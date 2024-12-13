@@ -1,0 +1,277 @@
+import json
+import os
+import re
+import maya.cmds as mc
+
+from nl_modules.build.tpl_loader import TplLoader
+
+from nl_modules.nodel.base.dag_node import DagNode
+from nl_modules.nodel.curve_node import CurveNode
+from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.joint_node import JointNode
+
+from nl_modules.utils import common, file
+from nl_modules.utils.color import Color
+
+import logging
+import nl_modules
+
+from nl_modules.build.leg import Leg
+from nl_modules.build.hand import Hand
+from nl_modules.build.arm import Arm
+from nl_modules.build.head import Head
+from nl_modules.build.neckPro import NeckPro
+from nl_modules.build.neckSrf import NeckSrf
+from nl_modules.build.spinePro import SpinePro
+from nl_modules.build.spineSrf import SpineSrf
+
+from nl_modules.build.quadLeg import QuadLeg
+from nl_modules.build.quadFLeg import QuadFLeg
+from nl_modules.build.quadNeckSrf import QuadNeckSrf
+from nl_modules.build.quadSpineCrv import QuadSpineCrv
+from nl_modules.build.quadSpineSrf import QuadSpineSrf
+from nl_modules.build.tail import Tail
+from nl_modules.build.tailSrf import TailSrf
+from nl_modules.build.spd3Leg import Spd3Leg
+
+COMPONENT_DICT = {
+    "head": ["head"],
+    "neck": ["neckSrf"],
+    "spine": ["spineSrf"],
+    "neck / quad": ["qNeckSrf"],
+    "spine / quad": ["qSpineSrf"],
+    "arm": ["lfArm", "rtArm"],
+    "hand": ["lfHand", "rtHand"],
+    "leg / planti-grade": ["lfLeg", "rtLeg"],
+    "leg / digiti unguli-grade": ["lfQHLeg", "rtQHLeg"],
+    "tail": ["tailSrf"],
+    "wing": [""],
+}
+MOD_DIR = os.path.dirname(nl_modules.__file__)
+PATH_PRESET = MOD_DIR + "/build/guide_presets"
+
+
+def loadGuide(names):
+    """Load component(s) for names"""
+
+    def genNextRigID(n):
+        """Generate next rigID name for newly created component"""
+        count = 0
+        for rN in mc.ls("*RGN", type="script"):
+            rN = DagNode(rN)
+            if rN.a.rigID.get().startswith(n):
+                count += 1
+        return f"{n}{count}"
+
+    for name in names:
+        nextRigID = genNextRigID(name)
+        TplLoader(name + ".ma", nextRigID).load_baseTpl()
+
+
+def copyGuideSel():
+    """Copy guide settings from 1st to 2nd selected """
+    from nl_modules.utils import build
+
+    selList = mc.ls(sl=1)
+    if len(selList) == 2:
+        rigNode1 = build.getRigNode(selList[0])
+        rigNode2 = build.getRigNode(selList[1])
+
+        if rigNode1 and rigNode2:
+            rigClass1 = rigNode1.a.rigClass.get()
+            rigClass2 = rigNode2.a.rigClass.get()
+
+            if rigClass1 == rigClass2:
+                rigID1 = rigNode1.a.rigID.get()
+                rigID2 = rigNode2.a.rigID.get()
+                guideList1 = mc.ls(rigID1 + "_*_guide")
+                guideList2 = mc.ls(rigID2 + "_*_guide")
+                for g1, g2 in zip(guideList1, guideList2):
+                    copyAttr(g1, g2, skipMasterXf=1)
+            else:
+                logging.info("Ignore copy for different rig classes")
+        else:
+            logging.info("Can not find rigNodes to copy")
+
+
+def mirrorGuideSelOrAll(*arg):
+    """Mirror guides for selected / all *lf*_guide"""
+    selList = mc.ls(sl=1, ap=1) or mc.ls("*lf*_guide", ap=1)
+    if selList:
+        mirrorAttr(selList)
+
+
+def getOppositeCtl(tgtN, pfL="lf", pfR="rt", pfB4Pf=1):
+    """Return opposite ctl
+    e.g.
+        getOppositeCtl(lf_leg0_ikc)              # rt_leg0_ikc
+        getOppositeCtl(head0_lf_eye, pfB4Pf=1)   # head0_rt_eye    
+    """
+    patternL = (
+        re.compile(rf"^(\w*){pfL}(\w+)$")
+        if pfB4Pf
+        else re.compile(rf"^{pfL}(\w+)$")
+    )
+    patternR = (
+        re.compile(rf"^(\w*){pfR}(\w+)$")
+        if pfB4Pf
+        else re.compile(rf"^{pfR}(\w+)$")
+    )
+    matchL = re.match(patternL, tgtN.name)
+    matchR = re.match(patternR, tgtN.name)
+
+    if matchL:
+        oppName = (
+            f"{matchL.group(1)}{pfR}{matchL.group(2)}"
+            if pfB4Pf
+            else f"{pfR}{matchL.group(1)}"
+        )
+        if mc.objExists(oppName):
+            return DagNode(oppName)
+    elif matchR:
+        oppName = (
+            f"{matchR.group(1)}{pfL}{matchR.group(2)}"
+            if pfB4Pf
+            else f"{pfL}{matchR.group(1)}"
+        )
+        if mc.objExists(oppName):
+            return DagNode(oppName)
+
+
+def copyAttr(A, B, wsMirrorAxis=0, mirror=0, skipMasterXf=0):
+    """Copy/mirror transform & user defined attribute values"""
+    A = DagNode(A) if isinstance(A, str) else A
+    B = DagNode(B) if isinstance(B, str) else B
+    if skipMasterXf and A.name.endswith("_master_guide"):
+        pass
+    else:
+        tx, ty, tz = A.a.t.get()
+        rx, ry, rz = A.a.r.get()
+        sx, sy, sz = A.a.s.get()
+        if mirror:
+            tx *= -1
+            if wsMirrorAxis or A.a.wsMirrorAxis.exists():
+                ry *= -1
+                rz *= -1
+            else:
+                ty *= -1
+                tz *= -1
+        B.a.t.set(tx, ty, tz)
+        B.a.r.set(rx, ry, rz)
+        B.a.s.set(sx, sy, sz)
+
+    udAttrs = A.a.list(ud=1, u=1) or []
+    for udA in udAttrs:
+        try:
+            B.a[udA.attr].set(udA.get())
+        except Exception as e:
+            print(e)
+
+
+def mirrorAttr(tgtList, wsMirrorAxis=0):
+    """Mirror xform for tgtList objects"""
+    for tgt in tgtList:
+        tgt = DagNode(tgt)
+        oppN = getOppositeCtl(tgt)
+        if oppN:
+            copyAttr(tgt, oppN, wsMirrorAxis=wsMirrorAxis, mirror=1)
+        else:
+            print(f'opposite not found for {tgt}')
+
+
+def mirrorPose(*arg):
+    """Mirror pose for selected ctl / all in set lf*_ctl_set"""
+    selList = mc.ls(sl=1, ap=1)
+    if not selList:
+        tgtSet = "lf*_ctl_set"
+        if mc.ls(tgtSet, type="objectSet"):
+            selList = mc.sets(tgtSet, q=1)
+    if selList:
+        mirrorAttr(selList)
+
+
+def loadPreset(path, removeUnused=1):
+    """Load preset from json file"""
+    from nl_modules.utils import build
+
+    idDict = file.loadJson(path)
+    if removeUnused:  # Remove unused components
+        idInPreset = [k + "_RGN" for k in idDict.keys()]
+        for rN in mc.ls("*RGN", type="script"):
+            if rN not in idInPreset:
+                build.deleteTgt(rN)
+
+    pattern = re.compile(rf"^([a-zA-Z_]+)")  # letter without digi
+
+    for rigID in idDict:
+        mG = DagNode(rigID + "_master_guide")
+        if mG.exists():
+            logging.info(f'master_guide for {rigID} already exists!')
+        else:
+            fName = re.match(pattern, str(rigID))  # e.g. lfLeg0 => 'lfLeg'
+            loadGuide([fName.group(1)])
+            mc.refresh(cv=1)
+
+        for guideN, attrs in idDict[rigID].items():  # Load settings from preset
+            guideN = DagNode(guideN)
+            if guideN.exists():
+                for attr in attrs:
+                    if guideN.a[attr].exists():
+                        if str(attr) in 'trs':
+                            v = attrs[attr]
+                            for i, axis in enumerate('xyz'):
+                                if guideN.a[attr + axis].settable():
+                                    guideN.a[attr + axis].set(v[i])
+                        else:
+                            if guideN.a[attr].settable():
+                                v = attrs[attr]
+                                if isinstance(v, (int, float)):
+                                    guideN.a[attr].set(v)
+                                elif isinstance(v, str):
+                                    guideN.a[attr].set(v, type="string")
+                                elif isinstance(v, list):
+                                    guideN.a[attr].set(*v)
+
+
+def genAttrDict(obj):
+    """Gen dict containing transform attr and user defined attr"""
+    obj = DagNode(obj)
+    attrDict = {
+        "t": obj.a.t.get(),
+        "r": obj.a.r.get(),
+        "s": obj.a.s.get(),
+    }
+    for ua in (obj.a.list(ud=1, u=1) or []):
+        uaName = ua.attr
+        attrDict[uaName] = obj.a[uaName].get()
+    return attrDict
+
+
+def savePreset(fName):
+    """Save preset into json file"""
+    fPath = f"{PATH_PRESET}/{fName}.json"
+    idDict = {}
+    rigNodes = mc.ls("*RGN", type="script")
+    if not rigNodes:
+        mc.confirmDialog(t="Info", m="No rigNode found.       \nSave ignored.", b="OK")
+        return
+
+    i = 0
+    for rN in rigNodes:
+        rN = DagNode(rN)
+        rigID = rN.a.rigID.get()
+        objsToSave = [DagNode(obj) for obj in mc.ls(rigID + "_*_guide", type="transform")]
+        objsToSave.append(rN.a.moduleG.inConnNode)
+        if i == 0:
+            objsToSave.append(DagNode('master2_ctl'))
+            objsToSave.append(DagNode('vis_ctl'))
+            i = 1
+
+        guideDict = {}
+        for obj in objsToSave:
+            guideDict[obj.name] = genAttrDict(obj)
+
+        idDict[rigID] = guideDict
+
+    file.saveJson(fPath, idDict, force=True)
+    logging.info("guides saved")

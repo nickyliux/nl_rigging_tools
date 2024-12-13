@@ -1,0 +1,54 @@
+import json
+import os
+import maya.cmds as mc
+
+
+def loadJson(path):
+    """Return json file as dict"""
+    if os.path.isfile(path):
+        f = open(path)
+        data = json.loads(f.read())
+        f.close()
+        return data
+    else:
+        raise FileNotFoundError("Json file NOT found.\n" + path)
+
+
+def saveJson(path, data, force=False):
+    """Save dictionary to json file"""
+    if os.path.isfile(path) and not force:
+        raise FileExistsError("Json file already exists.")
+
+    f = open(path, "w")
+    f.write(json.dumps(data, sort_keys=1, indent=4, separators=(",", ":")))
+    f.close()
+
+
+def importFile(path):
+    content = mc.file(path, i=True, returnNewNodes=1)
+    mc.setAttr('hardwareRenderingGlobals.ssaoEnable', 1)
+    # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
+    return content
+
+def openFile(path):
+    mc.file(new=1, force=1)
+    mc.file(path, o=1)
+    mc.viewFit(all=1)
+
+def deleteFile(path):
+    if os.path.isfile(path):
+        os.remove(path)
+    # for p in mc.getPanel(type="modelPanel"):
+    #     mc.modelEditor(p, e=1, jx=1)  # wos=1, jx=1,xray=1
+
+# def importFile(path, ns="tempNS"):
+#     """import file with namespace"""
+#     mc.file(path, i=True, namespace=ns)
+#     root_list = mc.ls(ns + ":|*")
+#     root_nodes = []
+#     for root in root_list:
+#         root_nodes.append(root.split(":")[-1])
+#
+#     mc.namespace(moveNamespace=(ns, ":"), f=1)
+#     mc.namespace(removeNamespace=ns)
+#     return root_nodes

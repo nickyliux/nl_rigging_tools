@@ -1,0 +1,608 @@
+import maya.cmds as mc
+import re
+from collections import OrderedDict
+from nl_modules.nodel.base.dep_node import DepNode
+from nl_modules.utils import common, open_maya_api
+from nl_modules.utils.color import Color
+import logging
+
+
+class DagNode(DepNode):
+    """DAG Node Class
+    e.g.
+        n = DagNode('existing')
+        n = DagNode('new', nodeType='transform')
+    """
+
+    def __init__(self, n, nodeType=None):
+        self._dag = None
+        DepNode.__init__(self, n)
+        if nodeType:
+            self.create(nodeType)
+
+    @property
+    def node(self):
+        return self._node
+
+    @node.setter
+    def node(self, n):
+        """Assign node from API and return state"""
+        self._dag = None
+        if DepNode.node.fset(self, n):
+            self._dag = open_maya_api.toMDagPath(self.node)
+            return True
+        return False
+
+    # @property
+    # def dag(self):
+    #     """get dag name"""
+    #     return self._dag
+
+    @property
+    def path(self):
+        """Get path from API"""
+        if self._dag:
+            return self._dag.partialPathName()
+
+        return DepNode.path.fget(self)
+
+    @property
+    def fullPath(self):
+        """Get fullPath from API"""
+        if self._dag:
+            return self._dag.fullPathName()
+
+        return DepNode.fullPath.fget(self)
+
+    @property
+    def shape(self):
+        """Return first shape"""
+        shapes = self.shapes
+        if len(shapes):
+            return shapes[0]
+
+    @property
+    def shapes(self):
+        """Return all shapes"""
+        return [DagNode(s) for s in mc.listRelatives(self, s=1, f=1, ni=1) or []]
+
+    @property
+    def shapesAll(self):
+        """Return all shapes, including intermediate"""
+        return [DagNode(s) for s in mc.listRelatives(self, s=1, f=1, ni=0) or []]
+
+    def deleteItmShapes(self):
+        """Delete related intermediate shapes"""
+        allShapes = [s for s in mc.listRelatives(self, s=1, f=1, ni=0) or []]
+        allIntShapes = [s for s in allShapes if s not in self.shapes]
+        if allIntShapes:
+            mc.delete(allIntShapes)
+
+    def cstAim(self, tgt, keep=True, **kwargs):
+        """Aim constraint tgt"""
+        return self.cstBase(tgt, cstType="aim", keep=keep, **kwargs)
+
+    def cstOri(self, tgt, keep=True, **kwargs):
+        """Orient constraint tgt"""
+        return self.cstBase(tgt, cstType="ori", keep=keep, **kwargs)
+
+    def cstPoi(self, tgt, keep=True, **kwargs):
+        """Point constraint tgt"""
+        return self.cstBase(tgt, cstType="poi", keep=keep, **kwargs)
+
+    def cstPar(self, tgt, keep=True, **kwargs):
+        """Parent constraint tgt"""
+        return self.cstBase(tgt, cstType="par", keep=keep, **kwargs)
+
+    def cstParR(self, tgt, keep=True, **kwargs):
+        """Parent constraint tgt to rotation"""
+        return self.cstBase(tgt, cstType="parR", keep=keep, **kwargs)
+
+    def cstParT(self, tgt, keep=True, **kwargs):
+        """Parent constraint tgt to position"""
+        return self.cstBase(tgt, cstType="parT", keep=keep, **kwargs)
+
+    def cstSca(self, tgt, keep=True, **kwargs):
+        """Scale constraint tgt"""
+        return self.cstBase(tgt, cstType="sca", keep=keep, **kwargs)
+
+    def cstParSca(self, tgt, keep=True, **kwargs):
+        """Parent + Scale constraint tgt"""
+        ret1 = self.cstBase(tgt, cstType="sca", keep=keep, **kwargs)
+        ret2 = self.cstBase(tgt, cstType="par", keep=keep, **kwargs)
+        return [ret1, ret2]
+
+    def cstNml(self, tgt, keep=True, **kwargs):
+        """Normal constraint tgt"""
+        return self.cstBase(tgt, cstType="nml", keep=keep, **kwargs)
+
+    def cstGeo(self, tgt, keep=True, **kwargs):
+        """Geometry constraint tgt"""
+        return self.cstBase(tgt, cstType="geo", keep=keep, **kwargs)
+
+    def cstBase(self, tgt, cstType="poi", keep=True, **kwargs):
+        """Create and return constraint based on cstType"""
+        if isinstance(tgt, str):
+            tgt = DagNode(tgt)
+
+        n = f"{tgt.name}_{cstType}Cst"
+
+        if cstType.startswith("par"):
+            skipR = ["x", "y", "z"] if cstType == "parT" else []
+            skipT = ["x", "y", "z"] if cstType == "parR" else []
+            cst = common.CST_DICT[cstType](
+                self, tgt, **kwargs, n=n, st=skipT, sr=skipR
+            )[0]
+        else:
+            cst = common.CST_DICT[cstType](self, tgt, **kwargs, n=n)[0]
+
+        if keep:
+            return DagNode(cst)
+        else:
+            mc.delete(cst)
+
+    def cstPvt(self, ikH, **kwargs):
+        """PoleVector constraint tgt"""
+        if isinstance(ikH, str):
+            ikH = DagNode(ikH)
+        n = mc.poleVectorConstraint(self, ikH, **kwargs, n=ikH.name + "_pvCst#")[0]
+        if n:
+            return DagNode(n)
+
+    def removeCstNodes(self, driven=1):
+        """Remove all constraints"""
+        cstList = self.getCstNodes(driven=driven)
+        if cstList:
+            mc.delete(cstList)
+
+    def getCstNodes(self, cstType=None, driven=1):
+        """Return constraints
+        driven
+            1 => object being driven
+            0 => object driving others
+        """
+        typ = cstType if cstType else ""
+        cstNodes = mc.listConnections(self, s=driven, d=not driven, t=typ) or []
+        CST_TYPE_LIST = common.getUniqueCstDictNames()
+
+        result = []
+        if cstNodes:
+            for cstNode in list(OrderedDict.fromkeys(cstNodes)):
+                cstNode = DagNode(cstNode)
+                if cstNode.type in CST_TYPE_LIST:
+                    result.append(cstNode)
+        return result
+
+    def getCstWeightAttr(self, cstType="pointConstraint"):
+        """Return weight attrs of constraint node of cstType
+        e.g.
+            obj1.getCstWeightAttr()  # [obj1_poiCst.handCtlW0, obj1_poiCst.handCtlW1]
+            obj1.getCstWeightAttr(cstType='orientConstraint')
+        """
+        from nl_modules.nodel.base.attribute import Attribute
+
+        cst = self.getCstNodes(cstType=cstType, driven=1)
+        weightList = []
+        if cst:
+            for attr in mc.listAttr(cst[0], k=1, c=1) or []:
+                if re.match(r"^.+W\d+$", attr):
+                    weightList.append(Attribute(cst[0], attr))
+        return weightList
+
+    def getCstObjects(self, cstType=None):
+        """Return constraint objects"""
+        result = []
+
+        cstNodes = self.getCstNodes(cstType=cstType, driven=1)
+        if cstNodes:
+
+            CST_TYPE_LIST = common.getUniqueCstDictNames()
+            for cstNode in cstNodes:
+                cstObjs = mc.listConnections(cstNode, s=1, d=0) or []
+                for cstObj in cstObjs:
+                    cstObj = DagNode(cstObj)
+                    if (
+                        cstObj not in result
+                        and cstObj.type not in CST_TYPE_LIST
+                        and self != cstObj
+                    ):
+                        result.append(cstObj)
+        return result
+
+    def _getDirectChildren(self):
+        """Return direct children"""
+        return [
+            DagNode(c)
+            for c in mc.listRelatives(self, c=1, f=1, ni=1, type="transform") or []
+        ]
+
+    def _getDescendants(self):
+        """Return all children recursively (in correct order)"""
+        result = []
+        for child in self._getDirectChildren():
+            result.append(child)
+            if child._getDirectChildren():
+                result.extend(child._getDescendants())
+        return result
+
+    def getChildren(self, nt="all", ad=0, incl=0):
+        """Return children objects
+        options
+            nt:    nodeType
+            ad:    all descendants
+            incl:  including itself
+        """
+        result = []
+        if ad == 0:
+            for child in self._getDirectChildren() or []:
+                result.append(DagNode(child))
+        else:
+            result = self._getDescendants()
+
+        if incl:
+            result.insert(0, self)
+
+        if nt == "all":
+            return result
+        else:
+            return [n for n in result if (n.shape or n).type == nt]
+
+    @property
+    def children(self):
+        """Return children"""
+        return self.getChildren()
+
+    @property
+    def children2(self):
+        """Return children including itself"""
+        return self.getChildren(incl=1)
+
+    @property
+    def childrenJt(self):
+        """Return children joints"""
+        return self.getChildren(nt="joint")
+
+    @property
+    def childrenJt2(self):
+        """Return children joints including itself"""
+        return self.getChildren(nt="joint", incl=1)
+
+    @property
+    def allChildren(self):
+        """Return all descendants, excluding shapes"""
+        return self.getChildren(ad=1)
+
+    @property
+    def allChildren2(self):
+        """Return all descendants including itself"""
+        return self.getChildren(ad=1, incl=1)
+
+    @property
+    def allChildrenJt(self):
+        """Return all joint descendants"""
+        return self.getChildren(nt="joint", ad=1)
+
+    @property
+    def allChildrenJt2(self):
+        """Return all joint descendants including itself"""
+        return self.getChildren(nt="joint", ad=1, incl=1)
+
+    @property
+    def parent(self):
+        """Return parent"""
+        parent = mc.listRelatives(self, p=1, f=1)
+        if parent:
+            return DagNode(parent[0])
+
+    @property
+    def offset(self):
+        """Return parent"""
+        return self.parent
+
+    def parentTo(self, target, reset=0, offset=None):
+        """Parent to target
+        options:
+            reset:  reset xform
+            offset: set offset
+        """
+        if mc.objExists(target):
+            mc.parent(self, target)
+            if reset:
+                mc.makeIdentity(self)
+            if offset:
+                self.a.t.set(*offset)
+
+    def parentToWorld(self):
+        """Parent itself to world"""
+        if self.parent:
+            mc.parent(self, w=1)
+
+    @property
+    def allParents(self):
+        """Return all parents"""
+        parents = []
+        parent = self.parent
+        while parent:
+            parents.append(parent)
+            parent = parent.parent
+        return parents
+
+    def __or__(self, parent):
+        """Parent itself to parent
+        e.g.
+            obj1 | obj2
+        """
+        if self in parent.allParents:
+            raise RuntimeError(f"Can not parent as {self.name} is above {parent.name}")
+
+        mc.parent(self, parent)
+        return parent
+
+    def __ror__(self, children):
+        """Parent children to itself
+        e.g.
+            (obj1, obj2) | obj3
+        """
+        if isinstance(children, (list, tuple)):
+            [mc.parent(child, self) for child in children]
+        else:
+            if children in self.allParents:
+                raise RuntimeError(
+                    f"Can not parent as {children.name} is above {self.name}"
+                )
+            else:
+                mc.parent(children, self)
+        return self
+
+    @property
+    def order(self):
+        """Return order among children (0-indexed)"""
+        return self.parent.children.index(self)
+
+    @order.setter
+    def order(self, index):
+        """Set order among children (0-indexed)"""
+        mc.reorder(self.name, r=index)
+
+    def zeroize(self, below=False, relink=True, alignParent=False):
+        """Add offset group above or below target
+        options
+            below:        added below selected
+            relink:       parent direct children to the offset group
+            alignParent:  align the offset group to target's parent instead of target
+
+        e.g.
+            zeroize('cube')           returns: cube_ofs1
+            zeroize('cube', below=1)  returns: cube_ofs1
+        """
+        name = self + "_ofs"
+        if mc.objExists(name):
+            name += "#"
+
+        grp = mc.group(em=1, n=name)
+
+        if not below:
+            currParent = mc.listRelatives(self, p=1, f=1) or []
+            if currParent and alignParent:
+                common.matchMove([grp, currParent])
+            else:
+                common.matchMove([grp, self])
+            mc.parent(self, grp)
+
+            if currParent:
+                mc.parent(grp, currParent[0])
+        else:
+            currChildren = mc.listRelatives(self, c=1, f=1, type="transform") or []
+            common.matchMove([grp, self])
+            mc.parent(grp, self)
+
+            if currChildren and relink:
+                [mc.parent(c, grp) for c in currChildren]
+
+        return DagNode(grp)
+
+    def addOffsetGrp(self, count=1, below=0, relink=1, alignParent=0):
+        """Add offset group"""
+        resultGrps = []
+        i = 0
+        target = self
+        while i < count:
+            returnGrp = target.zeroize(
+                below=below, relink=relink, alignParent=alignParent
+            )
+            target = returnGrp
+            resultGrps.append(returnGrp)
+            i += 1
+
+        if len(resultGrps) == 1:
+            return resultGrps[0]
+        else:
+            return resultGrps
+
+    def alignTo(self, obj, offset=None, offsetR=None, rotate=0, p=None):
+        """Align to obj"""
+        obj = DagNode(obj) if isinstance(obj, str) else obj
+        if rotate:
+            common.matchMove([self, obj], mode="r")
+        else:
+            common.matchMove([self, obj])
+        if p:
+            mc.parent(self, p)
+        if offsetR:
+            mc.rotate(*offsetR, self, objectSpace=1, r=1)
+        if offset:
+            mc.move(*offset, self, objectSpace=1, r=1)
+
+    def snapTo(self, obj, offset=None, p=None):
+        """Snap to obj"""
+        obj = DagNode(obj) if isinstance(obj, str) else obj
+        common.matchMove([self, obj], mode="t")
+        if p:
+            mc.parent(self, p)
+        if offset:
+            mc.move(*offset, self, objectSpace=1, r=1)
+
+    def alignHere(self, objs):
+        """Align objects to itself"""
+        objsList = objs if type(objs) == "list" else [objs]
+        common.matchMove([DagNode(obj) for obj in objsList] + [self])
+
+    def snapAlignTo(self, obj1, obj2, offset=None, p=None):
+        """Snap to obj1, align to obj2"""
+        obj1 = DagNode(obj1) if isinstance(obj1, str) else obj1
+        obj2 = DagNode(obj2) if isinstance(obj2, str) else obj2
+        common.matchMove([self, obj2], mode="r")
+        common.matchMove([self, obj1], mode="t")
+        if p:
+            mc.parent(self, p)
+        if offset:
+            mc.move(*offset, self, objectSpace=1, r=1)
+
+    def freezeXf(self, t=True, r=True, s=True):
+        """Freeze object transform"""
+        mc.makeIdentity(self, t=t, r=r, s=s, a=1)
+
+    def resetXf(self, t=True, r=True, s=False):
+        """Reset object transform"""
+        mc.makeIdentity(self, t=t, r=r, s=s)
+
+    def duplicate(self, name=None, **kwargs):
+        """Duplicate itself"""
+        from nl_modules.nodel.joint_node import JointNode
+        from nl_modules.nodel.loc_node import LocNode
+        from nl_modules.nodel.mesh_node import MeshNode
+        from nl_modules.nodel.curve_node import CurveNode
+
+        if not self.exists():
+            raise ValueError("Can not duplicate None !")
+
+        node = mc.duplicate(self, **kwargs)[0]
+
+        if name:
+            node.rename(name)
+
+        className = self.__class__.__name__
+        return eval(className)(node)
+
+    def displayLocalAxis(self, state=True):
+        """Show/hide display local axis"""
+        self.a.displayLocalAxis.set(state)
+
+    def lockHideAttr(self, attrsList, lock=True):
+        """Lock and hide attribute
+        e.g.
+            obj1.lockHideAttr(['tx','rx'])
+            obj1.lockHideAttr(['myAttr'])
+        """
+        for attr in attrsList:
+            try:
+                mc.setAttr(self + "." + attr, lock=lock, k=not lock)
+            except:
+                logging.debug("Fail to run on this attribute")
+
+    def lockHideAttrXf(self, chn="t", lock=True):
+        """Lock and hide transform attribute
+        e.g.
+            obj1.lockHideAttr(chn='r')  # 't'/'r'/'s'
+            obj1.lockHideAttr(chn='all')
+        """
+        if chn == "all":
+            self.lockHideAttr(
+                ["tx", "ty", "tz", "rx", "ry", "rz", "sx", "sy", "sz", "v"], lock=lock
+            )
+        else:
+            self.lockHideAttr([f"{chn}x", f"{chn}y", f"{chn}z"], lock=lock)
+
+    def show(self):
+        """Show itself"""
+        if self.exists():
+            mc.showHidden(self)
+
+    def hide(self):
+        """Hide itself"""
+        if self.exists():
+            mc.hide(self)
+
+    @property
+    def color(self):
+        """Return color"""
+        return Color.getColor(self)
+
+    @color.setter
+    def color(self, v):
+        """Set color"""
+        Color.setColor(self, v)
+
+    @property
+    def dspType(self):
+        """Return display type of shape, or itself"""
+        tgt = self.shape or self
+        return tgt.a.overrideDisplayType.get()
+
+    @dspType.setter
+    def dspType(self, state):
+        """Set display type of shape or itself"""
+        tgt = self.shape or self
+        tgt.a.overrideEnabled.set(1)
+        tgt.a.overrideDisplayType.set(state)
+
+    @property
+    def history(self):
+        """Return history"""
+        if self.exists():
+            return [DagNode(obj) for obj in mc.listHistory(self)]
+        return []
+
+    def deleteHistory(self):
+        """Delete history"""
+        if self.exists():
+            mc.delete(self, ch=1)
+
+    def selectEffector(self):
+        """Select IK from effector"""
+        if self.type == "ikEffector":
+            mc.select(self.a.handlePath.outConnNode)
+
+    def setMsg(self, msgDict):
+        """Add message attributes to tgt
+        e.g.
+            self.setMsg( { 'upr':upr, 'lwr':lwr, } )
+            self.setMsg( { 'upr':upr, 'lwr':lwr, } )
+        """
+        for name, obj in msgDict.items():
+            attr = self.a.add(name, attrType="message")
+            obj = DagNode(obj)
+            if obj.exists():
+                obj.a.message >> attr
+
+    def getMsgOutput(self):
+        """Return objects connected to its message attr
+        e.g.
+            moduleG.getMsgNodes()  # [DagNode('lfLeg0_RGN')]
+        """
+        nodes = mc.listConnections(self.a.message, s=0, d=1, scn=1)
+        return [DagNode(n) for n in nodes]
+
+    def getClosestInList(self, objList):
+        """Return the closest object in list"""
+        minD = 1e10
+        closest = None
+        for obj in objList:
+            d = self.o.distanceTo(obj)
+            if d < minD:
+                closest = obj
+                minD = d
+        if closest:
+            return DagNode(closest)
+
+    @property
+    def type(self):
+        """Return type of shape or itself"""
+        if self.exists():
+            return mc.nodeType(self.shape or self)
+
+    def scale(self, *args, **kwargs):
+        if len(args) == 1:
+            mc.scale(args[0], args[0], args[0], self, **kwargs)
+        else:
+            mc.scale(*args, self, **kwargs)

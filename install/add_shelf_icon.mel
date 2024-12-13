@@ -1,0 +1,30 @@
+/* ------------------------------------------ *\
+
+    Add shelf icon for nl_rigging_tools
+
+\* ------------------------------------------ */
+
+global string $gShelfTopLevel;
+string $currentShelf = `tabLayout -query -selectTab $gShelfTopLevel`;
+setParent $currentShelf;
+
+global proc dirFn() {}
+
+string $whatIsPath = `whatIs dirFn`;
+$whatIsPath = substring($whatIsPath, 25, size($whatIsPath));
+string $currDir = dirname($whatIsPath) + "/";
+
+string $icon = $currDir + "nl_rigging_tools.png";
+string $command = "" +
+    "from nl_modules import nl_rigging_tools\n" +
+    "from importlib import reload\n" +
+    "reload(nl_rigging_tools)\n\n" +
+    "nl_rigging_tools.main()\n";
+
+shelfButton
+	-command $command
+	-annotation "nl_rigging_tools"
+	-label "Oh"
+	-image $icon
+	-image1 $icon
+	-sourceType "python";
