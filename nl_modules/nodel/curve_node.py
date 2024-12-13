@@ -421,12 +421,9 @@ class CurveNode(GroupNode):
     def weightTo(self, joints, custom=0, **kwargs):
         if self.exists():
             skin_clu = mc.skinCluster(self, joints, **kwargs)[0]
-            """
-            Apply preset weight for 6-cv curve if custom != 0
-                1  : set as order below   
-                -1 : set in reverse order
-            """
-            if custom != 0:
+
+            # Apply preset weight for 6-cv curve if custom != 0
+            if custom != 0 and len(joints) == 3 and self.shape.a.spans == 4:
                 wList = [
                     (1, 0, 0),
                     (1, 0, 0),
@@ -439,10 +436,13 @@ class CurveNode(GroupNode):
                     wList.reverse()
 
                 for i, w in enumerate(wList):
+                    cv = f"{self.shape}.cv[{i}]"
                     mc.skinPercent(
                         skin_clu,
-                        f"{self.shape}.cv[{i}]",
-                        transformValue=[(joints[0], w[0]), (joints[1], w[1]), (joints[2], w[2]) ]
+                        cv,
+                        transformValue=[
+                            (joints[0], w[0]), (joints[1], w[1]), (joints[2], w[2])
+                        ]
                     )
 
             # if len(joints) == 3:

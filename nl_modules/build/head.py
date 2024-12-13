@@ -75,10 +75,9 @@ class Head(RigModule):
         self.isolateAlign(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC])
 
     def proxy_setup(self):
-        # for j in [self.head, self.jaw, self.lf_eye, self.rt_eye]:
-        for j in [self.head]:
+        for j in [self.head, self.jaw, self.lf_eye, self.rt_eye]:
             JointNode(j).addProxyMesh(
-                size=self.rigSize * 50, aimDir=(0, 1, 0), skipEnd=1, p=self.PRX_GRP
+                size=self.rigSize * 10, aimDir=(0, 1, 0), skipEnd=1, p=self.PRX_GRP
             )
 
     def vis_setup(self):

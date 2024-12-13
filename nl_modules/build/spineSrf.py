@@ -190,14 +190,21 @@ class SpineSrf(RigModule):
         self.rigNode.setMsg({"space_lwrBody": self.rt_ctl})
         self.rigNode.setMsg({"space_uprBody": self.tp_ctl})
 
+    def anchor_setup(self):
+        anchorM2Tgt = self.bindJ[-1] if self.RBN_BONES else self.tp_ctl
+        self.anchor_setup_module(
+            {
+                'anchorM1': self.rt_ctl, 'anchorM2': anchorM2Tgt
+            }
+        )
+
     def post_setup(self):
         rID = self.rigID
         logging.info(rID)
         self.addBindJntSet(self.bindJ)
         self.addCtlSet(self.fkCtl + self.ikCtl + [self.setting, self.cog_ctl, self.cog_gmb], pf=rID)
         self.space_setup()
-        anchorM2Tgt = self.bindJ[-1] if self.RBN_BONES else self.tp_ctl
-        self.anchor_setup_module({'anchorM1': self.rt_ctl, 'anchorM2': anchorM2Tgt})
+        self.anchor_setup()
         self.proxy_setup()
         self.vis_setup()
         self.channel_setup()

@@ -15,11 +15,12 @@ mel.eval("ik2Bsolver")
 
 class IkNode(DagNode):
     """Build ik component with start and end joint.
-        e.g.
-            n = IkNode('name', sj=J1, ee=J2)
-            n = IkNode('name', sj=J1, ee=J4, sol=2)
-            n = IkNode('name', sj=J1, ee=J4, ikc=C1, pvc=C2, sol=1)
-        """
+    e.g.
+        n = IkNode('name', sj=J1, ee=J2)
+        n = IkNode('name', sj=J1, ee=J4, sol=2)
+        n = IkNode('name', sj=J1, ee=J4, ikc=C1, pvc=C2, sol=1)
+    """
+
     SOL_DICT = {
         0: "ikSCsolver",
         1: "ikRPsolver",
@@ -29,25 +30,25 @@ class IkNode(DagNode):
     }
 
     def __init__(
-            self,
-            node,
-            pf="",
-            sf="_ikh",
-            sj=None,
-            ee=None,
-            jsf="",  # joint suffix
-            sol=0,  # solver
-            setting=None,
-            ikc=None,
-            pvc=None,
-            createCrv=1,
-            inputCrv=None,
-            numSpans=3,
-            limbScale=False,
-            scaleFix=None,
-            quat=None,
-            RIG_DATA=None,
-            p=None,
+        self,
+        node,
+        pf="",
+        sf="_ikh",
+        sj=None,
+        ee=None,
+        jsf="",  # joint suffix
+        sol=0,  # solver
+        setting=None,
+        ikc=None,
+        pvc=None,
+        createCrv=1,
+        inputCrv=None,
+        numSpans=3,
+        limbScale=False,
+        scaleFix=None,
+        quat=None,
+        RIG_DATA=None,
+        p=None,
     ):
 
         if pf and pf[-1] != "_":
@@ -93,7 +94,7 @@ class IkNode(DagNode):
         self
 
     def createIK(
-            self, node, quat=False, createCrv=1, inputCrv=None, numSpans=3, p=None
+        self, node, quat=False, createCrv=1, inputCrv=None, numSpans=3, p=None
     ):
         solverName = IkNode.SOL_DICT[self.solver]
         ikh = (
@@ -153,7 +154,7 @@ class IkNode(DagNode):
         """Return curve data of SplineIK"""
         if self.solver == 2:
             crvSh = self.a.inCurve.inConnNode
-            return [crvSh, CurveNode(crvSh.parent)]
+            return CurveNode(crvSh.parent)
 
     def stretchySp(self, on=0, axis="+x", ignoreX_dir=0):
         """Add stretchy logic to translate channel of joint chain"""
@@ -164,9 +165,9 @@ class IkNode(DagNode):
             logging.error("No setting control provided")
             return
 
-        crv, crvSh = self.getCrv()
-        D = mc.arclen(crvSh)
-        crvInfo = DepNode(mc.arclen(crvSh, ch=1))
+        crv = self.getCrv()
+        D = mc.arclen(crv.shape)
+        crvInfo = DepNode(mc.arclen(crv.shape, ch=1))
         d = crvInfo.a.arcLength
         if self.scaleFix:
             d /= self.scaleFix
@@ -280,8 +281,8 @@ class IkNode(DagNode):
         dist_loc.hide()
 
     def addSoft(self, d=None, ratio=None, softParent=None):
-        """ softJ
-                 softJ    <- cstP  leg IK
+        """softJ
+        softJ    <- cstP  leg IK
         """
         from nl_modules.nodel.joint_node import JointNode
 
@@ -296,7 +297,14 @@ class IkNode(DagNode):
         self.ee.cstAim(softJ[0], aim=(self.x_dir, 0, 0), keep=False)
         softJ[0].freezeXf()
 
-        ikH = IkNode("soft", pf=softJ[0].name, sj=softJ[0], ee=softJ[1], p=self.RIG_DATA, quat=True)
+        ikH = IkNode(
+            "soft",
+            pf=softJ[0].name,
+            sj=softJ[0],
+            ee=softJ[1],
+            p=self.RIG_DATA,
+            quat=True,
+        )
         softIkPosGrp = GroupNode(softJ[0].name + "_posGrp", snap=self.ee, p=self.parent)
         softIkPosGrp.cstPoi(ikH)
         softJ[1].cstPoi(self.node)

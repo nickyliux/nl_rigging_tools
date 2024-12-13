@@ -1,29 +1,21 @@
 import maya.cmds as mc
-import maya.mel as mel
-import importlib
 import logging
-import time
-from nl_modules.utils import common
 from nl_modules.nodel.base.dag_node import DagNode
 
 # Must keep it ------------------------------
-from nl_modules.build.rig_module import RigModule
 from nl_modules.build.leg import Leg
 from nl_modules.build.hand import Hand
 from nl_modules.build.arm import Arm
 from nl_modules.build.head import Head
-from nl_modules.build.neckPro import NeckPro
 from nl_modules.build.neckSrf import NeckSrf
-from nl_modules.build.spinePro import SpinePro
 from nl_modules.build.spineSrf import SpineSrf
 from nl_modules.build.quadLeg import QuadLeg
 from nl_modules.build.quadFLeg import QuadFLeg
 from nl_modules.build.quadNeckSrf import QuadNeckSrf
-from nl_modules.build.quadSpineCrv import QuadSpineCrv
 from nl_modules.build.quadSpineSrf import QuadSpineSrf
-from nl_modules.build.tail import Tail
 from nl_modules.build.tailSrf import TailSrf
-from nl_modules.build.spd3Leg import Spd3Leg
+
+from nl_modules.build.rig_module import RigModule
 
 from contextlib import ContextDecorator
 
@@ -173,11 +165,11 @@ def updateAnchorConn():
     # ---------------------------------------------------------------
     #  Create isolate neck to spine setup for standard quadruped
     # ---------------------------------------------------------------
-    neckCog = DagNode('qNeckSrf0_cog_ctl')
-    spineCtl = DagNode('qSpineSrf0_tp_ctl')
-    worldSpace = DagNode('master_ctl')
-    if all([neckCog.exists(), spineCtl.exists(), worldSpace.exists()]):
-        RigModule.isolateNeckToSpine(neckCog, spineCtl, worldSpace)
+    # neckCog = DagNode('qNeckSrf0_cog_ctl')
+    # spineCtl = DagNode('qSpineSrf0_tp_ctl')
+    # worldSpace = DagNode('master_ctl')
+    # if all([neckCog.exists(), spineCtl.exists(), worldSpace.exists()]):
+    #     RigModule.isolateNeckToSpine(neckCog, spineCtl, worldSpace)
 
 def updateSpaceSwitch():
     """Add/update space switch for ctl from rigNode's spaceHolder* attr

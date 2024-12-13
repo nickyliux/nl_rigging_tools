@@ -126,7 +126,7 @@ class QuadSpineCrv(rig_module.RigModule):
             scaleFix=self.masterC.a.globalScale,
         )
 
-        spCrv = spIkH.getCrv()[1]
+        spCrv = spIkH.getCrv()
         (spIkH, spCrv) | self.RIG_DATA
 
         # PARENTING

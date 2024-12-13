@@ -192,7 +192,7 @@ class Spine(rig_module.RigModule):
             scaleFix=self.masterC.parent.parent,
         )
         ratio = spIkH.stretchySp()
-        spCrv = spIkH.getCrv()[1]
+        spCrv = spIkH.getCrv()
         spCrv.a.inheritsTransform.set(0)
         (spIkH, spCrv) | self.SPINE_SETUP
 

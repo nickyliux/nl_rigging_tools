@@ -72,28 +72,37 @@ class SurfNode(GroupNode):
     def weightTo(self, joints, **kwargs):
         if self.exists():
             skin_clu = mc.skinCluster(self, joints, tsb=1, **kwargs)[0]
-            if len(joints) == 3:
-                if self.uSeg == 5 and self.degU == 3:
-                    wList = [
-                        (1, 0, 0),
-                        (0.75, 0.25, 0),
-                        (0.5, 0.5, 0),
-                        (0.25, 0.75, 0),
-                        (0, 0.75, 0.25),
-                        (0, 0.5, 0.5),
-                        (0, 0.25, 0.75),
-                        (0, 0, 1),
-                    ]
-                    for i, w in enumerate(wList):
-                        mc.skinPercent(
-                            skin_clu,
-                            f"{self.shape}.cv[{i}][*]",
-                            transformValue=[
-                                (joints[0], w[0]),
-                                (joints[1], w[1]),
-                                (joints[2], w[2]),
-                            ],
-                        )
+
+            cv = f"{self.shape}.cv[0][*]"
+            mc.skinPercent(skin_clu, cv, transformValue=[(joints[0], 1)])
+
+            spansUV = self.a.spansUV.get()[0]
+            degUV = self.a.degreeUV.get()[0]
+            cv = f"{self.shape}.cv[{spansUV + degUV - 1}][*]"
+            mc.skinPercent(skin_clu, cv, transformValue=[(joints[-1], 1)])
+
+            # if len(joints) == 3:
+            #     if self.uSeg == 5 and self.degU == 3:
+            #         wList = [
+            #             (1, 0, 0),
+            #             (0.75, 0.25, 0),
+            #             (0.5, 0.5, 0),
+            #             (0.25, 0.75, 0),
+            #             (0, 0.75, 0.25),
+            #             (0, 0.5, 0.5),
+            #             (0, 0.25, 0.75),
+            #             (0, 0, 1),
+            #         ]
+            #         for i, w in enumerate(wList):
+            #             mc.skinPercent(
+            #                 skin_clu,
+            #                 f"{self.shape}.cv[{i}][*]",
+            #                 transformValue=[
+            #                     (joints[0], w[0]),
+            #                     (joints[1], w[1]),
+            #                     (joints[2], w[2]),
+            #                 ],
+            #             )
 
     @staticmethod
     def moveCloseToSurf(objList, surf=None):

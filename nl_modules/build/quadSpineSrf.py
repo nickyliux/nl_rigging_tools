@@ -47,20 +47,34 @@ class QuadSpineSrf(rig_module.RigModule):
         CY = Color.YELLOW
 
         self.cog_ctl = CurveNode(
-            "cog_ctl", pf=rID, shape='trapezoid', scale=(rSz, rSz * 1.5, rSz * 2), color=CY
+            "cog_ctl",
+            pf=rID,
+            shape="trapezoid",
+            scale=(rSz, rSz * 1.5, rSz * 2),
+            color=CY,
         )
         self.cog_ctl.cv_move(0, rSz * 80, 0)
-        self.tp_ctl = CurveNode("tp_ctl", pf=rID, up="x", shape="cube", scale=rSz * 8, color=CDY)
+        self.tp_ctl = CurveNode(
+            "tp_ctl", pf=rID, up="x", shape="cube", scale=rSz * 8, color=CDY
+        )
         self.tp_ctl.cv_scale(1, 0.8, 0.5)
-        self.md_ctl = CurveNode("_md_ctl", pf=rID, shape="diamond", scale=rSz * 3, color=CDY)
+        self.md_ctl = CurveNode(
+            "_md_ctl", pf=rID, shape="diamond", scale=rSz * 3, color=CDY
+        )
         self.md_ctl.cv_move(0, rSz * 40, 0)
-        self.rt_ctl = CurveNode("rt_ctl", pf=rID, shape='cube', scale=rSz * 8, color=CDY)
+        self.rt_ctl = CurveNode(
+            "rt_ctl", pf=rID, shape="cube", scale=rSz * 8, color=CDY
+        )
         self.rt_ctl.cv_scale(1, 0.8, 0.5)
 
-        self.tangent_tp_ctl = CurveNode("tangent_tp_ctl", pf=rID, up="x", shape="T", scale=rSz * 2, color=CDY)
+        self.tangent_tp_ctl = CurveNode(
+            "tangent_tp_ctl", pf=rID, up="x", shape="T", scale=rSz * 2, color=CDY
+        )
         self.tangent_tp_ctl.cv_rotate(90, 0, 0)
         self.tangent_tp_ctl.cv_move(0, rSz * 40, 0)
-        self.tangent_rt_ctl = CurveNode("tangent_rt_ctl", pf=rID, up="x", shape="T", scale=rSz * 2, color=CDY)
+        self.tangent_rt_ctl = CurveNode(
+            "tangent_rt_ctl", pf=rID, up="x", shape="T", scale=rSz * 2, color=CDY
+        )
         self.tangent_rt_ctl.cv_rotate(90, 0, 0)
         self.tangent_rt_ctl.cv_move(0, rSz * 40, 0)
 
@@ -201,13 +215,17 @@ class QuadSpineSrf(rig_module.RigModule):
                 # fkJntA  is j1     j2 ... j4    j4_end
                 # fkJntB  is j1_end j1 ... j4
                 common.cstMulti(
-                    self.fkJntB[i + 1], self.fkJntA[i], self.fkJnt[i], w=spineSlider, cstType="par"
+                    self.fkJntB[i + 1],
+                    self.fkJntA[i],
+                    self.fkJnt[i],
+                    w=spineSlider,
+                    cstType="par",
                 )
 
             (ikH_A, ikH_B) | self.RIG_DATA
 
-            ikH_A.stretchySp(axis="+z", ignoreX_dir=1)
-            ikH_B.stretchySp(axis="-z", ignoreX_dir=1)
+            # ikH_A.stretchySp(axis="+z", ignoreX_dir=1)
+            # ikH_B.stretchySp(axis="-z", ignoreX_dir=1)
 
         self.rt_ctl.snapTo(self.fkJnt[0])
         self.md_ctl.snapTo(self.MD_GUIDE)
@@ -220,7 +238,9 @@ class QuadSpineSrf(rig_module.RigModule):
         # Create ctl joints
         # Skin to crv
         # --------------------------------------------
-        self.ctlJnts = self.createCtlJ(self.rt_ctl, self.md_ctl, self.tp_ctl, color=Color.RED)
+        self.ctlJnts = self.createCtlJ(
+            self.rt_ctl, self.md_ctl, self.tp_ctl, color=Color.RED
+        )
 
         spCrv.weightTo(self.ctlJnts, custom=1)  # mi=2, dr=3)
         spCrv.a.inheritsTransform.set(0)
@@ -249,7 +269,7 @@ class QuadSpineSrf(rig_module.RigModule):
         # Mid ctl setup
         # --------------------------------------------
         common.cstMulti(
-            self.tp_ctl, self.rt_ctl, self.md_ctl.offset.offset, cstType="parT", mo=1
+            self.tp_ctl, self.rt_ctl, self.md_ctl.offset.offset, cstType="par", mo=1
         )
 
         # self.tp_ctl.a.rz @ self.rt_ctl.a.rz >> self.md_ctl.offset.a.rz
@@ -277,8 +297,14 @@ class QuadSpineSrf(rig_module.RigModule):
 
         self.tangent_rt_ctl.a.r >> self.ctlJnts[0].a.r
         self.tangent_tp_ctl.a.r >> self.ctlJnts[2].a.r
-        self.tangent_rt_ctl.a.add("tangentScale", min=0, max=2, dv=1) >> self.ctlJnts[0].a.s
-        self.tangent_tp_ctl.a.add("tangentScale", min=0, max=2, dv=1) >> self.ctlJnts[2].a.s
+        (
+            self.tangent_rt_ctl.a.add("tangentScale", min=0, max=2, dv=1)
+            >> self.ctlJnts[0].a.s
+        )
+        (
+            self.tangent_tp_ctl.a.add("tangentScale", min=0, max=2, dv=1)
+            >> self.ctlJnts[2].a.s
+        )
 
         self.ctls = [
             self.tp_ctl,
@@ -324,7 +350,9 @@ class QuadSpineSrf(rig_module.RigModule):
         rSz = self.rigSize
         if self.bindJ:
             for j in self.bindJ:
-                JointNode(j).addProxyMesh(size=rSz * 80 / len(self.bindJ), p=self.PRX_GRP)
+                JointNode(j).addProxyMesh(
+                    size=rSz * 80 / len(self.bindJ), p=self.PRX_GRP
+                )
 
     def ro_setup(self):
         [c.a.ro.set(2) for c in self.ctls]
@@ -334,13 +362,21 @@ class QuadSpineSrf(rig_module.RigModule):
         self.tangent_tp_ctl.a.showAttr(r=1)
         self.tangent_rt_ctl.a.showAttr(r=1)
 
+    def anchor_setup(self):
+        self.anchor_setup_module(
+            {
+                "anchorM1": self.rootJ,
+                "anchorM2": self.rootJ.allChildrenJt[-1],
+            }
+        )
+
     def post_setup(self):
         rID = self.rigID
         logging.info(rID)
         if self.BIND_JNT_NUM > 1:
             self.addBindJntSet(self.bindJ)
         self.addCtlSet(self.ctls, pf=rID)
-        self.anchor_setup_module({'anchorM1': self.rootJ, 'anchorM2': self.rootJ.allChildrenJt[-1]})
+        self.anchor_setup()
         self.proxy_setup()
         self.vis_setup()
         self.channel_setup()

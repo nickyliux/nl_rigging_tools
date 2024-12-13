@@ -1,4 +1,3 @@
-import json
 import os
 import re
 import maya.cmds as mc
@@ -6,33 +5,11 @@ import maya.cmds as mc
 from nl_modules.build.tpl_loader import TplLoader
 
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
-from nl_modules.nodel.joint_node import JointNode
 
-from nl_modules.utils import common, file
-from nl_modules.utils.color import Color
+from nl_modules.utils import file
 
 import logging
 import nl_modules
-
-from nl_modules.build.leg import Leg
-from nl_modules.build.hand import Hand
-from nl_modules.build.arm import Arm
-from nl_modules.build.head import Head
-from nl_modules.build.neckPro import NeckPro
-from nl_modules.build.neckSrf import NeckSrf
-from nl_modules.build.spinePro import SpinePro
-from nl_modules.build.spineSrf import SpineSrf
-
-from nl_modules.build.quadLeg import QuadLeg
-from nl_modules.build.quadFLeg import QuadFLeg
-from nl_modules.build.quadNeckSrf import QuadNeckSrf
-from nl_modules.build.quadSpineCrv import QuadSpineCrv
-from nl_modules.build.quadSpineSrf import QuadSpineSrf
-from nl_modules.build.tail import Tail
-from nl_modules.build.tailSrf import TailSrf
-from nl_modules.build.spd3Leg import Spd3Leg
 
 COMPONENT_DICT = {
     "head": ["head"],

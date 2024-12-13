@@ -1,49 +1,37 @@
 import os
-import re
 import maya.cmds as mc
 import maya.mel as mel
 from functools import partial
 import nl_modules
 import logging
-import time
 from importlib import reload
 from nl_modules.utils import reload_all
 
 reload(reload_all)
 
 from PySide2 import QtWidgets
-from PySide2 import QtCore
 from PySide2.QtUiTools import QUiLoader
-from maya.app.general.mayaMixin import MayaQWidgetBaseMixin, MayaQWidgetDockableMixin
+from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
 
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.joint_node import JointNode
-from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.mesh_node import MeshNode
-from nl_modules.utils import build, common, file, guide, log, modeling
+from nl_modules.utils import common, file, guide, log, modeling
 from nl_modules.utils.color import Color
-from nl_modules.build import rig_module
-from nl_modules.build.tpl_loader import TplLoader
 
 # Must keep it ------------------------------
 from nl_modules.build.leg import Leg
 from nl_modules.build.hand import Hand
 from nl_modules.build.arm import Arm
 from nl_modules.build.head import Head
-from nl_modules.build.neckPro import NeckPro
 from nl_modules.build.neckSrf import NeckSrf
-from nl_modules.build.spinePro import SpinePro
 from nl_modules.build.spineSrf import SpineSrf
 from nl_modules.build.quadLeg import QuadLeg
 from nl_modules.build.quadFLeg import QuadFLeg
 from nl_modules.build.quadNeckSrf import QuadNeckSrf
-from nl_modules.build.quadSpineCrv import QuadSpineCrv
 from nl_modules.build.quadSpineSrf import QuadSpineSrf
-from nl_modules.build.tail import Tail
 from nl_modules.build.tailSrf import TailSrf
-from nl_modules.build.spd3Leg import Spd3Leg
 
 log.updateRootLogger()
 
