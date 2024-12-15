@@ -113,6 +113,7 @@ class MarkingMenuRigging:
         mc.menuItem(p=menu, l="Match", c=match_all)
         mc.menuItem(p=menu, l="Match Pos", c=match_pos)
         mc.menuItem(p=menu, l="---------------------", en=0)
+        mc.menuItem(p=menu, l="Show All", c=showHidden)
         mc.menuItem(p=menu, l="LRA", c=partial(display_LRA, 1, 0))
         mc.menuItem(p=menu, l="Hide LRA", c=partial(display_LRA, 0, 0), ob=1)
         mc.menuItem(p=menu, l="LRA -hi", c=partial(display_LRA, 1, 1))
@@ -121,6 +122,8 @@ class MarkingMenuRigging:
         mc.menuItem(p=menu, l="--------------------", en=0)
         mc.menuItem(p=menu, l="Reload Menu", c=reload_marking_menu)
 
+def showHidden(*args):
+    mc.showHidden(all=1)
 
 def select_joint_mask(*args):
     mc.selectType(allObjects=1)

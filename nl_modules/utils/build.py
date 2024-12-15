@@ -82,6 +82,8 @@ def buildSelOrAll(*arg):
         updateAnchorConn()
         updateSpaceSwitch()
         mc.select(cl=1)
+        for p in mc.getPanel(type="modelPanel"):
+            mc.modelEditor(p, e=1, xray=1, jx=1, wos=1)  # wos=1, jx=1,xray=1
 
 
 def unbuildTgt(rigN):

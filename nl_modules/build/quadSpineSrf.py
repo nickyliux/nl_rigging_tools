@@ -90,29 +90,26 @@ class QuadSpineSrf(rig_module.RigModule):
         )
 
     def build(self):
+        rID = self.rigID
+        rSz = self.rigSize
         self.build_module()
         self.createCtl()
         self.rbSrf = SurfNode.buildRbSrf(
-            self.rigID,
-            self.rigSize,
-            crv=self.LINE_GUIDE,
-            snap=self.rootJ,
-            spans=6,
-            p=self.RIG_DATA,
+            rID, rSz, crv=self.LINE_GUIDE, snap=self.rootJ, spans=6, p=self.RIG_DATA
         )
         self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
         self.bindJ = SurfNode.buildRbJnt(
-            self.rigID,
-            self.rigSize,
+            rID,
+            rSz,
             self.BIND_JNT_NUM,
             surf=self.rbSrf,
             rigData=self.RIG_DATA,
             sklData=self.SKL_DATA,
         )
         self.build_fk()
-        self.build_ik(twoChains=1)
-        self.post_setup()
+        self.build_ik(forwardBackwardChains=0)
+        # self.post_setup()
 
     def build_fk(self):
         logging.info(self.rigID)
@@ -129,19 +126,20 @@ class QuadSpineSrf(rig_module.RigModule):
         self.rootJ = self.fkJnt[0]
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
-    def build_ik(self, twoChains=1):
-        logging.info(self.rigID)
-        spCrv = self.LINE_GUIDE.duplicate(n=self.rigID + "_spCrv_#")
+    def build_ik(self, forwardBackwardChains=1):
+        rID = self.rigID
+        logging.info(rID)
+        spCrv = self.LINE_GUIDE.duplicate(n=rID + "_spCrv_#")
         # crv.rebuild(spans=4)
-        spCrvRev = spCrv.duplicate(n=self.rigID + "_spCrvRev_#")
+        spCrvRev = spCrv.duplicate(n=rID + "_spCrvRev_#")
         spCrvRev.reverse()
         (spCrv, spCrvRev) | self.RIG_DATA
         ikH_1, ikH_A, ikH_B = None, None, None
 
-        if twoChains == 0:
+        if forwardBackwardChains == 0:
             ikH_1 = IkNode(
                 "sp",
-                pf=self.rigID,
+                pf=rID,
                 sj=self.fkJnt[0],
                 ee=self.fkJnt[-1],
                 sol=2,
@@ -151,14 +149,14 @@ class QuadSpineSrf(rig_module.RigModule):
                 scaleFix=self.masterC.a.globalScale,
             )
             ikH_1 | self.RIG_DATA
-            ikH_1.stretchySp(axis="+z", ignoreX_dir=1)
+            # ikH_1.stretchySp(axis="+z", ignoreX_dir=1)
         else:
             # ---------------------------------------------------
             #   Create chain A and ikSpline
             # ---------------------------------------------------
             self.fkJntA = JointNode.makeJChainFrCrv(
                 self.LINE_GUIDE,
-                pf=self.rigID,
+                pf=rID,
                 name="fkJ_A",
                 crvDir=1,
                 jntNum=self.FK_JNT_NUM,
@@ -170,7 +168,7 @@ class QuadSpineSrf(rig_module.RigModule):
 
             ikH_A = IkNode(
                 "spA",
-                pf=self.rigID,
+                pf=rID,
                 sj=self.fkJntA[0],
                 ee=self.fkJntA[-1],
                 sol=2,
@@ -185,7 +183,7 @@ class QuadSpineSrf(rig_module.RigModule):
             # ---------------------------------------------------
             self.fkJntB = JointNode.makeJChainFrCrv(
                 self.LINE_GUIDE,
-                pf=self.rigID,
+                pf=rID,
                 name="fkJ_B",
                 crvDir=0,
                 jntNum=self.FK_JNT_NUM,
@@ -196,7 +194,7 @@ class QuadSpineSrf(rig_module.RigModule):
             )
             ikH_B = IkNode(
                 "spB",
-                pf=self.rigID,
+                pf=rID,
                 sj=self.fkJntB[-1],
                 ee=self.fkJntB[0],
                 sol=2,
@@ -224,8 +222,8 @@ class QuadSpineSrf(rig_module.RigModule):
 
             (ikH_A, ikH_B) | self.RIG_DATA
 
-            # ikH_A.stretchySp(axis="+z", ignoreX_dir=1)
-            # ikH_B.stretchySp(axis="-z", ignoreX_dir=1)
+            ikH_A.stretchySp(on=1, axis="+z", ignoreX_dir=1)
+            ikH_B.stretchySp(on=1, axis="-z", ignoreX_dir=1)
 
         self.rt_ctl.snapTo(self.fkJnt[0])
         self.md_ctl.snapTo(self.MD_GUIDE)
@@ -253,7 +251,7 @@ class QuadSpineSrf(rig_module.RigModule):
         self.tp_ctl.addOffsetGrp(below=1)
         self.rt_ctl.addOffsetGrp(below=1)
 
-        if twoChains:
+        if forwardBackwardChains:
             ikH_A.spline_twist_setup(self.rt_ctl, self.tp_ctl, twistAxis="+z")
             ikH_B.spline_twist_setup(self.tp_ctl, self.rt_ctl, twistAxis="-z")
             mc.hide(ikH_A, ikH_B)
@@ -273,7 +271,7 @@ class QuadSpineSrf(rig_module.RigModule):
         )
 
         # self.tp_ctl.a.rz @ self.rt_ctl.a.rz >> self.md_ctl.offset.a.rz
-        if not twoChains:
+        if not forwardBackwardChains:
             self.tp_ctl.cstOri(self.fkJnt[-1], mo=1)
         # self.cog_ctl.cstSca(self.fkJnt[0])
         # self.fkJnt[0].childrenJoint[0].a.segmentScaleCompensate.set(0)
@@ -324,7 +322,7 @@ class QuadSpineSrf(rig_module.RigModule):
         self.addPivOffset(self.tp_ctl, scale=self.rigSize, dnwd=0)
         self.addPivOffset(self.rt_ctl, scale=self.rigSize, dnwd=0)
 
-        mc.hide(spCrv, spCrvRev)
+        # mc.hide(spCrv, spCrvRev)
 
     # def anchor_setup(self):
     #     rS = self.rigSize
