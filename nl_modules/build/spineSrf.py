@@ -43,10 +43,18 @@ class SpineSrf(RigModule):
         rID = self.rigID
         CDY = Color.D_YELLOW
         self.setting = CurveNode("setting", pf=rID, shape="sphere", scale=rSz * 2)
-        self.cog_ctl = CurveNode("cog_ctl", pf=rID, shape="cog", scale=rSz * 7, color=CDY)
-        self.tp_ctl = CurveNode("tp_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 2, rSz * 6), color=CDY)
-        self.md_ctl = CurveNode("_md_ctl", pf=rID, shape="diamond", up="-z", scale=rSz * 2, color=CDY)
-        self.rt_ctl = CurveNode("rt_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 2, rSz * 6), color=CDY)
+        self.cog_ctl = CurveNode(
+            "cog_ctl", pf=rID, shape="cog", scale=rSz * 7, color=CDY
+        )
+        self.tp_ctl = CurveNode(
+            "tp_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 2, rSz * 6), color=CDY
+        )
+        self.md_ctl = CurveNode(
+            "_md_ctl", pf=rID, shape="diamond", up="-z", scale=rSz * 2, color=CDY
+        )
+        self.rt_ctl = CurveNode(
+            "rt_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 2, rSz * 6), color=CDY
+        )
         self.md_ctl.cv_move(0, 0, -rSz * 100)
 
         self.rigNode.setMsg(
@@ -72,7 +80,13 @@ class SpineSrf(RigModule):
         logging.info(rID)
 
         self.fkJnt = JointNode.makeJChainFrCrv(
-            self.LINE_GUIDE, jntNum=self.FK_JNT_NUM, pf=rID, wu=[0, 0, 1], p=self.SKL_DATA
+            # self.LINE_GUIDE, jntNum=self.FK_JNT_NUM, pf=rID, wu=[0, 0, 1], p=self.SKL_DATA
+            self.LINE_GUIDE,
+            jntNum=self.FK_JNT_NUM,
+            pf=rID,
+            aim=(0, 1, 0),
+            up=(0, 0, 1),
+            p=self.SKL_DATA,
         )
         mc.delete(self.rootJ)
         self.rootJ = self.fkJnt[0]
@@ -80,7 +94,13 @@ class SpineSrf(RigModule):
 
         self.fkCtl = []
         for i, j in enumerate(self.fkJnt[:-1]):
-            c = CurveNode(f"fkc_{i + 1}", pf=rID, shape="circle_round", scale=rSz * 5, color=Color.D_YELLOW)
+            c = CurveNode(
+                f"fkc_{i + 1}",
+                pf=rID,
+                shape="circle_round",
+                scale=rSz * 5,
+                color=Color.D_YELLOW,
+            )
             self.fkCtl.append(c)
 
         self.fkGivenCtl2(self.fkJnt[1:], self.fkCtl[1:], p=self.CTL_DATA)
@@ -125,7 +145,12 @@ class SpineSrf(RigModule):
         # RBN SURF
         if self.RBN_BONES:
             self.rbSrf = SurfNode.buildRbSrf(
-                rID, rSz, crv=self.LINE_GUIDE, normal=1, snap=self.rootJ, p=self.RIG_DATA
+                rID,
+                rSz,
+                crv=self.LINE_GUIDE,
+                normal=1,
+                snap=self.rootJ,
+                p=self.RIG_DATA,
             )
             self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
@@ -134,14 +159,19 @@ class SpineSrf(RigModule):
             mc.hide(ctlJnts)
 
             self.bindJ = SurfNode.buildRbJnt(
-                rID, rSz, self.RBN_JNT_NUM, surf=self.rbSrf, rigData=self.RIG_DATA, sklData=self.SKL_DATA
+                rID,
+                rSz,
+                self.RBN_JNT_NUM,
+                surf=self.rbSrf,
+                rigData=self.RIG_DATA,
+                sklData=self.SKL_DATA,
             )
             self.build_volume_setup()
 
         self.ikCtl = [self.cog_ctl, self.cog_gmb, self.rt_ctl, self.md_ctl, self.tp_ctl]
 
     def build_volume_setup(self):
-        """ Scale ribbon joints according to length of the surface """
+        """Scale ribbon joints according to length of the surface"""
         arcLD = ut.arcLenDim_(self.rbSrf)
         d = arcLD.a.arcLength
         keepVol = self.setting.a.add("keepVol", min=0, max=2, dv=1)
@@ -192,17 +222,15 @@ class SpineSrf(RigModule):
 
     def anchor_setup(self):
         anchorM2Tgt = self.bindJ[-1] if self.RBN_BONES else self.tp_ctl
-        self.anchor_setup_module(
-            {
-                'anchorM1': self.rt_ctl, 'anchorM2': anchorM2Tgt
-            }
-        )
+        self.anchor_setup_module({"anchorM1": self.rt_ctl, "anchorM2": anchorM2Tgt})
 
     def post_setup(self):
         rID = self.rigID
         logging.info(rID)
         self.addBindJntSet(self.bindJ)
-        self.addCtlSet(self.fkCtl + self.ikCtl + [self.setting, self.cog_ctl, self.cog_gmb], pf=rID)
+        self.addCtlSet(
+            self.fkCtl + self.ikCtl + [self.setting, self.cog_ctl, self.cog_gmb], pf=rID
+        )
         self.space_setup()
         self.anchor_setup()
         self.proxy_setup()

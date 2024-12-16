@@ -11,24 +11,24 @@ class SurfNode(GroupNode):
     """
 
     def __init__(
-            self,
-            node,
-            pf="",
-            sf="",
-            snap=None,
-            align=None,
-            alignR=None,
-            addOfs=0,
-            p=None,
-            #
-            # For surface
-            #
-            uSeg=1,
-            vSeg=1,
-            ax=(0, 0, 1),
-            width=1,
-            lr=1,
-            d=3,
+        self,
+        node,
+        pf="",
+        sf="",
+        snap=None,
+        align=None,
+        alignR=None,
+        addOfs=0,
+        p=None,
+        #
+        # For surface
+        #
+        uSeg=1,
+        vSeg=1,
+        ax=(0, 0, 1),
+        width=1,
+        lr=1,
+        d=3,
     ):
         GroupNode.__init__(
             self,
@@ -137,9 +137,9 @@ class SurfNode(GroupNode):
             )[0]
         )
         rbSrf = SurfNode(
-            mc.extrude(sweepLine, pathLine, n=rigID + "_rbSrf", ch=0, rn=0, et=1, upn=1)[
-                0
-            ]
+            mc.extrude(
+                sweepLine, pathLine, n=rigID + "_rbSrf", ch=0, rn=0, et=1, upn=1
+            )[0]
         )
         mc.delete(pathLine, sweepLine)
         if p:
@@ -148,7 +148,7 @@ class SurfNode(GroupNode):
 
     @staticmethod
     def buildRbJnt(
-            rID, rSz, bindJntNum, surf=None, rigData=None, normalize=1, sklData=None
+        rID, rSz, bindJntNum, surf=None, rigData=None, normalize=1, sklData=None
     ):
         """Build ribbon joints chain
         e.g.

@@ -77,7 +77,7 @@ class Test_JointNode_Main(Test_JointNode_Base):
         jnts = JointNode.makeJChainFrCrv(crv, jntNum=6)
         self.assertEqual(len(jnts), 6)
 
-        jnts = JointNode.makeJChainFrCrv(crv, jntNum=6, addEnd=1)
+        jnts = JointNode.makeJChainFrCrv(crv, jntNum=6, addEndJ=1)
         self.assertEqual(len(jnts), 7)
 
     def test_duplicate(self):

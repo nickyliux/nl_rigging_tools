@@ -39,7 +39,8 @@ MOD_DIR = os.path.dirname(nl_modules.__file__)
 PATH_PRESET = MOD_DIR + "/build/guide_presets"
 PATH_SHAPE = MOD_DIR + "/build/shapes"
 PATH_LIGHT = MOD_DIR + "/build/others"
-PATH_SKEL = MOD_DIR + "/../skeletons"
+# PATH_SKEL = MOD_DIR + "/../skeletons"
+PATH_SKEL = "D:/_PROJECT/GIT/nl_rigging_tools_skeletons/"
 PATH_UI = MOD_DIR + "/nl_rigging_tools.ui"
 BIND_JNT_SET = "bind_jnt_set"
 MAYA_TPL_DIR = MOD_DIR + "/build/components"
@@ -89,8 +90,12 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.rigNode_refresh_BN.clicked.connect(self.rigNode_refresh_BN_clicked)
 
         self.UI.crvShape_LW.itemDoubleClicked.connect(self.crvShape_LW_dblClicked)
-        self.UI.crvShape_copyAsInst_BN.clicked.connect(self.crvShape_copyAsInst_BN_clicked)
-        self.UI.crvShape_removeFrInst_BN.clicked.connect(self.crvShape_removeFrInst_BN_clicked)
+        self.UI.crvShape_copyAsInst_BN.clicked.connect(
+            self.crvShape_copyAsInst_BN_clicked
+        )
+        self.UI.crvShape_removeFrInst_BN.clicked.connect(
+            self.crvShape_removeFrInst_BN_clicked
+        )
         self.UI.crvShape_create_BN.clicked.connect(self.crvShape_create_BN_clicked)
         self.UI.crvShape_save_BN.clicked.connect(self.crvShape_save_BN_clicked)
         self.UI.crvShape_new_BN.clicked.connect(self.crvShape_new_BN_clicked)
@@ -102,20 +107,34 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # self.UI.refColor_0_BN.clicked.connect(partial(self.setRefColor, 0))
         # self.UI.refColor_1_BN.clicked.connect(partial(self.setRefColor, 1))
 
-        self.UI.joint_addForSpine_BN.clicked.connect(partial(self.joint_add_BN_clicked, rb=1))
-        self.UI.joint_addForRef_BN.clicked.connect(partial(self.joint_add_BN_clicked, rb=0))
-        self.UI.joint_mirrorAllRef_BN.clicked.connect(self.joint_mirrorAllRef_BN_clicked)
+        self.UI.joint_addForSpine_BN.clicked.connect(
+            partial(self.joint_add_BN_clicked, rb=1)
+        )
+        self.UI.joint_addForRef_BN.clicked.connect(
+            partial(self.joint_add_BN_clicked, rb=0)
+        )
+        self.UI.joint_mirrorAllRef_BN.clicked.connect(
+            self.joint_mirrorAllRef_BN_clicked
+        )
 
         self.UI.skinning_attach_BN.clicked.connect(self.skinning_attach_BN_clicked)
         self.UI.skinning_skin_BN.clicked.connect(self.skinning_skin_BN_clicked)
         self.UI.skinning_oneClick_BN.clicked.connect(self.skinning_oneClick_BN_clicked)
 
-        self.UI.misc_retopo50_BN.clicked.connect(partial(modeling.mesh_retopo, faceNum=50))
-        self.UI.misc_retopo150_BN.clicked.connect(partial(modeling.mesh_retopo, faceNum=150))
-        self.UI.misc_retopo500_BN.clicked.connect(partial(modeling.mesh_retopo, faceNum=500))
+        self.UI.misc_retopo50_BN.clicked.connect(
+            partial(modeling.mesh_retopo, faceNum=50)
+        )
+        self.UI.misc_retopo150_BN.clicked.connect(
+            partial(modeling.mesh_retopo, faceNum=150)
+        )
+        self.UI.misc_retopo500_BN.clicked.connect(
+            partial(modeling.mesh_retopo, faceNum=500)
+        )
         self.UI.misc_buildLineSel_BN.clicked.connect(CurveNode.buildLineLinkedSel)
         self.UI.misc_buildJntLineSel_BN.clicked.connect(JointNode.buildJntLineSel)
-        self.UI.misc_importEnvAndShd_BN.clicked.connect(self.misc_importEnvAndShd_BN_clicked)
+        self.UI.misc_importEnvAndShd_BN.clicked.connect(
+            self.misc_importEnvAndShd_BN_clicked
+        )
 
         self.UI.pickMaskCrv_BN.clicked.connect(self.pickMaskCrv_BN_clicked)
         self.UI.pickMaskAll_BN.clicked.connect(self.pickMaskAll_BN_clicked)
@@ -136,7 +155,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def shapeScaleHalf_BN_clicked(self):
         for sel in mc.ls(sl=1, tr=1):
             sel = DagNode(sel)
-            if sel.type == 'nurbsCurve':
+            if sel.type == "nurbsCurve":
                 CurveNode(sel).cv_scale(0.5)
 
     def shapeScaleX2_BN_clicked(self):
@@ -152,7 +171,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             self.rigNode_refresh_BN_clicked()
             mc.select(cl=1)
             mc.viewFit(all=1)
-            mc.setAttr('hardwareRenderingGlobals.ssaoEnable', 1)
+            mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
             # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
 
     def component_open_BN_clicked(self):
@@ -168,7 +187,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                     logging.info(f"missing file: {tgtFile}")
             mc.refresh(su=0)
             mc.viewFit(all=1)
-            mc.setAttr('hardwareRenderingGlobals.ssaoEnable', 1)
+            mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
             # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
             self.rigNode_refresh_BN_clicked()
 
@@ -183,7 +202,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 guide.loadPreset(f)
                 mc.select(cl=1)
                 mc.viewFit(all=1)
-                mc.setAttr('hardwareRenderingGlobals.ssaoEnable', 1)
+                mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
                 # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
                 mc.refresh(su=0)
                 self.rigNode_refresh_BN_clicked()
@@ -194,13 +213,20 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         items = self.UI.preset_LW.selectedItems()
         if items:
             itemText = items[0].text()
-            result = mc.confirmDialog(t="Save Preset", m=f'Overwrite "{itemText}" ?        ', b=["Yes", "No"], db="No")
+            result = mc.confirmDialog(
+                t="Save Preset",
+                m=f'Overwrite "{itemText}" ?        ',
+                b=["Yes", "No"],
+                db="No",
+            )
             if result == "Yes":
                 guide.savePreset(itemText)
 
     def preset_new_BN_clicked(self):
-        result = mc.promptDialog(t='New Preset', m='Enter name:', b=['OK', 'Cancel'], db='OK')
-        if result == 'OK':
+        result = mc.promptDialog(
+            t="New Preset", m="Enter name:", b=["OK", "Cancel"], db="OK"
+        )
+        if result == "OK":
             newName = mc.promptDialog(q=1, t=1)
             guide.savePreset(newName)
             self.preset_refresh_BN_clicked()
@@ -209,9 +235,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         items = self.UI.preset_LW.selectedItems()
         if items:
             itemText = items[0].text()
-            result = mc.confirmDialog(t="Delete Preset ", m=f'Delete "{itemText}" ?        ', b=["Yes", "No"], db="No")
+            result = mc.confirmDialog(
+                t="Delete Preset ",
+                m=f'Delete "{itemText}" ?        ',
+                b=["Yes", "No"],
+                db="No",
+            )
             if result == "Yes":
-                tgtFile = f'{PATH_PRESET}\\{itemText}.json'
+                tgtFile = f"{PATH_PRESET}\\{itemText}.json"
                 file.deleteFile(tgtFile)
                 self.preset_refresh_BN_clicked()
 
@@ -274,7 +305,10 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 if item:
                     itemText = item[0].text()
                     result = mc.confirmDialog(
-                        t="Save Shape", m=f'Overwrite "{itemText}" ?       ', b=["Yes", "No"], db="No"
+                        t="Save Shape",
+                        m=f'Overwrite "{itemText}" ?       ',
+                        b=["Yes", "No"],
+                        db="No",
                     )
                     if result == "Yes":
                         tgt >> itemText
@@ -283,9 +317,11 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         sel = mc.ls(sl=1, tr=1)
         if sel:
             tgt = DagNode(sel[0])
-            if tgt.type == 'nurbsCurve':
-                result = mc.promptDialog(t='New Shape', m='Enter name:', b=['OK', 'Cancel'], db='OK')
-                if result == 'OK':
+            if tgt.type == "nurbsCurve":
+                result = mc.promptDialog(
+                    t="New Shape", m="Enter name:", b=["OK", "Cancel"], db="OK"
+                )
+                if result == "OK":
                     newName = mc.promptDialog(q=1, t=1)
                     CurveNode(tgt) >> newName
                     self.crvShape_refresh_BN_clicked()
@@ -294,9 +330,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         items = self.UI.crvShape_LW.selectedItems()
         if items:
             itemText = items[0].text()
-            result = mc.confirmDialog(t="Delete Shape", m=f'Delete "{itemText}" ?        ', b=["Yes", "No"], db="No")
+            result = mc.confirmDialog(
+                t="Delete Shape",
+                m=f'Delete "{itemText}" ?        ',
+                b=["Yes", "No"],
+                db="No",
+            )
             if result == "Yes":
-                tgtFile = f'{PATH_SHAPE}\\{itemText}.json'
+                tgtFile = f"{PATH_SHAPE}\\{itemText}.json"
                 file.deleteFile(tgtFile)
                 self.crvShape_refresh_BN_clicked()
 
@@ -375,7 +416,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             logging.info("Ignore invalid surf and joints")
 
     def skinning_skin_BN_clicked(self):
-        """Bind to *_rbnJnt OR the closest joint to *_refJnt for all meshes under selected, either """
+        """Bind to *_rbnJnt OR the closest joint to *_refJnt for all meshes under selected, either"""
         meshSel = common.getMeshBelowSel()
         skinned = 0
         skinnedAlready = 0
@@ -392,7 +433,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                     skinned += 1
                 else:
                     skinnedAlready += 1
-            mc.progressWindow(e=1, progress=skinned / len(meshSel) * 200, status=mN.name)
+            mc.progressWindow(
+                e=1, progress=skinned / len(meshSel) * 200, status=mN.name
+            )
 
         # Find refJnt, bind to closest jnt in BIND_JNT_SET
         if DagNode(BIND_JNT_SET).exists():
@@ -405,15 +448,17 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                         skinned += 1
                     else:
                         skinnedAlready += 1
-                mc.progressWindow(e=1, progress=skinned / len(meshSel) * 200, status=mN.name)
+                mc.progressWindow(
+                    e=1, progress=skinned / len(meshSel) * 200, status=mN.name
+                )
         else:
-            logging.info('bind_jnt_set NOT found for refJnt skinning.')
+            logging.info("bind_jnt_set NOT found for refJnt skinning.")
 
         mc.select(cl=1)
         mc.progressWindow(ep=1)
         logging.info(f"{skinned} skinned. {skinnedAlready} ignored.")
 
-    @Undo('skinning_oneClick_BN_clicked')
+    @Undo("skinning_oneClick_BN_clicked")
     def skinning_oneClick_BN_clicked(self):
         """One click automation
         * For skinning to ref joints, all model under mdl_grp is used

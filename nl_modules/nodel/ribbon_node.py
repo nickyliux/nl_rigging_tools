@@ -12,15 +12,15 @@ from nl_modules.utils.color import Color
 
 class RibbonNode:
     def __init__(
-            self,
-            tgt,
-            pf="",
-            rbJNum=5,
-            volMode=0,
-            scaleFix=None,
-            forSpine=0,
-            proxyP=None,
-            p=None,
+        self,
+        tgt,
+        pf="",
+        rbJNum=5,
+        volMode=0,
+        scaleFix=None,
+        forSpine=0,
+        proxyP=None,
+        p=None,
     ):
         self.tgtN = DagNode(tgt) if isinstance(tgt, str) else tgt
         self.tgtChild = self.tgtN.children[0]
@@ -327,7 +327,9 @@ class RibbonNode:
 
     def proxy_setup(self):
         for j in self.rbJnt:
-            j.addProxyMesh(size=self.D / 2 / self.rbJNum, aimDir=(self.x_dir, 0, 0), p=self.proxyP)
+            j.addProxyMesh(
+                size=self.D / 2 / self.rbJNum, aimDir=(self.x_dir, 0, 0), p=self.proxyP
+            )
 
     def ro_setup(self):
         for j in (self.stt_loc, self.end_loc, self.stt_twistJ, self.end_twistJ):

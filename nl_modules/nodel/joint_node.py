@@ -13,18 +13,18 @@ class JointNode(GroupNode):
     """
 
     def __init__(
-            self,
-            node,
-            pf="",
-            sf="",
-            align=None,
-            alignR=None,
-            snap=None,
-            addOfs=0,
-            p=None,
-            # for joint
-            r=None,
-            color=0,
+        self,
+        node,
+        pf="",
+        sf="",
+        align=None,
+        alignR=None,
+        snap=None,
+        addOfs=0,
+        p=None,
+        # for joint
+        r=None,
+        color=0,
     ):
         GroupNode.__init__(
             self,
@@ -64,7 +64,7 @@ class JointNode(GroupNode):
             jnt1_end.addProxyMesh(size=2, skipEnd=1)    # no proxy created
         """
         from nl_modules.utils import common
-        
+
         if size <= 0:
             logging.error("Proxy size <= 0")
             return
@@ -85,7 +85,13 @@ class JointNode(GroupNode):
             if len(child) >= 1:
                 tgtChild = child[0]
                 common.cstMulti(self, tgtChild, proxyN, cstType="poi", delete=1)
-                tgtChild.cstAim(proxyN, keep=0, aim=aimDir, worldUpType="objectrotation", worldUpObject=self)
+                tgtChild.cstAim(
+                    proxyN,
+                    keep=0,
+                    aim=aimDir,
+                    worldUpType="objectrotation",
+                    worldUpObject=self,
+                )
 
             # ASSIGN SHADER
             common.assignProxyShader(proxyN)
@@ -97,15 +103,7 @@ class JointNode(GroupNode):
 
     @staticmethod
     def makeTwoJChain(
-            n,
-            align=None,
-            snap=None,
-            align_end=None,
-            pf="",
-            ofs=None,
-            r=1,
-            color=Color.APPLE,
-            p=None
+        n, align=None, snap=None, align_end=None, pf="", ofs=None, r=1, color=1, p=None
     ):
         """Make two-joint chain according to aligning objects
         e.g.
@@ -127,77 +125,70 @@ class JointNode(GroupNode):
 
     @staticmethod
     def makeJChainFrCrv(
-            crv,
-            name="fkJ",
-            jntNum=2,  # num of joints
-            crvDir=1,  # along curve direction
-            r=1,
-            pf="",
-            wu=None,  # world up direction
-            p=None,
-            color=1,
-            addEnd=0  # adding an end joint
+        crv,
+        name="fkJ",
+        jntNum=2,
+        alongCrvDir=1,
+        aim=(0, 0, 1),
+        up=(0, 1, 0),
+        r=1,
+        pf="",
+        p=None,
+        color=1,
+        addEndJ=0,
     ):
         """Build joint chain from curve
         e.g.
             makeChainFrCrv(crv, jntNum=10)           # curve direction
             makeChainFrCrv(crv, jntNum=10, crvDir=0) # reverse direction
         """
-        if wu is None:
-            wu = [0, 1, 0]
-
         loc = DagNode("_#", nodeType="transform")
         mp = DagNode("_#", nodeType="motionPath")
-
         DagNode(crv).shape.a.worldSpace >> mp.a.geometryPath
         mp.a.allCoordinates >> loc.a.t
-        mp.a.follow.set(1)
         mp.a.fractionMode.set(1)
-        mp.a.frontAxis.set(0)  # x
-        mp.a.upAxis.set(1)  # y
-        mp.a.worldUpType.set(3)  # Vector
-        mp.a.worldUpVector.set(*wu)
 
         joints = []
         mc.select(cl=1)
+        if pf and pf[-1] != "_":
+            pf += "_"
         for i in range(jntNum):
             mp.a.uValue.set(i / (jntNum - 1))
-            j = JointNode(pf + "_" + name + "_#", align=loc, r=r, color=color)
+            j = JointNode(pf + name + "_#", align=loc, r=r, color=color)
             joints.append(j)
 
+        root = joints[0] if alongCrvDir else joints[-1]
+        last = joints[-1] if alongCrvDir else joints[0]
         mc.delete(loc, mp)
 
         for i in range(jntNum - 1):
-            if crvDir:
+            if alongCrvDir:
+                # j1 > j2 > ... > jn
+                joints[i + 1].cstAim(joints[i], aim=aim, u=up, keep=0)
                 joints[i + 1] | joints[i]
             else:
+                # j1 < j2 < ... < jn
+                joints[i].cstAim(
+                    joints[i + 1], aim=(-aim[0], -aim[1], -aim[2]), u=up, keep=0
+                )
                 joints[i] | joints[i + 1]
-        if crvDir:
-            # Root: j1 > j2 > ... > j4
-            # Root: j1 > j2 > ... > j4 > j4_end
-            if addEnd:
-                endJ = joints[-1].duplicate(n=joints[-1] + "_end")
-                endJ | joints[-1]
-                translate = joints[-1].a.t.get()
-                endJ.a.t.set(*translate)
+        last.resetOrient()
+
+        if addEndJ:
+            endJ = last.duplicate(n=last + "_end")
+            endJ | last
+            translate = last.a.t.get()
+            endJ.a.t.set(*translate)
+            if alongCrvDir:
                 joints.append(endJ)
-            if p:
-                joints[0] | p
-                joints[0].freezeXf()
-                joints[0].resetOrient()
-        else:
-            # Root: j1 < j2 < ... < j4
-            # Root: j1_end < j1 < j2 < ... < j4
-            if addEnd:
-                endJ = joints[0].duplicate(n=joints[0] + "_end")
-                endJ | joints[0]
-                translate = joints[0].a.t.get()
-                endJ.a.t.set(*translate)
+            else:
                 joints = [endJ] + joints
-            if p:
-                joints[-1] | p
-                joints[-1].freezeXf()
-                joints[-1].resetOrient()
+        if p:
+            root | p
+        if alongCrvDir:
+            joints[0].freezeXf()
+        else:
+            joints[-1].freezeXf()
         return joints
 
     @staticmethod

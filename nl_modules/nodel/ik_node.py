@@ -50,7 +50,6 @@ class IkNode(DagNode):
         RIG_DATA=None,
         p=None,
     ):
-
         if pf and pf[-1] != "_":
             pf += "_"
         name = pf + node + sf
@@ -64,7 +63,6 @@ class IkNode(DagNode):
         if not mc.objExists(sj1) or not mc.objExists(ee1):
             logging.warning(f"Missing joint {sj1} & {ee1}. Can't create IK")
             return
-
         DagNode.__init__(self, name)
 
         self.sj = DagNode(sj1)
@@ -84,7 +82,6 @@ class IkNode(DagNode):
             numSpans=numSpans,
             p=p,
         )
-
         ikJnt = mc.ikHandle(self.node, q=1, jl=1) + [self.ee]
         self.jnt = [DagNode(j) for j in ikJnt]
         self.chainLen = self.calcChainLen()
@@ -156,7 +153,47 @@ class IkNode(DagNode):
             crvSh = self.a.inCurve.inConnNode
             return CurveNode(crvSh.parent)
 
-    def stretchySp(self, on=0, axis="+x", ignoreX_dir=0):
+    @classmethod
+    def stretchySpSS(cls, ikH=None, ctl=None, axis="tx", axisDir=1):
+        """
+        Add stretchy funciton for splineIK
+        e.g.
+            IkNode.stretchySpSS(ikH=ikH, ctl='ctl')
+        """
+        if ikH is None or ctl is None:
+            logging.info("Require ikH and ctl input")
+            return
+        ikH = DagNode(ikH)
+        ctl = DagNode(ctl)
+        if ikH.type != "ikHandle":
+            logging.info("No stretchy for non ikhandle")
+            return
+        solver = mc.ikHandle(ikH, q=1, sol=1)
+        if solver != "ikSplineSolver":
+            logging.info("No stretchy for non ikSplineSolver")
+            return
+        # ----------------------------------------
+        jl = mc.ikHandle(ikH, q=1, jl=1)
+        ee = mc.ikHandle(ikH, q=1, ee=1)
+        ej = DagNode(ee).a.t.inConnNode
+        jl = [DagNode(j) for j in jl]
+        jl.append(ej)
+        crv = ikH.a.inCurve.inConnNode.parent
+
+        D = mc.arclen(crv)
+        crvInfo = DepNode(mc.arclen(crv, ch=1))
+        d = crvInfo.a.arcLength
+        ks = ctl.a.add("stretchy", min=0, max=1)
+        ksMin = ctl.a.add("stretchMin", k=0, min=0, max=1, dv=0)
+        ksMax = ctl.a.add("stretchMax", k=0, min=0, dv=99)
+        ratio = (d / D - 1) * ks + 1
+
+        for i in range(1, len(jl)):
+            Di = jl[i - 1].o.distanceTo(jl[i])
+            result = ut.clp_(ratio, min=ksMin, max=ksMax) * Di
+            result * axisDir >> jl[i].a[axis]
+
+    def stretchySp(self, on=0, axis="tx", axisDir=1):
         """Add stretchy logic to translate channel of joint chain"""
         if self.solver != 2:
             logging.error("Incorrect solver")
@@ -171,28 +208,18 @@ class IkNode(DagNode):
         d = crvInfo.a.arcLength
         if self.scaleFix:
             d /= self.scaleFix
-        ks = self.setting.a.add("stretchy", min=0, max=1)
-        ksMin = self.setting.a.add("stretchMin", k=0, min=0, max=1, dv=0.9)
-        ksMax = self.setting.a.add("stretchMax", k=0, min=0, dv=1.1)
 
-        if on:
-            ks.set(1)
-            ksMin.set(0)
-            ksMax.set(999)
-
+        ks = self.setting.a.add("stretchy", min=0, max=1, dv=on)
+        ksMin = self.setting.a.add("stretchMin", k=0, min=0, max=1, dv=0)
+        ksMax = self.setting.a.add("stretchMax", k=0, min=0, dv=99)
         ratio = (d / D - 1) * ks + 1
 
         for i in range(1, len(self.jnt)):
-
             Di = self.jnt[i - 1].o.distanceTo(self.jnt[i])
-            result = ut.clp_(ratio, min=ksMin, max=ksMax) * Di  # * self.x_dir
-            if not ignoreX_dir:
-                result *= self.x_dir
-            tAttr = self.jnt[i].a["t" + axis[1]]
-            if axis[0] == "+":
-                result >> tAttr
-            else:
-                result * -1 >> tAttr
+            result = ut.clp_(ratio, min=ksMin, max=ksMax) * Di
+            tAttr = self.jnt[i].a[axis]
+            result * axisDir >> tAttr
+
         return ratio
 
     def stretchyIk(self, pvPin=0, soft=0):
@@ -281,7 +308,7 @@ class IkNode(DagNode):
         dist_loc.hide()
 
     def addSoft(self, d=None, ratio=None, softParent=None):
-        """softJ
+        """
         softJ    <- cstP  leg IK
         """
         from nl_modules.nodel.joint_node import JointNode
@@ -322,7 +349,7 @@ class IkNode(DagNode):
             self.a.dTwistControlEnable.set(1)
             if upAxis == "z":
                 self.a.dWorldUpAxis.set(3)
-
+            # ----------------
             # One ctl
             # ----------------
             if len(driver) == 1:
@@ -330,7 +357,7 @@ class IkNode(DagNode):
                 driver[0].a.worldMatrix >> self.a.dWorldUpMatrix
                 if upAxis == "z":
                     self.a.dWorldUpVector.set(0, 0, 1)
-
+            # ----------------
             # Two ctl
             # ----------------
             elif len(driver) == 2:
