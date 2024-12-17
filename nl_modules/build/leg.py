@@ -96,7 +96,9 @@ class Leg(RigModule):
         rID = self.rigID
         xDr = self.x_dir
         self.setting = CurveNode("setting", pf=rID, shape="sphere", scale=rSz)
-        self.hip_fkc = CurveNode("hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr / 2)
+        self.hip_fkc = CurveNode(
+            "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr / 2
+        )
         self.upr_fkc = CurveNode("upr_fkc", pf=rID, up="x", scale=rSz)
         self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", scale=rSz)
         self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz)
@@ -117,13 +119,13 @@ class Leg(RigModule):
         )
 
     def build(self):
-        """ Build rig for joints
-            hip
-                upr
-                    lwr
-                        palm
-                            ball
-                                toe
+        """Build rig for joints
+        hip
+            upr
+                lwr
+                    palm
+                        ball
+                            toe
         """
         self.build_module()
         self.joints = self.rootJ.allChildrenJt2
@@ -213,14 +215,14 @@ class Leg(RigModule):
 
         if self.x_dir == 1:
             for g in (
-                    self.ikCstG,
-                    ballRollG,
-                    toeWiggleG,
-                    footRollG,
-                    toeRollG,
-                    inRollG,
-                    outRollG,
-                    heelRollG,
+                self.ikCstG,
+                ballRollG,
+                toeWiggleG,
+                footRollG,
+                toeRollG,
+                inRollG,
+                outRollG,
+                heelRollG,
             ):
                 g.a.rx.set2(180, add=1)
 
@@ -236,7 +238,14 @@ class Leg(RigModule):
         footBreak = self.ikc.a.add("footBreak", min=0, dv=30, k=0)
 
         ut.min_(0, footRoll) >> heelRollG.a.rx
-        ut.clp_(footRoll, min=0, max=footBreak, ) >> ballRollG.a.rx
+        (
+            ut.clp_(
+                footRoll,
+                min=0,
+                max=footBreak,
+            )
+            >> ballRollG.a.rx
+        )
         ut.max_(0, (footRoll - footBreak)) >> footRollG.a.rx
 
         bank = self.ikc.a.add("footBank")
@@ -250,7 +259,12 @@ class Leg(RigModule):
         self.ikc.a.add("toeRoll") >> toeRollG.a.rx
         (self.ikc, self.pvc, self.ikCstG) | self.IK_PART
         self.pvc_line = CurveNode.buildLineLinked(
-            self.joints_ik[2], self.pvc, pf=self.rigID, inheritXf=0, dspType=2, p=self.IK_PART
+            self.joints_ik[2],
+            self.pvc,
+            pf=self.rigID,
+            inheritXf=0,
+            dspType=2,
+            p=self.IK_PART,
         )
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
@@ -285,11 +299,13 @@ class Leg(RigModule):
 
         for g in [toeRollG, inRollG, outRollG, heelRollG]:
             ofs = g.addOffsetGrp(below=1)
-            CurveNode(ofs)(name=g.name + "_ctl", shape='diamond', scale=rSz, color=CDY)
+            CurveNode(ofs)(name=g.name + "_ctl", shape="diamond", scale=rSz, color=CDY)
             self.subCtls.append(ofs)
 
         ofs = ballRollG.addOffsetGrp(below=1)
-        CurveNode(ofs)(name=ballRollG + "_ctl", shape="stickC", scale=-rSz * xDr, color=CDY)
+        CurveNode(ofs)(
+            name=ballRollG + "_ctl", shape="stickC", scale=-rSz * xDr, color=CDY
+        )
         CurveNode(ofs).cv_rotate(0, 90, 0)
         self.subCtls.append(ofs)
 
@@ -319,14 +335,14 @@ class Leg(RigModule):
     #     ikH_two.hide()
 
     def build_toes(self):
-        """ ball fkc
-                splay loc 1
-                    toe ikc 1
-                        toe ikh 1
-                splay loc 2
-                    toe ikc 2
-                        toe ikh 2
-                ...
+        """ball fkc
+        splay loc 1
+            toe ikc 1
+                toe ikh 1
+        splay loc 2
+            toe ikc 2
+                toe ikh 2
+        ...
         """
         logging.info(self.rigID)
         self.toesCtlsList = []
@@ -399,7 +415,9 @@ class Leg(RigModule):
         else:
             (radius_JC[0], ulna_JC[0]) | self.lwr
 
-        radius_loc = LocNode("radius_loc", pf=self.rigID, align=radius_JC[1], p=self.palm)
+        radius_loc = LocNode(
+            "radius_loc", pf=self.rigID, align=radius_JC[1], p=self.palm
+        )
         ulna_loc = LocNode("ulna_loc", pf=self.rigID, align=ulna_JC[1], p=self.palm)
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
@@ -445,7 +463,7 @@ class Leg(RigModule):
         GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.palm_fkc)
 
     def ball_ctl_setup(self):
-        """ Make ball ctl the single ctl in both FK IK """
+        """Make ball ctl the single ctl in both FK IK"""
         fkIk = self.setting.a.fkIk
         # Remove ball fkc parent's CST
         ball_fkc_ofs = self.ball_fkc.offset
@@ -551,13 +569,14 @@ class Leg(RigModule):
 
     def proxy_setup(self):
         proxyList = self.joints
+        proxyToeList = []
 
         if self.TOE_BONES:
             proxyList.remove(self.ball)
             proxyList.remove(self.palm)
-            proxyList.append(self.toesRootJ)
+            proxyToeList.append(self.toesRootJ)
             for t in self.toesJntList:
-                proxyList.extend(t)
+                proxyToeList.extend(t)
         if self.RBN_BONES:
             proxyList.remove(self.upr)
             proxyList.remove(self.lwr)
@@ -571,12 +590,19 @@ class Leg(RigModule):
             if self.boneFix in proxyList:
                 proxyList.remove(self.boneFix)
 
-        rSz = self.rigSize * 6
+        rSz = self.rigSize
         xDr = self.x_dir
         for j in proxyList:
-            JointNode(j).addProxyMesh(size=rSz, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(
+                size=rSz * 6, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
+            )
+        for j in proxyToeList:
+            JointNode(j).addProxyMesh(
+                size=rSz * 2, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
+            )
 
         self.addBindJntSet(proxyList)
+        self.addBindJntSet(proxyToeList)
 
     def vis_setup(self):
         # visGrp = common.addVisOption(self.visC, self.rigID)
@@ -615,8 +641,8 @@ class Leg(RigModule):
         self.rigNode.setMsg({"space_leg": self.ikH1.softJ[0]})
         self.rigNode.setMsg({"spaceHolder1": self.ikc})
         self.rigNode.setMsg({"spaceHolder2": self.pvc})
-        self.rigNode.a.add("spaceName1", attrType='string', txt="master, hip, COG")
-        self.rigNode.a.add("spaceName2", attrType='string', txt="leg, master, hip, COG")
+        self.rigNode.a.add("spaceName1", attrType="string", txt="master, hip, COG")
+        self.rigNode.a.add("spaceName2", attrType="string", txt="leg, master, hip, COG")
 
     def post_setup(self):
         rID = self.rigID
@@ -635,7 +661,7 @@ class Leg(RigModule):
 
         self.addCtlSet(ctlSet, pf=rID)
         self.space_setup()
-        self.anchor_setup_module({'anchorF1': self.hip_fkc})
+        self.anchor_setup_module({"anchorF1": self.hip_fkc})
         self.proxy_setup()
         self.vis_setup()
         self.channel_setup()

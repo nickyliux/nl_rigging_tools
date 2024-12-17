@@ -124,13 +124,14 @@ class JointNode(GroupNode):
         return [j0, j1]
 
     @staticmethod
-    def makeJChainFrCrv(
+    def makeJCFrCrv(
         crv,
         name="fkJ",
         jntNum=2,
-        alongCrvDir=1,
-        aim=(0, 0, 1),
-        up=(0, 1, 0),
+        alongCrv=1,
+        aimV=(0, 0, 1),
+        upV=(0, 1, 0),
+        wuV=(0, 1, 0),
         r=1,
         pf="",
         p=None,
@@ -154,38 +155,36 @@ class JointNode(GroupNode):
             pf += "_"
         for i in range(jntNum):
             mp.a.uValue.set(i / (jntNum - 1))
-            j = JointNode(pf + name + "_#", align=loc, r=r, color=color)
+            j = JointNode(pf + name + "_#", snap=loc, r=r)
             joints.append(j)
 
-        root = joints[0] if alongCrvDir else joints[-1]
-        last = joints[-1] if alongCrvDir else joints[0]
+        root = joints[0] if alongCrv else joints[-1]
+        last = joints[-1] if alongCrv else joints[0]
         mc.delete(loc, mp)
 
         for i in range(jntNum - 1):
-            if alongCrvDir:
+            if alongCrv:
                 # j1 > j2 > ... > jn
-                joints[i + 1].cstAim(joints[i], aim=aim, u=up, keep=0)
+                joints[i + 1].cstAim(joints[i], aim=aimV, u=upV, wu=wuV, keep=0)
                 joints[i + 1] | joints[i]
             else:
                 # j1 < j2 < ... < jn
-                joints[i].cstAim(
-                    joints[i + 1], aim=(-aim[0], -aim[1], -aim[2]), u=up, keep=0
-                )
+                negAim = (-aimV[0], -aimV[1], -aimV[2])
+                joints[i].cstAim(joints[i + 1], aim=negAim, u=upV, wu=wuV, keep=0)
                 joints[i] | joints[i + 1]
         last.resetOrient()
-
         if addEndJ:
             endJ = last.duplicate(n=last + "_end")
             endJ | last
             translate = last.a.t.get()
             endJ.a.t.set(*translate)
-            if alongCrvDir:
+            if alongCrv:
                 joints.append(endJ)
             else:
-                joints = [endJ] + joints
+                joints = [endJ] + joints  # first in list is end joint
         if p:
             root | p
-        if alongCrvDir:
+        if alongCrv:
             joints[0].freezeXf()
         else:
             joints[-1].freezeXf()

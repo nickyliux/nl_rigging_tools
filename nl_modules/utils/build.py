@@ -75,15 +75,15 @@ def buildSelOrAll(*arg):
     if rigNodes:
         for p in mc.getPanel(type="modelPanel"):
             mc.modelEditor(p, e=1, wos=1)  # , jx=1)
-        mc.setAttr('hardwareRenderingGlobals.ssaoEnable', 1)
+        mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
         # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
         for rigN in rigNodes:
             buildTgt(rigN)
         updateAnchorConn()
         updateSpaceSwitch()
         mc.select(cl=1)
-        for p in mc.getPanel(type="modelPanel"):
-            mc.modelEditor(p, e=1, xray=1, jx=1, wos=1)  # wos=1, jx=1,xray=1
+        # for p in mc.getPanel(type="modelPanel"):
+        #     mc.modelEditor(p, e=1, xray=1, jx=1, wos=1)  # wos=1, jx=1,xray=1
 
 
 def unbuildTgt(rigN):
@@ -159,10 +159,12 @@ def updateAnchorConn():
 
             if F_rigNode and M_rigNode:
                 if F_rigNode != M_rigNode:
-                    logging.debug(f'Connecting {closestMaleAnchor.name} to {fAnchor.name}')
+                    logging.debug(
+                        f"Connecting {closestMaleAnchor.name} to {fAnchor.name}"
+                    )
                     closestMaleAnchor.cstPar(fAnchor, mo=1)
                 else:
-                    logging.debug('Ignore connecting anchors from the same rigNode.')
+                    logging.debug("Ignore connecting anchors from the same rigNode.")
 
     # ---------------------------------------------------------------
     #  Create isolate neck to spine setup for standard quadruped
@@ -172,6 +174,7 @@ def updateAnchorConn():
     # worldSpace = DagNode('master_ctl')
     # if all([neckCog.exists(), spineCtl.exists(), worldSpace.exists()]):
     #     RigModule.isolateNeckToSpine(neckCog, spineCtl, worldSpace)
+
 
 def updateSpaceSwitch():
     """Add/update space switch for ctl from rigNode's spaceHolder* attr
@@ -188,7 +191,7 @@ def updateSpaceSwitch():
             #   Delete space and related groups
             # ------------------------------------
             ctl.a.space.delete()
-            cstNode = ctl.parent.getCstNodes(cstType='parentConstraint')
+            cstNode = ctl.parent.getCstNodes(cstType="parentConstraint")
             if cstNode:
                 spaceG = cstNode[0].a.target.inConnNode
                 if spaceG:
@@ -219,7 +222,7 @@ def updateSpaceSwitch():
 
 
 def getSpaceObj(rigNode):
-    """ Return space:obj dict for rigNode
+    """Return space:obj dict for rigNode
     e.g.
         rigNode.space_arm -> lfArm0_softJ
         rigNode.space_clavicle -> lfArm0_clavicle_fkc
@@ -243,7 +246,7 @@ def getSpaceObj(rigNode):
 
 
 def collectSpaceObj(rigNode):
-    """ Return space:obj dict for all rigNodes.
+    """Return space:obj dict for all rigNodes.
     [ Since both left and right arm ctl have the same 'arm', 'rigNode' is appended last ]
     e.g.
         {
@@ -319,6 +322,7 @@ def getRigNode(obj):
             logging.info(f"No connected rigNode found for {obj}")
     else:
         logging.info("Get rigNode for non-existing object.")
+
 
 # def getRigNodes(objList):
 #     rigNodes = []

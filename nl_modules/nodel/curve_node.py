@@ -20,23 +20,23 @@ class CurveNode(GroupNode):
     SHAPE_PATH = os.path.join(os.path.dirname(nl_modules.__file__), "build/shapes")
 
     def __init__(
-            self,
-            node,
-            pf="",
-            sf="",
-            align=None,
-            alignR=None,
-            snap=None,
-            addOfs=0,
-            p=None,
-            # for crv
-            color=0,
-            shape="",
-            rotate=None,
-            scale=None,
-            dspType=0,
-            lineW=-1,
-            up="",
+        self,
+        node,
+        pf="",
+        sf="",
+        align=None,
+        alignR=None,
+        snap=None,
+        addOfs=0,
+        p=None,
+        # for crv
+        color=0,
+        shape="",
+        rotate=None,
+        scale=None,
+        dspType=0,
+        lineW=-1,
+        up="",
     ):
         GroupNode.__init__(
             self,
@@ -234,12 +234,12 @@ class CurveNode(GroupNode):
         """
         typeName = type(crv).__name__
 
-        if typeName == 'str':  # preset name
+        if typeName == "str":  # preset name
             crvDictList = CurveNode.shape_getDictListFrLib(crv)
             crvObj = CurveNode.shape_buildFrDictList(crvDictList, crv)
             crvObj.copyShapeAsInst([self], keepSrc=0)
 
-        elif typeName == 'CurveNode':  # another curve
+        elif typeName == "CurveNode":  # another curve
             crv.copyShapeAsInst([self])
 
         # self.color = self.getSideColor()
@@ -326,7 +326,7 @@ class CurveNode(GroupNode):
                 dup = shapeSrc.duplicate()
                 xf = DagNode(xf)
                 mc.parent(dup.shape, xf, s=1, r=1)
-                xf.shape.rename(xf + 'Shape')
+                xf.shape.rename(xf + "Shape")
                 dup.delete()
                 if self != xf:
                     otherXf.append(xf)
@@ -335,17 +335,17 @@ class CurveNode(GroupNode):
 
     @staticmethod
     def buildLine(
-            tgt1,
-            tgt2,
-            n="line_#",
-            pf="",
-            lineW=-1,
-            bezier=0,
-            insertMid=0,
-            dspType=0,
-            snap=None,
-            inheritXf=1,
-            p=None,
+        tgt1,
+        tgt2,
+        n="line_#",
+        pf="",
+        lineW=-1,
+        bezier=0,
+        insertMid=0,
+        dspType=0,
+        snap=None,
+        inheritXf=1,
+        p=None,
     ):
         """Build line from object/position from tgt1 to tgt2
         e.g.
@@ -396,7 +396,9 @@ class CurveNode(GroupNode):
         """
         obj1 = DagNode(obj1)
         obj2 = DagNode(obj2)
-        line = CurveNode.buildLine(obj1, obj2, pf=pf, lineW=lineW, inheritXf=inheritXf, dspType=dspType, p=p)
+        line = CurveNode.buildLine(
+            obj1, obj2, pf=pf, lineW=lineW, inheritXf=inheritXf, dspType=dspType, p=p
+        )
 
         if line:
             nodes = obj1.a.worldMatrix.outConnNode
@@ -418,21 +420,21 @@ class CurveNode(GroupNode):
             CurveNode.buildLineLinked(a, b)
         mc.select(cl=1)
 
-    def weightTo(self, joints, custom=0, **kwargs):
+    def weightTo(self, joints, weightDir=0, **kwargs):
         if self.exists():
             skin_clu = mc.skinCluster(self, joints, **kwargs)[0]
 
             # Apply preset weight for 6-cv curve if custom != 0
-            if custom != 0 and len(joints) == 3 and self.shape.a.spans == 4:
+            if weightDir != 0 and len(joints) == 3 and self.shape.a.spans == 4:
                 wList = [
                     (1, 0, 0),
-                    (1, 0, 0),
-                    (0.6, 0.4, 0),
-                    (0, 0.4, 0.6),
-                    (0, 0, 1),
+                    (0.85, 0.15, 0),
+                    (0.25, 0.75, 0),
+                    (0, 0.75, 0.25),
+                    (0, 0.15, 0.85),
                     (0, 0, 1),
                 ]
-                if custom == -1:
+                if weightDir == -1:
                     wList.reverse()
 
                 for i, w in enumerate(wList):
@@ -441,8 +443,10 @@ class CurveNode(GroupNode):
                         skin_clu,
                         cv,
                         transformValue=[
-                            (joints[0], w[0]), (joints[1], w[1]), (joints[2], w[2])
-                        ]
+                            (joints[0], w[0]),
+                            (joints[1], w[1]),
+                            (joints[2], w[2]),
+                        ],
                     )
 
             # if len(joints) == 3:
@@ -470,16 +474,16 @@ class CurveNode(GroupNode):
             #             )
 
     def __call__(
-            self,
-            name="",
-            shape=None,
-            up=None,
-            scale=1,
-            color=0,
-            addOfs=0,
-            p=None,
-            *args,
-            **kwargs,
+        self,
+        name="",
+        shape=None,
+        up=None,
+        scale=1,
+        color=0,
+        addOfs=0,
+        p=None,
+        *args,
+        **kwargs,
     ):
         """Update multiple data of the curve
         e.g.

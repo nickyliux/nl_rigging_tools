@@ -81,7 +81,9 @@ class QuadLeg(rig_module.RigModule):
         self.toesRootJ = rigNode.a.toesRootJ.inConnNode
 
     def genSk(self):
-        self.genSk_module(["hip", "upr", "lwr", "palm", "fetlock", "pastern", "pasternTip"])
+        self.genSk_module(
+            ["hip", "upr", "lwr", "palm", "fetlock", "pastern", "pasternTip"]
+        )
 
         if self.TOE_BONES:
             self.toesRootJ = self.genSkFrNames(["toesRoot"], pf=self.rigID)[0]
@@ -105,13 +107,17 @@ class QuadLeg(rig_module.RigModule):
         rID = self.rigID
         xDr = self.x_dir
         self.setting = CurveNode("setting", pf=rID, shape="sphere", scale=rSz)
-        self.hip_fkc = CurveNode("hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr)
+        self.hip_fkc = CurveNode(
+            "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
+        )
         self.upr_fkc = CurveNode("upr_fkc", pf=rID, up="x", scale=rSz)
         self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", scale=rSz)
         self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz)
         self.fetlock_fkc = CurveNode("fetlock_fkc", pf=rID, up="x", scale=rSz)
         self.pastern_fkc = CurveNode("pastern_fkc", pf=rID, up="x", scale=rSz)
-        self.extraRoll_fkc = CurveNode("extraRoll_fkc", shape="rotator", pf=rID, scale=rSz)
+        self.extraRoll_fkc = CurveNode(
+            "extraRoll_fkc", shape="rotator", pf=rID, scale=rSz
+        )
         self.ikc = CurveNode("ikc", pf=rID, shape="foot_ikc2", scale=rSz)
         self.pvc = CurveNode("pvc", pf=rID, shape="pole_vector", scale=rSz)
         self.rigNode.setMsg(
@@ -130,7 +136,7 @@ class QuadLeg(rig_module.RigModule):
         )
 
     def build(self):
-        """ Build rig for joints
+        """Build rig for joints
         hip
             upr
                 lwr
@@ -241,7 +247,9 @@ class QuadLeg(rig_module.RigModule):
         )
         ikHX = IkNode("X", pf=self.rigID, sj=self.palm, ee=self.fetlock, jsf="_ik")
         ikH2 = IkNode("2", pf=self.rigID, sj=self.fetlock, ee=self.pastern, jsf="_ik")
-        ikH3 = IkNode("3", pf=self.rigID, sj=self.pastern, ee=self.pasternTip, jsf="_ik")
+        ikH3 = IkNode(
+            "3", pf=self.rigID, sj=self.pastern, ee=self.pasternTip, jsf="_ik"
+        )
 
         self.ikCstG = GroupNode("ikCstG", pf=self.rigID, snap=self.palm, alignR=mG)
         ballRollG = GroupNode("ballRollG", pf=self.rigID, snap=self.pastern, alignR=mG)
@@ -254,14 +262,14 @@ class QuadLeg(rig_module.RigModule):
 
         if self.x_dir == 1:
             for g in (
-                    self.ikCstG,
-                    ballRollG,
-                    toeWiggleG,
-                    footRollG,
-                    toeRollG,
-                    inRollG,
-                    outRollG,
-                    heelRollG,
+                self.ikCstG,
+                ballRollG,
+                toeWiggleG,
+                footRollG,
+                toeRollG,
+                inRollG,
+                outRollG,
+                heelRollG,
             ):
                 g.a.rx.set2(180, add=1)
         (
@@ -535,7 +543,9 @@ class QuadLeg(rig_module.RigModule):
         # else:
         (radius_JC[0], ulna_JC[0]) | self.lwr
 
-        radius_loc = LocNode("radius_loc", pf=self.rigID, align=radius_JC[1], p=self.palm)
+        radius_loc = LocNode(
+            "radius_loc", pf=self.rigID, align=radius_JC[1], p=self.palm
+        )
         ulna_loc = LocNode("ulna_loc", pf=self.rigID, align=ulna_JC[1], p=self.palm)
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
@@ -674,12 +684,12 @@ class QuadLeg(rig_module.RigModule):
         [
             fkIk >> c.a.v
             for c in (
-            self.ikc,
-            self.pvc,
-            self.pvc_line,
-            self.extraRoll_fkc,
-            self.ikCstG,
-        )
+                self.ikc,
+                self.pvc,
+                self.pvc_line,
+                self.extraRoll_fkc,
+                self.ikCstG,
+            )
         ]
         [~fkIk >> c.a.v for c in self.fkCtl[1:-1]]
 
@@ -693,6 +703,7 @@ class QuadLeg(rig_module.RigModule):
         rSz = self.rigSize
         xDr = self.x_dir
         proxyList = self.joints[1:]
+        proxyToeList = []
         if self.TOE_BONES:
             proxyList.remove(self.fetlock)
             proxyList.remove(self.pastern)
@@ -708,7 +719,13 @@ class QuadLeg(rig_module.RigModule):
         #     self.joints[foot_id] = self.boneFix
 
         for j in proxyList:
-            JointNode(j).addProxyMesh(size=rSz * 4, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(
+                size=rSz * 6, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
+            )
+        for j in proxyToeList:
+            JointNode(j).addProxyMesh(
+                size=rSz * 2, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
+            )
         # if self.TOE_BONES:
         #     for toes in self.toesJntList:
         #         for j in toes:
@@ -725,9 +742,9 @@ class QuadLeg(rig_module.RigModule):
         self.rigNode.setMsg({"space_hip": self.hip_fkc})
         self.rigNode.setMsg({"space_leg": self.twoJ})
         self.rigNode.setMsg({"spaceHolder1": self.ikc})
-        self.rigNode.a.add("spaceName1", attrType='string', txt="master, hip, COG")
+        self.rigNode.a.add("spaceName1", attrType="string", txt="master, hip, COG")
         self.rigNode.setMsg({"spaceHolder2": self.pvc})
-        self.rigNode.a.add("spaceName2", attrType='string', txt="leg, master, COG")
+        self.rigNode.a.add("spaceName2", attrType="string", txt="leg, master, COG")
 
     def post_setup(self):
         logging.info(self.rigID)
@@ -745,7 +762,7 @@ class QuadLeg(rig_module.RigModule):
             pf=self.rigID,
         )
         self.space_setup()
-        self.anchor_setup_module({'anchorF1': self.hip_fkc})
+        self.anchor_setup_module({"anchorF1": self.hip_fkc})
         self.proxy_setup()
         self.vis_setup()
         self.channel_setup()

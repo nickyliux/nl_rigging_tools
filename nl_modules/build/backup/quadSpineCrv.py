@@ -38,7 +38,6 @@ class QuadSpineCrv(rig_module.RigModule):
 
         self.build_module()
 
-        
         s = self.rigSize
         Y = Color.YELLOW
         DY = Color.D_YELLOW
@@ -73,10 +72,10 @@ class QuadSpineCrv(rig_module.RigModule):
         self.post_setup()
 
     def createCtlJ(
-            self,
-            st_ctl,
-            md_ctl,
-            ed_ctl,
+        self,
+        st_ctl,
+        md_ctl,
+        ed_ctl,
     ):
         s = self.rigSize * 2
 
@@ -106,7 +105,7 @@ class QuadSpineCrv(rig_module.RigModule):
             return
 
         # BUILD JOINT CHAIN
-        self.joints = JointNode.makeJChainFrCrv(
+        self.joints = JointNode.makeJCFrCrv(
             crv, jntNum=self.mg_jntNum, pf=self.rigID, p=self.SKL_DATA
         )
 

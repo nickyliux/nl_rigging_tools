@@ -79,13 +79,14 @@ class SpineSrf(RigModule):
         rID = self.rigID
         logging.info(rID)
 
-        self.fkJnt = JointNode.makeJChainFrCrv(
+        self.fkJnt = JointNode.makeJCFrCrv(
             # self.LINE_GUIDE, jntNum=self.FK_JNT_NUM, pf=rID, wu=[0, 0, 1], p=self.SKL_DATA
             self.LINE_GUIDE,
             jntNum=self.FK_JNT_NUM,
             pf=rID,
-            aim=(0, 1, 0),
-            up=(0, 0, 1),
+            aimV=(0, 1, 0),
+            upV=(0, 0, 1),
+            wuV=(0, 0, 1),
             p=self.SKL_DATA,
         )
         mc.delete(self.rootJ)

@@ -9,8 +9,8 @@ class QuadNeckSrf(QuadSpineSrf):
     def anchor_setup(self):
         self.anchor_setup_module(
             {
-                'anchorM1': self.tp_ctl,
-                'anchorF1': self.rt_ctl,
+                "anchorM1": self.tp_ctl,
+                "anchorF1": self.rt_ctl,
             }
         )
-        self.md_ctl.a.spineSlider.set(1)
+        self.md_ctl.a.baseAttach.set(1)
