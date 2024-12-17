@@ -46,7 +46,7 @@ class RigModule(RigBase):
         self.rootJ = rigNode.a.rootJ.inConnNode
 
     @staticmethod
-    def genSkFrNames(names, pf='', color=None, r=1):
+    def genSkFrNames(names, pf="", color=None, r=1):
         """Create joints by finding object : pf_name_guide' from name list
         e.g.
             jnt_names = ["clavicle", "upr", "lwr", "palm", "ball"]
@@ -55,14 +55,14 @@ class RigModule(RigBase):
         """
         guides = []
         if pf:
-            pf += '_'
+            pf += "_"
         if isinstance(names, str):
             names = [names]
 
         for n in names:
             guide_name = f"{pf}{n}_guide"
             if not mc.objExists(guide_name):
-                logging.error(f'missing object: {guide_name}')
+                logging.error(f"missing object: {guide_name}")
                 return
             guides.append(DagNode(guide_name))
 
@@ -182,9 +182,7 @@ class RigModule(RigBase):
             last_ctl = ctl
 
     @staticmethod
-    def fkGivenCtl_dbl(
-            jntList, ctlList=None, drvList=None, count=1, p=None
-    ):
+    def fkGivenCtl_dbl(jntList, ctlList=None, drvList=None, count=1, p=None):
         """Special FK setup for toe
         P
             Ctl 1 offset        << t & r connected by the ctl from DBL
@@ -259,14 +257,21 @@ class RigModule(RigBase):
             tgt = DagNode(tgt) if isinstance(tgt, str) else tgt
             tgt_ofs = tgt.addOffsetGrp()
             common.cstMulti(
-                *allSpaces, tgt_ofs, cstType=cstType, w=tgt.a.add(attrName, min=0, max=1, dv=dv)
+                *allSpaces,
+                tgt_ofs,
+                cstType=cstType,
+                w=tgt.a.add(attrName, min=0, max=1, dv=dv),
             )
 
     @classmethod
-    def isolateNeckToSpine(cls, neckCog, spineCtl, worldSpace):
+    def isolateNeckToSpine(cls, neckCog, spineCtl, wSpaceObj):
         """Add 'isolateT' & 'isolateR' to tgt to allow separate cst specially for the neck"""
-        cls.isolateAlign(neckCog, spaces=[spineCtl, worldSpace], attrName='isolateR', cstType='ori')
-        cls.isolateAlign(neckCog, spaces=[spineCtl, worldSpace], attrName='isolateT', cstType='parT')
+        cls.isolateAlign(
+            neckCog, spaces=[spineCtl, wSpaceObj], attrName="isolateR", cstType="ori"
+        )
+        cls.isolateAlign(
+            neckCog, spaces=[spineCtl, wSpaceObj], attrName="isolateT", cstType="parT"
+        )
 
     @staticmethod
     def spaceAlign(tgt, names=None, spaces=None, dv=0, cstType="par", w=None, **kwargs):
@@ -344,7 +349,7 @@ class RigModule(RigBase):
                 anchor.inConnNode.delete()
 
         self.rigNode.a.nodeState.set(0)
-        prx = mc.ls(self.rigID + '_*_pxGeo')
+        prx = mc.ls(self.rigID + "_*_pxGeo")
         if prx:
             mc.delete(prx)
 
@@ -361,10 +366,10 @@ class RigModule(RigBase):
             loc = LocNode(name, pf=self.rigID, size=5, p=self.masterC)
             self.rigNode.setMsg({name: loc})
 
-            if name.startswith('anchorM'):      # Blue for Male
+            if name.startswith("anchorM"):  # Blue for Male
                 loc.color = Color.L_BLUE
                 tgt.cstPar(loc)
-            elif name.startswith('anchorF'):    # Pink for Female
+            elif name.startswith("anchorF"):  # Pink for Female
                 loc.color = Color.PINK
                 loc.alignTo(tgt)
                 loc.cstPar(tgt.offset, mo=1)
@@ -384,13 +389,13 @@ class RigModule(RigBase):
 
     def addPivOffset(self, tgt, scale=1, inRange=10, maxOfs=120, fwd=1, dnwd=1):
         """Add pivot offset to target ctl"""
-        piv_ref = CurveNode(tgt + "_pivRef", shape="locator", align=tgt, scale=scale, p=tgt)
+        piv_ref = CurveNode(
+            tgt + "_pivRef", shape="locator", align=tgt, scale=scale, p=tgt
+        )
         piv_ref.dspType = 2
 
         if fwd:
-            pivotForward = tgt.a.add(
-                "pivotForward", min=-inRange, max=inRange, dv=0
-            )
+            pivotForward = tgt.a.add("pivotForward", min=-inRange, max=inRange, dv=0)
             rmN = DagNode("rmpZ_#", nodeType="remapValue")
             rmN.a.inputMin.set(inRange)
             rmN.a.inputMax.set(-inRange)
@@ -402,9 +407,7 @@ class RigModule(RigBase):
             rmN.a.outValue >> piv_ref.a.tz
 
         if dnwd:
-            pivotDownward = tgt.a.add(
-                "pivotDownward", min=-inRange, max=inRange, dv=0
-            )
+            pivotDownward = tgt.a.add("pivotDownward", min=-inRange, max=inRange, dv=0)
             rmN = DagNode("rmpY_#", nodeType="remapValue")
             rmN.a.inputMin.set(-inRange)
             rmN.a.inputMax.set(inRange)
@@ -463,7 +466,14 @@ class RigModule(RigBase):
         patella_guide = DagNode(rID + "_patella_guide")
 
         if patella_guide.exists():
-            j = JointNode("patella", pf=rID, align=patella_guide, color=Color.L_BLUE, r=rSz, p=self.upr)
+            j = JointNode(
+                "patella",
+                pf=rID,
+                align=patella_guide,
+                color=Color.L_BLUE,
+                r=rSz,
+                p=self.upr,
+            )
             j.addProxyMesh(size=rSz, aimDir=(xDr, 0, 0), p=PRX_GRP)
             j.freezeXf()
             self.addBindJntSet([j])

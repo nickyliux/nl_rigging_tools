@@ -26,7 +26,7 @@ class MarkingMenuRigging:
             sh=0,
             p="viewPanes",
             pmo=1,
-            pmc=self.setupMenu
+            pmc=self.setupMenu,
         )
 
     def setupMenu(self, menu, parent):
@@ -54,12 +54,7 @@ class MarkingMenuRigging:
 
         channel_MI = mc.menuItem(p=menu, l="Channel", rp="E", subMenu=1)
         mc.menuItem(p=channel_MI, l="LockH All", c=partial(lockAttr, "all", 1))
-        mc.menuItem(
-            p=channel_MI,
-            l="LockH Off",
-            c=partial(lockAttr, "all", 0),
-            ob=1
-        )
+        mc.menuItem(p=channel_MI, l="LockH Off", c=partial(lockAttr, "all", 0), ob=1)
         mc.menuItem(p=channel_MI, l="--------------------", en=0)
         mc.menuItem(p=channel_MI, l="Lock hide  T", c=partial(lockAttr, "t", 1))
         mc.menuItem(p=channel_MI, l="T off", c=partial(lockAttr, "t", 0), ob=1)
@@ -75,6 +70,7 @@ class MarkingMenuRigging:
         mc.menuItem(p=cst_MI, l="Select Constrained", c=partial(sel_cst_driver, 0))
         mc.menuItem(p=cst_MI, l="--------------------", en=0)
         mc.menuItem(p=cst_MI, l="Aim", c=partial(cst, "aim", 0))
+        mc.menuItem(p=cst_MI, l="Aim  mo", c=partial(cst, "aim", 1), ob=1)
         mc.menuItem(p=cst_MI, l="Parent", c=partial(cst, "par", 0))
         mc.menuItem(p=cst_MI, l="Parent  mo", c=partial(cst, "par", 1), ob=1)
         mc.menuItem(p=cst_MI, l="Parent T", c=partial(cst, "parT", 0))
@@ -122,8 +118,10 @@ class MarkingMenuRigging:
         mc.menuItem(p=menu, l="--------------------", en=0)
         mc.menuItem(p=menu, l="Reload Menu", c=reload_marking_menu)
 
+
 def showHidden(*args):
     mc.showHidden(all=1)
+
 
 def select_joint_mask(*args):
     mc.selectType(allObjects=1)
@@ -134,6 +132,7 @@ def use_last_crv_shapes(*args):
     sel = mc.ls(sl=1)
     if len(sel) > 1:
         from nl_modules.nodel.curve_node import CurveNode
+
         CurveNode(sel[-1]).copyShapeAsInst(sel[:-1])
 
 
@@ -166,7 +165,7 @@ def makeJointChainGold_mm(*args):
     jc = make_joint_chain(5)
     GR = 0.618034
     for i in range(1, len(jc)):
-        mc.setAttr(jc[i] + ".tx", 10 * GR ** i)
+        mc.setAttr(jc[i] + ".tx", 10 * GR**i)
     mc.select(jc[0])
 
 

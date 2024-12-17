@@ -38,7 +38,9 @@ class Head(RigModule):
     def build(self):
         self.build_module()
         self.joints = self.rootJ.allChildrenJt2
-        self.head, self.headEnd, self.jaw, self.jawEnd, self.lf_eye, self.rt_eye = self.joints
+        self.head, self.headEnd, self.jaw, self.jawEnd, self.lf_eye, self.rt_eye = (
+            self.joints
+        )
         self.createCtl()
         self.fkCtl = [self.head_fkc, self.jaw_fkc]
         self.build_fk()
@@ -49,8 +51,10 @@ class Head(RigModule):
         rSz = self.rigSize
         CY = Color.YELLOW
         CR = Color.RED
-        self.head_fkc = CurveNode("head", shape='circle_round', pf=rID, sf="_fkc", scale=rSz * 5, color=CY)
-        self.jaw_fkc = CurveNode("jaw", pf=rID, sf="_fkc", up='z', scale=rSz, color=CR)
+        self.head_fkc = CurveNode(
+            "head", shape="circle_round", pf=rID, sf="_fkc", scale=rSz * 5, color=CY
+        )
+        self.jaw_fkc = CurveNode("jaw", pf=rID, sf="_fkc", up="z", scale=rSz, color=CR)
 
         self.rigNode.setMsg(
             {
@@ -72,7 +76,7 @@ class Head(RigModule):
         self.jaw_fkc.cstPar(self.jaw, mo=1)
         self.jaw_fkc.offset | self.head_fkc
         self.jaw_fkc.cv_moveTo(self.jawEnd.o.pos)
-        self.isolateAlign(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC])
+        self.isolateAlign(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC], dv=1)
 
     def proxy_setup(self):
         for j in [self.head, self.jaw, self.lf_eye, self.rt_eye]:
@@ -95,7 +99,7 @@ class Head(RigModule):
         self.addBindJntSet(self.joints)
         self.addCtlSet(self.fkCtl, pf=self.rigID)
         self.space_setup()
-        self.anchor_setup_module({'anchorF1': self.head_fkc.offset})
+        self.anchor_setup_module({"anchorF1": self.head_fkc.offset})
         self.proxy_setup()
         self.vis_setup()
         self.post_module()

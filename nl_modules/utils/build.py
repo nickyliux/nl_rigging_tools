@@ -150,7 +150,6 @@ def updateAnchorConn():
             # ---------------------------------------------------------------
             distList = []
             [distList.append(fAnchor.o.distanceTo(m)) for m in maleAnchors]
-
             tgtID = distList.index(min(distList))
             closestMaleAnchor = maleAnchors[tgtID]
 
@@ -167,13 +166,15 @@ def updateAnchorConn():
                     logging.debug("Ignore connecting anchors from the same rigNode.")
 
     # ---------------------------------------------------------------
+    #
     #  Create isolate neck to spine setup for standard quadruped
+    #
     # ---------------------------------------------------------------
-    # neckCog = DagNode('qNeckSrf0_cog_ctl')
-    # spineCtl = DagNode('qSpineSrf0_tp_ctl')
-    # worldSpace = DagNode('master_ctl')
-    # if all([neckCog.exists(), spineCtl.exists(), worldSpace.exists()]):
-    #     RigModule.isolateNeckToSpine(neckCog, spineCtl, worldSpace)
+    neckCog = DagNode("qNeckSrf0_cog_ctl")
+    spineCtl = DagNode("qSpineSrf0_tp_ctl")
+    wSpaceObj = DagNode("master_ctl")
+    if all([neckCog.exists(), spineCtl.exists(), wSpaceObj.exists()]):
+        RigModule.isolateNeckToSpine(neckCog, spineCtl, wSpaceObj)
 
 
 def updateSpaceSwitch():

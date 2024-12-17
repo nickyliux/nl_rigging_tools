@@ -80,9 +80,9 @@ class Leg(RigModule):
             self.toesRootJ | self.SKL_DATA
             self.rigNode.setMsg({"toesRootJ": self.toesRootJ})
             toe_names = [
-                ["toe02_1", "toe02_2", "toe02_3", "toe02_4", "toe02_5"],
                 ["toe00_1", "toe00_2", "toe00_3", "toe00_4"],
                 ["toe01_1", "toe01_2", "toe01_3", "toe01_4", "toe01_5"],
+                ["toe02_1", "toe02_2", "toe02_3", "toe02_4", "toe02_5"],
                 ["toe03_1", "toe03_2", "toe03_3", "toe03_4", "toe03_5"],
                 ["toe04_1", "toe04_2", "toe04_3", "toe04_4", "toe04_5"],
             ]
@@ -393,14 +393,14 @@ class Leg(RigModule):
             self.toesCtlsList.append(ctlList)
             toeLocList.append(toe_loc)
 
-        splay = self.ball_fkc.a.add("splay", min=-5, max=5)
-        toeCount = len(self.toesJntList)
-        splayRange = 45
+        # splay = self.ball_fkc.a.add("splay", min=-5, max=5)
+        # toeCount = len(self.toesJntList)
+        # splayRange = 45
 
-        for i in range(toeCount):
-            tgt = toeLocList[i].a.rz
-            common.sdk2(splay, tgt, -5, splayRange * (-1 + 2 / (toeCount - 1) * i))
-            common.sdk2(splay, tgt, 5, -splayRange * (-1 + 2 / (toeCount - 1) * i))
+        # for i in range(toeCount):
+        #     tgt = toeLocList[i].a.rz
+        #     common.sdk2(splay, tgt, -5, splayRange * (-1 + 2 / (toeCount - 1) * i))
+        #     common.sdk2(splay, tgt, 5, -splayRange * (-1 + 2 / (toeCount - 1) * i))
 
         mc.hide(toeLocList)
 
@@ -594,7 +594,7 @@ class Leg(RigModule):
         xDr = self.x_dir
         for j in proxyList:
             JointNode(j).addProxyMesh(
-                size=rSz * 6, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
+                size=rSz * 5, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
             )
         for j in proxyToeList:
             JointNode(j).addProxyMesh(

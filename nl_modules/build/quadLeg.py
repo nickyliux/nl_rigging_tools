@@ -511,14 +511,14 @@ class QuadLeg(rig_module.RigModule):
         # For splay range R and 4 toes
         # Result = [-R, -R/3, R/3, R]
         #
-        splay = self.pastern_fkc.a.add("splay", min=-5, max=5)
-        toeCount = len(self.toesJntList)
-        splayRange = 45
+        # splay = self.pastern_fkc.a.add("splay", min=-5, max=5)
+        # toeCount = len(self.toesJntList)
+        # splayRange = 45
 
-        for i in range(toeCount):
-            tgt = toeLocList[i].a.ry
-            common.sdk2(splay, tgt, 5, splayRange * (-1 + 2 / (toeCount - 1) * i))
-            common.sdk2(splay, tgt, -5, -splayRange * (-1 + 2 / (toeCount - 1) * i))
+        # for i in range(toeCount):
+        #     tgt = toeLocList[i].a.ry
+        #     common.sdk2(splay, tgt, 5, splayRange * (-1 + 2 / (toeCount - 1) * i))
+        #     common.sdk2(splay, tgt, -5, -splayRange * (-1 + 2 / (toeCount - 1) * i))
 
         # claw = self.pastern_fkc.a.add("claw", min=-5, max=5)
         # for toes in self.toesJntList:
@@ -704,6 +704,9 @@ class QuadLeg(rig_module.RigModule):
         xDr = self.x_dir
         proxyList = self.joints[1:]
         proxyToeList = []
+
+        if self.TWIST_BONES:
+            proxyList.remove(self.palm)
         if self.TOE_BONES:
             proxyList.remove(self.fetlock)
             proxyList.remove(self.pastern)
@@ -720,11 +723,11 @@ class QuadLeg(rig_module.RigModule):
 
         for j in proxyList:
             JointNode(j).addProxyMesh(
-                size=rSz * 6, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
+                size=rSz * 5, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
             )
         for j in proxyToeList:
             JointNode(j).addProxyMesh(
-                size=rSz * 2, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
+                size=rSz, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
             )
         # if self.TOE_BONES:
         #     for toes in self.toesJntList:
