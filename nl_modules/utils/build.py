@@ -318,7 +318,9 @@ def getRigNode(obj):
     if mc.objExists(obj):
         nodes = DagNode(obj).a.message.outConnNode
         if nodes:
-            return nodes[0]
+            for n in nodes:
+                if n.type == "script":
+                    return n
         else:
             logging.info(f"No connected rigNode found for {obj}")
     else:

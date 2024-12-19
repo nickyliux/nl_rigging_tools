@@ -185,7 +185,7 @@ class IkNode(DagNode):
         d = crvInfo.a.arcLength
         ks = ctl.a.add("stretchy", min=0, max=1)
         ksMin = ctl.a.add("stretchMin", k=0, min=0, max=1, dv=0)
-        ksMax = ctl.a.add("stretchMax", k=0, min=0, dv=99)
+        ksMax = ctl.a.add("stretchMax", k=0, min=0, dv=2)
         ratio = (d / D - 1) * ks + 1
 
         for i in range(1, len(jl)):

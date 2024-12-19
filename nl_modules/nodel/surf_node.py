@@ -133,7 +133,7 @@ class SurfNode(GroupNode):
         sweepLine = CurveNode.buildLine(p1, p2, pf=rigID, snap=snap)
         pathLine = CurveNode(
             mc.rebuildCurve(
-                crv, n=rigID + "_line_#", ch=0, rpo=0, end=1, kr=2, kt=0, s=spans
+                crv, n=rigID + "_line_#", ch=0, rpo=0, end=1, kr=2, kt=0, s=spans, d=2
             )[0]
         )
         rbSrf = SurfNode(

@@ -190,6 +190,7 @@ class QuadSpineSrf(rig_module.RigModule):
                     w=baseAttach,
                     cstType="par",
                 )
+
         self.rt_ctl.snapTo(self.fkJnt[0])
         self.md_ctl.snapTo(self.MD_GUIDE)
         self.tp_ctl.snapTo(self.fkJnt[-1])
@@ -200,15 +201,19 @@ class QuadSpineSrf(rig_module.RigModule):
         self.ctlJnts = self.createCtlJ(
             self.rt_ctl, self.md_ctl, self.tp_ctl, color=Color.RED
         )
+
+        # Orient control last fkJ by tip ctl
+        self.fkJnt[-1].a.r.disconnect()
+        self.tp_ctl.cstOri(self.fkJnt[-1], mo=1)
+
+        # Bind curve to ctl joints
         self.spCrv.weightTo(self.ctlJnts, weightDir=1)
         self.spCrv.a.inheritsTransform.set(0)
         if sliding:
             self.spCrvR.weightTo(self.ctlJnts, weightDir=-1)
             self.spCrvR.a.inheritsTransform.set(0)
 
-        # --------------------------------------------
         # Setup spline ik twist
-        # --------------------------------------------
         self.tp_ctl.addOffsetGrp(below=1)
         self.rt_ctl.addOffsetGrp(below=1)
 
@@ -223,16 +228,15 @@ class QuadSpineSrf(rig_module.RigModule):
         self.rt_ctl.addOffsetGrp()
         self.md_ctl.addOffsetGrp(count=2)
         self.tp_ctl.addOffsetGrp()
-        # --------------------------------------------
-        # Mid ctl setup
-        # --------------------------------------------
-        # common.cstMulti(
-        #     self.tp_ctl, self.rt_ctl, self.md_ctl.offset.offset, cstType="poi", mo=1
-        # )
 
-        # self.tp_ctl.a.rz @ self.rt_ctl.a.rz >> self.md_ctl.offset.a.rz
-        if not sliding:
-            self.tp_ctl.cstOri(self.fkJnt[-1], mo=1)
+        # Mid ctl setup
+        common.cstMulti(
+            self.tp_ctl, self.rt_ctl, self.md_ctl.offset.offset, cstType="poi", mo=1
+        )
+        self.tp_ctl.a.rz @ self.rt_ctl.a.rz >> self.md_ctl.offset.a.rz
+
+        # if not sliding:
+        #     self.tp_ctl.cstOri(self.fkJnt[-1], mo=1)
         # self.cog_ctl.cstSca(self.fkJnt[0])
         # self.fkJnt[0].childrenJoint[0].a.segmentScaleCompensate.set(0)
         self.rbSrf.weightTo(self.rootJ.allChildrenJt2, mi=3, dr=3)
@@ -273,8 +277,8 @@ class QuadSpineSrf(rig_module.RigModule):
             self.tangent_tp_ctl,
             self.tangent_rt_ctl,
         ]
-        self.addPivOffset(self.tp_ctl, scale=self.rigSize, dnwd=0)
-        self.addPivOffset(self.rt_ctl, scale=self.rigSize, dnwd=0)
+        # self.addPivOffset(self.tp_ctl, scale=self.rigSize, dnwd=0)
+        # self.addPivOffset(self.rt_ctl, scale=self.rigSize, dnwd=0)
 
     def vis_setup(self):
         # visGrp = common.addVisOption(self.visC, self.rigID)
