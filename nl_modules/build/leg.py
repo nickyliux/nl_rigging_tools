@@ -97,14 +97,14 @@ class Leg(RigModule):
         xDr = self.x_dir
         self.setting = CurveNode("setting", pf=rID, shape="sphere", scale=rSz)
         self.hip_fkc = CurveNode(
-            "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr / 2
+            "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
         )
         self.upr_fkc = CurveNode("upr_fkc", pf=rID, up="x", scale=rSz)
         self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", scale=rSz)
         self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz)
         self.ball_fkc = CurveNode("ball_fkc", pf=rID, up="x", scale=rSz)
         self.ikc = CurveNode("ikc", pf=rID, shape="foot_ikc", scale=rSz)
-        self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz / 2)
+        self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz * 0.8)
         self.rigNode.setMsg(
             {
                 "setting": self.setting,
@@ -594,7 +594,7 @@ class Leg(RigModule):
         xDr = self.x_dir
         for j in proxyList:
             JointNode(j).addProxyMesh(
-                size=rSz * 5, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
+                size=rSz * 6, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
             )
         for j in proxyToeList:
             JointNode(j).addProxyMesh(

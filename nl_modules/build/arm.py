@@ -84,11 +84,14 @@ class Arm(RigModule):
         rID = self.rigID
         xDr = self.x_dir
         self.setting = CurveNode("setting", pf=rID, shape="sphere", scale=rSz)
-        self.clavicle_fkc = CurveNode("clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr)
+        self.clavicle_fkc = CurveNode(
+            "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
+        )
+        self.clavicle_fkc.cv_rotate(0, 0, -45)
         self.upr_fkc = CurveNode("upr_fkc", pf=rID, up="x", scale=rSz)
         self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", scale=rSz)
         self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz)
-        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=(rSz, rSz / 2, rSz * 2))
+        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=(rSz * 2, rSz, rSz * 3))
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz / 2)
         self.rigNode.setMsg(
             {
@@ -109,7 +112,9 @@ class Arm(RigModule):
         ulna_JC = self.genSkFrNames(jnt_names, pf=self.rigID)
         (radius_JC[0], ulna_JC[0]) | self.lwr
 
-        radius_loc = LocNode("radius_loc", pf=self.rigID, align=radius_JC[1], p=self.palm)
+        radius_loc = LocNode(
+            "radius_loc", pf=self.rigID, align=radius_JC[1], p=self.palm
+        )
         ulna_loc = LocNode("ulna_loc", pf=self.rigID, align=ulna_JC[1], p=self.palm)
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
@@ -177,7 +182,12 @@ class Arm(RigModule):
         self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
         (self.ikc, self.pvc, self.ikCstG) | self.IK_PART
         self.pvc_line = CurveNode.buildLineLinked(
-            self.joints_ik[2], self.pvc, pf=self.rigID, inheritXf=0, dspType=2, p=self.IK_PART
+            self.joints_ik[2],
+            self.pvc,
+            pf=self.rigID,
+            inheritXf=0,
+            dspType=2,
+            p=self.IK_PART,
         )
 
         self.ikc.addOffsetGrp()
@@ -224,7 +234,9 @@ class Arm(RigModule):
         # self.followAlignTwo(self.main_pvc, spaces, 0, cstType="par")
         logging.info(self.rigID)
         self.setting | self.CTL_DATA
-        self.setting.alignTo(self.palm, offset=(0, 0, self.rigSize * 20))  # -self.x_dir *
+        self.setting.alignTo(
+            self.palm, offset=(0, 0, self.rigSize * 20)
+        )  # -self.x_dir *
         self.palm.cstPar(self.setting.addOffsetGrp(), mo=1)
         fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=1)
 
@@ -356,7 +368,9 @@ class Arm(RigModule):
         rSz = self.rigSize * 6
         xDr = self.x_dir
         for j in proxyList:
-            JointNode(j).addProxyMesh(size=rSz, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(
+                size=rSz, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
+            )
 
         self.addBindJntSet(proxyList)
 
@@ -381,10 +395,14 @@ class Arm(RigModule):
         self.rigNode.setMsg({"space_arm": self.ikH1.softJ[0]})
         self.rigNode.setMsg({"spaceHolder1": self.ikc})
         self.rigNode.a.add(
-            "spaceName1", attrType='string', txt="master, clavicle, COG, uprBody, lwrBody, head"
+            "spaceName1",
+            attrType="string",
+            txt="master, clavicle, COG, uprBody, lwrBody, head",
         )
         self.rigNode.setMsg({"spaceHolder2": self.pvc})
-        self.rigNode.a.add("spaceName2", attrType='string', txt="arm, master, COG, uprBody, lwrBody")
+        self.rigNode.a.add(
+            "spaceName2", attrType="string", txt="arm, master, COG, uprBody, lwrBody"
+        )
 
         # tempLoc = LocNode('temp_#')
         # self.rigNode.setMsg({"space_temp": tempLoc})
@@ -402,7 +420,7 @@ class Arm(RigModule):
 
         self.addCtlSet(ctlSet, pf=rID)
         self.space_setup()
-        self.anchor_setup_module({'anchorM1': self.palm, 'anchorF1': self.clavicle_fkc})
+        self.anchor_setup_module({"anchorM1": self.palm, "anchorF1": self.clavicle_fkc})
         self.proxy_setup()
         self.vis_setup()
         self.channel_setup()

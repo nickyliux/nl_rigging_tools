@@ -387,36 +387,36 @@ class RigModule(RigBase):
         else:
             mc.sets(jntList, n=BIND_JNT_SET)
 
-    # def addPivOffset(self, tgt, scale=1, inRange=10, maxOfs=120, fwd=1, dnwd=1):
-    #     """Add pivot offset to target ctl"""
-    #     piv_ref = CurveNode(
-    #         tgt + "_pivRef", shape="locator", align=tgt, scale=scale, p=tgt
-    #     )
-    #     piv_ref.dspType = 2
+    def addPivOffset(self, tgt, scale=1, inRange=10, maxOfs=120, frontBack=1, upDown=0):
+        """Add pivot offset to target ctl"""
+        piv_ref = CurveNode(
+            tgt + "_pivRef", shape="locator", align=tgt, scale=scale, p=tgt
+        )
+        piv_ref.dspType = 2
 
-    #     if fwd:
-    #         pivotForward = tgt.a.add("pivotForward", min=-inRange, max=inRange, dv=0)
-    #         rmN = DagNode("rmpZ_#", nodeType="remapValue")
-    #         rmN.a.inputMin.set(inRange)
-    #         rmN.a.inputMax.set(-inRange)
-    #         rmN.a.outputMin.set(maxOfs)
-    #         rmN.a.outputMax.set(-maxOfs)
+        if frontBack:
+            pivotForward = tgt.a.add("pivotForward", min=-inRange, max=inRange, dv=0)
+            rmN = DagNode("rmpZ_#", nodeType="remapValue")
+            rmN.a.inputMin.set(inRange)
+            rmN.a.inputMax.set(-inRange)
+            rmN.a.outputMin.set(maxOfs)
+            rmN.a.outputMax.set(-maxOfs)
 
-    #         pivotForward >> rmN.a.inputValue
-    #         rmN.a.outValue >> tgt.a.rotatePivotZ
-    #         rmN.a.outValue >> piv_ref.a.tz
+            pivotForward >> rmN.a.inputValue
+            rmN.a.outValue >> tgt.a.rotatePivotZ
+            rmN.a.outValue >> piv_ref.a.tz
 
-    #     if dnwd:
-    #         pivotDownward = tgt.a.add("pivotDownward", min=-inRange, max=inRange, dv=0)
-    #         rmN = DagNode("rmpY_#", nodeType="remapValue")
-    #         rmN.a.inputMin.set(-inRange)
-    #         rmN.a.inputMax.set(inRange)
-    #         rmN.a.outputMin.set(maxOfs)
-    #         rmN.a.outputMax.set(-maxOfs)
+        if upDown:
+            pivotDownward = tgt.a.add("pivotDownward", min=-inRange, max=inRange, dv=0)
+            rmN = DagNode("rmpY_#", nodeType="remapValue")
+            rmN.a.inputMin.set(-inRange)
+            rmN.a.inputMax.set(inRange)
+            rmN.a.outputMin.set(-maxOfs)
+            rmN.a.outputMax.set(maxOfs)
 
-    #         pivotDownward >> rmN.a.inputValue
-    #         rmN.a.outValue >> tgt.a.rotatePivotY
-    #         rmN.a.outValue >> piv_ref.a.ty
+            pivotDownward >> rmN.a.inputValue
+            rmN.a.outValue >> tgt.a.rotatePivotY
+            rmN.a.outValue >> piv_ref.a.ty
 
     def boneFix_setup(self, tgt, tgtChild):
         upLoc = LocNode("lwrLimb_up", pf=self.rigID, align=tgtChild, addOfs=1, p=tgt)

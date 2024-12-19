@@ -46,38 +46,31 @@ class QuadSpineSrf(rig_module.RigModule):
         rSz = self.rigSize
         rID = self.rigID
         CDY = Color.D_YELLOW
-        CY = Color.YELLOW
 
         self.cog_ctl = CurveNode(
             "cog_ctl",
             pf=rID,
             shape="trapezoid",
-            scale=(rSz, rSz * 1.5, rSz * 2),
-            color=CY,
+            scale=(rSz * 0.5, rSz * 1.5, rSz * 2),
+            color=CDY,
         )
         self.cog_ctl.cv_move(0, rSz * 80, 0)
         self.tp_ctl = CurveNode(
-            "tp_ctl", pf=rID, up="x", shape="cube", scale=rSz * 8, color=CDY
+            "tp_ctl", pf=rID, shape="sphere2", scale=rSz * 15, color=CDY
         )
-        self.tp_ctl.cv_scale(1, 0.8, 0.5)
         self.md_ctl = CurveNode(
-            "_md_ctl", pf=rID, shape="diamond", scale=rSz * 3, color=CDY
+            "_md_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3, color=CDY
         )
-        self.md_ctl.cv_move(0, rSz * 40, 0)
         self.rt_ctl = CurveNode(
-            "rt_ctl", pf=rID, shape="cube", scale=rSz * 8, color=CDY
+            "rt_ctl", pf=rID, shape="sphere2", scale=rSz * 15, color=CDY
         )
-        self.rt_ctl.cv_scale(1, 0.8, 0.5)
-
         self.tangent_tp_ctl = CurveNode(
-            "tangent_tp_ctl", pf=rID, up="x", shape="T", scale=rSz * 2, color=CDY
+            "tangent_tp_ctl", pf=rID, shape="T_side", scale=rSz, color=CDY
         )
-        self.tangent_tp_ctl.cv_rotate(90, 0, 0)
         self.tangent_tp_ctl.cv_move(0, rSz * 40, 0)
         self.tangent_rt_ctl = CurveNode(
-            "tangent_rt_ctl", pf=rID, up="x", shape="T", scale=rSz * 2, color=CDY
+            "tangent_rt_ctl", pf=rID, shape="T_side", scale=rSz, color=CDY
         )
-        self.tangent_rt_ctl.cv_rotate(90, 0, 0)
         self.tangent_rt_ctl.cv_move(0, rSz * 40, 0)
 
         self.rigNode.setMsg(
@@ -149,7 +142,8 @@ class QuadSpineSrf(rig_module.RigModule):
             sol=2,
             createCrv=0,
             inputCrv=crv,
-            setting=self.md_ctl,
+            # setting=self.md_ctl,
+            setting=self.cog_ctl,
             scaleFix=self.masterC.a.globalScale,
             p=self.RIG_DATA,
         )
@@ -181,7 +175,7 @@ class QuadSpineSrf(rig_module.RigModule):
                 "spB", sj=self.fkJ_B[-1], ej=self.fkJ_B[1], crv=self.spCrvR, axisDir=-1
             )
 
-            baseAttach = self.md_ctl.a.add("baseAttach", min=0, max=1)
+            baseAttach = self.cog_ctl.a.add("baseAttach", min=0, max=1)
             for i in range(self.FK_JNT_NUM):
                 common.cstMulti(
                     self.fkJ_B[i + 1],
@@ -230,9 +224,9 @@ class QuadSpineSrf(rig_module.RigModule):
         self.tp_ctl.addOffsetGrp()
 
         # Mid ctl setup
-        common.cstMulti(
-            self.tp_ctl, self.rt_ctl, self.md_ctl.offset.offset, cstType="poi", mo=1
-        )
+        # common.cstMulti(
+        #     self.tp_ctl, self.rt_ctl, self.md_ctl.offset.offset, cstType="poi", mo=1
+        # )
         self.tp_ctl.a.rz @ self.rt_ctl.a.rz >> self.md_ctl.offset.a.rz
 
         # if not sliding:
@@ -240,7 +234,7 @@ class QuadSpineSrf(rig_module.RigModule):
         # self.cog_ctl.cstSca(self.fkJnt[0])
         # self.fkJnt[0].childrenJoint[0].a.segmentScaleCompensate.set(0)
         self.rbSrf.weightTo(self.rootJ.allChildrenJt2, mi=3, dr=3)
-        # self.addPivOffset(self.cog_ctl, scale=self.rigSize)
+        self.addPivOffset(self.cog_ctl, scale=self.rigSize, upDown=1)
 
         # ----------------------
         #  Add gimbal

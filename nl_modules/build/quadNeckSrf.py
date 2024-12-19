@@ -10,8 +10,10 @@ class QuadNeckSrf(QuadSpineSrf):
         self.anchor_setup_module(
             {
                 # "anchorM1": self.tp_ctl,
-                "anchorM1": self.fkJnt[-1],
                 "anchorF1": self.rt_ctl,
+                "anchorM1": self.fkJnt[-1],
             }
         )
-        self.md_ctl.a.baseAttach.set(1)
+        baseAttach = self.cog_ctl.a["baseAttach"]
+        if baseAttach:
+            baseAttach.set(1)
