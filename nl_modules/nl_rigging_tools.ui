@@ -281,7 +281,7 @@
        <x>0</x>
        <y>250</y>
        <width>221</width>
-       <height>271</height>
+       <height>275</height>
       </rect>
      </property>
      <property name="font">
@@ -347,42 +347,6 @@
        <number>-1</number>
       </property>
      </widget>
-     <widget class="QPushButton" name="preset_load_BN">
-      <property name="geometry">
-       <rect>
-        <x>190</x>
-        <y>42</y>
-        <width>16</width>
-        <height>163</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>9999</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Segoe UI</family>
-        <pointsize>11</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="toolTip">
-       <string>Load Preset</string>
-      </property>
-      <property name="text">
-       <string>+</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="preset_importSkel_BN">
       <property name="geometry">
        <rect>
@@ -416,7 +380,7 @@
        <string>import preset skel</string>
       </property>
       <property name="text">
-       <string>B</string>
+       <string>S</string>
       </property>
      </widget>
      <widget class="QPushButton" name="preset_openSkel_BN">
@@ -562,56 +526,69 @@
     <attribute name="title">
      <string>Nodes</string>
     </attribute>
-    <widget class="QPushButton" name="rigNode_refresh_BN">
+    <widget class="QGroupBox" name="groupBox_2">
      <property name="geometry">
       <rect>
-       <x>7</x>
-       <y>11</y>
-       <width>201</width>
-       <height>17</height>
+       <x>0</x>
+       <y>10</y>
+       <width>211</width>
+       <height>515</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <family>Segoe UI</family>
-       <pointsize>8</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
+     <property name="title">
+      <string>RigNodes</string>
      </property>
-     <property name="text">
-      <string>Refresh</string>
-     </property>
-    </widget>
-    <widget class="QListWidget" name="rigNode_LW">
-     <property name="geometry">
-      <rect>
-       <x>7</x>
-       <y>36</y>
-       <width>201</width>
-       <height>481</height>
-      </rect>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="font">
-      <font>
-       <family>Segoe UI</family>
-       <pointsize>9</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::SingleSelection</enum>
-     </property>
-     <property name="spacing">
-      <number>0</number>
-     </property>
+     <widget class="QListWidget" name="rigNode_LW">
+      <property name="geometry">
+       <rect>
+        <x>7</x>
+        <y>43</y>
+        <width>198</width>
+        <height>461</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>9</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::SingleSelection</enum>
+      </property>
+      <property name="spacing">
+       <number>0</number>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="rigNode_refresh_BN">
+      <property name="geometry">
+       <rect>
+        <x>7</x>
+        <y>20</y>
+        <width>198</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>8</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Refresh</string>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QWidget" name="curveShape_TB">
@@ -624,7 +601,7 @@
        <x>0</x>
        <y>10</y>
        <width>211</width>
-       <height>511</height>
+       <height>515</height>
       </rect>
      </property>
      <property name="title">
@@ -638,7 +615,7 @@
        <rect>
         <x>7</x>
         <y>43</y>
-        <width>176</width>
+        <width>198</width>
         <height>395</height>
        </rect>
       </property>
@@ -666,9 +643,9 @@
      <widget class="QPushButton" name="crvShape_copyAsInst_BN">
       <property name="geometry">
        <rect>
-        <x>9</x>
+        <x>7</x>
         <y>468</y>
-        <width>178</width>
+        <width>198</width>
         <height>17</height>
        </rect>
       </property>
@@ -702,42 +679,12 @@
        <string>Apply Copy as Instance</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="crvShape_create_BN">
-      <property name="geometry">
-       <rect>
-        <x>190</x>
-        <y>43</y>
-        <width>16</width>
-        <height>395</height>
-       </rect>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>999</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Segoe UI</family>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="toolTip">
-       <string>Load ctrl shape</string>
-      </property>
-      <property name="text">
-       <string>+</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="crvShape_refresh_BN">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>7</x>
         <y>20</y>
-        <width>175</width>
+        <width>198</width>
         <height>16</height>
        </rect>
       </property>
@@ -762,9 +709,9 @@
      <widget class="QPushButton" name="crvShape_new_BN">
       <property name="geometry">
        <rect>
-        <x>9</x>
+        <x>7</x>
         <y>446</y>
-        <width>56</width>
+        <width>63</width>
         <height>16</height>
        </rect>
       </property>
@@ -781,9 +728,9 @@
      <widget class="QPushButton" name="crvShape_save_BN">
       <property name="geometry">
        <rect>
-        <x>131</x>
+        <x>142</x>
         <y>446</y>
-        <width>56</width>
+        <width>63</width>
         <height>16</height>
        </rect>
       </property>
@@ -817,9 +764,9 @@
      <widget class="QPushButton" name="crvShape_del_BN">
       <property name="geometry">
        <rect>
-        <x>69</x>
+        <x>75</x>
         <y>446</y>
-        <width>56</width>
+        <width>63</width>
         <height>16</height>
        </rect>
       </property>
@@ -836,9 +783,9 @@
      <widget class="QPushButton" name="crvShape_removeFrInst_BN">
       <property name="geometry">
        <rect>
-        <x>9</x>
+        <x>7</x>
         <y>490</y>
-        <width>178</width>
+        <width>198</width>
         <height>17</height>
        </rect>
       </property>
@@ -1721,7 +1668,7 @@ or groups containing them</string>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(76, 102, 135);</string>
+    <string notr="true">background-color: rgb(76, 76, 76);</string>
    </property>
    <property name="text">
     <string>*</string>

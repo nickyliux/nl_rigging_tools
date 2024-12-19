@@ -73,22 +73,24 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def connect_UI(self):
         self.UI.component_load_BN.clicked.connect(self.component_load_BN_clicked)
         self.UI.component_open_BN.clicked.connect(self.component_open_BN_clicked)
+        self.UI.component_LW.itemDoubleClicked.connect(self.component_load_BN_clicked)
+
         # self.UI.component_buildAll_BN.clicked.connect(build.buildSelOrAll)
         # self.UI.component_unbuildAll_BN.clicked.connect(build.unbuildSelOrAll)
         # self.UI.component_delete_BN.clicked.connect(build.deleteSelOrAll)
         # self.UI.component_copy_BN.clicked.connect(guide.copyGuideSel)
-
-        self.UI.preset_load_BN.clicked.connect(self.preset_load_BN_clicked)
+        # ------------------------------
         self.UI.preset_save_BN.clicked.connect(self.preset_save_BN_clicked)
         self.UI.preset_new_BN.clicked.connect(self.preset_new_BN_clicked)
         self.UI.preset_del_BN.clicked.connect(self.preset_del_BN_clicked)
         self.UI.preset_importSkel_BN.clicked.connect(self.preset_importSkel_BN_clicked)
         self.UI.preset_openSkel_BN.clicked.connect(self.preset_openSkel_BN_clicked)
         self.UI.preset_refresh_BN.clicked.connect(self.preset_refresh_BN_clicked)
-
+        self.UI.preset_LW.itemDoubleClicked.connect(self.preset_load_BN_clicked)
+        # ------------------------------
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
         self.UI.rigNode_refresh_BN.clicked.connect(self.rigNode_refresh_BN_clicked)
-
+        # ------------------------------
         self.UI.crvShape_LW.itemDoubleClicked.connect(self.crvShape_LW_dblClicked)
         self.UI.crvShape_copyAsInst_BN.clicked.connect(
             self.crvShape_copyAsInst_BN_clicked
@@ -96,16 +98,16 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.crvShape_removeFrInst_BN.clicked.connect(
             self.crvShape_removeFrInst_BN_clicked
         )
-        self.UI.crvShape_create_BN.clicked.connect(self.crvShape_create_BN_clicked)
+        # self.UI.crvShape_create_BN.clicked.connect(self.crvShape_create_BN_clicked)
         self.UI.crvShape_save_BN.clicked.connect(self.crvShape_save_BN_clicked)
         self.UI.crvShape_new_BN.clicked.connect(self.crvShape_new_BN_clicked)
         self.UI.crvShape_del_BN.clicked.connect(self.crvShape_del_BN_clicked)
         self.UI.crvShape_refresh_BN.clicked.connect(self.crvShape_refresh_BN_clicked)
-
         # self.UI.leadColor_0_BN.clicked.connect(partial(self.setLeadColor, 0))
         # self.UI.leadColor_1_BN.clicked.connect(partial(self.setLeadColor, 1))
         # self.UI.refColor_0_BN.clicked.connect(partial(self.setRefColor, 0))
         # self.UI.refColor_1_BN.clicked.connect(partial(self.setRefColor, 1))
+        # ------------------------------
 
         self.UI.joint_addForSpine_BN.clicked.connect(
             partial(self.joint_add_BN_clicked, rb=1)
@@ -162,6 +164,10 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         for sel in mc.ls(sl=1, tr=1):
             CurveNode(sel).cv_scale(2)
 
+    def component_load_BN_doubleClicked(self, item):
+        names = guide.COMPONENT_DICT[item.text()]
+        guide.loadGuide(names)
+
     def component_load_BN_clicked(self):
         items = self.UI.component_LW.selectedItems()
         if items:
@@ -169,10 +175,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 names = guide.COMPONENT_DICT[item.text()]
                 guide.loadGuide(names)
             self.rigNode_refresh_BN_clicked()
-            mc.select(cl=1)
-            mc.viewFit(all=1)
-            mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
-            # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
+            self.setupViewport()
 
     def component_open_BN_clicked(self):
         items = self.UI.component_LW.selectedItems()
@@ -186,28 +189,21 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 else:
                     logging.info(f"missing file: {tgtFile}")
             mc.refresh(su=0)
-            mc.viewFit(all=1)
-            mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
-            # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
+            self.setupViewport()
             self.rigNode_refresh_BN_clicked()
 
-    def preset_load_BN_clicked(self):
-        items = self.UI.preset_LW.selectedItems()
-        if items:
-            itemText = items[0].text()
-            f = f"{PATH_PRESET}\\{itemText}.json"
-            if os.path.isfile(f):
-                mc.refresh(su=1)
-                logging.info(f'load preset "{itemText}"')
-                guide.loadPreset(f)
-                mc.select(cl=1)
-                mc.viewFit(all=1)
-                mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
-                # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
-                mc.refresh(su=0)
-                self.rigNode_refresh_BN_clicked()
-            else:
-                logging.info(f"missing file: {f}")
+    def preset_load_BN_clicked(self, item):
+        itemText = item.text()
+        f = f"{PATH_PRESET}\\{itemText}.json"
+        if os.path.isfile(f):
+            mc.refresh(su=1)
+            logging.info(f'load preset "{itemText}"')
+            guide.loadPreset(f)
+            mc.refresh(su=0)
+            self.setupViewport()
+            self.rigNode_refresh_BN_clicked()
+        else:
+            logging.info(f"missing file: {f}")
 
     def preset_save_BN_clicked(self):
         items = self.UI.preset_LW.selectedItems()
@@ -254,9 +250,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
             if os.path.isfile(skelFile):
                 file.importFile(skelFile)
-                mc.viewFit(all=1)
-                # for p in mc.getPanel(type="modelPanel"):
-                #     mc.modelEditor(p, e=1, jx=1)  # wos=1, jx=1,xray=1
+                self.setupViewport()
             else:
                 logging.info(f"missing file: {skelFile}")
 
@@ -341,12 +335,12 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 file.deleteFile(tgtFile)
                 self.crvShape_refresh_BN_clicked()
 
-    def crvShape_create_BN_clicked(self):
-        """Create new shape"""
-        items = self.UI.crvShape_LW.selectedItems()
-        if items:
-            itemText = items[0].text()
-            return CurveNode(itemText, shape=itemText)
+    # def crvShape_create_BN_clicked(self):
+    #     """Create new shape"""
+    #     items = self.UI.crvShape_LW.selectedItems()
+    #     if items:
+    #         itemText = items[0].text()
+    #         return CurveNode(itemText, shape=itemText)
 
     def crvShape_removeFrInst_BN_clicked(self):
         sel = mc.ls(sl=1, tr=1)
@@ -357,8 +351,10 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def crvShape_copyAsInst_BN_clicked(self):
         """Copy item shape as instance to selected"""
         sel = mc.ls(sl=1, tr=1)
-        shape = self.crvShape_create_BN_clicked()
-        if shape and sel:
+        items = self.UI.crvShape_LW.selectedItems()
+        if sel and items:
+            itemText = items[0].text()
+            shape = CurveNode(itemText, shape=itemText)
             shape.copyShapeAsInst(sel, keepSrc=0)
 
     def crvShape_refresh_BN_clicked(self):
@@ -496,6 +492,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             shader_file = PATH_LIGHT + "/bone_SHD.ma"
             if os.path.isfile(shader_file):
                 file.importFile(shader_file)
+
+    def setupViewport(self):
+        mc.select(cl=1)
+        mc.viewFit(all=1)
+        mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
+        # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
+        # for p in mc.getPanel(type="modelPanel"):
+        #     mc.modelEditor(p, e=1, jx=1)  # wos=1, jx=1,xray=1
 
     # def setLeadColor(self, id=0):
     #     """Change wireframe color"""
