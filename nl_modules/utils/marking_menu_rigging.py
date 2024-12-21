@@ -52,7 +52,7 @@ class MarkingMenuRigging:
         mc.menuItem(p=offset_MI, l="Add Offset", c=add_ofs)
         mc.menuItem(p=offset_MI, l="Add Offset ( below )", c=add_ofs_below)
 
-        channel_MI = mc.menuItem(p=menu, l="Channel", rp="E", subMenu=1)
+        channel_MI = mc.menuItem(p=menu, l="Channel", rp="SE", subMenu=1)
         mc.menuItem(p=channel_MI, l="LockH All", c=partial(lockAttr, "all", 1))
         mc.menuItem(p=channel_MI, l="LockH Off", c=partial(lockAttr, "all", 0), ob=1)
         mc.menuItem(p=channel_MI, l="--------------------", en=0)
@@ -83,12 +83,12 @@ class MarkingMenuRigging:
         mc.menuItem(p=cst_MI, l="Orient mo", c=partial(cst, "ori", 1), ob=1)
         mc.menuItem(p=cst_MI, l="Scale", c=partial(cst, "sca", 0))
         mc.menuItem(p=cst_MI, l="Scale mo", c=partial(cst, "sca", 0), ob=1)
-        mc.menuItem(p=cst_MI, l="PoleVector", c=partial(cst, "pv", 0))
+        mc.menuItem(p=cst_MI, l="PoleVector", c=partial(cst, "pvt", 0))
         mc.menuItem(p=cst_MI, l="Geo", c=partial(cst, "geo", 0))
         mc.menuItem(p=cst_MI, l="--------------------", en=0)
         mc.menuItem(p=cst_MI, l="Delete All", c=del_cst_mm)
 
-        joint_MI = mc.menuItem(p=menu, l="Joint / IK", rp="SE", subMenu=1)
+        joint_MI = mc.menuItem(p=menu, l="Joint / IK", rp="E", subMenu=1)
         mc.menuItem(p=joint_MI, l="SC IK", c=partial(add_IK, 0))
         mc.menuItem(p=joint_MI, l="RP IK", c=partial(add_IK, 1))
         mc.menuItem(p=joint_MI, l="Spline IK", c=partial(add_IK, 2))
@@ -238,7 +238,9 @@ def cst(*args):
         skipT = ["x", "y", "z"] if args[0] == "parR" else []
         cstCmd = common.CST_DICT[args[0]]
 
-        if args[0].startswith("par"):
+        if args[0] == "pvt":
+            cstCmd(sel)
+        elif args[0].startswith("par"):
             cstCmd(sel, mo=args[1], st=skipT, sr=skipR)
         else:
             cstCmd(sel, mo=args[1])

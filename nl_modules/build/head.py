@@ -51,9 +51,7 @@ class Head(RigModule):
         rSz = self.rigSize
         CY = Color.YELLOW
         CR = Color.RED
-        self.head_fkc = CurveNode(
-            "head", shape="circle_round", pf=rID, sf="_fkc", scale=rSz * 5, color=CY
-        )
+        self.head_fkc = CurveNode("head", pf=rID, sf="_fkc", scale=rSz * 5, color=CY)
         self.jaw_fkc = CurveNode("jaw", pf=rID, sf="_fkc", up="z", scale=rSz, color=CR)
 
         self.rigNode.setMsg(
