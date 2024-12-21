@@ -74,8 +74,6 @@ def buildTgt(rigN):
 def buildSelOrAll(*arg):
     rigNodes = getRigNodesSelOrAll()
     if rigNodes:
-        for p in mc.getPanel(type="modelPanel"):
-            mc.modelEditor(p, e=1, wos=1)  # , jx=1)
         mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
         # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
         for rigN in rigNodes:
@@ -85,6 +83,8 @@ def buildSelOrAll(*arg):
         mc.select(cl=1)
         # for p in mc.getPanel(type="modelPanel"):
         #     mc.modelEditor(p, e=1, xray=1, jx=1, wos=1)  # wos=1, jx=1,xray=1
+        # for p in mc.getPanel(type="modelPanel"):
+        #     mc.modelEditor(p, e=1, wos=1)  # , jx=1)
 
 
 def unbuildTgt(rigN):
@@ -340,9 +340,6 @@ def getRigNode(obj):
 # startTime = time.time()
 # endTime = time.time()
 # print(f"--------- Build Time: {endTime - startTime:.2}s")
-
-# for p in mc.getPanel(type="modelPanel"):
-#     mc.modelEditor(p, e=1, activeView=1, wos=1)
 
 # def disconnectAnchors():
 #     """Disconnect all Female anchors"""
