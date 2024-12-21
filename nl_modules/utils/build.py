@@ -10,6 +10,7 @@ from nl_modules.build.head import Head
 from nl_modules.build.neckSrf import NeckSrf
 from nl_modules.build.spineSrf import SpineSrf
 from nl_modules.build.quadLeg import QuadLeg
+from nl_modules.build.quadDLeg import QuadDLeg
 from nl_modules.build.quadFLeg import QuadFLeg
 from nl_modules.build.quadNeckSrf import QuadNeckSrf
 from nl_modules.build.quadSpineSrf import QuadSpineSrf

@@ -164,7 +164,7 @@
       </item>
       <item>
        <property name="text">
-        <string>leg / planti-grade</string>
+        <string>leg</string>
        </property>
       </item>
       <item>
@@ -187,7 +187,12 @@
       </item>
       <item>
        <property name="text">
-        <string>leg / digiti unguli-grade</string>
+        <string>leg / digitigrade</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>leg / unguligrade</string>
        </property>
       </item>
       <item>

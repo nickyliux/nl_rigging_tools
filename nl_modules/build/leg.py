@@ -71,9 +71,6 @@ class Leg(RigModule):
 
     def genSk(self):
         self.genSk_module(["hip", "upr", "lwr", "palm", "ball", "toe"])
-        # for i, name in enumerate(jnt_names):
-        #     if name == "lwr":
-        #         jnt_list[i].a.preferredAngleY.set(-90)
 
         if self.TOE_BONES:
             self.toesRootJ = self.genSkFrNames(["toesRoot"], pf=self.rigID)[0]
@@ -130,22 +127,20 @@ class Leg(RigModule):
         self.build_module()
         self.joints = self.rootJ.allChildrenJt2
         self.hip, self.upr, self.lwr, self.palm, self.ball, self.toe = self.joints
-        # self.x_dir = 1 if self.joints[1].a.tx.get() > 0 else -1
         self.ctl_setup()
-        # self.palmScale = self.setting.a.add("palmScale", min=0, dv=1)
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
+        self.ball_ctl_setup()
 
         if self.KNEE_FIX:
             self.boneFix_setup(self.lwr, self.palm)
-
-        self.ball_ctl_setup()
-
         if self.RBN_BONES:
             self.ribbon_setup()
         if self.PATELLA_BONE:
             self.patella_setup(self.PRX_GRP)
+        if self.TWIST_BONES:
+            self.twistBones_setup()
         if self.TOE_BONES:
             self.toesRootJ | self.palm
             self.toesJntList = []
@@ -153,8 +148,7 @@ class Leg(RigModule):
                 self.toesJntList.append([fgr for fgr in rJ.allChildrenJt2])
                 rJ.a.segmentScaleCompensate.set(0)
             self.build_toes()
-        if self.TWIST_BONES:
-            self.twistBones_setup()
+
         self.post_setup()
 
     def build_fk(self):
@@ -169,28 +163,23 @@ class Leg(RigModule):
         ]
         self.fkGivenCtl2(self.joints_fk, self.fkCtl, p=self.FK_PART)
         self.isolateAlign(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
-        # self.followAlign(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
-        # Scale
-        # proxyScale = self.palm_fkc.a.add("palmScale", proxy=self.palmScale)
-        # proxyScale >> self.palm_fkc.a.s
-        # for fkJ in self.joints_fk[3:]:
-        #     proxyScale >> fkJ.a.s
 
     def build_ik(self):
-        logging.info(self.rigID)
+        rID = self.rigID
+        logging.info(rID)
         mG = self.master_guide
-        pvc_guide = DagNode(self.rigID + "_pvc_guide")
-        inPos_guide = DagNode(self.rigID + "_palm_inPos_guide")
-        outPos_guide = DagNode(self.rigID + "_palm_outPos_guide")
-        heelPos_guide = DagNode(self.rigID + "_palm_heelPos_guide")
-        toePos_guide = DagNode(self.rigID + "_palm_toePos_guide")
+        pvc_guide = DagNode(rID + "_pvc_guide")
+        inPos_guide = DagNode(rID + "_palm_inPos_guide")
+        outPos_guide = DagNode(rID + "_palm_outPos_guide")
+        heelPos_guide = DagNode(rID + "_palm_heelPos_guide")
+        toePos_guide = DagNode(rID + "_palm_toePos_guide")
         self.ikc.alignTo(mG)
         self.pvc.alignTo(pvc_guide)
         self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_PART)
 
         ikH1 = IkNode(
             "1",
-            pf=self.rigID,
+            pf=rID,
             sj=self.upr,
             ee=self.palm,
             jsf="_ik",
@@ -202,16 +191,16 @@ class Leg(RigModule):
             scaleFix=self.masterC.a.globalScale,
             RIG_DATA=self.RIG_DATA,
         )
-        ikH2 = IkNode("2", pf=self.rigID, sj=self.palm, ee=self.ball, jsf="_ik")
-        ikH3 = IkNode("3", pf=self.rigID, sj=self.ball, ee=self.toe, jsf="_ik")
-        self.ikCstG = GroupNode("ikCstG", pf=self.rigID, snap=self.palm, alignR=mG)
-        ballRollG = GroupNode("ballRollG", pf=self.rigID, snap=self.ball, alignR=mG)
-        toeWiggleG = GroupNode("toeWiggleG", pf=self.rigID, align=self.ball)
-        footRollG = GroupNode("footRollG", pf=self.rigID, snap=toePos_guide, alignR=mG)
-        toeRollG = GroupNode("toeRollG", pf=self.rigID, snap=toePos_guide, alignR=mG)
-        inRollG = GroupNode("inRollG", pf=self.rigID, snap=inPos_guide, alignR=mG)
-        outRollG = GroupNode("outRollG", pf=self.rigID, snap=outPos_guide, alignR=mG)
-        heelRollG = GroupNode("heelRollG", pf=self.rigID, snap=heelPos_guide, alignR=mG)
+        ikH2 = IkNode("2", pf=rID, sj=self.palm, ee=self.ball, jsf="_ik")
+        ikH3 = IkNode("3", pf=rID, sj=self.ball, ee=self.toe, jsf="_ik")
+        self.ikCstG = GroupNode("ikCstG", pf=rID, snap=self.palm, alignR=mG)
+        ballRollG = GroupNode("ballRollG", pf=rID, snap=self.ball, alignR=mG)
+        toeWiggleG = GroupNode("toeWiggleG", pf=rID, align=self.ball)
+        footRollG = GroupNode("footRollG", pf=rID, snap=toePos_guide, alignR=mG)
+        toeRollG = GroupNode("toeRollG", pf=rID, snap=toePos_guide, alignR=mG)
+        inRollG = GroupNode("inRollG", pf=rID, snap=inPos_guide, alignR=mG)
+        outRollG = GroupNode("outRollG", pf=rID, snap=outPos_guide, alignR=mG)
+        heelRollG = GroupNode("heelRollG", pf=rID, snap=heelPos_guide, alignR=mG)
 
         if self.x_dir == 1:
             for g in (
@@ -230,7 +219,6 @@ class Leg(RigModule):
         (ikH2, ikH3) | toeWiggleG | inRollG
 
         self.ikc_gimbal = CurveNode(self.ikc).addGimbal(attrTgt=self.setting)
-
         self.ikc.snapTo(self.palm)
         self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
 
@@ -261,7 +249,7 @@ class Leg(RigModule):
         self.pvc_line = CurveNode.buildLineLinked(
             self.joints_ik[2],
             self.pvc,
-            pf=self.rigID,
+            pf=rID,
             inheritXf=0,
             dspType=2,
             p=self.IK_PART,
@@ -270,23 +258,9 @@ class Leg(RigModule):
         self.pvc.addOffsetGrp()
 
         ikH1.stretchyIk(pvPin=1, soft=1)
-        # return
         self.all_ikH = {"main": ikH1, "ball": ikH2, "toe": ikH3}
         self.toeWiggleG = toeWiggleG
         self.hip_fkc.cstPar(self.joints_ik[0], mo=1)
-
-        # Scale
-        # self.setting.a.s >> self.ikc.a.s
-        # self.setting.a.sy >> self.palmScale
-        # self.setting.a.sy >> self.setting.a.sx
-        # self.setting.a.sy >> self.setting.a.sz
-        # for j in self.joints_ik[3:]:
-        #     self.palmScale >> j.a.s
-        # Movable pivot setup
-        # common.add_movable_pivot(toeRollG)
-        # common.add_movable_pivot(inRollG)
-        # common.add_movable_pivot(outRollG)
-        # common.add_movable_pivot(heelRollG)
 
         self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal]
         self.ikH1 = ikH1
@@ -309,31 +283,6 @@ class Leg(RigModule):
         CurveNode(ofs).cv_rotate(0, 90, 0)
         self.subCtls.append(ofs)
 
-    # def add_pvc_JC(self):
-    #     """
-    #     TWO-J CHAIN FOR pvcRota
-    #     """
-    #     s = self.rigSize
-    #
-    #     self.pvcRota.addOffsetGrp()
-    #     ofs = [s * self.x_dir * 2, 0, 0]
-    #
-    #     twoJ = JointNode.makeTwoJnts(
-    #         "twoJ",
-    #         pf=self.rigID,
-    #         r=s / 2,
-    #         snap=self.joints_ik[1],
-    #         ofs=ofs,
-    #         p=self.joints_ik[0],
-    #     )
-    #     ikH_two = IkNode(
-    #         "two", pf=twoJ[0].name, sj=twoJ[0], ee=twoJ[1], p=self.RIG_DATA
-    #     )
-    #
-    #     self.ikc.cstPoi(ikH_two)
-    #     twoJ[0].cstPar(self.pvcRota.offset, mo=1)
-    #     ikH_two.hide()
-
     def build_toes(self):
         """ball fkc
         splay loc 1
@@ -344,54 +293,42 @@ class Leg(RigModule):
                 toe ikh 2
         ...
         """
-        logging.info(self.rigID)
+        rID = self.rigID
+        rSz = self.rigSize
+
+        logging.info(rID)
         self.toesCtlsList = []
         toeLocList = []
+        fix = self.masterC.a.globalScale
+        data = self.RIG_DATA
+        dir = self.x_dir
+        scale = dir * rSz / 8
 
         for toes in self.toesJntList:
+            t0 = toes[0]
+            t1 = toes[1]
+            t2 = toes[2]
             toe_ikH1 = IkNode(
-                toes[0],
-                sj=toes[0],
-                ee=toes[1],
-                sol=0,
-                scaleFix=self.masterC.a.globalScale,
-                RIG_DATA=self.RIG_DATA,
-                p=self.toesRootJ,
+                t0, sj=t0, ee=t1, sol=0, scaleFix=fix, RIG_DATA=data, p=self.toesRootJ
             )
             toe_loc = LocNode(
-                self.rigID + "_toe_loc_#",
-                align=toes[1],
-                addOfs=1,
-                p=self.ball_fkc,
-                color=Color.YELLOW,
-                size=5,
+                rID + "_toe_loc_#", align=t1, addOfs=1, p=self.ball_fkc, size=5
             )
-            # toes[1].cstPoi(toe_loc.offset)
             toe_ikH2 = IkNode(
-                toes[1],
-                sj=toes[1],
-                ee=toes[2],
-                sol=0,
-                scaleFix=self.masterC.a.globalScale,
-                RIG_DATA=self.RIG_DATA,
-                # p=self.ball_fkc,
-                p=toe_loc,
+                t1, sj=t1, ee=t2, sol=0, scaleFix=fix, RIG_DATA=data, p=toe_loc
             )
-            mc.hide(toe_ikH1, toe_ikH2)
 
             ctlList = []
             for toe in toes[2:-1]:
-                c = CurveNode(toe + "_ctl", align=toe, up="x", scale=self.rigSize / 10)
+                c = CurveNode(
+                    toe + "_ctl", shape="stickC", align=toe, up="-z", scale=scale
+                )
                 ctlList.append(c)
 
             self.fkGivenCtl(toes[2:-1], ctlList, p=self.CTL_DATA, ori=1)
-
-            # driverList = [self.palm, self.ball]
-            # self.fkGivenCtl_dbl(
-            #     toes, ctlList, driverList, count=2, p=self.CTL_DATA
-            # )
             self.toesCtlsList.append(ctlList)
             toeLocList.append(toe_loc)
+            mc.hide(toe_ikH1, toe_ikH2)
 
         # splay = self.ball_fkc.a.add("splay", min=-5, max=5)
         # toeCount = len(self.toesJntList)
@@ -405,40 +342,30 @@ class Leg(RigModule):
         mc.hide(toeLocList)
 
     def twistBones_setup(self):
+        rID = self.rigID
         jnt_names = ["radius", "radiusEnd"]
-        radius_JC = self.genSkFrNames(jnt_names, pf=self.rigID)
+        radius_JC = self.genSkFrNames(jnt_names, pf=rID)
         jnt_names = ["ulna", "ulnaEnd"]
-        ulna_JC = self.genSkFrNames(jnt_names, pf=self.rigID)
+        ulna_JC = self.genSkFrNames(jnt_names, pf=rID)
 
-        if self.KNEE_FIX:
-            (radius_JC[0], ulna_JC[0]) | self.boneFix
-        else:
-            (radius_JC[0], ulna_JC[0]) | self.lwr
+        parent = self.boneFix if self.KNEE_FIX else self.lwr
+        (radius_JC[0], ulna_JC[0]) | parent
 
         radius_loc = LocNode(
             "radius_loc", pf=self.rigID, align=radius_JC[1], p=self.palm
         )
-        ulna_loc = LocNode("ulna_loc", pf=self.rigID, align=ulna_JC[1], p=self.palm)
+        ulna_loc = LocNode("ulna_loc", pf=rID, align=ulna_JC[1], p=self.palm)
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
+        uType = "objectrotation"
+        aim = (self.x_dir, 0, 0)
+        z = (0, 0, 1)
 
         radius_loc.cstAim(
-            radius_JC[0],
-            worldUpType="objectrotation",
-            # worldUpObject=self.palm,
-            worldUpObject=self.lwr,
-            aim=(self.x_dir, 0, 0),
-            u=(0, 0, 1),
-            wu=(0, 0, 1),
+            radius_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
         ulna_loc.cstAim(
-            ulna_JC[0],
-            worldUpType="objectrotation",
-            worldUpObject=self.lwr,
-            # worldUpObject=self.palm,
-            aim=(self.x_dir, 0, 0),
-            u=(0, 0, 1),
-            wu=(0, 0, 1),
+            ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
         self.joints.extend([radius_JC[0], ulna_JC[0]])
 
@@ -485,10 +412,6 @@ class Leg(RigModule):
             "palmScaleG", pf=self.rigID, snap=self.palm, p=self.FK_PART
         )
         ball_fkc_ofs | palmScaleG
-        # self.palmScale >> palmScaleG.a.s
-        # for jnt in self.joints[3:]:
-        #     self.palmScale >> jnt.a.s
-        # Align ball fkj to    FK: ball fkc    IK: palm fkj
         ball_fkj.removeCstNodes()
         self.spaceAlign(
             ball_fkj, spaces=[self.ball_fkc, palm_fkj], w=fkIk, cstType="ori", mo=1
@@ -502,25 +425,22 @@ class Leg(RigModule):
         lw_bend     --
                     foot
         """
-        logging.info(self.rigID)
+        rID = self.rigID
         rSz = self.rigSize
+
+        logging.info(rID)
+        num = self.RBN_JNT_NUM
+        scale = self.masterC.a.globalScale
+        data = self.RIG_DATA
+        g = self.PRX_GRP
+
+        pf = rID + "_up_"
         ribbonUp = RibbonNode(
-            self.upr,
-            pf=self.rigID + "_up_",
-            rbJNum=self.RBN_JNT_NUM,
-            volMode=1,
-            scaleFix=self.masterC.a.globalScale,
-            p=self.RIG_DATA,
-            proxyP=self.PRX_GRP,
+            self.upr, pf=pf, rbJNum=num, volMode=1, scaleFix=scale, p=data, proxyP=g
         )
+        pf = rID + "_lw_"
         ribbonLw = RibbonNode(
-            self.lwr,
-            pf=self.rigID + "_lw_",
-            rbJNum=self.RBN_JNT_NUM,
-            volMode=2,
-            scaleFix=self.masterC.a.globalScale,
-            p=self.RIG_DATA,
-            proxyP=self.PRX_GRP,
+            self.lwr, pf=pf, rbJNum=num, volMode=2, scaleFix=scale, p=data, proxyP=g
         )
         # Upper Ribbon
         # --------------------------------
@@ -535,11 +455,10 @@ class Leg(RigModule):
         # Bend Ctl Setup
         upLoc = ribbonUp.mid_loc
         lwLoc = ribbonLw.mid_loc
-        grp = self.CTL_DATA
-        up_bend = CurveNode("up_bend", pf=self.rigID, align=upLoc, addOfs=1, p=grp)
-        lw_bend = CurveNode("lw_bend", pf=self.rigID, align=lwLoc, addOfs=1, p=grp)
-        md_bend = CurveNode("md_bend", pf=self.rigID, align=self.lwr, addOfs=1, p=grp)
-        # md_bend = CurveNode("md_bend", pf=self.rigID, align=self.lwr, addOfs=1, p=grp)
+        cData = self.CTL_DATA
+        up_bend = CurveNode("up_bend", pf=rID, align=upLoc, addOfs=1, p=cData)
+        lw_bend = CurveNode("lw_bend", pf=rID, align=lwLoc, addOfs=1, p=cData)
+        md_bend = CurveNode("md_bend", pf=rID, align=self.lwr, addOfs=1, p=cData)
 
         self.all_bend = [up_bend, lw_bend, md_bend]
         for b in self.all_bend:
@@ -553,7 +472,6 @@ class Leg(RigModule):
         self.lwr.cstPar(md_bend.offset, mo=1)
         md_bend.cstParSca(ribbonUp.end_loc, mo=1)
 
-        # md_bend.cstParSca(ribbonLw.stt_loc, mo=1)
         stt_ofs = ribbonLw.stt_loc.addOffsetGrp(count=2)
         md_bend.cstParSca(stt_ofs[0], mo=1)
 
@@ -591,14 +509,14 @@ class Leg(RigModule):
                 proxyList.remove(self.boneFix)
 
         rSz = self.rigSize
-        xDr = self.x_dir
+        aim = (self.x_dir, 0, 0)
         for j in proxyList:
             JointNode(j).addProxyMesh(
-                size=rSz * 6, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
+                size=rSz * 6, aimDir=aim, skipEnd=1, p=self.PRX_GRP
             )
         for j in proxyToeList:
             JointNode(j).addProxyMesh(
-                size=rSz * 2, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
+                size=rSz * 2, aimDir=aim, skipEnd=1, p=self.PRX_GRP
             )
 
         self.addBindJntSet(proxyList)
@@ -620,6 +538,7 @@ class Leg(RigModule):
 
         subCtls = self.setting.a.add("subCtls", min=0, max=1, dv=1, k=0)
         [subCtls >> self.ikCstG.children[0].a.v]
+
         mc.hide(self.joints_fk, self.joints_ik)
         [ikh.hide() for ikh in self.all_ikH.values()]
 
@@ -672,3 +591,62 @@ class Leg(RigModule):
 if __name__ == "__main__":
     for n in mc.ls("*RGN", type="script"):
         Leg(DagNode(n)).build()
+
+        # self.followAlign(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
+        # Scale
+        # proxyScale = self.palm_fkc.a.add("palmScale", proxy=self.palmScale)
+        # proxyScale >> self.palm_fkc.a.s
+        # for fkJ in self.joints_fk[3:]:
+        #     proxyScale >> fkJ.a.s
+
+        # for i, name in enumerate(jnt_names):
+        #     if name == "lwr":
+        #         jnt_list[i].a.preferredAngleY.set(-90)
+
+        # Scale
+        # self.setting.a.s >> self.ikc.a.s
+        # self.setting.a.sy >> self.palmScale
+        # self.setting.a.sy >> self.setting.a.sx
+        # self.setting.a.sy >> self.setting.a.sz
+        # for j in self.joints_ik[3:]:
+        #     self.palmScale >> j.a.s
+        # Movable pivot setup
+        # common.add_movable_pivot(toeRollG)
+        # common.add_movable_pivot(inRollG)
+        # common.add_movable_pivot(outRollG)
+        # common.add_movable_pivot(heelRollG)
+
+    # def add_pvc_JC(self):
+    #     """
+    #     TWO-J CHAIN FOR pvcRota
+    #     """
+    #     s = self.rigSize
+    #
+    #     self.pvcRota.addOffsetGrp()
+    #     ofs = [s * self.x_dir * 2, 0, 0]
+    #
+    #     twoJ = JointNode.makeTwoJnts(
+    #         "twoJ",
+    #         pf=self.rigID,
+    #         r=s / 2,
+    #         snap=self.joints_ik[1],
+    #         ofs=ofs,
+    #         p=self.joints_ik[0],
+    #     )
+    #     ikH_two = IkNode(
+    #         "two", pf=twoJ[0].name, sj=twoJ[0], ee=twoJ[1], p=self.RIG_DATA
+    #     )
+    #
+    #     self.ikc.cstPoi(ikH_two)
+    #     twoJ[0].cstPar(self.pvcRota.offset, mo=1)
+    #     ikH_two.hide()
+
+    # self.palmScale >> palmScaleG.a.s
+    # for jnt in self.joints[3:]:
+    #     self.palmScale >> jnt.a.s
+    # Align ball fkj to    FK: ball fkc    IK: palm fkj
+
+    # driverList = [self.palm, self.ball]
+    # self.fkGivenCtl_dbl(
+    #     toes, ctlList, driverList, count=2, p=self.CTL_DATA
+    # )

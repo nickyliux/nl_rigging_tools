@@ -19,8 +19,9 @@ COMPONENT_DICT = {
     "spine / quad": ["qSpineSrf"],
     "arm": ["lfArm", "rtArm"],
     "hand": ["lfHand", "rtHand"],
-    "leg / planti-grade": ["lfLeg", "rtLeg"],
-    "leg / digiti unguli-grade": ["lfQHLeg", "rtQHLeg"],
+    "leg": ["lfLeg", "rtLeg"],
+    "leg / digitigrade": ["lfQDLeg", "rtQDLeg"],
+    "leg / unguligrade": ["lfQHLeg", "rtQHLeg"],
     "tail": ["tailSrf"],
     "wing": [""],
 }
@@ -46,7 +47,7 @@ def loadGuide(names):
 
 
 def copyGuideSel():
-    """Copy guide settings from 1st to 2nd selected """
+    """Copy guide settings from 1st to 2nd selected"""
     from nl_modules.utils import build
 
     selList = mc.ls(sl=1)
@@ -82,17 +83,13 @@ def getOppositeCtl(tgtN, pfL="lf", pfR="rt", pfB4Pf=1):
     """Return opposite ctl
     e.g.
         getOppositeCtl(lf_leg0_ikc)              # rt_leg0_ikc
-        getOppositeCtl(head0_lf_eye, pfB4Pf=1)   # head0_rt_eye    
+        getOppositeCtl(head0_lf_eye, pfB4Pf=1)   # head0_rt_eye
     """
     patternL = (
-        re.compile(rf"^(\w*){pfL}(\w+)$")
-        if pfB4Pf
-        else re.compile(rf"^{pfL}(\w+)$")
+        re.compile(rf"^(\w*){pfL}(\w+)$") if pfB4Pf else re.compile(rf"^{pfL}(\w+)$")
     )
     patternR = (
-        re.compile(rf"^(\w*){pfR}(\w+)$")
-        if pfB4Pf
-        else re.compile(rf"^{pfR}(\w+)$")
+        re.compile(rf"^(\w*){pfR}(\w+)$") if pfB4Pf else re.compile(rf"^{pfR}(\w+)$")
     )
     matchL = re.match(patternL, tgtN.name)
     matchR = re.match(patternR, tgtN.name)
@@ -153,7 +150,7 @@ def mirrorAttr(tgtList, wsMirrorAxis=0):
         if oppN:
             copyAttr(tgt, oppN, wsMirrorAxis=wsMirrorAxis, mirror=1)
         else:
-            print(f'opposite not found for {tgt}')
+            print(f"opposite not found for {tgt}")
 
 
 def mirrorPose(*arg):
@@ -183,7 +180,7 @@ def loadPreset(path, removeUnused=1):
     for rigID in idDict:
         mG = DagNode(rigID + "_master_guide")
         if mG.exists():
-            logging.info(f'master_guide for {rigID} already exists!')
+            logging.info(f"master_guide for {rigID} already exists!")
         else:
             fName = re.match(pattern, str(rigID))  # e.g. lfLeg0 => 'lfLeg'
             loadGuide([fName.group(1)])
@@ -194,9 +191,9 @@ def loadPreset(path, removeUnused=1):
             if guideN.exists():
                 for attr in attrs:
                     if guideN.a[attr].exists():
-                        if str(attr) in 'trs':
+                        if str(attr) in "trs":
                             v = attrs[attr]
-                            for i, axis in enumerate('xyz'):
+                            for i, axis in enumerate("xyz"):
                                 if guideN.a[attr + axis].settable():
                                     guideN.a[attr + axis].set(v[i])
                         else:
@@ -218,7 +215,7 @@ def genAttrDict(obj):
         "r": obj.a.r.get(),
         "s": obj.a.s.get(),
     }
-    for ua in (obj.a.list(ud=1, u=1) or []):
+    for ua in obj.a.list(ud=1, u=1) or []:
         uaName = ua.attr
         attrDict[uaName] = obj.a[uaName].get()
     return attrDict
@@ -237,11 +234,13 @@ def savePreset(fName):
     for rN in rigNodes:
         rN = DagNode(rN)
         rigID = rN.a.rigID.get()
-        objsToSave = [DagNode(obj) for obj in mc.ls(rigID + "_*_guide", type="transform")]
+        objsToSave = [
+            DagNode(obj) for obj in mc.ls(rigID + "_*_guide", type="transform")
+        ]
         objsToSave.append(rN.a.moduleG.inConnNode)
         if i == 0:
-            objsToSave.append(DagNode('master2_ctl'))
-            objsToSave.append(DagNode('vis_ctl'))
+            objsToSave.append(DagNode("master2_ctl"))
+            objsToSave.append(DagNode("vis_ctl"))
             i = 1
 
         guideDict = {}

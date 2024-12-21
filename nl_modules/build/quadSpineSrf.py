@@ -132,7 +132,7 @@ class QuadSpineSrf(rig_module.RigModule):
         self.rootJ = self.fkJnt[0]
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
-    def makeStIk(self, name, sj=None, ej=None, crv=None, axis="tz", axisDir=1):
+    def makeStretchyIk(self, name, sj=None, ej=None, crv=None, axis="tz", axisDir=1):
         """Build stretcy IK for given joints and curve"""
         ikH = IkNode(
             name,
@@ -159,19 +159,19 @@ class QuadSpineSrf(rig_module.RigModule):
         ikH_1, ikH_A, ikH_B = None, None, None
 
         if sliding == 0:
-            ikH_1 = self.makeStIk(
+            ikH_1 = self.makeStretchyIk(
                 "sp", sj=self.fkJnt[0], ej=self.fkJnt[-1], crv=self.spCrv
             )
         else:
             # joint chain A
             self.fkJ_A = self.makeJC("fkJ_A", addEndJ=1)
-            ikH_A = self.makeStIk(
+            ikH_A = self.makeStretchyIk(
                 "spA", sj=self.fkJ_A[0], ej=self.fkJ_A[-2], crv=self.spCrv
             )
             # joint chain B
             self.fkJ_B = self.makeJC("fkJ_B", addEndJ=1, alongCrv=0)
             self.spCrvR = self.spCrv.duplicate(n=rID + "_spCrvR_#").reverse()
-            ikH_B = self.makeStIk(
+            ikH_B = self.makeStretchyIk(
                 "spB", sj=self.fkJ_B[-1], ej=self.fkJ_B[1], crv=self.spCrvR, axisDir=-1
             )
 

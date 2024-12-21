@@ -130,6 +130,7 @@ from nl_modules.build import (
     leg,
     quadSpineSrf,
     quadLeg,
+    quadDLeg,
     quadFLeg,
     quadNeckSrf,
     tailSrf,
@@ -148,6 +149,7 @@ reload(arm)
 reload(hand)
 reload(leg)
 reload(quadLeg)
+reload(quadDLeg)
 reload(quadFLeg)
 reload(quadNeckSrf)
 reload(quadSpineSrf)
