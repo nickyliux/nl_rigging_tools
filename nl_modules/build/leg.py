@@ -69,6 +69,8 @@ class Leg(RigModule):
         self.toesRootJ = rigNode.a.toesRootJ.inConnNode
         self.ikH1 = None
 
+        self.ballG_ctl = None
+
     def genSk(self):
         self.genSk_module(["hip", "upr", "lwr", "palm", "ball", "toe"])
 
@@ -215,44 +217,23 @@ class Leg(RigModule):
             ):
                 g.a.rx.set2(180, add=1)
 
-        ikH1 | ballRollG | inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG
+        ikH1 | ballRollG | inRollG
         (ikH2, ikH3) | toeWiggleG | inRollG
+        inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG
 
         self.ikc_gimbal = CurveNode(self.ikc).addGimbal(attrTgt=self.setting)
         self.ikc.snapTo(self.palm)
+        self.ikc.cv_drop()
+        self.ikc_gimbal.cv_drop()
         self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
 
-        footRoll = self.ikc.a.add("footRoll")
-        footBreak = self.ikc.a.add("footBreak", min=0, dv=30, k=0)
+        self.footRollLogic(heelRollG, ballRollG, footRollG, toeRollG)
+        self.footBankLogic(inRollG, outRollG)
 
-        ut.min_(0, footRoll) >> heelRollG.a.rx
-        (
-            ut.clp_(
-                footRoll,
-                min=0,
-                max=footBreak,
-            )
-            >> ballRollG.a.rx
-        )
-        ut.max_(0, (footRoll - footBreak)) >> footRollG.a.rx
-
-        bank = self.ikc.a.add("footBank")
-        (bank < 0).setCdn(ifTrue=bank, ifFalse=0) >> inRollG.a.rz
-        (bank > 0).setCdn(ifTrue=bank, ifFalse=0) >> outRollG.a.rz
-
-        self.ikc.a.add("heelTwist") >> heelRollG.a.ry
-        self.ikc.a.add("ballTwist") >> ballRollG.a.ry
-        self.ikc.a.add("toeTwist") >> toeRollG.a.ry
         self.ikc.a.add("kneeTwist") * self.x_dir >> ikH1.a.twist
-        self.ikc.a.add("toeRoll") >> toeRollG.a.rx
         (self.ikc, self.pvc, self.ikCstG) | self.IK_PART
         self.pvc_line = CurveNode.buildLineLinked(
-            self.joints_ik[2],
-            self.pvc,
-            pf=rID,
-            inheritXf=0,
-            dspType=2,
-            p=self.IK_PART,
+            self.joints_ik[2], self.pvc, pf=rID, dspType=2, p=self.IK_PART
         )
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
@@ -267,21 +248,19 @@ class Leg(RigModule):
         self.subCtl_setup(ballRollG, toeRollG, inRollG, outRollG, heelRollG)
 
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
+        rID = self.rigID
         rSz = self.rigSize / 2
         xDr = self.x_dir
-        CDY = Color.D_YELLOW
-
-        for g in [toeRollG, inRollG, outRollG, heelRollG]:
-            ofs = g.addOffsetGrp(below=1)
-            CurveNode(ofs)(name=g.name + "_ctl", shape="diamond", scale=rSz, color=CDY)
-            self.subCtls.append(ofs)
-
-        ofs = ballRollG.addOffsetGrp(below=1)
-        CurveNode(ofs)(
-            name=ballRollG + "_ctl", shape="stickC", scale=-rSz * xDr, color=CDY
+        # for g in [toeRollG, inRollG, outRollG, heelRollG]:
+        #     ofs = g.addOffsetGrp(below=1)
+        #     CurveNode(ofs)(name=g.name + "_ctl", shape="diamond", scale=rSz, color=CDY)
+        #     self.subCtls.append(ofs)
+        self.ballG_ctl = ballRollG.addOffsetGrp(below=1)
+        cName = rID + "ballG_ctl"
+        CurveNode(self.ballG_ctl)(
+            name=cName, shape="stickC", scale=-rSz * xDr, rotate=(0, 90, 0)
         )
-        CurveNode(ofs).cv_rotate(0, 90, 0)
-        self.subCtls.append(ofs)
+        self.subCtls.append(self.ballG_ctl)
 
     def build_toes(self):
         """ball fkc
@@ -499,9 +478,10 @@ class Leg(RigModule):
             proxyList.remove(self.upr)
             proxyList.remove(self.lwr)
         if self.KNEE_FIX:
-            proxyList.append(self.boneFix)
-            if self.lwr in proxyList:
-                proxyList.remove(self.lwr)
+            if self.boneFix:
+                proxyList.append(self.boneFix)
+                if self.lwr in proxyList:
+                    proxyList.remove(self.lwr)
         if self.TWIST_BONES:
             if self.lwr in proxyList:
                 proxyList.remove(self.lwr)
@@ -519,8 +499,10 @@ class Leg(RigModule):
                 size=rSz * 2, aimDir=aim, skipEnd=1, p=self.PRX_GRP
             )
 
-        self.addBindJntSet(proxyList)
-        self.addBindJntSet(proxyToeList)
+        if proxyList:
+            self.addBindJntSet(proxyList)
+        if proxyToeList:
+            self.addBindJntSet(proxyToeList)
 
     def vis_setup(self):
         # visGrp = common.addVisOption(self.visC, self.rigID)
@@ -566,8 +548,6 @@ class Leg(RigModule):
     def post_setup(self):
         rID = self.rigID
         logging.info(rID)
-        self.ikc.cv_drop()
-        self.ikc_gimbal.cv_drop()
         for c in [self.ikc, self.ikc_gimbal, self.pvc]:
             c.a.add("wsMirrorAxis", k=0, lock=1, cb=0)
         ctlSet = []

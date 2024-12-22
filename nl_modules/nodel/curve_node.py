@@ -387,7 +387,7 @@ class CurveNode(GroupNode):
         return crv
 
     @staticmethod
-    def buildLineLinked(obj1, obj2, pf="", lineW=-1, inheritXf=1, dspType=0, p=None):
+    def buildLineLinked(obj1, obj2, pf="", lineW=-1, inheritXf=0, dspType=0, p=None):
         """Build linked line using decomposeMatrix
         e.g.
             sel = mc.ls(sl=1)
@@ -478,6 +478,7 @@ class CurveNode(GroupNode):
         name="",
         shape=None,
         up=None,
+        rotate=None,
         scale=1,
         color=0,
         addOfs=0,
@@ -498,6 +499,8 @@ class CurveNode(GroupNode):
             self.cv_rotate(0, 0, 90)
         elif up == "z":
             self.cv_rotate(90, 0, 0)
+        if rotate:
+            self.cv_rotate(*rotate)
 
         if isinstance(scale, (tuple, list)):
             self.cv_scale(*scale)

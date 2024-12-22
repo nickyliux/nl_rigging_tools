@@ -109,14 +109,20 @@ class MarkingMenuRigging:
         mc.menuItem(p=menu, l="Match", c=match_all)
         mc.menuItem(p=menu, l="Match Pos", c=match_pos)
         mc.menuItem(p=menu, l="---------------------", en=0)
-        mc.menuItem(p=menu, l="Show All", c=showHidden)
         mc.menuItem(p=menu, l="LRA", c=partial(display_LRA, 1, 0))
         mc.menuItem(p=menu, l="Hide LRA", c=partial(display_LRA, 0, 0), ob=1)
         mc.menuItem(p=menu, l="LRA -hi", c=partial(display_LRA, 1, 1))
         mc.menuItem(p=menu, l="Del Keys", c="mc.cutKey()")
         mc.menuItem(p=menu, l="Use last crv shapes", c=use_last_crv_shapes)
+        mc.menuItem(p=menu, l="Reset Joint Display Size", c=partial(jointDisplay, 1))
+        mc.menuItem(p=menu, l="Joint Display Size = 0.1", c=partial(jointDisplay, 0.1))
+        mc.menuItem(p=menu, l="Show All", c=showHidden)
         mc.menuItem(p=menu, l="--------------------", en=0)
         mc.menuItem(p=menu, l="Reload Menu", c=reload_marking_menu)
+
+
+def jointDisplay(*args):
+    mc.jointDisplayScale(args[0])
 
 
 def showHidden(*args):

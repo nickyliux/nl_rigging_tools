@@ -176,7 +176,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 names = guide.COMPONENT_DICT[item.text()]
                 guide.loadGuide(names)
             self.rigNode_refresh_BN_clicked()
-            self.setupViewport()
+            common.setViewport()
 
     def component_open_BN_clicked(self):
         items = self.UI.component_LW.selectedItems()
@@ -190,7 +190,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 else:
                     logging.info(f"missing file: {tgtFile}")
             mc.refresh(su=0)
-            self.setupViewport()
+            common.setViewport()
             self.rigNode_refresh_BN_clicked()
 
     def preset_load_BN_clicked(self, item):
@@ -201,7 +201,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             logging.info(f'load preset "{itemText}"')
             guide.loadPreset(f)
             mc.refresh(su=0)
-            self.setupViewport()
+            common.setViewport()
             self.rigNode_refresh_BN_clicked()
         else:
             logging.info(f"missing file: {f}")
@@ -251,7 +251,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
             if os.path.isfile(skelFile):
                 file.importFile(skelFile)
-                self.setupViewport()
+                common.setViewport()
             else:
                 logging.info(f"missing file: {skelFile}")
 
@@ -493,14 +493,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             shader_file = PATH_LIGHT + "/bone_SHD.ma"
             if os.path.isfile(shader_file):
                 file.importFile(shader_file)
-
-    def setupViewport(self):
-        mc.select(cl=1)
-        mc.viewFit(all=1)
-        mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
-        # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
-        # for p in mc.getPanel(type="modelPanel"):
-        #     mc.modelEditor(p, e=1, jx=1)  # wos=1, jx=1,xray=1
 
     # def setLeadColor(self, id=0):
     #     """Change wireframe color"""

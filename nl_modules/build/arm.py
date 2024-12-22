@@ -185,7 +185,6 @@ class Arm(RigModule):
             self.joints_ik[2],
             self.pvc,
             pf=self.rigID,
-            inheritXf=0,
             dspType=2,
             p=self.IK_PART,
         )

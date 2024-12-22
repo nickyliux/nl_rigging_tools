@@ -1,6 +1,7 @@
 import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.utils import common
+import logging
 
 
 class GroupNode(DagNode):
@@ -23,6 +24,9 @@ class GroupNode(DagNode):
         radius=None,
         p=None,
     ):
+        if node is None:
+            logging.info("Fail to create group for None")
+            return
         if pf and pf[-1] != "_":
             pf += "_"
         name = pf + node + sf
@@ -63,7 +67,7 @@ class GroupNode(DagNode):
             self.parentTo(p)
         if addOfs:
             self.addOffsetGrp()
-        if nodeType=='joint' and radius:
+        if nodeType == "joint" and radius:
             self.a.radius.set(radius)
 
         return self

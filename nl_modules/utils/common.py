@@ -107,6 +107,7 @@ def addShader(n, shaderType="lambert", color=(1, 1, 1)):
         mc.connectAttr(f"{shd}.outColor", f"{sg}.surfaceShader")
     return shd, sg
 
+
 def cstMulti(*args, cstType="par", delete=False, w=None, **kwargs):
     """Constrain last one to multiple objects
 
@@ -454,6 +455,7 @@ def addTwistReader(target, pf="", p=None):
 
 def getMeshBelowSel():
     from nl_modules.nodel.mesh_node import MeshNode
+
     sel = mc.ls(sl=1)
     if not sel:
         if mc.objExists("mdl_grp"):
@@ -464,6 +466,16 @@ def getMeshBelowSel():
     mc.select(hi=1)
     meshes = mc.ls(sl=1, et="mesh") or []
     return [MeshNode(mesh) for mesh in meshes] or []
+
+
+def setViewport():
+    mc.select(cl=1)
+    mc.viewFit(all=1)
+    mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
+    # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
+    for p in mc.getPanel(type="modelPanel"):
+        mc.modelEditor(p, e=1, wos=1)  # jx=1,xray=1
+
 
 # def calcBB(tgt):
 #     from nl_modules.nodel.base.dag_node import DagNode

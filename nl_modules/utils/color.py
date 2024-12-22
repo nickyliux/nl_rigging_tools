@@ -38,13 +38,15 @@ class Color(Enum):
     @staticmethod
     def _getExpanded(objs):
         """get expanded shapes and nodes"""
-        objList = objs if isinstance(objs, list) else [objs]
-        shapes = mc.listRelatives(objs, s=1, f=1, ni=1) or []
-        filtered = mc.ls(
-            shapes + objList,
-            l=1,
-            type=["nurbsCurve", "locator", "joint", "mesh"],
-        )
+        filtered = None
+        if objs:
+            objList = objs if isinstance(objs, list) else [objs]
+            shapes = mc.listRelatives(objs, s=1, f=1, ni=1) or []
+            filtered = mc.ls(
+                shapes + objList,
+                l=1,
+                type=["nurbsCurve", "locator", "joint", "mesh"],
+            )
         return filtered or []
 
     @classmethod
