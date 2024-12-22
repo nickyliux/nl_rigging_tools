@@ -124,7 +124,7 @@ def cstMulti(*args, cstType="par", delete=False, w=None, **kwargs):
     skipR = ["x", "y", "z"] if cstType == "parT" else []
     skipT = ["x", "y", "z"] if cstType == "parR" else []
 
-    name = f"{lastObj}_{cstType}Cst_#"
+    name = f"{lastObj.name}_{cstType}Cst_#"
     cstCmd = CST_DICT[cstType]
 
     if cstType.startswith("par"):
@@ -474,7 +474,7 @@ def setViewport():
     mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
     # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
     for p in mc.getPanel(type="modelPanel"):
-        mc.modelEditor(p, e=1, wos=1)  # jx=1,xray=1
+        mc.modelEditor(p, e=1, wos=1, jx=1)  # xray=1
 
 
 # def calcBB(tgt):

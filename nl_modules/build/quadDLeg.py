@@ -139,14 +139,14 @@ class QuadDLeg(RigModule):
         self.blend_fk_ik()
         self.ball_ctl_setup()
 
-        # if self.KNEE_FIX:
-        #     self.boneFix_setup(self.lwr, self.palm)
+        if self.KNEE_FIX:
+            self.boneFix_setup(self.lwr, self.palm)
         # if self.RBN_BONES:
         #     self.ribbon_setup()
-        # if self.PATELLA_BONE:
-        #     self.patella_setup(self.PRX_GRP)
-        # if self.TWIST_BONES:
-        #     self.twistBones_setup()
+        if self.PATELLA_BONE:
+            self.patella_setup(self.PRX_GRP)
+        if self.TWIST_BONES:
+            self.twistBones_setup()
         # if self.TOE_BONES:
         #     self.toesRootJ | self.palm
         #     self.toesJntList = []
@@ -261,25 +261,29 @@ class QuadDLeg(RigModule):
         rSz = self.rigSize
         xDr = self.x_dir
         # Setup aim logic
-        ballG_ofs = self.ballG_ctl.addOffsetGrp()
-        aimAttr = self.ikc.a.add("palmAim", min=0, max=1)
+        aimGrp = extraRollG.addOffsetGrp(below=1, relink=0)
+        aimGrp | extraRollG.offset
 
-        aimGrp = ballRollG.addOffsetGrp(below=1, relink=0)
         uprIkJ = self.joints_ik[1]
         aimG_loc = LocNode(aimGrp + "_loc", align=uprIkJ, p=grp)
         self.ikc.cstPoi(aimG_loc, mo=1)
+
+        aimAttr = self.ikc.a.add("palmAim", min=0, max=1, dv=1)
         common.cstMulti(
             aimG_loc,
             uprIkJ,
             aimGrp,
             cstType="aim",
             w=aimAttr,
-            worldUpType=1,
-            worldUpObject=self.pvc,
+            worldUpType=2,
+            worldUpObject=self.ikc,
+            u=(0, 1, 0),
+            wu=(1, 0, 0),
         )
-        ballG_ofs | aimGrp
 
-        # setup palm rotate logic
+        # setup palm rotate logic, after aimGrp is ready
+        ofs = extraRollG.addOffsetGrp()
+        ofs | aimGrp
         d = ut.distDim_(self.ikc, self.joints_ik[1])
         D = d.get()
         (d - D) * 0.5 >> extraRollG.a.rx
@@ -580,7 +584,7 @@ class QuadDLeg(RigModule):
     def space_setup(self):
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_hip": self.hip_fkc})
-        # self.rigNode.setMsg({"space_leg": self.ikH1.softJ[0]})
+        self.rigNode.setMsg({"space_leg": self.ikH1.softJ[0]})
         self.rigNode.setMsg({"spaceHolder1": self.ikc})
         self.rigNode.setMsg({"spaceHolder2": self.pvc})
         self.rigNode.a.add("spaceName1", attrType="string", txt="master, hip, COG")
