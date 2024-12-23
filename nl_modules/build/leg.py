@@ -286,9 +286,9 @@ class Leg(RigModule):
                 t1, sj=t1, ee=t2, sol=0, scaleFix=fix, RIG_DATA=data, p=toe_loc
             )
             ctlList = []
-            for toe in toeJs[2:-1]:
+            for jnt in toeJs[2:-1]:
                 c = CurveNode(
-                    toe + "_ctl", shape="stickC", align=toe, up="-z", scale=scale
+                    jnt + "_ctl", shape="stickC", align=jnt, up="-z", scale=scale
                 )
                 ctlList.append(c)
 

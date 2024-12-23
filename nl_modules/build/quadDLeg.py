@@ -104,7 +104,8 @@ class QuadDLeg(RigModule):
         self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz)
         self.digit_fkc = CurveNode("digit_fkc", pf=rID, up="x", scale=rSz)
         self.ball_fkc = CurveNode("ball_fkc", pf=rID, up="x", scale=rSz)
-        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=(rSz, rSz / 2, rSz * 3))
+        ikcScale = (rSz * 1.5, rSz * 0.5, rSz * 3)
+        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=ikcScale)
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz * 0.8)
         self.rigNode.setMsg(
             {
@@ -305,7 +306,7 @@ class QuadDLeg(RigModule):
         self.ballG_ikc = ballRollG.addOffsetGrp(below=1)
         cName = rID + "_ballG_ikc"
         CurveNode(self.ballG_ikc)(
-            name=cName, shape="stickC", scale=-rSz * xDr, rotate=(0, 90, 0)
+            name=cName, shape="stickC", scale=-rSz * xDr / 2, rotate=(0, 90, 0)
         )
         self.subCtls.append(self.ballG_ikc)
 
@@ -325,40 +326,37 @@ class QuadDLeg(RigModule):
             t1 = toeJs[1]
             t2 = toeJs[2]
             t3 = toeJs[3]
-            t4 = toeJs[4]
             toe_ikH1 = IkNode(
                 t0, sj=t0, ee=t1, sol=0, scaleFix=fix, RIG_DATA=data, p=self.toesRootJ
             )
             toe_loc = LocNode(
-                # rID + "_toe_loc_#", align=t1, addOfs=1, p=self.ball_fkc, size=5
-                rID + "_toe_loc_#",
-                align=t1,
-                addOfs=1,
-                p=self.ball_fkc,
-                size=5,
+                rID + "_toe_loc_#", align=t2, addOfs=1, p=self.ball_fkc, size=5
             )
             toe_ikH2 = IkNode(
                 t1, sj=t1, ee=t2, sol=0, scaleFix=fix, RIG_DATA=data, p=toe_loc
             )
             toe_ikH3 = IkNode(
-                t2, sj=t2, ee=t3, sol=0, scaleFix=fix, RIG_DATA=data, p=self.ball_fkc
+                t2,
+                sj=t2,
+                ee=t3,
+                sol=0,
+                scaleFix=fix,
+                RIG_DATA=data,
+                p=toe_loc,  # p=self.ball_fkc
             )
-            # toe_ikH4 = IkNode(
-            #     t3, sj=t3, ee=t4, sol=0, scaleFix=fix, RIG_DATA=data, p=self.ball_fkc
-            # )
             ctlList = []
-            for toe in toeJs[3:-1]:
+            for jnt in toeJs[3:4]:
                 c = CurveNode(
-                    # toe + "_ctl", shape="stickC", align=toe, up="-z", scale=scale
-                    toe + "_ctl",
-                    shape="circle_round",
-                    align=toe,
+                    jnt + "_ctl",
+                    shape="stickC",
+                    align=jnt,
                     up="x",
                     scale=scale,
+                    rotate=(90, 0, 0),
                 )
                 ctlList.append(c)
 
-            self.fkGivenCtl(toeJs[2:-1], ctlList, p=self.CTL_DATA, ori=1)
+            self.fkGivenCtl(toeJs[3:4], ctlList, p=self.CTL_DATA, ori=1)
             self.toesCtlsList.append(ctlList)
             # mc.hide(toe_ikH1, toe_ikH2)
 
