@@ -13,9 +13,9 @@ from nl_modules.build.rig_module import RigModule
 
 
 class QuadDLeg(RigModule):
-    """Build leg component with given rigNode.
+    """Build QuadDLeg component with given rigNode.
     e.g.
-        n = Leg('lfArm0_RGN')  # n.__dict__
+        n = QuadDLeg('lfQDLeg0_RGN')  # n.__dict__
         n.genSk()
         n.build()
     """
@@ -50,6 +50,7 @@ class QuadDLeg(RigModule):
         self.upr_fkc = None
         self.lwr_fkc = None
         self.palm_fkc = None
+        self.digit_fkc = None
         self.ball_fkc = None
         self.pvc = None
         self.ikc = None
@@ -68,8 +69,8 @@ class QuadDLeg(RigModule):
         self.toesCtlsList = None
         self.toesRootJ = rigNode.a.toesRootJ.inConnNode
         self.ikH1 = None
-
-        self.ballG_ctl = None
+        self.ballG_ikc = None
+        self.extra_ikc = None
 
     def genSk(self):
         self.genSk_module(["hip", "upr", "lwr", "palm", "digit", "ball", "tip"])
@@ -103,7 +104,7 @@ class QuadDLeg(RigModule):
         self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz)
         self.digit_fkc = CurveNode("digit_fkc", pf=rID, up="x", scale=rSz)
         self.ball_fkc = CurveNode("ball_fkc", pf=rID, up="x", scale=rSz)
-        self.ikc = CurveNode("ikc", pf=rID, shape="foot_ikc", scale=rSz)
+        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=(rSz, rSz / 2, rSz * 3))
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz * 0.8)
         self.rigNode.setMsg(
             {
@@ -121,12 +122,13 @@ class QuadDLeg(RigModule):
 
     def build(self):
         """Build rig for joints
-        hip
-            upr
-                lwr
-                    palm
-                        ball
-                            tip
+        hip 0
+            upr 1
+                lwr 2
+                    palm 3
+                        digit 4
+                            ball 5
+                                tip 6
         """
         self.build_module()
         self.joints = self.rootJ.allChildrenJt2
@@ -137,7 +139,7 @@ class QuadDLeg(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        self.ball_ctl_setup()
+        self.singleBallCtl_setup()
 
         if self.KNEE_FIX:
             self.boneFix_setup(self.lwr, self.palm)
@@ -147,13 +149,13 @@ class QuadDLeg(RigModule):
             self.patella_setup(self.PRX_GRP)
         if self.TWIST_BONES:
             self.twistBones_setup()
-        # if self.TOE_BONES:
-        #     self.toesRootJ | self.palm
-        #     self.toesJntList = []
-        #     for rJ in self.toesRootJ.childrenJt:
-        #         self.toesJntList.append([fgr for fgr in rJ.allChildrenJt2])
-        #         rJ.a.segmentScaleCompensate.set(0)
-        #     self.build_toes()
+        if self.TOE_BONES:
+            self.toesRootJ | self.palm
+            self.toesJntList = []
+            for rJ in self.toesRootJ.childrenJt:
+                self.toesJntList.append([fgr for fgr in rJ.allChildrenJt2])
+                rJ.a.segmentScaleCompensate.set(0)
+            self.build_toes()
 
         self.post_setup()
 
@@ -288,9 +290,9 @@ class QuadDLeg(RigModule):
         D = d.get()
         (d - D) * 0.5 >> extraRollG.a.rx
 
-        extra_ctl = extraRollG.addOffsetGrp(below=1)
-        cName = rID + "_extra_ctl"
-        CurveNode(extra_ctl)(name=cName, shape="rotator", scale=-rSz * xDr)
+        self.extra_ikc = extraRollG.addOffsetGrp(below=1)
+        cName = rID + "_extra_ikc"
+        CurveNode(self.extra_ikc)(name=cName, shape="rotator", scale=-rSz * xDr)
 
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
         rID = self.rigID
@@ -300,59 +302,65 @@ class QuadDLeg(RigModule):
         #     ofs = g.addOffsetGrp(below=1)
         #     CurveNode(ofs)(name=g.name + "_ctl", shape="diamond", scale=rSz, color=CDY)
         #     self.subCtls.append(ofs)
-        self.ballG_ctl = ballRollG.addOffsetGrp(below=1)
-        cName = rID + "_ballG_ctl"
-        CurveNode(self.ballG_ctl)(
-            name=cName, shape="stickC", scale=-rSz * xDr / 2, rotate=(0, 90, 0)
+        self.ballG_ikc = ballRollG.addOffsetGrp(below=1)
+        cName = rID + "_ballG_ikc"
+        CurveNode(self.ballG_ikc)(
+            name=cName, shape="stickC", scale=-rSz * xDr, rotate=(0, 90, 0)
         )
-        self.subCtls.append(self.ballG_ctl)
+        self.subCtls.append(self.ballG_ikc)
 
     def build_toes(self):
-        """ball fkc
-        splay loc 1
-            toe ikc 1
-                toe ikh 1
-        splay loc 2
-            toe ikc 2
-                toe ikh 2
-        ...
-        """
         rID = self.rigID
         rSz = self.rigSize
-
         logging.info(rID)
         self.toesCtlsList = []
-        toeLocList = []
+        # toeLocList = []
         fix = self.masterC.a.globalScale
         data = self.RIG_DATA
         dir = self.x_dir
-        scale = dir * rSz / 8
+        scale = dir * rSz / 6
 
-        for toes in self.toesJntList:
-            t0 = toes[0]
-            t1 = toes[1]
-            t2 = toes[2]
+        for toeJs in self.toesJntList[1:]:
+            t0 = toeJs[0]
+            t1 = toeJs[1]
+            t2 = toeJs[2]
+            t3 = toeJs[3]
+            t4 = toeJs[4]
             toe_ikH1 = IkNode(
                 t0, sj=t0, ee=t1, sol=0, scaleFix=fix, RIG_DATA=data, p=self.toesRootJ
             )
             toe_loc = LocNode(
-                rID + "_toe_loc_#", align=t1, addOfs=1, p=self.ball_fkc, size=5
+                # rID + "_toe_loc_#", align=t1, addOfs=1, p=self.ball_fkc, size=5
+                rID + "_toe_loc_#",
+                align=t1,
+                addOfs=1,
+                p=self.ball_fkc,
+                size=5,
             )
             toe_ikH2 = IkNode(
                 t1, sj=t1, ee=t2, sol=0, scaleFix=fix, RIG_DATA=data, p=toe_loc
             )
-
+            toe_ikH3 = IkNode(
+                t2, sj=t2, ee=t3, sol=0, scaleFix=fix, RIG_DATA=data, p=self.ball_fkc
+            )
+            # toe_ikH4 = IkNode(
+            #     t3, sj=t3, ee=t4, sol=0, scaleFix=fix, RIG_DATA=data, p=self.ball_fkc
+            # )
             ctlList = []
-            for toe in toes[2:-1]:
+            for toe in toeJs[3:-1]:
                 c = CurveNode(
-                    toe + "_ctl", shape="stickC", align=toe, up="-z", scale=scale
+                    # toe + "_ctl", shape="stickC", align=toe, up="-z", scale=scale
+                    toe + "_ctl",
+                    shape="circle_round",
+                    align=toe,
+                    up="x",
+                    scale=scale,
                 )
                 ctlList.append(c)
 
-            self.fkGivenCtl(toes[2:-1], ctlList, p=self.CTL_DATA, ori=1)
+            self.fkGivenCtl(toeJs[2:-1], ctlList, p=self.CTL_DATA, ori=1)
             self.toesCtlsList.append(ctlList)
-            toeLocList.append(toe_loc)
-            mc.hide(toe_ikH1, toe_ikH2)
+            # mc.hide(toe_ikH1, toe_ikH2)
 
         # splay = self.ball_fkc.a.add("splay", min=-5, max=5)
         # toeCount = len(self.toesJntList)
@@ -363,7 +371,7 @@ class QuadDLeg(RigModule):
         #     common.sdk2(splay, tgt, -5, splayRange * (-1 + 2 / (toeCount - 1) * i))
         #     common.sdk2(splay, tgt, 5, -splayRange * (-1 + 2 / (toeCount - 1) * i))
 
-        mc.hide(toeLocList)
+        # mc.hide(toeLocList)
 
     def twistBones_setup(self):
         rID = self.rigID
@@ -413,32 +421,37 @@ class QuadDLeg(RigModule):
 
         GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.palm_fkc)
 
-    def ball_ctl_setup(self):
+    def singleBallCtl_setup(self):
         """Make ball ctl the single ctl in both FK IK"""
+        rID = self.rigID
         fkIk = self.setting.a.fkIk
-        # Remove ball fkc parent's CST
+
         ball_fkc_ofs = self.ball_fkc.offset
         ball_fkc_ofs.removeCstNodes()
-        # Parent ball joint's IKH under ball fkc
-        toe_ikH = self.all_ikH["toe"]
-        toe_ikH | self.ball_fkc
-        palm_fkj = self.joints_fk[3]
-        ball_fkj = self.joints_fk[4]
 
-        # Align ball fkc to    FK: palm joint    IK: wiggle grp
+        self.all_ikH["toe"] | self.ball_fkc
+        ball_fkj = self.joints_fk[5]
+
         self.spaceAlign(
             self.ball_fkc,
-            spaces=[palm_fkj, self.toeWiggleG],
+            spaces=[ball_fkj.offset, self.toeWiggleG],
             w=fkIk,
             cstType="par",
         )
-        palmScaleG = GroupNode(
-            "palmScaleG", pf=self.rigID, snap=self.palm, p=self.FK_PART
+        ballOfsG = GroupNode(
+            "ballOfsG",
+            pf=rID,
+            snap=self.ball.offset,
+            p=self.FK_PART,
         )
-        ball_fkc_ofs | palmScaleG
+        ball_fkc_ofs | ballOfsG
         ball_fkj.removeCstNodes()
         self.spaceAlign(
-            ball_fkj, spaces=[self.ball_fkc, palm_fkj], w=fkIk, cstType="ori", mo=1
+            ball_fkj,
+            spaces=[self.ball_fkc, ball_fkj.offset],
+            w=fkIk,
+            cstType="ori",
+            mo=1,
         )
 
     def ribbon_setup(self):
@@ -516,6 +529,7 @@ class QuadDLeg(RigModule):
         if self.TOE_BONES:
             proxyList.remove(self.ball)
             proxyList.remove(self.palm)
+            proxyList.remove(self.digit)
             proxyToeList.append(self.toesRootJ)
             for t in self.toesJntList:
                 proxyToeList.extend(t)
@@ -600,7 +614,7 @@ class QuadDLeg(RigModule):
         # if self.RBN_BONES:
         #     ctlSet.extend(self.all_bend)
         if self.TOE_BONES:
-            [ctlSet.extend(s) for s in self.toesCtlsList]
+            [ctlSet.extend(s) for s in self.toesCtlsList or []]
         self.addCtlSet(ctlSet, pf=rID)
         self.space_setup()
         self.anchor_setup_module({"anchorF1": self.hip_fkc})
