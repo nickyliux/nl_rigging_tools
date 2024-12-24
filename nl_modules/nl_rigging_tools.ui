@@ -187,12 +187,12 @@
       </item>
       <item>
        <property name="text">
-        <string>leg / digitigrade</string>
+        <string>arm / quad</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>leg / unguligrade</string>
+        <string>leg / quad</string>
        </property>
       </item>
       <item>

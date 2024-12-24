@@ -271,13 +271,14 @@ class QuadDLeg(RigModule):
         aimG_loc = LocNode(aimGrp + "_loc", align=uprIkJ, p=grp)
         self.ikc.cstPoi(aimG_loc, mo=1)
 
-        aimAttr = self.ikc.a.add("palmAim", min=0, max=1, dv=1)
+        palmAim = self.ikc.a.add("palmAim", min=0, max=1, dv=1)
+        rollDistRatio = self.setting.a.add("rollDistRatio", min=-1, max=1, dv=0.5)
         common.cstMulti(
             aimG_loc,
             uprIkJ,
             aimGrp,
             cstType="aim",
-            w=aimAttr,
+            w=palmAim,
             worldUpType=2,
             worldUpObject=self.ikc,
             u=(0, 1, 0),
@@ -289,7 +290,7 @@ class QuadDLeg(RigModule):
         ofs | aimGrp
         d = ut.distDim_(self.ikc, self.joints_ik[1])
         D = d.get()
-        (d - D) * 0.5 >> extraRollG.a.rx
+        (d - D) * rollDistRatio >> extraRollG.a.rx
 
         self.extra_ikc = extraRollG.addOffsetGrp(below=1)
         cName = rID + "_extra_ikc"
@@ -402,7 +403,7 @@ class QuadDLeg(RigModule):
     def blend_fk_ik(self):
         logging.info(self.rigID)
         self.setting | self.CTL_DATA
-        self.setting.alignTo(self.palm, offset=(0, self.rigSize * 20 * -self.x_dir, 0))
+        self.setting.alignTo(self.digit, offset=(0, self.rigSize * 20 * -self.x_dir, 0))
         ofs = self.setting.addOffsetGrp()
         self.palm.cstPar(ofs, mo=1)
 
