@@ -59,7 +59,7 @@ class QuadSpineSrf(rig_module.RigModule):
             "tp_ctl", pf=rID, shape="cube", scale=rSz * 3, color=CDY
         )
         self.md_ctl = CurveNode(
-            "_md_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3, color=CDY
+            "_md_ctl", pf=rID, shape="square", up="z", scale=rSz * 3, color=CDY
         )
         self.rt_ctl = CurveNode(
             "rt_ctl", pf=rID, shape="cube", scale=rSz * 3, color=CDY

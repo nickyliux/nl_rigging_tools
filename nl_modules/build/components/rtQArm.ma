@@ -2174,7 +2174,7 @@ createNode script -n "RGN";
 	addAttr -s false -ci true -sn "moduleG" -ln "moduleG" -at "message";
 	addAttr -s false -ci true -k true -sn "master_guide" -ln "master_guide" -at "message";
 	setAttr ".rigID" -type "string" "";
-	setAttr ".rigClass" -type "string" "QuadDLeg";
+	setAttr ".rigClass" -type "string" "QuadLeg";
 createNode ikSpringSolver -s -n "ikSpringSolver";
 	rename -uid "FAE7F5DB-4B62-65C0-B03F-05843F25B4CD";
 createNode nodeGraphEditorInfo -n "lf_leg_guide_hyperShadePrimaryNodeEditorSavedTabsInfo";

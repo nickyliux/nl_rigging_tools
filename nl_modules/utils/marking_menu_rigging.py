@@ -39,9 +39,16 @@ class MarkingMenuRigging:
         mc.menuItem(p=create_MI, l="Joint", c="mc.select(cl=1);mc.joint()", ob=1)
         mc.menuItem(p=create_MI, l="Loc", c="mc.spaceLocator()")
 
-        select_MI = mc.menuItem(p=menu, l="Select", rp="W", subMenu=1)
-        mc.menuItem(p=select_MI, l="Joint On", c=partial(select_joint_mask, 1))
-        mc.menuItem(p=select_MI, l="Joint Off", c=partial(select_joint_mask, 0), ob=1)
+        display_MI = mc.menuItem(p=menu, l="Display", rp="W", subMenu=1)
+        mc.menuItem(p=display_MI, l="Joint Size = 1", c=partial(jointDisplay, 1))
+        mc.menuItem(p=display_MI, l="Joint Size = 0.1", c=partial(jointDisplay, 0.1))
+        mc.menuItem(p=display_MI, l="LRA", c=partial(display_LRA, 1, 0))
+        mc.menuItem(p=display_MI, l="LRA Off", c=partial(display_LRA, 0, 0))
+        mc.menuItem(p=display_MI, l="LRA -hi", c=partial(display_LRA, 1, 1))
+        mc.menuItem(p=display_MI, l="--------------------", en=0)
+        mc.menuItem(p=display_MI, l="Show All", c=showHidden)
+        # mc.menuItem(p=display_MI, l="Joint On", c=partial(select_joint_mask, 1))
+        # mc.menuItem(p=display_MI, l="Joint Off", c=partial(select_joint_mask, 0), ob=1)
 
         connect_MI = mc.menuItem(p=menu, l="Connect", rp="NW", subMenu=1)
         mc.menuItem(p=connect_MI, l="T:  1st >> 2nd", c=partial(connect_channel, "t"))
@@ -108,15 +115,9 @@ class MarkingMenuRigging:
 
         mc.menuItem(p=menu, l="Match", c=match_all)
         mc.menuItem(p=menu, l="Match Pos", c=match_pos)
-        mc.menuItem(p=menu, l="---------------------", en=0)
-        mc.menuItem(p=menu, l="LRA", c=partial(display_LRA, 1, 0))
-        mc.menuItem(p=menu, l="Hide LRA", c=partial(display_LRA, 0, 0), ob=1)
-        mc.menuItem(p=menu, l="LRA -hi", c=partial(display_LRA, 1, 1))
-        mc.menuItem(p=menu, l="Del Keys", c="mc.cutKey()")
-        mc.menuItem(p=menu, l="Use last crv shapes", c=use_last_crv_shapes)
-        mc.menuItem(p=menu, l="Reset Joint Display Size", c=partial(jointDisplay, 1))
-        mc.menuItem(p=menu, l="Joint Display Size = 0.1", c=partial(jointDisplay, 0.1))
-        mc.menuItem(p=menu, l="Show All", c=showHidden)
+        # mc.menuItem(p=menu, l="---------------------", en=0)
+        # mc.menuItem(p=menu, l="Del Keys", c="mc.cutKey()")
+        mc.menuItem(p=menu, l="Use Last Crv Shape", c=use_last_crv_shapes)
         mc.menuItem(p=menu, l="--------------------", en=0)
         mc.menuItem(p=menu, l="Reload Menu", c=reload_marking_menu)
 
@@ -129,9 +130,9 @@ def showHidden(*args):
     mc.showHidden(all=1)
 
 
-def select_joint_mask(*args):
-    mc.selectType(allObjects=1)
-    mc.selectType(j=args[0])
+# def select_joint_mask(*args):
+#     mc.selectType(allObjects=1)
+#     mc.selectType(j=args[0])
 
 
 def use_last_crv_shapes(*args):
