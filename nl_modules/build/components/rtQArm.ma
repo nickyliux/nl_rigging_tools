@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: rtQArm.ma
-//Last modified: Thu, Dec 26, 2024 11:04:39 AM
+//Last modified: Thu, Dec 26, 2024 03:07:14 PM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,7 +12,7 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Home v2009 (Build: 22631)";
-fileInfo "UUID" "B6D2A7AB-4E81-3243-9AFC-35958248BE33";
+fileInfo "UUID" "A2ACFEAA-4911-FCA4-BDF8-9987E023AB6D";
 createNode transform -n "module_grp";
 	rename -uid "3F6958F6-4253-676A-51E6-CA9FE9573FBE";
 	addAttr -ci true -sn "mirrorCode" -ln "mirrorCode" -dt "string";
@@ -2092,20 +2092,20 @@ parent -s -nc -r -add "|module_grp|master_guide|rtLeg0_toesRoot_guide_ofs|toesRo
 parent -s -nc -r -add "|module_grp|master_guide|rtLeg0_toesRoot_guide_ofs|toesRoot_guide|toesRoot_guide_ofs|toe00_2_guide_ZRO|toe00_2_guide|toe00_2_guideShape" "toe04_2_guide" ;
 parent -s -nc -r -add "|module_grp|master_guide|rtLeg0_toesRoot_guide_ofs|toesRoot_guide|toesRoot_guide_ofs|toe00_2_guide_ZRO|toe00_2_guide|toe00_2_guideShape" "toe02_2_guide" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "F8253FE3-486E-7C2F-CA73-69A9AA4ED7ED";
+	rename -uid "1F146720-4A31-4973-CA22-9881AF031F6B";
 	setAttr -s 2 ".lnk";
 	setAttr -s 2 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "78BFACEA-4D4E-35F9-CEB8-3EAAD1A847E2";
+	rename -uid "9E092474-4857-A052-BC39-89B83192A894";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "AD9DAA91-4A9E-7B71-04F8-1498E0F8B464";
+	rename -uid "21A2CF55-4C86-8F14-250C-A08239DA63A1";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "58674130-49E5-8113-385D-8292B87F5118";
+	rename -uid "33EA5FA6-4924-4AD5-8159-F7ADAAC34A10";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "BC19330E-4E8B-4910-BB8A-238FB66CBBA1";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "5DB7AED9-4D47-3F37-6CC3-0A8B9091C7E0";
+	rename -uid "13FF811C-40F0-3D13-03A3-A49C5F69469E";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "47ABDCF5-4400-C307-437A-E4AF35DAB19B";
 	setAttr ".g" yes;
@@ -2174,7 +2174,7 @@ createNode script -n "RGN";
 	addAttr -s false -ci true -sn "moduleG" -ln "moduleG" -at "message";
 	addAttr -s false -ci true -k true -sn "master_guide" -ln "master_guide" -at "message";
 	setAttr ".rigID" -type "string" "";
-	setAttr ".rigClass" -type "string" "QuadArm";
+	setAttr ".rigClass" -type "string" "QuadLeg";
 createNode ikSpringSolver -s -n "ikSpringSolver";
 	rename -uid "FAE7F5DB-4B62-65C0-B03F-05843F25B4CD";
 createNode nodeGraphEditorInfo -n "lf_leg_guide_hyperShadePrimaryNodeEditorSavedTabsInfo";

@@ -28,7 +28,6 @@ from nl_modules.build.head import Head
 from nl_modules.build.neckSrf import NeckSrf
 from nl_modules.build.spineSrf import SpineSrf
 from nl_modules.build.quadLeg import QuadLeg
-from nl_modules.build.quadArm import QuadArm
 from nl_modules.build.quadNeckSrf import QuadNeckSrf
 from nl_modules.build.quadSpineSrf import QuadSpineSrf
 from nl_modules.build.tailSrf import TailSrf

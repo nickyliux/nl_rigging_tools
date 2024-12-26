@@ -279,7 +279,8 @@ class QuadLeg(RigModule):
         self.ikc.cstPoi(aimG_loc, mo=1)
 
         palmAim = self.ikc.a.add("palmAim", min=0, max=1, dv=1)
-        rollDistRatio = self.setting.a.add("rollDistRatio", min=-1, max=1, dv=0.5)
+        dv = -0.5 if "Arm" in rID else 0.5
+        rollDistRatio = self.setting.a.add("rollDistRatio", min=-1, max=1, dv=dv)
         common.cstMulti(
             aimG_loc,
             uprIkJ,
