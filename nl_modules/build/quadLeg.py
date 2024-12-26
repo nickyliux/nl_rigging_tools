@@ -165,6 +165,7 @@ class QuadLeg(RigModule):
             self.build_toes()
 
         self.post_setup()
+        self.custom_setup()
 
     def build_fk(self):
         logging.info(self.rigID)
@@ -639,3 +640,6 @@ class QuadLeg(RigModule):
         self.channel_setup()
         self.ro_setup()
         self.post_module()
+
+    def custom_setup(self):
+        pass
