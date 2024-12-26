@@ -35,6 +35,7 @@ stateDiagram
         RigModule --> QuadSpineSrf
         QuadSpineSrf --> QuadNeckSrf
         RigModule --> QuadLeg
+        QuadLeg --> QuadArm
         RigModule --> Tail
     }
 

@@ -91,10 +91,10 @@ def switchToFkIk(attr=None, toIK=0, rigNode=None):
                 lwr_fkc.alignTo(lwr)
                 palm_fkc.alignTo(palm)
 
-            if rigClass == "QuadLeg":
-                fetlock = palm.children[0]
-                fetlock_fkc = rN.a.fetlock_fkc.inConnNode
-                fetlock_fkc.alignTo(fetlock)
+            if rigClass == "QuadLeg" or rigClass == "QuadArm":
+                digit_jnt = palm.childrenJt[0]
+                digit_fkc = rN.a["digit_fkc"].inConnNode
+                digit_fkc.alignTo(digit_jnt)
 
     attr.set(toIK)
     mc.select(cl=1)

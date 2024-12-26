@@ -435,7 +435,7 @@ class QuadLeg(RigModule):
         for ctl in self.fkCtl + self.ikCtl:
             ctl.a.add("fkIk", proxy=fkIk, k=0)
 
-        GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.palm_fkc)
+        GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.digit_fkc)
 
     def singleBallCtl_setup(self):
         """Make ball ctl the single ctl in both FK IK"""
@@ -639,8 +639,3 @@ class QuadLeg(RigModule):
         self.channel_setup()
         self.ro_setup()
         self.post_module()
-
-
-if __name__ == "__main__":
-    for n in mc.ls("*RGN", type="script"):
-        Leg(DagNode(n)).build()
