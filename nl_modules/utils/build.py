@@ -153,9 +153,9 @@ def updateAnchorConn():
 
             if F_rigNode and M_rigNode:
                 if F_rigNode != M_rigNode:
-                    logging.debug(
-                        f"Connecting {closestMaleAnchor.name} to {fAnchor.name}"
-                    )
+                    # logging.debug(
+                    #     f"Connecting {closestMaleAnchor.name} to {fAnchor.name}"
+                    # )
                     closestMaleAnchor.cstPar(fAnchor, mo=1)
                 else:
                     logging.debug("Ignore connecting anchors from the same rigNode.")

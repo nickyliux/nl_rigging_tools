@@ -101,7 +101,7 @@ class Leg(RigModule):
         self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", scale=rSz)
         self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz)
         self.ball_fkc = CurveNode("ball_fkc", pf=rID, up="x", scale=rSz)
-        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=(rSz * 2, rSz, rSz * 3))
+        self.ikc = CurveNode("ikc", pf=rID, shape="foot")
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz * 0.8)
         self.rigNode.setMsg(
             {

@@ -1619,8 +1619,8 @@
             ]
         }
     },
-    "neckSrf0":{
-        "neckSrf0_line_guide":{
+    "neck0":{
+        "neck0_line_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1637,7 +1637,7 @@
                 0.0
             ]
         },
-        "neckSrf0_master_guide":{
+        "neck0_master_guide":{
             "fkJntNum":3,
             "r":[
                 18.4827291459744,
@@ -1657,7 +1657,7 @@
                 2.1141752004623413
             ]
         },
-        "neckSrf0_md_guide":{
+        "neck0_md_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1674,7 +1674,7 @@
                 1.0714980263259974
             ]
         },
-        "neckSrf0_module_grp":{
+        "neck0_module_grp":{
             "r":[
                 0.0,
                 0.0,
@@ -1691,7 +1691,7 @@
                 0.0
             ]
         },
-        "neckSrf0_rt_guide":{
+        "neck0_rt_guide":{
             "r":[
                 4.515284857480865,
                 0.0,
@@ -1708,7 +1708,7 @@
                 2.010856745343902
             ]
         },
-        "neckSrf0_tp_guide":{
+        "neck0_tp_guide":{
             "r":[
                 -7.757083658519372,
                 0.0,
@@ -3139,8 +3139,8 @@
             ]
         }
     },
-    "spineSrf0":{
-        "spineSrf0_line_guide":{
+    "spine0":{
+        "spine0_line_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -3157,7 +3157,7 @@
                 0.0
             ]
         },
-        "spineSrf0_master_guide":{
+        "spine0_master_guide":{
             "fkJntNum":4,
             "r":[
                 0.0,
@@ -3177,7 +3177,7 @@
                 4.79836961282846
             ]
         },
-        "spineSrf0_md_guide":{
+        "spine0_md_guide":{
             "r":[
                 -15.068316333479968,
                 0.0,
@@ -3194,7 +3194,7 @@
                 -0.080442018113346
             ]
         },
-        "spineSrf0_module_grp":{
+        "spine0_module_grp":{
             "r":[
                 0.0,
                 0.0,
@@ -3211,7 +3211,7 @@
                 0.0
             ]
         },
-        "spineSrf0_rt_guide":{
+        "spine0_rt_guide":{
             "r":[
                 8.168292957508642,
                 0.0,
@@ -3228,7 +3228,7 @@
                 -1.1575376997190645
             ]
         },
-        "spineSrf0_tp_guide":{
+        "spine0_tp_guide":{
             "r":[
                 12.602573118966045,
                 0.0,

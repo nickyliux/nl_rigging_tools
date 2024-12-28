@@ -45,34 +45,20 @@ class SpineQd(RigModule):
     def createCtl(self):
         rSz = self.rigSize
         rID = self.rigID
-        CDY = Color.D_YELLOW
-
-        self.cog_ctl = CurveNode(
-            "cog_ctl",
-            pf=rID,
-            shape="trapezoid",
-            scale=(rSz * 0.5, rSz * 1.5, rSz * 2),
-            color=CDY,
-        )
+        cogScale = (rSz * 0.8, rSz * 1.5, rSz * 2)
+        self.cog_ctl = CurveNode("cog_ctl", pf=rID, shape="trapezoid", scale=cogScale)
         self.cog_ctl.cv_move(0, rSz * 80, 0)
-        self.tp_ctl = CurveNode(
-            "tp_ctl", pf=rID, shape="cube", scale=rSz * 3, color=CDY
-        )
+        self.tp_ctl = CurveNode("tp_ctl", pf=rID, shape="cube", scale=rSz * 3)
         self.md_ctl = CurveNode(
-            "_md_ctl", pf=rID, shape="square", up="z", scale=rSz * 3, color=CDY
+            "_md_ctl", pf=rID, shape="square", up="z", scale=rSz * 3
         )
-        self.rt_ctl = CurveNode(
-            "rt_ctl", pf=rID, shape="cube", scale=rSz * 3, color=CDY
-        )
+        self.rt_ctl = CurveNode("rt_ctl", pf=rID, shape="cube", scale=rSz * 3)
         self.tangent_tp_ctl = CurveNode(
-            "tangent_tp_ctl", pf=rID, shape="T_side", scale=rSz, color=CDY
+            "tangent_tp_ctl", pf=rID, shape="stickS", scale=rSz * 1.5
         )
-        self.tangent_tp_ctl.cv_move(0, rSz * 40, 0)
         self.tangent_rt_ctl = CurveNode(
-            "tangent_rt_ctl", pf=rID, shape="T_side", scale=rSz, color=CDY
+            "tangent_rt_ctl", pf=rID, shape="stickS", scale=rSz * 1.5
         )
-        self.tangent_rt_ctl.cv_move(0, rSz * 40, 0)
-
         self.rigNode.setMsg(
             {
                 "cog_ctl": self.cog_ctl,
@@ -87,7 +73,6 @@ class SpineQd(RigModule):
     def build(self):
         rID = self.rigID
         rSz = self.rigSize
-
         self.build_module()
         self.createCtl()
         self.rbSrf = SurfNode.buildRbSrf(
@@ -175,7 +160,7 @@ class SpineQd(RigModule):
                 "spB", sj=self.fkJ_B[-1], ej=self.fkJ_B[1], crv=self.spCrvR, axisDir=-1
             )
 
-            baseAttach = self.cog_ctl.a.add("baseAttach", min=0, max=1)
+            baseAttach = self.cog_ctl.a.add("baseAttach", min=0, max=1, dv=0.5)
             for i in range(self.FK_JNT_NUM):
                 common.cstMulti(
                     self.fkJ_B[i + 1],
