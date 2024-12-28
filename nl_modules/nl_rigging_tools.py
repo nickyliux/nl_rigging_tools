@@ -25,12 +25,12 @@ from nl_modules.build.leg import Leg
 from nl_modules.build.hand import Hand
 from nl_modules.build.arm import Arm
 from nl_modules.build.head import Head
-from nl_modules.build.neckSrf import NeckSrf
-from nl_modules.build.spineSrf import SpineSrf
-from nl_modules.build.quadLeg import QuadLeg
-from nl_modules.build.quadNeckSrf import QuadNeckSrf
-from nl_modules.build.quadSpineSrf import QuadSpineSrf
-from nl_modules.build.tailSrf import TailSrf
+from nl_modules.build.neck import neck
+from nl_modules.build.spine import Spine
+from nl_modules.build.legQd import LegQd
+from nl_modules.build.neckQd import NeckQd
+from nl_modules.build.spineQd import SpineQd
+from nl_modules.build.tail import Tail
 
 log.updateRootLogger()
 
@@ -467,7 +467,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         for rigNode in mc.ls("*RGN", type="script"):
             rigNode = DagNode(rigNode)
             # rigClass = rigNode.a.rigClass.get()
-            # if rigClass in ("SpineSrf", "QuadSpineSrf", "QuadNeckSrf", "TailSrf"):
+            # if rigClass in ("Spine", "SpineQd", "NeckQd", "Tail"):
             rbjSetAttr = rigNode.a["rbjSet"]
             rbSrfAttr = rigNode.a["rbSrf"]
 

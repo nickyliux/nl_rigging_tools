@@ -12,7 +12,7 @@ from nl_modules.utils import common
 from nl_modules.utils.color import Color
 
 
-class TailSrf(RigModule):
+class Tail(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
         self.FK_CTL_NUM = self.master_guide.a.fkCtlNum.get()
@@ -66,7 +66,15 @@ class TailSrf(RigModule):
 
         self.rbSrf = DagNode(
             mc.extrude(
-                widthLine, rebuiltLine, n=rID + "_rbSrf", ch=0, rn=0, po=0, et=1, fpt=0, upn=1
+                widthLine,
+                rebuiltLine,
+                n=rID + "_rbSrf",
+                ch=0,
+                rn=0,
+                po=0,
+                et=1,
+                fpt=0,
+                upn=1,
             )[0]
         )
         self.rbSrf | self.RIG_DATA
@@ -89,7 +97,14 @@ class TailSrf(RigModule):
         clu2 = DagNode(mc.cluster(f"{self.rbSrf}.cv[1][*]", n=cluName)[1])
         jnt = JointNode("1_fkj", pf=rID, align=clu1, p=self.SKL_DATA)
         ctl = CurveNode(
-            "1_fkc", shape='circle_round', pf=rID, up="x", scale=rSz * 2, addOfs=1, color=CY, p=self.CTL_DATA
+            "1_fkc",
+            shape="circle_round",
+            pf=rID,
+            up="x",
+            scale=rSz * 2,
+            addOfs=1,
+            color=CY,
+            p=self.CTL_DATA,
         )
         self.rigNode.setMsg({"fkc1": ctl})
         self.fkCtl.append(ctl)
@@ -109,7 +124,8 @@ class TailSrf(RigModule):
             )
             jnt = JointNode(f"{i}_fkj", pf=self.rigID, align=clu)
             ctl = CurveNode(
-                f"{i}_fkc", pf=rID,
+                f"{i}_fkc",
+                pf=rID,
                 shape="circle_round",
                 up="x",
                 scale=rSz * 1.5,
@@ -187,10 +203,14 @@ class TailSrf(RigModule):
             sep = (self.FK_CTL_NUM - 1) / (self.BIND_JNT_NUM - 1)
             for i in range(self.BIND_JNT_NUM):
                 coord.append((i * sep, 0.5))
-            pin, pinXf = common.nlRivet(geo=self.rbSrf, coordList=coord, p=self.RIG_DATA)
+            pin, pinXf = common.nlRivet(
+                geo=self.rbSrf, coordList=coord, p=self.RIG_DATA
+            )
 
             for loc in pinXf:
-                j = JointNode(self.rigID + "_rbJ_#", align=loc, color=Color.RED, p=self.SKL_DATA)
+                j = JointNode(
+                    self.rigID + "_rbJ_#", align=loc, color=Color.RED, p=self.SKL_DATA
+                )
                 loc.cstPar(j)
                 self.bindJ.append(j)
 
@@ -212,7 +232,7 @@ class TailSrf(RigModule):
         rID = self.rigID
         self.addBindJntSet(self.bindJ)
         self.addCtlSet(self.fkCtl, pf=rID)
-        self.anchor_setup_module({'anchorF1': self.fkCtl[0].offset})
+        self.anchor_setup_module({"anchorF1": self.fkCtl[0].offset})
         self.proxy_setup()
         self.vis_setup()
         self.ro_setup()

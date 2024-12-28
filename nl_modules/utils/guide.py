@@ -13,16 +13,16 @@ import nl_modules
 
 COMPONENT_DICT = {
     "head": ["head"],
-    "neck": ["neckSrf"],
-    "spine": ["spineSrf"],
+    "neck": ["neck"],
+    "spine": ["spine"],
     "arm": ["lfArm", "rtArm"],
     "hand": ["lfHand", "rtHand"],
     "leg": ["lfLeg", "rtLeg"],
-    "neck / quad": ["qNeckSrf"],
-    "spine / quad": ["qSpineSrf"],
-    "arm / quad": ["lfQArm", "rtQArm"],
-    "leg / quad": ["lfQLeg", "rtQLeg"],
-    "tail": ["tailSrf"],
+    "neck / quad": ["neckQd"],
+    "spine / quad": ["spineQd"],
+    "arm / quad": ["lfArmQd", "rtArmQd"],
+    "leg / quad": ["lfLegQd", "rtLegQd"],
+    "tail": ["tail"],
     "wing": [""],
 }
 MOD_DIR = os.path.dirname(nl_modules.__file__)

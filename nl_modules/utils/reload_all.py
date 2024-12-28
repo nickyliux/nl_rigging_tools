@@ -118,20 +118,20 @@ reload(test_utils_node)
 
 # ----------------------------------------------------
 from nl_modules.build import (
+    legQd,
     rig_base,
     rig_module,
+    spineQd,
+    tail,
     tpl_loader,
     ribbon,
     head,
-    neckSrf,
-    spineSrf,
+    neck,
+    spine,
     arm,
     hand,
     leg,
-    quadSpineSrf,
-    quadLeg,
-    quadNeckSrf,
-    tailSrf,
+    neckQd,
 )
 
 # from nl_modules.build.backup import quadSpineCrv, spinePro, neckPro, spd3Leg, tail
@@ -141,15 +141,15 @@ reload(rig_module)
 reload(tpl_loader)
 reload(ribbon)
 reload(head)
-reload(neckSrf)
-reload(spineSrf)
+reload(neck)
+reload(spine)
 reload(arm)
 reload(hand)
 reload(leg)
-reload(quadLeg)
-reload(quadNeckSrf)
-reload(quadSpineSrf)
-reload(tailSrf)
+reload(legQd)
+reload(neckQd)
+reload(spineQd)
+reload(tail)
 
 if __name__ == "__main__":
     logging.info("reload modules")

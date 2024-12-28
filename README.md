@@ -28,13 +28,13 @@ stateDiagram
         [*] --> RigBase
         RigBase --> RigModule
         RigModule --> Head
-        RigModule --> SpineSrf
-        SpineSrf --> NeckSrf
+        RigModule --> Spine
+        Spine --> Neck
         RigModule --> Arm
         RigModule --> Leg
-        RigModule --> QuadSpineSrf
-        QuadSpineSrf --> QuadNeckSrf
-        RigModule --> QuadLeg
+        RigModule --> SpineQd
+        SpineQd --> NeckQd
+        RigModule --> LegQd
         RigModule --> Tail
     }
 

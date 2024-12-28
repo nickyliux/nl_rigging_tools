@@ -9,10 +9,10 @@ from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.surf_node import SurfNode
 from nl_modules.utils import common
 from nl_modules.utils.color import Color
-from nl_modules.build import rig_module
+from nl_modules.build.rig_module import RigModule
 
 
-class QuadSpineSrf(rig_module.RigModule):
+class SpineQd(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
         self.CTL_NUM = 3

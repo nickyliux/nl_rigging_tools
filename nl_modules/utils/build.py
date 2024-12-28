@@ -7,12 +7,12 @@ from nl_modules.build.leg import Leg
 from nl_modules.build.hand import Hand
 from nl_modules.build.arm import Arm
 from nl_modules.build.head import Head
-from nl_modules.build.neckSrf import NeckSrf
-from nl_modules.build.spineSrf import SpineSrf
-from nl_modules.build.quadLeg import QuadLeg
-from nl_modules.build.quadNeckSrf import QuadNeckSrf
-from nl_modules.build.quadSpineSrf import QuadSpineSrf
-from nl_modules.build.tailSrf import TailSrf
+from nl_modules.build.neck import neck
+from nl_modules.build.spine import Spine
+from nl_modules.build.legQd import LegQd
+from nl_modules.build.neckQd import NeckQd
+from nl_modules.build.spineQd import SpineQd
+from nl_modules.build.tail import Tail
 
 from nl_modules.build.rig_module import RigModule
 
@@ -33,7 +33,7 @@ class Undo(ContextDecorator):
 def getAnchors(rigNodes, name):
     """Return objects from all rigNodes connected thru attr, starting with name
     e.g.
-        spineSrf0_RGN
+        spine0_RGN
             AnchorM1 -> aa
             AnchorF1 -> bb
         lfLeg0_RGN
@@ -165,8 +165,8 @@ def updateAnchorConn():
     #  Create isolate neck to spine setup for standard quadruped
     #
     # ---------------------------------------------------------------
-    neckCog = DagNode("qNeckSrf0_cog_ctl")
-    spineCtl = DagNode("qSpineSrf0_tp_ctl")
+    neckCog = DagNode("neckQd0_cog_ctl")
+    spineCtl = DagNode("spineQd0_tp_ctl")
     wSpaceObj = DagNode("master_ctl")
     if all([neckCog.exists(), spineCtl.exists(), wSpaceObj.exists()]):
         RigModule.isolateNeckToSpine(neckCog, spineCtl, wSpaceObj)

@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
-//Name: lfQArm.ma
-//Last modified: Thu, Dec 26, 2024 03:07:01 PM
+//Name: lfArmQd.ma
+//Last modified: Fri, Dec 27, 2024 08:31:37 PM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "HIKSolverNode" -nodeType "HIKCharacterNode" -nodeType "HIKState2SK"
@@ -15,7 +15,7 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Home v2009 (Build: 22631)";
-fileInfo "UUID" "DAA818F6-4380-F605-4E06-5882B352FFCB";
+fileInfo "UUID" "85834A80-4DFF-A746-714C-7381CA38265C";
 createNode transform -n "module_grp";
 	rename -uid "3F6958F6-4253-676A-51E6-CA9FE9573FBE";
 	addAttr -ci true -sn "mirrorCode" -ln "mirrorCode" -dt "string";
@@ -1994,8 +1994,8 @@ createNode nurbsCurve -n "line_08Shape" -p "line_08";
 createNode transform -s -n "persp";
 	rename -uid "2CFF45DD-487A-9CD1-767B-A089B899D93C";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 97.495644115998687 39.626343529469764 114.97907251015266 ;
-	setAttr ".r" -type "double3" -0.33835272894061214 -307.80000000003065 0 ;
+	setAttr ".t" -type "double3" 98.977398993012514 52.104366569202831 112.1349828449296 ;
+	setAttr ".r" -type "double3" -5.1383527289405393 -307.00000000002927 6.6061716621890408e-16 ;
 	setAttr -cb on ".ro";
 	setAttr ".rp" -type "double3" 9.0523144535836764e-12 -9.5923269327613525e-13 -1.4551915228366852e-11 ;
 	setAttr ".rpt" -type "double3" -9.0526132061662243e-12 -3.9591234438924834e-12 -1.892917819089332e-12 ;
@@ -2098,20 +2098,20 @@ parent -s -nc -r -add "|module_grp|master_guide|toesRoot_guide|toesRoot_guide_of
 parent -s -nc -r -add "|module_grp|master_guide|toesRoot_guide|toesRoot_guide_ofs|toe00_2_guide_ZRO|toe00_2_guide|toe00_2_guideShape" "toe03_2_guide" ;
 parent -s -nc -r -add "|module_grp|master_guide|toesRoot_guide|toesRoot_guide_ofs|toe00_2_guide_ZRO|toe00_2_guide|toe00_2_guideShape" "toe04_2_guide" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "8CF0CB60-4B5B-9B16-CB9B-F5980911684E";
+	rename -uid "66CA76B9-41AA-957B-E6B1-AEAAF85BE327";
 	setAttr -s 2 ".lnk";
 	setAttr -s 2 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "8A687EC4-4C01-2B50-875E-B4BEDCE6B326";
+	rename -uid "B102EC7B-4F26-8F4B-FAB5-42A3274B07E4";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "629FE017-43DF-8CD3-C707-B386F99835F4";
+	rename -uid "3F938A68-4EAD-349B-26E0-9D86B49A399B";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "C04558D9-4964-E8B7-1BA5-F8B0531CB2A6";
+	rename -uid "FB1F3F4F-41B4-FEC3-FEF1-0A8B16317EC4";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "BC19330E-4E8B-4910-BB8A-238FB66CBBA1";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "E3E4C7BA-4D83-59EC-0C2C-E69EB25DF00F";
+	rename -uid "47F4AA51-458D-2DAF-AAA0-6F9AC5F06FC6";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "47ABDCF5-4400-C307-437A-E4AF35DAB19B";
 	setAttr ".g" yes;
@@ -2180,7 +2180,7 @@ createNode script -n "RGN";
 	addAttr -s false -ci true -sn "moduleG" -ln "moduleG" -at "message";
 	addAttr -s false -ci true -k true -sn "master_guide" -ln "master_guide" -at "message";
 	setAttr ".rigID" -type "string" "";
-	setAttr ".rigClass" -type "string" "QuadLeg";
+	setAttr ".rigClass" -type "string" "LegQd";
 createNode ikSpringSolver -s -n "ikSpringSolver";
 	rename -uid "FAE7F5DB-4B62-65C0-B03F-05843F25B4CD";
 createNode nodeGraphEditorInfo -n "lf_leg_guide_hyperShadePrimaryNodeEditorSavedTabsInfo";
@@ -4362,4 +4362,4 @@ connectAttr "palm_guide_ofs.msg" ":hyperGraphLayout.hyp[84997].dn";
 connectAttr "ball_guide_ofs1.msg" ":hyperGraphLayout.hyp[84998].dn";
 connectAttr "digit_guide_ofs.msg" ":hyperGraphLayout.hyp[84999].dn";
 connectAttr "tip_guide_ofs.msg" ":hyperGraphLayout.hyp[85001].dn";
-// End of lfQArm.ma
+// End of lfArmQd.ma

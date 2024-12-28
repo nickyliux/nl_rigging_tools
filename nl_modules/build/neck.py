@@ -1,9 +1,9 @@
 import maya.cmds as mc
 import logging
-from nl_modules.build.spineSrf import SpineSrf
+from nl_modules.build.spine import Spine
 
 
-class NeckSrf(SpineSrf):
+class neck(Spine):
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
@@ -40,7 +40,7 @@ class NeckSrf(SpineSrf):
         anchorM1Tgt = self.bindJ[-1] if self.RBN_BONES else self.tp_ctl
         self.anchor_setup_module(
             {
-                'anchorF1': self.cog_ctl,
-                'anchorM1': anchorM1Tgt,
+                "anchorF1": self.cog_ctl,
+                "anchorM1": anchorM1Tgt,
             }
         )

@@ -14,7 +14,7 @@ from nl_modules.utils import common
 from nl_modules.utils.color import Color
 
 
-class QuadSpineCrv(rig_module.RigModule):
+class SpineQdCrv(rig_module.RigModule):
     def __init__(self, rigNode):
 
         super().__init__(rigNode)

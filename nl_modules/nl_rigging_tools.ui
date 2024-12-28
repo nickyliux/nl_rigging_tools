@@ -169,7 +169,7 @@
       </item>
       <item>
        <property name="text">
-        <string>------------------------  Quad</string>
+        <string>-------------------  Quadruped</string>
        </property>
        <property name="flags">
         <set>ItemIsDragEnabled|ItemIsUserCheckable</set>

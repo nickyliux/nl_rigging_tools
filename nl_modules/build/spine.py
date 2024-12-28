@@ -12,7 +12,7 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
 
-class SpineSrf(RigModule):
+class Spine(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
         self.FK_JNT_NUM = self.master_guide.a.fkJntNum.get()

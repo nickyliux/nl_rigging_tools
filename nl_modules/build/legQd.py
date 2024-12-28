@@ -12,10 +12,10 @@ from nl_modules.utils.color import Color
 from nl_modules.build.rig_module import RigModule
 
 
-class QuadLeg(RigModule):
-    """Build QuadLeg component with given rigNode.
+class LegQd(RigModule):
+    """Build LegQd component with given rigNode.
     e.g.
-        n = QuadLeg('lfQDLeg0_RGN')  # n.__dict__
+        n = LegQd('lfQDLeg0_RGN')  # n.__dict__
         n.genSk()
         n.build()
     """

@@ -1,8 +1,8 @@
-from nl_modules.build.quadSpineSrf import QuadSpineSrf
+from nl_modules.build.spineQd import SpineQd
 import logging
 
 
-class QuadNeckSrf(QuadSpineSrf):
+class NeckQd(SpineQd):
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
