@@ -417,9 +417,12 @@ class LegQd(RigModule):
         self.joints.extend([radius_JC[0], ulna_JC[0]])
 
     def blend_fk_ik(self):
-        logging.info(self.rigID)
+        rID = self.rigID
+        rSz = self.rigSize
+        xDr = self.x_dir
+        logging.info(rID)
         self.setting | self.CTL_DATA
-        self.setting.alignTo(self.digit, offset=(0, self.rigSize * 20 * -self.x_dir, 0))
+        self.setting.alignTo(self.digit, offset=(0, rSz * -xDr * 20, 0))
         ofs = self.setting.addOffsetGrp()
         self.palm.cstPar(ofs, mo=1)
 

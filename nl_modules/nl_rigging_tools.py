@@ -25,7 +25,7 @@ from nl_modules.build.leg import Leg
 from nl_modules.build.hand import Hand
 from nl_modules.build.arm import Arm
 from nl_modules.build.head import Head
-from nl_modules.build.neck import neck
+from nl_modules.build.neck import Neck
 from nl_modules.build.spine import Spine
 from nl_modules.build.legQd import LegQd
 from nl_modules.build.neckQd import NeckQd

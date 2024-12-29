@@ -1,11 +1,11 @@
 # nl_rigging_tools
 
-This is another modular auto rigging tools written in Python for Maya. I try to make it as simple as possible but having features:
+This is another modular auto rigging tools written in Python for Maya. I try to make it as intuitive as possible and
 
-- modular rebuild
-- skeleton models support
+- allow modular rebuild
+- support anatomical models
 
-The tool is built efficiently based on framework modules which is not planned ahead. Thanks to the Course <b>Python for Maya Beginner to Advanced Rigging Automation</b> by Nick Hughes, it opens my eyes and shows me the proper way to go without pymel.
+The tool is built efficiently with custom framework which is not planned ahead. Thanks to the Udemy Course <b>Python for Maya Beginner to Advanced Rigging Automation</b> by Nick Hughes, it opens my eyes and shows me the proper way to go without pymel.
 
 ## Usage
 

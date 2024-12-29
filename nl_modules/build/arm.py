@@ -231,11 +231,12 @@ class Arm(RigModule):
         # spaces = [self.clavicle_fkc, self.masterC]
         # self.followAlignTwo(self.main_ikc, spaces, 0, cstType="par")
         # self.followAlignTwo(self.main_pvc, spaces, 0, cstType="par")
-        logging.info(self.rigID)
+        rID = self.rigID
+        rSz = self.rigSize
+        xDr = self.x_dir
+        logging.info(rID)
         self.setting | self.CTL_DATA
-        self.setting.alignTo(
-            self.palm, offset=(0, 0, self.rigSize * 20)
-        )  # -self.x_dir *
+        self.setting.alignTo(self.palm, offset=(0, 0, rSz * -xDr * 20))
         self.palm.cstPar(self.setting.addOffsetGrp(), mo=1)
         fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=1)
 

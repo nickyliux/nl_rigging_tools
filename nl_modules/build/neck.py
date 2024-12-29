@@ -3,7 +3,7 @@ import logging
 from nl_modules.build.spine import Spine
 
 
-class neck(Spine):
+class Neck(Spine):
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
