@@ -592,8 +592,8 @@ class LegQd(RigModule):
             bowCtl = self.setting.a.add("legBowCtls", min=0, max=1, dv=1, k=0)
             [bowCtl >> ctl.a.v for ctl in self.all_bend]
 
-        subCtls = self.setting.a.add("subCtls", min=0, max=1, dv=1, k=0)
-        [subCtls >> self.ikCstG.children[0].a.v]
+        # subCtls = self.setting.a.add("subCtls", min=0, max=1, dv=1, k=0)
+        # [subCtls >> self.ikCstG.children[0].a.v]
 
         mc.hide(self.joints_fk, self.joints_ik)
         [ikh.hide() for ikh in self.all_ikH.values()]

@@ -544,14 +544,17 @@ class CurveNode(GroupNode):
             gbc = crv.addGimbal()        # crv.gimbalCtl  -> gbc.v
             crv.addGimbal(attrTgt=obj1)  # obj1.gimbalCtl -> gbc.v
         """
-        gmb_ctl = CurveNode(self.addOffsetGrp(below=1))
-        gmb_ctl(shape=CurveNode(self.node))
-        gmb_ctl.uninstanceAll()
-        gmb_ctl(
-            name=self.node + "_gimbal",
-            scale=relScale,
-            color=color,
-        )
+        # gmb_ctl = CurveNode(self.addOffsetGrp(below=1))
+        # gmb_ctl(shape=CurveNode(self.node))
+        # gmb_ctl.uninstanceAll()
+        # gmb_ctl(
+        #     name=self.node + "_gimbal",
+        #     scale=relScale,
+        #     color=color,
+        # )
+        gmb_ctl = self.duplicate(n=self.node + "_gimbal")
+        gmb_ctl | self
+        gmb_ctl.cv_scale(0.8)
         attrTgt = attrTgt or self
         attrTgt.a.add("gimbalCtl", min=0, max=1, dv=0, k=0) >> gmb_ctl.a.v
         return gmb_ctl

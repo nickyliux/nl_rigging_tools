@@ -100,7 +100,7 @@ class Leg(RigModule):
         self.upr_fkc = CurveNode("upr_fkc", pf=rID, up="x", scale=rSz)
         self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", scale=rSz)
         self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz)
-        self.ball_fkc = CurveNode("ball_fkc", pf=rID, up="x", scale=rSz)
+        self.ball_fkc = CurveNode("ball_fkc", pf=rID, scale=rSz / 2)  # up="x",
         self.ikc = CurveNode("ikc", pf=rID, shape="foot")
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz * 0.8)
         self.rigNode.setMsg(
@@ -248,16 +248,17 @@ class Leg(RigModule):
 
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
         rID = self.rigID
-        rSz = self.rigSize / 2
+        rSz = self.rigSize
         xDr = self.x_dir
-        # for g in [toeRollG, inRollG, outRollG, heelRollG]:
-        #     ofs = g.addOffsetGrp(below=1)
-        #     CurveNode(ofs)(name=g.name + "_ctl", shape="diamond", scale=rSz, color=CDY)
-        #     self.subCtls.append(ofs)
+        for g in [toeRollG, inRollG, outRollG, heelRollG]:
+            ctl = g.addOffsetGrp(below=1)
+            CurveNode(ctl)(name=g.name + "_ctl", shape="diamond", scale=rSz / 4)
+            self.subCtls.append(ctl)
+
         self.ballG_ikc = ballRollG.addOffsetGrp(below=1)
         cName = rID + "ballG_ikc"
         CurveNode(self.ballG_ikc)(
-            name=cName, shape="stickC", scale=-rSz * xDr, rotate=(0, 90, 0)
+            name=cName, shape="stickC", scale=-rSz * xDr / 2, rotate=(0, 90, 0)
         )
         self.subCtls.append(self.ballG_ikc)
 
@@ -294,7 +295,7 @@ class Leg(RigModule):
 
             self.fkGivenCtl(toeJs[2:-1], ctlList, p=self.CTL_DATA, ori=1)
             self.toesCtlsList.append(ctlList)
-            mc.hide(toe_ikH1, toe_ikH2)
+            mc.hide(toe_ikH1, toe_ikH2, toe_loc)
 
         # splay = self.ball_fkc.a.add("splay", min=-5, max=5)
         # toeCount = len(self.toesJntList)
@@ -510,8 +511,8 @@ class Leg(RigModule):
             bowCtl = self.setting.a.add("legBowCtls", min=0, max=1, dv=1, k=0)
             [bowCtl >> ctl.a.v for ctl in self.all_bend]
 
-        subCtls = self.setting.a.add("subCtls", min=0, max=1, dv=1, k=0)
-        [subCtls >> self.ikCstG.children[0].a.v]
+        # subCtls = self.setting.a.add("subCtls", min=0, max=1, dv=1, k=0)
+        # [subCtls >> self.ikCstG.children[0].a.v]
 
         mc.hide(self.joints_fk, self.joints_ik)
         [ikh.hide() for ikh in self.all_ikH.values()]
