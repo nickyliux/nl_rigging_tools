@@ -27,14 +27,13 @@ class Tail(rig_module.RigModule):
 
         self.setting = None
 
-    def genSk(self):
+    def genGuildSk(self):
         self.genSk_module(["st", "ed"])
 
     def build(self):
 
         self.build_module()
 
-        
         # self.setting = CurveNode(self.rigID + "_setting", shape="sphere", scale=s * 0.3)
         # self.setting.a.message >> self.rigNode.a.setting
 

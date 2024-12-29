@@ -16,7 +16,7 @@ class LegQd(RigModule):
     """Build LegQd component with given rigNode.
     e.g.
         n = LegQd('lfQDLeg0_RGN')  # n.__dict__
-        n.genSk()
+        n.genGuildSk()
         n.build()
     """
 
@@ -72,7 +72,7 @@ class LegQd(RigModule):
         self.ballG_ikc = None
         self.extra_ikc = None
 
-    def genSk(self):
+    def genGuildSk(self):
         self.genSk_module(["hip", "upr", "lwr", "palm", "digit", "ball", "tip"])
 
         if self.TOE_BONES:

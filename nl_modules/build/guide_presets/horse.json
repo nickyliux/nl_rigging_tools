@@ -189,6 +189,11 @@
             ]
         },
         "vis_ctl":{
+            "bezierCtls":0,
+            "extraCtls":0,
+            "latticeCtls":0,
+            "primaryCtls":0,
+            "proxyMesh":true,
             "r":[
                 0.0,
                 0.0,
@@ -199,6 +204,7 @@
                 1.0,
                 1.0
             ],
+            "secondaryCtls":0,
             "t":[
                 0.0,
                 217.86213199313337,

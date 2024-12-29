@@ -24,7 +24,7 @@ class Tail(RigModule):
         self.rbSrf = None
         self.REVERSE_RB = 0
 
-    def genSk(self):
+    def genGuildSk(self):
         self.genSk_module(["st", "md", "ed"])
 
     def build(self):

@@ -19,8 +19,8 @@ class Hand(RigModule):
         self.fgrsArr = None
         self.ctlsArr = None
 
-    def genSk(self):
-        self.genSk_module(['handJ'])
+    def genGuildSk(self):
+        self.genSk_module(["handJ"])
         all_fgrs_names = [
             ["fgr00_1", "fgr00_2", "fgr00_3", "fgr00_4"],
             ["fgr01_1", "fgr01_2", "fgr01_3", "fgr01_4", "fgr01_5"],
@@ -40,10 +40,10 @@ class Hand(RigModule):
         rSz = self.rigSize
         rID = self.rigID
 
-        self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="cube", scale=(rSz * 2, rSz * 2, rSz))
-        self.rigNode.setMsg(
-            {"smart_ctl": self.smart_ctl}
+        self.smart_ctl = CurveNode(
+            "smart_ctl", pf=rID, shape="cube", scale=(rSz * 2, rSz * 2, rSz)
         )
+        self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
         if self.rootJ:
             self.fgrsArr = []
             for root in self.rootJ.childrenJt:
@@ -57,7 +57,7 @@ class Hand(RigModule):
         logging.info(self.rigID)
         self.ctlsArr = []
 
-        upDir = '-z' if self.x_dir == 1 else 'z'
+        upDir = "-z" if self.x_dir == 1 else "z"
         for fgrs in self.fgrsArr:
             ctlList = []
             for fgr in fgrs[:-1]:
@@ -66,7 +66,7 @@ class Hand(RigModule):
                     align=fgr,
                     shape="stickC",
                     scale=self.rigSize * 0.6,
-                    up=upDir
+                    up=upDir,
                 )
                 ctlList.append(ctl)
             self.fkGivenCtl3(fgrs, ctlList, count=2, p=self.CTL_DATA)
@@ -79,7 +79,9 @@ class Hand(RigModule):
         rID = self.rigID
         logging.info(rID)
         # self.smart_ctl.alignTo(self.rootJ, offset=(rSz * xDr * 60, 0, rSz * -xDr * 50), p=self.CTL_DATA)
-        self.smart_ctl.alignTo(self.rootJ, offset=(rSz * xDr * 150, 0, 0), p=self.CTL_DATA)
+        self.smart_ctl.alignTo(
+            self.rootJ, offset=(rSz * xDr * 150, 0, 0), p=self.CTL_DATA
+        )
         ofs = self.smart_ctl.addOffsetGrp()
         self.rootJ.cstPar(ofs, mo=1)
 
@@ -222,7 +224,9 @@ class Hand(RigModule):
         rSz = self.rigSize * 10
         xDr = self.x_dir
         for j in proxyList:
-            JointNode(j).addProxyMesh(size=rSz, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(
+                size=rSz, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
+            )
 
     def channel_setup(self):
         self.smart_ctl.a.showAttr(t=1, r=1, s=1)
@@ -248,7 +252,7 @@ class Hand(RigModule):
         ctlSet = [self.smart_ctl]
         [ctlSet.extend(x) for x in self.ctlsArr]
         self.addCtlSet(ctlSet, pf=self.rigID)
-        self.anchor_setup_module({'anchorF1': self.rootJ})
+        self.anchor_setup_module({"anchorF1": self.rootJ})
         self.proxy_setup()
         self.vis_setup()
         self.channel_setup()

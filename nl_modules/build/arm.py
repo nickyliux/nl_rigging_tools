@@ -16,7 +16,7 @@ class Arm(RigModule):
     """Build arm component with given rigNode.
     e.g.
         n = Arm('lfArm0_RGN')  # n.__dict__
-        n.genSk()
+        n.genGuildSk()
         n.build()
     """
 
@@ -58,7 +58,7 @@ class Arm(RigModule):
         self.ikCstG = None
         self.ikH1 = None
 
-    def genSk(self):
+    def genGuildSk(self):
         self.genSk_module(["clavicle", "upr", "lwr", "palm", "ball"])
         # for i, name in enumerate(jnt_names):
         #     if name == "lwr":

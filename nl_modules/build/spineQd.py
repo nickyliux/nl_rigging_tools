@@ -39,25 +39,29 @@ class SpineQd(RigModule):
         self.crv = None
         self.crvRev = None
 
-    def genSk(self):
+    def genGuildSk(self):
         self.genSk_module(["rt", "md", "tp"])
 
     def createCtl(self):
-        rSz = self.rigSize
+        rSz = self.rigSize * 3
         rID = self.rigID
-        cogScale = (rSz * 0.8, rSz * 1.5, rSz * 2)
-        self.cog_ctl = CurveNode("cog_ctl", pf=rID, shape="trapezoid", scale=cogScale)
-        self.cog_ctl.cv_move(0, rSz * 80, 0)
-        self.tp_ctl = CurveNode("tp_ctl", pf=rID, shape="cube", scale=rSz * 3)
-        self.md_ctl = CurveNode(
-            "_md_ctl", pf=rID, shape="square", up="z", scale=rSz * 3
-        )
-        self.rt_ctl = CurveNode("rt_ctl", pf=rID, shape="cube", scale=rSz * 3)
+        # cogScale = (rSz * 0.8, rSz * 1.5, rSz * 2)
+        self.cog_ctl = CurveNode(
+            # "cog_ctl", pf=rID, shape="trapezoid"
+            "cog_ctl",
+            pf=rID,
+            shape="stick",
+            scale=rSz,
+        )  # , scale=cogScale)
+        # self.cog_ctl.cv_move(0, rSz * 80, 0)
+        self.tp_ctl = CurveNode("tp_ctl", pf=rID, shape="circleU", scale=rSz, up="-z")
+        self.md_ctl = CurveNode("_md_ctl", pf=rID, shape="square", up="z", scale=rSz)
+        self.rt_ctl = CurveNode("rt_ctl", pf=rID, shape="circleU", scale=rSz, up="-z")
         self.tangent_tp_ctl = CurveNode(
-            "tangent_tp_ctl", pf=rID, shape="stickS", scale=rSz * 1.5
+            "tangent_tp_ctl", pf=rID, shape="stickS", scale=rSz / 2
         )
         self.tangent_rt_ctl = CurveNode(
-            "tangent_rt_ctl", pf=rID, shape="stickS", scale=rSz * 1.5
+            "tangent_rt_ctl", pf=rID, shape="stickS", scale=rSz / 2
         )
         self.rigNode.setMsg(
             {

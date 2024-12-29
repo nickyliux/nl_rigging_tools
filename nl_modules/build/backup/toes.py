@@ -22,7 +22,7 @@
 #
 #
 #
-#     def genSk(self):
+#     def genGuildSk(self):
 #         s = self.rigSize
 #         root = self.genSkFrNames(["root"], pf=self.rigID)[0]
 #         root | self.SKL
@@ -52,7 +52,7 @@
 #
 #         self.build_module()
 #
-#         
+#
 #         s = self.rigSize
 #
 #         # self.setting = CurveNode("setting", pf=self.rigID, shape="sphere", scale=s * 0.3)

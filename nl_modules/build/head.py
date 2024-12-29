@@ -26,7 +26,7 @@ class Head(RigModule):
         self.jaw_fkc = None
         self.fkCtl = None
 
-    def genSk(self):
+    def genGuildSk(self):
         self.genSk_module(["st", "ed"])
         rID = self.rigID
         jaw_list = self.genSkFrNames(["jaw", "jawEnd"], pf=rID)
@@ -51,7 +51,9 @@ class Head(RigModule):
         rSz = self.rigSize
         CY = Color.YELLOW
         CR = Color.RED
-        self.head_fkc = CurveNode("head", pf=rID, sf="_fkc", scale=rSz * 5, color=CY)
+        self.head_fkc = CurveNode(
+            "head", pf=rID, sf="_fkc", shape="circleU", scale=rSz * 5, color=CY
+        )
         self.jaw_fkc = CurveNode("jaw", pf=rID, sf="_fkc", up="z", scale=rSz, color=CR)
 
         self.rigNode.setMsg(

@@ -16,7 +16,7 @@ class Leg(RigModule):
     """Build leg component with given rigNode.
     e.g.
         n = Leg('lfArm0_RGN')  # n.__dict__
-        n.genSk()
+        n.genGuildSk()
         n.build()
     """
 
@@ -70,7 +70,7 @@ class Leg(RigModule):
         self.ikH1 = None
         self.ballG_ikc = None
 
-    def genSk(self):
+    def genGuildSk(self):
         self.genSk_module(["hip", "upr", "lwr", "palm", "ball", "tip"])
 
         if self.TOE_BONES:

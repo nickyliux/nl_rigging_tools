@@ -50,7 +50,7 @@ stateDiagram
     rfc: Framework Classes
     state rfc {
         [*] --> Attribute
-        [*] --> Attribute_Holder
+        [*] --> AttributeHolder
         [*] --> DepNode
         [*] --> Dimension
         [*] --> RibbonNode

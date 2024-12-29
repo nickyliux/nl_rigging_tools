@@ -31,7 +31,7 @@ class SpineQdCrv(rig_module.RigModule):
 
         self.joints = []
 
-    def genSk(self):
+    def genGuildSk(self):
         self.genSk_module(["st", "md", "ed"])
 
     def build(self):

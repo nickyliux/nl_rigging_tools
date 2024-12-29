@@ -37,32 +37,41 @@ class SpinePro(rig_module.RigModule):
         self.ikCtl = None
         self.fkCtl = None
 
-    def genSk(self):
+    def genGuildSk(self):
         self.genSk_module(["st", "ed"])
 
     def build(self):
 
         self.build_module()
 
-        
         s = self.rigSize
 
         DY = Color.D_YELLOW
 
-        self.setting = CurveNode("setting", pf=self.rigID, shape="sphere", scale=s * 0.4)
+        self.setting = CurveNode(
+            "setting", pf=self.rigID, shape="sphere", scale=s * 0.4
+        )
         self.setting.a.message >> self.rigNode.a.setting
 
-        self.cog_ctl = CurveNode("cog_ctl", pf=self.rigID, shape="cog", scale=s * 8, color=DY)
+        self.cog_ctl = CurveNode(
+            "cog_ctl", pf=self.rigID, shape="cog", scale=s * 8, color=DY
+        )
         self.cog_ctl.a.message >> self.rigNode.a.cog_ctl
 
-        self.up_ikc = CurveNode("up_ikc", pf=self.rigID, shape="cube", scale=s * 7, color=DY)
+        self.up_ikc = CurveNode(
+            "up_ikc", pf=self.rigID, shape="cube", scale=s * 7, color=DY
+        )
         self.up_ikc.cv_scale(1.2, 0.3, 1)
         self.up_ikc.a.message >> self.rigNode.a.up_ikc
 
-        self.md_ikc = CurveNode("md_ikc", pf=self.rigID, shape="square", scale=s * 4, color=DY)
+        self.md_ikc = CurveNode(
+            "md_ikc", pf=self.rigID, shape="square", scale=s * 4, color=DY
+        )
         self.md_ikc.a.message >> self.rigNode.a.md_ikc
 
-        self.lw_ikc = CurveNode("lw_ikc", pf=self.rigID, shape="cube", scale=s * 7, color=DY)
+        self.lw_ikc = CurveNode(
+            "lw_ikc", pf=self.rigID, shape="cube", scale=s * 7, color=DY
+        )
         self.lw_ikc.cv_scale(1.2, 0.3, 1)
         self.lw_ikc.a.message >> self.rigNode.a.lw_ikc
 
@@ -206,7 +215,8 @@ class SpinePro(rig_module.RigModule):
             c.a.ro.set(3)
 
         self.addCtlSet(
-            self.fkCtl + self.ikCtl + [self.setting, self.cog_ctl, self.cog_gmb], pf=self.rigID
+            self.fkCtl + self.ikCtl + [self.setting, self.cog_ctl, self.cog_gmb],
+            pf=self.rigID,
         )
 
         self.anchor_setup()
