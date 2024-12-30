@@ -91,7 +91,10 @@ class Arm(RigModule):
         self.upr_fkc = CurveNode("upr_fkc", pf=rID, up="x", scale=rSz)
         self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", scale=rSz)
         self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz)
-        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=(rSz * 2, rSz, rSz * 3))
+        up = "x" if xDr == 1 else "-x"
+        self.ikc = CurveNode(
+            "ikc", pf=rID, shape="circleU", up=up, rotate=(-xDr * 90, 0, 0)
+        )  # , scale=(rSz * 2, rSz, rSz * 3))
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz / 2)
         self.rigNode.setMsg(
             {
