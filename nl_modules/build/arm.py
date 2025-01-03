@@ -47,6 +47,7 @@ class Arm(RigModule):
         self.palm_fkc = None
         self.pvc = None
         self.ikc = None
+        self.ball_ikc = None
         self.ikCtl = None
         self.fkCtl = None
         self.toeWiggleG = None
@@ -96,6 +97,8 @@ class Arm(RigModule):
             "ikc", pf=rID, shape="circleU", up=up, rotate=(-xDr * 90, 0, 0)
         )  # , scale=(rSz * 2, rSz, rSz * 3))
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz / 2)
+        self.ball_ikc = CurveNode("ball_ikc", pf=rID, shape="square", up="x", scale=rSz)
+
         self.rigNode.setMsg(
             {
                 "setting": self.setting,
@@ -105,20 +108,20 @@ class Arm(RigModule):
                 "palm_fkc": self.palm_fkc,
                 "ikc": self.ikc,
                 "pvc": self.pvc,
+                "ball_ikc": self.ball_ikc,
             }
         )
 
     def twistBones_setup(self):
+        rID = self.rigID
         jnt_names = ["radius", "radiusEnd"]
-        radius_JC = self.genSkFrNames(jnt_names, pf=self.rigID)
+        radius_JC = self.genSkFrNames(jnt_names, pf=rID)
         jnt_names = ["ulna", "ulnaEnd"]
-        ulna_JC = self.genSkFrNames(jnt_names, pf=self.rigID)
+        ulna_JC = self.genSkFrNames(jnt_names, pf=rID)
         (radius_JC[0], ulna_JC[0]) | self.lwr
 
-        radius_loc = LocNode(
-            "radius_loc", pf=self.rigID, align=radius_JC[1], p=self.palm
-        )
-        ulna_loc = LocNode("ulna_loc", pf=self.rigID, align=ulna_JC[1], p=self.palm)
+        radius_loc = LocNode("radius_loc", pf=rID, align=radius_JC[1], p=self.palm)
+        ulna_loc = LocNode("ulna_loc", pf=rID, align=ulna_JC[1], p=self.palm)
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
 
@@ -154,15 +157,16 @@ class Arm(RigModule):
         #     proxyScale >> fkJ.a.s
 
     def build_ik(self):
-        logging.info(self.rigID)
-        pvc_guide = DagNode(self.rigID + "_pvc_guide")
+        rID = self.rigID
+        logging.info(rID)
+        pvc_guide = DagNode(rID + "_pvc_guide")
+        ball_guide = DagNode(rID + "_ball_guide")
         self.ikc.alignTo(self.palm)
         self.pvc.alignTo(pvc_guide)
-        rigID = self.rigID
         self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_PART)
         ikH1 = IkNode(
             "1",
-            pf=rigID,
+            pf=rID,
             sj=self.upr,
             ee=self.palm,
             jsf="_ik",
@@ -174,8 +178,8 @@ class Arm(RigModule):
             scaleFix=self.masterC.a.globalScale,
             RIG_DATA=self.RIG_DATA,
         )
-        ikH2 = IkNode("2", pf=rigID, sj=self.palm, ee=self.ball, jsf="_ik")
-        self.ikCstG = GroupNode("ikCstG", pf=rigID, align=self.palm)
+        ikH2 = IkNode("2", pf=rID, sj=self.palm, ee=self.ball, jsf="_ik")
+        self.ikCstG = GroupNode("ikCstG", pf=rID, align=self.palm)
         if self.x_dir == 1:
             for g in (self.ikCstG,):
                 g.a.rx.set2(180, add=1)
@@ -187,7 +191,7 @@ class Arm(RigModule):
         self.pvc_line = CurveNode.buildLineLinked(
             self.joints_ik[2],
             self.pvc,
-            pf=self.rigID,
+            pf=rID,
             dspType=2,
             p=self.IK_PART,
         )
@@ -203,7 +207,11 @@ class Arm(RigModule):
         # proxyScale >> self.ikc.a.s
         # for ikJ in self.joints_ik[3:]:
         #     proxyScale >> ikJ.a.s
-        self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal]
+        self.ball_ikc.alignTo(ball_guide)
+        self.ball_ikc | self.ikc
+        self.ball_ikc.cstParT(ikH1, mo=1)
+
+        self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal, self.ball_ikc]
         self.ikH1 = ikH1
 
     # def add_pvcRota_JC(self):
@@ -262,11 +270,12 @@ class Arm(RigModule):
         lw_bend     --
                     foot
         """
-        logging.info(self.rigID)
+        rID = self.rigID
+        logging.info(rID)
 
         ribbonUp = RibbonNode(
             self.upr,
-            pf=self.rigID + "_up_",
+            pf=rID + "_up_",
             rbJNum=self.RBN_JNT_NUM,
             volMode=1,
             scaleFix=self.masterC.a.globalScale,
@@ -275,7 +284,7 @@ class Arm(RigModule):
         )
         ribbonLw = RibbonNode(
             self.lwr,
-            pf=self.rigID + "_lw_",
+            pf=rID + "_lw_",
             rbJNum=self.RBN_JNT_NUM,
             volMode=2,
             scaleFix=self.masterC.a.globalScale,
@@ -300,9 +309,9 @@ class Arm(RigModule):
         upLoc = ribbonUp.mid_loc
         lwLoc = ribbonLw.mid_loc
         grp = self.CTL_DATA
-        up_bend = CurveNode("up_bend", pf=self.rigID, align=upLoc, addOfs=1, p=grp)
-        lw_bend = CurveNode("lw_bend", pf=self.rigID, align=lwLoc, addOfs=1, p=grp)
-        md_bend = CurveNode("md_bend", pf=self.rigID, align=self.lwr, addOfs=1, p=grp)
+        up_bend = CurveNode("up_bend", pf=rID, align=upLoc, addOfs=1, p=grp)
+        lw_bend = CurveNode("lw_bend", pf=rID, align=lwLoc, addOfs=1, p=grp)
+        md_bend = CurveNode("md_bend", pf=rID, align=self.lwr, addOfs=1, p=grp)
 
         self.all_bend = [up_bend, lw_bend, md_bend]
         for b in self.all_bend:
@@ -323,22 +332,6 @@ class Arm(RigModule):
         volPower >> ribbonLw.volPower
 
         self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
-
-    # def anchor_setup(self):
-    #     anchorF1 = LocNode(
-    #         "anchorF1", pf=self.rigID, size=self.rigSize * 10, color=Color.PINK
-    #     )
-    #     anchorF1.a.message >> self.rigNode.a.anchorF1
-    #     anchorM1 = LocNode(
-    #         "anchorM1", pf=self.rigID, size=self.rigSize * 10, color=Color.L_BLUE
-    #     )
-    #     anchorM1.a.message >> self.rigNode.a.anchorM1
-    #     (anchorF1, anchorM1) | self.masterC
-    #     anchorF1.snapTo(self.clavicle)
-    #     anchorF1.cstPar(self.clavicle_fkc.offset, mo=1)
-    #     self.palm.cstPar(anchorM1)
-    #     anchorF1.hide()
-    #     anchorM1.hide()
 
     def vis_setup(self):
         # visGrp = common.addVisOption(self.visC, self.rigID)
@@ -380,6 +373,7 @@ class Arm(RigModule):
     def channel_setup(self):
         self.setting.a.showAttr()
         self.pvc.a.showAttr(t=1)
+        self.ball_ikc.a.showAttr(r=1)
         for ctl in self.fkCtl + [self.ikc, self.ikc_gimbal]:
             ctl.a.showAttr(t=1, r=1)
         for ctl in self.all_bend or []:

@@ -334,7 +334,7 @@ class IkNode(DagNode):
         )
         softIkPosGrp = GroupNode(softJ[0].name + "_posGrp", snap=self.ee, p=self.parent)
         softIkPosGrp.cstPoi(ikH)
-        softJ[1].cstPoi(self.node)
+        softJ[1].cstPoi(self.node.addOffsetGrp())
 
         s = self.ikc.a.add("softIK", min=0, dv=0)
         D = self.chainLen

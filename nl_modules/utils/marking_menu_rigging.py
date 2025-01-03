@@ -159,7 +159,8 @@ def add_IK(*args):
     sel = mc.ls(sl=1, type="joint")
     if len(sel) == 2:
         solver = common.IK_SOLVER[args[0]]
-        mc.ikHandle(sol=solver, name=f"{sel[0]}_{solver[2:5]}_ikh", s="sticky")
+        solverCode = solver[2:5].upper()
+        mc.ikHandle(sol=solver, name=f"{sel[0]}_{solverCode}_ikh", s="sticky")
     else:
         mc.confirmDialog(t="Info", m="Pls select start & end joint", b="OK")
 
