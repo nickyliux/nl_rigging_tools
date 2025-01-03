@@ -324,58 +324,65 @@ class LegQd(RigModule):
     def build_toes(self):
         rID = self.rigID
         rSz = self.rigSize
+        xDr = self.x_dir
         logging.info(rID)
         self.toesCtlsList = []
-        # toeLocList = []
         fix = self.masterC.a.globalScale
         data = self.RIG_DATA
-        xDr = self.x_dir
-        scale = xDr * rSz / 6
+        scale = xDr * rSz / 8
 
-        for toeJs in self.toesJntList[1:]:
-            t0 = toeJs[0]
-            t1 = toeJs[1]
-            t2 = toeJs[2]
-            t3 = toeJs[3]
-            toe_ikH1 = IkNode(
-                t0, sj=t0, ee=t1, sol=0, scaleFix=fix, RIG_DATA=data, p=self.toesRootJ
+        for toeJs in self.toesJntList:
+            dupTgt = DagNode(toeJs[2])
+            IkNode(
+                toeJs[1],
+                sj=toeJs[1],
+                ee=dupTgt,
+                sol=0,
+                scaleFix=fix,
+                RIG_DATA=data,
+                vis=0,
+                p=self.ball_fkc,
             )
-            mainCtl = GroupNode(rID + "_toe_loc_#", align=t2, addOfs=1, p=self.ball_fkc)
-            # toe_loc = LocNode(
-            #     rID + "_toe_loc_#", align=t2, addOfs=1, p=self.ball_fkc, size=5
-            # )
-            # mainCtl = CurveNode(
-            #     rID + "_toeCtl_#",
-            #     shape="stickC",
-            #     up="-z",
-            #     align=t2,
-            #     addOfs=1,
-            #     scale=scale,
-            #     p=self.ball_fkc,
-            # )
-            toe_ikH2 = IkNode(
-                t1, sj=t1, ee=t2, sol=0, scaleFix=fix, RIG_DATA=data, p=mainCtl
+            # Setup IK
+            ctl1 = CurveNode(
+                dupTgt + "_ctl",
+                shape="stickC",
+                align=dupTgt,
+                up="-z",
+                scale=scale,
+                p=self.ball_fkc,
+                addOfs=1,
             )
-            toe_ikH3 = IkNode(
-                t2, sj=t2, ee=t3, sol=0, scaleFix=fix, RIG_DATA=data, p=mainCtl
+            rootJ = dupTgt.duplicate()
+            endJ = rootJ.allChildrenJt[-1]
+            if endJ not in rootJ.children:
+                endJ | rootJ
+                rootJ.children[0].delete()
+            rootJ.rename(rootJ.name + "_ikj")
+            endJ.rename(rootJ.name + "_end_ikj")
+            IkNode(
+                rootJ + "_ikh",
+                sj=rootJ,
+                ee=endJ,
+                sol=0,
+                scaleFix=fix,
+                RIG_DATA=data,
+                vis=0,
+                p=ctl1,
             )
-
+            rootJ.a.r >> dupTgt.a.r
+            # Add other fkc
             ctlList = []
-            for jnt in toeJs[3:4]:
+            fkToeList = toeJs[3:-1]
+            for jnt in fkToeList:
                 c = CurveNode(
-                    jnt + "_ctl",
-                    shape="stickC",
-                    align=jnt,
-                    up="x",
-                    scale=scale,
-                    rotate=(90, 0, 0),
+                    jnt + "_ctl", shape="stickC", align=jnt, up="-z", scale=scale
                 )
                 ctlList.append(c)
 
-            self.fkGivenCtl(toeJs[3:4], ctlList, p=self.CTL_DATA, ori=1)
+            self.fkGivenCtl(fkToeList, ctlList, p=self.CTL_DATA, ori=1)
             self.toesCtlsList.append(ctlList)
-
-            mc.hide(toe_ikH1, toe_ikH2, toe_ikH3)
+            self.toesCtlsList.append([ctl1])
 
         # splay = self.ball_fkc.a.add("splay", min=-5, max=5)
         # toeCount = len(self.toesJntList)

@@ -48,6 +48,7 @@ class IkNode(DagNode):
         scaleFix=None,
         quat=None,
         RIG_DATA=None,
+        vis=1,
         p=None,
     ):
         if pf and pf[-1] != "_":
@@ -88,6 +89,8 @@ class IkNode(DagNode):
         self.localStretch = limbScale
         self.x_dir = 1 if self.ee.a.tx.get() > 0 else -1
         self.RIG_DATA = RIG_DATA
+        if vis == 0:
+            mc.hide(self)
         self
 
     def createIK(

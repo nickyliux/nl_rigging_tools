@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: lfLegQd.ma
-//Last modified: Sun, Dec 29, 2024 12:28:40 AM
+//Last modified: Fri, Jan 03, 2025 11:54:11 PM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "HIKSolverNode" -nodeType "HIKCharacterNode" -nodeType "HIKState2SK"
@@ -15,7 +15,7 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Home v2009 (Build: 22631)";
-fileInfo "UUID" "6E548F0C-4BE3-044E-1E98-54A280156156";
+fileInfo "UUID" "CA63D1ED-43FA-1296-E071-7BBF2FF0DB0D";
 createNode transform -n "module_grp";
 	rename -uid "3F6958F6-4253-676A-51E6-CA9FE9573FBE";
 	addAttr -ci true -sn "mirrorCode" -ln "mirrorCode" -dt "string";
@@ -923,7 +923,7 @@ createNode nurbsCurve -n "toe00_4_guideShape" -p "toe00_4_guide";
 	setAttr ".adot" yes;
 createNode transform -n "toe00_1_guide" -p "toe00_2_guide";
 	rename -uid "13138FAF-4EAD-1F3E-30CD-3C9A4A1BDEC7";
-	setAttr ".t" -type "double3" -5 0 -9 ;
+	setAttr ".t" -type "double3" -5 8.8817841970012523e-16 -12 ;
 createNode nurbsCurve -n "toe00_1_guideShape" -p "toe00_1_guide";
 	rename -uid "382A5C4F-4D74-74F0-BCD9-39B808B23075";
 	setAttr -k off ".v";
@@ -1078,14 +1078,13 @@ createNode transform -n "toe01_3_guide" -p "toe01_2_guide";
 createNode transform -n "toe01_4_guide" -p "toe01_3_guide";
 	rename -uid "36DAC40F-4285-CA07-ED62-B68C7D57E9EB";
 	setAttr ".t" -type "double3" 4 -2.2937707964326551e-15 1.0616507672978059e-14 ;
-	setAttr ".r" -type "double3" 0 90 0 ;
+	setAttr ".r" -type "double3" 0 70 0 ;
 createNode transform -n "toe01_5_guide" -p "toe01_4_guide";
 	rename -uid "C0F55889-44A8-FFB6-1199-9A8110291009";
 	setAttr ".t" -type "double3" 2 1.4379889367229222e-15 -3.3306690738754696e-16 ;
-	setAttr ".r" -type "double3" 0 -90 0 ;
 createNode transform -n "toe01_1_guide" -p "toe01_2_guide";
 	rename -uid "531B5FB9-467F-9842-391B-BCA7EA451D18";
-	setAttr ".t" -type "double3" -5 0 -9 ;
+	setAttr ".t" -type "double3" -5 8.8817841970012523e-16 -12 ;
 createNode transform -n "toe02_2_guide_ZRO" -p "toesRoot_guide_ofs";
 	rename -uid "7E88181A-4F45-24DB-F9E3-EF9278091AA4";
 	setAttr ".t" -type "double3" 0 2.6645352591003761e-16 13 ;
@@ -1100,14 +1099,13 @@ createNode transform -n "toe02_3_guide" -p "toe02_2_guide";
 createNode transform -n "toe02_4_guide" -p "toe02_3_guide";
 	rename -uid "4D805001-4C7F-2014-06E9-90A29914D0E1";
 	setAttr ".t" -type "double3" 4 -2.2937707964326551e-15 9.7283292532779342e-15 ;
-	setAttr ".r" -type "double3" 0 90 0 ;
+	setAttr ".r" -type "double3" 0 70 0 ;
 createNode transform -n "toe02_5_guide" -p "toe02_4_guide";
 	rename -uid "CF66827F-4A09-CDE3-954B-4292445E9C60";
 	setAttr ".t" -type "double3" 2 1.4379889367229222e-15 -3.3306690738754696e-16 ;
-	setAttr ".r" -type "double3" 0 -90 0 ;
 createNode transform -n "toe02_1_guide" -p "toe02_2_guide";
 	rename -uid "B8A05C5F-4AA4-724F-511D-7D8388FFD1AE";
-	setAttr ".t" -type "double3" -5 0 -9 ;
+	setAttr ".t" -type "double3" -5 8.8817841970012523e-16 -12 ;
 createNode transform -n "toe03_2_guide_ZRO" -p "toesRoot_guide_ofs";
 	rename -uid "B2B152CB-4F00-243E-FEA4-81B924C04FF5";
 	setAttr ".t" -type "double3" 2 2.6645352591003761e-16 13 ;
@@ -1122,14 +1120,13 @@ createNode transform -n "toe03_3_guide" -p "toe03_2_guide";
 createNode transform -n "toe03_4_guide" -p "toe03_3_guide";
 	rename -uid "FFA798B3-4E9D-59EC-2EA9-38AB56A386E6";
 	setAttr ".t" -type "double3" 4 -5.174139570324052e-16 1.0616507672978059e-14 ;
-	setAttr ".r" -type "double3" 0 90 0 ;
+	setAttr ".r" -type "double3" 0 70 0 ;
 createNode transform -n "toe03_5_guide" -p "toe03_4_guide";
 	rename -uid "ACEF7A86-4979-3175-BADA-C4AA176C1D92";
 	setAttr ".t" -type "double3" 2 1.4379889367229222e-15 -3.3306690738754696e-16 ;
-	setAttr ".r" -type "double3" 0 -90 0 ;
 createNode transform -n "toe03_1_guide" -p "toe03_2_guide";
 	rename -uid "949EFD49-4D26-4102-110C-FF92D96A6524";
-	setAttr ".t" -type "double3" -5 0 -9 ;
+	setAttr ".t" -type "double3" -5 8.8817841970012523e-16 -12 ;
 createNode transform -n "toe04_2_guide_ZRO" -p "toesRoot_guide_ofs";
 	rename -uid "28BDAD83-4117-1CDD-83F1-DABBB4F1C338";
 	setAttr ".t" -type "double3" 4 2.6645352591003761e-16 13 ;
@@ -1144,14 +1141,13 @@ createNode transform -n "toe04_3_guide" -p "toe04_2_guide";
 createNode transform -n "toe04_4_guide" -p "toe04_3_guide";
 	rename -uid "90F76AD1-47B8-F698-B4EF-58A3CD9D9BF0";
 	setAttr ".t" -type "double3" 4 -1.1175554993433914e-14 1.0616507672978059e-14 ;
-	setAttr ".r" -type "double3" 0 90 0 ;
+	setAttr ".r" -type "double3" 0 70 0 ;
 createNode transform -n "toe04_5_guide" -p "toe04_4_guide";
 	rename -uid "3C890558-45A2-A042-BE5B-99B5DCE421BE";
 	setAttr ".t" -type "double3" 2 1.4379889367229222e-15 -3.3306690738754696e-16 ;
-	setAttr ".r" -type "double3" 0 -90 0 ;
 createNode transform -n "toe04_1_guide" -p "toe04_2_guide";
 	rename -uid "7B986E76-4074-7CE4-5DCD-19A5D2EEEAC6";
-	setAttr ".t" -type "double3" -5 0 -9 ;
+	setAttr ".t" -type "double3" -5 8.8817841970012523e-16 -12 ;
 createNode pointConstraint -n "toesRoot_guide_pointConstraint1" -p "toesRoot_guide";
 	rename -uid "09EB2B93-41F9-CC28-28C9-1DA8634879DE";
 	addAttr -dcb 0 -ci true -k true -sn "w0" -ln "palm_guideW0" -dv 1 -min 0 -at "double";
@@ -1379,7 +1375,7 @@ createNode nurbsCurve -n "line_09Shape" -p "line_09";
 		1 1 0 no 3
 		2 0 1
 		2
-		14 14 -49
+		14 17 -49
 		14 5 -44
 		;
 	setAttr ".adot" yes;
@@ -1455,7 +1451,7 @@ createNode nurbsCurve -n "line_12Shape" -p "line_12";
 		2 0 1
 		2
 		14.000000000000011 1.2412295168563614 -36.631919426697337
-		14.000000000000009 1.9252698035076992 -34.752534185125519
+		14.000000000000009 1.2412295168563618 -34.631919426697337
 		;
 	setAttr ".adot" yes;
 createNode transform -n "line_13" -p "line_grp2";
@@ -1479,7 +1475,7 @@ createNode nurbsCurve -n "line_13Shape" -p "line_13";
 		1 1 0 no 3
 		2 0 1
 		2
-		12 14 -49
+		12 17 -49
 		12 5 -44
 		;
 	setAttr ".adot" yes;
@@ -1555,7 +1551,7 @@ createNode nurbsCurve -n "line_16Shape" -p "line_16";
 		2 0 1
 		2
 		12 1.2412295168563614 -36.631919426697337
-		11.999999999999998 1.9252698035076992 -34.752534185125519
+		11.999999999999998 1.2412295168563618 -34.631919426697337
 		;
 	setAttr ".adot" yes;
 createNode transform -n "line_17" -p "line_grp2";
@@ -1579,7 +1575,7 @@ createNode nurbsCurve -n "line_17Shape" -p "line_17";
 		1 1 0 no 3
 		2 0 1
 		2
-		10 14 -49
+		10 17 -49
 		10 5 -44
 		;
 	setAttr ".adot" yes;
@@ -1655,7 +1651,7 @@ createNode nurbsCurve -n "line_20Shape" -p "line_20";
 		2 0 1
 		2
 		10.000000000000002 1.2412295168563618 -36.631919426697337
-		10 1.9252698035076996 -34.752534185125519
+		10 1.2412295168563623 -34.631919426697337
 		;
 	setAttr ".adot" yes;
 createNode transform -n "line_21" -p "line_grp2";
@@ -1679,7 +1675,7 @@ createNode nurbsCurve -n "line_21Shape" -p "line_21";
 		1 1 0 no 3
 		2 0 1
 		2
-		8 14 -49
+		7.9999999999999991 17 -49
 		8 5 -44
 		;
 	setAttr ".adot" yes;
@@ -1755,7 +1751,7 @@ createNode nurbsCurve -n "line_24Shape" -p "line_24";
 		2 0 1
 		2
 		8.0000000000000018 1.2412295168563614 -36.631919426697337
-		8 1.9252698035076992 -34.752534185125519
+		8 1.2412295168563618 -34.631919426697337
 		;
 	setAttr ".adot" yes;
 createNode transform -n "line_25" -p "line_grp2";
@@ -1779,7 +1775,7 @@ createNode nurbsCurve -n "line_25Shape" -p "line_25";
 		1 1 0 no 3
 		2 0 1
 		2
-		6 14 -49
+		5.9999999999999991 17 -49
 		6 5 -44
 		;
 	setAttr ".adot" yes;
@@ -1994,8 +1990,8 @@ createNode nurbsCurve -n "line_08Shape" -p "line_08";
 createNode transform -s -n "persp";
 	rename -uid "2CFF45DD-487A-9CD1-767B-A089B899D93C";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 93.009949114244279 97.719814210622104 29.609575664037003 ;
-	setAttr ".r" -type "double3" -24.338352728518558 -304.19999999954115 2.8292552375901386e-15 ;
+	setAttr ".t" -type "double3" 82.21409414225252 82.870263765412844 22.96995092385152 ;
+	setAttr ".r" -type "double3" -18.938352728554651 -306.19999999947839 -2.6926211987774842e-15 ;
 	setAttr -cb on ".ro";
 	setAttr ".rp" -type "double3" 9.0523144535836764e-12 -9.5923269327613525e-13 -1.4551915228366852e-11 ;
 	setAttr ".rpt" -type "double3" -9.0526132061662243e-12 -3.9591234438924834e-12 -1.892917819089332e-12 ;
@@ -2003,11 +1999,11 @@ createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "82C3F9B2-4980-6719-29B8-159665D78FA8";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999979;
-	setAttr ".coi" 113.63385476280942;
+	setAttr ".coi" 119.37799315866161;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
-	setAttr ".tp" -type "double3" 9.9999999999999929 47.19901233134307 -29.47448476907665 ;
+	setAttr ".tp" -type "double3" 9.9999999999999929 1.4791141972893971e-31 -41.629261865363503 ;
 	setAttr ".hc" -type "string" "viewSet -p %camera";
 createNode transform -s -n "top";
 	rename -uid "C26C709E-427B-9FAF-006E-479957AA5F62";
@@ -2098,20 +2094,20 @@ parent -s -nc -r -add "|module_grp|master_guide|toesRoot_guide|toesRoot_guide_of
 parent -s -nc -r -add "|module_grp|master_guide|toesRoot_guide|toesRoot_guide_ofs|toe00_2_guide_ZRO|toe00_2_guide|toe00_2_guideShape" "toe03_2_guide" ;
 parent -s -nc -r -add "|module_grp|master_guide|toesRoot_guide|toesRoot_guide_ofs|toe00_2_guide_ZRO|toe00_2_guide|toe00_2_guideShape" "toe04_2_guide" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "E2992E49-4399-EE44-AFA2-BFA57735DAE0";
+	rename -uid "AEA3A4BB-47F1-173C-60CA-009F77843B11";
 	setAttr -s 2 ".lnk";
 	setAttr -s 2 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "3B41E615-4DD2-B2A9-B2C9-F4AD259E0C77";
+	rename -uid "34EC0157-436C-26B1-B782-E7BB4007932B";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "56FE9DCA-49DC-DC1E-E9DF-E39934439C79";
+	rename -uid "8FAF8233-4B68-590B-9CC3-1E8C4EB79AE1";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "B8B5E1A1-4C3C-418B-536B-D4BBDFA19679";
+	rename -uid "99DDC4BA-47D9-3475-ABE3-6FBB97E49B53";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "BC19330E-4E8B-4910-BB8A-238FB66CBBA1";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "5A64F9CC-4F48-D8A9-76F8-3FA1909B2A67";
+	rename -uid "8627F7B3-4699-707C-97C6-598A78CA75C9";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "47ABDCF5-4400-C307-437A-E4AF35DAB19B";
 	setAttr ".g" yes;

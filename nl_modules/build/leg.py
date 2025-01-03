@@ -71,10 +71,11 @@ class Leg(RigModule):
         self.ballG_ikc = None
 
     def genGuildSk(self):
+        rID = self.rigID
         self.genSk_module(["hip", "upr", "lwr", "palm", "ball", "tip"])
 
         if self.TOE_BONES:
-            self.toesRootJ = self.genSkFrNames(["toesRoot"], pf=self.rigID)[0]
+            self.toesRootJ = self.genSkFrNames(["toesRoot"], pf=rID)[0]
             self.toesRootJ | self.SKL_DATA
             self.rigNode.setMsg({"toesRootJ": self.toesRootJ})
             toe_names = [
@@ -85,7 +86,7 @@ class Leg(RigModule):
                 ["toe04_1", "toe04_2", "toe04_3", "toe04_4", "toe04_5"],
             ]
             for names in toe_names:
-                fgr_jnts = self.genSkFrNames(names, pf=self.rigID, r=0.3)
+                fgr_jnts = self.genSkFrNames(names, pf=rID)
                 fgr_jnts[0].freezeXf()
                 fgr_jnts[0] | self.toesRootJ
 
@@ -265,37 +266,54 @@ class Leg(RigModule):
     def build_toes(self):
         rID = self.rigID
         rSz = self.rigSize
+        xDr = self.x_dir
         logging.info(rID)
         self.toesCtlsList = []
-        # toeLocList = []
         fix = self.masterC.a.globalScale
         data = self.RIG_DATA
-        dir = self.x_dir
-        scale = dir * rSz / 8
-
+        scale = xDr * rSz / 10
         for toeJs in self.toesJntList:
-            t0 = toeJs[0]
-            t1 = toeJs[1]
-            t2 = toeJs[2]
-            toe_ikH1 = IkNode(
-                t0, sj=t0, ee=t1, sol=0, scaleFix=fix, RIG_DATA=data, p=self.toesRootJ
+            dupTgt = DagNode(toeJs[1])
+            # Setup IK
+            ctl1 = CurveNode(
+                dupTgt + "_ctl",
+                shape="stickC",
+                align=dupTgt,
+                up="-z",
+                scale=scale,
+                p=self.ball_fkc,
+                addOfs=1,
             )
-            toe_loc = LocNode(
-                rID + "_toe_loc_#", align=t1, addOfs=1, p=self.ball_fkc, size=5
+            rootJ = dupTgt.duplicate()
+            endJ = rootJ.allChildrenJt[-1]
+            if endJ not in rootJ.children:
+                endJ | rootJ
+                rootJ.children[0].delete()
+            rootJ.rename(rootJ.name + "_ikj")
+            endJ.rename(rootJ.name + "_end_ikj")
+            IkNode(
+                rootJ + "_ikh",
+                sj=rootJ,
+                ee=endJ,
+                sol=0,
+                scaleFix=fix,
+                RIG_DATA=data,
+                vis=0,
+                p=ctl1,
             )
-            toe_ikH2 = IkNode(
-                t1, sj=t1, ee=t2, sol=0, scaleFix=fix, RIG_DATA=data, p=toe_loc
-            )
+            rootJ.a.r >> dupTgt.a.r
+            # Add other fkc
             ctlList = []
-            for jnt in toeJs[2:-1]:
+            fkToeList = toeJs[2:-1]
+            for jnt in fkToeList:
                 c = CurveNode(
                     jnt + "_ctl", shape="stickC", align=jnt, up="-z", scale=scale
                 )
                 ctlList.append(c)
 
-            self.fkGivenCtl(toeJs[2:-1], ctlList, p=self.CTL_DATA, ori=1)
+            self.fkGivenCtl(fkToeList, ctlList, p=self.CTL_DATA, ori=1)
             self.toesCtlsList.append(ctlList)
-            mc.hide(toe_ikH1, toe_ikH2, toe_loc)
+            self.toesCtlsList.append([ctl1])
 
         # splay = self.ball_fkc.a.add("splay", min=-5, max=5)
         # toeCount = len(self.toesJntList)
@@ -489,11 +507,11 @@ class Leg(RigModule):
         aim = (self.x_dir, 0, 0)
         for j in proxyList:
             JointNode(j).addProxyMesh(
-                size=rSz * 6, aimDir=aim, skipEnd=1, p=self.PRX_GRP
+                size=rSz * 5, aimDir=aim, skipEnd=1, p=self.PRX_GRP
             )
         for j in proxyToeList:
             JointNode(j).addProxyMesh(
-                size=rSz * 2, aimDir=aim, skipEnd=1, p=self.PRX_GRP
+                size=rSz * 1.5, aimDir=aim, skipEnd=1, p=self.PRX_GRP
             )
 
         if proxyList:
