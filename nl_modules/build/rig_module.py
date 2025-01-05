@@ -502,3 +502,39 @@ class RigModule(RigBase):
         bank = self.ikc.a.add("footBank")
         (bank < 0).setCdn(ifTrue=bank, ifFalse=0) >> inRollG.a.rz
         (bank > 0).setCdn(ifTrue=bank, ifFalse=0) >> outRollG.a.rz
+
+    def singleDigit_setup(self, dupTgt, scale):
+        """ik setup for single digit
+        connectTo:
+             is for finger and is what the root ik joint 's rotation is driving
+        """
+        from nl_modules.nodel.ik_node import IkNode
+
+        dupTgt = DagNode(dupTgt)
+        ctl = CurveNode(
+            dupTgt + "_ctl",
+            shape="stickC",
+            align=dupTgt,
+            up="-z",
+            scale=scale,
+            p=self.ball_fkc,
+            addOfs=1,
+        )
+        rootJ = dupTgt.duplicate()
+        endJ = rootJ.allChildrenJt[-1]
+        if endJ not in rootJ.children:
+            endJ | rootJ
+            rootJ.children[0].delete()
+        rootJ.rename(rootJ.name + "_ikj")
+        endJ.rename(rootJ.name + "_end_ikj")
+        ikh = IkNode(
+            rootJ,
+            sj=rootJ,
+            ee=endJ,
+            sol=0,
+            scaleFix=self.masterC.a.globalScale,
+            RIG_DATA=self.RIG_DATA,
+            vis=0,
+            p=ctl,
+        )
+        return ctl, ikh, rootJ

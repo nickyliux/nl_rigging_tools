@@ -18,6 +18,7 @@ class Hand(RigModule):
         self.smart_ctl = None
         self.fgrsArr = None
         self.ctlsArr = None
+        self.ball_fkc = None
 
     def genGuildSk(self):
         self.genSk_module(["handJ"])
@@ -51,13 +52,17 @@ class Hand(RigModule):
                 root.a.segmentScaleCompensate.set(0)
             self.build_fk()
             self.smart_setup()
+            self.digits_setup()
             self.post_setup()
 
     def build_fk(self):
-        logging.info(self.rigID)
+        rID = self.rigID
+        rSz = self.rigSize
+        xDr = self.x_dir
+        logging.info(rID)
         self.ctlsArr = []
 
-        upDir = "-z" if self.x_dir == 1 else "z"
+        upDir = "-z" if xDr == 1 else "z"
         for fgrs in self.fgrsArr:
             ctlList = []
             for fgr in fgrs[:-1]:
@@ -65,7 +70,7 @@ class Hand(RigModule):
                     fgr + "_ctl",
                     align=fgr,
                     shape="stickC",
-                    scale=self.rigSize * 0.6,
+                    scale=rSz * 0.6,
                     up=upDir,
                 )
                 ctlList.append(ctl)
@@ -216,6 +221,32 @@ class Hand(RigModule):
         common.sdk(drv, ofs, "ty", "rx", 20, 180)
         common.sdk(drv, ofs, "ty", "rx", -20, -180)
 
+    def digits_setup(self):
+        rID = self.rigID
+        rSz = self.rigSize
+        xDr = self.x_dir
+        scale = xDr * rSz / 10
+        ball_guide = DagNode(rID + "_ball_guide")
+        self.ball_fkc = CurveNode(
+            "ball_fkc",
+            pf=rID,
+            align=ball_guide,
+            scale=rSz * 2,
+            addOfs=1,
+            p=self.CTL_DATA,
+        )
+        self.rootJ.cstPar(self.ball_fkc.offset, mo=1)
+
+        for fgrs, ctls in zip(self.fgrsArr[1:], self.ctlsArr[1:]):
+            dupTgt = DagNode(fgrs[1])
+            ctl, digit_ikh, digit_ikj = self.singleDigit_setup(dupTgt, scale)
+            digit_ikh | self.ball_fkc
+            digit_ikj.a.r >> ctls[1].parent.parent.a.r
+
+    def space_setup(self):
+        self.rigNode.setMsg({"spaceHolder1": self.ball_fkc})
+        self.rigNode.a.add("spaceName1", attrType="string", txt="hand")
+
     def proxy_setup(self):
         proxyList = [self.rootJ]
         for fgrs in self.fgrsArr:
@@ -252,6 +283,7 @@ class Hand(RigModule):
         ctlSet = [self.smart_ctl]
         [ctlSet.extend(x) for x in self.ctlsArr]
         self.addCtlSet(ctlSet, pf=self.rigID)
+        self.space_setup()
         self.anchor_setup_module({"anchorF1": self.rootJ})
         self.proxy_setup()
         self.vis_setup()

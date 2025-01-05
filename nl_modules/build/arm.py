@@ -97,7 +97,7 @@ class Arm(RigModule):
             "ikc", pf=rID, shape="circleU", up=up, rotate=(-xDr * 90, 0, 0)
         )  # , scale=(rSz * 2, rSz, rSz * 3))
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz / 2)
-        self.ball_ikc = CurveNode("ball_ikc", pf=rID, shape="square", up="x", scale=rSz)
+        self.ball_ikc = CurveNode("ball_ikc", pf=rID, shape="stickC", scale=rSz / 2)
 
         self.rigNode.setMsg(
             {
@@ -387,22 +387,17 @@ class Arm(RigModule):
         self.palm_fkc.a.ro.set(5)
 
     def space_setup(self):
+        self.rigNode.setMsg({"spaceHolder1": self.ikc})
+        self.rigNode.setMsg({"spaceHolder2": self.pvc})
+        txt = "master, clavicle, COG, uprBody, lwrBody, head"
+        self.rigNode.a.add("spaceName1", attrType="string", txt=txt)
+        txt = "arm, master, COG, uprBody, lwrBody"
+        self.rigNode.a.add("spaceName2", attrType="string", txt=txt)
+
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_clavicle": self.clavicle_fkc})
         self.rigNode.setMsg({"space_arm": self.ikH1.softJ[0]})
-        self.rigNode.setMsg({"spaceHolder1": self.ikc})
-        self.rigNode.a.add(
-            "spaceName1",
-            attrType="string",
-            txt="master, clavicle, COG, uprBody, lwrBody, head",
-        )
-        self.rigNode.setMsg({"spaceHolder2": self.pvc})
-        self.rigNode.a.add(
-            "spaceName2", attrType="string", txt="arm, master, COG, uprBody, lwrBody"
-        )
-
-        # tempLoc = LocNode('temp_#')
-        # self.rigNode.setMsg({"space_temp": tempLoc})
+        self.rigNode.setMsg({"space_hand": self.ikc_gimbal})
 
     def post_setup(self):
         rID = self.rigID

@@ -149,7 +149,7 @@ class Leg(RigModule):
             for rJ in self.toesRootJ.childrenJt:
                 self.toesJntList.append([fgr for fgr in rJ.allChildrenJt2])
                 rJ.a.segmentScaleCompensate.set(0)
-            self.build_toes()
+            self.digits_setup()
 
         self.post_setup()
 
@@ -263,46 +263,18 @@ class Leg(RigModule):
         )
         self.subCtls.append(self.ballG_ikc)
 
-    def build_toes(self):
+    def digits_setup(self):
         rID = self.rigID
         rSz = self.rigSize
         xDr = self.x_dir
         logging.info(rID)
         self.toesCtlsList = []
-        fix = self.masterC.a.globalScale
-        data = self.RIG_DATA
         scale = xDr * rSz / 10
+
         for toeJs in self.toesJntList:
             dupTgt = DagNode(toeJs[1])
-            # Setup IK
-            ctl1 = CurveNode(
-                dupTgt + "_ctl",
-                shape="stickC",
-                align=dupTgt,
-                up="-z",
-                scale=scale,
-                p=self.ball_fkc,
-                addOfs=1,
-            )
-            rootJ = dupTgt.duplicate()
-            endJ = rootJ.allChildrenJt[-1]
-            if endJ not in rootJ.children:
-                endJ | rootJ
-                rootJ.children[0].delete()
-            rootJ.rename(rootJ.name + "_ikj")
-            endJ.rename(rootJ.name + "_end_ikj")
-            IkNode(
-                rootJ + "_ikh",
-                sj=rootJ,
-                ee=endJ,
-                sol=0,
-                scaleFix=fix,
-                RIG_DATA=data,
-                vis=0,
-                p=ctl1,
-            )
-            rootJ.a.r >> dupTgt.a.r
-            # Add other fkc
+            ctl, digit_ikh, digit_ikj = self.singleDigit_setup(dupTgt, scale)
+            digit_ikj.a.r >> dupTgt.a.r
             ctlList = []
             fkToeList = toeJs[2:-1]
             for jnt in fkToeList:
@@ -313,7 +285,7 @@ class Leg(RigModule):
 
             self.fkGivenCtl(fkToeList, ctlList, p=self.CTL_DATA, ori=1)
             self.toesCtlsList.append(ctlList)
-            self.toesCtlsList.append([ctl1])
+            self.toesCtlsList.append([ctl])
 
         # splay = self.ball_fkc.a.add("splay", min=-5, max=5)
         # toeCount = len(self.toesJntList)
@@ -323,8 +295,6 @@ class Leg(RigModule):
         #     tgt = toeLocList[i].a.rz
         #     common.sdk2(splay, tgt, -5, splayRange * (-1 + 2 / (toeCount - 1) * i))
         #     common.sdk2(splay, tgt, 5, -splayRange * (-1 + 2 / (toeCount - 1) * i))
-
-        # mc.hide(toeLocList)
 
     def twistBones_setup(self):
         rID = self.rigID
@@ -360,7 +330,6 @@ class Leg(RigModule):
         xDr = self.x_dir
         logging.info(rID)
         self.setting | self.CTL_DATA
-        print(xDr)
         self.setting.alignTo(self.palm, offset=(0, rSz * -xDr * 20, 0))
         ofs = self.setting.addOffsetGrp()
         self.palm.cstPar(ofs, mo=1)
@@ -552,13 +521,13 @@ class Leg(RigModule):
             c.a.ro.set(2)
 
     def space_setup(self):
-        self.rigNode.setMsg({"space_master": self.masterC})
-        self.rigNode.setMsg({"space_hip": self.hip_fkc})
-        self.rigNode.setMsg({"space_leg": self.ikH1.softJ[0]})
         self.rigNode.setMsg({"spaceHolder1": self.ikc})
         self.rigNode.setMsg({"spaceHolder2": self.pvc})
         self.rigNode.a.add("spaceName1", attrType="string", txt="master, hip, COG")
         self.rigNode.a.add("spaceName2", attrType="string", txt="leg, master, hip, COG")
+        self.rigNode.setMsg({"space_master": self.masterC})
+        self.rigNode.setMsg({"space_hip": self.hip_fkc})
+        self.rigNode.setMsg({"space_leg": self.ikH1.softJ[0]})
 
     def post_setup(self):
         rID = self.rigID
