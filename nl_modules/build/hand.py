@@ -58,30 +58,21 @@ class Hand(RigModule):
     def build_fk(self):
         rID = self.rigID
         rSz = self.rigSize
-        xDr = self.x_dir
         logging.info(rID)
         self.ctlsArr = []
-
-        upDir = "-z" if xDr == 1 else "z"
         for fgrs in self.fgrsArr:
             ctlList = []
             for fgr in fgrs[:-1]:
-                ctl = CurveNode(
-                    fgr + "_ctl",
-                    align=fgr,
-                    shape="stickC",
-                    scale=rSz * 0.6,
-                    up=upDir,
-                )
+                ctl = CurveNode(fgr + "_ctl", align=fgr, scale=rSz * 0.8, up="x")
                 ctlList.append(ctl)
             self.fkGivenCtl3(fgrs, ctlList, count=2, p=self.CTL_DATA)
             self.ctlsArr.append(ctlList)
             self.rootJ.cstParSca(ctlList[0].offset.offset, mo=1)
 
     def smart_setup(self):
-        xDr = self.x_dir
-        rSz = self.rigSize
         rID = self.rigID
+        rSz = self.rigSize
+        xDr = self.x_dir
         logging.info(rID)
         # self.smart_ctl.alignTo(self.rootJ, offset=(rSz * xDr * 60, 0, rSz * -xDr * 50), p=self.CTL_DATA)
         self.smart_ctl.alignTo(

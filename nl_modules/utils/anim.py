@@ -37,6 +37,7 @@ def switchToSpaceTgt(spaceName):
 
         if ctlN.a.space.exists():
             optionList = ctlN.a.space.query(le=1)[0].split(":")
+            print(optionList)
             optionDict = {n: i for i, n in enumerate(optionList)}
 
             if spaceName in optionList:
