@@ -522,8 +522,8 @@ class Leg(RigModule):
 
     def space_setup(self):
         self.rigNode.setMsg({"spaceHolder1": self.ikc})
-        self.rigNode.setMsg({"spaceHolder2": self.pvc})
         self.rigNode.a.add("spaceName1", attrType="string", txt="master, hip, COG")
+        self.rigNode.setMsg({"spaceHolder2": self.pvc})
         self.rigNode.a.add("spaceName2", attrType="string", txt="leg, master, hip, COG")
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_hip": self.hip_fkc})

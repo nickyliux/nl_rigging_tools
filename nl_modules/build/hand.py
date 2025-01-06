@@ -236,7 +236,7 @@ class Hand(RigModule):
 
     def space_setup(self):
         self.rigNode.setMsg({"spaceHolder1": self.ball_fkc})
-        self.rigNode.a.add("spaceName1", attrType="string", txt="hand")
+        self.rigNode.a.add("spaceName1", attrType="string", txt="armIkc")
 
     def proxy_setup(self):
         proxyList = [self.rootJ]
