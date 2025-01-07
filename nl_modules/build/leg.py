@@ -273,8 +273,8 @@ class Leg(RigModule):
 
         for toeJs in self.toesJntList:
             dupTgt = DagNode(toeJs[1])
-            ctl, digit_ikh, digit_ikj = self.oneDigitIK_setup(dupTgt, scale)
-            digit_ikj.a.r >> dupTgt.a.r
+            ctl, digit_ikJ = self.oneDigitIK_setup(dupTgt, scale)
+            digit_ikJ.a.r >> dupTgt.a.r
             ctlList = []
             fkToeList = toeJs[2:-1]
             for jnt in fkToeList:
@@ -476,7 +476,7 @@ class Leg(RigModule):
         aim = (self.x_dir, 0, 0)
         for j in proxyList:
             JointNode(j).addProxyMesh(
-                size=rSz * 5, aimDir=aim, skipEnd=1, p=self.PRX_GRP
+                size=rSz * 3, aimDir=aim, skipEnd=1, p=self.PRX_GRP
             )
         for j in proxyToeList:
             JointNode(j).addProxyMesh(

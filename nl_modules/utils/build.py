@@ -207,7 +207,6 @@ def updateSpaceSwitch():
         for s in spaceList:
             if s in spaceDict and spaceDict[s]:
                 resultDict[s] = spaceDict[s]
-        print(resultDict)
         # e.g.
         #   'master': master_ctl,
         #   'arm': lf_arm_ikc
@@ -244,6 +243,8 @@ def getSpaceObj(rigNode):
 
 def collectSpaceObj(rigNode):
     """Return space:obj dict for all rigNodes.
+    For cases like palm roll, driving rigNode updated second last
+    For cases like arm poleVector, its rigNode is updated last
     e.g.
         {
             'COG':      cog_ikc,
@@ -252,17 +253,23 @@ def collectSpaceObj(rigNode):
             'master':   master_ctl,
         }
     """
-    #
-    # When the left and right arm ctl can have the same 'arm' space,
-    # update the rigNode at last
-    #
     spaceDict = {}
     for r in mc.ls("*RGN", type="script"):
         if r != rigNode:
             spaceDict.update(getSpaceObj(DagNode(r)))
-    # Update at last
+    #
+    # Get driving rigNode
+    #
+    femaleAnchors = getAnchors([rigNode], "anchorF")
+    if femaleAnchors:
+        drivingAnchors = femaleAnchors[0].getCstObjects(cstType="parentConstraint")
+        if drivingAnchors:
+            drivingRN = getRigNode(drivingAnchors[0])
+            spaceDict.update(getSpaceObj(drivingRN))
+    #
+    # lf & rt arm ctl can have the same 'arm' space, so update its rigNode at last
+    #
     spaceDict.update(getSpaceObj(rigNode))
-
     return spaceDict
 
 

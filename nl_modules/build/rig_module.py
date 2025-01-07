@@ -504,32 +504,29 @@ class RigModule(RigBase):
         (bank > 0).setCdn(ifTrue=bank, ifFalse=0) >> outRollG.a.rz
 
     def oneDigitIK_setup(self, dupTgt, scale):
-        """ik setup for single digit
-        connectTo:
-             is for finger and is what the root ik joint 's rotation is driving
-        """
+        """IK setup for single digit"""
         from nl_modules.nodel.ik_node import IkNode
 
         dupTgt = DagNode(dupTgt)
         ctl = CurveNode(
-            dupTgt + "_ctl",
+            dupTgt + "_ikc",
             shape="stickC",
             align=dupTgt,
             up="-z",
             scale=scale,
-            p=self.ball_fkc,
             addOfs=1,
+            p=self.ball_fkc,
         )
-        rootJ = dupTgt.duplicate()
-        endJ = rootJ.allChildrenJt[-1]
-        if endJ not in rootJ.children:
-            endJ | rootJ
-            rootJ.children[0].delete()
-        rootJ.rename(rootJ.name + "_ikj")
-        endJ.rename(rootJ.name + "_end_ikj")
-        ikh = IkNode(
-            rootJ,
-            sj=rootJ,
+        ikJ = dupTgt.duplicate()
+        endJ = ikJ.allChildrenJt[-1]
+        if endJ not in ikJ.children:
+            endJ | ikJ
+            ikJ.children[0].delete()
+        ikJ.rename(ikJ.name + "_ikJ")
+        endJ.rename(ikJ.name + "_end_ikJ")
+        IkNode(
+            ikJ,
+            sj=ikJ,
             ee=endJ,
             sol=0,
             scaleFix=self.masterC.a.globalScale,
@@ -537,4 +534,5 @@ class RigModule(RigBase):
             vis=0,
             p=ctl,
         )
-        return ctl, ikh, rootJ
+        # mc.hide(ikJ)
+        return ctl, ikJ

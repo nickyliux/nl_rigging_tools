@@ -85,7 +85,9 @@ class Arm(RigModule):
         rSz = self.rigSize
         rID = self.rigID
         xDr = self.x_dir
-        self.setting = CurveNode("setting", pf=rID, shape="sphere", scale=rSz)
+        self.setting = CurveNode(
+            "setting", pf=rID, shape="sphere", scale=rSz * 2, color=Color.BLACK
+        )
         self.clavicle_fkc = CurveNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
         )
@@ -94,12 +96,12 @@ class Arm(RigModule):
         self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", scale=rSz)
         self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz)
         up = "x" if xDr == 1 else "-x"
-        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=(0.3, 1, 1))
+        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=(0.7, 1.2, 1.4))
         # , scale=(rSz * 2, rSz, rSz * 3))
         # "ikc", pf=rID, shape="circleU", up=up, rotate=(-xDr * 90, 0, 0)
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz / 2)
         self.ball_ikc = CurveNode(
-            "ball_ikc", pf=rID, shape="stickC", scale=xDr * rSz / 2
+            "ball_ikc", pf=rID, shape="stickC", scale=xDr * rSz / 3
         )
 
         self.rigNode.setMsg(
@@ -358,16 +360,15 @@ class Arm(RigModule):
         # visGrp[1] >> self.PRX_GRP.a.v
 
         # FK IK CTL VIS TOGGLE
-        # fkIk = self.setting.a.fkIk
-        # [fkIk >> c.a.v for c in (self.ikc, self.pvc, self.pvc_line, self.ikCstG)]
-        # [~fkIk >> c.a.v for c in (self.palm_fkc, self.lwr_fkc, self.upr_fkc)]
+        fkIk = self.setting.a.fkIk
+        [fkIk >> c.a.v for c in (self.ikc, self.pvc, self.pvc_line, self.ikCstG)]
+        [~fkIk >> c.a.v for c in (self.palm_fkc, self.lwr_fkc, self.upr_fkc)]
 
-        # if self.RBN_BONES:
-        #     bowCtl = self.setting.a.add("armBowCtls", min=0, max=1, dv=0, k=0)
-        #     [bowCtl >> ctl.a.v for ctl in self.all_bend]
+        if self.RBN_BONES:
+            bowCtl = self.setting.a.add("armBowCtls", min=0, max=1, dv=0, k=0)
+            [bowCtl >> ctl.a.v for ctl in self.all_bend]
 
-        # mc.hide(self.all_ikHs, self.joints_fk, self.joints_ik)
-        pass
+        mc.hide(self.all_ikHs, self.joints_fk, self.joints_ik)
 
     def proxy_setup(self):
         proxyList = self.joints
@@ -381,7 +382,7 @@ class Arm(RigModule):
             if self.lwr in proxyList:
                 proxyList.remove(self.lwr)
 
-        rSz = self.rigSize * 6
+        rSz = self.rigSize * 3
         xDr = self.x_dir
         for j in proxyList:
             JointNode(j).addProxyMesh(
@@ -418,7 +419,7 @@ class Arm(RigModule):
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_clavicle": self.clavicle_fkc})
         self.rigNode.setMsg({"space_arm": self.ikH1.softJ[0]})
-        self.rigNode.setMsg({"space_armJ": self.joints_bf[-2]})
+        self.rigNode.setMsg({"space_palm": self.ball_ikc})
 
     def post_setup(self):
         rID = self.rigID
@@ -433,7 +434,9 @@ class Arm(RigModule):
 
         self.addCtlSet(ctlSet, pf=rID)
         self.space_setup()
-        self.anchor_setup_module({"anchorM1": self.palm, "anchorF1": self.clavicle_fkc})
+        self.anchor_setup_module(
+            {"anchorM1": self.joints_bf[-2], "anchorF1": self.clavicle_fkc}
+        )
         self.proxy_setup()
         self.vis_setup()
         self.channel_setup()
