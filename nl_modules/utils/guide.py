@@ -13,6 +13,7 @@ import nl_modules
 
 COMPONENT_DICT = {
     "head": ["head"],
+    "limb": ["lfLimb"],
     "neck": ["neck"],
     "spine": ["spine"],
     "arm": ["lfArm", "rtArm"],

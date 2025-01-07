@@ -273,7 +273,7 @@ class Leg(RigModule):
 
         for toeJs in self.toesJntList:
             dupTgt = DagNode(toeJs[1])
-            ctl, digit_ikh, digit_ikj = self.singleDigit_setup(dupTgt, scale)
+            ctl, digit_ikh, digit_ikj = self.oneDigitIK_setup(dupTgt, scale)
             digit_ikj.a.r >> dupTgt.a.r
             ctlList = []
             fkToeList = toeJs[2:-1]

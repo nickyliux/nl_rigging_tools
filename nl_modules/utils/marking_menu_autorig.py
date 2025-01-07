@@ -17,7 +17,18 @@ class MarkingMenuAutorig:
     def __init__(self):
         if mc.popupMenu(MENU_NAME, ex=1):
             mc.deleteUI(MENU_NAME)
-        mc.popupMenu(MENU_NAME, mm=1, b=2, aob=1, ctl=1, alt=0, sh=0, p="viewPanes", pmo=1, pmc=self.setupMenu)
+        mc.popupMenu(
+            MENU_NAME,
+            mm=1,
+            b=2,
+            aob=1,
+            ctl=1,
+            alt=0,
+            sh=0,
+            p="viewPanes",
+            pmo=1,
+            pmc=self.setupMenu,
+        )
 
     def setupMenu(self, menu, parent):
         # pose_MI = mc.menuItem(p=menu, l="Pose", rp="SE", subMenu=1)

@@ -503,7 +503,7 @@ class RigModule(RigBase):
         (bank < 0).setCdn(ifTrue=bank, ifFalse=0) >> inRollG.a.rz
         (bank > 0).setCdn(ifTrue=bank, ifFalse=0) >> outRollG.a.rz
 
-    def singleDigit_setup(self, dupTgt, scale):
+    def oneDigitIK_setup(self, dupTgt, scale):
         """ik setup for single digit
         connectTo:
              is for finger and is what the root ik joint 's rotation is driving

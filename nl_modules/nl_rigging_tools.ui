@@ -136,6 +136,11 @@
       </item>
       <item>
        <property name="text">
+        <string>limb</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
         <string>------------------------  Biped</string>
        </property>
        <property name="flags">

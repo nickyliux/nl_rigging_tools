@@ -12,7 +12,7 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
 
-class Arm(RigModule):
+class Limb(RigModule):
     """Build arm component with given rigNode.
     e.g.
         n = Arm('lfArm0_RGN')  # n.__dict__
@@ -25,7 +25,6 @@ class Arm(RigModule):
             rigNode = DagNode(rigNode)
 
         super().__init__(rigNode)
-        self.TWIST_BONES = self.master_guide.a.twistBones.get()
         self.RBN_BONES = self.master_guide.a.rbnBones.get()
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
         self.FK_PART = GroupNode("FK", pf=self.rigID, p=self.CTL_DATA)
@@ -48,7 +47,6 @@ class Arm(RigModule):
         self.palm_fkc = None
         self.pvc = None
         self.ikc = None
-        self.ball_ikc = None
         self.ikCtl = None
         self.fkCtl = None
         self.toeWiggleG = None
@@ -77,8 +75,6 @@ class Arm(RigModule):
         self.blend_fk_ik()
         if self.RBN_BONES:
             self.ribbon_setup()
-        if self.TWIST_BONES:
-            self.twistBones_setup()
         self.post_setup()
 
     def createCtl(self):
@@ -98,9 +94,6 @@ class Arm(RigModule):
         # , scale=(rSz * 2, rSz, rSz * 3))
         # "ikc", pf=rID, shape="circleU", up=up, rotate=(-xDr * 90, 0, 0)
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz / 2)
-        self.ball_ikc = CurveNode(
-            "ball_ikc", pf=rID, shape="stickC", scale=xDr * rSz / 2
-        )
 
         self.rigNode.setMsg(
             {
@@ -111,40 +104,8 @@ class Arm(RigModule):
                 "palm_fkc": self.palm_fkc,
                 "ikc": self.ikc,
                 "pvc": self.pvc,
-                "ball_ikc": self.ball_ikc,
             }
         )
-
-    def twistBones_setup(self):
-        rID = self.rigID
-        jnt_names = ["radius", "radiusEnd"]
-        radius_JC = self.genSkFrNames(jnt_names, pf=rID)
-        jnt_names = ["ulna", "ulnaEnd"]
-        ulna_JC = self.genSkFrNames(jnt_names, pf=rID)
-        (radius_JC[0], ulna_JC[0]) | self.lwr
-
-        radius_loc = LocNode("radius_loc", pf=rID, align=radius_JC[1], p=self.palm)
-        ulna_loc = LocNode("ulna_loc", pf=rID, align=ulna_JC[1], p=self.palm)
-        radius_loc.cstPoi(radius_JC[1])
-        ulna_loc.cstPoi(ulna_JC[1])
-
-        radius_loc.cstAim(
-            radius_JC[0],
-            worldUpType="objectrotation",
-            worldUpObject=self.palm,
-            aim=(self.x_dir, 0, 0),
-            u=(0, 0, 1),
-            wu=(0, 0, 1),
-        )
-        ulna_loc.cstAim(
-            ulna_JC[0],
-            worldUpType="objectrotation",
-            worldUpObject=self.lwr,
-            aim=(self.x_dir, 0, 0),
-            u=(0, 0, 1),
-            wu=(0, 0, 1),
-        )
-        self.joints.extend([radius_JC[0], ulna_JC[0]])
 
     def build_fk(self):
         logging.info(self.rigID)
@@ -163,7 +124,6 @@ class Arm(RigModule):
         rID = self.rigID
         logging.info(rID)
         pvc_guide = DagNode(rID + "_pvc_guide")
-
         self.ikc.alignTo(self.palm)
         self.pvc.alignTo(pvc_guide)
         self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_PART)
@@ -187,7 +147,6 @@ class Arm(RigModule):
             for g in (self.ikCstG,):
                 g.a.rx.set2(180, add=1)
 
-        # (ikH1, ikH2) | self.ikCstG
         ikH1 | self.ikCstG
         self.ikc_gimbal = CurveNode(self.ikc).addGimbal(attrTgt=self.setting)
         self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
@@ -203,10 +162,8 @@ class Arm(RigModule):
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
         ikH1.stretchyIk(pvPin=1, soft=1)
-        # self.all_ikHs = [ikH1, ikH2]
         self.all_ikHs = [ikH1]
         self.clavicle_fkc.cstPar(self.joints_ik[0], mo=1)
-        self.ikc.cstOri(self.joints_ik[-2], mo=1)
 
         # Scale
         # proxyScale = self.ikc.a.add("palmScale", proxy=self.palmScale)
@@ -214,7 +171,7 @@ class Arm(RigModule):
         # for ikJ in self.joints_ik[3:]:
         #     proxyScale >> ikJ.a.s
 
-        self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal, self.ball_ikc]
+        self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal]
         self.ikH1 = ikH1
 
     # def add_pvcRota_JC(self):
@@ -256,12 +213,12 @@ class Arm(RigModule):
         self.palm.cstPar(self.setting.addOffsetGrp(), mo=1)
         fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=1)
 
-        ball_guide = DagNode(rID + "_ball_guide")
-        self.ball_ikc.alignTo(ball_guide)
-        self.ball_ikc | self.joints_bf[-1]
+        # ball_guide = DagNode(rID + "_ball_guide")
+        # self.ball_ikc.alignTo(ball_guide)
+        # self.ball_ikc | self.joints_bf[-1]
 
         total = len(self.joints) - 1
-        for i in range(total):
+        for i in range(len(self.joints) - 1):
             fkJ = self.joints_fk[i]
             ikJ = self.joints_ik[i]
             bfJ = self.joints_bf[i]
@@ -272,8 +229,8 @@ class Arm(RigModule):
             if i < total - 1:
                 bfJ.a.t >> jnt.a.t
                 bfJ.a.r >> jnt.a.r
-            else:
-                self.ball_ikc.cstPar(jnt, mo=1)
+            # else:
+            #     self.ball_ikc.cstPar(jnt, mo=1)
 
         for ctl in self.fkCtl + self.ikCtl:
             ctl.a.add("fkIk", proxy=fkIk, k=0)
@@ -377,9 +334,6 @@ class Arm(RigModule):
                 proxyList.remove(self.upr)
             if self.lwr in proxyList:
                 proxyList.remove(self.lwr)
-        if self.TWIST_BONES:
-            if self.lwr in proxyList:
-                proxyList.remove(self.lwr)
 
         rSz = self.rigSize * 6
         xDr = self.x_dir
@@ -393,7 +347,6 @@ class Arm(RigModule):
     def channel_setup(self):
         self.setting.a.showAttr()
         self.pvc.a.showAttr(t=1)
-        self.ball_ikc.a.showAttr(r=1)
         for ctl in self.fkCtl + [self.ikc, self.ikc_gimbal]:
             ctl.a.showAttr(t=1, r=1)
         for ctl in self.all_bend or []:
@@ -418,7 +371,7 @@ class Arm(RigModule):
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_clavicle": self.clavicle_fkc})
         self.rigNode.setMsg({"space_arm": self.ikH1.softJ[0]})
-        self.rigNode.setMsg({"space_armJ": self.joints_bf[-2]})
+        self.rigNode.setMsg({"space_armIkc": self.ikc_gimbal})
 
     def post_setup(self):
         rID = self.rigID
@@ -439,8 +392,3 @@ class Arm(RigModule):
         self.channel_setup()
         self.ro_setup()
         self.post_module()
-
-
-if __name__ == "__main__":
-    for n in mc.ls("*RGN", type="script"):
-        Arm(DagNode(n)).build()

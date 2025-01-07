@@ -51,8 +51,8 @@ class Hand(RigModule):
                 self.fgrsArr.append([fgr for fgr in root.allChildrenJt2])
                 root.a.segmentScaleCompensate.set(0)
             self.build_fk()
+            self.digitIK_setup()
             self.smart_setup()
-            self.digits_setup()
             self.post_setup()
 
     def build_fk(self):
@@ -79,7 +79,8 @@ class Hand(RigModule):
             self.rootJ, offset=(rSz * xDr * 150, 0, 0), p=self.CTL_DATA
         )
         ofs = self.smart_ctl.addOffsetGrp()
-        self.rootJ.cstPar(ofs, mo=1)
+        # self.rootJ.cstPar(ofs, mo=1)
+        self.ball_fkc.cstPar(ofs, mo=1)
 
         drv = self.smart_ctl
         if len(self.fgrsArr) != 5:
@@ -212,7 +213,7 @@ class Hand(RigModule):
         common.sdk(drv, ofs, "ty", "rx", 20, 180)
         common.sdk(drv, ofs, "ty", "rx", -20, -180)
 
-    def digits_setup(self):
+    def digitIK_setup(self):
         rID = self.rigID
         rSz = self.rigSize
         xDr = self.x_dir
@@ -230,13 +231,13 @@ class Hand(RigModule):
 
         for fgrs, ctls in zip(self.fgrsArr[1:], self.ctlsArr[1:]):
             dupTgt = DagNode(fgrs[1])
-            ctl, digit_ikh, digit_ikj = self.singleDigit_setup(dupTgt, scale)
+            ctl, digit_ikh, digit_ikj = self.oneDigitIK_setup(dupTgt, scale)
             digit_ikh | self.ball_fkc
             digit_ikj.a.r >> ctls[1].parent.parent.a.r
 
     def space_setup(self):
         self.rigNode.setMsg({"spaceHolder1": self.ball_fkc})
-        self.rigNode.a.add("spaceName1", attrType="string", txt="armIkc")
+        self.rigNode.a.add("spaceName1", attrType="string", txt="armJ")
 
     def proxy_setup(self):
         proxyList = [self.rootJ]

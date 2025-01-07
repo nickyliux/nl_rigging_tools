@@ -128,6 +128,7 @@ from nl_modules.build import (
     head,
     neck,
     spine,
+    limb,
     arm,
     hand,
     leg,
@@ -143,6 +144,7 @@ reload(ribbon)
 reload(head)
 reload(neck)
 reload(spine)
+reload(limb)
 reload(arm)
 reload(hand)
 reload(leg)
