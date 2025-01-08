@@ -41,9 +41,9 @@ class MarkingMenuAutorig:
         mc.menuItem(p=menu, l="Delete Guide", rp="SW", c=build.deleteSelOrAll)
 
         # shape_MI = mc.menuItem(p=menu, l="Shape", rp="NE", subMenu=1)
-        # mc.menuItem(p=menu, l="Mirror Shape", rp="E", c=self.mirrorShapeSelOrAll)
         mc.menuItem(p=menu, l="Copy Guide", rp="E", c=self.copyGuideSel)
-        mc.menuItem(p=menu, l="Select Controls", rp="W", c=self.selectCtlSelOrAll)
+        mc.menuItem(p=menu, l="Mirror Shape", rp="W", c=self.mirrorShapeSelOrAll)
+        # mc.menuItem(p=menu, l="Select Controls", rp="W", c=self.selectCtlSelOrAll)
 
         sel = mc.ls(sl=1)
         if sel:

@@ -108,7 +108,7 @@ class LegQd(RigModule):
             pf=rID,
             scale=xDr * rSz / 2,
         )
-        self.ikc = CurveNode("ikc", pf=rID, shape="foot_quad")
+        self.ikc = CurveNode("ikc", pf=rID, shape="foot_quad", color=Color.D_YELLOW)
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz * 0.8)
         self.rigNode.setMsg(
             {
@@ -277,7 +277,7 @@ class LegQd(RigModule):
 
         palmAim = self.ikc.a.add("palmAim", min=0, max=1, dv=1)
         dv = -0.5 if "Arm" in rID else 0.5
-        rollDistRatio = self.setting.a.add("rollDistRatio", min=-1, max=1, dv=dv)
+        rollDistRatio = self.setting.a.add("rollDistRatio", dv=dv)
         common.cstMulti(
             aimG_loc,
             uprIkJ,
@@ -295,7 +295,7 @@ class LegQd(RigModule):
         ofs | aimGrp
         d = ut.distDim_(self.ikc, self.joints_ik[1])
         D = d.get()
-        (d - D) * rollDistRatio >> extraRollG.a.rx
+        (d - D) * rollDistRatio * palmAim >> extraRollG.a.rx
 
         self.extra_ikc = extraRollG.addOffsetGrp(below=1)
         cName = rID + "_extra_ikc"
@@ -547,12 +547,10 @@ class LegQd(RigModule):
         aim = (self.x_dir, 0, 0)
         for j in proxyList:
             JointNode(j).addProxyMesh(
-                size=rSz * 6, aimDir=aim, skipEnd=1, p=self.PRX_GRP
+                size=rSz * 4, aimDir=aim, skipEnd=1, p=self.PRX_GRP
             )
         for j in proxyToeList:
-            JointNode(j).addProxyMesh(
-                size=rSz * 2, aimDir=aim, skipEnd=1, p=self.PRX_GRP
-            )
+            JointNode(j).addProxyMesh(size=rSz, aimDir=aim, skipEnd=1, p=self.PRX_GRP)
 
         if proxyList:
             self.addBindJntSet(proxyList)
@@ -582,6 +580,7 @@ class LegQd(RigModule):
     def channel_setup(self):
         self.setting.a.showAttr()
         self.pvc.a.showAttr(t=1)
+        self.extra_ikc.a.showAttr(r=1)
         for ctl in self.fkCtl + self.subCtls + [self.ikc, self.pvc]:
             ctl.a.showAttr(t=1, r=1)
         for ctl in self.all_bend or []:
@@ -605,8 +604,7 @@ class LegQd(RigModule):
         logging.info(rID)
         for c in [self.ikc, self.ikc_gimbal, self.pvc]:
             c.a.add("wsMirrorAxis", k=0, lock=1, cb=0)
-        ctlSet = []
-        ctlSet.extend(self.fkCtl + self.ikCtl + self.subCtls + [self.setting])
+        ctlSet = self.fkCtl + self.ikCtl + self.subCtls + [self.setting, self.extra_ikc]
         # if self.RBN_BONES:
         #     ctlSet.extend(self.all_bend)
         if self.TOE_BONES:

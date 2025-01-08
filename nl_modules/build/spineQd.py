@@ -45,23 +45,16 @@ class SpineQd(RigModule):
     def createCtl(self):
         rSz = self.rigSize * 3
         rID = self.rigID
-        # cogScale = (rSz * 0.8, rSz * 1.5, rSz * 2)
-        self.cog_ctl = CurveNode(
-            # "cog_ctl", pf=rID, shape="trapezoid"
-            "cog_ctl",
-            pf=rID,
-            shape="stick",
-            scale=rSz,
-        )  # , scale=cogScale)
-        # self.cog_ctl.cv_move(0, rSz * 80, 0)
+        CDY = Color.D_YELLOW
+        self.cog_ctl = CurveNode("cog_ctl", pf=rID, shape="stick", scale=rSz, color=CDY)
         self.tp_ctl = CurveNode("tp_ctl", pf=rID, shape="circleU", scale=rSz, up="-z")
         self.md_ctl = CurveNode("_md_ctl", pf=rID, shape="square", up="z", scale=rSz)
         self.rt_ctl = CurveNode("rt_ctl", pf=rID, shape="circleU", scale=rSz, up="-z")
         self.tangent_tp_ctl = CurveNode(
-            "tangent_tp_ctl", pf=rID, shape="stickS", scale=rSz / 2
+            "tangent_tp_ctl", pf=rID, shape="stickS", scale=rSz / 2, color=CDY
         )
         self.tangent_rt_ctl = CurveNode(
-            "tangent_rt_ctl", pf=rID, shape="stickS", scale=rSz / 2
+            "tangent_rt_ctl", pf=rID, shape="stickS", scale=rSz / 2, color=CDY
         )
         self.rigNode.setMsg(
             {
@@ -278,7 +271,7 @@ class SpineQd(RigModule):
         if self.bindJ:
             for j in self.bindJ:
                 JointNode(j).addProxyMesh(
-                    size=rSz * 80 / len(self.bindJ), p=self.PRX_GRP
+                    size=rSz * 50 / len(self.bindJ), p=self.PRX_GRP
                 )
 
     def ro_setup(self):
