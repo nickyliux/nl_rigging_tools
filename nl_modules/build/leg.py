@@ -149,7 +149,7 @@ class Leg(RigModule):
             for rJ in self.toesRootJ.childrenJt:
                 self.toesJntList.append([fgr for fgr in rJ.allChildrenJt2])
                 rJ.a.segmentScaleCompensate.set(0)
-            self.digits_setup()
+            self.build_toes()
 
         self.post_setup()
 
@@ -263,7 +263,7 @@ class Leg(RigModule):
         )
         self.subCtls.append(self.ballG_ikc)
 
-    def digits_setup(self):
+    def build_toes(self):
         rID = self.rigID
         rSz = self.rigSize
         xDr = self.x_dir
@@ -278,9 +278,7 @@ class Leg(RigModule):
             ctlList = []
             fkToeList = toeJs[2:-1]
             for jnt in fkToeList:
-                c = CurveNode(
-                    jnt + "_ctl", shape="stickC", align=jnt, up="-z", scale=scale
-                )
+                c = CurveNode(jnt + "_ctl", align=jnt, up="x", scale=scale)
                 ctlList.append(c)
 
             self.fkGivenCtl(fkToeList, ctlList, p=self.CTL_DATA, ori=1)

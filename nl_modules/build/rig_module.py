@@ -510,7 +510,7 @@ class RigModule(RigBase):
         dupTgt = DagNode(dupTgt)
         ctl = CurveNode(
             dupTgt + "_ikc",
-            shape="stickC",
+            shape="stickS",
             align=dupTgt,
             up="-z",
             scale=scale,
