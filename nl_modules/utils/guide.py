@@ -151,7 +151,7 @@ def mirrorAttr(tgtList, wsMirrorAxis=0):
         if oppN:
             copyAttr(tgt, oppN, wsMirrorAxis=wsMirrorAxis, mirror=1)
         else:
-            print(f"opposite not found for {tgt}")
+            print(f"opposite not found for {tgt.name}")
 
 
 def mirrorPose(*arg):

@@ -43,7 +43,6 @@ class Hand(RigModule):
         self.smart_ctl = CurveNode(
             "smart_ctl", pf=rID, shape="cube", scale=(rSz * 2, rSz * 2, rSz)
         )
-        # self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="diamond", scale=rSz * 5)
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
         if self.rootJ:
             self.fgrsArr = []
@@ -77,9 +76,9 @@ class Hand(RigModule):
         self.ikcArr = []
         rig_grp = GroupNode(rID + "_grp", p=self.RIG_DATA)
         self.rootJ.offset.cstPar(rig_grp, mo=1)
-        for fgrs, ctls in zip(self.fgrsArr[1:], self.ctlsArr[1:]):
+        for fgrs, ctls in zip(self.fgrsArr, self.ctlsArr):
             dupTgt = DagNode(fgrs[1])
-            ctl, ikj = self.build_digit_ik(dupTgt, scale / 2, p=rig_grp)
+            ctl, ikj = self.build_digit_ik(dupTgt, scale, p=rig_grp)
             self.ikcArr.append(ctl)
             ikj.a.r >> ctls[1].parent.parent.a.r
 
@@ -89,7 +88,7 @@ class Hand(RigModule):
         xDr = self.x_dir
         logging.info(rID)
         self.smart_ctl.alignTo(
-            self.rootJ, offset=(rSz * xDr * 50, 0, rSz * -xDr * 50), p=self.CTL_DATA
+            self.rootJ, offset=(rSz * xDr * 100, 0, rSz * -xDr * 50), p=self.CTL_DATA
         )
         ofs = self.smart_ctl.addOffsetGrp()
         self.rootJ.offset.cstPar(ofs, mo=1)
@@ -252,14 +251,9 @@ class Hand(RigModule):
         # visGrp[0] >> self.CTL_DATA.a.v
         # visGrp[1] >> self.rootJ.a.v
         # visGrp[1] >> self.PRX_GRP.a.v
-
-        fgrCtlVis = self.smart_ctl.a.add("fgrCtls", k=0, min=0, max=1, dv=1)
+        fgrCtlVis = self.smart_ctl.a.add("fgrCtls", k=0, min=0, max=1, dv=0)
         for fgrCtls in self.ctlsArr:
             fgrCtlVis >> fgrCtls[0].a.v
-
-        # for c in fgrCtls:
-        #     fgrCtlVis >> c.a.v
-        # self.addMinusScaleGrp(self.smart_ctl)
 
     def post_setup(self):
         self.addBindJntSet(self.rootJ.allChildrenJt2)
@@ -273,8 +267,3 @@ class Hand(RigModule):
         self.channel_setup()
         self.ro_setup()
         self.post_module()
-
-
-# if __name__ == "__main__":
-#     for n in mc.ls("*RGN", type="script"):
-#         Hand(DagNode(n)).build()

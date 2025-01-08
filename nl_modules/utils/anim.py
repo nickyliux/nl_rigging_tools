@@ -57,8 +57,11 @@ def switchToFkIk(attr=None, toIK=0, rigNode=None):
         rootJ = rN.a.rootJ.inConnNode
         upr = rootJ.children[0]
         lwr = upr.children[0]
-        palm = lwr.children[0]
+        # palm = lwr.children[0]
 
+        upr_fkc = rN.a.upr_fkc.inConnNode
+        lwr_fkc = rN.a.lwr_fkc.inConnNode
+        palm_fkc = rN.a.palm_fkc.inConnNode
         ikc = rN.a.ikc.inConnNode
         pvc = rN.a.pvc.inConnNode
 
@@ -70,7 +73,7 @@ def switchToFkIk(attr=None, toIK=0, rigNode=None):
             if ikc and pvc and ikcMatcher.exists():
                 pos1 = upr.o.pos
                 pos2 = lwr.o.pos
-                pos3 = palm.o.pos
+                pos3 = palm_fkc.o.pos
                 pvc_pos_grp = switchToFkIk_calcPvcPos(pos1, pos2, pos3)
                 ikc.alignTo(ikcMatcher)
                 pvc.snapTo(pvc_pos_grp)
@@ -78,19 +81,16 @@ def switchToFkIk(attr=None, toIK=0, rigNode=None):
         else:
             # IK to FK
             # Snap fkc to current limb
-            upr_fkc = rN.a.upr_fkc.inConnNode
-            lwr_fkc = rN.a.lwr_fkc.inConnNode
-            palm_fkc = rN.a.palm_fkc.inConnNode
 
-            if upr_fkc and lwr_fkc and palm_fkc and upr and lwr and palm:
+            if upr_fkc and lwr_fkc and palm_fkc and upr and lwr and ikc:
                 upr_fkc.alignTo(upr)
                 lwr_fkc.alignTo(lwr)
-                palm_fkc.alignTo(palm)
+                palm_fkc.alignTo(ikc)
 
-            if rigClass == "LegQd":
-                digit_jnt = palm.childrenJt[0]
-                digit_fkc = rN.a["digit_fkc"].inConnNode
-                digit_fkc.alignTo(digit_jnt)
+            # if rigClass == "LegQd":
+            #     digit_jnt = ikc.childrenJt[0]
+            #     digit_fkc = rN.a["digit_fkc"].inConnNode
+            #     digit_fkc.alignTo(digit_jnt)
 
     attr.set(toIK)
     mc.select(cl=1)
