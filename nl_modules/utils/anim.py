@@ -54,7 +54,6 @@ def switchToFkIk(attr=None, toIK=0, rigNode=None):
     if rN and rN.a.nodeState.get() == 2:
 
         rigClass = rN.a.rigClass.get()
-
         rootJ = rN.a.rootJ.inConnNode
         upr = rootJ.children[0]
         lwr = upr.children[0]
@@ -72,12 +71,10 @@ def switchToFkIk(attr=None, toIK=0, rigNode=None):
                 pos1 = upr.o.pos
                 pos2 = lwr.o.pos
                 pos3 = palm.o.pos
-
                 pvc_pos_grp = switchToFkIk_calcPvcPos(pos1, pos2, pos3)
                 ikc.alignTo(ikcMatcher)
                 pvc.snapTo(pvc_pos_grp)
                 pvc_pos_grp.delete()
-
         else:
             # IK to FK
             # Snap fkc to current limb
