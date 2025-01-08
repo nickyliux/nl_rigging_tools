@@ -331,8 +331,8 @@ class LegQd(RigModule):
 
         for toeJs in self.toesJntList:
             dupTgt = DagNode(toeJs[2])
-            ctl, digit_ikJ = self.oneDigitIK_setup(dupTgt, scale)
-            digit_ikJ.a.r >> dupTgt.a.r
+            ctl, ikj = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
+            ikj.a.r >> dupTgt.a.r
             ctlList = []
             fkToeList = toeJs[3:-1]
             for jnt in fkToeList:

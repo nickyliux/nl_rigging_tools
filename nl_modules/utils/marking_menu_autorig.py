@@ -41,7 +41,8 @@ class MarkingMenuAutorig:
         mc.menuItem(p=menu, l="Delete Guide", rp="SW", c=build.deleteSelOrAll)
 
         # shape_MI = mc.menuItem(p=menu, l="Shape", rp="NE", subMenu=1)
-        mc.menuItem(p=menu, l="Mirror Shape", rp="E", c=self.mirrorShapeSelOrAll)
+        # mc.menuItem(p=menu, l="Mirror Shape", rp="E", c=self.mirrorShapeSelOrAll)
+        mc.menuItem(p=menu, l="Copy Guide", rp="E", c=self.copyGuideSel)
         mc.menuItem(p=menu, l="Select Controls", rp="W", c=self.selectCtlSelOrAll)
 
         sel = mc.ls(sl=1)
@@ -89,6 +90,9 @@ class MarkingMenuAutorig:
                             )
 
         mc.menuItem(p=menu, l="Reload Menu", c=self.reload_marking_menu)
+
+    def copyGuideSel(*args):
+        guide.copyGuideSel()
 
     def mirrorShapeSelOrAll(*args):
         from nl_modules.utils import control

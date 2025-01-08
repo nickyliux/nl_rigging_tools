@@ -18,7 +18,7 @@ class Hand(RigModule):
         self.smart_ctl = None
         self.fgrsArr = None
         self.ctlsArr = None
-        self.ball_fkc = None
+        self.ikcArr = None
 
     def genGuildSk(self):
         self.genSk_module(["handJ"])
@@ -69,6 +69,20 @@ class Hand(RigModule):
             self.ctlsArr.append(ctlList)
             self.rootJ.cstParSca(ctlList[0].offset.offset, mo=1)
 
+    def build_ik(self):
+        rID = self.rigID
+        rSz = self.rigSize
+        xDr = self.x_dir
+        scale = xDr * rSz
+        self.ikcArr = []
+        rig_grp = GroupNode(rID + "_grp", p=self.RIG_DATA)
+        self.rootJ.offset.cstPar(rig_grp, mo=1)
+        for fgrs, ctls in zip(self.fgrsArr[1:], self.ctlsArr[1:]):
+            dupTgt = DagNode(fgrs[1])
+            ctl, ikj = self.build_digit_ik(dupTgt, scale / 2, p=rig_grp)
+            self.ikcArr.append(ctl)
+            ikj.a.r >> ctls[1].parent.parent.a.r
+
     def smart_setup(self):
         rID = self.rigID
         rSz = self.rigSize
@@ -78,7 +92,7 @@ class Hand(RigModule):
             self.rootJ, offset=(rSz * xDr * 50, 0, rSz * -xDr * 50), p=self.CTL_DATA
         )
         ofs = self.smart_ctl.addOffsetGrp()
-        self.ball_fkc.cstPar(ofs, mo=1)
+        self.rootJ.offset.cstPar(ofs, mo=1)
 
         drv = self.smart_ctl
         if len(self.fgrsArr) != 5:
@@ -211,26 +225,6 @@ class Hand(RigModule):
         common.sdk(drv, ofs, "ty", "rx", 20, 180)
         common.sdk(drv, ofs, "ty", "rx", -20, -180)
 
-    def build_ik(self):
-        rID = self.rigID
-        rSz = self.rigSize
-        xDr = self.x_dir
-        scale = xDr * rSz / 10
-        ball_guide = DagNode(rID + "_ball_guide")
-        self.ball_fkc = CurveNode(
-            "ball_fkc",
-            pf=rID,
-            align=ball_guide,
-            scale=rSz * 2,
-            addOfs=1,
-            p=self.CTL_DATA,
-        )
-        self.rootJ.offset.cstPar(self.ball_fkc.offset, mo=1)
-        for fgrs, ctls in zip(self.fgrsArr[1:], self.ctlsArr[1:]):
-            dupTgt = DagNode(fgrs[1])
-            ctl, digit_ikJ = self.oneDigitIK_setup(dupTgt, scale * 5)
-            digit_ikJ.a.r >> ctls[1].parent.parent.a.r
-
     def space_setup(self):
         self.rigNode.setMsg({"spaceHolder1": self.rootJ})
         self.rigNode.a.add("spaceName1", attrType="string", txt="palm")
@@ -258,16 +252,18 @@ class Hand(RigModule):
         # visGrp[0] >> self.CTL_DATA.a.v
         # visGrp[1] >> self.rootJ.a.v
         # visGrp[1] >> self.PRX_GRP.a.v
-        fgrCtlVis = self.ball_fkc.a.add("fgrCtls", k=0, min=0, max=1, dv=1)
+
+        fgrCtlVis = self.smart_ctl.a.add("fgrCtls", k=0, min=0, max=1, dv=1)
         for fgrCtls in self.ctlsArr:
             fgrCtlVis >> fgrCtls[0].a.v
-            # for c in fgrCtls:
-            #     fgrCtlVis >> c.a.v
+
+        # for c in fgrCtls:
+        #     fgrCtlVis >> c.a.v
         # self.addMinusScaleGrp(self.smart_ctl)
 
     def post_setup(self):
         self.addBindJntSet(self.rootJ.allChildrenJt2)
-        ctlSet = [self.smart_ctl]
+        ctlSet = [self.smart_ctl] + self.ikcArr
         [ctlSet.extend(x) for x in self.ctlsArr]
         self.addCtlSet(ctlSet, pf=self.rigID)
         self.space_setup()

@@ -503,7 +503,7 @@ class RigModule(RigBase):
         (bank < 0).setCdn(ifTrue=bank, ifFalse=0) >> inRollG.a.rz
         (bank > 0).setCdn(ifTrue=bank, ifFalse=0) >> outRollG.a.rz
 
-    def oneDigitIK_setup(self, dupTgt, scale):
+    def build_digit_ik(self, dupTgt, scale, p=None):
         """IK setup for single digit"""
         from nl_modules.nodel.ik_node import IkNode
 
@@ -515,7 +515,7 @@ class RigModule(RigBase):
             up="-z",
             scale=scale,
             addOfs=1,
-            p=self.ball_fkc,
+            p=p,
         )
         ikJ = dupTgt.duplicate()
         endJ = ikJ.allChildrenJt[-1]
@@ -534,5 +534,5 @@ class RigModule(RigBase):
             vis=0,
             p=ctl,
         )
-        # mc.hide(ikJ)
+        mc.hide(ikJ)
         return ctl, ikJ
