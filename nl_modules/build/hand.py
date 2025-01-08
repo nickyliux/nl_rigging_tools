@@ -225,7 +225,7 @@ class Hand(RigModule):
             addOfs=1,
             p=self.CTL_DATA,
         )
-        self.SKL_DATA.cstPar(self.ball_fkc.offset, mo=1)
+        self.rootJ.offset.cstPar(self.ball_fkc.offset, mo=1)
         for fgrs, ctls in zip(self.fgrsArr[1:], self.ctlsArr[1:]):
             dupTgt = DagNode(fgrs[1])
             ctl, digit_ikJ = self.oneDigitIK_setup(dupTgt, scale * 5)

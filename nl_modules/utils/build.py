@@ -5,7 +5,6 @@ from nl_modules.nodel.base.dag_node import DagNode
 # Must keep it ------------------------------
 from nl_modules.build.leg import Leg
 from nl_modules.build.hand import Hand
-from nl_modules.build.limb import Limb
 from nl_modules.build.arm import Arm
 from nl_modules.build.head import Head
 from nl_modules.build.neck import Neck
