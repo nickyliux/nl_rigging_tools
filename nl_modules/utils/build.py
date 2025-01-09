@@ -79,6 +79,7 @@ def buildSelOrAll(*arg):
         updateAnchorConn()
         updateSpaceSwitch()
         mc.select(cl=1)
+        print()
 
 
 def unbuildTgt(rigN):
@@ -193,24 +194,28 @@ def updateSpaceSwitch():
                     else:
                         mc.delete(spaceG.parent)
 
-        spaceDict = collectSpaceObj(rigNode)
+        # Collect space items
         # e.g.
         #   'COG': cog_ikc,
         #   'master': master_ctl,
         #   'arm': lf_arm_ikc
+        spaceDict = collectSpaceObj(rigNode)
 
-        resultDict = {}
-        for s in spaceList:
-            if s in spaceDict and spaceDict[s]:
-                resultDict[s] = spaceDict[s]
+        # Filter non-existing item
         # e.g.
         #   'master': master_ctl,
         #   'arm': lf_arm_ikc
         # ------------------------------------
+        resultDict = {}
+        for s in spaceList:
+            if s in spaceDict and spaceDict[s]:
+                resultDict[s] = spaceDict[s]
+
         if resultDict:
             RigModule.spaceAlign(
                 ctl, names=":".join(resultDict.keys()), spaces=resultDict.values()
             )
+            # print(ctl.name, resultDict)
 
 
 def getSpaceObj(rigNode):

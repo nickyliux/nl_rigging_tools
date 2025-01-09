@@ -10,6 +10,8 @@ from nl_modules.utils import common
 from nl_modules.utils.color import Color
 from nl_modules.build.rig_module import RigModule
 
+PRX = 12
+
 
 class Hand(RigModule):
     def __init__(self, rigNode):
@@ -233,7 +235,7 @@ class Hand(RigModule):
         for fgrs in self.fgrsArr:
             proxyList.extend(fgrs)
 
-        rSz = self.rigSize * 10
+        rSz = self.rigSize * PRX
         xDr = self.x_dir
         for j in proxyList:
             JointNode(j).addProxyMesh(

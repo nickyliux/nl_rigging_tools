@@ -11,6 +11,8 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 from nl_modules.build.rig_module import RigModule
 
+PRX = 8
+
 
 class LegQd(RigModule):
     """Build LegQd component with given rigNode.
@@ -547,10 +549,12 @@ class LegQd(RigModule):
         aim = (self.x_dir, 0, 0)
         for j in proxyList:
             JointNode(j).addProxyMesh(
-                size=rSz * 4, aimDir=aim, skipEnd=1, p=self.PRX_GRP
+                size=rSz * PRX, aimDir=aim, skipEnd=1, p=self.PRX_GRP
             )
         for j in proxyToeList:
-            JointNode(j).addProxyMesh(size=rSz, aimDir=aim, skipEnd=1, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(
+                size=rSz * 2, aimDir=aim, skipEnd=1, p=self.PRX_GRP
+            )
 
         if proxyList:
             self.addBindJntSet(proxyList)

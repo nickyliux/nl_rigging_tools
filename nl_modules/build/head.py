@@ -10,8 +10,11 @@ from nl_modules.utils import common
 from nl_modules.utils.color import Color
 from nl_modules.build.rig_module import RigModule
 
+PRX = 25
+
 
 class Head(RigModule):
+
     def __init__(self, rigNode):
         super().__init__(rigNode)
         self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
@@ -81,7 +84,10 @@ class Head(RigModule):
     def proxy_setup(self):
         for j in [self.head, self.jaw, self.lf_eye, self.rt_eye]:
             JointNode(j).addProxyMesh(
-                size=self.rigSize * 10, aimDir=(0, 1, 0), skipEnd=1, p=self.PRX_GRP
+                size=self.rigSize * PRX,
+                aimDir=(0, 1, 0),
+                skipEnd=1,
+                p=self.PRX_GRP,
             )
 
     def vis_setup(self):

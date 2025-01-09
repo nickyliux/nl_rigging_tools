@@ -11,6 +11,8 @@ from nl_modules.nodel.ribbon_node import RibbonNode
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
+PRX = 6
+
 
 class Arm(RigModule):
     """Build arm component with given rigNode.
@@ -382,7 +384,7 @@ class Arm(RigModule):
             if self.lwr in proxyList:
                 proxyList.remove(self.lwr)
 
-        rSz = self.rigSize * 3
+        rSz = self.rigSize * PRX
         xDr = self.x_dir
         for j in proxyList:
             JointNode(j).addProxyMesh(
