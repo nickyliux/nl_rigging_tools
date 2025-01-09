@@ -12,6 +12,7 @@ from nl_modules.utils.color import Color
 from nl_modules.build.rig_module import RigModule
 
 PRX = 7
+CDY = Color.D_YELLOW
 
 
 class Leg(RigModule):
@@ -103,9 +104,11 @@ class Leg(RigModule):
         self.upr_fkc = CurveNode("upr_fkc", pf=rID, up="x", scale=rSz)
         self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", scale=rSz)
         self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz)
-        self.ball_fkc = CurveNode("ball_fkc", pf=rID, scale=rSz / 2)  # up="x",
+        self.ball_fkc = CurveNode(
+            "ball_fkc", pf=rID, shape="rotator_3d", up="-z", scale=rSz * xDr
+        )
         self.ikc = CurveNode("ikc", pf=rID, shape="foot")
-        self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz / 2)
+        self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz)
         self.rigNode.setMsg(
             {
                 "setting": self.setting,
@@ -135,7 +138,7 @@ class Leg(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        self.singleBallCtl_setup()
+        self.build_ballCtl()
 
         if self.KNEE_FIX:
             self.boneFix_setup(self.lwr, self.palm)
@@ -335,7 +338,8 @@ class Leg(RigModule):
         self.palm.cstPar(ofs, mo=1)
 
         fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=1)
-        for i in range(len(self.joints) - 1):
+        total = len(self.joints) - 1
+        for i in range(total):
             fkJ = self.joints_fk[i]
             ikJ = self.joints_ik[i]
             jnt = self.joints[i]
@@ -347,11 +351,10 @@ class Leg(RigModule):
 
         GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.palm_fkc)
 
-    def singleBallCtl_setup(self):
+    def build_ballCtl(self):
         """Make ball ctl the single ctl in both FK IK"""
         rID = self.rigID
         fkIk = self.setting.a.fkIk
-
         ball_fkc_ofs = self.ball_fkc.offset
         ball_fkc_ofs.removeCstNodes()
 
@@ -425,7 +428,7 @@ class Leg(RigModule):
 
         self.all_bend = [up_bend, lw_bend, md_bend]
         for b in self.all_bend:
-            b(shape="square", up="x", color=Color.D_YELLOW, scale=rSz)
+            b(shape="square", up="x", color=CDY, scale=rSz)
 
         upLoc.cstPar(up_bend.offset, mo=1)
         lwLoc.cstPar(lw_bend.offset, mo=1)

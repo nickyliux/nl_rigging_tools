@@ -11,6 +11,10 @@ from nl_modules.nodel.surf_node import SurfNode
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
+PRX = 90
+CDY = Color.D_YELLOW
+CRD = Color.RED
+
 
 class Spine(RigModule):
     def __init__(self, rigNode):
@@ -41,20 +45,19 @@ class Spine(RigModule):
     def createCtl(self):
         rSz = self.rigSize
         rID = self.rigID
-        CDY = Color.D_YELLOW
+        scale = (rSz * 7, rSz, rSz * 5.5)
+
         self.setting = CurveNode("setting", pf=rID, shape="sphere", scale=rSz * 2)
         self.cog_ctl = CurveNode(
             "cog_ctl", pf=rID, shape="cog", scale=rSz * 7, color=CDY
         )
-        self.tp_ctl = CurveNode(
-            "tp_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 2, rSz * 6), color=CDY
-        )
+        # "tp_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 2, rSz * 6), color=CDY
+        self.tp_ctl = CurveNode("tp_ctl", pf=rID, shape="cube", scale=scale, color=CDY)
         self.md_ctl = CurveNode(
             "_md_ctl", pf=rID, shape="diamond", up="-z", scale=rSz * 2, color=CDY
         )
-        self.rt_ctl = CurveNode(
-            "rt_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 2, rSz * 6), color=CDY
-        )
+        # "rt_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 2, rSz * 6), color=CDY
+        self.rt_ctl = CurveNode("rt_ctl", pf=rID, shape="cube", scale=scale, color=CDY)
         self.md_ctl.cv_move(0, 0, -rSz * 100)
 
         self.rigNode.setMsg(
@@ -96,18 +99,17 @@ class Spine(RigModule):
         self.fkCtl = []
         for i, j in enumerate(self.fkJnt[:-1]):
             c = CurveNode(
-                f"fkc_{i + 1}",
-                pf=rID,
-                shape="circle_round",
-                scale=rSz * 5,
-                color=Color.D_YELLOW,
+                f"fkc_{i + 1}", pf=rID, shape="circle_round", scale=rSz * 5, color=CDY
             )
+            # shape="rotator_3d",
+            # up="-z",
+            # rotate=(0, 0, 90),
             self.fkCtl.append(c)
 
         self.fkGivenCtl2(self.fkJnt[1:], self.fkCtl[1:], p=self.CTL_DATA)
 
         hipCtl = self.fkCtl[0]
-        hipCtl(p=self.CTL_DATA, addOfs=1, color=Color.RED)
+        hipCtl(p=self.CTL_DATA, addOfs=1, color=CRD)
         hipCtl.offset.snapAlignTo(self.fkJnt[1], self.fkJnt[0])
         hipCtl.cv_move(0, rSz * -50, 0)
         hipCtl.cstPar(self.fkJnt[0], mo=1)
@@ -198,8 +200,9 @@ class Spine(RigModule):
         # visGrp[1] >> self.SKL_DATA.a.v
         # visGrp[1] >> self.RIG_DATA.a.v
         # visGrp[1] >> self.PRX_GRP.a.v
-        if self.bindJ:
-            self.rbSrf.hide()
+        pass
+        # if self.bindJ:
+        #     self.rbSrf.hide()
 
     def channel_setup(self):
         self.setting.a.showAttr()
@@ -213,7 +216,7 @@ class Spine(RigModule):
     def proxy_setup(self):
         rSz = self.rigSize
         for j in self.bindJ:
-            size = rSz * 100 / self.RBN_JNT_NUM if self.RBN_BONES else rSz * 6
+            size = rSz * PRX / self.RBN_JNT_NUM if self.RBN_BONES else rSz * 8
             JointNode(j).addProxyMesh(size=size, p=self.PRX_GRP)  # , skipEnd=1)
 
     def space_setup(self):

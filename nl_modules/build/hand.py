@@ -7,8 +7,9 @@ from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.joint_node import JointNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
-from nl_modules.utils.color import Color
 from nl_modules.build.rig_module import RigModule
+
+# from nl_modules.utils.color import Color
 
 PRX = 12
 

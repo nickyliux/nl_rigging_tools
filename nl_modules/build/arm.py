@@ -12,6 +12,8 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
 PRX = 6
+CYD = Color.D_YELLOW
+CB = Color.BLACK
 
 
 class Arm(RigModule):
@@ -88,16 +90,18 @@ class Arm(RigModule):
         rID = self.rigID
         xDr = self.x_dir
         self.setting = CurveNode(
-            "setting", pf=rID, shape="sphere", scale=rSz * 2, color=Color.BLACK
+            "setting", pf=rID, shape="sphere", scale=rSz * 2, color=CB
         )
         self.clavicle_fkc = CurveNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
         )
+        # "clavicle_fkc", pf=rID, shape="rotator_3d", scale=3 * rSz * xDr
         self.clavicle_fkc.cv_rotate(0, 0, -45)
+        # self.clavicle_fkc.cv_move(20 * xDr, 0, 0)
         self.upr_fkc = CurveNode("upr_fkc", pf=rID, up="x", scale=rSz)
         self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", scale=rSz)
         self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz)
-        up = "x" if xDr == 1 else "-x"
+        # up = "x" if xDr == 1 else "-x"
         self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=(0.7, 1.2, 1.4))
         # , scale=(rSz * 2, rSz, rSz * 3))
         # "ikc", pf=rID, shape="circleU", up=up, rotate=(-xDr * 90, 0, 0)
@@ -337,7 +341,7 @@ class Arm(RigModule):
 
         self.all_bend = [up_bend, lw_bend, md_bend]
         for b in self.all_bend:
-            b(shape="square", up="x", color=Color.D_YELLOW, scale=self.rigSize)
+            b(shape="square", up="x", color=CDY, scale=self.rigSize)
 
         upLoc.cstPar(up_bend.offset, mo=1)
         lwLoc.cstPar(lw_bend.offset, mo=1)

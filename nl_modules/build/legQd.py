@@ -12,6 +12,7 @@ from nl_modules.utils.color import Color
 from nl_modules.build.rig_module import RigModule
 
 PRX = 8
+CDY = Color.D_YELLOW
 
 
 class LegQd(RigModule):
@@ -110,7 +111,7 @@ class LegQd(RigModule):
             pf=rID,
             scale=xDr * rSz / 2,
         )
-        self.ikc = CurveNode("ikc", pf=rID, shape="foot_quad", color=Color.D_YELLOW)
+        self.ikc = CurveNode("ikc", pf=rID, shape="foot_quad", color=CDY)
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz * 0.8)
         self.rigNode.setMsg(
             {
@@ -497,7 +498,7 @@ class LegQd(RigModule):
 
         self.all_bend = [up_bend, lw_bend, md_bend]
         for b in self.all_bend:
-            b(shape="square", up="x", color=Color.D_YELLOW, scale=rSz)
+            b(shape="square", up="x", color=CDY, scale=rSz)
 
         upLoc.cstPar(up_bend.offset, mo=1)
         lwLoc.cstPar(lw_bend.offset, mo=1)

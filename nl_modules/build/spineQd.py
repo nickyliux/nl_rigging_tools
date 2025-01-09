@@ -11,6 +11,10 @@ from nl_modules.utils import common
 from nl_modules.utils.color import Color
 from nl_modules.build.rig_module import RigModule
 
+PRX = 90
+CDY = Color.D_YELLOW
+CR = Color.RED
+
 
 class SpineQd(RigModule):
     def __init__(self, rigNode):
@@ -45,7 +49,6 @@ class SpineQd(RigModule):
     def createCtl(self):
         rSz = self.rigSize * 3
         rID = self.rigID
-        CDY = Color.D_YELLOW
         self.cog_ctl = CurveNode("cog_ctl", pf=rID, shape="stick", scale=rSz, color=CDY)
         self.tp_ctl = CurveNode("tp_ctl", pf=rID, shape="circleU", scale=rSz, up="-z")
         self.md_ctl = CurveNode("_md_ctl", pf=rID, shape="square", up="z", scale=rSz)
@@ -174,9 +177,7 @@ class SpineQd(RigModule):
         (self.tp_ctl, self.md_ctl, self.rt_ctl) | self.cog_ctl | self.CTL_DATA
         self.cog_ctl.addOffsetGrp()
 
-        self.ctlJnts = self.createCtlJ(
-            self.rt_ctl, self.md_ctl, self.tp_ctl, color=Color.RED
-        )
+        self.ctlJnts = self.createCtlJ(self.rt_ctl, self.md_ctl, self.tp_ctl, color=CR)
 
         # Orient control last fkJ by tip ctl
         self.fkJnt[-1].a.r.disconnect()
@@ -271,7 +272,7 @@ class SpineQd(RigModule):
         if self.bindJ:
             for j in self.bindJ:
                 JointNode(j).addProxyMesh(
-                    size=rSz * 50 / len(self.bindJ), p=self.PRX_GRP
+                    size=rSz * PRX / len(self.bindJ), p=self.PRX_GRP
                 )
 
     def ro_setup(self):

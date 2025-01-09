@@ -11,6 +11,8 @@ from nl_modules.utils.color import Color
 from nl_modules.build.rig_module import RigModule
 
 PRX = 25
+CY = Color.YELLOW
+CR = Color.RED
 
 
 class Head(RigModule):
@@ -52,8 +54,6 @@ class Head(RigModule):
     def createCtl(self):
         rID = self.rigID
         rSz = self.rigSize
-        CY = Color.YELLOW
-        CR = Color.RED
         self.head_fkc = CurveNode(
             "head", pf=rID, sf="_fkc", shape="circleU", scale=rSz * 5, color=CY
         )
