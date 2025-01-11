@@ -29,7 +29,7 @@ class MarkingMenuAutorig:
             pmo=1,
             pmc=self.setupMenu,
         )
-        self.reload_marking_menu()
+        # self.reload_marking_menu()
 
     def setupMenu(self, menu, parent):
         # pose_MI = mc.menuItem(p=menu, l="Pose", rp="SE", subMenu=1)
