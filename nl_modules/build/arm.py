@@ -75,7 +75,6 @@ class Arm(RigModule):
         self.joints = self.rootJ.allChildrenJt2
         self.clavicle, self.upr, self.lwr, self.palm, self.ball = self.joints
         self.createCtl()
-        # self.palmScale = self.setting.a.add("palmScale", min=0, dv=1)
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
@@ -95,16 +94,11 @@ class Arm(RigModule):
         self.clavicle_fkc = CurveNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
         )
-        # "clavicle_fkc", pf=rID, shape="rotator_3d", scale=3 * rSz * xDr
         self.clavicle_fkc.cv_rotate(0, 0, -45)
-        # self.clavicle_fkc.cv_move(20 * xDr, 0, 0)
         self.upr_fkc = CurveNode("upr_fkc", pf=rID, up="x", scale=rSz)
         self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", scale=rSz)
         self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz)
-        # up = "x" if xDr == 1 else "-x"
         self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=(0.7, 1.2, 1.4))
-        # , scale=(rSz * 2, rSz, rSz * 3))
-        # "ikc", pf=rID, shape="circleU", up=up, rotate=(-xDr * 90, 0, 0)
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz / 2)
         self.ball_ikc = CurveNode(
             "ball_ikc", pf=rID, shape="stickC", scale=xDr * rSz / 3
@@ -160,12 +154,6 @@ class Arm(RigModule):
         self.fkCtl = [self.clavicle_fkc, self.upr_fkc, self.lwr_fkc, self.palm_fkc]
         self.fkGivenCtl2(self.joints_fk, self.fkCtl, p=self.FK_PART)
         self.isolateAlign(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
-        # Scale
-        # proxyScale = self.palm_fkc.a.add("palmScale", proxy=self.palmScale)
-        # proxyScale >> self.palm_fkc.a.s
-        #
-        # for fkJ in self.joints_fk[3:]:
-        #     proxyScale >> fkJ.a.s
 
     def build_ik(self):
         rID = self.rigID
@@ -189,13 +177,11 @@ class Arm(RigModule):
             scaleFix=self.masterC.a.globalScale,
             RIG_DATA=self.RIG_DATA,
         )
-        # ikH2 = IkNode("2", pf=rID, sj=self.palm, ee=self.ball, jsf="_ik")
         self.ikCstG = GroupNode("ikCstG", pf=rID, align=self.palm)
         if self.x_dir == 1:
             for g in (self.ikCstG,):
                 g.a.rx.set2(180, add=1)
 
-        # (ikH1, ikH2) | self.ikCstG
         ikH1 | self.ikCstG
         self.ikc_gimbal = CurveNode(self.ikc).addGimbal(attrTgt=self.setting)
         self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
@@ -211,48 +197,14 @@ class Arm(RigModule):
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
         ikH1.stretchyIk(pvPin=1, soft=1)
-        # self.all_ikHs = [ikH1, ikH2]
         self.all_ikHs = [ikH1]
         self.clavicle_fkc.cstPar(self.joints_ik[0], mo=1)
         self.ikc.cstOri(self.joints_ik[-2], mo=1)
 
-        # Scale
-        # proxyScale = self.ikc.a.add("palmScale", proxy=self.palmScale)
-        # proxyScale >> self.ikc.a.s
-        # for ikJ in self.joints_ik[3:]:
-        #     proxyScale >> ikJ.a.s
-
         self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal, self.ball_ikc]
         self.ikH1 = ikH1
 
-    # def add_pvcRota_JC(self):
-    #     """
-    #     TWO-J CHAIN FOR pvcRota
-    #     """
-    #     s = self.rigSize
-    #
-    #     self.pvcRota.addOffsetGrp()
-    #     ofs = [s * self.x_dir * 2, 0, 0]
-    #     twoJ = JointNode.makeTwoJnts(
-    #         "twoJ",
-    #         pf=self.rigID,
-    #         r=s / 2,
-    #         snap=self.joints_ik[1],
-    #         ofs=ofs,
-    #         p=self.joints_ik[0],
-    #     )
-    #     ikH_two = IkNode(
-    #         "two", pf=twoJ[0].name, sj=twoJ[0], ee=twoJ[1], p=self.RIG_DATA
-    #     )
-    #
-    #     self.ikc.cstPoi(ikH_two)
-    #     twoJ[0].cstPar(self.pvcRota.offset, mo=1)
-    #     ikH_two.hide()
-
     def blend_fk_ik(self):
-        # spaces = [self.clavicle_fkc, self.masterC]
-        # self.followAlignTwo(self.main_ikc, spaces, 0, cstType="par")
-        # self.followAlignTwo(self.main_pvc, spaces, 0, cstType="par")
         rID = self.rigID
         rSz = self.rigSize
         xDr = self.x_dir
@@ -317,7 +269,6 @@ class Arm(RigModule):
             p=self.RIG_DATA,
             proxyP=self.PRX_GRP,
         )
-
         # --------------------------------
         # Upper Ribbon
         # --------------------------------
@@ -448,8 +399,3 @@ class Arm(RigModule):
         self.channel_setup()
         self.ro_setup()
         self.post_module()
-
-
-if __name__ == "__main__":
-    for n in mc.ls("*RGN", type="script"):
-        Arm(DagNode(n)).build()
