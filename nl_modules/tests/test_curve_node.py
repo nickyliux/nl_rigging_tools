@@ -1,6 +1,6 @@
 import unittest
 import maya.cmds as mc
-from numpy.ma.core import shape
+# from numpy.ma.core import shape
 
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
