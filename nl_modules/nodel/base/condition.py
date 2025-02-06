@@ -25,8 +25,8 @@ class Condition(DepNode):
         """
         if n:
             self.rename(n)
-
-        is1D = (isinstance(ifTrue, (int,float)) or ifTrue.isChild()) and (isinstance(ifFalse, (int,float)) or ifFalse.isChild())
+            
+        is1D = (isinstance(ifTrue, (int,float)) or not ifTrue.isVector()) and (isinstance(ifFalse, (int,float)) or not ifFalse.isVector())
 
         if is1D:
             ifTrue >> self.a.colorIfTrueR

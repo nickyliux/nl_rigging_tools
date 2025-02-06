@@ -30,7 +30,7 @@ def blendN_(attr1, attr2, w=0.5):
     attr1 >> n.a.inputB
     attr2 >> n.a.inputA
     w >> n.a.weightA
-    1 - w >> n.a.weightB
+    ~w >> n.a.weightB
     return n.a.output
 
 

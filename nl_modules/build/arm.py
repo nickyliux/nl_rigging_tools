@@ -12,7 +12,7 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
 PRX = 6
-CYD = Color.D_YELLOW
+CDY = Color.D_YELLOW
 CB = Color.BLACK
 
 

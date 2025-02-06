@@ -267,19 +267,14 @@ class IkNode(DagNode):
             if len(self.jnt) != 3:
                 logging.debug("pvPin is for 3-pt joint chain")
                 return
+            
             kp = self.pvc.a.add("pvPin", min=0, max=1)
             div = d / D
             stretchyOutput = ut.blendN_(1, ut.max_(div, 1), w=ut.max_(ks, kp))
             squashyOutput = ut.blendN_(1, ut.min_(div, 1), w=kq)
             ratio = (div > 1).setCdn(ifTrue=stretchyOutput, ifFalse=squashyOutput)
             ratioSoft = (div > 1).setCdn(ifTrue=stretchyOutput, ifFalse=1)
-            # A = d / D
-            # B = ut.max_(A, 1)
-            # ratio1 = ut.blend2_(B, A, w=kq)
-            # W = ut.max_(ks, kp)
-            # ratio = (ratio1 - 1) * W + 1
-            # ratioSoft = (B - 1) * W + 1
-            # ratio = (ut.max_(d / D, 1) - 1) * ut.max_(ks, kp) + 1
+            
             di = [
                 ut.distDim_(self.pvc, self.jnt[0]) / self.scaleFix,
                 ut.distDim_(self.pvc, dist_loc) / self.scaleFix,
@@ -339,10 +334,10 @@ class IkNode(DagNode):
         softIkPosGrp.cstPoi(ikH)
         softJ[1].cstPoi(self.node.addOffsetGrp())
 
-        s = self.ikc.a.add("softIK", min=0, dv=0)
+        s = self.ikc.a.add("softIK", min=0, dv=0) * 0.01
         D = self.chainLen
-        Ds = D - s
-        ds = Ds + s * (1 - math.e ** -(d - Ds))
+        Ds = D * (1 - s)
+        ds = D * (1 - s * math.e ** -(d - Ds))
         (((d > Ds).setCdn(ifTrue=ds, ifFalse=d)) * ratio * self.x_dir >> softJ[1].a.tx)
         ikH.hide()
         self.softJ = softJ
