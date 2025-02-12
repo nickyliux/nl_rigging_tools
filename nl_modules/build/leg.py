@@ -108,7 +108,7 @@ class Leg(RigModule):
             "ball_fkc", pf=rID, shape="rotator_3d", up="-z", scale=rSz * xDr
         )
         self.ikc = CurveNode("ikc", pf=rID, shape="foot")
-        self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz)
+        self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz)
         self.rigNode.setMsg(
             {
                 "setting": self.setting,
@@ -181,7 +181,8 @@ class Leg(RigModule):
         heelPos_guide = DagNode(rID + "_palm_heelPos_guide")
         toePos_guide = DagNode(rID + "_palm_toePos_guide")
         self.ikc.alignTo(mG)
-        self.pvc.alignTo(pvc_guide)
+        # self.pvc.alignTo(pvc_guide)
+        self.pvc.alignTo(self.lwr)
         self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_PART)
 
         ikH1 = IkNode(
@@ -230,7 +231,16 @@ class Leg(RigModule):
         self.ikc.snapTo(self.palm)
         self.ikc.cv_drop()
         self.ikc_gimbal.cv_drop()
-        self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
+
+        # 
+        #   Constrain ikCstG supporting fk limb   
+        #
+        # self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
+        self.ikc_gimbal.cstParR(self.ikCstG, mo=1)
+        self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
+        fkLimb = self.pvc.a.add("fkLimb", min=0, max=1)
+        fkLimb_loc = LocNode('fkLimb_loc', align=self.ikc, p=self.pvc, color=Color.YELLOW)
+        common.cstMulti(self.ikc_gimbal, fkLimb_loc, self.ikCstG, w=fkLimb, cstType="poi")
 
         self.footRollLogic(heelRollG, ballRollG, footRollG, toeRollG)
         self.footBankLogic(inRollG, outRollG)
@@ -525,9 +535,14 @@ class Leg(RigModule):
 
     def space_setup(self):
         self.rigNode.setMsg({"spaceHolder1": self.ikc})
-        self.rigNode.a.add("spaceName1", attrType="string", txt="master, hip, COG")
+        spaces = "master, hip, COG"
+        self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
+
         self.rigNode.setMsg({"spaceHolder2": self.pvc})
-        self.rigNode.a.add("spaceName2", attrType="string", txt="leg, master, hip, COG")
+        # spaces = "leg, master, hip, COG"
+        spaces = "master, hip, COG"
+        self.rigNode.a.add("spaceName2", attrType="string", txt=spaces)
+
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_hip": self.hip_fkc})
         self.rigNode.setMsg({"space_leg": self.ikH1.softJ[0]})

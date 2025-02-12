@@ -99,7 +99,7 @@ class Arm(RigModule):
         self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", scale=rSz)
         self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz)
         self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=(0.7, 1.2, 1.4))
-        self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz * 3)
+        self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz)
         self.ball_ikc = CurveNode(
             "ball_ikc", pf=rID, shape="stickC", scale=xDr * rSz / 3
         )
@@ -191,8 +191,8 @@ class Arm(RigModule):
         #   Constrain ikCstG supporting fk limb   
         #
         # // self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
-        self.ikc_gimbal.cstParR(self.ikCstG, mo=1)
         self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
+        self.ikc_gimbal.cstParR(self.ikCstG, mo=1)
         fkLimb = self.pvc.a.add("fkLimb", min=0, max=1)
         fkLimb_loc = LocNode('fkLimb_loc', align=self.ikc, p=self.pvc, color=Color.YELLOW)
         common.cstMulti(self.ikc_gimbal, fkLimb_loc, self.ikCstG, w=fkLimb, cstType="poi")
@@ -378,13 +378,12 @@ class Arm(RigModule):
 
     def space_setup(self):
         self.rigNode.setMsg({"spaceHolder1": self.ikc})
-        txt = "master, clavicle, COG, uprBody, lwrBody, head"
-        self.rigNode.a.add("spaceName1", attrType="string", txt=txt)
+        spaces = "master, clavicle, COG, uprBody, lwrBody, head"
+        self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"spaceHolder2": self.pvc})
-        # txt = "arm, master, COG, uprBody, lwrBody"
-        txt = "master, COG, uprBody, lwrBody"
-        self.rigNode.a.add("spaceName2", attrType="string", txt=txt)
+        spaces = "master, COG, uprBody, lwrBody"
+        self.rigNode.a.add("spaceName2", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_clavicle": self.clavicle_fkc})
