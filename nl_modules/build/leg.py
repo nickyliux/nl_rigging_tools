@@ -243,7 +243,7 @@ class Leg(RigModule):
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
 
-        ikH1.stretchyIk(pvPin=1, soft=1)
+        ikH1.stretchyIk(soft=1)
         self.all_ikH = {"main": ikH1, "ball": ikH2, "toe": ikH3}
         self.toeWiggleG = toeWiggleG
         self.hip_fkc.cstPar(self.joints_ik[0], mo=1)

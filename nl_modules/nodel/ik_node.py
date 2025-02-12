@@ -225,7 +225,7 @@ class IkNode(DagNode):
 
         return ratio
 
-    def stretchyIk(self, pvPin=0, soft=0):
+    def stretchyIk(self, pvPin=1, soft=0):
         """
                    J0
             d0 /   |   > Di[0]

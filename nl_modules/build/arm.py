@@ -99,7 +99,7 @@ class Arm(RigModule):
         self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", scale=rSz)
         self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz)
         self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=(0.7, 1.2, 1.4))
-        self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz / 2)
+        self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz * 3)
         self.ball_ikc = CurveNode(
             "ball_ikc", pf=rID, shape="stickC", scale=xDr * rSz / 3
         )
@@ -158,10 +158,12 @@ class Arm(RigModule):
     def build_ik(self):
         rID = self.rigID
         logging.info(rID)
-        pvc_guide = DagNode(rID + "_pvc_guide")
+        # pvc_guide = DagNode(rID + "_pvc_guide")
 
         self.ikc.alignTo(self.palm)
-        self.pvc.alignTo(pvc_guide)
+        # self.pvc.alignTo(pvc_guide)
+        self.pvc.alignTo(self.lwr)
+
         self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_PART)
         ikH1 = IkNode(
             "1",
@@ -184,7 +186,17 @@ class Arm(RigModule):
 
         ikH1 | self.ikCstG
         self.ikc_gimbal = CurveNode(self.ikc).addGimbal(attrTgt=self.setting)
-        self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
+
+        # 
+        #   Constrain ikCstG supporting fk limb   
+        #
+        # // self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
+        self.ikc_gimbal.cstParR(self.ikCstG, mo=1)
+        self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
+        fkLimb = self.pvc.a.add("fkLimb", min=0, max=1)
+        fkLimb_loc = LocNode('fkLimb_loc', align=self.ikc, p=self.pvc, color=Color.YELLOW)
+        common.cstMulti(self.ikc_gimbal, fkLimb_loc, self.ikCstG, w=fkLimb, cstType="poi")
+        
         (self.ikc, self.pvc, self.ikCstG) | self.IK_PART
         self.pvc_line = CurveNode.buildLineLinked(
             self.joints_ik[2],
@@ -196,7 +208,7 @@ class Arm(RigModule):
 
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
-        ikH1.stretchyIk(pvPin=1, soft=1)
+        ikH1.stretchyIk(soft=1)
         self.all_ikHs = [ikH1]
         self.clavicle_fkc.cstPar(self.joints_ik[0], mo=1)
         self.ikc.cstOri(self.joints_ik[-2], mo=1)
@@ -350,9 +362,9 @@ class Arm(RigModule):
 
     def channel_setup(self):
         self.setting.a.showAttr()
-        self.pvc.a.showAttr(t=1)
+        # self.pvc.a.showAttr(t=1)
         self.ball_ikc.a.showAttr(r=1)
-        for ctl in self.fkCtl + [self.ikc, self.ikc_gimbal]:
+        for ctl in self.fkCtl + [self.ikc, self.ikc_gimbal, self.pvc]:
             ctl.a.showAttr(t=1, r=1)
         for ctl in self.all_bend or []:
             ctl.a.showAttr(t=1, r=1, s=1)
@@ -370,7 +382,8 @@ class Arm(RigModule):
         self.rigNode.a.add("spaceName1", attrType="string", txt=txt)
 
         self.rigNode.setMsg({"spaceHolder2": self.pvc})
-        txt = "arm, master, COG, uprBody, lwrBody"
+        # txt = "arm, master, COG, uprBody, lwrBody"
+        txt = "master, COG, uprBody, lwrBody"
         self.rigNode.a.add("spaceName2", attrType="string", txt=txt)
 
         self.rigNode.setMsg({"space_master": self.masterC})

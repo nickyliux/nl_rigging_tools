@@ -43,7 +43,8 @@ class RigModule(RigBase):
         self.x_dir = 1
         self.rigSize = 1
         self.boneFix = None
-        self.rootJ = rigNode.a.rootJ.inConnNode
+        if rigNode.a.rootJ.exists():
+            self.rootJ = rigNode.a.rootJ.inConnNode
 
     @staticmethod
     def genSkFrNames(names, pf="", color=None, r=1):

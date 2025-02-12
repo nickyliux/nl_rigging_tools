@@ -1,4 +1,5 @@
 import maya.cmds as mc
+import logging
 from nl_modules.utils import path
 
 
@@ -23,6 +24,7 @@ class AttributeHolder:
 
         if item in self.__dict__.keys():
             return self.__dict__[item]
+        
         return Attribute(self.node, item)
 
     def __getitem__(self, item):

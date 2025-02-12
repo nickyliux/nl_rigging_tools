@@ -64,6 +64,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         super(MainWindow, self).__init__(parent)
         logging.info("load " + PATH_UI)
         self.UI = QUiLoader().load(PATH_UI)
+        """
+        CHECK UI ELEMENTS
+
+        uiObj = mc.loadUI(f=PATH_UI)
+        for i in mc.lsUI(dumpWidgets=1):
+            if uiObj in i:
+                print(i)
+        """
         self.setWindowTitle("nl AutoRig")
         self.setCentralWidget(self.UI)
         self.setGeometry(0, 0, 220, 680)
