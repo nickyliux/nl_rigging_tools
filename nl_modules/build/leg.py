@@ -56,6 +56,7 @@ class Leg(RigModule):
         self.ball_fkc = None
         self.pvc = None
         self.ikc = None
+        self.palmFk_ikc = None
         self.ikCtl = None
         self.fkCtl = None
         self.palmScale = None
@@ -108,7 +109,7 @@ class Leg(RigModule):
             "ball_fkc", pf=rID, shape="rotator_3d", up="-z", scale=rSz * xDr
         )
         self.ikc = CurveNode("ikc", pf=rID, shape="foot")
-        self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz)
+        self.pvc = CurveNode("pvc", pf=rID, shape="sphere", scale=rSz * 4)
         self.rigNode.setMsg(
             {
                 "setting": self.setting,
@@ -236,11 +237,10 @@ class Leg(RigModule):
         #   Constrain ikCstG supporting fk limb   
         #
         # self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
-        self.ikc_gimbal.cstParR(self.ikCstG, mo=1)
         self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
-        fkLimb = self.pvc.a.add("fkLimb", min=0, max=1)
-        fkLimb_loc = LocNode('fkLimb_loc', align=self.ikc, p=self.pvc, color=Color.YELLOW)
-        common.cstMulti(self.ikc_gimbal, fkLimb_loc, self.ikCstG, w=fkLimb, cstType="poi")
+        fkForelimb = self.pvc.a.add("fkForelimb", min=0, max=1)
+        self.palmFk_ikc = CurveNode(rID + '_palmFk_ikc', align=self.ikc, p=self.pvc, addOfs=1)
+        common.cstMulti(self.ikc_gimbal, self.palmFk_ikc, self.ikCstG, w=fkForelimb, cstType="par", mo=1)
 
         self.footRollLogic(heelRollG, ballRollG, footRollG, toeRollG)
         self.footBankLogic(inRollG, outRollG)
@@ -258,7 +258,7 @@ class Leg(RigModule):
         self.toeWiggleG = toeWiggleG
         self.hip_fkc.cstPar(self.joints_ik[0], mo=1)
 
-        self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal]
+        self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal, self.palmFk_ikc]
         self.ikH1 = ikH1
         self.subCtl_setup(ballRollG, toeRollG, inRollG, outRollG, heelRollG)
 
@@ -510,6 +510,7 @@ class Leg(RigModule):
         fkIk = self.setting.a.fkIk
         [fkIk >> c.a.v for c in (self.ikc, self.pvc, self.pvc_line, self.ikCstG)]
         [~fkIk >> c.a.v for c in self.fkCtl[1:-1]]
+        self.pvc.a['fkForelimb'] >> self.palmFk_ikc.a.v
 
         if self.all_bend:
             bowCtl = self.setting.a.add("legBowCtls", min=0, max=1, dv=1, k=0)
@@ -550,7 +551,7 @@ class Leg(RigModule):
     def post_setup(self):
         rID = self.rigID
         logging.info(rID)
-        for c in [self.ikc, self.ikc_gimbal, self.pvc]:
+        for c in [self.ikc, self.ikc_gimbal]:
             c.a.add("wsMirrorAxis", k=0, lock=1, cb=0)
         ctlSet = []
         ctlSet.extend(self.fkCtl + self.ikCtl + self.subCtls + [self.setting])

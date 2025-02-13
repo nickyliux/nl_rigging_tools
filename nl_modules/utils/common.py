@@ -127,10 +127,15 @@ def cstMulti(*args, cstType="par", delete=False, w=None, **kwargs):
     name = f"{lastObj.name}_{cstType}Cst_#"
     cstCmd = CST_DICT[cstType]
 
+    cst = None
     if cstType.startswith("par"):
         cst = cstCmd(args[:-1], lastObj, n=name, st=skipT, sr=skipR, **kwargs)[0]
     else:
         cst = cstCmd(args[:-1], lastObj, n=name, **kwargs)[0]
+
+    # Look like that shortest is a better option for orientation transition
+    if cstCmd == 'mc.orientConstraint' or cstCmd == 'mc.parentConstraint':
+        mc.setAttr(cst + ".interpType", 2)
 
     weightList = lastObj.getCstWeightAttr(cstType=cstCmd.__name__)
 

@@ -94,6 +94,7 @@
         <pointsize>9</pointsize>
         <weight>75</weight>
         <bold>true</bold>
+        <kerning>true</kerning>
        </font>
       </property>
       <property name="styleSheet">
@@ -228,6 +229,7 @@
         <pointsize>11</pointsize>
         <weight>75</weight>
         <bold>true</bold>
+        <kerning>true</kerning>
        </font>
       </property>
       <property name="toolTip">
@@ -270,6 +272,7 @@
         <pointsize>9</pointsize>
         <weight>50</weight>
         <bold>false</bold>
+        <kerning>true</kerning>
        </font>
       </property>
       <property name="toolTip">
@@ -726,8 +729,11 @@
         <height>16</height>
        </size>
       </property>
+      <property name="toolTip">
+       <string>Add selection to library</string>
+      </property>
       <property name="text">
-       <string>New</string>
+       <string>Add Sel</string>
       </property>
      </widget>
      <widget class="QPushButton" name="crvShape_save_BN">
@@ -760,7 +766,7 @@
        </font>
       </property>
       <property name="toolTip">
-       <string>Save ctrl shape</string>
+       <string>Save selection to library</string>
       </property>
       <property name="text">
        <string>Save</string>
@@ -780,6 +786,9 @@
         <width>16777215</width>
         <height>16</height>
        </size>
+      </property>
+      <property name="toolTip">
+       <string>Delete item in library</string>
       </property>
       <property name="text">
        <string>Del</string>
@@ -987,6 +996,8 @@ Ref</string>
      </property>
      <property name="font">
       <font>
+       <family>Segoe UI</family>
+       <pointsize>8</pointsize>
        <weight>50</weight>
        <bold>false</bold>
       </font>

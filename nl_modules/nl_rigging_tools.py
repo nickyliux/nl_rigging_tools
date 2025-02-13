@@ -294,7 +294,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def crvShape_LW_dblClicked(self, item):
         """Add curve object"""
-        CurveNode(item.text(), shape=item.text())
+        crv = CurveNode(item.text(), shape=item.text())
+        mc.select(crv)
 
     def crvShape_save_BN_clicked(self):
         """Save selected shape to highlighted"""

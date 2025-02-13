@@ -265,10 +265,10 @@ class IkNode(DagNode):
                 logging.error("setting undefined !")
                 return
             if len(self.jnt) != 3:
-                logging.debug("pvPin is for 3-pt joint chain")
+                logging.debug("pin is for 3-pt joint chain")
                 return
             
-            kp = self.pvc.a.add("pvPin", min=0, max=1)
+            kp = self.pvc.a.add("pin", min=0, max=1)
             div = d / D
             stretchyOutput = ut.blendN_(1, ut.max_(div, 1), w=ut.max_(ks, kp))
             squashyOutput = ut.blendN_(1, ut.min_(div, 1), w=kq)
