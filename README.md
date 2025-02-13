@@ -1,14 +1,14 @@
 ## N-Rig
 
-Another modular rigging system in Python for Autodesk Maya, with the core values for animators:
+This is a modular rigging system for Autodesk Maya. I have developed one in mel and one in maxscript for biped in production. The modular one is a challenge I really want to take, as a character rigger.
 
+Core values of the system :
 - Intuitive:&emsp;Too many things at a time is scary.
 - Effective:&emsp;No animator I know enjoy waiting for playback.
 - Modular:&emsp;Animators will break it badly otherwise.
 - Fun:&emsp;&emsp;&emsp;Isn't it great ?
 
-
-The system was built based on a custom rigging framework. Thanks to the rigging course by <i><b>Nick Hughes</b></i> which opens my eyes and shows me the proper way to go without pymel.
+The system was built with a custom framework. Thanks to the rigging course by <i><b>Nick Hughes</b></i> which opens my eyes and shows me the proper way to go without pymel.
 
 ## Installation
 
