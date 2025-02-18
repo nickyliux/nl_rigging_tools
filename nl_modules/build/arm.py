@@ -84,6 +84,7 @@ class Arm(RigModule):
         if self.TWIST_BONES:
             self.twistBones_setup()
         self.post_setup()
+        self.pvc.a.tz.set(self.rigSize * self.x_dir)
 
     def createCtl(self):
         rSz = self.rigSize
@@ -100,7 +101,7 @@ class Arm(RigModule):
         self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", scale=rSz)
         self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz)
         self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=(0.7, 1.2, 1.4))
-        self.pvc = CurveNode("pvc", pf=rID, shape="sphere", scale=rSz * 4)
+        self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz * 1.5)
         # self.ball_ikc = CurveNode(
         #     "ball_ikc", pf=rID, shape="stickC", scale=xDr * rSz / 3
         # )
@@ -186,14 +187,23 @@ class Arm(RigModule):
         ikH1 | self.ikCstG
         self.ikc_gimbal = CurveNode(self.ikc).addGimbal(attrTgt=self.setting)
 
-        # 
-        #   Constrain ikCstG supporting fk limb   
+        #
+        #   Constrain ikCstG supporting fk limb
         #
         # // self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
         self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
         fkForelimb = self.pvc.a.add("fkForelimb", min=0, max=1)
-        self.palmFk_ikc = CurveNode(rID + '_palmFk_ikc', up="x", align=self.fkCtl[-1], p=self.pvc, addOfs=1)
-        common.cstMulti(self.ikc_gimbal, self.palmFk_ikc, self.ikCstG, w=fkForelimb, cstType="par", mo=1)
+        self.palmFk_ikc = CurveNode(
+            rID + "_palmFk_ikc", up="x", align=self.fkCtl[-1], p=self.pvc, addOfs=1
+        )
+        common.cstMulti(
+            self.ikc_gimbal,
+            self.palmFk_ikc,
+            self.ikCstG,
+            w=fkForelimb,
+            cstType="par",
+            mo=1,
+        )
 
         (self.ikc, self.pvc, self.ikCstG) | self.IK_PART
         self.pvc_line = CurveNode.buildLineLinked(
@@ -212,7 +222,12 @@ class Arm(RigModule):
         # self.ikc.cstOri(self.joints_ik[-2], mo=1)
         # self.ikCstG.cstPar(self.joints_ik[-2], mo=1)
 
-        self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal, self.palmFk_ikc] # self.ball_ikc, 
+        self.ikCtl = [
+            self.ikc,
+            self.pvc,
+            self.ikc_gimbal,
+            self.palmFk_ikc,
+        ]  # self.ball_ikc,
         self.ikH1 = ikH1
 
     def blend_fk_ik(self):
@@ -331,7 +346,7 @@ class Arm(RigModule):
         fkIk = self.setting.a.fkIk
         [fkIk >> c.a.v for c in (self.ikc, self.pvc, self.pvc_line, self.ikCstG)]
         [~fkIk >> c.a.v for c in (self.palm_fkc, self.lwr_fkc, self.upr_fkc)]
-        self.pvc.a['fkForelimb'] >> self.palmFk_ikc.a.v
+        self.pvc.a["fkForelimb"] >> self.palmFk_ikc.a.v
 
         if self.RBN_BONES:
             bowCtl = self.setting.a.add("armBowCtls", min=0, max=1, dv=0, k=0)

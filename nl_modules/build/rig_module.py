@@ -324,8 +324,8 @@ class RigModule(RigBase):
     def post_module(self):
         for obj in mc.ls(tr=1):
             mc.setAttr(obj + ".ro", cb=1)
-        for _ in mc.ls(type='curveShape'):
-            mc.setAttr(_ + '.alwaysDrawOnTop', 1)
+        for _ in mc.ls(type="curveShape"):
+            mc.setAttr(_ + ".alwaysDrawOnTop", 1)
         self.moduleG.hide()
 
     def unbuild_module(self):
@@ -486,6 +486,28 @@ class RigModule(RigBase):
         jnt2 = JointNode(ctl2 + "_ctlJ", r=rS, color=color, align=ctl2, p=ctl2)
         jnt3 = JointNode(ctl3 + "_ctlJ", r=rS, color=color, align=ctl3, p=ctl3)
         return [jnt1, jnt2, jnt3]
+
+    def visByCondition(self, fkIk, autoVis, manualVis, targets, hideWhen=0):
+        """Setup vis logic with auto / manual mode
+
+        visByCondition(
+            fkIk,
+            autoVis,
+            showFk,
+            [DagNode('a')],
+            hideWhen=0
+        )
+        """
+        cond = DagNode("visCond" + str(hideWhen) + "__#", nodeType="condition")
+        fkIk >> cond.a.firstTerm
+        cond.a.secondTerm.set(1 - hideWhen)
+        # [cond.a.outColor >> target.a.v for target in targets]
+
+        condF = DagNode("visCondF" + str(hideWhen) + "__#", nodeType="floatCondition")
+        cond.a.outColorR >> condF.a.floatA
+        autoVis >> condF.a.condition
+        manualVis >> condF.a.floatB
+        [condF.a.outFloat >> target.a.v for target in targets]
 
     def footRollLogic(self, heelRollG, ballRollG, footRollG, toeRollG):
         from nl_modules.utils import utils_node as ut
