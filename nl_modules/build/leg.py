@@ -231,7 +231,7 @@ class Leg(RigModule):
         (ikH2, ikH3) | toeWiggleG | inRollG
         inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG
 
-        self.ikc_gimbal = CurveNode(self.ikc).addGimbal(attrTgt=self.setting)
+        self.ikc_gimbal = CurveNode(self.ikc).addGimbal()  # attrTgt=self.setting)
         self.ikc.snapTo(self.palm)
         self.ikc.cv_drop()
         self.ikc_gimbal.cv_drop()

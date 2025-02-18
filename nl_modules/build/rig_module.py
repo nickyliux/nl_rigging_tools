@@ -488,7 +488,7 @@ class RigModule(RigBase):
         return [jnt1, jnt2, jnt3]
 
     def visByCondition(self, fkIk, autoVis, manualVis, targets, hideWhen=0):
-        """Setup vis logic with auto / manual mode
+        """Setup vis logic with auto / manual mode like Advanced Skeleton
 
         visByCondition(
             fkIk,
