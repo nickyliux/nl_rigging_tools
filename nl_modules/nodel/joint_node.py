@@ -99,6 +99,7 @@ class JointNode(GroupNode):
             # Constraint must be after shader assignment
             # Or mc.sets(..) will show warning
             self.cstPar(proxyN, mo=1)
+            # proxyN.parentTo(self)
             return proxyN
 
     @staticmethod

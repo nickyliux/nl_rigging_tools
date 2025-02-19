@@ -528,6 +528,9 @@ def main():
 if __name__ == "__main__":
     main()
 
+mc.evalDeferred("reloadMenus()")
+mc.scriptJob(permanent=1, runOnce=1, event=["SelectionChanged", "reloadMenusAutorig"])
+
 """
 import importlib
 from nl_modules import nl_rigging_tools

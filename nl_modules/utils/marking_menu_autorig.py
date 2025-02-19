@@ -29,7 +29,7 @@ class MarkingMenuAutorig:
             pmo=1,
             pmc=self.setupMenu,
         )
-        # self.reload_marking_menu()
+        self.reload_marking_menu()
 
     def setupMenu(self, menu, parent):
         # pose_MI = mc.menuItem(p=menu, l="Pose", rp="SE", subMenu=1)
@@ -75,17 +75,17 @@ class MarkingMenuAutorig:
                     # -----------------------------
                     fkIkAttr = selN.a.fkIk
                     if fkIkAttr.exists():
-                        if fkIkAttr.get() == 1:
+                        if fkIkAttr.get() > 0.5:
                             mc.menuItem(
                                 p=menu,
-                                l="To FK",
+                                l="To FK Mode",
                                 rp="S",
                                 c=partial(self.setFkIk, fkIkAttr, 0, rN),
                             )
                         else:
                             mc.menuItem(
                                 p=menu,
-                                l="To IK",
+                                l="To IK Mode",
                                 rp="S",
                                 c=partial(self.setFkIk, fkIkAttr, 1, rN),
                             )
@@ -134,7 +134,7 @@ class MarkingMenuAutorig:
         anim.switchToSpaceTgt(args[0])
 
     def setFkIk(self, *args):
-        anim.switchToFkIk(attr=args[0], toIK=args[1], rigNode=args[2])
+        anim.switchToFkIk(attr=args[0], toIKMode=args[1], rigNode=args[2])
         self.reload_marking_menu()
 
     def reload_marking_menu(*args):
@@ -143,7 +143,7 @@ class MarkingMenuAutorig:
 from importlib import reload
 import nl_modules.utils.marking_menu_autorig as mma
 reload(mma)
-mma.MarkingMenuAutorig()
+# mma.MarkingMenuAutorig()
             """
         )
 

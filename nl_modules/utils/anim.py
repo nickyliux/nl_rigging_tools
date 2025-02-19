@@ -45,10 +45,10 @@ def switchToSpaceTgt(spaceName):
                 mc.xform(ctlN, ws=1, m=m)
 
 
-def switchToFkIk(attr=None, toIK=0, rigNode=None):
+def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
     """Switch fk ik for input rigNode. World transform is unchanged
     e.g.
-        switchToFkIk(attr=, toIK=1, rigNode=)
+        switchToFkIk(attr=, toIKMode=1, rigNode=)
     """
     rN = rigNode
     if rN and rN.a.nodeState.get() == 2:
@@ -57,7 +57,7 @@ def switchToFkIk(attr=None, toIK=0, rigNode=None):
         rootJ = rN.a.rootJ.inConnNode
         upr = rootJ.children[0]
         lwr = upr.children[0]
-        # palm = lwr.children[0]
+        palm = lwr.children[0]
 
         upr_fkc = rN.a.upr_fkc.inConnNode
         lwr_fkc = rN.a.lwr_fkc.inConnNode
@@ -65,11 +65,10 @@ def switchToFkIk(attr=None, toIK=0, rigNode=None):
         ikc = rN.a.ikc.inConnNode
         pvc = rN.a.pvc.inConnNode
 
-        if toIK == 1:
-            # FK to IK
+        if toIKMode == 1:
+            # mode: FK to IK
             # Snap ikc to matchers under fkc
             ikcMatcher = DagNode(ikc + "_matcher")
-
             if ikc and pvc and ikcMatcher.exists():
                 pos1 = upr.o.pos
                 pos2 = lwr.o.pos
@@ -79,20 +78,20 @@ def switchToFkIk(attr=None, toIK=0, rigNode=None):
                 pvc.snapTo(pvc_pos_grp)
                 pvc_pos_grp.delete()
         else:
-            # IK to FK
+            # mode: IK to FK
             # Snap fkc to current limb
-
             if upr_fkc and lwr_fkc and palm_fkc and upr and lwr and ikc:
                 upr_fkc.alignTo(upr)
                 lwr_fkc.alignTo(lwr)
-                palm_fkc.alignTo(ikc)
+                # palm_fkc.alignTo(ikc)
+                palm_fkc.alignTo(palm)
 
             # if rigClass == "LegQd":
             #     digit_jnt = ikc.childrenJt[0]
             #     digit_fkc = rN.a["digit_fkc"].inConnNode
             #     digit_fkc.alignTo(digit_jnt)
 
-    attr.set(toIK)
+    attr.set(toIKMode)
     mc.select(cl=1)
 
 

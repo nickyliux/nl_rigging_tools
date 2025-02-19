@@ -42,6 +42,7 @@ class Leg(RigModule):
         self.joints = []
         self.joints_fk = []
         self.joints_ik = []
+        self.joints_bf = []
         self.jointsFix = None
         self.hip = None
         self.upr = None
@@ -354,6 +355,8 @@ class Leg(RigModule):
         rSz = self.rigSize
         xDr = self.x_dir
         logging.info(rID)
+        self.joints_bf = common.extractSk(self.joints, "_bf", p=self.RIG_DATA)
+
         self.setting | self.CTL_DATA
         self.setting.alignTo(self.palm, offset=(0, rSz * -xDr * 20, 0))
         ofs = self.setting.addOffsetGrp()
@@ -365,8 +368,22 @@ class Leg(RigModule):
         for i in range(total):
             fkJ = self.joints_fk[i]
             ikJ = self.joints_ik[i]
+            bfJ = self.joints_bf[i]
             jnt = self.joints[i]
-            common.cstMulti(fkJ, ikJ, jnt, w=fkIk, cstType="par")
+            # common.cstMulti(fkJ, ikJ, jnt, w=fkIk, cstType="par")
+            common.cstMulti(fkJ, ikJ, bfJ, w=fkIk, cstType="par")
+            if i < total - 1:
+                bfJ.a.t >> jnt.a.t
+                bfJ.a.r >> jnt.a.r
+            else:
+                # Remove connections for ball fkc
+                ofg = self.ball_fkc.offset
+                ofg.removeCstNodes()
+                self.joints_fk[-2].removeCstNodes()
+
+                # Put ball fkc under ball buffer jnt
+                bfJ.cstPar(ofg, mo=1)
+                self.ball_fkc.cstPar(jnt)
 
         # Useful for fk ik switch popUp menu
         for ctl in self.fkCtl + self.ikCtl:
@@ -375,36 +392,37 @@ class Leg(RigModule):
         GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.palm_fkc)
 
     def build_ballCtl(self):
-        """Make ball ctl the single ctl in both FK IK"""
-        rID = self.rigID
-        fkIk = self.setting.a.fkIk
-        ball_fkc_ofs = self.ball_fkc.offset
-        ball_fkc_ofs.removeCstNodes()
+        return
+        # """Make ball ctl the single ctl in both FK IK"""
+        # rID = self.rigID
+        # fkIk = self.setting.a.fkIk
+        # ball_fkc_ofs = self.ball_fkc.offset
+        # ball_fkc_ofs.removeCstNodes()
 
-        self.all_ikH["toe"] | self.ball_fkc
-        ball_fkj = self.joints_fk[4]
+        # self.all_ikH["toe"] | self.ball_fkc
+        # ball_fkj = self.joints_fk[4]
 
-        self.spaceAlign(
-            self.ball_fkc,
-            spaces=[ball_fkj.offset, self.toeWiggleG],
-            w=fkIk,
-            cstType="par",
-        )
-        ballOfsG = GroupNode(
-            "ballOfsG",
-            pf=rID,
-            snap=self.ball.offset,
-            p=self.FK_PART,
-        )
-        ball_fkc_ofs | ballOfsG
-        ball_fkj.removeCstNodes()
-        self.spaceAlign(
-            ball_fkj,
-            spaces=[self.ball_fkc, ball_fkj.offset],
-            w=fkIk,
-            cstType="ori",
-            mo=1,
-        )
+        # self.spaceAlign(
+        #     self.ball_fkc,
+        #     spaces=[ball_fkj.offset, self.toeWiggleG],
+        #     w=fkIk,
+        #     cstType="par",
+        # )
+        # ballOfsG = GroupNode(
+        #     "ballOfsG",
+        #     pf=rID,
+        #     snap=self.ball.offset,
+        #     p=self.FK_PART,
+        # )
+        # ball_fkc_ofs | ballOfsG
+        # ball_fkj.removeCstNodes()
+        # self.spaceAlign(
+        #     ball_fkj,
+        #     spaces=[self.ball_fkc, ball_fkj.offset],
+        #     w=fkIk,
+        #     cstType="ori",
+        #     mo=1,
+        # )
 
     def ribbon_setup(self):
         """
