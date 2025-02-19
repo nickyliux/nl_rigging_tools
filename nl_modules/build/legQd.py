@@ -407,23 +407,23 @@ class LegQd(RigModule):
         ofs = self.setting.addOffsetGrp()
         self.palm.cstPar(ofs, mo=1)
 
-        fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=1)
+        fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
         for i in range(len(self.joints) - 1):
             fkJ = self.joints_fk[i]
             ikJ = self.joints_ik[i]
             jnt = self.joints[i]
-            common.cstMulti(fkJ, ikJ, jnt, w=fkIk, cstType="par")
+            common.cstMulti(fkJ, ikJ, jnt, w=fkIkBlend, cstType="par")
 
         # Useful for fk ik switch popUp menu
         for ctl in self.fkCtl + self.ikCtl:
-            ctl.a.add("fkIk", proxy=fkIk, k=0)
+            ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
         GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.digit_fkc)
 
     def singleBallCtl_setup(self):
         """Make ball ctl the single ctl in both FK IK"""
         rID = self.rigID
-        fkIk = self.setting.a.fkIk
+        fkIkBlend = self.setting.a["fkIkBlend"]
 
         ball_fkc_ofs = self.ball_fkc.offset
         ball_fkc_ofs.removeCstNodes()
@@ -434,7 +434,7 @@ class LegQd(RigModule):
         self.spaceAlign(
             self.ball_fkc,
             spaces=[ball_fkj.offset, self.toeWiggleG],
-            w=fkIk,
+            w=fkIkBlend,
             cstType="par",
         )
         ballOfsG = GroupNode(
@@ -448,7 +448,7 @@ class LegQd(RigModule):
         self.spaceAlign(
             ball_fkj,
             spaces=[self.ball_fkc, ball_fkj.offset],
-            w=fkIk,
+            w=fkIkBlend,
             cstType="ori",
             mo=1,
         )
@@ -568,9 +568,9 @@ class LegQd(RigModule):
         # visGrp[1] >> self.SKL_DATA.a.v
         # visGrp[1] >> self.PRX_GRP.a.v
 
-        fkIk = self.setting.a.fkIk
-        [fkIk >> c.a.v for c in (self.ikc, self.pvc, self.pvc_line, self.ikCstG)]
-        [~fkIk >> c.a.v for c in self.fkCtl[1:-1]]
+        fkIkBlend = self.setting.a["fkIkBlend"]
+        [fkIkBlend >> c.a.v for c in (self.ikc, self.pvc, self.pvc_line, self.ikCstG)]
+        [~fkIkBlend >> c.a.v for c in self.fkCtl[1:-1]]
 
         if self.all_bend:
             bowCtl = self.setting.a.add("legBowCtls", min=0, max=1, dv=1, k=0)

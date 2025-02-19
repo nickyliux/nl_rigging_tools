@@ -487,11 +487,11 @@ class RigModule(RigBase):
         jnt3 = JointNode(ctl3 + "_ctlJ", r=rS, color=color, align=ctl3, p=ctl3)
         return [jnt1, jnt2, jnt3]
 
-    def visByCondition(self, fkIk, autoVis, manualVis, targets, hideWhen=0):
+    def visByCondition(self, fkIkBlend, autoVis, manualVis, targets, hideWhen=0):
         """Setup vis logic with auto / manual mode like Advanced Skeleton
 
         visByCondition(
-            fkIk,
+            fkIkBlend,
             autoVis,
             showFk,
             [DagNode('a')],
@@ -499,7 +499,7 @@ class RigModule(RigBase):
         )
         """
         cond = DagNode("visCond" + str(hideWhen) + "__#", nodeType="condition")
-        fkIk >> cond.a.firstTerm
+        fkIkBlend >> cond.a.firstTerm
         cond.a.secondTerm.set(1 - hideWhen)
         # [cond.a.outColor >> target.a.v for target in targets]
 

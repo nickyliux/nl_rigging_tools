@@ -267,14 +267,14 @@ class IkNode(DagNode):
             if len(self.jnt) != 3:
                 logging.debug("pin is for 3-pt joint chain")
                 return
-            
-            kp = self.pvc.a.add("pin", min=0, max=1)
+
+            kp = self.pvc.a.add("pvPin", min=0, max=1)
             div = d / D
             stretchyOutput = ut.blendN_(1, ut.max_(div, 1), w=ut.max_(ks, kp))
             squashyOutput = ut.blendN_(1, ut.min_(div, 1), w=kq)
             ratio = (div > 1).setCdn(ifTrue=stretchyOutput, ifFalse=squashyOutput)
             ratioSoft = (div > 1).setCdn(ifTrue=stretchyOutput, ifFalse=1)
-            
+
             di = [
                 ut.distDim_(self.pvc, self.jnt[0]) / self.scaleFix,
                 ut.distDim_(self.pvc, dist_loc) / self.scaleFix,

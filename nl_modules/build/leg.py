@@ -242,7 +242,7 @@ class Leg(RigModule):
         #
         # self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
         self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
-        fkForelimb = self.pvc.a.add("fkForelimb", min=0, max=1)
+        fkLimb = self.pvc.a.add("fkLimb", min=0, max=1)
         self.palmFk_ikc = CurveNode(
             rID + "_palmFk_ikc", align=self.ikc, p=self.pvc, addOfs=1
         )
@@ -250,7 +250,7 @@ class Leg(RigModule):
             self.ikc_gimbal,
             self.palmFk_ikc,
             self.ikCstG,
-            w=fkForelimb,
+            w=fkLimb,
             cstType="par",
             mo=1,
         )
@@ -362,7 +362,7 @@ class Leg(RigModule):
         ofs = self.setting.addOffsetGrp()
         self.palm.cstPar(ofs, mo=1)
 
-        fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=1)
+        fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
 
         total = len(self.joints) - 1
         for i in range(total):
@@ -370,8 +370,8 @@ class Leg(RigModule):
             ikJ = self.joints_ik[i]
             bfJ = self.joints_bf[i]
             jnt = self.joints[i]
-            # common.cstMulti(fkJ, ikJ, jnt, w=fkIk, cstType="par")
-            common.cstMulti(fkJ, ikJ, bfJ, w=fkIk, cstType="par")
+            # common.cstMulti(fkJ, ikJ, jnt, w=fkIkBlend, cstType="par")
+            common.cstMulti(fkJ, ikJ, bfJ, w=fkIkBlend, cstType="par")
             if i < total - 1:
                 bfJ.a.t >> jnt.a.t
                 bfJ.a.r >> jnt.a.r
@@ -387,7 +387,7 @@ class Leg(RigModule):
 
         # Useful for fk ik switch popUp menu
         for ctl in self.fkCtl + self.ikCtl:
-            ctl.a.add("fkIk", proxy=fkIk, k=0)
+            ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
         GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.palm_fkc)
 
@@ -395,7 +395,7 @@ class Leg(RigModule):
         return
         # """Make ball ctl the single ctl in both FK IK"""
         # rID = self.rigID
-        # fkIk = self.setting.a.fkIk
+        # fkIkBlend = self.setting.a.fkIkBlend
         # ball_fkc_ofs = self.ball_fkc.offset
         # ball_fkc_ofs.removeCstNodes()
 
@@ -405,7 +405,7 @@ class Leg(RigModule):
         # self.spaceAlign(
         #     self.ball_fkc,
         #     spaces=[ball_fkj.offset, self.toeWiggleG],
-        #     w=fkIk,
+        #     w=fkIkBlend,
         #     cstType="par",
         # )
         # ballOfsG = GroupNode(
@@ -419,7 +419,7 @@ class Leg(RigModule):
         # self.spaceAlign(
         #     ball_fkj,
         #     spaces=[self.ball_fkc, ball_fkj.offset],
-        #     w=fkIk,
+        #     w=fkIkBlend,
         #     cstType="ori",
         #     mo=1,
         # )
@@ -538,30 +538,30 @@ class Leg(RigModule):
         # visGrp[1] >> self.SKL_DATA.a.v
         # visGrp[1] >> self.PRX_GRP.a.v
 
-        fkIk = self.setting.a.fkIk
+        fkIkBlend = self.setting.a["fkIkBlend"]
 
         autoVis = self.setting.a.add("autoVis", min=0, max=1, dv=1, k=0)
         showFk = self.setting.a.add("showFk", min=0, max=1, dv=1, k=0)
         showIk = self.setting.a.add("showIk", min=0, max=1, dv=1, k=0)
 
-        # [fkIk >> c.a.v for c in (self.ikc, self.pvc, self.pvc_line, self.ikCstG)]
+        # [fkIkBlend >> c.a.v for c in (self.ikc, self.pvc, self.pvc_line, self.ikCstG)]
         self.visByCondition(
-            fkIk,
+            fkIkBlend,
             autoVis,
             showIk,
             [self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             hideWhen=1,
         )
-        # [~fkIk >> c.a.v for c in self.fkCtl[1:-1]]
+        # [~fkIkBlend >> c.a.v for c in self.fkCtl[1:-1]]
         self.visByCondition(
-            fkIk,
+            fkIkBlend,
             autoVis,
             showFk,
             self.fkCtl[1:-1],
             hideWhen=0,
         )
 
-        self.pvc.a["fkForelimb"] >> self.palmFk_ikc.a.v
+        self.pvc.a["fkLimb"] >> self.palmFk_ikc.a.v
 
         if self.all_bend:
             bowCtl = self.setting.a.add("legBowCtls", min=0, max=1, dv=1, k=0)

@@ -73,7 +73,7 @@ class MarkingMenuAutorig:
                     # -----------------------------
                     # IK FK
                     # -----------------------------
-                    fkIkAttr = selN.a.fkIk
+                    fkIkAttr = selN.a["fkIkBlend"]
                     if fkIkAttr.exists():
                         if fkIkAttr.get() > 0.5:
                             mc.menuItem(

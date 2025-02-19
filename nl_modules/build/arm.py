@@ -192,7 +192,7 @@ class Arm(RigModule):
         #
         # // self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
         self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
-        fkForelimb = self.pvc.a.add("fkForelimb", min=0, max=1)
+        fkLimb = self.pvc.a.add("fkLimb", min=0, max=1)
         self.palmFk_ikc = CurveNode(
             rID + "_palmFk_ikc", up="x", align=self.fkCtl[-1], p=self.pvc, addOfs=1
         )
@@ -200,7 +200,7 @@ class Arm(RigModule):
             self.ikc_gimbal,
             self.palmFk_ikc,
             self.ikCstG,
-            w=fkForelimb,
+            w=fkLimb,
             cstType="par",
             mo=1,
         )
@@ -240,7 +240,7 @@ class Arm(RigModule):
         self.setting | self.CTL_DATA
         self.setting.alignTo(self.palm, offset=(0, 0, rSz * -xDr * 20))
         self.palm.cstPar(self.setting.addOffsetGrp(), mo=1)
-        fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=1)
+        fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
 
         # ball_guide = DagNode(rID + "_ball_guide")
         # self.ball_ikc.alignTo(ball_guide)
@@ -252,9 +252,9 @@ class Arm(RigModule):
             ikJ = self.joints_ik[i]
             # bfJ = self.joints_bf[i]
             jnt = self.joints[i]
-            common.cstMulti(fkJ, ikJ, jnt, w=fkIk, cstType="par")
-            # ut.blendN_(fkJ.a.t, ikJ.a.t, w=fkIk) >> bfJ.a.t
-            # ut.blendN_(fkJ.a.r, ikJ.a.r, w=fkIk) >> bfJ.a.r
+            common.cstMulti(fkJ, ikJ, jnt, w=fkIkBlend, cstType="par")
+            # ut.blendN_(fkJ.a.t, ikJ.a.t, w=fkIkBlend) >> bfJ.a.t
+            # ut.blendN_(fkJ.a.r, ikJ.a.r, w=fkIkBlend) >> bfJ.a.r
             # if i < total - 1:
             #     bfJ.a.t >> jnt.a.t
             #     bfJ.a.r >> jnt.a.r
@@ -262,7 +262,7 @@ class Arm(RigModule):
             #     self.ball_ikc.cstPar(jnt, mo=1)
 
         for ctl in self.fkCtl + self.ikCtl:
-            ctl.a.add("fkIk", proxy=fkIk, k=0)
+            ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
         GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.palm_fkc)
 
@@ -343,10 +343,10 @@ class Arm(RigModule):
         # visGrp[1] >> self.PRX_GRP.a.v
 
         # FK IK CTL VIS TOGGLE
-        fkIk = self.setting.a.fkIk
-        [fkIk >> c.a.v for c in (self.ikc, self.pvc, self.pvc_line, self.ikCstG)]
-        [~fkIk >> c.a.v for c in (self.palm_fkc, self.lwr_fkc, self.upr_fkc)]
-        self.pvc.a["fkForelimb"] >> self.palmFk_ikc.a.v
+        fkIkBlend = self.setting.a["fkIkBlend"]
+        [fkIkBlend >> c.a.v for c in (self.ikc, self.pvc, self.pvc_line, self.ikCstG)]
+        [~fkIkBlend >> c.a.v for c in (self.palm_fkc, self.lwr_fkc, self.upr_fkc)]
+        self.pvc.a["fkLimb"] >> self.palmFk_ikc.a.v
 
         if self.RBN_BONES:
             bowCtl = self.setting.a.add("armBowCtls", min=0, max=1, dv=0, k=0)

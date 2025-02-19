@@ -1,6 +1,10 @@
 ## N-Rig
 
-This is a modular rigging system for Autodesk Maya. I have developed one in mel and one in maxscript for biped in production. The modular one is a challenge I really want to take, as a character rigger.
+It is another modular rigging tool for Autodesk Maya written in python. 
+
+Around 2009, I started developing my own autorig. It was very simple 
+
+It was I've been using one written for biped for many years in production. As a rigger it is always on my list to build my own modular one 
 
 Core values of the system :
 - Intuitive:&emsp;Too many things at a time is scary.
