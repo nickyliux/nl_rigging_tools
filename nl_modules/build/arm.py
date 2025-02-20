@@ -368,7 +368,7 @@ class Arm(RigModule):
             fkIkBlend,
             autoVis,
             showFk,
-            self.fkCtl[1:-1],
+            self.fkCtl[1:],
             hideWhen=0,
         )
 
