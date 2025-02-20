@@ -284,7 +284,6 @@ class Leg(RigModule):
         self.hip_fkc.cstPar(self.joints_ik[0], mo=1)
 
         self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal]
-        self.fkCtl.append(self.limb_fkc)
         self.ikH1 = ikH1
         self.subCtl_setup(ballRollG, toeRollG, inRollG, outRollG, heelRollG)
 
@@ -562,7 +561,6 @@ class Leg(RigModule):
         # visGrp[1] >> self.PRX_GRP.a.v
 
         fkIkBlend = self.setting.a["fkIkBlend"]
-
         autoVis = self.setting.a.add("autoVis", min=0, max=1, dv=1, k=0)
         showFk = self.setting.a.add("showFk", min=0, max=1, dv=1, k=0)
         showIk = self.setting.a.add("showIk", min=0, max=1, dv=1, k=0)
@@ -636,7 +634,10 @@ class Leg(RigModule):
             c.a.add("wsMirrorAxis", k=0, lock=1, cb=0)
         ctlSet = []
         ctlSet.extend(
-            self.fkCtl + self.ikCtl + self.subCtls + [self.setting, self.smart_ctl]
+            self.fkCtl
+            + self.ikCtl
+            + self.subCtls
+            + [self.setting, self.smart_ctl, self.limb_fkc]
         )
 
         if self.RBN_BONES:
