@@ -73,10 +73,15 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
                 pos1 = upr.o.pos
                 pos2 = lwr.o.pos
                 pos3 = palm_fkc.o.pos
-                pvc_pos_grp = switchToFkIk_calcPvcPos(pos1, pos2, pos3)
                 ikc.alignTo(ikcMatcher)
-                pvc.snapTo(pvc_pos_grp)
-                pvc_pos_grp.delete()
+                pvc.a["fkLimb"].set(0)
+
+                if pvc.a["pvPin"].get() > 0.5:
+                    pvc.alignTo(lwr)
+                else:
+                    pvc_pos_grp = switchToFkIk_calcPvcPos(pos1, pos2, pos3)
+                    pvc.snapTo(pvc_pos_grp)
+                    pvc_pos_grp.delete()
         else:
             # mode: IK to FK
             # Snap fkc to current limb

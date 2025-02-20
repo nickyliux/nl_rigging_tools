@@ -89,7 +89,7 @@ class MarkingMenuAutorig:
                                 rp="S",
                                 c=partial(self.setFkIk, fkIkAttr, 1, rN),
                             )
-        mc.menuItem(p=menu, l="Sel Ctl", c=self.selectCtlSelOrAll)
+        mc.menuItem(p=menu, l="Select Ctls", c=self.selectCtlSelOrAll)
         mc.menuItem(p=menu, l="Reload Menu", c=self.reload_marking_menu)
 
     def copyGuideSel(*args):

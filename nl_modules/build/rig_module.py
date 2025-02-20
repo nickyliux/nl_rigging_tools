@@ -518,10 +518,10 @@ class RigModule(RigBase):
         ut.clp_(footRoll, min=0, max=footBreak) >> ballRollG.a.rx
         ut.max_(0, (footRoll - footBreak)) >> footRollG.a.rx
 
-        self.ikc.a.add("heelTwist") >> heelRollG.a.ry
-        self.ikc.a.add("ballTwist") >> ballRollG.a.ry
-        self.ikc.a.add("toeTwist") >> toeRollG.a.ry
-        self.ikc.a.add("toeRoll") >> toeRollG.a.rx
+        # self.ikc.a.add("heelTwist") >> heelRollG.a.ry
+        # self.ikc.a.add("ballTwist") >> ballRollG.a.ry
+        # self.ikc.a.add("toeTwist") >> toeRollG.a.ry
+        # self.ikc.a.add("toeRoll") >> toeRollG.a.rx
 
     def footBankLogic(self, inRollG, outRollG):
         bank = self.ikc.a.add("footBank")
