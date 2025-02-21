@@ -1,7 +1,9 @@
-## N-Auto
-It is another modular auto rigging tool for Autodesk Maya written in Python. 
+## Chi-Auto-Rigger (CaR)
+It is another open-source modular auto-rigger written for Autodesk Maya in Python.
 
-The rigging tool was built base on a custom framework, thanks to the course by <i><b>Nick Hughes</b></i>. It opens my eyes and shows me the proper way to go without PyMEL.
+There are a few great auto-rigger tools available online. As a rigger I'm interested in building my own.
+
+Thanks to the Udemy course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by <b>Nick Hughes</b>, my tools are built with custom framework which speed up development without dependency on PyMEL.
 
 ## Installation
 1. Download the repository zip file
@@ -10,11 +12,13 @@ The rigging tool was built base on a custom framework, thanks to the course by <
 4. Drag and drop this file onto a Maya viewport.
 
 ## Usage
+
 ```python
 from nl_modules import nl_rigging_tools
 from importlib import reload
 reload(nl_rigging_tools)
-nl_rigging_tools.main()```
+nl_rigging_tools.main()
+```
 
 ## Framework & Components Classes
 
@@ -74,9 +78,7 @@ jnt = JointNode('myJoint')
 msh = MeshNode('myMesh')
 srf = SurfNode('mySrf')
 loc = LocNode('myLoc')
-obj = DagNode('obj')
-
-objA.a.tx + objB.a.tｘ >> objC.a.tx
+obj = DagNode('myObj')
 ```
 
 ## Marking Menus
