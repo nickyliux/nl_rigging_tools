@@ -7,6 +7,7 @@ from nl_modules.nodel.base.dep_node import DepNode
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.loc_node import LocNode
+from nl_modules.utils.color import Color
 from nl_modules.utils import common, utils_node as ut
 
 mel.eval("ikSpringSolver")
@@ -75,6 +76,7 @@ class IkNode(DagNode):
         self.scaleFix = scaleFix
         self.pf = pf
         self.softJ = None
+        self.pvChainJ = None
         self.createIK(
             name,
             quat=quat,
@@ -341,6 +343,31 @@ class IkNode(DagNode):
         (((d > Ds).setCdn(ifTrue=ds, ifFalse=d)) * ratio * self.x_dir >> softJ[1].a.tx)
         ikH.hide()
         self.softJ = softJ
+
+    def addPvSpaceChain(self):
+        from nl_modules.nodel.joint_node import JointNode
+
+        dist = self.sj.o.distanceTo(self.ee)
+        pvChainJ = JointNode.makeTwoJChain(
+            "pvChainJ",
+            pf=self.pf,
+            snap=self.sj,
+            ofs=(self.x_dir * dist, 0, 0),
+            p=self.sj.parent,
+            color=Color.RED,
+        )
+        self.ee.cstAim(pvChainJ[0], aim=(self.x_dir, 0, 0), keep=False)
+        pvChainJ[0].freezeXf()
+
+        IkNode(
+            "pvChain",
+            pf=pvChainJ[0].name,
+            sj=pvChainJ[0],
+            ee=pvChainJ[1],
+            p=self.ikc,
+            quat=True,
+        )
+        self.pvChainJ = pvChainJ
 
     def spline_twist_setup(self, *driver, upAxis="y", twistAxis="x"):
         if self.solver == 2:

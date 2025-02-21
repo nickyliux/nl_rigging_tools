@@ -110,7 +110,7 @@ def switchToFkIk_calcPvcPos(pos1, pos2, pos3):
     crv = CurveNode(mc.curve(p=[pos1, pos2, pos3], d=1, k=[0, 1, 2]))
     d1 = maths.getDistBetwPt(pos1, pos2)
     d2 = maths.getDistBetwPt(pos2, pos3)
-    distToMove = (d1 + d2) * 3 / 4
+    distToMove = (d1 + d2) * 0.5
 
     mid_cv = crv + ".cv[1]"
     mc.moveVertexAlongDirection(mid_cv, n=distToMove)

@@ -7,8 +7,8 @@ from nl_modules.nodel.ik_node import IkNode
 from nl_modules.nodel.joint_node import JointNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.ribbon_node import RibbonNode
-from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
+from nl_modules.utils import common, utils_node as ut
 from nl_modules.build.rig_module import RigModule
 
 PRX = 7
@@ -74,6 +74,7 @@ class Leg(RigModule):
         self.toesCtlsList = None
         self.toesRootJ = rigNode.a.toesRootJ.inConnNode
         self.ikH1 = None
+        self.ikH_PV = None
         self.ballG_ikc = None
 
     def genGuildSk(self):
@@ -581,8 +582,7 @@ class Leg(RigModule):
             self.fkCtl[1:-1],
             hideWhen=0,
         )
-
-        self.pvc.a["fkLimb"] >> self.limb_fkc.a.v
+        # self.pvc.a["fkLimb"] >> self.limb_fkc.a.v
 
         if self.all_bend:
             bowCtl = self.setting.a.add("legBowCtls", min=0, max=1, dv=1, k=0)
@@ -617,15 +617,14 @@ class Leg(RigModule):
         self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"spaceHolder2": self.pvc})
-        # spaces = "leg, master, hip, COG"
-        spaces = "master, hip, COG"
-        # spaces = "foot, master, hip, COG"
+        spaces = "leg, master, hip, COG"
         self.rigNode.a.add("spaceName2", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_hip": self.hip_fkc})
+        self.ikH1.addPvSpaceChain()
+        self.rigNode.setMsg({"space_leg": self.ikH1.pvChainJ[0]})
         # self.rigNode.setMsg({"space_leg": self.ikH1.softJ[0]})
-        # self.rigNode.setMsg({"space_foot": self.ikc})
 
     def post_setup(self):
         rID = self.rigID
