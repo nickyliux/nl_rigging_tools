@@ -1,13 +1,20 @@
 ## nl-rigging-tools (nRT)
 It is another open-source modular auto-rigger written for Autodesk Maya in Python.
 
-There are a few great auto-rigger tools available online. As a rigger I'm interested in building my own.
+There are a few great auto-rigger tools available online. As a rigger I'm interested in building my own. One cool thing I learn through the development is the use of custom framework. Thanks to the Udemy course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by <b>Nick Hughes</b>, the tools are built with less redundant codes, better readability, and no dependency on PyMEL.
 
-Thanks to the Udemy course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by <b>Nick Hughes</b>, my tools are built with custom framework to reduce redundant codes and avoid dependency on PyMEL.
+For example, the lines below generates all utility nodes required with readability just like expression.
 
-e.g. the single line of code below generate 
+```python
+# ---------------------------------------------------------------
+#  Soft ik logic
+# ---------------------------------------------------------------
+s = self.ikc.a.softIK
+Ds = D * (1 - s)
+new_d = D * (1 - s * math.e ** -(d - Ds))
+(((d > Ds).setCdn(ifTrue=new_d, ifFalse=d)) * ratio >> softJ.a.tx)
+```
 
-```ds = D * (1 - s * math.e ** -(d - Ds))```
 
 ## Installation
 1. Download the repository zip file
