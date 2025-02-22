@@ -1,9 +1,10 @@
 # nl-rigging-tools (nRT)
+### What ?
 It is another open-source modular auto-rigger written for Autodesk Maya in Python.
 
-There are a few great auto-rigger tools available online. As a rigger I'm interested in building my own. One cool thing I learn throughout the development is the use of custom framework. Thanks to the Udemy course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by <b>Nick Hughes</b>, the tools are built with less redundant codes, better readability, and no dependency on PyMEL.
+There are a few great auto-rigger tools available online. As a rigger I'm interested in building my own. One cool thing I learn throughout the development is the use of custom framework. Thanks to the Udemy course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by <b>Nick Hughes</b>, my tools are built with less redundant codes, better readability, and no dependency on PyMEL.
 
-For example, the lines below generates all utility nodes and connections required and read as easy as expression.
+For example, the lines below generates all utility nodes and connections required and read as easy as expression !
 
 ```python
 # ---------------------------------------------------------------
@@ -15,7 +16,7 @@ new_d = D * (1 - s * math.e ** -(d - Ds))
 (((d > Ds).setCdn(ifTrue=new_d, ifFalse=d)) * ratio >> softJ.a.tx)
 ```
 
-### Hierarchy of Framework & Components Classes
+### Framework / Components
 ```mermaid
 stateDiagram
     rfc: Framework Classes
@@ -54,7 +55,7 @@ stateDiagram
     }
 
 ```
-## Rig Component Features
+### Rig Component Features
 Limb Basic
 1. fk/ik blend
 2. stretch/squash
@@ -75,19 +76,19 @@ Limb Options ( Arm/leg )
 
 Two marking menus are included with shortcut to speed things up.
 
-#### 1. Rig Operation ( ctrl + MMB )
+#### Rig Operation ( ctrl + MMB )
 
 ![The Autorig](nl_modules/doc/marking_menu_autorig.png)
 
-#### 2. General Rigging ( ctrl + alt + MMB )
+#### General Rigging ( ctrl + alt + MMB )
 
 ![General Rigging](nl_modules/doc/marking_menu_rigging.png)
 
 
 ### Installation
-1. Download the repository zip file
-2. Extract to storage location
-3. Locate install/dragAndDrop.py
+1. Download the repository zip file.
+2. Extract to storage location.
+3. Locate install/dragAndDrop.py.
 4. Drag and drop it onto a Maya viewport.
 
 
@@ -99,8 +100,8 @@ from importlib import reload
 reload(nl_rigging_tools)
 nl_rigging_tools.main()
 ```
-## To do
+### To do
 
-* Study matrix for more efficient constraint calculation
-* Understand more about how professional animators work
-* Study more about rigging in Houdini
+* Study matrix for more efficient constraint calculation.
+* Understand more about how professional animators work.
+* Study more about rigging in Houdini.
