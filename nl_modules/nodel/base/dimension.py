@@ -12,7 +12,8 @@ class Dimension:
     def __init__(self, node):
         self._node = node
         if not self.worldMatrix:
-            raise ValueError("No worldMatrix found.")
+            # raise ValueError("No worldMatrix found.")
+            print("No worldMatrix found.")
 
     @property
     def worldMatrix(self):

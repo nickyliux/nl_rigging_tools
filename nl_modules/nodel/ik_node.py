@@ -344,7 +344,8 @@ class IkNode(DagNode):
         ikH.hide()
         self.softJ = softJ
 
-    def addPvSpaceChain(self):
+    def build_pvSpaceChain(self, ikParent=None):
+        """Build a two-joint chain for pv space"""
         from nl_modules.nodel.joint_node import JointNode
 
         dist = self.sj.o.distanceTo(self.ee)
@@ -364,8 +365,9 @@ class IkNode(DagNode):
             pf=pvChainJ[0].name,
             sj=pvChainJ[0],
             ee=pvChainJ[1],
-            p=self.ikc,
+            p=ikParent,
             quat=True,
+            vis=0,
         )
         self.pvChainJ = pvChainJ
 

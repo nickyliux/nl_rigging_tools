@@ -242,8 +242,6 @@ class Leg(RigModule):
 
         self.ikc_gimbal = CurveNode(self.ikc).addGimbal()  # attrTgt=self.setting)
         self.ikc.snapTo(self.palm)
-        # self.ikc.cv_drop()
-        # self.ikc_gimbal.cv_drop()
 
         #
         #   Constrain ikCstG supporting fk limb
@@ -307,11 +305,10 @@ class Leg(RigModule):
         CurveNode(self.ballG_ikc)(
             name=cName, shape="stickC", scale=-rSz * xDr / 2, rotate=(0, 90, 0)
         )
-        # self.ballG_ikc.cv_rotate(0,90,0)
         self.subCtls.append(self.ballG_ikc)
 
         # Smart Ctl setup
-        self.smart_ctl.parentTo(self.ikc)
+        self.smart_ctl.parentTo(self.ikc_gimbal)
         self.smart_ctl.a.tz.set(rSz * 26)
         self.smart_ctl.a.tx.set(0)
         self.smart_ctl.a.r.set(0, 0, 0)
@@ -353,17 +350,13 @@ class Leg(RigModule):
 
     def twistBones_setup(self):
         rID = self.rigID
-        jnt_names = ["radius", "radiusEnd"]
-        radius_JC = self.genSkFrNames(jnt_names, pf=rID)
-        jnt_names = ["ulna", "ulnaEnd"]
-        ulna_JC = self.genSkFrNames(jnt_names, pf=rID)
+        radius_JC = self.genSkFrNames(["radius", "radiusEnd"], pf=rID)
+        ulna_JC = self.genSkFrNames(["ulna", "ulnaEnd"], pf=rID)
 
         parent = self.boneFix if self.KNEE_FIX else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent
 
-        radius_loc = LocNode(
-            "radius_loc", pf=self.rigID, align=radius_JC[1], p=self.palm
-        )
+        radius_loc = LocNode("radius_loc", pf=rID, align=radius_JC[1], p=self.palm)
         ulna_loc = LocNode("ulna_loc", pf=rID, align=ulna_JC[1], p=self.palm)
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
@@ -377,7 +370,9 @@ class Leg(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-        self.joints.extend([radius_JC[0], ulna_JC[0]])
+        # self.joints.extend([radius_JC[0], ulna_JC[0]])
+        self.joints.insert(0, radius_JC[0])
+        self.joints.insert(0, ulna_JC[0])
 
     def blend_fk_ik(self):
         rID = self.rigID
@@ -483,9 +478,9 @@ class Leg(RigModule):
             self.boneFix_sdk(self.lwr, stt_ofs[1])
 
         # Add Ctl Attr to md_bend
-        volPower = self.setting.a.add("volume", min=0, max=2, dv=1, k=0)
-        volPower >> ribbonUp.volPower
-        volPower >> ribbonLw.volPower
+        keepVol = self.ikc.a.add("keepVol", min=0, max=2, dv=1, k=0)
+        keepVol >> ribbonUp.volPower
+        keepVol >> ribbonLw.volPower
 
         self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
@@ -561,8 +556,8 @@ class Leg(RigModule):
         self.pvc.a["fkLimb"] >> self.limb_fkc.a.v
 
         if self.all_bend:
-            bowVis = self.setting.a.add("bowVis", min=0, max=1, dv=1, k=0)
-            [bowVis >> ctl.a.v for ctl in self.all_bend]
+            ribbonCtlVis = self.setting.a.add("ribbonCtlVis", min=0, max=1, dv=1, k=0)
+            [ribbonCtlVis >> ctl.a.v for ctl in self.all_bend]
 
         # subCtls = self.setting.a.add("subCtls", min=0, max=1, dv=1, k=0)
         # [subCtls >> self.ikCstG.children[0].a.v]
@@ -598,7 +593,7 @@ class Leg(RigModule):
 
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_hip": self.hip_fkc})
-        self.ikH1.addPvSpaceChain()
+        self.ikH1.build_pvSpaceChain(ikParent=self.ikc_gimbal)
         self.rigNode.setMsg({"space_leg": self.ikH1.pvChainJ[0]})
         # self.rigNode.setMsg({"space_leg": self.ikH1.softJ[0]})
 

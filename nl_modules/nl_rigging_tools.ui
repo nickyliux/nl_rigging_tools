@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>439</width>
-    <height>687</height>
+    <height>702</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -1653,10 +1653,10 @@ or groups containing them</string>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(76, 102, 135);</string>
+    <string notr="true"/>
    </property>
    <property name="text">
-    <string>Crv</string>
+    <string>curve</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pickMaskAll_BN">
@@ -1684,7 +1684,7 @@ or groups containing them</string>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(76, 76, 76);</string>
+    <string notr="true"/>
    </property>
    <property name="text">
     <string>*</string>

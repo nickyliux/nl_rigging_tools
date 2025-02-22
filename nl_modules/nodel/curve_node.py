@@ -120,13 +120,23 @@ class CurveNode(GroupNode):
         else:
             mc.rotate(*args, self.cvs, **kwargs)
 
-    def cv_scale(self, *args, **kwargs):
+    def cv_scale(self, *args, atCVCetner=0, **kwargs):
         """Scale all cvs of the curve"""
         kwargs = kwargs or {"r": 1}
-        if len(args) == 1:
-            mc.scale(args[0], args[0], args[0], self.cvs, **kwargs)
+
+        if atCVCetner:
+            clusterN = DagNode(mc.cluster(self.cvs)[1])
+            p = mc.xform(clusterN, q=1, ws=1, rp=1)
+            clusterN.delete()
+            if len(args) == 1:
+                mc.scale(args[0], args[0], args[0], self.cvs, pivot=p, **kwargs)
+            else:
+                mc.scale(*args, self.cvs, pivot=p, **kwargs)
         else:
-            mc.scale(*args, self.cvs, **kwargs)
+            if len(args) == 1:
+                mc.scale(args[0], args[0], args[0], self.cvs, **kwargs)
+            else:
+                mc.scale(*args, self.cvs, **kwargs)
 
     @property
     def length(self):
@@ -538,23 +548,15 @@ class CurveNode(GroupNode):
         )
         return self
 
-    def addGimbal(self, relScale=0.8, attrTgt=None, color=0):
+    def addGimbal(self, relScale=0.7, attrTgt=None, color=0):
         """Add a gimbal control below itself and attr at attrOn to link its visibility
         e.g.
             gbc = crv.addGimbal()        # crv.gimbalCtl  -> gbc.v
             crv.addGimbal(attrTgt=obj1)  # obj1.gimbalCtl -> gbc.v
         """
-        # gmb_ctl = CurveNode(self.addOffsetGrp(below=1))
-        # gmb_ctl(shape=CurveNode(self.node))
-        # gmb_ctl.uninstanceAll()
-        # gmb_ctl(
-        #     name=self.node + "_gimbal",
-        #     scale=relScale,
-        #     color=color,
-        # )
         gmb_ctl = self.duplicate(n=self.node + "_gimbal")
         gmb_ctl | self
-        gmb_ctl.cv_scale(0.8)
+        gmb_ctl.cv_scale(relScale, atCVCetner=1)
         attrTgt = attrTgt or self
-        attrTgt.a.add("gimbalCtl", min=0, max=1, dv=0, k=0) >> gmb_ctl.a.v
+        attrTgt.a.add("gimbalCtl", min=0, max=1, dv=0, k=0) >> gmb_ctl.shape.a.v
         return gmb_ctl

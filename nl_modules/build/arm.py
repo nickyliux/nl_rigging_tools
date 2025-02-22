@@ -123,34 +123,28 @@ class Arm(RigModule):
 
     def twistBones_setup(self):
         rID = self.rigID
-        jnt_names = ["radius", "radiusEnd"]
-        radius_JC = self.genSkFrNames(jnt_names, pf=rID)
-        jnt_names = ["ulna", "ulnaEnd"]
-        ulna_JC = self.genSkFrNames(jnt_names, pf=rID)
+        radius_JC = self.genSkFrNames(["radius", "radiusEnd"], pf=rID)
+        ulna_JC = self.genSkFrNames(["ulna", "ulnaEnd"], pf=rID)
+
         (radius_JC[0], ulna_JC[0]) | self.lwr
 
         radius_loc = LocNode("radius_loc", pf=rID, align=radius_JC[1], p=self.palm)
         ulna_loc = LocNode("ulna_loc", pf=rID, align=ulna_JC[1], p=self.palm)
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
+        uType = "objectrotation"
+        aim = (self.x_dir, 0, 0)
+        z = (0, 0, 1)
 
         radius_loc.cstAim(
-            radius_JC[0],
-            worldUpType="objectrotation",
-            worldUpObject=self.palm,
-            aim=(self.x_dir, 0, 0),
-            u=(0, 0, 1),
-            wu=(0, 0, 1),
+            radius_JC[0], worldUpType=uType, worldUpObject=self.palm, aim=aim, u=z, wu=z
         )
         ulna_loc.cstAim(
-            ulna_JC[0],
-            worldUpType="objectrotation",
-            worldUpObject=self.lwr,
-            aim=(self.x_dir, 0, 0),
-            u=(0, 0, 1),
-            wu=(0, 0, 1),
+            ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-        self.joints.extend([radius_JC[0], ulna_JC[0]])
+        # self.joints.extend([radius_JC[0], ulna_JC[0]])
+        self.joints.insert(0, radius_JC[0])
+        self.joints.insert(0, ulna_JC[0])
 
     def build_fk(self):
         logging.info(self.rigID)
@@ -337,9 +331,9 @@ class Arm(RigModule):
         md_bend.cstParSca(ribbonLw.stt_loc, mo=1)
 
         # Add Ctl Attr to md_bend
-        volPower = self.setting.a.add("volume", min=0, max=2, dv=1, k=0)
-        volPower >> ribbonUp.volPower
-        volPower >> ribbonLw.volPower
+        keepVol = self.ikc.a.add("keepVol", min=0, max=2, dv=1, k=0)
+        keepVol >> ribbonUp.volPower
+        keepVol >> ribbonLw.volPower
 
         self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
@@ -375,8 +369,8 @@ class Arm(RigModule):
         self.pvc.a["fkLimb"] >> self.limb_fkc.a.v
 
         if self.RBN_BONES:
-            bowVis = self.setting.a.add("bowVis", min=0, max=1, dv=0, k=0)
-            [bowVis >> ctl.a.v for ctl in self.all_bend]
+            ribbonCtlVis = self.setting.a.add("ribbonCtlVis", min=0, max=1, dv=0, k=0)
+            [ribbonCtlVis >> ctl.a.v for ctl in self.all_bend]
 
         mc.hide(self.all_ikHs, self.joints_fk, self.joints_ik)
 
@@ -429,7 +423,7 @@ class Arm(RigModule):
 
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_clavicle": self.clavicle_fkc})
-        self.ikH1.addPvSpaceChain()
+        self.ikH1.build_pvSpaceChain(ikParent=self.ikc_gimbal)
         self.rigNode.setMsg({"space_arm": self.ikH1.pvChainJ[0]})
         # self.rigNode.setMsg({"space_arm": self.ikH1.softJ[0]})
         # self.rigNode.setMsg({"space_palm": self.ball_ikc})
