@@ -52,7 +52,25 @@ stateDiagram
         RigModule --> LegQd
         RigModule --> Tail
     }
+
 ```
+## Rig Component Features
+Limb Basic
+1. fk/ik blend
+2. stretch/squash
+3. space switch
+4. soft ik
+5. smart ctl
+6. pv pin with fk
+
+Limb Options ( Arm/leg )
+1. ribbon
+2. patella (leg)
+3. toe bones (leg)
+4. knee fix (leg)
+5. fore limb twist bone
+6. auto hip/shoulder
+
 ### Marking Menus
 
 Two marking menus are included with shortcut to speed things up.
@@ -81,3 +99,8 @@ from importlib import reload
 reload(nl_rigging_tools)
 nl_rigging_tools.main()
 ```
+## To do
+
+* Study matrix for more efficient constraint calculation
+* Understand more about how professional animators work
+* Study more about rigging in Houdini
