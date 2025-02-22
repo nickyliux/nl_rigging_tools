@@ -475,10 +475,11 @@ class RigModule(RigBase):
                 r=rSz,
                 p=self.upr,
             )
-            j.addProxyMesh(size=rSz, aimDir=(xDr, 0, 0), p=PRX_GRP)
+            # j.addProxyMesh(size=rSz, aimDir=(xDr, 0, 0), p=PRX_GRP)
             j.freezeXf()
             self.addBindJntSet([j])
             patella_sdk(self.lwr, j)
+            return j
 
     def createCtlJ(self, ctl1, ctl2, ctl3, color=None):
         rS = self.rigSize * 4

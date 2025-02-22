@@ -375,13 +375,13 @@ class Arm(RigModule):
         self.pvc.a["fkLimb"] >> self.limb_fkc.a.v
 
         if self.RBN_BONES:
-            bowCtl = self.setting.a.add("armBowCtls", min=0, max=1, dv=0, k=0)
-            [bowCtl >> ctl.a.v for ctl in self.all_bend]
+            bowVis = self.setting.a.add("bowVis", min=0, max=1, dv=0, k=0)
+            [bowVis >> ctl.a.v for ctl in self.all_bend]
 
         mc.hide(self.all_ikHs, self.joints_fk, self.joints_ik)
 
     def proxy_setup(self):
-        proxyList = self.joints
+        proxyList = self.joints[:-1]
         self.joints.remove(self.palm)
         if self.RBN_BONES:
             if self.upr in proxyList:
@@ -396,7 +396,7 @@ class Arm(RigModule):
         xDr = self.x_dir
         for j in proxyList:
             JointNode(j).addProxyMesh(
-                size=rSz, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
+                size=rSz, aimDir=(xDr, 0, 0), skipEnd=0, p=self.PRX_GRP
             )
 
         self.addBindJntSet(proxyList)
@@ -423,12 +423,15 @@ class Arm(RigModule):
         self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"spaceHolder2": self.pvc})
-        spaces = "master, COG, uprBody, lwrBody"
+        # spaces = "master, COG, uprBody, lwrBody"
+        spaces = "arm, master, COG, uprBody, lwrBody"
         self.rigNode.a.add("spaceName2", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_clavicle": self.clavicle_fkc})
-        self.rigNode.setMsg({"space_arm": self.ikH1.softJ[0]})
+        self.ikH1.addPvSpaceChain()
+        self.rigNode.setMsg({"space_arm": self.ikH1.pvChainJ[0]})
+        # self.rigNode.setMsg({"space_arm": self.ikH1.softJ[0]})
         # self.rigNode.setMsg({"space_palm": self.ball_ikc})
 
     def post_setup(self):

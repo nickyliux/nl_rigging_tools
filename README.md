@@ -1,9 +1,13 @@
-## Chi-Auto-Rigger (CaR)
+## nl-rigging-tools (nRT)
 It is another open-source modular auto-rigger written for Autodesk Maya in Python.
 
 There are a few great auto-rigger tools available online. As a rigger I'm interested in building my own.
 
-Thanks to the Udemy course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by <b>Nick Hughes</b>, my tools are built with custom framework which speed up development without dependency on PyMEL.
+Thanks to the Udemy course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by <b>Nick Hughes</b>, my tools are built with custom framework to reduce redundant codes and avoid dependency on PyMEL.
+
+e.g. the single line of code below generate 
+
+```ds = D * (1 - s * math.e ** -(d - Ds))```
 
 ## Installation
 1. Download the repository zip file

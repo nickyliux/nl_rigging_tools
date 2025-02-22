@@ -76,6 +76,7 @@ class Leg(RigModule):
         self.ikH1 = None
         self.ikH_PV = None
         self.ballG_ikc = None
+        self.patellaJ = None
 
     def genGuildSk(self):
         rID = self.rigID
@@ -101,6 +102,7 @@ class Leg(RigModule):
         rSz = self.rigSize
         rID = self.rigID
         xDr = self.x_dir
+        # self.setting = CurveNode("setting", pf=rID, shape="setting", scale=rSz)
         self.setting = CurveNode("setting", pf=rID, shape="setting", scale=rSz)
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
@@ -113,11 +115,11 @@ class Leg(RigModule):
         self.ball_fkc = CurveNode(
             "ball_fkc", pf=rID, shape="fk_rotator", up="-z", scale=rSz * xDr
         )
-        self.ikc = CurveNode("ikc", pf=rID, shape="foot2")
-        self.smart_ctl = CurveNode(
-            "smart_ctl", pf=rID, shape="rotator2", scale=rSz * 0.15
-        )
-        self.smart_ctl.cv_scale(3, 1, 1)
+        self.ikc = CurveNode("ikc", pf=rID, shape="diamond", scale=rSz * 2)
+        self.ikc.cv_move(0, 0, -rSz * 12)
+
+        self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="sphere", scale=rSz * 0.5)
+
         self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz)
         self.rigNode.setMsg(
             {
@@ -148,14 +150,13 @@ class Leg(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        # self.build_ballCtl()
 
         if self.KNEE_FIX:
             self.boneFix_setup(self.lwr, self.palm)
         if self.RBN_BONES:
             self.ribbon_setup()
         if self.PATELLA_BONE:
-            self.patella_setup(self.PRX_GRP)
+            self.patellaJ = self.patella_setup(self.PRX_GRP)
         if self.TWIST_BONES:
             self.twistBones_setup()
         if self.TOE_BONES:
@@ -241,8 +242,8 @@ class Leg(RigModule):
 
         self.ikc_gimbal = CurveNode(self.ikc).addGimbal()  # attrTgt=self.setting)
         self.ikc.snapTo(self.palm)
-        self.ikc.cv_drop()
-        self.ikc_gimbal.cv_drop()
+        # self.ikc.cv_drop()
+        # self.ikc_gimbal.cv_drop()
 
         #
         #   Constrain ikCstG supporting fk limb
@@ -303,9 +304,13 @@ class Leg(RigModule):
 
         self.ballG_ikc = ballRollG.addOffsetGrp(below=1)
         cName = rID + "_ballG_ikc"
-        CurveNode(self.ballG_ikc)(name=cName, shape="stickC", scale=-rSz * xDr / 2)
+        CurveNode(self.ballG_ikc)(
+            name=cName, shape="stickC", scale=-rSz * xDr / 2, rotate=(0, 90, 0)
+        )
+        # self.ballG_ikc.cv_rotate(0,90,0)
         self.subCtls.append(self.ballG_ikc)
 
+        # Smart Ctl setup
         self.smart_ctl.parentTo(self.ikc)
         self.smart_ctl.a.tz.set(rSz * 26)
         self.smart_ctl.a.tx.set(0)
@@ -382,7 +387,8 @@ class Leg(RigModule):
         self.joints_bf = common.extractSk(self.joints, "_bf", p=self.RIG_DATA)
 
         self.setting | self.CTL_DATA
-        self.setting.alignTo(self.palm, offset=(0, rSz * -xDr * 20, 0))
+        # self.setting.alignTo(self.palm, offset=(0, rSz * -xDr * 10, 0))
+        self.setting.snapTo(self.palm)
         ofs = self.setting.addOffsetGrp()
         self.palm.cstPar(ofs, mo=1)
 
@@ -414,38 +420,6 @@ class Leg(RigModule):
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
         GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.palm_fkc)
-
-    # def build_ballCtl(self):
-    #     """Make ball ctl the single ctl in both FK IK"""
-    #     rID = self.rigID
-    #     fkIkBlend = self.setting.a.fkIkBlend
-    #     ball_fkc_ofs = self.ball_fkc.offset
-    #     ball_fkc_ofs.removeCstNodes()
-
-    #     self.all_ikH["toe"] | self.ball_fkc
-    #     ball_fkj = self.joints_fk[4]
-
-    #     self.spaceAlign(
-    #         self.ball_fkc,
-    #         spaces=[ball_fkj.offset, self.toeWiggleG],
-    #         w=fkIkBlend,
-    #         cstType="par",
-    #     )
-    #     ballOfsG = GroupNode(
-    #         "ballOfsG",
-    #         pf=rID,
-    #         snap=self.ball.offset,
-    #         p=self.FK_PART,
-    #     )
-    #     ball_fkc_ofs | ballOfsG
-    #     ball_fkj.removeCstNodes()
-    #     self.spaceAlign(
-    #         ball_fkj,
-    #         spaces=[self.ball_fkc, ball_fkj.offset],
-    #         w=fkIkBlend,
-    #         cstType="ori",
-    #         mo=1,
-    #     )
 
     def ribbon_setup(self):
         """
@@ -516,7 +490,7 @@ class Leg(RigModule):
         self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def proxy_setup(self):
-        proxyList = self.joints
+        proxyList = self.joints[:-1]
         proxyToeList = []
 
         if self.TOE_BONES:
@@ -538,12 +512,14 @@ class Leg(RigModule):
                 proxyList.remove(self.lwr)
             if self.boneFix in proxyList:
                 proxyList.remove(self.boneFix)
+        if self.PATELLA_BONE:
+            proxyList.append(self.patellaJ)
 
         rSz = self.rigSize
         aim = (self.x_dir, 0, 0)
         for j in proxyList:
             JointNode(j).addProxyMesh(
-                size=rSz * PRX, aimDir=aim, skipEnd=1, p=self.PRX_GRP
+                size=rSz * PRX, aimDir=aim, skipEnd=0, p=self.PRX_GRP
             )
         for j in proxyToeList:
             JointNode(j).addProxyMesh(
@@ -582,16 +558,16 @@ class Leg(RigModule):
             self.fkCtl[1:-1],
             hideWhen=0,
         )
-        # self.pvc.a["fkLimb"] >> self.limb_fkc.a.v
+        self.pvc.a["fkLimb"] >> self.limb_fkc.a.v
 
         if self.all_bend:
-            bowCtl = self.setting.a.add("legBowCtls", min=0, max=1, dv=1, k=0)
-            [bowCtl >> ctl.a.v for ctl in self.all_bend]
+            bowVis = self.setting.a.add("bowVis", min=0, max=1, dv=1, k=0)
+            [bowVis >> ctl.a.v for ctl in self.all_bend]
 
         # subCtls = self.setting.a.add("subCtls", min=0, max=1, dv=1, k=0)
         # [subCtls >> self.ikCstG.children[0].a.v]
 
-        mc.hide(self.joints_fk, self.joints_ik)
+        mc.hide(self.joints_fk, self.joints_ik, self.joints_bf)
         [ikh.hide() for ikh in self.all_ikH.values()]
 
     def channel_setup(self):
@@ -652,3 +628,5 @@ class Leg(RigModule):
         self.channel_setup()
         self.ro_setup()
         self.post_module()
+
+        self.setting.cv_drop()

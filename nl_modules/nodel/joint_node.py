@@ -78,7 +78,8 @@ class JointNode(GroupNode):
         if child or (not skipEnd):
             # ADD PROXY
             dist = self.o.distanceTo(child[0]) if child else size
-            cube = mc.polyCube(n=name, ax=aimDir, h=dist, w=size, d=size)[0]
+            # cube = mc.polyCube(n=name, ax=aimDir, h=dist, w=size, d=size)[0]
+            cube = mc.polyCube(n=name, ax=aimDir, h=size, w=size, d=size)[0]
             proxyN = DagNode(cube)
             proxyN.alignTo(self, p=p)
 
