@@ -1,13 +1,13 @@
-## nl-rigging-tools (nRT)
+# nl-rigging-tools (nRT)
 It is another open-source modular auto-rigger written for Autodesk Maya in Python.
 
-There are a few great auto-rigger tools available online. As a rigger I'm interested in building my own. One cool thing I learn through the development is the use of custom framework. Thanks to the Udemy course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by <b>Nick Hughes</b>, the tools are built with less redundant codes, better readability, and no dependency on PyMEL.
+There are a few great auto-rigger tools available online. As a rigger I'm interested in building my own. One cool thing I learn throughout the development is the use of custom framework. Thanks to the Udemy course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by <b>Nick Hughes</b>, the tools are built with less redundant codes, better readability, and no dependency on PyMEL.
 
-For example, the lines below generates all utility nodes required with readability just like expression.
+For example, the lines below generates all utility nodes and connections required and read as easy as expression.
 
 ```python
 # ---------------------------------------------------------------
-#  Soft ik logic
+#    Soft ik logic
 # ---------------------------------------------------------------
 s = self.ikc.a.softIK
 Ds = D * (1 - s)
@@ -15,51 +15,7 @@ new_d = D * (1 - s * math.e ** -(d - Ds))
 (((d > Ds).setCdn(ifTrue=new_d, ifFalse=d)) * ratio >> softJ.a.tx)
 ```
 
-
-## Installation
-1. Download the repository zip file
-2. Extract the contents
-3. Locate install/dragAndDropMe.py
-4. Drag and drop this file onto a Maya viewport.
-
-## Usage
-
-```python
-from nl_modules import nl_rigging_tools
-from importlib import reload
-reload(nl_rigging_tools)
-nl_rigging_tools.main()
-```
-
-## Framework & Components Classes
-
-```mermaid
-stateDiagram
-    rcc: Component Classes
-    state rcc {
-        [*] --> RigBase
-        RigBase --> RigModule
-        RigModule --> Head
-        RigModule --> Spine
-        Spine --> Neck
-        RigModule --> Arm
-        RigModule --> Leg
-        RigModule --> SpineQd
-        SpineQd --> NeckQd
-        RigModule --> LegQd
-        RigModule --> Tail
-    }
-
-```
-
-### Example use
-
-```python
-headObj = Head('head0_RGN')
-headObj.genSk()
-headObj.build()
-```
-
+### Hierarchy of Framework & Components Classes
 ```mermaid
 stateDiagram
     rfc: Framework Classes
@@ -80,24 +36,48 @@ stateDiagram
         GroupNode --> LocNode
     }
 ```
+```mermaid
+stateDiagram
+    rcc: Component Classes
+    state rcc {
+        [*] --> RigBase
+        RigBase --> RigModule
+        RigModule --> Head
+        RigModule --> Spine
+        Spine --> Neck
+        RigModule --> Arm
+        RigModule --> Leg
+        RigModule --> SpineQd
+        SpineQd --> NeckQd
+        RigModule --> LegQd
+        RigModule --> Tail
+    }
+```
+### Marking Menus
 
-### Example use
+Two marking menus are included with shortcut to speed things up.
+
+#### 1. Rig Operation ( ctrl + MMB )
+
+![The Autorig](nl_modules/doc/marking_menu_autorig.png)
+
+#### 2. General Rigging ( ctrl + alt + MMB )
+
+![General Rigging](nl_modules/doc/marking_menu_rigging.png)
+
+
+### Installation
+1. Download the repository zip file
+2. Extract to storage location
+3. Locate install/dragAndDrop.py
+4. Drag and drop it onto a Maya viewport.
+
+
+### Usage
 
 ```python
-crv = CurveNode('myCurve')
-jnt = JointNode('myJoint')
-msh = MeshNode('myMesh')
-srf = SurfNode('mySrf')
-loc = LocNode('myLoc')
-obj = DagNode('myObj')
+from nl_modules import nl_rigging_tools
+from importlib import reload
+reload(nl_rigging_tools)
+nl_rigging_tools.main()
 ```
-
-## Marking Menus
-
-#### Marking menu for autorig ( ctrl + MMB )
-
-![marking_menu_autorig.png](nl_modules/doc/marking_menu_autorig.png)
-
-#### Marking menu for general rigging ( ctrl + alt + MMB )
-
-![marking_menu_rigging.png](nl_modules/doc/marking_menu_rigging.png)
