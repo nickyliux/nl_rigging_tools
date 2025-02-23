@@ -117,6 +117,7 @@ class RigModule(RigBase):
     @staticmethod
     def fkGivenCtl2(jntList, ctlList=None, count=1, p=None):
         """FK setup with ctls in separate hierarchy
+            The benefit compared to fkGivenCtl3 is separate selection highlight
         P
             c1 ofs
                 c1
@@ -510,11 +511,11 @@ class RigModule(RigBase):
         manualVis >> condF.a.floatB
         [condF.a.outFloat >> target.a.v for target in targets]
 
-    def footRollLogic(self, heelRollG, ballRollG, footRollG, toeRollG):
+    def footRollLogic(self, targetCtl, heelRollG, ballRollG, footRollG, toeRollG):
         from nl_modules.utils import utils_node as ut
 
-        footRoll = self.ikc.a.add("footRoll")
-        footBreak = self.ikc.a.add("footBreak", min=0, dv=30, k=0)
+        footRoll = targetCtl.a.add("footRoll")
+        footBreak = targetCtl.a.add("footBreak", min=0, dv=30, k=0)
         ut.min_(0, footRoll) >> heelRollG.a.rx
         ut.clp_(footRoll, min=0, max=footBreak) >> ballRollG.a.rx
         ut.max_(0, (footRoll - footBreak)) >> footRollG.a.rx
@@ -524,8 +525,8 @@ class RigModule(RigBase):
         # self.ikc.a.add("toeTwist") >> toeRollG.a.ry
         # self.ikc.a.add("toeRoll") >> toeRollG.a.rx
 
-    def footBankLogic(self, inRollG, outRollG):
-        bank = self.ikc.a.add("footBank")
+    def footBankLogic(self, targetCtl, inRollG, outRollG):
+        bank = targetCtl.a.add("footBank")
         (bank < 0).setCdn(ifTrue=bank, ifFalse=0) >> inRollG.a.rz
         (bank > 0).setCdn(ifTrue=bank, ifFalse=0) >> outRollG.a.rz
 

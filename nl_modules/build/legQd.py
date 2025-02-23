@@ -245,8 +245,8 @@ class LegQd(RigModule):
         self.ikc.cv_drop()
         self.ikc_gimbal.cv_drop()
 
-        self.footRollLogic(heelRollG, ballRollG, footRollG, toeRollG)
-        self.footBankLogic(inRollG, outRollG)
+        self.footRollLogic(self.ikc, heelRollG, ballRollG, footRollG, toeRollG)
+        self.footBankLogic(self.ikc, inRollG, outRollG)
 
         self.ikc.a.add("kneeTwist") * self.x_dir >> ikH1.a.twist
         (self.ikc, self.pvc, self.ikCstG) | self.IK_PART

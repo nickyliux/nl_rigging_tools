@@ -252,7 +252,10 @@ class Arm(RigModule):
             ikj = self.joints_ik[i]
             # bfj = self.joints_bf[i]
             jnt = self.joints[i]
-            common.cstMulti(fkj, ikj, jnt, w=fkIkBlend)
+            # common.cstMulti(fkj, ikj, jnt, w=fkIkBlend)
+            ut.blendN_(fkj.a.tx, ikj.a.tx, w=fkIkBlend) >> jnt.a.tx
+            ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> jnt.a.r
+
             # ut.blendN_(fkJ.a.t, ikJ.a.t, w=fkIkBlend) >> bfJ.a.t
             # ut.blendN_(fkJ.a.r, ikJ.a.r, w=fkIkBlend) >> bfJ.a.r
             # if i < total - 1:

@@ -179,7 +179,7 @@ class Leg(RigModule):
             self.palm_fkc,
             self.ball_fkc,
         ]
-        self.fkGivenCtl2(self.joints_fk, self.fkCtl, p=self.FK_PART)
+        self.fkGivenCtl2(self.joints_fk[:-1], self.fkCtl[:-1], p=self.FK_PART)
         self.isolateAlign(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
@@ -266,8 +266,8 @@ class Leg(RigModule):
         )
         # self.fkCtl.append(self.limb_fkc)
 
-        self.footRollLogic(heelRollG, ballRollG, footRollG, toeRollG)
-        self.footBankLogic(inRollG, outRollG)
+        self.footRollLogic(self.smart_ctl, heelRollG, ballRollG, footRollG, toeRollG)
+        self.footBankLogic(self.smart_ctl, inRollG, outRollG)
 
         self.ikc.a.add("kneeTwist") * self.x_dir >> ikH1.a.twist
         (self.ikc, self.pvc, self.ikCstG) | self.IK_PART
@@ -310,9 +310,9 @@ class Leg(RigModule):
         self.smart_ctl.a.tx.set(0)
         self.smart_ctl.a.r.set(0, 0, 0)
         self.smart_ctl.addOffsetGrp()
-        self.smart_ctl.a.rx >> self.ikc.a["footRoll"]
+        self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry  # self.ikc.a["toeTwist"]
-        -xDr * self.smart_ctl.a.rz >> self.ikc.a["footBank"]
+        -xDr * self.smart_ctl.a.rz >> self.smart_ctl.a["footBank"]
 
     def build_toes(self):
         rID = self.rigID
@@ -390,22 +390,20 @@ class Leg(RigModule):
             ikj = self.joints_ik[i]
             bfj = self.joints_bf[i]
             jnt = self.joints[i]
-            common.cstMulti(fkj, ikj, bfj, w=fkIkBlend)
+            # common.cstMulti(fkj, ikj, bfj, w=fkIkBlend)
+            ut.blendN_(fkj.a.tx, ikj.a.tx, w=fkIkBlend) >> bfj.a.tx
+            ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
 
             if i < total - 1:
                 bfj.a.t >> jnt.a.t
                 bfj.a.r >> jnt.a.r
             else:
                 #
-                #   Break ball_fkc's parent connection
-                #   Break ball_fkj's connection
                 #   ballJ_bfj --> ball_fkc's parent
                 #   ball_fkc --> ball_jnt
                 #
-                ofg = self.ball_fkc.offset
-                ofg.removeCstNodes()
-                self.joints_fk[-2].removeCstNodes()
-
+                self.ball_fkc.alignTo(self.ball, p=self.FK_PART)
+                ofg = self.ball_fkc.addOffsetGrp()
                 bfj.cstPar(ofg, mo=1)
                 self.ball_fkc.cstPar(jnt)
 
