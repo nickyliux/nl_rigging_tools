@@ -156,9 +156,8 @@ class Arm(RigModule):
     def build_ik(self):
         rID = self.rigID
         logging.info(rID)
+
         self.ikc.alignTo(self.palm)
-        # pvc_guide = DagNode(rID + "_pvc_guide")
-        # self.pvc.alignTo(pvc_guide)
         self.pvc.alignTo(self.lwr)
 
         self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_PART)
@@ -253,7 +252,7 @@ class Arm(RigModule):
             ikj = self.joints_ik[i]
             # bfj = self.joints_bf[i]
             jnt = self.joints[i]
-            common.cstMulti(fkj, ikj, jnt, w=fkIkBlend, cstType="par")
+            common.cstMulti(fkj, ikj, jnt, w=fkIkBlend)
             # ut.blendN_(fkJ.a.t, ikJ.a.t, w=fkIkBlend) >> bfJ.a.t
             # ut.blendN_(fkJ.a.r, ikJ.a.r, w=fkIkBlend) >> bfJ.a.r
             # if i < total - 1:
@@ -449,3 +448,4 @@ class Arm(RigModule):
         self.channel_setup()
         self.ro_setup()
         self.post_module()
+        # self.pvc.alignTo(DagNode(rID + "_pvc_guide"))

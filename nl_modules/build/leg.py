@@ -186,14 +186,12 @@ class Leg(RigModule):
         rID = self.rigID
         logging.info(rID)
         mG = self.master_guide
-        pvc_guide = DagNode(rID + "_pvc_guide")
         inPos_guide = DagNode(rID + "_palm_inPos_guide")
         outPos_guide = DagNode(rID + "_palm_outPos_guide")
         heelPos_guide = DagNode(rID + "_palm_heelPos_guide")
         toePos_guide = DagNode(rID + "_palm_toePos_guide")
 
         self.ikc.alignTo(mG)
-        # self.pvc.alignTo(pvc_guide)
         self.pvc.alignTo(self.lwr)
 
         self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_PART)
@@ -266,7 +264,7 @@ class Leg(RigModule):
             cstType="par",
             mo=1,
         )
-        self.fkCtl.append(self.limb_fkc)
+        # self.fkCtl.append(self.limb_fkc)
 
         self.footRollLogic(heelRollG, ballRollG, footRollG, toeRollG)
         self.footBankLogic(inRollG, outRollG)
@@ -392,7 +390,7 @@ class Leg(RigModule):
             ikj = self.joints_ik[i]
             bfj = self.joints_bf[i]
             jnt = self.joints[i]
-            common.cstMulti(fkj, ikj, bfj, w=fkIkBlend, cstType="par")
+            common.cstMulti(fkj, ikj, bfj, w=fkIkBlend)
 
             if i < total - 1:
                 bfj.a.t >> jnt.a.t
@@ -570,7 +568,7 @@ class Leg(RigModule):
         self.setting.a.showAttr()
         self.pvc.a.showAttr(t=1)
         self.smart_ctl.a.showAttr(r=1)
-        for ctl in self.fkCtl + self.subCtls + [self.ikc, self.pvc]:
+        for ctl in self.fkCtl + self.subCtls + [self.ikc, self.pvc, self.limb_fkc]:
             ctl.a.showAttr(t=1, r=1)
         for ctl in self.all_bend or []:
             ctl.a.showAttr(t=1, r=1, s=1)
@@ -579,7 +577,13 @@ class Leg(RigModule):
         for c in (
             self.fkCtl
             + self.ikCtl
-            + [self.lwr, self.joints_bf[2], self.joints_fk[2], self.joints_ik[2]]
+            + [
+                self.lwr,
+                self.joints_bf[2],
+                self.joints_fk[2],
+                self.joints_ik[2],
+                self.limb_fkc,
+            ]
         ):
             c.a.ro.set(2)
 
@@ -605,7 +609,10 @@ class Leg(RigModule):
         self.setWSMirror([self.ikc, self.smart_ctl, self.ikc_gimbal])
         ctlSet = []
         ctlSet.extend(
-            self.fkCtl + self.ikCtl + self.subCtls + [self.setting, self.smart_ctl]
+            self.fkCtl
+            + self.ikCtl
+            + self.subCtls
+            + [self.setting, self.smart_ctl, self.limb_fkc]
         )
 
         if self.RBN_BONES:
@@ -623,3 +630,4 @@ class Leg(RigModule):
         self.post_module()
 
         self.setting.cv_drop()
+        # self.pvc.alignTo(DagNode(rID + "_pvc_guide"))

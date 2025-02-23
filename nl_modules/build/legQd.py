@@ -412,7 +412,7 @@ class LegQd(RigModule):
             fkJ = self.joints_fk[i]
             ikJ = self.joints_ik[i]
             jnt = self.joints[i]
-            common.cstMulti(fkJ, ikJ, jnt, w=fkIkBlend, cstType="par")
+            common.cstMulti(fkJ, ikJ, jnt, w=fkIkBlend)
 
         # Useful for fk ik switch popUp menu
         for ctl in self.fkCtl + self.ikCtl:
