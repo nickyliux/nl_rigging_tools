@@ -2,9 +2,9 @@
 ### What ?
 It is another open-source modular auto-rigger written for Autodesk Maya in Python.
 
-There are a few great auto-rigger tools available online. As a rigger I'm interested in building my own. One cool thing I learn throughout the development is the use of custom framework. Thanks to the Udemy course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by <b>Nick Hughes</b>, my tools are built with less redundant codes, better readability, and no dependency on PyMEL.
+There are a few great auto-rigger tools available freely online. As a rigger I'm interested in building my own. One cool thing I learn throughout the development is the use of custom framework. Thanks to the Udemy course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by <b>Nick Hughes</b>, my tools could be built with less redundant code, better readability, and no dependency on PyMEL.
 
-For example, the lines below generates all utility nodes and connections required and read as easy as expression !
+For example, the lines below generates all utility nodes and connections required and read as easily as expression !
 
 ```python
 # ---------------------------------------------------------------
@@ -16,63 +16,59 @@ new_d = D * (1 - s * math.e ** -(d - Ds))
 (((d > Ds).setCdn(ifTrue=new_d, ifFalse=d)) * ratio >> softJ.a.tx)
 ```
 
-### Framework / Components
-```mermaid
-stateDiagram
-    rfc: Framework Classes
-    state rfc {
-        [*] --> Attribute
-        [*] --> AttributeHolder
-        [*] --> DepNode
-        [*] --> Dimension
-        [*] --> RibbonNode
-        DepNode --> DagNode
-        DagNode --> IkNode
-        DagNode --> GroupNode
-        DagNode --> Condition
-        GroupNode --> CurveNode
-        GroupNode --> JointNode
-        GroupNode --> MeshNode
-        GroupNode --> SurfNode
-        GroupNode --> LocNode
-    }
-```
-```mermaid
-stateDiagram
-    rcc: Component Classes
-    state rcc {
-        [*] --> RigBase
-        RigBase --> RigModule
-        RigModule --> Head
-        RigModule --> Spine
-        Spine --> Neck
-        RigModule --> Arm
-        RigModule --> Leg
-        RigModule --> SpineQd
-        SpineQd --> NeckQd
-        RigModule --> LegQd
-        RigModule --> Tail
-    }
+## Framework Classes
 
+```mermaid
+classDiagram
+    
+    DepNode <|-- DagNode
+    DagNode <|-- GroupNode
+    DepNode <|-- Condition
+    GroupNode <|-- CurveNode
+    GroupNode <|-- JointNode
+    GroupNode <|-- MeshNode
+    GroupNode <|-- SurfNode
+    GroupNode <|-- LocNode
+    DepNode --* Dimension
+    DepNode --* AttributeHolder
+    AttributeHolder --* Attribute
+    
 ```
-### Rig Component Features
+## Component Classes
+```mermaid
+classDiagram
+    RigBase <|-- RigModule
+    class RibbonNode
+    class IkNode
+    RigModule <|-- Head
+    RigModule <|-- Spine
+    Spine <|-- Neck
+    RigModule <|-- Arm
+    RigModule <|-- Leg
+    RigModule <|-- SpineQd
+    SpineQd <|-- NeckQd
+    RigModule <|-- LegQd
+    RigModule <|-- Tail
+```
+
+## Rig Features
 Limb Basic
 1. fk/ik blend
-2. stretch/squash
+2. squash & stretch
 3. space switch
 4. soft ik
 5. smart ctl
 6. pv pin with fk
+7. auto hip/shoulder
 
-Limb Options ( Arm/leg )
-1. ribbon
-2. patella (leg)
+Limb Options
+1. ribbon ctl
+2. patella bone (leg)
 3. toe bones (leg)
-4. knee fix (leg)
+4. knee correction (leg)
 5. fore limb twist bone
-6. auto hip/shoulder
 
-### Marking Menus
+## Marking Menus
 
 Two marking menus are included with shortcut to speed things up.
 
@@ -85,14 +81,14 @@ Two marking menus are included with shortcut to speed things up.
 ![General Rigging](nl_modules/doc/marking_menu_rigging.png)
 
 
-### Installation
+## Installation
 1. Download the repository zip file.
 2. Extract to storage location.
 3. Locate install/dragAndDrop.py.
 4. Drag and drop it onto a Maya viewport.
 
 
-### Usage
+## Usage
 
 ```python
 from nl_modules import nl_rigging_tools
@@ -100,7 +96,7 @@ from importlib import reload
 reload(nl_rigging_tools)
 nl_rigging_tools.main()
 ```
-### To do
+## To do
 
 * Study matrix for more efficient constraint calculation.
 * Understand more about how professional animators work.
