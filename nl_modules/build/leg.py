@@ -103,7 +103,7 @@ class Leg(RigModule):
         rID = self.rigID
         xDr = self.x_dir
         # self.setting = CurveNode("setting", pf=rID, shape="setting", scale=rSz)
-        self.setting = CurveNode("setting", pf=rID, shape="setting", scale=rSz)
+        self.setting = CurveNode("setting", pf=rID, shape="square", scale=rSz)
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
         )
@@ -266,6 +266,7 @@ class Leg(RigModule):
             cstType="par",
             mo=1,
         )
+        self.fkCtl.append(self.limb_fkc)
 
         self.footRollLogic(heelRollG, ballRollG, footRollG, toeRollG)
         self.footBankLogic(inRollG, outRollG)
@@ -291,21 +292,19 @@ class Leg(RigModule):
         rID = self.rigID
         rSz = self.rigSize
         xDr = self.x_dir
-        self.setting.a.add("SecVis", k=0, min=0, max=1)
 
         for g in [toeRollG, inRollG, outRollG, heelRollG]:
             ctl = g.addOffsetGrp(below=1)
             # CurveNode(ctl)(name=g.name + "_ctl", up="x", scale=rSz / 4)
             CurveNode(ctl)(name=g.name + "_ctl", shape="diamond", scale=rSz / 2)
             self.subCtls.append(ctl)
-            self.setting.a["SecVis"] >> ctl.shape.a.v
 
         self.ballG_ikc = ballRollG.addOffsetGrp(below=1)
         cName = rID + "_ballG_ikc"
         CurveNode(self.ballG_ikc)(
             name=cName, shape="stickC", scale=-rSz * xDr / 2, rotate=(0, 90, 0)
         )
-        self.subCtls.append(self.ballG_ikc)
+        self.ikCtl.append(self.ballG_ikc)
 
         # Smart Ctl setup
         self.smart_ctl.parentTo(self.ikc_gimbal)
@@ -370,19 +369,17 @@ class Leg(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-        # self.joints.extend([radius_JC[0], ulna_JC[0]])
         self.joints.insert(0, radius_JC[0])
         self.joints.insert(0, ulna_JC[0])
 
     def blend_fk_ik(self):
         rID = self.rigID
-        rSz = self.rigSize
-        xDr = self.x_dir
+        # rSz = self.rigSize
+        # xDr = self.x_dir
         logging.info(rID)
         self.joints_bf = common.extractSk(self.joints, "_bf", p=self.RIG_DATA)
 
         self.setting | self.CTL_DATA
-        # self.setting.alignTo(self.palm, offset=(0, rSz * -xDr * 10, 0))
         self.setting.snapTo(self.palm)
         ofs = self.setting.addOffsetGrp()
         self.palm.cstPar(ofs, mo=1)
@@ -391,23 +388,27 @@ class Leg(RigModule):
         total = len(self.joints) - 1
 
         for i in range(total):
-            fkJ = self.joints_fk[i]
-            ikJ = self.joints_ik[i]
-            bfJ = self.joints_bf[i]
+            fkj = self.joints_fk[i]
+            ikj = self.joints_ik[i]
+            bfj = self.joints_bf[i]
             jnt = self.joints[i]
-            common.cstMulti(fkJ, ikJ, bfJ, w=fkIkBlend, cstType="par")
+            common.cstMulti(fkj, ikj, bfj, w=fkIkBlend, cstType="par")
 
             if i < total - 1:
-                bfJ.a.t >> jnt.a.t
-                bfJ.a.r >> jnt.a.r
+                bfj.a.t >> jnt.a.t
+                bfj.a.r >> jnt.a.r
             else:
-                # Remove connections for ball fkc
+                #
+                #   Break ball_fkc's parent connection
+                #   Break ball_fkj's connection
+                #   ballJ_bfj --> ball_fkc's parent
+                #   ball_fkc --> ball_jnt
+                #
                 ofg = self.ball_fkc.offset
                 ofg.removeCstNodes()
                 self.joints_fk[-2].removeCstNodes()
 
-                # Put ball fkc under ball buffer jnt
-                bfJ.cstPar(ofg, mo=1)
+                bfj.cstPar(ofg, mo=1)
                 self.ball_fkc.cstPar(jnt)
 
         # Useful for fk ik switch popUp menu
@@ -543,7 +544,7 @@ class Leg(RigModule):
             autoVis,
             showIk,
             [self.ikc, self.pvc, self.pvc_line, self.ikCstG],
-            hideWhen=1,
+            v=1,
         )
         # [~fkIkBlend >> c.a.v for c in self.fkCtl[1:-1]]
         self.visByCondition(
@@ -551,7 +552,7 @@ class Leg(RigModule):
             autoVis,
             showFk,
             self.fkCtl[1:-1],
-            hideWhen=0,
+            v=0,
         )
         self.pvc.a["fkLimb"] >> self.limb_fkc.a.v
 
@@ -559,8 +560,8 @@ class Leg(RigModule):
             ribbonCtlVis = self.setting.a.add("ribbonCtlVis", min=0, max=1, dv=1, k=0)
             [ribbonCtlVis >> ctl.a.v for ctl in self.all_bend]
 
-        # subCtls = self.setting.a.add("subCtls", min=0, max=1, dv=1, k=0)
-        # [subCtls >> self.ikCstG.children[0].a.v]
+        secCtlVis = self.setting.a.add("secCtlVis", k=0, min=0, max=1)
+        [secCtlVis >> c.shape.a.v for c in self.subCtls]
 
         mc.hide(self.joints_fk, self.joints_ik, self.joints_bf)
         [ikh.hide() for ikh in self.all_ikH.values()]
@@ -593,21 +594,18 @@ class Leg(RigModule):
 
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_hip": self.hip_fkc})
+
         self.ikH1.build_pvSpaceChain(ikParent=self.ikc_gimbal)
         self.rigNode.setMsg({"space_leg": self.ikH1.pvChainJ[0]})
-        # self.rigNode.setMsg({"space_leg": self.ikH1.softJ[0]})
 
     def post_setup(self):
         rID = self.rigID
         logging.info(rID)
-        for c in [self.ikc, self.smart_ctl, self.ikc_gimbal]:
-            c.a.add("wsMirrorAxis", k=0, lock=1, cb=0)
+
+        self.setWSMirror([self.ikc, self.smart_ctl, self.ikc_gimbal])
         ctlSet = []
         ctlSet.extend(
-            self.fkCtl
-            + self.ikCtl
-            + self.subCtls
-            + [self.setting, self.smart_ctl, self.limb_fkc]
+            self.fkCtl + self.ikCtl + self.subCtls + [self.setting, self.smart_ctl]
         )
 
         if self.RBN_BONES:

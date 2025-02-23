@@ -70,7 +70,7 @@ Limb Options
 
 ## Marking Menus
 
-Two marking menus are included with shortcut to speed things up.
+Two marking menus are included with shortcut.
 
 #### Rig Operation ( ctrl + MMB )
 
@@ -100,4 +100,3 @@ nl_rigging_tools.main()
 
 * Study matrix for more efficient constraint calculation.
 * Understand more about how professional animators work.
-* Study more about rigging in Houdini.

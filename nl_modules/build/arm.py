@@ -249,11 +249,11 @@ class Arm(RigModule):
 
         total = len(self.joints) - 1
         for i in range(total):
-            fkJ = self.joints_fk[i]
-            ikJ = self.joints_ik[i]
-            # bfJ = self.joints_bf[i]
+            fkj = self.joints_fk[i]
+            ikj = self.joints_ik[i]
+            # bfj = self.joints_bf[i]
             jnt = self.joints[i]
-            common.cstMulti(fkJ, ikJ, jnt, w=fkIkBlend, cstType="par")
+            common.cstMulti(fkj, ikj, jnt, w=fkIkBlend, cstType="par")
             # ut.blendN_(fkJ.a.t, ikJ.a.t, w=fkIkBlend) >> bfJ.a.t
             # ut.blendN_(fkJ.a.r, ikJ.a.r, w=fkIkBlend) >> bfJ.a.r
             # if i < total - 1:
@@ -355,7 +355,7 @@ class Arm(RigModule):
             autoVis,
             showIk,
             [self.ikc, self.pvc, self.pvc_line, self.ikCstG],
-            hideWhen=1,
+            v=1,
         )
         # [~fkIkBlend >> c.a.v for c in (self.palm_fkc, self.lwr_fkc, self.upr_fkc)]
         self.visByCondition(
@@ -363,7 +363,7 @@ class Arm(RigModule):
             autoVis,
             showFk,
             self.fkCtl[1:],
-            hideWhen=0,
+            v=0,
         )
 
         self.pvc.a["fkLimb"] >> self.limb_fkc.a.v
@@ -397,7 +397,6 @@ class Arm(RigModule):
 
     def channel_setup(self):
         self.setting.a.showAttr()
-        # self.pvc.a.showAttr(t=1)
         # self.ball_ikc.a.showAttr(r=1)
         for ctl in self.fkCtl + [self.ikc, self.ikc_gimbal, self.pvc]:
             ctl.a.showAttr(t=1, r=1)
@@ -417,22 +416,20 @@ class Arm(RigModule):
         self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"spaceHolder2": self.pvc})
-        # spaces = "master, COG, uprBody, lwrBody"
         spaces = "arm, master, COG, uprBody, lwrBody"
         self.rigNode.a.add("spaceName2", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_clavicle": self.clavicle_fkc})
+
         self.ikH1.build_pvSpaceChain(ikParent=self.ikc_gimbal)
         self.rigNode.setMsg({"space_arm": self.ikH1.pvChainJ[0]})
-        # self.rigNode.setMsg({"space_arm": self.ikH1.softJ[0]})
         # self.rigNode.setMsg({"space_palm": self.ball_ikc})
 
     def post_setup(self):
         rID = self.rigID
         logging.info(rID)
-        # for c in [self.pvc]:
-        #     c.a.add("wsMirrorAxis", k=0, lock=1, cb=0)
+
         ctlSet = []
         ctlSet.extend(self.fkCtl + self.ikCtl + [self.setting, self.limb_fkc])
 

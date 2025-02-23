@@ -488,7 +488,7 @@ class RigModule(RigBase):
         jnt3 = JointNode(ctl3 + "_ctlJ", r=rS, color=color, align=ctl3, p=ctl3)
         return [jnt1, jnt2, jnt3]
 
-    def visByCondition(self, fkIkBlend, autoVis, manualVis, targets, hideWhen=0):
+    def visByCondition(self, fkIkBlend, autoVis, manualVis, targets, v=0):
         """Setup vis logic with auto / manual mode like Advanced Skeleton
 
         visByCondition(
@@ -499,12 +499,12 @@ class RigModule(RigBase):
             hideWhen=0
         )
         """
-        cond = DagNode("visCond" + str(hideWhen) + "__#", nodeType="condition")
+        cond = DagNode("visCond" + str(v) + "__#", nodeType="condition")
         fkIkBlend >> cond.a.firstTerm
-        cond.a.secondTerm.set(1 - hideWhen)
+        cond.a.secondTerm.set(1 - v)
         # [cond.a.outColor >> target.a.v for target in targets]
 
-        condF = DagNode("visCondF" + str(hideWhen) + "__#", nodeType="floatCondition")
+        condF = DagNode("visCondF" + str(v) + "__#", nodeType="floatCondition")
         cond.a.outColorR >> condF.a.floatA
         autoVis >> condF.a.condition
         manualVis >> condF.a.floatB
@@ -528,6 +528,11 @@ class RigModule(RigBase):
         bank = self.ikc.a.add("footBank")
         (bank < 0).setCdn(ifTrue=bank, ifFalse=0) >> inRollG.a.rz
         (bank > 0).setCdn(ifTrue=bank, ifFalse=0) >> outRollG.a.rz
+
+    def setWSMirror(self, targets):
+        for t in targets:
+            if t.exists():
+                t.a.add("wsMirrorAxis", k=0, lock=1, cb=0)
 
     def build_digit_ik(self, dupTgt, scale, p=None):
         """IK setup for single digit"""

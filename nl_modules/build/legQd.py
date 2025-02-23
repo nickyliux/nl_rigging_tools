@@ -607,8 +607,8 @@ class LegQd(RigModule):
     def post_setup(self):
         rID = self.rigID
         logging.info(rID)
-        for c in [self.ikc, self.ikc_gimbal, self.pvc]:
-            c.a.add("wsMirrorAxis", k=0, lock=1, cb=0)
+
+        self.setWSMirror([self.ikc, self.ikc_gimbal, self.pvc])
         ctlSet = self.fkCtl + self.ikCtl + self.subCtls + [self.setting, self.extra_ikc]
         # if self.RBN_BONES:
         #     ctlSet.extend(self.all_bend)
