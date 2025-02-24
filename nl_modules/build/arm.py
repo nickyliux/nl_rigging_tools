@@ -102,7 +102,7 @@ class Arm(RigModule):
         self.palm_fkc = CurveNode(
             "palm_fkc", pf=rID, up="x", shape="circleZ", scale=rSz
         )
-        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=(0.7, 1.2, 1.4))
+        self.ikc = CurveNode("ikc", pf=rID, shape="diamond", scale=rSz * 4)
         self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz * 1.5)
         self.ball_ikc = CurveNode(
             "ball_ikc", pf=rID, shape="stickC", scale=xDr * rSz / 3
@@ -361,7 +361,7 @@ class Arm(RigModule):
 
         # FK IK CTL VIS TOGGLE
         fkIkBlend = self.setting.a["fkIkBlend"]
-        autoVis = self.setting.a.add("autoVis", min=0, max=1, dv=1, k=0)
+        autoVis = self.setting.a.add("autoVis", min=0, max=1, k=0)
         showFk = self.setting.a.add("showFk", min=0, max=1, dv=1, k=0)
         showIk = self.setting.a.add("showIk", min=0, max=1, dv=1, k=0)
 
