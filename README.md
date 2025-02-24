@@ -33,7 +33,7 @@ classDiagram
     AttributeHolder *-- Attribute
     Attribute *-- Condition
     DepNode *-- Dimension
-    namespace _ {
+    namespace x {
         class DepNode
         class AttributeHolder
         class Attribute
@@ -44,13 +44,13 @@ classDiagram
 ```
 Examples
 ```python
-# create cube curve with offset group
+# create curve with cube shape and offset group
 ctl = CurveNode("myCrv", shape="cube", addOfs=1)
 
-# create joint with radius 2 and parent ctl
+# create joint of radius=2 and parented to ctl
 jnt = JointNode("myJnt", r=2, p=ctl)
 
-# create locator with size 3
+# create locator of size=3
 loc = LocNode("myLoc", size=3)
 
 # pointConstraint loc to ctl
