@@ -29,11 +29,38 @@ classDiagram
     GroupNode <|-- MeshNode
     GroupNode <|-- SurfNode
     GroupNode <|-- LocNode
-    DepNode --* Dimension
-    DepNode --* AttributeHolder
-    AttributeHolder --* Attribute
+    DepNode *-- AttributeHolder
+    AttributeHolder *-- Attribute
+    Attribute *-- Condition
+    DepNode *-- Dimension
+    namespace _ {
+        class DepNode
+        class AttributeHolder
+        class Attribute
+        class Dimension
+        class Condition
+    }
     
 ```
+Examples
+```python
+# create cube curve with offset group
+ctl = CurveNode("myCrv", shape="cube", addOfs=1)
+
+# create joint with radius 2 and parent ctl
+jnt = JointNode("myJnt", r=2, p=ctl)
+
+# create locator with size 3
+loc = LocNode("myLoc", size=3)
+
+# pointConstraint loc to ctl
+ctl.cstPoi(loc)
+
+# loc.r = ctl.r * 2
+ctl.a.r * 2 >> loc.a.r                              
+```
+
+
 ## Component Classes
 ```mermaid
 classDiagram
@@ -53,20 +80,20 @@ classDiagram
 
 ## Rig Features
 Limb Basic
-1. fk/ik blend
-2. squash & stretch
+1. fk/ik switch
+2. squash/stretch
 3. space switch
 4. soft ik
 5. smart ctl
-6. pv pin with fk
+6. pv pin with fk ctl
 7. auto hip/shoulder
 
 Limb Options
 1. ribbon ctl
-2. patella bone (leg)
-3. toe bones (leg)
-4. knee correction (leg)
-5. fore limb twist bone
+2. fore limb twist bone
+3. patella bone (leg)
+4. toe bones (leg)
+5. knee correction (leg)
 
 ## Marking Menus
 
