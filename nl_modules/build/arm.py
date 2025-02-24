@@ -40,7 +40,7 @@ class Arm(RigModule):
         self.joints = []
         self.joints_fk = []
         self.joints_ik = []
-        # self.joints_bf = []
+        self.joints_bf = []
         self.clavicle = None
         self.upr = None
         self.lwr = None
@@ -53,7 +53,7 @@ class Arm(RigModule):
         self.pvc = None
         self.ikc = None
         self.limb_fkc = None
-        # self.ball_ikc = None
+        self.ball_ikc = None
         self.ikCtl = None
         self.fkCtl = None
         self.toeWiggleG = None
@@ -104,9 +104,9 @@ class Arm(RigModule):
         )
         self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=(0.7, 1.2, 1.4))
         self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz * 1.5)
-        # self.ball_ikc = CurveNode(
-        #     "ball_ikc", pf=rID, shape="stickC", scale=xDr * rSz / 3
-        # )
+        self.ball_ikc = CurveNode(
+            "ball_ikc", pf=rID, shape="stickC", scale=xDr * rSz / 3
+        )
 
         self.rigNode.setMsg(
             {
@@ -117,7 +117,7 @@ class Arm(RigModule):
                 "palm_fkc": self.palm_fkc,
                 "ikc": self.ikc,
                 "pvc": self.pvc,
-                # "ball_ikc": self.ball_ikc,
+                "ball_ikc": self.ball_ikc,
             }
         )
 
@@ -220,49 +220,63 @@ class Arm(RigModule):
         ikH1.stretchyIk(soft=1)
         self.all_ikHs = [ikH1]
         self.clavicle_fkc.cstPar(self.joints_ik[0], mo=1)
-        # self.ikc.cstOri(self.joints_ik[-2], mo=1)
-        # self.ikCstG.cstPar(self.joints_ik[-2], mo=1)
 
         self.ikCtl = [
             self.ikc,
             self.pvc,
             self.ikc_gimbal,
-        ]  # self.ball_ikc,
+            self.ball_ikc,
+        ]
         self.ikH1 = ikH1
+        self.alignOri_setup()
+
+    def alignOri_setup(self):
+        """Setup Align-Orient on ikc"""
+        alignOrient = self.ikc.a.add("alignOrient", min=0, max=1)
+        loc = LocNode(
+            "alignOrient_loc#",
+            pf=self.rigID,
+            align=self.palm,
+            p=self.joints_ik[2],
+            addOfs=1,
+        )
+        self.joints_ik[-2].cstPoi(loc.offset)
+        common.cstMulti(
+            loc, self.ikc, self.joints_ik[-2], mo=1, w=alignOrient, cstType="ori"
+        )
 
     def blend_fk_ik(self):
         rID = self.rigID
         rSz = self.rigSize
         xDr = self.x_dir
         logging.info(rID)
-        # self.joints_bf = common.extractSk(self.joints, "_bf", p=self.RIG_DATA)
+        self.joints_bf = common.extractSk(self.joints, "_bf", p=self.RIG_DATA)
 
         self.setting | self.CTL_DATA
         self.setting.alignTo(self.palm, offset=(0, 0, rSz * -xDr * 20))
         self.palm.cstPar(self.setting.addOffsetGrp(), mo=1)
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
 
-        # ball_guide = DagNode(rID + "_ball_guide")
-        # self.ball_ikc.alignTo(ball_guide)
-        # self.ball_ikc | self.joints_bf[-1]
+        ball_guide = DagNode(rID + "_ball_guide")
+        self.ball_ikc.alignTo(ball_guide, p=self.CTL_DATA)
+        self.joints_bf[-1].cstPar(self.ball_ikc.addOffsetGrp(), mo=1)
 
         total = len(self.joints) - 1
         for i in range(total):
             fkj = self.joints_fk[i]
             ikj = self.joints_ik[i]
-            # bfj = self.joints_bf[i]
+            bfj = self.joints_bf[i]
             jnt = self.joints[i]
             # common.cstMulti(fkj, ikj, jnt, w=fkIkBlend)
-            ut.blendN_(fkj.a.tx, ikj.a.tx, w=fkIkBlend) >> jnt.a.tx
-            ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> jnt.a.r
-
-            # ut.blendN_(fkJ.a.t, ikJ.a.t, w=fkIkBlend) >> bfJ.a.t
-            # ut.blendN_(fkJ.a.r, ikJ.a.r, w=fkIkBlend) >> bfJ.a.r
-            # if i < total - 1:
-            #     bfJ.a.t >> jnt.a.t
-            #     bfJ.a.r >> jnt.a.r
-            # else:
-            #     self.ball_ikc.cstPar(jnt, mo=1)
+            # ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> jnt.a.t
+            # ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> jnt.a.r
+            ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> bfj.a.t
+            ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
+            if i < total - 1:
+                bfj.a.t >> jnt.a.t
+                bfj.a.r >> jnt.a.r
+            else:
+                self.ball_ikc.cstPar(jnt, mo=1)
 
         for ctl in self.fkCtl + self.ikCtl:
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
@@ -374,7 +388,7 @@ class Arm(RigModule):
             ribbonCtlVis = self.setting.a.add("ribbonCtlVis", min=0, max=1, dv=0, k=0)
             [ribbonCtlVis >> ctl.a.v for ctl in self.all_bend]
 
-        mc.hide(self.all_ikHs, self.joints_fk, self.joints_ik)
+        mc.hide(self.all_ikHs, self.joints_fk, self.joints_ik, self.joints_bf)
 
     def proxy_setup(self):
         proxyList = self.joints[:-1]
@@ -440,12 +454,12 @@ class Arm(RigModule):
 
         self.addCtlSet(ctlSet, pf=rID)
         self.space_setup()
-        # self.anchor_setup_module(
-        #     {"anchorM1": self.joints_bf[-2], "anchorF1": self.clavicle_fkc}
-        # )
         self.anchor_setup_module(
-            {"anchorM1": self.joints[-2], "anchorF1": self.clavicle_fkc}
+            {"anchorM1": self.joints_bf[-2], "anchorF1": self.clavicle_fkc}
         )
+        # self.anchor_setup_module(
+        #     {"anchorM1": self.joints[-2], "anchorF1": self.clavicle_fkc}
+        # )
         self.proxy_setup()
         self.vis_setup()
         self.channel_setup()
