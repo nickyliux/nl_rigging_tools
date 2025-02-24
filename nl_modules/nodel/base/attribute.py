@@ -24,8 +24,8 @@ class Attribute:
         """e.g. '|obj1.rx'"""
         if self.fullPath:
             return self.fullPath
-        else:
-            ''
+        # else:
+        #     ''
         #     raise ValueError('Invalid Attr')
 
     def __repr__(self):
@@ -97,7 +97,11 @@ class Attribute:
         #     mc.setAttr(self, *args, **kwargs)
 
         objType = self.node.type
-        if objType == 'locator' or objType == 'nurbsCurve' and isinstance(args, (tuple, list)):
+        if (
+            objType == "locator"
+            or objType == "nurbsCurve"
+            and isinstance(args, (tuple, list))
+        ):
             attrs = self.atChildren if self.isParent() else [self]
             for i, attr in enumerate(attrs):
                 if attr.get(se=1):

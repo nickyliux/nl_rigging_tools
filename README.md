@@ -23,25 +23,27 @@ classDiagram
     
     DepNode <|-- DagNode
     DagNode <|-- GroupNode
-    DepNode <|-- Condition
     GroupNode <|-- CurveNode
     GroupNode <|-- JointNode
     GroupNode <|-- MeshNode
     GroupNode <|-- SurfNode
     GroupNode <|-- LocNode
+    
+    DepNode *-- Dimension
+    AttributeHolder *-- Attribute
+    DepNode *-- AttributeHolder
+    Attribute *-- Condition
+    class AttributeHolder
+    class Attribute
+    class Condition
+    class Dimension
+    
+```
     DepNode *-- AttributeHolder
     AttributeHolder *-- Attribute
     Attribute *-- Condition
     DepNode *-- Dimension
-    namespace x {
-        class DepNode
-        class AttributeHolder
-        class Attribute
-        class Dimension
-        class Condition
-    }
-    
-```
+
 Examples
 ```python
 # create curve with cube shape and offset group
@@ -57,7 +59,7 @@ loc = LocNode("myLoc", size=3)
 ctl.cstPoi(loc)
 
 # loc.r = ctl.r * 2
-ctl.a.r * 2 >> loc.a.r                              
+ctl.a.r * (2,2,2) >> loc.a.r
 ```
 
 
@@ -119,8 +121,6 @@ Two marking menus are included with shortcut.
 
 ```python
 from nl_modules import nl_rigging_tools
-from importlib import reload
-reload(nl_rigging_tools)
 nl_rigging_tools.main()
 ```
 ## To do
