@@ -14,14 +14,14 @@ class RigBase:
     """
 
     def __init__(self, rigNode):
-        if not mc.objExists("master_ctl") or not mc.objExists("vis_ctl"):
-            logging.warning("Missing master_ctl or vis_ctl")
+        if not mc.objExists("master_ctl"):  # or not mc.objExists("vis_ctl"):
+            logging.warning("Missing master_ctl")
             return
 
         self.masterC = CurveNode("master_ctl")
-        self.visC = CurveNode("vis_ctl")
-        self.visC.a.addSep("_" * 8)
-        self.visC.a.add("proxyMesh", attrType="bool", dv=1, k=0)
+        # self.visC = CurveNode("vis_ctl")
+        # self.visC.a.addSep("_" * 8)
+        # self.visC.a.add("proxyMesh", attrType="bool", dv=1, k=0)
 
         if isinstance(rigNode, str):
             rigNode = DagNode(rigNode)
@@ -42,7 +42,7 @@ class RigBase:
             self.masterC.a.globalScale >> self.SKL.a.s
         if self.PRX.a.s.settable():
             self.masterC.a.globalScale >> self.PRX.a.s
-        self.visC.a.proxyMesh >> self.PRX.a.v
+        # self.visC.a.proxyMesh >> self.PRX.a.v
 
         root = self.masterC.parent.parent
         if not root.parent:

@@ -24,7 +24,7 @@ class AttributeHolder:
 
         if item in self.__dict__.keys():
             return self.__dict__[item]
-        
+
         return Attribute(self.node, item)
 
     def __getitem__(self, item):
@@ -83,11 +83,12 @@ class AttributeHolder:
 
         return Attribute(self.node, name)
 
-    def addSep(self, name):
+    def addSep(self, name=None):
         """Add string attribute as separator
         e.g.
             addSep('_'*8)
         """
+        name = name or "_" * 12
         self.add(name, lock=True, attrType="enum", k=1, en=" ")
 
     def reset(self, **kwargs):

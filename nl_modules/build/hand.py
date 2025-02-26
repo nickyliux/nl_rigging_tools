@@ -20,7 +20,7 @@ class Hand(RigModule):
         self.smart_ctl = None
         self.fgrsArr = None
         self.ctlsArr = None
-        self.ikcArr = None
+        self.fgrRootCtlArr = None
 
     def genGuildSk(self):
         self.genSk_module(["handJ"])
@@ -44,7 +44,7 @@ class Hand(RigModule):
         rID = self.rigID
         # "smart_ctl", pf=rID, shape="cube", scale=(rSz * 2, rSz * 2, rSz)
         self.smart_ctl = CurveNode(
-            "smart_ctl", pf=rID, shape="cube", scale=(rSz, rSz * 2, rSz)
+            "smart_ctl", pf=rID, shape="arrow3D", up="x", scale=(rSz, rSz * 2, rSz)
         )
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
         if self.rootJ:
@@ -85,13 +85,13 @@ class Hand(RigModule):
         rSz = self.rigSize
         xDr = self.x_dir
         scale = xDr * rSz
-        self.ikcArr = []
+        self.fgrRootCtlArr = []
         rig_grp = GroupNode(rID + "_grp", p=self.RIG_DATA)
         self.rootJ.offset.cstPar(rig_grp, mo=1)
         for fgrs, ctls in zip(self.fgrsArr, self.ctlsArr):
             dupTgt = DagNode(fgrs[1])
             ctl, ikj = self.build_digit_ik(dupTgt, scale, p=rig_grp)
-            self.ikcArr.append(ctl)
+            self.fgrRootCtlArr.append(ctl)
             ikj.a.r >> ctls[1].parent.parent.a.r
 
     def smart_setup(self):
@@ -237,6 +237,8 @@ class Hand(RigModule):
         common.sdk(drv, ofs, "ty", "rx", -20, -180)
 
     def space_setup(self):
+        # We add space to "rootJ" because we want to drive it by the
+        # locator under buffer chain for palm roll setup
         self.rigNode.setMsg({"spaceHolder1": self.rootJ})
         self.rigNode.a.add("spaceName1", attrType="string", txt="palm")
 
@@ -254,6 +256,10 @@ class Hand(RigModule):
 
     def channel_setup(self):
         self.smart_ctl.a.showAttr(t=1, r=1, s=1)
+        [c.a.showAttr(r=1) for c in self.fgrRootCtlArr]
+        for fgrCtls in self.ctlsArr:
+            for c in fgrCtls:
+                c.a.showAttr(t=1, r=1)
 
     def ro_setup(self):
         self.smart_ctl.a.ro.set(3)
@@ -269,7 +275,7 @@ class Hand(RigModule):
 
     def post_setup(self):
         self.addBindJntSet(self.rootJ.allChildrenJt2)
-        ctlSet = [self.smart_ctl] + self.ikcArr
+        ctlSet = [self.smart_ctl] + self.fgrRootCtlArr
         [ctlSet.extend(x) for x in self.ctlsArr]
         self.addCtlSet(ctlSet, pf=self.rigID)
         self.space_setup()

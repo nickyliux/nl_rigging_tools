@@ -53,7 +53,7 @@ class Arm(RigModule):
         self.pvc = None
         self.ikc = None
         self.limb_fkc = None
-        self.ball_ikc = None
+        self.ballRoll_loc = None
         self.ikCtl = None
         self.fkCtl = None
         self.toeWiggleG = None
@@ -91,7 +91,7 @@ class Arm(RigModule):
         rID = self.rigID
         xDr = self.x_dir
         self.setting = CurveNode(
-            "setting", pf=rID, shape="square", up="x", scale=rSz * 0.2, color=CB
+            "setting", pf=rID, shape="stickS", up="-z", scale=rSz * xDr * 0.8, color=CB
         )
         self.clavicle_fkc = CurveNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
@@ -106,11 +106,8 @@ class Arm(RigModule):
         self.palm_fkc = CurveNode(
             "palm_fkc", pf=rID, up="x", shape="circle_round", scale=rSz
         )
-        self.ikc = CurveNode("ikc", pf=rID, shape="diamond", scale=rSz * 4)
+        self.ikc = CurveNode("ikc", pf=rID, shape="diamond", scale=rSz * 3)
         self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz * 1.5)
-        self.ball_ikc = CurveNode(
-            "ball_ikc", pf=rID, shape="stickC", scale=xDr * rSz / 3
-        )
 
         self.rigNode.setMsg(
             {
@@ -121,7 +118,6 @@ class Arm(RigModule):
                 "palm_fkc": self.palm_fkc,
                 "ikc": self.ikc,
                 "pvc": self.pvc,
-                "ball_ikc": self.ball_ikc,
             }
         )
 
@@ -191,6 +187,7 @@ class Arm(RigModule):
         #
         # // self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
         self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
+        self.pvc.a.addSep()
         fkLimb = self.pvc.a.add("fkLimb", min=0, max=1)
         self.limb_fkc = CurveNode(
             rID + "_limb_fkc",
@@ -225,12 +222,7 @@ class Arm(RigModule):
         self.all_ikHs = [ikH1]
         self.clavicle_fkc.cstPar(self.joints_ik[0], mo=1)
 
-        self.ikCtl = [
-            self.ikc,
-            self.pvc,
-            self.ikc_gimbal,
-            self.ball_ikc,
-        ]
+        self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal]
         self.ikH1 = ikH1
         self.alignOri_setup()
 
@@ -256,14 +248,17 @@ class Arm(RigModule):
         logging.info(rID)
         self.joints_bf = common.extractSk(self.joints, "_bf", p=self.RIG_DATA)
 
+        palmIn_guide = DagNode(rID + "_palmIn_guide")
+        palmIn_loc = LocNode("palmIn", pf=rID, align=palmIn_guide, p=self.joints_bf[-1])
+        palmOut_guide = DagNode(rID + "_palmOut_guide")
+        palmOut_loc = LocNode("palmOut", pf=rID, align=palmOut_guide, p=palmIn_loc)
+        ball_guide = DagNode(rID + "_ball_guide")
+        self.ballRoll_loc = LocNode("ballRoll", pf=rID, align=ball_guide, p=palmOut_loc)
+
         self.setting | self.CTL_DATA
-        self.setting.alignTo(self.palm, offset=(rSz * xDr * 30, 0, 0))
+        self.setting.alignTo(self.palm)  # , offset=(rSz * xDr * 35, 0, 0))
         self.palm.cstPar(self.setting.addOffsetGrp(), mo=1)
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
-
-        ball_guide = DagNode(rID + "_ball_guide")
-        self.ball_ikc.alignTo(ball_guide, p=self.CTL_DATA)
-        self.joints_bf[-1].cstPar(self.ball_ikc.addOffsetGrp(), mo=1)
 
         total = len(self.joints) - 1
         for i in range(total):
@@ -280,7 +275,11 @@ class Arm(RigModule):
                 bfj.a.t >> jnt.a.t
                 bfj.a.r >> jnt.a.r
             else:
-                self.ball_ikc.cstPar(jnt, mo=1)
+                self.ballRoll_loc.cstPar(jnt, mo=1)
+
+        self.ikc.a.addSep()
+        self.handRollLogic(self.ikc, self.ballRoll_loc)
+        self.handBankLogic(self.ikc, palmIn_loc, palmOut_loc)
 
         for ctl in self.fkCtl + self.ikCtl:
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
@@ -365,7 +364,7 @@ class Arm(RigModule):
 
         # FK IK CTL VIS TOGGLE
         fkIkBlend = self.setting.a["fkIkBlend"]
-        autoVis = self.setting.a.add("autoVis", min=0, max=1, k=0)
+        autoVis = self.setting.a.add("autoVis", min=0, max=1, dv=1, k=0)
         showFk = self.setting.a.add("showFk", min=0, max=1, dv=1, k=0)
         showIk = self.setting.a.add("showIk", min=0, max=1, dv=1, k=0)
 
@@ -417,7 +416,6 @@ class Arm(RigModule):
 
     def channel_setup(self):
         self.setting.a.showAttr()
-        # self.ball_ikc.a.showAttr(r=1)
         for ctl in self.fkCtl + [self.ikc, self.ikc_gimbal, self.pvc]:
             ctl.a.showAttr(t=1, r=1)
         for ctl in self.all_bend or []:
@@ -436,7 +434,7 @@ class Arm(RigModule):
         self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"spaceHolder2": self.pvc})
-        spaces = "arm, master, COG, uprBody, lwrBody"
+        spaces = "arm, master, clavicle, COG, uprBody, lwrBody"
         self.rigNode.a.add("spaceName2", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"space_master": self.masterC})
@@ -444,7 +442,7 @@ class Arm(RigModule):
 
         self.ikH1.build_pvSpaceChain(ikParent=self.ikc_gimbal)
         self.rigNode.setMsg({"space_arm": self.ikH1.pvChainJ[0]})
-        # self.rigNode.setMsg({"space_palm": self.ball_ikc})
+        self.rigNode.setMsg({"space_palm": self.ballRoll_loc})
 
     def post_setup(self):
         rID = self.rigID

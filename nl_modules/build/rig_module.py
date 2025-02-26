@@ -377,6 +377,7 @@ class RigModule(RigBase):
                 loc.color = Color.PINK
                 loc.alignTo(tgt)
                 loc.cstPar(tgt.offset, mo=1)
+            loc.hide()
 
     def addCtlSet(self, ctlList, pf=None):
         setName = pf + "_ctl_set"
@@ -510,6 +511,19 @@ class RigModule(RigBase):
         autoVis >> condF.a.condition
         manualVis >> condF.a.floatB
         [condF.a.outFloat >> target.a.v for target in targets]
+
+    def handRollLogic(self, targetCtl, locRoll):
+        from nl_modules.utils import utils_node as ut
+
+        palmRoll = targetCtl.a.add("palmRoll")
+        palmRoll * -1 >> locRoll.a.rz
+
+    def handBankLogic(self, targetCtl, locIn, locOut):
+        from nl_modules.utils import utils_node as ut
+
+        palmBank = targetCtl.a.add("palmBank")
+        ut.min_(palmBank, 0) * -1 >> locIn.a.rx
+        ut.max_(0, palmBank) * -1 >> locOut.a.rx
 
     def footRollLogic(self, targetCtl, heelRollG, ballRollG, footRollG, toeRollG):
         from nl_modules.utils import utils_node as ut

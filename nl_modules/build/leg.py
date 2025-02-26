@@ -13,6 +13,7 @@ from nl_modules.build.rig_module import RigModule
 
 PRX = 7
 CDY = Color.D_YELLOW
+CB = Color.BLACK
 
 
 class Leg(RigModule):
@@ -103,14 +104,21 @@ class Leg(RigModule):
         rID = self.rigID
         xDr = self.x_dir
         # self.setting = CurveNode("setting", pf=rID, shape="setting", scale=rSz)
-        self.setting = CurveNode("setting", pf=rID, shape="square", scale=rSz)
+        # self.setting = CurveNode("setting", pf=rID, shape="square", scale=rSz)
+        self.setting = CurveNode(
+            "setting", pf=rID, shape="stickS", up="x", scale=rSz * xDr * 0.7, color=CB
+        )
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
         )
-        self.upr_fkc = CurveNode("upr_fkc", pf=rID, up="x", shape="circleZ", scale=rSz)
-        self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", shape="circleZ", scale=rSz)
+        self.upr_fkc = CurveNode(
+            "upr_fkc", pf=rID, up="x", shape="circle_round", scale=rSz
+        )
+        self.lwr_fkc = CurveNode(
+            "lwr_fkc", pf=rID, up="x", shape="circle_round", scale=rSz
+        )
         self.palm_fkc = CurveNode(
-            "palm_fkc", pf=rID, up="x", shape="circleZ", scale=rSz
+            "palm_fkc", pf=rID, up="x", shape="circle_round", scale=rSz
         )
         self.ball_fkc = CurveNode(
             "ball_fkc", pf=rID, shape="fk_rotator", up="-z", scale=rSz * xDr
@@ -530,7 +538,7 @@ class Leg(RigModule):
         # visGrp[1] >> self.PRX_GRP.a.v
 
         fkIkBlend = self.setting.a["fkIkBlend"]
-        autoVis = self.setting.a.add("autoVis", min=0, max=1, k=0)
+        autoVis = self.setting.a.add("autoVis", min=0, max=1, dv=1, k=0)
         showFk = self.setting.a.add("showFk", min=0, max=1, dv=1, k=0)
         showIk = self.setting.a.add("showIk", min=0, max=1, dv=1, k=0)
 
@@ -627,5 +635,4 @@ class Leg(RigModule):
         self.ro_setup()
         self.post_module()
 
-        self.setting.cv_drop()
         # self.pvc.alignTo(DagNode(rID + "_pvc_guide"))
