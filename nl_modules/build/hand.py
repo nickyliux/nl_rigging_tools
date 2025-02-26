@@ -42,8 +42,9 @@ class Hand(RigModule):
         self.build_module()
         rSz = self.rigSize
         rID = self.rigID
+        # "smart_ctl", pf=rID, shape="cube", scale=(rSz * 2, rSz * 2, rSz)
         self.smart_ctl = CurveNode(
-            "smart_ctl", pf=rID, shape="cube", scale=(rSz * 2, rSz * 2, rSz)
+            "smart_ctl", pf=rID, shape="cube", scale=(rSz, rSz * 2, rSz)
         )
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
         if self.rootJ:
@@ -59,12 +60,21 @@ class Hand(RigModule):
     def build_fk(self):
         rID = self.rigID
         rSz = self.rigSize
+        xDr = self.x_dir
         logging.info(rID)
         self.ctlsArr = []
         for fgrs in self.fgrsArr:
             ctlList = []
             for fgr in fgrs[:-1]:
-                ctl = CurveNode(fgr + "_ctl", align=fgr, scale=rSz * 0.8, up="x")
+                # fgr + "_ctl", shape="circleZ", align=fgr, scale=rSz * 0.8, up="x"
+                ctl = CurveNode(
+                    fgr + "_ctl",
+                    shape="circle_round",
+                    align=fgr,
+                    scale=rSz * 0.3,
+                    up="z",
+                )
+                ctl.cv_move(0, 0, xDr * rSz * -10)
                 ctlList.append(ctl)
             self.fkGivenCtl3(fgrs, ctlList, count=2, p=self.CTL_DATA)
             self.ctlsArr.append(ctlList)
@@ -90,7 +100,7 @@ class Hand(RigModule):
         xDr = self.x_dir
         logging.info(rID)
         self.smart_ctl.alignTo(
-            self.rootJ, offset=(rSz * xDr * 100, 0, rSz * -xDr * 50), p=self.CTL_DATA
+            self.rootJ, offset=(rSz * xDr * 120, 0, 0), p=self.CTL_DATA
         )
         ofs = self.smart_ctl.addOffsetGrp()
         self.rootJ.offset.cstPar(ofs, mo=1)
@@ -253,7 +263,7 @@ class Hand(RigModule):
         # visGrp[0] >> self.CTL_DATA.a.v
         # visGrp[1] >> self.rootJ.a.v
         # visGrp[1] >> self.PRX_GRP.a.v
-        fgrCtlVis = self.smart_ctl.a.add("fgrCtls", k=0, min=0, max=1, dv=0)
+        fgrCtlVis = self.smart_ctl.a.add("fgrCtls", k=0, min=0, max=1, dv=1)
         for fgrCtls in self.ctlsArr:
             fgrCtlVis >> fgrCtls[0].a.v
 

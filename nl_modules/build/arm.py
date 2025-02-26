@@ -91,16 +91,20 @@ class Arm(RigModule):
         rID = self.rigID
         xDr = self.x_dir
         self.setting = CurveNode(
-            "setting", pf=rID, shape="sphere", scale=rSz * 2, color=CB
+            "setting", pf=rID, shape="square", up="x", scale=rSz * 0.2, color=CB
         )
         self.clavicle_fkc = CurveNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
         )
         self.clavicle_fkc.cv_rotate(0, 0, -45)
-        self.upr_fkc = CurveNode("upr_fkc", pf=rID, up="x", shape="circleZ", scale=rSz)
-        self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", shape="circleZ", scale=rSz)
+        self.upr_fkc = CurveNode(
+            "upr_fkc", pf=rID, up="x", shape="circle_round", scale=rSz
+        )
+        self.lwr_fkc = CurveNode(
+            "lwr_fkc", pf=rID, up="x", shape="circle_round", scale=rSz
+        )
         self.palm_fkc = CurveNode(
-            "palm_fkc", pf=rID, up="x", shape="circleZ", scale=rSz
+            "palm_fkc", pf=rID, up="x", shape="circle_round", scale=rSz
         )
         self.ikc = CurveNode("ikc", pf=rID, shape="diamond", scale=rSz * 4)
         self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz * 1.5)
@@ -232,7 +236,7 @@ class Arm(RigModule):
 
     def alignOri_setup(self):
         """Setup Align-Orient on ikc"""
-        alignOrient = self.ikc.a.add("alignOrient", min=0, max=1)
+        alignOrient = self.ikc.a.add("alignOrient", min=0, max=1, dv=1)
         loc = LocNode(
             "alignOrient_loc#",
             pf=self.rigID,
@@ -253,7 +257,7 @@ class Arm(RigModule):
         self.joints_bf = common.extractSk(self.joints, "_bf", p=self.RIG_DATA)
 
         self.setting | self.CTL_DATA
-        self.setting.alignTo(self.palm, offset=(0, 0, rSz * -xDr * 20))
+        self.setting.alignTo(self.palm, offset=(rSz * xDr * 30, 0, 0))
         self.palm.cstPar(self.setting.addOffsetGrp(), mo=1)
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
 

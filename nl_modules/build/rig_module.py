@@ -542,13 +542,14 @@ class RigModule(RigBase):
         dupTgt = DagNode(dupTgt)
         ctl = CurveNode(
             dupTgt + "_ikc",
-            shape="stickS",
+            shape="stickC",
             align=dupTgt,
             up="-z",
             scale=scale,
             addOfs=1,
             p=p,
         )
+        # ctl.cv_move(0, 0, self.rigSize * self.x_dir * -30)
         ikJ = dupTgt.duplicate()
         endJ = ikJ.allChildrenJt[-1]
         if endJ not in ikJ.children:
