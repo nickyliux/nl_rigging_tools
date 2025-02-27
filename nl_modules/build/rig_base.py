@@ -20,7 +20,7 @@ class RigBase:
 
         self.masterC = CurveNode("master_ctl")
         # self.visC = CurveNode("vis_ctl")
-        # self.visC.a.addSep("_" * 8)
+        # self.visC.a.addSep()
         # self.visC.a.add("proxyMesh", attrType="bool", dv=1, k=0)
 
         if isinstance(rigNode, str):
