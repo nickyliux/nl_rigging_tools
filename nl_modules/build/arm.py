@@ -34,6 +34,7 @@ class Arm(RigModule):
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
         self.FK_PART = GroupNode("FK", pf=self.rigID, p=self.CTL_DATA)
         self.IK_PART = GroupNode("IK", pf=self.rigID, p=self.CTL_DATA)
+        self.BF_PART = GroupNode("BF", pf=self.rigID, p=self.CTL_DATA)
         self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
 
         self.setting = None
@@ -79,7 +80,9 @@ class Arm(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        self.autoHipOrClav(self.upr, self.palm, fkc=self.clavicle_fkc, ikc=self.ikc)
+        self.build_autoAim(
+            self.upr, self.palm, fkc=self.clavicle_fkc, ikc=self.ikc, dir=-1
+        )
 
         if self.RBN_BONES:
             self.ribbon_setup()
@@ -109,7 +112,7 @@ class Arm(RigModule):
             "palm_fkc", pf=rID, up="x", shape="circle_round", scale=rSz
         )
         self.ikc = CurveNode("ikc", pf=rID, shape="diamond", scale=rSz * 3)
-        self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz * 1.5)
+        self.pvc = CurveNode("pvc", pf=rID, shape="sphere2", scale=xDr * rSz * 2)
 
         self.rigNode.setMsg(
             {
@@ -185,29 +188,22 @@ class Arm(RigModule):
         ikH1 | self.ikCstG
         self.ikc_gimbal = CurveNode(self.ikc).addGimbal(attrTgt=self.setting)
 
-        #
         #   Constrain ikCstG supporting fk limb
-        #
-        # // self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
+        #   self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
         self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
         self.pvc.a.addSep()
         fkLimb = self.pvc.a.add("fkLimb", min=0, max=1)
         self.limb_fkc = CurveNode(
-            rID + "_limb_fkc",
-            shape="circleZ",
+            "limb_fkc",
+            pf=rID,
+            shape="circle_round",
             up="x",
-            # align=self.fkCtl[-1],
             align=self.palm,
             p=self.pvc,
             addOfs=1,
         )
         common.cstMulti(
-            self.ikc_gimbal,
-            self.limb_fkc,
-            self.ikCstG,
-            w=fkLimb,
-            cstType="par",
-            mo=1,
+            self.ikc_gimbal, self.limb_fkc, self.ikCstG, w=fkLimb, cstType="par", mo=1
         )
 
         (self.ikc, self.pvc, self.ikCstG) | self.IK_PART
@@ -227,29 +223,26 @@ class Arm(RigModule):
 
         self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal]
         self.ikH1 = ikH1
-        self.alignOri_setup()
+        self.palmAlign_setup()
 
-    def alignOri_setup(self):
-        """Setup Align-Orient on ikc"""
-        alignOrient = self.ikc.a.add("alignOrient", min=0, max=1, dv=1)
-        loc = LocNode(
-            "alignOrient_loc#",
-            pf=self.rigID,
-            align=self.palm,
-            p=self.joints_ik[2],
-            addOfs=1,
+    def palmAlign_setup(self):
+        """
+        Let palm to follow ikH orientation or not
+        """
+        rID = self.rigID
+        palmIkJ = self.joints_ik[-2]
+
+        palmAlign = self.ikc.a.add("palmAlign", min=0, max=1, dv=1)
+        nonAlign = LocNode(
+            "nonAlign_loc#", pf=rID, align=self.palm, p=self.joints_ik[2], addOfs=1
         )
-        self.joints_ik[-2].cstPoi(loc.offset)
-        common.cstMulti(
-            loc, self.ikc, self.joints_ik[-2], mo=1, w=alignOrient, cstType="ori"
-        )
+        palmIkJ.cstPoi(nonAlign.offset)
+        common.cstMulti(nonAlign, self.ikc, palmIkJ, mo=1, w=palmAlign, cstType="ori")
 
     def blend_fk_ik(self):
         rID = self.rigID
-        rSz = self.rigSize
-        xDr = self.x_dir
         logging.info(rID)
-        self.joints_bf = common.extractSk(self.joints, "_bf", p=self.RIG_DATA)
+        self.joints_bf = common.extractSk(self.joints, "_bf", p=self.BF_PART)
 
         palmIn_guide = DagNode(rID + "_palmIn_guide")
         palmIn_loc = LocNode("palmIn", pf=rID, align=palmIn_guide, p=self.joints_bf[-1])
@@ -262,16 +255,14 @@ class Arm(RigModule):
         self.setting.alignTo(self.palm)  # , offset=(rSz * xDr * 35, 0, 0))
         self.palm.cstPar(self.setting.addOffsetGrp(), mo=1)
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
-
         total = len(self.joints) - 1
+
         for i in range(total):
             fkj = self.joints_fk[i]
             ikj = self.joints_ik[i]
             bfj = self.joints_bf[i]
             jnt = self.joints[i]
             # common.cstMulti(fkj, ikj, jnt, w=fkIkBlend)
-            # ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> jnt.a.t
-            # ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> jnt.a.r
             if i > 0:
                 ut.blendN_(fkj.a.tx, ikj.a.tx, w=fkIkBlend) >> bfj.a.tx
                 ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
@@ -284,8 +275,8 @@ class Arm(RigModule):
 
         self.clavicle_fkc.cstPar(self.joints_bf[0], mo=1)
 
-        self.handRollLogic(self.ikc, self.ballRoll_loc)
-        self.handBankLogic(self.ikc, palmIn_loc, palmOut_loc)
+        self.handRollLogic(self.ikc, self.palm_fkc, self.ballRoll_loc)
+        self.handBankLogic(self.ikc, self.palm_fkc, palmIn_loc, palmOut_loc)
 
         for ctl in self.fkCtl + self.ikCtl:
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)

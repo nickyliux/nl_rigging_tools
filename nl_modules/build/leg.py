@@ -124,12 +124,11 @@ class Leg(RigModule):
         self.ball_fkc = CurveNode(
             "ball_fkc", pf=rID, shape="fk_rotator", up="-z", scale=rSz * xDr
         )
-        self.ikc = CurveNode("ikc", pf=rID, shape="diamond", scale=rSz * 2)
+        self.ikc = CurveNode("ikc", pf=rID, shape="diamond", scale=rSz * 3)
         self.ikc.cv_move(0, 0, -rSz * 12)
 
         self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="sphere", scale=rSz * 0.5)
-
-        self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz)
+        self.pvc = CurveNode("pvc", pf=rID, shape="sphere2", scale=-xDr * rSz * 2)
         self.rigNode.setMsg(
             {
                 "setting": self.setting,
@@ -159,7 +158,7 @@ class Leg(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        self.autoHipOrClav(self.upr, self.palm, fkc=self.hip_fkc, ikc=self.ikc)
+        self.build_autoAim(self.upr, self.palm, fkc=self.hip_fkc, ikc=self.ikc)
 
         if self.KNEE_FIX:
             self.boneFix_setup(self.lwr, self.palm)
@@ -251,30 +250,21 @@ class Leg(RigModule):
         self.ikc_gimbal = CurveNode(self.ikc).addGimbal()  # attrTgt=self.setting)
         self.ikc.snapTo(self.palm)
 
-        #
         #   Constrain ikCstG supporting fk limb
-        #
-        # self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
+        #   self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
         self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
         fkLimb = self.pvc.a.add("fkLimb", min=0, max=1)
         self.limb_fkc = CurveNode(
-            # rID + "_limb_fkc", shape="circleZ", align=self.ikc, p=self.pvc, addOfs=1
             rID + "_limb_fkc",
-            shape="circleZ",
+            shape="circle_round",
             up="x",
             align=self.palm,
             p=self.pvc,
             addOfs=1,
         )
         common.cstMulti(
-            self.ikc_gimbal,
-            self.limb_fkc,
-            self.ikCstG,
-            w=fkLimb,
-            cstType="par",
-            mo=1,
+            self.ikc_gimbal, self.limb_fkc, self.ikCstG, w=fkLimb, cstType="par", mo=1
         )
-        # self.fkCtl.append(self.limb_fkc)
 
         self.footRollLogic(self.smart_ctl, heelRollG, ballRollG, footRollG, toeRollG)
         self.footBankLogic(self.smart_ctl, inRollG, outRollG)
@@ -383,8 +373,6 @@ class Leg(RigModule):
 
     def blend_fk_ik(self):
         rID = self.rigID
-        # rSz = self.rigSize
-        # xDr = self.x_dir
         logging.info(rID)
         self.joints_bf = common.extractSk(self.joints, "_bf", p=self.BF_PART)
 
@@ -410,10 +398,8 @@ class Leg(RigModule):
                 bfj.a.t >> jnt.a.t
                 bfj.a.r >> jnt.a.r
             else:
-                #
                 #   ballJ_bfj --> ball_fkc's parent
                 #   ball_fkc --> ball_jnt
-                #
                 self.ball_fkc.alignTo(self.ball, p=self.FK_PART)
                 ofg = self.ball_fkc.addOffsetGrp()
                 bfj.cstPar(ofg, mo=1)

@@ -325,8 +325,8 @@ class RigModule(RigBase):
     def post_module(self):
         for obj in mc.ls(tr=1):
             mc.setAttr(obj + ".ro", cb=1)
-        for _ in mc.ls(type="curveShape"):
-            mc.setAttr(_ + ".alwaysDrawOnTop", 1)
+        # for _ in mc.ls(type="curveShape"):
+        #     mc.setAttr(_ + ".alwaysDrawOnTop", 1)
         self.moduleG.hide()
 
     def unbuild_module(self):
@@ -344,8 +344,8 @@ class RigModule(RigBase):
         for xf in self.masterC.children:
             if xf.name.startswith(self.rigID):
                 xf.delete()
-        if self.visC and self.visC.a[self.rigID].exists():
-            mc.deleteAttr(f"{self.visC}.{self.rigID}")
+        # if self.visC and self.visC.a[self.rigID].exists():
+        #     mc.deleteAttr(f"{self.visC}.{self.rigID}")
 
         for attr in ["anchorF1", "anchorM1", "anchorM2"]:
             anchor = self.rigNode.a[attr]
@@ -512,16 +512,20 @@ class RigModule(RigBase):
         manualVis >> condF.a.floatB
         [condF.a.outFloat >> target.a.v for target in targets]
 
-    def handRollLogic(self, targetCtl, locRoll):
-        from nl_modules.utils import utils_node as ut
+    def handRollLogic(self, ikc, fkc, locRoll):
+        # from nl_modules.utils import utils_node as ut
 
-        palmRoll = targetCtl.a.add("palmRoll")
+        palmRoll = ikc.a.add("palmRoll")
+        fkc.a.add("palmRoll", proxy=palmRoll)
+
         palmRoll * -1 >> locRoll.a.rz
 
-    def handBankLogic(self, targetCtl, locIn, locOut):
-        from nl_modules.utils import utils_node as ut
+    def handBankLogic(self, ikc, fkc, locIn, locOut):
+        # from nl_modules.utils import utils_node as ut
 
-        palmBank = targetCtl.a.add("palmBank")
+        palmBank = ikc.a.add("palmBank")
+        fkc.a.add("palmBank", proxy=palmBank)
+
         ut.min_(palmBank, 0) * -1 >> locIn.a.rx
         ut.max_(0, palmBank) * -1 >> locOut.a.rx
 
@@ -549,23 +553,19 @@ class RigModule(RigBase):
             if t.exists():
                 t.a.add("wsMirrorAxis", k=0, lock=1, cb=0)
 
-    def autoHipOrClav(self, startJ, endJ, fkc=None, ikc=None):
-        """
-        Auto hip/Clav setup
-        """
+    def build_autoAim(self, startJ, endJ, fkc=None, ikc=None, dir=1):
         from nl_modules.nodel.joint_node import JointNode
         from nl_modules.nodel.ik_node import IkNode
 
         rID = self.rigID
         rSz = self.rigSize
         xDr = self.x_dir
-
         # autoGrp to be cst by an anchor
         autoGrp = GroupNode("AUTO", pf=rID, p=fkc.offset)
 
         dist = startJ.o.distanceTo(endJ)
         autoChain = JointNode.makeTwoJChain(
-            "autoHipOrClav",
+            "autoChain",
             pf=rID,
             snap=startJ,
             ofs=(xDr * dist, 0, 0),
@@ -577,12 +577,13 @@ class RigModule(RigBase):
         autoChain[0].freezeXf()
 
         auto_ikH = IkNode(
-            "autoChain",
+            "autoAim",
             pf=rID,
             sj=autoChain[0],
             ee=autoChain[1],
             quat=1,
             p=self.RIG_DATA,
+            vis=0,
         )
         ikc.cstPoi(auto_ikH)
 
@@ -602,21 +603,21 @@ class RigModule(RigBase):
         driver = auto_offset.a.tz
         driven = auto_sdk.a.ry
         common.sdk2(driver, driven, 0, 0)
-        common.sdk2(driver, driven, -locOffset, -20 * xDr)
-        common.sdk2(driver, driven, locOffset, 20 * xDr)
+        common.sdk2(driver, driven, -locOffset, -20 * xDr * dir)
+        common.sdk2(driver, driven, locOffset, 20 * xDr * dir)
 
         driver = auto_offset.a.ty
         driven = auto_sdk.a.rz
         common.sdk2(driver, driven, 0, 0)
-        common.sdk2(driver, driven, -locOffset, 20 * xDr)
-        common.sdk2(driver, driven, locOffset, -20 * xDr)
+        common.sdk2(driver, driven, -locOffset, 20 * xDr * dir)
+        common.sdk2(driver, driven, locOffset, -20 * xDr * dir)
 
-        autoHipOrClav = ikc.a.add("autoHipOrClav", min=0)
+        autoAim = ikc.a.add("autoAim", min=0)
 
         ofs = fkc.addOffsetGrp()
-        ut.blendC_((0, 0, 0), auto_sdk.a.r, w=autoHipOrClav * xDr) >> ofs.a.r
-        # auto_sdk.a.ry >> ofs.a.ry
-        # auto_sdk.a.rz >> ofs.a.rz
+        ut.blendC_((0, 0, 0), auto_sdk.a.r, w=autoAim * xDr) >> ofs.a.r
+
+        autoGrp.hide()
 
     def build_digit_ik(self, dupTgt, scale, p=None):
         """IK setup for single digit"""
