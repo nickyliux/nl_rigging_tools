@@ -344,7 +344,7 @@ class IkNode(DagNode):
         ikH.hide()
         self.softJ = softJ
 
-    def build_pvSpaceChain(self, ikParent=None):
+    def build_pvPinFkSetup(self, ikParent=None):
         """Build a two-joint chain for pv space"""
         from nl_modules.nodel.joint_node import JointNode
 

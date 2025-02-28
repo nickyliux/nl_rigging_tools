@@ -78,8 +78,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect_UI()
 
     def connect_UI(self):
+
         self.UI.component_load_BN.clicked.connect(self.component_load_BN_clicked)
-        self.UI.component_open_BN.clicked.connect(self.component_open_BN_clicked)
+        self.UI.component_explore_BN.clicked.connect(self.component_explore_BN_clicked)
         self.UI.component_LW.itemDoubleClicked.connect(self.component_load_BN_clicked)
 
         # self.UI.component_buildAll_BN.clicked.connect(build.buildSelOrAll)
@@ -177,27 +178,38 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def component_load_BN_clicked(self):
         items = self.UI.component_LW.selectedItems()
+        side_L = self.UI.component_L_RB.isChecked()
+        side_R = self.UI.component_R_RB.isChecked()
         if items:
             for item in items:
                 names = guide.COMPONENT_DICT[item.text()]
+                if len(names) == 2:
+                    if side_L:
+                        names = [names[0]]
+                    if side_R:
+                        names = [names[1]]
                 guide.loadGuide(names)
             self.rigNode_refresh_BN_clicked()
             common.setViewport()
 
-    def component_open_BN_clicked(self):
-        items = self.UI.component_LW.selectedItems()
-        if items:
-            mc.refresh(su=1)
-            for item in items:
-                names = guide.COMPONENT_DICT[item.text()]
-                tgtFile = f"{MAYA_TPL_DIR}/{names[0]}.ma"
-                if os.path.isfile(tgtFile):
-                    file.openFile(tgtFile)
-                else:
-                    logging.info(f"missing file: {tgtFile}")
-            mc.refresh(su=0)
-            common.setViewport()
-            self.rigNode_refresh_BN_clicked()
+    def component_explore_BN_clicked(self):
+        import subprocess
+
+        path = os.path.realpath(MAYA_TPL_DIR)
+        subprocess.Popen(f'explorer "{path}"')
+        # items = self.UI.component_LW.selectedItems()
+        # if items:
+        #     mc.refresh(su=1)
+        #     for item in items:
+        #         names = guide.COMPONENT_DICT[item.text()]
+        #         tgtFile = f"{MAYA_TPL_DIR}/{names[0]}.ma"
+        #         if os.path.isfile(tgtFile):
+        #             file.openFile(tgtFile)
+        #         else:
+        #             logging.info(f"missing file: {tgtFile}")
+        #     mc.refresh(su=0)
+        #     common.setViewport()
+        #     self.rigNode_refresh_BN_clicked()
 
     def preset_load_BN_clicked(self, item):
         itemText = item.text()

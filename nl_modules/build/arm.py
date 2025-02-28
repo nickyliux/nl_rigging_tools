@@ -79,6 +79,8 @@ class Arm(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
+        self.autoHipOrClav(self.upr, self.palm, fkc=self.clavicle_fkc, ikc=self.ikc)
+
         if self.RBN_BONES:
             self.ribbon_setup()
         if self.TWIST_BONES:
@@ -157,6 +159,7 @@ class Arm(RigModule):
         rID = self.rigID
         logging.info(rID)
 
+        self.ikc.a.addSep()
         self.ikc.alignTo(self.palm)
         self.pvc.alignTo(self.lwr)
 
@@ -269,15 +272,18 @@ class Arm(RigModule):
             # common.cstMulti(fkj, ikj, jnt, w=fkIkBlend)
             # ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> jnt.a.t
             # ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> jnt.a.r
-            ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> bfj.a.t
-            ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
+            if i > 0:
+                ut.blendN_(fkj.a.tx, ikj.a.tx, w=fkIkBlend) >> bfj.a.tx
+                ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
+
             if i < total - 1:
                 bfj.a.t >> jnt.a.t
                 bfj.a.r >> jnt.a.r
             else:
                 self.ballRoll_loc.cstPar(jnt, mo=1)
 
-        self.ikc.a.addSep()
+        self.clavicle_fkc.cstPar(self.joints_bf[0], mo=1)
+
         self.handRollLogic(self.ikc, self.ballRoll_loc)
         self.handBankLogic(self.ikc, palmIn_loc, palmOut_loc)
 
@@ -364,14 +370,14 @@ class Arm(RigModule):
 
         # FK IK CTL VIS TOGGLE
         fkIkBlend = self.setting.a["fkIkBlend"]
-        autoVis = self.setting.a.add("autoVis", min=0, max=1, dv=1, k=0)
+        autoCtlVis = self.setting.a.add("autoCtlVis", min=0, max=1, dv=1, k=0)
         showFk = self.setting.a.add("showFk", min=0, max=1, dv=1, k=0)
         showIk = self.setting.a.add("showIk", min=0, max=1, dv=1, k=0)
 
         # [fkIkBlend >> c.a.v for c in (self.ikc, self.pvc, self.pvc_line, self.ikCstG)]
         self.visByCondition(
             fkIkBlend,
-            autoVis,
+            autoCtlVis,
             showIk,
             [self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             v=1,
@@ -379,7 +385,7 @@ class Arm(RigModule):
         # [~fkIkBlend >> c.a.v for c in (self.palm_fkc, self.lwr_fkc, self.upr_fkc)]
         self.visByCondition(
             fkIkBlend,
-            autoVis,
+            autoCtlVis,
             showFk,
             self.fkCtl[1:],
             v=0,
@@ -430,7 +436,7 @@ class Arm(RigModule):
 
     def space_setup(self):
         self.rigNode.setMsg({"spaceHolder1": self.ikc})
-        spaces = "master, clavicle, COG, uprBody, lwrBody, head"
+        spaces = "master, COG, uprBody, lwrBody, head"
         self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"spaceHolder2": self.pvc})
@@ -438,9 +444,9 @@ class Arm(RigModule):
         self.rigNode.a.add("spaceName2", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"space_master": self.masterC})
-        self.rigNode.setMsg({"space_clavicle": self.clavicle_fkc})
+        # self.rigNode.setMsg({"space_clavicle": self.clavicle_fkc})
 
-        self.ikH1.build_pvSpaceChain(ikParent=self.ikc_gimbal)
+        self.ikH1.build_pvPinFkSetup(ikParent=self.ikc_gimbal)
         self.rigNode.setMsg({"space_arm": self.ikH1.pvChainJ[0]})
         self.rigNode.setMsg({"space_palm": self.ballRoll_loc})
 
@@ -457,7 +463,10 @@ class Arm(RigModule):
         self.addCtlSet(ctlSet, pf=rID)
         self.space_setup()
         self.anchor_setup_module(
-            {"anchorM1": self.joints_bf[-2], "anchorF1": self.clavicle_fkc}
+            {
+                "anchorM1": self.joints_bf[-2],
+                "anchorF1": self.clavicle_fkc.offset,
+            }
         )
         # self.anchor_setup_module(
         #     {"anchorM1": self.joints[-2], "anchorF1": self.clavicle_fkc}

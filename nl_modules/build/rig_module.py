@@ -6,7 +6,7 @@ from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.joint_node import JointNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.utils import common
+from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
 BIND_JNT_SET = "bind_jnt_set"
@@ -548,6 +548,75 @@ class RigModule(RigBase):
         for t in targets:
             if t.exists():
                 t.a.add("wsMirrorAxis", k=0, lock=1, cb=0)
+
+    def autoHipOrClav(self, startJ, endJ, fkc=None, ikc=None):
+        """
+        Auto hip/Clav setup
+        """
+        from nl_modules.nodel.joint_node import JointNode
+        from nl_modules.nodel.ik_node import IkNode
+
+        rID = self.rigID
+        rSz = self.rigSize
+        xDr = self.x_dir
+
+        # autoGrp to be cst by an anchor
+        autoGrp = GroupNode("AUTO", pf=rID, p=fkc.offset)
+
+        dist = startJ.o.distanceTo(endJ)
+        autoChain = JointNode.makeTwoJChain(
+            "autoHipOrClav",
+            pf=rID,
+            snap=startJ,
+            ofs=(xDr * dist, 0, 0),
+            p=autoGrp,
+            r=rSz * 5,
+            color=Color.RED,
+        )
+        endJ.cstAim(autoChain[0], aim=(xDr, 0, 0), keep=False)
+        autoChain[0].freezeXf()
+
+        auto_ikH = IkNode(
+            "autoChain",
+            pf=rID,
+            sj=autoChain[0],
+            ee=autoChain[1],
+            quat=1,
+            p=self.RIG_DATA,
+        )
+        ikc.cstPoi(auto_ikH)
+
+        auto_local = LocNode(
+            "auto_local_loc", pf=rID, p=autoChain[0], align=autoChain[0]
+        )
+        locOffset = rSz * 4
+        auto_local.a.tx.set(xDr * locOffset)
+
+        # sdk to be made from auto_offset's translation to auto_sdk's rotation
+        auto_world = LocNode("auto_world", pf=rID, p=autoGrp, align=auto_local)
+        auto_offset = LocNode("auto_offset", pf=rID, p=auto_world, align=auto_world)
+        auto_local.cstPoi(auto_offset)
+        auto_sdk = LocNode("auto_sdk", pf=rID, p=autoGrp, align=fkc, addOfs=1)
+
+        # Setup SDK from offset to rotation
+        driver = auto_offset.a.tz
+        driven = auto_sdk.a.ry
+        common.sdk2(driver, driven, 0, 0)
+        common.sdk2(driver, driven, -locOffset, -20 * xDr)
+        common.sdk2(driver, driven, locOffset, 20 * xDr)
+
+        driver = auto_offset.a.ty
+        driven = auto_sdk.a.rz
+        common.sdk2(driver, driven, 0, 0)
+        common.sdk2(driver, driven, -locOffset, 20 * xDr)
+        common.sdk2(driver, driven, locOffset, -20 * xDr)
+
+        autoHipOrClav = ikc.a.add("autoHipOrClav", min=0)
+
+        ofs = fkc.addOffsetGrp()
+        ut.blendC_((0, 0, 0), auto_sdk.a.r, w=autoHipOrClav * xDr) >> ofs.a.r
+        # auto_sdk.a.ry >> ofs.a.ry
+        # auto_sdk.a.rz >> ofs.a.rz
 
     def build_digit_ik(self, dupTgt, scale, p=None):
         """IK setup for single digit"""

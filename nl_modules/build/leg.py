@@ -37,6 +37,7 @@ class Leg(RigModule):
         self.KNEE_FIX = self.master_guide.a.kneeFix.get()
         self.FK_PART = GroupNode("FK", pf=self.rigID, p=self.CTL_DATA)
         self.IK_PART = GroupNode("IK", pf=self.rigID, p=self.CTL_DATA)
+        self.BF_PART = GroupNode("BF", pf=self.rigID, p=self.CTL_DATA)
         self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
 
         self.setting = None
@@ -158,6 +159,7 @@ class Leg(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
+        self.autoHipOrClav(self.upr, self.palm, fkc=self.hip_fkc, ikc=self.ikc)
 
         if self.KNEE_FIX:
             self.boneFix_setup(self.lwr, self.palm)
@@ -199,9 +201,9 @@ class Leg(RigModule):
         heelPos_guide = DagNode(rID + "_palm_heelPos_guide")
         toePos_guide = DagNode(rID + "_palm_toePos_guide")
 
+        self.ikc.a.addSep()
         self.ikc.alignTo(mG)
         self.pvc.alignTo(self.lwr)
-
         self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_PART)
 
         ikH1 = IkNode(
@@ -286,12 +288,13 @@ class Leg(RigModule):
         self.pvc.addOffsetGrp()
 
         ikH1.stretchyIk(soft=1)
-        self.all_ikH = {"main": ikH1, "ball": ikH2, "toe": ikH3}
-        self.toeWiggleG = toeWiggleG
         self.hip_fkc.cstPar(self.joints_ik[0], mo=1)
 
+        self.all_ikH = {"main": ikH1, "ball": ikH2, "toe": ikH3}
         self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal]
         self.ikH1 = ikH1
+        self.toeWiggleG = toeWiggleG
+
         self.subCtl_setup(ballRollG, toeRollG, inRollG, outRollG, heelRollG)
 
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
@@ -383,7 +386,7 @@ class Leg(RigModule):
         # rSz = self.rigSize
         # xDr = self.x_dir
         logging.info(rID)
-        self.joints_bf = common.extractSk(self.joints, "_bf", p=self.RIG_DATA)
+        self.joints_bf = common.extractSk(self.joints, "_bf", p=self.BF_PART)
 
         self.setting | self.CTL_DATA
         self.setting.snapTo(self.palm)
@@ -399,8 +402,9 @@ class Leg(RigModule):
             bfj = self.joints_bf[i]
             jnt = self.joints[i]
             # common.cstMulti(fkj, ikj, bfj, w=fkIkBlend)
-            ut.blendN_(fkj.a.tx, ikj.a.tx, w=fkIkBlend) >> bfj.a.tx
-            ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
+            if i > 0:
+                ut.blendN_(fkj.a.tx, ikj.a.tx, w=fkIkBlend) >> bfj.a.tx
+                ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
 
             if i < total - 1:
                 bfj.a.t >> jnt.a.t
@@ -414,6 +418,8 @@ class Leg(RigModule):
                 ofg = self.ball_fkc.addOffsetGrp()
                 bfj.cstPar(ofg, mo=1)
                 self.ball_fkc.cstPar(jnt)
+
+        self.hip_fkc.cstPar(self.joints_bf[0], mo=1)
 
         # Useful for fk ik switch popUp menu
         for ctl in self.fkCtl + self.ikCtl:
@@ -538,14 +544,14 @@ class Leg(RigModule):
         # visGrp[1] >> self.PRX_GRP.a.v
 
         fkIkBlend = self.setting.a["fkIkBlend"]
-        autoVis = self.setting.a.add("autoVis", min=0, max=1, dv=1, k=0)
+        autoCtlVis = self.setting.a.add("autoCtlVis", min=0, max=1, dv=1, k=0)
         showFk = self.setting.a.add("showFk", min=0, max=1, dv=1, k=0)
         showIk = self.setting.a.add("showIk", min=0, max=1, dv=1, k=0)
 
         # [fkIkBlend >> c.a.v for c in (self.ikc, self.pvc, self.pvc_line, self.ikCstG)]
         self.visByCondition(
             fkIkBlend,
-            autoVis,
+            autoCtlVis,
             showIk,
             [self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             v=1,
@@ -553,7 +559,7 @@ class Leg(RigModule):
         # [~fkIkBlend >> c.a.v for c in self.fkCtl[1:-1]]
         self.visByCondition(
             fkIkBlend,
-            autoVis,
+            autoCtlVis,
             showFk,
             self.fkCtl[1:-1],
             v=0,
@@ -595,7 +601,8 @@ class Leg(RigModule):
 
     def space_setup(self):
         self.rigNode.setMsg({"spaceHolder1": self.ikc})
-        spaces = "master, hip, COG"
+        # spaces = "master, hip, COG"
+        spaces = "master, COG, lwrBody"
         self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"spaceHolder2": self.pvc})
@@ -603,9 +610,9 @@ class Leg(RigModule):
         self.rigNode.a.add("spaceName2", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"space_master": self.masterC})
-        self.rigNode.setMsg({"space_hip": self.hip_fkc})
+        # self.rigNode.setMsg({"space_hip": self.hip_fkc})
 
-        self.ikH1.build_pvSpaceChain(ikParent=self.ikc_gimbal)
+        self.ikH1.build_pvPinFkSetup(ikParent=self.ikc_gimbal)
         self.rigNode.setMsg({"space_leg": self.ikH1.pvChainJ[0]})
 
     def post_setup(self):
@@ -628,7 +635,7 @@ class Leg(RigModule):
 
         self.addCtlSet(ctlSet, pf=rID)
         self.space_setup()
-        self.anchor_setup_module({"anchorF1": self.hip_fkc})
+        self.anchor_setup_module({"anchorF1": self.hip_fkc.offset})
         self.proxy_setup()
         self.vis_setup()
         self.channel_setup()
