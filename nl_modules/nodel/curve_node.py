@@ -548,13 +548,13 @@ class CurveNode(GroupNode):
         )
         return self
 
-    def addGimbal(self, relScale=0.7, attrTgt=None, color=0):
+    def addGimbal(self, relScale=0.8, attrTgt=None, color=0):
         """Add a gimbal control below itself and attr at attrOn to link its visibility
         e.g.
             gbc = crv.addGimbal()        # crv.gimbalCtl  -> gbc.v
             crv.addGimbal(attrTgt=obj1)  # obj1.gimbalCtl -> gbc.v
         """
-        gmb_ctl = self.duplicate(n=self.node + "_gimbal")
+        gmb_ctl = self.duplicate(n=self.node + "_gmb")
         gmb_ctl | self
         gmb_ctl.cv_scale(relScale, atCVCetner=1)
         attrTgt = attrTgt or self

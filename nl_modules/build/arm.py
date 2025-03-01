@@ -96,7 +96,7 @@ class Arm(RigModule):
         rID = self.rigID
         xDr = self.x_dir
         self.setting = CurveNode(
-            "setting", pf=rID, shape="stickS", up="-z", scale=rSz * xDr * 0.8, color=CB
+            "setting", pf=rID, shape="stickS", up="-z", scale=rSz * xDr, color=CB
         )
         self.clavicle_fkc = CurveNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
@@ -147,7 +147,6 @@ class Arm(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-        # self.joints.extend([radius_JC[0], ulna_JC[0]])
         self.joints.insert(0, radius_JC[0])
         self.joints.insert(0, ulna_JC[0])
 
@@ -231,11 +230,10 @@ class Arm(RigModule):
         """
         rID = self.rigID
         palmIkJ = self.joints_ik[-2]
+        lwrIkJ = self.joints_ik[2]
 
         palmAlign = self.ikc.a.add("palmAlign", min=0, max=1, dv=1)
-        nonAlign = LocNode(
-            "nonAlign_loc#", pf=rID, align=self.palm, p=self.joints_ik[2], addOfs=1
-        )
+        nonAlign = LocNode("nonAlign_loc#", pf=rID, align=self.palm, p=lwrIkJ, addOfs=1)
         palmIkJ.cstPoi(nonAlign.offset)
         common.cstMulti(nonAlign, self.ikc, palmIkJ, mo=1, w=palmAlign, cstType="ori")
 

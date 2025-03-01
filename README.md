@@ -2,18 +2,18 @@
 ### What ?
 It is another open-source modular auto-rigger written for Autodesk Maya in Python.
 
-There are a few great auto-rigger tools available freely online. As a rigger I'm interested in building my own. One cool thing I learn throughout the development is the use of custom framework. Thanks to the Udemy course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by <b>Nick Hughes</b>, my tools could be built with less redundant code, better readability, and no dependency on PyMEL.
+There are a few great auto-rigger tools available freely online. As a rigger I'm interested in building my own. One cool thing I learn throughout the development is the use of custom framework. Thanks to the Udemy course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by <b>Nick Hughes</b>, my code is less redundant, easier to read, and not dependent on PyMEL.
 
-For example, the lines below generates all utility nodes and connections required and read as easily as expression !
+e.g. the codes below generate all utility nodes and connections, and read like expression.
 
 ```python
-# ---------------------------------------------------------------
-#    Soft ik logic
-# ---------------------------------------------------------------
+# ---------------
+#    Soft IK
+# ---------------
 s = self.ikc.a.softIK
 Ds = D * (1 - s)
-new_d = D * (1 - s * math.e ** -(d - Ds))
-(((d > Ds).setCdn(ifTrue=new_d, ifFalse=d)) * ratio >> softJ.a.tx)
+ds = D * (1 - s * math.e ** -(d - Ds))
+(((d > Ds).setCdn(ifTrue=ds, ifFalse=d)) * ratio >> softJ.a.tx)
 ```
 
 ## Framework Classes
@@ -25,9 +25,9 @@ classDiagram
     DagNode <|-- GroupNode
     GroupNode <|-- CurveNode
     GroupNode <|-- JointNode
+    GroupNode <|-- LocNode
     GroupNode <|-- MeshNode
     GroupNode <|-- SurfNode
-    GroupNode <|-- LocNode
     
     DepNode *-- Dimension
     AttributeHolder *-- Attribute
@@ -39,10 +39,6 @@ classDiagram
     class Dimension
     
 ```
-    DepNode *-- AttributeHolder
-    AttributeHolder *-- Attribute
-    Attribute *-- Condition
-    DepNode *-- Dimension
 
 Examples
 ```python
@@ -52,14 +48,8 @@ ctl = CurveNode("myCrv", shape="cube", addOfs=1)
 # create joint of radius=2 and parented to ctl
 jnt = JointNode("myJnt", r=2, p=ctl)
 
-# create locator of size=3
-loc = LocNode("myLoc", size=3)
-
-# pointConstraint loc to ctl
-ctl.cstPoi(loc)
-
-# loc.r = ctl.r * 2
-ctl.a.r * (2,2,2) >> loc.a.r
+# create locator of size=3, aligned to ctl, parented to jnt
+loc = LocNode("myLoc", size=3, align=ctl, p=jnt)
 ```
 
 
@@ -81,21 +71,37 @@ classDiagram
 ```
 
 ## Rig Features
-Limb Basic
-1. fk/ik switch
-2. squash/stretch
-3. space switch
-4. soft ik
-5. smart ctl
-6. pv pin with fk ctl
-7. auto hip/shoulder
+Biped Limbs
+* fk ik switch
+* squash & stretch
+* space switch
+* soft ik
+* smart ctl
+* elbow & knee pin with fk ctl
+* auto aim for hip & clavicle
+* palm roll & bank for both fk ik
+* -------- ( Optional ) --------
+* ribbon ctl
+* twist bones
+* patella bone
+* toe bones
+* knee correction
 
-Limb Options
-1. ribbon ctl
-2. fore limb twist bone
-3. patella bone (leg)
-4. toe bones (leg)
-5. knee correction (leg)
+Biped Spine
+* hybrid fk ik
+* squash & stretch
+* lower hip ctl
+* volume ctl
+
+Quad Limbs
+* fk ik switch
+* squash & stretch
+* space switch
+* -------- ( Optional ) --------
+* twist bones
+* patella bone
+* toe bones
+* wrist correction
 
 ## Marking Menus
 

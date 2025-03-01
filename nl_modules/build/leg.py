@@ -104,10 +104,8 @@ class Leg(RigModule):
         rSz = self.rigSize
         rID = self.rigID
         xDr = self.x_dir
-        # self.setting = CurveNode("setting", pf=rID, shape="setting", scale=rSz)
-        # self.setting = CurveNode("setting", pf=rID, shape="square", scale=rSz)
         self.setting = CurveNode(
-            "setting", pf=rID, shape="stickS", up="x", scale=rSz * xDr * 0.7, color=CB
+            "setting", pf=rID, shape="stickS", up="x", scale=rSz * xDr, color=CB
         )
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
@@ -247,7 +245,7 @@ class Leg(RigModule):
         (ikH2, ikH3) | toeWiggleG | inRollG
         inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG
 
-        self.ikc_gimbal = CurveNode(self.ikc).addGimbal()  # attrTgt=self.setting)
+        self.ikc_gimbal = CurveNode(self.ikc).addGimbal()
         self.ikc.snapTo(self.palm)
 
         #   Constrain ikCstG supporting fk limb

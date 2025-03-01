@@ -13,6 +13,7 @@ from nl_modules.utils.color import Color
 
 PRX = 90
 CDY = Color.D_YELLOW
+CB = Color.BLACK
 CRD = Color.RED
 
 
@@ -45,16 +46,18 @@ class Spine(RigModule):
     def createCtl(self):
         rSz = self.rigSize
         rID = self.rigID
-        scale = (rSz * 7, rSz, rSz * 5.5)
+        scale = (rSz * 7, rSz * 2, rSz * 5.5)
 
-        self.setting = CurveNode("setting", pf=rID, shape="sphere", scale=rSz * 2)
+        self.setting = CurveNode(
+            "setting", pf=rID, shape="stickS", up="-z", scale=rSz * 3, color=CB
+        )
         self.cog_ctl = CurveNode(
             "cog_ctl", pf=rID, shape="cog", scale=rSz * 7, color=CDY
         )
         # "tp_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 2, rSz * 6), color=CDY
         self.tp_ctl = CurveNode("tp_ctl", pf=rID, shape="cube", scale=scale, color=CDY)
         self.md_ctl = CurveNode(
-            "_md_ctl", pf=rID, shape="diamond", up="-z", scale=rSz * 2, color=CDY
+            "_md_ctl", pf=rID, shape="diamond", up="-z", scale=rSz * 4, color=CDY
         )
         # "rt_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 2, rSz * 6), color=CDY
         self.rt_ctl = CurveNode("rt_ctl", pf=rID, shape="cube", scale=scale, color=CDY)
@@ -83,7 +86,6 @@ class Spine(RigModule):
         logging.info(rID)
 
         self.fkJnt = JointNode.makeJCFrCrv(
-            # self.LINE_GUIDE, jntNum=self.FK_JNT_NUM, pf=rID, wu=[0, 0, 1], p=self.SKL_DATA
             self.LINE_GUIDE,
             jntNum=self.FK_JNT_NUM,
             pf=rID,
@@ -101,9 +103,6 @@ class Spine(RigModule):
             c = CurveNode(
                 f"fkc_{i + 1}", pf=rID, shape="circle_round", scale=rSz * 5, color=CDY
             )
-            # shape="rotator_3d",
-            # up="-z",
-            # rotate=(0, 0, 90),
             self.fkCtl.append(c)
 
         self.fkGivenCtl2(self.fkJnt[1:], self.fkCtl[1:], p=self.CTL_DATA)
@@ -125,7 +124,7 @@ class Spine(RigModule):
         self.md_ctl.snapAlignTo(self.MD_GUIDE, mG)
         self.tp_ctl.snapAlignTo(self.fkJnt[-1], mG)
         self.cog_ctl.snapAlignTo(self.rt_ctl, mG)
-        self.setting.alignTo(self.cog_ctl, offset=(0, 0, -rSz * 100))
+        self.setting.alignTo(self.cog_ctl)  # , offset=(0, 0, -rSz * 100))
         self.cog_gmb = CurveNode(self.cog_ctl).addGimbal()  # attrTgt=self.setting)
         self.setting | self.cog_ctl | self.CTL_DATA
         self.cog_gmb.cstPar(self.fkCtl[0].offset, mo=1)
@@ -171,7 +170,8 @@ class Spine(RigModule):
             )
             self.build_volume_setup()
 
-        self.ikCtl = [self.cog_ctl, self.cog_gmb, self.rt_ctl, self.md_ctl, self.tp_ctl]
+        # self.ikCtl = [self.cog_ctl, self.cog_gmb, self.rt_ctl, self.md_ctl, self.tp_ctl]
+        self.ikCtl = [self.rt_ctl, self.md_ctl, self.tp_ctl]
 
     def build_volume_setup(self):
         """Scale ribbon joints according to length of the surface"""
@@ -200,13 +200,19 @@ class Spine(RigModule):
         # visGrp[1] >> self.SKL_DATA.a.v
         # visGrp[1] >> self.RIG_DATA.a.v
         # visGrp[1] >> self.PRX_GRP.a.v
-        pass
+
+        # autoCtlVis = self.setting.a.add("autoCtlVis", min=0, max=1, dv=1, k=0)
+        showFk = self.setting.a.add("showFk", min=0, max=1, dv=1, k=0)
+        showIk = self.setting.a.add("showIk", min=0, max=1, dv=1, k=0)
+        [showFk >> c.shape.a.v for c in self.fkCtl]
+        [showIk >> c.a.v for c in self.ikCtl]
+
         # if self.bindJ:
         #     self.rbSrf.hide()
 
     def channel_setup(self):
         self.setting.a.showAttr()
-        for ctl in [self.cog_ctl, self.rt_ctl, self.md_ctl, self.tp_ctl]:
+        for ctl in [self.cog_ctl, self.cog_gmb, self.rt_ctl, self.md_ctl, self.tp_ctl]:
             ctl.a.showAttr(t=1, r=1)
 
     def ro_setup(self):
