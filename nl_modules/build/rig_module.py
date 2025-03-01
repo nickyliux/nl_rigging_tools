@@ -553,7 +553,9 @@ class RigModule(RigBase):
             if t.exists():
                 t.a.add("wsMirrorAxis", k=0, lock=1, cb=0)
 
-    def build_autoAim(self, startJ, endJ, fkc=None, ikc=None, dir=1):
+    def build_autoAim(
+        self, startJ, endJ, fkc=None, ikc=None, dir=1, attrName="autoAim"
+    ):
         from nl_modules.nodel.joint_node import JointNode
         from nl_modules.nodel.ik_node import IkNode
 
@@ -612,7 +614,7 @@ class RigModule(RigBase):
         common.sdk2(driver, driven, -locOffset, 20 * xDr * dir)
         common.sdk2(driver, driven, locOffset, -20 * xDr * dir)
 
-        autoAim = ikc.a.add("autoAim", min=0)
+        autoAim = ikc.a.add(attrName, min=0)
 
         ofs = fkc.addOffsetGrp()
         ut.blendC_((0, 0, 0), auto_sdk.a.r, w=autoAim * xDr) >> ofs.a.r

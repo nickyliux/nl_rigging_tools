@@ -201,7 +201,6 @@ class Spine(RigModule):
         # visGrp[1] >> self.RIG_DATA.a.v
         # visGrp[1] >> self.PRX_GRP.a.v
 
-        # autoCtlVis = self.setting.a.add("autoCtlVis", min=0, max=1, dv=1, k=0)
         showFk = self.setting.a.add("showFk", min=0, max=1, dv=1, k=0)
         showIk = self.setting.a.add("showIk", min=0, max=1, dv=1, k=0)
         [showFk >> c.shape.a.v for c in self.fkCtl]

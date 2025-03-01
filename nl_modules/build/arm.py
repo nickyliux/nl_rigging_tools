@@ -81,7 +81,12 @@ class Arm(RigModule):
         self.build_ik()
         self.blend_fk_ik()
         self.build_autoAim(
-            self.upr, self.palm, fkc=self.clavicle_fkc, ikc=self.ikc, dir=-1
+            self.upr,
+            self.palm,
+            fkc=self.clavicle_fkc,
+            ikc=self.ikc,
+            dir=-1,
+            attrName="autoClavicle",
         )
 
         if self.RBN_BONES:
@@ -185,7 +190,7 @@ class Arm(RigModule):
             for g in (self.ikCstG,):
                 g.a.rx.set2(180, add=1)
         ikH1 | self.ikCstG
-        self.ikc_gimbal = CurveNode(self.ikc).addGimbal(attrTgt=self.setting)
+        self.ikc_gimbal = CurveNode(self.ikc).addGimbal()
 
         #   Constrain ikCstG supporting fk limb
         #   self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
@@ -276,6 +281,7 @@ class Arm(RigModule):
         self.handRollLogic(self.ikc, self.palm_fkc, self.ballRoll_loc)
         self.handBankLogic(self.ikc, self.palm_fkc, palmIn_loc, palmOut_loc)
 
+        self.ikc.a.addSep()
         for ctl in self.fkCtl + self.ikCtl:
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
@@ -359,14 +365,14 @@ class Arm(RigModule):
 
         # FK IK CTL VIS TOGGLE
         fkIkBlend = self.setting.a["fkIkBlend"]
-        autoCtlVis = self.setting.a.add("autoCtlVis", min=0, max=1, dv=1, k=0)
+        autoVis = self.setting.a.add("autoVis", min=0, max=1, dv=1, k=0)
         showFk = self.setting.a.add("showFk", min=0, max=1, dv=1, k=0)
         showIk = self.setting.a.add("showIk", min=0, max=1, dv=1, k=0)
 
         # [fkIkBlend >> c.a.v for c in (self.ikc, self.pvc, self.pvc_line, self.ikCstG)]
         self.visByCondition(
             fkIkBlend,
-            autoCtlVis,
+            autoVis,
             showIk,
             [self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             v=1,
@@ -374,7 +380,7 @@ class Arm(RigModule):
         # [~fkIkBlend >> c.a.v for c in (self.palm_fkc, self.lwr_fkc, self.upr_fkc)]
         self.visByCondition(
             fkIkBlend,
-            autoCtlVis,
+            autoVis,
             showFk,
             self.fkCtl[1:],
             v=0,
