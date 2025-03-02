@@ -115,9 +115,11 @@ class MarkingMenuRigging:
 
         mc.menuItem(p=menu, l="Match", c=match_all)
         mc.menuItem(p=menu, l="Match Pos", c=match_pos)
+        mc.menuItem(p=menu, l="Smooth Bind", c=mc.SmoothBindSkin)
+        mc.menuItem(p=menu, l="Smooth Bind", c=mc.SmoothBindSkinOptions, ob=1)
         # mc.menuItem(p=menu, l="---------------------", en=0)
         # mc.menuItem(p=menu, l="Del Keys", c="mc.cutKey()")
-        mc.menuItem(p=menu, l="Use Last Crv Shape", c=use_last_crv_shapes)
+        mc.menuItem(p=menu, l="Use Last Shape", c=use_last_crv_shapes)
         mc.menuItem(p=menu, l="--------------------", en=0)
         mc.menuItem(p=menu, l="Reload Menu", c=reload_marking_menu)
 
