@@ -512,19 +512,24 @@ class RigModule(RigBase):
         manualVis >> condF.a.floatB
         [condF.a.outFloat >> target.a.v for target in targets]
 
-    def handRollLogic(self, ikc, fkc, locRoll):
+    def handRollLogic(self, ikc, fkc, fkPin, locRoll):
         # from nl_modules.utils import utils_node as ut
 
+        ikc.a.addSep()
         palmRoll = ikc.a.add("palmRoll")
+        fkc.a.addSep()
         fkc.a.add("palmRoll", proxy=palmRoll)
+        fkPin.a.addSep()
+        fkPin.a.add("palmRoll", proxy=palmRoll)
 
         palmRoll * -1 >> locRoll.a.rz
 
-    def handBankLogic(self, ikc, fkc, locIn, locOut):
+    def handBankLogic(self, ikc, fkc, fkPin, locIn, locOut):
         # from nl_modules.utils import utils_node as ut
 
         palmBank = ikc.a.add("palmBank")
         fkc.a.add("palmBank", proxy=palmBank)
+        fkPin.a.add("palmBank", proxy=palmBank)
 
         ut.min_(palmBank, 0) * -1 >> locIn.a.rx
         ut.max_(0, palmBank) * -1 >> locOut.a.rx

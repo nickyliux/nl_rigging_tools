@@ -37,7 +37,7 @@ class NeckPro(rig_module.RigModule):
         self.ikCtl = None
         self.fkCtl = None
 
-    def genGuildSk(self):
+    def genGuideSk(self):
         self.genSk_module(["st", "ed"])
 
     def build(self):

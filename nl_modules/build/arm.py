@@ -20,7 +20,7 @@ class Arm(RigModule):
     """Build arm component with given rigNode.
     e.g.
         n = Arm('lfArm0_RGN')  # n.__dict__
-        n.genGuildSk()
+        n.genGuideSk()
         n.build()
     """
 
@@ -53,7 +53,7 @@ class Arm(RigModule):
         self.palm_fkc = None
         self.pvc = None
         self.ikc = None
-        self.limb_fkc = None
+        self.pin_fkc = None
         self.ballRoll_loc = None
         self.ikCtl = None
         self.fkCtl = None
@@ -66,7 +66,7 @@ class Arm(RigModule):
         self.ikCstG = None
         self.ikH1 = None
 
-    def genGuildSk(self):
+    def genGuideSk(self):
         self.genSk_module(["clavicle", "upr", "lwr", "palm", "ball"])
         # for i, name in enumerate(jnt_names):
         #     if name == "lwr":
@@ -196,9 +196,9 @@ class Arm(RigModule):
         #   self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
         self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
         self.pvc.a.addSep()
-        fkLimb = self.pvc.a.add("fkLimb", min=0, max=1)
-        self.limb_fkc = CurveNode(
-            "limb_fkc",
+        fkPin = self.pvc.a.add("fkPin", min=0, max=1)
+        self.pin_fkc = CurveNode(
+            "pin_fkc",
             pf=rID,
             shape="circle_round",
             up="x",
@@ -207,7 +207,7 @@ class Arm(RigModule):
             addOfs=1,
         )
         common.cstMulti(
-            self.ikc_gimbal, self.limb_fkc, self.ikCstG, w=fkLimb, cstType="par", mo=1
+            self.ikc_gimbal, self.pin_fkc, self.ikCstG, w=fkPin, cstType="par", mo=1
         )
 
         (self.ikc, self.pvc, self.ikCstG) | self.IK_PART
@@ -225,22 +225,25 @@ class Arm(RigModule):
         self.all_ikHs = [ikH1]
         self.clavicle_fkc.cstPar(self.joints_ik[0], mo=1)
 
-        self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal]
+        self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal, self.pin_fkc]
         self.ikH1 = ikH1
-        self.palmAlign_setup()
+        # self.alignOrient_setup()
+        common.cstMulti(
+            self.ikc, self.pin_fkc, self.joints_ik[-2], w=fkPin, cstType="ori"
+        )
 
-    def palmAlign_setup(self):
-        """
-        Let palm to follow ikH orientation or not
-        """
-        rID = self.rigID
-        palmIkJ = self.joints_ik[-2]
-        lwrIkJ = self.joints_ik[2]
+    # def alignOrient_setup(self):
+    #     """
+    #     Let palm to follow ikH orientation or not
+    #     """
+    #     rID = self.rigID
+    #     palmIkJ = self.joints_ik[-2]
+    #     lwrIkJ = self.joints_ik[2]
 
-        palmAlign = self.ikc.a.add("palmAlign", min=0, max=1, dv=1)
-        nonAlign = LocNode("nonAlign_loc#", pf=rID, align=self.palm, p=lwrIkJ, addOfs=1)
-        palmIkJ.cstPoi(nonAlign.offset)
-        common.cstMulti(nonAlign, self.ikc, palmIkJ, mo=1, w=palmAlign, cstType="ori")
+    #     alignOrient = self.ikc.a.add("alignOrient", min=0, max=1, dv=1)
+    #     nonAlign = LocNode("nonAlign_loc#", pf=rID, align=self.palm, p=lwrIkJ, addOfs=1)
+    #     palmIkJ.cstPoi(nonAlign.offset)
+    #     common.cstMulti(nonAlign, self.ikc, palmIkJ, mo=1, w=alignOrient, cstType="ori")
 
     def blend_fk_ik(self):
         rID = self.rigID
@@ -278,8 +281,10 @@ class Arm(RigModule):
 
         self.clavicle_fkc.cstPar(self.joints_bf[0], mo=1)
 
-        self.handRollLogic(self.ikc, self.palm_fkc, self.ballRoll_loc)
-        self.handBankLogic(self.ikc, self.palm_fkc, palmIn_loc, palmOut_loc)
+        self.handRollLogic(self.ikc, self.palm_fkc, self.pin_fkc, self.ballRoll_loc)
+        self.handBankLogic(
+            self.ikc, self.palm_fkc, self.pin_fkc, palmIn_loc, palmOut_loc
+        )
 
         self.ikc.a.addSep()
         for ctl in self.fkCtl + self.ikCtl:
@@ -386,7 +391,7 @@ class Arm(RigModule):
             v=0,
         )
 
-        self.pvc.a["fkLimb"] >> self.limb_fkc.a.v
+        self.pvc.a["fkPin"] >> self.pin_fkc.a.v
 
         if self.RBN_BONES:
             ribbonCtlVis = self.setting.a.add("ribbonCtlVis", min=0, max=1, dv=0, k=0)
@@ -441,7 +446,7 @@ class Arm(RigModule):
         self.rigNode.setMsg({"space_master": self.masterC})
         # self.rigNode.setMsg({"space_clavicle": self.clavicle_fkc})
 
-        self.ikH1.build_pvPinFkSetup(ikParent=self.ikc_gimbal)
+        self.ikH1.build_pvfkPinSetup(ikTarget=self.ikc_gimbal)
         self.rigNode.setMsg({"space_arm": self.ikH1.pvChainJ[0]})
         self.rigNode.setMsg({"space_palm": self.ballRoll_loc})
 
@@ -450,7 +455,7 @@ class Arm(RigModule):
         logging.info(rID)
 
         ctlSet = []
-        ctlSet.extend(self.fkCtl + self.ikCtl + [self.setting, self.limb_fkc])
+        ctlSet.extend(self.fkCtl + self.ikCtl + [self.setting, self.pin_fkc])
 
         if self.RBN_BONES:
             ctlSet.extend(self.all_bend)

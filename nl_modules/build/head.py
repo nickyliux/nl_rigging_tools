@@ -31,7 +31,7 @@ class Head(RigModule):
         self.jaw_fkc = None
         self.fkCtl = None
 
-    def genGuildSk(self):
+    def genGuideSk(self):
         self.genSk_module(["st", "ed"])
         rID = self.rigID
         jaw_list = self.genSkFrNames(["jaw", "jawEnd"], pf=rID)

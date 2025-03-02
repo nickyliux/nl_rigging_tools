@@ -22,7 +22,7 @@
 #
 #
 #
-#     def genGuildSk(self):
+#     def genGuideSk(self):
 #         s = self.rigSize
 #         root = self.genSkFrNames(["root"], pf=self.rigID)[0]
 #         root | self.SKL

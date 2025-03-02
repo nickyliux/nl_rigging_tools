@@ -20,7 +20,7 @@ class Leg(RigModule):
     """Build leg component with given rigNode.
     e.g.
         n = Leg('lfArm0_RGN')  # n.__dict__
-        n.genGuildSk()
+        n.genGuideSk()
         n.build()
     """
 
@@ -60,7 +60,7 @@ class Leg(RigModule):
         self.pvc = None
         self.ikc = None
         self.smart_ctl = None
-        self.limb_fkc = None
+        self.pin_fkc = None
         self.ikCtl = None
         self.fkCtl = None
         self.palmScale = None
@@ -80,7 +80,7 @@ class Leg(RigModule):
         self.ballG_ikc = None
         self.patellaJ = None
 
-    def genGuildSk(self):
+    def genGuideSk(self):
         rID = self.rigID
         self.genSk_module(["hip", "upr", "lwr", "palm", "ball", "tip"])
 
@@ -253,9 +253,9 @@ class Leg(RigModule):
         #   Constrain ikCstG supporting fk limb
         #   self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
         self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
-        fkLimb = self.pvc.a.add("fkLimb", min=0, max=1)
-        self.limb_fkc = CurveNode(
-            rID + "_limb_fkc",
+        fkPin = self.pvc.a.add("fkPin", min=0, max=1)
+        self.pin_fkc = CurveNode(
+            rID + "_pin_fkc",
             shape="circle_round",
             up="x",
             align=self.palm,
@@ -263,7 +263,7 @@ class Leg(RigModule):
             addOfs=1,
         )
         common.cstMulti(
-            self.ikc_gimbal, self.limb_fkc, self.ikCstG, w=fkLimb, cstType="par", mo=1
+            self.ikc_gimbal, self.pin_fkc, self.ikCstG, w=fkPin, cstType="par", mo=1
         )
 
         self.footRollLogic(self.smart_ctl, heelRollG, ballRollG, footRollG, toeRollG)
@@ -551,7 +551,7 @@ class Leg(RigModule):
             self.fkCtl[1:-1],
             v=0,
         )
-        self.pvc.a["fkLimb"] >> self.limb_fkc.a.v
+        self.pvc.a["fkPin"] >> self.pin_fkc.a.v
 
         if self.all_bend:
             ribbonCtlVis = self.setting.a.add("ribbonCtlVis", min=0, max=1, dv=1, k=0)
@@ -567,7 +567,7 @@ class Leg(RigModule):
         self.setting.a.showAttr()
         self.pvc.a.showAttr(t=1)
         self.smart_ctl.a.showAttr(r=1)
-        for ctl in self.fkCtl + self.subCtls + [self.ikc, self.pvc, self.limb_fkc]:
+        for ctl in self.fkCtl + self.subCtls + [self.ikc, self.pvc, self.pin_fkc]:
             ctl.a.showAttr(t=1, r=1)
         for ctl in self.all_bend or []:
             ctl.a.showAttr(t=1, r=1, s=1)
@@ -581,7 +581,7 @@ class Leg(RigModule):
                 self.joints_bf[2],
                 self.joints_fk[2],
                 self.joints_ik[2],
-                self.limb_fkc,
+                self.pin_fkc,
             ]
         ):
             c.a.ro.set(2)
@@ -599,7 +599,7 @@ class Leg(RigModule):
         self.rigNode.setMsg({"space_master": self.masterC})
         # self.rigNode.setMsg({"space_hip": self.hip_fkc})
 
-        self.ikH1.build_pvPinFkSetup(ikParent=self.ikc_gimbal)
+        self.ikH1.build_pvfkPinSetup(ikTarget=self.ikc_gimbal)
         self.rigNode.setMsg({"space_leg": self.ikH1.pvChainJ[0]})
 
     def post_setup(self):
@@ -612,7 +612,7 @@ class Leg(RigModule):
             self.fkCtl
             + self.ikCtl
             + self.subCtls
-            + [self.setting, self.smart_ctl, self.limb_fkc]
+            + [self.setting, self.smart_ctl, self.pin_fkc]
         )
 
         if self.RBN_BONES:

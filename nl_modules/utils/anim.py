@@ -74,7 +74,7 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
                 pos2 = lwr.o.pos
                 pos3 = palm_fkc.o.pos
                 ikc.alignTo(ikcMatcher)
-                pvc.a["fkLimb"].set(0)
+                pvc.a["fkPin"].set(0)
 
                 if pvc.a["pvPin"].get() > 0.5:
                     pvc.alignTo(lwr)

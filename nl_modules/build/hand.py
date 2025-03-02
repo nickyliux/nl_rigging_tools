@@ -22,7 +22,7 @@ class Hand(RigModule):
         self.ctlsArr = None
         self.fgrRootCtlArr = None
 
-    def genGuildSk(self):
+    def genGuideSk(self):
         self.genSk_module(["handJ"])
         all_fgrs_names = [
             ["fgr00_1", "fgr00_2", "fgr00_3", "fgr00_4"],

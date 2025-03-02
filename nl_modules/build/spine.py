@@ -40,7 +40,7 @@ class Spine(RigModule):
         self.fkJnt = []
         self.rbSrf = None
 
-    def genGuildSk(self):
+    def genGuideSk(self):
         self.genSk_module(["rt", "md", "tp"])
 
     def createCtl(self):

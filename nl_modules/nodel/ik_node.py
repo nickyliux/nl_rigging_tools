@@ -344,7 +344,7 @@ class IkNode(DagNode):
         ikH.hide()
         self.softJ = softJ
 
-    def build_pvPinFkSetup(self, ikParent=None):
+    def build_pvfkPinSetup(self, ikTarget=None):
         """Build a two-joint chain for pv space"""
         from nl_modules.nodel.joint_node import JointNode
 
@@ -360,15 +360,16 @@ class IkNode(DagNode):
         self.ee.cstAim(pvChainJ[0], aim=(self.x_dir, 0, 0), keep=False)
         pvChainJ[0].freezeXf()
 
-        IkNode(
+        pinIk = IkNode(
             "pvChain",
             pf=pvChainJ[0].name,
             sj=pvChainJ[0],
             ee=pvChainJ[1],
-            p=ikParent,
-            quat=True,
+            p=self.RIG_DATA,
+            quat=1,
             vis=0,
         )
+        ikTarget.cstPoi(pinIk)
         self.pvChainJ = pvChainJ
 
     def spline_twist_setup(self, *driver, upAxis="y", twistAxis="x"):

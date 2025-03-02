@@ -27,7 +27,7 @@ class Tail(rig_module.RigModule):
 
         self.setting = None
 
-    def genGuildSk(self):
+    def genGuideSk(self):
         self.genSk_module(["st", "ed"])
 
     def build(self):

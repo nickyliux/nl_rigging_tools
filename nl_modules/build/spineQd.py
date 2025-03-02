@@ -43,7 +43,7 @@ class SpineQd(RigModule):
         self.crv = None
         self.crvRev = None
 
-    def genGuildSk(self):
+    def genGuideSk(self):
         self.genSk_module(["rt", "md", "tp"])
 
     def createCtl(self):
