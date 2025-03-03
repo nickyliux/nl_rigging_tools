@@ -1364,9 +1364,9 @@ or groups containing them</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>66</x>
        <y>55</y>
-       <width>47</width>
+       <width>30</width>
        <height>17</height>
       </rect>
      </property>
@@ -1382,22 +1382,25 @@ or groups containing them</string>
        <pointsize>8</pointsize>
       </font>
      </property>
+     <property name="toolTip">
+      <string>Scale x0.5</string>
+     </property>
      <property name="styleSheet">
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>x 0.5</string>
+      <string>s /2</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="shapeScaleX2_BN">
+    <widget class="QPushButton" name="shapeScale2_BN">
      <property name="enabled">
       <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
-       <x>162</x>
+       <x>100</x>
        <y>55</y>
-       <width>47</width>
+       <width>30</width>
        <height>17</height>
       </rect>
      </property>
@@ -1413,11 +1416,14 @@ or groups containing them</string>
        <pointsize>8</pointsize>
       </font>
      </property>
+     <property name="toolTip">
+      <string>Scale x2</string>
+     </property>
      <property name="styleSheet">
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>x 2</string>
+      <string>s 2</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_3">
@@ -1425,15 +1431,117 @@ or groups containing them</string>
       <rect>
        <x>10</x>
        <y>53</y>
-       <width>91</width>
+       <width>51</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>Shape Size</string>
+      <string>Shape CV</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="shapeRotaX_BN">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>134</x>
+       <y>55</y>
+       <width>22</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>Rotate X</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>x</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="shapeRotaY_BN">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>55</y>
+       <width>22</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>Rotate Y</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>y</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="shapeRotaZ_BN">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>186</x>
+       <y>55</y>
+       <width>22</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>Rotate Z</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>z</string>
      </property>
     </widget>
    </widget>

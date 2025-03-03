@@ -148,8 +148,11 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         self.UI.pickMaskCrv_BN.clicked.connect(self.pickMaskCrv_BN_clicked)
         self.UI.pickMaskAll_BN.clicked.connect(self.pickMaskAll_BN_clicked)
-        self.UI.shapeScaleHalf_BN.clicked.connect(self.shapeScaleHalf_BN_clicked)
-        self.UI.shapeScaleX2_BN.clicked.connect(self.shapeScaleX2_BN_clicked)
+        self.UI.shapeScaleHalf_BN.clicked.connect(partial(self.shapeScale, 0.5))
+        self.UI.shapeScale2_BN.clicked.connect(partial(self.shapeScale, 2))
+        self.UI.shapeRotaX_BN.clicked.connect(partial(self.shapeRota, 90, 0, 0))
+        self.UI.shapeRotaY_BN.clicked.connect(partial(self.shapeRota, 0, 90, 0))
+        self.UI.shapeRotaZ_BN.clicked.connect(partial(self.shapeRota, 0, 0, 90))
 
         self.rigNode_refresh_BN_clicked()
         self.preset_refresh_BN_clicked()
@@ -162,15 +165,17 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def pickMaskAll_BN_clicked(self):
         mel.eval('setObjectPickMask "All" 1')
 
-    def shapeScaleHalf_BN_clicked(self):
+    def shapeRota(self, *args):
         for sel in mc.ls(sl=1, tr=1):
             sel = DagNode(sel)
             if sel.type == "nurbsCurve":
-                CurveNode(sel).cv_scale(0.5)
+                CurveNode(sel).cv_rotate(*args)
 
-    def shapeScaleX2_BN_clicked(self):
+    def shapeScale(self, value):
         for sel in mc.ls(sl=1, tr=1):
-            CurveNode(sel).cv_scale(2)
+            sel = DagNode(sel)
+            if sel.type == "nurbsCurve":
+                CurveNode(sel).cv_scale(value)
 
     def component_load_BN_doubleClicked(self, item):
         names = guide.COMPONENT_DICT[item.text()]
