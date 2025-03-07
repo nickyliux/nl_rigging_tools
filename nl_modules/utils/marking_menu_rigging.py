@@ -113,15 +113,26 @@ class MarkingMenuRigging:
         mc.menuItem(p=freeze_MI, l="R", c=partial(frz_xform, "r"))
         mc.menuItem(p=freeze_MI, l="S", c=partial(frz_xform, "s"))
 
-        mc.menuItem(p=menu, l="Match", c=match_all)
+        mc.menuItem(p=menu, l="Match All", c=match_all)
         mc.menuItem(p=menu, l="Match Pos", c=match_pos)
-        mc.menuItem(p=menu, l="Smooth Bind", c=mc.SmoothBindSkin)
-        mc.menuItem(p=menu, l="Smooth Bind", c=mc.SmoothBindSkinOptions, ob=1)
+        mc.menuItem(p=menu, l="Bind Skin", c=mc.SmoothBindSkin)
+        mc.menuItem(p=menu, l="Bind Skin", c=mc.SmoothBindSkinOptions, ob=1)
+        mc.menuItem(p=menu, l="Add Influence", c=addInf)
+        mc.menuItem(p=menu, l="Add Influence", c=addInfOpt, ob=1)
+        mc.menuItem(p=menu, l="Detach Skin", c=mc.DetachSkin)
         # mc.menuItem(p=menu, l="---------------------", en=0)
         # mc.menuItem(p=menu, l="Del Keys", c="mc.cutKey()")
         mc.menuItem(p=menu, l="Use Last Shape", c=use_last_crv_shapes)
         mc.menuItem(p=menu, l="--------------------", en=0)
         mc.menuItem(p=menu, l="Reload Menu", c=reload_marking_menu)
+
+
+def addInf(*args):
+    mel.eval('skinClusterInfluence 1 " -dr 4 -lw true -wt 0"')
+
+
+def addInfOpt(*args):
+    mel.eval("AddInfluenceOptions")
 
 
 def jointDisplay(*args):
