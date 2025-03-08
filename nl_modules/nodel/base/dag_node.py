@@ -364,7 +364,7 @@ class DagNode(DepNode):
         """Set order among children (0-indexed)"""
         mc.reorder(self.name, r=index)
 
-    def zeroize(self, below=False, relink=True, alignParent=False):
+    def zeroize(self, below=False, relink=True, alignParent=False, snapIt=False):
         """Add offset group above or below target
         options
             below:        added below selected
@@ -385,6 +385,8 @@ class DagNode(DepNode):
             currParent = mc.listRelatives(self, p=1, f=1) or []
             if currParent and alignParent:
                 common.matchMove([grp, currParent])
+                if snapIt:
+                    common.matchMove([grp, self], mode="t")
             else:
                 common.matchMove([grp, self])
             mc.parent(self, grp)
@@ -401,14 +403,14 @@ class DagNode(DepNode):
 
         return DagNode(grp)
 
-    def addOffsetGrp(self, count=1, below=0, relink=1, alignParent=0):
+    def addOffsetGrp(self, count=1, below=0, relink=1, alignParent=0, snapIt=0):
         """Add offset group"""
         resultGrps = []
         i = 0
         target = self
         while i < count:
             returnGrp = target.zeroize(
-                below=below, relink=relink, alignParent=alignParent
+                below=below, relink=relink, alignParent=alignParent, snapIt=snapIt
             )
             target = returnGrp
             resultGrps.append(returnGrp)
