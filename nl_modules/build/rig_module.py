@@ -559,7 +559,15 @@ class RigModule(RigBase):
                 t.a.add("wsMirrorAxis", k=0, lock=1, cb=0)
 
     def build_autoAim(
-        self, startJ, endJ, fkc=None, ikc=None, dir=1, attrName="autoAim"
+        self,
+        startJ,
+        endJ,
+        fkc=None,
+        ikc=None,
+        rotaDir=1,
+        attrName="autoAim",
+        tyToR="rz",
+        tzToR="ry",
     ):
         from nl_modules.nodel.joint_node import JointNode
         from nl_modules.nodel.ik_node import IkNode
@@ -607,19 +615,19 @@ class RigModule(RigBase):
         auto_sdk = LocNode("auto_sdk", pf=rID, p=autoGrp, align=fkc, addOfs=1)
 
         # Setup SDK from offset to rotation
-        driver = auto_offset.a.tz
-        driven = auto_sdk.a.ry
-        common.sdk2(driver, driven, 0, 0)
-        common.sdk2(driver, driven, -locOffset, -20 * xDr * dir)
-        common.sdk2(driver, driven, locOffset, 20 * xDr * dir)
-
         driver = auto_offset.a.ty
-        driven = auto_sdk.a.rz
+        driven = auto_sdk.a[tyToR]
         common.sdk2(driver, driven, 0, 0)
-        common.sdk2(driver, driven, -locOffset, 20 * xDr * dir)
-        common.sdk2(driver, driven, locOffset, -20 * xDr * dir)
+        common.sdk2(driver, driven, -locOffset, 20 * xDr * rotaDir)
+        common.sdk2(driver, driven, locOffset, -20 * xDr * rotaDir)
 
-        autoAim = ikc.a.add(attrName, min=0)
+        driver = auto_offset.a.tz
+        driven = auto_sdk.a[tzToR]
+        common.sdk2(driver, driven, 0, 0)
+        common.sdk2(driver, driven, -locOffset, -20 * xDr * rotaDir)
+        common.sdk2(driver, driven, locOffset, 20 * xDr * rotaDir)
+
+        autoAim = ikc.a.add(attrName, min=0, dv=1)
 
         ofs = fkc.addOffsetGrp()
         ut.blendC_((0, 0, 0), auto_sdk.a.r, w=autoAim * xDr) >> ofs.a.r

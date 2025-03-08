@@ -85,7 +85,7 @@ class Arm(RigModule):
             self.palm,
             fkc=self.clavicle_fkc,
             ikc=self.ikc,
-            dir=-1,
+            rotaDir=-1,
             attrName="autoClavicle",
         )
 
@@ -116,7 +116,8 @@ class Arm(RigModule):
         self.palm_fkc = CurveNode(
             "palm_fkc", pf=rID, up="x", shape="circle_round", scale=rSz
         )
-        self.ikc = CurveNode("ikc", pf=rID, shape="diamond", scale=rSz * 3)
+        # self.ikc = CurveNode("ikc", pf=rID, shape="diamond", scale=rSz * 3)
+        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 2)
         self.pvc = CurveNode("pvc", pf=rID, shape="sphere2", scale=xDr * rSz * 2)
 
         self.rigNode.setMsg(

@@ -122,8 +122,9 @@ class Leg(RigModule):
         self.ball_fkc = CurveNode(
             "ball_fkc", pf=rID, shape="fk_rotator", up="-z", scale=rSz * xDr
         )
-        self.ikc = CurveNode("ikc", pf=rID, shape="diamond", scale=rSz * 3)
-        self.ikc.cv_move(0, 0, -rSz * 12)
+        # self.ikc = CurveNode("ikc", pf=rID, shape="diamond", scale=rSz * 3)
+        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 1.5)
+        # self.ikc.cv_move(0, 0, -rSz * 12)
 
         self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="sphere", scale=rSz * 0.5)
         self.pvc = CurveNode("pvc", pf=rID, shape="sphere2", scale=-xDr * rSz * 2)
@@ -157,7 +158,12 @@ class Leg(RigModule):
         self.build_ik()
         self.blend_fk_ik()
         self.build_autoAim(
-            self.upr, self.palm, fkc=self.hip_fkc, ikc=self.ikc, attrName="autoHip"
+            self.upr,
+            self.palm,
+            fkc=self.hip_fkc,
+            ikc=self.ikc,
+            rotaDir=1,
+            attrName="autoHip",
         )
 
         if self.KNEE_FIX:
