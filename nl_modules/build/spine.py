@@ -52,7 +52,7 @@ class Spine(RigModule):
             "setting", pf=rID, shape="stickS", up="-z", scale=rSz * 3, color=CB
         )
         self.cog_ctl = CurveNode(
-            "cog_ctl", pf=rID, shape="cog", scale=rSz * 7, color=CDY
+            "cog_ctl", pf=rID, shape="cog2", scale=rSz * 3, color=CDY
         )
         # "tp_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 2, rSz * 6), color=CDY
         self.tp_ctl = CurveNode("tp_ctl", pf=rID, shape="cube", scale=scale, color=CDY)
