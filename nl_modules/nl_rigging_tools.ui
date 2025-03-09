@@ -1364,9 +1364,9 @@ or groups containing them</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>66</x>
+       <x>76</x>
        <y>55</y>
-       <width>30</width>
+       <width>18</width>
        <height>17</height>
       </rect>
      </property>
@@ -1389,7 +1389,7 @@ or groups containing them</string>
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>s /2</string>
+      <string>&lt;</string>
      </property>
     </widget>
     <widget class="QPushButton" name="shapeScale2_BN">
@@ -1400,7 +1400,7 @@ or groups containing them</string>
       <rect>
        <x>100</x>
        <y>55</y>
-       <width>30</width>
+       <width>18</width>
        <height>17</height>
       </rect>
      </property>
@@ -1423,7 +1423,7 @@ or groups containing them</string>
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>s 2</string>
+      <string>&gt;</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_3">
@@ -1448,9 +1448,9 @@ or groups containing them</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>134</x>
+       <x>141</x>
        <y>55</y>
-       <width>22</width>
+       <width>18</width>
        <height>17</height>
       </rect>
      </property>
@@ -1482,9 +1482,9 @@ or groups containing them</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>165</x>
        <y>55</y>
-       <width>22</width>
+       <width>18</width>
        <height>17</height>
       </rect>
      </property>
@@ -1516,9 +1516,9 @@ or groups containing them</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>186</x>
+       <x>189</x>
        <y>55</y>
-       <width>22</width>
+       <width>18</width>
        <height>17</height>
       </rect>
      </property>

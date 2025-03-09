@@ -2,7 +2,7 @@ import os
 import maya.cmds as mc
 import nl_modules as nl_modules
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.utils import common
+from nl_modules.utils import common, file, path, open_maya_api
 from nl_modules.utils.color import Color
 import logging
 
@@ -142,6 +142,191 @@ class GroupNode(DagNode):
         attrTgt = attrTgt or self
         attrTgt.a.add("gimbalCtl", min=0, max=1, dv=0, k=0) >> gmb_ctl.shape.a.v
         return gmb_ctl
+
+    def shape_saveToLib(self, dictList, name):
+        """Save shapes data to library with filename as name
+        e.g.
+            saveToLib(list, 'arrow')
+        """
+        f = f"{GroupNode.PATH_SHAPE}/{name}.json"
+
+        file.saveJson(f, dictList, force=True)
+        logging.info(f"Saved to {f}")
+
+    def shape_getDictListFrLib(self, name):
+        """Return curveDictList from library with filename as name
+        e.g.
+            list = loadFrLib('arrow')
+        """
+        f = f"{GroupNode.PATH_SHAPE}/{name}.json"
+        return file.loadJson(f)
+
+    def shape_getDictListFrObj(self, crv):
+        """Return curveDictList of shapes from curve
+        e.g.
+            list = crvToList('curve')
+        """
+        dictList = []
+        shapes = mc.listRelatives(crv, s=1)
+
+        for s in shapes:
+            if mc.objExists(s + ".create"):
+                if mc.listConnections(s + ".create"):
+                    raise Exception("History is not deleted in the shape")
+
+            ptCount = mc.getAttr(f"{s}.controlPoints", size=1)
+            crvDict = {
+                "points": [
+                    mc.getAttr(f"{s}.controlPoints[{i}]")[0] for i in range(ptCount)
+                ],
+                "knots": open_maya_api.getKnotsList(s),
+                "form": mc.getAttr(s + ".form"),
+                "degree": mc.getAttr(s + ".degree"),
+                "color": mc.getAttr(s + ".overrideColor"),
+            }
+            dictList.append(crvDict)
+
+        return dictList
+
+    def shape_buildFrDictList(self, dictList, name, xf=None):
+        """Return curve with name from curveDictlist of shapes
+        e.g.
+            crv = crvFrList(list, 'arrow')
+        """
+        xf = xf or mc.createNode("transform", n=name)
+
+        for i, crvShapeDict in enumerate(dictList):
+            tmp = GroupNode(
+                mc.curve(
+                    p=crvShapeDict["points"],
+                    d=crvShapeDict["degree"],
+                    k=crvShapeDict["knots"],
+                    per=bool(crvShapeDict["form"]),
+                )
+            )
+            shape = DagNode(mc.parent(tmp.shape, xf, r=1, s=1)[0])
+            tmp.delete()
+            shape.rename(name + "Shape#")
+            shape.a.overrideEnabled.set(1)
+            shape.a.overrideColor.set(crvShapeDict["color"])
+
+        mc.select(cl=1)
+        return GroupNode(xf)
+
+    def __le__(self, crv):
+        """Copy shape from preset/another
+        e.g.
+           CurveNode('a') <= 'circle'          # from preset
+           CurveNode('a') <= CurveNode('b')    # from another curve
+        """
+        self << crv
+        self.uninstanceFromOthers()
+
+    def __ge__(self, crv):
+        """Copy shape to another
+        e.g.
+            CurveNode('a') >= CurveNode('b')    # copy to another
+        """
+        # if isinstance(crv, GroupNode):
+        self >> crv
+        crv.uninstanceFromOthers()
+
+    def __lshift__(self, crv):
+        """Instance shape from preset/another
+        e.g.
+           CurveNode('a') << 'circle'          # from preset
+           CurveNode('a') << CurveNode('b')    # from another curve
+        """
+        typeName = type(crv).__name__
+
+        if typeName == "str":  # preset name
+            print(crv)
+            crvDictList = self.shape_getDictListFrLib(crv)
+            print(crvDictList)
+            crvObj = self.shape_buildFrDictList(crvDictList, crv)
+            print(crvObj)
+            crvObj.copyShapeAsInst([self], keepSrc=0)
+
+        elif typeName == "GroupNode":  # another curve
+            crv.copyShapeAsInst([self])
+
+        # self.color = self.getSideColor()
+
+    def __rshift__(self, crv):
+        """Copy shape to preset/another
+        e.g.
+            CurveNode('a') >> 'circle'          # save to preset
+            CurveNode('a') >> CurveNode('b')    # copy to another
+        """
+        if isinstance(crv, str):
+            crvDictList = self.shape_getDictListFrObj(self)
+            self.shape_saveToLib(crvDictList, crv)
+
+        # elif isinstance(crv, GroupNode):
+        else:
+            self.copyShapeAsInst([crv])
+
+    def copyShapeAsInst(self, targets, keepSrc=1):
+        """Copy shapes to all as instance
+        e.g.
+            crv.copyShapeAsInst(['a', 'b'])
+        """
+        if isinstance(targets, list):
+            allTargets = []
+            self.color = DagNode(targets[0]).color
+            for target in targets:
+                target = DagNode(target)
+                shapes = target.shapes
+                if shapes:
+                    allXf = mc.listRelatives(shapes[0], ap=1)
+                    #
+                    #   If the shape is instance, collect all transforms
+                    #
+                    if len(allXf) > 1:
+                        allXf = [DagNode(xf) for xf in allXf]
+                        [allTargets.append(xf) for xf in allXf if xf not in allTargets]
+                    else:
+                        if target not in allTargets:
+                            allTargets.append(target)
+                else:
+                    if target not in allTargets:
+                        allTargets.append(target)
+
+            for target in allTargets:
+                [shape.delete() for shape in target.shapes]
+                for shape in self.shapes:
+                    mc.parent(shape, target, r=1, s=1, add=1)
+
+            if not keepSrc:
+                self.delete()
+
+    def uninstanceFromOthers(self):
+        """Un-instance itself from other instances"""
+        otherXf = self.uninstanceAll()
+        if otherXf:
+            dup = self.duplicate()
+            dup.copyShapeAsInst(otherXf, keepSrc=0)
+
+    def uninstanceAll(self):
+        """Un-instance all curves sharing the same shape
+        return transforms of all objects sharing shapes before un-instance
+        """
+        tgtShape = self.shape
+        allXf = mc.listRelatives(tgtShape, ap=1)
+        otherXf = []
+        if len(allXf) > 1:
+            shapeSrc = self.duplicate()
+            tgtShape.delete()
+            for xf in allXf:
+                dup = shapeSrc.duplicate()
+                xf = DagNode(xf)
+                mc.parent(dup.shape, xf, s=1, r=1)
+                xf.shape.rename(xf + "Shape")
+                dup.delete()
+                if self != xf:
+                    otherXf.append(xf)
+            shapeSrc.delete()
+            return otherXf
 
     @property
     def cvs(self):

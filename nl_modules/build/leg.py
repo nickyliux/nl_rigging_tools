@@ -563,8 +563,8 @@ class Leg(RigModule):
             ribbonCtlVis = self.setting.a.add("ribbonCtlVis", min=0, max=1, dv=1, k=0)
             [ribbonCtlVis >> ctl.a.v for ctl in self.all_bend]
 
-        secCtlVis = self.setting.a.add("secCtlVis", k=0, min=0, max=1)
-        # [secCtlVis >> c.shape.a.v for c in self.subCtls]
+        extraCtlVis = self.setting.a.add("extraCtlVis", k=0, min=0, max=1)
+        [extraCtlVis >> c.shape.a.v for c in self.subCtls]
 
         mc.hide(self.joints_fk, self.joints_ik, self.joints_bf)
         [ikh.hide() for ikh in self.all_ikH.values()]
