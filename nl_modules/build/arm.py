@@ -108,13 +108,13 @@ class Arm(RigModule):
         )
         self.clavicle_fkc.cv_rotate(0, 0, -45)
         self.upr_fkc = CurveNode(
-            "upr_fkc", pf=rID, up="x", shape="circle_round", scale=rSz
+            "upr_fkc", pf=rID, up="x", shape="sphere2", scale=rSz * 4
         )
         self.lwr_fkc = CurveNode(
-            "lwr_fkc", pf=rID, up="x", shape="circle_round", scale=rSz
+            "lwr_fkc", pf=rID, up="x", shape="sphere2", scale=rSz * 4
         )
         self.palm_fkc = CurveNode(
-            "palm_fkc", pf=rID, up="x", shape="circle_round", scale=rSz
+            "palm_fkc", pf=rID, up="x", shape="sphere2", scale=rSz * 4
         )
         # self.ikc = CurveNode("ikc", pf=rID, shape="diamond", scale=rSz * 3)
         self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 2)

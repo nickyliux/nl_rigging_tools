@@ -71,6 +71,9 @@ classDiagram
 ```
 
 ## Rig Features
+General
+* Scalable
+
 Biped Limbs
 * fk ik switch
 * squash & stretch
