@@ -164,6 +164,7 @@ class Leg(RigModule):
             ikc=self.ikc,
             rotaDir=1,
             attrName="autoHip",
+            scaleFix=self.masterC.a.globalScale,
         )
 
         if self.KNEE_FIX:

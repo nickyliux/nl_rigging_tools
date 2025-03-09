@@ -87,6 +87,7 @@ class Arm(RigModule):
             ikc=self.ikc,
             rotaDir=-1,
             attrName="autoClavicle",
+            scaleFix=self.masterC.a.globalScale,
         )
 
         if self.RBN_BONES:
