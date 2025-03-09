@@ -23,6 +23,7 @@ class JointNode(GroupNode):
         addOfs=0,
         p=None,
         # for joint
+        shape=None,
         r=None,
         color=0,
     ):
@@ -39,6 +40,13 @@ class JointNode(GroupNode):
             radius=r,
             p=p,
         )
+        if shape:
+            from nl_modules.nodel.curve_node import CurveNode
+
+            print(self)
+            print(shape)
+            CurveNode(self) << shape
+
         self.color = color or 0
         # self.a.radius.set(r or 1)
 

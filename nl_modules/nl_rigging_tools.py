@@ -38,11 +38,10 @@ MOD_DIR = os.path.dirname(nl_modules.__file__)
 PATH_PRESET = MOD_DIR + "/build/guide_presets"
 PATH_SHAPE = MOD_DIR + "/build/shapes"
 PATH_LIGHT = MOD_DIR + "/build/others"
-# PATH_SKEL = MOD_DIR + "/../skeletons"
 PATH_SKEL = "D:/_PROJECT/GIT/nl_rigging_tools_skeletons/"
+MAYA_TPL_DIR = MOD_DIR + "/build/components"
 PATH_UI = MOD_DIR + "/nl_rigging_tools.ui"
 BIND_JNT_SET = "bind_jnt_set"
-MAYA_TPL_DIR = MOD_DIR + "/build/components"
 
 from contextlib import ContextDecorator
 

@@ -118,6 +118,7 @@ class Arm(RigModule):
         )
         # self.ikc = CurveNode("ikc", pf=rID, shape="diamond", scale=rSz * 3)
         self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 2)
+        # self.ikc = JointNode("ikc", pf=rID, r=10, shape="cube")
         self.pvc = CurveNode("pvc", pf=rID, shape="sphere2", scale=xDr * rSz * 2)
 
         self.rigNode.setMsg(
@@ -168,7 +169,8 @@ class Arm(RigModule):
         logging.info(rID)
 
         self.ikc.a.addSep()
-        self.ikc.alignTo(self.palm)
+        # self.ikc.alignTo(self.palm)
+        self.ikc.snapTo(self.palm)
         self.pvc.alignTo(self.lwr)
 
         self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_PART)
@@ -232,19 +234,6 @@ class Arm(RigModule):
         common.cstMulti(
             self.ikc, self.pin_fkc, self.joints_ik[-2], w=fkPin, cstType="ori"
         )
-
-    # def alignOrient_setup(self):
-    #     """
-    #     Let palm to follow ikH orientation or not
-    #     """
-    #     rID = self.rigID
-    #     palmIkJ = self.joints_ik[-2]
-    #     lwrIkJ = self.joints_ik[2]
-
-    #     alignOrient = self.ikc.a.add("alignOrient", min=0, max=1, dv=1)
-    #     nonAlign = LocNode("nonAlign_loc#", pf=rID, align=self.palm, p=lwrIkJ, addOfs=1)
-    #     palmIkJ.cstPoi(nonAlign.offset)
-    #     common.cstMulti(nonAlign, self.ikc, palmIkJ, mo=1, w=alignOrient, cstType="ori")
 
     def blend_fk_ik(self):
         rID = self.rigID
@@ -455,6 +444,8 @@ class Arm(RigModule):
         rID = self.rigID
         logging.info(rID)
 
+        self.setWSMirror([self.ikc, self.ikc_gimbal])
+
         ctlSet = []
         ctlSet.extend(self.fkCtl + self.ikCtl + [self.setting, self.pin_fkc])
 
@@ -478,3 +469,16 @@ class Arm(RigModule):
         self.ro_setup()
         self.post_module()
         # self.pvc.alignTo(DagNode(rID + "_pvc_guide"))
+
+    # def alignOrient_setup(self):
+    #     """
+    #     Let palm to follow ikH orientation or not
+    #     """
+    #     rID = self.rigID
+    #     palmIkJ = self.joints_ik[-2]
+    #     lwrIkJ = self.joints_ik[2]
+
+    #     alignOrient = self.ikc.a.add("alignOrient", min=0, max=1, dv=1)
+    #     nonAlign = LocNode("nonAlign_loc#", pf=rID, align=self.palm, p=lwrIkJ, addOfs=1)
+    #     palmIkJ.cstPoi(nonAlign.offset)
+    #     common.cstMulti(nonAlign, self.ikc, palmIkJ, mo=1, w=alignOrient, cstType="ori")
