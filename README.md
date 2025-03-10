@@ -1,4 +1,4 @@
-# nl-rigging-tools (NxR)
+# nl-rigging-tools (NRT)
 ### What ?
 It is another open-source modular auto-rigger written for Autodesk Maya in Python.
 
@@ -74,15 +74,21 @@ classDiagram
 General
 * Scalable
 
+Biped Spine
+* hybrid fk/ik
+* squash/stretch
+* lower hip ctl
+* volume ctl
+
 Biped Limbs
-* fk ik switch
-* squash & stretch
+* fk/ik
+* squash/stretch
 * space switch
 * soft ik
 * smart ctl
-* elbow & knee pin with fk ctl
-* auto aim for hip & clavicle
-* palm roll & bank for both fk ik
+* elbow/knee pin with fk ctl
+* auto clavicle/hip
+* palm roll/bank
 * -------- ( Optional ) --------
 * ribbon ctl
 * twist bones
@@ -90,15 +96,12 @@ Biped Limbs
 * toe bones
 * knee correction
 
-Biped Spine
-* hybrid fk ik
-* squash & stretch
-* lower hip ctl
-* volume ctl
+Quad Spine
+* squash/stretch
 
 Quad Limbs
-* fk ik switch
-* squash & stretch
+* fk/ik
+* squash/stretch
 * space switch
 * -------- ( Optional ) --------
 * twist bones
@@ -136,3 +139,6 @@ nl_rigging_tools.main()
 
 * Study matrix for more efficient constraint calculation.
 * Understand more about how professional animators work.
+
+## More info
+Visit [nickyliu.com](http://www.nickyliu.com) for more information.
