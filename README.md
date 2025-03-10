@@ -1,4 +1,4 @@
-# nl-rigging-tools (nRT)
+# nl-rigging-tools (NxR)
 ### What ?
 It is another open-source modular auto-rigger written for Autodesk Maya in Python.
 
