@@ -76,8 +76,9 @@ def buildSelOrAll(*arg):
         # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
         for rigN in rigNodes:
             buildTgt(rigN)
-        updateAnchorConn()
+        resetAllCtlAttr()
         updateSpaceSwitch()
+        updateAnchorConn()
         mc.select(cl=1)
         print()
 
@@ -97,8 +98,9 @@ def unbuildSelOrAll(*arg):
     if rigNodes:
         for rigN in rigNodes:
             unbuildTgt(rigN)
-        updateAnchorConn()
+        resetAllCtlAttr()
         updateSpaceSwitch()
+        updateAnchorConn()
         mc.select(cl=1)
         print()
 
@@ -170,6 +172,43 @@ def updateAnchorConn():
     #     RigModule.isolateNeckToSpine(neckCog, spineCtl, wSpaceObj)
 
 
+# "{ string $selection[]=`ls -sl`;string $attr, $udAttr[];float $dfv[];for ($c in $selection) {\
+# 		$udAttr = `listAttr -ud -s -k $c`;\
+#  		for ($attr in $udAttr) {\
+#  			$dfv = `attributeQuery -node $c -ld $attr`;\
+#  			if ( `size $dfv` && `getAttr -se ($c + \".\" + $attr)` ) setAttr ($c + \".\" + $attr) $dfv[0];}\
+# 		if (`getAttr -se ($c + \".tx\")`) catch(`setAttr ($c + \".tx\") 0`);\
+# 		if (`getAttr -se ($c + \".ty\")`) catch(`setAttr ($c + \".ty\") 0`);\
+# 		if (`getAttr -se ($c + \".tz\")`) catch(`setAttr ($c + \".tz\") 0`);\
+# 		if (`getAttr -se ($c + \".rx\")`) catch(`setAttr ($c + \".rx\") 0`);\
+# 		if (`getAttr -se ($c + \".ry\")`) catch(`setAttr ($c + \".ry\") 0`);\
+# 		if (`getAttr -se ($c + \".rz\")`) catch(`setAttr ($c + \".rz\") 0`);\
+# 		if (`getAttr -se ($c + \".sx\")`) catch(`setAttr ($c + \".sx\") 1`);\
+# 		if (`getAttr -se ($c + \".sy\")`) catch(`setAttr ($c + \".sy\") 1`);\
+# 		if (`getAttr -se ($c + \".sz\")`) catch(`setAttr ($c + \".sz\") 1`);}\
+# 		}\
+def getAllRigCtls():
+    rigNodes = mc.ls("*RGN", type="script")
+    setList = []
+    for rigNode in rigNodes:
+        ctlSet = DagNode(rigNode).a.rigID.get() + "_ctl_set"
+        ctlSet = mc.ls(ctlSet, type="objectSet")
+        if ctlSet:
+            setList.append(ctlSet[0])
+    if setList:
+        return mc.sets(setList, q=1)
+    return []
+
+
+def resetAllCtlAttr():
+    """Reset all ctl's attr to default"""
+    for sel in getAllRigCtls():
+        selN = DagNode(sel)
+        for attr in selN.a.list(k=1, u=1, se=1, s=1):
+            if attr.settable():
+                attr.reset()
+
+
 def updateSpaceSwitch():
     """Add/update space switch for ctl from rigNode's spaceHolder* attr
     e.g.
@@ -212,12 +251,12 @@ def updateSpaceSwitch():
                 resultDict[s] = spaceDict[s]
 
         if resultDict:
+            # print(ctl.name, resultDict)
             RigModule.spaceAlign(
                 ctl,
                 names=":".join(resultDict.keys()),
                 spaces=resultDict.values(),
             )
-            # print(ctl.name, resultDict)
 
 
 def getSpaceObj(rigNode):

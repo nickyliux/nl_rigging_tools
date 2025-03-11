@@ -312,11 +312,10 @@ class Leg(RigModule):
         self.ikCtl.append(self.ballG_ikc)
 
         # Smart Ctl setup
-        # self.smart_ctl.parentTo(self.ikc_gimbal)
-        self.smart_ctl.snapTo(self.ikc, p=self.ikc_gimbal)
+        self.smart_ctl.snapTo(self.ikc)
+        self.smart_ctl.a.ty.set(0)
+        self.smart_ctl | self.ikc_gimbal
         self.smart_ctl.a.tz.set(rSz * 25)
-        # self.smart_ctl.a.tx.set(0)
-        # self.smart_ctl.a.r.set(0, 0, 0)
         self.smart_ctl.addOffsetGrp()
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry  # self.ikc.a["toeTwist"]
@@ -564,8 +563,8 @@ class Leg(RigModule):
             ribbonCtlVis = self.setting.a.add("ribbonCtlVis", min=0, max=1, dv=1, k=0)
             [ribbonCtlVis >> ctl.a.v for ctl in self.all_bend]
 
-        extraCtlVis = self.setting.a.add("extraCtlVis", k=0, min=0, max=1)
-        [extraCtlVis >> c.shape.a.v for c in self.subCtls]
+        secCtlVis = self.setting.a.add("secCtlVis", k=0, min=0, max=1)
+        [secCtlVis >> c.shape.a.v for c in self.subCtls]
 
         mc.hide(self.joints_fk, self.joints_ik, self.joints_bf)
         [ikh.hide() for ikh in self.all_ikH.values()]

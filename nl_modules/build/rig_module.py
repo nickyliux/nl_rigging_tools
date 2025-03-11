@@ -660,18 +660,6 @@ class RigModule(RigBase):
             common.sdk(self.joints_am[0], auto_dvn, "ry", "ry", _, _)
             common.sdk(self.joints_am[0], auto_dvn, "rz", "rz", _, _)
 
-        # driver = self.joints_am[0].a.ry
-        # driven = auto_dvn.a.ry
-        # common.sdk2(driver, driven, 0, 0)
-        # common.sdk2(driver, driven, -120, -120)
-        # common.sdk2(driver, driven, 120, 120)
-
-        # driver = self.joints_am[0].a.rz
-        # driven = auto_dvn.a.rz
-        # common.sdk2(driver, driven, 0, 0)
-        # common.sdk2(driver, driven, -120, -120)
-        # common.sdk2(driver, driven, 120, 120)
-
         auto_ikH.hide()
         self.joints_am[0].hide()
 
