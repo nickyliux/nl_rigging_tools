@@ -126,7 +126,7 @@ class Leg(RigModule):
         self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 1.5)
         # self.ikc.cv_move(0, 0, -rSz * 12)
 
-        self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="sphere", scale=rSz * 0.5)
+        self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
         self.pvc = CurveNode("pvc", pf=rID, shape="sphere2", scale=-xDr * rSz * 2)
         self.rigNode.setMsg(
             {
@@ -157,14 +157,13 @@ class Leg(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        self.build_autoAim(
+        self.build_autoAim2(
+            self.hip,
             self.upr,
-            self.palm,
             fkc=self.hip_fkc,
             ikc=self.ikc,
-            rotaDir=1,
             attrName="autoHip",
-            scaleFix=self.masterC.a.globalScale,
+            p=self.RIG_DATA,
         )
 
         if self.KNEE_FIX:
@@ -313,10 +312,11 @@ class Leg(RigModule):
         self.ikCtl.append(self.ballG_ikc)
 
         # Smart Ctl setup
-        self.smart_ctl.parentTo(self.ikc_gimbal)
-        self.smart_ctl.a.tz.set(rSz * 26)
-        self.smart_ctl.a.tx.set(0)
-        self.smart_ctl.a.r.set(0, 0, 0)
+        # self.smart_ctl.parentTo(self.ikc_gimbal)
+        self.smart_ctl.snapTo(self.ikc, p=self.ikc_gimbal)
+        self.smart_ctl.a.tz.set(rSz * 25)
+        # self.smart_ctl.a.tx.set(0)
+        # self.smart_ctl.a.r.set(0, 0, 0)
         self.smart_ctl.addOffsetGrp()
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry  # self.ikc.a["toeTwist"]

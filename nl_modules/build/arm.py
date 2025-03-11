@@ -80,14 +80,13 @@ class Arm(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        self.build_autoAim(
+        self.build_autoAim2(
+            self.clavicle,
             self.upr,
-            self.palm,
             fkc=self.clavicle_fkc,
             ikc=self.ikc,
-            rotaDir=-1,
-            attrName="autoClavicle",
-            scaleFix=self.masterC.a.globalScale,
+            attrName="autoClav",
+            p=self.RIG_DATA,
         )
 
         if self.RBN_BONES:
@@ -96,6 +95,28 @@ class Arm(RigModule):
             self.twistBones_setup()
         self.post_setup()
         self.pvc.a.tz.set(self.rigSize * self.x_dir)
+
+    # def build_autoAim2(self):
+    #     self.joints_am = common.extractSk(
+    #         [self.clavicle, self.upr], "_am", p=self.AM_PART
+    #     )
+    #     auto_loc = LocNode(
+    #         "auto_loc", pf=self.rigID, align=self.joints_am[0], p=self.joints_am[0]
+    #     )
+    #     auto_ikH = IkNode(
+    #         "autoAim",
+    #         pf=self.rigID,
+    #         sj=self.joints_am[0],
+    #         ee=self.joints_am[1],
+    #         quat=1,
+    #         p=self.RIG_DATA,
+    #         vis=1,
+    #     )
+    #     self.ikc.cstPoi(auto_ikH)
+    #     autoAim = self.ikc.a.add("autoHip", min=0, dv=0)
+    #     common.cstMulti(
+    #         auto_loc, self.joints_am[0], self.clavicle_fkc.offset, mo=1, w=autoAim
+    #     )
 
     def createCtl(self):
         rSz = self.rigSize
@@ -170,8 +191,8 @@ class Arm(RigModule):
         logging.info(rID)
 
         self.ikc.a.addSep()
-        # self.ikc.alignTo(self.palm)
-        self.ikc.snapTo(self.palm)
+        self.ikc.alignTo(self.palm)
+        # self.ikc.snapTo(self.palm)
         self.pvc.alignTo(self.lwr)
 
         self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_PART)

@@ -558,81 +558,118 @@ class RigModule(RigBase):
             if t.exists():
                 t.a.add("wsMirrorAxis", k=0, lock=1, cb=0)
 
-    def build_autoAim(
-        self,
-        startJ,
-        endJ,
-        fkc=None,
-        ikc=None,
-        rotaDir=1,
-        attrName="autoAim",
-        tyToR="rz",
-        tzToR="ry",
-        scaleFix=1,
+    # def build_autoAim(
+    #     self,
+    #     startJ,
+    #     endJ,
+    #     fkc=None,
+    #     ikc=None,
+    #     rotaDir=1,
+    #     attrName="autoAim",
+    #     tyToR="rz",
+    #     tzToR="ry",
+    #     scaleFix=1,
+    # ):
+    #     from nl_modules.nodel.joint_node import JointNode
+    #     from nl_modules.nodel.ik_node import IkNode
+
+    #     rID = self.rigID
+    #     rSz = self.rigSize
+    #     xDr = self.x_dir
+    #     # autoGrp to be cst by an anchor
+    #     autoGrp = GroupNode("AUTO", pf=rID, p=fkc.offset)
+
+    #     dist = startJ.o.distanceTo(endJ)
+    #     autoChain = JointNode.makeTwoJChain(
+    #         "autoChain",
+    #         pf=rID,
+    #         snap=startJ,
+    #         ofs=(xDr * dist, 0, 0),
+    #         p=autoGrp,
+    #         r=rSz * 5,
+    #         color=Color.RED,
+    #     )
+    #     endJ.cstAim(autoChain[0], aim=(xDr, 0, 0), keep=False)
+    #     autoChain[0].freezeXf()
+
+    #     auto_ikH = IkNode(
+    #         "autoAim",
+    #         pf=rID,
+    #         sj=autoChain[0],
+    #         ee=autoChain[1],
+    #         quat=1,
+    #         p=self.RIG_DATA,
+    #         vis=0,
+    #     )
+    #     ikc.cstPoi(auto_ikH)
+
+    #     auto_local = LocNode(
+    #         "auto_local_loc", pf=rID, p=autoChain[0], align=autoChain[0]
+    #     )
+    #     locOffset = rSz * 4
+    #     auto_local.a.tx.set(xDr * locOffset)
+
+    #     # sdk to be made from auto_offset's translation to auto_sdk's rotation
+    #     auto_world = LocNode("auto_world", pf=rID, p=autoGrp, align=auto_local)
+    #     auto_offset = LocNode("auto_offset", pf=rID, p=auto_world, align=auto_world)
+    #     auto_local.cstPoi(auto_offset)
+    #     auto_sdk = LocNode("auto_sdk", pf=rID, p=autoGrp, align=fkc, addOfs=1)
+
+    #     # Setup SDK from offset to rotation
+    #     driver = auto_offset.a.ty
+    #     driven = auto_sdk.a[tyToR]
+    #     common.sdk2(driver, driven, 0, 0)
+    #     common.sdk2(driver, driven, -locOffset, 20 * xDr * rotaDir)
+    #     common.sdk2(driver, driven, locOffset, -20 * xDr * rotaDir)
+
+    #     driver = auto_offset.a.tz
+    #     driven = auto_sdk.a[tzToR]
+    #     common.sdk2(driver, driven, 0, 0)
+    #     common.sdk2(driver, driven, -locOffset, -20 * xDr * rotaDir)
+    #     common.sdk2(driver, driven, locOffset, 20 * xDr * rotaDir)
+
+    #     autoAim = ikc.a.add(attrName, min=0, dv=1)
+    #     ofs = fkc.addOffsetGrp()
+    #     auto_sdk.a.ry * autoAim * xDr / scaleFix >> ofs.a.ry
+    #     auto_sdk.a.rz * autoAim * xDr / scaleFix >> ofs.a.rz
+    #     autoGrp.hide()
+
+    def build_autoAim2(
+        self, startJ, endJ, fkc=None, ikc=None, attrName="autoAim", p=None
     ):
-        from nl_modules.nodel.joint_node import JointNode
         from nl_modules.nodel.ik_node import IkNode
 
         rID = self.rigID
         rSz = self.rigSize
-        xDr = self.x_dir
-        # autoGrp to be cst by an anchor
-        autoGrp = GroupNode("AUTO", pf=rID, p=fkc.offset)
-
-        dist = startJ.o.distanceTo(endJ)
-        autoChain = JointNode.makeTwoJChain(
-            "autoChain",
-            pf=rID,
-            snap=startJ,
-            ofs=(xDr * dist, 0, 0),
-            p=autoGrp,
-            r=rSz * 5,
-            color=Color.RED,
-        )
-        endJ.cstAim(autoChain[0], aim=(xDr, 0, 0), keep=False)
-        autoChain[0].freezeXf()
+        self.joints_am = common.extractSk([startJ, endJ], "_am", p=fkc.offset)
+        auto_loc = LocNode("auto_loc", pf=rID, align=self.joints_am[0], p=fkc.offset)
+        auto_dvn = self.joints_am[0].duplicate(n=rID + "auto_dvn", po=1)
+        auto_dvn.a.radius.set(rSz * 10)
 
         auto_ikH = IkNode(
-            "autoAim",
-            pf=rID,
-            sj=autoChain[0],
-            ee=autoChain[1],
-            quat=1,
-            p=self.RIG_DATA,
-            vis=0,
+            attrName, pf=rID, sj=self.joints_am[0], ee=self.joints_am[1], quat=1, p=p
         )
         ikc.cstPoi(auto_ikH)
+        autoAim = ikc.a.add(attrName, min=0, max=1, dv=0)
 
-        auto_local = LocNode(
-            "auto_local_loc", pf=rID, p=autoChain[0], align=autoChain[0]
-        )
-        locOffset = rSz * 4
-        auto_local.a.tx.set(xDr * locOffset)
-
-        # sdk to be made from auto_offset's translation to auto_sdk's rotation
-        auto_world = LocNode("auto_world", pf=rID, p=autoGrp, align=auto_local)
-        auto_offset = LocNode("auto_offset", pf=rID, p=auto_world, align=auto_world)
-        auto_local.cstPoi(auto_offset)
-        auto_sdk = LocNode("auto_sdk", pf=rID, p=autoGrp, align=fkc, addOfs=1)
-
-        # Setup SDK from offset to rotation
-        driver = auto_offset.a.ty
-        driven = auto_sdk.a[tyToR]
-        common.sdk2(driver, driven, 0, 0)
-        common.sdk2(driver, driven, -locOffset, 20 * xDr * rotaDir)
-        common.sdk2(driver, driven, locOffset, -20 * xDr * rotaDir)
-
-        driver = auto_offset.a.tz
-        driven = auto_sdk.a[tzToR]
-        common.sdk2(driver, driven, 0, 0)
-        common.sdk2(driver, driven, -locOffset, -20 * xDr * rotaDir)
-        common.sdk2(driver, driven, locOffset, 20 * xDr * rotaDir)
-
-        autoAim = ikc.a.add(attrName, min=0, dv=1)
         ofs = fkc.addOffsetGrp()
-        auto_sdk.a.ry * autoAim * xDr / scaleFix >> ofs.a.ry
-        auto_sdk.a.rz * autoAim * xDr / scaleFix >> ofs.a.rz
-        autoGrp.hide()
+        common.cstMulti(auto_loc, auto_dvn, ofs, cstType="ori", w=autoAim)
+
+        # Set driven key from aim joint to driven joint
+        driver = self.joints_am[0].a.ry
+        driven = auto_dvn.a.ry
+        common.sdk2(driver, driven, 0, 0)
+        common.sdk2(driver, driven, -120, -120)
+        common.sdk2(driver, driven, 120, 120)
+
+        driver = self.joints_am[0].a.rz
+        driven = auto_dvn.a.rz
+        common.sdk2(driver, driven, 0, 0)
+        common.sdk2(driver, driven, -120, -120)
+        common.sdk2(driver, driven, 120, 120)
+
+        auto_ikH.hide()
+        self.joints_am[0].hide()
 
     def build_digit_ik(self, dupTgt, scale, p=None):
         """IK setup for single digit"""
