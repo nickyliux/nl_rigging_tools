@@ -465,9 +465,6 @@ class Arm(RigModule):
     def post_setup(self):
         rID = self.rigID
         logging.info(rID)
-
-        self.setWSMirror([self.ikc, self.ikc_gimbal])
-
         ctlSet = []
         ctlSet.extend(self.fkCtl + self.ikCtl + [self.setting, self.pin_fkc])
 
