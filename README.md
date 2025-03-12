@@ -2,11 +2,11 @@
 ### What ?
 It is another open-source modular auto-rigger written for Autodesk Maya in Python.
 
-There are a few great auto-rigger tools available freely online. As a rigger I'm interested in building my own. I have scripted a few in Maya with MEL and in 3dsMax with maxscript. Python allows more possibility and I hope it's not too late to learn and apply it :relaxed:
+There are a few great auto-rigger tools available freely online. As a rigger I'm interested in building my own. I have scripted a few in Maya with MEL and in 3dsMax with maxscript. Python allows more possibility and I hope it's not too late to learn and apply it.
 
 One cool thing I learn throughout the development is the use of custom framework. Thanks to the Udemy course <b>"Python for Maya: Beginner to Advanced Rigging Automation"</b> by Nick Hughes, my code is more concise, faster to read, and independent on PyMEL.
 
-For example, the lines below generate all utility nodes and connections, but read like expression :fire:
+For example, the lines below generate all utility nodes and connections, but read like expression.
 
 ```python
 # ---------------
@@ -17,6 +17,38 @@ Ds = D * (1 - s)
 ds = D * (1 - s * math.e ** -(d - Ds))
 (((d > Ds).setCdn(ifTrue=ds, ifFalse=d)) * ratio >> softJ.a.tx)
 ```
+
+## Build Features
+* Modular
+* Individual rebuild
+* Auto linkage and space switch update
+
+## Rig Features
+General
+* Scalable
+
+Spine
+* hybrid fk/ik
+* squash/stretch
+* lower hip ctl
+* volume ctl
+
+Limbs
+* fk/ik
+* squash/stretch
+* space switch
+* auto clavicle/hip
+* soft ik ( biped )
+* smart ctl ( biped )
+* palm roll/bank ( biped )
+* elbow/knee pin with fk ctl ( biped )
+* -------- ( Optional ) --------
+* twist bones
+* patella bone
+* toe bones
+* knee correction
+* ribbon ctl ( biped )
+
 
 ## Framework Classes
 
@@ -41,6 +73,18 @@ classDiagram
     class Dimension
     
 ```
+<br>Examples
+```python
+loc = LocNode('myLoc', size=5, addOfs=1)
+crv = CurveNode('myCrv', shape='cube', color=Color.RED, p=loc)
+
+# Result :
+#
+#   myLoc_ofs       <- offset group
+#       myLoc       <- locator with local scale = 5
+#           myCrv   <- cube shape curve with color red
+#
+```
 
 ## Component Classes
 ```mermaid
@@ -58,49 +102,7 @@ classDiagram
     RigModule <|-- LegQd
     RigModule <|-- Tail
 ```
-## Builder Features
-* Modular
-* Individual rebuild
-* Automatic linkage and space switch target update
 
-## Rig Features
-General
-* Scalable
-
-Biped Spine
-* hybrid fk/ik
-* squash/stretch
-* lower hip ctl
-* volume ctl
-
-Biped Limbs
-* fk/ik
-* squash/stretch
-* space switch
-* soft ik
-* smart ctl
-* elbow/knee pin with fk ctl
-* auto clavicle/hip
-* palm roll/bank
-* -------- ( Optional ) --------
-* ribbon ctl
-* twist bones
-* patella bone
-* toe bones
-* knee correction
-
-Quad Spine
-* squash/stretch
-
-Quad Limbs
-* fk/ik
-* squash/stretch
-* space switch
-* -------- ( Optional ) --------
-* twist bones
-* patella bone
-* toe bones
-* wrist correction
 
 ## Marking Menus
 
@@ -125,4 +127,4 @@ Quad Limbs
 
 * Study matrix for more efficient constraint calculation.
 * Understand more about how professional animators work.
-* Visit my blog at [nickyliu.com](http://www.nickyliu.com) for more information.
+* Visit my blog at [nickyliu.com](http://www.nickyliu.com) for more info.

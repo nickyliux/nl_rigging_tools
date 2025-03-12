@@ -46,11 +46,11 @@ class LocNode(GroupNode):
             loc.delete()
 
         self.color = color or 0
-        self.scale(size or 1)
+        self.localScale(size or 1)
 
         if matchOffset:
             mc.move(*matchOffset, self, objectSpace=1, r=1)
 
-    def scale(self, val):
+    def localScale(self, val):
         """Set locator local scale"""
         self.shape.a.localScale.set(val, val, val)

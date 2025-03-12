@@ -43,7 +43,7 @@ class Test_LocNode_Main(Test_LocNode_Base):
         self.assertEqual(loc1.a.t.get(), (1, 2, 3))
 
     def test_scale(self):
-        self.loc.scale(5)
+        self.loc.localScale(5)
         self.assertEqual(self.loc.shape.a.localScaleX, 5)
         self.assertEqual(self.loc.shape.a.localScaleY, 5)
         self.assertEqual(self.loc.shape.a.localScaleZ, 5)
@@ -54,6 +54,7 @@ class Test_LocNode_Main(Test_LocNode_Base):
     def test_duplicate(self):
         dup = self.loc.duplicate()
         self.assertEqual(dup.__class__.__name__, "LocNode")
+
 
 if __name__ == "__main__":
     unittest.TestLoader.sortTestMethodsUsing = lambda self, a, b: (a < b) - (a > b)
