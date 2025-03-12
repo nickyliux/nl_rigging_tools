@@ -513,9 +513,7 @@ class RigModule(RigBase):
         [condF.a.outFloat >> target.a.v for target in targets]
 
     def handRollLogic(self, ikc, fkc, fkPin, locRoll):
-        # from nl_modules.utils import utils_node as ut
 
-        ikc.a.addSep()
         palmRoll = ikc.a.add("palmRoll")
         fkc.a.addSep()
         fkc.a.add("palmRoll", proxy=palmRoll)
@@ -525,7 +523,6 @@ class RigModule(RigBase):
         palmRoll * -1 >> locRoll.a.rz
 
     def handBankLogic(self, ikc, fkc, fkPin, locIn, locOut):
-        # from nl_modules.utils import utils_node as ut
 
         palmBank = ikc.a.add("palmBank")
         fkc.a.add("palmBank", proxy=palmBank)
@@ -635,16 +632,31 @@ class RigModule(RigBase):
     #     autoGrp.hide()
 
     def build_autoAim2(
-        self, startJ, endJ, fkc=None, ikc=None, attrName="autoAim", p=None
+        self,
+        startJ,
+        endJ,
+        fkc=None,
+        ikc=None,
+        attrName="autoAim",
+        p=None,
+        fwd=1,
+        bwd=1,
+        uwd=1,
+        dwd=1,
+        sign=1,
     ):
         from nl_modules.nodel.ik_node import IkNode
 
         rID = self.rigID
         rSz = self.rigSize
+        xDr = self.x_dir
         self.joints_am = common.extractSk([startJ, endJ], "_am", p=fkc.offset)
         auto_loc = LocNode("auto_loc", pf=rID, align=self.joints_am[0], p=fkc.offset)
         auto_dvn = self.joints_am[0].duplicate(n=rID + "auto_dvn", po=1)
-        auto_dvn.a.radius.set(rSz * 50)
+        auto_dvn.a.radius.set(rSz * 10)
+
+        ikc.cstAim(self.joints_am[0], aim=(xDr, 0, 0), keep=0)
+        self.joints_am[0].freezeXf()
 
         auto_ikH = IkNode(
             attrName, pf=rID, sj=self.joints_am[0], ee=self.joints_am[1], quat=1, p=p
@@ -653,15 +665,29 @@ class RigModule(RigBase):
         autoAim = ikc.a.add(attrName, min=0, max=1, dv=0)
 
         ofs = fkc.addOffsetGrp()
-        common.cstMulti(auto_loc, auto_dvn, ofs, cstType="ori", w=autoAim)  # , mo=1)
-
+        common.cstMulti(auto_loc, self.joints_am[0], ofs, cstType="ori", w=autoAim)
         # Set driven key from aim joint to driven joint
+        #
+        #   ARM
+        #       fwd bwd uwd dwd
+        #       -y  +y  +z  -z
+        #   LEG
+        #       fwd bwd owd iwd
+        #       +y  -y  -z  +z
+        #
+        # common.sdk(self.joints_am[0], auto_dvn, "ry", "ry", -120, -120 * fwd * sign)
+        # common.sdk(self.joints_am[0], auto_dvn, "ry", "ry", 0, 0)
+        # common.sdk(self.joints_am[0], auto_dvn, "ry", "ry", 120, 120 * bwd * sign)
+        # common.sdk(self.joints_am[0], auto_dvn, "rz", "rz", 120, 120 * uwd * sign)
+        # common.sdk(self.joints_am[0], auto_dvn, "rz", "rz", 0, 0)
+        # common.sdk(self.joints_am[0], auto_dvn, "rz", "rz", -120, -120 * dwd * sign)
+
         for _ in [-120, 0, 120]:
             common.sdk(self.joints_am[0], auto_dvn, "ry", "ry", _, _)
             common.sdk(self.joints_am[0], auto_dvn, "rz", "rz", _, _)
 
         auto_ikH.hide()
-        self.joints_am[0].hide()
+        # self.joints_am[0].hide()
 
     def build_digit_ik(self, dupTgt, scale, p=None):
         """IK setup for single digit"""

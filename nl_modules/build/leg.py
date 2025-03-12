@@ -35,6 +35,12 @@ class Leg(RigModule):
         self.TOE_BONES = self.master_guide.a.toeBones.get()
         self.TWIST_BONES = self.master_guide.a.twistBones.get()
         self.KNEE_FIX = self.master_guide.a.kneeFix.get()
+
+        self.autoAim_fwd = self.master_guide.a.autoAimFwd.get()
+        self.autoAim_bwd = self.master_guide.a.autoAimBwd.get()
+        self.autoAim_iwd = self.master_guide.a.autoAimIwd.get()
+        self.autoAim_owd = self.master_guide.a.autoAimOwd.get()
+
         self.FK_PART = GroupNode("FK", pf=self.rigID, p=self.CTL_DATA)
         self.IK_PART = GroupNode("IK", pf=self.rigID, p=self.CTL_DATA)
         self.BF_PART = GroupNode("BF", pf=self.rigID, p=self.CTL_DATA)
@@ -162,6 +168,11 @@ class Leg(RigModule):
             ikc=self.ikc,
             attrName="autoHip",
             p=self.RIG_DATA,
+            fwd=self.autoAim_fwd,
+            bwd=self.autoAim_bwd,
+            uwd=self.autoAim_owd,
+            dwd=self.autoAim_iwd,
+            sign=1,
         )
 
         if self.KNEE_FIX:

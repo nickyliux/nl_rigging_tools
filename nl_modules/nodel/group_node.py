@@ -240,11 +240,8 @@ class GroupNode(DagNode):
         typeName = type(crv).__name__
 
         if typeName == "str":  # preset name
-            print(crv)
             crvDictList = self.shape_getDictListFrLib(crv)
-            print(crvDictList)
             crvObj = self.shape_buildFrDictList(crvDictList, crv)
-            print(crvObj)
             crvObj.copyShapeAsInst([self], keepSrc=0)
 
         elif typeName == "GroupNode":  # another curve
