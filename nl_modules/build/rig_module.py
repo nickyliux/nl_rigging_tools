@@ -644,7 +644,7 @@ class RigModule(RigBase):
         self.joints_am = common.extractSk([startJ, endJ], "_am", p=fkc.offset)
         auto_loc = LocNode("auto_loc", pf=rID, align=self.joints_am[0], p=fkc.offset)
         auto_dvn = self.joints_am[0].duplicate(n=rID + "auto_dvn", po=1)
-        auto_dvn.a.radius.set(rSz * 10)
+        auto_dvn.a.radius.set(rSz * 50)
 
         auto_ikH = IkNode(
             attrName, pf=rID, sj=self.joints_am[0], ee=self.joints_am[1], quat=1, p=p

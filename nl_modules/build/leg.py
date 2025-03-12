@@ -123,7 +123,7 @@ class Leg(RigModule):
             "ball_fkc", pf=rID, shape="fk_rotator", up="-z", scale=rSz * xDr
         )
         self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 1.5)
-        self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz)
+        self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz / 2)
         self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
 
         self.rigNode.setMsg(

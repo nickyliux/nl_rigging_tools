@@ -217,7 +217,7 @@ def resetAllPvCtl():
         pvc = rN.a.pvc.inConnNode
         guide = DagNode(rID + "_pvc_guide")
         if pvc and guide and pvc.exists() and guide.exists():
-            pvc.alignTo(guide)
+            pvc.snapTo(guide)
 
 
 def updateSpaceSwitch():
