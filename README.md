@@ -2,11 +2,11 @@
 ### What ?
 It is another open-source modular auto-rigger written for Autodesk Maya in Python.
 
-There are a few great auto-rigger tools available freely online. As a rigger I'm interested in building my own. I have scripted a few in Maya with MEL and in 3dsMax with maxscript. Python allows more possibility and I hope it's not too late to learn and apply it :blush:
+There are a few great auto-rigger tools available freely online. As a rigger I'm interested in building my own. I have scripted a few in Maya with MEL and in 3dsMax with maxscript. Python allows more possibility and I hope it's not too late to learn and apply it :relaxed:
 
 One cool thing I learn throughout the development is the use of custom framework. Thanks to the Udemy course <b>"Python for Maya: Beginner to Advanced Rigging Automation"</b> by Nick Hughes, my code is more concise, faster to read, and independent on PyMEL.
 
-For example, the lines below generate all utility nodes and connections, but read like expression :fireworks:
+For example, the lines below generate all utility nodes and connections, but read like expression :fire:
 
 ```python
 # ---------------
