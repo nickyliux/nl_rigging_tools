@@ -477,7 +477,7 @@ def getMeshBelowSel():
 
 def setViewport():
     mc.select(cl=1)
-    mc.viewFit(all=1)
+    # mc.viewFit(all=1)
     mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
     # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
     for p in mc.getPanel(type="modelPanel"):

@@ -2,15 +2,17 @@
 ### What ?
 It is another open-source modular auto-rigger written for Autodesk Maya in Python.
 
-There are a few great auto-rigger tools available freely online. As a rigger I'm interested in building my own. One cool thing I learn throughout the development is the use of custom framework. Thanks to the Udemy course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by <b>Nick Hughes</b>, my code is less redundant, easier to read, and not dependent on PyMEL.
+There are a few great auto-rigger tools available freely online. As a rigger I'm interested in building my own. I have scripted a few in Maya with MEL and Max with maxscript. Python allows more possibility and I hope it's not too late to learn and apply it.
 
-e.g. the codes below generate all utility nodes and connections, and read like expression.
+One cool thing I learn throughout the development is the use of custom framework. Thanks to the Udemy course <b>"Python for Maya: Beginner to Advanced Rigging Automation"</b> by Nick Hughes, my code is more concise, faster to read, and independent on PyMEL.
+
+For example, the lines below generate all utility nodes and connections, but read like expression.
 
 ```python
 # ---------------
 #    Soft IK
 # ---------------
-s = self.ikc.a.softIK
+s = self.ikc.a.soft
 Ds = D * (1 - s)
 ds = D * (1 - s * math.e ** -(d - Ds))
 (((d > Ds).setCdn(ifTrue=ds, ifFalse=d)) * ratio >> softJ.a.tx)
@@ -40,19 +42,6 @@ classDiagram
     
 ```
 
-Examples
-```python
-# create curve with cube shape and offset group
-ctl = CurveNode("myCrv", shape="cube", addOfs=1)
-
-# create joint of radius=2 and parented to ctl
-jnt = JointNode("myJnt", r=2, p=ctl)
-
-# create locator of size=3, aligned to ctl, parented to jnt
-loc = LocNode("myLoc", size=3, align=ctl, p=jnt)
-```
-
-
 ## Component Classes
 ```mermaid
 classDiagram
@@ -69,6 +58,10 @@ classDiagram
     RigModule <|-- LegQd
     RigModule <|-- Tail
 ```
+## Builder Features
+* Modular
+* Individual rebuild
+* Automatic linkage and space switch target update
 
 ## Rig Features
 General
@@ -111,14 +104,9 @@ Quad Limbs
 
 ## Marking Menus
 
-Two marking menus are included with shortcut.
-
 #### Rig Operation ( ctrl + MMB )
-
 ![The Autorig](nl_modules/doc/marking_menu_autorig.png)
-
 #### General Rigging ( ctrl + alt + MMB )
-
 ![General Rigging](nl_modules/doc/marking_menu_rigging.png)
 
 
@@ -127,18 +115,14 @@ Two marking menus are included with shortcut.
 2. Extract to storage location.
 3. Locate install/dragAndDrop.py.
 4. Drag and drop it onto a Maya viewport.
+5. Run the lines below
+    ```python
+    from nl_modules import nl_rigging_tools
+    nl_rigging_tools.main()
+    ```
 
-
-## Usage
-
-```python
-from nl_modules import nl_rigging_tools
-nl_rigging_tools.main()
-```
 ## To do
 
 * Study matrix for more efficient constraint calculation.
 * Understand more about how professional animators work.
-
-## More info
-Visit [nickyliu.com](http://www.nickyliu.com) for more information.
+* Visit my blog at [nickyliu.com](http://www.nickyliu.com) for more information.
