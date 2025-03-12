@@ -2,7 +2,7 @@
 ### What ?
 It is another open-source modular auto-rigger written for Autodesk Maya in Python.
 
-There are a few great auto-rigger tools available freely online. As a rigger I'm interested in building my own. I have scripted a few autorigs in Maya with MEL and in 3dsMax with maxscript. I have a few applications written for shotgun in Python but I've been longing for applying it in rig building.
+There are a few great auto-rigger tools available freely online. As a rigger I'm interested in building my own. I have scripted a few autorigs in Maya with MEL and in 3dsMax with maxscript. I have a few applications written for shotgun in Python but I've been longing for applying it in rig creation.
 
 One cool thing I learn throughout the development is the use of custom framework. Thanks to the Udemy course <b>"Python for Maya: Beginner to Advanced Rigging Automation"</b> by Nick Hughes, my code is more concise, faster to read, and independent on PyMEL.
 
