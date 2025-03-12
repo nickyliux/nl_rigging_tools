@@ -116,10 +116,8 @@ class Arm(RigModule):
         self.palm_fkc = CurveNode(
             "palm_fkc", pf=rID, up="x", shape="sphere2", scale=rSz * 4
         )
-        # self.ikc = CurveNode("ikc", pf=rID, shape="diamond", scale=rSz * 3)
         self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 2)
-        # self.ikc = JointNode("ikc", pf=rID, r=10, shape="cube")
-        self.pvc = CurveNode("pvc", pf=rID, shape="sphere2", scale=xDr * rSz * 2)
+        self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz)
 
         self.rigNode.setMsg(
             {

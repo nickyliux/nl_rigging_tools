@@ -325,8 +325,8 @@ class RigModule(RigBase):
     def post_module(self):
         for obj in mc.ls(tr=1):
             mc.setAttr(obj + ".ro", cb=1)
-        for _ in mc.ls(type="curveShape"):
-            mc.setAttr(_ + ".alwaysDrawOnTop", 1)
+        # for _ in mc.ls(type="curveShape"):
+        #     mc.setAttr(_ + ".alwaysDrawOnTop", 1)
         self.moduleG.hide()
 
     def unbuild_module(self):

@@ -26,15 +26,13 @@ def saveJson(path, data, force=False):
 
 def importFile(path):
     content = mc.file(path, i=True, returnNewNodes=1)
-    mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
-    # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
     return content
 
 
 def openFile(path):
     mc.file(new=1, force=1)
     mc.file(path, o=1)
-    # mc.viewFit(all=1)
+    mc.viewFit(all=1)
 
 
 def deleteFile(path):

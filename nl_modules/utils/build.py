@@ -72,13 +72,12 @@ def buildTgt(rigN):
 def buildSelOrAll(*arg):
     rigNodes = getRigNodesSelOrAll()
     if rigNodes:
-        mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
-        # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
         for rigN in rigNodes:
             buildTgt(rigN)
-        resetAllCtlAttr()
-        updateSpaceSwitch()
+        resetAllCtl()
         updateAnchorConn()
+        updateSpaceSwitch()
+        resetAllPvCtl()
         mc.select(cl=1)
         print()
 
@@ -98,9 +97,10 @@ def unbuildSelOrAll(*arg):
     if rigNodes:
         for rigN in rigNodes:
             unbuildTgt(rigN)
-        resetAllCtlAttr()
-        updateSpaceSwitch()
+        resetAllCtl()
         updateAnchorConn()
+        updateSpaceSwitch()
+        resetAllPvCtl()
         mc.select(cl=1)
         print()
 
@@ -200,13 +200,24 @@ def getAllRigCtls():
     return []
 
 
-def resetAllCtlAttr():
+def resetAllCtl():
     """Reset all ctl's attr to default"""
     for sel in getAllRigCtls():
         selN = DagNode(sel)
         for attr in selN.a.list(k=1, u=1, se=1, s=1):
             if attr.settable():
                 attr.reset()
+
+
+def resetAllPvCtl():
+    rigNodes = mc.ls("*RGN", type="script")
+    for rigNode in rigNodes:
+        rN = DagNode(rigNode)
+        rID = rN.a.rigID.get()
+        pvc = rN.a.pvc.inConnNode
+        guide = DagNode(rID + "_pvc_guide")
+        if pvc and guide and pvc.exists() and guide.exists():
+            pvc.alignTo(guide)
 
 
 def updateSpaceSwitch():

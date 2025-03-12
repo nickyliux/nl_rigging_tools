@@ -201,19 +201,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         path = os.path.realpath(MAYA_TPL_DIR)
         subprocess.Popen(f'explorer "{path}"')
-        # items = self.UI.component_LW.selectedItems()
-        # if items:
-        #     mc.refresh(su=1)
-        #     for item in items:
-        #         names = guide.COMPONENT_DICT[item.text()]
-        #         tgtFile = f"{MAYA_TPL_DIR}/{names[0]}.ma"
-        #         if os.path.isfile(tgtFile):
-        #             file.openFile(tgtFile)
-        #         else:
-        #             logging.info(f"missing file: {tgtFile}")
-        #     mc.refresh(su=0)
-        #     common.setViewport()
-        #     self.rigNode_refresh_BN_clicked()
 
     def preset_load_BN_clicked(self, item):
         itemText = item.text()
