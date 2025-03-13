@@ -86,7 +86,7 @@ class Arm(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        self.build_autoAim2(
+        self.build_autoAim(
             self.clavicle,
             self.upr,
             fkc=self.clavicle_fkc,

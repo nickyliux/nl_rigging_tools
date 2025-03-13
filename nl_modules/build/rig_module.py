@@ -631,7 +631,7 @@ class RigModule(RigBase):
     #     auto_sdk.a.rz * autoAim * xDr / scaleFix >> ofs.a.rz
     #     autoGrp.hide()
 
-    def build_autoAim2(
+    def build_autoAim(
         self,
         startJ,
         endJ,
@@ -651,12 +651,12 @@ class RigModule(RigBase):
         rSz = self.rigSize
         xDr = self.x_dir
         self.joints_am = common.extractSk([startJ, endJ], "_am", p=fkc.offset)
-        auto_loc = LocNode("auto_loc", pf=rID, align=self.joints_am[0], p=fkc.offset)
-        auto_dvn = self.joints_am[0].duplicate(n=rID + "auto_dvn", po=1)
-        auto_dvn.a.radius.set(rSz * 10)
 
         ikc.cstAim(self.joints_am[0], aim=(xDr, 0, 0), keep=0)
         self.joints_am[0].freezeXf()
+        auto_loc = LocNode("auto_loc", pf=rID, align=self.joints_am[0], p=fkc.offset)
+        auto_dvn = self.joints_am[0].duplicate(n=rID + "auto_dvn", po=1)
+        auto_dvn.a.radius.set(rSz * 12)
 
         auto_ikH = IkNode(
             attrName, pf=rID, sj=self.joints_am[0], ee=self.joints_am[1], quat=1, p=p
