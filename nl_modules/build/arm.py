@@ -33,10 +33,10 @@ class Arm(RigModule):
         self.RBN_BONES = self.master_guide.a.rbnBones.get()
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
 
-        self.autoAim_fwd = self.master_guide.a.autoAimFwd.get()
-        self.autoAim_bwd = self.master_guide.a.autoAimBwd.get()
-        self.autoAim_uwd = self.master_guide.a.autoAimUwd.get()
-        self.autoAim_dwd = self.master_guide.a.autoAimDwd.get()
+        # self.autoAim_fwd = self.master_guide.a.foWeight.get()
+        # self.autoAim_bwd = self.master_guide.a.bkWeight.get()
+        # self.autoAim_uwd = self.master_guide.a.upWeight.get()
+        # self.autoAim_dwd = self.master_guide.a.dnWeight.get()
 
         self.FK_PART = GroupNode("FK", pf=self.rigID, p=self.CTL_DATA)
         self.IK_PART = GroupNode("IK", pf=self.rigID, p=self.CTL_DATA)
@@ -92,12 +92,6 @@ class Arm(RigModule):
             fkc=self.clavicle_fkc,
             ikc=self.ikc,
             attrName="autoClav",
-            p=self.RIG_DATA,
-            fwd=self.autoAim_fwd,
-            bwd=self.autoAim_bwd,
-            uwd=self.autoAim_uwd,
-            dwd=self.autoAim_dwd,
-            sign=1,
         )
 
         if self.RBN_BONES:

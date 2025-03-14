@@ -10,6 +10,9 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
 BIND_JNT_SET = "bind_jnt_set"
+CPK = Color.PINK
+CYL = Color.YELLOW
+CLB = Color.L_BLUE
 
 
 class RigModule(RigBase):
@@ -371,10 +374,10 @@ class RigModule(RigBase):
             self.rigNode.setMsg({name: loc})
 
             if name.startswith("anchorM"):  # Blue for Male
-                loc.color = Color.L_BLUE
+                loc.color = CLB
                 tgt.cstPar(loc)
             elif name.startswith("anchorF"):  # Pink for Female
-                loc.color = Color.PINK
+                loc.color = CPK
                 loc.alignTo(tgt)
                 loc.cstPar(tgt.offset, mo=1)
             loc.hide()
@@ -473,7 +476,7 @@ class RigModule(RigBase):
                 "patella",
                 pf=rID,
                 align=patella_guide,
-                color=Color.L_BLUE,
+                color=CLB,
                 r=rSz,
                 p=self.upr,
             )
@@ -631,41 +634,38 @@ class RigModule(RigBase):
     #     auto_sdk.a.rz * autoAim * xDr / scaleFix >> ofs.a.rz
     #     autoGrp.hide()
 
-    def build_autoAim(
-        self,
-        startJ,
-        endJ,
-        fkc=None,
-        ikc=None,
-        attrName="autoAim",
-        p=None,
-        fwd=1,
-        bwd=1,
-        uwd=1,
-        dwd=1,
-        sign=1,
-    ):
+    def build_autoAim(self, startJ, endJ, fkc=None, ikc=None, attrName="autoAim"):
+        """Setup auto clavicle / hip using simple ik and orient cst"""
         from nl_modules.nodel.ik_node import IkNode
 
         rID = self.rigID
         rSz = self.rigSize
-        xDr = self.x_dir
+
+        # create aim chain
         self.joints_am = common.extractSk([startJ, endJ], "_am", p=fkc.offset)
-        # ikc.cstAim(self.joints_am[0], aim=(xDr, 0, 0), keep=0)
-        # self.joints_am[0].freezeXf()
         auto_loc = LocNode("auto_loc", pf=rID, align=self.joints_am[0], p=fkc.offset)
         auto_dvn = self.joints_am[0].duplicate(n=rID + "auto_dvn", po=1)
         auto_dvn.a.radius.set(rSz * 8)
-        auto_dvn.color = Color.YELLOW
+        auto_dvn.color = CYL
 
+        # setup IK
         auto_ikH = IkNode(
-            attrName, pf=rID, sj=self.joints_am[0], ee=self.joints_am[1], quat=1, p=p
+            attrName,
+            pf=rID,
+            sj=self.joints_am[0],
+            ee=self.joints_am[1],
+            quat=1,
+            p=self.RIG_DATA,
         )
         ikc.cstPoi(auto_ikH)
-        autoAim = ikc.a.add(attrName, min=0, max=1, dv=0)
 
+        # setup psd & cst
+        autoAim = ikc.a.add(attrName, min=0, max=1, dv=0)
+        psdAttr = self.build_uvPSD(endJ, ikc, 4)
         ofs = fkc.addOffsetGrp()
-        common.cstMulti(auto_loc, self.joints_am[0], ofs, cstType="ori", w=autoAim)
+        common.cstMulti(
+            auto_loc, self.joints_am[0], ofs, cstType="ori", w=autoAim * psdAttr
+        )
         # Set driven key from aim joint to driven joint
         #
         #   ARM
@@ -724,45 +724,70 @@ class RigModule(RigBase):
         mc.hide(ikJ)
         return ctl, ikJ
 
-    @staticmethod
-    def uvPSD(tgt):
+    def build_uvPSD(self, tgt, ikc, ctlNum):
+        """
+        Create uv based pose base setup, useful for corrective blendshape fix
+        or auto clav or hip
 
+        Note:
+            Since this is not using translate to rotate method for upper arm,
+            moving the ikc toward the uv ball doesn't affect the orientation
+            of the upper joint
+        """
         if not tgt.children:
             return
-        rID = ("test",)  # self.rigID
 
+        rID = self.rigID
+        rSz = self.rigSize
+
+        # create group & loc
         tgt_child = tgt.children[0]
-        psd_grp = GroupNode("psd_grp", pf=rID)
+        psd_grp = GroupNode("PSD", pf=rID, p=self.CTL_DATA)
+        ctl_grp = GroupNode("ctl_grp", pf=rID, align=tgt, p=psd_grp)
         psd_loc = LocNode("psd_loc_#", pf=rID, align=tgt_child, p=psd_grp)
-        tgt_child.cstPoi(psd_loc)
+        ikc.cstPoi(psd_loc)
 
-        ctl_ofs = GroupNode("psd_ofs", pf=rID, align=tgt, p=psd_grp)
-        ctl = CurveNode("psd_ctl_#", shape="stick", align=ctl_ofs, p=ctl_ofs, scale=0.2)
-        ctl.a.add("hit", k=0)
-        ctl.a.add("weight", k=0, dv=1)
+        allCtl = []
+        for i in range(ctlNum):
 
-        psd_ball = DagNode(
-            mc.sphere(n=rID + "_psdBall_#", r=2, d=3, s=4, spans=2, ch=0)[0]
-        )
-        psd_ball.alignTo(ctl, offsetR=(0, 0, -90), p=ctl)
+            # create ctl
+            ctl = CurveNode(
+                "psd_ctl_#", shape="stickS", align=ctl_grp, p=ctl_grp, scale=rSz / 5
+            )
+            allCtl.append(ctl)
+            ctl.a.add("hit", k=0, min=0, max=1)
+            ctl.a.add("weight", k=0, min=0, max=1, dv=0.5)
+            ctl.a.rx.set(i * 90)
 
-        if not ctl_ofs.getCstNodes():
-            tgt.parent.cstPar(ctl_ofs, mo=1)
+            # create uv sphere
+            psd_ball = DagNode(
+                mc.sphere(n=rID + "_psdBall_#", r=2, d=3, s=4, spans=2, ch=0)[0]
+            )
+            psd_ball.alignTo(ctl, offsetR=(0, 0, -90), p=ctl)
 
-        # create cpos
-        cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
-        psd_ball.shape.a.worldSpace >> cpos.a.inputSurface
-        psd_loc.a.t >> cpos.a.inPosition
+            # create cpos
+            cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
+            psd_ball.shape.a.worldSpace >> cpos.a.inputSurface
+            psd_loc.shape.a.worldPosition >> cpos.a.inPosition
 
-        # create setRange
-        setRg_out = ut.setRange_(cpos.a.parameterU, 0, 2, 1, 0)
+            # create setRange
+            setRg_out = ut.setRange_(cpos.a.parameterU, 0, 2, 1, 0)
+            hit = ctl.a["hit"]
+            common.sdk2(setRg_out, hit, 0.5, 0)
+            common.sdk2(setRg_out, hit, 1, 1)
 
-        hit = ctl.a["hit"]
-        common.sdk2(setRg_out, hit, 0.5, 0)  # , tangent=1)
-        # common.sdk2(setRg_out, hit, 0.75, 0.3, tangent=1)
-        common.sdk2(setRg_out, hit, 1, 1)  # , tangent=1)
+            # color debug
+            driven = ctl.shape.a.overrideColor
+            common.sdk2(hit, driven, 0.1, 1, tangent=2)
+            common.sdk2(hit, driven, 0.7, 12, tangent=2)
+            common.sdk2(hit, driven, 1, 13, tangent=2)
 
-        driven = ctl.shape.a.overrideColor
-        common.sdk2(hit, driven, 0, 1, tangent=2)
-        common.sdk2(hit, driven, 0.7, 12, tangent=2)
-        common.sdk2(hit, driven, 1, 13, tangent=2)
+        # Calc average weight
+        result = allCtl[0].a.hit * allCtl[0].a.weight
+        for ctl in allCtl[1:]:
+            result += ctl.a.hit * ctl.a.weight
+
+        autoWeight = ikc.a.add("autoWeight", k=0)
+        result >> autoWeight
+
+        return autoWeight
