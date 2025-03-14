@@ -409,29 +409,38 @@ def addVisOption(ctl, attrName):
     return [v0, v1]
 
 
-def sdk(dvr, dvn, attr1, attr2, v1, v2, auto=0):
+def sdk(dvr, dvn, attr1, attr2, v1, v2, tangent=0):
     """Create set driven key, using object, attr
     e.g.
         sdk2(obj1, obj2, 'ty', 'ty', 0, 0)
         sdk2(obj1, obj2, 'ty', 'ty', 1, 2)
     """
-    itt = "linear" if auto == 0 else "auto"
-    ott = "linear" if auto == 0 else "auto"
+    opt = ["linear", "auto", "stepnext"]
+    # itt = "linear" if auto == 0 else "auto"
+    # ott = "linear" if auto == 0 else "auto"
     mc.setDrivenKeyframe(
-        f"{dvn}.{attr2}", cd=f"{dvr}.{attr1}", dv=v1, v=v2, itt=itt, ott=ott
+        f"{dvn}.{attr2}",
+        cd=f"{dvr}.{attr1}",
+        dv=v1,
+        v=v2,
+        itt=opt[tangent],
+        ott=opt[tangent],
     )
     # mc.setInfinity(dvr, pri="linear", poi="linear")
 
 
-def sdk2(attr1, attr2, v1, v2, auto=0):
+def sdk2(attr1, attr2, v1, v2, tangent=0):
     """Create set driven key, using full attr
     e.g.
         sdk2(obj1.a.ty, obj2.a.ty, 0, 0)
         sdk2(obj1.a.ty, obj2.a.ty, 1, 2)
     """
-    itt = "linear" if auto == 0 else "auto"
-    ott = "linear" if auto == 0 else "auto"
-    mc.setDrivenKeyframe(attr2, cd=attr1, dv=v1, v=v2, itt=itt, ott=ott)
+    opt = ["linear", "auto", "stepnext"]
+    # itt = "linear" if auto == 0 else "auto"
+    # ott = "linear" if auto == 0 else "auto"
+    mc.setDrivenKeyframe(
+        attr2, cd=attr1, dv=v1, v=v2, itt=opt[tangent], ott=opt[tangent]
+    )
 
 
 def addTwistReader(target, pf="", p=None):

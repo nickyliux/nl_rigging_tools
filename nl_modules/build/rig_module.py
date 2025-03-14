@@ -448,19 +448,19 @@ class RigModule(RigBase):
     def boneFix_sdk(self, driver, driven):
         s = self.rigSize * self.x_dir
         common.sdk(driver, driven, "ry", "tz", 0, 0)
-        common.sdk(driver, driven, "ry", "tz", -60, 0, auto=1)
-        common.sdk(driver, driven, "ry", "tz", -80, -1.5 * s, auto=1)
+        common.sdk(driver, driven, "ry", "tz", -60, 0, tangent=1)
+        common.sdk(driver, driven, "ry", "tz", -80, -1.5 * s, tangent=1)
         common.sdk(driver, driven, "ry", "tz", -170, -7 * s)
         common.sdk(driver, driven, "ry", "tx", 0, 0)
-        common.sdk(driver, driven, "ry", "tx", -80, s, auto=1)
+        common.sdk(driver, driven, "ry", "tx", -80, s, tangent=1)
         common.sdk(driver, driven, "ry", "tx", -170, -3 * s)
 
     def patella_setup(self, PRX_GRP):
 
         def patella_sdk(driver, driven):
             common.sdk(driver, driven, "ry", "ry", 0, 0)
-            common.sdk(driver, driven, "ry", "ry", -20, -1, auto=1)
-            common.sdk(driver, driven, "ry", "ry", -90, -45, auto=1)
+            common.sdk(driver, driven, "ry", "ry", -20, -1, tangent=1)
+            common.sdk(driver, driven, "ry", "ry", -90, -45, tangent=1)
             common.sdk(driver, driven, "ry", "ry", -180, -90)
 
         rID = self.rigID
@@ -651,12 +651,12 @@ class RigModule(RigBase):
         rSz = self.rigSize
         xDr = self.x_dir
         self.joints_am = common.extractSk([startJ, endJ], "_am", p=fkc.offset)
-
-        ikc.cstAim(self.joints_am[0], aim=(xDr, 0, 0), keep=0)
-        self.joints_am[0].freezeXf()
+        # ikc.cstAim(self.joints_am[0], aim=(xDr, 0, 0), keep=0)
+        # self.joints_am[0].freezeXf()
         auto_loc = LocNode("auto_loc", pf=rID, align=self.joints_am[0], p=fkc.offset)
         auto_dvn = self.joints_am[0].duplicate(n=rID + "auto_dvn", po=1)
-        auto_dvn.a.radius.set(rSz * 12)
+        auto_dvn.a.radius.set(rSz * 8)
+        auto_dvn.color = Color.YELLOW
 
         auto_ikH = IkNode(
             attrName, pf=rID, sj=self.joints_am[0], ee=self.joints_am[1], quat=1, p=p
@@ -723,3 +723,46 @@ class RigModule(RigBase):
         )
         mc.hide(ikJ)
         return ctl, ikJ
+
+    @staticmethod
+    def uvPSD(tgt):
+
+        if not tgt.children:
+            return
+        rID = ("test",)  # self.rigID
+
+        tgt_child = tgt.children[0]
+        psd_grp = GroupNode("psd_grp", pf=rID)
+        psd_loc = LocNode("psd_loc_#", pf=rID, align=tgt_child, p=psd_grp)
+        tgt_child.cstPoi(psd_loc)
+
+        ctl_ofs = GroupNode("psd_ofs", pf=rID, align=tgt, p=psd_grp)
+        ctl = CurveNode("psd_ctl_#", shape="stick", align=ctl_ofs, p=ctl_ofs, scale=0.2)
+        ctl.a.add("hit", k=0)
+        ctl.a.add("weight", k=0, dv=1)
+
+        psd_ball = DagNode(
+            mc.sphere(n=rID + "_psdBall_#", r=2, d=3, s=4, spans=2, ch=0)[0]
+        )
+        psd_ball.alignTo(ctl, offsetR=(0, 0, -90), p=ctl)
+
+        if not ctl_ofs.getCstNodes():
+            tgt.parent.cstPar(ctl_ofs, mo=1)
+
+        # create cpos
+        cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
+        psd_ball.shape.a.worldSpace >> cpos.a.inputSurface
+        psd_loc.a.t >> cpos.a.inPosition
+
+        # create setRange
+        setRg_out = ut.setRange_(cpos.a.parameterU, 0, 2, 1, 0)
+
+        hit = ctl.a["hit"]
+        common.sdk2(setRg_out, hit, 0.5, 0)  # , tangent=1)
+        # common.sdk2(setRg_out, hit, 0.75, 0.3, tangent=1)
+        common.sdk2(setRg_out, hit, 1, 1)  # , tangent=1)
+
+        driven = ctl.shape.a.overrideColor
+        common.sdk2(hit, driven, 0, 1, tangent=2)
+        common.sdk2(hit, driven, 0.7, 12, tangent=2)
+        common.sdk2(hit, driven, 1, 13, tangent=2)

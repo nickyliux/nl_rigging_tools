@@ -81,6 +81,18 @@ def clp_(attr, min=0, max=0):
     return n.a.outputR
 
 
+def setRange_(attr, minO, maxO, minN, maxN):
+    from nl_modules.nodel.base.dep_node import DepNode
+
+    n = DepNode("setR__#", "setRange")
+    minO >> n.a.oldMinX
+    maxO >> n.a.oldMaxX
+    minN >> n.a.minX
+    maxN >> n.a.maxX
+    attr >> n.a.valueX
+    return n.a.outValueX
+
+
 def distDim_(obj1, obj2):
     """Return distance attr for two objects with distanceDimension
     e.g.
@@ -118,17 +130,17 @@ def arcLenDim_(crv):
 
 
 def motionPath_(
-        crv,
-        uValue=0,
-        fractionMode=1,
-        follow=1,
-        worldUpType=2,
-        worldUpVector=(0, 1, 0),
-        worldUpObject=None,
-        frontAxis=0,
-        inverseFront=0,
-        upAxis=1,
-        driven=None,
+    crv,
+    uValue=0,
+    fractionMode=1,
+    follow=1,
+    worldUpType=2,
+    worldUpVector=(0, 1, 0),
+    worldUpObject=None,
+    frontAxis=0,
+    inverseFront=0,
+    upAxis=1,
+    driven=None,
 ):
     """Create motion path for curve
     e.g.
