@@ -33,11 +33,6 @@ class Arm(RigModule):
         self.RBN_BONES = self.master_guide.a.rbnBones.get()
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
 
-        # self.autoAim_fwd = self.master_guide.a.foWeight.get()
-        # self.autoAim_bwd = self.master_guide.a.bkWeight.get()
-        # self.autoAim_uwd = self.master_guide.a.upWeight.get()
-        # self.autoAim_dwd = self.master_guide.a.dnWeight.get()
-
         self.FK_PART = GroupNode("FK", pf=self.rigID, p=self.CTL_DATA)
         self.IK_PART = GroupNode("IK", pf=self.rigID, p=self.CTL_DATA)
         self.BF_PART = GroupNode("BF", pf=self.rigID, p=self.CTL_DATA)
@@ -106,7 +101,7 @@ class Arm(RigModule):
         rID = self.rigID
         xDr = self.x_dir
         self.setting = CurveNode(
-            "setting", pf=rID, shape="stickS", up="-z", scale=rSz * xDr, color=CB
+            "setting", pf=rID, shape="stick", up="-z", scale=rSz * xDr, color=CB
         )
         self.clavicle_fkc = CurveNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
@@ -363,23 +358,23 @@ class Arm(RigModule):
 
         # FK IK CTL VIS TOGGLE
         fkIkBlend = self.setting.a["fkIkBlend"]
-        autoFkIk = self.setting.a.add("autoFkIk", min=0, max=1, dv=1, k=0)
-        showFk = self.setting.a.add("showFk", min=0, max=1, dv=1, k=0)
-        showIk = self.setting.a.add("showIk", min=0, max=1, dv=1, k=0)
+        autoFkIkVis = self.setting.a.add("autoFkIkVis", min=0, max=1, dv=1, k=0)
+        fkVis = self.setting.a.add("fkVis", min=0, max=1, dv=1, k=0)
+        ikVis = self.setting.a.add("ikVis", min=0, max=1, dv=1, k=0)
 
         # [fkIkBlend >> c.a.v for c in (self.ikc, self.pvc, self.pvc_line, self.ikCstG)]
         self.visByCondition(
             fkIkBlend,
-            autoFkIk,
-            showIk,
+            autoFkIkVis,
+            ikVis,
             [self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             v=1,
         )
         # [~fkIkBlend >> c.a.v for c in (self.palm_fkc, self.lwr_fkc, self.upr_fkc)]
         self.visByCondition(
             fkIkBlend,
-            autoFkIk,
-            showFk,
+            autoFkIkVis,
+            fkVis,
             self.fkCtl[1:],
             v=0,
         )

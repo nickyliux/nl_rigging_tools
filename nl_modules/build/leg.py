@@ -111,7 +111,7 @@ class Leg(RigModule):
         rID = self.rigID
         xDr = self.x_dir
         self.setting = CurveNode(
-            "setting", pf=rID, shape="stickS", up="x", scale=rSz * xDr, color=CB
+            "setting", pf=rID, shape="stick", up="x", scale=rSz * xDr, color=CB
         )
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
@@ -536,14 +536,14 @@ class Leg(RigModule):
         # visGrp[1] >> self.PRX_GRP.a.v
 
         fkIkBlend = self.setting.a["fkIkBlend"]
-        autoVis = self.setting.a.add("autoVis", min=0, max=1, dv=1, k=0)
+        autoFkIkVis = self.setting.a.add("autoFkIkVis", min=0, max=1, dv=1, k=0)
         showFk = self.setting.a.add("showFk", min=0, max=1, dv=1, k=0)
         showIk = self.setting.a.add("showIk", min=0, max=1, dv=1, k=0)
 
         # [fkIkBlend >> c.a.v for c in (self.ikc, self.pvc, self.pvc_line, self.ikCstG)]
         self.visByCondition(
             fkIkBlend,
-            autoVis,
+            autoFkIkVis,
             showIk,
             [self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             v=1,
@@ -551,7 +551,7 @@ class Leg(RigModule):
         # [~fkIkBlend >> c.a.v for c in self.fkCtl[1:-1]]
         self.visByCondition(
             fkIkBlend,
-            autoVis,
+            autoFkIkVis,
             showFk,
             self.fkCtl[1:-1],
             v=0,

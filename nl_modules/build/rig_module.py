@@ -593,6 +593,21 @@ class RigModule(RigBase):
         mc.hide(ikJ)
         return ctl, ikJ
 
+    def getAutoAimPreset(self, rID):
+
+        autoClavUp = self.master_guide.a.autoClavUp.get()
+        autoClavFw = self.master_guide.a.autoClavFw.get()
+        autoClavDn = self.master_guide.a.autoClavDn.get()
+        autoClavBk = self.master_guide.a.autoClavBk.get()
+
+        preset = [1, 1, 1, 1]
+        if rID.startswith("lf"):
+            preset = [autoClavUp, autoClavFw, autoClavDn, autoClavBk]
+        elif rID.startswith("rt"):
+            preset = [autoClavDn, autoClavBk, autoClavUp, autoClavFw]
+
+        return preset
+
     def build_autoAim(self, startJ, endJ, fkc=None, ikc=None, setting=None):
         """
         Setup auto clavicle / hip using simple ik and orient cst
@@ -621,12 +636,20 @@ class RigModule(RigBase):
         # setup PSD & cst
         autoAim = ikc.a.add("autoAim", min=0, max=1, dv=0)
         psdAttr = self.build_uvPSD(
-            tgtJ=endJ, ikc=ikc, ctlNum=4, cst=fkc.offset, setting=setting
+            rID=rID,
+            rSz=rSz,
+            tgtJ=endJ,
+            ikc=ikc,
+            ctlNum=4,
+            cst=fkc.offset,
+            setting=setting,
+            preset=self.getAutoAimPreset(rID),
+            p=self.CTL_DATA,
         )
 
-        ofs = fkc.addOffsetGrp()
+        fkc_ofs = fkc.addOffsetGrp()
         common.cstMulti(
-            base_loc, self.joints_am[0], ofs, cstType="ori", w=autoAim * psdAttr
+            base_loc, self.joints_am[0], fkc_ofs, cstType="ori", w=autoAim * psdAttr
         )
         # Set driven key from aim joint to driven joint
         #
@@ -651,7 +674,18 @@ class RigModule(RigBase):
         auto_ikH.hide()
         self.joints_am[0].hide()
 
-    def build_uvPSD(self, tgtJ=None, ikc=None, ctlNum=1, cst=None, setting=None):
+    @staticmethod
+    def build_uvPSD(
+        rID=None,
+        rSz=4,
+        tgtJ=None,
+        ikc=None,
+        ctlNum=1,
+        cst=None,
+        setting=None,
+        preset=None,
+        p=None,
+    ):
         """
         Create uv based pose base setup, useful for corrective blendshape fix
         or auto clav or hip
@@ -663,12 +697,9 @@ class RigModule(RigBase):
         if not tgtJ.children:
             return
 
-        rID = self.rigID
-        rSz = self.rigSize
-
         # create group & loc
         tgtJ_child = tgtJ.children[0]
-        psd_grp = GroupNode("PSD", pf=rID, p=self.CTL_DATA)
+        psd_grp = GroupNode("PSD", pf=rID, p=p)  # self.CTL_DATA)
         ctl_grp = GroupNode("ctl_grp", pf=rID, align=tgtJ, p=psd_grp)
         cst.cstPar(ctl_grp, mo=1)
         psd_loc = LocNode("psd_loc_#", pf=rID, align=tgtJ_child, p=psd_grp)
@@ -680,14 +711,21 @@ class RigModule(RigBase):
         for i in range(ctlNum):
             # create ctl
             ctl = CurveNode(
-                "psd_ctl_#", shape="stickS", align=ctl_grp, p=ctl_grp, scale=rSz / 3
+                "psd_ctl_#",
+                pf=rID,
+                shape="stickS",
+                align=ctl_grp,
+                p=ctl_grp,
+                scale=rSz / 4,
             )
             allCtl.append(ctl)
             ctl.a.rx.set(i * 90)
 
             # setup output value
             hit = ctl.a.add("hit", k=0, min=0, max=1)
-            weight = ctl.a.add("weight", k=0, min=0, max=1, dv=0.7)
+            weight = ctl.a.add("weight", k=0, min=0, max=1, dv=0.5)
+            if preset:
+                weight.set(preset[i])
             (hit * weight) >> productSum.a.input1D
 
             # create uv sphere
@@ -711,11 +749,12 @@ class RigModule(RigBase):
             common.sdk2(hit, driven, 0.7, Color.D_RED.value, tangent=2)
             common.sdk2(hit, driven, 1, Color.RED.value, tangent=2)
 
-        autoAimSetup = setting.a.add("autoAimSetup", min=0, max=1, dv=1, k=0)
-        autoAimSetup >> psd_grp.a.v
+        setting.a.addSep()
+        autoAimVis = setting.a.add("autoAimVis", min=0, max=1, dv=1, k=0)
+        autoAimVis >> psd_grp.a.v
 
         # Connect total weight
-        autoWeight = ikc.a.add("autoWeight", k=0)
+        autoWeight = ikc.a.add("autoWeight", k=0, cb=0)
         productSum.a.output1D >> autoWeight
 
         return autoWeight
