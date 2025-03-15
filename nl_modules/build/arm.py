@@ -86,13 +86,7 @@ class Arm(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        self.build_autoAim(
-            self.clavicle,
-            self.upr,
-            fkc=self.clavicle_fkc,
-            ikc=self.ikc,
-            attrName="autoClav",
-        )
+        self.build_autoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
 
         if self.RBN_BONES:
             self.ribbon_setup()

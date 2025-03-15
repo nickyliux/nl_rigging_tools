@@ -161,9 +161,7 @@ class Leg(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        self.build_autoAim(
-            self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, attrName="autoHip"
-        )
+        self.build_autoAim(self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc)
 
         if self.KNEE_FIX:
             self.boneFix_setup(self.lwr, self.palm)

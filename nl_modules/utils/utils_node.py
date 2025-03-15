@@ -81,14 +81,26 @@ def clp_(attr, min=0, max=0):
     return n.a.outputR
 
 
-def setRange_(attr, minO, maxO, minN, maxN):
+def remap_(attr, minIn, maxIn, minOut, maxOut):
     from nl_modules.nodel.base.dep_node import DepNode
 
-    n = DepNode("setR__#", "setRange")
-    minO >> n.a.oldMinX
-    maxO >> n.a.oldMaxX
-    minN >> n.a.minX
-    maxN >> n.a.maxX
+    n = DepNode("rmp__#", "remapValue")
+    minIn >> n.a.inputMin
+    maxIn >> n.a.inputMax
+    minOut >> n.a.outputMin
+    maxOut >> n.a.outputMax
+    attr >> n.a.inputValue
+    return n.a.outValue
+
+
+def setRange_(attr, minOld, maxOld, minNew, maxNew):
+    from nl_modules.nodel.base.dep_node import DepNode
+
+    n = DepNode("seR__#", "setRange")
+    minOld >> n.a.oldMinX
+    maxOld >> n.a.oldMaxX
+    minNew >> n.a.minX
+    maxNew >> n.a.maxX
     attr >> n.a.valueX
     return n.a.outValueX
 
@@ -103,8 +115,8 @@ def distDim_(obj1, obj2):
     from nl_modules.nodel.base.dag_node import DagNode
 
     grpN = GroupNode("distDim_grp#", p="distDim_GRP", pf=obj2.name)
-    locA = LocNode("dist_locA#", p=grpN)
-    locB = LocNode("dist_locB#", p=grpN)
+    locA = LocNode("distLocA__#", p=grpN)
+    locB = LocNode("distLocB__#", p=grpN)
     distDim = DagNode(mc.distanceDimension(locA, locB))
     distDim.parent | grpN
 
