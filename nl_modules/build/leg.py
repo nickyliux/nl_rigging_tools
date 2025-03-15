@@ -161,7 +161,9 @@ class Leg(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        self.build_autoAim(self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc)
+        self.build_autoAim(
+            self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, setting=self.setting
+        )
 
         if self.KNEE_FIX:
             self.boneFix_setup(self.lwr, self.palm)
@@ -560,8 +562,8 @@ class Leg(RigModule):
             ribbonCtlVis = self.setting.a.add("ribbonCtlVis", min=0, max=1, dv=1, k=0)
             [ribbonCtlVis >> ctl.a.v for ctl in self.all_bend]
 
-        secCtlVis = self.setting.a.add("secCtlVis", k=0, min=0, max=1)
-        [secCtlVis >> c.shape.a.v for c in self.subCtls]
+        secCtl = self.setting.a.add("secCtl", k=0, min=0, max=1)
+        [secCtl >> c.shape.a.v for c in self.subCtls]
 
         mc.hide(self.joints_fk, self.joints_ik, self.joints_bf)
         [ikh.hide() for ikh in self.all_ikH.values()]
@@ -588,6 +590,7 @@ class Leg(RigModule):
             ]
         ):
             c.a.ro.set(2)
+        self.smart_ctl.a.ro.set(3)
 
     def space_setup(self):
         self.rigNode.setMsg({"spaceHolder1": self.ikc})

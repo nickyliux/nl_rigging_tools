@@ -558,138 +558,6 @@ class RigModule(RigBase):
             if t.exists():
                 t.a.add("wsMirrorAxis", k=0, lock=1, cb=0)
 
-    # def build_autoAim(
-    #     self,
-    #     startJ,
-    #     endJ,
-    #     fkc=None,
-    #     ikc=None,
-    #     rotaDir=1,
-    #     attrName="autoAim",
-    #     tyToR="rz",
-    #     tzToR="ry",
-    #     scaleFix=1,
-    # ):
-    #     from nl_modules.nodel.joint_node import JointNode
-    #     from nl_modules.nodel.ik_node import IkNode
-
-    #     rID = self.rigID
-    #     rSz = self.rigSize
-    #     xDr = self.x_dir
-    #     # autoGrp to be cst by an anchor
-    #     autoGrp = GroupNode("AUTO", pf=rID, p=fkc.offset)
-
-    #     dist = startJ.o.distanceTo(endJ)
-    #     autoChain = JointNode.makeTwoJChain(
-    #         "autoChain",
-    #         pf=rID,
-    #         snap=startJ,
-    #         ofs=(xDr * dist, 0, 0),
-    #         p=autoGrp,
-    #         r=rSz * 5,
-    #         color=Color.RED,
-    #     )
-    #     endJ.cstAim(autoChain[0], aim=(xDr, 0, 0), keep=False)
-    #     autoChain[0].freezeXf()
-
-    #     auto_ikH = IkNode(
-    #         "autoAim",
-    #         pf=rID,
-    #         sj=autoChain[0],
-    #         ee=autoChain[1],
-    #         quat=1,
-    #         p=self.RIG_DATA,
-    #         vis=0,
-    #     )
-    #     ikc.cstPoi(auto_ikH)
-
-    #     auto_local = LocNode(
-    #         "auto_local_loc", pf=rID, p=autoChain[0], align=autoChain[0]
-    #     )
-    #     locOffset = rSz * 4
-    #     auto_local.a.tx.set(xDr * locOffset)
-
-    #     # sdk to be made from auto_offset's translation to auto_sdk's rotation
-    #     auto_world = LocNode("auto_world", pf=rID, p=autoGrp, align=auto_local)
-    #     auto_offset = LocNode("auto_offset", pf=rID, p=auto_world, align=auto_world)
-    #     auto_local.cstPoi(auto_offset)
-    #     auto_sdk = LocNode("auto_sdk", pf=rID, p=autoGrp, align=fkc, addOfs=1)
-
-    #     # Setup SDK from offset to rotation
-    #     driver = auto_offset.a.ty
-    #     driven = auto_sdk.a[tyToR]
-    #     common.sdk2(driver, driven, 0, 0)
-    #     common.sdk2(driver, driven, -locOffset, 20 * xDr * rotaDir)
-    #     common.sdk2(driver, driven, locOffset, -20 * xDr * rotaDir)
-
-    #     driver = auto_offset.a.tz
-    #     driven = auto_sdk.a[tzToR]
-    #     common.sdk2(driver, driven, 0, 0)
-    #     common.sdk2(driver, driven, -locOffset, -20 * xDr * rotaDir)
-    #     common.sdk2(driver, driven, locOffset, 20 * xDr * rotaDir)
-
-    #     autoAim = ikc.a.add(attrName, min=0, dv=1)
-    #     ofs = fkc.addOffsetGrp()
-    #     auto_sdk.a.ry * autoAim * xDr / scaleFix >> ofs.a.ry
-    #     auto_sdk.a.rz * autoAim * xDr / scaleFix >> ofs.a.rz
-    #     autoGrp.hide()
-
-    def build_autoAim(self, startJ, endJ, fkc=None, ikc=None):
-        """
-        Setup auto clavicle / hip using simple ik and orient cst
-        Limit on side is calculted with the uvPSD setup
-        """
-        from nl_modules.nodel.ik_node import IkNode
-
-        rID = self.rigID
-        rSz = self.rigSize
-
-        # create aim chain
-        self.joints_am = common.extractSk([startJ, endJ], "_am", p=fkc.offset)
-        base_loc = LocNode("base_loc", pf=rID, align=self.joints_am[0], p=fkc.offset)
-
-        # setup IK
-        auto_ikH = IkNode(
-            "autoAim",
-            pf=rID,
-            sj=self.joints_am[0],
-            ee=self.joints_am[1],
-            quat=1,
-            p=self.RIG_DATA,
-        )
-        ikc.cstPoi(auto_ikH)
-
-        # setup PSD & cst
-        autoAim = ikc.a.add("autoAim", min=0, max=1, dv=0)
-        psdAttr = self.build_uvPSD(tgtJ=endJ, ikc=ikc, ctlNum=4)
-
-        ofs = fkc.addOffsetGrp()
-        common.cstMulti(
-            base_loc, self.joints_am[0], ofs, cstType="ori", w=autoAim * psdAttr
-        )
-        # Set driven key from aim joint to driven joint
-        #
-        #   ARM
-        #       fwd bwd uwd dwd
-        #       -y  +y  +z  -z
-        #   LEG
-        #       fwd bwd owd iwd
-        #       +y  -y  -z  +z
-        #
-        # common.sdk(self.joints_am[0], auto_dvn, "ry", "ry", -120, -120 * fwd * sign)
-        # common.sdk(self.joints_am[0], auto_dvn, "ry", "ry", 0, 0)
-        # common.sdk(self.joints_am[0], auto_dvn, "ry", "ry", 120, 120 * bwd * sign)
-        # common.sdk(self.joints_am[0], auto_dvn, "rz", "rz", 120, 120 * uwd * sign)
-        # common.sdk(self.joints_am[0], auto_dvn, "rz", "rz", 0, 0)
-        # common.sdk(self.joints_am[0], auto_dvn, "rz", "rz", -120, -120 * dwd * sign)
-
-        # for _ in [-120, 0, 120]:
-        #     common.sdk(self.joints_am[0], auto_dvn, "ry", "ry", _, _)
-        #     common.sdk(self.joints_am[0], auto_dvn, "rz", "rz", _, _)
-
-        auto_ikH.hide()
-        self.joints_am[0].hide()
-
     def build_digit_ik(self, dupTgt, scale, p=None):
         """IK setup for single digit"""
         from nl_modules.nodel.ik_node import IkNode
@@ -725,7 +593,65 @@ class RigModule(RigBase):
         mc.hide(ikJ)
         return ctl, ikJ
 
-    def build_uvPSD(self, tgtJ=None, ikc=None, ctlNum=1):
+    def build_autoAim(self, startJ, endJ, fkc=None, ikc=None, setting=None):
+        """
+        Setup auto clavicle / hip using simple ik and orient cst
+        Limit on side is calculted with the uvPSD setup
+        """
+        from nl_modules.nodel.ik_node import IkNode
+
+        rID = self.rigID
+        rSz = self.rigSize
+
+        # create aim chain
+        self.joints_am = common.extractSk([startJ, endJ], "_am", p=fkc.offset)
+        base_loc = LocNode("base_loc", pf=rID, align=self.joints_am[0], p=fkc.offset)
+
+        # setup IK
+        auto_ikH = IkNode(
+            "autoAim",
+            pf=rID,
+            sj=self.joints_am[0],
+            ee=self.joints_am[1],
+            quat=1,
+            p=self.RIG_DATA,
+        )
+        ikc.cstPoi(auto_ikH)
+
+        # setup PSD & cst
+        autoAim = ikc.a.add("autoAim", min=0, max=1, dv=0)
+        psdAttr = self.build_uvPSD(
+            tgtJ=endJ, ikc=ikc, ctlNum=4, cst=fkc.offset, setting=setting
+        )
+
+        ofs = fkc.addOffsetGrp()
+        common.cstMulti(
+            base_loc, self.joints_am[0], ofs, cstType="ori", w=autoAim * psdAttr
+        )
+        # Set driven key from aim joint to driven joint
+        #
+        #   ARM
+        #       fwd bwd uwd dwd
+        #       -y  +y  +z  -z
+        #   LEG
+        #       fwd bwd owd iwd
+        #       +y  -y  -z  +z
+        #
+        # common.sdk(self.joints_am[0], auto_dvn, "ry", "ry", -120, -120 * fwd * sign)
+        # common.sdk(self.joints_am[0], auto_dvn, "ry", "ry", 0, 0)
+        # common.sdk(self.joints_am[0], auto_dvn, "ry", "ry", 120, 120 * bwd * sign)
+        # common.sdk(self.joints_am[0], auto_dvn, "rz", "rz", 120, 120 * uwd * sign)
+        # common.sdk(self.joints_am[0], auto_dvn, "rz", "rz", 0, 0)
+        # common.sdk(self.joints_am[0], auto_dvn, "rz", "rz", -120, -120 * dwd * sign)
+
+        # for _ in [-120, 0, 120]:
+        #     common.sdk(self.joints_am[0], auto_dvn, "ry", "ry", _, _)
+        #     common.sdk(self.joints_am[0], auto_dvn, "rz", "rz", _, _)
+
+        auto_ikH.hide()
+        self.joints_am[0].hide()
+
+    def build_uvPSD(self, tgtJ=None, ikc=None, ctlNum=1, cst=None, setting=None):
         """
         Create uv based pose base setup, useful for corrective blendshape fix
         or auto clav or hip
@@ -744,6 +670,7 @@ class RigModule(RigBase):
         tgtJ_child = tgtJ.children[0]
         psd_grp = GroupNode("PSD", pf=rID, p=self.CTL_DATA)
         ctl_grp = GroupNode("ctl_grp", pf=rID, align=tgtJ, p=psd_grp)
+        cst.cstPar(ctl_grp, mo=1)
         psd_loc = LocNode("psd_loc_#", pf=rID, align=tgtJ_child, p=psd_grp)
         ikc.cstPoi(psd_loc)
 
@@ -760,7 +687,7 @@ class RigModule(RigBase):
 
             # setup output value
             hit = ctl.a.add("hit", k=0, min=0, max=1)
-            weight = ctl.a.add("weight", k=0, min=0, max=1, dv=0.5)
+            weight = ctl.a.add("weight", k=0, min=0, max=1, dv=0.7)
             (hit * weight) >> productSum.a.input1D
 
             # create uv sphere
@@ -777,8 +704,6 @@ class RigModule(RigBase):
             # create setRange
             hitRange = ut.setRange_(cpos.a.parameterU, 0, 2, 1, 0)
             ut.setRange_(hitRange, 0.5, 1, 0, 1) >> hit
-            # common.sdk2(setRg_x, hit, 0.5, 0)
-            # common.sdk2(setRg_x, hit, 1, 1)
 
             # color debug
             driven = ctl.shape.a.overrideColor
@@ -786,8 +711,11 @@ class RigModule(RigBase):
             common.sdk2(hit, driven, 0.7, Color.D_RED.value, tangent=2)
             common.sdk2(hit, driven, 1, Color.RED.value, tangent=2)
 
-        # Connect total weight
-        autoAimW = ikc.a.add("autoAimW", k=0)
-        productSum.a.output1D >> autoAimW
+        autoAimSetup = setting.a.add("autoAimSetup", min=0, max=1, dv=1, k=0)
+        autoAimSetup >> psd_grp.a.v
 
-        return autoAimW
+        # Connect total weight
+        autoWeight = ikc.a.add("autoWeight", k=0)
+        productSum.a.output1D >> autoWeight
+
+        return autoWeight

@@ -86,7 +86,13 @@ class Arm(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        self.build_autoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
+        self.build_autoAim(
+            self.clavicle,
+            self.upr,
+            fkc=self.clavicle_fkc,
+            ikc=self.ikc,
+            setting=self.setting,
+        )
 
         if self.RBN_BONES:
             self.ribbon_setup()
@@ -357,14 +363,14 @@ class Arm(RigModule):
 
         # FK IK CTL VIS TOGGLE
         fkIkBlend = self.setting.a["fkIkBlend"]
-        autoVis = self.setting.a.add("autoVis", min=0, max=1, dv=1, k=0)
+        autoFkIk = self.setting.a.add("autoFkIk", min=0, max=1, dv=1, k=0)
         showFk = self.setting.a.add("showFk", min=0, max=1, dv=1, k=0)
         showIk = self.setting.a.add("showIk", min=0, max=1, dv=1, k=0)
 
         # [fkIkBlend >> c.a.v for c in (self.ikc, self.pvc, self.pvc_line, self.ikCstG)]
         self.visByCondition(
             fkIkBlend,
-            autoVis,
+            autoFkIk,
             showIk,
             [self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             v=1,
@@ -372,7 +378,7 @@ class Arm(RigModule):
         # [~fkIkBlend >> c.a.v for c in (self.palm_fkc, self.lwr_fkc, self.upr_fkc)]
         self.visByCondition(
             fkIkBlend,
-            autoVis,
+            autoFkIk,
             showFk,
             self.fkCtl[1:],
             v=0,
