@@ -36,11 +36,6 @@ class Leg(RigModule):
         self.TWIST_BONES = self.master_guide.a.twistBones.get()
         self.KNEE_FIX = self.master_guide.a.kneeFix.get()
 
-        # self.autoAim_fwd = self.master_guide.a.autoAimFwd.get()
-        # self.autoAim_bwd = self.master_guide.a.autoAimBwd.get()
-        # self.autoAim_iwd = self.master_guide.a.autoAimIwd.get()
-        # self.autoAim_owd = self.master_guide.a.autoAimOwd.get()
-
         self.FK_PART = GroupNode("FK", pf=self.rigID, p=self.CTL_DATA)
         self.IK_PART = GroupNode("IK", pf=self.rigID, p=self.CTL_DATA)
         self.BF_PART = GroupNode("BF", pf=self.rigID, p=self.CTL_DATA)

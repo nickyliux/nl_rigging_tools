@@ -595,16 +595,20 @@ class RigModule(RigBase):
 
     def getAutoAimPreset(self, rID):
 
-        autoClavUp = self.master_guide.a.autoClavUp.get()
-        autoClavFw = self.master_guide.a.autoClavFw.get()
-        autoClavDn = self.master_guide.a.autoClavDn.get()
-        autoClavBk = self.master_guide.a.autoClavBk.get()
+        upW = self.master_guide.a.autoUpWeight.get()
+        fwW = self.master_guide.a.autoFwWeight.get()
+        dnW = self.master_guide.a.autoDnWeight.get()
+        bkW = self.master_guide.a.autoBkWeight.get()
 
         preset = [1, 1, 1, 1]
-        if rID.startswith("lf"):
-            preset = [autoClavUp, autoClavFw, autoClavDn, autoClavBk]
-        elif rID.startswith("rt"):
-            preset = [autoClavDn, autoClavBk, autoClavUp, autoClavFw]
+        if rID.startswith("lfArm"):
+            preset = [upW, fwW, dnW, bkW]
+        elif rID.startswith("rtArm"):
+            preset = [dnW, bkW, upW, fwW]
+        elif rID.startswith("lfLeg"):
+            preset = [dnW, bkW, upW, fwW]
+        elif rID.startswith("rtLeg"):
+            preset = [upW, fwW, dnW, bkW]
 
         return preset
 
@@ -699,8 +703,10 @@ class RigModule(RigBase):
 
         # create group & loc
         tgtJ_child = tgtJ.children[0]
-        psd_grp = GroupNode("PSD", pf=rID, p=p)  # self.CTL_DATA)
-        ctl_grp = GroupNode("ctl_grp", pf=rID, align=tgtJ, p=psd_grp)
+        psd_grp = GroupNode("PSD", pf=rID, p=p)
+        ctl_grp = GroupNode(
+            "ctl_grp", pf=rID, align=tgtJ, alignR=tgtJ.offset, p=psd_grp
+        )
         cst.cstPar(ctl_grp, mo=1)
         psd_loc = LocNode("psd_loc_#", pf=rID, align=tgtJ_child, p=psd_grp)
         ikc.cstPoi(psd_loc)
