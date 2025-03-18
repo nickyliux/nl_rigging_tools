@@ -129,7 +129,7 @@ class Leg(RigModule):
         )
         self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 1.5)
         self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz / 2)
-        self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 3)
+        self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
 
         self.rigNode.setMsg(
             {
@@ -519,11 +519,21 @@ class Leg(RigModule):
         aim = (self.x_dir, 0, 0)
         for j in proxyList:
             JointNode(j).addProxyMesh(
-                size=rSz * PRX, aimDir=aim, skipEnd=0, p=self.PRX_GRP
+                size=rSz * PRX,
+                aimDir=aim,
+                skipEnd=0,
+                p=self.PRX_GRP,
+                vis=self.setting,
+                grp=self.PRX_GRP,
             )
         for j in proxyToeList:
             JointNode(j).addProxyMesh(
-                size=rSz * 2, aimDir=aim, skipEnd=1, p=self.PRX_GRP
+                size=rSz * 2,
+                aimDir=aim,
+                skipEnd=1,
+                p=self.PRX_GRP,
+                vis=self.setting,
+                grp=self.PRX_GRP,
             )
 
         if proxyList:

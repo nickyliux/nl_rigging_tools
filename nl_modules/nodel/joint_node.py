@@ -65,7 +65,9 @@ class JointNode(GroupNode):
         """Reset joint orient"""
         self.a.jointOrient.reset()
 
-    def addProxyMesh(self, size=1, aimDir=(1, 0, 0), skipEnd=0, p=None):
+    def addProxyMesh(
+        self, size=1, aimDir=(1, 0, 0), skipEnd=0, p=None, vis=None, grp=None
+    ):
         """Add Proxy Mesh for joint
         e.g.
             jnt1.addProxyMesh(size=2)                   # proxy cube created
@@ -84,9 +86,10 @@ class JointNode(GroupNode):
         child = self.childrenJt
 
         if child or (not skipEnd):
-            # ADD PROXY
-            dist = self.o.distanceTo(child[0]) if child else size
+            # dist = self.o.distanceTo(child[0]) if child else size
             # cube = mc.polyCube(n=name, ax=aimDir, h=dist, w=size, d=size)[0]
+
+            # add proxy
             cube = mc.polyCube(n=name, ax=aimDir, h=size, w=size, d=size)[0]
             proxyN = DagNode(cube)
             proxyN.alignTo(self, p=p)
@@ -102,13 +105,22 @@ class JointNode(GroupNode):
                     worldUpObject=self,
                 )
 
-            # ASSIGN SHADER
+            # assign shader
+            #
+            # NOTE:  constraint must be after shader assignment, otherwise mc.sets(..) will sohw error
+            #
             common.assignProxyShader(proxyN)
 
-            # Constraint must be after shader assignment
-            # Or mc.sets(..) will show warning
-            # self.cstPar(proxyN, mo=1)
-            proxyN.parentTo(self)
+            self.cstPar(proxyN, mo=1)
+            # proxyN.parentTo(self)
+
+            # connect proxy vis
+            if vis:
+                visAttr = vis.a["proxyVis"]
+                if not visAttr.exists() and grp and grp.exists():
+                    vis.a.add("proxyVis", min=0, max=1, dv=1)
+                    visAttr >> grp.a.v
+
             return proxyN
 
     @staticmethod

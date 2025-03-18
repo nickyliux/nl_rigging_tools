@@ -405,10 +405,15 @@ class Arm(RigModule):
                 proxyList.remove(self.lwr)
 
         rSz = self.rigSize * PRX
-        xDr = self.x_dir
+        aim = (self.x_dir, 0, 0)
         for j in proxyList:
             JointNode(j).addProxyMesh(
-                size=rSz, aimDir=(xDr, 0, 0), skipEnd=0, p=self.PRX_GRP
+                size=rSz,
+                aimDir=aim,
+                skipEnd=0,
+                p=self.PRX_GRP,
+                vis=self.setting,
+                grp=self.PRX_GRP,
             )
 
         self.addBindJntSet(proxyList)

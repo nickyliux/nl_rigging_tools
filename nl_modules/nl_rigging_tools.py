@@ -74,7 +74,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """
         self.setWindowTitle("NRT 0.0.1")
         self.setCentralWidget(self.UI)
-        self.setGeometry(0, 0, 220, 680)
+        self.setGeometry(0, 0, 220, 700)
         self.connect_UI()
 
     def connect_UI(self):

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>439</width>
-    <height>702</height>
+    <height>749</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -885,7 +885,7 @@
      <x>1</x>
      <y>570</y>
      <width>220</width>
-     <height>101</height>
+     <height>131</height>
     </rect>
    </property>
    <property name="font">
@@ -895,19 +895,19 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_1">
     <attribute name="title">
-     <string>Bone Setup</string>
+     <string>Prepare</string>
     </attribute>
     <widget class="QPushButton" name="joint_addForRef_BN">
      <property name="geometry">
       <rect>
-       <x>110</x>
-       <y>31</y>
-       <width>45</width>
-       <height>17</height>
+       <x>80</x>
+       <y>30</y>
+       <width>120</width>
+       <height>15</height>
       </rect>
      </property>
      <property name="minimumSize">
@@ -940,16 +940,16 @@
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Ref</string>
+      <string>Add Jnt : others</string>
      </property>
     </widget>
     <widget class="QPushButton" name="joint_addForSpine_BN">
      <property name="geometry">
       <rect>
-       <x>110</x>
-       <y>10</y>
-       <width>45</width>
-       <height>17</height>
+       <x>80</x>
+       <y>9</y>
+       <width>120</width>
+       <height>15</height>
       </rect>
      </property>
      <property name="minimumSize">
@@ -982,16 +982,157 @@
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Spine</string>
+      <string>Add Jnt : spine</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>12</x>
+       <y>10</y>
+       <width>81</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>8</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Select bone
+Mesh(es)</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="Line" name="line">
+     <property name="geometry">
+      <rect>
+       <x>7</x>
+       <y>70</y>
+       <width>201</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="misc_retopo500_BN">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>84</y>
+       <width>22</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>999</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>poly count = 500</string>
+     </property>
+     <property name="text">
+      <string>H</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="misc_retopo150_BN">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>84</y>
+       <width>22</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>999</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>poly count = 150</string>
+     </property>
+     <property name="text">
+      <string>M</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>12</x>
+       <y>82</y>
+       <width>42</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Retopo</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="misc_retopo50_BN">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>84</y>
+       <width>22</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>999</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>poly count = 50</string>
+     </property>
+     <property name="text">
+      <string>L</string>
      </property>
     </widget>
     <widget class="QPushButton" name="joint_mirrorAllRef_BN">
      <property name="geometry">
       <rect>
-       <x>161</x>
-       <y>10</y>
-       <width>45</width>
-       <height>38</height>
+       <x>12</x>
+       <y>53</y>
+       <width>188</width>
+       <height>15</height>
       </rect>
      </property>
      <property name="minimumSize">
@@ -1024,140 +1165,7 @@
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Mirror
-Ref</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_2">
-     <property name="geometry">
-      <rect>
-       <x>12</x>
-       <y>11</y>
-       <width>81</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Segoe UI</family>
-       <pointsize>8</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Add joint for
-selected bone</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="Line" name="line">
-     <property name="geometry">
-      <rect>
-       <x>7</x>
-       <y>45</y>
-       <width>201</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="misc_retopo500_BN">
-     <property name="geometry">
-      <rect>
-       <x>162</x>
-       <y>60</y>
-       <width>45</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>999</height>
-      </size>
-     </property>
-     <property name="font">
-      <font>
-       <family>Segoe UI</family>
-       <pointsize>8</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>500</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="misc_retopo150_BN">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>60</y>
-       <width>45</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>999</height>
-      </size>
-     </property>
-     <property name="font">
-      <font>
-       <family>Segoe UI</family>
-       <pointsize>8</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>150</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>11</x>
-       <y>56</y>
-       <width>42</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Segoe UI</family>
-       <pointsize>9</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Retopo</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="misc_retopo50_BN">
-     <property name="geometry">
-      <rect>
-       <x>59</x>
-       <y>60</y>
-       <width>45</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>999</height>
-      </size>
-     </property>
-     <property name="font">
-      <font>
-       <family>Segoe UI</family>
-       <pointsize>8</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>50</string>
+      <string>Mirror Ref Jnt from Left</string>
      </property>
     </widget>
    </widget>

@@ -331,6 +331,9 @@ class RigModule(RigBase):
         # for _ in mc.ls(type="curveShape"):
         #     mc.setAttr(_ + ".alwaysDrawOnTop", 1)
         self.moduleG.hide()
+        if self.PRX:
+            self.masterC.a.add("PROXY_VIS", min=0, max=1, dv=1)
+            self.masterC.a["PROXY_VIS"] >> self.PRX.a.v
 
     def unbuild_module(self):
         logging.info(self.rigID)
