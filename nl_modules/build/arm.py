@@ -101,12 +101,13 @@ class Arm(RigModule):
         rSz = self.rigSize
         rID = self.rigID
         xDr = self.x_dir
-        self.setting = CurveNode(
-            "setting", pf=rID, shape="stick", up="-z", scale=rSz * xDr * 0.7, color=CBK
-        )
+        # "setting", pf=rID, shape="stick", up="-z", scale=rSz * xDr * 0.7, color=CBK
         # "setting", pf=rID, shape="cube", scale=rSz / 4, color=CRD, top=1
+        self.setting = CurveNode(
+            "setting", pf=rID, shape="sphere2", scale=rSz * xDr, color=CBK
+        )
         self.clavicle_fkc = CurveNode(
-            "clavicle_fkc", pf=rID, shape="fk_rotator", scale=rSz * xDr * 2
+            "clavicle_fkc", pf=rID, shape="fk_rotator", scale=rSz * xDr * 3
         )
         self.clavicle_fkc.cv_move(rSz * xDr * 15)
         self.upr_fkc = CurveNode(
@@ -250,7 +251,7 @@ class Arm(RigModule):
         self.ballRoll_loc = LocNode("ballRoll", pf=rID, align=ball_guide, p=palmOut_loc)
 
         self.setting | self.CTL_DATA
-        self.setting.alignTo(self.palm)  # , offset=(rSz * xDr * 35, 0, 0))
+        self.setting.alignTo(self.palm, offset=(0, 0, rSz * xDr * -20))
         self.palm.cstPar(self.setting.addOffsetGrp(), mo=1)
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
         total = len(self.joints) - 1

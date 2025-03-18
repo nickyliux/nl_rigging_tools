@@ -30,7 +30,7 @@ class CurveNode(GroupNode):
         p=None,
         # for crv
         color=0,
-        shape="",
+        shape="circle",
         rotate=None,
         scale=None,
         dspType=0,

@@ -11,8 +11,8 @@ from nl_modules.utils.color import Color
 from nl_modules.build.rig_module import RigModule
 
 PRX = 25
-CY = Color.YELLOW
-CR = Color.RED
+CYL = Color.YELLOW
+CRD = Color.RED
 
 
 class Head(RigModule):
@@ -55,9 +55,11 @@ class Head(RigModule):
         rID = self.rigID
         rSz = self.rigSize
         self.head_fkc = CurveNode(
-            "head", pf=rID, sf="_fkc", shape="circleU", scale=rSz * 5, color=CY
+            "head", pf=rID, sf="_fkc", shape="circleU", scale=rSz * 5, color=CYL
         )
-        self.jaw_fkc = CurveNode("jaw", pf=rID, sf="_fkc", up="z", scale=rSz, color=CR)
+        self.jaw_fkc = CurveNode(
+            "jaw", pf=rID, sf="_fkc", up="z", scale=rSz * 2, color=CRD
+        )
 
         self.rigNode.setMsg(
             {
@@ -82,7 +84,7 @@ class Head(RigModule):
         self.isolateAlign(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC], dv=1)
 
     def proxy_setup(self):
-        for j in [self.head, self.jaw, self.lf_eye, self.rt_eye]:
+        for j in [self.head]:  # , self.lf_eye, self.rt_eye]:
             JointNode(j).addProxyMesh(
                 size=self.rigSize * PRX,
                 aimDir=(0, 1, 0),

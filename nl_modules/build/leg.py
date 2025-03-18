@@ -106,12 +106,13 @@ class Leg(RigModule):
         rSz = self.rigSize
         rID = self.rigID
         xDr = self.x_dir
+        # "setting", pf=rID, shape="stick", up="x", scale=rSz * xDr * 0.7, color=CBK
         self.setting = CurveNode(
-            "setting", pf=rID, shape="stick", up="x", scale=rSz * xDr * 0.7, color=CBK
+            "setting", pf=rID, shape="sphere2", scale=rSz * xDr, color=CBK
         )
         # "setting", pf=rID, shape="cube", scale=rSz / 4, color=CRD, top=1
         self.hip_fkc = CurveNode(
-            "hip_fkc", pf=rID, up="-y", shape="fk_rotator", scale=rSz * xDr * 2
+            "hip_fkc", pf=rID, up="-y", shape="fk_rotator", scale=rSz * xDr * 3
         )
         # "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
         self.upr_fkc = CurveNode(
@@ -124,11 +125,11 @@ class Leg(RigModule):
             "palm_fkc", pf=rID, up="x", shape="sphere2", scale=rSz * 4
         )
         self.ball_fkc = CurveNode(
-            "ball_fkc", pf=rID, shape="fk_rotator", up="-z", scale=rSz * xDr
+            "ball_fkc", pf=rID, shape="fk_rotator", up="-z", scale=rSz * xDr * 2
         )
         self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 1.5)
         self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz / 2)
-        self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
+        self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 3)
 
         self.rigNode.setMsg(
             {
@@ -376,11 +377,14 @@ class Leg(RigModule):
 
     def blend_fk_ik(self):
         rID = self.rigID
+        rSz = self.rigSize
+        xDr = self.x_dir
         logging.info(rID)
         self.joints_bf = common.extractSk(self.joints, "_bf", p=self.BF_PART)
 
         self.setting | self.CTL_DATA
-        self.setting.snapTo(self.palm)
+        # self.setting.snapTo(self.palm)
+        self.setting.alignTo(self.palm, offset=(0, rSz * xDr * -20, 0))
         ofs = self.setting.addOffsetGrp()
         self.palm.cstPar(ofs, mo=1)
 
