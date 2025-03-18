@@ -14,14 +14,11 @@ class RigBase:
     """
 
     def __init__(self, rigNode):
-        if not mc.objExists("master_ctl"):  # or not mc.objExists("vis_ctl"):
+        if not mc.objExists("master_ctl"):
             logging.warning("Missing master_ctl")
             return
 
         self.masterC = CurveNode("master_ctl")
-        # self.visC = CurveNode("vis_ctl")
-        # self.visC.a.addSep()
-        # self.visC.a.add("proxyMesh", attrType="bool", dv=1, k=0)
 
         if isinstance(rigNode, str):
             rigNode = DagNode(rigNode)

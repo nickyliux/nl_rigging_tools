@@ -13,7 +13,8 @@ from nl_modules.build.rig_module import RigModule
 
 PRX = 7
 CDY = Color.D_YELLOW
-CB = Color.BLACK
+CBK = Color.BLACK
+CRD = Color.RED
 
 
 class Leg(RigModule):
@@ -106,11 +107,13 @@ class Leg(RigModule):
         rID = self.rigID
         xDr = self.x_dir
         self.setting = CurveNode(
-            "setting", pf=rID, shape="stick", up="x", scale=rSz * xDr, color=CB
+            "setting", pf=rID, shape="stick", up="x", scale=rSz * xDr * 0.7, color=CBK
         )
+        # "setting", pf=rID, shape="cube", scale=rSz / 4, color=CRD, top=1
         self.hip_fkc = CurveNode(
-            "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
+            "hip_fkc", pf=rID, up="-y", shape="fk_rotator", scale=rSz * xDr * 2
         )
+        # "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
         self.upr_fkc = CurveNode(
             "upr_fkc", pf=rID, up="x", shape="sphere2", scale=rSz * 4
         )

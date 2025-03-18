@@ -243,7 +243,6 @@ def savePreset(fName):
         objsToSave.append(rN.a.moduleG.inConnNode)
         if i == 0:
             objsToSave.append(DagNode("master2_ctl"))
-            # objsToSave.append(DagNode("vis_ctl"))
             i = 1
 
         guideDict = {}

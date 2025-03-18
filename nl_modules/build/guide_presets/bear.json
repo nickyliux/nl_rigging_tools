@@ -187,28 +187,6 @@
                 0.0,
                 0.0
             ]
-        },
-        "vis_ctl":{
-            "bezierCtls":0,
-            "extraCtls":0,
-            "latticeCtls":0,
-            "primaryCtls":0,
-            "r":[
-                0.0,
-                0.0,
-                0.0
-            ],
-            "s":[
-                1.0,
-                1.0,
-                1.0
-            ],
-            "secondaryCtls":0,
-            "t":[
-                0.0,
-                142.07420083073285,
-                97.44836935319026
-            ]
         }
     },
     "lfLeg0":{
@@ -264,6 +242,10 @@
             ]
         },
         "lfLeg0_master_guide":{
+            "autoBkWeight":0.30000001192092896,
+            "autoDnWeight":0.10000000149011612,
+            "autoFwWeight":0.5,
+            "autoUpWeight":0.5,
             "kneeFix":true,
             "patellaBone":false,
             "r":[
@@ -1005,6 +987,10 @@
             ]
         },
         "lfLeg1_master_guide":{
+            "autoBkWeight":0.30000001192092896,
+            "autoDnWeight":0.10000000149011612,
+            "autoFwWeight":0.5,
+            "autoUpWeight":0.5,
             "kneeFix":true,
             "patellaBone":false,
             "r":[
@@ -1852,6 +1838,10 @@
             ]
         },
         "rtLeg0_master_guide":{
+            "autoBkWeight":0.30000001192092896,
+            "autoDnWeight":0.10000000149011612,
+            "autoFwWeight":0.5,
+            "autoUpWeight":0.5,
             "kneeFix":true,
             "patellaBone":false,
             "r":[
@@ -2593,6 +2583,10 @@
             ]
         },
         "rtLeg1_master_guide":{
+            "autoBkWeight":0.30000001192092896,
+            "autoDnWeight":0.10000000149011612,
+            "autoFwWeight":0.5,
+            "autoUpWeight":0.5,
             "kneeFix":true,
             "patellaBone":false,
             "r":[

@@ -13,7 +13,8 @@ from nl_modules.utils.color import Color
 
 PRX = 6
 CDY = Color.D_YELLOW
-CB = Color.BLACK
+CBK = Color.BLACK
+CRD = Color.RED
 
 
 class Arm(RigModule):
@@ -101,12 +102,13 @@ class Arm(RigModule):
         rID = self.rigID
         xDr = self.x_dir
         self.setting = CurveNode(
-            "setting", pf=rID, shape="stick", up="-z", scale=rSz * xDr, color=CB
+            "setting", pf=rID, shape="stick", up="-z", scale=rSz * xDr * 0.7, color=CBK
         )
+        # "setting", pf=rID, shape="cube", scale=rSz / 4, color=CRD, top=1
         self.clavicle_fkc = CurveNode(
-            "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
+            "clavicle_fkc", pf=rID, shape="fk_rotator", scale=rSz * xDr * 2
         )
-        self.clavicle_fkc.cv_rotate(0, 0, -45)
+        self.clavicle_fkc.cv_move(rSz * xDr * 15)
         self.upr_fkc = CurveNode(
             "upr_fkc", pf=rID, up="x", shape="sphere2", scale=rSz * 4
         )
@@ -235,6 +237,8 @@ class Arm(RigModule):
 
     def blend_fk_ik(self):
         rID = self.rigID
+        rSz = self.rigSize
+        xDr = self.x_dir
         logging.info(rID)
         self.joints_bf = common.extractSk(self.joints, "_bf", p=self.BF_PART)
 

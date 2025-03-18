@@ -6,6 +6,7 @@ import nl_modules
 import logging
 from importlib import reload
 from nl_modules.utils import reload_all
+import subprocess
 
 reload(reload_all)
 
@@ -90,8 +91,11 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.preset_save_BN.clicked.connect(self.preset_save_BN_clicked)
         self.UI.preset_new_BN.clicked.connect(self.preset_new_BN_clicked)
         self.UI.preset_del_BN.clicked.connect(self.preset_del_BN_clicked)
+        self.UI.component_exploreSkel_BN.clicked.connect(
+            self.component_exploreSkel_BN_clicked
+        )
         self.UI.preset_importSkel_BN.clicked.connect(self.preset_importSkel_BN_clicked)
-        self.UI.preset_openSkel_BN.clicked.connect(self.preset_openSkel_BN_clicked)
+        # self.UI.preset_openSkel_BN.clicked.connect(self.preset_openSkel_BN_clicked)
         self.UI.preset_refresh_BN.clicked.connect(self.preset_refresh_BN_clicked)
         self.UI.preset_LW.itemDoubleClicked.connect(self.preset_load_BN_clicked)
         # ------------------------------
@@ -197,9 +201,11 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             common.setViewport()
 
     def component_explore_BN_clicked(self):
-        import subprocess
-
         path = os.path.realpath(MAYA_TPL_DIR)
+        subprocess.Popen(f'explorer "{path}"')
+
+    def component_exploreSkel_BN_clicked(self):
+        path = os.path.realpath(PATH_SKEL)
         subprocess.Popen(f'explorer "{path}"')
 
     def preset_load_BN_clicked(self, item):
@@ -264,15 +270,15 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             else:
                 logging.info(f"missing file: {skelFile}")
 
-    def preset_openSkel_BN_clicked(self):
-        items = self.UI.preset_LW.selectedItems()
-        if items:
-            itemText = items[0].text()
-            skelFile = f"{PATH_SKEL}/{itemText}_low.ma"
-            if os.path.isfile(skelFile):
-                file.openFile(skelFile)
-            else:
-                logging.info(f"missing file: {skelFile}")
+    # def preset_openSkel_BN_clicked(self):
+    #     items = self.UI.preset_LW.selectedItems()
+    #     if items:
+    #         itemText = items[0].text()
+    #         skelFile = f"{PATH_SKEL}/{itemText}_low.ma"
+    #         if os.path.isfile(skelFile):
+    #             file.openFile(skelFile)
+    #         else:
+    #             logging.info(f"missing file: {skelFile}")
 
     def preset_refresh_BN_clicked(self):
         self.UI.preset_LW.clear()

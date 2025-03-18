@@ -208,7 +208,7 @@
         <x>190</x>
         <y>40</y>
         <width>16</width>
-        <height>201</height>
+        <height>206</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -401,7 +401,7 @@
       <property name="geometry">
        <rect>
         <x>190</x>
-        <y>180</y>
+        <y>150</y>
         <width>16</width>
         <height>16</height>
        </rect>
@@ -430,43 +430,7 @@
        <string>import preset skel</string>
       </property>
       <property name="text">
-       <string>S</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="preset_openSkel_BN">
-      <property name="geometry">
-       <rect>
-        <x>190</x>
-        <y>200</y>
-        <width>16</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>9999</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Segoe UI</family>
-        <pointsize>9</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="toolTip">
-       <string>open preset skel</string>
-      </property>
-      <property name="text">
-       <string>O</string>
+       <string>I</string>
       </property>
      </widget>
      <widget class="QPushButton" name="preset_new_BN">
@@ -568,6 +532,43 @@
       </property>
       <property name="text">
        <string>Del</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="component_exploreSkel_BN">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>170</y>
+        <width>16</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>9999</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>9</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+        <kerning>true</kerning>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>open component</string>
+      </property>
+      <property name="text">
+       <string>E</string>
       </property>
      </widget>
     </widget>

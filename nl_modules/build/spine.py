@@ -46,13 +46,13 @@ class Spine(RigModule):
     def createCtl(self):
         rSz = self.rigSize
         rID = self.rigID
-        scale = (rSz * 7, rSz * 2, rSz * 5.5)
+        scale = (rSz * 7, rSz / 2, rSz * 5.5)
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="stickS", up="-z", scale=rSz * 3, color=CB
+            "setting", pf=rID, shape="stick", up="-z", scale=rSz * 2, color=CB
         )
         self.cog_ctl = CurveNode(
-            "cog_ctl", pf=rID, shape="cog2", scale=rSz * 3, color=CDY
+            "cog_ctl", pf=rID, shape="cog2", scale=rSz * 2, color=CDY
         )
         # "tp_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 2, rSz * 6), color=CDY
         self.tp_ctl = CurveNode("tp_ctl", pf=rID, shape="cube", scale=scale, color=CDY)
@@ -221,7 +221,7 @@ class Spine(RigModule):
     def proxy_setup(self):
         rSz = self.rigSize
         for j in self.bindJ:
-            size = rSz * PRX / self.RBN_JNT_NUM if self.RBN_BONES else rSz * 8
+            size = rSz * PRX / self.RBN_JNT_NUM / 2 if self.RBN_BONES else rSz * 4
             JointNode(j).addProxyMesh(size=size, p=self.PRX_GRP)  # , skipEnd=1)
 
     def space_setup(self):

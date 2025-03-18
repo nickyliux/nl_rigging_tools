@@ -36,6 +36,7 @@ class CurveNode(GroupNode):
         dspType=0,
         lineW=-1,
         up="",
+        top=0,  # alwaysDrawOnTop
     ):
         GroupNode.__init__(
             self,
@@ -83,6 +84,8 @@ class CurveNode(GroupNode):
             elif isinstance(scale, (int, float)):
                 self.cv_scale(scale)
         self.lineW = lineW
+        if top:
+            mc.setAttr(self.name + ".alwaysDrawOnTop", 1)
 
     @property
     def length(self):
