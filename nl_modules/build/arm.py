@@ -392,8 +392,8 @@ class Arm(RigModule):
         mc.hide(self.all_ikHs, self.joints_fk, self.joints_ik, self.joints_bf)
 
     def proxy_setup(self):
-        proxyList = self.joints[:-1]
         self.joints.remove(self.palm)
+        proxyList = self.joints[:-1]
         if self.RBN_BONES:
             if self.upr in proxyList:
                 proxyList.remove(self.upr)
