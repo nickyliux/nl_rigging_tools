@@ -150,7 +150,13 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         )
 
         self.UI.pickMaskCrv_BN.clicked.connect(self.pickMaskCrv_BN_clicked)
+        self.UI.pickMaskMsh_BN.clicked.connect(self.pickMaskMsh_BN_clicked)
         self.UI.pickMaskAll_BN.clicked.connect(self.pickMaskAll_BN_clicked)
+        self.UI.clickDrag_CB.stateChanged.connect(self.clickDrag_CB_stateChanged)
+
+        if mc.selectPref(clickDrag=1, q=1):
+            self.UI.clickDrag_CB.setChecked(1)
+
         self.UI.shapeScaleHalf_BN.clicked.connect(partial(self.shapeScale, 0.5))
         self.UI.shapeScale2_BN.clicked.connect(partial(self.shapeScale, 2))
         self.UI.shapeRotaX_BN.clicked.connect(partial(self.shapeRota, 90, 0, 0))
@@ -161,9 +167,17 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.preset_refresh_BN_clicked()
         self.crvShape_refresh_BN_clicked()
 
+    def clickDrag_CB_stateChanged(self, state):
+        # mc.selectPref(clickDrag=1, q=1)
+        mc.selectPref(clickDrag=state)
+
     def pickMaskCrv_BN_clicked(self):
         mel.eval('setObjectPickMask "All" 0')
         mel.eval('setObjectPickMask "Curve" 1')
+
+    def pickMaskMsh_BN_clicked(self):
+        mel.eval('setObjectPickMask "All" 0')
+        mel.eval('setObjectPickMask "Surface" 1')
 
     def pickMaskAll_BN_clicked(self):
         mel.eval('setObjectPickMask "All" 1')

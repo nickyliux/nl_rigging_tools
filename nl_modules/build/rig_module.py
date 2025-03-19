@@ -641,7 +641,7 @@ class RigModule(RigBase):
         ikc.cstPoi(auto_ikH)
 
         # setup PSD & cst
-        autoAim = ikc.a.add("autoAim", min=0, max=1, dv=1)
+        autoAim = ikc.a.add("autoAim", min=0, max=1)  # , dv=1)
         psdAttr = self.build_uvPSD(
             rID=rID,
             rSz=rSz,

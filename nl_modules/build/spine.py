@@ -221,7 +221,7 @@ class Spine(RigModule):
     def proxy_setup(self):
         rSz = self.rigSize
         for j in self.bindJ:
-            size = rSz * PRX / self.RBN_JNT_NUM / 2 if self.RBN_BONES else rSz * 4
+            size = rSz * PRX / self.RBN_JNT_NUM / 1.5 if self.RBN_BONES else rSz * 3
             JointNode(j).addProxyMesh(size=size, p=self.PRX_GRP)  # , skipEnd=1)
 
     def space_setup(self):

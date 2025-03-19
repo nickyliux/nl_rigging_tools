@@ -931,7 +931,7 @@
       </font>
      </property>
      <property name="toolTip">
-      <string>Add refJnt for selected</string>
+      <string>Add reference joint for each selected mesh</string>
      </property>
      <property name="statusTip">
       <string/>
@@ -940,7 +940,7 @@
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Add Jnt : others</string>
+      <string>Add Reference Jnt</string>
      </property>
     </widget>
     <widget class="QPushButton" name="joint_addForSpine_BN">
@@ -973,7 +973,7 @@
       </font>
      </property>
      <property name="toolTip">
-      <string>Add rbJnt for selected</string>
+      <string>Add ribbon joint for each selected mesh</string>
      </property>
      <property name="statusTip">
       <string/>
@@ -982,7 +982,7 @@
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Add Jnt : spine</string>
+      <string>Add Ribbon Jnt</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_2">
@@ -1165,7 +1165,7 @@ Mesh(es)</string>
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Mirror Ref Jnt from Left</string>
+      <string>Mirror Reference Jnt  ( L -&gt; R )</string>
      </property>
     </widget>
    </widget>
@@ -1793,7 +1793,7 @@ or groups containing them</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>182</x>
+     <x>90</x>
      <y>1</y>
      <width>14</width>
      <height>15</height>
@@ -1812,7 +1812,7 @@ or groups containing them</string>
     </font>
    </property>
    <property name="toolTip">
-    <string>Curve filter on</string>
+    <string>Curve Only</string>
    </property>
    <property name="statusTip">
     <string/>
@@ -1830,7 +1830,7 @@ or groups containing them</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>202</x>
+     <x>110</x>
      <y>1</y>
      <width>14</width>
      <height>15</height>
@@ -1849,7 +1849,7 @@ or groups containing them</string>
     </font>
    </property>
    <property name="toolTip">
-    <string>Filter off</string>
+    <string>All</string>
    </property>
    <property name="styleSheet">
     <string notr="true"/>
@@ -1872,6 +1872,56 @@ or groups containing them</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pickMaskMsh_BN">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>72</x>
+     <y>1</y>
+     <width>14</width>
+     <height>15</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>8</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>Surface Only</string>
+   </property>
+   <property name="statusTip">
+    <string/>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string>s</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="clickDrag_CB">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>0</y>
+     <width>70</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Click Drag</string>
    </property>
   </widget>
  </widget>
