@@ -75,6 +75,7 @@ class Arm(RigModule):
         #         jnt_list[i].a.preferredAngleY.set(-90 * self.x_dir)
 
     def build(self):
+
         self.build_module()
         self.joints = self.rootJ.allChildrenJt2
         self.clavicle, self.upr, self.lwr, self.palm, self.ball = self.joints
@@ -110,6 +111,8 @@ class Arm(RigModule):
             "clavicle_fkc", pf=rID, shape="fk_rotator", scale=rSz * xDr * 3
         )
         self.clavicle_fkc.cv_move(rSz * xDr * 15)
+        self.clavicle_fkc.cv_scale(0.5, 1, 1)
+
         self.upr_fkc = CurveNode(
             "upr_fkc", pf=rID, up="x", shape="sphere2", scale=rSz * 4
         )

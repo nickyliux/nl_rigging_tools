@@ -319,6 +319,8 @@ class RigModule(RigBase):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_module(self):
+
+        mc.refresh(su=1)
         self.calcRigSize(self.rootJ)
         self.rigNode.a.nodeState.set(2)
         children = self.rootJ.childrenJt
@@ -332,8 +334,9 @@ class RigModule(RigBase):
         #     mc.setAttr(_ + ".alwaysDrawOnTop", 1)
         self.moduleG.hide()
         if self.PRX:
-            self.masterC.a.add("PROXY_VIS", min=0, max=1, dv=1)
+            self.masterC.a.add("PROXY_VIS", min=0, max=1)  # , dv=1)
             self.masterC.a["PROXY_VIS"] >> self.PRX.a.v
+        mc.refresh(su=0)
 
     def unbuild_module(self):
         logging.info(self.rigID)

@@ -1180,7 +1180,7 @@ Mesh(es)</string>
      <property name="geometry">
       <rect>
        <x>7</x>
-       <y>57</y>
+       <y>8</y>
        <width>201</width>
        <height>17</height>
       </rect>
@@ -1213,103 +1213,14 @@ or groups containing them</string>
       <string notr="true">color: rgb(255, 130, 130);</string>
      </property>
      <property name="text">
-      <string>One Click</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="skin_refJnt_BN">
-     <property name="geometry">
-      <rect>
-       <x>7</x>
-       <y>34</y>
-       <width>201</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>999</width>
-       <height>999</height>
-      </size>
-     </property>
-     <property name="font">
-      <font>
-       <family>Segoe UI</family>
-       <pointsize>8</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="text">
-      <string>Reference Jnts</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="skin_attachJntsToSurf_BN">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>7</x>
-       <y>11</y>
-       <width>201</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>999</width>
-       <height>999</height>
-      </size>
-     </property>
-     <property name="font">
-      <font>
-       <family>Segoe UI</family>
-       <pointsize>8</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="text">
-      <string>Attach Jnts to Surf</string>
+      <string>Auto Skin</string>
      </property>
     </widget>
     <widget class="QProgressBar" name="oneClick_PB">
      <property name="geometry">
       <rect>
        <x>7</x>
-       <y>79</y>
+       <y>30</y>
        <width>200</width>
        <height>8</height>
       </rect>
@@ -1941,6 +1852,95 @@ or groups containing them</string>
    </property>
    <property name="text">
     <string>Click Drag</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="skin_attachJntsToSurf_BN">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>550</y>
+     <width>150</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>999</width>
+     <height>999</height>
+    </size>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>8</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string/>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string>Attach Jnts to Surf</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="skin_refJnt_BN">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>573</y>
+     <width>150</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>999</width>
+     <height>999</height>
+    </size>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>8</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string/>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string>Reference Jnts</string>
    </property>
   </widget>
  </widget>
