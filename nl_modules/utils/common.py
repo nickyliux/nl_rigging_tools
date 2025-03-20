@@ -481,18 +481,19 @@ def getMeshBelow(grp):
             return []
     mc.select(hi=1)
     meshes = mc.ls(sl=1, et="mesh") or []
+    mc.select(cl=1)
     return [MeshNode(mesh) for mesh in meshes] or []
 
 
-def setViewport():
+def setViewport(jx=1, xray=0, wos=0):
     mc.select(cl=1)
-    mc.viewFit(all=1)
+    # mc.viewFit(all=1)
     # mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
     # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
     for p in mc.getPanel(type="modelPanel"):
-        # mc.modelEditor(p, e=1, wos=1)
-        mc.modelEditor(p, e=1, jx=1)
-        # wos=1, jx=1, xray=1
+        mc.modelEditor(p, e=1, jx=jx, xray=xray, wos=wos)
+
+    mc.refresh(f=1)
 
 
 # def calcBB(tgt):

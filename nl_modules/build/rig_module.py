@@ -759,7 +759,7 @@ class RigModule(RigBase):
             common.sdk2(hit, driven, 1, Color.RED.value, tangent=2)
 
         setting.a.addSep()
-        autoAimVis = setting.a.add("autoAimVis", min=0, max=1, dv=1, k=0)
+        autoAimVis = setting.a.add("autoAimVis", min=0, max=1, dv=0, k=0)
         autoAimVis >> psd_grp.a.v
 
         # Connect total weight

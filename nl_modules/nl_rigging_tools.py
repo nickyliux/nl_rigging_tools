@@ -426,7 +426,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         else:
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 
-    def attachJntsToSurfSel(self):
+    def attachJntToSurfSel(self):
         """Attach joints to surf for selected"""
         srfSel = []
         jntSel = []
@@ -441,7 +441,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         if jntSel and srfSel:
             common.ribbonAttach(tgtList=jntSel, p=DagNode("SKL"), geo=srfSel[0])
-            logging.info("Joints attatched to ribbon.")
         else:
             logging.info("Ignore invalid surf and joints")
 
@@ -487,7 +486,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         return (weighted, ignored)
 
-    def skin_bindJnts(self):
+    def autoBindJnt(self):
         """
         For all meshes under selected, bind to target joints
         """
@@ -507,23 +506,24 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         2. Attach Joints to Surface
         """
-        self.skin_bindJnts()
-        self.skin_attachJntsToSurf()
-        # mc.select(cl=1)
+        self.autoBindJnt()
+        self.autoAttachJntToSurf()
+        common.setViewport(jx=0)
+        mc.select(cl=1)
 
-    def skin_attachJntsToSurf(self):
+    def autoAttachJntToSurf(self):
 
+        attached = 0
         for rigNode in mc.ls("*RGN", type="script"):
             rN = DagNode(rigNode)
-            # rigClass = rN.a.rigClass.get()
-            # if rigClass in ("Spine", "SpineQd", "NeckQd", "Tail"):
             if rN.a.nodeState.get() == 2:
 
-                rbJntSet = rN.a["rbJntSet"]
-                if rbJntSet.exists():
-                    rbJntSet = DagNode(rbJntSet.get())
+                attr = rN.a["rbJntSet"]
+                if attr.exists():
+                    rbJntSetName = attr.get()
+                    rbJntSet = DagNode(rbJntSetName)
                     if not rbJntSet.exists():
-                        logging.info(f"Set {rbJntSet} NOT found.")
+                        logging.info(f"Set {rbJntSetName} NOT found.")
                         continue
 
                     rbSrf = rN.a["rbSrf"]
@@ -533,10 +533,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
                     rbSrfNode = rbSrf.inConnNode
                     if rbSrfNode:
+                        logging.info(
+                            f"Attach joints in {rbJntSet} to {rbSrfNode.name}."
+                        )
                         mc.select(rbSrfNode, mc.sets(rbJntSet, q=1))
-                        self.attachJntsToSurfSel()
-            else:
-                logging.info(f"Unbuilt rigNode {rN} ignored.")
+                        self.attachJntToSurfSel()
+                        attached += 1
+
+        # logging.info(f"{attached} surfaces with joints attached.")
 
     def misc_importEnvAndShd_BN_clicked(self):
         """Import lighting & shader scenes for better look"""
