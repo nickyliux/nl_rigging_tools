@@ -43,6 +43,7 @@ PATH_SKEL = "D:/_PROJECT/GIT/nl_rigging_tools_skeletons/"
 MAYA_TPL_DIR = MOD_DIR + "/build/components"
 PATH_UI = MOD_DIR + "/nl_rigging_tools.ui"
 BIND_JNT_SET = "bind_jnt_set"
+MODEL_GRP = "mdl_grp"
 
 from contextlib import ContextDecorator
 
@@ -130,9 +131,11 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             self.joint_mirrorAllRef_BN_clicked
         )
 
-        self.UI.skinning_attach_BN.clicked.connect(self.skinning_attach_BN_clicked)
-        self.UI.skinning_skin_BN.clicked.connect(self.skinning_skin_BN_clicked)
-        self.UI.skinning_oneClick_BN.clicked.connect(self.skinning_oneClick_BN_clicked)
+        # self.UI.skin_attachJntsToSurf_BN.clicked.connect(
+        #     self.skin_attachJntsToSurf_BN_clicked
+        # )
+        # self.UI.skin_refJnt_BN.clicked.connect(self.bindJnts)
+        self.UI.skin_oneClick_BN.clicked.connect(self.skin_oneClick)
 
         self.UI.misc_retopo50_BN.clicked.connect(
             partial(modeling.mesh_retopo, faceNum=50)
@@ -423,7 +426,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         else:
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 
-    def skinning_attach_BN_clicked(self):
+    def attachJntsToSurfSel(self):
         """Attach joints to surf for selected"""
         srfSel = []
         jntSel = []
@@ -438,80 +441,102 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         if jntSel and srfSel:
             common.ribbonAttach(tgtList=jntSel, p=DagNode("SKL"), geo=srfSel[0])
-            mc.select(cl=1)
+            logging.info("Joints attatched to ribbon.")
         else:
             logging.info("Ignore invalid surf and joints")
 
-    def skinning_skin_BN_clicked(self):
-        """Bind to *_rbnJnt OR the closest joint to *_refJnt for all meshes under selected, either"""
-        meshSel = common.getMeshBelowSel()
-        skinned = 0
-        skinnedAlready = 0
-        mc.progressWindow(
-            title="Auto Skin", progress=100, status="Processing", isInterruptable=1
+    def bindRbnJnts(self, meshSel):
+        """
+        Bind meshes to *_rbnJnt
+        """
+        weighted = 0
+        ignored = 0
+        for i, mN in enumerate(meshSel):
+            jnt = DagNode(mN.name + "_rbnJnt")
+            if jnt.exists():
+                if mN.skinCluster:
+                    ignored += 1
+                else:
+                    mN.weightTo(jnt, mi=1, tsb=1)
+                    weighted += 1
+            self.UI.oneClick_PB.setValue(i)
+        self.UI.oneClick_PB.setValue(0)
+
+        return (weighted, ignored)
+
+    def bindRefJnts(self, meshSel, closestSet=None):
+        """
+        Bind meshes to closest *_refJnt
+        """
+        weighted = 0
+        ignored = 0
+        if not DagNode(closestSet).exists():
+            logging.info(f"Set {closestSet} NOT found for ref jnt skinning.")
+        else:
+            for i, mN in enumerate(meshSel):
+                jnt = DagNode(mN.name + "_refJnt")
+                if jnt.exists():
+                    if mN.skinCluster:
+                        ignored += 1
+                    else:
+                        closest = jnt.getClosestInList(mc.sets(closestSet, q=1))
+                        mN.weightTo(closest, mi=1, tsb=1)
+                        weighted += 1
+                self.UI.oneClick_PB.setValue(i)
+            self.UI.oneClick_PB.setValue(0)
+
+        return (weighted, ignored)
+
+    def skin_bindJnts(self):
+        """
+        For all meshes under selected, bind to target joints
+        """
+        meshSel = common.getMeshBelow(MODEL_GRP)
+        (weighted1, ignored1) = self.bindRbnJnts(meshSel)
+        (weighted2, ignored2) = self.bindRefJnts(meshSel, closestSet=BIND_JNT_SET)
+        logging.info(
+            f"{weighted1 + weighted2} weighted. {ignored1 + ignored2} ignored."
         )
 
-        # Bind to rbnJnt found
-        for mN in meshSel:
-            rbnJnt = DagNode(mN.name + "_rbnJnt")
-            if rbnJnt.exists():
-                if mN.skinCluster is None:
-                    mN.weightTo(rbnJnt, mi=1, tsb=1)
-                    skinned += 1
-                else:
-                    skinnedAlready += 1
-            mc.progressWindow(
-                e=1, progress=skinned / len(meshSel) * 200, status=mN.name
-            )
-
-        # Find refJnt, bind to closest jnt in BIND_JNT_SET
-        if DagNode(BIND_JNT_SET).exists():
-            for mN in meshSel:
-                refJnt = DagNode(mN.name + "_refJnt")
-                if refJnt.exists():
-                    if mN.skinCluster is None:
-                        closest = refJnt.getClosestInList(mc.sets(BIND_JNT_SET, q=1))
-                        mN.weightTo(closest, mi=1, tsb=1)
-                        skinned += 1
-                    else:
-                        skinnedAlready += 1
-                mc.progressWindow(
-                    e=1, progress=skinned / len(meshSel) * 200, status=mN.name
-                )
-        else:
-            logging.info("bind_jnt_set NOT found for refJnt skinning.")
-
-        mc.select(cl=1)
-        mc.progressWindow(ep=1)
-        logging.info(f"{skinned} skinned. {skinnedAlready} ignored.")
-
-    @Undo("skinning_oneClick_BN_clicked")
-    def skinning_oneClick_BN_clicked(self):
-        """One click automation
-        * For skinning to ref joints, all model under mdl_grp is used
-        * For skinning to rbn joints, search attr rbSrf & rbJSet for each rigNode
+    @Undo("skin_oneClick")
+    def skin_oneClick(self):
         """
-        mc.select(cl=1)
-        # ref jnt skinning
-        self.skinning_skin_BN_clicked()
+        1. Weighting
+            * For reference joints, all model under mdl_grp is used
+            * For ribbon joints, search attr rbSrf & rbJSet for each rigNode
 
-        # rbn jnt skinning
+        2. Attach Joints to Surface
+        """
+        self.skin_bindJnts()
+        self.skin_attachJntsToSurf()
+        # mc.select(cl=1)
+
+    def skin_attachJntsToSurf(self):
+
         for rigNode in mc.ls("*RGN", type="script"):
-            rigNode = DagNode(rigNode)
-            # rigClass = rigNode.a.rigClass.get()
+            rN = DagNode(rigNode)
+            # rigClass = rN.a.rigClass.get()
             # if rigClass in ("Spine", "SpineQd", "NeckQd", "Tail"):
-            rbjSetAttr = rigNode.a["rbjSet"]
-            rbSrfAttr = rigNode.a["rbSrf"]
+            if rN.a.nodeState.get() == 2:
 
-            if rbjSetAttr.exists() and rbSrfAttr.exists():
-                rbjSet = DagNode(rbjSetAttr.get())
-                rbSrf = rbSrfAttr.inConnNode
+                rbJntSet = rN.a["rbJntSet"]
+                if rbJntSet.exists():
+                    rbJntSet = DagNode(rbJntSet.get())
+                    if not rbJntSet.exists():
+                        logging.info(f"Set {rbJntSet} NOT found.")
+                        continue
 
-                if rbjSet.exists() and rbSrf:
-                    mc.select(rbSrf, mc.sets(rbjSet, q=1))
-                    self.skinning_attach_BN_clicked()
-                else:
-                    logging.info("rbjSet / rbSrf objects NOT found at " + rigNode)
+                    rbSrf = rN.a["rbSrf"]
+                    if not rbSrf.exists():
+                        logging.info(f"Attr rbSrf NOT found in {rN}.")
+                        continue
+
+                    rbSrfNode = rbSrf.inConnNode
+                    if rbSrfNode:
+                        mc.select(rbSrfNode, mc.sets(rbJntSet, q=1))
+                        self.attachJntsToSurfSel()
+            else:
+                logging.info(f"Unbuilt rigNode {rN} ignored.")
 
     def misc_importEnvAndShd_BN_clicked(self):
         """Import lighting & shader scenes for better look"""

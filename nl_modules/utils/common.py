@@ -469,15 +469,15 @@ def addTwistReader(target, pf="", p=None):
     return reader_loc
 
 
-def getMeshBelowSel():
+def getMeshBelow(grp):
     from nl_modules.nodel.mesh_node import MeshNode
 
     sel = mc.ls(sl=1)
     if not sel:
-        if mc.objExists("mdl_grp"):
-            mc.select("mdl_grp")
+        if mc.objExists(grp):
+            mc.select(grp)
         else:
-            logging.info('Ignore auto skin as "mdl_grp" NOT found.')
+            logging.info(f"Model set {grp} NOT found.")
             return []
     mc.select(hi=1)
     meshes = mc.ls(sl=1, et="mesh") or []
@@ -490,7 +490,9 @@ def setViewport():
     # mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
     # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
     for p in mc.getPanel(type="modelPanel"):
-        mc.modelEditor(p, e=1, wos=1)  # wos=1, jx=1, xray=1
+        # mc.modelEditor(p, e=1, wos=1)
+        mc.modelEditor(p, e=1, jx=1)
+        # wos=1, jx=1, xray=1
 
 
 # def calcBB(tgt):

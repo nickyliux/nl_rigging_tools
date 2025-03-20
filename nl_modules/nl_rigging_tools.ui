@@ -895,7 +895,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab_1">
     <attribute name="title">
@@ -1130,7 +1130,7 @@ Mesh(es)</string>
      <property name="geometry">
       <rect>
        <x>12</x>
-       <y>53</y>
+       <y>51</y>
        <width>188</width>
        <height>15</height>
       </rect>
@@ -1171,16 +1171,16 @@ Mesh(es)</string>
    </widget>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
-     <string>Skinning</string>
+     <string>Skin</string>
     </attribute>
-    <widget class="QPushButton" name="skinning_oneClick_BN">
+    <widget class="QPushButton" name="skin_oneClick_BN">
      <property name="enabled">
       <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
        <x>7</x>
-       <y>38</y>
+       <y>57</y>
        <width>201</width>
        <height>17</height>
       </rect>
@@ -1213,15 +1213,15 @@ or groups containing them</string>
       <string notr="true">color: rgb(255, 130, 130);</string>
      </property>
      <property name="text">
-      <string>One click</string>
+      <string>One Click</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="skinning_skin_BN">
+    <widget class="QPushButton" name="skin_refJnt_BN">
      <property name="geometry">
       <rect>
-       <x>111</x>
-       <y>11</y>
-       <width>97</width>
+       <x>7</x>
+       <y>34</y>
+       <width>201</width>
        <height>17</height>
       </rect>
      </property>
@@ -1256,10 +1256,10 @@ or groups containing them</string>
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Skin ref jnts</string>
+      <string>Reference Jnts</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="skinning_attach_BN">
+    <widget class="QPushButton" name="skin_attachJntsToSurf_BN">
      <property name="enabled">
       <bool>true</bool>
      </property>
@@ -1267,7 +1267,7 @@ or groups containing them</string>
       <rect>
        <x>7</x>
        <y>11</y>
-       <width>97</width>
+       <width>201</width>
        <height>17</height>
       </rect>
      </property>
@@ -1302,7 +1302,26 @@ or groups containing them</string>
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Skin rbn jnts</string>
+      <string>Attach Jnts to Surf</string>
+     </property>
+    </widget>
+    <widget class="QProgressBar" name="oneClick_PB">
+     <property name="geometry">
+      <rect>
+       <x>7</x>
+       <y>79</y>
+       <width>200</width>
+       <height>8</height>
+      </rect>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+     <property name="textVisible">
+      <bool>false</bool>
+     </property>
+     <property name="invertedAppearance">
+      <bool>false</bool>
      </property>
     </widget>
    </widget>
