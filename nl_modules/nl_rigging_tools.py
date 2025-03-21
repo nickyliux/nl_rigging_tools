@@ -136,6 +136,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # )
         # self.UI.skin_refJnt_BN.clicked.connect(self.bindJnts)
         self.UI.skin_oneClick_BN.clicked.connect(self.skin_oneClick)
+        self.UI.skin_delForAllMeshes_BN.clicked.connect(self.skin_delForAllMeshes)
 
         self.UI.misc_retopo50_BN.clicked.connect(
             partial(modeling.mesh_retopo, faceNum=50)
@@ -444,9 +445,38 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         else:
             logging.info("Ignore invalid surf and joints")
 
+    def bindRefJnts(self, meshSel, closestSet=None):
+        """
+        Bind each mesh to a joint found which is
+            1. closest to _refJnt
+            2. but not end with _rbnJnt
+        """
+        weighted = 0
+        ignored = 0
+        if not DagNode(closestSet).exists():
+            logging.info(f"Set {closestSet} NOT found for ref jnt skinning.")
+        else:
+            for i, mN in enumerate(meshSel):
+                jnt = DagNode(mN.name + "_refJnt")
+                if jnt.exists():
+                    if mN.skinCluster:
+                        ignored += 1
+                    else:
+                        closest = jnt.getClosestInList(mc.sets(closestSet, q=1))
+                        if closest and not str(closest).endswith("_rbnJnt"):
+                            mN.weightTo(closest, mi=1, tsb=1)
+                            weighted += 1
+                        else:
+                            ignored += 1
+
+                self.UI.oneClick_PB.setValue(i)
+            self.UI.oneClick_PB.setValue(0)
+
+        return (weighted, ignored)
+
     def bindRbnJnts(self, meshSel):
         """
-        Bind meshes to *_rbnJnt
+        Bind meshes to a joint found which is ended with _rbnJnt
         """
         weighted = 0
         ignored = 0
@@ -463,36 +493,13 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         return (weighted, ignored)
 
-    def bindRefJnts(self, meshSel, closestSet=None):
-        """
-        Bind meshes to closest *_refJnt
-        """
-        weighted = 0
-        ignored = 0
-        if not DagNode(closestSet).exists():
-            logging.info(f"Set {closestSet} NOT found for ref jnt skinning.")
-        else:
-            for i, mN in enumerate(meshSel):
-                jnt = DagNode(mN.name + "_refJnt")
-                if jnt.exists():
-                    if mN.skinCluster:
-                        ignored += 1
-                    else:
-                        closest = jnt.getClosestInList(mc.sets(closestSet, q=1))
-                        mN.weightTo(closest, mi=1, tsb=1)
-                        weighted += 1
-                self.UI.oneClick_PB.setValue(i)
-            self.UI.oneClick_PB.setValue(0)
-
-        return (weighted, ignored)
-
-    def autoBindJnt(self):
+    def autoSkinning(self):
         """
         For all meshes under selected, bind to target joints
         """
         meshSel = common.getMeshBelow(MODEL_GRP)
-        (weighted1, ignored1) = self.bindRbnJnts(meshSel)
         (weighted2, ignored2) = self.bindRefJnts(meshSel, closestSet=BIND_JNT_SET)
+        (weighted1, ignored1) = self.bindRbnJnts(meshSel)
         logging.info(
             f"{weighted1 + weighted2} weighted. {ignored1 + ignored2} ignored."
         )
@@ -506,10 +513,26 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         2. Attach Joints to Surface
         """
-        self.autoBindJnt()
-        self.autoAttachJntToSurf()
-        common.setViewport(jx=0)
+        self.autoSkinning()
+        # self.autoAttachJntToSurf()
+        common.setViewport()  # jx=0)
         mc.select(cl=1)
+
+    def skin_delForAllMeshes(self):
+        from nl_modules.nodel.mesh_node import MeshNode
+
+        # Collect all skincluster and delete
+        allSkin = []
+        for m in set(mc.ls(type="mesh")):
+            sk = MeshNode(m).skinCluster
+            if sk and sk not in allSkin:
+                allSkin.append(sk)
+
+        num = len(allSkin)
+        for sk in allSkin:
+            sk.delete()
+
+        logging.info(f"{num} skinClusters deleted.")
 
     def autoAttachJntToSurf(self):
 
