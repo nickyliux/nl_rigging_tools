@@ -472,13 +472,12 @@ def addTwistReader(target, pf="", p=None):
 def getMeshBelow(grp):
     from nl_modules.nodel.mesh_node import MeshNode
 
-    sel = mc.ls(sl=1)
-    if not sel:
-        if mc.objExists(grp):
-            mc.select(grp)
-        else:
-            logging.info(f"Model set {grp} NOT found.")
-            return []
+    if mc.objExists(grp):
+        mc.select(grp)
+    else:
+        logging.info(f"Model set {grp} NOT found.")
+        return []
+
     mc.select(hi=1)
     meshes = mc.ls(sl=1, et="mesh") or []
     mc.select(cl=1)
