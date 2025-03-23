@@ -34,10 +34,10 @@ class Head(RigModule):
     def genGuideSk(self):
         self.genSk_module(["st", "ed"])
         rID = self.rigID
-        jaw_list = self.genSkFrNames(["jaw", "jawEnd"], pf=rID)
+        jaw_list = self.genSkFrNames(["jaw", "jawEnd"])
         jaw_list[0] | self.rootJ
-        lf_eye = self.genSkFrNames("lf_eye", pf=rID)[0]
-        rt_eye = self.genSkFrNames("rt_eye", pf=rID)[0]
+        lf_eye = self.genSkFrNames("lf_eye")[0]
+        rt_eye = self.genSkFrNames("rt_eye")[0]
         (lf_eye, rt_eye) | self.rootJ
 
     def build(self):
@@ -102,8 +102,8 @@ class Head(RigModule):
 
     def post_setup(self):
         logging.info(self.rigID)
-        self.addBindJntSet(self.joints)
-        self.addCtlSet(self.fkCtl, pf=self.rigID)
+        self.addBindJntSet(jntList=self.joints)
+        self.addCtlSet(ctlList=self.fkCtl)
         self.space_setup()
         self.anchor_setup_module({"anchorF1": self.head_fkc.offset})
         self.proxy_setup()

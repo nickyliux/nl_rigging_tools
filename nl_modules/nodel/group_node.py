@@ -115,6 +115,7 @@ class GroupNode(DagNode):
                 mc.scale(args[0], args[0], args[0], self.cvs, pivot=p, **kwargs)
             else:
                 mc.scale(*args, self.cvs, pivot=p, **kwargs)
+            mc.select(self)
         else:
             if len(args) == 1:
                 mc.scale(args[0], args[0], args[0], self.cvs, **kwargs)

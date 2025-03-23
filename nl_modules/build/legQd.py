@@ -79,7 +79,7 @@ class LegQd(RigModule):
         self.genSk_module(["hip", "upr", "lwr", "palm", "digit", "ball", "tip"])
 
         if self.TOE_BONES:
-            self.toesRootJ = self.genSkFrNames(["toesRoot"], pf=self.rigID)[0]
+            self.toesRootJ = self.genSkFrNames(["toesRoot"])[0]
             self.toesRootJ | self.SKL_DATA
             self.rigNode.setMsg({"toesRootJ": self.toesRootJ})
             toe_names = [
@@ -90,7 +90,7 @@ class LegQd(RigModule):
                 ["toe04_1", "toe04_2", "toe04_3", "toe04_4", "toe04_5"],
             ]
             for names in toe_names:
-                fgr_jnts = self.genSkFrNames(names, pf=self.rigID, r=0.3)
+                fgr_jnts = self.genSkFrNames(names, r=0.3)
                 fgr_jnts[0].freezeXf()
                 fgr_jnts[0] | self.toesRootJ
 
@@ -372,9 +372,9 @@ class LegQd(RigModule):
     def twistBones_setup(self):
         rID = self.rigID
         jnt_names = ["radius", "radiusEnd"]
-        radius_JC = self.genSkFrNames(jnt_names, pf=rID)
+        radius_JC = self.genSkFrNames(jnt_names)
         jnt_names = ["ulna", "ulnaEnd"]
-        ulna_JC = self.genSkFrNames(jnt_names, pf=rID)
+        ulna_JC = self.genSkFrNames(jnt_names)
 
         parent = self.boneFix if self.KNEE_FIX else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent
@@ -519,7 +519,7 @@ class LegQd(RigModule):
         volPower >> ribbonUp.volPower
         volPower >> ribbonLw.volPower
 
-        self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
+        self.addBindJntSet(jntList=ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def proxy_setup(self):
         proxyList = self.joints
@@ -558,9 +558,9 @@ class LegQd(RigModule):
             )
 
         if proxyList:
-            self.addBindJntSet(proxyList)
+            self.addBindJntSet(jntList=proxyList)
         if proxyToeList:
-            self.addBindJntSet(proxyToeList)
+            self.addBindJntSet(jntList=proxyToeList)
 
     def vis_setup(self):
         # visGrp = common.addVisOption(self.visC, self.rigID)
@@ -614,7 +614,7 @@ class LegQd(RigModule):
         #     ctlSet.extend(self.all_bend)
         if self.TOE_BONES:
             [ctlSet.extend(s) for s in self.toesCtlsList or []]
-        self.addCtlSet(ctlSet, pf=rID)
+        self.addCtlSet(ctlList=ctlSet)
         self.space_setup()
         self.anchor_setup_module({"anchorF1": self.hip_fkc})
         self.proxy_setup()

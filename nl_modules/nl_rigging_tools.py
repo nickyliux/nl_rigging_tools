@@ -161,8 +161,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if mc.selectPref(clickDrag=1, q=1):
             self.UI.clickDrag_CB.setChecked(1)
 
-        self.UI.shapeScaleHalf_BN.clicked.connect(partial(self.shapeScale, 0.5))
-        self.UI.shapeScale2_BN.clicked.connect(partial(self.shapeScale, 2))
+        self.UI.shapeScaleHalf_BN.clicked.connect(partial(self.shapeScale, 3 / 4))
+        self.UI.shapeScale2_BN.clicked.connect(partial(self.shapeScale, 4 / 3))
         self.UI.shapeRotaX_BN.clicked.connect(partial(self.shapeRota, 90, 0, 0))
         self.UI.shapeRotaY_BN.clicked.connect(partial(self.shapeRota, 0, 90, 0))
         self.UI.shapeRotaZ_BN.clicked.connect(partial(self.shapeRota, 0, 0, 90))
@@ -196,7 +196,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         for sel in mc.ls(sl=1, tr=1):
             sel = DagNode(sel)
             if sel.type == "nurbsCurve":
-                CurveNode(sel).cv_scale(value)
+                CurveNode(sel).cv_scale(value, atCVCetner=1)
 
     def component_load_BN_doubleClicked(self, item):
         names = guide.COMPONENT_DICT[item.text()]
@@ -437,7 +437,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             if sN.type == "joint":
                 jntSel.append(sN)
             elif sN.type == "nurbsSurface":
-                # srfSel.append(sN.parent)
                 srfSel.append(sN)
 
         if jntSel and srfSel:
@@ -453,8 +452,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """
         weighted = 0
         ignored = 0
+        autoBind_threshold = 5
         if not DagNode(closestSet).exists():
-            logging.info(f"Set {closestSet} NOT found for ref jnt skinning.")
+            logging.info(f"Set {closestSet} NOT found for auto skin.")
             return (0, 0)
 
         for i, mN in enumerate(meshSel):
@@ -464,9 +464,12 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                     ignored += 1
                 else:
                     closest = jnt.getClosestInList(mc.sets(closestSet, q=1))
-                    if closest and not str(closest).endswith("_rbnJnt"):
-                        mN.weightTo(closest, mi=1, tsb=1)
-                        weighted += 1
+                    if closest:
+                        if closest.o.distanceTo(jnt) < autoBind_threshold:
+                            mN.weightTo(closest, mi=1, tsb=1)
+                            weighted += 1
+                        else:
+                            ignored += 1
                     else:
                         ignored += 1
             self.UI.oneClick_PB.setValue(i)
@@ -515,7 +518,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """
         self.autoSkinning()
         self.autoAttachJntToSurf()
-        common.setViewport()  # jx=0)
+        common.setViewport()
         mc.select(cl=1)
 
     def skin_delForAllMeshes(self):
@@ -537,37 +540,36 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def autoAttachJntToSurf(self):
 
         for rigNode in mc.ls("*RGN", type="script"):
+
             rN = DagNode(rigNode)
             if rN.a.nodeState.get() == 2:
 
-                # Check attributes
+                # Process only if rbJntSet found
                 rbJntSetAttr = rN.a["rbJntSet"]
-                if not rbJntSetAttr.exists():
-                    logging.info(f"Attr rbJntSet NOT found in {rN}.")
-                    continue
+                if rbJntSetAttr.exists():
 
-                rbSrfAttr = rN.a["rbSrf"]
-                if not rbSrfAttr.exists():
-                    logging.info(f"Attr rbSrf NOT found in {rN}.")
-                    continue
+                    rbSrfAttr = rN.a["rbSrf"]
+                    if not rbSrfAttr.exists():
+                        logging.info(f"Attr rbSrf NOT found in {rN}.")
+                        continue
 
-                # Check set rbJntSet
-                rbJntSetName = rbJntSetAttr.get()
-                rbJntSet = DagNode(rbJntSetName)
-                if not rbJntSet.exists():
-                    logging.info(f"Set {rbJntSetName} NOT found.")
-                    continue
+                    # Check set rbJntSet
+                    rbJntSetName = rbJntSetAttr.get()
+                    rbJntSet = DagNode(rbJntSetName)
+                    if not rbJntSet.exists():
+                        logging.info(f"Set {rbJntSetName} NOT found.")
+                        continue
 
-                # Check surface rbSrf
-                rbSrfNode = rbSrfAttr.inConnNode
-                if not rbSrfNode:
-                    logging.info(f"Surface object NOT found.")
-                    continue
+                    # Check surface rbSrf
+                    rbSrfNode = rbSrfAttr.inConnNode
+                    if not rbSrfNode:
+                        logging.info(f"Surface object NOT found.")
+                        continue
 
-                # Attach joints in set to srf
-                mc.select(rbSrfNode, mc.sets(rbJntSet, q=1))
-                self.attachJntToSurfSel()
-                logging.info(f"Attach joints in {rbJntSet} to {rbSrfNode.name}.")
+                    # Attach joints in set to srf
+                    mc.select(rbSrfNode, mc.sets(rbJntSet, q=1))
+                    self.attachJntToSurfSel()
+                    logging.info(f"Attach joints in {rbJntSet} to {rbSrfNode.name}.")
 
     def misc_importEnvAndShd_BN_clicked(self):
         """Import lighting & shader scenes for better look"""

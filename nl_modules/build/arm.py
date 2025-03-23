@@ -139,8 +139,8 @@ class Arm(RigModule):
 
     def twistBones_setup(self):
         rID = self.rigID
-        radius_JC = self.genSkFrNames(["radius", "radiusEnd"], pf=rID)
-        ulna_JC = self.genSkFrNames(["ulna", "ulnaEnd"], pf=rID)
+        radius_JC = self.genSkFrNames(["radius", "radiusEnd"])
+        ulna_JC = self.genSkFrNames(["ulna", "ulnaEnd"])
 
         (radius_JC[0], ulna_JC[0]) | self.lwr
 
@@ -356,7 +356,7 @@ class Arm(RigModule):
         keepVol >> ribbonUp.volPower
         keepVol >> ribbonLw.volPower
 
-        self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
+        self.addBindJntSet(jntList=ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def vis_setup(self):
         # visGrp = common.addVisOption(self.visC, self.rigID)
@@ -419,7 +419,7 @@ class Arm(RigModule):
                 grp=self.PRX_GRP,
             )
 
-        self.addBindJntSet(proxyList)
+        self.addBindJntSet(jntList=proxyList)
 
     def channel_setup(self):
         self.setting.a.showAttr()
@@ -460,7 +460,7 @@ class Arm(RigModule):
         if self.RBN_BONES:
             ctlSet.extend(self.all_bend)
 
-        self.addCtlSet(ctlSet, pf=rID)
+        self.addCtlSet(ctlList=ctlSet)
         self.space_setup()
         self.anchor_setup_module(
             {

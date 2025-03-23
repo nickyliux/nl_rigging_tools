@@ -33,7 +33,7 @@ class Hand(RigModule):
         ]
         fgr_roots = []
         for fgrs_names in all_fgrs_names:
-            fgr_jnts = self.genSkFrNames(fgrs_names, pf=self.rigID)
+            fgr_jnts = self.genSkFrNames(fgrs_names)
             fgr_jnts[0].freezeXf()
             fgr_jnts[0] | self.rootJ
             fgr_roots.append(fgr_jnts[0])
@@ -275,10 +275,10 @@ class Hand(RigModule):
             fgrCtlVis >> fgrCtls[0].a.v
 
     def post_setup(self):
-        self.addBindJntSet(self.rootJ.allChildrenJt2)
+        self.addBindJntSet(jntList=self.rootJ.allChildrenJt2)
         ctlSet = [self.smart_ctl] + self.fgrRootCtlArr
         [ctlSet.extend(x) for x in self.ctlsArr]
-        self.addCtlSet(ctlSet, pf=self.rigID)
+        self.addCtlSet(ctlList=ctlSet)
         self.space_setup()
         self.anchor_setup_module({"anchorF1": self.rootJ})
         self.proxy_setup()

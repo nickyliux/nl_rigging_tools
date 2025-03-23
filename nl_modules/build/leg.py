@@ -87,7 +87,7 @@ class Leg(RigModule):
         self.genSk_module(["hip", "upr", "lwr", "palm", "ball", "tip"])
 
         if self.TOE_BONES:
-            self.toesRootJ = self.genSkFrNames(["toesRoot"], pf=rID)[0]
+            self.toesRootJ = self.genSkFrNames(["toesRoot"])[0]
             self.toesRootJ | self.SKL_DATA
             self.rigNode.setMsg({"toesRootJ": self.toesRootJ})
             toe_names = [
@@ -98,7 +98,7 @@ class Leg(RigModule):
                 ["toe04_1", "toe04_2", "toe04_3", "toe04_4", "toe04_5"],
             ]
             for names in toe_names:
-                fgr_jnts = self.genSkFrNames(names, pf=rID)
+                fgr_jnts = self.genSkFrNames(names)
                 fgr_jnts[0].freezeXf()
                 fgr_jnts[0] | self.toesRootJ
 
@@ -355,8 +355,8 @@ class Leg(RigModule):
 
     def twistBones_setup(self):
         rID = self.rigID
-        radius_JC = self.genSkFrNames(["radius", "radiusEnd"], pf=rID)
-        ulna_JC = self.genSkFrNames(["ulna", "ulnaEnd"], pf=rID)
+        radius_JC = self.genSkFrNames(["radius", "radiusEnd"])
+        ulna_JC = self.genSkFrNames(["ulna", "ulnaEnd"])
 
         parent = self.boneFix if self.KNEE_FIX else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent
@@ -490,7 +490,7 @@ class Leg(RigModule):
         keepVol >> ribbonUp.volPower
         keepVol >> ribbonLw.volPower
 
-        self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
+        self.addBindJntSet(jntList=ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def proxy_setup(self):
         proxyList = self.joints[:-1]
@@ -540,9 +540,9 @@ class Leg(RigModule):
             )
 
         if proxyList:
-            self.addBindJntSet(proxyList)
+            self.addBindJntSet(jntList=proxyList)
         if proxyToeList:
-            self.addBindJntSet(proxyToeList)
+            self.addBindJntSet(jntList=proxyToeList)
 
     def vis_setup(self):
         # visGrp = common.addVisOption(self.visC, self.rigID)
@@ -641,7 +641,7 @@ class Leg(RigModule):
         if self.TOE_BONES:
             [ctlSet.extend(s) for s in self.toesCtlsList]
 
-        self.addCtlSet(ctlSet, pf=rID)
+        self.addCtlSet(ctlList=ctlSet)
         self.space_setup()
         self.anchor_setup_module({"anchorF1": self.hip_fkc.offset})
         self.proxy_setup()

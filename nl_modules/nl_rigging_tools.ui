@@ -895,7 +895,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_1">
     <attribute name="title">
@@ -905,7 +905,7 @@
      <property name="geometry">
       <rect>
        <x>80</x>
-       <y>30</y>
+       <y>28</y>
        <width>120</width>
        <height>15</height>
       </rect>
@@ -940,7 +940,7 @@
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Add Reference Jnt</string>
+      <string>Add Reference Jnts</string>
      </property>
     </widget>
     <widget class="QPushButton" name="joint_addForSpine_BN">
@@ -982,16 +982,16 @@
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Add Ribbon Jnt</string>
+      <string>Add Ribbon Jnts</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_2">
      <property name="geometry">
       <rect>
        <x>12</x>
-       <y>10</y>
+       <y>8</y>
        <width>81</width>
-       <height>31</height>
+       <height>41</height>
       </rect>
      </property>
      <property name="font">
@@ -1003,7 +1003,8 @@
       </font>
      </property>
      <property name="text">
-      <string>Select bone
+      <string>Select
+bone
 Mesh(es)</string>
      </property>
      <property name="alignment">
@@ -1026,7 +1027,7 @@ Mesh(es)</string>
     <widget class="QPushButton" name="misc_retopo500_BN">
      <property name="geometry">
       <rect>
-       <x>170</x>
+       <x>160</x>
        <y>84</y>
        <width>22</width>
        <height>17</height>
@@ -1054,7 +1055,7 @@ Mesh(es)</string>
     <widget class="QPushButton" name="misc_retopo150_BN">
      <property name="geometry">
       <rect>
-       <x>140</x>
+       <x>130</x>
        <y>84</y>
        <width>22</width>
        <height>17</height>
@@ -1101,7 +1102,7 @@ Mesh(es)</string>
     <widget class="QPushButton" name="misc_retopo50_BN">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>100</x>
        <y>84</y>
        <width>22</width>
        <height>17</height>
@@ -1129,9 +1130,9 @@ Mesh(es)</string>
     <widget class="QPushButton" name="joint_mirrorAllRef_BN">
      <property name="geometry">
       <rect>
-       <x>12</x>
-       <y>51</y>
-       <width>188</width>
+       <x>80</x>
+       <y>54</y>
+       <width>120</width>
        <height>15</height>
       </rect>
      </property>
@@ -1165,7 +1166,7 @@ Mesh(es)</string>
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Mirror Reference Jnt  ( L -&gt; R )</string>
+      <string>Mirror Ref Jnts   L&gt;R</string>
      </property>
     </widget>
    </widget>

@@ -196,7 +196,7 @@ class SpinePro(rig_module.RigModule):
         self.setting.a.add("keepVol", min=0, max=2, dv=1, k=0) >> spine_RB.volPower
 
         self.spine_RB = spine_RB
-        self.addBindJntSet(spine_RB.rbJnt)
+        self.addBindJntSet(jntList=spine_RB.rbJnt)
 
     def post_setup(self):
 
@@ -215,8 +215,7 @@ class SpinePro(rig_module.RigModule):
             c.a.ro.set(3)
 
         self.addCtlSet(
-            self.fkCtl + self.ikCtl + [self.setting, self.cog_ctl, self.cog_gmb],
-            pf=self.rigID,
+            ctlList=self.fkCtl + self.ikCtl + [self.setting, self.cog_ctl, self.cog_gmb]
         )
 
         self.anchor_setup()

@@ -49,8 +49,9 @@ class RigModule(RigBase):
         if rigNode.a.rootJ.exists():
             self.rootJ = rigNode.a.rootJ.inConnNode
 
-    @staticmethod
-    def genSkFrNames(names, pf="", color=None, r=1):
+    # @staticmethod
+    # def genSkFrNames(names, pf="", color=None, r=1):
+    def genSkFrNames(self, names, color=None, r=1):
         """Create joints by finding object : pf_name_guide' from name list
         e.g.
             jnt_names = ["clavicle", "upr", "lwr", "palm", "ball"]
@@ -58,13 +59,12 @@ class RigModule(RigBase):
                                       # given lfArm0_{n}_guide exists
         """
         guides = []
-        if pf:
-            pf += "_"
+        pf = self.rigID
         if isinstance(names, str):
             names = [names]
 
         for n in names:
-            guide_name = f"{pf}{n}_guide"
+            guide_name = f"{pf}_{n}_guide"
             if not mc.objExists(guide_name):
                 logging.error(f"missing object: {guide_name}")
                 return
@@ -75,7 +75,7 @@ class RigModule(RigBase):
         joints = []
 
         for i, key in enumerate(guideDict):
-            jN = JointNode(f"{pf}{key}", align=guideDict[key], color=color, r=r)
+            jN = JointNode(f"{pf}_{key}", align=guideDict[key], color=color, r=r)
             if lastJ:
                 jN | lastJ
             lastJ = jN
@@ -312,7 +312,7 @@ class RigModule(RigBase):
             rootCtl.freezeXf(t=0, r=0, s=1)
         self.moduleG.hide()
 
-        jnt_list = self.genSkFrNames(jnt_names, pf=self.rigID)
+        jnt_list = self.genSkFrNames(jnt_names)
         self.rootJ = jnt_list[0]
         self.rootJ | self.SKL_DATA
         self.rootJ.freezeXf()
@@ -388,14 +388,16 @@ class RigModule(RigBase):
                 loc.cstPar(tgt.offset, mo=1)
             loc.hide()
 
-    def addCtlSet(self, ctlList, pf=None):
-        setName = pf + "_ctl_set"
+    def addCtlSet(self, ctlList=None):
+        setName = self.rigID + "_ctl_set"
         if DagNode(setName).exists():
             mc.sets(ctlList, add=setName)
         else:
             mc.sets(ctlList, n=setName)
 
-    def addBindJntSet(self, jntList):
+    def addBindJntSet(self, jntList=None):
+        """Add bind joint set for target joints"""
+
         if DagNode(BIND_JNT_SET).exists():
             mc.sets(jntList, add=BIND_JNT_SET)
         else:
@@ -599,13 +601,14 @@ class RigModule(RigBase):
         mc.hide(ikJ)
         return ctl, ikJ
 
-    def getAutoAimPreset(self, rID):
+    def getAutoAimPreset(self):
 
         upW = self.master_guide.a.autoUpWeight.get()
         fwW = self.master_guide.a.autoFwWeight.get()
         dnW = self.master_guide.a.autoDnWeight.get()
         bkW = self.master_guide.a.autoBkWeight.get()
 
+        rID = self.rigID
         preset = [1, 1, 1, 1]
         if rID.startswith("lfArm"):
             preset = [upW, fwW, dnW, bkW]
@@ -653,7 +656,7 @@ class RigModule(RigBase):
             ctlNum=4,
             cst=fkc.offset,
             setting=setting,
-            preset=self.getAutoAimPreset(rID),
+            preset=self.getAutoAimPreset(),
             p=self.CTL_DATA,
         )
 

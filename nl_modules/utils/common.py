@@ -236,10 +236,10 @@ def ribbonAttach(tgtList=None, geo=None, p=None):
     #  create coordList
     # ------------------------------
     coordList = []
-    for obj in tgtList:
-        obj = DagNode(obj)
-        ribbonAttach_reset(obj)
-        obj.a.t >> cpos.a.inPosition
+    for tgt in tgtList:
+        tgt = DagNode(tgt)
+        ribbonAttach_reset(tgt)
+        tgt.a.t >> cpos.a.inPosition
 
         if geoType == "mesh":
             vId = cpos.a.closestVertexIndex.get()
@@ -254,7 +254,7 @@ def ribbonAttach(tgtList=None, geo=None, p=None):
         grp = GroupNode(geo + "_jntGrp", p=p)
         pin, pinXf = nlRivet(geo=geo, coordList=coordList, p=grp)
         if pinXf:
-            obj | pinXf[0]
+            tgt | pinXf[0]
     cpos.delete()
 
 
