@@ -251,7 +251,7 @@ def ribbonAttach(tgtList=None, geo=None, p=None):
             v = cpos.a.parameterV.get()
             coordList = [(u, v)]
 
-        grp = GroupNode(geo + "_jntGrp", p=p)
+        grp = GroupNode(geo + "_rvtGrp", p=p)
         pin, pinXf = nlRivet(geo=geo, coordList=coordList, p=grp)
         if pinXf:
             tgt | pinXf[0]

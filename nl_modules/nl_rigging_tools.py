@@ -440,7 +440,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 srfSel.append(sN)
 
         if jntSel and srfSel:
-            common.ribbonAttach(tgtList=jntSel, p=DagNode("SKL"), geo=srfSel[0])
+            common.ribbonAttach(tgtList=jntSel, p=DagNode("RIG"), geo=srfSel[0])
         else:
             logging.info("Ignore invalid surf and joints")
 
@@ -540,7 +540,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def autoAttachJntToSurf(self):
 
         for rigNode in mc.ls("*RGN", type="script"):
-
             rN = DagNode(rigNode)
             if rN.a.nodeState.get() == 2:
 
