@@ -1,13 +1,12 @@
 import maya.cmds as mc
 import logging
 
+from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.joint_node import JointNode
-from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
-from nl_modules.build.rig_module import RigModule
 
 
 PRX = 12
@@ -19,6 +18,7 @@ class Hand(RigModule):
         self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
         self.smart_ctl = None
         self.fgrsArr = None
+        self.all_fgr_jnts = []
         self.ctlsArr = None
         self.fgrRootCtlArr = None
 
@@ -34,6 +34,7 @@ class Hand(RigModule):
         fgr_roots = []
         for fgrs_names in all_fgrs_names:
             fgr_jnts = self.genSkFrNames(fgrs_names)
+            self.all_fgr_jnts.extend(fgr_jnts)
             fgr_jnts[0].freezeXf()
             fgr_jnts[0] | self.rootJ
             fgr_roots.append(fgr_jnts[0])
@@ -275,7 +276,7 @@ class Hand(RigModule):
             fgrCtlVis >> fgrCtls[0].a.v
 
     def post_setup(self):
-        self.addBindJntSet(jntList=self.rootJ.allChildrenJt2)
+        self.addBindJntSet(jntList=self.all_fgr_jnts)
         ctlSet = [self.smart_ctl] + self.fgrRootCtlArr
         [ctlSet.extend(x) for x in self.ctlsArr]
         self.addCtlSet(ctlList=ctlSet)

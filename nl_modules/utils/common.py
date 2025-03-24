@@ -158,7 +158,9 @@ def cstMulti(*args, cstType="par", delete=False, w=None, **kwargs):
         return cst
 
 
-def nlRivet(geo=None, coordList=None, normal=0, tangent=2, normalize=0, p=None):
+def nlRivet(
+    geo=None, coordList=None, normal=0, tangent=2, normalize=0, scaleAttr=None, p=None
+):
     """Create Rivets and return uvPin, locators
     ( Benefit over mc.Rivet is not using selection )
     e.g.
@@ -192,6 +194,9 @@ def nlRivet(geo=None, coordList=None, normal=0, tangent=2, normalize=0, p=None):
 
     for i in range(len(coordList)):
         loc = LocNode("rivetLoc_#")
+        scaleAttr >> loc.a.scaleX
+        scaleAttr >> loc.a.scaleY
+        scaleAttr >> loc.a.scaleZ
         uvPinN.a.outputMatrix >> loc.a.offsetParentMatrix
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateU", coordList[i][0])
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateV", coordList[i][1])
@@ -211,7 +216,7 @@ def ribbonAttach_reset(tgt):
             pa.delete()
 
 
-def ribbonAttach(tgtList=None, geo=None, p=None):
+def ribbonAttach(tgtList=None, geo=None, scaleAttr=None, p=None):
     """Attach objects to geometry (nurbs / meshes)"""
 
     from nl_modules.nodel.base.dag_node import DagNode
@@ -252,7 +257,7 @@ def ribbonAttach(tgtList=None, geo=None, p=None):
             coordList = [(u, v)]
 
         grp = GroupNode(geo + "_rvtGrp", p=p)
-        pin, pinXf = nlRivet(geo=geo, coordList=coordList, p=grp)
+        pin, pinXf = nlRivet(geo=geo, coordList=coordList, scaleAttr=scaleAttr, p=grp)
         if pinXf:
             tgt | pinXf[0]
     cpos.delete()

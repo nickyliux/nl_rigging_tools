@@ -427,35 +427,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         else:
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 
-    def attachJntToSurfSel(self):
-        """Attach joints to surf for selected"""
-        srfSel = []
-        jntSel = []
-        mc.select(hi=1)
-        for s in mc.ls(sl=1):
-            sN = DagNode(s)
-            if sN.type == "joint":
-                jntSel.append(sN)
-            elif sN.type == "nurbsSurface":
-                srfSel.append(sN)
-
-        if jntSel and srfSel:
-            common.ribbonAttach(tgtList=jntSel, p=DagNode("RIG"), geo=srfSel[0])
-        else:
-            logging.info("Ignore invalid surf and joints")
-
     def bindRefJnts(self, meshSel, closestSet=None):
-        """
-        Bind each mesh to a joint found which is
-            1. closest to _refJnt
-            2. but not end with _rbnJnt
-        """
         weighted = 0
         ignored = 0
-        autoBind_threshold = 5
+        autoBind_threshold = 8
+
         if not DagNode(closestSet).exists():
             logging.info(f"Set {closestSet} NOT found for auto skin.")
-            return (0, 0)
+            return
 
         for i, mN in enumerate(meshSel):
             jnt = DagNode(mN.name + "_refJnt")
@@ -475,7 +454,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             self.UI.oneClick_PB.setValue(i)
 
         self.UI.oneClick_PB.setValue(0)
-        return (weighted, ignored)
+        logging.info(f"{weighted} weighted. {ignored} ignored.")
 
     def bindRbnJnts(self, meshSel):
         """
@@ -494,30 +473,23 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             self.UI.oneClick_PB.setValue(i)
 
         self.UI.oneClick_PB.setValue(0)
-        return (weighted, ignored)
-
-    def autoSkinning(self):
-        """
-        For all meshes under selected, bind to target joints
-        """
-        meshSel = common.getMeshBelow(MODEL_GRP)
-        (weighted2, ignored2) = self.bindRefJnts(meshSel, closestSet=BIND_JNT_SET)
-        (weighted1, ignored1) = self.bindRbnJnts(meshSel)
-        logging.info(
-            f"{weighted1 + weighted2} weighted. {ignored1 + ignored2} ignored."
-        )
+        logging.info(f"{weighted} weighted. {ignored} ignored.")
 
     @Undo("skin_oneClick")
     def skin_oneClick(self):
-        """
-        1. Weighting
-            * For reference joints, all model under mdl_grp is used
-            * For ribbon joints, search attr rbSrf & rbJSet for each rigNode
 
-        2. Attach Joints to Surface
-        """
-        self.autoSkinning()
+        meshSel = common.getMeshBelow(MODEL_GRP)
+
+        # Bind to cloeset refJnt in MODEL_GRP
+        self.bindRefJnts(meshSel, closestSet=BIND_JNT_SET)
+
+        # Bind to _rbnJnt For each in MODEL GRP,
+        self.bindRbnJnts(meshSel)
+
+        # Search the attr rbSrf & rbJSet for each rigNode and attach joints
+        # to surface with 'closest point on surface' node
         self.autoAttachJntToSurf()
+
         common.setViewport()
         mc.select(cl=1)
 
@@ -539,6 +511,16 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def autoAttachJntToSurf(self):
 
+        masterCtl = DagNode("master_ctl")
+        if not masterCtl.exists():
+            logging.info(f"master_ctl NOT found")
+            return
+
+        globalScale = masterCtl.a.globalScale
+        if not globalScale.exists():
+            logging.info(f"globalScale attr NOT found")
+            return
+
         for rigNode in mc.ls("*RGN", type="script"):
             rN = DagNode(rigNode)
             if rN.a.nodeState.get() == 2:
@@ -559,16 +541,28 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                         logging.info(f"Set {rbJntSetName} NOT found.")
                         continue
 
+                    rbJnts = mc.sets(rbJntSet, q=1)
+                    if not rbJnts:
+                        logging.info(f"No joints found in Set {rbJntSet}.")
+                        continue
+
                     # Check surface rbSrf
-                    rbSrfNode = rbSrfAttr.inConnNode
-                    if not rbSrfNode:
+                    rbSrf = rbSrfAttr.inConnNode
+                    if not rbSrf:
                         logging.info(f"Surface object NOT found.")
                         continue
 
                     # Attach joints in set to srf
-                    mc.select(rbSrfNode, mc.sets(rbJntSet, q=1))
-                    self.attachJntToSurfSel()
-                    logging.info(f"Attach joints in {rbJntSet} to {rbSrfNode.name}.")
+                    if rbSrf and rbJnts:
+                        common.ribbonAttach(
+                            geo=rbSrf,
+                            tgtList=rbJnts,
+                            scaleAttr=globalScale,
+                            p=DagNode("RIG"),
+                        )
+                    else:
+                        logging.info("Ignore invalid surf and joints")
+                    logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")
 
     def misc_importEnvAndShd_BN_clicked(self):
         """Import lighting & shader scenes for better look"""

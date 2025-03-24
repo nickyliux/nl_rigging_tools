@@ -37,6 +37,11 @@ class MeshNode(DagNode):
             return None
         return DepNode(skinClu)
 
+    def delSkin(self):
+        sc = self.skinCluster
+        if sc:
+            sc.delete()
+
     @property
     def joints(self):
         """Return joints connected to the mesh thru skinCluster"""
