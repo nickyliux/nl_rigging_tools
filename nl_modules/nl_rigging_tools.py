@@ -427,10 +427,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         else:
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 
-    def bindRefJnts(self, meshSel, closestSet=None):
+    def bindRefJnts(self, meshSel, closestSet=None, threshold=4):
         weighted = 0
         ignored = 0
-        autoBind_threshold = 8
 
         if not DagNode(closestSet).exists():
             logging.info(f"Set {closestSet} NOT found for auto skin.")
@@ -444,7 +443,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 else:
                     closest = jnt.getClosestInList(mc.sets(closestSet, q=1))
                     if closest:
-                        if closest.o.distanceTo(jnt) < autoBind_threshold:
+                        if closest.o.distanceTo(jnt) < threshold:
                             mN.weightTo(closest, mi=1, tsb=1)
                             weighted += 1
                         else:

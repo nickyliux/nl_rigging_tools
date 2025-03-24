@@ -111,7 +111,7 @@ class Arm(RigModule):
             "clavicle_fkc", pf=rID, shape="fk_rotator", scale=rSz * xDr * 3
         )
         self.clavicle_fkc.cv_move(rSz * xDr * 15)
-        self.clavicle_fkc.cv_scale(0.5, 1, 1)
+        self.clavicle_fkc.cv_scale(0.7, 1, 1)
 
         self.upr_fkc = CurveNode(
             "upr_fkc", pf=rID, up="x", shape="sphere2", scale=rSz * 4
