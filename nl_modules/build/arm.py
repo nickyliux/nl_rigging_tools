@@ -89,6 +89,7 @@ class Arm(RigModule):
             self.upr,
             fkc=self.clavicle_fkc,
             ikc=self.ikc,
+            ikcGim=self.ikc_gimbal,
             setting=self.setting,
         )
 
@@ -111,10 +112,12 @@ class Arm(RigModule):
         self.setting = CurveNode(
             "setting", pf=rID, shape="sphere2", scale=rSz * xDr, color=CBK
         )
+        # "clavicle_fkc", pf=rID, shape="fk_rotator", scale=rSz * xDr * 2.5
         self.clavicle_fkc = CurveNode(
-            "clavicle_fkc", pf=rID, shape="fk_rotator", scale=rSz * xDr * 2.5
+            "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr / 2
         )
-        self.clavicle_fkc.cv_move(rSz * xDr * 18)
+        # self.clavicle_fkc.cv_move(rSz * xDr * 18)
+        self.clavicle_fkc.cv_rotate(0, 0, -45)
 
         self.upr_fkc = CurveNode(
             "upr_fkc", pf=rID, up="x", shape="sphere2", scale=rSz * 4

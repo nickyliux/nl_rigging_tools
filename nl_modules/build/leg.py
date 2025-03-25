@@ -111,8 +111,9 @@ class Leg(RigModule):
             "setting", pf=rID, shape="sphere2", scale=rSz * xDr, color=CBK
         )
         # "setting", pf=rID, shape="cube", scale=rSz / 4, color=CRD, top=1
+        # "hip_fkc", pf=rID, up="-y", shape="fk_rotator", scale=rSz * xDr * 2.5
         self.hip_fkc = CurveNode(
-            "hip_fkc", pf=rID, up="-y", shape="fk_rotator", scale=rSz * xDr * 2.5
+            "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr / 2
         )
         self.upr_fkc = CurveNode(
             "upr_fkc", pf=rID, up="x", shape="sphere2", scale=rSz * 4
@@ -162,7 +163,12 @@ class Leg(RigModule):
         self.build_ik()
         self.blend_fk_ik()
         self.build_autoAim(
-            self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, setting=self.setting
+            self.hip,
+            self.upr,
+            fkc=self.hip_fkc,
+            ikc=self.ikc,
+            ikcGim=self.ikc_gimbal,
+            setting=self.setting,
         )
 
         if self.KNEE_FIX:

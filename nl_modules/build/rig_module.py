@@ -621,7 +621,9 @@ class RigModule(RigBase):
 
         return preset
 
-    def build_autoAim(self, startJ, endJ, fkc=None, ikc=None, setting=None):
+    def build_autoAim(
+        self, startJ, endJ, fkc=None, ikc=None, ikcGim=None, setting=None
+    ):
         """
         Setup auto clavicle / hip using simple ik and orient cst
         Limit on side is calculted with the uvPSD setup
@@ -644,7 +646,7 @@ class RigModule(RigBase):
             quat=1,
             p=self.RIG_DATA,
         )
-        ikc.cstPoi(auto_ikH)
+        ikcGim.cstPoi(auto_ikH)
 
         # setup PSD & cst
         autoAim = ikc.a.add("autoAim", min=0, max=1)  # , dv=1)
@@ -653,6 +655,7 @@ class RigModule(RigBase):
             rSz=rSz,
             tgtJ=endJ,
             ikc=ikc,
+            ikcGim=ikcGim,
             ctlNum=4,
             cst=fkc.offset,
             setting=setting,
@@ -693,6 +696,7 @@ class RigModule(RigBase):
         rSz=4,
         tgtJ=None,
         ikc=None,
+        ikcGim=None,
         ctlNum=1,
         cst=None,
         setting=None,
@@ -713,12 +717,20 @@ class RigModule(RigBase):
         # create group & loc
         tgtJ_child = tgtJ.children[0]
         psd_grp = GroupNode("PSD", pf=rID, p=p)
-        ctl_grp = GroupNode(
-            "ctl_grp", pf=rID, align=tgtJ, alignR=tgtJ.offset, p=psd_grp
-        )
-        cst.cstPar(ctl_grp, mo=1)
         psd_loc = LocNode("psd_loc_#", pf=rID, align=tgtJ_child, p=psd_grp)
-        ikc.cstPoi(psd_loc)
+        ctl_grp = GroupNode("ctl_grp", pf=rID, align=tgtJ, p=psd_grp)
+        ctl_main = CurveNode(
+            "main_ctl",
+            pf=rID,
+            shape="diamond",
+            align=tgtJ,
+            p=ctl_grp,
+            scale=rSz * 3,
+            top=1,
+        )
+
+        cst.cstPar(ctl_grp, mo=1)
+        ikcGim.cstPoi(psd_loc)
 
         allCtl = []
         productSum = DagNode("pma__#", nodeType="plusMinusAverage")
@@ -730,8 +742,9 @@ class RigModule(RigBase):
                 pf=rID,
                 shape="stickS",
                 align=ctl_grp,
-                p=ctl_grp,
+                p=ctl_main,
                 scale=rSz / 2,
+                top=1,
             )
             allCtl.append(ctl)
             ctl.a.rx.set(i * 90)
@@ -756,7 +769,8 @@ class RigModule(RigBase):
 
             # create setRange
             hitRange = ut.setRange_(cpos.a.parameterU, 0, 2, 1, 0)
-            ut.setRange_(hitRange, 0.5, 1, 0, 1) >> hit
+            # ut.setRange_(hitRange, 0.5, 1, 0, 1) >> hit
+            ut.setRange_(hitRange, 0.25, 1, 0, 1) >> hit
 
             # color debug
             driven = ctl.shape.a.overrideColor
