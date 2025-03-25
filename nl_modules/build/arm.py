@@ -33,6 +33,7 @@ class Arm(RigModule):
         self.TWIST_BONES = self.master_guide.a.twistBones.get()
         self.RBN_BONES = self.master_guide.a.rbnBones.get()
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
+        self.BLADE_BONE = self.master_guide.a.bladeBone.get()
 
         self.FK_PART = GroupNode("FK", pf=self.rigID, p=self.CTL_DATA)
         self.IK_PART = GroupNode("IK", pf=self.rigID, p=self.CTL_DATA)
@@ -95,6 +96,9 @@ class Arm(RigModule):
             self.ribbon_setup()
         if self.TWIST_BONES:
             self.twistBones_setup()
+        if self.BLADE_BONE:
+            self.blade_setup()
+
         self.post_setup()
         self.pvc.a.tz.set(self.rigSize * self.x_dir)
 
@@ -135,6 +139,36 @@ class Arm(RigModule):
                 "pvc": self.pvc,
             }
         )
+
+    def blade_setup(self):
+        rID = self.rigID
+        rSz = self.rigSize
+        xDr = self.x_dir
+        clavEnd_guide = DagNode(rID + "_clavEnd_guide")
+        blade_guide = DagNode(rID + "_blade_guide")
+
+        # blade setup
+        bladeJnt = JointNode("bladeJ", pf=rID, align=blade_guide, r=rSz * 5, addOfs=1)
+        bladeLoc = LocNode("blade", pf=rID, align=clavEnd_guide, p=bladeJnt)
+        self.clavicle.cstParR(bladeJnt.offset, mo=1)
+        self.upr.cstPoi(bladeJnt.offset)
+
+        # clav chain
+        dist = self.clavicle.o.distanceTo(bladeLoc)
+        twoJ = JointNode.makeTwoJChain(
+            "clavChainJ",
+            pf=rID,
+            snap=self.clavicle,
+            ofs=(xDr * dist, 0, 0),
+            p=self.clavicle,
+        )
+        bladeLoc.cstAim(twoJ[0], aim=(xDr, 0, 0), keep=False)
+        twoJ[0].freezeXf()
+
+        twoJ_ik = IkNode(
+            "ik", pf=twoJ[0].name, sj=twoJ[0], ee=twoJ[1], p=self.RIG_DATA, vis=0
+        )
+        bladeLoc.cstPoi(twoJ_ik)
 
     def twistBones_setup(self):
         rID = self.rigID

@@ -731,7 +731,7 @@ class RigModule(RigBase):
                 shape="stickS",
                 align=ctl_grp,
                 p=ctl_grp,
-                scale=rSz / 4,
+                scale=rSz / 2,
             )
             allCtl.append(ctl)
             ctl.a.rx.set(i * 90)
@@ -761,8 +761,8 @@ class RigModule(RigBase):
             # color debug
             driven = ctl.shape.a.overrideColor
             common.sdk2(hit, driven, 0.1, Color.BLACK.value, tangent=2)
-            common.sdk2(hit, driven, 0.7, Color.D_RED.value, tangent=2)
-            common.sdk2(hit, driven, 1, Color.RED.value, tangent=2)
+            common.sdk2(hit, driven, 0.7, Color.ORANGE.value, tangent=2)
+            common.sdk2(hit, driven, 1, Color.YELLOW.value, tangent=2)
 
         setting.a.addSep()
         autoAimVis = setting.a.add("autoAimVis", min=0, max=1, dv=1, k=0)
