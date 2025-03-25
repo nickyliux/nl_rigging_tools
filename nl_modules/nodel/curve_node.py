@@ -34,7 +34,7 @@ class CurveNode(GroupNode):
         rotate=None,
         scale=None,
         dspType=0,
-        lineW=-1,
+        lineWidth=-1,
         up="",
         top=0,  # alwaysDrawOnTop
     ):
@@ -83,7 +83,7 @@ class CurveNode(GroupNode):
                 self.cv_scale(*scale)
             elif isinstance(scale, (int, float)):
                 self.cv_scale(scale)
-        self.lineW = lineW
+        self.lineWidth = lineWidth
         if top:
             mc.setAttr(self.name + ".alwaysDrawOnTop", 1)
 
@@ -98,7 +98,7 @@ class CurveNode(GroupNode):
         tgt2,
         n="line_#",
         pf="",
-        lineW=-1,
+        lineWidth=-1,
         bezier=0,
         insertMid=0,
         dspType=0,
@@ -108,7 +108,7 @@ class CurveNode(GroupNode):
     ):
         """Build line from object/position from tgt1 to tgt2
         e.g.
-            line = CurveNode.buildLine(obj1, obj2, lineW=5)
+            line = CurveNode.buildLine(obj1, obj2, lineWidth=5)
             line = CurveNode.buildLine((0,0,0), (3,3,3), n='crv')
         """
 
@@ -129,7 +129,7 @@ class CurveNode(GroupNode):
         crv = CurveNode(
             mc.curve(n=f"{pf}{n}", p=[pos1, pos2], d=1, k=[0, 1]),
             color=1,
-            lineW=lineW,
+            lineWidth=lineWidth,
         )
         crv.dspType = dspType
 
@@ -146,7 +146,9 @@ class CurveNode(GroupNode):
         return crv
 
     @staticmethod
-    def buildLineLinked(obj1, obj2, pf="", lineW=-1, inheritXf=0, dspType=0, p=None):
+    def buildLineLinked(
+        obj1, obj2, pf="", lineWidth=-1, inheritXf=0, dspType=0, p=None
+    ):
         """Build linked line using decomposeMatrix
         e.g.
             sel = mc.ls(sl=1)
@@ -156,7 +158,13 @@ class CurveNode(GroupNode):
         obj1 = DagNode(obj1)
         obj2 = DagNode(obj2)
         line = CurveNode.buildLine(
-            obj1, obj2, pf=pf, lineW=lineW, inheritXf=inheritXf, dspType=dspType, p=p
+            obj1,
+            obj2,
+            pf=pf,
+            lineWidth=lineWidth,
+            inheritXf=inheritXf,
+            dspType=dspType,
+            p=p,
         )
 
         if line:

@@ -1,7 +1,5 @@
 import unittest
 import maya.cmds as mc
-# from numpy.ma.core import shape
-
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.utils.color import Color
@@ -82,9 +80,9 @@ class Test_CurveNode_Main(Test_CurveNode_Base):
         self.assertEqual(CurveNode(crv).length, 3)
 
     def test_lineW(self):
-        self.circle.lineW = 10
+        self.circle.lineWidth = 10
         self.assertEqual(self.circle.a.lineWidth.get(), 10)
-        self.assertEqual(self.circle.lineW, 10)
+        self.assertEqual(self.circle.lineWidth, 10)
 
 
 class Test_CurveNode_Advanced(Test_CurveNode_Base):

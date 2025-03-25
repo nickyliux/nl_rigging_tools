@@ -737,8 +737,8 @@ class RigModule(RigBase):
             ctl.a.rx.set(i * 90)
 
             # setup output value
-            hit = ctl.a.add("hit", k=0, min=0, max=1)
-            weight = ctl.a.add("weight", k=0, min=0, max=1, dv=0.5)
+            hit = ctl.a.add("hit", min=0, max=1)  # k=0,
+            weight = ctl.a.add("weight", min=0, max=1, dv=0.5, k=0)
             if preset:
                 weight.set(preset[i])
             (hit * weight) >> productSum.a.input1D
@@ -765,7 +765,7 @@ class RigModule(RigBase):
             common.sdk2(hit, driven, 1, Color.RED.value, tangent=2)
 
         setting.a.addSep()
-        autoAimVis = setting.a.add("autoAimVis", min=0, max=1, dv=0, k=0)
+        autoAimVis = setting.a.add("autoAimVis", min=0, max=1, dv=1, k=0)
         autoAimVis >> psd_grp.a.v
 
         # Connect total weight

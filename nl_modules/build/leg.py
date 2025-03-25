@@ -112,10 +112,8 @@ class Leg(RigModule):
         )
         # "setting", pf=rID, shape="cube", scale=rSz / 4, color=CRD, top=1
         self.hip_fkc = CurveNode(
-            "hip_fkc", pf=rID, up="-y", shape="fk_rotator", scale=rSz * xDr * 3
+            "hip_fkc", pf=rID, up="-y", shape="fk_rotator", scale=rSz * xDr * 2.5
         )
-        self.hip_fkc.cv_scale(0.4, 1, 1)
-        # "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
         self.upr_fkc = CurveNode(
             "upr_fkc", pf=rID, up="x", shape="sphere2", scale=rSz * 4
         )
