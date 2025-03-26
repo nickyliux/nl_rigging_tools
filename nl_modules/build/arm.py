@@ -15,6 +15,7 @@ PRX = 6
 CDY = Color.D_YELLOW
 CBK = Color.BLACK
 CRD = Color.RED
+CPK = Color.PINK
 
 
 class Arm(RigModule):
@@ -151,10 +152,13 @@ class Arm(RigModule):
         blade_guide = DagNode(rID + "_blade_guide")
 
         # blade setup
-        bladeJnt = JointNode("bladeJ", pf=rID, align=blade_guide, r=rSz * 5, addOfs=1)
-        bladeLoc = LocNode("blade", pf=rID, align=clavEnd_guide, p=bladeJnt)
-        self.clavicle.cstParR(bladeJnt.offset, mo=1)
-        self.upr.cstPoi(bladeJnt.offset)
+        bladeJnt = JointNode(
+            "blade", pf=rID, align=blade_guide, r=rSz * 2, p=self.clavicle, color=CPK
+        )
+        bladeJnt.freezeXf()
+        bladeLoc = LocNode("blade", pf=rID, snap=clavEnd_guide, p=bladeJnt)
+        # self.clavicle.cstParR(bladeJnt.offset, mo=1)
+        self.upr.cstPoi(bladeJnt)
 
         # clav chain
         dist = self.clavicle.o.distanceTo(bladeLoc)
@@ -496,7 +500,7 @@ class Arm(RigModule):
         if self.RBN_BONES:
             ctlSet.extend(self.all_bend)
 
-        self.addCtlSet(ctlList=ctlSet)
+        self.addCtlSet(tgtList=ctlSet)
         self.space_setup()
         self.anchor_setup_module(
             {

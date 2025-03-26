@@ -242,10 +242,6 @@
             ]
         },
         "lfArm0_master_guide":{
-            "autoBkWeight":0.30000001192092896,
-            "autoDnWeight":0.10000000149011612,
-            "autoFwWeight":0.5,
-            "autoUpWeight":0.5,
             "r":[
                 0.0,
                 0.0,
@@ -952,10 +948,6 @@
             ]
         },
         "lfLeg0_master_guide":{
-            "autoBkWeight":0.30000001192092896,
-            "autoDnWeight":0.10000000149011612,
-            "autoFwWeight":0.5,
-            "autoUpWeight":0.5,
             "kneeFix":true,
             "patellaBone":true,
             "r":[
@@ -1804,10 +1796,6 @@
             ]
         },
         "rtArm0_master_guide":{
-            "autoBkWeight":0.30000001192092896,
-            "autoDnWeight":0.10000000149011612,
-            "autoFwWeight":0.5,
-            "autoUpWeight":0.5,
             "r":[
                 0.0,
                 0.0,
@@ -2514,10 +2502,6 @@
             ]
         },
         "rtLeg0_master_guide":{
-            "autoBkWeight":0.30000001192092896,
-            "autoDnWeight":0.10000000149011612,
-            "autoFwWeight":0.5,
-            "autoUpWeight":0.5,
             "kneeFix":true,
             "patellaBone":true,
             "r":[

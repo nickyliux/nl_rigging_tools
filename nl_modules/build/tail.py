@@ -231,7 +231,7 @@ class Tail(RigModule):
     def post_setup(self):
         rID = self.rigID
         self.addBindJntSet(jntList=self.bindJ)
-        self.addCtlSet(ctlList=self.fkCtl)
+        self.addCtlSet(tgtList=self.fkCtl)
         self.anchor_setup_module({"anchorF1": self.fkCtl[0].offset})
         self.proxy_setup()
         self.vis_setup()

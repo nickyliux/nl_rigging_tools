@@ -46,7 +46,7 @@ class Spine(RigModule):
     def createCtl(self):
         rSz = self.rigSize
         rID = self.rigID
-        scale = (rSz * 7, rSz / 2, rSz * 5.5)
+        scale = (rSz * 7, rSz, rSz * 5.5)
 
         self.setting = CurveNode(
             "setting", pf=rID, shape="stick", up="-z", scale=rSz * 2, color=CB
@@ -238,7 +238,7 @@ class Spine(RigModule):
         logging.info(rID)
         self.addBindJntSet(jntList=self.bindJ)
         self.addCtlSet(
-            ctlList=self.fkCtl + self.ikCtl + [self.setting, self.cog_ctl, self.cog_gmb]
+            tgtList=self.fkCtl + self.ikCtl + [self.setting, self.cog_ctl, self.cog_gmb]
         )
         self.space_setup()
         self.anchor_setup()

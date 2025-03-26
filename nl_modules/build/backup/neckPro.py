@@ -199,7 +199,7 @@ class NeckPro(rig_module.RigModule):
 
         for c in self.fkCtl + self.ikCtl + [self.cog_ctl, self.cog_gmb]:
             c.a.ro.set(3)
-        self.addCtlSet(ctlList=self.fkCtl + self.ikCtl + [self.setting])
+        self.addCtlSet(tgtList=self.fkCtl + self.ikCtl + [self.setting])
 
         self.anchor_setup()
 

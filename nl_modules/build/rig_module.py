@@ -320,7 +320,6 @@ class RigModule(RigBase):
 
     def build_module(self):
 
-        mc.refresh(su=1)
         self.calcRigSize(self.rootJ)
         self.rigNode.a.nodeState.set(2)
         children = self.rootJ.childrenJt
@@ -330,13 +329,10 @@ class RigModule(RigBase):
     def post_module(self):
         for obj in mc.ls(tr=1):
             mc.setAttr(obj + ".ro", cb=1)
-        # for _ in mc.ls(type="curveShape"):
-        #     mc.setAttr(_ + ".alwaysDrawOnTop", 1)
         self.moduleG.hide()
         if self.PRX:
-            self.masterC.a.add("PROXY_VIS", min=0, max=1)  # , dv=1)
+            self.masterC.a.add("PROXY_VIS", min=0, max=1)
             self.masterC.a["PROXY_VIS"] >> self.PRX.a.v
-        mc.refresh(su=0)
 
     def unbuild_module(self):
         logging.info(self.rigID)
@@ -388,12 +384,12 @@ class RigModule(RigBase):
                 loc.cstPar(tgt.offset, mo=1)
             loc.hide()
 
-    def addCtlSet(self, ctlList=None):
+    def addCtlSet(self, tgtList=None):
         setName = self.rigID + "_ctl_set"
         if DagNode(setName).exists():
-            mc.sets(ctlList, add=setName)
+            mc.sets(tgtList, add=setName)
         else:
-            mc.sets(ctlList, n=setName)
+            mc.sets(tgtList, n=setName)
 
     def addBindJntSet(self, jntList=None):
         """Add bind joint set for target joints"""
@@ -610,14 +606,10 @@ class RigModule(RigBase):
 
         rID = self.rigID
         preset = [1, 1, 1, 1]
-        if rID.startswith("lfArm"):
+        if rID.startswith("lfArm") or rID.startswith("rtArm"):
             preset = [upW, fwW, dnW, bkW]
-        elif rID.startswith("rtArm"):
+        elif rID.startswith("lfLeg") or rID.startswith("rtLeg"):
             preset = [dnW, bkW, upW, fwW]
-        elif rID.startswith("lfLeg"):
-            preset = [dnW, bkW, upW, fwW]
-        elif rID.startswith("rtLeg"):
-            preset = [upW, fwW, dnW, bkW]
 
         return preset
 
@@ -651,8 +643,8 @@ class RigModule(RigBase):
         # setup PSD & cst
         autoAim = ikc.a.add("autoAim", min=0, max=1)  # , dv=1)
         psdAttr = self.build_uvPSD(
-            rID=rID,
-            rSz=rSz,
+            # rID=rID,
+            # rSz=rSz,
             tgtJ=endJ,
             ikc=ikc,
             ikcGim=ikcGim,
@@ -690,10 +682,9 @@ class RigModule(RigBase):
         auto_ikH.hide()
         self.joints_am[0].hide()
 
-    @staticmethod
+    # @staticmethod
     def build_uvPSD(
-        rID=None,
-        rSz=4,
+        self,
         tgtJ=None,
         ikc=None,
         ikcGim=None,
@@ -714,15 +705,18 @@ class RigModule(RigBase):
         if not tgtJ.children:
             return
 
+        rID = self.rigID
+        rSz = self.rigSize
+
         # create group & loc
         tgtJ_child = tgtJ.children[0]
         psd_grp = GroupNode("PSD", pf=rID, p=p)
         psd_loc = LocNode("psd_loc_#", pf=rID, align=tgtJ_child, p=psd_grp)
         ctl_grp = GroupNode("ctl_grp", pf=rID, align=tgtJ, p=psd_grp)
         ctl_main = CurveNode(
-            "main_ctl",
+            "psd_main_ctl",
             pf=rID,
-            shape="diamond",
+            shape="sphere",
             align=tgtJ,
             p=ctl_grp,
             scale=rSz * 3,
@@ -732,8 +726,9 @@ class RigModule(RigBase):
         cst.cstPar(ctl_grp, mo=1)
         ikcGim.cstPoi(psd_loc)
 
-        allCtl = []
+        allCtl = [ctl_main]
         productSum = DagNode("pma__#", nodeType="plusMinusAverage")
+        rx = 0
 
         for i in range(ctlNum):
             # create ctl
@@ -743,18 +738,27 @@ class RigModule(RigBase):
                 shape="stickS",
                 align=ctl_grp,
                 p=ctl_main,
-                scale=rSz / 2,
+                scale=rSz / 3,
                 top=1,
             )
             allCtl.append(ctl)
-            ctl.a.rx.set(i * 90)
+
+            rx = i * 90
+            # correct right side by offset -180
+            if rID.startswith("rt"):
+                rx -= 180
+            ctl.a.rx.set(rx)
+            ctl.addOffsetGrp()
 
             # setup output value
-            hit = ctl.a.add("hit", min=0, max=1)  # k=0,
+            hit = ctl.a.add("hit", min=0, max=1, k=0)
             weight = ctl.a.add("weight", min=0, max=1, dv=0.5, k=0)
+            hitWeighted = ctl.a.add("hitWeighted", min=0, max=1, dv=0.5)  # , k=0)
             if preset:
                 weight.set(preset[i])
-            (hit * weight) >> productSum.a.input1D
+            hit * weight >> hitWeighted
+            # (hit * weight) >> productSum.a.input1D
+            hitWeighted >> productSum.a.input1D
 
             # create uv sphere
             psd_ball = DagNode(
@@ -775,8 +779,11 @@ class RigModule(RigBase):
             # color debug
             driven = ctl.shape.a.overrideColor
             common.sdk2(hit, driven, 0.1, Color.BLACK.value, tangent=2)
-            common.sdk2(hit, driven, 0.7, Color.ORANGE.value, tangent=2)
-            common.sdk2(hit, driven, 1, Color.YELLOW.value, tangent=2)
+            common.sdk2(hit, driven, 0.5, Color.L_GREY.value, tangent=2)
+            common.sdk2(hit, driven, 0.9, Color.YELLOW.value, tangent=2)
+
+        self.setWSMirror(allCtl)
+        self.addCtlSet(tgtList=allCtl)
 
         setting.a.addSep()
         autoAimVis = setting.a.add("autoAimVis", min=0, max=1, dv=1, k=0)

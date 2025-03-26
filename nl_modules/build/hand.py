@@ -279,7 +279,7 @@ class Hand(RigModule):
         self.addBindJntSet(jntList=self.all_fgr_jnts)
         ctlSet = [self.smart_ctl] + self.fgrRootCtlArr
         [ctlSet.extend(x) for x in self.ctlsArr]
-        self.addCtlSet(ctlList=ctlSet)
+        self.addCtlSet(tgtList=ctlSet)
         self.space_setup()
         self.anchor_setup_module({"anchorF1": self.rootJ})
         self.proxy_setup()

@@ -614,7 +614,7 @@ class LegQd(RigModule):
         #     ctlSet.extend(self.all_bend)
         if self.TOE_BONES:
             [ctlSet.extend(s) for s in self.toesCtlsList or []]
-        self.addCtlSet(ctlList=ctlSet)
+        self.addCtlSet(tgtList=ctlSet)
         self.space_setup()
         self.anchor_setup_module({"anchorF1": self.hip_fkc})
         self.proxy_setup()
