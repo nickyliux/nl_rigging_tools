@@ -12,7 +12,6 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
 PRX = 90
-CDY = Color.D_YELLOW
 CB = Color.BLACK
 CRD = Color.RED
 
@@ -46,21 +45,20 @@ class Spine(RigModule):
     def createCtl(self):
         rSz = self.rigSize
         rID = self.rigID
-        scale = (rSz * 7, rSz, rSz * 5.5)
 
         self.setting = CurveNode(
             "setting", pf=rID, shape="stick", up="-z", scale=rSz * 2, color=CB
         )
-        self.cog_ctl = CurveNode(
-            "cog_ctl", pf=rID, shape="cog2", scale=rSz * 2, color=CDY
+        self.cog_ctl = CurveNode("cog_ctl", pf=rID, shape="cog2", scale=rSz * 2)
+        self.tp_ctl = CurveNode(
+            "tp_ctl", pf=rID, shape="circle_round", scale=rSz * 4, lineWidth=3
         )
-        # "tp_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 2, rSz * 6), color=CDY
-        self.tp_ctl = CurveNode("tp_ctl", pf=rID, shape="cube", scale=scale, color=CDY)
         self.md_ctl = CurveNode(
-            "_md_ctl", pf=rID, shape="diamond", up="-z", scale=rSz * 4, color=CDY
+            "_md_ctl", pf=rID, shape="diamond", up="-z", scale=rSz * 4
         )
-        # "rt_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 2, rSz * 6), color=CDY
-        self.rt_ctl = CurveNode("rt_ctl", pf=rID, shape="cube", scale=scale, color=CDY)
+        self.rt_ctl = CurveNode(
+            "rt_ctl", pf=rID, shape="circle_round", scale=rSz * 4, lineWidth=3
+        )
         self.md_ctl.cv_move(0, 0, -rSz * 100)
 
         self.rigNode.setMsg(
@@ -100,9 +98,7 @@ class Spine(RigModule):
 
         self.fkCtl = []
         for i, j in enumerate(self.fkJnt[:-1]):
-            c = CurveNode(
-                f"fkc_{i + 1}", pf=rID, shape="circle_round", scale=rSz * 5, color=CDY
-            )
+            c = CurveNode(f"fkc_{i + 1}", pf=rID, shape="circle_round", scale=rSz * 5)
             self.fkCtl.append(c)
 
         self.fkGivenCtl2(self.fkJnt[1:], self.fkCtl[1:], p=self.CTL_DATA)

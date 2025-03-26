@@ -15,6 +15,7 @@ PRX = 6
 CDY = Color.D_YELLOW
 CBK = Color.BLACK
 CRD = Color.RED
+CYL = Color.YELLOW
 CPK = Color.PINK
 
 
@@ -108,16 +109,13 @@ class Arm(RigModule):
         rSz = self.rigSize
         rID = self.rigID
         xDr = self.x_dir
-        # "setting", pf=rID, shape="stick", up="-z", scale=rSz * xDr * 0.7, color=CBK
-        # "setting", pf=rID, shape="cube", scale=rSz / 4, color=CRD, top=1
+
         self.setting = CurveNode(
             "setting", pf=rID, shape="sphere2", scale=rSz * xDr, color=CBK
         )
-        # "clavicle_fkc", pf=rID, shape="fk_rotator", scale=rSz * xDr * 2.5
         self.clavicle_fkc = CurveNode(
-            "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr / 2
+            "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
         )
-        # self.clavicle_fkc.cv_move(rSz * xDr * 18)
         self.clavicle_fkc.cv_rotate(0, 0, -45)
 
         self.upr_fkc = CurveNode(
@@ -153,12 +151,10 @@ class Arm(RigModule):
 
         # blade setup
         bladeJnt = JointNode(
-            "blade", pf=rID, align=blade_guide, r=rSz * 2, p=self.clavicle, color=CPK
+            "blade", pf=rID, align=blade_guide, r=rSz * 3, p=self.clavicle, color=CYL
         )
         bladeJnt.freezeXf()
-        bladeLoc = LocNode("blade", pf=rID, snap=clavEnd_guide, p=bladeJnt)
-        # self.clavicle.cstParR(bladeJnt.offset, mo=1)
-        self.upr.cstPoi(bladeJnt)
+        bladeLoc = LocNode("bladeLoc", pf=rID, snap=clavEnd_guide, p=bladeJnt)
 
         # clav chain
         dist = self.clavicle.o.distanceTo(bladeLoc)
@@ -169,7 +165,7 @@ class Arm(RigModule):
             ofs=(xDr * dist, 0, 0),
             p=self.clavicle,
         )
-        bladeLoc.cstAim(twoJ[0], aim=(xDr, 0, 0), keep=False)
+        bladeLoc.cstAim(twoJ[0], aim=(xDr, 0, 0), u=(0, xDr, 0), keep=False)
         twoJ[0].freezeXf()
 
         twoJ_ik = IkNode(

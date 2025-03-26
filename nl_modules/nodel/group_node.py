@@ -124,7 +124,7 @@ class GroupNode(DagNode):
 
     def getSideColor(self):
         """Return color depending on side"""
-        color = Color.YELLOW
+        color = Color.D_YELLOW
         if str(self.node).startswith("lf"):
             color = Color.L_BLUE
         elif str(self.node).startswith("rt"):
