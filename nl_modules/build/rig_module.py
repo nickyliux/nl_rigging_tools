@@ -384,20 +384,20 @@ class RigModule(RigBase):
                 loc.cstPar(tgt.offset, mo=1)
             loc.hide()
 
-    def addCtlSet(self, tgtList=None):
+    def addCtlSet(self, tgtList):
         setName = self.rigID + "_ctl_set"
         if DagNode(setName).exists():
             mc.sets(tgtList, add=setName)
         else:
             mc.sets(tgtList, n=setName)
 
-    def addBindJntSet(self, jntList=None):
+    def addBindJntSet(self, tgtList):
         """Add bind joint set for target joints"""
 
         if DagNode(BIND_JNT_SET).exists():
-            mc.sets(jntList, add=BIND_JNT_SET)
+            mc.sets(tgtList, add=BIND_JNT_SET)
         else:
-            mc.sets(jntList, n=BIND_JNT_SET)
+            mc.sets(tgtList, n=BIND_JNT_SET)
 
     def addPivOffset(self, tgt, scale=1, inRange=10, maxOfs=120, frontBack=1, upDown=0):
         """Add pivot offset to target ctl"""
@@ -739,6 +739,7 @@ class RigModule(RigBase):
                 align=ctl_grp,
                 p=ctl_main,
                 scale=rSz / 3,
+                lineWidth=3,
                 top=1,
             )
             allCtl.append(ctl)
@@ -783,7 +784,7 @@ class RigModule(RigBase):
             common.sdk2(hit, driven, 0.9, Color.YELLOW.value, tangent=2)
 
         self.setWSMirror(allCtl)
-        self.addCtlSet(tgtList=allCtl)
+        self.addCtlSet(allCtl)
 
         setting.a.addSep()
         autoAimVis = setting.a.add("autoAimVis", min=0, max=1, dv=1, k=0)

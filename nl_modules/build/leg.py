@@ -127,7 +127,8 @@ class Leg(RigModule):
         )
         self.ball_fkc.cv_scale(0.7, 1, 1)
 
-        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 1.5)
+        ikcScale = (rSz, rSz * 1.5, rSz * 1.5)
+        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=ikcScale)
         self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz / 2)
         self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 3)
 
@@ -492,7 +493,7 @@ class Leg(RigModule):
         keepVol >> ribbonUp.volPower
         keepVol >> ribbonLw.volPower
 
-        self.addBindJntSet(jntList=ribbonUp.rbJnt + ribbonLw.rbJnt)
+        self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def proxy_setup(self):
         proxyList = self.joints[:-1]
@@ -542,9 +543,9 @@ class Leg(RigModule):
             )
 
         if proxyList:
-            self.addBindJntSet(jntList=proxyList)
+            self.addBindJntSet(proxyList)
         if proxyToeList:
-            self.addBindJntSet(jntList=proxyToeList)
+            self.addBindJntSet(proxyToeList)
 
     def vis_setup(self):
         # visGrp = common.addVisOption(self.visC, self.rigID)
@@ -643,7 +644,7 @@ class Leg(RigModule):
         if self.TOE_BONES:
             [ctlSet.extend(s) for s in self.toesCtlsList]
 
-        self.addCtlSet(tgtList=ctlSet)
+        self.addCtlSet(ctlSet)
         self.space_setup()
         self.anchor_setup_module({"anchorF1": self.hip_fkc.offset})
         self.proxy_setup()

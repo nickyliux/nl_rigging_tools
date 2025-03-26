@@ -102,8 +102,8 @@ class Head(RigModule):
 
     def post_setup(self):
         logging.info(self.rigID)
-        self.addBindJntSet(jntList=self.joints)
-        self.addCtlSet(tgtList=self.fkCtl)
+        self.addBindJntSet(self.joints)
+        self.addCtlSet(self.fkCtl)
         self.space_setup()
         self.anchor_setup_module({"anchorF1": self.head_fkc.offset})
         self.proxy_setup()

@@ -35,7 +35,7 @@ class Arm(RigModule):
         self.TWIST_BONES = self.master_guide.a.twistBones.get()
         self.RBN_BONES = self.master_guide.a.rbnBones.get()
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
-        self.BLADE_BONE = self.master_guide.a.bladeBone.get()
+        self.SCAPULAR_BONE = self.master_guide.a.scapularBone.get()
 
         self.FK_PART = GroupNode("FK", pf=self.rigID, p=self.CTL_DATA)
         self.IK_PART = GroupNode("IK", pf=self.rigID, p=self.CTL_DATA)
@@ -99,8 +99,8 @@ class Arm(RigModule):
             self.ribbon_setup()
         if self.TWIST_BONES:
             self.twistBones_setup()
-        if self.BLADE_BONE:
-            self.blade_setup()
+        if self.SCAPULAR_BONE:
+            self.scapular_setup()
 
         self.post_setup()
         self.pvc.a.tz.set(self.rigSize * self.x_dir)
@@ -127,7 +127,9 @@ class Arm(RigModule):
         self.palm_fkc = CurveNode(
             "palm_fkc", pf=rID, up="x", shape="sphere2", scale=rSz * 4
         )
-        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 2)
+
+        ikcScale = (rSz * 1.5, rSz, rSz * 1.5)
+        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=ikcScale)
         self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz / 2)
 
         self.rigNode.setMsg(
@@ -142,36 +144,42 @@ class Arm(RigModule):
             }
         )
 
-    def blade_setup(self):
+    def scapular_setup(self):
         rID = self.rigID
         rSz = self.rigSize
         xDr = self.x_dir
         clavEnd_guide = DagNode(rID + "_clavEnd_guide")
-        blade_guide = DagNode(rID + "_blade_guide")
+        scapular_guide = DagNode(rID + "_scapular_guide")
 
-        # blade setup
-        bladeJnt = JointNode(
-            "blade", pf=rID, align=blade_guide, r=rSz * 3, p=self.clavicle, color=CYL
+        # scapular setup
+        scapularJnt = JointNode(
+            "scapular",
+            pf=rID,
+            align=scapular_guide,
+            r=rSz * 3,
+            p=self.clavicle,
+            color=CYL,
         )
-        bladeJnt.freezeXf()
-        bladeLoc = LocNode("bladeLoc", pf=rID, snap=clavEnd_guide, p=bladeJnt)
+        scapularJnt.freezeXf()
+        scapularLoc = LocNode("scapularLoc", pf=rID, snap=clavEnd_guide, p=scapularJnt)
 
         # clav chain
-        dist = self.clavicle.o.distanceTo(bladeLoc)
+        dist = self.clavicle.o.distanceTo(scapularLoc)
         twoJ = JointNode.makeTwoJChain(
-            "clavChainJ",
+            "clav",
             pf=rID,
             snap=self.clavicle,
             ofs=(xDr * dist, 0, 0),
             p=self.clavicle,
         )
-        bladeLoc.cstAim(twoJ[0], aim=(xDr, 0, 0), u=(0, xDr, 0), keep=False)
+        scapularLoc.cstAim(twoJ[0], aim=(xDr, 0, 0), u=(0, xDr, 0), keep=False)
         twoJ[0].freezeXf()
 
         twoJ_ik = IkNode(
             "ik", pf=twoJ[0].name, sj=twoJ[0], ee=twoJ[1], p=self.RIG_DATA, vis=0
         )
-        bladeLoc.cstPoi(twoJ_ik)
+        scapularLoc.cstPoi(twoJ_ik)
+        self.addBindJntSet([twoJ[0]])
 
     def twistBones_setup(self):
         rID = self.rigID
@@ -392,7 +400,7 @@ class Arm(RigModule):
         keepVol >> ribbonUp.volPower
         keepVol >> ribbonLw.volPower
 
-        self.addBindJntSet(jntList=ribbonUp.rbJnt + ribbonLw.rbJnt)
+        self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def vis_setup(self):
         # visGrp = common.addVisOption(self.visC, self.rigID)
@@ -442,6 +450,9 @@ class Arm(RigModule):
         if self.TWIST_BONES:
             if self.lwr in proxyList:
                 proxyList.remove(self.lwr)
+        if self.SCAPULAR_BONE:
+            if self.clavicle in proxyList:
+                proxyList.remove(self.clavicle)
 
         rSz = self.rigSize * PRX
         aim = (self.x_dir, 0, 0)
@@ -455,7 +466,7 @@ class Arm(RigModule):
                 grp=self.PRX_GRP,
             )
 
-        self.addBindJntSet(jntList=proxyList)
+        self.addBindJntSet(proxyList)
 
     def channel_setup(self):
         self.setting.a.showAttr()
@@ -496,7 +507,7 @@ class Arm(RigModule):
         if self.RBN_BONES:
             ctlSet.extend(self.all_bend)
 
-        self.addCtlSet(tgtList=ctlSet)
+        self.addCtlSet(ctlSet)
         self.space_setup()
         self.anchor_setup_module(
             {

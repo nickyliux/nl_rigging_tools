@@ -205,8 +205,8 @@ class SpineQdCrv(rig_module.RigModule):
         [c.a.ro.set(2) for c in self.ctls]
 
         # SET
-        self.addBindJntSet(jntList=self.joints)
-        self.addCtlSet(tgtList=self.ctls + [self.setting])
+        self.addBindJntSet(self.joints)
+        self.addCtlSet(self.ctls + [self.setting])
 
         self.anchor_setup()
 

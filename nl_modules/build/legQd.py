@@ -519,7 +519,7 @@ class LegQd(RigModule):
         volPower >> ribbonUp.volPower
         volPower >> ribbonLw.volPower
 
-        self.addBindJntSet(jntList=ribbonUp.rbJnt + ribbonLw.rbJnt)
+        self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def proxy_setup(self):
         proxyList = self.joints
@@ -558,9 +558,9 @@ class LegQd(RigModule):
             )
 
         if proxyList:
-            self.addBindJntSet(jntList=proxyList)
+            self.addBindJntSet(proxyList)
         if proxyToeList:
-            self.addBindJntSet(jntList=proxyToeList)
+            self.addBindJntSet(proxyToeList)
 
     def vis_setup(self):
         # visGrp = common.addVisOption(self.visC, self.rigID)
@@ -614,7 +614,7 @@ class LegQd(RigModule):
         #     ctlSet.extend(self.all_bend)
         if self.TOE_BONES:
             [ctlSet.extend(s) for s in self.toesCtlsList or []]
-        self.addCtlSet(tgtList=ctlSet)
+        self.addCtlSet(ctlSet)
         self.space_setup()
         self.anchor_setup_module({"anchorF1": self.hip_fkc})
         self.proxy_setup()

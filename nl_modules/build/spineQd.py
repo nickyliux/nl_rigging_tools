@@ -295,8 +295,8 @@ class SpineQd(RigModule):
         rID = self.rigID
         logging.info(rID)
         if self.BIND_JNT_NUM > 1:
-            self.addBindJntSet(jntList=self.bindJ)
-        self.addCtlSet(tgtList=self.ctls)
+            self.addBindJntSet(self.bindJ)
+        self.addCtlSet(self.ctls)
         self.anchor_setup()
         self.proxy_setup()
         self.vis_setup()

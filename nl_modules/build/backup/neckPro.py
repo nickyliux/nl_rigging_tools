@@ -182,7 +182,7 @@ class NeckPro(rig_module.RigModule):
         self.setting.a.add("keepVol", min=0, max=2, dv=1, k=0) >> spine_RB.volPower
 
         self.spine_RB = spine_RB
-        self.addBindJntSet(jntList=spine_RB.rbJnt)
+        self.addBindJntSet(spine_RB.rbJnt)
 
     def post_setup(self):
 
@@ -199,7 +199,7 @@ class NeckPro(rig_module.RigModule):
 
         for c in self.fkCtl + self.ikCtl + [self.cog_ctl, self.cog_gmb]:
             c.a.ro.set(3)
-        self.addCtlSet(tgtList=self.fkCtl + self.ikCtl + [self.setting])
+        self.addCtlSet(self.fkCtl + self.ikCtl + [self.setting])
 
         self.anchor_setup()
 

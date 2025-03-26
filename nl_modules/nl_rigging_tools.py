@@ -98,7 +98,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.preset_importSkel_BN.clicked.connect(self.preset_importSkel_BN_clicked)
         # self.UI.preset_openSkel_BN.clicked.connect(self.preset_openSkel_BN_clicked)
         self.UI.preset_refresh_BN.clicked.connect(self.preset_refresh_BN_clicked)
-        self.UI.preset_LW.itemDoubleClicked.connect(self.preset_load_BN_clicked)
+        self.UI.preset_LW.itemDoubleClicked.connect(self.preset_load_BN_dbClicked)
+        self.UI.preset_load_BN.clicked.connect(self.preset_load_BN_clicked)
         # ------------------------------
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
         self.UI.rigNode_refresh_BN.clicked.connect(self.rigNode_refresh_BN_clicked)
@@ -226,12 +227,21 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         path = os.path.realpath(PATH_SKEL)
         subprocess.Popen(f'explorer "{path}"')
 
-    def preset_load_BN_clicked(self, item):
+    def preset_load_BN_clicked(self):
+        items = self.UI.preset_LW.selectedItems()
+        if items:
+            itemText = items[0].text()
+            self.load_preset(itemText)
+
+    def preset_load_BN_dbClicked(self, item):
         itemText = item.text()
-        f = f"{PATH_PRESET}\\{itemText}.json"
+        self.load_preset(itemText)
+
+    def load_preset(self, preset_name):
+        f = f"{PATH_PRESET}\\{preset_name}.json"
         if os.path.isfile(f):
             mc.refresh(su=1)
-            logging.info(f'load preset "{itemText}"')
+            logging.info(f'load preset "{preset_name}"')
             guide.loadPreset(f)
             mc.refresh(su=0)
             common.setViewport()
@@ -391,6 +401,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             itemText = items[0].text()
             shape = CurveNode(itemText, shape=itemText)
             shape.copyShapeAsInst(sel, keepSrc=0)
+            mc.select(sel)
 
     def crvShape_refresh_BN_clicked(self):
         """Refresh crvShape_LW"""

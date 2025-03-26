@@ -232,9 +232,9 @@ class Spine(RigModule):
     def post_setup(self):
         rID = self.rigID
         logging.info(rID)
-        self.addBindJntSet(jntList=self.bindJ)
+        self.addBindJntSet(self.bindJ)
         self.addCtlSet(
-            tgtList=self.fkCtl + self.ikCtl + [self.setting, self.cog_ctl, self.cog_gmb]
+            self.fkCtl + self.ikCtl + [self.setting, self.cog_ctl, self.cog_gmb]
         )
         self.space_setup()
         self.anchor_setup()

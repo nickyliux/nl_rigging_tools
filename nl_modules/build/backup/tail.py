@@ -144,8 +144,6 @@ class Tail(rig_module.RigModule):
 
         # SET
         # self.addBindJSet(self.bindJ)
-        self.addCtlSet(tgtList=self.fkCtl)
-
+        self.addCtlSet(self.fkCtl)
         self.anchor_setup()
-
         self.post_module()
