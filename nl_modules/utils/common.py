@@ -288,18 +288,27 @@ def makeChain(start, end, count=5):
         return chain
 
 
-def extractSk(tgtJList, sf="", p=None):
+def extractSk(tgtJList, sf="", p=None, color=None, r=1):
     """Duplicate joint chain with suffix
     e.g.
         fkJList = extractSk(jointList, sf='_fk)
         ikJList = extractSk(jointList, sf='_ik)
     """
-    from nl_modules.nodel.base.dag_node import DagNode
+    # from nl_modules.nodel.base.dag_node import DagNode
+    from nl_modules.nodel.joint_node import JointNode
 
     dupJList = mc.duplicate(tgtJList, po=1, rc=1)
-    newJList = [
-        DagNode(dupJ).rename(tgtJ + sf) for dupJ, tgtJ in zip(dupJList, tgtJList)
-    ]
+    # newJList = [
+    #     DagNode(dupJ).rename(tgtJ + sf) for dupJ, tgtJ in zip(dupJList, tgtJList)
+    # ]
+    newJList = []
+    for dupJ, tgtJ in zip(dupJList, tgtJList):
+        j = JointNode(dupJ).rename(tgtJ + sf)
+        j.setRadius(r, rel=1)
+        newJList.append(j)
+
+    if color:
+        newJList[0].color = color
     if p:
         mc.parent(newJList[0], p)
     return newJList

@@ -12,11 +12,12 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
 PRX = 6
-CDY = Color.D_YELLOW
 CBK = Color.BLACK
+CBL = Color.BLUE
+CDY = Color.D_YELLOW
+CPK = Color.PINK
 CRD = Color.RED
 CYL = Color.YELLOW
-CPK = Color.PINK
 
 
 class Arm(RigModule):
@@ -58,12 +59,13 @@ class Arm(RigModule):
         self.palm_fkc = None
         self.pvc = None
         self.ikc = None
+        self.ikc_rota = None
+        self.ikc_gimbal = None
         self.pin_fkc = None
         self.ballRoll_loc = None
         self.ikCtl = None
         self.fkCtl = None
         self.toeWiggleG = None
-        self.ikc_gimbal = None
         self.pvc_line = None
         self.pvRota_line = None
         self.all_ikHs = None
@@ -128,9 +130,13 @@ class Arm(RigModule):
             "palm_fkc", pf=rID, up="x", shape="sphere2", scale=rSz * 4
         )
 
-        ikcScale = (rSz * 1.5, rSz, rSz * 1.5)
-        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=ikcScale)
-        self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz / 2)
+        scale1 = (rSz * 1.2, rSz * 1.5, rSz * 1.5)
+        scale2 = (rSz * 2.4, rSz, rSz * 1.2)
+
+        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=scale1)
+        self.ikc_rota = CurveNode("ikcRota", pf=rID, shape="cube", scale=scale2)
+        self.ikc_rota.cv_move(xDr * rSz * 6, 0, 0)
+        self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz * 4)
 
         self.rigNode.setMsg(
             {
@@ -140,6 +146,7 @@ class Arm(RigModule):
                 "lwr_fkc": self.lwr_fkc,
                 "palm_fkc": self.palm_fkc,
                 "ikc": self.ikc,
+                "ikc_rota": self.ikc_rota,
                 "pvc": self.pvc,
             }
         )
@@ -207,7 +214,9 @@ class Arm(RigModule):
 
     def build_fk(self):
         logging.info(self.rigID)
-        self.joints_fk = common.extractSk(self.joints, "_fk", p=self.FK_PART)
+        self.joints_fk = common.extractSk(
+            self.joints, "_fk", p=self.FK_PART, color=CBL, r=3
+        )
         self.fkCtl = [self.clavicle_fkc, self.upr_fkc, self.lwr_fkc, self.palm_fkc]
         self.fkGivenCtl2(self.joints_fk, self.fkCtl, p=self.FK_PART)
         self.isolateAlign(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
@@ -218,10 +227,12 @@ class Arm(RigModule):
 
         self.ikc.a.addSep()
         self.ikc.alignTo(self.palm)
-        # self.ikc.snapTo(self.palm)
+        self.ikc_rota.alignTo(self.palm)
         self.pvc.alignTo(self.lwr)
 
-        self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_PART)
+        self.joints_ik = common.extractSk(
+            self.joints, "_ik", p=self.IK_PART, color=CRD, r=4
+        )
         ikH1 = IkNode(
             "1",
             pf=rID,
@@ -276,19 +287,32 @@ class Arm(RigModule):
         self.all_ikHs = [ikH1]
         self.clavicle_fkc.cstPar(self.joints_ik[0], mo=1)
 
-        self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal, self.pin_fkc]
+        self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal, self.ikc_rota, self.pin_fkc]
         self.ikH1 = ikH1
         # self.alignOrient_setup()
-        common.cstMulti(
-            self.ikc, self.pin_fkc, self.joints_ik[-2], w=fkPin, cstType="ori"
-        )
+
+        # ikcRota setup
+        palm_ik = self.joints_ik[-2]
+        # palm_ik_dup = palm_ik.duplicate(po=1)
+
+        ikcRota_ofs = self.ikc_rota.addOffsetGrp()
+        self.ikc.cstPoi(ikcRota_ofs)
+        palm_ik.offset.cstParR(ikcRota_ofs, mo=1)
+        self.ikc_rota.cstOri(palm_ik)
+
+        # common.cstMulti(
+        #     self.ikc_gimbal, self.pin_fkc, palm_ik_dup, w=fkPin, cstType="ori"
+        # )
+        common.cstMulti(self.ikc_rota, self.pin_fkc, palm_ik, w=fkPin, cstType="ori")
 
     def blend_fk_ik(self):
         rID = self.rigID
         rSz = self.rigSize
         xDr = self.x_dir
         logging.info(rID)
-        self.joints_bf = common.extractSk(self.joints, "_bf", p=self.BF_PART)
+        self.joints_bf = common.extractSk(
+            self.joints, "_bf", p=self.BF_PART, color=CYL, r=2
+        )
 
         palmIn_guide = DagNode(rID + "_palmIn_guide")
         palmIn_loc = LocNode("palmIn", pf=rID, align=palmIn_guide, p=self.joints_bf[-1])
@@ -321,9 +345,13 @@ class Arm(RigModule):
 
         self.clavicle_fkc.cstPar(self.joints_bf[0], mo=1)
 
-        self.handRollLogic(self.ikc, self.palm_fkc, self.pin_fkc, self.ballRoll_loc)
+        # add roll & bank to ikc_rota
+        self.ikc_rota.a.addSep()
+        self.handRollLogic(
+            self.ikc_rota, self.palm_fkc, self.pin_fkc, self.ballRoll_loc
+        )
         self.handBankLogic(
-            self.ikc, self.palm_fkc, self.pin_fkc, palmIn_loc, palmOut_loc
+            self.ikc_rota, self.palm_fkc, self.pin_fkc, palmIn_loc, palmOut_loc
         )
 
         self.ikc.a.addSep()
@@ -437,7 +465,7 @@ class Arm(RigModule):
             ribbonCtlVis = self.setting.a.add("ribbonCtlVis", min=0, max=1, dv=0, k=0)
             [ribbonCtlVis >> ctl.a.v for ctl in self.all_bend]
 
-        mc.hide(self.all_ikHs, self.joints_fk, self.joints_ik, self.joints_bf)
+        # mc.hide(self.all_ikHs, self.joints_fk, self.joints_ik, self.joints_bf)
 
     def proxy_setup(self):
         self.joints.remove(self.palm)
@@ -470,7 +498,11 @@ class Arm(RigModule):
 
     def channel_setup(self):
         self.setting.a.showAttr()
-        for ctl in self.fkCtl + [self.ikc, self.ikc_gimbal, self.pvc]:
+        self.ikc.a.showAttr(t=1)
+        self.ikc_gimbal.a.showAttr(t=1)
+        self.ikc_rota.a.showAttr(r=1)
+
+        for ctl in self.fkCtl + [self.pvc]:
             ctl.a.showAttr(t=1, r=1)
         for ctl in self.all_bend or []:
             ctl.a.showAttr(t=1, r=1, s=1)

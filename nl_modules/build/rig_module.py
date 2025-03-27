@@ -519,9 +519,9 @@ class RigModule(RigBase):
         manualVis >> condF.a.floatB
         [condF.a.outFloat >> target.a.v for target in targets]
 
-    def handRollLogic(self, ikc, fkc, fkPin, locRoll):
+    def handRollLogic(self, attrHolder, fkc, fkPin, locRoll):
 
-        palmRoll = ikc.a.add("palmRoll")
+        palmRoll = attrHolder.a.add("palmRoll")
         fkc.a.addSep()
         fkc.a.add("palmRoll", proxy=palmRoll)
         fkPin.a.addSep()
@@ -529,9 +529,9 @@ class RigModule(RigBase):
 
         palmRoll * -1 >> locRoll.a.rz
 
-    def handBankLogic(self, ikc, fkc, fkPin, locIn, locOut):
+    def handBankLogic(self, attrHolder, fkc, fkPin, locIn, locOut):
 
-        palmBank = ikc.a.add("palmBank")
+        palmBank = attrHolder.a.add("palmBank")
         fkc.a.add("palmBank", proxy=palmBank)
         fkPin.a.add("palmBank", proxy=palmBank)
 
