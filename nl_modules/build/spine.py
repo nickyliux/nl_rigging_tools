@@ -12,7 +12,7 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
 PRX = 90
-CB = Color.BLACK
+CBK = Color.BLACK
 CRD = Color.RED
 
 
@@ -47,19 +47,19 @@ class Spine(RigModule):
         rID = self.rigID
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="stick", up="-z", scale=rSz * 2, color=CB
+            "setting", pf=rID, shape="sphere2", up="-z", scale=rSz * 4, color=CBK
         )
         self.cog_ctl = CurveNode("cog_ctl", pf=rID, shape="cog2", scale=rSz * 2)
         self.tp_ctl = CurveNode(
-            "tp_ctl", pf=rID, shape="circle_round", scale=rSz * 4, lineWidth=3
+            "tp_ctl", pf=rID, shape="circle_round", scale=rSz * 4, lineWidth=2
         )
         self.md_ctl = CurveNode(
-            "_md_ctl", pf=rID, shape="diamond", up="-z", scale=rSz * 4
+            "_md_ctl", pf=rID, shape="cube", up="-z", scale=rSz, lineWidth=2
         )
         self.rt_ctl = CurveNode(
-            "rt_ctl", pf=rID, shape="circle_round", scale=rSz * 4, lineWidth=3
+            "rt_ctl", pf=rID, shape="circle_round", scale=rSz * 4, lineWidth=2
         )
-        self.md_ctl.cv_move(0, 0, -rSz * 100)
+        self.md_ctl.cv_move(0, 0, rSz * -100)
 
         self.rigNode.setMsg(
             {
@@ -120,7 +120,7 @@ class Spine(RigModule):
         self.md_ctl.snapAlignTo(self.MD_GUIDE, mG)
         self.tp_ctl.snapAlignTo(self.fkJnt[-1], mG)
         self.cog_ctl.snapAlignTo(self.rt_ctl, mG)
-        self.setting.alignTo(self.cog_ctl)  # , offset=(0, 0, -rSz * 100))
+        self.setting.alignTo(self.cog_ctl, offset=(0, 0, rSz * -100))
         self.cog_gmb = CurveNode(self.cog_ctl).addGimbal()  # attrTgt=self.setting)
         self.setting | self.cog_ctl | self.CTL_DATA
         self.cog_gmb.cstPar(self.fkCtl[0].offset, mo=1)
@@ -197,13 +197,19 @@ class Spine(RigModule):
         # visGrp[1] >> self.RIG_DATA.a.v
         # visGrp[1] >> self.PRX_GRP.a.v
 
-        showFk = self.setting.a.add("showFk", min=0, max=1, dv=1, k=0)
-        showIk = self.setting.a.add("showIk", min=0, max=1, dv=1, k=0)
-        [showFk >> c.shape.a.v for c in self.fkCtl]
-        [showIk >> c.a.v for c in self.ikCtl]
+        # showFk = self.setting.a.add("showFk", min=0, max=1, dv=1, k=0)
+        # showIk = self.setting.a.add("showIk", min=0, max=1, dv=1, k=0)
+        # [showFk >> c.shape.a.v for c in self.fkCtl]
+        # [showIk >> c.a.v for c in self.ikCtl]
 
-        # if self.bindJ:
-        #     self.rbSrf.hide()
+        self.ctrlOnOffByAttr(
+            self.setting.a.add("showFk", min=0, max=1, dv=1, k=0),
+            onList=self.fkCtl,
+        )
+        self.ctrlOnOffByAttr(
+            self.setting.a.add("showIk", min=0, max=1, dv=1, k=0),
+            onList=self.ikCtl,
+        )
 
     def channel_setup(self):
         self.setting.a.showAttr()

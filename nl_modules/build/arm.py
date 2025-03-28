@@ -59,7 +59,7 @@ class Arm(RigModule):
         self.palm_fkc = None
         self.pvc = None
         self.ikc = None
-        self.ikc_rota = None
+        self.palm_ikc = None
         self.pin_fkc = None
         self.ballRoll_loc = None
         self.ikCtl = None
@@ -129,10 +129,10 @@ class Arm(RigModule):
         )
 
         self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 1.2)
-        self.ikc_rota = CurveNode(
-            "palm_ikc", pf=rID, shape="circle_round", up="x", scale=rSz * 1.5
+        self.palm_ikc = CurveNode(
+            "palm_ikc", pf=rID, shape="circle_round", up="x", scale=rSz * 1.2
         )
-        self.ikc_rota.cv_move(xDr * rSz * 7, 0, 0)
+        self.palm_ikc.cv_move(xDr * rSz * 7, 0, 0)
         self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz)
 
         self.rigNode.setMsg(
@@ -143,7 +143,7 @@ class Arm(RigModule):
                 "lwr_fkc": self.lwr_fkc,
                 "palm_fkc": self.palm_fkc,
                 "ikc": self.ikc,
-                "ikc_rota": self.ikc_rota,
+                "palm_ikc": self.palm_ikc,
                 "pvc": self.pvc,
             }
         )
@@ -177,7 +177,14 @@ class Arm(RigModule):
         twoJ[0].freezeXf()
 
         twoJ_ik = IkNode(
-            "ik", pf=twoJ[0].name, sj=twoJ[0], ee=twoJ[1], p=self.RIG_DATA, vis=0
+            "ik",
+            sol=1,
+            pvc=scapularJnt,
+            pf=twoJ[0].name,
+            sj=twoJ[0],
+            ee=twoJ[1],
+            p=self.RIG_DATA,
+            vis=0,
         )
         scapularLoc.cstPoi(twoJ_ik)
         self.clavBone = twoJ[0]
@@ -220,7 +227,7 @@ class Arm(RigModule):
         logging.info(rID)
 
         self.ikc.alignTo(self.palm)
-        self.ikc_rota.alignTo(self.palm, p=self.RIG_DATA)
+        self.palm_ikc.alignTo(self.palm, p=self.IK_PART)
         self.pvc.alignTo(self.lwr)
 
         self.joints_ik = common.extractSk(
@@ -278,20 +285,20 @@ class Arm(RigModule):
         self.all_ikHs = [ikH1]
         self.clavicle_fkc.cstPar(self.joints_ik[0], mo=1)
 
-        self.ikCtl = [self.ikc, self.pvc, self.ikc, self.ikc_rota, self.pin_fkc]
+        self.ikCtl = [self.ikc, self.pvc, self.ikc, self.palm_ikc, self.pin_fkc]
         self.ikH1 = ikH1
 
-        # ikc_rota setup
+        # palm_ikc setup
         palm_ik = self.joints_ik[-2]
-        ikcRota_ofs = self.ikc_rota.addOffsetGrp()
-        self.ikc.cstPoi(ikcRota_ofs)
+        palm_ikc_ofs = self.palm_ikc.addOffsetGrp()
+        self.ikc.cstPoi(palm_ikc_ofs)
 
         palmAlign = self.ikc.a.add("palmAlign", min=0, max=1)
         common.cstMulti(
-            palm_ik.offset, self.ikc, ikcRota_ofs, w=palmAlign, cstType="parR"
+            palm_ik.offset, self.ikc, palm_ikc_ofs, w=palmAlign, cstType="parR"
         )
 
-        common.cstMulti(self.ikc_rota, self.pin_fkc, palm_ik, w=fkPin, cstType="ori")
+        common.cstMulti(self.palm_ikc, self.pin_fkc, palm_ik, w=fkPin, cstType="ori")
 
     def blend_fk_ik(self):
         rID = self.rigID
@@ -311,7 +318,10 @@ class Arm(RigModule):
 
         self.setting | self.CTL_DATA
         self.setting.alignTo(self.palm, offset=(rSz * xDr * 35, 0, 0))
-        self.palm.cstPar(self.setting.addOffsetGrp(), mo=1)
+        ofs = self.setting.addOffsetGrp()
+        self.palm.cstPar(ofs, mo=1)
+
+        self.setting.a.addSep()
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
         total = len(self.joints) - 1
 
@@ -333,12 +343,12 @@ class Arm(RigModule):
 
         self.clavicle_fkc.cstPar(self.joints_bf[0], mo=1)
 
-        # add roll & bank to ikc_rota
+        # add roll & bank to palm_ikc
         self.handRollLogic(
-            self.ikc_rota, self.palm_fkc, self.pin_fkc, self.ballRoll_loc
+            self.palm_ikc, self.palm_fkc, self.pin_fkc, self.ballRoll_loc
         )
         self.handBankLogic(
-            self.ikc_rota, self.palm_fkc, self.pin_fkc, palmIn_loc, palmOut_loc
+            self.palm_ikc, self.palm_fkc, self.pin_fkc, palmIn_loc, palmOut_loc
         )
 
         for ctl in self.fkCtl + self.ikCtl:
@@ -431,7 +441,7 @@ class Arm(RigModule):
 
         self.ctrlOnOffByAttr(self.pvc.a["fkPin"], onList=[self.pin_fkc])
 
-        self.ikc.a.v >> self.ikc_rota.a.v
+        self.ikc.a.v >> self.palm_ikc.a.v
 
         if self.RBN_BONES:
             self.ctrlOnOffByAttr(
@@ -476,7 +486,7 @@ class Arm(RigModule):
 
     def channel_setup(self):
         self.setting.a.showAttr()
-        self.ikc_rota.a.showAttr(r=1)
+        self.palm_ikc.a.showAttr(r=1)
 
         for ctl in self.fkCtl + [self.ikc, self.pvc]:
             ctl.a.showAttr(t=1, r=1)

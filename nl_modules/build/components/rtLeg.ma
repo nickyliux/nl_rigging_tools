@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: rtLeg.ma
-//Last modified: Fri, Mar 28, 2025 11:47:42 AM
+//Last modified: Fri, Mar 28, 2025 05:38:16 PM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,7 +12,7 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26100)";
-fileInfo "UUID" "7E0B25D9-4396-3383-A3C3-6B947750D05A";
+fileInfo "UUID" "5714A107-4A8F-8638-564C-CA91F4639D4A";
 createNode transform -n "module_grp";
 	rename -uid "3F6958F6-4253-676A-51E6-CA9FE9573FBE";
 	addAttr -ci true -sn "mirrorCode" -ln "mirrorCode" -dt "string";
@@ -48,7 +48,7 @@ createNode transform -n "master_guide" -p "module_grp";
 	setAttr -l on -k on ".____________";
 	setAttr -cb on ".autoUpWeight" 0.80000001192092896;
 	setAttr -cb on ".autoFwWeight" 0.80000001192092896;
-	setAttr -cb on ".autoDnWeight" 0;
+	setAttr -cb on ".autoDnWeight" 0.10000000149011612;
 	setAttr -cb on ".autoBkWeight" 0.5;
 createNode transform -n "hip_guide_ofs" -p "master_guide";
 	rename -uid "1B251669-4809-99CF-2AA5-B291D2C0C8FF";
@@ -228,7 +228,6 @@ createNode transform -n "lwr_guide" -p "lwr_guide_ofs";
 	rename -uid "61B4C85D-4A6F-96DF-91ED-80B2FEF15965";
 	setAttr -l on -k off ".v";
 	setAttr ".ovc" 1;
-	setAttr ".t" -type "double3" 0 0 2 ;
 	setAttr -k off ".rx";
 	setAttr -k off ".ry";
 	setAttr -k off ".rz";
@@ -696,17 +695,13 @@ createNode pointConstraint -n "pv_loc_ofs_pointConstraint1" -p "pv_loc_ofs";
 	setAttr ".rst" -type "double3" 0 49.800000667572021 8.8817841970012543e-16 ;
 	setAttr -k on ".w0";
 	setAttr -k on ".w1";
-createNode transform -n "pv_loc" -p "pv_loc_ofs";
-	rename -uid "E2799575-486C-9C81-2CD0-55882166B70D";
-	setAttr -l on ".v";
+createNode transform -n "pv_loc_ofs1" -p "pv_loc_ofs";
+	rename -uid "704D401E-4ABC-A401-F0F3-939BD31053B4";
 	setAttr ".t" -type "double3" 0 -7.1054273576010019e-15 0 ;
-	setAttr -l on ".tx";
-	setAttr -l on ".ty";
-	setAttr -l on ".tz";
+	setAttr ".r" -type "double3" 0 -89.999999999999815 0 ;
+createNode transform -n "pv_loc" -p "pv_loc_ofs1";
+	rename -uid "E2799575-486C-9C81-2CD0-55882166B70D";
 	setAttr -cb on ".ro";
-	setAttr -l on ".sx";
-	setAttr -l on ".sy";
-	setAttr -l on ".sz";
 createNode locator -n "pv_locShape" -p "pv_loc";
 	rename -uid "C3D1B0F3-491B-F5D6-7163-E4B34BAB547C";
 	setAttr -k off ".v" no;
@@ -1156,7 +1151,7 @@ createNode nurbsCurve -n "line_01Shape" -p "line_01";
 		2 0 1
 		2
 		-15 108 0
-		-15 91.900001525878906 1.000533584333115e-18
+		-15 91.900001525878906 1.9721522630525295e-31
 		;
 	setAttr ".adot" yes;
 createNode transform -n "line_02" -p "line_grp";
@@ -1180,8 +1175,8 @@ createNode nurbsCurve -n "line_02Shape" -p "line_02";
 		1 1 0 no 3
 		2 0 1
 		2
-		-15 91.900001525878906 1.000533584333115e-18
-		-15 49.800000667572021 2.0000000000000009
+		-15 91.900001525878906 1.9721522630525295e-31
+		-15 49.800000667572021 8.8817841970012434e-16
 		;
 	setAttr ".adot" yes;
 createNode transform -n "line_03" -p "line_grp";
@@ -1205,7 +1200,7 @@ createNode nurbsCurve -n "line_03Shape" -p "line_03";
 		1 1 0 no 3
 		2 0 1
 		2
-		-15 49.800000667572021 2.0000000000000009
+		-15 49.800000667572021 8.8817841970012434e-16
 		-15 7.6999998092651367 -1.9721522630525295e-31
 		;
 	setAttr ".adot" yes;
@@ -1281,8 +1276,8 @@ createNode nurbsCurve -n "line_06Shape" -p "line_06";
 		1 1 0 no 3
 		2 0 1
 		2
-		-15.000000000000755 49.800000667572014 70
-		-15 49.800000667572021 2.0000000000000009
+		-15.00000000000078 49.800000667572014 70.000000000000014
+		-15 49.800000667572021 8.8817841970012434e-16
 		;
 	setAttr ".adot" yes;
 createNode transform -n "line_grp2" -p "module_grp";
@@ -1893,8 +1888,8 @@ createNode nurbsCurve -n "line_07Shape" -p "line_07";
 		1 1 0 no 3
 		2 0 1
 		2
-		-10 44.805632503576206 1.7627378861556426
-		-10.000000000000002 7.6999998092651367 1.0005336147904439e-18
+		-10 44.800000000751986 2.6846204282399365e-08
+		-10.000000000000002 7.6999998092651367 -1.3805065841367717e-30
 		;
 	setAttr ".adot" yes;
 createNode transform -n "line_08" -p "line_grp3";
@@ -1918,21 +1913,21 @@ createNode nurbsCurve -n "line_08Shape" -p "line_08";
 		1 1 0 no 3
 		2 0 1
 		2
-		-20 44.805632503576206 1.7627378861556404
-		-20 7.6999998092651367 6.1332393318846648e-16
+		-20 44.800000000751986 2.684620206320398e-08
+		-20 7.6999998092651367 6.1232339957367466e-16
 		;
 	setAttr ".adot" yes;
 createNode transform -s -n "persp";
 	rename -uid "2CFF45DD-487A-9CD1-767B-A089B899D93C";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 73.215463431089148 83.907040076360332 157.69878878399001 ;
-	setAttr ".r" -type "double3" -11.138352728930832 29.00000000000399 0 ;
+	setAttr ".t" -type "double3" 91.532590264849233 69.420558666937708 113.45307252134715 ;
+	setAttr ".r" -type "double3" -5.7383527289309439 49.800000000004637 -6.1594949249874036e-16 ;
 	setAttr -cb on ".ro";
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "82C3F9B2-4980-6719-29B8-159665D78FA8";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999993;
-	setAttr ".coi" 194.84610050051697;
+	setAttr ".coi" 173.45069477255578;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -2025,20 +2020,20 @@ parent -s -nc -r -add "|module_grp|master_guide|rtLeg0_toesRoot_guide_ofs|toesRo
 parent -s -nc -r -add "|module_grp|master_guide|rtLeg0_toesRoot_guide_ofs|toesRoot_guide|toesRoot_guide_ofs|toe00_2_guide_ZRO|toe00_2_guide|toe00_2_guideShape" "toe04_2_guide" ;
 parent -s -nc -r -add "|module_grp|master_guide|rtLeg0_toesRoot_guide_ofs|toesRoot_guide|toesRoot_guide_ofs|toe00_2_guide_ZRO|toe00_2_guide|toe00_2_guideShape" "toe02_2_guide" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "C8CAF60C-4172-4572-AF51-D9A8482FC63F";
+	rename -uid "B095D55E-4C0E-1DE0-0ED5-C588034126AE";
 	setAttr -s 2 ".lnk";
 	setAttr -s 2 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "FC3847E6-488C-86C9-7693-75B61E26E2F2";
+	rename -uid "359A2EF2-493E-4D48-8120-F7B984EAC12A";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "67DE4D91-415E-BB93-50BC-EA8ABBF7738C";
+	rename -uid "2DC61672-4D9F-D001-E3BD-E99E9E514B33";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "85F368E6-422A-D213-E44D-99A7D1416EFF";
+	rename -uid "DC201176-4D32-3D7E-1146-78B1DCB64295";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "BC19330E-4E8B-4910-BB8A-238FB66CBBA1";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "4638EAD0-493D-37F1-FAF3-AEB617FA38A4";
+	rename -uid "ECB112F0-4050-9C1A-024E-0183C36672D3";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "47ABDCF5-4400-C307-437A-E4AF35DAB19B";
 	setAttr ".g" yes;
@@ -2828,9 +2823,9 @@ connectAttr "palm_guide.pm" "pv_loc_ofs_pointConstraint1.tg[1].tpm";
 connectAttr "pv_loc_ofs_pointConstraint1.w1" "pv_loc_ofs_pointConstraint1.tg[1].tw"
 		;
 connectAttr "pvc_guide.posRatio" "pv_loc_ofs_pointConstraint1.w0";
-connectAttr "pv_loc_aimConstraint1.crx" "pv_loc.rx" -l on;
-connectAttr "pv_loc_aimConstraint1.cry" "pv_loc.ry" -l on;
-connectAttr "pv_loc_aimConstraint1.crz" "pv_loc.rz" -l on;
+connectAttr "pv_loc_aimConstraint1.crx" "pv_loc.rx";
+connectAttr "pv_loc_aimConstraint1.cry" "pv_loc.ry";
+connectAttr "pv_loc_aimConstraint1.crz" "pv_loc.rz";
 connectAttr "pv_loc.pim" "pv_loc_aimConstraint1.cpim";
 connectAttr "pv_loc.t" "pv_loc_aimConstraint1.ct";
 connectAttr "pv_loc.rp" "pv_loc_aimConstraint1.crp";

@@ -85,14 +85,13 @@ class Hand(RigModule):
         rID = self.rigID
         rSz = self.rigSize
         xDr = self.x_dir
-        scale = xDr * rSz
+
         self.fgrRootCtlArr = []
         rig_grp = GroupNode(rID + "_grp", p=self.RIG_DATA)
-        # self.rootJ.offset.cstPar(rig_grp, mo=1)
+
         self.rootJ.offset.cstParSca(rig_grp, mo=1)
         for fgrs, ctls in zip(self.fgrsArr, self.ctlsArr):
-            dupTgt = DagNode(fgrs[1])
-            ctl, ikj = self.build_digit_ik(dupTgt, scale, p=rig_grp)
+            ctl, ikj = self.build_digit_ik(DagNode(fgrs[1]), xDr * rSz * 0.8, p=rig_grp)
             self.fgrRootCtlArr.append(ctl)
             ikj.a.r >> ctls[1].parent.parent.a.r
 

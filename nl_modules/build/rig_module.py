@@ -337,7 +337,7 @@ class RigModule(RigBase):
             mc.setAttr(obj + ".ro", cb=1)
         self.moduleG.hide()
         if self.PRX:
-            proxyVis = self.masterC.a.add("proxyVis", min=0, max=1, dv=1)
+            proxyVis = self.masterC.a.add("proxyVis", min=0, max=1, k=0)  # , dv=1)
             proxyVis >> self.PRX.a.v
 
     def unbuild_module(self):
@@ -712,7 +712,7 @@ class RigModule(RigBase):
         psd_loc = LocNode("psd_loc_#", pf=rID, align=tgtJ_child, p=psd_grp)
         ctl_grp = GroupNode("ctl_grp", pf=rID, align=tgtJ, p=psd_grp)
         ctl_main = CurveNode(
-            "psd_main_ctl",
+            "psd_ctl",
             pf=rID,
             shape="cube",
             align=tgtJ,
@@ -720,6 +720,7 @@ class RigModule(RigBase):
             scale=rSz,
             top=1,
         )
+        ctl_main.a.showAttr(t=1, r=1)
 
         cst.cstPar(ctl_grp, mo=1)
         if ikcGim:
@@ -740,9 +741,10 @@ class RigModule(RigBase):
                 align=ctl_grp,
                 p=ctl_main,
                 scale=rSz / 3,
-                lineWidth=3,
+                lineWidth=2,
                 top=1,
             )
+            ctl.a.showAttr(t=1, r=1)
             allCtl.append(ctl)
 
             rx = i * 90
@@ -754,7 +756,7 @@ class RigModule(RigBase):
 
             # setup output value
             hit = ctl.a.add("hit", min=0, max=1, k=0)
-            weight = ctl.a.add("weight", min=0, max=1, dv=0.5, k=0)
+            weight = ctl.a.add("weight", min=0, max=1, dv=0.5)  # , k=0
             hitWeighted = ctl.a.add("hitWeighted", min=0, max=1, dv=0.5)  # , k=0)
             if preset:
                 weight.set(preset[i])
@@ -775,8 +777,7 @@ class RigModule(RigBase):
 
             # create setRange
             hitRange = ut.setRange_(cpos.a.parameterU, 0, 2, 1, 0)
-            # ut.setRange_(hitRange, 0.5, 1, 0, 1) >> hit
-            ut.setRange_(hitRange, 0.25, 1, 0, 1) >> hit
+            ut.setRange_(hitRange, 0.5, 1, 0, 1) >> hit
 
             # color debug
             driven = ctl.shape.a.overrideColor

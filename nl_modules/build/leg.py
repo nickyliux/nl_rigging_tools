@@ -72,7 +72,7 @@ class Leg(RigModule):
         self.ikc_gimbal = None
         self.pvc_line = None
         self.pvRota_line = None
-        self.all_ikH = {}
+        self.all_ikHs = []
         self.all_bend = None
         self.ikCstG = None
         self.subCtls = []
@@ -296,7 +296,8 @@ class Leg(RigModule):
         ikH1.stretchyIk(soft=1)
         self.hip_fkc.cstPar(self.joints_ik[0], mo=1)
 
-        self.all_ikH = {"main": ikH1, "ball": ikH2, "toe": ikH3}
+        # self.all_ikH = {"main": ikH1, "ball": ikH2, "toe": ikH3}
+        self.all_ikHs = [ikH1, ikH2, ikH3]
         self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal]
         self.ikH1 = ikH1
         self.toeWiggleG = toeWiggleG
@@ -397,11 +398,11 @@ class Leg(RigModule):
         )
 
         self.setting | self.CTL_DATA
-        # self.setting.snapTo(self.palm)
         self.setting.alignTo(self.palm, offset=(0, rSz * xDr * -20, 0))
         ofs = self.setting.addOffsetGrp()
         self.palm.cstPar(ofs, mo=1)
 
+        self.setting.a.addSep()
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
         total = len(self.joints) - 1
 
@@ -569,6 +570,10 @@ class Leg(RigModule):
 
         self.pvc.a["fkPin"] >> self.pin_fkc.a.v
 
+        self.ctrlOnOffByAttr(
+            self.setting.a.add("secCtls", min=0, max=1, k=0), onList=self.subCtls
+        )
+
         if self.all_bend:
             self.ctrlOnOffByAttr(
                 self.setting.a.add("ribbonCtlVis", min=0, max=1, dv=1, k=0),
@@ -576,14 +581,9 @@ class Leg(RigModule):
             )
 
         self.ctrlOnOffByAttr(
-            self.setting.a.add("secCtl", min=0, max=1, k=0), onList=self.subCtls
-        )
-
-        self.ctrlOnOffByAttr(
             self.setting.a.add("DEBUG", min=0, max=1, dv=1, k=0),
-            onList=self.joints_fk + self.joints_ik + self.joints_bf,
+            onList=self.all_ikHs + self.joints_fk + self.joints_ik + self.joints_bf,
         )
-        # [ikh.hide() for ikh in self.all_ikH.values()]
 
     def channel_setup(self):
         self.setting.a.showAttr()
