@@ -349,13 +349,9 @@ class IkNode(DagNode):
         from nl_modules.nodel.joint_node import JointNode
 
         dist = self.sj.o.distanceTo(self.ee)
+        ofs = (self.x_dir * dist, 0, 0)
         pvChainJ = JointNode.makeTwoJChain(
-            "pvChainJ",
-            pf=self.pf,
-            snap=self.sj,
-            ofs=(self.x_dir * dist, 0, 0),
-            p=self.sj.parent,
-            color=Color.RED,
+            "pvChainJ", pf=self.pf, snap=self.sj, ofs=ofs, p=self.sj.parent
         )
         self.ee.cstAim(pvChainJ[0], aim=(self.x_dir, 0, 0), keep=False)
         pvChainJ[0].freezeXf()

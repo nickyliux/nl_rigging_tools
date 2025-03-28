@@ -74,8 +74,13 @@ class RigModule(RigBase):
         lastJ = None
         joints = []
 
-        for i, key in enumerate(guideDict):
+        # for i, key in enumerate(guideDict):
+        for key in guideDict:
             jN = JointNode(f"{pf}_{key}", align=guideDict[key], color=color, r=r)
+
+            if key == "lwr":
+                jN.a.preferredAngleY.set(-90 * self.x_dir)
+
             if lastJ:
                 jN | lastJ
             lastJ = jN
@@ -313,6 +318,7 @@ class RigModule(RigBase):
         self.moduleG.hide()
 
         jnt_list = self.genSkFrNames(jnt_names)
+
         self.rootJ = jnt_list[0]
         self.rootJ | self.SKL_DATA
         self.rootJ.freezeXf()
@@ -331,8 +337,8 @@ class RigModule(RigBase):
             mc.setAttr(obj + ".ro", cb=1)
         self.moduleG.hide()
         if self.PRX:
-            self.masterC.a.add("PROXY_VIS", min=0, max=1)
-            self.masterC.a["PROXY_VIS"] >> self.PRX.a.v
+            proxyVis = self.masterC.a.add("proxyVis", min=0, max=1, dv=1)
+            proxyVis >> self.PRX.a.v
 
     def unbuild_module(self):
         logging.info(self.rigID)
@@ -497,46 +503,35 @@ class RigModule(RigBase):
         jnt3 = JointNode(ctl3 + "_ctlJ", r=rS, color=color, align=ctl3, p=ctl3)
         return [jnt1, jnt2, jnt3]
 
-    def visByCondition(self, fkIkBlend, autoVis, manualVis, targets, v=0):
-        """Setup vis logic with auto / manual mode like Advanced Skeleton
+    # def visByCondition(self, attr, autoVis, manualVis, targets=None, v=0):
+    #     """Setup vis logic with auto / manual mode like Advanced Skeleton"""
+    #     cond = DagNode("visCond" + str(v) + "__#", nodeType="condition")
+    #     attr >> cond.a.firstTerm
+    #     cond.a.secondTerm.set(1 - v)
+    #     # [cond.a.outColor >> target.a.v for target in targets]
 
-        visByCondition(
-            fkIkBlend,
-            autoVis,
-            showFk,
-            [DagNode('a')],
-            hideWhen=0
-        )
-        """
-        cond = DagNode("visCond" + str(v) + "__#", nodeType="condition")
-        fkIkBlend >> cond.a.firstTerm
-        cond.a.secondTerm.set(1 - v)
-        # [cond.a.outColor >> target.a.v for target in targets]
-
-        condF = DagNode("visCondF" + str(v) + "__#", nodeType="floatCondition")
-        cond.a.outColorR >> condF.a.floatA
-        autoVis >> condF.a.condition
-        manualVis >> condF.a.floatB
-        [condF.a.outFloat >> target.a.v for target in targets]
+    #     condF = DagNode("visCondF" + str(v) + "__#", nodeType="floatCondition")
+    #     cond.a.outColorR >> condF.a.floatA
+    #     autoVis >> condF.a.condition
+    #     manualVis >> condF.a.floatB
+    #     [condF.a.outFloat >> target.a.v for target in targets]
 
     def handRollLogic(self, attrHolder, fkc, fkPin, locRoll):
 
         palmRoll = attrHolder.a.add("palmRoll")
-        fkc.a.addSep()
-        fkc.a.add("palmRoll", proxy=palmRoll)
-        fkPin.a.addSep()
-        fkPin.a.add("palmRoll", proxy=palmRoll)
-
         palmRoll * -1 >> locRoll.a.rz
+
+        fkc.a.add("palmRoll", proxy=palmRoll)
+        fkPin.a.add("palmRoll", proxy=palmRoll)
 
     def handBankLogic(self, attrHolder, fkc, fkPin, locIn, locOut):
 
         palmBank = attrHolder.a.add("palmBank")
-        fkc.a.add("palmBank", proxy=palmBank)
-        fkPin.a.add("palmBank", proxy=palmBank)
-
         ut.min_(palmBank, 0) * -1 >> locIn.a.rx
         ut.max_(0, palmBank) * -1 >> locOut.a.rx
+
+        fkc.a.add("palmBank", proxy=palmBank)
+        fkPin.a.add("palmBank", proxy=palmBank)
 
     def footRollLogic(self, targetCtl, heelRollG, ballRollG, footRollG, toeRollG):
         from nl_modules.utils import utils_node as ut
@@ -623,7 +618,7 @@ class RigModule(RigBase):
         from nl_modules.nodel.ik_node import IkNode
 
         rID = self.rigID
-        rSz = self.rigSize
+        # rSz = self.rigSize
 
         # create aim chain
         self.joints_am = common.extractSk([startJ, endJ], "_am", p=fkc.offset)
@@ -638,7 +633,10 @@ class RigModule(RigBase):
             quat=1,
             p=self.RIG_DATA,
         )
-        ikcGim.cstPoi(auto_ikH)
+        if ikcGim:
+            ikcGim.cstPoi(auto_ikH)
+        else:
+            ikc.cstPoi(auto_ikH)
 
         # setup PSD & cst
         autoAim = ikc.a.add("autoAim", min=0, max=1)  # , dv=1)
@@ -716,15 +714,18 @@ class RigModule(RigBase):
         ctl_main = CurveNode(
             "psd_main_ctl",
             pf=rID,
-            shape="sphere",
+            shape="cube",
             align=tgtJ,
             p=ctl_grp,
-            scale=rSz * 3,
+            scale=rSz,
             top=1,
         )
 
         cst.cstPar(ctl_grp, mo=1)
-        ikcGim.cstPoi(psd_loc)
+        if ikcGim:
+            ikcGim.cstPoi(psd_loc)
+        else:
+            ikc.cstPoi(psd_loc)
 
         allCtl = [ctl_main]
         productSum = DagNode("pma__#", nodeType="plusMinusAverage")
@@ -786,12 +787,17 @@ class RigModule(RigBase):
         self.setWSMirror(allCtl)
         self.addCtlSet(allCtl)
 
-        setting.a.addSep()
-        autoAimVis = setting.a.add("autoAimVis", min=0, max=1, dv=1, k=0)
-        autoAimVis >> psd_grp.a.v
+        autoAimSetup = setting.a.add("autoAimSetup", min=0, max=1, dv=1, k=0)
+        autoAimSetup >> psd_grp.a.v
 
         # Connect total weight
         autoWeight = ikc.a.add("autoWeight", k=0, cb=0)
         productSum.a.output1D >> autoWeight
 
         return autoWeight
+
+    def ctrlOnOffByAttr(self, attr, onList=None, offList=None):
+        if onList:
+            [attr >> ctl.a.v for ctl in onList]
+        if offList:
+            [~attr >> ctl.a.v for ctl in offList]

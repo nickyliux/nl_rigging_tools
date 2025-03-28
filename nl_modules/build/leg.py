@@ -12,9 +12,11 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.build.rig_module import RigModule
 
 PRX = 7
-CDY = Color.D_YELLOW
 CBK = Color.BLACK
+CBL = Color.BLUE
+CDY = Color.D_YELLOW
 CRD = Color.RED
+CYL = Color.YELLOW
 
 
 class Leg(RigModule):
@@ -108,7 +110,7 @@ class Leg(RigModule):
         xDr = self.x_dir
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="sphere2", scale=rSz * xDr, color=CBK
+            "setting", pf=rID, shape="sphere2", scale=rSz * xDr * 2, color=CBK
         )
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
@@ -127,8 +129,9 @@ class Leg(RigModule):
         )
         self.ball_fkc.cv_scale(0.7, 1, 1)
 
-        ikcScale = (rSz, rSz * 1.5, rSz * 1.5)
-        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=ikcScale)
+        scale = (rSz, rSz * 1.5, rSz * 3)
+        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=scale)
+        self.ikc.cv_move(0, 0, rSz * 8)
         self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz / 2)
         self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 3)
 
@@ -190,7 +193,9 @@ class Leg(RigModule):
 
     def build_fk(self):
         logging.info(self.rigID)
-        self.joints_fk = common.extractSk(self.joints, "_fk", p=self.FK_PART)
+        self.joints_fk = common.extractSk(
+            self.joints, "_fk", p=self.FK_PART, color=CBL, r=3
+        )
         self.fkCtl = [
             self.hip_fkc,
             self.upr_fkc,
@@ -210,10 +215,11 @@ class Leg(RigModule):
         heelPos_guide = DagNode(rID + "_palm_heelPos_guide")
         toePos_guide = DagNode(rID + "_palm_toePos_guide")
 
-        self.ikc.a.addSep()
         self.ikc.alignTo(mG)
         self.pvc.alignTo(self.lwr)
-        self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_PART)
+        self.joints_ik = common.extractSk(
+            self.joints, "_ik", p=self.IK_PART, color=CRD, r=4
+        )
 
         ikH1 = IkNode(
             "1",
@@ -386,7 +392,9 @@ class Leg(RigModule):
         rSz = self.rigSize
         xDr = self.x_dir
         logging.info(rID)
-        self.joints_bf = common.extractSk(self.joints, "_bf", p=self.BF_PART)
+        self.joints_bf = common.extractSk(
+            self.joints, "_bf", p=self.BF_PART, color=CYL, r=2
+        )
 
         self.setting | self.CTL_DATA
         # self.setting.snapTo(self.palm)
@@ -420,9 +428,9 @@ class Leg(RigModule):
 
         self.hip_fkc.cstPar(self.joints_bf[0], mo=1)
 
-        self.ikc.a.addSep()
         # Useful for fk ik switch popUp menu
         for ctl in self.fkCtl + self.ikCtl:
+            ctl.a.addSep()
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
         GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.palm_fkc)
@@ -553,38 +561,29 @@ class Leg(RigModule):
         # visGrp[1] >> self.SKL_DATA.a.v
         # visGrp[1] >> self.PRX_GRP.a.v
 
-        fkIkBlend = self.setting.a["fkIkBlend"]
-        autoFkIkVis = self.setting.a.add("autoFkIkVis", min=0, max=1, dv=1, k=0)
-        showFk = self.setting.a.add("showFk", min=0, max=1, dv=1, k=0)
-        showIk = self.setting.a.add("showIk", min=0, max=1, dv=1, k=0)
+        self.ctrlOnOffByAttr(
+            self.setting.a["fkIkBlend"],
+            onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
+            offList=self.fkCtl[1:-1],
+        )
 
-        # [fkIkBlend >> c.a.v for c in (self.ikc, self.pvc, self.pvc_line, self.ikCstG)]
-        self.visByCondition(
-            fkIkBlend,
-            autoFkIkVis,
-            showIk,
-            [self.ikc, self.pvc, self.pvc_line, self.ikCstG],
-            v=1,
-        )
-        # [~fkIkBlend >> c.a.v for c in self.fkCtl[1:-1]]
-        self.visByCondition(
-            fkIkBlend,
-            autoFkIkVis,
-            showFk,
-            self.fkCtl[1:-1],
-            v=0,
-        )
         self.pvc.a["fkPin"] >> self.pin_fkc.a.v
 
         if self.all_bend:
-            ribbonCtlVis = self.setting.a.add("ribbonCtlVis", min=0, max=1, dv=1, k=0)
-            [ribbonCtlVis >> ctl.a.v for ctl in self.all_bend]
+            self.ctrlOnOffByAttr(
+                self.setting.a.add("ribbonCtlVis", min=0, max=1, dv=1, k=0),
+                onList=self.all_bend,
+            )
 
-        secCtl = self.setting.a.add("secCtl", k=0, min=0, max=1)
-        [secCtl >> c.shape.a.v for c in self.subCtls]
+        self.ctrlOnOffByAttr(
+            self.setting.a.add("secCtl", min=0, max=1, k=0), onList=self.subCtls
+        )
 
-        mc.hide(self.joints_fk, self.joints_ik, self.joints_bf)
-        [ikh.hide() for ikh in self.all_ikH.values()]
+        self.ctrlOnOffByAttr(
+            self.setting.a.add("DEBUG", min=0, max=1, dv=1, k=0),
+            onList=self.joints_fk + self.joints_ik + self.joints_bf,
+        )
+        # [ikh.hide() for ikh in self.all_ikH.values()]
 
     def channel_setup(self):
         self.setting.a.showAttr()

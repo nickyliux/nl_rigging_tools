@@ -4,7 +4,7 @@ from nl_modules.nodel.group_node import GroupNode
 from nl_modules.utils.color import Color
 import logging
 
-CRD = Color.D_RED
+CDR = Color.D_RED
 CBL = Color.BLUE
 
 
@@ -113,16 +113,14 @@ class JointNode(GroupNode):
             # NOTE:  constraint must be after shader assignment, otherwise mc.sets(..) will sohw error
             #
             common.assignProxyShader(proxyN)
-
             self.cstPar(proxyN, mo=1)
-            # proxyN.parentTo(self)
 
             # connect proxy vis
-            if vis:
-                visAttr = vis.a["proxyVis"]
-                if not visAttr.exists() and grp and grp.exists():
-                    vis.a.add("proxyVis", min=0, max=1, dv=1)
-                    visAttr >> grp.a.v
+            # if vis:
+            #     visAttr = vis.a["proxyVis"]
+            #     if not visAttr.exists() and grp and grp.exists():
+            #         vis.a.add("proxyVis", min=0, max=1, k=0, dv=1)
+            #         visAttr >> grp.a.v
 
             return proxyN
 
@@ -135,7 +133,7 @@ class JointNode(GroupNode):
         pf="",
         ofs=None,
         r=1,
-        color=CRD,
+        color=CDR,
         p=None,
     ):
         """Make two-joint chain according to aligning objects
