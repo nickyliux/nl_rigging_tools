@@ -171,7 +171,7 @@ class Spine(RigModule):
 
     def build_volume_setup(self):
         """Scale ribbon joints according to length of the surface"""
-        arcLD = ut.arcLenDim_(self.rbSrf)
+        arcLD = ut.arcLenDim_(self.rbSrf, u=3, v=1)
         d = arcLD.a.arcLength
         keepVol = self.setting.a.add("keepVol", min=0, max=2, dv=1)
         scaleFix = self.masterC.a.globalScale
