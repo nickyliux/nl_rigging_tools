@@ -113,7 +113,7 @@ class JointNode(GroupNode):
             # NOTE:  constraint must be after shader assignment, otherwise mc.sets(..) will sohw error
             #
             common.assignProxyShader(proxyN)
-            self.cstPar(proxyN, mo=1)
+            self.cstParSca(proxyN, mo=1)
 
             # connect proxy vis
             # if vis:

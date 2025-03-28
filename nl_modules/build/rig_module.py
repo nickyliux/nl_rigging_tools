@@ -337,7 +337,7 @@ class RigModule(RigBase):
             mc.setAttr(obj + ".ro", cb=1)
         self.moduleG.hide()
         if self.PRX:
-            proxyVis = self.masterC.a.add("proxyVis", min=0, max=1, k=0)  # , dv=1)
+            proxyVis = self.masterC.a.add("proxyVis", min=0, max=1, k=0, dv=0)
             proxyVis >> self.PRX.a.v
 
     def unbuild_module(self):

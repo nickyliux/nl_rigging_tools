@@ -106,7 +106,7 @@ class Spine(RigModule):
         hipCtl = self.fkCtl[0]
         hipCtl(p=self.CTL_DATA, addOfs=1, color=CRD)
         hipCtl.offset.snapAlignTo(self.fkJnt[1], self.fkJnt[0])
-        hipCtl.cv_move(0, rSz * -50, 0)
+        hipCtl.cv_move(0, rSz * -20, 0)
         hipCtl.cstPar(self.fkJnt[0], mo=1)
         self.bindJ = self.fkJnt
 
@@ -158,7 +158,7 @@ class Spine(RigModule):
 
             self.bindJ = SurfNode.buildRbJnt(
                 rID,
-                rSz,
+                rSz * 4,
                 self.RBN_JNT_NUM,
                 surf=self.rbSrf,
                 rigData=self.RIG_DATA,
@@ -197,18 +197,18 @@ class Spine(RigModule):
         # visGrp[1] >> self.RIG_DATA.a.v
         # visGrp[1] >> self.PRX_GRP.a.v
 
-        # showFk = self.setting.a.add("showFk", min=0, max=1, dv=1, k=0)
-        # showIk = self.setting.a.add("showIk", min=0, max=1, dv=1, k=0)
-        # [showFk >> c.shape.a.v for c in self.fkCtl]
-        # [showIk >> c.a.v for c in self.ikCtl]
-
         self.ctrlOnOffByAttr(
-            self.setting.a.add("showFk", min=0, max=1, dv=1, k=0),
+            self.setting.a.add("fkVis", min=0, max=1, dv=1, k=0),
             onList=self.fkCtl,
         )
         self.ctrlOnOffByAttr(
-            self.setting.a.add("showIk", min=0, max=1, dv=1, k=0),
+            self.setting.a.add("ikVis", min=0, max=1, dv=1, k=0),
             onList=self.ikCtl,
+        )
+
+        self.ctrlOnOffByAttr(
+            self.setting.a.add("DEBUG", min=0, max=1, dv=1, k=0),
+            onList=[self.RIG_DATA],
         )
 
     def channel_setup(self):

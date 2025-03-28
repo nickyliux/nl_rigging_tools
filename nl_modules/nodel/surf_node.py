@@ -172,7 +172,7 @@ class SurfNode(GroupNode):
             bindJ = []
 
             for i, loc in enumerate(pinXf):
-                j = JointNode(rID + f"_rbJ_{i + 1}", align=loc, r=rSz * 2, p=sklData)
+                j = JointNode(rID + f"_rbJ_{i + 1}", align=loc, r=rSz, p=sklData)
                 loc.cstPar(j)
                 bindJ.append(j)
             return bindJ
