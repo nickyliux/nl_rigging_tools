@@ -413,7 +413,8 @@ class Leg(RigModule):
             jnt = self.joints[i]
             # common.cstMulti(fkj, ikj, bfj, w=fkIkBlend)
             if i > 0:
-                ut.blendN_(fkj.a.tx, ikj.a.tx, w=fkIkBlend) >> bfj.a.tx
+                # ut.blendN_(fkj.a.tx, ikj.a.tx, w=fkIkBlend) >> bfj.a.tx
+                ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> bfj.a.t
                 ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
 
             if i < total - 1:
@@ -498,9 +499,9 @@ class Leg(RigModule):
             self.boneFix_sdk(self.lwr, stt_ofs[1])
 
         # Add Ctl Attr to md_bend
-        keepVol = self.ikc.a.add("keepVol", min=0, max=2, dv=1, k=0)
-        keepVol >> ribbonUp.volPower
-        keepVol >> ribbonLw.volPower
+        # keepVol = self.ikc.a.add("keepVol", min=0, max=2, dv=1, k=0)
+        # keepVol >> ribbonUp.volPower
+        # keepVol >> ribbonLw.volPower
 
         self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
@@ -574,9 +575,9 @@ class Leg(RigModule):
             self.setting.a.add("secCtls", min=0, max=1, k=0), onList=self.subCtls
         )
 
-        if self.all_bend:
+        if self.RBN_BONES:
             self.ctrlOnOffByAttr(
-                self.setting.a.add("ribbonCtlVis", min=0, max=1, dv=1, k=0),
+                self.setting.a.add("showRibbonCtl", min=0, max=1, dv=1, k=0),
                 onList=self.all_bend,
             )
 

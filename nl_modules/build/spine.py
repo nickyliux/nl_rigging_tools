@@ -171,24 +171,31 @@ class Spine(RigModule):
 
     def build_volume_setup(self):
         """Scale ribbon joints according to length of the surface"""
+
+        import math
+
+        scaleFix = self.masterC.a.globalScale
         arcLD = ut.arcLenDim_(self.rbSrf, u=3, v=1)
         d = arcLD.a.arcLength
-        keepVol = self.setting.a.add("keepVol", min=0, max=2, dv=1)
-        scaleFix = self.masterC.a.globalScale
-        ratio = (d.get() / (d / scaleFix) - 1) * keepVol
+        D = d.get()
+        volSquash = self.setting.a.add("volSquash", min=0, dv=1)
 
-        if self.RBN_BONES:
-            for i in range(self.RBN_JNT_NUM):
-                MID = self.RBN_JNT_NUM / 2
-                calcV = (
-                    2 * i / (self.RBN_JNT_NUM - 1)
-                    if i < MID
-                    else -2 * i / (self.RBN_JNT_NUM - 1) + 2
-                )
-                newRatio = ratio * calcV + 1
-                newRatio >> self.bindJ[i].a.sx
-                newRatio >> self.bindJ[i].a.sy
-        arcLD.hide()
+        # keys for volume squash
+        volGraph = self.setting.a.add("volGraph", dv=0)
+        mc.setKeyframe(volGraph, t=0, v=0)
+        mc.setKeyframe(volGraph, t=(self.RBN_JNT_NUM - 1) / 2, v=1)
+        mc.setKeyframe(volGraph, t=self.RBN_JNT_NUM - 1, v=0)
+        mc.setAttr(volGraph, l=1)
+
+        for i in range(self.RBN_JNT_NUM):
+
+            fc = DagNode("fc__#", nodeType="frameCache")
+            volGraph >> fc.a.stream
+            fc.a.varyTime.set(i)
+
+            ratio = (volSquash * D / (d / scaleFix)) ** fc.a.varying
+            ratio >> self.bindJ[i].a.sx
+            ratio >> self.bindJ[i].a.sy
 
     def vis_setup(self):
         # visGrp = common.addVisOption(self.visC, self.rigID)

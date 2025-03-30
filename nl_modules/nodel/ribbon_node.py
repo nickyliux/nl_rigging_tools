@@ -297,32 +297,27 @@ class RibbonNode:
         """
         arcLD = ut.arcLenDim_(self.surf)
         d = arcLD.a.arcLength
-        self.volPower = self.ribbonG.a.add("volPower", min=0, max=1, dv=1)
-        scaleFix = self.ribbonG.a.add("scaleFix", min=0, dv=1)
-        ratioYZ = (self.D / (d / scaleFix) - 1) * self.volPower
+        D = d.get()
+        volSquash = self.ribbonG.a.add("volSquash", min=0, dv=1)
+        scaleFix = self.ribbonG.a.sy
 
-        if self.rbJNum > 1:
-            for i in range(self.rbJNum):
+        # keys for volume squash
+        volGraph = self.ribbonG.a.add("volGraph", dv=0)
+        mc.setKeyframe(volGraph, t=0, v=0)
+        mc.setKeyframe(volGraph, t=(self.rbJNum - 1) / 2, v=1)
+        mc.setKeyframe(volGraph, t=self.rbJNum - 1, v=0)
+        mc.setAttr(volGraph, l=1)
 
-                calcV = 0
-                MID = self.rbJNum / 2
+        for i in range(self.rbJNum):
 
-                if self.volMode == 0:
-                    calcV = (
-                        2 * i / (self.rbJNum - 1)
-                        if i < MID
-                        else -2 * i / (self.rbJNum - 1) + 2
-                    )
-                elif self.volMode == 1:
-                    calcV = (i + 0.5) / self.rbJNum
-                elif self.volMode == 2:
-                    calcV = 1 - (i + 0.5) / self.rbJNum
+            fc = DagNode("fc__#", nodeType="frameCache")
+            volGraph >> fc.a.stream
+            fc.a.varyTime.set(i)
 
-                newRatio = ratioYZ * calcV + 1
-                newRatio >> self.rbJnt[i].a.sy
-                newRatio >> self.rbJnt[i].a.sz
+            ratio = (volSquash * D / (d / scaleFix)) ** fc.a.varying
+            ratio >> self.rbJnt[i].a.sy
+            ratio >> self.rbJnt[i].a.sz
 
-        self.ribbonG.a.sy >> scaleFix
         self.d = d
 
     def proxy_setup(self):

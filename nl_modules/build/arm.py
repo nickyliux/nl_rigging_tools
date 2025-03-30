@@ -317,7 +317,7 @@ class Arm(RigModule):
         self.ballRoll_loc = LocNode("ballRoll", pf=rID, align=ball_guide, p=palmOut_loc)
 
         self.setting | self.CTL_DATA
-        self.setting.alignTo(self.palm, offset=(rSz * xDr * 35, 0, 0))
+        self.setting.alignTo(self.palm, offset=(rSz * xDr * 50, 0, 0))
         ofs = self.setting.addOffsetGrp()
         self.palm.cstPar(ofs, mo=1)
 
@@ -332,7 +332,8 @@ class Arm(RigModule):
             jnt = self.joints[i]
             # common.cstMulti(fkj, ikj, jnt, w=fkIkBlend)
             if i > 0:
-                ut.blendN_(fkj.a.tx, ikj.a.tx, w=fkIkBlend) >> bfj.a.tx
+                # ut.blendN_(fkj.a.tx, ikj.a.tx, w=fkIkBlend) >> bfj.a.tx
+                ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> bfj.a.t
                 ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
 
             if i < total - 1:
@@ -374,8 +375,8 @@ class Arm(RigModule):
             rbJNum=self.RBN_JNT_NUM,
             volMode=1,
             scaleFix=self.masterC.a.globalScale,
-            p=self.RIG_DATA,
             proxyP=self.PRX_GRP,
+            p=self.RIG_DATA,
         )
         ribbonLw = RibbonNode(
             self.lwr,
@@ -383,8 +384,8 @@ class Arm(RigModule):
             rbJNum=self.RBN_JNT_NUM,
             volMode=2,
             scaleFix=self.masterC.a.globalScale,
-            p=self.RIG_DATA,
             proxyP=self.PRX_GRP,
+            p=self.RIG_DATA,
         )
         # --------------------------------
         # Upper Ribbon
@@ -421,9 +422,9 @@ class Arm(RigModule):
         md_bend.cstParSca(ribbonLw.stt_loc, mo=1)
 
         # Add Ctl Attr to md_bend
-        keepVol = self.ikc.a.add("keepVol", min=0, max=2, dv=1, k=0)
-        keepVol >> ribbonUp.volPower
-        keepVol >> ribbonLw.volPower
+        # keepVol = self.ikc.a.add("keepVol", min=0, max=2, dv=1, k=0)
+        # keepVol >> ribbonUp.volPower
+        # keepVol >> ribbonLw.volPower
 
         self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
@@ -445,7 +446,7 @@ class Arm(RigModule):
 
         if self.RBN_BONES:
             self.ctrlOnOffByAttr(
-                self.setting.a.add("ribbonCtlVis", min=0, max=1, dv=0, k=0),
+                self.setting.a.add("showRibbonCtl", min=0, max=1, dv=1, k=0),
                 onList=self.all_bend,
             )
 

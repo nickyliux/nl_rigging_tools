@@ -122,6 +122,7 @@ def distDim_(obj1, obj2):
 
     DagNode(obj1).cstPoi(locA)
     DagNode(obj2).cstPoi(locB)
+    grpN.hide()
     return distDim.a.distance
 
 
