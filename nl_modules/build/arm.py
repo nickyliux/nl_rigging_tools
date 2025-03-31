@@ -317,7 +317,7 @@ class Arm(RigModule):
         self.ballRoll_loc = LocNode("ballRoll", pf=rID, align=ball_guide, p=palmOut_loc)
 
         self.setting | self.CTL_DATA
-        self.setting.alignTo(self.palm, offset=(rSz * xDr * 50, 0, 0))
+        self.setting.alignTo(self.palm, offset=(rSz * xDr * 40, 0, 0))
         ofs = self.setting.addOffsetGrp()
         self.palm.cstPar(ofs, mo=1)
 
@@ -373,7 +373,7 @@ class Arm(RigModule):
             self.upr,
             pf=rID + "_up_",
             rbJNum=self.RBN_JNT_NUM,
-            volMode=1,
+            volMode="upr",
             scaleFix=self.masterC.a.globalScale,
             proxyP=self.PRX_GRP,
             p=self.RIG_DATA,
@@ -382,7 +382,7 @@ class Arm(RigModule):
             self.lwr,
             pf=rID + "_lw_",
             rbJNum=self.RBN_JNT_NUM,
-            volMode=2,
+            volMode="lwr",
             scaleFix=self.masterC.a.globalScale,
             proxyP=self.PRX_GRP,
             p=self.RIG_DATA,
@@ -421,10 +421,15 @@ class Arm(RigModule):
         md_bend.cstParSca(ribbonUp.end_loc, mo=1)
         md_bend.cstParSca(ribbonLw.stt_loc, mo=1)
 
-        # Add Ctl Attr to md_bend
-        # keepVol = self.ikc.a.add("keepVol", min=0, max=2, dv=1, k=0)
-        # keepVol >> ribbonUp.volPower
-        # keepVol >> ribbonLw.volPower
+        # add volType attr to setting
+        autoVol = self.setting.a.add("autoVol")
+        volType = self.setting.a.add(
+            "volType", attrType="enum", enumName="whole:separate", k=0
+        )
+        autoVol >> ribbonUp.autoVol
+        autoVol >> ribbonLw.autoVol
+        volType >> ribbonUp.volType
+        volType >> ribbonLw.volType
 
         self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
@@ -451,7 +456,7 @@ class Arm(RigModule):
             )
 
         self.ctrlOnOffByAttr(
-            self.setting.a.add("DEBUG", min=0, max=1, dv=1, k=0),
+            self.masterC.a.debug,
             onList=self.all_ikHs + self.joints_fk + self.joints_ik + self.joints_bf,
         )
 

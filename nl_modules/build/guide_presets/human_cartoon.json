@@ -178,9 +178,9 @@
                 0.0
             ],
             "s":[
-                1.0,
-                1.0,
-                1.0
+                0.6,
+                0.6,
+                0.6
             ],
             "t":[
                 0.0,
@@ -992,7 +992,7 @@
             "autoFwWeight":0.800000011920929,
             "autoUpWeight":0.800000011920929,
             "kneeFix":false,
-            "patellaBone":true,
+            "patellaBone":false,
             "r":[
                 0.0,
                 0.0,
@@ -2589,7 +2589,7 @@
             "autoFwWeight":0.800000011920929,
             "autoUpWeight":0.800000011920929,
             "kneeFix":false,
-            "patellaBone":true,
+            "patellaBone":false,
             "r":[
                 0.0,
                 -0.0,

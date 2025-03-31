@@ -245,7 +245,6 @@ class Leg(RigModule):
         inRollG = GroupNode("inRollG", pf=rID, snap=inPos_guide, alignR=mG)
         outRollG = GroupNode("outRollG", pf=rID, snap=outPos_guide, alignR=mG)
         heelRollG = GroupNode("heelRollG", pf=rID, snap=heelPos_guide, alignR=mG)
-
         if self.x_dir == 1:
             for g in (
                 self.ikCstG,
@@ -262,10 +261,8 @@ class Leg(RigModule):
         ikH1 | ballRollG | inRollG
         (ikH2, ikH3) | toeWiggleG | inRollG
         inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG
-
         self.ikc_gimbal = CurveNode(self.ikc).addGimbal()
         self.ikc.snapTo(self.palm)
-
         #   Constrain ikCstG supporting fk limb
         #   self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
         self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
@@ -456,11 +453,11 @@ class Leg(RigModule):
 
         pf = rID + "_up_"
         ribbonUp = RibbonNode(
-            self.upr, pf=pf, rbJNum=num, volMode=1, scaleFix=scale, p=data, proxyP=g
+            self.upr, pf=pf, rbJNum=num, volMode="upr", scaleFix=scale, p=data, proxyP=g
         )
         pf = rID + "_lw_"
         ribbonLw = RibbonNode(
-            self.lwr, pf=pf, rbJNum=num, volMode=2, scaleFix=scale, p=data, proxyP=g
+            self.lwr, pf=pf, rbJNum=num, volMode="lwr", scaleFix=scale, p=data, proxyP=g
         )
         # Upper Ribbon
         # --------------------------------
@@ -498,10 +495,15 @@ class Leg(RigModule):
         if self.KNEE_FIX:
             self.boneFix_sdk(self.lwr, stt_ofs[1])
 
-        # Add Ctl Attr to md_bend
-        # keepVol = self.ikc.a.add("keepVol", min=0, max=2, dv=1, k=0)
-        # keepVol >> ribbonUp.volPower
-        # keepVol >> ribbonLw.volPower
+        # add volType attr to setting
+        autoVol = self.setting.a.add("autoVol")
+        volType = self.setting.a.add(
+            "volType", attrType="enum", enumName="whole:separate", k=0
+        )
+        autoVol >> ribbonUp.autoVol
+        autoVol >> ribbonLw.autoVol
+        volType >> ribbonUp.volType
+        volType >> ribbonLw.volType
 
         self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
@@ -572,7 +574,7 @@ class Leg(RigModule):
         self.pvc.a["fkPin"] >> self.pin_fkc.a.v
 
         self.ctrlOnOffByAttr(
-            self.setting.a.add("secCtls", min=0, max=1, k=0), onList=self.subCtls
+            self.setting.a.add("showExtraCtl", min=0, max=1, k=0), onList=self.subCtls
         )
 
         if self.RBN_BONES:
@@ -582,7 +584,7 @@ class Leg(RigModule):
             )
 
         self.ctrlOnOffByAttr(
-            self.setting.a.add("DEBUG", min=0, max=1, dv=1, k=0),
+            self.masterC.a.debug,
             onList=self.all_ikHs + self.joints_fk + self.joints_ik + self.joints_bf,
         )
 

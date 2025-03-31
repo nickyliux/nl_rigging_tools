@@ -78,8 +78,15 @@ class RigModule(RigBase):
         for key in guideDict:
             jN = JointNode(f"{pf}_{key}", align=guideDict[key], color=color, r=r)
 
-            if key == "lwr":
-                jN.a.preferredAngleY.set(-90 * self.x_dir)
+            # if key == "lwr":
+            #     jN.a.preferredAngleY.set(10 * self.x_dir)
+            if (
+                pf.startswith("lfLeg")
+                or pf.startswith("rtLeg")
+                or pf.startswith("lfArm")
+                or pf.startswith("rtArm")
+            ) and key == "lwr":
+                jN.a.preferredAngleY.set(-10 * self.x_dir)
 
             if lastJ:
                 jN | lastJ
@@ -332,13 +339,15 @@ class RigModule(RigBase):
         if children:
             self.x_dir = 1 if children[0].a.tx.get() > 0 else -1
 
+        self.masterC.a.add("debug", min=0, max=1, dv=1, k=0)
+
     def post_module(self):
         for obj in mc.ls(tr=1):
             mc.setAttr(obj + ".ro", cb=1)
         self.moduleG.hide()
         if self.PRX:
-            proxyVis = self.masterC.a.add("proxyVis", min=0, max=1, k=0, dv=1)
-            proxyVis >> self.PRX.a.v
+            showProxy = self.masterC.a.add("showProxy", min=0, max=1, k=0, dv=1)
+            showProxy >> self.PRX.a.v
 
     def unbuild_module(self):
         logging.info(self.rigID)
@@ -788,8 +797,8 @@ class RigModule(RigBase):
         self.setWSMirror(allCtl)
         self.addCtlSet(allCtl)
 
-        autoAimSetup = setting.a.add("autoAimSetup", min=0, max=1, dv=1, k=0)
-        autoAimSetup >> psd_grp.a.v
+        showAimSetup = self.masterC.a.add("showAimSetup", min=0, max=1, dv=1, k=0)
+        showAimSetup >> psd_grp.a.v
 
         # Connect total weight
         autoWeight = ikc.a.add("autoWeight", k=0, cb=0)

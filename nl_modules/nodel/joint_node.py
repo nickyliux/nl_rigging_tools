@@ -114,14 +114,6 @@ class JointNode(GroupNode):
             #
             common.assignProxyShader(proxyN)
             self.cstParSca(proxyN, mo=1)
-
-            # connect proxy vis
-            # if vis:
-            #     visAttr = vis.a["proxyVis"]
-            #     if not visAttr.exists() and grp and grp.exists():
-            #         vis.a.add("proxyVis", min=0, max=1, k=0, dv=1)
-            #         visAttr >> grp.a.v
-
             return proxyN
 
     @staticmethod

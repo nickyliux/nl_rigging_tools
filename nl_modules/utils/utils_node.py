@@ -122,7 +122,6 @@ def distDim_(obj1, obj2):
 
     DagNode(obj1).cstPoi(locA)
     DagNode(obj2).cstPoi(locB)
-    grpN.hide()
     return distDim.a.distance
 
 
@@ -136,6 +135,7 @@ def arcLenDim_(crv, u=1, v=1):
     crv.shape.a.worldSpace >> arcLD.a.nurbsGeometry
     arcLD.a.uParamValue.set(u)
     arcLD.a.vParamValue.set(v)
+    arcLD.hide()
     return arcLD
 
 
@@ -192,6 +192,18 @@ def nonlinear_(targets, nodeType="twist"):
 
     dfm = mc.nonLinear(targets, n="dfm__#", type=nodeType)
     return [DepNode(dfm[0]), DagNode(dfm[1])]
+
+
+def choice_(attrTargets, selector):
+
+    from nl_modules.nodel.base.dep_node import DepNode
+
+    n = DepNode("cho__#", "choice")
+    for t in attrTargets:
+        t >> n.a.input
+    selector >> n.a.selector
+
+    return n.a.output
 
 
 def follicle_(inSurf, u=0, v=0):

@@ -16,7 +16,7 @@ class RibbonNode:
         tgt,
         pf="",
         rbJNum=5,
-        volMode=0,
+        volMode=None,
         scaleFix=None,
         forSpine=0,
         proxyP=None,
@@ -57,7 +57,9 @@ class RibbonNode:
         self.stt_twistJ = None
         self.end_twistJ = None
 
-        self.volPower = None
+        # self.volPower = None
+        self.autoVol = 0
+        self.volType = 0
         self.forSpine = forSpine
         self.scaleFix = scaleFix
         self.volMode = volMode
@@ -298,23 +300,33 @@ class RibbonNode:
         arcLD = ut.arcLenDim_(self.surf)
         d = arcLD.a.arcLength
         D = d.get()
-        volSquash = self.ribbonG.a.add("volSquash", min=0, dv=1)
+        self.autoVol = self.ribbonG.a.add("autoVol")
+        self.volType = self.ribbonG.a.add(
+            "volType", attrType="enum", enumName="whole:separate", k=0
+        )
         scaleFix = self.ribbonG.a.sy
 
-        # keys for volume squash
-        volGraph = self.ribbonG.a.add("volGraph", dv=0)
-        mc.setKeyframe(volGraph, t=0, v=0)
-        mc.setKeyframe(volGraph, t=(self.rbJNum - 1) / 2, v=1)
-        mc.setKeyframe(volGraph, t=self.rbJNum - 1, v=0)
-        mc.setAttr(volGraph, l=1)
+        volGraph1 = self.ribbonG.a.add("volGraph1", dv=0)
+        volValue = 0 if self.volMode == "upr" else 1
+        mc.setKeyframe(volGraph1, t=0, v=volValue)
+        mc.setKeyframe(volGraph1, t=self.rbJNum - 1, v=1 - volValue)
+        mc.setAttr(volGraph1, l=1)
+
+        volGraph2 = self.ribbonG.a.add("volGraph2", dv=0)
+        mc.setKeyframe(volGraph2, t=0, v=0)
+        mc.setKeyframe(volGraph2, t=(self.rbJNum - 1) / 2, v=1)
+        mc.setKeyframe(volGraph2, t=self.rbJNum - 1, v=0)
+        mc.setAttr(volGraph2, l=1)
+
+        choiceN = ut.choice_([volGraph1, volGraph2], self.volType)
 
         for i in range(self.rbJNum):
 
             fc = DagNode("fc__#", nodeType="frameCache")
-            volGraph >> fc.a.stream
+            choiceN >> fc.a.stream
             fc.a.varyTime.set(i)
 
-            ratio = (volSquash * D / (d / scaleFix)) ** fc.a.varying
+            ratio = (D / (d / scaleFix)) ** (fc.a.varying * self.autoVol)
             ratio >> self.rbJnt[i].a.sy
             ratio >> self.rbJnt[i].a.sz
 

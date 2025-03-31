@@ -178,7 +178,7 @@ class Spine(RigModule):
         arcLD = ut.arcLenDim_(self.rbSrf, u=3, v=1)
         d = arcLD.a.arcLength
         D = d.get()
-        volSquash = self.setting.a.add("volSquash", min=0, dv=1)
+        autoVol = self.setting.a.add("autoVol")
 
         # keys for volume squash
         volGraph = self.setting.a.add("volGraph", dv=0)
@@ -193,7 +193,7 @@ class Spine(RigModule):
             volGraph >> fc.a.stream
             fc.a.varyTime.set(i)
 
-            ratio = (volSquash * D / (d / scaleFix)) ** fc.a.varying
+            ratio = (D / (d / scaleFix)) ** (fc.a.varying * autoVol)
             ratio >> self.bindJ[i].a.sx
             ratio >> self.bindJ[i].a.sy
 
@@ -213,10 +213,7 @@ class Spine(RigModule):
             onList=self.ikCtl,
         )
 
-        self.ctrlOnOffByAttr(
-            self.setting.a.add("DEBUG", min=0, max=1, dv=1, k=0),
-            onList=[self.RIG_DATA],
-        )
+        self.ctrlOnOffByAttr(self.masterC.a.debug, onList=[self.RIG_DATA, self.rbSrf])
 
     def channel_setup(self):
         self.setting.a.showAttr()
