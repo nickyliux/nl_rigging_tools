@@ -13,7 +13,7 @@ from nl_modules.build.rig_module import RigModule
 
 PRX = 90
 CDY = Color.D_YELLOW
-CR = Color.RED
+CRD = Color.RED
 
 
 class SpineQd(RigModule):
@@ -47,24 +47,28 @@ class SpineQd(RigModule):
         self.genSk_module(["rt", "md", "tp"])
 
     def createCtl(self):
-        rSz = self.rigSize * 3
+        rSz = self.rigSize
         rID = self.rigID
-        scale = (rSz * 2, rSz * 2, rSz * 0.3)
-        self.cog_ctl = CurveNode("cog_ctl", pf=rID, shape="stick", scale=rSz, color=CDY)
+        scale = (rSz * 6, rSz * 6, rSz)
+        self.cog_ctl = CurveNode(
+            "cog_ctl", pf=rID, shape="cube", scale=rSz * 2, color=CDY
+        )
+        self.cog_ctl.cv_move(0, 80 * rSz, 0)
+
         self.tp_ctl = CurveNode(
             "tp_ctl", pf=rID, shape="circle_round", scale=scale, up="z", lineWidth=2
         )
         self.md_ctl = CurveNode(
-            "_md_ctl", pf=rID, shape="square", up="z", scale=rSz * 2
+            "_md_ctl", pf=rID, shape="square", up="z", scale=rSz * 5
         )
         self.rt_ctl = CurveNode(
             "rt_ctl", pf=rID, shape="circle_round", scale=scale, up="z", lineWidth=2
         )
         self.tangent_tp_ctl = CurveNode(
-            "tangent_tp_ctl", pf=rID, shape="stickS", scale=rSz / 2, color=CDY
+            "tangent_tp_ctl", pf=rID, shape="stickS", scale=rSz * 1.5, color=CDY
         )
         self.tangent_rt_ctl = CurveNode(
-            "tangent_rt_ctl", pf=rID, shape="stickS", scale=rSz / 2, color=CDY
+            "tangent_rt_ctl", pf=rID, shape="stickS", scale=rSz * 1.5, color=CDY
         )
         self.rigNode.setMsg(
             {
@@ -176,20 +180,17 @@ class SpineQd(RigModule):
                     w=baseAttach,
                     cstType="par",
                 )
+        self.rt_ctl.snapAlignTo(self.fkJnt[0], self.MD_GUIDE)
+        self.md_ctl.alignTo(self.MD_GUIDE)
+        self.tp_ctl.snapAlignTo(self.fkJnt[-1], self.MD_GUIDE)
 
-        self.rt_ctl.snapTo(self.fkJnt[0])
-        # self.rt_ctl.snapAlignTo(self.fkJnt[0], self.MD_GUIDE)
-        self.md_ctl.snapTo(self.MD_GUIDE)
-        # self.md_ctl.alignTo(self.MD_GUIDE)
-        self.tp_ctl.snapTo(self.fkJnt[-1])
-        # self.tp_ctl.snapAlignTo(self.fkJnt[-1], self.MD_GUIDE)
-
-        self.cog_ctl.snapTo(self.md_ctl)
+        self.cog_ctl.alignTo(self.md_ctl)
         (self.tp_ctl, self.md_ctl, self.rt_ctl) | self.cog_ctl | self.CTL_DATA
         self.cog_ctl.addOffsetGrp()
 
-        self.ctlJnts = self.createCtlJ(self.rt_ctl, self.md_ctl, self.tp_ctl, color=CR)
-
+        self.ctlJnts = self.createCtlJ(
+            [self.rt_ctl, self.md_ctl, self.tp_ctl], color=CRD
+        )
         # Orient control last fkJ by tip ctl
         self.fkJnt[-1].a.r.disconnect()
         self.tp_ctl.cstOri(self.fkJnt[-1], mo=1)

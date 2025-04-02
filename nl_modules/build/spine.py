@@ -152,7 +152,7 @@ class Spine(RigModule):
             )
             self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
-            ctlJnts = self.createCtlJ(self.rt_ctl, self.md_ctl, self.tp_ctl)
+            ctlJnts = self.createCtlJ([self.rt_ctl, self.md_ctl, self.tp_ctl])
             self.rbSrf.weightTo(ctlJnts, mi=3, dr=4)
             mc.hide(ctlJnts)
 

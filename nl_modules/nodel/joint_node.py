@@ -68,6 +68,12 @@ class JointNode(GroupNode):
         """Reset joint orient"""
         self.a.jointOrient.reset()
 
+    def resetXf(self):
+        """Reset joint orient"""
+        self.a.t.set(0, 0, 0)
+        self.a.r.set(0, 0, 0)
+        self.a.s.set(1, 1, 1)
+
     def addProxyMesh(
         self, size=1, aimDir=(1, 0, 0), skipEnd=0, p=None, vis=None, grp=None
     ):

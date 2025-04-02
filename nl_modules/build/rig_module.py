@@ -505,12 +505,15 @@ class RigModule(RigBase):
             patella_sdk(self.lwr, j)
             return j
 
-    def createCtlJ(self, ctl1, ctl2, ctl3, color=None):
+    def createCtlJ(self, ctls, color=None):
         rS = self.rigSize * 4
-        jnt1 = JointNode(ctl1 + "_ctlJ", r=rS, color=color, align=ctl1, p=ctl1)
-        jnt2 = JointNode(ctl2 + "_ctlJ", r=rS, color=color, align=ctl2, p=ctl2)
-        jnt3 = JointNode(ctl3 + "_ctlJ", r=rS, color=color, align=ctl3, p=ctl3)
-        return [jnt1, jnt2, jnt3]
+        result = []
+        for ctl in ctls:
+            jnt = JointNode(ctl, sf="_ctlJ", r=rS, color=color, p=ctl)
+            jnt.resetOrient()
+            jnt.resetXf()
+            result.append(jnt)
+        return result
 
     # def visByCondition(self, attr, autoVis, manualVis, targets=None, v=0):
     #     """Setup vis logic with auto / manual mode like Advanced Skeleton"""
