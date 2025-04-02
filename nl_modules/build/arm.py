@@ -336,13 +336,17 @@ class Arm(RigModule):
                 ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> bfj.a.t
                 ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
 
-            if i < total - 1:
+            if i == 0:
+                self.clavicle_fkc.cstPar(jnt, mo=1)
+                self.clavicle_fkc.cstPar(bfj, mo=1)
+                bfj.a.r >> jnt.a.r
+            elif i < total - 1:
                 bfj.a.t >> jnt.a.t
                 bfj.a.r >> jnt.a.r
             else:
                 self.ballRoll_loc.cstPar(jnt, mo=1)
 
-        self.clavicle_fkc.cstPar(self.joints_bf[0], mo=1)
+        # self.clavicle_fkc.cstPar(self.joints_bf[0], mo=1)
 
         # add roll & bank to palm_ikc
         self.handRollLogic(

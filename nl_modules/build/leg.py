@@ -414,7 +414,11 @@ class Leg(RigModule):
                 ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> bfj.a.t
                 ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
 
-            if i < total - 1:
+            if i == 0:
+                self.hip_fkc.cstPar(jnt, mo=1)
+                self.hip_fkc.cstPar(bfj, mo=1)
+                bfj.a.r >> jnt.a.r
+            elif i < total - 1:
                 bfj.a.t >> jnt.a.t
                 bfj.a.r >> jnt.a.r
             else:
@@ -425,7 +429,7 @@ class Leg(RigModule):
                 bfj.cstPar(ofg, mo=1)
                 self.ball_fkc.cstPar(jnt)
 
-        self.hip_fkc.cstPar(self.joints_bf[0], mo=1)
+        # self.hip_fkc.cstPar(self.joints_bf[0], mo=1)
 
         # Useful for fk ik switch popUp menu
         for ctl in self.fkCtl + self.ikCtl:

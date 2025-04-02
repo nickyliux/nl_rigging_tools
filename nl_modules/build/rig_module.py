@@ -85,7 +85,7 @@ class RigModule(RigBase):
                 or pf.startswith("lfArm")
                 or pf.startswith("rtArm")
             ) and key == "lwr":
-                jN.a.preferredAngleY.set(-10 * self.x_dir)
+                jN.a.preferredAngleY.set(-45 * self.x_dir)
 
             if lastJ:
                 jN | lastJ

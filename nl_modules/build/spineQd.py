@@ -66,10 +66,10 @@ class SpineQd(RigModule):
             "rt_ctl", pf=rID, shape="circle_round", scale=scale, up="z", lineWidth=2
         )
         self.tangent_tp_ctl = CurveNode(
-            "tangent_tp_ctl", pf=rID, shape="stickS", scale=rSz * 1.5, color=CDY
+            "tangent_tp_ctl", pf=rID, shape="stickS", scale=rSz * 2, color=CDY
         )
         self.tangent_rt_ctl = CurveNode(
-            "tangent_rt_ctl", pf=rID, shape="stickS", scale=rSz * 1.5, color=CDY
+            "tangent_rt_ctl", pf=rID, shape="stickS", scale=rSz * 2, color=CDY
         )
         self.rigNode.setMsg(
             {
