@@ -14,6 +14,7 @@ from nl_modules.build.rig_module import RigModule
 PRX = 90
 CDY = Color.D_YELLOW
 CRD = Color.RED
+CYL = Color.YELLOW
 
 
 class SpineQd(RigModule):
@@ -49,9 +50,9 @@ class SpineQd(RigModule):
     def createCtl(self):
         rSz = self.rigSize
         rID = self.rigID
-        scale = (rSz * 6, rSz * 6, rSz)
+        scale = (rSz * 5, rSz * 5, rSz)
         self.cog_ctl = CurveNode(
-            "cog_ctl", pf=rID, shape="cube", scale=rSz * 2, color=CDY
+            "cog_ctl", pf=rID, shape="cube", scale=rSz * 2, color=CYL
         )
         self.cog_ctl.cv_move(0, 80 * rSz, 0)
 
@@ -266,6 +267,13 @@ class SpineQd(RigModule):
             self.tangent_tp_ctl,
             self.tangent_rt_ctl,
         ]
+
+        for ctl in [self.rt_ctl, self.md_ctl, self.tp_ctl]:
+            ctl.a.addSep()
+            ctl.a.add("stretchy", proxy=self.cog_ctl.a.stretchy)
+            ctl.a.add("stretchyMin", proxy=self.cog_ctl.a.stretchyMin, k=0)
+            ctl.a.add("stretchyMax", proxy=self.cog_ctl.a.stretchyMax, k=0)
+
         # self.addPivOffset(self.tp_ctl, scale=self.rigSize, dnwd=0)
         # self.addPivOffset(self.rt_ctl, scale=self.rigSize, dnwd=0)
 

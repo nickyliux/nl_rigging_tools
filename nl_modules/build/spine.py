@@ -178,7 +178,10 @@ class Spine(RigModule):
         arcLD = ut.arcLenDim_(self.rbSrf, u=3, v=1)
         d = arcLD.a.arcLength
         D = d.get()
+
         autoVol = self.setting.a.add("autoVol")
+        self.tp_ctl.a.add("autoVol", proxy=autoVol)
+        self.rt_ctl.a.add("autoVol", proxy=autoVol)
 
         # keys for volume squash
         volGraph = self.setting.a.add("volGraph", dv=0)

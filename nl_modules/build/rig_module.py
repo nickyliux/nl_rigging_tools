@@ -11,7 +11,6 @@ from nl_modules.utils.color import Color
 
 BIND_JNT_SET = "bind_jnt_set"
 CPK = Color.PINK
-CYL = Color.YELLOW
 CLB = Color.L_BLUE
 
 
@@ -322,6 +321,10 @@ class RigModule(RigBase):
         rootCtl = self.masterC.parent.parent
         if rootCtl.a.sx.get() != 1:
             rootCtl.freezeXf(t=0, r=0, s=1)
+
+        self.masterC.a.showAttr(t=1, r=1)
+        self.masterC.parent.a.showAttr(t=1, r=1)
+
         self.moduleG.hide()
 
         jnt_list = self.genSkFrNames(jnt_names)
@@ -345,6 +348,8 @@ class RigModule(RigBase):
         for obj in mc.ls(tr=1):
             mc.setAttr(obj + ".ro", cb=1)
         self.moduleG.hide()
+        # self.masterC.a.showAttr(t=1, r=1)
+        # self.masterC.offset.a.showAttr(t=1, r=1)
         if self.PRX:
             showProxy = self.masterC.a.add("showProxy", min=0, max=1, k=0, dv=1)
             showProxy >> self.PRX.a.v

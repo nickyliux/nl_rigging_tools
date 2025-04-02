@@ -189,8 +189,8 @@ class IkNode(DagNode):
         crvInfo = DepNode(mc.arclen(crv, ch=1))
         d = crvInfo.a.arcLength
         ks = ctl.a.add("stretchy", min=0, max=1)
-        ksMin = ctl.a.add("stretchMin", k=0, min=0, max=1, dv=0)
-        ksMax = ctl.a.add("stretchMax", k=0, min=0, dv=2)
+        ksMin = ctl.a.add("stretchyMin", k=0, min=0, max=1, dv=0)
+        ksMax = ctl.a.add("stretchyMax", k=0, min=0, dv=2)
         ratio = (d / D - 1) * ks + 1
 
         for i in range(1, len(jl)):
@@ -214,9 +214,10 @@ class IkNode(DagNode):
         if self.scaleFix:
             d /= self.scaleFix
 
+        self.setting.a.addSep()
         ks = self.setting.a.add("stretchy", min=0, max=1, dv=on)
-        ksMin = self.setting.a.add("stretchMin", k=0, min=0, max=1, dv=0.9)
-        ksMax = self.setting.a.add("stretchMax", k=0, min=0, dv=1.1)
+        ksMin = self.setting.a.add("stretchyMin", k=0, min=0, max=1, dv=0.9)
+        ksMax = self.setting.a.add("stretchyMax", k=0, min=0, dv=1.1)
         ratio = (d / D - 1) * ks + 1
 
         for i in range(1, len(self.jnt)):
