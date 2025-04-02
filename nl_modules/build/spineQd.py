@@ -49,10 +49,17 @@ class SpineQd(RigModule):
     def createCtl(self):
         rSz = self.rigSize * 3
         rID = self.rigID
+        scale = (rSz * 2, rSz * 2, rSz * 0.3)
         self.cog_ctl = CurveNode("cog_ctl", pf=rID, shape="stick", scale=rSz, color=CDY)
-        self.tp_ctl = CurveNode("tp_ctl", pf=rID, shape="circleU", scale=rSz, up="-z")
-        self.md_ctl = CurveNode("_md_ctl", pf=rID, shape="square", up="z", scale=rSz)
-        self.rt_ctl = CurveNode("rt_ctl", pf=rID, shape="circleU", scale=rSz, up="-z")
+        self.tp_ctl = CurveNode(
+            "tp_ctl", pf=rID, shape="circle_round", scale=scale, up="z", lineWidth=2
+        )
+        self.md_ctl = CurveNode(
+            "_md_ctl", pf=rID, shape="square", up="z", scale=rSz * 2
+        )
+        self.rt_ctl = CurveNode(
+            "rt_ctl", pf=rID, shape="circle_round", scale=scale, up="z", lineWidth=2
+        )
         self.tangent_tp_ctl = CurveNode(
             "tangent_tp_ctl", pf=rID, shape="stickS", scale=rSz / 2, color=CDY
         )
@@ -171,8 +178,12 @@ class SpineQd(RigModule):
                 )
 
         self.rt_ctl.snapTo(self.fkJnt[0])
+        # self.rt_ctl.snapAlignTo(self.fkJnt[0], self.MD_GUIDE)
         self.md_ctl.snapTo(self.MD_GUIDE)
+        # self.md_ctl.alignTo(self.MD_GUIDE)
         self.tp_ctl.snapTo(self.fkJnt[-1])
+        # self.tp_ctl.snapAlignTo(self.fkJnt[-1], self.MD_GUIDE)
+
         self.cog_ctl.snapTo(self.md_ctl)
         (self.tp_ctl, self.md_ctl, self.rt_ctl) | self.cog_ctl | self.CTL_DATA
         self.cog_ctl.addOffsetGrp()

@@ -178,35 +178,13 @@
                 0.0
             ],
             "s":[
-                2.0072330906408404,
-                2.0072330906408404,
-                2.0072330906408404
+                2.5,
+                2.5,
+                2.5
             ],
             "t":[
                 0.0,
                 0.0,
-                0.0
-            ]
-        },
-        "vis_ctl":{
-            "bezierCtls":0,
-            "extraCtls":0,
-            "latticeCtls":0,
-            "primaryCtls":0,
-            "r":[
-                0.0,
-                0.0,
-                0.0
-            ],
-            "s":[
-                1.0,
-                1.0,
-                1.0
-            ],
-            "secondaryCtls":0,
-            "t":[
-                0.0,
-                20.0,
                 0.0
             ]
         }
@@ -264,6 +242,10 @@
             ]
         },
         "lfLeg0_master_guide":{
+            "autoBkWeight":0.5,
+            "autoDnWeight":0.10000000149011612,
+            "autoFwWeight":0.800000011920929,
+            "autoUpWeight":0.800000011920929,
             "kneeFix":false,
             "patellaBone":false,
             "r":[
@@ -1005,6 +987,10 @@
             ]
         },
         "lfLeg1_master_guide":{
+            "autoBkWeight":0.5,
+            "autoDnWeight":0.10000000149011612,
+            "autoFwWeight":0.800000011920929,
+            "autoUpWeight":0.800000011920929,
             "kneeFix":false,
             "patellaBone":false,
             "r":[
@@ -1852,6 +1838,10 @@
             ]
         },
         "rtLeg0_master_guide":{
+            "autoBkWeight":0.5,
+            "autoDnWeight":0.10000000149011612,
+            "autoFwWeight":0.800000011920929,
+            "autoUpWeight":0.800000011920929,
             "kneeFix":false,
             "patellaBone":false,
             "r":[
@@ -2593,6 +2583,10 @@
             ]
         },
         "rtLeg1_master_guide":{
+            "autoBkWeight":0.5,
+            "autoDnWeight":0.10000000149011612,
+            "autoFwWeight":0.800000011920929,
+            "autoUpWeight":0.800000011920929,
             "kneeFix":false,
             "patellaBone":false,
             "r":[

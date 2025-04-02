@@ -1,6 +1,6 @@
 {
-    "lfQHLeg0":{
-        "lfQHLeg0_fetlock_guide":{
+    "lfLegQd0":{
+        "lfLegQd0_fetlock_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -17,7 +17,7 @@
                 0.9797489830174015
             ]
         },
-        "lfQHLeg0_hip_guide":{
+        "lfLegQd0_hip_guide":{
             "r":[
                 -8.04143545774823,
                 -37.83424536645522,
@@ -34,7 +34,7 @@
                 12.50633856478309
             ]
         },
-        "lfQHLeg0_lwr_guide":{
+        "lfLegQd0_lwr_guide":{
             "r":[
                 -1.947669516768035e-13,
                 -40.09094228004272,
@@ -51,7 +51,7 @@
                 9.775263309365533
             ]
         },
-        "lfQHLeg0_master_guide":{
+        "lfLegQd0_master_guide":{
             "patellaBone":false,
             "r":[
                 0.0,
@@ -70,7 +70,7 @@
             ],
             "toeBones":false
         },
-        "lfQHLeg0_palm_guide":{
+        "lfLegQd0_palm_guide":{
             "r":[
                 1.8090822933965386e-14,
                 -4.435950116734376,
@@ -87,7 +87,7 @@
                 -3.8532513659574286
             ]
         },
-        "lfQHLeg0_palm_heelPos_guide":{
+        "lfLegQd0_palm_heelPos_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -104,7 +104,7 @@
                 -1.9405660694665698
             ]
         },
-        "lfQHLeg0_palm_inPos_guide":{
+        "lfLegQd0_palm_inPos_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -121,7 +121,7 @@
                 5.0
             ]
         },
-        "lfQHLeg0_palm_outPos_guide":{
+        "lfLegQd0_palm_outPos_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -138,7 +138,7 @@
                 5.000000000000007
             ]
         },
-        "lfQHLeg0_palm_toePos_guide":{
+        "lfLegQd0_palm_toePos_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -155,7 +155,7 @@
                 5.8184065633736
             ]
         },
-        "lfQHLeg0_pasternTip_guide":{
+        "lfLegQd0_pasternTip_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -172,7 +172,7 @@
                 -0.5875072903745266
             ]
         },
-        "lfQHLeg0_pastern_guide":{
+        "lfLegQd0_pastern_guide":{
             "r":[
                 -0.08620719041441176,
                 16.55037250047436,
@@ -189,7 +189,7 @@
                 0.9433629509807138
             ]
         },
-        "lfQHLeg0_patella_guide":{
+        "lfLegQd0_patella_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -206,7 +206,7 @@
                 -2.411880742601447
             ]
         },
-        "lfQHLeg0_plane_guide":{
+        "lfLegQd0_plane_guide":{
             "r":[
                 28.772278725313317,
                 82.87725785688193,
@@ -223,7 +223,7 @@
                 19.12873448336162
             ]
         },
-        "lfQHLeg0_pvc_guide":{
+        "lfLegQd0_pvc_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -240,7 +240,7 @@
                 -30.0
             ]
         },
-        "lfQHLeg0_toe00_1_guide":{
+        "lfLegQd0_toe00_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -257,7 +257,7 @@
                 -10.0
             ]
         },
-        "lfQHLeg0_toe00_2_guide":{
+        "lfLegQd0_toe00_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -274,7 +274,7 @@
                 -4.0
             ]
         },
-        "lfQHLeg0_toe00_3_guide":{
+        "lfLegQd0_toe00_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -291,7 +291,7 @@
                 0.0
             ]
         },
-        "lfQHLeg0_toe00_4_guide":{
+        "lfLegQd0_toe00_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -308,7 +308,7 @@
                 0.0
             ]
         },
-        "lfQHLeg0_toe01_1_guide":{
+        "lfLegQd0_toe01_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -325,7 +325,7 @@
                 -10.0
             ]
         },
-        "lfQHLeg0_toe01_2_guide":{
+        "lfLegQd0_toe01_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -342,7 +342,7 @@
                 -4.0
             ]
         },
-        "lfQHLeg0_toe01_3_guide":{
+        "lfLegQd0_toe01_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -359,7 +359,7 @@
                 0.0
             ]
         },
-        "lfQHLeg0_toe01_4_guide":{
+        "lfLegQd0_toe01_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -376,7 +376,7 @@
                 0.0
             ]
         },
-        "lfQHLeg0_toe01_5_guide":{
+        "lfLegQd0_toe01_5_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -393,7 +393,7 @@
                 0.0
             ]
         },
-        "lfQHLeg0_toe02_1_guide":{
+        "lfLegQd0_toe02_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -410,7 +410,7 @@
                 -10.0
             ]
         },
-        "lfQHLeg0_toe02_2_guide":{
+        "lfLegQd0_toe02_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -427,7 +427,7 @@
                 -4.0
             ]
         },
-        "lfQHLeg0_toe02_3_guide":{
+        "lfLegQd0_toe02_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -444,7 +444,7 @@
                 0.0
             ]
         },
-        "lfQHLeg0_toe02_4_guide":{
+        "lfLegQd0_toe02_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -461,7 +461,7 @@
                 0.0
             ]
         },
-        "lfQHLeg0_toe02_5_guide":{
+        "lfLegQd0_toe02_5_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -478,7 +478,7 @@
                 0.0
             ]
         },
-        "lfQHLeg0_toe03_1_guide":{
+        "lfLegQd0_toe03_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -495,7 +495,7 @@
                 -10.0
             ]
         },
-        "lfQHLeg0_toe03_2_guide":{
+        "lfLegQd0_toe03_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -512,7 +512,7 @@
                 -4.0
             ]
         },
-        "lfQHLeg0_toe03_3_guide":{
+        "lfLegQd0_toe03_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -529,7 +529,7 @@
                 0.0
             ]
         },
-        "lfQHLeg0_toe03_4_guide":{
+        "lfLegQd0_toe03_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -546,7 +546,7 @@
                 0.0
             ]
         },
-        "lfQHLeg0_toe03_5_guide":{
+        "lfLegQd0_toe03_5_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -563,7 +563,7 @@
                 0.0
             ]
         },
-        "lfQHLeg0_toe04_1_guide":{
+        "lfLegQd0_toe04_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -580,7 +580,7 @@
                 -10.0
             ]
         },
-        "lfQHLeg0_toe04_2_guide":{
+        "lfLegQd0_toe04_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -597,7 +597,7 @@
                 -4.0
             ]
         },
-        "lfQHLeg0_toe04_3_guide":{
+        "lfLegQd0_toe04_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -614,7 +614,7 @@
                 0.0
             ]
         },
-        "lfQHLeg0_toe04_4_guide":{
+        "lfLegQd0_toe04_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -631,7 +631,7 @@
                 0.0
             ]
         },
-        "lfQHLeg0_toe04_5_guide":{
+        "lfLegQd0_toe04_5_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -648,7 +648,7 @@
                 0.0
             ]
         },
-        "lfQHLeg0_toesRoot_guide":{
+        "lfLegQd0_toesRoot_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -665,7 +665,7 @@
                 0.0
             ]
         },
-        "lfQHLeg0_upr_guide":{
+        "lfLegQd0_upr_guide":{
             "r":[
                 -6.294809713434421,
                 7.577300007315329,
@@ -683,8 +683,8 @@
             ]
         }
     },
-    "lfQHLeg1":{
-        "lfQHLeg1_fetlock_guide":{
+    "lfLegQd1":{
+        "lfLegQd1_fetlock_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -701,7 +701,7 @@
                 1.5849845503234334
             ]
         },
-        "lfQHLeg1_hip_guide":{
+        "lfLegQd1_hip_guide":{
             "r":[
                 -169.05353478536074,
                 25.957476408935616,
@@ -718,7 +718,7 @@
                 29.794698840903514
             ]
         },
-        "lfQHLeg1_lwr_guide":{
+        "lfLegQd1_lwr_guide":{
             "r":[
                 -8.111003452613909e-14,
                 -22.006185198845014,
@@ -735,7 +735,7 @@
                 12.474896540483714
             ]
         },
-        "lfQHLeg1_master_guide":{
+        "lfLegQd1_master_guide":{
             "patellaBone":false,
             "r":[
                 0.0,
@@ -754,7 +754,7 @@
             ],
             "toeBones":false
         },
-        "lfQHLeg1_palm_guide":{
+        "lfLegQd1_palm_guide":{
             "r":[
                 9.701616961478673e-14,
                 -19.15096283038192,
@@ -771,7 +771,7 @@
                 -7.565969828704497
             ]
         },
-        "lfQHLeg1_palm_heelPos_guide":{
+        "lfLegQd1_palm_heelPos_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -788,7 +788,7 @@
                 -2.7961952475008545
             ]
         },
-        "lfQHLeg1_palm_inPos_guide":{
+        "lfLegQd1_palm_inPos_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -805,7 +805,7 @@
                 5.0
             ]
         },
-        "lfQHLeg1_palm_outPos_guide":{
+        "lfLegQd1_palm_outPos_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -822,7 +822,7 @@
                 -0.7213618156541344
             ]
         },
-        "lfQHLeg1_palm_toePos_guide":{
+        "lfLegQd1_palm_toePos_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -839,7 +839,7 @@
                 5.8712658228811705
             ]
         },
-        "lfQHLeg1_pasternTip_guide":{
+        "lfLegQd1_pasternTip_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -856,7 +856,7 @@
                 -0.6850849340918916
             ]
         },
-        "lfQHLeg1_pastern_guide":{
+        "lfLegQd1_pastern_guide":{
             "r":[
                 -0.007887959535463562,
                 13.330873500763765,
@@ -873,7 +873,7 @@
                 0.7146771199013712
             ]
         },
-        "lfQHLeg1_patella_guide":{
+        "lfLegQd1_patella_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -890,7 +890,7 @@
                 -2.411880742601447
             ]
         },
-        "lfQHLeg1_plane_guide":{
+        "lfLegQd1_plane_guide":{
             "r":[
                 -75.36995954790801,
                 -70.07287323848746,
@@ -907,7 +907,7 @@
                 -19.842792296419685
             ]
         },
-        "lfQHLeg1_pvc_guide":{
+        "lfLegQd1_pvc_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -924,7 +924,7 @@
                 -30.0
             ]
         },
-        "lfQHLeg1_toe00_1_guide":{
+        "lfLegQd1_toe00_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -941,7 +941,7 @@
                 -10.0
             ]
         },
-        "lfQHLeg1_toe00_2_guide":{
+        "lfLegQd1_toe00_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -958,7 +958,7 @@
                 -4.0
             ]
         },
-        "lfQHLeg1_toe00_3_guide":{
+        "lfLegQd1_toe00_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -975,7 +975,7 @@
                 0.0
             ]
         },
-        "lfQHLeg1_toe00_4_guide":{
+        "lfLegQd1_toe00_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -992,7 +992,7 @@
                 0.0
             ]
         },
-        "lfQHLeg1_toe01_1_guide":{
+        "lfLegQd1_toe01_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1009,7 +1009,7 @@
                 -10.0
             ]
         },
-        "lfQHLeg1_toe01_2_guide":{
+        "lfLegQd1_toe01_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1026,7 +1026,7 @@
                 -4.0
             ]
         },
-        "lfQHLeg1_toe01_3_guide":{
+        "lfLegQd1_toe01_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -1043,7 +1043,7 @@
                 0.0
             ]
         },
-        "lfQHLeg1_toe01_4_guide":{
+        "lfLegQd1_toe01_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -1060,7 +1060,7 @@
                 0.0
             ]
         },
-        "lfQHLeg1_toe01_5_guide":{
+        "lfLegQd1_toe01_5_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1077,7 +1077,7 @@
                 0.0
             ]
         },
-        "lfQHLeg1_toe02_1_guide":{
+        "lfLegQd1_toe02_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1094,7 +1094,7 @@
                 -10.0
             ]
         },
-        "lfQHLeg1_toe02_2_guide":{
+        "lfLegQd1_toe02_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1111,7 +1111,7 @@
                 -4.0
             ]
         },
-        "lfQHLeg1_toe02_3_guide":{
+        "lfLegQd1_toe02_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -1128,7 +1128,7 @@
                 0.0
             ]
         },
-        "lfQHLeg1_toe02_4_guide":{
+        "lfLegQd1_toe02_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -1145,7 +1145,7 @@
                 0.0
             ]
         },
-        "lfQHLeg1_toe02_5_guide":{
+        "lfLegQd1_toe02_5_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1162,7 +1162,7 @@
                 0.0
             ]
         },
-        "lfQHLeg1_toe03_1_guide":{
+        "lfLegQd1_toe03_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1179,7 +1179,7 @@
                 -10.0
             ]
         },
-        "lfQHLeg1_toe03_2_guide":{
+        "lfLegQd1_toe03_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1196,7 +1196,7 @@
                 -4.0
             ]
         },
-        "lfQHLeg1_toe03_3_guide":{
+        "lfLegQd1_toe03_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -1213,7 +1213,7 @@
                 0.0
             ]
         },
-        "lfQHLeg1_toe03_4_guide":{
+        "lfLegQd1_toe03_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -1230,7 +1230,7 @@
                 0.0
             ]
         },
-        "lfQHLeg1_toe03_5_guide":{
+        "lfLegQd1_toe03_5_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1247,7 +1247,7 @@
                 0.0
             ]
         },
-        "lfQHLeg1_toe04_1_guide":{
+        "lfLegQd1_toe04_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1264,7 +1264,7 @@
                 -10.0
             ]
         },
-        "lfQHLeg1_toe04_2_guide":{
+        "lfLegQd1_toe04_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1281,7 +1281,7 @@
                 -4.0
             ]
         },
-        "lfQHLeg1_toe04_3_guide":{
+        "lfLegQd1_toe04_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -1298,7 +1298,7 @@
                 0.0
             ]
         },
-        "lfQHLeg1_toe04_4_guide":{
+        "lfLegQd1_toe04_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -1315,7 +1315,7 @@
                 0.0
             ]
         },
-        "lfQHLeg1_toe04_5_guide":{
+        "lfLegQd1_toe04_5_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1332,7 +1332,7 @@
                 0.0
             ]
         },
-        "lfQHLeg1_toesRoot_guide":{
+        "lfLegQd1_toesRoot_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1349,7 +1349,7 @@
                 0.0
             ]
         },
-        "lfQHLeg1_upr_guide":{
+        "lfLegQd1_upr_guide":{
             "r":[
                 -174.27704735602035,
                 -30.313678111097378,
@@ -1522,8 +1522,8 @@
             ]
         }
     },
-    "qNeckSrf0":{
-        "qNeckSrf0_ed_guide":{
+    "neckQd0":{
+        "neckQd0_ed_guide":{
             "r":[
                 4.727874569290051,
                 0.0,
@@ -1540,7 +1540,7 @@
                 -58.52441371037898
             ]
         },
-        "qNeckSrf0_line_guide":{
+        "neckQd0_line_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1557,7 +1557,7 @@
                 0.0
             ]
         },
-        "qNeckSrf0_master_guide":{
+        "neckQd0_master_guide":{
             "bindJntNum":0,
             "fkCtlNum":3,
             "r":[
@@ -1576,7 +1576,7 @@
                 45.408558450974155
             ]
         },
-        "qNeckSrf0_md_guide":{
+        "neckQd0_md_guide":{
             "r":[
                 -49.62989117844116,
                 0.0,
@@ -1593,7 +1593,7 @@
                 -31.48631546485223
             ]
         },
-        "qNeckSrf0_st_guide":{
+        "neckQd0_st_guide":{
             "r":[
                 0.5603362618403114,
                 0.0,
@@ -1611,8 +1611,8 @@
             ]
         }
     },
-    "qSpineSrf0":{
-        "qSpineSrf0_ed_guide":{
+    "spineQd0":{
+        "spineQd0_ed_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1629,7 +1629,7 @@
                 -1.4210854715202004e-14
             ]
         },
-        "qSpineSrf0_line_guide":{
+        "spineQd0_line_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1646,7 +1646,7 @@
                 0.0
             ]
         },
-        "qSpineSrf0_master_guide":{
+        "spineQd0_master_guide":{
             "bindJntNum":0,
             "fkJntNum":6,
             "r":[
@@ -1665,7 +1665,7 @@
                 10.479245173731407
             ]
         },
-        "qSpineSrf0_md_guide":{
+        "spineQd0_md_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1682,7 +1682,7 @@
                 -2.1168579324018158e-14
             ]
         },
-        "qSpineSrf0_st_guide":{
+        "spineQd0_st_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1700,8 +1700,8 @@
             ]
         }
     },
-    "rtQHLeg0":{
-        "rtQHLeg0_fetlock_guide":{
+    "rtLegQd0":{
+        "rtLegQd0_fetlock_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1718,7 +1718,7 @@
                 -0.9797489830174015
             ]
         },
-        "rtQHLeg0_hip_guide":{
+        "rtLegQd0_hip_guide":{
             "r":[
                 -8.041435457748277,
                 -37.83424536645521,
@@ -1735,7 +1735,7 @@
                 -12.50633856478309
             ]
         },
-        "rtQHLeg0_lwr_guide":{
+        "rtLegQd0_lwr_guide":{
             "r":[
                 -2.1577123077920486e-13,
                 -40.0909422800428,
@@ -1752,7 +1752,7 @@
                 -9.775263309365533
             ]
         },
-        "rtQHLeg0_master_guide":{
+        "rtLegQd0_master_guide":{
             "patellaBone":false,
             "r":[
                 0.0,
@@ -1771,7 +1771,7 @@
             ],
             "toeBones":false
         },
-        "rtQHLeg0_palm_guide":{
+        "rtLegQd0_palm_guide":{
             "r":[
                 2.2481064482794814e-14,
                 -4.43595011673454,
@@ -1788,7 +1788,7 @@
                 3.8532513659574286
             ]
         },
-        "rtQHLeg0_palm_heelPos_guide":{
+        "rtLegQd0_palm_heelPos_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1805,7 +1805,7 @@
                 -1.9405660694665698
             ]
         },
-        "rtQHLeg0_palm_inPos_guide":{
+        "rtLegQd0_palm_inPos_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1822,7 +1822,7 @@
                 5.0
             ]
         },
-        "rtQHLeg0_palm_outPos_guide":{
+        "rtLegQd0_palm_outPos_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1839,7 +1839,7 @@
                 5.000000000000007
             ]
         },
-        "rtQHLeg0_palm_toePos_guide":{
+        "rtLegQd0_palm_toePos_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1856,7 +1856,7 @@
                 5.8184065633736
             ]
         },
-        "rtQHLeg0_pasternTip_guide":{
+        "rtLegQd0_pasternTip_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1873,7 +1873,7 @@
                 0.5875072903745266
             ]
         },
-        "rtQHLeg0_pastern_guide":{
+        "rtLegQd0_pastern_guide":{
             "r":[
                 -0.0862071904198434,
                 16.550372500474356,
@@ -1890,7 +1890,7 @@
                 -0.9433629509807138
             ]
         },
-        "rtQHLeg0_patella_guide":{
+        "rtLegQd0_patella_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1907,7 +1907,7 @@
                 2.411880742601447
             ]
         },
-        "rtQHLeg0_plane_guide":{
+        "rtLegQd0_plane_guide":{
             "r":[
                 28.77227872531335,
                 -82.87725785688193,
@@ -1924,7 +1924,7 @@
                 19.12873448336162
             ]
         },
-        "rtQHLeg0_pvc_guide":{
+        "rtLegQd0_pvc_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1941,7 +1941,7 @@
                 -30.0
             ]
         },
-        "rtQHLeg0_toe00_1_guide":{
+        "rtLegQd0_toe00_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1958,7 +1958,7 @@
                 10.0
             ]
         },
-        "rtQHLeg0_toe00_2_guide":{
+        "rtLegQd0_toe00_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -1975,7 +1975,7 @@
                 4.0
             ]
         },
-        "rtQHLeg0_toe00_3_guide":{
+        "rtLegQd0_toe00_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -1992,7 +1992,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg0_toe00_4_guide":{
+        "rtLegQd0_toe00_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -2009,7 +2009,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg0_toe01_1_guide":{
+        "rtLegQd0_toe01_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2026,7 +2026,7 @@
                 10.0
             ]
         },
-        "rtQHLeg0_toe01_2_guide":{
+        "rtLegQd0_toe01_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2043,7 +2043,7 @@
                 4.0
             ]
         },
-        "rtQHLeg0_toe01_3_guide":{
+        "rtLegQd0_toe01_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -2060,7 +2060,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg0_toe01_4_guide":{
+        "rtLegQd0_toe01_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -2077,7 +2077,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg0_toe01_5_guide":{
+        "rtLegQd0_toe01_5_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2094,7 +2094,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg0_toe02_1_guide":{
+        "rtLegQd0_toe02_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2111,7 +2111,7 @@
                 10.0
             ]
         },
-        "rtQHLeg0_toe02_2_guide":{
+        "rtLegQd0_toe02_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2128,7 +2128,7 @@
                 4.0
             ]
         },
-        "rtQHLeg0_toe02_3_guide":{
+        "rtLegQd0_toe02_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -2145,7 +2145,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg0_toe02_4_guide":{
+        "rtLegQd0_toe02_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -2162,7 +2162,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg0_toe02_5_guide":{
+        "rtLegQd0_toe02_5_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2179,7 +2179,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg0_toe03_1_guide":{
+        "rtLegQd0_toe03_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2196,7 +2196,7 @@
                 10.0
             ]
         },
-        "rtQHLeg0_toe03_2_guide":{
+        "rtLegQd0_toe03_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2213,7 +2213,7 @@
                 4.0
             ]
         },
-        "rtQHLeg0_toe03_3_guide":{
+        "rtLegQd0_toe03_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -2230,7 +2230,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg0_toe03_4_guide":{
+        "rtLegQd0_toe03_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -2247,7 +2247,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg0_toe03_5_guide":{
+        "rtLegQd0_toe03_5_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2264,7 +2264,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg0_toe04_1_guide":{
+        "rtLegQd0_toe04_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2281,7 +2281,7 @@
                 10.0
             ]
         },
-        "rtQHLeg0_toe04_2_guide":{
+        "rtLegQd0_toe04_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2298,7 +2298,7 @@
                 4.0
             ]
         },
-        "rtQHLeg0_toe04_3_guide":{
+        "rtLegQd0_toe04_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -2315,7 +2315,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg0_toe04_4_guide":{
+        "rtLegQd0_toe04_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -2332,7 +2332,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg0_toe04_5_guide":{
+        "rtLegQd0_toe04_5_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2349,7 +2349,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg0_toesRoot_guide":{
+        "rtLegQd0_toesRoot_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2366,7 +2366,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg0_upr_guide":{
+        "rtLegQd0_upr_guide":{
             "r":[
                 -6.294809713434481,
                 7.577300007315315,
@@ -2384,8 +2384,8 @@
             ]
         }
     },
-    "rtQHLeg1":{
-        "rtQHLeg1_fetlock_guide":{
+    "rtLegQd1":{
+        "rtLegQd1_fetlock_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2402,7 +2402,7 @@
                 -1.5849845503234334
             ]
         },
-        "rtQHLeg1_hip_guide":{
+        "rtLegQd1_hip_guide":{
             "r":[
                 -169.0535347853607,
                 25.957476408935616,
@@ -2419,7 +2419,7 @@
                 -29.794698840903514
             ]
         },
-        "rtQHLeg1_lwr_guide":{
+        "rtLegQd1_lwr_guide":{
             "r":[
                 -9.074687031142314e-14,
                 -22.00618519884505,
@@ -2436,7 +2436,7 @@
                 -12.474896540483714
             ]
         },
-        "rtQHLeg1_master_guide":{
+        "rtLegQd1_master_guide":{
             "patellaBone":false,
             "r":[
                 0.0,
@@ -2455,7 +2455,7 @@
             ],
             "toeBones":false
         },
-        "rtQHLeg1_palm_guide":{
+        "rtLegQd1_palm_guide":{
             "r":[
                 1.1055330956103665e-13,
                 -19.150962830382046,
@@ -2472,7 +2472,7 @@
                 7.565969828704497
             ]
         },
-        "rtQHLeg1_palm_heelPos_guide":{
+        "rtLegQd1_palm_heelPos_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2489,7 +2489,7 @@
                 -2.7961952475008545
             ]
         },
-        "rtQHLeg1_palm_inPos_guide":{
+        "rtLegQd1_palm_inPos_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2506,7 +2506,7 @@
                 5.0
             ]
         },
-        "rtQHLeg1_palm_outPos_guide":{
+        "rtLegQd1_palm_outPos_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2523,7 +2523,7 @@
                 -0.7213618156541344
             ]
         },
-        "rtQHLeg1_palm_toePos_guide":{
+        "rtLegQd1_palm_toePos_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2540,7 +2540,7 @@
                 5.8712658228811705
             ]
         },
-        "rtQHLeg1_pasternTip_guide":{
+        "rtLegQd1_pasternTip_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2557,7 +2557,7 @@
                 0.6850849340918916
             ]
         },
-        "rtQHLeg1_pastern_guide":{
+        "rtLegQd1_pastern_guide":{
             "r":[
                 -0.00788795953546355,
                 13.330873500763714,
@@ -2574,7 +2574,7 @@
                 -0.7146771199013712
             ]
         },
-        "rtQHLeg1_patella_guide":{
+        "rtLegQd1_patella_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2591,7 +2591,7 @@
                 2.411880742601447
             ]
         },
-        "rtQHLeg1_plane_guide":{
+        "rtLegQd1_plane_guide":{
             "r":[
                 -75.36995954790801,
                 70.07287323848747,
@@ -2608,7 +2608,7 @@
                 -19.842792296419685
             ]
         },
-        "rtQHLeg1_pvc_guide":{
+        "rtLegQd1_pvc_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2625,7 +2625,7 @@
                 -30.0
             ]
         },
-        "rtQHLeg1_toe00_1_guide":{
+        "rtLegQd1_toe00_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2642,7 +2642,7 @@
                 10.0
             ]
         },
-        "rtQHLeg1_toe00_2_guide":{
+        "rtLegQd1_toe00_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2659,7 +2659,7 @@
                 4.0
             ]
         },
-        "rtQHLeg1_toe00_3_guide":{
+        "rtLegQd1_toe00_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -2676,7 +2676,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg1_toe00_4_guide":{
+        "rtLegQd1_toe00_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -2693,7 +2693,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg1_toe01_1_guide":{
+        "rtLegQd1_toe01_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2710,7 +2710,7 @@
                 10.0
             ]
         },
-        "rtQHLeg1_toe01_2_guide":{
+        "rtLegQd1_toe01_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2727,7 +2727,7 @@
                 4.0
             ]
         },
-        "rtQHLeg1_toe01_3_guide":{
+        "rtLegQd1_toe01_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -2744,7 +2744,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg1_toe01_4_guide":{
+        "rtLegQd1_toe01_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -2761,7 +2761,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg1_toe01_5_guide":{
+        "rtLegQd1_toe01_5_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2778,7 +2778,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg1_toe02_1_guide":{
+        "rtLegQd1_toe02_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2795,7 +2795,7 @@
                 10.0
             ]
         },
-        "rtQHLeg1_toe02_2_guide":{
+        "rtLegQd1_toe02_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2812,7 +2812,7 @@
                 4.0
             ]
         },
-        "rtQHLeg1_toe02_3_guide":{
+        "rtLegQd1_toe02_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -2829,7 +2829,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg1_toe02_4_guide":{
+        "rtLegQd1_toe02_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -2846,7 +2846,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg1_toe02_5_guide":{
+        "rtLegQd1_toe02_5_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2863,7 +2863,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg1_toe03_1_guide":{
+        "rtLegQd1_toe03_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2880,7 +2880,7 @@
                 10.0
             ]
         },
-        "rtQHLeg1_toe03_2_guide":{
+        "rtLegQd1_toe03_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2897,7 +2897,7 @@
                 4.0
             ]
         },
-        "rtQHLeg1_toe03_3_guide":{
+        "rtLegQd1_toe03_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -2914,7 +2914,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg1_toe03_4_guide":{
+        "rtLegQd1_toe03_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -2931,7 +2931,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg1_toe03_5_guide":{
+        "rtLegQd1_toe03_5_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2948,7 +2948,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg1_toe04_1_guide":{
+        "rtLegQd1_toe04_1_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2965,7 +2965,7 @@
                 10.0
             ]
         },
-        "rtQHLeg1_toe04_2_guide":{
+        "rtLegQd1_toe04_2_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -2982,7 +2982,7 @@
                 4.0
             ]
         },
-        "rtQHLeg1_toe04_3_guide":{
+        "rtLegQd1_toe04_3_guide":{
             "r":[
                 0.0,
                 -70.0,
@@ -2999,7 +2999,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg1_toe04_4_guide":{
+        "rtLegQd1_toe04_4_guide":{
             "r":[
                 0.0,
                 70.0,
@@ -3016,7 +3016,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg1_toe04_5_guide":{
+        "rtLegQd1_toe04_5_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -3033,7 +3033,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg1_toesRoot_guide":{
+        "rtLegQd1_toesRoot_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -3050,7 +3050,7 @@
                 -0.0
             ]
         },
-        "rtQHLeg1_upr_guide":{
+        "rtLegQd1_upr_guide":{
             "r":[
                 -174.2770473560203,
                 -30.313678111097385,

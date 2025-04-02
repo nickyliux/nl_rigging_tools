@@ -13,6 +13,7 @@ from nl_modules.build.rig_module import RigModule
 PRX = 25
 CYL = Color.YELLOW
 CRD = Color.RED
+CPK = Color.PINK
 
 
 class Head(RigModule):
@@ -57,7 +58,9 @@ class Head(RigModule):
         self.head_fkc = CurveNode(
             "head", pf=rID, sf="_fkc", shape="circle_round", scale=rSz * 4, color=CYL
         )
-        self.jaw_fkc = CurveNode("jaw", pf=rID, sf="_fkc", up="z", scale=rSz, color=CRD)
+        self.jaw_fkc = CurveNode(
+            "jaw", pf=rID, sf="_fkc", shape="roll", scale=rSz * 2, color=CPK
+        )
 
         self.rigNode.setMsg(
             {
@@ -74,10 +77,9 @@ class Head(RigModule):
         self.head_fkc.addOffsetGrp()
         self.head_fkc.cstPar(self.head, mo=1)
         self.head_fkc.cv_moveTo(self.headEnd.o.pos)
-        self.jaw_fkc.alignTo(self.jaw)
+        self.jaw_fkc.snapTo(self.jaw, p=self.head_fkc)
         self.jaw_fkc.addOffsetGrp()
         self.jaw_fkc.cstPar(self.jaw, mo=1)
-        self.jaw_fkc.offset | self.head_fkc
         self.jaw_fkc.cv_moveTo(self.jawEnd.o.pos)
         self.isolateAlign(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC], dv=1)
 
