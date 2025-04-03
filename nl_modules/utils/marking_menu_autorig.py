@@ -32,14 +32,12 @@ class MarkingMenuAutorig:
         self.reload_marking_menu()
 
     def setupMenu(self, menu, parent):
-        # pose_MI = mc.menuItem(p=menu, l="Pose", rp="SE", subMenu=1)
-        mc.menuItem(p=menu, l="Mirror Pose", rp="SE", c=guide.mirrorPose)
 
         # component_MI = mc.menuItem(p=menu, l="Build / Guide", rp="N", subMenu=1)
         mc.menuItem(p=menu, l="Build", rp="N", c=build.buildSelOrAll)
         mc.menuItem(p=menu, l="Unbuild", rp="NW", c=build.unbuildSelOrAll)
         mc.menuItem(p=menu, l="Mirror Guide", rp="NE", c=guide.mirrorGuideSelOrAll)
-        mc.menuItem(p=menu, l="Delete Guide", rp="SW", c=build.deleteSelOrAll)
+        mc.menuItem(p=menu, l="Delete Guide", rp="SE", c=build.deleteSelOrAll)
 
         # shape_MI = mc.menuItem(p=menu, l="Shape", rp="NE", subMenu=1)
         mc.menuItem(p=menu, l="Copy Guide", rp="E", c=self.copyGuideSel)
@@ -89,7 +87,9 @@ class MarkingMenuAutorig:
                                 rp="S",
                                 c=partial(self.setFkIk, fkIkAttr, 1, rN),
                             )
-        mc.menuItem(p=menu, l="Select Ctls", c=self.selectCtlSelOrAll)
+        # pose_MI = mc.menuItem(p=menu, l="Pose", rp="SE", subMenu=1)
+        mc.menuItem(p=menu, l="Mirror Pose", c=guide.mirrorPose)
+        mc.menuItem(p=menu, l="Select Ctls", rp="SW", c=self.selectCtlSelOrAll)
         mc.menuItem(p=menu, l="Reload Menu", c=self.reload_marking_menu)
 
     def copyGuideSel(*args):

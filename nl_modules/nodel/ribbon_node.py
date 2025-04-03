@@ -140,6 +140,10 @@ class RibbonNode:
         self.mid_loc.a.tx.set(Dx / 2)
         self.mid_loc.addOffsetGrp(count=2)
 
+        # self.stt_loc.showLocalAxis(1)
+        # self.end_loc.showLocalAxis(1)
+        # self.mid_loc.showLocalAxis(1)
+
         # rbJnt = self.rbJnt
         # if self.seg == 5:
         #     ofsList = [j.offset for j in rbJnt]
@@ -348,7 +352,7 @@ class RibbonNode:
     def post_setup(self):
         self.proxy_setup()
         self.ro_setup()
-        self.vis_setup()
+        # self.vis_setup()
 
 
 if __name__ == "__main__":

@@ -344,3 +344,8 @@ class GroupNode(DagNode):
         """Set line width"""
         if self.shape:
             self.shape.a.lineWidth.set(w)
+
+    def showLocalAxis(self, state):
+        attr = self.a["displayLocalAxis"]
+        if attr.exists():
+            attr.set(state)

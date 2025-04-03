@@ -413,8 +413,9 @@ class Arm(RigModule):
         md_bend = CurveNode("md_bend", pf=rID, align=self.lwr, addOfs=1, p=grp)
 
         self.all_bend = [up_bend, lw_bend, md_bend]
-        for b in self.all_bend:
-            b(shape="square", up="x", color=CDY, scale=self.rigSize)
+        for ctl in self.all_bend:
+            ctl(shape="square", up="x", color=CDY, scale=self.rigSize)
+            # ctl.a.rotateOrder.set(1)  # yzx
 
         upLoc.cstPar(up_bend.offset, mo=1)
         lwLoc.cstPar(lw_bend.offset, mo=1)

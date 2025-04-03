@@ -448,42 +448,51 @@ class Leg(RigModule):
         """
         rID = self.rigID
         rSz = self.rigSize
-
         logging.info(rID)
-        num = self.RBN_JNT_NUM
-        scale = self.masterC.a.globalScale
-        data = self.RIG_DATA
-        g = self.PRX_GRP
 
-        pf = rID + "_up_"
         ribbonUp = RibbonNode(
-            self.upr, pf=pf, rbJNum=num, volMode="upr", scaleFix=scale, p=data, proxyP=g
+            self.upr,
+            pf=rID + "_up_",
+            rbJNum=self.RBN_JNT_NUM,
+            volMode="upr",
+            scaleFix=self.masterC.a.globalScale,
+            p=self.RIG_DATA,
+            proxyP=self.PRX_GRP,
         )
-        pf = rID + "_lw_"
         ribbonLw = RibbonNode(
-            self.lwr, pf=pf, rbJNum=num, volMode="lwr", scaleFix=scale, p=data, proxyP=g
+            self.lwr,
+            pf=rID + "_lw_",
+            rbJNum=self.RBN_JNT_NUM,
+            volMode="lwr",
+            scaleFix=self.masterC.a.globalScale,
+            p=self.RIG_DATA,
+            proxyP=self.PRX_GRP,
         )
+        # --------------------------------
         # Upper Ribbon
         # --------------------------------
         self.upr.cstPoi(ribbonUp.stt_loc)
         self.hip.cstOri(ribbonUp.stt_loc, mo=1)
+        # --------------------------------
         # Lower Ribbon
         # --------------------------------
         self.palm.cstPar(ribbonLw.end_loc, mo=1)
+        # --------------------------------
         # Ribbon Controls
         # --------------------------------
 
         # Bend Ctl Setup
         upLoc = ribbonUp.mid_loc
         lwLoc = ribbonLw.mid_loc
-        cData = self.CTL_DATA
-        up_bend = CurveNode("up_bend", pf=rID, align=upLoc, addOfs=1, p=cData)
-        lw_bend = CurveNode("lw_bend", pf=rID, align=lwLoc, addOfs=1, p=cData)
-        md_bend = CurveNode("md_bend", pf=rID, align=self.lwr, addOfs=1, p=cData)
+        grp = self.CTL_DATA
+        up_bend = CurveNode("up_bend", pf=rID, align=upLoc, addOfs=1, p=grp)
+        lw_bend = CurveNode("lw_bend", pf=rID, align=lwLoc, addOfs=1, p=grp)
+        md_bend = CurveNode("md_bend", pf=rID, align=self.lwr, addOfs=1, p=grp)
 
         self.all_bend = [up_bend, lw_bend, md_bend]
-        for b in self.all_bend:
-            b(shape="square", up="x", color=CDY, scale=rSz)
+        for ctl in self.all_bend:
+            ctl(shape="square", up="x", color=CDY, scale=rSz)
+            # ctl.a.rotateOrder.set(1)  # yzx
 
         upLoc.cstPar(up_bend.offset, mo=1)
         lwLoc.cstPar(lw_bend.offset, mo=1)
@@ -492,7 +501,6 @@ class Leg(RigModule):
 
         self.lwr.cstPar(md_bend.offset, mo=1)
         md_bend.cstParSca(ribbonUp.end_loc, mo=1)
-
         stt_ofs = ribbonLw.stt_loc.addOffsetGrp(count=2)
         md_bend.cstParSca(stt_ofs[0], mo=1)
 
@@ -587,9 +595,14 @@ class Leg(RigModule):
                 onList=self.all_bend,
             )
 
+        # DEBUG
         self.ctrlOnOffByAttr(
             self.masterC.a.debug,
-            onList=self.all_ikHs + self.joints_fk + self.joints_ik + self.joints_bf,
+            onList=self.all_ikHs
+            + self.joints_fk
+            + self.joints_ik
+            + self.joints_bf
+            + [self.RIG_DATA],
         )
 
     def channel_setup(self):
