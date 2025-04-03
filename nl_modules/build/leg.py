@@ -577,18 +577,17 @@ class Leg(RigModule):
         # visGrp[1] >> self.SKL_DATA.a.v
         # visGrp[1] >> self.PRX_GRP.a.v
 
+        self.pvc.a["fkPin"] >> self.pin_fkc.a.v
+
         self.ctrlOnOffByAttr(
             self.setting.a["fkIkBlend"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             offList=self.fkCtl[1:-1],
         )
-
-        self.pvc.a["fkPin"] >> self.pin_fkc.a.v
-
         self.ctrlOnOffByAttr(
-            self.setting.a.add("showExtraCtl", min=0, max=1, k=0), onList=self.subCtls
+            self.ikc.a.add("extraCtl", dv=1, min=0, max=1, k=0),
+            onList=self.subCtls,
         )
-
         if self.RBN_BONES:
             self.ctrlOnOffByAttr(
                 self.setting.a.add("showRibbonCtl", min=0, max=1, dv=1, k=0),

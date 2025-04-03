@@ -111,7 +111,8 @@ class LegQd(RigModule):
             pf=rID,
             scale=xDr * rSz / 2,
         )
-        self.ikc = CurveNode("ikc", pf=rID, shape="foot_quad", color=CDY)
+        self.ikc = CurveNode("ikc", pf=rID, shape="cube", color=CDY)
+        # self.ikc = CurveNode("ikc", pf=rID, shape="foot_quad", color=CDY)
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz * 0.8)
         self.rigNode.setMsg(
             {

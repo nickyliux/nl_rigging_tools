@@ -510,11 +510,10 @@ class RigModule(RigBase):
             patella_sdk(self.lwr, j)
             return j
 
-    def createCtlJ(self, ctls, color=None):
-        rS = self.rigSize * 4
+    def createCtlJ(self, ctls, r=1, color=None):
         result = []
         for ctl in ctls:
-            jnt = JointNode(ctl, sf="_ctlJ", r=rS, color=color, p=ctl)
+            jnt = JointNode(ctl, sf="_ctlJ", r=r, color=color, p=ctl)
             jnt.resetOrient()
             jnt.resetXf()
             result.append(jnt)

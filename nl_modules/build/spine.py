@@ -34,6 +34,7 @@ class Spine(RigModule):
         self.ikCtl = None
         self.fkCtl = None
         self.setting = None
+        self.ctlJnts = None
 
         self.bindJ = []
         self.fkJnt = []
@@ -152,9 +153,10 @@ class Spine(RigModule):
             )
             self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
-            ctlJnts = self.createCtlJ([self.rt_ctl, self.md_ctl, self.tp_ctl])
-            self.rbSrf.weightTo(ctlJnts, mi=3, dr=4)
-            mc.hide(ctlJnts)
+            self.ctlJnts = self.createCtlJ(
+                [self.rt_ctl, self.md_ctl, self.tp_ctl], r=rSz * 20, color=CRD
+            )
+            self.rbSrf.weightTo(self.ctlJnts, mi=3, dr=4)
 
             self.bindJ = SurfNode.buildRbJnt(
                 rID,
@@ -215,8 +217,10 @@ class Spine(RigModule):
             self.setting.a.add("ikVis", min=0, max=1, dv=1, k=0),
             onList=self.ikCtl,
         )
-
-        self.ctrlOnOffByAttr(self.masterC.a.debug, onList=[self.RIG_DATA, self.rbSrf])
+        self.ctrlOnOffByAttr(
+            self.masterC.a.debug,
+            onList=[self.RIG_DATA, self.rbSrf] + self.ctlJnts,
+        )
 
     def channel_setup(self):
         self.setting.a.showAttr()

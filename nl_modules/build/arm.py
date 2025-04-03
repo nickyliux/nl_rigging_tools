@@ -462,7 +462,11 @@ class Arm(RigModule):
 
         self.ctrlOnOffByAttr(
             self.masterC.a.debug,
-            onList=self.all_ikHs + self.joints_fk + self.joints_ik + self.joints_bf,
+            onList=self.all_ikHs
+            + self.joints_fk
+            + self.joints_ik
+            + self.joints_bf
+            + [self.RIG_DATA],
         )
 
     def proxy_setup(self):
