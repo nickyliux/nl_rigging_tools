@@ -112,8 +112,8 @@ class Spine(RigModule):
         self.bindJ = self.fkJnt
 
     def build_ik(self):
-        rSz = self.rigSize
         rID = self.rigID
+        rSz = self.rigSize
         logging.info(rID)
 
         mG = self.master_guide
@@ -136,12 +136,10 @@ class Spine(RigModule):
         self.cog_ctl.addOffsetGrp()
         self.rt_ctl.a.ry @ self.tp_ctl.a.ry >> self.md_ctl.offset.a.ry
 
-        # END CST
         self.tp_ctl.cstOri(self.fkJnt[-1], mo=1)
         self.cog_gmb.cstSca(self.fkJnt[0])
         self.fkJnt[0].childrenJt[0].a.segmentScaleCompensate.set(0)
 
-        # RBN SURF
         if self.RBN_BONES:
             self.rbSrf = SurfNode.buildRbSrf(
                 rID,
@@ -203,11 +201,6 @@ class Spine(RigModule):
             ratio >> self.bindJ[i].a.sy
 
     def vis_setup(self):
-        # visGrp = common.addVisOption(self.visC, self.rigID)
-        # visGrp[0] >> self.CTL_DATA.a.v
-        # visGrp[1] >> self.SKL_DATA.a.v
-        # visGrp[1] >> self.RIG_DATA.a.v
-        # visGrp[1] >> self.PRX_GRP.a.v
 
         self.ctrlOnOffByAttr(
             self.setting.a.add("fkVis", min=0, max=1, dv=1, k=0),

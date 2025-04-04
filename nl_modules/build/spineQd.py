@@ -5,13 +5,15 @@ from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.ik_node import IkNode
 from nl_modules.nodel.joint_node import JointNode
+
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.surf_node import SurfNode
-from nl_modules.utils import common
+from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 from nl_modules.build.rig_module import RigModule
 
 PRX = 90
+CBK = Color.BLACK
 CDY = Color.D_YELLOW
 CRD = Color.RED
 CYL = Color.YELLOW
@@ -33,6 +35,7 @@ class SpineQd(RigModule):
         self.rt_ctl = None
         self.tangent_tp_ctl = None
         self.tangent_rt_ctl = None
+        self.setting = None
         self.ctls = []
 
         self.bindJ = []
@@ -51,6 +54,9 @@ class SpineQd(RigModule):
         rSz = self.rigSize
         rID = self.rigID
         scale = (rSz * 5, rSz * 5, rSz)
+        self.setting = CurveNode(
+            "setting", pf=rID, shape="sphere2", up="-z", scale=rSz * 4, color=CBK
+        )
         self.cog_ctl = CurveNode(
             "cog_ctl", pf=rID, shape="cube", scale=rSz * 2, color=CYL
         )
@@ -73,6 +79,7 @@ class SpineQd(RigModule):
         )
         self.rigNode.setMsg(
             {
+                "setting": self.setting,
                 "cog_ctl": self.cog_ctl,
                 "tp_ctl": self.tp_ctl,
                 "md_ctl": self.md_ctl,
@@ -277,12 +284,41 @@ class SpineQd(RigModule):
         # self.addPivOffset(self.tp_ctl, scale=self.rigSize, dnwd=0)
         # self.addPivOffset(self.rt_ctl, scale=self.rigSize, dnwd=0)
 
+        self.build_volume_setup()
+
+    def build_volume_setup(self):
+        """Scale ribbon joints according to length of the surface"""
+
+        import math
+
+        scaleFix = self.masterC.a.globalScale
+        arcLD = ut.arcLenDim_(self.rbSrf, u=4, v=1)
+        d = arcLD.a.arcLength
+        D = d.get()
+
+        autoVol = self.setting.a.add("autoVol")
+        self.tp_ctl.a.add("autoVol", proxy=autoVol)
+        self.rt_ctl.a.add("autoVol", proxy=autoVol)
+
+        # keys for volume squash
+        volGraph = self.setting.a.add("volGraph", dv=0)
+        mc.setKeyframe(volGraph, t=0, v=0)
+        mc.setKeyframe(volGraph, t=(self.BIND_JNT_NUM - 1) / 2, v=1)
+        mc.setKeyframe(volGraph, t=self.BIND_JNT_NUM - 1, v=0)
+        mc.setAttr(volGraph, l=1)
+
+        for i in range(self.BIND_JNT_NUM):
+
+            fc = DagNode("fc__#", nodeType="frameCache")
+            volGraph >> fc.a.stream
+            fc.a.varyTime.set(i)
+
+            ratio = (D / (d / scaleFix)) ** (fc.a.varying * autoVol)
+            ratio >> self.bindJ[i].a.sx
+            ratio >> self.bindJ[i].a.sy
+
     def vis_setup(self):
-        # visGrp = common.addVisOption(self.visC, self.rigID)
-        # visGrp[0] >> self.CTL_DATA.a.v
-        # visGrp[1] >> self.SKL_DATA.a.v
-        # visGrp[1] >> self.RIG_DATA.a.v
-        # visGrp[1] >> self.PRX_GRP.a.v
+
         if self.bindJ:
             mc.hide(self.bindJ, self.rbSrf)
         mc.hide(self.ctlJnts, self.fkJ_A, self.fkJ_B)

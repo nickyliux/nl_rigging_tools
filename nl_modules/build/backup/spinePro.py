@@ -200,12 +200,6 @@ class SpinePro(rig_module.RigModule):
 
     def post_setup(self):
 
-        # VIS
-        # visGrp = common.addVisOption(self.visC, self.rigID)
-        # visGrp[0] >> self.CTL_DATA.a.v
-        # visGrp[1] >> self.rootJ.a.v
-        # visGrp[1] >> self.RIG_DATA.a.v
-
         # [c.a.lockHide(t=1, r=1, s=1) for c in (self.fkCtl + self.ikCtl)]
         # self.cog_ctl.a.lockHide(t=1, r=1, s=1)
         # self.pelvis_fkc.a.lockHide(t=1, r=1, s=1)

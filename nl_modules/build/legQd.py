@@ -564,10 +564,6 @@ class LegQd(RigModule):
             self.addBindJntSet(proxyToeList)
 
     def vis_setup(self):
-        # visGrp = common.addVisOption(self.visC, self.rigID)
-        # visGrp[0] >> self.CTL_DATA.a.v
-        # visGrp[1] >> self.SKL_DATA.a.v
-        # visGrp[1] >> self.PRX_GRP.a.v
 
         fkIkBlend = self.setting.a["fkIkBlend"]
         [fkIkBlend >> c.a.v for c in (self.ikc, self.pvc, self.pvc_line, self.ikCstG)]

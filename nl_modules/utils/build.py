@@ -74,7 +74,7 @@ def buildTgt(rigN):
 def buildSelOrAll(*arg):
     rigNodes = getRigNodesSelOrAll()
     if rigNodes:
-        mc.refresh(su=1)
+        # mc.refresh(su=1)
         for rigN in rigNodes:
             buildTgt(rigN)
         resetAllCtl()
@@ -83,7 +83,7 @@ def buildSelOrAll(*arg):
         resetAllPvCtl()
         mc.select(cl=1)
         print()
-        mc.refresh(su=0)
+        # mc.refresh(su=0)
 
 
 def unbuildTgt(rigN):

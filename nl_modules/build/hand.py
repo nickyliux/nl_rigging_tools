@@ -266,10 +266,7 @@ class Hand(RigModule):
         self.smart_ctl.a.ro.set(3)
 
     def vis_setup(self):
-        # visGrp = common.addVisOption(self.visC, self.rigID)
-        # visGrp[0] >> self.CTL_DATA.a.v
-        # visGrp[1] >> self.rootJ.a.v
-        # visGrp[1] >> self.PRX_GRP.a.v
+
         fgrCtlVis = self.smart_ctl.a.add("fgrCtls", k=0, min=0, max=1, dv=1)
         for fgrCtls in self.ctlsArr:
             fgrCtlVis >> fgrCtls[0].a.v

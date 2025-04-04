@@ -94,10 +94,6 @@ class Head(RigModule):
 
     def vis_setup(self):
         pass
-        # visGrp = common.addVisOption(self.visC, self.rigID)
-        # visGrp[0] >> self.CTL_DATA.a.v
-        # visGrp[1] >> self.rootJ.a.v
-        # visGrp[1] >> self.PRX_GRP.a.v
 
     def space_setup(self):
         self.rigNode.setMsg({"space_head": self.head_fkc})

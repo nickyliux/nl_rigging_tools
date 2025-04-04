@@ -129,11 +129,6 @@ class Tail(rig_module.RigModule):
         for j in self.bindJGrp:
             JointNode(j.childrenJt[0]).addProxyMesh(size=self.rigSize * 2)
 
-        # Vis Enum
-        # visGrp = common.addVisOption(self.visC, self.rigID)
-        # visGrp[0] >> self.CTL_DATA.a.v
-        # visGrp[1] >> self.RIG_DATA.a.v
-
         for c in self.fkCtl:
             # c.a.lockHide(t=1, r=1)
             # c.a.tx.lockHide()

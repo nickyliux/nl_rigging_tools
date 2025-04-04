@@ -371,6 +371,7 @@ class Arm(RigModule):
                     foot
         """
         rID = self.rigID
+        rSz = self.rigSize
         logging.info(rID)
 
         ribbonUp = RibbonNode(
@@ -414,7 +415,7 @@ class Arm(RigModule):
 
         self.all_bend = [up_bend, lw_bend, md_bend]
         for ctl in self.all_bend:
-            ctl(shape="square", up="x", color=CDY, scale=self.rigSize)
+            ctl(shape="square", up="x", color=CDY, scale=rSz)
             # ctl.a.rotateOrder.set(1)  # yzx
 
         upLoc.cstPar(up_bend.offset, mo=1)
@@ -428,28 +429,24 @@ class Arm(RigModule):
 
         # add volType attr to setting
         autoVol = self.setting.a.add("autoVol")
+        autoVol >> ribbonUp.autoVol
+        autoVol >> ribbonLw.autoVol
+
         volType = self.setting.a.add(
             "volType", attrType="enum", enumName="whole:separate", k=0
         )
-        autoVol >> ribbonUp.autoVol
-        autoVol >> ribbonLw.autoVol
         volType >> ribbonUp.volType
         volType >> ribbonLw.volType
 
         self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def vis_setup(self):
-        # visGrp = common.addVisOption(self.visC, self.rigID)
-        # visGrp[0] >> self.CTL_DATA.a.v
-        # visGrp[1] >> self.SKL_DATA.a.v
-        # visGrp[1] >> self.PRX_GRP.a.v
 
         self.ctrlOnOffByAttr(
             self.setting.a["fkIkBlend"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             offList=self.fkCtl[1:],
         )
-
         self.ctrlOnOffByAttr(self.pvc.a["fkPin"], onList=[self.pin_fkc])
 
         self.ikc.a.v >> self.palm_ikc.a.v

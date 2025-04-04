@@ -456,8 +456,8 @@ class Leg(RigModule):
             rbJNum=self.RBN_JNT_NUM,
             volMode="upr",
             scaleFix=self.masterC.a.globalScale,
-            p=self.RIG_DATA,
             proxyP=self.PRX_GRP,
+            p=self.RIG_DATA,
         )
         ribbonLw = RibbonNode(
             self.lwr,
@@ -465,8 +465,8 @@ class Leg(RigModule):
             rbJNum=self.RBN_JNT_NUM,
             volMode="lwr",
             scaleFix=self.masterC.a.globalScale,
-            p=self.RIG_DATA,
             proxyP=self.PRX_GRP,
+            p=self.RIG_DATA,
         )
         # --------------------------------
         # Upper Ribbon
@@ -509,11 +509,12 @@ class Leg(RigModule):
 
         # add volType attr to setting
         autoVol = self.setting.a.add("autoVol")
+        autoVol >> ribbonUp.autoVol
+        autoVol >> ribbonLw.autoVol
+
         volType = self.setting.a.add(
             "volType", attrType="enum", enumName="whole:separate", k=0
         )
-        autoVol >> ribbonUp.autoVol
-        autoVol >> ribbonLw.autoVol
         volType >> ribbonUp.volType
         volType >> ribbonLw.volType
 
@@ -572,10 +573,6 @@ class Leg(RigModule):
             self.addBindJntSet(proxyToeList)
 
     def vis_setup(self):
-        # visGrp = common.addVisOption(self.visC, self.rigID)
-        # visGrp[0] >> self.CTL_DATA.a.v
-        # visGrp[1] >> self.SKL_DATA.a.v
-        # visGrp[1] >> self.PRX_GRP.a.v
 
         self.pvc.a["fkPin"] >> self.pin_fkc.a.v
 

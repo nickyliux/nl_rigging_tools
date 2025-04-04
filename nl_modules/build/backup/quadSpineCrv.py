@@ -191,12 +191,6 @@ class SpineQdCrv(rig_module.RigModule):
         for j in self.rootJ.allChildrenJt2:
             JointNode(j).addProxyMesh(size=self.rigSize, skipEnd=1, p=self.PRX)
 
-        # VIS
-        # visGrp = common.addVisOption(self.visC, self.rigID)
-        # visGrp[0] >> self.CTL_DATA.a.v
-        # visGrp[1] >> self.rootJ.a.v
-        # visGrp[1] >> self.RIG_DATA.a.v
-
         # [x.a.lockHide(t=1, r=1) for x in [self.cog_ctl, self.st_ctl, self.ed_ctl]]
         # self.md_ctl.a.lockHide(t=1)
         # self.setting.a.lockHide()

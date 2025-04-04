@@ -114,11 +114,6 @@
 #                 )
 #         # self.rootJ.addProxyMesh(size=self.rigSize, aimDir=(self.x_dir, 0, 0))
 #
-#         # Vis options
-#         visGrp = common.addVisOption(self.visC, self.rigID)
-#         # visGrp[0] >> self.CTL_DATA.a.v
-#         # visGrp[1] >> self.rootJ.a.v
-#
 #         # fgrCtlVis = self.smart_ctl.a.add("toeCtl", k=0, min=0, max=1)
 #         # for fgrCtls in self.ctlsArr:
 #         #     for c in fgrCtls:
