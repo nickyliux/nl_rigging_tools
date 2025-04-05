@@ -14,6 +14,7 @@ from nl_modules.build.rig_module import RigModule
 PRX = 7
 CBK = Color.BLACK
 CBL = Color.BLUE
+CDR = Color.D_RED
 CDY = Color.D_YELLOW
 CRD = Color.RED
 CYL = Color.YELLOW
@@ -362,8 +363,8 @@ class Leg(RigModule):
 
     def twistBones_setup(self):
         rID = self.rigID
-        radius_JC = self.genSkFrNames(["radius", "radiusEnd"])
-        ulna_JC = self.genSkFrNames(["ulna", "ulnaEnd"])
+        radius_JC = self.genSkFrNames(["radius", "radiusEnd"], color=CDR)
+        ulna_JC = self.genSkFrNames(["ulna", "ulnaEnd"], color=CDR)
 
         parent = self.boneFix if self.KNEE_FIX else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent
@@ -382,8 +383,7 @@ class Leg(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-        self.joints.insert(0, radius_JC[0])
-        self.joints.insert(0, ulna_JC[0])
+        self.joints = [radius_JC[0], ulna_JC[0]] + self.joints
 
     def blend_fk_ik(self):
         rID = self.rigID

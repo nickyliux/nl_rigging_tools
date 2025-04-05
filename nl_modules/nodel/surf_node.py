@@ -2,6 +2,7 @@ import maya.cmds as mc
 import logging
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.group_node import GroupNode
+from nl_modules.utils.color import Color
 
 
 class SurfNode(GroupNode):
@@ -148,7 +149,14 @@ class SurfNode(GroupNode):
 
     @staticmethod
     def buildRbJnt(
-        rID, rSz, bindJntNum, surf=None, rigData=None, normalize=1, sklData=None
+        rID,
+        rSz,
+        bindJntNum,
+        surf=None,
+        rigData=None,
+        normalize=1,
+        sklData=None,
+        color=None,
     ):
         """Build ribbon joints chain
         e.g.
@@ -172,7 +180,12 @@ class SurfNode(GroupNode):
             bindJ = []
 
             for i, loc in enumerate(pinXf):
-                j = JointNode(rID + f"_rbJ_{i + 1}", align=loc, r=rSz, p=sklData)
+                # print("x", i, color)
+                j = JointNode(
+                    rID + f"_rbJ_{i + 1}", color=color, align=loc, r=rSz, p=sklData
+                )
+                print(color)
+                j.color = color
                 loc.cstPar(j)
                 bindJ.append(j)
             return bindJ

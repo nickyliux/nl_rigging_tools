@@ -13,6 +13,7 @@ from nl_modules.utils.color import Color
 
 PRX = 90
 CBK = Color.BLACK
+CDR = Color.D_RED
 CRD = Color.RED
 
 
@@ -163,6 +164,7 @@ class Spine(RigModule):
                 surf=self.rbSrf,
                 rigData=self.RIG_DATA,
                 sklData=self.SKL_DATA,
+                color=CDR,
             )
             self.build_volume_setup()
 

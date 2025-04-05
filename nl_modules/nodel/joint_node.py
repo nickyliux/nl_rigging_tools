@@ -25,11 +25,15 @@ class JointNode(GroupNode):
         snap=None,
         addOfs=0,
         p=None,
-        # for joint
         shape=None,
-        r=None,
         color=0,
+        r=None,
     ):
+        nodeExists = 0
+        name = pf + node + sf
+        if mc.objExists(name):
+            nodeExists = 1
+
         GroupNode.__init__(
             self,
             node,
@@ -46,12 +50,10 @@ class JointNode(GroupNode):
         if shape:
             from nl_modules.nodel.curve_node import CurveNode
 
-            print(self)
-            print(shape)
             CurveNode(self) << shape
 
-        self.color = color or 0
-        # self.a.radius.set(r or 1)
+        if not nodeExists:
+            self.color = color or 0
 
     def setRadius(self, v, rel=False):
         """Set joint radius, rel=True for relative to current value"""

@@ -14,6 +14,7 @@ from nl_modules.utils.color import Color
 PRX = 6
 CBK = Color.BLACK
 CBL = Color.BLUE
+CDR = Color.D_RED
 CDY = Color.D_YELLOW
 CRD = Color.RED
 CYL = Color.YELLOW
@@ -162,7 +163,7 @@ class Arm(RigModule):
             align=scapular_guide,
             r=rSz * 3,
             p=self.clavicle,
-            color=CYL,
+            color=CDR,
         )
         scapularJnt.freezeXf()
         scapularLoc = LocNode("scapularLoc", pf=rID, snap=clavEnd_guide, p=scapularJnt)
@@ -190,9 +191,10 @@ class Arm(RigModule):
         self.clavBone = twoJ[0]
 
     def twistBones_setup(self):
+
         rID = self.rigID
-        radius_JC = self.genSkFrNames(["radius", "radiusEnd"])
-        ulna_JC = self.genSkFrNames(["ulna", "ulnaEnd"])
+        radius_JC = self.genSkFrNames(["radius", "radiusEnd"], color=CDR)
+        ulna_JC = self.genSkFrNames(["ulna", "ulnaEnd"], color=CDR)
 
         (radius_JC[0], ulna_JC[0]) | self.lwr
 
@@ -200,18 +202,17 @@ class Arm(RigModule):
         ulna_loc = LocNode("ulna_loc", pf=rID, align=ulna_JC[1], p=self.palm)
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
+
         uType = "objectrotation"
         aim = (self.x_dir, 0, 0)
         z = (0, 0, 1)
-
         radius_loc.cstAim(
             radius_JC[0], worldUpType=uType, worldUpObject=self.palm, aim=aim, u=z, wu=z
         )
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-        self.joints.insert(0, radius_JC[0])
-        self.joints.insert(0, ulna_JC[0])
+        self.joints = [radius_JC[0], ulna_JC[0]] + self.joints
 
     def build_fk(self):
         logging.info(self.rigID)
@@ -468,7 +469,9 @@ class Arm(RigModule):
 
     def proxy_setup(self):
         self.joints.remove(self.palm)
-        proxyList = self.joints[:-1]
+        self.joints.remove(self.ball)
+        # proxyList = self.joints[:-1]
+        proxyList = self.joints
         if self.RBN_BONES:
             if self.upr in proxyList:
                 proxyList.remove(self.upr)

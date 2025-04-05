@@ -44,8 +44,8 @@ class Color(Enum):
             shapes = mc.listRelatives(objs, s=1, f=1, ni=1) or []
             filtered = mc.ls(
                 shapes + objList,
-                l=1,
                 type=["nurbsCurve", "locator", "joint", "mesh"],
+                l=1,
             )
         return filtered or []
 

@@ -51,16 +51,25 @@ class SpineQd(RigModule):
         self.genSk_module(["rt", "md", "tp"])
 
     def createCtl(self):
-        rSz = self.rigSize
         rID = self.rigID
+        rSz = self.rigSize
         scale = (rSz * 5, rSz * 5, rSz)
+
         self.setting = CurveNode(
-            "setting", pf=rID, shape="sphere2", up="-z", scale=rSz * 4, color=CBK
+            "setting", pf=rID, shape="sphere2", up="-z", scale=rSz * 4, color=CBK, top=1
         )
         self.cog_ctl = CurveNode(
-            "cog_ctl", pf=rID, shape="cube", scale=rSz * 2, color=CYL
+            "cog_ctl",
+            pf=rID,
+            shape="cube",
+            scale=(rSz, rSz * 1.5, rSz * 1.5),
+            color=CYL,
         )
         self.cog_ctl.cv_move(0, 80 * rSz, 0)
+        mc.select(cl=1)
+        for id in [1, 12, 15, 16]:
+            mc.select(self.cog_ctl.shape + f".cv[{id}]", add=1)
+        mc.move(0, rSz * -5, 0, os=1, r=1)
 
         self.tp_ctl = CurveNode(
             "tp_ctl", pf=rID, shape="circle_round", scale=scale, up="z", lineWidth=2
@@ -156,7 +165,9 @@ class SpineQd(RigModule):
 
     def build_ik(self, sliding=1):
         rID = self.rigID
+        rSz = self.rigSize
         logging.info(rID)
+        self.setting.alignTo(self.cog_ctl, p=self.cog_ctl)  # offset=(0, rSz * 100, 0),
         self.spCrv = self.LINE_GUIDE.duplicate(n=rID + "_spCrv_#")
         self.spCrv | self.RIG_DATA
         # crv.rebuild(spans=4)
@@ -296,7 +307,7 @@ class SpineQd(RigModule):
         d = arcLD.a.arcLength
         D = d.get()
 
-        autoVol = self.setting.a.add("autoVol")
+        autoVol = self.setting.a.add("autoVol", dv=1)
         self.tp_ctl.a.add("autoVol", proxy=autoVol)
         self.rt_ctl.a.add("autoVol", proxy=autoVol)
 
@@ -336,6 +347,7 @@ class SpineQd(RigModule):
 
     def channel_setup(self):
         [ctl.a.showAttr(t=1, r=1) for ctl in self.ctls]
+        self.setting.a.showAttr()
         self.tangent_tp_ctl.a.showAttr(r=1)
         self.tangent_rt_ctl.a.showAttr(r=1)
 

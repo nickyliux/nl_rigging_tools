@@ -10,6 +10,7 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
 BIND_JNT_SET = "bind_jnt_set"
+CDR = Color.D_RED
 CPK = Color.PINK
 CLB = Color.L_BLUE
 
@@ -49,7 +50,6 @@ class RigModule(RigBase):
             self.rootJ = rigNode.a.rootJ.inConnNode
 
     # @staticmethod
-    # def genSkFrNames(names, pf="", color=None, r=1):
     def genSkFrNames(self, names, color=None, r=1):
         """Create joints by finding object : pf_name_guide' from name list
         e.g.
@@ -75,10 +75,8 @@ class RigModule(RigBase):
 
         # for i, key in enumerate(guideDict):
         for key in guideDict:
-            jN = JointNode(f"{pf}_{key}", align=guideDict[key], color=color, r=r)
+            jN = JointNode(f"{pf}_{key}", align=guideDict[key], r=r, color=color)
 
-            # if key == "lwr":
-            #     jN.a.preferredAngleY.set(10 * self.x_dir)
             if (
                 pf.startswith("lfLeg")
                 or pf.startswith("rtLeg")
@@ -500,7 +498,7 @@ class RigModule(RigBase):
                 "patella",
                 pf=rID,
                 align=patella_guide,
-                color=CLB,
+                color=CDR,
                 r=rSz,
                 p=self.upr,
             )

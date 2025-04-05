@@ -35,6 +35,7 @@ class GroupNode(DagNode):
         if pf and pf[-1] != "_":
             pf += "_"
         name = pf + node + sf
+
         if name:
             DagNode.__init__(self, name)
             if not mc.objExists(name):
