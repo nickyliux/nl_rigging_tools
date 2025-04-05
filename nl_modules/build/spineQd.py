@@ -24,7 +24,7 @@ class SpineQd(RigModule):
         super().__init__(rigNode)
         self.CTL_NUM = 3
         self.FK_JNT_NUM = self.master_guide.a.fkJntNum.get()
-        self.BIND_JNT_NUM = self.master_guide.a.bindJntNum.get()
+        self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
         self.LINE_GUIDE = CurveNode(self.rigID + "_line_guide")
         self.MD_GUIDE = DagNode(self.rigID + "_md_guide")
         self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
@@ -56,13 +56,13 @@ class SpineQd(RigModule):
         scale = (rSz * 5, rSz * 5, rSz)
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="sphere2", up="-z", scale=rSz * 4, color=CBK, top=1
+            "setting", pf=rID, shape="sphere2", up="-z", scale=rSz * 3, color=CBK, top=1
         )
         self.cog_ctl = CurveNode(
             "cog_ctl",
             pf=rID,
             shape="cube",
-            scale=(rSz, rSz * 1.5, rSz * 1.5),
+            scale=(rSz, rSz * 1.5, rSz * 2),
             color=CYL,
         )
         self.cog_ctl.cv_move(0, 80 * rSz, 0)
@@ -113,7 +113,7 @@ class SpineQd(RigModule):
         self.bindJ = SurfNode.buildRbJnt(
             rID,
             rSz,
-            self.BIND_JNT_NUM,
+            self.RBN_JNT_NUM,
             surf=self.rbSrf,
             rigData=self.RIG_DATA,
             sklData=self.SKL_DATA,
@@ -204,8 +204,11 @@ class SpineQd(RigModule):
         (self.tp_ctl, self.md_ctl, self.rt_ctl) | self.cog_ctl | self.CTL_DATA
         self.cog_ctl.addOffsetGrp()
 
+        tp_gimbal = self.tp_ctl.addGimbal()
+        rt_gimbal = self.rt_ctl.addGimbal()
+
         self.ctlJnts = self.createCtlJ(
-            [self.rt_ctl, self.md_ctl, self.tp_ctl], color=CRD
+            [self.rt_ctl, self.md_ctl, self.tp_ctl], color=CRD, r=rSz * 20
         )
         # Orient control last fkJ by tip ctl
         self.fkJnt[-1].a.r.disconnect()
@@ -250,8 +253,8 @@ class SpineQd(RigModule):
         # ----------------------
         #  Add gimbal
         # ----------------------
-        tp_gimbal = self.tp_ctl.addGimbal()
-        rt_gimbal = self.rt_ctl.addGimbal()
+        # tp_gimbal = self.tp_ctl.addGimbal()
+        # rt_gimbal = self.rt_ctl.addGimbal()
         # tp_gimbal.cstPar(self.tangent_tp_ctl.addOffsetGrp())
         # self.rt_ctl.cstPar(self.tangent_rt_ctl.addOffsetGrp())
 
@@ -311,11 +314,11 @@ class SpineQd(RigModule):
         # keys for volume squash
         volGraph = self.setting.a.add("volGraph", dv=0)
         mc.setKeyframe(volGraph, t=0, v=0)
-        mc.setKeyframe(volGraph, t=(self.BIND_JNT_NUM - 1) / 2, v=1)
-        mc.setKeyframe(volGraph, t=self.BIND_JNT_NUM - 1, v=0)
+        mc.setKeyframe(volGraph, t=(self.RBN_JNT_NUM - 1) / 2, v=1)
+        mc.setKeyframe(volGraph, t=self.RBN_JNT_NUM - 1, v=0)
         mc.setAttr(volGraph, l=1)
 
-        for i in range(self.BIND_JNT_NUM):
+        for i in range(self.RBN_JNT_NUM):
 
             fc = DagNode("fc__#", nodeType="frameCache")
             volGraph >> fc.a.stream
@@ -328,8 +331,12 @@ class SpineQd(RigModule):
     def vis_setup(self):
 
         if self.bindJ:
-            mc.hide(self.bindJ, self.rbSrf)
-        mc.hide(self.ctlJnts, self.fkJ_A, self.fkJ_B)
+            # mc.hide(self.bindJ, self.rbSrf)
+            self.ctrlOnOffByAttr(self.masterC.a.debug, onList=self.bindJ + [self.rbSrf])
+
+        self.ctrlOnOffByAttr(
+            self.masterC.a.debug, onList=self.ctlJnts + self.fkJ_A + self.fkJ_B
+        )
 
     def proxy_setup(self):
         rSz = self.rigSize
@@ -359,7 +366,7 @@ class SpineQd(RigModule):
     def post_setup(self):
         rID = self.rigID
         logging.info(rID)
-        if self.BIND_JNT_NUM > 1:
+        if self.RBN_JNT_NUM > 1:
             self.addBindJntSet(self.bindJ)
         self.addCtlSet(self.ctls)
         self.anchor_setup()
