@@ -14,6 +14,7 @@ from nl_modules.utils.color import Color
 PRX = 90
 CBK = Color.BLACK
 CDR = Color.D_RED
+COR = Color.ORANGE
 CRD = Color.RED
 
 
@@ -49,7 +50,13 @@ class Spine(RigModule):
         rID = self.rigID
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="sphere2", up="-z", scale=rSz * 2, color=CBK
+            "setting",
+            pf=rID,
+            shape="sphere2",
+            up="-z",
+            scale=rSz * 1.5,
+            color=COR,
+            top=1,
         )
         self.cog_ctl = CurveNode("cog_ctl", pf=rID, shape="cog2", scale=rSz * 2)
         self.tp_ctl = CurveNode(
@@ -122,7 +129,7 @@ class Spine(RigModule):
         self.md_ctl.snapAlignTo(self.MD_GUIDE, mG)
         self.tp_ctl.snapAlignTo(self.fkJnt[-1], mG)
         self.cog_ctl.snapAlignTo(self.rt_ctl, mG)
-        self.setting.alignTo(self.cog_ctl, offset=(0, 0, rSz * -100))
+        self.setting.alignTo(self.cog_ctl)  # , offset=(0, 0, rSz * -100))
         self.cog_gmb = CurveNode(self.cog_ctl).addGimbal()  # attrTgt=self.setting)
         self.setting | self.cog_ctl | self.CTL_DATA
         self.cog_gmb.cstPar(self.fkCtl[0].offset, mo=1)

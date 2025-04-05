@@ -533,9 +533,6 @@ class LegQd(RigModule):
             proxyToeList.append(self.toesRootJ)
             for t in self.toesJntList:
                 proxyToeList.extend(t)
-        # if self.RBN_BONES:
-        #     proxyList.remove(self.upr)
-        #     proxyList.remove(self.lwr)
         if self.KNEE_FIX:
             if self.boneFix:
                 proxyList.append(self.boneFix)
@@ -565,19 +562,26 @@ class LegQd(RigModule):
 
     def vis_setup(self):
 
-        fkIkBlend = self.setting.a["fkIkBlend"]
-        [fkIkBlend >> c.a.v for c in (self.ikc, self.pvc, self.pvc_line, self.ikCstG)]
-        [~fkIkBlend >> c.a.v for c in self.fkCtl[1:-1]]
-
+        self.ctrlOnOffByAttr(
+            self.setting.a["fkIkBlend"],
+            onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
+            offList=self.fkCtl[1:-1],
+        )
         if self.all_bend:
-            bowCtl = self.setting.a.add("legBowCtls", min=0, max=1, dv=1, k=0)
-            [bowCtl >> ctl.a.v for ctl in self.all_bend]
+            self.ctrlOnOffByAttr(
+                self.setting.a.add("bowCtls", min=0, max=1, dv=1, k=0),
+                onList=self.all_bend,
+            )
 
         # subCtls = self.setting.a.add("subCtls", min=0, max=1, dv=1, k=0)
         # [subCtls >> self.ikCstG.children[0].a.v]
 
-        mc.hide(self.joints_fk, self.joints_ik)
         [ikh.hide() for ikh in self.all_ikH.values()]
+
+        self.ctrlOnOffByAttr(
+            self.masterC.a.debug,
+            onList=self.joints_fk + self.joints_ik,
+        )
 
     def channel_setup(self):
         self.setting.a.showAttr()

@@ -15,6 +15,7 @@ from nl_modules.build.rig_module import RigModule
 PRX = 90
 CBK = Color.BLACK
 CDY = Color.D_YELLOW
+COR = Color.ORANGE
 CRD = Color.RED
 CYL = Color.YELLOW
 
@@ -26,7 +27,9 @@ class SpineQd(RigModule):
         self.FK_JNT_NUM = self.master_guide.a.fkJntNum.get()
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
         self.LINE_GUIDE = CurveNode(self.rigID + "_line_guide")
+        self.TP_GUIDE = DagNode(self.rigID + "_tp_guide")
         self.MD_GUIDE = DagNode(self.rigID + "_md_guide")
+        self.RT_GUIDE = DagNode(self.rigID + "_rt_guide")
         self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
 
         self.cog_ctl = None
@@ -56,7 +59,7 @@ class SpineQd(RigModule):
         scale = (rSz * 5, rSz * 5, rSz)
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="sphere2", up="-z", scale=rSz * 3, color=CBK, top=1
+            "setting", pf=rID, shape="sphere2", up="-z", scale=rSz * 3, color=COR, top=1
         )
         self.cog_ctl = CurveNode(
             "cog_ctl",
@@ -196,11 +199,12 @@ class SpineQd(RigModule):
                     w=baseAttach,
                     cstType="par",
                 )
-        self.rt_ctl.snapAlignTo(self.fkJnt[0], self.MD_GUIDE)
+        self.rt_ctl.snapAlignTo(self.fkJnt[0], self.RT_GUIDE)
         self.md_ctl.alignTo(self.MD_GUIDE)
-        self.tp_ctl.snapAlignTo(self.fkJnt[-1], self.MD_GUIDE)
+        self.tp_ctl.snapAlignTo(self.fkJnt[-1], self.TP_GUIDE)
 
-        self.cog_ctl.alignTo(self.md_ctl)
+        # self.cog_ctl.alignTo(self.md_ctl)
+        self.cog_ctl.alignTo(self.master_guide)
         (self.tp_ctl, self.md_ctl, self.rt_ctl) | self.cog_ctl | self.CTL_DATA
         self.cog_ctl.addOffsetGrp()
 

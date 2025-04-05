@@ -16,6 +16,7 @@ CBK = Color.BLACK
 CBL = Color.BLUE
 CDR = Color.D_RED
 CDY = Color.D_YELLOW
+COR = Color.ORANGE
 CRD = Color.RED
 CYL = Color.YELLOW
 
@@ -111,7 +112,7 @@ class Leg(RigModule):
         xDr = self.x_dir
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="sphere2", scale=rSz, color=CBK
+            "setting", pf=rID, shape="sphere2", scale=rSz, color=COR, top=1
         )
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
@@ -130,7 +131,7 @@ class Leg(RigModule):
         )
         self.ball_fkc.cv_scale(0.7, 1, 1)
 
-        scale = (rSz * 1.5, rSz * 2, rSz * 3.5)
+        scale = (rSz * 2, rSz * 1.5, rSz * 3.5)
         self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=scale)
         self.ikc.lowerCubeFrontCV()
         self.ikc.cv_move(0, 0, rSz * 8)
@@ -397,7 +398,7 @@ class Leg(RigModule):
         )
 
         self.setting | self.CTL_DATA
-        self.setting.alignTo(self.palm, offset=(0, rSz * xDr * -20, 0))
+        self.setting.alignTo(self.palm)  # , offset=(0, rSz * xDr * -20, 0))
         ofs = self.setting.addOffsetGrp()
         self.palm.cstPar(ofs, mo=1)
 

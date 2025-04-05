@@ -16,6 +16,7 @@ CBK = Color.BLACK
 CBL = Color.BLUE
 CDR = Color.D_RED
 CDY = Color.D_YELLOW
+COR = Color.ORANGE
 CRD = Color.RED
 CYL = Color.YELLOW
 
@@ -112,7 +113,7 @@ class Arm(RigModule):
         xDr = self.x_dir
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="sphere2", scale=rSz, color=CBK
+            "setting", pf=rID, shape="sphere2", scale=rSz, color=COR, top=1
         )
         self.clavicle_fkc = CurveNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
@@ -318,7 +319,7 @@ class Arm(RigModule):
         self.ballRoll_loc = LocNode("ballRoll", pf=rID, align=ball_guide, p=palmOut_loc)
 
         self.setting | self.CTL_DATA
-        self.setting.alignTo(self.palm, offset=(rSz * xDr * 40, 0, 0))
+        self.setting.alignTo(self.palm)  # , offset=(rSz * xDr * 40, 0, 0))
         ofs = self.setting.addOffsetGrp()
         self.palm.cstPar(ofs, mo=1)
 
