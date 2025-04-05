@@ -112,7 +112,7 @@ class Arm(RigModule):
         xDr = self.x_dir
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="sphere2", scale=rSz * xDr * 2, color=CBK
+            "setting", pf=rID, shape="sphere2", scale=rSz, color=CBK
         )
         self.clavicle_fkc = CurveNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
@@ -470,7 +470,6 @@ class Arm(RigModule):
     def proxy_setup(self):
         self.joints.remove(self.palm)
         self.joints.remove(self.ball)
-        # proxyList = self.joints[:-1]
         proxyList = self.joints
         if self.RBN_BONES:
             if self.upr in proxyList:

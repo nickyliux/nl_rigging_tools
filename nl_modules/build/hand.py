@@ -43,11 +43,11 @@ class Hand(RigModule):
         self.build_module()
         rSz = self.rigSize
         rID = self.rigID
-        # "smart_ctl", pf=rID, shape="cube", scale=(rSz * 2, rSz * 2, rSz)
         self.smart_ctl = CurveNode(
-            "smart_ctl", pf=rID, shape="arrow3D", up="x", scale=(rSz, rSz * 2, rSz)
+            "smart_ctl", pf=rID, shape="roll", up="x", scale=rSz * 2
         )
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
+
         if self.rootJ:
             self.fgrsArr = []
             for root in self.rootJ.childrenJt:
@@ -101,7 +101,7 @@ class Hand(RigModule):
         xDr = self.x_dir
         logging.info(rID)
         self.smart_ctl.alignTo(
-            self.rootJ, offset=(rSz * xDr * 120, 0, 0), p=self.CTL_DATA
+            self.rootJ, offset=(rSz * xDr * 150, 0, 0), p=self.CTL_DATA
         )
         ofs = self.smart_ctl.addOffsetGrp()
         self.rootJ.offset.cstPar(ofs, mo=1)

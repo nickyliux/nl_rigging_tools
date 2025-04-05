@@ -66,10 +66,7 @@ class SpineQd(RigModule):
             color=CYL,
         )
         self.cog_ctl.cv_move(0, 80 * rSz, 0)
-        mc.select(cl=1)
-        for id in [1, 12, 15, 16]:
-            mc.select(self.cog_ctl.shape + f".cv[{id}]", add=1)
-        mc.move(0, rSz * -5, 0, os=1, r=1)
+        self.cog_ctl.lowerCubeFrontCV()
 
         self.tp_ctl = CurveNode(
             "tp_ctl", pf=rID, shape="circle_round", scale=scale, up="z", lineWidth=2

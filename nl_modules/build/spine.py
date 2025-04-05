@@ -49,7 +49,7 @@ class Spine(RigModule):
         rID = self.rigID
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="sphere2", up="-z", scale=rSz * 4, color=CBK
+            "setting", pf=rID, shape="sphere2", up="-z", scale=rSz * 2, color=CBK
         )
         self.cog_ctl = CurveNode("cog_ctl", pf=rID, shape="cog2", scale=rSz * 2)
         self.tp_ctl = CurveNode(

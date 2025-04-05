@@ -83,6 +83,7 @@ class CurveNode(GroupNode):
                 self.cv_scale(*scale)
             elif isinstance(scale, (int, float)):
                 self.cv_scale(scale)
+
         self.lineWidth = lineWidth
         if top:
             mc.setAttr(self.name + ".alwaysDrawOnTop", 1)
@@ -304,3 +305,8 @@ class CurveNode(GroupNode):
             degree=deg,
         )
         return self
+
+    def lowerCubeFrontCV(self):
+        targetCV = [self.shape + f".cv[{id}]" for id in [1, 12, 15, 16]]
+        for cv in targetCV:
+            mc.move(0, -self.o.height / 2, 0, cv, os=1, r=1)
