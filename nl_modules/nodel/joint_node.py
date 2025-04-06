@@ -118,12 +118,10 @@ class JointNode(GroupNode):
                     worldUpObject=self,
                 )
 
-            # assign shader
-            #
             # NOTE:  constraint must be after shader assignment, otherwise mc.sets(..) will sohw error
-            #
             # common.assignProxyShader(proxyN)
-            self.cstParSca(proxyN, mo=1)
+
+            # self.cstParSca(proxyN, mo=1)
             return proxyN
 
     @staticmethod

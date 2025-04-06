@@ -89,7 +89,7 @@ class Head(RigModule):
 
         self.addBindJntSet(self.bindJnts)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(size=rSz, aimDir=aim, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(size=rSz * 15, aimDir=aim, p=self.PRX_GRP)
 
     def vis_setup(self):
         pass
@@ -106,8 +106,3 @@ class Head(RigModule):
         self.proxy_setup()
         self.vis_setup()
         self.post_module()
-
-
-if __name__ == "__main__":
-    for n in mc.ls("*RGN", type="script"):
-        Head(DagNode(n)).build()

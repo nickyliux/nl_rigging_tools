@@ -14,7 +14,9 @@ CBK = Color.BLACK
 CBL = Color.BLUE
 CDR = Color.D_RED
 CDY = Color.D_YELLOW
+CLB = Color.L_BLUE
 COR = Color.ORANGE
+CPK = Color.PINK
 CRD = Color.RED
 CYL = Color.YELLOW
 
@@ -469,7 +471,7 @@ class RigModule(RigBase):
         )
         mc.hide(upLoc)
         self.boneFix = tgtDup
-        self.bindJnts.append(self.boneFix)
+        # self.bindJnts.append(self.boneFix)
         self.boneFix_sdk(tgt, tgtDup)
         # self.carpalFix(tgt)
 
@@ -747,7 +749,7 @@ class RigModule(RigBase):
         else:
             ikc.cstPoi(psd_loc)
 
-        allCtl = [ctl_main]
+        allPsdCtl = []
         productSum = DagNode("pma__#", nodeType="plusMinusAverage")
         rx = 0
 
@@ -764,7 +766,7 @@ class RigModule(RigBase):
                 top=1,
             )
             ctl.a.showAttr(t=1, r=1)
-            allCtl.append(ctl)
+            allPsdCtl.append(ctl)
 
             rx = i * 90
             # correct right side by offset -180
@@ -804,8 +806,8 @@ class RigModule(RigBase):
             common.sdk2(hit, driven, 0.5, Color.L_GREY.value, tangent=2)
             common.sdk2(hit, driven, 0.9, Color.YELLOW.value, tangent=2)
 
-        self.setWSMirror(allCtl)
-        self.addCtlSet(allCtl)
+        self.setWSMirror(allPsdCtl)
+        self.addCtlSet(allPsdCtl + [ctl_main])
 
         showAimSetup = self.masterC.a.add("showAimSetup", min=0, max=1, dv=1, k=0)
         showAimSetup >> psd_grp.a.v

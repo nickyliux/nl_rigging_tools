@@ -118,15 +118,9 @@ class Leg(RigModule):
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
         )
-        self.upr_fkc = CurveNode(
-            "upr_fkc", pf=rID, up="x", shape="sphere2", scale=rSz * 4
-        )
-        self.lwr_fkc = CurveNode(
-            "lwr_fkc", pf=rID, up="x", shape="sphere2", scale=rSz * 4
-        )
-        self.palm_fkc = CurveNode(
-            "palm_fkc", pf=rID, up="x", shape="sphere2", scale=rSz * 4
-        )
+        self.upr_fkc = CurveNode("upr_fkc", pf=rID, up="x", scale=rSz * 2)
+        self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", scale=rSz * 2)
+        self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz * 2)
         self.ball_fkc = CurveNode(
             "ball_fkc", pf=rID, shape="fk_rotator", up="-z", scale=rSz * xDr * 1.5
         )
