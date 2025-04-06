@@ -1,12 +1,10 @@
 # nl-rigging-tools (NRT)
 ### What ?
-It is another open-source modular auto-rigger written for Autodesk Maya in Python.
+There are a few great auto-rigging tools available freely online. As a rigger I'm interested in building my own. 
 
-There are a few great auto-rigger tools available freely online. As a rigger I'm interested in building my own. I have scripted a few autorigs in Maya with MEL and in 3dsMax with maxscript. I have a few applications written for shotgun in Python but I've been longing for applying it in rig creation.
+One thing I learn throughout the development is the use of custom framework. Thanks to the Udemy course <b>"Python for Maya: Beginner to Advanced Rigging Automation"</b> by Nick Hughes, I learn to write codes that is more concise, easier to read, while independent on PyMEL.
 
-One cool thing I learn throughout the development is the use of custom framework. Thanks to the Udemy course <b>"Python for Maya: Beginner to Advanced Rigging Automation"</b> by Nick Hughes, my code is more concise, faster to read, and independent on PyMEL.
-
-For example, the lines below generate all utility nodes and connections, but read like expression.
+The lines below generate all utility nodes and connections, and read like expression.
 
 ```python
 # ---------------
@@ -18,13 +16,9 @@ ds = D * (1 - s * math.e ** -(d - Ds))
 (((d > Ds).setCdn(ifTrue=ds, ifFalse=d)) * ratio >> softJ.a.tx)
 ```
 
-## Build Features
-* Modular
-* Individual rebuild
-* Auto linkage and space switch update
-
 ## Rig Features
 General
+* Modular build / unbuild
 * Scalable
 
 Spine
