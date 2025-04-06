@@ -99,7 +99,9 @@ class JointNode(GroupNode):
         if child or (not skipEnd):
 
             dist = self.o.distanceTo(child[0]) if child else size
-            cube = mc.polyCube(n=name, ax=aimDir, h=dist, w=size, d=size)[0]
+            cube = mc.polyCube(
+                n=name, ax=aimDir, h=dist, w=size, d=size, subdivisionsHeight=dist / 7
+            )[0]
             # cube = mc.polyCube(n=name, ax=aimDir, h=size, w=size, d=size)[0]
 
             proxyN = DagNode(cube)
@@ -120,7 +122,7 @@ class JointNode(GroupNode):
             #
             # NOTE:  constraint must be after shader assignment, otherwise mc.sets(..) will sohw error
             #
-            common.assignProxyShader(proxyN)
+            # common.assignProxyShader(proxyN)
             self.cstParSca(proxyN, mo=1)
             return proxyN
 

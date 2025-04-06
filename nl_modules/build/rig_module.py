@@ -465,10 +465,10 @@ class RigModule(RigBase):
         mc.hide(upLoc)
         self.boneFix = tgtDup
         self.boneFix_sdk(tgt, tgtDup)
-        self.carpalFix(tgt)
+        # self.carpalFix(tgt)
 
-    def carpalFix(self, tgt):
-        pass
+    # def carpalFix(self, tgt):
+    #     pass
 
     def boneFix_sdk(self, driver, driven):
         s = self.rigSize * self.x_dir

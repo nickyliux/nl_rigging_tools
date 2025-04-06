@@ -579,7 +579,7 @@ class LegQd(RigModule):
         [ikh.hide() for ikh in self.all_ikH.values()]
 
         self.ctrlOnOffByAttr(
-            self.masterC.a.debug,
+            self.masterC.a["debug"],
             onList=self.joints_fk + self.joints_ik,
         )
 

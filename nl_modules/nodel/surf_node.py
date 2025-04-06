@@ -180,12 +180,9 @@ class SurfNode(GroupNode):
             bindJ = []
 
             for i, loc in enumerate(pinXf):
-                # print("x", i, color)
                 j = JointNode(
-                    rID + f"_rbJ_{i + 1}", color=color, align=loc, r=rSz, p=sklData
+                    rID + f"_rbJ_{i + 1}", align=loc, r=rSz, p=sklData, color=color
                 )
-                print(color)
-                j.color = color
                 loc.cstPar(j)
                 bindJ.append(j)
             return bindJ

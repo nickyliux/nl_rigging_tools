@@ -219,10 +219,12 @@ class Spine(RigModule):
             self.setting.a.add("ikVis", min=0, max=1, dv=1, k=0),
             onList=self.ikCtl,
         )
-        self.ctrlOnOffByAttr(
-            self.masterC.a.debug,
-            onList=[self.RIG_DATA, self.rbSrf] + self.ctlJnts,
-        )
+        self.ctrlOnOffByAttr(self.masterC.a["debug"], onList=[self.RIG_DATA])
+
+        if self.RBN_BONES:
+            self.ctrlOnOffByAttr(
+                self.masterC.a["debug"], onList=[self.rbSrf] + self.ctlJnts
+            )
 
     def channel_setup(self):
         self.setting.a.showAttr()
@@ -236,8 +238,8 @@ class Spine(RigModule):
     def proxy_setup(self):
         rSz = self.rigSize
         for j in self.bindJ:
-            size = rSz * PRX / self.RBN_JNT_NUM / 1.5 if self.RBN_BONES else rSz * 3
-            JointNode(j).addProxyMesh(size=size, p=self.PRX_GRP)  # , skipEnd=1)
+            size = rSz * PRX / self.RBN_JNT_NUM if self.RBN_BONES else rSz * 10
+            JointNode(j).addProxyMesh(size=size, p=self.PRX_GRP, aimDir=(0, 1, 0))
 
     def space_setup(self):
         self.rigNode.setMsg({"space_COG": self.cog_ctl})

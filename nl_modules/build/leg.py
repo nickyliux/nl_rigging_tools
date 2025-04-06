@@ -85,6 +85,8 @@ class Leg(RigModule):
         self.ikH_PV = None
         self.ballG_ikc = None
         self.patellaJ = None
+        self.ribbonUp = None
+        self.ribbonLw = None
 
     def genGuideSk(self):
         rID = self.rigID
@@ -177,10 +179,12 @@ class Leg(RigModule):
             setting=self.setting,
         )
 
-        if self.KNEE_FIX:
-            self.boneFix_setup(self.lwr, self.palm)
         if self.RBN_BONES:
             self.ribbon_setup()
+        if self.KNEE_FIX:
+            self.boneFix_setup(self.lwr, self.palm)
+            if self.RBN_BONES:
+                self.boneFix.cstPoi(self.ribbonLw.stt_loc)
         if self.PATELLA_BONE:
             self.patellaJ = self.patella_setup(self.PRX_GRP)
         if self.TWIST_BONES:
@@ -453,7 +457,7 @@ class Leg(RigModule):
         rSz = self.rigSize
         logging.info(rID)
 
-        ribbonUp = RibbonNode(
+        self.ribbonUp = RibbonNode(
             self.upr,
             pf=rID + "_up_",
             rbJNum=self.RBN_JNT_NUM,
@@ -462,7 +466,7 @@ class Leg(RigModule):
             proxyP=self.PRX_GRP,
             p=self.RIG_DATA,
         )
-        ribbonLw = RibbonNode(
+        self.ribbonLw = RibbonNode(
             self.lwr,
             pf=rID + "_lw_",
             rbJNum=self.RBN_JNT_NUM,
@@ -474,19 +478,19 @@ class Leg(RigModule):
         # --------------------------------
         # Upper Ribbon
         # --------------------------------
-        self.upr.cstPoi(ribbonUp.stt_loc)
-        self.hip.cstOri(ribbonUp.stt_loc, mo=1)
+        self.upr.cstPoi(self.ribbonUp.stt_loc)
+        self.hip.cstOri(self.ribbonUp.stt_loc, mo=1)
         # --------------------------------
         # Lower Ribbon
         # --------------------------------
-        self.palm.cstPar(ribbonLw.end_loc, mo=1)
+        self.palm.cstPar(self.ribbonLw.end_loc, mo=1)
         # --------------------------------
         # Ribbon Controls
         # --------------------------------
 
         # Bend Ctl Setup
-        upLoc = ribbonUp.mid_loc
-        lwLoc = ribbonLw.mid_loc
+        upLoc = self.ribbonUp.mid_loc
+        lwLoc = self.ribbonLw.mid_loc
         grp = self.CTL_DATA
         up_bend = CurveNode("up_bend", pf=rID, align=upLoc, addOfs=1, p=grp)
         lw_bend = CurveNode("lw_bend", pf=rID, align=lwLoc, addOfs=1, p=grp)
@@ -503,8 +507,8 @@ class Leg(RigModule):
         lw_bend.cstParSca(lwLoc.children[0], mo=1)
 
         self.lwr.cstPar(md_bend.offset, mo=1)
-        md_bend.cstParSca(ribbonUp.end_loc, mo=1)
-        stt_ofs = ribbonLw.stt_loc.addOffsetGrp(count=2)
+        md_bend.cstParSca(self.ribbonUp.end_loc, mo=1)
+        stt_ofs = self.ribbonLw.stt_loc.addOffsetGrp(count=2)
         md_bend.cstParSca(stt_ofs[0], mo=1)
 
         if self.KNEE_FIX:
@@ -512,16 +516,16 @@ class Leg(RigModule):
 
         # add volType attr to setting
         autoVol = self.setting.a.add("autoVol")
-        autoVol >> ribbonUp.autoVol
-        autoVol >> ribbonLw.autoVol
+        autoVol >> self.ribbonUp.autoVol
+        autoVol >> self.ribbonLw.autoVol
 
         volType = self.setting.a.add(
             "volType", attrType="enum", enumName="whole:separate", k=0
         )
-        volType >> ribbonUp.volType
-        volType >> ribbonLw.volType
+        volType >> self.ribbonUp.volType
+        volType >> self.ribbonLw.volType
 
-        self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
+        self.addBindJntSet(self.ribbonUp.rbJnt + self.ribbonLw.rbJnt)
 
     def proxy_setup(self):
         proxyList = self.joints[:-1]
@@ -536,7 +540,7 @@ class Leg(RigModule):
         if self.RBN_BONES:
             proxyList.remove(self.upr)
             proxyList.remove(self.lwr)
-        if self.KNEE_FIX:
+        elif self.KNEE_FIX:
             if self.boneFix:
                 proxyList.append(self.boneFix)
                 if self.lwr in proxyList:
@@ -596,7 +600,7 @@ class Leg(RigModule):
 
         # DEBUG
         self.ctrlOnOffByAttr(
-            self.masterC.a.debug,
+            self.masterC.a["debug"],
             onList=self.all_ikHs
             + self.joints_fk
             + self.joints_ik
@@ -656,7 +660,6 @@ class Leg(RigModule):
             + self.subCtls
             + [self.setting, self.smart_ctl, self.pin_fkc]
         )
-
         if self.RBN_BONES:
             ctlSet.extend(self.all_bend)
         if self.TOE_BONES:

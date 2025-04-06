@@ -336,10 +336,12 @@ class SpineQd(RigModule):
 
         if self.bindJ:
             # mc.hide(self.bindJ, self.rbSrf)
-            self.ctrlOnOffByAttr(self.masterC.a.debug, onList=self.bindJ + [self.rbSrf])
+            self.ctrlOnOffByAttr(
+                self.masterC.a["debug"], onList=self.bindJ + [self.rbSrf]
+            )
 
         self.ctrlOnOffByAttr(
-            self.masterC.a.debug, onList=self.ctlJnts + self.fkJ_A + self.fkJ_B
+            self.masterC.a["debug"], onList=self.ctlJnts + self.fkJ_A + self.fkJ_B
         )
 
     def proxy_setup(self):
