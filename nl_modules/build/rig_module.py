@@ -10,9 +10,13 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
 BIND_JNT_SET = "bind_jnt_set"
+CBK = Color.BLACK
+CBL = Color.BLUE
 CDR = Color.D_RED
-CPK = Color.PINK
-CLB = Color.L_BLUE
+CDY = Color.D_YELLOW
+COR = Color.ORANGE
+CRD = Color.RED
+CYL = Color.YELLOW
 
 
 class RigModule(RigBase):
@@ -46,6 +50,7 @@ class RigModule(RigBase):
         self.x_dir = 1
         self.rigSize = 1
         self.boneFix = None
+        self.bindJnts = []
         if rigNode.a.rootJ.exists():
             self.rootJ = rigNode.a.rootJ.inConnNode
 
@@ -376,7 +381,7 @@ class RigModule(RigBase):
                 anchor.inConnNode.delete()
 
         self.rigNode.a.nodeState.set(0)
-        prx = mc.ls(self.rigID + "_*_pxGeo")
+        prx = mc.ls(self.rigID + "_*_pxGeo*")
         if prx:
             mc.delete(prx)
 
@@ -464,6 +469,7 @@ class RigModule(RigBase):
         )
         mc.hide(upLoc)
         self.boneFix = tgtDup
+        self.bindJnts.append(self.boneFix)
         self.boneFix_sdk(tgt, tgtDup)
         # self.carpalFix(tgt)
 
@@ -490,7 +496,6 @@ class RigModule(RigBase):
 
         rID = self.rigID
         rSz = self.rigSize * 2
-        xDr = self.x_dir
         patella_guide = DagNode(rID + "_patella_guide")
 
         if patella_guide.exists():
@@ -504,7 +509,7 @@ class RigModule(RigBase):
             )
             # j.addProxyMesh(size=rSz, aimDir=(xDr, 0, 0), p=PRX_GRP)
             j.freezeXf()
-            self.addBindJntSet([j])
+            self.bindJnts.append(j)
             patella_sdk(self.lwr, j)
             return j
 

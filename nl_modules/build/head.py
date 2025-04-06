@@ -10,7 +10,7 @@ from nl_modules.utils import common
 from nl_modules.utils.color import Color
 from nl_modules.build.rig_module import RigModule
 
-PRX = 25
+CDY = Color.D_YELLOW
 CYL = Color.YELLOW
 CRD = Color.RED
 CPK = Color.PINK
@@ -34,7 +34,6 @@ class Head(RigModule):
 
     def genGuideSk(self):
         self.genSk_module(["st", "ed"])
-        rID = self.rigID
         jaw_list = self.genSkFrNames(["jaw", "jawEnd"])
         jaw_list[0] | self.rootJ
         lf_eye = self.genSkFrNames("lf_eye")[0]
@@ -47,6 +46,7 @@ class Head(RigModule):
         self.head, self.headEnd, self.jaw, self.jawEnd, self.lf_eye, self.rt_eye = (
             self.joints
         )
+        self.bindJnts = [self.head, self.jaw]
         self.createCtl()
         self.fkCtl = [self.head_fkc, self.jaw_fkc]
         self.build_fk()
@@ -59,7 +59,7 @@ class Head(RigModule):
             "head", pf=rID, sf="_fkc", shape="circle_round", scale=rSz * 4, color=CYL
         )
         self.jaw_fkc = CurveNode(
-            "jaw", pf=rID, sf="_fkc", shape="roll", scale=rSz * 2, color=CPK
+            "jaw", pf=rID, sf="_fkc", shape="cube", scale=rSz, color=CDY
         )
 
         self.rigNode.setMsg(
@@ -84,13 +84,12 @@ class Head(RigModule):
         self.isolateAlign(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC], dv=1)
 
     def proxy_setup(self):
-        for j in [self.head]:  # , self.lf_eye, self.rt_eye]:
-            JointNode(j).addProxyMesh(
-                size=self.rigSize * PRX,
-                aimDir=(0, 1, 0),
-                skipEnd=1,
-                p=self.PRX_GRP,
-            )
+        rSz = self.rigSize
+        aim = (0, 1, 0)
+
+        self.addBindJntSet(self.bindJnts)
+        for j in self.bindJnts:
+            JointNode(j).addProxyMesh(size=rSz, aimDir=aim, p=self.PRX_GRP)
 
     def vis_setup(self):
         pass

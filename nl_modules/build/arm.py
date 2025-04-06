@@ -11,7 +11,6 @@ from nl_modules.nodel.ribbon_node import RibbonNode
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
-PRX = 6
 CBK = Color.BLACK
 CBL = Color.BLUE
 CDR = Color.D_RED
@@ -97,12 +96,22 @@ class Arm(RigModule):
             setting=self.setting,
         )
 
+        self.bindJnts = []
         if self.RBN_BONES:
             self.ribbon_setup()
+        else:
+            self.bindJnts.append(self.upr)
+
+        if not self.RBN_BONES and not self.TWIST_BONES:
+            self.bindJnts.append(self.lwr)
+
         if self.TWIST_BONES:
             self.twistBones_setup()
+
         if self.SCAPULAR_BONE:
             self.scapular_setup()
+        else:
+            self.bindJnts.append(self.clavicle)
 
         self.post_setup()
         self.pvc.a.tz.set(self.rigSize * self.x_dir)
@@ -190,6 +199,7 @@ class Arm(RigModule):
         )
         scapularLoc.cstPoi(twoJ_ik)
         self.clavBone = twoJ[0]
+        self.bindJnts.append(self.clavBone)
 
     def twistBones_setup(self):
 
@@ -213,7 +223,7 @@ class Arm(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-        self.joints = [radius_JC[0], ulna_JC[0]] + self.joints
+        self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
 
     def build_fk(self):
         logging.info(self.rigID)
@@ -440,7 +450,7 @@ class Arm(RigModule):
         volType >> ribbonUp.volType
         volType >> ribbonLw.volType
 
-        self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
+        self.bindJnts.extend(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def vis_setup(self):
 
@@ -469,35 +479,18 @@ class Arm(RigModule):
         )
 
     def proxy_setup(self):
-        self.joints.remove(self.palm)
-        self.joints.remove(self.ball)
-        proxyList = self.joints
-        if self.RBN_BONES:
-            if self.upr in proxyList:
-                proxyList.remove(self.upr)
-            if self.lwr in proxyList:
-                proxyList.remove(self.lwr)
-        if self.TWIST_BONES:
-            if self.lwr in proxyList:
-                proxyList.remove(self.lwr)
-        if self.SCAPULAR_BONE:
-            if self.clavicle in proxyList:
-                proxyList.remove(self.clavicle)
-                proxyList.append(self.clavBone)
-
-        rSz = self.rigSize * PRX
+        rSz = self.rigSize
         aim = (self.x_dir, 0, 0)
-        for j in proxyList:
+
+        self.addBindJntSet(self.bindJnts)
+        for j in self.bindJnts:
             JointNode(j).addProxyMesh(
-                size=rSz,
+                size=rSz * 4,
                 aimDir=aim,
-                skipEnd=0,
                 p=self.PRX_GRP,
                 vis=self.setting,
                 grp=self.PRX_GRP,
             )
-
-        self.addBindJntSet(proxyList)
 
     def channel_setup(self):
         self.setting.a.showAttr()
