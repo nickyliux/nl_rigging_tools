@@ -76,9 +76,7 @@ class JointNode(GroupNode):
         self.a.r.set(0, 0, 0)
         self.a.s.set(1, 1, 1)
 
-    def addProxyMesh(
-        self, size=1, aimDir=(1, 0, 0), skipEnd=0, p=None, vis=None, grp=None
-    ):
+    def addProxyMesh(self, size=1, aimDir=(1, 0, 0), skipEnd=0, p=None):
         """Add Proxy Mesh for joint
         e.g.
             jnt1.addProxyMesh(size=2)                   # proxy cube created
@@ -97,12 +95,10 @@ class JointNode(GroupNode):
         child = self.childrenJt
 
         if child or (not skipEnd):
-
             dist = self.o.distanceTo(child[0]) if child else size
-            cube = mc.polyCube(
-                n=name, ax=aimDir, h=dist, w=size, d=size, subdivisionsHeight=dist / 7
-            )[0]
-            # cube = mc.polyCube(n=name, ax=aimDir, h=size, w=size, d=size)[0]
+            cube = mc.polyCube(n=name, ax=aimDir, h=dist, w=size, d=size, cuv=4)[0]
+            # subdivisionsHeight=dist / 7
+            # cube = mc.polyCube(n=name, ax=aimDir, h=size, w=size, d=size, cuv=4)[0]
 
             proxyN = DagNode(cube)
             proxyN.alignTo(self, p=p)
@@ -121,7 +117,7 @@ class JointNode(GroupNode):
             # NOTE:  constraint must be after shader assignment, otherwise mc.sets(..) will sohw error
             # common.assignProxyShader(proxyN)
 
-            # self.cstParSca(proxyN, mo=1)
+            self.cstParSca(proxyN, mo=1)
             return proxyN
 
     @staticmethod

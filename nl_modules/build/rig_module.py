@@ -509,7 +509,6 @@ class RigModule(RigBase):
                 r=rSz,
                 p=self.upr,
             )
-            # j.addProxyMesh(size=rSz, aimDir=(xDr, 0, 0), p=PRX_GRP)
             j.freezeXf()
             self.bindJnts.append(j)
             patella_sdk(self.lwr, j)
