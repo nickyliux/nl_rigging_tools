@@ -272,9 +272,9 @@ class Hand(RigModule):
             fgrCtlVis >> fgrCtls[0].a.v
 
     def post_setup(self):
-        self.addBindJntSet(self.all_fgr_jnts)
         ctlSet = [self.smart_ctl] + self.fgrRootCtlArr
         [ctlSet.extend(x) for x in self.ctlsArr]
+        self.addBindJntSet(self.all_fgr_jnts)
         self.addCtlSet(ctlSet)
         self.space_setup()
         self.anchor_setup_module({"anchorF1": self.rootJ})

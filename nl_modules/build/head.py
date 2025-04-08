@@ -84,12 +84,13 @@ class Head(RigModule):
     def proxy_setup(self):
         rSz = self.rigSize
         aim = (0, 1, 0)
-
-        self.addBindJntSet(self.bindJnts)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(size=rSz * 15, aimDir=aim, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(size=rSz * 20, aimDir=aim, p=self.PRX_GRP)
 
     def vis_setup(self):
+        pass
+
+    def ro_setup(self):
         pass
 
     def space_setup(self):
@@ -97,10 +98,11 @@ class Head(RigModule):
 
     def post_setup(self):
         logging.info(self.rigID)
-        self.addBindJntSet(self.joints)
+        self.addBindJntSet(self.bindJnts)
         self.addCtlSet(self.fkCtl)
         self.space_setup()
         self.anchor_setup_module({"anchorF1": self.head_fkc.offset})
         self.proxy_setup()
         self.vis_setup()
+        self.ro_setup()
         self.post_module()

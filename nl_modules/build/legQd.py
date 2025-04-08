@@ -11,8 +11,12 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 from nl_modules.build.rig_module import RigModule
 
-PRX = 8
+CBK = Color.BLACK
+CBL = Color.BLUE
+CDR = Color.D_RED
 CDY = Color.D_YELLOW
+CRD = Color.RED
+CYL = Color.YELLOW
 
 
 class LegQd(RigModule):
@@ -98,7 +102,9 @@ class LegQd(RigModule):
         rSz = self.rigSize
         rID = self.rigID
         xDr = self.x_dir
-        self.setting = CurveNode("setting", pf=rID, shape="sphere", scale=rSz)
+        self.setting = CurveNode(
+            "setting", pf=rID, shape="sphere", scale=rSz, color=CBK, top=1, lineWidth=2
+        )
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
         )
@@ -111,7 +117,8 @@ class LegQd(RigModule):
             pf=rID,
             scale=xDr * rSz / 2,
         )
-        self.ikc = CurveNode("ikc", pf=rID, shape="cube", color=CDY)
+        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 2, color=CDY)
+        self.ikc.lowerCubeFrontCV()
         # self.ikc = CurveNode("ikc", pf=rID, shape="foot_quad", color=CDY)
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz * 0.8)
         self.rigNode.setMsg(
@@ -149,14 +156,21 @@ class LegQd(RigModule):
         self.blend_fk_ik()
         self.singleBallCtl_setup()
 
+        self.bindJnts = [self.hip, self.upr]
         if self.KNEE_FIX:
             self.boneFix_setup(self.lwr, self.palm)
-        # if self.RBN_BONES:
-        #     self.ribbon_setup()
+
         if self.PATELLA_BONE:
             self.patella_setup(self.PRX_GRP)
+
         if self.TWIST_BONES:
             self.twistBones_setup()
+        else:
+            if self.KNEE_FIX:
+                self.bindJnts.append(self.boneFix)
+            else:
+                self.bindJnts.append(self.lwr)
+
         if self.TOE_BONES:
             self.toesRootJ | self.palm
             self.toesJntList = []
@@ -164,6 +178,8 @@ class LegQd(RigModule):
                 self.toesJntList.append([fgr for fgr in rJ.allChildrenJt2])
                 rJ.a.segmentScaleCompensate.set(0)
             self.digits_setup()
+        else:
+            self.bindJnts.extend([self.palm, self.digit, self.ball])
 
         self.post_setup()
         self.custom_setup()
@@ -338,6 +354,7 @@ class LegQd(RigModule):
             ctl, ikj = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
             ikj.a.r >> dupTgt.a.r
             ctlList = []
+            self.bindJnts.extend(toeJs[:-1])
             fkToeList = toeJs[3:-1]
             for jnt in fkToeList:
                 c = CurveNode(
@@ -396,15 +413,13 @@ class LegQd(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-        self.joints.extend([radius_JC[0], ulna_JC[0]])
+        self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
 
     def blend_fk_ik(self):
         rID = self.rigID
-        rSz = self.rigSize
-        xDr = self.x_dir
         logging.info(rID)
         self.setting | self.CTL_DATA
-        self.setting.alignTo(self.digit, offset=(0, rSz * -xDr * 20, 0))
+        self.setting.alignTo(self.digit)  # , offset=(0, rSz * -xDr * 20, 0))
         ofs = self.setting.addOffsetGrp()
         self.palm.cstPar(ofs, mo=1)
 
@@ -523,42 +538,10 @@ class LegQd(RigModule):
         self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def proxy_setup(self):
-        proxyList = self.joints
-        proxyToeList = []
-
-        if self.TOE_BONES:
-            proxyList.remove(self.ball)
-            proxyList.remove(self.palm)
-            proxyList.remove(self.digit)
-            proxyToeList.append(self.toesRootJ)
-            for t in self.toesJntList:
-                proxyToeList.extend(t)
-        if self.KNEE_FIX:
-            if self.boneFix:
-                proxyList.append(self.boneFix)
-                if self.lwr in proxyList:
-                    proxyList.remove(self.lwr)
-        if self.TWIST_BONES:
-            if self.lwr in proxyList:
-                proxyList.remove(self.lwr)
-            if self.boneFix in proxyList:
-                proxyList.remove(self.boneFix)
-
         rSz = self.rigSize
         aim = (self.x_dir, 0, 0)
-        for j in proxyList:
-            JointNode(j).addProxyMesh(
-                size=rSz * PRX, aimDir=aim, skipEnd=1, p=self.PRX_GRP
-            )
-        for j in proxyToeList:
-            JointNode(j).addProxyMesh(
-                size=rSz * 2, aimDir=aim, skipEnd=1, p=self.PRX_GRP
-            )
-
-        if proxyList:
-            self.addBindJntSet(proxyList)
-        if proxyToeList:
-            self.addBindJntSet(proxyToeList)
+        for j in self.bindJnts:
+            JointNode(j).addProxyMesh(size=rSz * 8, aimDir=aim, p=self.PRX_GRP)
 
     def vis_setup(self):
 

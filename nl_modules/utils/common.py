@@ -55,34 +55,27 @@ def matchMove(targetList, mode=None):
 
 def assignProxyShader(geo):
     """Assign shaders to proxy mesh"""
-
-    CPG = (0.4, 0.4, 0.4)  # Color Proxy Green
-    CPY = (0.3, 0.5, 0.3)  # Color Proxy Yellow
-    CPR = (0.5, 0.2, 0.2)  # Color Proxy Red
-    CPB = (0.2, 0.2, 0.8)  # Color Proxy Blue
-
     from nl_modules.nodel.base.dag_node import DagNode
+
+    COLOR1 = (0.5, 0.5, 0.5)
+    COLOR2 = (0.7, 0.3, 0.3)
 
     geo = DagNode(geo)
     # SHADER FOR ENTIRE
-    shd, sg = addShader("proxy_default_shd", color=CPG)
+    shd, sg = addShader("proxy_default_shd", color=COLOR1)
     mc.sets(geo, forceElement=sg)
 
     # SHADER FOR LEFT / RIGHT
-    if geo.name.startswith("lf"):
-        name = "proxy_lf_shd"
+    name = "proxy_md_shd"
+    faceID = [4, 5]
+    if geo.name.startswith("lf") or geo.name.startswith("rt"):
+        name = "proxy_side_shd"
         faceID = [0, 2]
-        color = CPB
-    elif geo.name.startswith("rt"):
-        name = "proxy_rt_shd"
-        faceID = [0, 2]
-        color = CPR
-    else:
-        name = "proxy_md_shd"
-        faceID = [4, 5]
-        color = CPY
+    # elif geo.name.startswith("rt"):
+    #     name = "proxy_rt_shd"
+    #     faceID = [0, 2]
 
-    shd, sg = addShader(name, color=color)
+    shd, sg = addShader(name, color=COLOR2)
     for fID in faceID:
         mc.sets(f"{geo}.f[{fID}]", forceElement=sg)
 

@@ -15,7 +15,6 @@ CBL = Color.BLUE
 CDR = Color.D_RED
 CDY = Color.D_YELLOW
 CLB = Color.L_BLUE
-COR = Color.ORANGE
 CPK = Color.PINK
 CRD = Color.RED
 CYL = Color.YELLOW
@@ -309,8 +308,8 @@ class RigModule(RigBase):
 
     def calcRigSize(self, rootJ):
         if rootJ:
-            self.rigSize = max(rootJ.o.width2, rootJ.o.height2, rootJ.o.depth2) / 100
-            # logging.info(f"{self.__class__.__name__}: {round(self.rigSize, 2)}")
+            # self.rigSize = max(rootJ.o.width2, rootJ.o.height2, rootJ.o.depth2) / 100
+            self.rigSize = rootJ.o.diagonal2 / 100
 
     def addMinusScaleGrp(self, tgt):
         if self.rigID.startswith("rt_"):
@@ -471,7 +470,6 @@ class RigModule(RigBase):
         )
         mc.hide(upLoc)
         self.boneFix = tgtDup
-        # self.bindJnts.append(self.boneFix)
         self.boneFix_sdk(tgt, tgtDup)
         # self.carpalFix(tgt)
 
@@ -497,7 +495,7 @@ class RigModule(RigBase):
             common.sdk(driver, driven, "ry", "ry", -180, -90)
 
         rID = self.rigID
-        rSz = self.rigSize * 2
+        rSz = self.rigSize
         patella_guide = DagNode(rID + "_patella_guide")
 
         if patella_guide.exists():
@@ -506,7 +504,7 @@ class RigModule(RigBase):
                 pf=rID,
                 align=patella_guide,
                 color=CDR,
-                r=rSz,
+                r=rSz * 2,
                 p=self.upr,
             )
             j.freezeXf()
@@ -591,7 +589,6 @@ class RigModule(RigBase):
             addOfs=1,
             p=p,
         )
-        # ctl.cv_move(0, 0, self.rigSize * self.x_dir * -30)
         ikJ = dupTgt.duplicate()
         endJ = ikJ.allChildrenJt[-1]
         if endJ not in ikJ.children:
@@ -638,7 +635,6 @@ class RigModule(RigBase):
         from nl_modules.nodel.ik_node import IkNode
 
         rID = self.rigID
-        # rSz = self.rigSize
 
         # create aim chain
         self.joints_am = common.extractSk([startJ, endJ], "_am", p=fkc.offset)

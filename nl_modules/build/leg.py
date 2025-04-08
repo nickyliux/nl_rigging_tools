@@ -15,7 +15,6 @@ CBK = Color.BLACK
 CBL = Color.BLUE
 CDR = Color.D_RED
 CDY = Color.D_YELLOW
-COR = Color.ORANGE
 CRD = Color.RED
 CYL = Color.YELLOW
 
@@ -113,7 +112,13 @@ class Leg(RigModule):
         xDr = self.x_dir
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="sphere2", scale=rSz, color=COR, top=1
+            "setting",
+            pf=rID,
+            shape="sphere2",
+            scale=rSz,
+            color=CBK,
+            top=1,
+            lineWidth=2,
         )
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
@@ -403,8 +408,6 @@ class Leg(RigModule):
 
     def blend_fk_ik(self):
         rID = self.rigID
-        # rSz = self.rigSize
-        # xDr = self.x_dir
         logging.info(rID)
         self.joints_bf = common.extractSk(
             self.joints, "_bf", p=self.BF_PART, color=CYL, r=2
@@ -539,10 +542,8 @@ class Leg(RigModule):
     def proxy_setup(self):
         rSz = self.rigSize
         aim = (self.x_dir, 0, 0)
-
-        self.addBindJntSet(self.bindJnts)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(size=rSz * 4, aimDir=aim, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(size=rSz * 6, aimDir=aim, p=self.PRX_GRP)
 
     def vis_setup(self):
 
@@ -630,6 +631,7 @@ class Leg(RigModule):
         if self.TOE_BONES:
             [ctlSet.extend(s) for s in self.toesCtlsList]
 
+        self.addBindJntSet(self.bindJnts)
         self.addCtlSet(ctlSet)
         self.space_setup()
         self.anchor_setup_module({"anchorF1": self.hip_fkc.offset})

@@ -15,7 +15,6 @@ CBK = Color.BLACK
 CBL = Color.BLUE
 CDR = Color.D_RED
 CDY = Color.D_YELLOW
-COR = Color.ORANGE
 CRD = Color.RED
 CYL = Color.YELLOW
 
@@ -122,7 +121,7 @@ class Arm(RigModule):
         xDr = self.x_dir
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="sphere2", scale=rSz, color=COR, top=1
+            "setting", pf=rID, shape="sphere2", scale=rSz, color=CBK, top=1, lineWidth=2
         )
         self.clavicle_fkc = CurveNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
@@ -475,8 +474,6 @@ class Arm(RigModule):
     def proxy_setup(self):
         rSz = self.rigSize
         aim = (self.x_dir, 0, 0)
-
-        self.addBindJntSet(self.bindJnts)
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(size=rSz * 4, aimDir=aim, p=self.PRX_GRP)
 
@@ -521,6 +518,7 @@ class Arm(RigModule):
         if self.RBN_BONES:
             ctlSet.extend(self.all_bend)
 
+        self.addBindJntSet(self.bindJnts)
         self.addCtlSet(ctlSet)
         self.space_setup()
         self.anchor_setup_module(

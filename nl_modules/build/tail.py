@@ -198,7 +198,6 @@ class Tail(RigModule):
 
     def build_rbJ(self):
         if self.BIND_JNT_NUM > 1:
-            self.bindJ = []
             coord = []
             sep = (self.FK_CTL_NUM - 1) / (self.BIND_JNT_NUM - 1)
             for i in range(self.BIND_JNT_NUM):
@@ -212,25 +211,24 @@ class Tail(RigModule):
                     self.rigID + "_rbJ_#", align=loc, color=Color.RED, p=self.SKL_DATA
                 )
                 loc.cstPar(j)
-                self.bindJ.append(j)
+                self.bindJnts.append(j)
 
     def vis_setup(self):
-        if self.bindJ:
-            self.rbSrf.hide()
+        if self.bindJnts:
+            self.ctrlOnOffByAttr(self.masterC.a["debug"], onList=[self.rbSrf])
 
     def ro_setup(self):
         for ctl in self.fkCtl:
             ctl.a.ro.set(3)
 
     def proxy_setup(self):
-        rSz = self.rigSize * 6
-        if self.bindJ:
-            for j in self.bindJ:
-                JointNode(j).addProxyMesh(size=rSz, p=self.PRX)
+        rSz = self.rigSize
+        for j in self.bindJnts:
+            JointNode(j).addProxyMesh(size=rSz * 12, p=self.PRX)
 
     def post_setup(self):
         rID = self.rigID
-        self.addBindJntSet(self.bindJ)
+        self.addBindJntSet(self.bindJnts)
         self.addCtlSet(self.fkCtl)
         self.anchor_setup_module({"anchorF1": self.fkCtl[0].offset})
         self.proxy_setup()

@@ -11,10 +11,8 @@ from nl_modules.nodel.surf_node import SurfNode
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
-PRX = 90
 CBK = Color.BLACK
 CDR = Color.D_RED
-COR = Color.ORANGE
 CRD = Color.RED
 
 
@@ -54,9 +52,10 @@ class Spine(RigModule):
             pf=rID,
             shape="sphere2",
             up="-z",
-            scale=rSz * 1.5,
-            color=COR,
+            scale=rSz,
+            color=CBK,
             top=1,
+            lineWidth=2,
         )
         self.cog_ctl = CurveNode("cog_ctl", pf=rID, shape="cog2", scale=rSz * 2)
         self.tp_ctl = CurveNode(
@@ -238,7 +237,9 @@ class Spine(RigModule):
     def proxy_setup(self):
         rSz = self.rigSize
         for j in self.bindJ:
-            size = rSz * PRX / self.RBN_JNT_NUM if self.RBN_BONES else rSz * 10
+            size = rSz * 10
+            if self.RBN_BONES:
+                size = rSz / self.RBN_JNT_NUM * 80
             JointNode(j).addProxyMesh(size=size, p=self.PRX_GRP, aimDir=(0, 1, 0))
 
     def space_setup(self):

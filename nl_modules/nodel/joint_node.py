@@ -115,7 +115,7 @@ class JointNode(GroupNode):
                 )
 
             # NOTE:  constraint must be after shader assignment, otherwise mc.sets(..) will sohw error
-            # common.assignProxyShader(proxyN)
+            common.assignProxyShader(proxyN)
 
             self.cstParSca(proxyN, mo=1)
             return proxyN

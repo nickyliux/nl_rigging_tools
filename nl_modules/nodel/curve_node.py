@@ -309,4 +309,4 @@ class CurveNode(GroupNode):
     def lowerCubeFrontCV(self):
         targetCV = [self.shape + f".cv[{id}]" for id in [1, 12, 15, 16]]
         for cv in targetCV:
-            mc.move(0, -self.o.height / 2, 0, cv, os=1, r=1)
+            mc.move(0, -self.o.height * 0.3, 0, cv, os=1, r=1)

@@ -12,10 +12,8 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 from nl_modules.build.rig_module import RigModule
 
-PRX = 90
 CBK = Color.BLACK
 CDY = Color.D_YELLOW
-COR = Color.ORANGE
 CRD = Color.RED
 CYL = Color.YELLOW
 
@@ -41,7 +39,7 @@ class SpineQd(RigModule):
         self.setting = None
         self.ctls = []
 
-        self.bindJ = []
+        self.bindJnts = []
         self.fkJnt = []
         self.fkJ_A = []
         self.fkJ_B = []
@@ -59,7 +57,14 @@ class SpineQd(RigModule):
         scale = (rSz * 5, rSz * 5, rSz)
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="sphere2", up="-z", scale=rSz * 3, color=COR, top=1
+            "setting",
+            pf=rID,
+            shape="sphere2",
+            up="-z",
+            scale=rSz,
+            color=CBK,
+            top=1,
+            lineWidth=2,
         )
         self.cog_ctl = CurveNode(
             "cog_ctl",
@@ -81,10 +86,10 @@ class SpineQd(RigModule):
             "rt_ctl", pf=rID, shape="circle_round", scale=scale, up="z", lineWidth=2
         )
         self.tangent_tp_ctl = CurveNode(
-            "tangent_tp_ctl", pf=rID, shape="stickS", scale=rSz * 2, color=CDY
+            "tangent_tp_ctl", pf=rID, shape="stickS", scale=rSz, color=CDY
         )
         self.tangent_rt_ctl = CurveNode(
-            "tangent_rt_ctl", pf=rID, shape="stickS", scale=rSz * 2, color=CDY
+            "tangent_rt_ctl", pf=rID, shape="stickS", scale=rSz, color=CDY
         )
         self.rigNode.setMsg(
             {
@@ -113,7 +118,7 @@ class SpineQd(RigModule):
             p=self.RIG_DATA,
         )
         self.rigNode.setMsg({"rbSrf": self.rbSrf})
-        self.bindJ = SurfNode.buildRbJnt(
+        self.bindJnts = SurfNode.buildRbJnt(
             rID,
             rSz,
             self.RBN_JNT_NUM,
@@ -329,15 +334,15 @@ class SpineQd(RigModule):
             fc.a.varyTime.set(i)
 
             ratio = (D / (d / scaleFix)) ** (fc.a.varying * autoVol)
-            ratio >> self.bindJ[i].a.sx
-            ratio >> self.bindJ[i].a.sy
+            ratio >> self.bindJnts[i].a.sx
+            ratio >> self.bindJnts[i].a.sy
 
     def vis_setup(self):
 
-        if self.bindJ:
-            # mc.hide(self.bindJ, self.rbSrf)
+        if self.bindJnts:
+            # mc.hide(self.bindJnts, self.rbSrf)
             self.ctrlOnOffByAttr(
-                self.masterC.a["debug"], onList=self.bindJ + [self.rbSrf]
+                self.masterC.a["debug"], onList=self.bindJnts + [self.rbSrf]
             )
 
         self.ctrlOnOffByAttr(
@@ -346,11 +351,9 @@ class SpineQd(RigModule):
 
     def proxy_setup(self):
         rSz = self.rigSize
-        if self.bindJ:
-            for j in self.bindJ:
-                JointNode(j).addProxyMesh(
-                    size=rSz * PRX / len(self.bindJ), p=self.PRX_GRP
-                )
+        for j in self.bindJnts:
+            size = rSz / len(self.bindJnts) * 80
+            JointNode(j).addProxyMesh(size=size, p=self.PRX_GRP)
 
     def ro_setup(self):
         [c.a.ro.set(2) for c in self.ctls]
@@ -373,7 +376,7 @@ class SpineQd(RigModule):
         rID = self.rigID
         logging.info(rID)
         if self.RBN_JNT_NUM > 1:
-            self.addBindJntSet(self.bindJ)
+            self.addBindJntSet(self.bindJnts)
         self.addCtlSet(self.ctls)
         self.anchor_setup()
         self.proxy_setup()
