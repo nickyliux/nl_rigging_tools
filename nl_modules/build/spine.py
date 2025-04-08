@@ -22,6 +22,7 @@ class Spine(RigModule):
         self.FK_JNT_NUM = self.master_guide.a.fkJntNum.get()
         self.RBN_BONES = self.master_guide.a.rbnBones.get()
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
+
         self.LINE_GUIDE = DagNode(self.rigID + "_line_guide")
         self.MD_GUIDE = DagNode(self.rigID + "_md_guide")
         self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
