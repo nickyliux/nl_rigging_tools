@@ -85,7 +85,7 @@ class Head(RigModule):
         rSz = self.rigSize
         aim = (0, 1, 0)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(size=rSz * 20, aimDir=aim, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(size=rSz * 15, aimDir=aim, p=self.PRX_GRP)
 
     def vis_setup(self):
         pass
