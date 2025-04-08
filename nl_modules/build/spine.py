@@ -13,6 +13,8 @@ from nl_modules.utils.color import Color
 
 CBK = Color.BLACK
 CDR = Color.D_RED
+CBL = Color.BLUE
+CLB = Color.L_BLUE
 CRD = Color.RED
 
 
@@ -37,7 +39,7 @@ class Spine(RigModule):
         self.setting = None
         self.ctlJnts = None
 
-        self.bindJ = []
+        self.bindJnts = []
         self.fkJnt = []
         self.rbSrf = None
 
@@ -117,7 +119,7 @@ class Spine(RigModule):
         hipCtl.offset.snapAlignTo(self.fkJnt[1], self.fkJnt[0])
         hipCtl.cv_move(0, rSz * -20, 0)
         hipCtl.cstPar(self.fkJnt[0], mo=1)
-        self.bindJ = self.fkJnt
+        self.bindJnts = self.fkJnt
 
     def build_ik(self):
         rID = self.rigID
@@ -160,13 +162,13 @@ class Spine(RigModule):
             self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
             self.ctlJnts = self.createCtlJ(
-                [self.rt_ctl, self.md_ctl, self.tp_ctl], r=rSz * 20, color=CRD
+                [self.rt_ctl, self.md_ctl, self.tp_ctl], r=rSz * 20, color=CBL
             )
             self.rbSrf.weightTo(self.ctlJnts, mi=3, dr=4)
 
-            self.bindJ = SurfNode.buildRbJnt(
+            self.bindJnts = SurfNode.buildRbJnt(
                 rID,
-                rSz * 4,
+                rSz * 8,
                 self.RBN_JNT_NUM,
                 surf=self.rbSrf,
                 rigData=self.RIG_DATA,
@@ -174,6 +176,9 @@ class Spine(RigModule):
                 color=CDR,
             )
             self.build_volume_setup()
+
+        for ctl in self.fkCtl:
+            self.cog_ctl.a.s >> ctl.offset.a.s
 
         # self.ikCtl = [self.cog_ctl, self.cog_gmb, self.rt_ctl, self.md_ctl, self.tp_ctl]
         self.ikCtl = [self.rt_ctl, self.md_ctl, self.tp_ctl]
@@ -206,8 +211,8 @@ class Spine(RigModule):
             fc.a.varyTime.set(i)
 
             ratio = (D / (d / scaleFix)) ** (fc.a.varying * autoVol)
-            ratio >> self.bindJ[i].a.sx
-            ratio >> self.bindJ[i].a.sy
+            ratio >> self.bindJnts[i].a.sx
+            ratio >> self.bindJnts[i].a.sy
 
     def vis_setup(self):
 
@@ -228,8 +233,9 @@ class Spine(RigModule):
 
     def channel_setup(self):
         self.setting.a.showAttr()
-        for ctl in [self.cog_ctl, self.cog_gmb, self.rt_ctl, self.md_ctl, self.tp_ctl]:
+        for ctl in [self.cog_gmb, self.rt_ctl, self.md_ctl, self.tp_ctl] + self.fkCtl:
             ctl.a.showAttr(t=1, r=1)
+        self.cog_ctl.a.showAttr(t=1, r=1, s=1)
 
     def ro_setup(self):
         for ctl in self.fkCtl + self.ikCtl + [self.cog_ctl, self.cog_gmb]:
@@ -237,11 +243,13 @@ class Spine(RigModule):
 
     def proxy_setup(self):
         rSz = self.rigSize
-        for j in self.bindJ:
+        for j in self.bindJnts:
             size = rSz * 10
             if self.RBN_BONES:
                 size = rSz / self.RBN_JNT_NUM * 80
-            JointNode(j).addProxyMesh(size=size, p=self.PRX_GRP, aimDir=(0, 1, 0))
+            JointNode(j).addProxyMesh(
+                size=size, p=self.PRX_GRP, aimDir=(0, 1, 0), scaler=self.cog_ctl
+            )
 
     def space_setup(self):
         self.rigNode.setMsg({"space_COG": self.cog_ctl})
@@ -249,13 +257,13 @@ class Spine(RigModule):
         self.rigNode.setMsg({"space_uprBody": self.tp_ctl})
 
     def anchor_setup(self):
-        anchorM2Tgt = self.bindJ[-1] if self.RBN_BONES else self.tp_ctl
+        anchorM2Tgt = self.bindJnts[-1] if self.RBN_BONES else self.tp_ctl
         self.anchor_setup_module({"anchorM1": self.rt_ctl, "anchorM2": anchorM2Tgt})
 
     def post_setup(self):
         rID = self.rigID
         logging.info(rID)
-        self.addBindJntSet(self.bindJ)
+        self.addBindJntSet(self.bindJnts)
         self.addCtlSet(
             self.fkCtl + self.ikCtl + [self.setting, self.cog_ctl, self.cog_gmb]
         )

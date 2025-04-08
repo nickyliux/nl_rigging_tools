@@ -9,6 +9,8 @@ from nl_modules.nodel.surf_node import SurfNode
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
+CBL = Color.BLUE
+
 
 class RibbonNode:
     def __init__(
@@ -113,7 +115,7 @@ class RibbonNode:
         )
         rbJnt = []
         for i in range(self.rbJNum):
-            jnt = JointNode(f"rbj_{i}", pf=pf, p=self.JNT_GRP, r=0.5, addOfs=1)
+            jnt = JointNode(f"rbj_{i}", pf=pf, p=self.JNT_GRP, r=self.D / 10, addOfs=1)
             pinXf[i].cstPar(jnt.parent)
             pinXf[i].a.inheritsTransform.set(0)
             rbJnt.append(jnt)
@@ -211,7 +213,7 @@ class RibbonNode:
 
         for j in stt_sknJ, end_sknJ, mid_sknJ:
             j.setRadius(self.D / 5)
-            j.color = Color.D_RED
+            j.color = CBL
 
         stt_ikh = IkNode("stt", pf=pf, sj=stt_aimJ, ee=stt_aimJ_end, sol=1, quat=1, p=g)
         mid_ikh = IkNode("mid", pf=pf, sj=mid_aimJ, ee=mid_aimJ_end, sol=1, quat=1, p=g)

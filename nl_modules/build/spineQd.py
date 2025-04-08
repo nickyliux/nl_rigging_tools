@@ -14,6 +14,7 @@ from nl_modules.build.rig_module import RigModule
 
 CBK = Color.BLACK
 CDY = Color.D_YELLOW
+CBL = Color.BLUE
 CRD = Color.RED
 CYL = Color.YELLOW
 
@@ -120,7 +121,7 @@ class SpineQd(RigModule):
         self.rigNode.setMsg({"rbSrf": self.rbSrf})
         self.bindJnts = SurfNode.buildRbJnt(
             rID,
-            rSz,
+            rSz * 4,
             self.RBN_JNT_NUM,
             surf=self.rbSrf,
             rigData=self.RIG_DATA,
@@ -217,7 +218,7 @@ class SpineQd(RigModule):
         rt_gimbal = self.rt_ctl.addGimbal()
 
         self.ctlJnts = self.createCtlJ(
-            [self.rt_ctl, self.md_ctl, self.tp_ctl], color=CRD, r=rSz * 20
+            [self.rt_ctl, self.md_ctl, self.tp_ctl], color=CBL, r=rSz * 20
         )
         # Orient control last fkJ by tip ctl
         self.fkJnt[-1].a.r.disconnect()

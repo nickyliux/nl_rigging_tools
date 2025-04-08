@@ -178,8 +178,7 @@ class Tail(RigModule):
 
     def channel_setup(self):
         pass
-        # self.setting.a.showAttr()
-        # for ctl in self.fkCtl:
+        # for ctl in self.fkCtl[1:]:
         #     ctl.a.showAttr(t=1, r=1)
 
     def ro_setup(self):
@@ -189,7 +188,7 @@ class Tail(RigModule):
     def proxy_setup(self):
         rSz = self.rigSize
         for j in self.bindJnts:
-            size = rSz / self.RBN_JNT_NUM * 40
+            size = rSz / self.RBN_JNT_NUM * 80
             JointNode(j).addProxyMesh(size=size, p=self.PRX)
 
     def post_setup(self):
