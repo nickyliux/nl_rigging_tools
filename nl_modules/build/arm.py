@@ -121,8 +121,9 @@ class Arm(RigModule):
         xDr = self.x_dir
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="sphere2", scale=rSz, color=CBK, top=1, lineWidth=2
+            "setting", pf=rID, shape="diamond", scale=rSz, color=CBK, top=1
         )
+        # lineWidth=2
         self.clavicle_fkc = CurveNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
         )

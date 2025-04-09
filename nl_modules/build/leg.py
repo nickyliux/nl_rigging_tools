@@ -112,20 +112,21 @@ class Leg(RigModule):
         xDr = self.x_dir
 
         self.setting = CurveNode(
-            "setting",
-            pf=rID,
-            shape="sphere2",
-            scale=rSz,
-            color=CBK,
-            top=1,
-            lineWidth=2,
+            "setting", pf=rID, shape="stickS", scale=rSz * -xDr, color=CBK, top=1
         )
+        # lineWidth=2,
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
         )
-        self.upr_fkc = CurveNode("upr_fkc", pf=rID, up="x", scale=rSz * 2)
-        self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", scale=rSz * 2)
-        self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz * 2)
+        self.upr_fkc = CurveNode(
+            "upr_fkc", pf=rID, shape="circle_round", up="x", scale=rSz
+        )
+        self.lwr_fkc = CurveNode(
+            "lwr_fkc", pf=rID, shape="circle_round", up="x", scale=rSz
+        )
+        self.palm_fkc = CurveNode(
+            "palm_fkc", pf=rID, shape="circle_round", up="x", scale=rSz
+        )
         self.ball_fkc = CurveNode(
             "ball_fkc", pf=rID, shape="fk_rotator", up="-z", scale=rSz * xDr * 1.5
         )
@@ -136,8 +137,8 @@ class Leg(RigModule):
         self.ikc.lowerCubeFrontCV()
         self.ikc.cv_move(0, 0, rSz * 8)
 
-        self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz / 2)
-        self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 3)
+        self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz * 0.5)
+        self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz * 0.3)
 
         self.rigNode.setMsg(
             {

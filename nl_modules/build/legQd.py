@@ -103,14 +103,9 @@ class LegQd(RigModule):
         rID = self.rigID
         xDr = self.x_dir
         self.setting = CurveNode(
-            "setting",
-            pf=rID,
-            shape="sphere",
-            scale=rSz * 2,
-            color=CBK,
-            top=1,
-            lineWidth=2,
+            "setting", pf=rID, shape="stickS", scale=rSz * -xDr, color=CBK, top=1
         )
+        # lineWidth=2,
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
         )

@@ -308,8 +308,8 @@ class RigModule(RigBase):
 
     def calcRigSize(self, rootJ):
         if rootJ:
-            # self.rigSize = max(rootJ.o.width2, rootJ.o.height2, rootJ.o.depth2) / 100
-            self.rigSize = rootJ.o.diagonal2 / 100
+            # min size for ctl is 0.4
+            self.rigSize = max(rootJ.o.diagonal2 / 100, 0.4)
 
     def addMinusScaleGrp(self, tgt):
         if self.rigID.startswith("rt_"):

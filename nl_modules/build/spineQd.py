@@ -58,15 +58,9 @@ class SpineQd(RigModule):
         scale = (rSz * 4, rSz * 4, rSz)
 
         self.setting = CurveNode(
-            "setting",
-            pf=rID,
-            shape="sphere2",
-            up="-z",
-            scale=rSz * 2,
-            color=CBK,
-            top=1,
-            lineWidth=2,
+            "setting", pf=rID, shape="stickS", scale=rSz * 2, color=CBK, top=1
         )
+        # lineWidth=2,
         self.cog_ctl = CurveNode(
             "cog_ctl",
             pf=rID,
@@ -80,7 +74,7 @@ class SpineQd(RigModule):
         self.tp_ctl = CurveNode(
             "tp_ctl", pf=rID, shape="circle_round", scale=scale, up="z", lineWidth=2
         )
-        self.md_ctl = CurveNode("_md_ctl", pf=rID, shape="cube", scale=scale * 1.5)
+        self.md_ctl = CurveNode("_md_ctl", pf=rID, shape="cube", scale=scale)
         self.rt_ctl = CurveNode(
             "rt_ctl", pf=rID, shape="circle_round", scale=scale, up="z", lineWidth=2
         )
@@ -170,7 +164,7 @@ class SpineQd(RigModule):
         rID = self.rigID
         rSz = self.rigSize
         logging.info(rID)
-        self.setting.alignTo(self.cog_ctl, p=self.cog_ctl)
+
         self.spCrv = self.LINE_GUIDE.duplicate(n=rID + "_spCrv_#")
         self.spCrv | self.RIG_DATA
         # crv.rebuild(spans=4)
@@ -207,7 +201,6 @@ class SpineQd(RigModule):
         self.md_ctl.alignTo(self.MD_GUIDE)
         self.tp_ctl.snapAlignTo(self.fkJnt[-1], self.TP_GUIDE)
 
-        # self.cog_ctl.alignTo(self.md_ctl)
         self.cog_ctl.alignTo(self.master_guide)
         (self.tp_ctl, self.md_ctl, self.rt_ctl) | self.cog_ctl | self.CTL_DATA
         self.cog_ctl.addOffsetGrp()
@@ -304,6 +297,8 @@ class SpineQd(RigModule):
         # self.addPivOffset(self.rt_ctl, scale=self.rigSize, dnwd=0)
 
         self.build_volume_setup()
+
+        self.setting.alignTo(self.md_ctl, p=self.cog_ctl)
 
     def build_volume_setup(self):
         """Scale ribbon joints according to length of the surface"""
