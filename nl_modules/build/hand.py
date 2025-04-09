@@ -9,9 +9,6 @@ from nl_modules.nodel.joint_node import JointNode
 from nl_modules.utils import common
 
 
-PRX = 12
-
-
 class Hand(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
@@ -79,7 +76,8 @@ class Hand(RigModule):
                 ctlList.append(ctl)
             self.fkGivenCtl3(fgrs, ctlList, count=2, p=self.CTL_DATA)
             self.ctlsArr.append(ctlList)
-            self.rootJ.cstParSca(ctlList[0].offset.offset, mo=1)
+            self.rootJ.cstPar(ctlList[0].offset.offset, mo=1)
+            self.rootJ.a.s >> ctlList[0].offset.offset.a.s
 
     def build_ik(self):
         rID = self.rigID
@@ -87,13 +85,17 @@ class Hand(RigModule):
         xDr = self.x_dir
 
         self.fgrRootCtlArr = []
-        rig_grp = GroupNode(rID + "_grp", p=self.RIG_DATA)
+        rig_grp = GroupNode(rID + "_grp", align=self.rootJ, p=self.RIG_DATA)
+        self.rootJ.offset.cstPar(rig_grp, mo=1)
 
-        self.rootJ.offset.cstParSca(rig_grp, mo=1)
         for fgrs, ctls in zip(self.fgrsArr, self.ctlsArr):
             ctl, ikj = self.build_digit_ik(DagNode(fgrs[1]), xDr * rSz * 0.8, p=rig_grp)
             self.fgrRootCtlArr.append(ctl)
             ikj.a.r >> ctls[1].parent.parent.a.r
+
+        # scalable
+        self.rootJ.a.s >> self.PRX_GRP.a.s
+        self.rootJ.cstSca(self.RIG_DATA)
 
     def smart_setup(self):
         rID = self.rigID
@@ -248,7 +250,7 @@ class Hand(RigModule):
         for fgrs in self.fgrsArr:
             proxyList.extend(fgrs)
 
-        rSz = self.rigSize * PRX
+        rSz = self.rigSize * 12
         xDr = self.x_dir
         for j in proxyList:
             JointNode(j).addProxyMesh(

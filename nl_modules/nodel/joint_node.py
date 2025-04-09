@@ -76,7 +76,7 @@ class JointNode(GroupNode):
         self.a.r.set(0, 0, 0)
         self.a.s.set(1, 1, 1)
 
-    def addProxyMesh(self, size=1, aimDir=(1, 0, 0), skipEnd=0, p=None, scaler=None):
+    def addProxyMesh(self, size=1, aimDir=(1, 0, 0), skipEnd=0, p=None):
         """Add Proxy Mesh for joint
         e.g.
             jnt1.addProxyMesh(size=2)                   # proxy cube created
@@ -118,8 +118,8 @@ class JointNode(GroupNode):
             common.assignProxyShader(proxyN)
 
             self.cstPar(proxyN, mo=1)
-            if scaler:
-                scaler.a.s >> proxyN.a.s
+            # if scaler:
+            #     scaler.a.s >> proxyN.a.s
             return proxyN
 
     @staticmethod

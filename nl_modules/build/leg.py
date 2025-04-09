@@ -544,7 +544,7 @@ class Leg(RigModule):
         rSz = self.rigSize
         aim = (self.x_dir, 0, 0)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(size=rSz * 6, aimDir=aim, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(size=rSz * 5, aimDir=aim, p=self.PRX_GRP)
 
     def vis_setup(self):
 

@@ -83,6 +83,9 @@ class Head(RigModule):
         self.jaw_fkc.cstPar(self.jaw, mo=1)
         self.jaw_fkc.cv_moveTo(self.jawEnd.o.pos)
 
+        # scalable
+        self.head_fkc.a.s >> self.PRX_GRP.a.s
+
         self.isolateAlign(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC], dv=1)
 
     def proxy_setup(self):

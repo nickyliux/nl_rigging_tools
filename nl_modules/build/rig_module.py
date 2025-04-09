@@ -308,8 +308,7 @@ class RigModule(RigBase):
 
     def calcRigSize(self, rootJ):
         if rootJ:
-            # min size for ctl is 0.4
-            self.rigSize = max(rootJ.o.diagonal2 / 100, 0.4)
+            self.rigSize = rootJ.o.diagonal2 / 100
 
     def addMinusScaleGrp(self, tgt):
         if self.rigID.startswith("rt_"):
@@ -600,10 +599,10 @@ class RigModule(RigBase):
             sol=0,
             scaleFix=self.masterC.a.globalScale,
             RIG_DATA=self.RIG_DATA,
-            vis=0,
             p=ctl,
+            # vis=0,
         )
-        mc.hide(ikJ)
+        # mc.hide(ikJ)
         return ctl, ikJ
 
     def getAutoAimPreset(self):

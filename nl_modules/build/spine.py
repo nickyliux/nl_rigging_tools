@@ -16,6 +16,7 @@ CDR = Color.D_RED
 CBL = Color.BLUE
 CLB = Color.L_BLUE
 CRD = Color.RED
+CYL = Color.YELLOW
 
 
 class Spine(RigModule):
@@ -60,7 +61,9 @@ class Spine(RigModule):
             top=1,
             lineWidth=2,
         )
-        self.cog_ctl = CurveNode("cog_ctl", pf=rID, shape="cog2", scale=rSz * 2)
+        self.cog_ctl = CurveNode(
+            "cog_ctl", pf=rID, shape="cog2", scale=rSz * 2, color=CYL
+        )
         self.tp_ctl = CurveNode(
             "tp_ctl", pf=rID, shape="circle_round", scale=rSz * 4, lineWidth=2
         )
@@ -180,6 +183,8 @@ class Spine(RigModule):
         for ctl in self.fkCtl:
             self.cog_ctl.a.s >> ctl.offset.a.s
 
+        self.cog_ctl.a.s >> self.PRX_GRP.a.s
+
         # self.ikCtl = [self.cog_ctl, self.cog_gmb, self.rt_ctl, self.md_ctl, self.tp_ctl]
         self.ikCtl = [self.rt_ctl, self.md_ctl, self.tp_ctl]
 
@@ -247,9 +252,7 @@ class Spine(RigModule):
             size = rSz * 10
             if self.RBN_BONES:
                 size = rSz / self.RBN_JNT_NUM * 80
-            JointNode(j).addProxyMesh(
-                size=size, p=self.PRX_GRP, aimDir=(0, 1, 0), scaler=self.cog_ctl
-            )
+            JointNode(j).addProxyMesh(size=size, p=self.PRX_GRP, aimDir=(0, 1, 0))
 
     def space_setup(self):
         self.rigNode.setMsg({"space_COG": self.cog_ctl})
