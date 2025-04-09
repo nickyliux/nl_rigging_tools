@@ -1,5 +1,6 @@
+# import logging
+import maya.cmds as mc
 from nl_modules.build.spineQd import SpineQd
-import logging
 
 
 class NeckQd(SpineQd):
@@ -9,11 +10,7 @@ class NeckQd(SpineQd):
     def anchor_setup(self):
         self.anchor_setup_module(
             {
-                # "anchorM1": self.tp_ctl,
                 "anchorF1": self.rt_ctl,
                 "anchorM1": self.fkJnt[-1],
             }
         )
-        baseAttach = self.cog_ctl.a["baseAttach"]
-        if baseAttach:
-            baseAttach.set(1)

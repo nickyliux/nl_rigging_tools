@@ -22,6 +22,7 @@ class Tail(RigModule):
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
 
         self.LINE_GUIDE = DagNode(self.rigID + "_line_guide")
+        self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
 
         self.fkCtl = None
         self.fkJnt = None
@@ -116,6 +117,8 @@ class Tail(RigModule):
             clu = DagNode(
                 mc.cluster(f"{self.rbSrf}.cv[{i}][*]", n=cluName)[1],
             )
+            clu.cstPoi(currJnt, keep=0)  # move jnt to cv
+
             ctl = CurveNode(
                 f"{i}_fkc#",
                 pf=rID,
@@ -129,6 +132,7 @@ class Tail(RigModule):
             )
             ctl.cstPar(self.fkJnt[i], mo=1)
             ctl.cstPar(clu, mo=1)
+
             if lastJnt:
                 lastJnt.cstPar(ctl.offset, mo=1)
             lastJnt = currJnt
@@ -138,7 +142,7 @@ class Tail(RigModule):
             self.allClusters.append(clu)
 
         # ADD FOLLOW ALIGN ON 1 ST FK CTL
-        self.isolateAlign(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC])
+        self.isolateAlign(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC], dv=1)
 
         mc.delete(self.rootJ)
         self.rootJ = self.fkJnt[0]
@@ -148,6 +152,12 @@ class Tail(RigModule):
         self.bindJnts = self.fkJnt
 
         [c | self.RIG_DATA for c in self.allClusters]
+
+        # scalable
+        self.fkCtl[0].a.s >> self.SKL_DATA.a.s
+        self.fkCtl[0].a.s >> self.PRX_GRP.a.s
+        for ctl in self.fkCtl[1:]:
+            self.fkCtl[0].a.s >> ctl.offset.a.s
 
     def build_rbJ(self):
         rID = self.rigID
@@ -172,14 +182,13 @@ class Tail(RigModule):
     def vis_setup(self):
         if self.RBN_BONES:
             self.ctrlOnOffByAttr(
-                self.masterC.a["debug"],
+                self.masterC.a["showSetup"],
                 onList=[self.rbSrf, self.RIG_DATA, self.SKL_DATA],
             )
 
     def channel_setup(self):
-        pass
-        # for ctl in self.fkCtl[1:]:
-        #     ctl.a.showAttr(t=1, r=1)
+        for ctl in self.fkCtl[1:]:
+            ctl.a.showAttr(t=1, r=1)
 
     def ro_setup(self):
         for ctl in self.fkCtl:
@@ -189,7 +198,7 @@ class Tail(RigModule):
         rSz = self.rigSize
         for j in self.bindJnts:
             size = rSz / self.RBN_JNT_NUM * 80
-            JointNode(j).addProxyMesh(size=size, p=self.PRX)
+            JointNode(j).addProxyMesh(size=size, p=self.PRX_GRP)
 
     def post_setup(self):
         rID = self.rigID

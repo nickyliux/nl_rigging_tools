@@ -55,14 +55,14 @@ class SpineQd(RigModule):
     def createCtl(self):
         rID = self.rigID
         rSz = self.rigSize
-        scale = (rSz * 5, rSz * 5, rSz)
+        scale = (rSz * 4, rSz * 4, rSz)
 
         self.setting = CurveNode(
             "setting",
             pf=rID,
             shape="sphere2",
             up="-z",
-            scale=rSz,
+            scale=rSz * 2,
             color=CBK,
             top=1,
             lineWidth=2,
@@ -71,7 +71,7 @@ class SpineQd(RigModule):
             "cog_ctl",
             pf=rID,
             shape="cube",
-            scale=(rSz, rSz * 1.5, rSz * 2),
+            scale=(rSz, rSz * 2, rSz * 3),
             color=CYL,
         )
         self.cog_ctl.cv_move(0, 80 * rSz, 0)
@@ -80,9 +80,7 @@ class SpineQd(RigModule):
         self.tp_ctl = CurveNode(
             "tp_ctl", pf=rID, shape="circle_round", scale=scale, up="z", lineWidth=2
         )
-        self.md_ctl = CurveNode(
-            "_md_ctl", pf=rID, shape="square", up="z", scale=rSz * 5
-        )
+        self.md_ctl = CurveNode("_md_ctl", pf=rID, shape="cube", scale=scale * 1.5)
         self.rt_ctl = CurveNode(
             "rt_ctl", pf=rID, shape="circle_round", scale=scale, up="z", lineWidth=2
         )
@@ -161,7 +159,6 @@ class SpineQd(RigModule):
             sol=2,
             createCrv=0,
             inputCrv=crv,
-            # setting=self.md_ctl,
             setting=self.cog_ctl,
             scaleFix=self.masterC.a.globalScale,
             p=self.RIG_DATA,
@@ -173,7 +170,7 @@ class SpineQd(RigModule):
         rID = self.rigID
         rSz = self.rigSize
         logging.info(rID)
-        self.setting.alignTo(self.cog_ctl, p=self.cog_ctl)  # offset=(0, rSz * 100, 0),
+        self.setting.alignTo(self.cog_ctl, p=self.cog_ctl)
         self.spCrv = self.LINE_GUIDE.duplicate(n=rID + "_spCrv_#")
         self.spCrv | self.RIG_DATA
         # crv.rebuild(spans=4)
@@ -196,7 +193,8 @@ class SpineQd(RigModule):
                 "spB", sj=self.fkJ_B[-1], ej=self.fkJ_B[1], crv=self.spCrvR, axisDir=-1
             )
 
-            baseAttach = self.cog_ctl.a.add("baseAttach", min=0, max=1, dv=0.5)
+            dv = 0.5 if self.__class__.__name__ == "SpineQd" else 1
+            baseAttach = self.cog_ctl.a.add("baseAttach", min=0, max=1, dv=dv)
             for i in range(self.FK_JNT_NUM):
                 common.cstMulti(
                     self.fkJ_B[i + 1],
@@ -343,11 +341,11 @@ class SpineQd(RigModule):
         if self.bindJnts:
             # mc.hide(self.bindJnts, self.rbSrf)
             self.ctrlOnOffByAttr(
-                self.masterC.a["debug"], onList=self.bindJnts + [self.rbSrf]
+                self.masterC.a["showSetup"], onList=self.bindJnts + [self.rbSrf]
             )
 
         self.ctrlOnOffByAttr(
-            self.masterC.a["debug"], onList=self.ctlJnts + self.fkJ_A + self.fkJ_B
+            self.masterC.a["showSetup"], onList=self.ctlJnts + self.fkJ_A + self.fkJ_B
         )
 
     def proxy_setup(self):

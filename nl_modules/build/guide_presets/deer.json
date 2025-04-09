@@ -1724,13 +1724,13 @@
             ]
         },
         "neckQd0_master_guide":{
-            "fkJntNum":5,
+            "fkJntNum":4,
             "r":[
                 0.0,
                 0.0,
                 0.0
             ],
-            "rbnJntNum":8,
+            "rbnJntNum":6,
             "s":[
                 0.3,
                 0.3,

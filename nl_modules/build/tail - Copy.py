@@ -221,7 +221,7 @@ class Tail(RigModule):
     def vis_setup(self):
         pass
         # if self.bindJnts:
-        #     self.ctrlOnOffByAttr(self.masterC.a["debug"], onList=[self.rbSrf])
+        #     self.ctrlOnOffByAttr(self.masterC.a["showSetup"], onList=[self.rbSrf])
 
     def ro_setup(self):
         for ctl in self.fkCtl:

@@ -70,6 +70,16 @@ class SurfNode(GroupNode):
         """Return all patches"""
         return mc.ls(self + ".sf[*][*]", fl=1)
 
+    @property
+    def lengthU(self):
+        """Return length in U"""
+        return mc.arclen(self.shape + ".v[0]")
+
+    @property
+    def lengthV(self):
+        """Return length in V"""
+        return mc.arclen(self.shape + ".u[0]")
+
     def weightTo(self, joints, **kwargs):
         if self.exists():
             skin_clu = mc.skinCluster(self, joints, tsb=1, **kwargs)[0]
@@ -127,9 +137,10 @@ class SurfNode(GroupNode):
         """Build ribbon surface"""
         from nl_modules.nodel.curve_node import CurveNode
 
+        crvLen = CurveNode(crv).length
         sign = 1 if normal else -1
-        p1 = (rSz * 8 * sign, 0, 0)
-        p2 = (rSz * -8 * sign, 0, 0)
+        p1 = (crvLen * 0.1 * sign, 0, 0)
+        p2 = (crvLen * 0.1 * -sign, 0, 0)
 
         sweepLine = CurveNode.buildLine(p1, p2, pf=rigID, snap=snap)
         pathLine = CurveNode(
@@ -178,10 +189,15 @@ class SurfNode(GroupNode):
                 geo=surf, coordList=coord, normalize=normalize, p=rigData
             )
             bindJ = []
+            lenU = surf.lengthU
 
             for i, loc in enumerate(pinXf):
                 j = JointNode(
-                    rID + f"_rbJ_{i + 1}", align=loc, r=rSz, p=sklData, color=color
+                    rID + f"_rbJ_{i + 1}",
+                    align=loc,
+                    r=lenU / 20,
+                    p=sklData,
+                    color=color,
                 )
                 loc.cstPar(j)
                 bindJ.append(j)

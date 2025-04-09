@@ -566,7 +566,7 @@ class Leg(RigModule):
 
         # DEBUG
         self.ctrlOnOffByAttr(
-            self.masterC.a["debug"],
+            self.masterC.a["showSetup"],
             onList=self.all_ikHs
             + self.joints_fk
             + self.joints_ik

@@ -101,7 +101,7 @@ class Hand(RigModule):
         xDr = self.x_dir
         logging.info(rID)
         self.smart_ctl.alignTo(
-            self.rootJ, offset=(rSz * xDr * 150, 0, 0), p=self.CTL_DATA
+            self.rootJ, offset=(rSz * xDr * 130, 0, 0), p=self.CTL_DATA
         )
         ofs = self.smart_ctl.addOffsetGrp()
         self.rootJ.offset.cstPar(ofs, mo=1)

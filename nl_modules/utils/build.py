@@ -70,20 +70,31 @@ def buildTgt(rigN):
             mc.refresh(cv=1)
 
 
+def preRig():
+    # mc.refresh(su=1)
+    m = DagNode("master_ctl")
+    m.a.add("showProxy", min=0, max=1, k=0, dv=1)
+    m.a.add("showSetup", min=0, max=1, dv=1, k=0)
+
+
 @Undo("buildSelOrAll")
 def buildSelOrAll(*arg):
     rigNodes = getRigNodesSelOrAll()
     if rigNodes:
-        # mc.refresh(su=1)
+        preRig()
         for rigN in rigNodes:
             buildTgt(rigN)
-        resetAllCtl()
-        updateAnchorConn()
-        updateSpaceSwitch()
-        resetAllPvCtl()
-        mc.select(cl=1)
-        print()
-        # mc.refresh(su=0)
+        postRig()
+
+
+def postRig():
+    resetAllCtl()
+    updateAnchorConn()
+    updateSpaceSwitch()
+    resetAllPvCtl()
+    mc.select(cl=1)
+    print()
+    # mc.refresh(su=0)
 
 
 def unbuildTgt(rigN):

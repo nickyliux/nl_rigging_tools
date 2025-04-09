@@ -1698,13 +1698,13 @@
             ]
         },
         "neckQd0_master_guide":{
-            "bindJntNum":8,
-            "fkJntNum":5,
+            "fkJntNum":3,
             "r":[
                 0.0,
                 0.0,
                 0.0
             ],
+            "rbnJntNum":5,
             "s":[
                 0.5,
                 0.5,
@@ -3294,13 +3294,13 @@
             ]
         },
         "spineQd0_master_guide":{
-            "bindJntNum":8,
             "fkJntNum":5,
             "r":[
                 0.0,
                 0.0,
                 0.0
             ],
+            "rbnJntNum":8,
             "s":[
                 1.0,
                 1.0,

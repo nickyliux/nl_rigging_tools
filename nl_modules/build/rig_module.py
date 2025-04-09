@@ -346,8 +346,6 @@ class RigModule(RigBase):
         if children:
             self.x_dir = 1 if children[0].a.tx.get() > 0 else -1
 
-        self.masterC.a.add("debug", min=0, max=1, dv=1, k=0)
-
     def post_module(self):
         for obj in mc.ls(tr=1):
             mc.setAttr(obj + ".ro", cb=1)
@@ -355,8 +353,7 @@ class RigModule(RigBase):
         # self.masterC.a.showAttr(t=1, r=1)
         # self.masterC.offset.a.showAttr(t=1, r=1)
         if self.PRX:
-            showProxy = self.masterC.a.add("showProxy", min=0, max=1, k=0, dv=1)
-            showProxy >> self.PRX.a.v
+            self.masterC.a["showProxy"] >> self.PRX.a.v
 
     def unbuild_module(self):
         logging.info(self.rigID)
@@ -657,8 +654,6 @@ class RigModule(RigBase):
         # setup PSD & cst
         autoAim = ikc.a.add("autoAim", min=0, max=1)  # , dv=1)
         psdAttr = self.build_uvPSD(
-            # rID=rID,
-            # rSz=rSz,
             tgtJ=endJ,
             ikc=ikc,
             ikcGim=ikcGim,
@@ -804,8 +799,8 @@ class RigModule(RigBase):
         self.setWSMirror(allPsdCtl)
         self.addCtlSet(allPsdCtl + [ctl_main])
 
-        showAimSetup = self.masterC.a.add("showAimSetup", min=0, max=1, dv=1, k=0)
-        showAimSetup >> psd_grp.a.v
+        showAimCtl = self.masterC.a.add("showAimCtl", min=0, max=1, dv=1, k=0)
+        showAimCtl >> psd_grp.a.v
 
         # Connect total weight
         autoWeight = ikc.a.add("autoWeight", k=0, cb=0)
