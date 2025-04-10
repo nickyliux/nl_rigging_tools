@@ -42,9 +42,10 @@ class Hand(RigModule):
     def createCtl(self):
         rSz = self.rigSize
         rID = self.rigID
+        # xDr = self.x_dir
 
         self.smart_ctl = CurveNode(
-            "smart_ctl", pf=rID, shape="roll", up="x", scale=rSz * 2
+            "smart_ctl", pf=rID, shape="roll", up="x", scale=rSz * 1.5
         )
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
 
@@ -221,10 +222,10 @@ class Hand(RigModule):
         # ------------------------
         for i in range(1, 5):
             ofs = self.ctlsArr[i][1].offset
-            common.sdk(drv, ofs, "tz", "ry", 60, -180)
-            common.sdk(drv, ofs, "tz", "ry", -60, 180)
-            common.sdk(drv, ofs, "ty", "rz", 60, 180)
-            common.sdk(drv, ofs, "ty", "rz", -60, -180)
+            common.sdk(drv, ofs, "tz", "ry", 60, -180 * xDr)
+            common.sdk(drv, ofs, "tz", "ry", -60, 180 * xDr)
+            common.sdk(drv, ofs, "ty", "rz", 60, 180 * xDr)
+            common.sdk(drv, ofs, "ty", "rz", -60, -180 * xDr)
 
         # cup
         # ------------------------
@@ -248,6 +249,8 @@ class Hand(RigModule):
             ofs = self.ctlsArr[i][0].offset
             common.sdk(drv, ofs, "sx", "rx", *cupList[i - 1][0])
             common.sdk(drv, ofs, "sx", "rx", *cupList[i - 1][1])
+
+        self.smart_ctl.a.add("handScale", min=0, dv=1) >> self.rootJ.a.scale
 
         # thumb
         # ------------------------

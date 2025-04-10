@@ -402,7 +402,6 @@ class RigModule(RigBase):
                 loc.color = CPK
                 loc.alignTo(tgt)
                 loc.cstPar(tgt.offset, mo=1)
-            loc.hide()
 
     def addCtlSet(self, tgtList):
         setName = self.rigID + "_ctl_set"

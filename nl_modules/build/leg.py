@@ -87,7 +87,6 @@ class Leg(RigModule):
         self.ribbonLw = None
 
     def genGuideSk(self):
-        rID = self.rigID
         self.genSk_module(["hip", "upr", "lwr", "palm", "ball", "tip"])
 
         if self.TOE_BONES:

@@ -88,7 +88,7 @@ class JointNode(GroupNode):
             logging.error("Proxy size <= 0")
             return
         if self.type != "joint":
-            logging.error(f"{self.name}: is NOT a joint !")
+            logging.error(f"{self.name} is NOT a joint !")
             return
 
         name = self.name + "_pxGeo"

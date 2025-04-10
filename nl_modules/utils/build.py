@@ -151,6 +151,7 @@ def updateAnchorConn():
 
     if not rigNodes or len(rigNodes) < 2:
         return
+
     maleAnchors = getAnchors(rigNodes, "anchorM")
     femaleAnchors = getAnchors(rigNodes, "anchorF")
     [fAnchor.removeCstNodes() for fAnchor in femaleAnchors]
