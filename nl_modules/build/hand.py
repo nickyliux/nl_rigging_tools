@@ -7,6 +7,9 @@ from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.joint_node import JointNode
 from nl_modules.utils import common
+from nl_modules.utils.color import Color
+
+CDR = Color.D_RED
 
 
 class Hand(RigModule):
@@ -15,8 +18,9 @@ class Hand(RigModule):
         self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
         self.smart_ctl = None
         self.fgrsArr = None
-        self.all_fgr_jnts = []
         self.ctlsArr = None
+        self.allIkJ = []
+        self.allIkH = []
         self.fgrRootCtlArr = None
 
     def genGuideSk(self):
@@ -31,25 +35,32 @@ class Hand(RigModule):
         fgr_roots = []
         for fgrs_names in all_fgrs_names:
             fgr_jnts = self.genSkFrNames(fgrs_names)
-            self.all_fgr_jnts.extend(fgr_jnts)
             fgr_jnts[0].freezeXf()
             fgr_jnts[0] | self.rootJ
             fgr_roots.append(fgr_jnts[0])
 
-    def build(self):
-        self.build_module()
+    def createCtl(self):
         rSz = self.rigSize
         rID = self.rigID
+
         self.smart_ctl = CurveNode(
             "smart_ctl", pf=rID, shape="roll", up="x", scale=rSz * 2
         )
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
 
+    def build(self):
+        self.build_module()
+        self.createCtl()
+
+        self.bindJnts = [self.rootJ]
         if self.rootJ:
             self.fgrsArr = []
             for root in self.rootJ.childrenJt:
-                self.fgrsArr.append([fgr for fgr in root.allChildrenJt2])
+                fgrJnts = [fgr for fgr in root.allChildrenJt2]
+                self.fgrsArr.append(fgrJnts)
+                self.bindJnts.extend(fgrJnts)
                 root.a.segmentScaleCompensate.set(0)
+
             self.build_fk()
             self.build_ik()
             self.smart_setup()
@@ -60,16 +71,17 @@ class Hand(RigModule):
         rSz = self.rigSize
         xDr = self.x_dir
         logging.info(rID)
+
         self.ctlsArr = []
         for fgrs in self.fgrsArr:
             ctlList = []
             for fgr in fgrs[:-1]:
-                # fgr + "_ctl", shape="circleZ", align=fgr, scale=rSz * 0.8, up="x"
                 ctl = CurveNode(
                     fgr + "_ctl",
-                    shape="circle_round",
+                    shape="squareR",
                     align=fgr,
-                    scale=rSz * 0.3,
+                    scale=rSz / 3,
+                    color=CDR,
                     up="z",
                 )
                 ctl.cv_move(0, 0, xDr * rSz * -10)
@@ -86,12 +98,15 @@ class Hand(RigModule):
 
         self.fgrRootCtlArr = []
         rig_grp = GroupNode(rID + "_grp", align=self.rootJ, p=self.RIG_DATA)
-        self.rootJ.offset.cstPar(rig_grp, mo=1)
+        self.rootJ.cstPar(rig_grp, mo=1)
 
         for fgrs, ctls in zip(self.fgrsArr, self.ctlsArr):
-            ctl, ikj = self.build_digit_ik(DagNode(fgrs[1]), xDr * rSz * 0.8, p=rig_grp)
+            scale = xDr * rSz * 0.8
+            ctl, ikJ, ikH = self.build_digit_ik(fgrs[1], scale=scale, p=rig_grp)
             self.fgrRootCtlArr.append(ctl)
-            ikj.a.r >> ctls[1].parent.parent.a.r
+            self.allIkJ.append(ikJ)
+            self.allIkH.append(ikH)
+            ikJ.a.r >> ctls[1].parent.parent.a.r
 
         # scalable
         self.rootJ.a.s >> self.PRX_GRP.a.s
@@ -102,19 +117,21 @@ class Hand(RigModule):
         rSz = self.rigSize
         xDr = self.x_dir
         logging.info(rID)
-        self.smart_ctl.alignTo(
-            self.rootJ, offset=(rSz * xDr * 130, 0, 0), p=self.CTL_DATA
-        )
-        ofs = self.smart_ctl.addOffsetGrp()
-        self.rootJ.offset.cstPar(ofs, mo=1)
 
-        drv = self.smart_ctl
         if len(self.fgrsArr) != 5:
             logging.info("Smart setup for 5-fgr only")
             return
-        for i in range(5):  # Set joint rotate order
-            for j in [0, 1]:
-                self.ctlsArr[i][j].offset.a.rotateOrder.set(3)
+
+        # smart_ctl, with group scaling with rootJ
+        scaleGrp = GroupNode("smartScale", pf=rID, align=self.rootJ, p=self.CTL_DATA)
+        offset = (rSz * xDr * 110, 0, 0)
+        self.smart_ctl.alignTo(self.rootJ, offset=offset, p=scaleGrp)
+        self.smart_ctl.addOffsetGrp()
+
+        self.rootJ.cstPar(scaleGrp, mo=1)
+        self.rootJ.a.s >> scaleGrp.a.s
+
+        drv = self.smart_ctl
 
         # fist
         # ------------------------
@@ -142,15 +159,15 @@ class Hand(RigModule):
                 [(0, -40), (2, 40)],
             ]
             ofs = self.ctlsArr[i][0].offset
-            common.sdk(drv, ofs, "sx", "ry", *fistPalmList[i - 2][0])
-            common.sdk(drv, ofs, "sx", "ry", *fistPalmList[i - 2][1])
+            common.sdk(drv, ofs, "sz", "ry", *fistPalmList[i - 2][0])
+            common.sdk(drv, ofs, "sz", "ry", *fistPalmList[i - 2][1])
 
         # side
         # ------------------------
-        for i in range(1, 5):
-            ofs = self.ctlsArr[i][1].offset
-            common.sdk(drv, ofs, "rz", "rz", -90, -90)
-            common.sdk(drv, ofs, "rz", "rz", 90, 90)
+        # for i in range(1, 5):
+        #     ofs = self.ctlsArr[i][1].offset
+        #     common.sdk(drv, ofs, "rz", "rz", -90, -90)
+        #     common.sdk(drv, ofs, "rz", "rz", 90, 90)
 
         # flap
         # ------------------------
@@ -206,6 +223,8 @@ class Hand(RigModule):
             ofs = self.ctlsArr[i][1].offset
             common.sdk(drv, ofs, "tz", "ry", 60, -180)
             common.sdk(drv, ofs, "tz", "ry", -60, 180)
+            common.sdk(drv, ofs, "ty", "rz", 60, 180)
+            common.sdk(drv, ofs, "ty", "rz", -60, -180)
 
         # cup
         # ------------------------
@@ -217,8 +236,8 @@ class Hand(RigModule):
                 [(0, -30), (2, 30)],
             ]
             ofs = self.ctlsArr[i][1].offset
-            common.sdk(drv, ofs, "sz", "rx", *cupList[i - 1][0])
-            common.sdk(drv, ofs, "sz", "rx", *cupList[i - 1][1])
+            common.sdk(drv, ofs, "sx", "rx", *cupList[i - 1][0])
+            common.sdk(drv, ofs, "sx", "rx", *cupList[i - 1][1])
 
             cupList = [
                 [(0, 10), (2, -10)],
@@ -227,17 +246,17 @@ class Hand(RigModule):
                 [(0, -10), (2, 10)],
             ]
             ofs = self.ctlsArr[i][0].offset
-            common.sdk(drv, ofs, "sz", "rx", *cupList[i - 1][0])
-            common.sdk(drv, ofs, "sz", "rx", *cupList[i - 1][1])
+            common.sdk(drv, ofs, "sx", "rx", *cupList[i - 1][0])
+            common.sdk(drv, ofs, "sx", "rx", *cupList[i - 1][1])
 
         # thumb
         # ------------------------
-        ofs = self.ctlsArr[0][0].offset
+        # ofs = self.ctlsArr[0][0].offset
 
-        common.sdk(drv, ofs, "tx", "rz", 20, -90)
-        common.sdk(drv, ofs, "tx", "rz", -20, 90)
-        common.sdk(drv, ofs, "ty", "rx", 20, 180)
-        common.sdk(drv, ofs, "ty", "rx", -20, -180)
+        # common.sdk(drv, ofs, "tx", "rz", 20, -90)
+        # common.sdk(drv, ofs, "tx", "rz", -20, 90)
+        # common.sdk(drv, ofs, "ty", "rx", 20, 180)
+        # common.sdk(drv, ofs, "ty", "rx", -20, -180)
 
     def space_setup(self):
         # We add space to "rootJ" because we want to drive it by the
@@ -246,15 +265,11 @@ class Hand(RigModule):
         self.rigNode.a.add("spaceName1", attrType="string", txt="palm")
 
     def proxy_setup(self):
-        proxyList = [self.rootJ]
-        for fgrs in self.fgrsArr:
-            proxyList.extend(fgrs)
-
-        rSz = self.rigSize * 12
+        rSz = self.rigSize
         xDr = self.x_dir
-        for j in proxyList:
+        for j in self.bindJnts:
             JointNode(j).addProxyMesh(
-                size=rSz, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
+                size=rSz * 12, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
             )
 
     def channel_setup(self):
@@ -266,17 +281,23 @@ class Hand(RigModule):
 
     def ro_setup(self):
         self.smart_ctl.a.ro.set(3)
+        for i in range(5):
+            for j in [0, 1]:
+                self.ctlsArr[i][j].offset.a.rotateOrder.set(3)
 
     def vis_setup(self):
-
-        fgrCtlVis = self.smart_ctl.a.add("fgrCtls", k=0, min=0, max=1, dv=1)
+        showCtls = self.smart_ctl.a.add("showCtls", k=0, min=0, max=1, dv=1)
         for fgrCtls in self.ctlsArr:
-            fgrCtlVis >> fgrCtls[0].a.v
+            showCtls >> fgrCtls[0].a.v
+
+        self.ctrlOnOffByAttr(
+            self.masterC.a["showSetup"], onList=self.allIkJ + self.allIkH
+        )
 
     def post_setup(self):
         ctlSet = [self.smart_ctl] + self.fgrRootCtlArr
         [ctlSet.extend(x) for x in self.ctlsArr]
-        self.addBindJntSet(self.all_fgr_jnts)
+        self.addBindJntSet(self.bindJnts)
         self.addCtlSet(ctlSet)
         self.space_setup()
         self.anchor_setup_module({"anchorF1": self.rootJ})

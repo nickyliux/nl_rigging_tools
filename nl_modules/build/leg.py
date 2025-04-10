@@ -118,14 +118,10 @@ class Leg(RigModule):
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
         )
-        self.upr_fkc = CurveNode(
-            "upr_fkc", pf=rID, shape="circle_round", up="x", scale=rSz
-        )
-        self.lwr_fkc = CurveNode(
-            "lwr_fkc", pf=rID, shape="circle_round", up="x", scale=rSz
-        )
+        self.upr_fkc = CurveNode("upr_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
+        self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
         self.palm_fkc = CurveNode(
-            "palm_fkc", pf=rID, shape="circle_round", up="x", scale=rSz
+            "palm_fkc", pf=rID, shape="squareR", up="x", scale=rSz
         )
         self.ball_fkc = CurveNode(
             "ball_fkc", pf=rID, shape="fk_rotator", up="-z", scale=rSz * xDr * 1.5
@@ -291,7 +287,7 @@ class Leg(RigModule):
         fkPin = self.pvc.a.add("fkPin", min=0, max=1)
         self.pin_fkc = CurveNode(
             rID + "_pin_fkc",
-            shape="circle_round",
+            shape="squareR",
             up="x",
             align=self.palm,
             p=self.pvc,
@@ -361,8 +357,8 @@ class Leg(RigModule):
 
         for toeJs in self.toesJntList:
             dupTgt = DagNode(toeJs[1])
-            ctl, ikj = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
-            ikj.a.r >> dupTgt.a.r
+            ctl, ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
+            ikJ.a.r >> dupTgt.a.r
             ctlList = []
             self.bindJnts.extend(toeJs[:-1])
             fkToeList = toeJs[2:-1]

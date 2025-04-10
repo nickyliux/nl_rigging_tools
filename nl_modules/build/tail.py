@@ -120,9 +120,9 @@ class Tail(RigModule):
             clu.cstPoi(currJnt, keep=0)  # move jnt to cv
 
             ctl = CurveNode(
-                f"{i}_fkc#",
+                f"{i}_fkc_#",
                 pf=rID,
-                shape="circle_round",
+                shape="squareR",
                 up="z",
                 scale=rSz * 1.5,
                 align=clu,

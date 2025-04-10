@@ -135,7 +135,7 @@ class Arm(RigModule):
 
         self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 1.5)
         self.palm_ikc = CurveNode(
-            "palm_ikc", pf=rID, shape="circle_round", up="x", scale=rSz * 1.2
+            "palm_ikc", pf=rID, shape="squareR", up="x", scale=rSz * 1.2
         )
         self.palm_ikc.cv_move(xDr * rSz * 7, 0, 0)
         self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz)
@@ -266,7 +266,7 @@ class Arm(RigModule):
         self.pin_fkc = CurveNode(
             "pin_fkc",
             pf=rID,
-            shape="circle_round",
+            shape="squareR",
             up="x",
             align=self.palm,
             p=self.pvc,
@@ -447,13 +447,15 @@ class Arm(RigModule):
         self.bindJnts.extend(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def vis_setup(self):
-
         self.ctrlOnOffByAttr(
             self.setting.a["fkIkBlend"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             offList=self.fkCtl[1:],
         )
-        self.ctrlOnOffByAttr(self.pvc.a["fkPin"], onList=[self.pin_fkc])
+        self.ctrlOnOffByAttr(
+            self.pvc.a["fkPin"],
+            onList=[self.pin_fkc],
+        )
 
         self.ikc.a.v >> self.palm_ikc.a.v
 
@@ -462,7 +464,6 @@ class Arm(RigModule):
                 self.setting.a.add("showRibbonCtl", min=0, max=1, dv=1, k=0),
                 onList=self.all_bend,
             )
-
         self.ctrlOnOffByAttr(
             self.masterC.a["showSetup"],
             onList=self.all_ikHs

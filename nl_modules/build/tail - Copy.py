@@ -102,7 +102,7 @@ class Tail(RigModule):
         jnt = JointNode("1_fkj", pf=rID, align=clu1, p=self.SKL_DATA)
         ctl = CurveNode(
             "1_fkc",
-            shape="circle_round",
+            shape="squareR",
             pf=rID,
             up="x",
             scale=rSz * 2,
@@ -130,7 +130,7 @@ class Tail(RigModule):
             ctl = CurveNode(
                 f"{i}_fkc",
                 pf=rID,
-                shape="circle_round",
+                shape="squareR",
                 up="x",
                 scale=rSz * 1.5,
                 addOfs=1,
@@ -153,7 +153,7 @@ class Tail(RigModule):
         jnt = JointNode(f"{self.FK_JNT_NUM}_fkj", pf=rID, align=clu2_)
         ctl = CurveNode(
             f"{self.FK_JNT_NUM}_fkc",
-            shape="circle_round",
+            shape="squareR",
             pf=rID,
             up="x",
             scale=rSz * 1.5,

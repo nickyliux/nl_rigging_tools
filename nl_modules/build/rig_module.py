@@ -571,11 +571,11 @@ class RigModule(RigBase):
             if t.exists():
                 t.a.add("wsMirrorAxis", k=0, lock=1, cb=0)
 
-    def build_digit_ik(self, dupTgt, scale, p=None):
+    def build_digit_ik(self, dupTgt, scale=1, p=None):
         """IK setup for single digit"""
         from nl_modules.nodel.ik_node import IkNode
 
-        dupTgt = DagNode(dupTgt)
+        dupTgt = JointNode(dupTgt)
         ctl = CurveNode(
             dupTgt + "_ikc",
             shape="stickC",
@@ -586,13 +586,15 @@ class RigModule(RigBase):
             p=p,
         )
         ikJ = dupTgt.duplicate()
+        ikJ.setRadius(2, rel=1)
+
         endJ = ikJ.allChildrenJt[-1]
         if endJ not in ikJ.children:
             endJ | ikJ
             ikJ.children[0].delete()
         ikJ.rename(ikJ.name + "_ikJ")
         endJ.rename(ikJ.name + "_end_ikJ")
-        IkNode(
+        ikH = IkNode(
             ikJ,
             sj=ikJ,
             ee=endJ,
@@ -603,7 +605,7 @@ class RigModule(RigBase):
             # vis=0,
         )
         # mc.hide(ikJ)
-        return ctl, ikJ
+        return ctl, ikJ, ikH
 
     def getAutoAimPreset(self):
 

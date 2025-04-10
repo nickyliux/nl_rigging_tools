@@ -65,13 +65,13 @@ class Spine(RigModule):
             "cog_ctl", pf=rID, shape="cog2", scale=rSz * 2, color=CYL
         )
         self.tp_ctl = CurveNode(
-            "tp_ctl", pf=rID, shape="circle_round", scale=rSz * 4, lineWidth=2
+            "tp_ctl", pf=rID, shape="squareR", scale=rSz * 4, lineWidth=2
         )
         self.md_ctl = CurveNode(
             "_md_ctl", pf=rID, shape="cube", up="-z", scale=rSz, lineWidth=2
         )
         self.rt_ctl = CurveNode(
-            "rt_ctl", pf=rID, shape="circle_round", scale=rSz * 4, lineWidth=2
+            "rt_ctl", pf=rID, shape="squareR", scale=rSz * 4, lineWidth=2
         )
         self.md_ctl.cv_move(0, 0, rSz * -70)
 
@@ -112,7 +112,7 @@ class Spine(RigModule):
 
         self.fkCtl = []
         for i, j in enumerate(self.fkJnt[:-1]):
-            c = CurveNode(f"fkc_{i + 1}", pf=rID, shape="circle_round", scale=rSz * 5)
+            c = CurveNode(f"fkc_{i + 1}", pf=rID, shape="squareR", scale=rSz * 5)
             self.fkCtl.append(c)
 
         self.fkGivenCtl2(self.fkJnt[1:], self.fkCtl[1:], p=self.CTL_DATA)
