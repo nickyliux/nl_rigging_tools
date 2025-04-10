@@ -12,6 +12,7 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.build.rig_module import RigModule
 
 CBK = Color.BLACK
+CGY = Color.GREY
 CBL = Color.BLUE
 CDR = Color.D_RED
 CDY = Color.D_YELLOW
@@ -209,9 +210,10 @@ class Leg(RigModule):
         self.post_setup()
 
     def build_fk(self):
+        rSz = self.rigSize
         logging.info(self.rigID)
         self.joints_fk = common.extractSk(
-            self.joints, "_fk", p=self.FK_PART, color=CBL, r=3
+            self.joints, "_fk", p=self.FK_PART, color=CBL, r=2 * rSz
         )
         self.fkCtl = [
             self.hip_fkc,
@@ -225,6 +227,7 @@ class Leg(RigModule):
 
     def build_ik(self):
         rID = self.rigID
+        rSz = self.rigSize
         logging.info(rID)
         mG = self.master_guide
         inPos_guide = DagNode(rID + "_palm_inPos_guide")
@@ -235,7 +238,7 @@ class Leg(RigModule):
         self.ikc.alignTo(mG)
         self.pvc.alignTo(self.lwr)
         self.joints_ik = common.extractSk(
-            self.joints, "_ik", p=self.IK_PART, color=CRD, r=4
+            self.joints, "_ik", p=self.IK_PART, color=CRD, r=3 * rSz
         )
 
         ikH1 = IkNode(
@@ -288,6 +291,7 @@ class Leg(RigModule):
             rID + "_pin_fkc",
             shape="squareR",
             up="x",
+            scale=rSz,
             align=self.palm,
             p=self.pvc,
             addOfs=1,
@@ -404,9 +408,10 @@ class Leg(RigModule):
 
     def blend_fk_ik(self):
         rID = self.rigID
+        rSz = self.rigSize
         logging.info(rID)
         self.joints_bf = common.extractSk(
-            self.joints, "_bf", p=self.BF_PART, color=CYL, r=2
+            self.joints, "_bf", p=self.BF_PART, color=CGY, r=4 * rSz
         )
 
         self.setting | self.CTL_DATA
@@ -472,6 +477,7 @@ class Leg(RigModule):
             volMode="upr",
             scaleFix=self.masterC.a.globalScale,
             proxyP=self.PRX_GRP,
+            rigSize=rSz,
             p=self.RIG_DATA,
         )
         self.ribbonLw = RibbonNode(
@@ -481,6 +487,7 @@ class Leg(RigModule):
             volMode="lwr",
             scaleFix=self.masterC.a.globalScale,
             proxyP=self.PRX_GRP,
+            rigSize=rSz,
             p=self.RIG_DATA,
         )
         # --------------------------------
@@ -536,10 +543,9 @@ class Leg(RigModule):
         self.bindJnts.extend(self.ribbonUp.rbJnt + self.ribbonLw.rbJnt)
 
     def proxy_setup(self):
-        rSz = self.rigSize
         aim = (self.x_dir, 0, 0)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(size=rSz * 5, aimDir=aim, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(aimDir=aim, p=self.PRX_GRP)
 
     def vis_setup(self):
 

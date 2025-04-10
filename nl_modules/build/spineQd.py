@@ -98,23 +98,24 @@ class SpineQd(RigModule):
 
     def build(self):
         rID = self.rigID
-        rSz = self.rigSize
+
         self.build_module()
         self.createCtl()
         self.rbSrf = SurfNode.buildRbSrf(
-            rID,
-            rSz,
+            pf=rID,
             crv=self.LINE_GUIDE,
             snap=self.rootJ,
             # spans=6,
             spans=self.FK_JNT_NUM - 1,
             p=self.RIG_DATA,
         )
+        rSz = self.rigSize = self.rbSrf.lengthU / 100
+
         self.rigNode.setMsg({"rbSrf": self.rbSrf})
         self.bindJnts = SurfNode.buildRbJnt(
-            rID,
-            rSz * 4,
             self.RBN_JNT_NUM,
+            pf=rID,
+            size=rSz,
             surf=self.rbSrf,
             rigData=self.RIG_DATA,
             sklData=self.SKL_DATA,
@@ -209,7 +210,7 @@ class SpineQd(RigModule):
         rt_gimbal = self.rt_ctl.addGimbal()
 
         self.ctlJnts = self.createCtlJ(
-            [self.rt_ctl, self.md_ctl, self.tp_ctl], color=CBL, r=rSz * 20
+            [self.rt_ctl, self.md_ctl, self.tp_ctl], color=CBL, r=rSz * 5
         )
         # Orient control last fkJ by tip ctl
         self.fkJnt[-1].a.r.disconnect()
@@ -344,10 +345,8 @@ class SpineQd(RigModule):
         )
 
     def proxy_setup(self):
-        rSz = self.rigSize
         for j in self.bindJnts:
-            size = rSz / len(self.bindJnts) * 80
-            JointNode(j).addProxyMesh(size=size, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(scale=2, p=self.PRX_GRP)
 
     def ro_setup(self):
         [c.a.ro.set(2) for c in self.ctls]

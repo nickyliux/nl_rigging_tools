@@ -152,7 +152,14 @@ def cstMulti(*args, cstType="par", delete=False, w=None, **kwargs):
 
 
 def nlRivet(
-    geo=None, coordList=None, normal=0, tangent=2, normalize=0, scaleAttr=None, p=None
+    geo=None,
+    coordList=None,
+    normal=0,
+    tangent=2,
+    normalize=0,
+    scaleAttr=None,
+    p=None,
+    size=1,
 ):
     """Create Rivets and return uvPin, locators
     ( Benefit over mc.Rivet is not using selection )
@@ -186,7 +193,7 @@ def nlRivet(
     pinLocs = []
 
     for i in range(len(coordList)):
-        loc = LocNode("rivetLoc_#")
+        loc = LocNode("rivetLoc_#", size=size)
         scaleAttr >> loc.a.scaleX
         scaleAttr >> loc.a.scaleY
         scaleAttr >> loc.a.scaleZ
@@ -297,7 +304,7 @@ def extractSk(tgtJList, sf="", p=None, color=None, r=1):
     newJList = []
     for dupJ, tgtJ in zip(dupJList, tgtJList):
         j = JointNode(dupJ).rename(tgtJ + sf)
-        j.setRadius(r, rel=1)
+        j.setRadius(r)
         newJList.append(j)
 
     if color:

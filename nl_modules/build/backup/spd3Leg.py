@@ -3,8 +3,9 @@ import nl_modules.build.rig_module as rig_module
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.ik_node import IkNode
-from nl_modules.utils import common # , utils_node as ut
+from nl_modules.utils import common
 import logging
+
 # import maya.mel as mel
 
 
@@ -164,7 +165,7 @@ class Spd3Leg(rig_module.RigModule):
         logging.info(".")
 
         for jnt in self.joints:
-            jnt.addProxyMesh(size=5, p=self.PRX)
+            jnt.addProxyMesh(p=self.PRX)
 
         # self.main_ikc.a.lockHide(t=1, r=1, s=1, v=0)
         # self.main_pvc.a.lockHide(t=1)

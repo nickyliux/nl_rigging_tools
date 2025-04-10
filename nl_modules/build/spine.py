@@ -104,6 +104,7 @@ class Spine(RigModule):
             aimV=(0, 1, 0),
             upV=(0, 0, 1),
             wuV=(0, 0, 1),
+            r=rSz,
             p=self.SKL_DATA,
         )
         mc.delete(self.rootJ)
@@ -155,8 +156,7 @@ class Spine(RigModule):
 
         if self.RBN_BONES:
             self.rbSrf = SurfNode.buildRbSrf(
-                rID,
-                rSz,
+                pf=rID,
                 crv=self.LINE_GUIDE,
                 normal=1,
                 snap=self.rootJ,
@@ -165,14 +165,14 @@ class Spine(RigModule):
             self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
             self.ctlJnts = self.createCtlJ(
-                [self.rt_ctl, self.md_ctl, self.tp_ctl], r=rSz * 20, color=CBL
+                [self.rt_ctl, self.md_ctl, self.tp_ctl], r=rSz * 5, color=CBL
             )
             self.rbSrf.weightTo(self.ctlJnts, mi=3, dr=4)
 
             self.bindJnts = SurfNode.buildRbJnt(
-                rID,
-                rSz * 8,
                 self.RBN_JNT_NUM,
+                pf=rID,
+                size=rSz,
                 surf=self.rbSrf,
                 rigData=self.RIG_DATA,
                 sklData=self.SKL_DATA,
@@ -247,12 +247,8 @@ class Spine(RigModule):
             ctl.a.ro.set(2)
 
     def proxy_setup(self):
-        rSz = self.rigSize
         for j in self.bindJnts:
-            size = rSz * 10
-            if self.RBN_BONES:
-                size = rSz / self.RBN_JNT_NUM * 80
-            JointNode(j).addProxyMesh(size=size, p=self.PRX_GRP, aimDir=(0, 1, 0))
+            JointNode(j).addProxyMesh(scale=2, aimDir=(0, 1, 0), p=self.PRX_GRP)
 
     def space_setup(self):
         self.rigNode.setMsg({"space_COG": self.cog_ctl})

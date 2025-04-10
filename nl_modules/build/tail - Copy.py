@@ -228,9 +228,8 @@ class Tail(RigModule):
             ctl.a.ro.set(3)
 
     def proxy_setup(self):
-        rSz = self.rigSize
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(size=rSz * 12, p=self.PRX)
+            JointNode(j).addProxyMesh(p=self.PRX)
 
     def post_setup(self):
         rID = self.rigID

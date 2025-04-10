@@ -268,12 +268,9 @@ class Hand(RigModule):
         self.rigNode.a.add("spaceName1", attrType="string", txt="palm")
 
     def proxy_setup(self):
-        rSz = self.rigSize
-        xDr = self.x_dir
+        aim = (self.x_dir, 0, 0)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(
-                size=rSz * 12, aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP
-            )
+            JointNode(j).addProxyMesh(scale=3, aimDir=aim, skipEnd=1, p=self.PRX_GRP)
 
     def channel_setup(self):
         self.smart_ctl.a.showAttr(t=1, r=1, s=1)

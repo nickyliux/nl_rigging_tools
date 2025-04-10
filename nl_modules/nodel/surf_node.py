@@ -21,13 +21,11 @@ class SurfNode(GroupNode):
         alignR=None,
         addOfs=0,
         p=None,
-        #
         # For surface
-        #
         uSeg=1,
         vSeg=1,
         ax=(0, 0, 1),
-        width=1,
+        size=1,
         lr=1,
         d=3,
     ):
@@ -44,7 +42,7 @@ class SurfNode(GroupNode):
         )
         if not self.shape:
             surfObj = DagNode(
-                mc.nurbsPlane(ax=ax, w=width, lr=lr, d=d, v=vSeg, u=uSeg, ch=1)[0]
+                mc.nurbsPlane(ax=ax, w=size, lr=lr, d=d, v=vSeg, u=uSeg, ch=1)[0]
             )
             parentedSh = mc.parent(surfObj.shape, self, r=1, s=1)[0]
             mc.rename(parentedSh, self.name + "Shape#")
@@ -133,7 +131,7 @@ class SurfNode(GroupNode):
             xf.delete()
 
     @staticmethod
-    def buildRbSrf(rigID, rSz, crv=None, normal=0, snap=None, spans=3, p=None):
+    def buildRbSrf(pf="", crv=None, normal=0, snap=None, spans=3, p=None):
         """Build ribbon surface"""
         from nl_modules.nodel.curve_node import CurveNode
 
@@ -142,16 +140,14 @@ class SurfNode(GroupNode):
         p1 = (crvLen * 0.1 * sign, 0, 0)
         p2 = (crvLen * 0.1 * -sign, 0, 0)
 
-        sweepLine = CurveNode.buildLine(p1, p2, pf=rigID, snap=snap)
+        sweepLine = CurveNode.buildLine(p1, p2, pf=pf, snap=snap)
         pathLine = CurveNode(
             mc.rebuildCurve(
-                crv, n=rigID + "_line_#", ch=0, rpo=0, end=1, kr=2, kt=0, s=spans, d=2
+                crv, n=pf + "_line_#", ch=0, rpo=0, end=1, kr=2, kt=0, s=spans, d=2
             )[0]
         )
         rbSrf = SurfNode(
-            mc.extrude(
-                sweepLine, pathLine, n=rigID + "_rbSrf", ch=0, rn=0, et=1, upn=1
-            )[0]
+            mc.extrude(sweepLine, pathLine, n=pf + "_rbSrf", ch=0, rn=0, et=1, upn=1)[0]
         )
         mc.delete(pathLine, sweepLine)
         if p:
@@ -160,9 +156,9 @@ class SurfNode(GroupNode):
 
     @staticmethod
     def buildRbJnt(
-        rID,
-        rSz,
         bindJntNum,
+        pf="",
+        size=1,
         surf=None,
         rigData=None,
         normalize=1,
@@ -178,7 +174,7 @@ class SurfNode(GroupNode):
         from nl_modules.utils import common
 
         if bindJntNum > 1:
-            logging.info(rID)
+            logging.info(pf)
             coord = []
             sep = 1 / (bindJntNum - 1)
 
@@ -188,17 +184,17 @@ class SurfNode(GroupNode):
             pin, pinXf = common.nlRivet(
                 geo=surf, coordList=coord, normalize=normalize, p=rigData
             )
-            bindJ = []
-            lenU = surf.lengthU
 
+            bindJ = []
             for i, loc in enumerate(pinXf):
                 j = JointNode(
-                    rID + f"_rbJ_{i + 1}",
+                    pf + f"_rbJ_{i + 1}",
                     align=loc,
-                    r=lenU / 20,
+                    r=size / bindJntNum * 8,
                     p=sklData,
                     color=color,
                 )
                 loc.cstPar(j)
                 bindJ.append(j)
+
             return bindJ

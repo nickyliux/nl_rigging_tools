@@ -32,7 +32,7 @@ class Head(RigModule):
         self.fkCtl = None
 
     def genGuideSk(self):
-        self.genSk_module(["st", "ed"])
+        self.genSk_module(["st", "ed"], scale=2)
         jaw_list = self.genSkFrNames(["jaw", "jawEnd"])
         jaw_list[0] | self.rootJ
         lf_eye = self.genSkFrNames("lf_eye")[0]
@@ -58,7 +58,7 @@ class Head(RigModule):
             "head", pf=rID, sf="_fkc", shape="squareR", scale=rSz * 4, color=CYL
         )
         self.jaw_fkc = CurveNode(
-            "jaw", pf=rID, sf="_fkc", up="z", scale=rSz * 2, color=CYL
+            "jaw", pf=rID, sf="_fkc", up="z", scale=rSz * 1.5, color=CYL
         )
 
         self.rigNode.setMsg(
@@ -89,10 +89,9 @@ class Head(RigModule):
         self.isolateAlign(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC], dv=1)
 
     def proxy_setup(self):
-        rSz = self.rigSize
         aim = (0, 1, 0)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(size=rSz * 15, aimDir=aim, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(scale=3, aimDir=aim, p=self.PRX_GRP)
 
     def vis_setup(self):
         pass

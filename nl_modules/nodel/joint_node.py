@@ -76,20 +76,19 @@ class JointNode(GroupNode):
         self.a.r.set(0, 0, 0)
         self.a.s.set(1, 1, 1)
 
-    def addProxyMesh(self, size=1, aimDir=(1, 0, 0), skipEnd=0, p=None):
+    def addProxyMesh(self, scale=1, aimDir=(1, 0, 0), skipEnd=0, p=None):
         """Add Proxy Mesh for joint
         e.g.
-            jnt1.addProxyMesh(size=2)                   # proxy cube created
-            jnt1_end.addProxyMesh(size=2, skipEnd=1)    # no proxy created
+            jnt1.addProxyMesh()                 # proxy cube created
+            jnt1_end.addProxyMesh(skipEnd=1)    # no proxy created
         """
         from nl_modules.utils import common
 
-        if size <= 0:
-            logging.error("Proxy size <= 0")
-            return
         if self.type != "joint":
             logging.error(f"{self.name} is NOT a joint !")
             return
+
+        size = self.a.radius.get() * 5 * scale
 
         name = self.name + "_pxGeo"
         child = self.childrenJt
@@ -97,8 +96,6 @@ class JointNode(GroupNode):
         if child or (not skipEnd):
             dist = self.o.distanceTo(child[0]) if child else size
             cube = mc.polyCube(n=name, ax=aimDir, h=dist, w=size, d=size, cuv=4)[0]
-            # subdivisionsHeight=dist / 7
-            # cube = mc.polyCube(n=name, ax=aimDir, h=size, w=size, d=size, cuv=4)[0]
 
             proxyN = DagNode(cube)
             proxyN.alignTo(self, p=p)

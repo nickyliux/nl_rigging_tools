@@ -320,6 +320,7 @@ class IkNode(DagNode):
             pf=self.pf,
             snap=self.sj,
             ofs=(self.x_dir * dist, 0, 0),
+            r=dist / 100,
             p=softParent,
         )
         self.ee.cstAim(softJ[0], aim=(self.x_dir, 0, 0), keep=False)

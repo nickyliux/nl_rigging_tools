@@ -154,7 +154,7 @@ class Ribbon(rig_module.RigModule):
                 "rb_jnt_#", pf=self.rigID, r=1, color=Color.BLACK, align=locN, p=locN
             )
             jnt.displayLocalAxis()
-            jnt.addProxyMesh(size=2, p=self.PRX)
+            jnt.addProxyMesh(p=self.PRX)
 
         if p:
             rbSurf | p

@@ -94,7 +94,7 @@ class LegQd(RigModule):
                 ["toe04_1", "toe04_2", "toe04_3", "toe04_4", "toe04_5"],
             ]
             for names in toe_names:
-                fgr_jnts = self.genSkFrNames(names, r=0.3)
+                fgr_jnts = self.genSkFrNames(names)
                 fgr_jnts[0].freezeXf()
                 fgr_jnts[0] | self.toesRootJ
 
@@ -390,18 +390,20 @@ class LegQd(RigModule):
 
     def twistBones_setup(self):
         rID = self.rigID
+        rSz = self.rigSize
+
         jnt_names = ["radius", "radiusEnd"]
-        radius_JC = self.genSkFrNames(jnt_names)
+        radius_JC = self.genSkFrNames(jnt_names, scale=3)
         jnt_names = ["ulna", "ulnaEnd"]
-        ulna_JC = self.genSkFrNames(jnt_names)
+        ulna_JC = self.genSkFrNames(jnt_names, scale=3)
 
         parent = self.boneFix if self.KNEE_FIX else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent
 
         radius_loc = LocNode(
-            "radius_loc", pf=self.rigID, align=radius_JC[1], p=self.palm
+            "radius_loc", pf=self.rigID, align=radius_JC[1], p=self.palm, size=rSz
         )
-        ulna_loc = LocNode("ulna_loc", pf=rID, align=ulna_JC[1], p=self.palm)
+        ulna_loc = LocNode("ulna_loc", pf=rID, align=ulna_JC[1], p=self.palm, size=rSz)
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
         uType = "objectrotation"
@@ -539,10 +541,9 @@ class LegQd(RigModule):
         self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def proxy_setup(self):
-        rSz = self.rigSize
         aim = (self.x_dir, 0, 0)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(size=rSz * 8, aimDir=aim, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(scale=1.5, aimDir=aim, p=self.PRX_GRP)
 
     def vis_setup(self):
 

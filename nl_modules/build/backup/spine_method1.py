@@ -204,7 +204,7 @@ class Spine(rig_module.RigModule):
         self.volumeSetup(joints, ratio)
 
         for jnt in joints:
-            JointNode(jnt).addProxyMesh(size=5, p=self.PRX)
+            JointNode(jnt).addProxyMesh(p=self.PRX)
 
         spCrv.hide()
         spIkH.hide()

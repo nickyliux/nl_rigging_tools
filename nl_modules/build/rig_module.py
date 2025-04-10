@@ -56,7 +56,7 @@ class RigModule(RigBase):
             self.rootJ = rigNode.a.rootJ.inConnNode
 
     # @staticmethod
-    def genSkFrNames(self, names, color=None, r=1):
+    def genSkFrNames(self, names, color=None, scale=1):
         """Create joints by finding object : pf_name_guide' from name list
         e.g.
             jnt_names = ["clavicle", "upr", "lwr", "palm", "ball"]
@@ -81,7 +81,7 @@ class RigModule(RigBase):
 
         # for i, key in enumerate(guideDict):
         for key in guideDict:
-            jN = JointNode(f"{pf}_{key}", align=guideDict[key], r=r, color=color)
+            jN = JointNode(f"{pf}_{key}", align=guideDict[key], color=color)
 
             if (
                 pf.startswith("lfLeg")
@@ -95,6 +95,11 @@ class RigModule(RigBase):
                 jN | lastJ
             lastJ = jN
             joints.append(jN)
+
+        # set all joints' radius based on current root as a group
+        rigSize = self.getRigSize(joints[0])
+        for j in joints:
+            j.a.radius.set(rigSize * scale)
 
         return joints
 
@@ -306,9 +311,12 @@ class RigModule(RigBase):
 
         common.cstMulti(*allSpacesGrp, tgt_ofs, cstType=cstType, w=w, **kwargs)
 
-    def calcRigSize(self, rootJ):
-        if rootJ:
-            self.rigSize = rootJ.o.diagonal2 / 100
+    # def calcRigSize(self, rootJ):
+    #     if rootJ:
+    #         self.rigSize = self.getRigSize(rootJ)
+
+    def getRigSize(self, rootJ):
+        return rootJ.o.diagonal2 / 100
 
     def addMinusScaleGrp(self, tgt):
         if self.rigID.startswith("rt_"):
@@ -318,7 +326,7 @@ class RigModule(RigBase):
         else:
             tgt.addOffsetGrp()
 
-    def genSk_module(self, jnt_names):
+    def genSk_module(self, jnt_names, scale=1):
         self.rigNode.a.nodeState.set(1)
 
         rootCtl = self.masterC.parent.parent
@@ -330,7 +338,7 @@ class RigModule(RigBase):
 
         self.moduleG.hide()
 
-        jnt_list = self.genSkFrNames(jnt_names)
+        jnt_list = self.genSkFrNames(jnt_names, scale=scale)
 
         self.rootJ = jnt_list[0]
         self.rootJ | self.SKL_DATA
@@ -339,7 +347,8 @@ class RigModule(RigBase):
 
     def build_module(self):
 
-        self.calcRigSize(self.rootJ)
+        # self.calcRigSize(self.rootJ)
+        self.rigSize = self.getRigSize(self.rootJ)
         self.rigNode.a.nodeState.set(2)
         children = self.rootJ.childrenJt
         if children:
@@ -391,8 +400,9 @@ class RigModule(RigBase):
         or
         { 'anchorF1': loc1, }
         """
+        rSz = self.rigSize
         for name, tgt in anchorDict.items():
-            loc = LocNode(name, pf=self.rigID, size=5, p=self.masterC)
+            loc = LocNode(name, pf=self.rigID, size=rSz * 2, p=self.masterC)
             self.rigNode.setMsg({name: loc})
 
             if name.startswith("anchorM"):  # Blue for Male
@@ -450,9 +460,13 @@ class RigModule(RigBase):
             rmN.a.outValue >> piv_ref.a.ty
 
     def boneFix_setup(self, tgt, tgtChild):
-        upLoc = LocNode("lwrLimb_up", pf=self.rigID, align=tgtChild, addOfs=1, p=tgt)
+        rSz = self.rigSize
+        xDr = self.x_dir
+        upLoc = LocNode(
+            "lwrLimb_up", pf=self.rigID, align=tgtChild, addOfs=1, p=tgt, size=rSz
+        )
         tgtChild.cstPoi(upLoc.offset)
-        upLoc.a.ty.set(self.rigSize * 10 * self.x_dir)
+        upLoc.a.ty.set(rSz * 10 * xDr)
 
         tgtDup = tgt.duplicate(po=1)
         childDup = tgtChild.duplicate(po=1)
@@ -461,7 +475,7 @@ class RigModule(RigBase):
         childDup | tgtDup | tgt
 
         tgtChild.cstAim(
-            tgtDup, worldUpType="object", worldUpObject=upLoc, aim=(self.x_dir, 0, 0)
+            tgtDup, worldUpType="object", worldUpObject=upLoc, aim=(xDr, 0, 0)
         )
         mc.hide(upLoc)
         self.boneFix = tgtDup
@@ -499,7 +513,7 @@ class RigModule(RigBase):
                 pf=rID,
                 align=patella_guide,
                 color=CDR,
-                r=rSz * 2,
+                r=rSz,
                 p=self.upr,
             )
             j.freezeXf()
@@ -632,10 +646,13 @@ class RigModule(RigBase):
         from nl_modules.nodel.ik_node import IkNode
 
         rID = self.rigID
+        rSz = self.rigSize
 
         # create aim chain
         self.joints_am = common.extractSk([startJ, endJ], "_am", p=fkc.offset)
-        base_loc = LocNode("base_loc", pf=rID, align=self.joints_am[0], p=fkc.offset)
+        base_loc = LocNode(
+            "base_loc", pf=rID, align=self.joints_am[0], p=fkc.offset, size=rSz
+        )
 
         # setup IK
         auto_ikH = IkNode(
@@ -701,6 +718,7 @@ class RigModule(RigBase):
         cst=None,
         setting=None,
         preset=None,
+        size=1,
         p=None,
     ):
         """
@@ -777,7 +795,7 @@ class RigModule(RigBase):
 
             # create uv sphere
             psd_ball = DagNode(
-                mc.sphere(n=rID + "_psdBall_#", r=2, d=3, s=4, spans=2, ch=0)[0]
+                mc.sphere(n=rID + "_psdBall_#", r=rSz, d=3, s=4, spans=2, ch=0)[0]
             )
             psd_ball.alignTo(ctl, offsetR=(0, 0, -90), p=ctl)
 

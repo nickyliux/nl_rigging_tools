@@ -72,7 +72,7 @@ def addAwesomeSpine(targetJ, scaleGrp=None, reader=None, ctlParent=None, grp=Non
     #     reader.a.rx >> ikCtl[2].a.rx
 
     for j in chain:
-        JointNode(j).addProxyMesh(size=refSize * 0.5, p=self.PRX)
+        JointNode(j).addProxyMesh()
 
 
 def clusterSetup(crv, ikCtl):
@@ -612,8 +612,9 @@ def addAwesomeIK(
 #     dupJChild | dupJ
 #     # qIk = IkNode()
 
+
 def dupAndParent():
-    base = DagNode('base')
+    base = DagNode("base")
     thisParent = None
     for x in mc.ls(sl=1):
         dup = base.duplicate(n=x)
@@ -621,6 +622,7 @@ def dupAndParent():
         if thisParent:
             dup | thisParent
         thisParent = dup
+
 
 def setCrvShapeOnTop():
     for x in mc.ls(sl=1):

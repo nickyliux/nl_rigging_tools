@@ -10,6 +10,8 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
 CBL = Color.BLUE
+CYL = Color.YELLOW
+COR = Color.ORANGE
 
 
 class RibbonNode:
@@ -22,6 +24,7 @@ class RibbonNode:
         scaleFix=None,
         forSpine=0,
         proxyP=None,
+        rigSize=1,
         p=None,
     ):
         self.tgtN = DagNode(tgt) if isinstance(tgt, str) else tgt
@@ -68,6 +71,7 @@ class RibbonNode:
         self.rbJNum = rbJNum
         self.all_ikHs = []
         self.proxyP = proxyP
+        self.rigSize = rigSize
 
         self.build()
 
@@ -93,29 +97,32 @@ class RibbonNode:
 
     def build_surf(self, pf):
 
+        rSz = self.rigSize
+        xDr = self.x_dir
+
         surf = SurfNode(
             "rb_surf",
             pf=pf,
             uSeg=5,
             ax=(0, 1, 0),
             lr=0.1,
-            width=max(10, self.D),
+            size=self.D,
             p=self.BSE_GRP,
         )
         surf.a.inheritsTransform.set(0)
-        surf.a.tx.set(self.D / 2 * self.x_dir)
-        surf.a.sx.set(self.x_dir)
-        # mc.select(surf.patches)
+        surf.a.tx.set(self.D / 2 * xDr)
+        surf.a.sx.set(xDr)
+
         coord = []
         for i in range(self.rbJNum):
             coord.append(((2 * i + 1) / (2 * self.rbJNum), 0.5))
 
         pin, pinXf = common.nlRivet(
-            geo=surf, coordList=coord, normal=1, tangent=0, p=self.BSE_GRP
+            geo=surf, coordList=coord, normal=1, tangent=0, p=self.BSE_GRP, size=rSz
         )
         rbJnt = []
         for i in range(self.rbJNum):
-            jnt = JointNode(f"rbj_{i}", pf=pf, p=self.JNT_GRP, r=self.D / 10, addOfs=1)
+            jnt = JointNode(f"rbj_{i}", pf=pf, p=self.JNT_GRP, r=rSz, addOfs=1)
             pinXf[i].cstPar(jnt.parent)
             pinXf[i].a.inheritsTransform.set(0)
             rbJnt.append(jnt)
@@ -124,19 +131,20 @@ class RibbonNode:
         self.rbJnt = rbJnt
 
     def build_locs(self, pf):
-        size = self.D / 4
+        offset = self.D / 4
+        size = self.D / 15
         Dx = self.D * self.x_dir
 
         self.stt_loc = LocNode("stt_loc", pf=pf, p=self.CTL_GRP, size=size)
-        self.stt_loc_upVec = LocNode("stt_loc_upVec", pf=pf, p=self.stt_loc)
+        self.stt_loc_upVec = LocNode("stt_loc_upVec", pf=pf, p=self.stt_loc, size=size)
         self.stt_loc.addOffsetGrp()
-        self.stt_loc_upVec.a.ty.set(size)
+        self.stt_loc_upVec.a.ty.set(offset)
 
         self.end_loc = LocNode("end_loc", pf=pf, p=self.CTL_GRP, size=size)
-        self.end_loc_upVec = LocNode("end_loc_upVec", pf=pf, p=self.end_loc)
+        self.end_loc_upVec = LocNode("end_loc_upVec", pf=pf, p=self.end_loc, size=size)
         self.end_loc.a.tx.set(Dx)
         self.end_loc.addOffsetGrp()
-        self.end_loc_upVec.a.ty.set(size)
+        self.end_loc_upVec.a.ty.set(offset)
 
         self.mid_loc = LocNode("mid_loc", pf=pf, p=self.CTL_GRP, size=size)
         self.mid_loc.a.tx.set(Dx / 2)
@@ -157,24 +165,43 @@ class RibbonNode:
 
     def build_aim_chains(self, pf):
         g = self.AIM_GRP
+        rSz = self.rigSize
 
         ofsX = self.D / 4 * self.x_dir
         ofsX2 = ofsX * 2
 
         stt_aimJ, stt_aimJ_end = JointNode.makeTwoJChain(
-            "stt_aimJ", pf=pf, snap=self.stt_loc, ofs=(ofsX, 0, 0), p=g
+            "stt_aimJ",
+            pf=pf,
+            snap=self.stt_loc,
+            ofs=(ofsX, 0, 0),
+            p=g,
+            r=rSz * 2,
+            color=COR,
         )
         stt_sknJ = stt_aimJ_end.duplicate(n=pf + "stt_sknJ")
         stt_sknJ.alignTo(self.stt_loc)
 
         end_aimJ, end_aimJ_end = JointNode.makeTwoJChain(
-            "end_aimJ", pf=pf, snap=self.end_loc, ofs=(-ofsX, 0, 0), p=g
+            "end_aimJ",
+            pf=pf,
+            snap=self.end_loc,
+            ofs=(-ofsX, 0, 0),
+            p=g,
+            r=rSz * 2,
+            color=COR,
         )
         end_sknJ = end_aimJ_end.duplicate(n=pf + "end_sknJ")
         end_sknJ.alignTo(self.end_loc)
 
         mid_aimJ, mid_aimJ_end = JointNode.makeTwoJChain(
-            "mid_aimJ", pf=pf, snap=self.stt_loc, ofs=(ofsX2, 0, 0), p=g
+            "mid_aimJ",
+            pf=pf,
+            snap=self.stt_loc,
+            ofs=(ofsX2, 0, 0),
+            p=g,
+            r=rSz * 2,
+            color=COR,
         )
         mid_sknJ = mid_aimJ_end.duplicate(n=pf + "mid_sknJ")
         mid_sknJ.alignTo(self.mid_loc, p=self.mid_loc)
@@ -240,10 +267,17 @@ class RibbonNode:
         aimV = (self.x_dir, 0, 0)
         aimVN = (-self.x_dir, 0, 0)
         upV = (0, 1, 0)
+        rSz = self.rigSize
 
         # From
         stt_twistJ, stt_twistJ_end = JointNode.makeTwoJChain(
-            "stt_twistJ", pf=pf, snap=self.stt_loc, ofs=(-ofsX, 0, 0), p=self.AIM_GRP
+            "stt_twistJ",
+            pf=pf,
+            snap=self.stt_loc,
+            ofs=(-ofsX, 0, 0),
+            p=self.AIM_GRP,
+            r=rSz / 2,
+            color=CYL,
         )
         stt_twistG = GroupNode("stt_twistG", pf=pf, align=stt_twistJ, p=stt_twistJ)
         stt_twistG.a.rx >> self.stt_sknJ.a.rx
@@ -255,10 +289,15 @@ class RibbonNode:
             aim=aimVN,
             u=upV,
         )
-
         # To
         end_twistJ, end_twistJ_end = JointNode.makeTwoJChain(
-            "end_twistJ", pf=pf, snap=self.end_loc, ofs=(ofsX, 0, 0), p=self.AIM_GRP
+            "end_twistJ",
+            pf=pf,
+            snap=self.end_loc,
+            ofs=(ofsX, 0, 0),
+            p=self.AIM_GRP,
+            r=rSz / 2,
+            color=CYL,
         )
         end_twistG = GroupNode("end_twistG", pf=pf, align=end_twistJ, p=end_twistJ)
         end_twistG.a.rx >> self.end_sknJ.a.rx

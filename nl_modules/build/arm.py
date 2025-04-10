@@ -15,6 +15,7 @@ CBK = Color.BLACK
 CBL = Color.BLUE
 CDR = Color.D_RED
 CDY = Color.D_YELLOW
+CGY = Color.GREY
 CRD = Color.RED
 CYL = Color.YELLOW
 
@@ -113,7 +114,6 @@ class Arm(RigModule):
             self.bindJnts.append(self.clavicle)
 
         self.post_setup()
-        self.pvc.a.tz.set(self.rigSize * self.x_dir)
 
     def createCtl(self):
         rSz = self.rigSize
@@ -129,9 +129,15 @@ class Arm(RigModule):
         )
         self.clavicle_fkc.cv_rotate(0, 0, -45)
 
-        self.upr_fkc = CurveNode("upr_fkc", pf=rID, up="x", scale=rSz * 2)
-        self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", scale=rSz * 2)
-        self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz * 2)
+        self.upr_fkc = CurveNode(
+            "upr_fkc", pf=rID, shape="squareR", up="x", scale=rSz * 1.5
+        )
+        self.lwr_fkc = CurveNode(
+            "lwr_fkc", pf=rID, shape="squareR", up="x", scale=rSz * 1.5
+        )
+        self.palm_fkc = CurveNode(
+            "palm_fkc", pf=rID, shape="squareR", up="x", scale=rSz * 1.5
+        )
 
         self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 1.5)
         self.palm_ikc = CurveNode(
@@ -165,18 +171,20 @@ class Arm(RigModule):
             "scapular",
             pf=rID,
             align=scapular_guide,
-            r=rSz * 3,
+            r=rSz,
             p=self.clavicle,
             color=CDR,
         )
         scapularJnt.freezeXf()
-        scapularLoc = LocNode("scapularLoc", pf=rID, snap=clavEnd_guide, p=scapularJnt)
+        scapularLoc = LocNode(
+            "scapularLoc", pf=rID, snap=clavEnd_guide, p=scapularJnt, size=rSz
+        )
 
         # clav chain
         dist = self.clavicle.o.distanceTo(scapularLoc)
         ofs = (xDr * dist, 0, 0)
         twoJ = JointNode.makeTwoJChain(
-            "clav", pf=rID, snap=self.clavicle, ofs=ofs, p=self.clavicle
+            "clav", pf=rID, snap=self.clavicle, ofs=ofs, p=self.clavicle, r=rSz
         )
         scapularLoc.cstAim(twoJ[0], aim=(xDr, 0, 0), u=(0, xDr, 0), keep=False)
         twoJ[0].freezeXf()
@@ -198,13 +206,16 @@ class Arm(RigModule):
     def twistBones_setup(self):
 
         rID = self.rigID
+        rSz = self.rigSize
         radius_JC = self.genSkFrNames(["radius", "radiusEnd"], color=CDR)
         ulna_JC = self.genSkFrNames(["ulna", "ulnaEnd"], color=CDR)
 
         (radius_JC[0], ulna_JC[0]) | self.lwr
 
-        radius_loc = LocNode("radius_loc", pf=rID, align=radius_JC[1], p=self.palm)
-        ulna_loc = LocNode("ulna_loc", pf=rID, align=ulna_JC[1], p=self.palm)
+        radius_loc = LocNode(
+            "radius_loc", pf=rID, align=radius_JC[1], p=self.palm, size=rSz
+        )
+        ulna_loc = LocNode("ulna_loc", pf=rID, align=ulna_JC[1], p=self.palm, size=rSz)
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
 
@@ -220,9 +231,11 @@ class Arm(RigModule):
         self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
 
     def build_fk(self):
+        rSz = self.rigSize
         logging.info(self.rigID)
+
         self.joints_fk = common.extractSk(
-            self.joints, "_fk", p=self.FK_PART, color=CBL, r=3
+            self.joints, "_fk", p=self.FK_PART, color=CBL, r=rSz * 2
         )
         self.fkCtl = [self.clavicle_fkc, self.upr_fkc, self.lwr_fkc, self.palm_fkc]
         self.fkGivenCtl2(self.joints_fk, self.fkCtl, p=self.FK_PART)
@@ -230,6 +243,7 @@ class Arm(RigModule):
 
     def build_ik(self):
         rID = self.rigID
+        rSz = self.rigSize
         logging.info(rID)
 
         self.ikc.alignTo(self.palm)
@@ -237,7 +251,7 @@ class Arm(RigModule):
         self.pvc.alignTo(self.lwr)
 
         self.joints_ik = common.extractSk(
-            self.joints, "_ik", p=self.IK_PART, color=CRD, r=4
+            self.joints, "_ik", p=self.IK_PART, color=CRD, r=3 * rSz
         )
         ikH1 = IkNode(
             "1",
@@ -268,6 +282,7 @@ class Arm(RigModule):
             pf=rID,
             shape="squareR",
             up="x",
+            scale=rSz,
             align=self.palm,
             p=self.pvc,
             addOfs=1,
@@ -309,18 +324,24 @@ class Arm(RigModule):
     def blend_fk_ik(self):
         rID = self.rigID
         rSz = self.rigSize
-        xDr = self.x_dir
+        # xDr = self.x_dir
         logging.info(rID)
         self.joints_bf = common.extractSk(
-            self.joints, "_bf", p=self.BF_PART, color=CYL, r=2
+            self.joints, "_bf", p=self.BF_PART, color=CGY, r=4 * rSz
         )
 
         palmIn_guide = DagNode(rID + "_palmIn_guide")
-        palmIn_loc = LocNode("palmIn", pf=rID, align=palmIn_guide, p=self.joints_bf[-1])
+        palmIn_loc = LocNode(
+            "palmIn", pf=rID, align=palmIn_guide, p=self.joints_bf[-1], size=rSz
+        )
         palmOut_guide = DagNode(rID + "_palmOut_guide")
-        palmOut_loc = LocNode("palmOut", pf=rID, align=palmOut_guide, p=palmIn_loc)
+        palmOut_loc = LocNode(
+            "palmOut", pf=rID, align=palmOut_guide, p=palmIn_loc, size=rSz
+        )
         ball_guide = DagNode(rID + "_ball_guide")
-        self.ballRoll_loc = LocNode("ballRoll", pf=rID, align=ball_guide, p=palmOut_loc)
+        self.ballRoll_loc = LocNode(
+            "ballRoll", pf=rID, align=ball_guide, p=palmOut_loc, size=rSz
+        )
 
         self.setting | self.CTL_DATA
         self.setting.alignTo(self.palm)  # , offset=(rSz * xDr * 40, 0, 0))
@@ -387,6 +408,7 @@ class Arm(RigModule):
             volMode="upr",
             scaleFix=self.masterC.a.globalScale,
             proxyP=self.PRX_GRP,
+            rigSize=rSz,
             p=self.RIG_DATA,
         )
         ribbonLw = RibbonNode(
@@ -396,6 +418,7 @@ class Arm(RigModule):
             volMode="lwr",
             scaleFix=self.masterC.a.globalScale,
             proxyP=self.PRX_GRP,
+            rigSize=rSz,
             p=self.RIG_DATA,
         )
         # --------------------------------
@@ -474,10 +497,9 @@ class Arm(RigModule):
         )
 
     def proxy_setup(self):
-        rSz = self.rigSize
         aim = (self.x_dir, 0, 0)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(size=rSz * 5, aimDir=aim, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(aimDir=aim, p=self.PRX_GRP)
 
     def channel_setup(self):
         self.setting.a.showAttr()

@@ -172,11 +172,11 @@ class Tail(RigModule):
         rSz = self.rigSize
         self.bindJnts = []
         for loc in pinXf:
+            r = rSz / self.FK_JNT_NUM * 8
             j = JointNode(
-                self.rigID + "_rbJ_#", align=loc, r=rSz * 4, color=CDR, p=self.SKL_DATA
+                self.rigID + "_rbJ_#", align=loc, r=r, color=CDR, p=self.SKL_DATA
             )
             loc.cstPar(j)
-            # self.fkCtl[0].a.s >> j.a.s
             self.bindJnts.append(j)
 
     def vis_setup(self):
@@ -195,10 +195,8 @@ class Tail(RigModule):
             ctl.a.ro.set(3)
 
     def proxy_setup(self):
-        rSz = self.rigSize
         for j in self.bindJnts:
-            size = rSz / self.RBN_JNT_NUM * 80
-            JointNode(j).addProxyMesh(size=size, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(p=self.PRX_GRP)
 
     def post_setup(self):
         rID = self.rigID
