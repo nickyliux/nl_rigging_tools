@@ -102,7 +102,7 @@ class Leg(RigModule):
                 ["toe04_1", "toe04_2", "toe04_3", "toe04_4", "toe04_5"],
             ]
             for names in toe_names:
-                fgr_jnts = self.genSkFrNames(names)
+                fgr_jnts = self.genSkFrNames(names, scale=2)
                 fgr_jnts[0].freezeXf()
                 fgr_jnts[0] | self.toesRootJ
 
@@ -128,13 +128,13 @@ class Leg(RigModule):
         )
         self.ball_fkc.cv_scale(0.7, 1, 1)
 
-        scale = (rSz * 2, rSz * 1.5, rSz * 3.5)
+        scale = (rSz * 1.5, rSz * 1.5, rSz * 3.5)
         self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=scale)
         self.ikc.lowerCubeFrontCV()
         self.ikc.cv_move(0, 0, rSz * 8)
 
         self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz * 0.5)
-        self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz * 0.3)
+        self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz * 0.5)
 
         self.rigNode.setMsg(
             {
@@ -188,7 +188,7 @@ class Leg(RigModule):
             self.boneFix_setup(self.lwr, self.palm)
             if self.RBN_BONES:
                 self.boneFix.cstPoi(self.ribbonLw.stt_loc)
-            else:
+            elif not self.TWIST_BONES:
                 self.bindJnts.append(self.boneFix)
 
         if self.PATELLA_BONE:
@@ -344,7 +344,7 @@ class Leg(RigModule):
         self.smart_ctl.snapTo(self.ikc)
         self.smart_ctl.a.ty.set(0)
         self.smart_ctl | self.ikc_gimbal
-        self.smart_ctl.a.tz.set(rSz * 25)
+        self.smart_ctl.a.tz.set(rSz * 35)
         self.smart_ctl.addOffsetGrp()
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry  # self.ikc.a["toeTwist"]
@@ -384,8 +384,8 @@ class Leg(RigModule):
 
     def twistBones_setup(self):
         rID = self.rigID
-        radius_JC = self.genSkFrNames(["radius", "radiusEnd"], color=CDR)
-        ulna_JC = self.genSkFrNames(["ulna", "ulnaEnd"], color=CDR)
+        radius_JC = self.genSkFrNames(["radius", "radiusEnd"], color=CDR, scale=2)
+        ulna_JC = self.genSkFrNames(["ulna", "ulnaEnd"], color=CDR, scale=2)
 
         parent = self.boneFix if self.KNEE_FIX else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent
@@ -545,7 +545,7 @@ class Leg(RigModule):
     def proxy_setup(self):
         aim = (self.x_dir, 0, 0)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(aimDir=aim, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(scale=1, aimDir=aim, p=self.PRX_GRP)
 
     def vis_setup(self):
 
@@ -568,7 +568,7 @@ class Leg(RigModule):
 
         # DEBUG
         self.ctrlOnOffByAttr(
-            self.masterC.a["showSetup"],
+            self.masterC.a["debug"],
             onList=self.all_ikHs
             + self.joints_fk
             + self.joints_ik

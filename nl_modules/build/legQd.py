@@ -94,7 +94,7 @@ class LegQd(RigModule):
                 ["toe04_1", "toe04_2", "toe04_3", "toe04_4", "toe04_5"],
             ]
             for names in toe_names:
-                fgr_jnts = self.genSkFrNames(names)
+                fgr_jnts = self.genSkFrNames(names, scale=1.2)
                 fgr_jnts[0].freezeXf()
                 fgr_jnts[0] | self.toesRootJ
 
@@ -103,7 +103,14 @@ class LegQd(RigModule):
         rID = self.rigID
         xDr = self.x_dir
         self.setting = CurveNode(
-            "setting", pf=rID, shape="stickS", scale=rSz * -xDr, color=CBK, top=1
+            "setting",
+            pf=rID,
+            shape="stickS",
+            up="-z",
+            # rotate=(0, 0, 90),
+            scale=rSz * xDr,
+            color=CBK,
+            top=1,
         )
         # lineWidth=2,
         self.hip_fkc = CurveNode(
@@ -118,7 +125,7 @@ class LegQd(RigModule):
             pf=rID,
             scale=xDr * rSz / 2,
         )
-        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 2, color=CDY)
+        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 2)
         self.ikc.lowerCubeFrontCV()
         # self.ikc = CurveNode("ikc", pf=rID, shape="foot_quad", color=CDY)
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz * 0.8)
@@ -186,8 +193,11 @@ class LegQd(RigModule):
         self.custom_setup()
 
     def build_fk(self):
+        rSz = self.rigSize
         logging.info(self.rigID)
-        self.joints_fk = common.extractSk(self.joints, "_fk", p=self.FK_PART)
+        self.joints_fk = common.extractSk(
+            self.joints, "_fk", p=self.FK_PART, color=CBL, r=2 * rSz
+        )
         self.fkCtl = [
             self.hip_fkc,
             self.upr_fkc,
@@ -201,6 +211,7 @@ class LegQd(RigModule):
 
     def build_ik(self):
         rID = self.rigID
+        rSz = self.rigSize
         logging.info(rID)
         mG = self.master_guide
         pvc_guide = DagNode(rID + "_pvc_guide")
@@ -210,7 +221,9 @@ class LegQd(RigModule):
         toePos_guide = DagNode(rID + "_palm_toePos_guide")
         self.ikc.alignTo(mG)
         self.pvc.alignTo(pvc_guide)
-        self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_PART)
+        self.joints_ik = common.extractSk(
+            self.joints, "_ik", p=self.IK_PART, color=CRD, r=3 * rSz
+        )
 
         ikH1 = IkNode(
             "1",
@@ -393,9 +406,9 @@ class LegQd(RigModule):
         rSz = self.rigSize
 
         jnt_names = ["radius", "radiusEnd"]
-        radius_JC = self.genSkFrNames(jnt_names, scale=3)
+        radius_JC = self.genSkFrNames(jnt_names, scale=2)
         jnt_names = ["ulna", "ulnaEnd"]
-        ulna_JC = self.genSkFrNames(jnt_names, scale=3)
+        ulna_JC = self.genSkFrNames(jnt_names, scale=2)
 
         parent = self.boneFix if self.KNEE_FIX else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent
@@ -564,7 +577,7 @@ class LegQd(RigModule):
         [ikh.hide() for ikh in self.all_ikH.values()]
 
         self.ctrlOnOffByAttr(
-            self.masterC.a["showSetup"],
+            self.masterC.a["debug"],
             onList=self.joints_fk + self.joints_ik,
         )
 

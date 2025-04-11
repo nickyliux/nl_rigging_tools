@@ -45,7 +45,7 @@ class Hand(RigModule):
         # xDr = self.x_dir
 
         self.smart_ctl = CurveNode(
-            "smart_ctl", pf=rID, shape="roll", up="x", scale=rSz * 1.5
+            "smart_ctl", pf=rID, shape="roll", up="x", scale=rSz * 2
         )
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
 
@@ -270,7 +270,7 @@ class Hand(RigModule):
     def proxy_setup(self):
         aim = (self.x_dir, 0, 0)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(scale=3, aimDir=aim, skipEnd=1, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(scale=2.5, aimDir=aim, skipEnd=1, p=self.PRX_GRP)
 
     def channel_setup(self):
         self.smart_ctl.a.showAttr(t=1, r=1, s=1)
@@ -290,9 +290,7 @@ class Hand(RigModule):
         for fgrCtls in self.ctlsArr:
             showCtls >> fgrCtls[0].a.v
 
-        self.ctrlOnOffByAttr(
-            self.masterC.a["showSetup"], onList=self.allIkJ + self.allIkH
-        )
+        self.ctrlOnOffByAttr(self.masterC.a["debug"], onList=self.allIkJ + self.allIkH)
 
     def post_setup(self):
         ctlSet = [self.smart_ctl] + self.fgrRootCtlArr

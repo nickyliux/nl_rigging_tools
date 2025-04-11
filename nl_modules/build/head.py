@@ -32,7 +32,7 @@ class Head(RigModule):
         self.fkCtl = None
 
     def genGuideSk(self):
-        self.genSk_module(["st", "ed"], scale=2)
+        self.genSk_module(["st", "ed"])
         jaw_list = self.genSkFrNames(["jaw", "jawEnd"])
         jaw_list[0] | self.rootJ
         lf_eye = self.genSkFrNames("lf_eye")[0]
@@ -86,7 +86,7 @@ class Head(RigModule):
         # scalable
         self.head_fkc.a.s >> self.PRX_GRP.a.s
 
-        self.isolateAlign(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC], dv=1)
+        self.isolateAlign(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC])
 
     def proxy_setup(self):
         aim = (0, 1, 0)

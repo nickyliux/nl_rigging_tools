@@ -122,7 +122,9 @@ class RibbonNode:
         )
         rbJnt = []
         for i in range(self.rbJNum):
-            jnt = JointNode(f"rbj_{i}", pf=pf, p=self.JNT_GRP, r=rSz, addOfs=1)
+            jnt = JointNode(
+                f"rbj_{i}", pf=pf, p=self.JNT_GRP, r=rSz / self.rbJNum * 5, addOfs=1
+            )
             pinXf[i].cstPar(jnt.parent)
             pinXf[i].a.inheritsTransform.set(0)
             rbJnt.append(jnt)

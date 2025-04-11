@@ -316,7 +316,7 @@ class RigModule(RigBase):
     #         self.rigSize = self.getRigSize(rootJ)
 
     def getRigSize(self, rootJ):
-        return rootJ.o.diagonal2 / 100
+        return rootJ.o.diagonal2 / 100 or 1
 
     def addMinusScaleGrp(self, tgt):
         if self.rigID.startswith("rt_"):
@@ -326,7 +326,7 @@ class RigModule(RigBase):
         else:
             tgt.addOffsetGrp()
 
-    def genSk_module(self, jnt_names, scale=1):
+    def genSk_module(self, jnt_names):  # , scale=1):
         self.rigNode.a.nodeState.set(1)
 
         rootCtl = self.masterC.parent.parent
@@ -338,7 +338,7 @@ class RigModule(RigBase):
 
         self.moduleG.hide()
 
-        jnt_list = self.genSkFrNames(jnt_names, scale=scale)
+        jnt_list = self.genSkFrNames(jnt_names)  # , scale=scale)
 
         self.rootJ = jnt_list[0]
         self.rootJ | self.SKL_DATA
@@ -346,13 +346,17 @@ class RigModule(RigBase):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_module(self):
-
-        # self.calcRigSize(self.rootJ)
+        logging.info(self.rigID)
         self.rigSize = self.getRigSize(self.rootJ)
         self.rigNode.a.nodeState.set(2)
         children = self.rootJ.childrenJt
         if children:
             self.x_dir = 1 if children[0].a.tx.get() > 0 else -1
+
+        # update all joints' radius
+        joints = self.rootJ.allChildrenJt2
+        for j in joints:
+            j.a.radius.set(self.rigSize)
 
     def post_module(self):
         for obj in mc.ls(tr=1):

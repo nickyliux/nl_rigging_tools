@@ -207,8 +207,8 @@ class Arm(RigModule):
 
         rID = self.rigID
         rSz = self.rigSize
-        radius_JC = self.genSkFrNames(["radius", "radiusEnd"], color=CDR)
-        ulna_JC = self.genSkFrNames(["ulna", "ulnaEnd"], color=CDR)
+        radius_JC = self.genSkFrNames(["radius", "radiusEnd"], color=CDR, scale=2)
+        ulna_JC = self.genSkFrNames(["ulna", "ulnaEnd"], color=CDR, scale=2)
 
         (radius_JC[0], ulna_JC[0]) | self.lwr
 
@@ -488,7 +488,7 @@ class Arm(RigModule):
                 onList=self.all_bend,
             )
         self.ctrlOnOffByAttr(
-            self.masterC.a["showSetup"],
+            self.masterC.a["debug"],
             onList=self.all_ikHs
             + self.joints_fk
             + self.joints_ik
@@ -499,7 +499,7 @@ class Arm(RigModule):
     def proxy_setup(self):
         aim = (self.x_dir, 0, 0)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(aimDir=aim, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(scale=2, aimDir=aim, p=self.PRX_GRP)
 
     def channel_setup(self):
         self.setting.a.showAttr()

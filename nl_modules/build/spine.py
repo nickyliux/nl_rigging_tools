@@ -229,11 +229,11 @@ class Spine(RigModule):
             self.setting.a.add("ikVis", min=0, max=1, dv=1, k=0),
             onList=self.ikCtl,
         )
-        self.ctrlOnOffByAttr(self.masterC.a["showSetup"], onList=[self.RIG_DATA])
+        self.ctrlOnOffByAttr(self.masterC.a["debug"], onList=[self.RIG_DATA])
 
         if self.RBN_BONES:
             self.ctrlOnOffByAttr(
-                self.masterC.a["showSetup"], onList=[self.rbSrf] + self.ctlJnts
+                self.masterC.a["debug"], onList=[self.rbSrf] + self.ctlJnts
             )
 
     def channel_setup(self):

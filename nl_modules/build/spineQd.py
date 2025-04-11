@@ -58,14 +58,20 @@ class SpineQd(RigModule):
         scale = (rSz * 4, rSz * 4, rSz)
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="stickS", scale=rSz * 2, color=CBK, top=1
+            "setting",
+            pf=rID,
+            shape="stickS",
+            rotate=(0, 90, 0),
+            scale=rSz * 1.5,
+            color=CBK,
+            top=1,
         )
         # lineWidth=2,
         self.cog_ctl = CurveNode(
             "cog_ctl",
             pf=rID,
             shape="cube",
-            scale=(rSz, rSz * 2, rSz * 3),
+            scale=(rSz, rSz * 1.5, rSz * 2.5),
             color=CYL,
         )
         self.cog_ctl.cv_move(0, 80 * rSz, 0)
@@ -337,11 +343,11 @@ class SpineQd(RigModule):
         if self.bindJnts:
             # mc.hide(self.bindJnts, self.rbSrf)
             self.ctrlOnOffByAttr(
-                self.masterC.a["showSetup"], onList=self.bindJnts + [self.rbSrf]
+                self.masterC.a["debug"], onList=self.bindJnts + [self.rbSrf]
             )
 
         self.ctrlOnOffByAttr(
-            self.masterC.a["showSetup"], onList=self.ctlJnts + self.fkJ_A + self.fkJ_B
+            self.masterC.a["debug"], onList=self.ctlJnts + self.fkJ_A + self.fkJ_B
         )
 
     def proxy_setup(self):

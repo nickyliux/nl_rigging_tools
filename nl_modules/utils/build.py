@@ -74,7 +74,7 @@ def preRig():
     # mc.refresh(su=1)
     m = DagNode("master_ctl")
     m.a.add("showProxy", min=0, max=1, k=0, dv=1)
-    m.a.add("showSetup", min=0, max=1, dv=1, k=0)
+    m.a.add("debug", min=0, max=1, dv=1, k=0)
 
 
 @Undo("buildSelOrAll")
