@@ -100,7 +100,7 @@ class Attribute:
         if (
             objType == "locator"
             or objType == "nurbsCurve"
-            and isinstance(args, (tuple, list))
+            and (args and isinstance(args, (tuple, list)))
         ):
             attrs = self.atChildren if self.isParent() else [self]
             for i, attr in enumerate(attrs):

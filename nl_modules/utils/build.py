@@ -226,14 +226,15 @@ def resetAllCtl():
 
 
 def resetAllPvCtl():
-    rigNodes = mc.ls("*RGN", type="script")
-    for rigNode in rigNodes:
-        rN = DagNode(rigNode)
-        rID = rN.a.rigID.get()
-        pvc = rN.a.pvc.inConnNode
-        guide = DagNode(rID + "_pvc_guide")
-        if pvc and guide and pvc.exists() and guide.exists():
-            pvc.snapTo(guide)
+    pass
+    # rigNodes = mc.ls("*RGN", type="script")
+    # for rigNode in rigNodes:
+    #     rN = DagNode(rigNode)
+    #     rID = rN.a.rigID.get()
+    #     pvc = rN.a.pvc.inConnNode
+    #     guide = DagNode(rID + "_pvc_guide")
+    #     if pvc and guide and pvc.exists() and guide.exists():
+    #         pvc.snapTo(guide)
 
 
 def updateSpaceSwitch():

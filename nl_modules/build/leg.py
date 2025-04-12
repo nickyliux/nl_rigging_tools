@@ -545,7 +545,7 @@ class Leg(RigModule):
     def proxy_setup(self):
         aim = (self.x_dir, 0, 0)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(scale=1, aimDir=aim, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(aimDir=aim, p=self.PRX_GRP)
 
     def vis_setup(self):
 
@@ -579,7 +579,9 @@ class Leg(RigModule):
     def channel_setup(self):
         self.setting.a.showAttr()
         self.pvc.a.showAttr(t=1)
-        self.smart_ctl.a.showAttr(r=1)
+        self.smart_ctl.a.showAttr("tz", r=1)
+        self.smart_ctl.a.tz.set(cb=1, k=0)
+
         for ctl in self.fkCtl + self.subCtls + [self.ikc, self.pvc, self.pin_fkc]:
             ctl.a.showAttr(t=1, r=1)
         for ctl in self.all_bend or []:

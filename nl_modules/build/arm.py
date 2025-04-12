@@ -499,7 +499,7 @@ class Arm(RigModule):
     def proxy_setup(self):
         aim = (self.x_dir, 0, 0)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(scale=2, aimDir=aim, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(aimDir=aim, p=self.PRX_GRP)
 
     def channel_setup(self):
         self.setting.a.showAttr()

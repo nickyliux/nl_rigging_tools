@@ -361,7 +361,7 @@ class RigModule(RigBase):
     def post_module(self):
         for obj in mc.ls(tr=1):
             mc.setAttr(obj + ".ro", cb=1)
-        self.moduleG.hide()
+        # self.moduleG.hide()
         # self.masterC.a.showAttr(t=1, r=1)
         # self.masterC.offset.a.showAttr(t=1, r=1)
         if self.PRX:
