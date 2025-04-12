@@ -109,6 +109,7 @@ class Tail(RigModule):
             aimV=(0, 0, -1),
             upV=(0, 1, 0),
             wuV=(0, 1, 0),
+            jntRad=rSz,
         )
 
         lastJnt = None

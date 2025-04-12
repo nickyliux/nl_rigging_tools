@@ -104,7 +104,7 @@ class Spine(RigModule):
             aimV=(0, 1, 0),
             upV=(0, 0, 1),
             wuV=(0, 0, 1),
-            r=rSz,
+            jntRad=rSz,
             p=self.SKL_DATA,
         )
         mc.delete(self.rootJ)

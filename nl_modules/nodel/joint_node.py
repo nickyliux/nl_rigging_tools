@@ -158,10 +158,10 @@ class JointNode(GroupNode):
         aimV=(0, 0, 1),
         upV=(0, 1, 0),
         wuV=(0, 1, 0),
-        r=1,
+        jntRad=1,
         pf="",
         p=None,
-        color=1,
+        color=0,
         addEndJ=0,
     ):
         """Build joint chain from curve
@@ -181,7 +181,7 @@ class JointNode(GroupNode):
             pf += "_"
         for i in range(jntNum):
             mp.a.uValue.set(i / (jntNum - 1))
-            j = JointNode(pf + name + "_#", snap=loc, r=r)
+            j = JointNode(pf + name + "_#", snap=loc, r=jntRad, color=color)
             joints.append(j)
 
         root = joints[0] if alongCrv else joints[-1]
