@@ -66,7 +66,7 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
         pvc = rN.a.pvc.inConnNode
 
         if toIKMode == 1:
-            # mode: FK to IK
+            # To IK Mode
             # Snap ikc to matchers under fkc
             ikcMatcher = DagNode(ikc + "_matcher")
             if ikc and pvc and ikcMatcher.exists():
@@ -83,7 +83,7 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
                     pvc.snapTo(pvc_pos_grp)
                     pvc_pos_grp.delete()
         else:
-            # mode: IK to FK
+            # To FK Mode
             # Snap fkc to current limb
             if upr_fkc and lwr_fkc and palm_fkc and upr and lwr and ikc:
                 upr_fkc.alignTo(upr)

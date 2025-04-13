@@ -336,8 +336,6 @@ class RigModule(RigBase):
         self.masterC.a.showAttr(t=1, r=1)
         self.masterC.parent.a.showAttr(t=1, r=1)
 
-        self.moduleG.hide()
-
         jnt_list = self.genSkFrNames(jnt_names)  # , scale=scale)
 
         self.rootJ = jnt_list[0]

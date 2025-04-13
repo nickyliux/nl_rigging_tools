@@ -488,9 +488,9 @@ class LegQd(RigModule):
     def ribbon_setup(self):
         """
                     upr
-        up_bend     --
-        md_bend     lwr
-        lw_bend     --
+        upr_bend     --
+        mid_bend     lwr
+        lwr_bend     --
                     foot
         """
         rID = self.rigID
@@ -524,29 +524,29 @@ class LegQd(RigModule):
         upLoc = ribbonUp.mid_loc
         lwLoc = ribbonLw.mid_loc
         cData = self.CTL_DATA
-        up_bend = CurveNode("up_bend", pf=rID, align=upLoc, addOfs=1, p=cData)
-        lw_bend = CurveNode("lw_bend", pf=rID, align=lwLoc, addOfs=1, p=cData)
-        md_bend = CurveNode("md_bend", pf=rID, align=self.lwr, addOfs=1, p=cData)
+        upr_bend = CurveNode("upr_bend", pf=rID, align=upLoc, addOfs=1, p=cData)
+        lwr_bend = CurveNode("lwr_bend", pf=rID, align=lwLoc, addOfs=1, p=cData)
+        mid_bend = CurveNode("mid_bend", pf=rID, align=self.lwr, addOfs=1, p=cData)
 
-        self.all_bend = [up_bend, lw_bend, md_bend]
+        self.all_bend = [upr_bend, lwr_bend, mid_bend]
         for b in self.all_bend:
             b(shape="square", up="x", color=CDY, scale=rSz)
 
-        upLoc.cstPar(up_bend.offset, mo=1)
-        lwLoc.cstPar(lw_bend.offset, mo=1)
-        up_bend.cstParSca(upLoc.children[0], mo=1)
-        lw_bend.cstParSca(lwLoc.children[0], mo=1)
+        upLoc.cstPar(upr_bend.offset, mo=1)
+        lwLoc.cstPar(lwr_bend.offset, mo=1)
+        upr_bend.cstParSca(upLoc.children[0], mo=1)
+        lwr_bend.cstParSca(lwLoc.children[0], mo=1)
 
-        self.lwr.cstPar(md_bend.offset, mo=1)
-        md_bend.cstParSca(ribbonUp.end_loc, mo=1)
+        self.lwr.cstPar(mid_bend.offset, mo=1)
+        mid_bend.cstParSca(ribbonUp.end_loc, mo=1)
 
         stt_ofs = ribbonLw.stt_loc.addOffsetGrp(count=2)
-        md_bend.cstParSca(stt_ofs[0], mo=1)
+        mid_bend.cstParSca(stt_ofs[0], mo=1)
 
         if self.KNEE_FIX:
             self.boneFix_sdk(self.lwr, stt_ofs[1])
 
-        # Add Ctl Attr to md_bend
+        # Add Ctl Attr to mid_bend
         volPower = self.setting.a.add("volume", min=0, max=2, dv=1, k=0)
         volPower >> ribbonUp.volPower
         volPower >> ribbonLw.volPower
