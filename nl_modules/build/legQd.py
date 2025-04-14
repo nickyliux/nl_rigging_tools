@@ -169,7 +169,7 @@ class LegQd(RigModule):
             self.boneFix_setup(self.lwr, self.palm)
 
         if self.PATELLA_BONE:
-            self.patella_setup(self.PRX_GRP)
+            self.patella_setup()
 
         if self.TWIST_BONES:
             self.twistBones_setup()

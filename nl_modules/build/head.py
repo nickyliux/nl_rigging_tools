@@ -75,8 +75,6 @@ class Head(RigModule):
         self.head_fkc.alignTo(self.head)
         self.head_fkc.addOffsetGrp()
         self.head_fkc.cstPar(self.head, mo=1)
-        self.head_fkc.cv_moveTo(self.headEnd.o.pos)
-        self.head_fkc.a.s >> self.SKL_DATA.a.s
 
         self.jaw_fkc.snapTo(self.jaw, p=self.head_fkc)
         self.jaw_fkc.addOffsetGrp()
@@ -84,6 +82,7 @@ class Head(RigModule):
         self.jaw_fkc.cv_moveTo(self.jawEnd.o.pos)
 
         # scalable
+        self.head_fkc.a.s >> self.SKL_DATA.a.s
         self.head_fkc.a.s >> self.PRX_GRP.a.s
 
         self.isolateAlign(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC])

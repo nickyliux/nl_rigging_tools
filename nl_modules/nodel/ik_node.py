@@ -47,6 +47,7 @@ class IkNode(DagNode):
         numSpans=3,
         limbScale=False,
         scaleFix=None,
+        scaleFix2=None,
         quat=None,
         RIG_DATA=None,
         vis=1,
@@ -74,6 +75,7 @@ class IkNode(DagNode):
         self.pvc = pvc
         self.setting = setting
         self.scaleFix = scaleFix
+        self.scaleFix2 = scaleFix2
         self.pf = pf
         self.softJ = None
         self.pvChainJ = None
@@ -213,6 +215,8 @@ class IkNode(DagNode):
         d = crvInfo.a.arcLength
         if self.scaleFix:
             d /= self.scaleFix
+        if self.scaleFix2:
+            d /= self.scaleFix2
 
         self.setting.a.addSep()
         ks = self.setting.a.add("stretchy", min=0, max=1, dv=on)
@@ -257,6 +261,9 @@ class IkNode(DagNode):
             dist_loc | self.ikc
 
         d = ut.distDim_(self.jnt[0], dist_loc) / self.scaleFix
+        if self.scaleFix2:
+            d /= self.scaleFix2
+
         if pvPin:
             #
             #   With Pv pinning

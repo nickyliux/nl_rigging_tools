@@ -40,6 +40,9 @@ class Leg(RigModule):
         self.TWIST_BONES = self.master_guide.a.twistBones.get()
         self.KNEE_FIX = self.master_guide.a.kneeFix.get()
 
+        hip_guide = DagNode(self.rigID + "_hip_guide")
+        self.CTL_DATA.snapTo(hip_guide)
+
         self.FK_PART = GroupNode("FK", pf=self.rigID, p=self.CTL_DATA)
         self.IK_PART = GroupNode("IK", pf=self.rigID, p=self.CTL_DATA)
         self.BF_PART = GroupNode("BF", pf=self.rigID, p=self.CTL_DATA)
@@ -192,7 +195,7 @@ class Leg(RigModule):
                 self.bindJnts.append(self.boneFix)
 
         if self.PATELLA_BONE:
-            self.patellaJ = self.patella_setup(self.PRX_GRP)
+            self.patellaJ = self.patella_setup()
 
         if self.TWIST_BONES:
             self.twistBones_setup()
@@ -206,6 +209,15 @@ class Leg(RigModule):
             self.build_toes()
         else:
             self.bindJnts.extend([self.palm, self.ball])
+
+        # Scaling
+        self.CTL_DATA.a.s >> self.RIG_DATA.a.s
+        self.CTL_DATA.a.s >> self.PRX_GRP.a.s
+        self.CTL_DATA.a.s >> self.SKL_DATA.a.s
+        legScale = self.setting.a.add("legScale", min=0.01, dv=1)
+        legScale >> self.CTL_DATA.a.sx
+        legScale >> self.CTL_DATA.a.sy
+        legScale >> self.CTL_DATA.a.sz
 
         self.post_setup()
 
@@ -223,7 +235,7 @@ class Leg(RigModule):
             self.ball_fkc,
         ]
         self.fkGivenCtl2(self.joints_fk[:-1], self.fkCtl[:-1], p=self.FK_PART)
-        self.isolateAlign(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
+        self.isolateAlign(self.upr_fkc, spaces=[self.upr_fkc.parent, self.CTL_DATA])
 
     def build_ik(self):
         rID = self.rigID
@@ -253,6 +265,7 @@ class Leg(RigModule):
             setting=self.setting,
             limbScale=1,
             scaleFix=self.masterC.a.globalScale,
+            scaleFix2=self.CTL_DATA.a.sy,
             RIG_DATA=self.RIG_DATA,
         )
         ikH2 = IkNode("2", pf=rID, sj=self.palm, ee=self.ball, jsf="_ik")
@@ -613,7 +626,8 @@ class Leg(RigModule):
         spaces = "leg, master, hip, COG"
         self.rigNode.a.add("spaceName2", attrType="string", txt=spaces)
 
-        self.rigNode.setMsg({"space_master": self.masterC})
+        # self.rigNode.setMsg({"space_master": self.masterC})
+        self.rigNode.setMsg({"space_master": self.CTL_DATA})
         # self.rigNode.setMsg({"space_hip": self.hip_fkc})
 
         self.ikH1.build_pvfkPinSetup(ikTarget=self.ikc_gimbal)

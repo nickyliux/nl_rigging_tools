@@ -21,6 +21,7 @@ class Hand(RigModule):
         self.ctlsArr = None
         self.allIkJ = []
         self.allIkH = []
+        self.hand_grp = None
         self.fgrRootCtlArr = None
 
     def genGuideSk(self):
@@ -98,12 +99,12 @@ class Hand(RigModule):
         xDr = self.x_dir
 
         self.fgrRootCtlArr = []
-        rig_grp = GroupNode(rID + "_grp", align=self.rootJ, p=self.RIG_DATA)
-        self.rootJ.cstPar(rig_grp, mo=1)
+        self.hand_grp = GroupNode(rID + "_grp", align=self.rootJ, p=self.RIG_DATA)
+        self.rootJ.cstPar(self.hand_grp, mo=1)
 
         for fgrs, ctls in zip(self.fgrsArr, self.ctlsArr):
             scale = xDr * rSz * 0.8
-            ctl, ikJ, ikH = self.build_digit_ik(fgrs[1], scale=scale, p=rig_grp)
+            ctl, ikJ, ikH = self.build_digit_ik(fgrs[1], scale=scale, p=self.hand_grp)
             self.fgrRootCtlArr.append(ctl)
             self.allIkJ.append(ikJ)
             self.allIkH.append(ikH)
@@ -129,7 +130,8 @@ class Hand(RigModule):
         self.smart_ctl.alignTo(self.rootJ, offset=offset, p=scaleGrp)
         self.smart_ctl.addOffsetGrp()
 
-        self.rootJ.cstPar(scaleGrp, mo=1)
+        # self.rootJ.cstPar(scaleGrp, mo=1)
+        self.hand_grp.cstPar(scaleGrp, mo=1)
         self.rootJ.a.s >> scaleGrp.a.s
 
         drv = self.smart_ctl

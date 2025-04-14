@@ -497,7 +497,7 @@ class RigModule(RigBase):
         common.sdk(driver, driven, "ry", "tx", -80, s, tangent=1)
         common.sdk(driver, driven, "ry", "tx", -170, -3 * s)
 
-    def patella_setup(self, PRX_GRP):
+    def patella_setup(self):
 
         def patella_sdk(driver, driven):
             common.sdk(driver, driven, "ry", "ry", 0, 0)
