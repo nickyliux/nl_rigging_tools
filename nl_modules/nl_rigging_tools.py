@@ -243,8 +243,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             mc.refresh(su=1)
             logging.info(f'load preset "{preset_name}"')
             guide.loadPreset(f)
-            mc.refresh(su=0)
             common.setViewport()
+            mc.refresh(su=0)
+            mc.select(cl=1)
             self.rigNode_refresh_BN_clicked()
         else:
             logging.info(f"missing file: {f}")

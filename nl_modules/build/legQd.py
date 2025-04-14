@@ -116,10 +116,14 @@ class LegQd(RigModule):
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
         )
-        self.upr_fkc = CurveNode("upr_fkc", pf=rID, up="x", scale=rSz)
-        self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, up="x", scale=rSz)
-        self.palm_fkc = CurveNode("palm_fkc", pf=rID, up="x", scale=rSz)
-        self.digit_fkc = CurveNode("digit_fkc", pf=rID, up="x", scale=rSz)
+        self.upr_fkc = CurveNode("upr_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
+        self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
+        self.palm_fkc = CurveNode(
+            "palm_fkc", pf=rID, shape="squareR", up="x", scale=rSz
+        )
+        self.digit_fkc = CurveNode(
+            "digit_fkc", pf=rID, shape="squareR", up="x", scale=rSz
+        )
         self.ball_fkc = CurveNode(
             "ball_fkc",
             pf=rID,

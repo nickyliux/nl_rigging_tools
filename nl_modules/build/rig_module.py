@@ -326,17 +326,14 @@ class RigModule(RigBase):
         else:
             tgt.addOffsetGrp()
 
-    def genSk_module(self, jnt_names):  # , scale=1):
+    def genSk_module(self, jnt_names):
         self.rigNode.a.nodeState.set(1)
 
         rootCtl = self.masterC.parent.parent
         if rootCtl.a.sx.get() != 1:
             rootCtl.freezeXf(t=0, r=0, s=1)
 
-        self.masterC.a.showAttr(t=1, r=1)
-        self.masterC.parent.a.showAttr(t=1, r=1)
-
-        jnt_list = self.genSkFrNames(jnt_names)  # , scale=scale)
+        jnt_list = self.genSkFrNames(jnt_names)
 
         self.rootJ = jnt_list[0]
         self.rootJ | self.SKL_DATA
