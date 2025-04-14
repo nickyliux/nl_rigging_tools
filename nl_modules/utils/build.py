@@ -1,3 +1,4 @@
+import os.path
 import maya.cmds as mc
 import logging
 from nl_modules.nodel.base.dag_node import DagNode
@@ -15,9 +16,7 @@ from nl_modules.build.legQd import LegQd
 from nl_modules.build.neckQd import NeckQd
 from nl_modules.build.spineQd import SpineQd
 from nl_modules.build.tail import Tail
-
 from nl_modules.build.rig_module import RigModule
-
 from contextlib import ContextDecorator
 
 
@@ -70,8 +69,22 @@ def buildTgt(rigN):
             mc.refresh(cv=1)
 
 
+def loadBase():
+    MAYA_TPL_DIR = "D:/_PROJECT/GIT/nl_rigging_tools/nl_modules/build/components"
+    BASE_FILE = "base.ma"
+    f = f"{MAYA_TPL_DIR}/{BASE_FILE}"
+    if os.path.exists(f):
+        mc.file(f, i=1)
+        if not mc.objExists("master_ctl"):
+            logging.error(f"master_ctl not found")
+    else:
+        logging.error(f"{f} not found")
+
+
 def preRig():
     # mc.refresh(su=1)
+    if not mc.objExists("master_ctl"):
+        loadBase()
     m = DagNode("master_ctl")
     m.a.add("showProxy", min=0, max=1, k=0, dv=1)
     m.a.add("debug", min=0, max=1, dv=1, k=0)

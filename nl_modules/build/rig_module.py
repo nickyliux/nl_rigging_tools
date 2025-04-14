@@ -41,8 +41,8 @@ class RigModule(RigBase):
         if not self.moduleG:
             logging.info("moduleG not found in RigNode !")
 
-        if self.moduleG and self.moduleG.parent is None:
-            self.moduleG | self.MOD
+        # if self.moduleG and self.moduleG.parent is None:
+        #     self.moduleG | self.MOD
 
         self.master_guide = rigNode.a.master_guide.inConnNode
         if not self.master_guide:
@@ -359,7 +359,7 @@ class RigModule(RigBase):
     def post_module(self):
         for obj in mc.ls(tr=1):
             mc.setAttr(obj + ".ro", cb=1)
-        # self.moduleG.hide()
+        self.moduleG.hide()
         # self.masterC.a.showAttr(t=1, r=1)
         # self.masterC.offset.a.showAttr(t=1, r=1)
         if self.PRX:

@@ -32,7 +32,7 @@ class RigBase:
         self.PRX = GroupNode("PRX", p=self.MDL)
         self.SKL = GroupNode("SKL", p=self.CHR)
         self.CTL = GroupNode("CTL", p=self.CHR)
-        self.MOD = GroupNode("MOD", p=self.CHR)
+        # self.MOD = GroupNode("MOD", p=self.CHR)
         self.DIM = GroupNode("distDim_GRP")
 
         if self.SKL.a.s.settable():

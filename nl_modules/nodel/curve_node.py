@@ -38,6 +38,9 @@ class CurveNode(GroupNode):
         up="",
         top=0,  # alwaysDrawOnTop
     ):
+        thisName = pf + node + sf
+        existing = DagNode(thisName).exists()
+
         GroupNode.__init__(
             self,
             node,
@@ -63,30 +66,31 @@ class CurveNode(GroupNode):
             self.color = color or self.getSideColor()
             self.dspType = dspType
 
-        if up == "x":
-            self.cv_rotate(0, 0, -90)
-        elif up == "z":
-            self.cv_rotate(90, 0, 0)
-        elif up == "-x":
-            self.cv_rotate(0, 0, -90)
-            self.cv_scale(-1, 1, 1)
-        elif up == "-z":
-            self.cv_rotate(90, 0, 0)
-            self.cv_scale(1, 1, -1)
-        elif up == "-y":
-            self.cv_scale(1, -1, 1)
+        if not existing:
+            if up == "x":
+                self.cv_rotate(0, 0, -90)
+            elif up == "z":
+                self.cv_rotate(90, 0, 0)
+            elif up == "-x":
+                self.cv_rotate(0, 0, -90)
+                self.cv_scale(-1, 1, 1)
+            elif up == "-z":
+                self.cv_rotate(90, 0, 0)
+                self.cv_scale(1, 1, -1)
+            elif up == "-y":
+                self.cv_scale(1, -1, 1)
 
-        if rotate:
-            self.cv_rotate(*rotate)
-        if scale:
-            if isinstance(scale, (tuple, list)):
-                self.cv_scale(*scale)
-            elif isinstance(scale, (int, float)):
-                self.cv_scale(scale)
+            if rotate:
+                self.cv_rotate(*rotate)
+            if scale:
+                if isinstance(scale, (tuple, list)):
+                    self.cv_scale(*scale)
+                elif isinstance(scale, (int, float)):
+                    self.cv_scale(scale)
 
-        self.lineWidth = lineWidth
-        if top:
-            mc.setAttr(self.name + ".alwaysDrawOnTop", 1)
+            self.lineWidth = lineWidth
+            if top:
+                mc.setAttr(self.name + ".alwaysDrawOnTop", 1)
 
     @property
     def length(self):
