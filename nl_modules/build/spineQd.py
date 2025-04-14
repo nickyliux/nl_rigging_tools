@@ -31,6 +31,12 @@ class SpineQd(RigModule):
         self.TP_GUIDE = DagNode(self.rigID + "_tp_guide")
         self.MD_GUIDE = DagNode(self.rigID + "_md_guide")
         self.RT_GUIDE = DagNode(self.rigID + "_rt_guide")
+
+        self.PV_GUIDE = None
+        pvtGuide = DagNode(self.rigID + "_pivot_guide")
+        if pvtGuide.exists():
+            self.PV_GUIDE = pvtGuide
+
         self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
 
         self.cog_ctl = None
@@ -214,7 +220,11 @@ class SpineQd(RigModule):
         self.md_ctl.alignTo(self.MD_GUIDE)
         self.tp_ctl.snapAlignTo(self.fkJnt[-1], self.TP_GUIDE)
 
-        self.cog_ctl.alignTo(self.master_guide)
+        if self.PV_GUIDE:
+            self.cog_ctl.alignTo(self.PV_GUIDE)
+        else:
+            self.cog_ctl.alignTo(self.RT_GUIDE)
+
         (self.tp_ctl, self.md_ctl, self.rt_ctl) | self.cog_ctl | self.CTL_DATA
         self.cog_ctl.addOffsetGrp()
 
