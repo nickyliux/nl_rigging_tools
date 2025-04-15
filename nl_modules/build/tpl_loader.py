@@ -46,7 +46,6 @@ class TplLoader:
             if n.exists():
                 n.a.rigID.set(self.rigID, type="string")
                 self.rigNode = n
-                mc.select(self.rigID + "_master_guide")
             else:
                 logging.error(f"{rigNodeStr} not found")
 

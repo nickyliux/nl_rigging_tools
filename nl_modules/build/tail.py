@@ -90,6 +90,8 @@ class Tail(RigModule):
             )[0]
         )
         self.rbSrf | self.RIG_DATA
+        self.rigNode.setMsg({"rbSrf": self.rbSrf})
+
         rebuiltLine.delete()
         widthLine.delete()
 

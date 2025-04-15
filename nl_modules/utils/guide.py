@@ -48,6 +48,8 @@ def loadGuide(names):
         nextRigID = genNextRigID(name)
         TplLoader(name + ".ma", nextRigID).load_baseTpl()
 
+    mc.select(cl=1)
+
 
 def copyGuideSel():
     """Copy guide settings from 1st to 2nd selected"""
@@ -233,7 +235,7 @@ def savePreset(fName):
         mc.confirmDialog(t="Info", m="No rigNode found.       \nSave ignored.", b="OK")
         return
 
-    i = 0
+    # i = 0
     for rN in rigNodes:
         rN = DagNode(rN)
         rigID = rN.a.rigID.get()
@@ -241,9 +243,9 @@ def savePreset(fName):
             DagNode(obj) for obj in mc.ls(rigID + "_*_guide", type="transform")
         ]
         objsToSave.append(rN.a.moduleG.inConnNode)
-        if i == 0:
-            objsToSave.append(DagNode("master2_ctl"))
-            i = 1
+        # if i == 0:
+        #     objsToSave.append(DagNode("master2_ctl"))
+        #     i = 1
 
         guideDict = {}
         for obj in objsToSave:

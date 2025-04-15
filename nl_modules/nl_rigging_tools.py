@@ -75,7 +75,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """
         self.setWindowTitle("NRT 0.0.1")
         self.setCentralWidget(self.UI)
-        self.setGeometry(0, 0, 220, 700)
+        self.setGeometry(0, 0, 220, 650)
         self.connect_UI()
 
     def connect_UI(self):
@@ -311,12 +311,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def preset_refresh_BN_clicked(self):
         self.UI.preset_LW.clear()
+        # self.UI.preset_CBB.clear()
         items = [
             f.split(".")[0]
             for f in os.listdir(PATH_PRESET)
             if os.path.isfile(PATH_PRESET + "/" + f)
         ]
         self.UI.preset_LW.addItems(items)
+        # self.UI.preset_CBB.addItems(items)
 
     def rigNode_LW_dblClicked(self, item):
         """Show attribute editor for rigNode"""
@@ -425,8 +427,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if meshSel:
             jnt_grp = GroupNode("jnt_grp")
             for sN in meshSel:
-                sf = "_rbnJnt" if rb else "_refJnt"
-                color = Color.RED if rb else Color.YELLOW
+                sf = "_rbJnt" if rb else "_refJnt"
+                color = Color.RED if rb else Color.L_BLUE
                 jnt = JointNode(sN + sf, color=color, p=jnt_grp)
                 jnt.a.t.set(*sN.o.bbCenter)
         mc.select(cl=1)
@@ -439,7 +441,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         else:
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 
-    def bindRefJnts(self, meshSel, closestSet=None, threshold=4):
+    def bindRefJnts(self, meshSel, closestSet=None, threshold=5):
         weighted = 0
         ignored = 0
 
@@ -473,18 +475,21 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """
         weighted = 0
         ignored = 0
+        notFound = 0
         for i, mN in enumerate(meshSel):
-            jnt = DagNode(mN.name + "_rbnJnt")
+            jnt = DagNode(mN.name + "_rbJnt")
             if jnt.exists():
                 if mN.skinCluster:
                     ignored += 1
                 else:
                     mN.weightTo(jnt, mi=1, tsb=1)
                     weighted += 1
+            else:
+                notFound += 1
             self.UI.oneClick_PB.setValue(i)
 
         self.UI.oneClick_PB.setValue(0)
-        logging.info(f"{weighted} weighted. {ignored} ignored.")
+        logging.info(f"{weighted} weighted. {ignored} ignored. {notFound} notFound.")
 
     @Undo("skin_oneClick")
     def skin_oneClick(self):
@@ -492,7 +497,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         meshSel = common.getMeshBelow(MODEL_GRP)
 
         # Bind to cloeset refJnt in MODEL_GRP
-        self.bindRefJnts(meshSel, closestSet=BIND_JNT_SET)
+        self.bindRefJnts(meshSel, closestSet=BIND_JNT_SET, threshold=15)
 
         # Bind to _rbnJnt For each in MODEL GRP,
         self.bindRbnJnts(meshSel)

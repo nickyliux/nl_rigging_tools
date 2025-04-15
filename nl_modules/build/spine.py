@@ -113,7 +113,7 @@ class Spine(RigModule):
 
         self.fkCtl = []
         for i, j in enumerate(self.fkJnt[:-1]):
-            c = CurveNode(f"fkc_{i + 1}", pf=rID, shape="squareR", scale=rSz * 5)
+            c = CurveNode(f"fkc_{i + 1}", pf=rID, shape="circleC", scale=rSz * 5)
             self.fkCtl.append(c)
 
         self.fkGivenCtl2(self.fkJnt[1:], self.fkCtl[1:], p=self.CTL_DATA)

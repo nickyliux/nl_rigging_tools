@@ -86,11 +86,11 @@ class SpineQd(RigModule):
         self.cog_ctl.lowerCubeFrontCV()
 
         self.tp_ctl = CurveNode(
-            "tp_ctl", pf=rID, shape="squareR", scale=scale, up="z", lineWidth=2
+            "tp_ctl", pf=rID, shape="circleC", scale=scale, up="z", lineWidth=2
         )
         self.md_ctl = CurveNode("_md_ctl", pf=rID, shape="cube", scale=scale)
         self.rt_ctl = CurveNode(
-            "rt_ctl", pf=rID, shape="squareR", scale=scale, up="z", lineWidth=2
+            "rt_ctl", pf=rID, shape="circleC", scale=scale, up="z", lineWidth=2
         )
         self.tangent_tp_ctl = CurveNode(
             "tangent_tp_ctl", pf=rID, shape="stickS", scale=rSz, color=CDY
@@ -363,7 +363,8 @@ class SpineQd(RigModule):
             )
 
         self.ctrlOnOffByAttr(
-            self.masterC.a["debug"], onList=self.ctlJnts + self.fkJ_A + self.fkJ_B
+            self.masterC.a["debug"],
+            onList=self.ctlJnts + self.fkJ_A + self.fkJ_B + [self.RIG_DATA],
         )
 
     def proxy_setup(self):

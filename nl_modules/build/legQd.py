@@ -618,6 +618,7 @@ class LegQd(RigModule):
         if self.TOE_BONES:
             [ctlSet.extend(s) for s in self.toesCtlsList or []]
         self.addCtlSet(ctlSet)
+        self.addBindJntSet(self.bindJnts)
         self.space_setup()
         self.anchor_setup_module({"anchorF1": self.hip_fkc})
         self.proxy_setup()
