@@ -392,6 +392,9 @@ class RigModule(RigBase):
 
     def anchor_setup_module(self, anchorDict=None):
         """
+        F is female, for driven plugs. e.g. hand has 1 F anchor
+        M is male, for driver plugs. e.g spine has 2 M anchors
+
         e.g.
         { 'anchorM1': loc1, 'anchorM2': loc2, }
         or

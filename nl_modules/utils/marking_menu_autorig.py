@@ -67,7 +67,7 @@ class MarkingMenuAutorig:
                                 # data=i,
                                 c=partial(self.switchToSpace, attr),
                             )
-                        mc.menuItem(p=menu, l="-" * 10, en=0)
+                        mc.menuItem(p=menu, l="-" * 15, en=0)
                     # -----------------------------
                     # IK FK
                     # -----------------------------

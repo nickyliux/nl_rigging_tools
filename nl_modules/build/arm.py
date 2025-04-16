@@ -121,7 +121,7 @@ class Arm(RigModule):
         xDr = self.x_dir
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="diamond", scale=rSz, color=CBK, top=1
+            "setting", pf=rID, shape="stick", scale=rSz / 2, color=CBK, top=1
         )
         # lineWidth=2
         self.clavicle_fkc = CurveNode(
@@ -470,16 +470,15 @@ class Arm(RigModule):
         self.bindJnts.extend(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def vis_setup(self):
-        self.ctrlOnOffByAttr(
-            self.setting.a["fkIkBlend"],
-            onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
-            offList=self.fkCtl[1:],
-        )
+        # self.ctrlOnOffByAttr(
+        #     self.setting.a["fkIkBlend"],
+        #     onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
+        #     offList=self.fkCtl[1:],
+        # )
         self.ctrlOnOffByAttr(
             self.pvc.a["fkPin"],
             onList=[self.pin_fkc],
         )
-
         self.ikc.a.v >> self.palm_ikc.a.v
 
         if self.RBN_BONES:
@@ -532,12 +531,14 @@ class Arm(RigModule):
         self.ikH1.build_pvfkPinSetup(ikTarget=self.ikc)
         self.rigNode.setMsg({"space_arm": self.ikH1.pvChainJ[0]})
         self.rigNode.setMsg({"space_palm": self.ballRoll_loc})
+        self.rigNode.setMsg({"space_palmIK": self.joints_bf[3]})
 
     def post_setup(self):
         rID = self.rigID
         logging.info(rID)
         ctlSet = []
         ctlSet.extend(self.fkCtl + self.ikCtl + [self.setting, self.pin_fkc])
+        self.setWSMirror([self.pvc])
 
         if self.RBN_BONES:
             ctlSet.extend(self.all_bend)

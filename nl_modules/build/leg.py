@@ -96,6 +96,7 @@ class Leg(RigModule):
         if self.TOE_BONES:
             self.toesRootJ = self.genSkFrNames(["toesRoot"])[0]
             self.toesRootJ | self.SKL_DATA
+            self.toesRootJ.a.segmentScaleCompensate.set(0)
             self.rigNode.setMsg({"toesRootJ": self.toesRootJ})
             toe_names = [
                 ["toe00_1", "toe00_2", "toe00_3", "toe00_4"],
@@ -115,9 +116,14 @@ class Leg(RigModule):
         xDr = self.x_dir
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="stickS", scale=rSz * -xDr, color=CBK, top=1
+            "setting",
+            pf=rID,
+            shape="stick",
+            up="z",
+            scale=-rSz * -xDr,
+            color=CBK,
+            top=1,
         )
-        # lineWidth=2,
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
         )
@@ -141,11 +147,12 @@ class Leg(RigModule):
         self.ikc.cv_move(0, 0, rSz * 8)
 
         self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz * 0.5)
-        self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz * 0.5)
+        self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz * 0.6)
 
         self.rigNode.setMsg(
             {
                 "setting": self.setting,
+                "smart_ctl": self.smart_ctl,
                 "hip_fkc": self.hip_fkc,
                 "upr_fkc": self.upr_fkc,
                 "lwr_fkc": self.lwr_fkc,
@@ -222,6 +229,12 @@ class Leg(RigModule):
         legScale >> self.CTL_DATA.a.sx
         legScale >> self.CTL_DATA.a.sy
         legScale >> self.CTL_DATA.a.sz
+
+        footScale = self.setting.a.add("footScale", min=0.01, dv=1)
+        footScale >> self.ball_fkc.offset.a.s
+        footScale >> self.joints_bf[3].a.s  # palm
+        footScale >> self.palm.a.s
+        footScale >> self.ikc.a.s
 
         self.post_setup()
 
@@ -433,8 +446,10 @@ class Leg(RigModule):
         )
 
         self.setting | self.CTL_DATA
-        self.setting.alignTo(self.palm)  # , offset=(0, rSz * xDr * -20, 0))
+        # self.setting.alignTo(self.master_guide)
+        self.setting.alignTo(self.palm)
         ofs = self.setting.addOffsetGrp()
+        # self.ball.cstPar(ofs, mo=1)
         self.palm.cstPar(ofs, mo=1)
 
         self.setting.a.addSep()
@@ -470,7 +485,7 @@ class Leg(RigModule):
         # self.hip_fkc.cstPar(self.joints_bf[0], mo=1)
 
         # Useful for fk ik switch popUp menu
-        for ctl in self.fkCtl + self.ikCtl:
+        for ctl in self.fkCtl + self.ikCtl + [self.smart_ctl]:
             ctl.a.addSep()
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
@@ -583,8 +598,6 @@ class Leg(RigModule):
                 self.setting.a.add("showRibbonCtl", min=0, max=1, dv=1, k=0),
                 onList=self.all_bend,
             )
-
-        # DEBUG
         self.ctrlOnOffByAttr(
             self.masterC.a["debug"],
             onList=self.all_ikHs
@@ -596,9 +609,8 @@ class Leg(RigModule):
 
     def channel_setup(self):
         self.setting.a.showAttr()
-        self.pvc.a.showAttr(t=1)
-        self.smart_ctl.a.showAttr("tz", r=1)
-        self.smart_ctl.a.tz.set(cb=1, k=0)
+        self.pvc.a.showAttr(t=1, r=1)
+        self.smart_ctl.a.showAttr(r=1)
 
         for ctl in self.fkCtl + self.subCtls + [self.ikc, self.pvc, self.pin_fkc]:
             ctl.a.showAttr(t=1, r=1)

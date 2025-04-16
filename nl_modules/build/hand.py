@@ -100,7 +100,6 @@ class Hand(RigModule):
 
         self.fgrRootCtlArr = []
         self.hand_grp = GroupNode(rID + "_grp", align=self.rootJ, p=self.RIG_DATA)
-        self.rootJ.cstPar(self.hand_grp, mo=1)
 
         for fgrs, ctls in zip(self.fgrsArr, self.ctlsArr):
             scale = xDr * rSz * 0.8
@@ -264,10 +263,17 @@ class Hand(RigModule):
         # common.sdk(drv, ofs, "ty", "rx", -20, -180)
 
     def space_setup(self):
-        # We add space to "rootJ" because we want to drive it by the
-        # locator under buffer chain for palm roll setup
+        #
+        # Add space to rootJ so that it is driven by ballRoll_loc
+        #
         self.rigNode.setMsg({"spaceHolder1": self.rootJ})
         self.rigNode.a.add("spaceName1", attrType="string", txt="palm")
+
+        #
+        # Add space to hand_grp so that it is driven by palm_ikc
+        #
+        self.rigNode.setMsg({"spaceHolder2": self.hand_grp})
+        self.rigNode.a.add("spaceName2", attrType="string", txt="palmIK")
 
     def proxy_setup(self):
         aim = (self.x_dir, 0, 0)

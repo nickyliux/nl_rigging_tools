@@ -53,7 +53,7 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
     rN = rigNode
     if rN and rN.a.nodeState.get() == 2:
 
-        rigClass = rN.a.rigClass.get()
+        rigID = rN.a.rigID.get()
         rootJ = rN.a.rootJ.inConnNode
         upr = rootJ.children[0]
         lwr = upr.children[0]
@@ -65,14 +65,23 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
         ikc = rN.a.ikc.inConnNode
         pvc = rN.a.pvc.inConnNode
 
+        #
+        # To IK Mode
+        # Snap ikc to matchers under fkc
+        #
         if toIKMode == 1:
-            # To IK Mode
-            # Snap ikc to matchers under fkc
             ikcMatcher = DagNode(ikc + "_matcher")
-            if ikc and pvc and ikcMatcher.exists():
+            if not ikcMatcher.exists():
+                logging.info(f"{ikc}_matcher NOT found")
+                return
+            smartCtl = DagNode(rigID + "_smart_ctl")
+
+            if ikc and pvc:
                 pos1 = upr.o.pos
                 pos2 = lwr.o.pos
                 pos3 = palm_fkc.o.pos
+                if smartCtl.exists():
+                    smartCtl.resetXf()
                 ikc.alignTo(ikcMatcher)
                 pvc.a["fkPin"].set(0)
 
@@ -82,9 +91,11 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
                     pvc_pos_grp = switchToFkIk_calcPvcPos(pos1, pos2, pos3)
                     pvc.snapTo(pvc_pos_grp)
                     pvc_pos_grp.delete()
+        #
+        # To FK Mode
+        # Snap fkc to current limb
+        #
         else:
-            # To FK Mode
-            # Snap fkc to current limb
             if upr_fkc and lwr_fkc and palm_fkc and upr and lwr and ikc:
                 upr_fkc.alignTo(upr)
                 lwr_fkc.alignTo(lwr)
