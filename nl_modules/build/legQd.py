@@ -189,6 +189,8 @@ class LegQd(RigModule):
         else:
             self.bindJnts.extend([self.palm, self.digit, self.ball])
 
+        # scaling
+
         self.post_setup()
         self.custom_setup()
 
@@ -329,6 +331,7 @@ class LegQd(RigModule):
         ofs | aimGrp
         d = ut.distDim_(self.ikc, self.joints_ik[1])
         D = d.get()
+        d /= self.masterC.a["globalScale"]
         (d - D) * rollDistRatio * palmAim >> extraRollG.a.rx
 
         self.extra_ikc = extraRollG.addOffsetGrp(below=1)
