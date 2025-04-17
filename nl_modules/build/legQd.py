@@ -13,10 +13,8 @@ from nl_modules.build.rig_module import RigModule
 
 CBK = Color.BLACK
 CBL = Color.BLUE
-CDR = Color.D_RED
 CDY = Color.D_YELLOW
 CRD = Color.RED
-CYL = Color.YELLOW
 
 
 class LegQd(RigModule):
@@ -105,10 +103,9 @@ class LegQd(RigModule):
         self.setting = CurveNode(
             "setting",
             pf=rID,
-            shape="stickS",
-            up="-z",
-            # rotate=(0, 0, 90),
-            scale=rSz * xDr,
+            shape="stick",
+            # up="z",
+            scale=rSz * -xDr,
             color=CBK,
             top=1,
         )
@@ -131,7 +128,6 @@ class LegQd(RigModule):
         )
         self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 2)
         self.ikc.lowerCubeFrontCV()
-        # self.ikc = CurveNode("ikc", pf=rID, shape="foot_quad", color=CDY)
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz * 0.8)
         self.rigNode.setMsg(
             {
@@ -240,7 +236,7 @@ class LegQd(RigModule):
             pvc=self.pvc,
             setting=self.setting,
             limbScale=1,
-            scaleFix=self.masterC.a.globalScale,
+            scaleFix=self.masterC.a["globalScale"],
             RIG_DATA=self.RIG_DATA,
         )
         ikHX = IkNode("X", pf=rID, sj=self.palm, ee=self.digit, jsf="_ik")
@@ -390,7 +386,7 @@ class LegQd(RigModule):
                 sj=toeJs[1],
                 ee=toeJs[2],
                 sol=0,
-                scaleFix=self.masterC.a.globalScale,
+                scaleFix=self.masterC.a["globalScale"],
                 RIG_DATA=self.RIG_DATA,
                 vis=0,
                 p=self.ball_fkc,
@@ -502,7 +498,7 @@ class LegQd(RigModule):
 
         logging.info(rID)
         num = self.RBN_JNT_NUM
-        scale = self.masterC.a.globalScale
+        scale = self.masterC.a["globalScale"]
         data = self.RIG_DATA
         g = self.PRX_GRP
 
@@ -581,7 +577,7 @@ class LegQd(RigModule):
         [ikh.hide() for ikh in self.all_ikH.values()]
 
         self.ctrlOnOffByAttr(
-            self.masterC.a["debug"],
+            self.masterC2.a["debug"],
             onList=self.joints_fk + self.joints_ik,
         )
 

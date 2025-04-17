@@ -219,12 +219,12 @@ class Leg(RigModule):
         self.CTL_DATA.a.s >> self.RIG_DATA.a.s
         self.CTL_DATA.a.s >> self.PRX_GRP.a.s
         self.CTL_DATA.a.s >> self.SKL_DATA.a.s
-        legScale = self.setting.a.add("legScale", min=0.01, dv=1)
+        legScale = self.smart_ctl.a.add("legScale", min=0.01, dv=1)
         legScale >> self.CTL_DATA.a.sx
         legScale >> self.CTL_DATA.a.sy
         legScale >> self.CTL_DATA.a.sz
 
-        footScale = self.setting.a.add("footScale", min=0.01, dv=1)
+        footScale = self.smart_ctl.a.add("footScale", min=0.01, dv=1)
         footScale >> self.ball_fkc.offset.a.s
         footScale >> self.joints_bf[3].a.s  # palm
         footScale >> self.palm.a.s
@@ -275,7 +275,7 @@ class Leg(RigModule):
             pvc=self.pvc,
             setting=self.setting,
             limbScale=1,
-            scaleFix=self.masterC.a.globalScale,
+            scaleFix=self.masterC.a["globalScale"],
             scaleFix2=self.CTL_DATA.a.sy,
             RIG_DATA=self.RIG_DATA,
         )
@@ -502,7 +502,7 @@ class Leg(RigModule):
             pf=rID + "_up_",
             rbJNum=self.RBN_JNT_NUM,
             volMode="upr",
-            scaleFix=self.masterC.a.globalScale,
+            scaleFix=self.masterC.a["globalScale"],
             proxyP=self.PRX_GRP,
             rigSize=rSz,
             p=self.RIG_DATA,
@@ -512,7 +512,7 @@ class Leg(RigModule):
             pf=rID + "_lw_",
             rbJNum=self.RBN_JNT_NUM,
             volMode="lwr",
-            scaleFix=self.masterC.a.globalScale,
+            scaleFix=self.masterC.a["globalScale"],
             proxyP=self.PRX_GRP,
             rigSize=rSz,
             p=self.RIG_DATA,
@@ -573,7 +573,7 @@ class Leg(RigModule):
         aim = (self.x_dir, 0, 0)
         for j in self.bindJnts:
             scaler = (
-                self.setting.a["footScale"]
+                self.smart_ctl.a["footScale"]
                 if j.name.startswith(self.rigID + "_toe")
                 else None
             )
@@ -598,7 +598,7 @@ class Leg(RigModule):
                 onList=self.all_bend,
             )
         self.ctrlOnOffByAttr(
-            self.masterC.a["debug"],
+            self.masterC2.a["debug"],
             onList=self.all_ikHs
             + self.joints_fk
             + self.joints_ik

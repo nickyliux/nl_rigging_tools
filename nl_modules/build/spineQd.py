@@ -171,7 +171,7 @@ class SpineQd(RigModule):
             createCrv=0,
             inputCrv=crv,
             setting=self.cog_ctl,
-            scaleFix=self.masterC.a.globalScale,
+            scaleFix=self.masterC.a["globalScale"],
             p=self.RIG_DATA,
         )
         ikH.stretchySp(axis=axis, axisDir=axisDir)
@@ -328,7 +328,7 @@ class SpineQd(RigModule):
 
         import math
 
-        scaleFix = self.masterC.a.globalScale
+        scaleFix = self.masterC.a["globalScale"]
         arcLD = ut.arcLenDim_(self.rbSrf, u=4, v=1)
         d = arcLD.a.arcLength
         D = d.get()
@@ -359,11 +359,11 @@ class SpineQd(RigModule):
         if self.bindJnts:
             # mc.hide(self.bindJnts, self.rbSrf)
             self.ctrlOnOffByAttr(
-                self.masterC.a["debug"], onList=self.bindJnts + [self.rbSrf]
+                self.masterC2.a["debug"], onList=self.bindJnts + [self.rbSrf]
             )
 
         self.ctrlOnOffByAttr(
-            self.masterC.a["debug"],
+            self.masterC2.a["debug"],
             onList=self.ctlJnts + self.fkJ_A + self.fkJ_B + [self.RIG_DATA],
         )
 

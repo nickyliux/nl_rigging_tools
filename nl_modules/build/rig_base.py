@@ -19,6 +19,8 @@ class RigBase:
             return
 
         self.masterC = CurveNode("master_ctl")
+        self.masterC1 = self.masterC.offset
+        self.masterC2 = self.masterC1.offset
 
         if isinstance(rigNode, str):
             rigNode = DagNode(rigNode)
@@ -36,12 +38,12 @@ class RigBase:
         self.DIM = GroupNode("distDim_GRP")
 
         if self.SKL.a.s.settable():
-            self.masterC.a.globalScale >> self.SKL.a.s
+            self.masterC.a["globalScale"] >> self.SKL.a.s
         if self.PRX.a.s.settable():
-            self.masterC.a.globalScale >> self.PRX.a.s
+            self.masterC.a["globalScale"] >> self.PRX.a.s
         # self.visC.a.proxyMesh >> self.PRX.a.v
 
-        root = self.masterC.parent.parent
+        root = self.masterC2
         if not root.parent:
             root | self.CTL
 

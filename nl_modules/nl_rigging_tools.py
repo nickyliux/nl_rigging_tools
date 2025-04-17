@@ -532,7 +532,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             logging.info(f"master_ctl NOT found")
             return
 
-        globalScale = masterCtl.a.globalScale
+        globalScale = masterCtl.a["globalScale"]
         if not globalScale.exists():
             logging.info(f"globalScale attr NOT found")
             return

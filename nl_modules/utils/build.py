@@ -86,11 +86,13 @@ def preRig():
     if not mc.objExists("master_ctl"):
         loadBase()
     m = DagNode("master_ctl")
-    for ctl in [m, m.parent]:
+    m1 = m.offset
+    m2 = m1.offset
+    for ctl in [m, m1]:
         ctl.a.showAttr(t=1, r=1)
 
-    m.a.add("showProxy", min=0, max=1, k=0, dv=1)
-    m.a.add("debug", min=0, max=1, dv=0, k=0)
+    m2.a.add("showProxy", min=0, max=1, k=0, dv=1)
+    m2.a.add("debug", min=0, max=1, dv=0, k=0)
 
 
 @Undo("buildSelOrAll")

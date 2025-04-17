@@ -185,7 +185,7 @@ class Tail(RigModule):
     def vis_setup(self):
         if self.RBN_BONES:
             self.ctrlOnOffByAttr(
-                self.masterC.a["debug"],
+                self.masterC2.a["debug"],
                 onList=[self.rbSrf, self.RIG_DATA, self.SKL_DATA],
             )
 

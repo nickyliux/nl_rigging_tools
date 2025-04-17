@@ -264,7 +264,7 @@ class Arm(RigModule):
             pvc=self.pvc,
             setting=self.setting,
             limbScale=1,
-            scaleFix=self.masterC.a.globalScale,
+            scaleFix=self.masterC.a["globalScale"],
             RIG_DATA=self.RIG_DATA,
         )
         self.ikCstG = GroupNode("ikCstG", pf=rID, align=self.palm)
@@ -406,7 +406,7 @@ class Arm(RigModule):
             pf=rID + "_up_",
             rbJNum=self.RBN_JNT_NUM,
             volMode="upr",
-            scaleFix=self.masterC.a.globalScale,
+            scaleFix=self.masterC.a["globalScale"],
             proxyP=self.PRX_GRP,
             rigSize=rSz,
             p=self.RIG_DATA,
@@ -416,7 +416,7 @@ class Arm(RigModule):
             pf=rID + "_lw_",
             rbJNum=self.RBN_JNT_NUM,
             volMode="lwr",
-            scaleFix=self.masterC.a.globalScale,
+            scaleFix=self.masterC.a["globalScale"],
             proxyP=self.PRX_GRP,
             rigSize=rSz,
             p=self.RIG_DATA,
@@ -487,7 +487,7 @@ class Arm(RigModule):
                 onList=self.all_bend,
             )
         self.ctrlOnOffByAttr(
-            self.masterC.a["debug"],
+            self.masterC2.a["debug"],
             onList=self.all_ikHs
             + self.joints_fk
             + self.joints_ik

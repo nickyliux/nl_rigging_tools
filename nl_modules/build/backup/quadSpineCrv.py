@@ -122,7 +122,7 @@ class SpineQdCrv(rig_module.RigModule):
             sol=2,
             numSpans=4,
             setting=self.setting,
-            scaleFix=self.masterC.a.globalScale,
+            scaleFix=self.masterC.a["globalScale"],
         )
 
         spCrv = spIkH.getCrv()

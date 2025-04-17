@@ -10,14 +10,6 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
 BIND_JNT_SET = "bind_jnt_set"
-CBK = Color.BLACK
-CBL = Color.BLUE
-CDR = Color.D_RED
-CDY = Color.D_YELLOW
-CLB = Color.L_BLUE
-CPK = Color.PINK
-CRD = Color.RED
-CYL = Color.YELLOW
 
 
 class RigModule(RigBase):
@@ -360,7 +352,7 @@ class RigModule(RigBase):
         # self.masterC.a.showAttr(t=1, r=1)
         # self.masterC.offset.a.showAttr(t=1, r=1)
         if self.PRX:
-            self.masterC.a["showProxy"] >> self.PRX.a.v
+            self.masterC2.a["showProxy"] >> self.PRX.a.v
 
     def unbuild_module(self):
         logging.info(self.rigID)
@@ -408,10 +400,10 @@ class RigModule(RigBase):
             self.rigNode.setMsg({name: loc})
 
             if name.startswith("anchorM"):  # Blue for Male
-                loc.color = CLB
+                loc.color = Color.L_BLUE
                 tgt.cstPar(loc)
             elif name.startswith("anchorF"):  # Pink for Female
-                loc.color = CPK
+                loc.color = Color.PINK
                 loc.alignTo(tgt)
                 loc.cstPar(tgt.offset, mo=1)
 
@@ -514,7 +506,7 @@ class RigModule(RigBase):
                 "patella",
                 pf=rID,
                 align=patella_guide,
-                color=CDR,
+                color=Color.RED,
                 r=rSz,
                 p=self.upr,
             )
@@ -614,7 +606,7 @@ class RigModule(RigBase):
             sj=ikJ,
             ee=endJ,
             sol=0,
-            scaleFix=self.masterC.a.globalScale,
+            scaleFix=self.masterC.a["globalScale"],
             RIG_DATA=self.RIG_DATA,
             p=ctl,
             # vis=0,
@@ -819,7 +811,7 @@ class RigModule(RigBase):
         self.setWSMirror(allPsdCtl)
         self.addCtlSet(allPsdCtl + [ctl_main])
 
-        showAimCtl = self.masterC.a.add("showAimCtl", min=0, max=1, dv=1, k=0)
+        showAimCtl = self.masterC2.a.add("showAimCtl", min=0, max=1, dv=1, k=0)
         showAimCtl >> psd_grp.a.v
 
         # Connect total weight
