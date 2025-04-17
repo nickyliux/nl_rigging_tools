@@ -127,7 +127,7 @@ class Tail(rig_module.RigModule):
 
         # Proxy Mesh
         for j in self.bindJGrp:
-            JointNode(j.childrenJt[0]).addProxyMesh(size=self.rigSize * 2)
+            JointNode(j.childrenJt[0]).addProxyMesh(scale=2)
 
         for c in self.fkCtl:
             # c.a.lockHide(t=1, r=1)

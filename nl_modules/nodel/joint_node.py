@@ -76,7 +76,7 @@ class JointNode(GroupNode):
         self.a.r.set(0, 0, 0)
         self.a.s.set(1, 1, 1)
 
-    def addProxyMesh(self, scale=1, aimDir=(1, 0, 0), skipEnd=0, p=None):
+    def addProxyMesh(self, scale=1, scaler=None, aimDir=(1, 0, 0), skipEnd=0, p=None):
         """Add Proxy Mesh for joint
         e.g.
             jnt1.addProxyMesh()                 # proxy cube created
@@ -96,9 +96,10 @@ class JointNode(GroupNode):
         if child or (not skipEnd):
             dist = self.o.distanceTo(child[0]) if child else size
             cube = mc.polyCube(n=name, ax=aimDir, h=dist, w=size, d=size, cuv=4)[0]
-
             proxyN = DagNode(cube)
             proxyN.alignTo(self, p=p)
+            if scaler:
+                scaler >> proxyN.a.s
 
             if len(child) >= 1:
                 tgtChild = child[0]

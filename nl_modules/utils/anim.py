@@ -58,6 +58,7 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
         upr = rootJ.children[0]
         lwr = upr.children[0]
         palm = lwr.children[0]
+        palm_bf = DagNode(palm.name + "_bf")
 
         upr_fkc = rN.a.upr_fkc.inConnNode
         lwr_fkc = rN.a.lwr_fkc.inConnNode
@@ -99,8 +100,8 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
             if upr_fkc and lwr_fkc and palm_fkc and upr and lwr and ikc:
                 upr_fkc.alignTo(upr)
                 lwr_fkc.alignTo(lwr)
-                # palm_fkc.alignTo(ikc)
-                palm_fkc.alignTo(palm)
+                # palm_fkc.alignTo(palm)
+                palm_fkc.alignTo(palm_bf)
 
             # if rigClass == "LegQd":
             #     digit_jnt = ikc.childrenJt[0]

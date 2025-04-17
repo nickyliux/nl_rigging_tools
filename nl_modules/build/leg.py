@@ -116,13 +116,7 @@ class Leg(RigModule):
         xDr = self.x_dir
 
         self.setting = CurveNode(
-            "setting",
-            pf=rID,
-            shape="stick",
-            up="z",
-            scale=-rSz * -xDr,
-            color=CBK,
-            top=1,
+            "setting", pf=rID, shape="stick", scale=-rSz * xDr / 2, color=CBK, top=1
         )
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
@@ -578,7 +572,12 @@ class Leg(RigModule):
     def proxy_setup(self):
         aim = (self.x_dir, 0, 0)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(aimDir=aim, p=self.PRX_GRP)
+            scaler = (
+                self.setting.a["footScale"]
+                if j.name.startswith(self.rigID + "_toe")
+                else None
+            )
+            JointNode(j).addProxyMesh(aimDir=aim, p=self.PRX_GRP, scaler=scaler)
 
     def vis_setup(self):
 
