@@ -104,12 +104,10 @@ class LegQd(RigModule):
             "setting",
             pf=rID,
             shape="stick",
-            # up="z",
             scale=rSz * -xDr,
             color=CBK,
             top=1,
         )
-        # lineWidth=2,
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
         )
@@ -226,7 +224,6 @@ class LegQd(RigModule):
         self.joints_ik = common.extractSk(
             self.joints, "_ik", p=self.IK_PART, color=CRD, r=3 * rSz
         )
-
         ikH1 = IkNode(
             "1",
             pf=rID,
@@ -272,11 +269,11 @@ class LegQd(RigModule):
         (ikH2, ikH3) | toeWiggleG | inRollG
         inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG
 
-        self.ikc_gimbal = CurveNode(self.ikc).addGimbal(attrTgt=self.setting)
+        self.ikc_gimbal = CurveNode(self.ikc).addGimbal()  # attrTgt=self.setting)
         self.ikc.snapTo(self.digit)
         self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
-        self.ikc.cv_drop()
-        self.ikc_gimbal.cv_drop()
+        # self.ikc.cv_drop()
+        # self.ikc_gimbal.cv_drop()
 
         self.footRollLogic(self.ikc, heelRollG, ballRollG, footRollG, toeRollG)
         self.footBankLogic(self.ikc, inRollG, outRollG)

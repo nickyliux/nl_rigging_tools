@@ -70,18 +70,16 @@ class RigModule(RigBase):
         guideDict = dict(zip(names, guides))
         lastJ = None
         joints = []
+        currClass = self.__class__.__name__
 
         # for i, key in enumerate(guideDict):
         for key in guideDict:
             jN = JointNode(f"{pf}_{key}", align=guideDict[key], color=color)
 
-            if (
-                pf.startswith("lfLeg")
-                or pf.startswith("rtLeg")
-                or pf.startswith("lfArm")
-                or pf.startswith("rtArm")
-            ) and key == "lwr":
-                jN.a.preferredAngleY.set(-45 * self.x_dir)
+            if (currClass == "Arm" or currClass == "Leg") and key == "lwr":
+                # side = -1 if mc.xform(jN, q=1, ws=1, t=1)[0] > 0 else 1
+                # jN.a.preferredAngleY.set(45 * side)
+                jN.a.preferredAngleY.set(-45)
 
             if lastJ:
                 jN | lastJ
