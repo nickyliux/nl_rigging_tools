@@ -121,7 +121,7 @@ class Arm(RigModule):
         xDr = self.x_dir
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="stick", scale=rSz / 2, color=CBK, top=1
+            "setting", pf=rID, shape="stick", scale=rSz * xDr / 2, color=CBK, top=1
         )
         # lineWidth=2
         self.clavicle_fkc = CurveNode(
@@ -470,11 +470,11 @@ class Arm(RigModule):
         self.bindJnts.extend(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def vis_setup(self):
-        # self.ctrlOnOffByAttr(
-        #     self.setting.a["fkIkBlend"],
-        #     onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
-        #     offList=self.fkCtl[1:],
-        # )
+        self.ctrlOnOffByAttr(
+            self.setting.a["fkIkBlend"],
+            onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
+            offList=self.fkCtl[1:],
+        )
         self.ctrlOnOffByAttr(
             self.pvc.a["fkPin"],
             onList=[self.pin_fkc],

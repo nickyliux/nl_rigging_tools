@@ -80,7 +80,8 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
             if ikc and pvc:
                 pos1 = upr.o.pos
                 pos2 = lwr.o.pos
-                pos3 = palm_fkc.o.pos
+                # pos3 = palm_fkc.o.pos
+                pos3 = palm_bf.o.pos
                 if smartCtl.exists():
                     smartCtl.resetXf()
                 ikc.alignTo(ikcMatcher)
@@ -100,8 +101,8 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
             if upr_fkc and lwr_fkc and palm_fkc and upr and lwr and ikc:
                 upr_fkc.alignTo(upr)
                 lwr_fkc.alignTo(lwr)
-                # palm_fkc.alignTo(palm)
-                palm_fkc.alignTo(palm_bf)
+                if palm_bf.exists():
+                    palm_fkc.alignTo(palm_bf)
 
             # if rigClass == "LegQd":
             #     digit_jnt = ikc.childrenJt[0]
