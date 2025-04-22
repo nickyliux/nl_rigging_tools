@@ -197,7 +197,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         for sel in mc.ls(sl=1, tr=1):
             sel = DagNode(sel)
             if sel.type == "nurbsCurve":
-                CurveNode(sel).cv_scale(value, atCVCetner=1)
+                CurveNode(sel).cv_scale(value)  # , atCVCetner=1)
 
     def component_load_BN_doubleClicked(self, item):
         names = guide.COMPONENT_DICT[item.text()]

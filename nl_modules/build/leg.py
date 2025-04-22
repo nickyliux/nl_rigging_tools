@@ -256,9 +256,10 @@ class Leg(RigModule):
         outPos_guide = DagNode(rID + "_palm_outPos_guide")
         heelPos_guide = DagNode(rID + "_palm_heelPos_guide")
         toePos_guide = DagNode(rID + "_palm_toePos_guide")
+        pvc_guide = DagNode(rID + "_pvc_guide")
 
         self.ikc.alignTo(mG)
-        self.pvc.alignTo(self.lwr)
+        self.pvc.alignTo(pvc_guide)
         self.joints_ik = common.extractSk(
             self.joints, "_ik", p=self.IK_PART, color=CRD, r=3 * rSz
         )

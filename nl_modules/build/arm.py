@@ -144,7 +144,7 @@ class Arm(RigModule):
             "palm_ikc", pf=rID, shape="squareR", up="x", scale=rSz * 1.2 * xDr
         )
         self.palm_ikc.cv_move(xDr * rSz * 7, 0, 0)
-        self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz)
+        self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz)
 
         self.rigNode.setMsg(
             {
@@ -248,7 +248,10 @@ class Arm(RigModule):
 
         self.ikc.alignTo(self.palm)
         self.palm_ikc.alignTo(self.palm, p=self.IK_PART)
-        self.pvc.alignTo(self.lwr)
+
+        pvc_guide = DagNode(rID + "_pvc_guide")
+        self.pvc.alignTo(pvc_guide)
+        # self.pvc.alignTo(self.lwr)
 
         self.joints_ik = common.extractSk(
             self.joints, "_ik", p=self.IK_PART, color=CRD, r=3 * rSz
