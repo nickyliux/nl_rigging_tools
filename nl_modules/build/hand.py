@@ -2,14 +2,14 @@ import maya.cmds as mc
 import logging
 
 from nl_modules.build.rig_module import RigModule
-from nl_modules.nodel.base.dag_node import DagNode
+
+# from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.joint_node import JointNode
 from nl_modules.utils import common
-from nl_modules.utils.color import Color
 
-CDR = Color.D_RED
+# from nl_modules.utils.color import Color
 
 
 class Hand(RigModule):
@@ -79,12 +79,7 @@ class Hand(RigModule):
             ctlList = []
             for fgr in fgrs[:-1]:
                 ctl = CurveNode(
-                    fgr + "_ctl",
-                    shape="squareR",
-                    align=fgr,
-                    scale=rSz / 3,
-                    color=CDR,
-                    up="z",
+                    fgr + "_ctl", shape="squareR", align=fgr, scale=rSz / 3, up="z"
                 )
                 ctl.cv_move(0, 0, xDr * rSz * -10)
                 ctlList.append(ctl)

@@ -68,7 +68,7 @@ class SpineQd(RigModule):
         self.setting = CurveNode(
             "setting",
             pf=rID,
-            shape="stickS",
+            shape="stick",
             rotate=(0, 90, 0),
             scale=rSz * 1.5,
             color=CBK,

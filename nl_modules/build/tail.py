@@ -125,7 +125,7 @@ class Tail(RigModule):
             ctl = CurveNode(
                 f"{i}_fkc_#",
                 pf=rID,
-                shape="squareR",
+                shape="circleC",
                 up="z",
                 scale=rSz * 1.5,
                 align=clu,

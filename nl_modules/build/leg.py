@@ -89,6 +89,7 @@ class Leg(RigModule):
         self.patellaJ = None
         self.ribbonUp = None
         self.ribbonLw = None
+        self.toeIKHs = []
 
     def genGuideSk(self):
         self.genSk_module(["hip", "upr", "lwr", "palm", "ball", "tip"])
@@ -386,6 +387,7 @@ class Leg(RigModule):
         for toeJs in self.toesJntList:
             dupTgt = DagNode(toeJs[1])
             ctl, ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
+            self.toeIKHs.append(ikH)
             ikJ.a.r >> dupTgt.a.r
             ctlList = []
             self.bindJnts.extend(toeJs[:-1])
@@ -603,6 +605,7 @@ class Leg(RigModule):
             + self.joints_fk
             + self.joints_ik
             + self.joints_bf
+            + self.toeIKHs
             + [self.RIG_DATA],
         )
 

@@ -54,7 +54,7 @@ class Spine(RigModule):
         self.setting = CurveNode(
             "setting",
             pf=rID,
-            shape="stickS",
+            shape="stick",
             up="-z",
             scale=rSz * 2,
             color=CBK,
