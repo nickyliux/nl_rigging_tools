@@ -1,22 +1,14 @@
-# nl-rigging-tools (NRT)
-### What ?
-There are a few great auto-rigging tools available freely online. As a rigger I'm interested in building my own. 
+# nl-rigging-tools
+
+## About
+There are a few great auto-rigging tools available freely online. As a rigger I'm interested in building my own.
 
 One thing I learn throughout the development is the use of custom framework. Thanks to the Udemy course <b>"Python for Maya: Beginner to Advanced Rigging Automation"</b> by Nick Hughes, I learn to write codes that is more concise, easier to read, while independent on PyMEL.
 
 The lines below generate all utility nodes and connections, and read like expression.
 
-```python
-# ---------------
-#    Soft IK
-# ---------------
-s = self.ikc.a.soft
-Ds = D * (1 - s)
-ds = D * (1 - s * math.e ** -(d - Ds))
-(((d > Ds).setCdn(ifTrue=ds, ifFalse=d)) * ratio >> softJ.a.tx)
-```
 
-## Rig Features
+## Features
 General
 * Modular build / unbuild
 * Scalable
@@ -66,18 +58,6 @@ classDiagram
     class Condition
     class Dimension
     
-```
-<br>Examples
-```python
-loc = LocNode('myLoc', size=5, addOfs=1)
-crv = CurveNode('myCrv', shape='cube', color=Color.RED, p=loc)
-
-# Result :
-#
-#   myLoc_ofs       <- offset group
-#       myLoc       <- locator with local scale = 5
-#           myCrv   <- cube shape curve with color red
-#
 ```
 
 ## Component Classes

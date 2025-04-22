@@ -538,7 +538,7 @@ class Arm(RigModule):
         logging.info(rID)
         ctlSet = []
         ctlSet.extend(self.fkCtl + self.ikCtl + [self.setting, self.pin_fkc])
-        self.setWSMirror([self.pvc])
+        # self.setWSMirror([self.pvc])
 
         if self.RBN_BONES:
             ctlSet.extend(self.all_bend)
