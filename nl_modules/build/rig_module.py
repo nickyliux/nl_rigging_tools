@@ -481,8 +481,9 @@ class RigModule(RigBase):
         s = self.rigSize * self.x_dir
         common.sdk(driver, driven, "ry", "tz", 0, 0)
         common.sdk(driver, driven, "ry", "tz", -60, 0, tangent=1)
-        common.sdk(driver, driven, "ry", "tz", -80, -1.5 * s, tangent=1)
-        common.sdk(driver, driven, "ry", "tz", -170, -7 * s)
+        common.sdk(driver, driven, "ry", "tz", -80, -0.8 * s, tangent=1)
+        common.sdk(driver, driven, "ry", "tz", -150, -6.5 * s, tangent=1)
+        common.sdk(driver, driven, "ry", "tz", -180, -7 * s)
         common.sdk(driver, driven, "ry", "tx", 0, 0)
         common.sdk(driver, driven, "ry", "tx", -80, s, tangent=1)
         common.sdk(driver, driven, "ry", "tx", -170, -3 * s)
