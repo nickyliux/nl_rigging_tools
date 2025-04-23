@@ -78,12 +78,11 @@ class SpineQd(RigModule):
         self.cog_ctl = CurveNode(
             "cog_ctl",
             pf=rID,
-            shape="cube",
+            shape="trapezoid",
             scale=(rSz, rSz * 1.5, rSz * 2.5),
             color=CYL,
         )
         self.cog_ctl.cv_move(0, 80 * rSz, 0)
-        self.cog_ctl.lowerCubeFrontCV()
 
         self.tp_ctl = CurveNode(
             "tp_ctl", pf=rID, shape="circleC", scale=scale, up="z", lineWidth=2
@@ -292,11 +291,11 @@ class SpineQd(RigModule):
         self.tangent_rt_ctl.a.r >> self.ctlJnts[0].a.r
         self.tangent_tp_ctl.a.r >> self.ctlJnts[2].a.r
         (
-            self.tangent_rt_ctl.a.add("tangentScale", min=0, max=2, dv=1)
+            self.tangent_rt_ctl.a.add("tangentScale", min=0, max=5, dv=1)
             >> self.ctlJnts[0].a.s
         )
         (
-            self.tangent_tp_ctl.a.add("tangentScale", min=0, max=2, dv=1)
+            self.tangent_tp_ctl.a.add("tangentScale", min=0, max=5, dv=1)
             >> self.ctlJnts[2].a.s
         )
         self.ctls = [
@@ -329,7 +328,7 @@ class SpineQd(RigModule):
         import math
 
         scaleFix = self.masterC.a["globalScale"]
-        arcLD = ut.arcLenDim_(self.rbSrf, u=4, v=1)
+        arcLD = ut.arcLenDim_(self.rbSrf)
         d = arcLD.a.arcLength
         D = d.get()
 

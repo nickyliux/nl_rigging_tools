@@ -162,8 +162,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if mc.selectPref(clickDrag=1, q=1):
             self.UI.clickDrag_CB.setChecked(1)
 
-        self.UI.shapeScaleHalf_BN.clicked.connect(partial(self.shapeScale, 3 / 4))
-        self.UI.shapeScale2_BN.clicked.connect(partial(self.shapeScale, 4 / 3))
+        self.UI.shapeScaleDn_BN.clicked.connect(partial(self.shapeScale, 3 / 4))
+        self.UI.shapeScaleUp_BN.clicked.connect(partial(self.shapeScale, 4 / 3))
         self.UI.shapeRotaX_BN.clicked.connect(partial(self.shapeRota, 90, 0, 0))
         self.UI.shapeRotaY_BN.clicked.connect(partial(self.shapeRota, 0, 90, 0))
         self.UI.shapeRotaZ_BN.clicked.connect(partial(self.shapeRota, 0, 0, 90))

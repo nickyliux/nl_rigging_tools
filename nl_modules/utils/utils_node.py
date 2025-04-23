@@ -125,16 +125,18 @@ def distDim_(obj1, obj2):
     return distDim.a.distance
 
 
-def arcLenDim_(crv, u=1, v=1):
+def arcLenDim_(srf):
     """Return arcLengthDimension node for curve"""
     from nl_modules.nodel.base.dag_node import DagNode
+    from nl_modules.nodel.surf_node import SurfNode
 
-    arcLD = DagNode(crv + "_arcLD__#", nodeType="arcLengthDimension")
-    arcLD.parent | crv
+    arcLD = DagNode(srf + "_arcLD__#", nodeType="arcLengthDimension")
+    arcLD.parent | srf
 
-    crv.shape.a.worldSpace >> arcLD.a.nurbsGeometry
-    arcLD.a.uParamValue.set(u)
-    arcLD.a.vParamValue.set(v)
+    srf.shape.a.worldSpace >> arcLD.a.nurbsGeometry
+
+    arcLD.a.uParamValue.set(SurfNode(srf).uSeg)
+    arcLD.a.vParamValue.set(SurfNode(srf).vSeg)
     arcLD.hide()
     return arcLD
 

@@ -137,8 +137,7 @@ class Leg(RigModule):
         self.ball_fkc.cv_scale(0.7, 1, 1)
 
         scale = (rSz * 1.5, rSz * 1.5, rSz * 3.5)
-        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=scale)
-        self.ikc.lowerCubeFrontCV()
+        self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=scale)
         self.ikc.cv_move(0, 0, rSz * 8)
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz)
         self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz * 0.6)

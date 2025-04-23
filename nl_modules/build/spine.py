@@ -194,7 +194,7 @@ class Spine(RigModule):
         import math
 
         scaleFix = self.masterC.a["globalScale"]
-        arcLD = ut.arcLenDim_(self.rbSrf, u=3, v=1)
+        arcLD = ut.arcLenDim_(self.rbSrf)
         d = arcLD.a.arcLength
         D = d.get()
 
