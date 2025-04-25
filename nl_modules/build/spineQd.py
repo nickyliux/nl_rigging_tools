@@ -231,7 +231,7 @@ class SpineQd(RigModule):
         rt_gimbal = self.rt_ctl.addGimbal()
 
         self.ctlJnts = self.createCtlJ(
-            [self.rt_ctl, self.md_ctl, self.tp_ctl], color=CBL, r=rSz * 5
+            [self.rt_ctl, self.md_ctl, self.tp_ctl], color=CBL, r=rSz * 8
         )
         # Orient control last fkJ by tip ctl
         self.fkJnt[-1].a.r.disconnect()

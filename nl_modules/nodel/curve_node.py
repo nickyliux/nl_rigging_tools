@@ -193,6 +193,7 @@ class CurveNode(GroupNode):
         mc.select(cl=1)
 
     def weightTo(self, joints, weightDir=0, **kwargs):
+        """Bind this curve to joints"""
         if self.exists():
             skin_clu = mc.skinCluster(self, joints, **kwargs)[0]
 
