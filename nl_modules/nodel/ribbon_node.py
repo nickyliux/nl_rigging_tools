@@ -105,7 +105,7 @@ class RibbonNode:
             pf=pf,
             uSeg=5,
             ax=(0, 1, 0),
-            lr=0.1,
+            lr=0.2,
             size=self.D,
             p=self.BSE_GRP,
         )
@@ -218,7 +218,7 @@ class RibbonNode:
             common.cstMulti(self.stt_loc, self.end_loc, mid_loc_ofs1, cstType="poi")
             mid_aimJ.cstOri(mid_loc_ofs1)
 
-        self.surf.weightTo([stt_sknJ, mid_sknJ, end_sknJ], mi=2)
+        self.surf.weightTo([stt_sknJ, mid_sknJ, end_sknJ], chain=0, mi=2, dr=2)
 
         # clu = [
         #     DagNode(mc.cluster(self.surf + ".cv[0:2][*]", n="clu_0")[1]),

@@ -33,7 +33,7 @@ class Tail(RigModule):
         self.REVERSE_RB = 0
 
     def genGuideSk(self):
-        self.genSk_module(["st", "md", "ed"])
+        self.genSk_module(["rt", "md", "tp"])
 
     def build(self):
         self.build_module()

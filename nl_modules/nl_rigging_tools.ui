@@ -55,7 +55,7 @@
        <x>0</x>
        <y>10</y>
        <width>211</width>
-       <height>231</height>
+       <height>91</height>
       </rect>
      </property>
      <property name="title">
@@ -214,110 +214,13 @@ Mesh(es)</string>
       </property>
      </widget>
     </widget>
-    <widget class="QGroupBox" name="groupBox_7">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>240</y>
-       <width>211</width>
-       <height>121</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>Mesh Retopo</string>
-     </property>
-     <widget class="QPushButton" name="misc_retopo500_BN">
-      <property name="geometry">
-       <rect>
-        <x>140</x>
-        <y>30</y>
-        <width>57</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>999</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Segoe UI</family>
-        <pointsize>8</pointsize>
-       </font>
-      </property>
-      <property name="toolTip">
-       <string>poly count = 500</string>
-      </property>
-      <property name="text">
-       <string>500</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="misc_retopo50_BN">
-      <property name="geometry">
-       <rect>
-        <x>15</x>
-        <y>30</y>
-        <width>57</width>
-        <height>15</height>
-       </rect>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>999</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Segoe UI</family>
-        <pointsize>8</pointsize>
-       </font>
-      </property>
-      <property name="toolTip">
-       <string>poly count = 50</string>
-      </property>
-      <property name="text">
-       <string>50</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="misc_retopo150_BN">
-      <property name="geometry">
-       <rect>
-        <x>78</x>
-        <y>30</y>
-        <width>57</width>
-        <height>15</height>
-       </rect>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>999</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Segoe UI</family>
-        <pointsize>8</pointsize>
-       </font>
-      </property>
-      <property name="toolTip">
-       <string>poly count = 150</string>
-      </property>
-      <property name="text">
-       <string>150</string>
-      </property>
-     </widget>
-    </widget>
     <widget class="QGroupBox" name="groupBox_8">
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>360</y>
+       <y>110</y>
        <width>211</width>
-       <height>241</height>
+       <height>161</height>
       </rect>
      </property>
      <property name="title">
@@ -371,7 +274,7 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>60</y>
+        <y>70</y>
         <width>193</width>
         <height>17</height>
        </rect>
@@ -384,6 +287,90 @@ Mesh(es)</string>
       </property>
       <property name="text">
        <string>Import Env / Shd</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="misc_retopo500_BN">
+      <property name="geometry">
+       <rect>
+        <x>142</x>
+        <y>120</y>
+        <width>60</width>
+        <height>15</height>
+       </rect>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>999</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>poly count = 500</string>
+      </property>
+      <property name="text">
+       <string>500</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="misc_retopo150_BN">
+      <property name="geometry">
+       <rect>
+        <x>77</x>
+        <y>120</y>
+        <width>60</width>
+        <height>15</height>
+       </rect>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>999</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>poly count = 150</string>
+      </property>
+      <property name="text">
+       <string>150</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="misc_retopo50_BN">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>60</width>
+        <height>15</height>
+       </rect>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>999</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>poly count = 50</string>
+      </property>
+      <property name="text">
+       <string>50</string>
       </property>
      </widget>
     </widget>
@@ -551,7 +538,7 @@ Mesh(es)</string>
         <x>144</x>
         <y>90</y>
         <width>62</width>
-        <height>16</height>
+        <height>41</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -744,7 +731,7 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>144</x>
-        <y>140</y>
+        <y>64</y>
         <width>62</width>
         <height>16</height>
        </rect>
@@ -780,7 +767,7 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>144</x>
-        <y>19</y>
+        <y>170</y>
         <width>62</width>
         <height>16</height>
        </rect>
@@ -799,7 +786,7 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>144</x>
-        <y>263</y>
+        <y>190</y>
         <width>62</width>
         <height>16</height>
        </rect>
@@ -826,7 +813,7 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>144</x>
-        <y>60</y>
+        <y>130</y>
         <width>62</width>
         <height>16</height>
        </rect>
@@ -862,7 +849,7 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>144</x>
-        <y>40</y>
+        <y>150</y>
         <width>62</width>
         <height>16</height>
        </rect>
@@ -918,9 +905,9 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>144</x>
-        <y>119</y>
+        <y>19</y>
         <width>62</width>
-        <height>16</height>
+        <height>41</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -967,9 +954,9 @@ Mesh(es)</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>200</y>
+       <y>140</y>
        <width>211</width>
-       <height>401</height>
+       <height>461</height>
       </rect>
      </property>
      <property name="title">
@@ -1012,9 +999,9 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>326</y>
-        <width>95</width>
-        <height>17</height>
+        <y>330</y>
+        <width>60</width>
+        <height>16</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -1044,7 +1031,7 @@ Mesh(es)</string>
        <enum>Qt::LeftToRight</enum>
       </property>
       <property name="text">
-       <string>Load to Sel</string>
+       <string>Load</string>
       </property>
      </widget>
      <widget class="QPushButton" name="crvShape_refresh_BN">
@@ -1074,34 +1061,12 @@ Mesh(es)</string>
        <string>Refresh</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="crvShape_new_BN">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>348</y>
-        <width>95</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>16</height>
-       </size>
-      </property>
-      <property name="toolTip">
-       <string>Add selection to library</string>
-      </property>
-      <property name="text">
-       <string>New Item</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="crvShape_save_BN">
       <property name="geometry">
        <rect>
-        <x>110</x>
-        <y>326</y>
-        <width>95</width>
+        <x>75</x>
+        <y>330</y>
+        <width>60</width>
         <height>16</height>
        </rect>
       </property>
@@ -1114,7 +1079,7 @@ Mesh(es)</string>
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>16</height>
+        <height>9999</height>
        </size>
       </property>
       <property name="font">
@@ -1129,15 +1094,15 @@ Mesh(es)</string>
        <string>Save selection to library</string>
       </property>
       <property name="text">
-       <string>Overwrite Item</string>
+       <string>Save</string>
       </property>
      </widget>
      <widget class="QPushButton" name="crvShape_removeFrInst_BN">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>370</y>
-        <width>195</width>
+        <y>390</y>
+        <width>191</width>
         <height>17</height>
        </rect>
       </property>
@@ -1168,15 +1133,37 @@ Mesh(es)</string>
        <enum>Qt::LeftToRight</enum>
       </property>
       <property name="text">
-       <string>Remove Sel from Instances</string>
+       <string>Break Sel from Instances</string>
       </property>
      </widget>
      <widget class="QPushButton" name="crvShape_del_BN">
       <property name="geometry">
        <rect>
-        <x>110</x>
-        <y>348</y>
-        <width>95</width>
+        <x>140</x>
+        <y>330</y>
+        <width>60</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>9999</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>Delete item in library</string>
+      </property>
+      <property name="text">
+       <string>Delete</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="crvShape_new_BN">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>351</y>
+        <width>191</width>
         <height>16</height>
        </rect>
       </property>
@@ -1187,10 +1174,10 @@ Mesh(es)</string>
        </size>
       </property>
       <property name="toolTip">
-       <string>Delete item in library</string>
+       <string>Add selection to library</string>
       </property>
       <property name="text">
-       <string>Delete Item</string>
+       <string>New Shape</string>
       </property>
      </widget>
     </widget>
@@ -1200,7 +1187,7 @@ Mesh(es)</string>
        <x>0</x>
        <y>10</y>
        <width>211</width>
-       <height>181</height>
+       <height>121</height>
       </rect>
      </property>
      <property name="title">
@@ -1218,7 +1205,7 @@ Mesh(es)</string>
         <x>137</x>
         <y>40</y>
         <width>60</width>
-        <height>17</height>
+        <height>16</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -1252,7 +1239,7 @@ Mesh(es)</string>
         <x>10</x>
         <y>40</y>
         <width>60</width>
-        <height>17</height>
+        <height>16</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -1286,7 +1273,7 @@ Mesh(es)</string>
         <x>74</x>
         <y>40</y>
         <width>60</width>
-        <height>17</height>
+        <height>16</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -1320,7 +1307,7 @@ Mesh(es)</string>
         <x>10</x>
         <y>20</y>
         <width>92</width>
-        <height>17</height>
+        <height>16</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -1354,7 +1341,7 @@ Mesh(es)</string>
         <x>106</x>
         <y>20</y>
         <width>92</width>
-        <height>17</height>
+        <height>16</height>
        </rect>
       </property>
       <property name="sizePolicy">

@@ -353,14 +353,15 @@ class Leg(RigModule):
 
         for g in [toeRollG, inRollG, outRollG, heelRollG]:
             ctl = g.addOffsetGrp(below=1)
-            # CurveNode(ctl)(name=g.name + "_ctl", up="x", scale=rSz / 4)
             CurveNode(ctl)(name=g.name + "_ctl", shape="diamond", scale=rSz / 2)
             self.subCtls.append(ctl)
 
         self.ballG_ikc = ballRollG.addOffsetGrp(below=1)
-        cName = rID + "_ballG_ikc"
         CurveNode(self.ballG_ikc)(
-            name=cName, shape="stickC", scale=-rSz * xDr / 2, rotate=(0, 90, 0)
+            name=rID + "_ballG_ikc",
+            shape="stickC",
+            scale=-rSz * xDr / 2,
+            rotate=(0, 90, 0),
         )
         self.ikCtl.append(self.ballG_ikc)
 

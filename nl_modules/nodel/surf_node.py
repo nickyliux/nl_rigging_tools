@@ -42,7 +42,7 @@ class SurfNode(GroupNode):
         )
         if not self.shape:
             surfObj = DagNode(
-                mc.nurbsPlane(ax=ax, w=size, lr=lr, d=d, v=vSeg, u=uSeg, ch=1)[0]
+                mc.nurbsPlane(ax=ax, w=size, lr=lr, d=d, v=vSeg, u=uSeg, ch=0)[0]
             )
             parentedSh = mc.parent(surfObj.shape, self, r=1, s=1)[0]
             mc.rename(parentedSh, self.name + "Shape#")
@@ -78,17 +78,26 @@ class SurfNode(GroupNode):
         """Return length in V"""
         return mc.arclen(self.shape + ".u[0]")
 
-    def weightTo(self, joints, **kwargs):
+    def weightTo(self, joints, chain=1, **kwargs):
         if self.exists():
             skin_clu = mc.skinCluster(self, joints, tsb=1, **kwargs)[0]
 
-            cv = f"{self.shape}.cv[0][*]"
-            mc.skinPercent(skin_clu, cv, transformValue=[(joints[0], 1)])
+            #
+            # chain : 1 is fk chain,  0 is ctlJ
+            #
+            if chain:
+                spansUV = self.a.spansUV.get()[0]
+                degUV = self.a.degreeUV.get()[0]
+                last = spansUV + degUV - 1
+                cv = f"{self.shape}.cv[{last}][*]"
+                mc.skinPercent(skin_clu, cv, transformValue=[(joints[-1], 1)])
 
-            spansUV = self.a.spansUV.get()[0]
-            degUV = self.a.degreeUV.get()[0]
-            cv = f"{self.shape}.cv[{spansUV + degUV - 1}][*]"
-            mc.skinPercent(skin_clu, cv, transformValue=[(joints[-1], 1)])
+                for i in range(self.uSeg + 1):
+                    mc.skinPercent(
+                        skin_clu,
+                        f"{self.shape}.cv[{i+1}][*]",
+                        transformValue=[(joints[i], 1)],
+                    )
 
             # if len(joints) == 3:
             #     if self.uSeg == 5 and self.degU == 3:

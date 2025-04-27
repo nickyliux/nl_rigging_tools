@@ -197,14 +197,17 @@ class CurveNode(GroupNode):
         if self.exists():
             skin_clu = mc.skinCluster(self, joints, **kwargs)[0]
 
-            # Apply preset weight for 6-cv curve if custom != 0
-            if weightDir != 0 and len(joints) == 3 and self.shape.a.spans == 4:
+            # Test
+            spans = self.shape.a.spans.get()
+            degree = self.shape.a.degree.get()
+            if len(joints) == 3 and spans == 4 and degree == 3:
                 wList = [
                     (1, 0, 0),
-                    (0.85, 0.15, 0),
-                    (0.25, 0.75, 0),
-                    (0, 0.75, 0.25),
-                    (0, 0.15, 0.85),
+                    (1, 0, 0),
+                    (1, 0, 0),
+                    (0, 1, 0),
+                    (0, 0, 1),
+                    (0, 0, 1),
                     (0, 0, 1),
                 ]
                 if weightDir == -1:
@@ -221,30 +224,6 @@ class CurveNode(GroupNode):
                             (joints[2], w[2]),
                         ],
                     )
-
-            # if len(joints) == 3:
-            #     if self.shape.a.spans == 4 and self.shape.a.degree == 3:
-            #
-            #         wList = [
-            #             (1, 0, 0),
-            #             (1, 0, 0),
-            #             (1, 0, 0),
-            #             (0, 1, 0),
-            #             (0, 0, 1),
-            #             (0, 0, 1),
-            #             (0, 0, 1),
-            #         ]
-            #
-            #         for i, w in enumerate(wList):
-            #             mc.skinPercent(
-            #                 skin_clu,
-            #                 f"{self.shape}.cv[{i}]",
-            #                 transformValue=[
-            #                     (joints[0], w[0]),
-            #                     (joints[1], w[1]),
-            #                     (joints[2], w[2]),
-            #                 ],
-            #             )
 
     def __call__(
         self,

@@ -64,6 +64,7 @@ class SpineQd(RigModule):
         rID = self.rigID
         rSz = self.rigSize
         scale = (rSz * 4, rSz * 4, rSz)
+        scale2 = (rSz * 3.5, rSz * 3.5, rSz)
 
         self.setting = CurveNode(
             "setting",
@@ -87,7 +88,9 @@ class SpineQd(RigModule):
         self.tp_ctl = CurveNode(
             "tp_ctl", pf=rID, shape="circleC", scale=scale, up="z", lineWidth=2
         )
-        self.md_ctl = CurveNode("_md_ctl", pf=rID, shape="cube", scale=scale)
+        self.md_ctl = CurveNode(
+            "_md_ctl", pf=rID, shape="circleC", scale=scale2, up="z", lineWidth=2
+        )
         self.rt_ctl = CurveNode(
             "rt_ctl", pf=rID, shape="circleC", scale=scale, up="z", lineWidth=2
         )
@@ -114,25 +117,8 @@ class SpineQd(RigModule):
 
         self.build_module()
         self.createCtl()
-        self.rbSrf = SurfNode.buildRbSrf(
-            pf=rID,
-            crv=self.LINE_GUIDE,
-            snap=self.rootJ,
-            # spans=6,
-            spans=self.FK_JNT_NUM - 1,
-            p=self.RIG_DATA,
-        )
-        rSz = self.rigSize = self.rbSrf.lengthU / 100
-
-        self.rigNode.setMsg({"rbSrf": self.rbSrf})
-        self.bindJnts = SurfNode.buildRbJnt(
-            self.RBN_JNT_NUM,
-            pf=rID,
-            size=rSz,
-            surf=self.rbSrf,
-            rigData=self.RIG_DATA,
-            sklData=self.SKL_DATA,
-        )
+        # rSz = self.rigSize = self.rbSrf.lengthU / 100
+        self.rigSize = rSz = CurveNode(self.LINE_GUIDE).length / 100
         self.build_fk()
         self.build_ik(sliding=1)
         self.post_setup()
@@ -181,28 +167,28 @@ class SpineQd(RigModule):
         rSz = self.rigSize
         logging.info(rID)
 
-        self.spCrv = self.LINE_GUIDE.duplicate(n=rID + "_spCrv_#")
-        self.spCrv | self.RIG_DATA
-        # crv.rebuild(spans=4)
+        self.rbCrv = self.LINE_GUIDE.duplicate(n=rID + "_spCrv_#")
+        self.rbCrv | self.RIG_DATA
+        # self.rbCrv.rebuild(spans=self.FK_JNT_NUM)
         ikH_1, ikH_A, ikH_B = None, None, None
 
         if sliding == 0:
             ikH_1 = self.makeStretchyIk(
-                "sp", sj=self.fkJnt[0], ej=self.fkJnt[-1], crv=self.spCrv
+                "sp", sj=self.fkJnt[0], ej=self.fkJnt[-1], crv=self.rbCrv
             )
         else:
             # joint chain A
             self.fkJ_A = self.makeJC("fkJ_A", addEndJ=1, jntRad=rSz * 2, color=CLB)
             ikH_A = self.makeStretchyIk(
-                "spA", sj=self.fkJ_A[0], ej=self.fkJ_A[-2], crv=self.spCrv
+                "spA", sj=self.fkJ_A[0], ej=self.fkJ_A[-2], crv=self.rbCrv
             )
             # joint chain B
             self.fkJ_B = self.makeJC(
                 "fkJ_B", addEndJ=1, alongCrv=0, jntRad=rSz * 3, color=CPK
             )
-            self.spCrvR = self.spCrv.duplicate(n=rID + "_spCrvR_#").reverse()
+            self.rbCrvR = self.rbCrv.duplicate(n=rID + "_spCrvR_#").reverse()
             ikH_B = self.makeStretchyIk(
-                "spB", sj=self.fkJ_B[-1], ej=self.fkJ_B[1], crv=self.spCrvR, axisDir=-1
+                "spB", sj=self.fkJ_B[-1], ej=self.fkJ_B[1], crv=self.rbCrvR, axisDir=-1
             )
 
             dv = 0.5 if self.__class__.__name__ == "SpineQd" else 1
@@ -238,11 +224,11 @@ class SpineQd(RigModule):
         self.tp_ctl.cstOri(self.fkJnt[-1], mo=1)
 
         # Bind curve to ctl joints
-        self.spCrv.weightTo(self.ctlJnts, weightDir=1)
-        self.spCrv.a.inheritsTransform.set(0)
+        self.rbCrv.weightTo(self.ctlJnts, weightDir=1)
+        self.rbCrv.a.inheritsTransform.set(0)
         if sliding:
-            self.spCrvR.weightTo(self.ctlJnts, weightDir=-1)
-            self.spCrvR.a.inheritsTransform.set(0)
+            self.rbCrvR.weightTo(self.ctlJnts, weightDir=-1)
+            self.rbCrvR.a.inheritsTransform.set(0)
 
         # Setup spline ik twist
         self.tp_ctl.addOffsetGrp(below=1)
@@ -266,11 +252,23 @@ class SpineQd(RigModule):
         # )
         self.tp_ctl.a.rz @ self.rt_ctl.a.rz >> self.md_ctl.offset.a.rz
 
-        # if not sliding:
-        #     self.tp_ctl.cstOri(self.fkJnt[-1], mo=1)
-        # self.cog_ctl.cstSca(self.fkJnt[0])
-        # self.fkJnt[0].childrenJoint[0].a.segmentScaleCompensate.set(0)
-        self.rbSrf.weightTo(self.rootJ.allChildrenJt2, mi=3, dr=3)
+        self.rbSrf = SurfNode.buildRbSrf(
+            pf=rID,
+            crv=self.LINE_GUIDE,
+            snap=self.rootJ,
+            spans=self.FK_JNT_NUM - 1,
+            p=self.RIG_DATA,
+        )
+        self.rigNode.setMsg({"rbSrf": self.rbSrf})
+        self.bindJnts = SurfNode.buildRbJnt(
+            self.RBN_JNT_NUM,
+            pf=rID,
+            size=rSz,
+            surf=self.rbSrf,
+            rigData=self.RIG_DATA,
+            sklData=self.SKL_DATA,
+        )
+        self.rbSrf.weightTo(self.rootJ.allChildrenJt2, mi=1)
         self.addPivOffset(self.cog_ctl, scale=self.rigSize, upDown=1)
 
         # ----------------------
@@ -368,7 +366,7 @@ class SpineQd(RigModule):
 
     def proxy_setup(self):
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(scale=2, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(scale=2, p=self.PRX_GRP, scaler=JointNode(j).a.s)
 
     def ro_setup(self):
         [c.a.ro.set(2) for c in self.ctls]
