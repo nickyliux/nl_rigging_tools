@@ -123,6 +123,7 @@ from nl_modules.build import (
     rig_module,
     spineQd,
     tail,
+    tail_adv,
     tpl_loader,
     ribbon,
     head,
@@ -133,8 +134,6 @@ from nl_modules.build import (
     leg,
     neckQd,
 )
-
-# from nl_modules.build.backup import quadSpineCrv, spinePro, neckPro, spd3Leg, tail
 
 reload(rig_base)
 reload(rig_module)
@@ -150,6 +149,7 @@ reload(legQd)
 reload(neckQd)
 reload(spineQd)
 reload(tail)
+reload(tail_adv)
 
 if __name__ == "__main__":
     logging.info("reload modules")

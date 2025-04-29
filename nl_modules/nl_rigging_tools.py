@@ -32,6 +32,7 @@ from nl_modules.build.legQd import LegQd
 from nl_modules.build.neckQd import NeckQd
 from nl_modules.build.spineQd import SpineQd
 from nl_modules.build.tail import Tail
+from nl_modules.build.tail_adv import TailAdv
 
 log.updateRootLogger()
 
