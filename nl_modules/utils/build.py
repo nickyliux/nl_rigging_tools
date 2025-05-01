@@ -15,8 +15,8 @@ from nl_modules.build.spine import Spine
 from nl_modules.build.legQd import LegQd
 from nl_modules.build.neckQd import NeckQd
 from nl_modules.build.spineQd import SpineQd
-from nl_modules.build.tail import Tail
-from nl_modules.build.tail_adv import TailAdv
+from nl_modules.build.tail_fk import TailFk
+from nl_modules.build.tail_hybrid import TailHybrid
 from nl_modules.build.rig_module import RigModule
 from contextlib import ContextDecorator
 

@@ -17,16 +17,14 @@ COMPONENT_DICT = {
     "neck": ["neck"],
     "spine": ["spine"],
     "arm": ["lfArm", "rtArm"],
-    # "arm": ["lfArm"],
     "hand": ["lfHand", "rtHand"],
     "leg": ["lfLeg", "rtLeg"],
-    # "leg": ["lfLeg"],
     "neck / quad": ["neckQd"],
     "spine / quad": ["spineQd"],
     "arm / quad": ["lfArmQd", "rtArmQd"],
     "leg / quad": ["lfLegQd", "rtLegQd"],
-    "tail": ["tail"],
-    "tailAdv": ["tailAdv"],
+    "tail fk": ["tailFk"],
+    "tail hybrid": ["tailHybrid"],
     "wing": [""],
 }
 MOD_DIR = os.path.dirname(nl_modules.__file__)

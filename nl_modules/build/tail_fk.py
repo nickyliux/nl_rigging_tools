@@ -11,17 +11,15 @@ from nl_modules.nodel.surf_node import SurfNode
 from nl_modules.utils import common
 from nl_modules.utils.color import Color
 
-CDR = Color.D_RED
 
-
-class Tail(RigModule):
+class TailFk(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
-        self.FK_JNT_NUM = self.master_guide.a.fkJntNum.get()
+        self.FK_BONE_NUM = self.master_guide.a.fkBoneNum.get()
         self.RBN_BONES = self.master_guide.a.rbnBones.get()
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
 
-        self.LINE_GUIDE = DagNode(self.rigID + "_line_guide")
+        self.LINE_GUIDE = CurveNode(self.rigID + "_line_guide")
         self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
 
         self.fkCtl = None
@@ -30,7 +28,7 @@ class Tail(RigModule):
         self.setting = None
         self.rbSrf = None
         self.allClusters = []
-        self.REVERSE_RB = 0
+        self.REVERSE = 0
 
     def genGuideSk(self):
         self.genSk_module(["rt", "md", "tp"])
@@ -58,7 +56,7 @@ class Tail(RigModule):
         widthLine = CurveNode.buildLine(
             (rSz * 8, 0, 0), (-rSz * 8, 0, 0), n="rbCrvWidth_#", pf=rID
         )
-        if self.REVERSE_RB:
+        if self.REVERSE:
             mc.reverseCurve(widthLine, ch=0, rpo=1)
         self.rootJ.cstPoi(widthLine, keep=0)
 
@@ -74,8 +72,8 @@ class Tail(RigModule):
                 kcp=0,
                 kep=1,
                 kt=0,
-                s=self.FK_JNT_NUM - 1,
-                d=2,  # 5 cv
+                s=self.FK_BONE_NUM,
+                d=3,
                 tol=0.01,
             )[0]
         )
@@ -111,7 +109,7 @@ class Tail(RigModule):
 
         self.fkJnt = JointNode.makeJCFrCrv(
             self.LINE_GUIDE,
-            jntNum=self.FK_JNT_NUM + 1,
+            jntNum=self.FK_BONE_NUM + 1,
             pf=rID,
             aimV=(0, 0, -1),
             upV=(0, 1, 0),
@@ -120,12 +118,20 @@ class Tail(RigModule):
         )
 
         lastJnt = None
-        for i in range(self.FK_JNT_NUM + 1):
+        for i in range(0, self.FK_BONE_NUM + 1):
             currJnt = self.fkJnt[i]
+
+            cv = f"{self.rbSrf}.cv[{i+1}][*]"
+            if i == 0:
+                cv = f"{self.rbSrf}.cv[0:1][*]"
+            elif i == self.FK_BONE_NUM:
+                cv = (
+                    f"{self.rbSrf}.cv[{self.FK_BONE_NUM + 1}:{self.FK_BONE_NUM + 2}][*]"
+                )
+
             clu = DagNode(
-                mc.cluster(f"{self.rbSrf}.cv[{i}][*]", n=cluName)[1],
+                mc.cluster(cv, n=cluName)[1],
             )
-            clu.cstPoi(currJnt, keep=0)  # move jnt to cv
 
             ctl = CurveNode(
                 f"{i}_fkc_#",
@@ -133,8 +139,7 @@ class Tail(RigModule):
                 shape="circleC",
                 up="z",
                 scale=rSz * 1.5,
-                align=clu,
-                alignR=currJnt,
+                align=currJnt,
                 addOfs=1,
                 p=self.CTL_DATA,
             )
@@ -159,11 +164,15 @@ class Tail(RigModule):
         self.rigNode.setMsg({"rootJ": self.rootJ})
         self.bindJnts = self.fkJnt
 
-        [c | self.RIG_DATA for c in self.allClusters]
+        cluGrp1 = GroupNode("cluGrp1", pf=rID, p=self.RIG_DATA)
+        [self.masterC.a["globalScale"] >> cluGrp1.a[x] for x in ["sx", "sy", "sz"]]
+        cluGrp2 = GroupNode("cluGrp2", pf=rID, p=cluGrp1)
+        [x | cluGrp2 for x in self.allClusters]
 
         # scalable
         self.fkCtl[0].a.s >> self.SKL_DATA.a.s
         self.fkCtl[0].a.s >> self.PRX_GRP.a.s
+        self.fkCtl[0].a.s >> cluGrp2.a.s
         for ctl in self.fkCtl[1:]:
             self.fkCtl[0].a.s >> ctl.offset.a.s
 
@@ -172,7 +181,7 @@ class Tail(RigModule):
         logging.info(rID)
 
         coord = []
-        sep = (self.FK_JNT_NUM - 1) / (self.RBN_JNT_NUM - 1)
+        sep = self.FK_BONE_NUM / (self.RBN_JNT_NUM - 1)
         for i in range(self.RBN_JNT_NUM):
             coord.append((i * sep, 0.5))
         pin, pinXf = common.nlRivet(geo=self.rbSrf, coordList=coord, p=self.RIG_DATA)
@@ -182,7 +191,11 @@ class Tail(RigModule):
         for loc in pinXf:
             r = rSz / self.RBN_JNT_NUM * 8
             j = JointNode(
-                self.rigID + "_rbJ_#", align=loc, r=r, color=CDR, p=self.SKL_DATA
+                self.rigID + "_rbJ_#",
+                align=loc,
+                r=r,
+                color=Color.D_RED,
+                p=self.SKL_DATA,
             )
             loc.cstPar(j)
             self.bindJnts.append(j)
@@ -209,7 +222,6 @@ class Tail(RigModule):
     def post_setup(self):
         rID = self.rigID
         logging.info(rID)
-
         self.addBindJntSet(self.bindJnts)
         self.addCtlSet(self.fkCtl)
         self.anchor_setup_module({"anchorF1": self.fkCtl[0].offset})

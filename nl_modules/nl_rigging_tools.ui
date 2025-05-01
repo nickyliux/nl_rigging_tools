@@ -528,7 +528,12 @@ Mesh(es)</string>
       </item>
       <item>
        <property name="text">
-        <string>tail</string>
+        <string>tail fk</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>tail hybrid</string>
        </property>
       </item>
      </widget>
