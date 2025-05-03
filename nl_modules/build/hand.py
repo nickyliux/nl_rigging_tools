@@ -293,7 +293,7 @@ class Hand(RigModule):
         for fgrCtls in self.ctlsArr:
             showCtls >> fgrCtls[0].a.v
 
-        self.ctrlOnOffByAttr(self.masterC2.a["debug"], onList=self.allIkJ + self.allIkH)
+        # self.ctrlOnOffByAttr(self.masterC2.a["debug"], onList=self.allIkJ + self.allIkH)
 
     def post_setup(self):
         ctlSet = [self.smart_ctl] + self.fgrRootCtlArr

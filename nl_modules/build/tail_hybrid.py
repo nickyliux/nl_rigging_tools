@@ -8,7 +8,7 @@ from nl_modules.nodel.joint_node import JointNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.ribbon_node import RibbonNode
 from nl_modules.nodel.surf_node import SurfNode
-from nl_modules.utils import common
+from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
 
@@ -20,15 +20,25 @@ class TailHybrid(RigModule):
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
 
         self.LINE_GUIDE = CurveNode(self.rigID + "_line_guide")
+        self.RT_GUIDE = CurveNode(self.rigID + "_rt_guide")
         self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
 
-        self.fkCtl = None
-        self.fkJnt = None
+        self.FK_PART = GroupNode("FK", pf=self.rigID, p=self.CTL_DATA)
+        self.IK_PART = GroupNode("IK", pf=self.rigID, p=self.CTL_DATA)
+
+        self.fkCtl = []
+        self.fkJnt = []
+        self.ikCtl = []
+        self.ikJnt = []
+        self.ikOffsetCtl = []
+        self.ikOffsetJnt = []
+        self.rbJnt = []
         self.bindJ = None
         self.setting = None
-        self.rbSrf = None
-        self.allClusters = []
+        self.rbSrf1 = None
+        self.rbSrf2 = None
         self.REVERSE = 0
+        self.bindJnts = []
 
     def genGuideSk(self):
         self.genSk_module(["rt", "md", "tp"])
@@ -40,73 +50,105 @@ class TailHybrid(RigModule):
             rbSrf -> joints by pin
         """
         self.build_module()
-        self.build_rbSrf()
-        self.build_fk()
-        if self.RBN_BONES:
-            self.build_rbJ()
-        else:
-            mc.delete(self.allClusters, self.rbSrf)
 
+        self.rbSrf1 = self.build_rbSrf(self.FK_BONE_NUM)
+        self.rbSrf2 = self.rbSrf1.duplicate()
+        self.rigNode.setMsg({"rbSrf": self.rbSrf2})
+
+        self.build_ik()
+        self.build_fk()
+        self.build_stretchy_rbJ()
         self.post_setup()
 
-    def build_rbSrf(self):
+    def build_rbSrf(self, n="rbSrf", span=5):
         rID = self.rigID
-        rSz = self.rigSize
-        line_guide = DagNode(rID + "_line_guide")
+        rSz = self.rigSize = CurveNode(self.LINE_GUIDE).length / 100
+        logging.info(rID)
+
         widthLine = CurveNode.buildLine(
-            (rSz * 8, 0, 0), (-rSz * 8, 0, 0), n="rbCrvWidth_#", pf=rID
+            (-rSz * 8, 0, 0), (rSz * 8, 0, 0), pf=rID, snap=self.RT_GUIDE
         )
         if self.REVERSE:
             mc.reverseCurve(widthLine, ch=0, rpo=1)
-        self.rootJ.cstPoi(widthLine, keep=0)
 
         rebuiltLine = CurveNode(
             mc.rebuildCurve(
-                line_guide,
+                self.LINE_GUIDE,
                 n=rID + "_line_#",
                 ch=0,
                 rpo=0,
                 rt=0,
                 end=1,
-                kr=2,
+                # kr=2,
+                kr=0,
                 kcp=0,
                 kep=1,
                 kt=0,
-                s=self.FK_BONE_NUM,
+                s=span,
                 d=3,
                 tol=0.01,
             )[0]
         )
         rebuiltLine | self.RIG_DATA
-
-        self.rbSrf = DagNode(
+        rbSrf = DagNode(
             mc.extrude(
-                widthLine,
                 rebuiltLine,
-                n=rID + "_rbSrf",
+                widthLine,
+                fixedPath=1,
+                n=f"{rID}_{n}",
+                extrudeType=1,
                 ch=0,
-                rn=0,
-                po=0,
-                et=1,
-                fpt=0,
-                upn=1,
             )[0]
         )
-        self.rbSrf | self.RIG_DATA
-        self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
+        rbSrf | self.RIG_DATA
         rebuiltLine.delete()
         widthLine.delete()
+        return rbSrf
+
+    def build_ik(self):
+        rID = self.rigID
+        rSz = self.rigSize
+        logging.info(rID)
+
+        self.ikJnt = JointNode.makeJCFrCrv(
+            self.LINE_GUIDE,
+            jntNum=5,
+            name="ikj",
+            pf=rID,
+            aimV=(0, 0, -1),
+            upV=(0, 1, 0),
+            wuV=(0, 1, 0),
+            jntRad=rSz * 4,
+        )
+
+        for i in range(0, 5):
+            ctl = CurveNode(
+                f"{i}_ikc",
+                pf=rID,
+                shape="sphere2",
+                scale=rSz * 4,
+                align=self.ikJnt[i],
+                addOfs=1,
+                p=self.IK_PART,
+            )
+            self.ikJnt[i] | ctl
+            self.ikCtl.append(ctl)
+            if i > 0:
+                ctl.offset | self.ikCtl[0]
+
+            # self.rigNode.setMsg({f"ikc{i}": ctl})
+
+        SurfNode(self.rbSrf1).weightTo(self.ikJnt, chain=0)
 
     def build_fk(self):
         rID = self.rigID
         rSz = self.rigSize
         logging.info(rID)
 
-        self.fkCtl = []
-        self.fkJnt = []
-        cluName = rID + "clu_#"
-
+        # ------------------------------------------
+        # Build fkJ
+        # ------------------------------------------
         self.fkJnt = JointNode.makeJCFrCrv(
             self.LINE_GUIDE,
             jntNum=self.FK_BONE_NUM + 1,
@@ -115,100 +157,162 @@ class TailHybrid(RigModule):
             upV=(0, 1, 0),
             wuV=(0, 1, 0),
             jntRad=rSz,
+            p=self.SKL_DATA,
         )
+        # ------------------------------------------
+        # Build pins for fkCtl
+        # ------------------------------------------
+        coord = []
+        # sep = self.FK_BONE_NUM / (self.RBN_JNT_NUM)
+        for i in range(self.FK_BONE_NUM + 1):
+            coord.append((0.5, i / self.FK_BONE_NUM))
+        pin, pinXf = common.nlRivet(geo=self.rbSrf1, coordList=coord, p=self.RIG_DATA)
 
-        lastJnt = None
-        for i in range(0, self.FK_BONE_NUM + 1):
-            currJnt = self.fkJnt[i]
-
-            cv = f"{self.rbSrf}.cv[{i+1}][*]"
-            if i == 0:
-                cv = f"{self.rbSrf}.cv[0:1][*]"
-            elif i == self.FK_BONE_NUM:
-                cv = (
-                    f"{self.rbSrf}.cv[{self.FK_BONE_NUM + 1}:{self.FK_BONE_NUM + 2}][*]"
-                )
-
-            clu = DagNode(
-                mc.cluster(cv, n=cluName)[1],
-            )
-
+        # ------------------------------------------
+        # Build fkCtls
+        # ------------------------------------------
+        for i in range(self.FK_BONE_NUM + 1):
             ctl = CurveNode(
-                f"{i}_fkc_#",
+                f"{i}_fkc",
                 pf=rID,
                 shape="circleC",
                 up="z",
-                scale=rSz * 1.5,
-                align=currJnt,
-                addOfs=1,
-                p=self.CTL_DATA,
+                scale=rSz,
+                align=self.fkJnt[i],
+                color=Color.YELLOW,
             )
-            ctl.cstPar(self.fkJnt[i], mo=1)
-            ctl.cstPar(clu, mo=1)
-
-            if lastJnt:
-                lastJnt.cstPar(ctl.offset, mo=1)
-            lastJnt = currJnt
-
             self.rigNode.setMsg({f"fkc{i}": ctl})
             self.fkCtl.append(ctl)
-            self.allClusters.append(clu)
 
-        # ADD FOLLOW ALIGN ON 1 ST FK CTL
-        self.isolateAlign(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC], dv=1)
+        # ------------------------------------------
+        # Build group chain
+        # ------------------------------------------
+        chainGrps = []
+        lastGrp = self.FK_PART
+        for i in range(self.FK_BONE_NUM + 1):
+            grp = GroupNode(f"{i}_chainGrp", pf=rID, align=self.fkCtl[i], p=lastGrp)
+            pinXf[i].cstPar(grp, mo=1)
+            chainGrps.append(grp)
+            lastGrp = grp
+
+        self.fkGivenCtl3(self.fkJnt, self.fkCtl, p=self.FK_PART)
+
+        # ------------------------------------------
+        # Cnnnect chain grps to fkCtl offset
+        # ------------------------------------------
+        for i in range(self.FK_BONE_NUM + 1):
+            chainGrps[i].a.t >> self.fkCtl[i].offset.a.t
+            chainGrps[i].a.r >> self.fkCtl[i].offset.a.r
+
+        # SurfNode(self.rbSrf2).weightTo(self.fkJnt)
+        # mc.delete(self.fkJnt)
+
+        # ------------------------------------------
+        # Build lowest ikCtl layer
+        # ------------------------------------------
+        for i in range(self.FK_BONE_NUM + 1):
+            ctl = CurveNode(
+                f"{i}_offset_ikc",
+                pf=rID,
+                shape="sphere",
+                scale=rSz / 2,
+                align=self.fkCtl[i],
+                p=self.fkCtl[i],
+            )
+            ctl.cv_move(0, rSz * 18, 0)
+            jnt = JointNode(f"{i}_offset_ikj", pf=rID, align=ctl, p=ctl)
+
+            self.ikOffsetCtl.append(ctl)
+            self.ikOffsetJnt.append(jnt)
+
+        SurfNode(self.rbSrf2).weightTo(self.ikOffsetJnt, chain=0, mi=2, dr=6)
+
+        self.isolateAlign(self.ikCtl[0], [self.ikCtl[0].offset, self.masterC], dv=1)
 
         mc.delete(self.rootJ)
         self.rootJ = self.fkJnt[0]
-        self.rootJ | self.SKL_DATA
-
         self.rigNode.setMsg({"rootJ": self.rootJ})
-        self.bindJnts = self.fkJnt
-
-        cluGrp1 = GroupNode("cluGrp1", pf=rID, p=self.RIG_DATA)
-        [self.masterC.a["globalScale"] >> cluGrp1.a[x] for x in ["sx", "sy", "sz"]]
-        cluGrp2 = GroupNode("cluGrp2", pf=rID, p=cluGrp1)
-        [x | cluGrp2 for x in self.allClusters]
 
         # scalable
-        self.fkCtl[0].a.s >> self.SKL_DATA.a.s
-        self.fkCtl[0].a.s >> self.PRX_GRP.a.s
-        self.fkCtl[0].a.s >> cluGrp2.a.s
-        for ctl in self.fkCtl[1:]:
-            self.fkCtl[0].a.s >> ctl.offset.a.s
+        self.ikCtl[0].a.s >> self.FK_PART.a.s
 
-    def build_rbJ(self):
+    def build_stretchy_rbJ(self):
         rID = self.rigID
+        rSz = self.rigSize
         logging.info(rID)
 
-        coord = []
-        sep = self.FK_BONE_NUM / (self.RBN_JNT_NUM - 1)
-        for i in range(self.RBN_JNT_NUM):
-            coord.append((i * sep, 0.5))
-        pin, pinXf = common.nlRivet(geo=self.rbSrf, coordList=coord, p=self.RIG_DATA)
+        stretchy = self.fkCtl[0].a.add("stretchy", min=0, max=1)
 
-        rSz = self.rigSize
-        self.bindJnts = []
-        for loc in pinXf:
-            r = rSz / self.RBN_JNT_NUM * 8
-            j = JointNode(
-                self.rigID + "_rbJ_#",
-                align=loc,
-                r=r,
-                color=Color.D_RED,
-                p=self.SKL_DATA,
-            )
-            loc.cstPar(j)
-            self.bindJnts.append(j)
+        crv = CurveNode(mc.duplicateCurve(self.rbSrf2 + ".u[0.5]", rn=0, local=0)[0])
+        crv | self.RIG_DATA
+
+        crvInfo = DagNode("crvInfo#", nodeType="curveInfo")
+        crv.shape.a.worldSpace >> crvInfo.a.inputCurve
+
+        ratio = crvInfo.a.arcLength / crv.length
+        ratioOut = ut.blend2_(ratio, 1, stretchy)
+
+        sep = 1 / (self.RBN_JNT_NUM - 1)
+        locGrp = GroupNode("loc_grp", pf=rID, p=self.RIG_DATA)
+
+        for i in range(self.RBN_JNT_NUM):
+
+            mp = DagNode("mp#", nodeType="motionPath")
+            #
+            #   Parametric Length at motionPath must be OFF for
+            #   even sliding to work along the whole curve
+            #
+            mp.a.fm.set(1)
+            # mp.a.uValue.set(i * sep)
+
+            (i * sep) / ratioOut >> mp.a.uValue
+
+            cpos = DagNode("cpos#", nodeType="closestPointOnSurface")
+            posi = DagNode("posi#", nodeType="pointOnSurfaceInfo")
+            posi.a.turnOnPercentage.set(1)
+
+            aimCst = DagNode("aimCst#", nodeType="aimConstraint")
+            aimCst | self.RIG_DATA
+            loc = LocNode(f"{i}_loc", pf=rID, p=locGrp)
+            crv.shape.a.worldSpace >> mp.a.geometryPath
+            mp.a.allCoordinates >> cpos.a.inPosition
+
+            self.rbSrf2.shape.a.worldSpace >> cpos.a.inputSurface
+            cpos.a.parameterU >> posi.a.parameterU
+            cpos.a.parameterV >> posi.a.parameterV
+
+            self.rbSrf2.shape.a.worldSpace >> posi.a.inputSurface
+            mc.connectAttr(f"{posi}.tangentV", f"{aimCst}.target[0].targetTranslate")
+            posi.a.tangentU >> aimCst.a.worldUpVector
+            posi.a.position >> loc.a.translate
+
+            aimCst.a.constraintRotateX >> loc.a.rx
+            aimCst.a.constraintRotateY >> loc.a.ry
+            aimCst.a.constraintRotateZ >> loc.a.rz
+
+            jnt = JointNode(f"{i}_rbj", pf=rID, align=loc, r=rSz, p=loc, reset=1)
+            self.rbJnt.append(jnt)
+
+            self.ikCtl[0].a.s >> loc.a.s
+
+        self.bindJnts = self.rbJnt
 
     def vis_setup(self):
-        if self.RBN_BONES:
-            self.ctrlOnOffByAttr(
-                self.masterC2.a["debug"],
-                onList=[self.rbSrf, self.RIG_DATA, self.SKL_DATA],
-            )
+        # if self.RBN_BONES:
+        #     self.ctrlOnOffByAttr(
+        #         self.masterC2.a["debug"],
+        #         onList=[self.RIG_DATA, self.SKL_DATA],
+        #     )
+        self.ctrlOnOffByAttr(
+            self.fkCtl[0].a.add("extraCtl", k=0, min=0, max=1), onList=self.ikOffsetCtl
+        )
+        self.ctrlOnOffByAttr(
+            self.fkCtl[0].a.add("ikCtl", k=0, min=0, max=1), onList=[self.ikCtl[0]]
+        )
+        mc.hide(self.ikJnt, self.fkJnt, self.ikOffsetJnt, self.rbJnt)
 
     def channel_setup(self):
-        for ctl in self.fkCtl[1:]:
+        for ctl in self.fkCtl[1:] + self.ikCtl[1:]:
             ctl.a.showAttr(t=1, r=1)
 
     def ro_setup(self):
@@ -217,13 +321,11 @@ class TailHybrid(RigModule):
 
     def proxy_setup(self):
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(scale=2, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(p=self.PRX_GRP, scaler=self.ikCtl[0].a.s)
 
     def post_setup(self):
-        rID = self.rigID
-        logging.info(rID)
         self.addBindJntSet(self.bindJnts)
-        self.addCtlSet(self.fkCtl)
+        self.addCtlSet(self.ikCtl + self.fkCtl + self.ikOffsetCtl)
         self.anchor_setup_module({"anchorF1": self.fkCtl[0].offset})
         self.proxy_setup()
         self.vis_setup()

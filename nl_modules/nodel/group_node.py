@@ -63,14 +63,14 @@ class GroupNode(DagNode):
     ):
         """Create transform or joint"""
         self.node = mc.createNode(nodeType, n=node)
+        if p:
+            self.parentTo(p)
         if align:
             self.alignTo(align)
         if alignR:
             self.alignTo(alignR, rotate=1)
         if snap:
             self.snapTo(snap)
-        if p:
-            self.parentTo(p)
         if addOfs:
             self.addOffsetGrp()
         if nodeType == "joint" and radius:

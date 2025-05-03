@@ -576,10 +576,10 @@ class LegQd(RigModule):
 
         [ikh.hide() for ikh in self.all_ikH.values()]
 
-        self.ctrlOnOffByAttr(
-            self.masterC2.a["debug"],
-            onList=self.joints_fk + self.joints_ik,
-        )
+        # self.ctrlOnOffByAttr(
+        #     self.masterC2.a["debug"],
+        #     onList=self.joints_fk + self.joints_ik,
+        # )
 
     def channel_setup(self):
         self.setting.a.showAttr()
@@ -604,9 +604,6 @@ class LegQd(RigModule):
         self.rigNode.setMsg({"space_leg": self.ikH1.softJ[0]})
 
     def post_setup(self):
-        rID = self.rigID
-        logging.info(rID)
-
         self.setWSMirror([self.ikc, self.ikc_gimbal, self.pvc])
         ctlSet = self.fkCtl + self.ikCtl + self.subCtls + [self.setting, self.extra_ikc]
         # if self.RBN_BONES:

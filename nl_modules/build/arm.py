@@ -489,14 +489,14 @@ class Arm(RigModule):
                 self.setting.a.add("showRibbonCtl", min=0, max=1, dv=1, k=0),
                 onList=self.all_bend,
             )
-        self.ctrlOnOffByAttr(
-            self.masterC2.a["debug"],
-            onList=self.all_ikHs
-            + self.joints_fk
-            + self.joints_ik
-            + self.joints_bf
-            + [self.RIG_DATA],
-        )
+        # self.ctrlOnOffByAttr(
+        #     self.masterC2.a["debug"],
+        #     onList=self.all_ikHs
+        #     + self.joints_fk
+        #     + self.joints_ik
+        #     + self.joints_bf
+        #     + [self.RIG_DATA],
+        # )
 
     def proxy_setup(self):
         aim = (self.x_dir, 0, 0)
@@ -537,8 +537,6 @@ class Arm(RigModule):
         self.rigNode.setMsg({"space_palmIK": self.joints_bf[3]})
 
     def post_setup(self):
-        rID = self.rigID
-        logging.info(rID)
         ctlSet = []
         ctlSet.extend(self.fkCtl + self.ikCtl + [self.setting, self.pin_fkc])
         # self.setWSMirror([self.pvc])

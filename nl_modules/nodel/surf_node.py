@@ -183,7 +183,6 @@ class SurfNode(GroupNode):
         from nl_modules.utils import common
 
         if bindJntNum > 1:
-            logging.info(pf)
             coord = []
             sep = 1 / (bindJntNum - 1)
 

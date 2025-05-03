@@ -22,8 +22,8 @@ class TailFk(RigModule):
         self.LINE_GUIDE = CurveNode(self.rigID + "_line_guide")
         self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
 
-        self.fkCtl = None
-        self.fkJnt = None
+        self.fkCtl = []
+        self.fkJnt = []
         self.bindJ = None
         self.setting = None
         self.rbSrf = None
@@ -102,9 +102,6 @@ class TailFk(RigModule):
         rID = self.rigID
         rSz = self.rigSize
         logging.info(rID)
-
-        self.fkCtl = []
-        self.fkJnt = []
         cluName = rID + "clu_#"
 
         self.fkJnt = JointNode.makeJCFrCrv(
@@ -117,7 +114,6 @@ class TailFk(RigModule):
             jntRad=rSz,
         )
 
-        lastJnt = None
         for i in range(0, self.FK_BONE_NUM + 1):
             currJnt = self.fkJnt[i]
 
@@ -128,11 +124,9 @@ class TailFk(RigModule):
                 cv = (
                     f"{self.rbSrf}.cv[{self.FK_BONE_NUM + 1}:{self.FK_BONE_NUM + 2}][*]"
                 )
-
             clu = DagNode(
                 mc.cluster(cv, n=cluName)[1],
             )
-
             ctl = CurveNode(
                 f"{i}_fkc_#",
                 pf=rID,
@@ -140,19 +134,14 @@ class TailFk(RigModule):
                 up="z",
                 scale=rSz * 1.5,
                 align=currJnt,
-                addOfs=1,
-                p=self.CTL_DATA,
             )
-            ctl.cstPar(self.fkJnt[i], mo=1)
             ctl.cstPar(clu, mo=1)
-
-            if lastJnt:
-                lastJnt.cstPar(ctl.offset, mo=1)
-            lastJnt = currJnt
 
             self.rigNode.setMsg({f"fkc{i}": ctl})
             self.fkCtl.append(ctl)
             self.allClusters.append(clu)
+
+        self.fkGivenCtl3(self.fkJnt, self.fkCtl, p=self.CTL_DATA)
 
         # ADD FOLLOW ALIGN ON 1 ST FK CTL
         self.isolateAlign(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC], dv=1)
@@ -173,8 +162,8 @@ class TailFk(RigModule):
         self.fkCtl[0].a.s >> self.SKL_DATA.a.s
         self.fkCtl[0].a.s >> self.PRX_GRP.a.s
         self.fkCtl[0].a.s >> cluGrp2.a.s
-        for ctl in self.fkCtl[1:]:
-            self.fkCtl[0].a.s >> ctl.offset.a.s
+        # for ctl in self.fkCtl[1:]:
+        #     self.fkCtl[0].a.s >> ctl.offset.a.s
 
     def build_rbJ(self):
         rID = self.rigID
@@ -201,11 +190,12 @@ class TailFk(RigModule):
             self.bindJnts.append(j)
 
     def vis_setup(self):
-        if self.RBN_BONES:
-            self.ctrlOnOffByAttr(
-                self.masterC2.a["debug"],
-                onList=[self.rbSrf, self.RIG_DATA, self.SKL_DATA],
-            )
+        # if self.RBN_BONES:
+        #     self.ctrlOnOffByAttr(
+        #         self.masterC2.a["debug"],
+        #         onList=[self.rbSrf, self.RIG_DATA, self.SKL_DATA],
+        #     )
+        pass
 
     def channel_setup(self):
         for ctl in self.fkCtl[1:]:
@@ -220,8 +210,6 @@ class TailFk(RigModule):
             JointNode(j).addProxyMesh(scale=2, p=self.PRX_GRP)
 
     def post_setup(self):
-        rID = self.rigID
-        logging.info(rID)
         self.addBindJntSet(self.bindJnts)
         self.addCtlSet(self.fkCtl)
         self.anchor_setup_module({"anchorF1": self.fkCtl[0].offset})

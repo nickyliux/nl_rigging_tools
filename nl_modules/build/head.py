@@ -100,9 +100,6 @@ class Head(RigModule):
         self.rigNode.setMsg({"space_head": self.head_fkc})
 
     def post_setup(self):
-        rID = self.rigID
-        logging.info(rID)
-
         self.addBindJntSet(self.bindJnts)
         self.addCtlSet(self.fkCtl)
         self.space_setup()

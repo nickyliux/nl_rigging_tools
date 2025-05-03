@@ -28,6 +28,7 @@ class JointNode(GroupNode):
         shape=None,
         color=0,
         r=None,
+        reset=0,
     ):
         nodeExists = 0
         name = pf + node + sf
@@ -54,6 +55,10 @@ class JointNode(GroupNode):
 
         if not nodeExists:
             self.color = color or 0
+
+        if reset:
+            self.resetOrient()
+            self.resetXf()
 
     def setRadius(self, v, rel=False):
         """Set joint radius, rel=True for relative to current value"""
@@ -182,7 +187,7 @@ class JointNode(GroupNode):
             pf += "_"
         for i in range(jntNum):
             mp.a.uValue.set(i / (jntNum - 1))
-            j = JointNode(pf + name + "_#", snap=loc, r=jntRad, color=color)
+            j = JointNode(f"{i}_{name}", pf=pf, snap=loc, r=jntRad, color=color)
             joints.append(j)
 
         root = joints[0] if alongCrv else joints[-1]

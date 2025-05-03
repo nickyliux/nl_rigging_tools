@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: tailHybrid.ma
-//Last modified: Thu, May 01, 2025 04:51:21 PM
+//Last modified: Fri, May 02, 2025 08:39:51 AM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,12 +12,12 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26100)";
-fileInfo "UUID" "EF2088C1-4411-C63B-DDBA-6E885EEFD571";
+fileInfo "UUID" "AC9D8E82-4D38-A0AC-F31C-6687A0034D0B";
 createNode transform -s -n "persp";
 	rename -uid "83BBC351-4169-8A57-6147-3688C3C5E65F";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 110.14279977694007 133.92097096337818 -178.08694462837681 ;
-	setAttr ".r" -type "double3" -24.938352729813001 118.99999999999326 0 ;
+	setAttr ".t" -type "double3" 105.88543728965463 146.59519465684028 -172.18509987364826 ;
+	setAttr ".r" -type "double3" -29.7383527298126 117.79999999999303 0 ;
 	setAttr -cb on ".ro";
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "E4BD1A20-4E99-1123-5E44-089307917010";
@@ -94,7 +94,7 @@ createNode transform -n "master_guide" -p "module_grp";
 	setAttr ".t" -type "double3" 0 90 -90 ;
 	setAttr ".s" -type "double3" 0.5 0.5 0.5 ;
 	setAttr -l on -k on ".__________";
-	setAttr -cb on ".fkBoneNum" 8;
+	setAttr -cb on ".fkBoneNum" 5;
 	setAttr -cb on ".rbnBones" yes;
 	setAttr -cb on ".rbnJntNum" 8;
 createNode transform -n "rt_guide_ofs" -p "master_guide";
@@ -381,20 +381,20 @@ createNode nurbsCurve -n "line_guideShapeOrig1" -p "line_guide";
 parent -s -nc -r -add "|module_grp|master_guide|rt_guide_ofs|rt_guide|tp_guideShape" "md_guide" ;
 parent -s -nc -r -add "|module_grp|master_guide|rt_guide_ofs|rt_guide|tp_guideShape" "tp_guide" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "3A2327BE-4D9E-6550-618A-8898CA3E33EE";
+	rename -uid "6F3EB96A-4B8B-AB2A-0F58-E3B71C9A20B0";
 	setAttr -s 2 ".lnk";
 	setAttr -s 2 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "466FDAA1-4376-73ED-08CA-ECA0DE703DA5";
+	rename -uid "4F170EA1-463C-F008-2885-179EBB653C24";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "B90384E3-4F40-CB77-3033-C895B112603A";
+	rename -uid "A669DEA0-4837-61A4-B6FC-DCBC8833FA62";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "C6D7F52A-4FF8-8A12-E057-25BDFC65DB59";
+	rename -uid "C859E883-4E22-99B4-319A-BF9F5E909042";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "EDE7F8A1-4185-37A4-5FA7-49A7396409D6";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "A6088D8E-4967-4E35-7F25-53839B6E428F";
+	rename -uid "91B90FAE-4011-7CB7-156F-4EA549E8034D";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "D70BF562-46C4-2F8D-ABFE-179003332609";
 	setAttr ".g" yes;

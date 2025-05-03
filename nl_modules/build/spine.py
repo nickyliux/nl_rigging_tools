@@ -223,19 +223,19 @@ class Spine(RigModule):
     def vis_setup(self):
 
         self.ctrlOnOffByAttr(
-            self.setting.a.add("fkVis", min=0, max=1, dv=1, k=0),
+            self.setting.a.add("fkCtl", min=0, max=1, dv=1, k=0),
             onList=self.fkCtl,
         )
         self.ctrlOnOffByAttr(
-            self.setting.a.add("ikVis", min=0, max=1, dv=1, k=0),
+            self.setting.a.add("ikCtl", min=0, max=1, dv=1, k=0),
             onList=self.ikCtl,
         )
-        self.ctrlOnOffByAttr(self.masterC2.a["debug"], onList=[self.RIG_DATA])
+        # self.ctrlOnOffByAttr(self.masterC2.a["debug"], onList=[self.RIG_DATA])
 
-        if self.RBN_BONES:
-            self.ctrlOnOffByAttr(
-                self.masterC2.a["debug"], onList=[self.rbSrf] + self.ctlJnts
-            )
+        # if self.RBN_BONES:
+        #     self.ctrlOnOffByAttr(
+        #         self.masterC2.a["debug"], onList=[self.rbSrf] + self.ctlJnts
+        #     )
 
     def channel_setup(self):
         self.setting.a.showAttr()
@@ -263,8 +263,6 @@ class Spine(RigModule):
         self.anchor_setup_module({"anchorM1": self.rt_ctl, "anchorM2": anchorM2Tgt})
 
     def post_setup(self):
-        rID = self.rigID
-        logging.info(rID)
         self.addBindJntSet(self.bindJnts)
         self.addCtlSet(
             self.fkCtl + self.ikCtl + [self.setting, self.cog_ctl, self.cog_gmb]

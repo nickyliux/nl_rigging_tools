@@ -353,16 +353,17 @@ class SpineQd(RigModule):
 
     def vis_setup(self):
 
-        if self.bindJnts:
-            # mc.hide(self.bindJnts, self.rbSrf)
-            self.ctrlOnOffByAttr(
-                self.masterC2.a["debug"], onList=self.bindJnts + [self.rbSrf]
-            )
+        # if self.bindJnts:
+        #     # mc.hide(self.bindJnts, self.rbSrf)
+        #     self.ctrlOnOffByAttr(
+        #         self.masterC2.a["debug"], onList=self.bindJnts + [self.rbSrf]
+        #     )
 
-        self.ctrlOnOffByAttr(
-            self.masterC2.a["debug"],
-            onList=self.ctlJnts + self.fkJ_A + self.fkJ_B + [self.RIG_DATA],
-        )
+        # self.ctrlOnOffByAttr(
+        #     self.masterC2.a["debug"],
+        #     onList=self.ctlJnts + self.fkJ_A + self.fkJ_B + [self.RIG_DATA],
+        # )
+        pass
 
     def proxy_setup(self):
         for j in self.bindJnts:
@@ -386,8 +387,6 @@ class SpineQd(RigModule):
         )
 
     def post_setup(self):
-        rID = self.rigID
-        logging.info(rID)
         if self.RBN_JNT_NUM > 1:
             self.addBindJntSet(self.bindJnts)
         self.addCtlSet(self.ctls)

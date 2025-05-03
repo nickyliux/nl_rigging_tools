@@ -481,7 +481,7 @@ class DagNode(DepNode):
         node = mc.duplicate(self, **kwargs)[0]
 
         if name:
-            node.rename(name)
+            DagNode(node).rename(name)
 
         className = self.__class__.__name__
         return eval(className)(node)

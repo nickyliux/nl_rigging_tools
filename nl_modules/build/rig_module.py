@@ -344,13 +344,16 @@ class RigModule(RigBase):
             j.a.radius.set(self.rigSize)
 
     def post_module(self):
+        logging.info(self.rigID)
+        self.moduleG.hide()
+
         for obj in mc.ls(tr=1):
             mc.setAttr(obj + ".ro", cb=1)
-        self.moduleG.hide()
-        # self.masterC.a.showAttr(t=1, r=1)
-        # self.masterC.offset.a.showAttr(t=1, r=1)
+
         if self.PRX:
             self.masterC2.a["showProxy"] >> self.PRX.a.v
+
+        self.ctrlOnOffByAttr(self.masterC2.a["debug"], onList=[self.RIG, self.SKL])
 
     def unbuild_module(self):
         logging.info(self.rigID)
