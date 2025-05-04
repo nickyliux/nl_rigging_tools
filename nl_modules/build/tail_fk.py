@@ -5,6 +5,7 @@ from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.joint_node import JointNode
+
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.ribbon_node import RibbonNode
 from nl_modules.nodel.surf_node import SurfNode
@@ -40,9 +41,24 @@ class TailFk(RigModule):
             FK -> rbSrf by skin
             rbSrf -> joints by pin
         """
+        rID = self.rigID
+
         self.build_module()
-        self.rbSrf = self.build_rbSrf(
-            span=self.FK_BONE_NUM, p=self.RIG_DATA, rootPos=self.RT_GUIDE
+
+        # self.rbSrf = self.build_rbSrf(
+        #     pf=rID,
+        #     crv=self.LINE_GUIDE,
+        #     spans=self.FK_BONE_NUM,
+        #     p=self.RIG_DATA,
+        #     rootPos=self.RT_GUIDE,
+        # )
+        self.rbSrf = SurfNode.buildRbSrf(
+            pf=rID,
+            crv=self.LINE_GUIDE,
+            normal=1,
+            spans=self.FK_BONE_NUM,
+            p=self.RIG_DATA,
+            snap=self.RT_GUIDE,
         )
         self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
@@ -75,47 +91,44 @@ class TailFk(RigModule):
             }
         )
 
-    def build_rbSrf(self, n="rbSrf", span=5, p=None, rootPos=None):
-        rID = self.rigID
-        rSz = self.rigSize
-        widthLine = CurveNode.buildLine(
-            (-rSz * 8, 0, 0), (rSz * 8, 0, 0), pf=rID, snap=rootPos
-        )
-        if self.REVERSE:
-            mc.reverseCurve(widthLine, ch=0, rpo=1)
+    # def build_rbSrf(self, pf="", crv=None, n="rbSrf", spans=5, p=None, rootPos=None):
+    #     rID = self.rigID
+    #     crvLen = CurveNode(crv).length
 
-        rebuiltLine = CurveNode(
-            mc.rebuildCurve(
-                self.LINE_GUIDE,
-                n=rID + "_line_#",
-                ch=0,
-                rpo=0,
-                rt=0,
-                end=1,
-                kr=0,  #
-                kcp=0,
-                kep=1,
-                kt=0,
-                s=span,
-                d=3,
-                tol=0.01,
-            )[0]
-        )
-        rbSrf = DagNode(
-            mc.extrude(
-                rebuiltLine,
-                widthLine,
-                fixedPath=1,
-                n=f"{rID}_{n}",
-                extrudeType=1,
-                ch=0,
-            )[0]
-        )
-        if p:
-            rbSrf | p
+    #     p1 = (-crvLen / 10, 0, 0)
+    #     p2 = (crvLen / 10, 0, 0)
+    #     widthLine = CurveNode.buildLine(p1, p2, pf=pf, snap=rootPos)
 
-        mc.delete(rebuiltLine, widthLine)
-        return rbSrf
+    #     if self.REVERSE:
+    #         mc.reverseCurve(widthLine, rpo=1)
+
+    #     pathLine = CurveNode(
+    #         mc.rebuildCurve(
+    #             crv,
+    #             rpo=0,
+    #             rt=0,
+    #             end=1,
+    #             kr=0,
+    #             kcp=0,
+    #             kep=1,
+    #             kt=0,
+    #             s=spans,
+    #         )[0]
+    #     )
+    #     rbSrf = DagNode(
+    #         mc.extrude(
+    #             pathLine,
+    #             widthLine,
+    #             fixedPath=1,
+    #             n=f"{rID}_{n}",
+    #             extrudeType=1,
+    #             ch=0,
+    #         )[0]
+    #     )
+    #     mc.delete(pathLine, widthLine)
+    #     if p:
+    #         rbSrf | p
+    #     return rbSrf
 
     def build_fk(self):
         rID = self.rigID

@@ -146,17 +146,19 @@ class SurfNode(GroupNode):
 
         crvLen = CurveNode(crv).length
         sign = 1 if normal else -1
-        p1 = (crvLen * 0.1 * sign, 0, 0)
-        p2 = (crvLen * 0.1 * -sign, 0, 0)
-
+        p1 = (crvLen * 0.1 * -sign, 0, 0)
+        p2 = (crvLen * 0.1 * sign, 0, 0)
         sweepLine = CurveNode.buildLine(p1, p2, pf=pf, snap=snap)
+
         pathLine = CurveNode(
-            mc.rebuildCurve(
-                crv, n=pf + "_line_#", ch=0, rpo=0, end=1, kr=2, kt=0, s=spans, d=3
-            )[0]
+            mc.rebuildCurve(crv, rpo=0, rt=0, end=1, kr=0, kcp=0, kep=1, kt=0, s=spans)[
+                0
+            ]
         )
         rbSrf = SurfNode(
-            mc.extrude(sweepLine, pathLine, n=pf + "_rbSrf", ch=0, rn=0, et=1, upn=1)[0]
+            mc.extrude(
+                pathLine, sweepLine, fixedPath=1, n=pf + "_rbSrf", extrudeType=1
+            )[0]
         )
         mc.delete(pathLine, sweepLine)
         if p:
@@ -187,7 +189,7 @@ class SurfNode(GroupNode):
             sep = 1 / (bindJntNum - 1)
 
             for i in range(bindJntNum):
-                coord.append((i * sep, 0.5))
+                coord.append((0.5, i * sep))
 
             pin, pinXf = common.nlRivet(
                 geo=surf, coordList=coord, normalize=normalize, p=rigData
@@ -198,7 +200,7 @@ class SurfNode(GroupNode):
                 j = JointNode(
                     pf + f"_rbJ_{i + 1}",
                     align=loc,
-                    r=size / bindJntNum * 8,
+                    # r=size / bindJntNum * 8,
                     p=sklData,
                     color=color,
                 )

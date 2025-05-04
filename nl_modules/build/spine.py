@@ -87,6 +87,7 @@ class Spine(RigModule):
 
     def build(self):
         self.build_module()
+        self.rigSize = rSz = CurveNode(self.LINE_GUIDE).length / 100
         self.createCtl()
         self.build_fk()
         self.build_ik()
@@ -169,7 +170,6 @@ class Spine(RigModule):
                 [self.rt_ctl, self.md_ctl, self.tp_ctl], r=rSz * 5, color=CBL
             )
             self.rbSrf.weightTo(self.ctlJnts, chain=0, mi=2, dr=6)
-
             self.bindJnts = SurfNode.buildRbJnt(
                 self.RBN_JNT_NUM,
                 pf=rID,
@@ -192,11 +192,9 @@ class Spine(RigModule):
     def build_volume_setup(self):
         """Scale ribbon joints according to length of the surface"""
 
-        import math
-
         scaleFix = self.masterC.a["globalScale"]
         arcLD = ut.arcLenDim_(self.rbSrf)
-        d = arcLD.a.arcLength
+        d = arcLD.a.arcLengthInV
         D = d.get()
 
         autoVol = self.setting.a.add("autoVol", dv=1)
@@ -250,7 +248,7 @@ class Spine(RigModule):
     def proxy_setup(self):
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(
-                scale=2, aimDir=(0, 1, 0), p=self.PRX_GRP, scaler=JointNode(j).a.s
+                scale=1, aimDir=(0, 1, 0), p=self.PRX_GRP, scaler=JointNode(j).a.s
             )
 
     def space_setup(self):

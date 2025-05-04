@@ -474,6 +474,7 @@ class DagNode(DepNode):
         from nl_modules.nodel.loc_node import LocNode
         from nl_modules.nodel.mesh_node import MeshNode
         from nl_modules.nodel.curve_node import CurveNode
+        from nl_modules.nodel.surf_node import SurfNode
 
         if not self.exists():
             raise ValueError("Can not duplicate None !")

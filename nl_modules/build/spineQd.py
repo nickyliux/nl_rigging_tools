@@ -113,12 +113,9 @@ class SpineQd(RigModule):
         )
 
     def build(self):
-        rID = self.rigID
-
         self.build_module()
-        self.createCtl()
-        # rSz = self.rigSize = self.rbSrf.lengthU / 100
         self.rigSize = rSz = CurveNode(self.LINE_GUIDE).length / 100
+        self.createCtl()
         self.build_fk()
         self.build_ik(sliding=1)
         self.post_setup()
@@ -268,7 +265,7 @@ class SpineQd(RigModule):
             rigData=self.RIG_DATA,
             sklData=self.SKL_DATA,
         )
-        self.rbSrf.weightTo(self.rootJ.allChildrenJt2, mi=1)
+        self.rbSrf.weightTo(self.rootJ.allChildrenJt2, mi=1, chain=0)
         self.addPivOffset(self.cog_ctl, scale=self.rigSize, upDown=1)
 
         # ----------------------
@@ -323,11 +320,9 @@ class SpineQd(RigModule):
     def build_volume_setup(self):
         """Scale ribbon joints according to length of the surface"""
 
-        import math
-
         scaleFix = self.masterC.a["globalScale"]
         arcLD = ut.arcLenDim_(self.rbSrf)
-        d = arcLD.a.arcLength
+        d = arcLD.a.arcLengthInV
         D = d.get()
 
         autoVol = self.setting.a.add("autoVol", dv=1)

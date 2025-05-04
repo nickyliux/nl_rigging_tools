@@ -6,7 +6,8 @@ from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.joint_node import JointNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.ribbon_node import RibbonNode
+
+# from nl_modules.nodel.ribbon_node import RibbonNode
 from nl_modules.nodel.surf_node import SurfNode
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
@@ -48,10 +49,24 @@ class TailFkIk(RigModule):
             FK -> rbSrf by skin
             rbSrf -> joints by pin
         """
+        rID = self.rigID
+
         self.build_module()
 
-        self.rbSrf1 = self.build_rbSrf(
-            span=self.FK_BONE_NUM, p=self.RIG_DATA, rootPos=self.RT_GUIDE
+        # self.rbSrf1 = self.build_rbSrf(
+        #     pf=rID,
+        #     crv=self.LINE_GUIDE,
+        #     spans=self.FK_BONE_NUM,
+        #     p=self.RIG_DATA,
+        #     rootPos=self.RT_GUIDE,
+        # )
+        self.rbSrf1 = SurfNode.buildRbSrf(
+            pf=rID,
+            crv=self.LINE_GUIDE,
+            normal=1,
+            spans=self.FK_BONE_NUM,
+            p=self.RIG_DATA,
+            snap=self.RT_GUIDE,
         )
         self.rbSrf2 = self.rbSrf1.duplicate()
 
@@ -82,47 +97,44 @@ class TailFkIk(RigModule):
             }
         )
 
-    def build_rbSrf(self, n="rbSrf", span=5, p=None, rootPos=None):
-        rID = self.rigID
-        rSz = self.rigSize = CurveNode(self.LINE_GUIDE).length / 100
-        widthLine = CurveNode.buildLine(
-            (-rSz * 8, 0, 0), (rSz * 8, 0, 0), pf=rID, snap=rootPos
-        )
-        if self.REVERSE:
-            mc.reverseCurve(widthLine, ch=0, rpo=1)
+    # def build_rbSrf(self, pf="", crv=None, n="rbSrf", spans=5, p=None, rootPos=None):
+    #     rID = self.rigID
+    #     crvLen = CurveNode(crv).length
 
-        rebuiltLine = CurveNode(
-            mc.rebuildCurve(
-                self.LINE_GUIDE,
-                n=rID + "_line_#",
-                ch=0,
-                rpo=0,
-                rt=0,
-                end=1,
-                kr=0,  #
-                kcp=0,
-                kep=1,
-                kt=0,
-                s=span,
-                d=3,
-                tol=0.01,
-            )[0]
-        )
-        rbSrf = DagNode(
-            mc.extrude(
-                rebuiltLine,
-                widthLine,
-                fixedPath=1,
-                n=f"{rID}_{n}",
-                extrudeType=1,
-                ch=0,
-            )[0]
-        )
-        if p:
-            rbSrf | p
+    #     p1 = (-crvLen / 10, 0, 0)
+    #     p2 = (crvLen / 10, 0, 0)
+    #     widthLine = CurveNode.buildLine(p1, p2, pf=pf, snap=rootPos)
 
-        mc.delete(rebuiltLine, widthLine)
-        return rbSrf
+    #     if self.REVERSE:
+    #         mc.reverseCurve(widthLine, rpo=1)
+
+    #     pathLine = CurveNode(
+    #         mc.rebuildCurve(
+    #             crv,
+    #             rpo=0,
+    #             rt=0,
+    #             end=1,
+    #             kr=0,
+    #             kcp=0,
+    #             kep=1,
+    #             kt=0,
+    #             s=spans,
+    #         )[0]
+    #     )
+    #     rbSrf = DagNode(
+    #         mc.extrude(
+    #             pathLine,
+    #             widthLine,
+    #             fixedPath=1,
+    #             n=f"{rID}_{n}",
+    #             extrudeType=1,
+    #             ch=0,
+    #         )[0]
+    #     )
+    #     mc.delete(pathLine, widthLine)
+    #     if p:
+    #         rbSrf | p
+    #     return rbSrf
 
     def build_ik(self):
         rID = self.rigID
@@ -260,7 +272,7 @@ class TailFkIk(RigModule):
 
         self.setting.snapTo(self.ikCtl[0])
         self.setting.addOffsetGrp(snapIt=1)
-        self.setting.a.t.set(0, rSz * 50, 0)
+        self.setting.a.t.set(0, rSz * 30, 0)
         self.ikCtl[0].cstPar(self.setting.offset, mo=1)
 
         tailScale = self.setting.a.add("tailScale", min=0.01, dv=1)
