@@ -3433,8 +3433,8 @@
             ]
         }
     },
-    "tail0":{
-        "tail0_line_guide":{
+    "tailHybrid0":{
+        "tailHybrid0_line_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -3451,7 +3451,7 @@
                 0.0
             ]
         },
-        "tail0_master_guide":{
+        "tailHybrid0_master_guide":{
             "fkJntNum":4,
             "r":[
                 -11.913359921936232,
@@ -3471,7 +3471,7 @@
                 -42.04963820904935
             ]
         },
-        "tail0_md_guide":{
+        "tailHybrid0_md_guide":{
             "r":[
                 1.749598753164647,
                 0.0,
@@ -3488,7 +3488,7 @@
                 -1.311703380196206
             ]
         },
-        "tail0_module_grp":{
+        "tailHybrid0_module_grp":{
             "r":[
                 0.0,
                 0.0,
@@ -3505,7 +3505,7 @@
                 0.0
             ]
         },
-        "tail0_rt_guide":{
+        "tailHybrid0_rt_guide":{
             "r":[
                 -3.9938016467125164,
                 0.0,
@@ -3522,7 +3522,7 @@
                 -0.3707878381626729
             ]
         },
-        "tail0_tp_guide":{
+        "tailHybrid0_tp_guide":{
             "r":[
                 4.7444507034425145,
                 0.0,

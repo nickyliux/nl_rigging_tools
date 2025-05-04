@@ -374,6 +374,70 @@ Mesh(es)</string>
       </property>
      </widget>
     </widget>
+    <widget class="QGroupBox" name="groupBox_9">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>310</y>
+       <width>211</width>
+       <height>291</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>RigNodes</string>
+     </property>
+     <widget class="QListWidget" name="rigNode_LW">
+      <property name="geometry">
+       <rect>
+        <x>7</x>
+        <y>40</y>
+        <width>198</width>
+        <height>241</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>9</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::SingleSelection</enum>
+      </property>
+      <property name="spacing">
+       <number>0</number>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="rigNode_refresh_BN">
+      <property name="geometry">
+       <rect>
+        <x>7</x>
+        <y>20</y>
+        <width>198</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>8</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Refresh</string>
+      </property>
+     </widget>
+    </widget>
    </widget>
    <widget class="QWidget" name="main_TB">
     <attribute name="title">
@@ -1375,7 +1439,7 @@ Mesh(es)</string>
    </widget>
    <widget class="QWidget" name="rigNodes_TB">
     <attribute name="title">
-     <string>Misc</string>
+     <string>Skin</string>
     </attribute>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="geometry">
@@ -1492,70 +1556,6 @@ or groups containing them</string>
       </property>
       <property name="invertedAppearance">
        <bool>false</bool>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QGroupBox" name="groupBox_9">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>200</y>
-       <width>211</width>
-       <height>401</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>RigNodes</string>
-     </property>
-     <widget class="QListWidget" name="rigNode_LW">
-      <property name="geometry">
-       <rect>
-        <x>7</x>
-        <y>40</y>
-        <width>198</width>
-        <height>351</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Segoe UI</family>
-        <pointsize>9</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="selectionMode">
-       <enum>QAbstractItemView::SingleSelection</enum>
-      </property>
-      <property name="spacing">
-       <number>0</number>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="rigNode_refresh_BN">
-      <property name="geometry">
-       <rect>
-        <x>7</x>
-        <y>20</y>
-        <width>198</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Segoe UI</family>
-        <pointsize>8</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>Refresh</string>
       </property>
      </widget>
     </widget>
