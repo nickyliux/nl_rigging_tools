@@ -50,7 +50,9 @@ class TailFkIk(RigModule):
         """
         self.build_module()
 
-        self.rbSrf1 = self.build_rbSrf(self.FK_BONE_NUM, p=self.RIG_DATA)
+        self.rbSrf1 = self.build_rbSrf(
+            span=self.FK_BONE_NUM, p=self.RIG_DATA, rootPos=self.RT_GUIDE
+        )
         self.rbSrf2 = self.rbSrf1.duplicate()
 
         self.rigNode.setMsg({"rbSrf": self.rbSrf2})
@@ -80,13 +82,11 @@ class TailFkIk(RigModule):
             }
         )
 
-    def build_rbSrf(self, n="rbSrf", span=5, p=None):
+    def build_rbSrf(self, n="rbSrf", span=5, p=None, rootPos=None):
         rID = self.rigID
         rSz = self.rigSize = CurveNode(self.LINE_GUIDE).length / 100
-        logging.info(rID)
-
         widthLine = CurveNode.buildLine(
-            (-rSz * 8, 0, 0), (rSz * 8, 0, 0), pf=rID, snap=self.RT_GUIDE
+            (-rSz * 8, 0, 0), (rSz * 8, 0, 0), pf=rID, snap=rootPos
         )
         if self.REVERSE:
             mc.reverseCurve(widthLine, ch=0, rpo=1)
@@ -108,7 +108,6 @@ class TailFkIk(RigModule):
                 tol=0.01,
             )[0]
         )
-        rebuiltLine | self.RIG_DATA
         rbSrf = DagNode(
             mc.extrude(
                 rebuiltLine,
@@ -122,8 +121,7 @@ class TailFkIk(RigModule):
         if p:
             rbSrf | p
 
-        rebuiltLine.delete()
-        widthLine.delete()
+        mc.delete(rebuiltLine, widthLine)
         return rbSrf
 
     def build_ik(self):
@@ -364,7 +362,7 @@ class TailFkIk(RigModule):
     def proxy_setup(self):
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(
-                p=self.PRX_GRP, scaler=self.setting.a["tailScale"], scale=2
+                p=self.PRX_GRP, scaler=self.setting.a["tailScale"], scale=1
             )
 
     def post_setup(self):

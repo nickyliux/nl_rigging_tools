@@ -41,7 +41,9 @@ class TailFk(RigModule):
             rbSrf -> joints by pin
         """
         self.build_module()
-        self.rbSrf = self.build_rbSrf(span=self.FK_BONE_NUM, p=self.RIG_DATA)
+        self.rbSrf = self.build_rbSrf(
+            span=self.FK_BONE_NUM, p=self.RIG_DATA, rootPos=self.RT_GUIDE
+        )
         self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
         self.createCtl()
@@ -73,19 +75,18 @@ class TailFk(RigModule):
             }
         )
 
-    def build_rbSrf(self, n="rbSrf", span=5, p=None):
+    def build_rbSrf(self, n="rbSrf", span=5, p=None, rootPos=None):
         rID = self.rigID
         rSz = self.rigSize
-        line_guide = DagNode(rID + "_line_guide")
         widthLine = CurveNode.buildLine(
-            (-rSz * 8, 0, 0), (rSz * 8, 0, 0), pf=rID, snap=self.RT_GUIDE
+            (-rSz * 8, 0, 0), (rSz * 8, 0, 0), pf=rID, snap=rootPos
         )
         if self.REVERSE:
             mc.reverseCurve(widthLine, ch=0, rpo=1)
 
         rebuiltLine = CurveNode(
             mc.rebuildCurve(
-                line_guide,
+                self.LINE_GUIDE,
                 n=rID + "_line_#",
                 ch=0,
                 rpo=0,
@@ -100,7 +101,6 @@ class TailFk(RigModule):
                 tol=0.01,
             )[0]
         )
-        rebuiltLine | self.RIG_DATA
         rbSrf = DagNode(
             mc.extrude(
                 rebuiltLine,
@@ -111,11 +111,10 @@ class TailFk(RigModule):
                 ch=0,
             )[0]
         )
-
         if p:
             rbSrf | p
-        rebuiltLine.delete()
-        widthLine.delete()
+
+        mc.delete(rebuiltLine, widthLine)
         return rbSrf
 
     def build_fk(self):
