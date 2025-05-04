@@ -20,12 +20,13 @@ class TailFk(RigModule):
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
 
         self.LINE_GUIDE = CurveNode(self.rigID + "_line_guide")
+        self.RT_GUIDE = CurveNode(self.rigID + "_rt_guide")
         self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
 
+        self.setting = None
         self.fkCtl = []
         self.fkJnt = []
-        self.bindJ = None
-        self.setting = None
+        self.bindJnts = []
         self.rbSrf = None
         self.allClusters = []
         self.REVERSE = 0
@@ -40,25 +41,47 @@ class TailFk(RigModule):
             rbSrf -> joints by pin
         """
         self.build_module()
-        self.build_rbSrf()
+        self.rbSrf = self.build_rbSrf(span=self.FK_BONE_NUM, p=self.RIG_DATA)
+        self.rigNode.setMsg({"rbSrf": self.rbSrf})
+
+        self.createCtl()
         self.build_fk()
         if self.RBN_BONES:
             self.build_rbJ()
         else:
+            self.bindJnts = self.fkJnt
             mc.delete(self.allClusters, self.rbSrf)
 
         self.post_setup()
 
-    def build_rbSrf(self):
+    def createCtl(self):
+        rID = self.rigID
+        rSz = self.rigSize
+        self.setting = CurveNode(
+            "setting",
+            pf=rID,
+            shape="sphere2",
+            scale=rSz * 2,
+            top=1,
+            color=Color.BLACK,
+            p=self.CTL_DATA,
+        )
+
+        self.rigNode.setMsg(
+            {
+                "setting": self.setting,
+            }
+        )
+
+    def build_rbSrf(self, n="rbSrf", span=5, p=None):
         rID = self.rigID
         rSz = self.rigSize
         line_guide = DagNode(rID + "_line_guide")
         widthLine = CurveNode.buildLine(
-            (rSz * 8, 0, 0), (-rSz * 8, 0, 0), n="rbCrvWidth_#", pf=rID
+            (-rSz * 8, 0, 0), (rSz * 8, 0, 0), pf=rID, snap=self.RT_GUIDE
         )
         if self.REVERSE:
             mc.reverseCurve(widthLine, ch=0, rpo=1)
-        self.rootJ.cstPoi(widthLine, keep=0)
 
         rebuiltLine = CurveNode(
             mc.rebuildCurve(
@@ -68,35 +91,32 @@ class TailFk(RigModule):
                 rpo=0,
                 rt=0,
                 end=1,
-                kr=2,
+                kr=0,  #
                 kcp=0,
                 kep=1,
                 kt=0,
-                s=self.FK_BONE_NUM,
+                s=span,
                 d=3,
                 tol=0.01,
             )[0]
         )
         rebuiltLine | self.RIG_DATA
-
-        self.rbSrf = DagNode(
+        rbSrf = DagNode(
             mc.extrude(
-                widthLine,
                 rebuiltLine,
-                n=rID + "_rbSrf",
+                widthLine,
+                fixedPath=1,
+                n=f"{rID}_{n}",
+                extrudeType=1,
                 ch=0,
-                rn=0,
-                po=0,
-                et=1,
-                fpt=0,
-                upn=1,
             )[0]
         )
-        self.rbSrf | self.RIG_DATA
-        self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
+        if p:
+            rbSrf | p
         rebuiltLine.delete()
         widthLine.delete()
+        return rbSrf
 
     def build_fk(self):
         rID = self.rigID
@@ -113,16 +133,15 @@ class TailFk(RigModule):
             wuV=(0, 1, 0),
             jntRad=rSz,
         )
-
         for i in range(0, self.FK_BONE_NUM + 1):
             currJnt = self.fkJnt[i]
 
-            cv = f"{self.rbSrf}.cv[{i+1}][*]"
+            cv = f"{self.rbSrf}.cv[*][{i+1}]"
             if i == 0:
-                cv = f"{self.rbSrf}.cv[0:1][*]"
+                cv = f"{self.rbSrf}.cv[*][0:1]"
             elif i == self.FK_BONE_NUM:
                 cv = (
-                    f"{self.rbSrf}.cv[{self.FK_BONE_NUM + 1}:{self.FK_BONE_NUM + 2}][*]"
+                    f"{self.rbSrf}.cv[*][{self.FK_BONE_NUM + 1}:{self.FK_BONE_NUM + 2}]"
                 )
             clu = DagNode(
                 mc.cluster(cv, n=cluName)[1],
@@ -151,7 +170,6 @@ class TailFk(RigModule):
         self.rootJ | self.SKL_DATA
 
         self.rigNode.setMsg({"rootJ": self.rootJ})
-        self.bindJnts = self.fkJnt
 
         cluGrp1 = GroupNode("cluGrp1", pf=rID, p=self.RIG_DATA)
         [self.masterC.a["globalScale"] >> cluGrp1.a[x] for x in ["sx", "sy", "sz"]]
@@ -162,44 +180,40 @@ class TailFk(RigModule):
         self.fkCtl[0].a.s >> self.SKL_DATA.a.s
         self.fkCtl[0].a.s >> self.PRX_GRP.a.s
         self.fkCtl[0].a.s >> cluGrp2.a.s
-        # for ctl in self.fkCtl[1:]:
-        #     self.fkCtl[0].a.s >> ctl.offset.a.s
+
+        self.setting.snapTo(self.fkCtl[0])
+        self.setting.addOffsetGrp(snapIt=1)
+        self.setting.a.t.set(0, rSz * 30, 0)
+        self.fkCtl[0].cstPar(self.setting.offset, mo=1)
+
+        self.setting.a.add("tailScale", min=0.01, dv=1) >> self.fkCtl[0].a.s
 
     def build_rbJ(self):
         rID = self.rigID
+        # rSz = self.rigSize
         logging.info(rID)
 
+        # ------------------------------------------
+        # Build pins for rbJnt
+        # ------------------------------------------
         coord = []
-        sep = self.FK_BONE_NUM / (self.RBN_JNT_NUM - 1)
         for i in range(self.RBN_JNT_NUM):
-            coord.append((i * sep, 0.5))
+            coord.append((0.5, i / (self.RBN_JNT_NUM - 1)))
         pin, pinXf = common.nlRivet(geo=self.rbSrf, coordList=coord, p=self.RIG_DATA)
 
-        rSz = self.rigSize
-        self.bindJnts = []
         for loc in pinXf:
-            r = rSz / self.RBN_JNT_NUM * 8
-            j = JointNode(
-                self.rigID + "_rbJ_#",
-                align=loc,
-                r=r,
-                color=Color.D_RED,
-                p=self.SKL_DATA,
-            )
-            loc.cstPar(j)
-            self.bindJnts.append(j)
+            # r = rSz / self.RBN_JNT_NUM * 8
+            jnt = JointNode("rbJ_#", pf=rID, align=loc, p=self.SKL_DATA)
+            loc.cstPar(jnt)
+            self.bindJnts.append(jnt)
 
     def vis_setup(self):
-        # if self.RBN_BONES:
-        #     self.ctrlOnOffByAttr(
-        #         self.masterC2.a["debug"],
-        #         onList=[self.rbSrf, self.RIG_DATA, self.SKL_DATA],
-        #     )
         pass
 
     def channel_setup(self):
-        for ctl in self.fkCtl[1:]:
+        for ctl in self.fkCtl:
             ctl.a.showAttr(t=1, r=1)
+        self.setting.a.showAttr()
 
     def ro_setup(self):
         for ctl in self.fkCtl:
@@ -207,7 +221,7 @@ class TailFk(RigModule):
 
     def proxy_setup(self):
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(scale=2, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(scale=1, p=self.PRX_GRP)
 
     def post_setup(self):
         self.addBindJntSet(self.bindJnts)

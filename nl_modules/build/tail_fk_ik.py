@@ -34,7 +34,6 @@ class TailFkIk(RigModule):
         self.ikOffsetCtl = []
         self.ikOffsetJnt = []
         self.rbJnt = []
-        self.bindJ = None
         self.rbSrf1 = None
         self.rbSrf2 = None
         self.REVERSE = 0
@@ -51,8 +50,9 @@ class TailFkIk(RigModule):
         """
         self.build_module()
 
-        self.rbSrf1 = self.build_rbSrf(self.FK_BONE_NUM)
+        self.rbSrf1 = self.build_rbSrf(self.FK_BONE_NUM, p=self.RIG_DATA)
         self.rbSrf2 = self.rbSrf1.duplicate()
+
         self.rigNode.setMsg({"rbSrf": self.rbSrf2})
 
         self.createCtl()
@@ -80,7 +80,7 @@ class TailFkIk(RigModule):
             }
         )
 
-    def build_rbSrf(self, n="rbSrf", span=5):
+    def build_rbSrf(self, n="rbSrf", span=5, p=None):
         rID = self.rigID
         rSz = self.rigSize = CurveNode(self.LINE_GUIDE).length / 100
         logging.info(rID)
@@ -99,8 +99,7 @@ class TailFkIk(RigModule):
                 rpo=0,
                 rt=0,
                 end=1,
-                # kr=2,
-                kr=0,
+                kr=0,  #
                 kcp=0,
                 kep=1,
                 kt=0,
@@ -120,8 +119,9 @@ class TailFkIk(RigModule):
                 ch=0,
             )[0]
         )
+        if p:
+            rbSrf | p
 
-        rbSrf | self.RIG_DATA
         rebuiltLine.delete()
         widthLine.delete()
         return rbSrf
@@ -183,7 +183,6 @@ class TailFkIk(RigModule):
         # Build pins for fkCtl
         # ------------------------------------------
         coord = []
-        # sep = self.FK_BONE_NUM / (self.RBN_JNT_NUM)
         for i in range(self.FK_BONE_NUM + 1):
             coord.append((0.5, i / self.FK_BONE_NUM))
         pin, pinXf = common.nlRivet(geo=self.rbSrf1, coordList=coord, p=self.RIG_DATA)
