@@ -597,7 +597,7 @@ Mesh(es)</string>
       </item>
       <item>
        <property name="text">
-        <string>tail hybrid</string>
+        <string>tail fk ik</string>
        </property>
       </item>
      </widget>

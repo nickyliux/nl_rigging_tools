@@ -464,7 +464,7 @@ createNode script -n "RGN";
 	addAttr -s false -ci true -k true -sn "master_guide" -ln "master_guide" -at "message";
 	addAttr -ci true -sn "rbJntSet" -ln "rbJntSet" -dt "string";
 	setAttr ".rigID" -type "string" "";
-	setAttr ".rigClass" -type "string" "TailHybrid";
+	setAttr ".rigClass" -type "string" "TailFkIk";
 	setAttr -cb on ".rbJntSet" -type "string" "tail_rbj_set";
 createNode nodeGraphEditorInfo -n "hyperShadePrimaryNodeEditorSavedTabsInfo";
 	rename -uid "37D0EF4F-491E-F1A4-1A86-87A86D74875D";

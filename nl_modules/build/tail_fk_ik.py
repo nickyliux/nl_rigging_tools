@@ -12,7 +12,7 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
 
-class TailHybrid(RigModule):
+class TailFkIk(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
         self.FK_BONE_NUM = self.master_guide.a.fkBoneNum.get()
@@ -26,6 +26,7 @@ class TailHybrid(RigModule):
         self.FK_PART = GroupNode("FK", pf=self.rigID, p=self.CTL_DATA)
         self.IK_PART = GroupNode("IK", pf=self.rigID, p=self.CTL_DATA)
 
+        self.setting = None
         self.fkCtl = []
         self.fkJnt = []
         self.ikCtl = []
@@ -34,7 +35,6 @@ class TailHybrid(RigModule):
         self.ikOffsetJnt = []
         self.rbJnt = []
         self.bindJ = None
-        self.setting = None
         self.rbSrf1 = None
         self.rbSrf2 = None
         self.REVERSE = 0
@@ -55,10 +55,30 @@ class TailHybrid(RigModule):
         self.rbSrf2 = self.rbSrf1.duplicate()
         self.rigNode.setMsg({"rbSrf": self.rbSrf2})
 
+        self.createCtl()
         self.build_ik()
         self.build_fk()
         self.build_stretchy_rbJ()
         self.post_setup()
+
+    def createCtl(self):
+        rID = self.rigID
+        rSz = self.rigSize
+        self.setting = CurveNode(
+            "setting",
+            pf=rID,
+            shape="sphere2",
+            scale=rSz * 2,
+            top=1,
+            color=Color.BLACK,
+            p=self.CTL_DATA,
+        )
+
+        self.rigNode.setMsg(
+            {
+                "setting": self.setting,
+            }
+        )
 
     def build_rbSrf(self, n="rbSrf", span=5):
         rID = self.rigID
@@ -127,7 +147,7 @@ class TailHybrid(RigModule):
                 f"{i}_ikc",
                 pf=rID,
                 shape="sphere2",
-                scale=rSz * 4,
+                scale=rSz * 5,
                 align=self.ikJnt[i],
                 addOfs=1,
                 p=self.IK_PART,
@@ -137,7 +157,7 @@ class TailHybrid(RigModule):
             if i > 0:
                 ctl.offset | self.ikCtl[0]
 
-            # self.rigNode.setMsg({f"ikc{i}": ctl})
+            self.rigNode.setMsg({f"ikc{i}": ctl})
 
         SurfNode(self.rbSrf1).weightTo(self.ikJnt, chain=0)
 
@@ -215,7 +235,7 @@ class TailHybrid(RigModule):
                 f"{i}_offset_ikc",
                 pf=rID,
                 shape="sphere",
-                scale=rSz / 2,
+                scale=rSz,
                 align=self.fkCtl[i],
                 p=self.fkCtl[i],
             )
@@ -241,7 +261,18 @@ class TailHybrid(RigModule):
         rSz = self.rigSize
         logging.info(rID)
 
-        stretchy = self.fkCtl[0].a.add("stretchy", min=0, max=1)
+        self.setting.snapTo(self.ikCtl[0])
+        self.setting.addOffsetGrp(snapIt=1)
+        self.setting.a.t.set(0, rSz * 50, 0)
+        self.ikCtl[0].cstPar(self.setting.offset, mo=1)
+
+        tailScale = self.setting.a.add("tailScale", min=0.01, dv=1)
+        tailScale >> self.ikCtl[0].a.s
+        tailScale >> self.setting.offset.a.s
+
+        stretchy = self.setting.a.add("stretchy", min=0, max=1)
+        self.ikCtl[-1].a.add("stretchy", proxy=stretchy)
+        self.fkCtl[-1].a.add("stretchy", proxy=stretchy)
 
         crv = CurveNode(mc.duplicateCurve(self.rbSrf2 + ".u[0.5]", rn=0, local=0)[0])
         crv | self.RIG_DATA
@@ -249,7 +280,12 @@ class TailHybrid(RigModule):
         crvInfo = DagNode("crvInfo#", nodeType="curveInfo")
         crv.shape.a.worldSpace >> crvInfo.a.inputCurve
 
-        ratio = crvInfo.a.arcLength / crv.length
+        ratio = (
+            crvInfo.a.arcLength
+            / self.masterC.a.globalScale
+            / self.setting.a.tailScale
+            / crv.length
+        )
         ratioOut = ut.blend2_(ratio, 1, stretchy)
 
         sep = 1 / (self.RBN_JNT_NUM - 1)
@@ -304,16 +340,23 @@ class TailHybrid(RigModule):
         #         onList=[self.RIG_DATA, self.SKL_DATA],
         #     )
         self.ctrlOnOffByAttr(
-            self.fkCtl[0].a.add("extraCtl", k=0, min=0, max=1), onList=self.ikOffsetCtl
+            self.setting.a.add("ikCtl", k=0, min=0, max=1, dv=1),
+            onList=[self.ikCtl[0]],
         )
         self.ctrlOnOffByAttr(
-            self.fkCtl[0].a.add("ikCtl", k=0, min=0, max=1), onList=[self.ikCtl[0]]
+            self.setting.a.add("fkCtl", k=0, min=0, max=1, dv=1),
+            onList=[self.fkCtl[0]],
+        )
+        self.ctrlOnOffByAttr(
+            self.setting.a.add("extraCtl", k=0, min=0, max=1, dv=1),
+            onList=self.ikOffsetCtl,
         )
         mc.hide(self.ikJnt, self.fkJnt, self.ikOffsetJnt, self.rbJnt)
 
     def channel_setup(self):
-        for ctl in self.fkCtl[1:] + self.ikCtl[1:]:
+        for ctl in self.fkCtl + self.ikCtl:
             ctl.a.showAttr(t=1, r=1)
+        self.setting.a.showAttr()
 
     def ro_setup(self):
         for ctl in self.fkCtl:
@@ -321,12 +364,14 @@ class TailHybrid(RigModule):
 
     def proxy_setup(self):
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(p=self.PRX_GRP, scaler=self.ikCtl[0].a.s)
+            JointNode(j).addProxyMesh(
+                p=self.PRX_GRP, scaler=self.setting.a["tailScale"], scale=2
+            )
 
     def post_setup(self):
         self.addBindJntSet(self.bindJnts)
-        self.addCtlSet(self.ikCtl + self.fkCtl + self.ikOffsetCtl)
-        self.anchor_setup_module({"anchorF1": self.fkCtl[0].offset})
+        self.addCtlSet(self.ikCtl + self.fkCtl + self.ikOffsetCtl + [self.setting])
+        self.anchor_setup_module({"anchorF1": self.ikCtl[0].offset.offset})
         self.proxy_setup()
         self.vis_setup()
         self.channel_setup()

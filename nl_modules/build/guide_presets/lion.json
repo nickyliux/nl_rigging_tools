@@ -3433,8 +3433,8 @@
             ]
         }
     },
-    "tailHybrid0":{
-        "tailHybrid0_line_guide":{
+    "tailFkIk0":{
+        "tailFkIk0_line_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -3451,7 +3451,7 @@
                 0.0
             ]
         },
-        "tailHybrid0_master_guide":{
+        "tailFkIk0_master_guide":{
             "fkJntNum":5,
             "r":[
                 0.0,
@@ -3471,7 +3471,7 @@
                 -46.173533147807866
             ]
         },
-        "tailHybrid0_md_guide":{
+        "tailFkIk0_md_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -3488,7 +3488,7 @@
                 1.2385925618474403e-14
             ]
         },
-        "tailHybrid0_module_grp":{
+        "tailFkIk0_module_grp":{
             "r":[
                 0.0,
                 0.0,
@@ -3505,7 +3505,7 @@
                 0.0
             ]
         },
-        "tailHybrid0_rt_guide":{
+        "tailFkIk0_rt_guide":{
             "r":[
                 -11.034542037928738,
                 -0.8915067066762266,
@@ -3522,7 +3522,7 @@
                 -5.208166392144927
             ]
         },
-        "tailHybrid0_tp_guide":{
+        "tailFkIk0_tp_guide":{
             "r":[
                 0.0,
                 0.0,

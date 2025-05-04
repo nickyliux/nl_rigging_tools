@@ -123,7 +123,7 @@ from nl_modules.build import (
     rig_module,
     spineQd,
     tail_fk,
-    tail_hybrid,
+    tail_fk_ik,
     tpl_loader,
     ribbon,
     head,
@@ -149,7 +149,7 @@ reload(legQd)
 reload(neckQd)
 reload(spineQd)
 reload(tail_fk)
-reload(tail_hybrid)
+reload(tail_fk_ik)
 
 if __name__ == "__main__":
     logging.info("reload modules")
