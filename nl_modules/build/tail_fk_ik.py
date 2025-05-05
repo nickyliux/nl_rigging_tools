@@ -79,10 +79,11 @@ class TailFkIk(RigModule):
         self.setting = CurveNode(
             "setting",
             pf=rID,
-            shape="sphere2",
-            scale=rSz * 2,
-            top=1,
+            shape="diamond",
+            scale=rSz * 3,
             color=Color.BLACK,
+            top=1,
+            lineWidth=2,
             p=self.CTL_DATA,
         )
         self.rigNode.setMsg(

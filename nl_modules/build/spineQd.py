@@ -40,11 +40,11 @@ class SpineQd(RigModule):
         self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
 
         self.cog_ctl = None
-        self.tp_ctl = None
-        self.md_ctl = None
-        self.rt_ctl = None
-        self.tangent_tp_ctl = None
-        self.tangent_rt_ctl = None
+        self.fore_ctl = None
+        self.mid_ctl = None
+        self.base_ctl = None
+        self.tangent_fore_ctl = None
+        self.tangent_base_ctl = None
         self.setting = None
         self.ctls = []
 
@@ -69,46 +69,46 @@ class SpineQd(RigModule):
         self.setting = CurveNode(
             "setting",
             pf=rID,
-            shape="stick",
-            rotate=(0, 90, 0),
+            shape="diamond",
             scale=rSz * 1.5,
             color=CBK,
             top=1,
+            lineWidth=2,
+            p=self.CTL_DATA,
         )
-        # lineWidth=2,
         self.cog_ctl = CurveNode(
             "cog_ctl",
             pf=rID,
             shape="trapezoid",
-            scale=(rSz, rSz * 1.5, rSz * 2.5),
+            scale=(rSz * 0.8, rSz * 1.5, rSz * 2.5),
             color=CYL,
         )
-        self.cog_ctl.cv_move(0, 80 * rSz, 0)
+        self.cog_ctl.cv_move(0, 70 * rSz, 0)
 
-        self.tp_ctl = CurveNode(
-            "tp_ctl", pf=rID, shape="circleC", scale=scale, up="z", lineWidth=2
+        self.fore_ctl = CurveNode(
+            "fore_ctl", pf=rID, shape="circleC", scale=scale, up="z", lineWidth=2
         )
-        self.md_ctl = CurveNode(
-            "_md_ctl", pf=rID, shape="circleC", scale=scale2, up="z", lineWidth=2
+        self.mid_ctl = CurveNode(
+            "_mid_ctl", pf=rID, shape="circleC", scale=scale2, up="z", lineWidth=2
         )
-        self.rt_ctl = CurveNode(
-            "rt_ctl", pf=rID, shape="circleC", scale=scale, up="z", lineWidth=2
+        self.base_ctl = CurveNode(
+            "base_ctl", pf=rID, shape="circleC", scale=scale, up="z", lineWidth=2
         )
-        self.tangent_tp_ctl = CurveNode(
-            "tangent_tp_ctl", pf=rID, shape="stickS", scale=rSz, color=CDY
+        self.tangent_fore_ctl = CurveNode(
+            "tangent_fore_ctl", pf=rID, shape="stickS", scale=rSz, color=CDY
         )
-        self.tangent_rt_ctl = CurveNode(
-            "tangent_rt_ctl", pf=rID, shape="stickS", scale=rSz, color=CDY
+        self.tangent_base_ctl = CurveNode(
+            "tangent_base_ctl", pf=rID, shape="stickS", scale=rSz, color=CDY
         )
         self.rigNode.setMsg(
             {
                 "setting": self.setting,
                 "cog_ctl": self.cog_ctl,
-                "tp_ctl": self.tp_ctl,
-                "md_ctl": self.md_ctl,
-                "rt_ctl": self.rt_ctl,
-                "tangent_tp_ctl": self.tangent_tp_ctl,
-                "tangent_rt_ctl": self.tangent_rt_ctl,
+                "fore_ctl": self.fore_ctl,
+                "mid_ctl": self.mid_ctl,
+                "base_ctl": self.base_ctl,
+                "tangent_fore_ctl": self.tangent_fore_ctl,
+                "tangent_base_ctl": self.tangent_base_ctl,
             }
         )
 
@@ -188,8 +188,8 @@ class SpineQd(RigModule):
                 "spB", sj=self.fkJ_B[-1], ej=self.fkJ_B[1], crv=self.rbCrvR, axisDir=-1
             )
 
-            dv = 0.5 if self.__class__.__name__ == "SpineQd" else 1
-            baseAttach = self.cog_ctl.a.add("baseAttach", min=0, max=1, dv=dv)
+            # dv = 0.5 if self.__class__.__name__ == "SpineQd" else 1
+            baseAttach = self.cog_ctl.a.add("baseAttach", min=0, max=1, dv=1)
             for i in range(self.FK_JNT_NUM):
                 common.cstMulti(
                     self.fkJ_B[i + 1],
@@ -198,27 +198,27 @@ class SpineQd(RigModule):
                     w=baseAttach,
                     cstType="par",
                 )
-        self.rt_ctl.snapAlignTo(self.fkJnt[0], self.RT_GUIDE)
-        self.md_ctl.alignTo(self.MD_GUIDE)
-        self.tp_ctl.snapAlignTo(self.fkJnt[-1], self.TP_GUIDE)
+        self.base_ctl.snapAlignTo(self.fkJnt[0], self.RT_GUIDE)
+        self.mid_ctl.alignTo(self.MD_GUIDE)
+        self.fore_ctl.snapAlignTo(self.fkJnt[-1], self.TP_GUIDE)
 
         if self.PV_GUIDE:
             self.cog_ctl.alignTo(self.PV_GUIDE)
         else:
             self.cog_ctl.alignTo(self.RT_GUIDE)
 
-        (self.tp_ctl, self.md_ctl, self.rt_ctl) | self.cog_ctl | self.CTL_DATA
+        (self.fore_ctl, self.mid_ctl, self.base_ctl) | self.cog_ctl | self.CTL_DATA
         self.cog_ctl.addOffsetGrp()
 
-        tp_gimbal = self.tp_ctl.addGimbal()
-        rt_gimbal = self.rt_ctl.addGimbal()
+        fore_gimbal = self.fore_ctl.addGimbal()
+        base_gimbal = self.base_ctl.addGimbal()
 
         self.ctlJnts = self.createCtlJ(
-            [self.rt_ctl, self.md_ctl, self.tp_ctl], color=CBL, r=rSz * 8
+            [self.base_ctl, self.mid_ctl, self.fore_ctl], color=CBL, r=rSz * 8
         )
         # Orient control last fkJ by tip ctl
         self.fkJnt[-1].a.r.disconnect()
-        self.tp_ctl.cstOri(self.fkJnt[-1], mo=1)
+        self.fore_ctl.cstOri(self.fkJnt[-1], mo=1)
 
         # Bind curve to ctl joints
         self.rbCrv.weightTo(self.ctlJnts, weightDir=1)
@@ -228,26 +228,33 @@ class SpineQd(RigModule):
             self.rbCrvR.a.inheritsTransform.set(0)
 
         # Setup spline ik twist
-        self.tp_ctl.addOffsetGrp(below=1)
-        self.rt_ctl.addOffsetGrp(below=1)
+        self.fore_ctl.addOffsetGrp(below=1)
+        self.base_ctl.addOffsetGrp(below=1)
 
         if sliding:
-            ikH_A.spline_twist_setup(self.rt_ctl, self.tp_ctl, twistAxis="+z")
-            ikH_B.spline_twist_setup(self.tp_ctl, self.rt_ctl, twistAxis="-z")
+            ikH_A.spline_twist_setup(self.base_ctl, self.fore_ctl, twistAxis="+z")
+            ikH_B.spline_twist_setup(self.fore_ctl, self.base_ctl, twistAxis="-z")
             mc.hide(ikH_A, ikH_B)
         else:
-            ikH_1.spline_twist_setup(self.rt_ctl, self.tp_ctl, twistAxis="+z")
+            ikH_1.spline_twist_setup(self.base_ctl, self.fore_ctl, twistAxis="+z")
             mc.hide(ikH_1)
 
-        self.rt_ctl.addOffsetGrp()
-        self.md_ctl.addOffsetGrp(count=2)
-        self.tp_ctl.addOffsetGrp()
+        self.base_ctl.addOffsetGrp()
+        self.mid_ctl.addOffsetGrp(count=2)
+        self.fore_ctl.addOffsetGrp()
 
         # Mid ctl setup
-        # common.cstMulti(
-        #     self.tp_ctl, self.rt_ctl, self.md_ctl.offset.offset, cstType="poi", mo=1
-        # )
-        self.tp_ctl.a.rz @ self.rt_ctl.a.rz >> self.md_ctl.offset.a.rz
+        common.cstMulti(
+            # self.fore_ctl,
+            # self.base_ctl,
+            fore_gimbal,
+            base_gimbal,
+            self.mid_ctl.offset.offset,
+            cstType="par",
+            mo=1,
+        )
+        self.fore_ctl.a.rz * 0.3 >> self.mid_ctl.offset.a.rz
+        # self.fore_ctl.a.rz @ self.base_ctl.a.rz >> self.mid_ctl.offset.a.rz
 
         self.rbSrf = SurfNode.buildRbSrf(
             pf=rID,
@@ -271,51 +278,52 @@ class SpineQd(RigModule):
         # ----------------------
         #  Add gimbal
         # ----------------------
-        # tp_gimbal = self.tp_ctl.addGimbal()
-        # rt_gimbal = self.rt_ctl.addGimbal()
-        # tp_gimbal.cstPar(self.tangent_tp_ctl.addOffsetGrp())
-        # self.rt_ctl.cstPar(self.tangent_rt_ctl.addOffsetGrp())
+        # fore_gimbal = self.fore_ctl.addGimbal()
+        # base_gimbal = self.base_ctl.addGimbal()
+        # fore_gimbal.cstPar(self.tangent_fore_ctl.addOffsetGrp())
+        # self.base_ctl.cstPar(self.tangent_base_ctl.addOffsetGrp())
 
         # ----------------------
         #  Setup tangent ctls
         # ----------------------
-        (self.tangent_tp_ctl, self.tangent_rt_ctl) | self.CTL_DATA
-        rt_gimbal.cstPar(self.tangent_rt_ctl.addOffsetGrp())
-        tp_gimbal.cstPar(self.tangent_tp_ctl.addOffsetGrp())
+        (self.tangent_fore_ctl, self.tangent_base_ctl) | self.CTL_DATA
+        base_gimbal.cstPar(self.tangent_base_ctl.addOffsetGrp())
+        fore_gimbal.cstPar(self.tangent_fore_ctl.addOffsetGrp())
 
-        self.tangent_rt_ctl.a.r >> self.ctlJnts[0].a.r
-        self.tangent_tp_ctl.a.r >> self.ctlJnts[2].a.r
+        self.tangent_base_ctl.a.r >> self.ctlJnts[0].a.r
+        self.tangent_fore_ctl.a.r >> self.ctlJnts[2].a.r
         (
-            self.tangent_rt_ctl.a.add("tangentScale", min=0, max=5, dv=1)
+            self.tangent_base_ctl.a.add("tangentScale", min=0, max=5, dv=1)
             >> self.ctlJnts[0].a.s
         )
         (
-            self.tangent_tp_ctl.a.add("tangentScale", min=0, max=5, dv=1)
+            self.tangent_fore_ctl.a.add("tangentScale", min=0, max=5, dv=1)
             >> self.ctlJnts[2].a.s
         )
         self.ctls = [
-            self.tp_ctl,
-            self.md_ctl,
-            self.rt_ctl,
+            self.fore_ctl,
+            self.mid_ctl,
+            self.base_ctl,
             self.cog_ctl,
-            tp_gimbal,
-            rt_gimbal,
-            self.tangent_tp_ctl,
-            self.tangent_rt_ctl,
+            fore_gimbal,
+            base_gimbal,
+            self.tangent_fore_ctl,
+            self.tangent_base_ctl,
         ]
 
-        for ctl in [self.rt_ctl, self.md_ctl, self.tp_ctl]:
+        for ctl in [self.base_ctl, self.mid_ctl, self.fore_ctl]:
             ctl.a.addSep()
             ctl.a.add("stretchy", proxy=self.cog_ctl.a.stretchy)
-            ctl.a.add("stretchyMin", proxy=self.cog_ctl.a.stretchyMin, k=0)
-            ctl.a.add("stretchyMax", proxy=self.cog_ctl.a.stretchyMax, k=0)
+            ctl.a.add("stretchMin", proxy=self.cog_ctl.a.stretchMin, k=0)
+            ctl.a.add("stretchMax", proxy=self.cog_ctl.a.stretchMax, k=0)
 
-        # self.addPivOffset(self.tp_ctl, scale=self.rigSize, dnwd=0)
-        # self.addPivOffset(self.rt_ctl, scale=self.rigSize, dnwd=0)
+        # self.addPivOffset(self.fore_ctl, scale=self.rigSize, dnwd=0)
+        # self.addPivOffset(self.base_ctl, scale=self.rigSize, dnwd=0)
 
         self.build_volume_setup()
 
-        self.setting.alignTo(self.md_ctl, p=self.cog_ctl)
+        self.setting.alignTo(self.cog_ctl, offset=(0, rSz * 90, 0))
+        self.cog_ctl.cstPar(self.setting, mo=1)
 
     def build_volume_setup(self):
         """Scale ribbon joints according to length of the surface"""
@@ -326,8 +334,8 @@ class SpineQd(RigModule):
         D = d.get()
 
         autoVol = self.setting.a.add("autoVol", dv=1)
-        self.tp_ctl.a.add("autoVol", proxy=autoVol)
-        self.rt_ctl.a.add("autoVol", proxy=autoVol)
+        self.fore_ctl.a.add("autoVol", proxy=autoVol)
+        self.base_ctl.a.add("autoVol", proxy=autoVol)
 
         # keys for volume squash
         volGraph = self.setting.a.add("volGraph", dv=0)
@@ -370,8 +378,8 @@ class SpineQd(RigModule):
     def channel_setup(self):
         [ctl.a.showAttr(t=1, r=1) for ctl in self.ctls]
         self.setting.a.showAttr()
-        self.tangent_tp_ctl.a.showAttr(r=1)
-        self.tangent_rt_ctl.a.showAttr(r=1)
+        self.tangent_fore_ctl.a.showAttr(r=1)
+        self.tangent_base_ctl.a.showAttr(r=1)
 
     def anchor_setup(self):
         self.anchor_setup_module(
