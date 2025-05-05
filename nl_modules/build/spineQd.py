@@ -120,7 +120,7 @@ class SpineQd(RigModule):
         self.build_ik(sliding=1)
         self.post_setup()
 
-    def makeJC(self, name, alongCrv=1, addEndJ=0, jntRad=1, color=0):
+    def makeJC(self, name, alongCrv=1, addEndJ=0, size=1, color=0):
         jc = JointNode.makeJCFrCrv(
             self.LINE_GUIDE,
             pf=self.rigID,
@@ -128,7 +128,7 @@ class SpineQd(RigModule):
             alongCrv=alongCrv,
             jntNum=self.FK_JNT_NUM,
             p=self.SKL_DATA,
-            jntRad=jntRad,
+            size=size,
             addEndJ=addEndJ,
             color=color,
         )
@@ -175,13 +175,13 @@ class SpineQd(RigModule):
             )
         else:
             # joint chain A
-            self.fkJ_A = self.makeJC("fkJ_A", addEndJ=1, jntRad=rSz * 2, color=CLB)
+            self.fkJ_A = self.makeJC("fkJ_A", addEndJ=1, size=rSz * 2, color=CLB)
             ikH_A = self.makeStretchyIk(
                 "spA", sj=self.fkJ_A[0], ej=self.fkJ_A[-2], crv=self.rbCrv
             )
             # joint chain B
             self.fkJ_B = self.makeJC(
-                "fkJ_B", addEndJ=1, alongCrv=0, jntRad=rSz * 3, color=CPK
+                "fkJ_B", addEndJ=1, alongCrv=0, size=rSz * 3, color=CPK
             )
             self.rbCrvR = self.rbCrv.duplicate(n=rID + "_spCrvR_#").reverse()
             ikH_B = self.makeStretchyIk(

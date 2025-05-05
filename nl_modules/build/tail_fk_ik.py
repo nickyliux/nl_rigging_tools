@@ -53,13 +53,6 @@ class TailFkIk(RigModule):
 
         self.build_module()
 
-        # self.rbSrf1 = self.build_rbSrf(
-        #     pf=rID,
-        #     crv=self.LINE_GUIDE,
-        #     spans=self.FK_BONE_NUM,
-        #     p=self.RIG_DATA,
-        #     rootPos=self.RT_GUIDE,
-        # )
         self.rbSrf1 = SurfNode.buildRbSrf(
             pf=rID,
             crv=self.LINE_GUIDE,
@@ -97,45 +90,6 @@ class TailFkIk(RigModule):
             }
         )
 
-    # def build_rbSrf(self, pf="", crv=None, n="rbSrf", spans=5, p=None, rootPos=None):
-    #     rID = self.rigID
-    #     crvLen = CurveNode(crv).length
-
-    #     p1 = (-crvLen / 10, 0, 0)
-    #     p2 = (crvLen / 10, 0, 0)
-    #     widthLine = CurveNode.buildLine(p1, p2, pf=pf, snap=rootPos)
-
-    #     if self.REVERSE:
-    #         mc.reverseCurve(widthLine, rpo=1)
-
-    #     pathLine = CurveNode(
-    #         mc.rebuildCurve(
-    #             crv,
-    #             rpo=0,
-    #             rt=0,
-    #             end=1,
-    #             kr=0,
-    #             kcp=0,
-    #             kep=1,
-    #             kt=0,
-    #             s=spans,
-    #         )[0]
-    #     )
-    #     rbSrf = DagNode(
-    #         mc.extrude(
-    #             pathLine,
-    #             widthLine,
-    #             fixedPath=1,
-    #             n=f"{rID}_{n}",
-    #             extrudeType=1,
-    #             ch=0,
-    #         )[0]
-    #     )
-    #     mc.delete(pathLine, widthLine)
-    #     if p:
-    #         rbSrf | p
-    #     return rbSrf
-
     def build_ik(self):
         rID = self.rigID
         rSz = self.rigSize
@@ -149,7 +103,7 @@ class TailFkIk(RigModule):
             aimV=(0, 0, -1),
             upV=(0, 1, 0),
             wuV=(0, 1, 0),
-            jntRad=rSz * 4,
+            size=rSz * 4,
         )
 
         for i in range(0, 5):
@@ -186,7 +140,7 @@ class TailFkIk(RigModule):
             aimV=(0, 0, -1),
             upV=(0, 1, 0),
             wuV=(0, 1, 0),
-            jntRad=rSz,
+            size=rSz,
             p=self.SKL_DATA,
         )
         # ------------------------------------------
@@ -195,6 +149,7 @@ class TailFkIk(RigModule):
         coord = []
         for i in range(self.FK_BONE_NUM + 1):
             coord.append((0.5, i / self.FK_BONE_NUM))
+
         pin, pinXf = common.nlRivet(geo=self.rbSrf1, coordList=coord, p=self.RIG_DATA)
 
         # ------------------------------------------
@@ -343,11 +298,6 @@ class TailFkIk(RigModule):
         self.bindJnts = self.rbJnt
 
     def vis_setup(self):
-        # if self.RBN_BONES:
-        #     self.ctrlOnOffByAttr(
-        #         self.masterC2.a["debug"],
-        #         onList=[self.RIG_DATA, self.SKL_DATA],
-        #     )
         self.ctrlOnOffByAttr(
             self.setting.a.add("ikCtl", k=0, min=0, max=1, dv=1),
             onList=[self.ikCtl[0]],

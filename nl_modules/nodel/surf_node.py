@@ -167,7 +167,7 @@ class SurfNode(GroupNode):
 
     @staticmethod
     def buildRbJnt(
-        bindJntNum,
+        num,
         pf="",
         size=1,
         surf=None,
@@ -178,33 +178,31 @@ class SurfNode(GroupNode):
     ):
         """Build ribbon joints chain
         e.g.
-            Create pin at (0, 0.5), (1/7, 0.5), (2/7, 0.5) ... (7/7, 0.5)
-            Constraint joint to the pins
+            Create pin at coord and constraint joint to the pins
         """
         from nl_modules.nodel.joint_node import JointNode
         from nl_modules.utils import common
 
-        if bindJntNum > 1:
+        if num > 1:
             coord = []
-            sep = 1 / (bindJntNum - 1)
-
-            for i in range(bindJntNum):
-                coord.append((0.5, i * sep))
+            for i in range(num):
+                coord.append((0.5, i / (num - 1)))
 
             pin, pinXf = common.nlRivet(
                 geo=surf, coordList=coord, normalize=normalize, p=rigData
             )
 
-            bindJ = []
+            returnJnt = []
             for i, loc in enumerate(pinXf):
-                j = JointNode(
-                    pf + f"_rbJ_{i + 1}",
+                jnt = JointNode(
+                    f"{i}_rbj",
+                    pf=pf,
                     align=loc,
-                    # r=size / bindJntNum * 8,
-                    p=sklData,
+                    r=size / num * 8,
                     color=color,
+                    p=sklData,
                 )
-                loc.cstPar(j)
-                bindJ.append(j)
+                loc.cstPar(jnt)
+                returnJnt.append(jnt)
 
-            return bindJ
+            return returnJnt

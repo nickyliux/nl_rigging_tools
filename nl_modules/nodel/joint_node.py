@@ -164,7 +164,7 @@ class JointNode(GroupNode):
         aimV=(0, 0, 1),
         upV=(0, 1, 0),
         wuV=(0, 1, 0),
-        jntRad=1,
+        size=1,
         pf="",
         p=None,
         color=0,
@@ -187,7 +187,7 @@ class JointNode(GroupNode):
             pf += "_"
         for i in range(jntNum):
             mp.a.uValue.set(i / (jntNum - 1))
-            j = JointNode(f"{i}_{name}", pf=pf, snap=loc, r=jntRad, color=color)
+            j = JointNode(f"{i}_{name}", pf=pf, snap=loc, r=size, color=color)
             joints.append(j)
 
         root = joints[0] if alongCrv else joints[-1]
