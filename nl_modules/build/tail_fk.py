@@ -79,6 +79,8 @@ class TailFk(RigModule):
     def createCtl(self):
         rID = self.rigID
         rSz = self.rigSize
+        logging.info(rID)
+
         self.setting = CurveNode(
             "setting",
             pf=rID,
@@ -88,7 +90,6 @@ class TailFk(RigModule):
             color=Color.BLACK,
             p=self.CTL_DATA,
         )
-
         self.rigNode.setMsg(
             {
                 "setting": self.setting,

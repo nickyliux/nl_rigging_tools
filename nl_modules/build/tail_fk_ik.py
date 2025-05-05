@@ -74,6 +74,8 @@ class TailFkIk(RigModule):
     def createCtl(self):
         rID = self.rigID
         rSz = self.rigSize
+        logging.info(rID)
+
         self.setting = CurveNode(
             "setting",
             pf=rID,
@@ -83,7 +85,6 @@ class TailFkIk(RigModule):
             color=Color.BLACK,
             p=self.CTL_DATA,
         )
-
         self.rigNode.setMsg(
             {
                 "setting": self.setting,
@@ -324,7 +325,7 @@ class TailFkIk(RigModule):
     def proxy_setup(self):
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(
-                p=self.PRX_GRP, scaler=self.setting.a["tailScale"], scale=1
+                p=self.PRX_GRP, scaler=self.setting.a["tailScale"]
             )
 
     def post_setup(self):
