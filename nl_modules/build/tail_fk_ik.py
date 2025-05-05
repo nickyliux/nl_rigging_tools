@@ -311,7 +311,7 @@ class TailFkIk(RigModule):
             self.setting.a.add("extraCtl", k=0, min=0, max=1, dv=1),
             onList=self.ikOffsetCtl,
         )
-        mc.hide(self.ikJnt, self.fkJnt, self.ikOffsetJnt, self.rbJnt)
+        # mc.hide(self.ikJnt, self.fkJnt, self.ikOffsetJnt, self.rbJnt)
 
     def channel_setup(self):
         for ctl in self.fkCtl + self.ikCtl:

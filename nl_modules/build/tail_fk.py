@@ -172,9 +172,9 @@ class TailFk(RigModule):
             self.setting.a.add("fkCtl", k=0, min=0, max=1, dv=1),
             onList=[self.fkCtl[0]],
         )
-        mc.hide(self.fkJnt)
-        if self.RBN_BONES:
-            mc.hide(self.rbJnt)
+        # mc.hide(self.fkJnt)
+        # if self.RBN_BONES:
+        #     mc.hide(self.rbJnt)
 
     def channel_setup(self):
         for ctl in self.fkCtl:
