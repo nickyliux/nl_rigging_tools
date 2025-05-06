@@ -22,9 +22,9 @@
 #
 #
 #
-#     def genGuideSk(self):
+#     def gen_guide_sk(self):
 #         s = self.rigSize
-#         root = self.genSkFrNames(["root"], pf=self.rigID)[0]
+#         root = self.gen_sk_fr_names(["root"], pf=self.rigID)[0]
 #         root | self.SKL
 #         self.rigNode.setMsg({"rootJ": root})
 #         all_names = [
@@ -36,12 +36,12 @@
 #         ]
 #         fgr_roots = []
 #         for names in all_names:
-#             fgr_jnts = self.genSkFrNames(names, pf=self.rigID, r=s / 20)
+#             fgr_jnts = self.gen_sk_fr_names(names, pf=self.rigID, r=s / 20)
 #             self.rigNode.setMsg({names[0]: fgr_jnts[0]})
 #             fgr_jnts[0].freezeXf()
 #             fgr_jnts[0] | root
 #             fgr_roots.append(fgr_jnts[0])
-#         self.genSk_module()
+#         self.gen_sk_module()
 #
 #
 #
@@ -83,7 +83,7 @@
 #                 # c.scale(1,1,0.6)
 #                 ctlList.append(c)
 #
-#             self.fkGivenCtl3(fgrs, ctlList, count=2, p=self.CTL_DATA)
+#             self.build_fk_with_ctl3(fgrs, ctlList, count=2, p=self.CTL_DATA)
 #
 #             self.ctlsArr.append(ctlList)
 #

@@ -24,8 +24,8 @@ class Hand(RigModule):
         self.hand_grp = None
         self.fgrRootCtlArr = None
 
-    def genGuideSk(self):
-        self.genSk_module(["handJ"])
+    def gen_guide_sk(self):
+        self.gen_sk_module(["handJ"])
         all_fgrs_names = [
             ["fgr00_1", "fgr00_2", "fgr00_3", "fgr00_4"],
             ["fgr01_1", "fgr01_2", "fgr01_3", "fgr01_4", "fgr01_5"],
@@ -35,12 +35,12 @@ class Hand(RigModule):
         ]
         fgr_roots = []
         for fgrs_names in all_fgrs_names:
-            fgr_jnts = self.genSkFrNames(fgrs_names)
+            fgr_jnts = self.gen_sk_fr_names(fgrs_names)
             fgr_jnts[0].freezeXf()
             fgr_jnts[0] | self.rootJ
             fgr_roots.append(fgr_jnts[0])
 
-    def createCtl(self):
+    def create_ctl(self):
         rSz = self.rigSize
         rID = self.rigID
         # xDr = self.x_dir
@@ -52,7 +52,7 @@ class Hand(RigModule):
 
     def build(self):
         self.build_module()
-        self.createCtl()
+        self.create_ctl()
 
         self.bindJnts = [self.rootJ]
         if self.rootJ:
@@ -83,7 +83,7 @@ class Hand(RigModule):
                 )
                 ctl.cv_move(0, 0, xDr * rSz * -10)
                 ctlList.append(ctl)
-            self.fkGivenCtl3(fgrs, ctlList, count=2, p=self.CTL_DATA)
+            self.build_fk_with_ctl3(fgrs, ctlList, count=2, p=self.CTL_DATA)
             self.ctlsArr.append(ctlList)
             self.rootJ.cstPar(ctlList[0].offset.offset, mo=1)
             self.rootJ.a.s >> ctlList[0].offset.offset.a.s
@@ -293,7 +293,7 @@ class Hand(RigModule):
         for fgrCtls in self.ctlsArr:
             showCtls >> fgrCtls[0].a.v
 
-        # self.ctrlOnOffByAttr(self.masterC2.a["debug"], onList=self.allIkJ + self.allIkH)
+        # self.ctl_vis_toggle(self.masterC2.a["debug"], onList=self.allIkJ + self.allIkH)
 
     def post_setup(self):
         ctlSet = [self.smart_ctl] + self.fgrRootCtlArr

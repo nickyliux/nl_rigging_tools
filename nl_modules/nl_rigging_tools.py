@@ -438,7 +438,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Mirror left reference(*_refJnt) joints"""
         sel = mc.ls("lf_*_refJnt", type="joint")
         if sel:
-            guide.mirrorAttr(sel, wsMirrorAxis=1)
+            guide.mirrorAttr(sel, wsMirror=1)
         else:
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 

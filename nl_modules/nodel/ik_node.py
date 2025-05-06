@@ -194,7 +194,7 @@ class IkNode(DagNode):
         d = crvInfo.a.arcLength
         ks = ctl.a.add("stretchy", min=0, max=1, dv=1)
         ksMin = ctl.a.add("stretchMin", k=0, min=0, max=1, dv=1)
-        ksMax = ctl.a.add("stretchMax", k=0, min=0, dv=1.2)
+        ksMax = ctl.a.add("stretchMax", k=0, min=0, dv=1.1)
         ratio = (d / D - 1) * ks + 1
 
         for i in range(1, len(jl)):
@@ -223,7 +223,7 @@ class IkNode(DagNode):
         self.setting.a.addSep()
         ks = self.setting.a.add("stretchy", min=0, max=1, dv=1)
         ksMin = self.setting.a.add("stretchMin", k=0, min=0, max=1, dv=1)
-        ksMax = self.setting.a.add("stretchMax", k=0, min=0, dv=1.2)
+        ksMax = self.setting.a.add("stretchMax", k=0, min=0, dv=1.1)
         ratio = (d / D - 1) * ks + 1
 
         for i in range(1, len(self.jnt)):

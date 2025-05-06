@@ -37,10 +37,10 @@ class Spine(RigModule):
         self.fkJnt = []
         self.rbSrf = None
 
-    def genGuideSk(self):
-        self.genSk_module(["rt", "md", "tp"])
+    def gen_guide_sk(self):
+        self.gen_sk_module(["rt", "md", "tp"])
 
-    def createCtl(self):
+    def create_ctl(self):
         rSz = self.rigSize
         rID = self.rigID
 
@@ -81,7 +81,7 @@ class Spine(RigModule):
     def build(self):
         self.build_module()
         self.rigSize = rSz = CurveNode(self.LINE_GUIDE).length / 100
-        self.createCtl()
+        self.create_ctl()
         self.build_fk()
         self.build_ik()
         self.post_setup()
@@ -110,7 +110,7 @@ class Spine(RigModule):
             c = CurveNode(f"fkc_{i + 1}", pf=rID, shape="circleC", scale=rSz * 5)
             self.fkCtl.append(c)
 
-        self.fkGivenCtl2(self.fkJnt[1:], self.fkCtl[1:], p=self.CTL_DATA)
+        self.build_fk_with_ctl2(self.fkJnt[1:], self.fkCtl[1:], p=self.CTL_DATA)
 
         hipCtl = self.fkCtl[0]
         hipCtl(p=self.CTL_DATA, addOfs=1, color=Color.D_RED)
@@ -159,7 +159,7 @@ class Spine(RigModule):
             )
             self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
-            self.ctlJnts = self.createCtlJ(
+            self.ctlJnts = self.create_ctl_jnt(
                 [self.rt_ctl, self.md_ctl, self.tp_ctl], r=rSz * 5
             )
             self.rbSrf.weightTo(self.ctlJnts, chain=0, mi=2, dr=6)
@@ -172,7 +172,7 @@ class Spine(RigModule):
                 sklData=self.SKL_DATA,
                 color=Color.D_RED,
             )
-            self.build_volume_setup()
+            self.volume_setup()
 
         for ctl in self.fkCtl:
             self.cog_ctl.a.s >> ctl.offset.a.s
@@ -182,7 +182,7 @@ class Spine(RigModule):
 
         self.tp_ctl
 
-    def build_volume_setup(self):
+    def volume_setup(self):
         """Scale ribbon joints according to length of the surface"""
 
         scaleFix = self.masterC.a["globalScale"]
@@ -213,18 +213,18 @@ class Spine(RigModule):
 
     def vis_setup(self):
 
-        self.ctrlOnOffByAttr(
+        self.ctl_vis_toggle(
             self.setting.a.add("fkCtl", min=0, max=1, dv=1, k=0),
             onList=self.fkCtl,
         )
-        self.ctrlOnOffByAttr(
+        self.ctl_vis_toggle(
             self.setting.a.add("ikCtl", min=0, max=1, dv=1, k=0),
             onList=self.ikCtl,
         )
-        # self.ctrlOnOffByAttr(self.masterC2.a["debug"], onList=[self.RIG_DATA])
+        # self.ctl_vis_toggle(self.masterC2.a["debug"], onList=[self.RIG_DATA])
 
         # if self.RBN_BONES:
-        #     self.ctrlOnOffByAttr(
+        #     self.ctl_vis_toggle(
         #         self.masterC2.a["debug"], onList=[self.rbSrf] + self.ctlJnts
         #     )
 

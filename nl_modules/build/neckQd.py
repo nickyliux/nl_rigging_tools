@@ -1,4 +1,3 @@
-# import logging
 import maya.cmds as mc
 from nl_modules.build.spineQd import SpineQd
 

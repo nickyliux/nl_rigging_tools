@@ -40,8 +40,8 @@ class TailFkIk(RigModule):
         self.REVERSE = 0
         self.bindJnts = []
 
-    def genGuideSk(self):
-        self.genSk_module(["rt", "md", "tp"])
+    def gen_guide_sk(self):
+        self.gen_sk_module(["rt", "md", "tp"])
 
     def build(self):
         """
@@ -65,13 +65,13 @@ class TailFkIk(RigModule):
 
         self.rigNode.setMsg({"rbSrf": self.rbSrf2})
 
-        self.createCtl()
+        self.create_ctl()
         self.build_ik()
         self.build_fk()
-        self.build_stretchy_rbJ()
+        self.build_stretchy_rbj()
         self.post_setup()
 
-    def createCtl(self):
+    def create_ctl(self):
         rID = self.rigID
         rSz = self.rigSize
         logging.info(rID)
@@ -182,7 +182,7 @@ class TailFkIk(RigModule):
             chainGrps.append(grp)
             lastGrp = grp
 
-        self.fkGivenCtl3(self.fkJnt, self.fkCtl, p=self.FK_PART)
+        self.build_fk_with_ctl3(self.fkJnt, self.fkCtl, p=self.FK_PART)
 
         # ------------------------------------------
         # Cnnnect chain grps to fkCtl offset
@@ -216,7 +216,7 @@ class TailFkIk(RigModule):
 
         SurfNode(self.rbSrf2).weightTo(self.ikOffsetJnt, chain=0, mi=2, dr=6)
 
-        self.isolateAlign(self.ikCtl[0], [self.ikCtl[0].offset, self.masterC])
+        self.isolate_align(self.ikCtl[0], [self.ikCtl[0].offset, self.masterC])
 
         mc.delete(self.rootJ)
         self.rootJ = self.fkJnt[0]
@@ -225,7 +225,7 @@ class TailFkIk(RigModule):
         # scalable
         self.ikCtl[0].a.s >> self.FK_PART.a.s
 
-    def build_stretchy_rbJ(self):
+    def build_stretchy_rbj(self):
         rID = self.rigID
         rSz = self.rigSize
         logging.info(rID)
@@ -304,15 +304,15 @@ class TailFkIk(RigModule):
         self.bindJnts = self.rbJnt
 
     def vis_setup(self):
-        self.ctrlOnOffByAttr(
+        self.ctl_vis_toggle(
             self.setting.a.add("ikCtl", k=0, min=0, max=1, dv=1),
             onList=[self.ikCtl[0]],
         )
-        self.ctrlOnOffByAttr(
+        self.ctl_vis_toggle(
             self.setting.a.add("fkCtl", k=0, min=0, max=1, dv=1),
             onList=[self.fkCtl[0]],
         )
-        self.ctrlOnOffByAttr(
+        self.ctl_vis_toggle(
             self.setting.a.add("extraCtl", k=0, min=0, max=1, dv=1),
             onList=self.ikOffsetCtl,
         )

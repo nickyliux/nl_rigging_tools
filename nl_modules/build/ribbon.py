@@ -383,8 +383,3 @@ class Ribbon(rig_module.RigModule):
         addTangentAttr(rbCtl[2], self.endJ, clu[3])
         clu[4] | rbCtl[3]
         addTangentAttr(rbCtl[4], self.midJ, clu[5])
-
-
-# if __name__ == "__main__":
-#     for n in mc.ls("*RGN", type="script"):
-#         Ribbon(DagNode(n)).build()

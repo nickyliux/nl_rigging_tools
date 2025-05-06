@@ -16,7 +16,7 @@ class TplLoader:
     Class for loading base & guide for the component
     e.g.
         loader = TplLoader('lfArm.ma', 'lfArm0')
-        loader.load_baseTpl()
+        loader.load_base_tpl()
     """
 
     def __init__(self, tpl_name, rigID):
@@ -25,7 +25,7 @@ class TplLoader:
         self.rigNode = None
         self.masterC = None
 
-    def load_baseTpl(self):
+    def load_base_tpl(self):
 
         from nl_modules.nodel.base.dag_node import DagNode
 

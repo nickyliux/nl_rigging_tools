@@ -45,7 +45,7 @@ def loadGuide(names):
 
     for name in names:
         nextRigID = genNextRigID(name)
-        TplLoader(name + ".ma", nextRigID).load_baseTpl()
+        TplLoader(name + ".ma", nextRigID).load_base_tpl()
 
     mc.select(cl=1)
 
@@ -116,7 +116,7 @@ def getOppositeCtl(tgtN, pfL="lf", pfR="rt", pfB4Pf=1):
             return DagNode(oppName)
 
 
-def copyAttr(A, B, wsMirrorAxis=0, mirror=0, skipMasterXf=0):
+def copyAttr(A, B, wsMirror=0, mirror=0, skipMasterXf=0):
     """Copy/mirror transform & user defined attribute values"""
     A = DagNode(A) if isinstance(A, str) else A
     B = DagNode(B) if isinstance(B, str) else B
@@ -128,7 +128,7 @@ def copyAttr(A, B, wsMirrorAxis=0, mirror=0, skipMasterXf=0):
         sx, sy, sz = A.a.s.get()
         if mirror:
             tx *= -1
-            if wsMirrorAxis or A.a.wsMirrorAxis.exists():
+            if wsMirror or A.a.wsMirror.exists():
                 ry *= -1
                 rz *= -1
             else:
@@ -146,13 +146,13 @@ def copyAttr(A, B, wsMirrorAxis=0, mirror=0, skipMasterXf=0):
             print(e)
 
 
-def mirrorAttr(tgtList, wsMirrorAxis=0):
+def mirrorAttr(tgtList, wsMirror=0):
     """Mirror xform for tgtList objects"""
     for tgt in tgtList:
         tgt = DagNode(tgt)
         oppN = getOppositeCtl(tgt)
         if oppN:
-            copyAttr(tgt, oppN, wsMirrorAxis=wsMirrorAxis, mirror=1)
+            copyAttr(tgt, oppN, wsMirror=wsMirror, mirror=1)
         else:
             print(f"opposite not found for {tgt.name}")
 

@@ -47,12 +47,11 @@ class RigModule(RigBase):
         if rigNode.a.rootJ.exists():
             self.rootJ = rigNode.a.rootJ.inConnNode
 
-    # @staticmethod
-    def genSkFrNames(self, names, color=None, scale=1):
+    def gen_sk_fr_names(self, names, color=None, scale=1):
         """Create joints by finding object : pf_name_guide' from name list
         e.g.
             jnt_names = ["clavicle", "upr", "lwr", "palm", "ball"]
-            genSkFrNames(jnt_names)   # [j1, j2, j3, j4, j5]
+            gen_sk_fr_names(jnt_names)   # [j1, j2, j3, j4, j5]
                                       # given lfArm0_{n}_guide exists
         """
         guides = []
@@ -94,7 +93,7 @@ class RigModule(RigBase):
         return joints
 
     @staticmethod
-    def fkGivenCtl(jntList, ctlList=None, ori=0, count=1, p=None):
+    def build_fk_with_ctl(jntList, ctlList=None, ori=0, count=1, p=None):
         """
         P
             c1 ofs  <- j1
@@ -128,9 +127,9 @@ class RigModule(RigBase):
                 ofs.parentTo(p)
 
     @staticmethod
-    def fkGivenCtl2(jntList, ctlList=None, count=1, p=None):
+    def build_fk_with_ctl2(jntList, ctlList=None, count=1, p=None):
         """FK setup with ctls in separate hierarchy
-            The benefit compared to fkGivenCtl3 is separate selection highlight
+            The benefit compared to build_fk_with_ctl3 is separate selection highlight
         P
             c1 ofs
                 c1
@@ -164,7 +163,7 @@ class RigModule(RigBase):
                 last_ctl = ctl
 
     @staticmethod
-    def fkGivenCtl3(jntList, ctlList=None, count=1, p=None):
+    def build_fk_with_ctl3(jntList, ctlList=None, count=1, p=None):
         """FK setup with ctls in single hierarchy
         P
             c1 ofs
@@ -197,7 +196,7 @@ class RigModule(RigBase):
             last_ctl = ctl
 
     @staticmethod
-    def fkGivenCtl_dbl(jntList, ctlList=None, drvList=None, count=1, p=None):
+    def build_fk_with_ctl_dbl(jntList, ctlList=None, drvList=None, count=1, p=None):
         """Special FK setup for toe
         P
             Ctl 1 offset        << t & r connected by the ctl from DBL
@@ -260,7 +259,7 @@ class RigModule(RigBase):
                 i += 1
 
     @staticmethod
-    def isolateAlign(tgt, spaces=None, attrName="isolate", dv=0, cstType="ori"):
+    def isolate_align(tgt, spaces=None, attrName="isolate", dv=0, cstType="ori"):
         """Add 'isolate' to tgt to allow separate cst"""
         allSpaces = []
         if len(spaces) == 2:
@@ -281,10 +280,10 @@ class RigModule(RigBase):
     @classmethod
     def isolateNeckToSpine(cls, neckCog, spineCtl, wSpaceObj):
         """Add 'isolateT' & 'isolateR' to tgt to allow separate cst specially for the neck"""
-        cls.isolateAlign(
+        cls.isolate_align(
             neckCog, spaces=[spineCtl, wSpaceObj], attrName="isolateR", cstType="ori"
         )
-        cls.isolateAlign(
+        cls.isolate_align(
             neckCog, spaces=[spineCtl, wSpaceObj], attrName="isolateT", cstType="parT"
         )
 
@@ -301,10 +300,6 @@ class RigModule(RigBase):
 
         common.cstMulti(*allSpacesGrp, tgt_ofs, cstType=cstType, w=w, **kwargs)
 
-    # def calcRigSize(self, rootJ):
-    #     if rootJ:
-    #         self.rigSize = self.getRigSize(rootJ)
-
     def getRigSize(self, rootJ):
         return rootJ.o.diagonal2 / 100 or 1
 
@@ -316,14 +311,14 @@ class RigModule(RigBase):
         else:
             tgt.addOffsetGrp()
 
-    def genSk_module(self, jnt_names):
+    def gen_sk_module(self, jnt_names):
         self.rigNode.a.nodeState.set(1)
 
         rootCtl = self.masterC.parent.parent
         if rootCtl.a.sx.get() != 1:
             rootCtl.freezeXf(t=0, r=0, s=1)
 
-        jnt_list = self.genSkFrNames(jnt_names)
+        jnt_list = self.gen_sk_fr_names(jnt_names)
 
         self.rootJ = jnt_list[0]
         self.rootJ | self.SKL_DATA
@@ -353,7 +348,7 @@ class RigModule(RigBase):
         if self.PRX:
             self.masterC2.a["showProxy"] >> self.PRX.a.v
 
-        self.ctrlOnOffByAttr(self.masterC2.a["debug"], onList=[self.RIG, self.SKL])
+        self.ctl_vis_toggle(self.masterC2.a["debug"], onList=[self.RIG, self.SKL])
 
     def unbuild_module(self):
         logging.info(self.rigID)
@@ -517,7 +512,7 @@ class RigModule(RigBase):
             patella_sdk(self.lwr, j)
             return j
 
-    def createCtlJ(self, ctls, r=1, color=Color.BLACK):
+    def create_ctl_jnt(self, ctls, r=1, color=Color.BLACK):
         result = []
         for ctl in ctls:
             jnt = JointNode(ctl, sf="_ctlJ", r=r, color=color, p=ctl)
@@ -539,7 +534,7 @@ class RigModule(RigBase):
     #     manualVis >> condF.a.floatB
     #     [condF.a.outFloat >> target.a.v for target in targets]
 
-    def handRollLogic(self, attrHolder, fkc, fkPin, locRoll):
+    def hand_roll_logic(self, attrHolder, fkc, fkPin, locRoll):
 
         palmRoll = attrHolder.a.add("palmRoll")
         palmRoll * -1 >> locRoll.a.rz
@@ -547,7 +542,7 @@ class RigModule(RigBase):
         fkc.a.add("palmRoll", proxy=palmRoll)
         fkPin.a.add("palmRoll", proxy=palmRoll)
 
-    def handBankLogic(self, attrHolder, fkc, fkPin, locIn, locOut):
+    def hand_bank_logic(self, attrHolder, fkc, fkPin, locIn, locOut):
 
         palmBank = attrHolder.a.add("palmBank")
         ut.min_(palmBank, 0) * -1 >> locIn.a.rx
@@ -556,7 +551,7 @@ class RigModule(RigBase):
         fkc.a.add("palmBank", proxy=palmBank)
         fkPin.a.add("palmBank", proxy=palmBank)
 
-    def footRollLogic(self, targetCtl, heelRollG, ballRollG, footRollG, toeRollG):
+    def foot_roll_logic(self, targetCtl, heelRollG, ballRollG, footRollG, toeRollG):
         from nl_modules.utils import utils_node as ut
 
         footRoll = targetCtl.a.add("footRoll")
@@ -570,15 +565,15 @@ class RigModule(RigBase):
         # self.ikc.a.add("toeTwist") >> toeRollG.a.ry
         # self.ikc.a.add("toeRoll") >> toeRollG.a.rx
 
-    def footBankLogic(self, targetCtl, inRollG, outRollG):
+    def foot_bank_logic(self, targetCtl, inRollG, outRollG):
         bank = targetCtl.a.add("footBank")
         (bank < 0).setCdn(ifTrue=bank, ifFalse=0) >> inRollG.a.rz
         (bank > 0).setCdn(ifTrue=bank, ifFalse=0) >> outRollG.a.rz
 
-    def setWSMirror(self, targets):
+    def add_mirror_attr(self, targets):
         for t in targets:
             if t.exists():
-                t.a.add("wsMirrorAxis", k=0, lock=1, cb=0)
+                t.a.add("wsMirror", k=0, lock=1, cb=0)
 
     def build_digit_ik(self, dupTgt, scale=1, p=None):
         """IK setup for single digit"""
@@ -616,7 +611,7 @@ class RigModule(RigBase):
         # mc.hide(ikJ)
         return ctl, ikJ, ikH
 
-    def getAutoAimPreset(self):
+    def get_autoAim_preset(self):
 
         upW = self.master_guide.a.autoUpWeight.get()
         fwW = self.master_guide.a.autoFwWeight.get()
@@ -673,7 +668,7 @@ class RigModule(RigBase):
             ctlNum=4,
             cst=fkc.offset,
             setting=setting,
-            preset=self.getAutoAimPreset(),
+            preset=self.get_autoAim_preset(),
             p=self.CTL_DATA,
         )
 
@@ -810,7 +805,7 @@ class RigModule(RigBase):
             common.sdk2(hit, driven, 0.5, Color.L_GREY.value, tangent=2)
             common.sdk2(hit, driven, 0.9, Color.YELLOW.value, tangent=2)
 
-        self.setWSMirror(allPsdCtl)
+        self.add_mirror_attr(allPsdCtl)
         self.addCtlSet(allPsdCtl + [ctl_main])
 
         showAimCtl = self.masterC2.a.add("showAimCtl", min=0, max=1, dv=1, k=0)
@@ -822,7 +817,7 @@ class RigModule(RigBase):
 
         return autoWeight
 
-    def ctrlOnOffByAttr(self, attr, onList=None, offList=None):
+    def ctl_vis_toggle(self, attr, onList=None, offList=None):
         if onList:
             [attr >> ctl.a.v for ctl in onList]
         if offList:

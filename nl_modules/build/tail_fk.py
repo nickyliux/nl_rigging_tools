@@ -33,8 +33,8 @@ class TailFk(RigModule):
         self.allClusters = []
         self.REVERSE = 0
 
-    def genGuideSk(self):
-        self.genSk_module(["rt", "md", "tp"])
+    def gen_guide_sk(self):
+        self.gen_sk_module(["rt", "md", "tp"])
 
     def build(self):
         """
@@ -57,7 +57,7 @@ class TailFk(RigModule):
         )
         self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
-        self.createCtl()
+        self.create_ctl()
         self.build_fk()
 
         if self.RBN_BONES:
@@ -76,7 +76,7 @@ class TailFk(RigModule):
 
         self.post_setup()
 
-    def createCtl(self):
+    def create_ctl(self):
         rID = self.rigID
         rSz = self.rigSize
         logging.info(rID)
@@ -140,10 +140,10 @@ class TailFk(RigModule):
             self.fkCtl.append(ctl)
             self.allClusters.append(clu)
 
-        self.fkGivenCtl3(self.fkJnt, self.fkCtl, p=self.CTL_DATA)
+        self.build_fk_with_ctl3(self.fkJnt, self.fkCtl, p=self.CTL_DATA)
 
         # ADD FOLLOW ALIGN ON 1 ST FK CTL
-        self.isolateAlign(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC])
+        self.isolate_align(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC])
 
         mc.delete(self.rootJ)
         self.rootJ = self.fkJnt[0]
@@ -169,7 +169,7 @@ class TailFk(RigModule):
         self.setting.a.add("tailScale", min=0.01, dv=1) >> self.fkCtl[0].a.s
 
     def vis_setup(self):
-        self.ctrlOnOffByAttr(
+        self.ctl_vis_toggle(
             self.setting.a.add("fkCtl", k=0, min=0, max=1, dv=1),
             onList=[self.fkCtl[0]],
         )

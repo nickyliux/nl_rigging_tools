@@ -35,7 +35,7 @@ def mirrorCtlShape(ctl):
     myGrp = GroupNode("myG", align=mG, snap=dup)
     dup | myGrp
 
-    if dup.a.wsMirrorAxis.exists():
+    if dup.a.wsMirror.exists():
         myGrp.a.sx.set(-1)
     else:
         myGrp.a.s.set(-1, -1, -1)

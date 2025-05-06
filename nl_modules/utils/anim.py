@@ -13,7 +13,7 @@ from nl_modules.nodel.group_node import GroupNode
 #     else:
 #         return name
 #
-# def mirXForm(grp, wsMirrorAxis=0):
+# def mirXForm(grp, wsMirror=0):
 #
 #     if not grp.a.tx.isLock():
 #         grp.a.tx.set2(-1, mul=1)
@@ -22,7 +22,7 @@ from nl_modules.nodel.group_node import GroupNode
 #     if not grp.a.rz.isLock():
 #         grp.a.rz.set2(-1, mul=1)
 #
-#     if not wsMirrorAxis:
+#     if not wsMirror:
 #         if not grp.a.rx.isLock():
 #             grp.a.rx.set2(180,add=1)
 

@@ -21,7 +21,7 @@ class LegQd(RigModule):
     """Build LegQd component with given rigNode.
     e.g.
         n = LegQd('lfQDLeg0_RGN')  # n.__dict__
-        n.genGuideSk()
+        n.gen_guide_sk()
         n.build()
     """
 
@@ -77,11 +77,11 @@ class LegQd(RigModule):
         self.ballG_ikc = None
         self.extra_ikc = None
 
-    def genGuideSk(self):
-        self.genSk_module(["hip", "upr", "lwr", "palm", "digit", "ball", "tip"])
+    def gen_guide_sk(self):
+        self.gen_sk_module(["hip", "upr", "lwr", "palm", "digit", "ball", "tip"])
 
         if self.TOE_BONES:
-            self.toesRootJ = self.genSkFrNames(["toesRoot"])[0]
+            self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
             self.toesRootJ | self.SKL_DATA
             self.rigNode.setMsg({"toesRootJ": self.toesRootJ})
             toe_names = [
@@ -92,11 +92,11 @@ class LegQd(RigModule):
                 ["toe04_1", "toe04_2", "toe04_3", "toe04_4", "toe04_5"],
             ]
             for names in toe_names:
-                fgr_jnts = self.genSkFrNames(names, scale=1.2)
+                fgr_jnts = self.gen_sk_fr_names(names, scale=1.2)
                 fgr_jnts[0].freezeXf()
                 fgr_jnts[0] | self.toesRootJ
 
-    def ctl_setup(self):
+    def create_ctl(self):
         rSz = self.rigSize
         rID = self.rigID
         xDr = self.x_dir
@@ -156,7 +156,7 @@ class LegQd(RigModule):
         self.hip, self.upr, self.lwr, self.palm, self.digit, self.ball, self.tip = (
             self.joints
         )
-        self.ctl_setup()
+        self.create_ctl()
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
@@ -206,8 +206,8 @@ class LegQd(RigModule):
             self.digit_fkc,
             self.ball_fkc,
         ]
-        self.fkGivenCtl2(self.joints_fk, self.fkCtl, p=self.FK_PART)
-        self.isolateAlign(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
+        self.build_fk_with_ctl2(self.joints_fk, self.fkCtl, p=self.FK_PART)
+        self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
         rID = self.rigID
@@ -275,8 +275,8 @@ class LegQd(RigModule):
         # self.ikc.cv_drop()
         # self.ikc_gimbal.cv_drop()
 
-        self.footRollLogic(self.ikc, heelRollG, ballRollG, footRollG, toeRollG)
-        self.footBankLogic(self.ikc, inRollG, outRollG)
+        self.foot_roll_logic(self.ikc, heelRollG, ballRollG, footRollG, toeRollG)
+        self.foot_bank_logic(self.ikc, inRollG, outRollG)
 
         self.ikc.a.add("kneeTwist") * self.x_dir >> ikH1.a.twist
         (self.ikc, self.pvc, self.ikCstG) | self.IK_PART
@@ -294,9 +294,9 @@ class LegQd(RigModule):
         self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal]
         self.ikH1 = ikH1
         self.subCtl_setup(ballRollG, toeRollG, inRollG, outRollG, heelRollG)
-        self.extraRollLogic(ballRollG, extraRollG, self.IK_PART)
+        self.extra_roll_logic(ballRollG, extraRollG, self.IK_PART)
 
-    def extraRollLogic(self, ballRollG, extraRollG, grp):
+    def extra_roll_logic(self, ballRollG, extraRollG, grp):
         rID = self.rigID
         rSz = self.rigSize
         xDr = self.x_dir
@@ -376,7 +376,7 @@ class LegQd(RigModule):
                 )
                 ctlList.append(c)
 
-            self.fkGivenCtl(fkToeList, ctlList, p=self.CTL_DATA, ori=1)
+            self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, ori=1)
             self.toesCtlsList.append(ctlList)
             self.toesCtlsList.append([ctl])
 
@@ -406,9 +406,9 @@ class LegQd(RigModule):
         rSz = self.rigSize
 
         jnt_names = ["radius", "radiusEnd"]
-        radius_JC = self.genSkFrNames(jnt_names, scale=2)
+        radius_JC = self.gen_sk_fr_names(jnt_names, scale=2)
         jnt_names = ["ulna", "ulnaEnd"]
-        ulna_JC = self.genSkFrNames(jnt_names, scale=2)
+        ulna_JC = self.gen_sk_fr_names(jnt_names, scale=2)
 
         parent = self.boneFix if self.KNEE_FIX else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent
@@ -560,13 +560,13 @@ class LegQd(RigModule):
 
     def vis_setup(self):
 
-        self.ctrlOnOffByAttr(
+        self.ctl_vis_toggle(
             self.setting.a["fkIkBlend"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             offList=self.fkCtl[1:-1],
         )
         if self.all_bend:
-            self.ctrlOnOffByAttr(
+            self.ctl_vis_toggle(
                 self.setting.a.add("bowCtls", min=0, max=1, dv=1, k=0),
                 onList=self.all_bend,
             )
@@ -576,7 +576,7 @@ class LegQd(RigModule):
 
         [ikh.hide() for ikh in self.all_ikH.values()]
 
-        # self.ctrlOnOffByAttr(
+        # self.ctl_vis_toggle(
         #     self.masterC2.a["debug"],
         #     onList=self.joints_fk + self.joints_ik,
         # )
@@ -604,7 +604,7 @@ class LegQd(RigModule):
         self.rigNode.setMsg({"space_leg": self.ikH1.softJ[0]})
 
     def post_setup(self):
-        self.setWSMirror([self.ikc, self.ikc_gimbal, self.pvc])
+        self.add_mirror_attr([self.ikc, self.ikc_gimbal, self.pvc])
         ctlSet = self.fkCtl + self.ikCtl + self.subCtls + [self.setting, self.extra_ikc]
         # if self.RBN_BONES:
         #     ctlSet.extend(self.all_bend)

@@ -91,12 +91,12 @@ class Spd3Leg(rig_module.RigModule):
 
         # for ctl, jnt in zip(self.fkCtl, self.joints_fk):
         #     ctl.alignTo(jnt)
-        self.fkGivenCtl(self.joints_fk, self.fkCtl, p=self.FK_SETUP)
+        self.build_fk_with_ctl(self.joints_fk, self.fkCtl, p=self.FK_SETUP)
 
         self.anchor.cstPar(self.leg_01_fkc.offset, mo=1)
         self.masterC.cstSca(self.FK_SETUP)
 
-        self.isolateAlign(self.leg_02_fkc, [self.leg_02_fkc.parent, self.masterC], 1)
+        self.isolate_align(self.leg_02_fkc, [self.leg_02_fkc.parent, self.masterC], 1)
 
     def build_ik(self):
         logging.info(".")
@@ -134,8 +134,8 @@ class Spd3Leg(rig_module.RigModule):
         pvc.addOffsetGrp()
 
         spaces = [self.leg_01_fkc, self.masterC]
-        self.isolateAlign(ikc, spaces, 0, cstType="par")
-        self.isolateAlign(pvc, spaces, 0, cstType="par")
+        self.isolate_align(ikc, spaces, 0, cstType="par")
+        self.isolate_align(pvc, spaces, 0, cstType="par")
 
         self.leg_01_fkc.cstPar(self.joints_ik[0], mo=1)
 

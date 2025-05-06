@@ -37,8 +37,8 @@ class SpinePro(rig_module.RigModule):
         self.ikCtl = None
         self.fkCtl = None
 
-    def genGuideSk(self):
-        self.genSk_module(["st", "ed"])
+    def gen_guide_sk(self):
+        self.gen_sk_module(["st", "ed"])
 
     def build(self):
 
@@ -117,7 +117,7 @@ class SpinePro(rig_module.RigModule):
             # c.rotate(90, 0, 0)
             self.fkCtl.append(c)
 
-        self.fkGivenCtl2(self.fkJnt[1:], self.fkCtl[1:], p=self.CTL_DATA)
+        self.build_fk_with_ctl2(self.fkJnt[1:], self.fkCtl[1:], p=self.CTL_DATA)
 
         self.fkCtl[0].color = Color.RED
         self.fkCtl[0].snapAlignTo(self.fkJnt[1], self.fkJnt[0])

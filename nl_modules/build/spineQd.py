@@ -48,11 +48,13 @@ class SpineQd(RigModule):
         self.rbSrf = None
         self.crv = None
         self.crvRev = None
+        self.rbCrv = None
+        self.rbCrvR = None
 
-    def genGuideSk(self):
-        self.genSk_module(["rt", "md", "tp"])
+    def gen_guide_sk(self):
+        self.gen_sk_module(["rt", "md", "tp"])
 
-    def createCtl(self):
+    def create_ctl(self):
         rID = self.rigID
         rSz = self.rigSize
         scale = (rSz * 4, rSz * 4, rSz)
@@ -62,7 +64,7 @@ class SpineQd(RigModule):
             "setting",
             pf=rID,
             shape="diamond",
-            scale=rSz * 1.5,
+            scale=rSz * 2,
             color=Color.BLACK,
             top=1,
             lineWidth=2,
@@ -75,7 +77,7 @@ class SpineQd(RigModule):
             scale=(rSz * 0.8, rSz * 1.5, rSz * 2.5),
             color=Color.YELLOW,
         )
-        self.cog_ctl.cv_move(0, 70 * rSz, 0)
+        self.cog_ctl.cv_move(0, 70 * rSz, 40 * rSz)
 
         self.fore_ctl = CurveNode(
             "fore_ctl", pf=rID, shape="circleC", scale=scale, up="z", lineWidth=2
@@ -107,17 +109,25 @@ class SpineQd(RigModule):
     def build(self):
         self.build_module()
         self.rigSize = rSz = CurveNode(self.LINE_GUIDE).length / 100
-        self.createCtl()
+        self.create_ctl()
         self.build_fk()
         self.build_ik(sliding=1)
         self.post_setup()
 
-    def makeJC(self, name, alongCrv=1, addEndJ=0, size=1, color=Color.BLUE):
+    def build_fk(self):
+        rID = self.rigID
+        logging.info(rID)
+        self.fkJnt = self.make_jc_fr_crv("fkJ")
+        mc.delete(self.rootJ)
+        self.rootJ = self.fkJnt[0]
+        self.rigNode.setMsg({"rootJ": self.rootJ})
+
+    def make_jc_fr_crv(self, name, addEndJ=0, rev=0, size=1, color=Color.BLUE):
         jc = JointNode.makeJCFrCrv(
             self.LINE_GUIDE,
             pf=self.rigID,
             name=name,
-            alongCrv=alongCrv,
+            rev=rev,
             jntNum=self.FK_JNT_NUM,
             p=self.SKL_DATA,
             size=size,
@@ -126,15 +136,7 @@ class SpineQd(RigModule):
         )
         return jc
 
-    def build_fk(self):
-        rID = self.rigID
-        logging.info(rID)
-        self.fkJnt = self.makeJC("fkJ")
-        mc.delete(self.rootJ)
-        self.rootJ = self.fkJnt[0]
-        self.rigNode.setMsg({"rootJ": self.rootJ})
-
-    def makeStretchyIk(self, name, sj=None, ej=None, crv=None, axis="tz", axisDir=1):
+    def make_stretchy_ik(self, name, sj=None, ej=None, crv=None, axis="tz", axisDir=1):
         """Build stretcy IK for given joints and curve"""
         ikH = IkNode(
             name,
@@ -158,36 +160,46 @@ class SpineQd(RigModule):
 
         self.rbCrv = self.LINE_GUIDE.duplicate(n=rID + "_spCrv_#")
         self.rbCrv | self.RIG_DATA
-        # self.rbCrv.rebuild(spans=self.FK_JNT_NUM)
+        if sliding:
+            self.rbCrvR = self.rbCrv.duplicate(n=rID + "_spCrvR_#").reverse()
+
         ikH_1, ikH_A, ikH_B = None, None, None
 
         if sliding == 0:
-            ikH_1 = self.makeStretchyIk(
+            ikH_1 = self.make_stretchy_ik(
                 "sp", sj=self.fkJnt[0], ej=self.fkJnt[-1], crv=self.rbCrv
             )
         else:
-            # joint chain A
-            self.fkJ_A = self.makeJC("fkJ_A", addEndJ=1, size=rSz * 2)
-            ikH_A = self.makeStretchyIk(
+            self.fkJ_A = self.make_jc_fr_crv("fkJ_A", addEndJ=1, size=rSz)
+            self.fkJ_B = self.make_jc_fr_crv("fkJ_B", addEndJ=1, rev=1, size=rSz)
+
+            ikH_A = self.make_stretchy_ik(
                 "spA", sj=self.fkJ_A[0], ej=self.fkJ_A[-2], crv=self.rbCrv
             )
-            # joint chain B
-            self.fkJ_B = self.makeJC("fkJ_B", addEndJ=1, alongCrv=0, size=rSz * 2.5)
-            self.rbCrvR = self.rbCrv.duplicate(n=rID + "_spCrvR_#").reverse()
-            ikH_B = self.makeStretchyIk(
+            ikH_B = self.make_stretchy_ik(
                 "spB", sj=self.fkJ_B[-1], ej=self.fkJ_B[1], crv=self.rbCrvR, axisDir=-1
             )
 
-            # dv = 0.5 if self.__class__.__name__ == "SpineQd" else 1
             baseAttach = self.cog_ctl.a.add("baseAttach", min=0, max=1, dv=1)
             for i in range(self.FK_JNT_NUM):
-                common.cstMulti(
-                    self.fkJ_B[i + 1],
-                    self.fkJ_A[i],
-                    self.fkJnt[i],
-                    w=baseAttach,
-                    cstType="par",
-                )
+                if i == 0:
+                    common.cstMulti(
+                        self.fkJ_B[i + 1],
+                        self.fkJ_A[i],
+                        self.fkJnt[i],
+                        w=baseAttach,
+                        cstType="poi",
+                    )
+                    self.tangent_base_ctl.cstOri(self.fkJnt[0], mo=1)
+                else:
+                    common.cstMulti(
+                        self.fkJ_B[i + 1],
+                        self.fkJ_A[i],
+                        self.fkJnt[i],
+                        w=baseAttach,
+                        cstType="par",
+                    )
+
         self.base_ctl.snapAlignTo(self.fkJnt[0], self.RT_GUIDE)
         self.mid_ctl.alignTo(self.MD_GUIDE)
         self.fore_ctl.snapAlignTo(self.fkJnt[-1], self.TP_GUIDE)
@@ -203,8 +215,9 @@ class SpineQd(RigModule):
         fore_gimbal = self.fore_ctl.addGimbal()
         base_gimbal = self.base_ctl.addGimbal()
 
-        self.ctlJnts = self.createCtlJ(
-            [self.base_ctl, self.mid_ctl, self.fore_ctl], r=rSz * 8
+        self.ctlJnts = self.create_ctl_jnt(
+            [base_gimbal, self.mid_ctl, fore_gimbal],
+            r=rSz * 8,
         )
         # Orient control last fkJ by tip ctl
         self.fkJnt[-1].a.r.disconnect()
@@ -310,12 +323,11 @@ class SpineQd(RigModule):
         # self.addPivOffset(self.fore_ctl, scale=self.rigSize, dnwd=0)
         # self.addPivOffset(self.base_ctl, scale=self.rigSize, dnwd=0)
 
-        self.build_volume_setup()
-
+        self.volume_setup()
         self.setting.alignTo(self.cog_ctl, offset=(0, rSz * 90, 0))
         self.cog_ctl.cstPar(self.setting, mo=1)
 
-    def build_volume_setup(self):
+    def volume_setup(self):
         """Scale ribbon joints according to length of the surface"""
 
         scaleFix = self.masterC.a["globalScale"]
@@ -348,11 +360,11 @@ class SpineQd(RigModule):
 
         # if self.bindJnts:
         #     # mc.hide(self.bindJnts, self.rbSrf)
-        #     self.ctrlOnOffByAttr(
+        #     self.ctl_vis_toggle(
         #         self.masterC2.a["debug"], onList=self.bindJnts + [self.rbSrf]
         #     )
 
-        # self.ctrlOnOffByAttr(
+        # self.ctl_vis_toggle(
         #     self.masterC2.a["debug"],
         #     onList=self.ctlJnts + self.fkJ_A + self.fkJ_B + [self.RIG_DATA],
         # )

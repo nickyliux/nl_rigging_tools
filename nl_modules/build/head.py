@@ -31,12 +31,12 @@ class Head(RigModule):
         self.jaw_fkc = None
         self.fkCtl = None
 
-    def genGuideSk(self):
-        self.genSk_module(["st", "ed"])
-        jaw_list = self.genSkFrNames(["jaw", "jawEnd"])
+    def gen_guide_sk(self):
+        self.gen_sk_module(["st", "ed"])
+        jaw_list = self.gen_sk_fr_names(["jaw", "jawEnd"])
         jaw_list[0] | self.rootJ
-        lf_eye = self.genSkFrNames("lf_eye")[0]
-        rt_eye = self.genSkFrNames("rt_eye")[0]
+        lf_eye = self.gen_sk_fr_names("lf_eye")[0]
+        rt_eye = self.gen_sk_fr_names("rt_eye")[0]
         (lf_eye, rt_eye) | self.rootJ
 
     def build(self):
@@ -46,12 +46,12 @@ class Head(RigModule):
             self.joints
         )
         self.bindJnts = [self.head, self.jaw]
-        self.createCtl()
+        self.create_ctl()
         self.fkCtl = [self.head_fkc, self.jaw_fkc]
         self.build_fk()
         self.post_setup()
 
-    def createCtl(self):
+    def create_ctl(self):
         rID = self.rigID
         rSz = self.rigSize
         self.head_fkc = CurveNode(
@@ -83,7 +83,7 @@ class Head(RigModule):
         self.head_fkc.a.s >> self.SKL_DATA.a.s
         self.head_fkc.a.s >> self.PRX_GRP.a.s
 
-        self.isolateAlign(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC])
+        self.isolate_align(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC])
 
     def proxy_setup(self):
         aim = (0, 1, 0)

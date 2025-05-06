@@ -157,7 +157,7 @@ class JointNode(GroupNode):
         crv,
         name="fkJ",
         jntNum=2,
-        alongCrv=1,
+        rev=0,
         aimV=(0, 0, 1),
         upV=(0, 1, 0),
         wuV=(0, 1, 0),
@@ -187,12 +187,12 @@ class JointNode(GroupNode):
             j = JointNode(f"{i}_{name}", pf=pf, snap=loc, r=size, color=color)
             joints.append(j)
 
-        root = joints[0] if alongCrv else joints[-1]
-        last = joints[-1] if alongCrv else joints[0]
+        root = joints[-1] if rev else joints[0]
+        last = joints[0] if rev else joints[-1]
         mc.delete(loc, mp)
 
         for i in range(jntNum - 1):
-            if alongCrv:
+            if not rev:
                 # j1 > j2 > ... > jn
                 joints[i + 1].cstAim(joints[i], aim=aimV, u=upV, wu=wuV, keep=0)
                 joints[i + 1] | joints[i]
@@ -207,13 +207,13 @@ class JointNode(GroupNode):
             endJ | last
             translate = last.a.t.get()
             endJ.a.t.set(*translate)
-            if alongCrv:
+            if not rev:
                 joints.append(endJ)
             else:
                 joints = [endJ] + joints  # first in list is end joint
         if p:
             root | p
-        if alongCrv:
+        if not rev:
             joints[0].freezeXf()
         else:
             joints[-1].freezeXf()

@@ -37,8 +37,8 @@ class NeckPro(rig_module.RigModule):
         self.ikCtl = None
         self.fkCtl = None
 
-    def genGuideSk(self):
-        self.genSk_module(["st", "ed"])
+    def gen_guide_sk(self):
+        self.gen_sk_module(["st", "ed"])
 
     def build(self):
 
@@ -111,7 +111,7 @@ class NeckPro(rig_module.RigModule):
         for j in self.fkJnt[:-1]:
             self.fkCtl.append(CurveNode("fkc_#", pf=self.rigID, scale=s * 4))
 
-        self.fkGivenCtl2(self.fkJnt, self.fkCtl, p=self.CTL_DATA)
+        self.build_fk_with_ctl2(self.fkJnt, self.fkCtl, p=self.CTL_DATA)
 
         self.rootJ.delete()
         self.rootJ = self.fkJnt[0]

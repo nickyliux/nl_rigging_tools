@@ -24,7 +24,7 @@ class Arm(RigModule):
     """Build arm component with given rigNode.
     e.g.
         n = Arm('lfArm0_RGN')  # n.__dict__
-        n.genGuideSk()
+        n.gen_guide_sk()
         n.build()
     """
 
@@ -73,8 +73,8 @@ class Arm(RigModule):
         self.ikCstG = None
         self.ikH1 = None
 
-    def genGuideSk(self):
-        self.genSk_module(["clavicle", "upr", "lwr", "palm", "ball"])
+    def gen_guide_sk(self):
+        self.gen_sk_module(["clavicle", "upr", "lwr", "palm", "ball"])
         # for i, name in enumerate(jnt_names):
         #     if name == "lwr":
         #         jnt_list[i].a.preferredAngleY.set(-90 * self.x_dir)
@@ -84,7 +84,7 @@ class Arm(RigModule):
         self.build_module()
         self.joints = self.rootJ.allChildrenJt2
         self.clavicle, self.upr, self.lwr, self.palm, self.ball = self.joints
-        self.createCtl()
+        self.create_ctl()
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
@@ -115,7 +115,7 @@ class Arm(RigModule):
 
         self.post_setup()
 
-    def createCtl(self):
+    def create_ctl(self):
         rSz = self.rigSize
         rID = self.rigID
         xDr = self.x_dir
@@ -207,8 +207,8 @@ class Arm(RigModule):
 
         rID = self.rigID
         rSz = self.rigSize
-        radius_JC = self.genSkFrNames(["radius", "radiusEnd"], color=CDR, scale=2)
-        ulna_JC = self.genSkFrNames(["ulna", "ulnaEnd"], color=CDR, scale=2)
+        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], color=CDR, scale=2)
+        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], color=CDR, scale=2)
 
         (radius_JC[0], ulna_JC[0]) | self.lwr
 
@@ -238,8 +238,8 @@ class Arm(RigModule):
             self.joints, "_fk", p=self.FK_PART, color=CBL, r=rSz * 2
         )
         self.fkCtl = [self.clavicle_fkc, self.upr_fkc, self.lwr_fkc, self.palm_fkc]
-        self.fkGivenCtl2(self.joints_fk, self.fkCtl, p=self.FK_PART)
-        self.isolateAlign(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
+        self.build_fk_with_ctl2(self.joints_fk, self.fkCtl, p=self.FK_PART)
+        self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
         rID = self.rigID
@@ -380,10 +380,10 @@ class Arm(RigModule):
         # self.clavicle_fkc.cstPar(self.joints_bf[0], mo=1)
 
         # add roll & bank to palm_ikc
-        self.handRollLogic(
+        self.hand_roll_logic(
             self.palm_ikc, self.palm_fkc, self.pin_fkc, self.ballRoll_loc
         )
-        self.handBankLogic(
+        self.hand_bank_logic(
             self.palm_ikc, self.palm_fkc, self.pin_fkc, palmIn_loc, palmOut_loc
         )
 
@@ -474,19 +474,19 @@ class Arm(RigModule):
         self.bindJnts.extend(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def vis_setup(self):
-        self.ctrlOnOffByAttr(
+        self.ctl_vis_toggle(
             self.setting.a["fkIkBlend"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             offList=self.fkCtl[1:],
         )
-        self.ctrlOnOffByAttr(
+        self.ctl_vis_toggle(
             self.pvc.a["fkPin"],
             onList=[self.pin_fkc],
         )
         self.ikc.a.v >> self.palm_ikc.a.v
 
         if self.RBN_BONES:
-            self.ctrlOnOffByAttr(
+            self.ctl_vis_toggle(
                 self.setting.a.add("showRibbonCtl", min=0, max=1, dv=1, k=0),
                 onList=self.all_bend,
             )
