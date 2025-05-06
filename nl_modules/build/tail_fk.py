@@ -84,11 +84,12 @@ class TailFk(RigModule):
         self.setting = CurveNode(
             "setting",
             pf=rID,
-            shape="sphere2",
-            scale=rSz * 2,
-            top=1,
+            shape="diamond",
+            scale=rSz * 3,
             color=Color.BLACK,
             p=self.CTL_DATA,
+            top=1,
+            lineWidth=2,
         )
         self.rigNode.setMsg(
             {
@@ -142,7 +143,7 @@ class TailFk(RigModule):
         self.fkGivenCtl3(self.fkJnt, self.fkCtl, p=self.CTL_DATA)
 
         # ADD FOLLOW ALIGN ON 1 ST FK CTL
-        self.isolateAlign(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC], dv=1)
+        self.isolateAlign(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC])
 
         mc.delete(self.rootJ)
         self.rootJ = self.fkJnt[0]
@@ -162,7 +163,7 @@ class TailFk(RigModule):
 
         self.setting.snapTo(self.fkCtl[0])
         self.setting.addOffsetGrp(snapIt=1)
-        self.setting.a.t.set(0, rSz * 30, 0)
+        self.setting.a.t.set(0, rSz * 50, 0)
         self.fkCtl[0].cstPar(self.setting.offset, mo=1)
 
         self.setting.a.add("tailScale", min=0.01, dv=1) >> self.fkCtl[0].a.s
@@ -172,9 +173,7 @@ class TailFk(RigModule):
             self.setting.a.add("fkCtl", k=0, min=0, max=1, dv=1),
             onList=[self.fkCtl[0]],
         )
-        # mc.hide(self.fkJnt)
-        # if self.RBN_BONES:
-        #     mc.hide(self.rbJnt)
+        mc.hide(self.allClusters)
 
     def channel_setup(self):
         for ctl in self.fkCtl:

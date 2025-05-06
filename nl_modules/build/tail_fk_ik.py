@@ -106,6 +106,7 @@ class TailFkIk(RigModule):
             upV=(0, 1, 0),
             wuV=(0, 1, 0),
             size=rSz * 4,
+            color=Color.BLUE,
         )
 
         for i in range(0, 5):
@@ -200,20 +201,22 @@ class TailFkIk(RigModule):
             ctl = CurveNode(
                 f"{i}_offset_ikc",
                 pf=rID,
-                shape="sphere",
-                scale=rSz,
+                shape="sphere2",
+                scale=rSz / 2,
                 align=self.fkCtl[i],
                 p=self.fkCtl[i],
             )
             ctl.cv_move(0, rSz * 18, 0)
-            jnt = JointNode(f"{i}_offset_ikj", pf=rID, align=ctl, p=ctl)
+            jnt = JointNode(
+                f"{i}_offset_ikj", pf=rID, align=ctl, p=ctl, color=Color.RED
+            )
 
             self.ikOffsetCtl.append(ctl)
             self.ikOffsetJnt.append(jnt)
 
         SurfNode(self.rbSrf2).weightTo(self.ikOffsetJnt, chain=0, mi=2, dr=6)
 
-        self.isolateAlign(self.ikCtl[0], [self.ikCtl[0].offset, self.masterC], dv=1)
+        self.isolateAlign(self.ikCtl[0], [self.ikCtl[0].offset, self.masterC])
 
         mc.delete(self.rootJ)
         self.rootJ = self.fkJnt[0]
@@ -229,7 +232,7 @@ class TailFkIk(RigModule):
 
         self.setting.snapTo(self.ikCtl[0])
         self.setting.addOffsetGrp(snapIt=1)
-        self.setting.a.t.set(0, rSz * 30, 0)
+        self.setting.a.t.set(0, rSz * 50, 0)
         self.ikCtl[0].cstPar(self.setting.offset, mo=1)
 
         tailScale = self.setting.a.add("tailScale", min=0.01, dv=1)
@@ -292,9 +295,10 @@ class TailFkIk(RigModule):
             aimCst.a.constraintRotateY >> loc.a.ry
             aimCst.a.constraintRotateZ >> loc.a.rz
 
-            jnt = JointNode(f"{i}_rbj", pf=rID, align=loc, r=rSz, p=loc, reset=1)
+            jnt = JointNode(
+                f"{i}_rbj", pf=rID, align=loc, r=rSz, p=loc, reset=1, color=Color.D_RED
+            )
             self.rbJnt.append(jnt)
-
             self.ikCtl[0].a.s >> loc.a.s
 
         self.bindJnts = self.rbJnt

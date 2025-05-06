@@ -259,6 +259,7 @@ class Arm(RigModule):
         ikH1 = IkNode(
             "1",
             pf=rID,
+            rSz=rSz,
             sj=self.upr,
             ee=self.palm,
             jsf="_ik",
@@ -489,14 +490,7 @@ class Arm(RigModule):
                 self.setting.a.add("showRibbonCtl", min=0, max=1, dv=1, k=0),
                 onList=self.all_bend,
             )
-        # self.ctrlOnOffByAttr(
-        #     self.masterC2.a["debug"],
-        #     onList=self.all_ikHs
-        #     + self.joints_fk
-        #     + self.joints_ik
-        #     + self.joints_bf
-        #     + [self.RIG_DATA],
-        # )
+        mc.hide(self.all_ikHs)
 
     def proxy_setup(self):
         aim = (self.x_dir, 0, 0)
@@ -539,7 +533,6 @@ class Arm(RigModule):
     def post_setup(self):
         ctlSet = []
         ctlSet.extend(self.fkCtl + self.ikCtl + [self.setting, self.pin_fkc])
-        # self.setWSMirror([self.pvc])
 
         if self.RBN_BONES:
             ctlSet.extend(self.all_bend)

@@ -599,15 +599,7 @@ class Leg(RigModule):
                 self.setting.a.add("showRibbonCtl", min=0, max=1, dv=1, k=0),
                 onList=self.all_bend,
             )
-        # self.ctrlOnOffByAttr(
-        #     self.masterC2.a["debug"],
-        #     onList=self.all_ikHs
-        #     + self.joints_fk
-        #     + self.joints_ik
-        #     + self.joints_bf
-        #     + self.toeIKHs
-        #     + [self.RIG_DATA],
-        # )
+        mc.hide(self.all_ikHs, self.toeIKHs)
 
     def channel_setup(self):
         self.setting.a.showAttr()

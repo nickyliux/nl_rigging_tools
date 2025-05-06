@@ -11,13 +11,6 @@ from nl_modules.nodel.surf_node import SurfNode
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
-CBK = Color.BLACK
-CDR = Color.D_RED
-CBL = Color.BLUE
-CLB = Color.L_BLUE
-CRD = Color.RED
-CYL = Color.YELLOW
-
 
 class Spine(RigModule):
     def __init__(self, rigNode):
@@ -57,12 +50,12 @@ class Spine(RigModule):
             shape="stick",
             up="-z",
             scale=rSz * 2,
-            color=CBK,
+            color=Color.BLACK,
             top=1,
             lineWidth=2,
         )
         self.cog_ctl = CurveNode(
-            "cog_ctl", pf=rID, shape="cog2", scale=rSz * 2, color=CYL
+            "cog_ctl", pf=rID, shape="cog2", scale=rSz * 2, color=Color.YELLOW
         )
         self.tp_ctl = CurveNode(
             "tp_ctl", pf=rID, shape="squareR", scale=rSz * 4, lineWidth=2
@@ -120,7 +113,7 @@ class Spine(RigModule):
         self.fkGivenCtl2(self.fkJnt[1:], self.fkCtl[1:], p=self.CTL_DATA)
 
         hipCtl = self.fkCtl[0]
-        hipCtl(p=self.CTL_DATA, addOfs=1, color=CRD)
+        hipCtl(p=self.CTL_DATA, addOfs=1, color=Color.D_RED)
         hipCtl.offset.snapAlignTo(self.fkJnt[1], self.fkJnt[0])
         hipCtl.cv_move(0, rSz * -20, 0)
         hipCtl.cstPar(self.fkJnt[0], mo=1)
@@ -167,7 +160,7 @@ class Spine(RigModule):
             self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
             self.ctlJnts = self.createCtlJ(
-                [self.rt_ctl, self.md_ctl, self.tp_ctl], r=rSz * 5, color=CBL
+                [self.rt_ctl, self.md_ctl, self.tp_ctl], r=rSz * 5
             )
             self.rbSrf.weightTo(self.ctlJnts, chain=0, mi=2, dr=6)
             self.bindJnts = SurfNode.buildRbJnt(
@@ -177,7 +170,7 @@ class Spine(RigModule):
                 surf=self.rbSrf,
                 rigData=self.RIG_DATA,
                 sklData=self.SKL_DATA,
-                color=CDR,
+                color=Color.D_RED,
             )
             self.build_volume_setup()
 

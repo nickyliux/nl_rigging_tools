@@ -379,39 +379,18 @@ class RibbonNode:
 
         self.d = d
 
-    # def proxy_setup(self):
-    #     for j in self.rbJnt:
-    #         j.addProxyMesh(
-    #             size=self.D / 2 / self.rbJNum, aimDir=(self.x_dir, 0, 0), p=self.proxyP
-    #         )
-
     def ro_setup(self):
         for j in (self.stt_loc, self.end_loc, self.stt_twistJ, self.end_twistJ):
             j.a.rotateOrder.set(1)  # yzx
 
-    # def vis_setup(self):
-    #     mc.hide(self.BSE_GRP, self.AIM_GRP, self.CTL_GRP)
+    def vis_setup(self):
+        # mc.hide(self.BSE_GRP, self.AIM_GRP, self.CTL_GRP)
+        mc.hide(self.all_ikHs)
 
     def post_setup(self):
-        # self.proxy_setup()
         self.ro_setup()
-        # self.vis_setup()
+        self.vis_setup()
 
-
-# if __name__ == "__main__":
-#     mc.file(new=1, f=1)
-#     g1 = GroupNode("g1")
-#     g2 = GroupNode("g2", p=g1)
-#     g2.a.tx.set(30)
-
-#     RibbonNode(
-#         g1,
-#         pf="test",
-#         forSpine=1,
-#         scaleFix=g1.a.sy,
-#     )
-
-#     mc.showHidden(all=1)
 
 # def buildRibbon(pf):
 #     """Build ribbon using uvPin"""

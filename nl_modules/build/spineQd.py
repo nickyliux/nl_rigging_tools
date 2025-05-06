@@ -12,14 +12,6 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 from nl_modules.build.rig_module import RigModule
 
-CBK = Color.BLACK
-CDY = Color.D_YELLOW
-CBL = Color.BLUE
-CLB = Color.L_BLUE
-CPK = Color.PINK
-CRD = Color.RED
-CYL = Color.YELLOW
-
 
 class SpineQd(RigModule):
     def __init__(self, rigNode):
@@ -71,7 +63,7 @@ class SpineQd(RigModule):
             pf=rID,
             shape="diamond",
             scale=rSz * 1.5,
-            color=CBK,
+            color=Color.BLACK,
             top=1,
             lineWidth=2,
             p=self.CTL_DATA,
@@ -81,7 +73,7 @@ class SpineQd(RigModule):
             pf=rID,
             shape="trapezoid",
             scale=(rSz * 0.8, rSz * 1.5, rSz * 2.5),
-            color=CYL,
+            color=Color.YELLOW,
         )
         self.cog_ctl.cv_move(0, 70 * rSz, 0)
 
@@ -95,10 +87,10 @@ class SpineQd(RigModule):
             "base_ctl", pf=rID, shape="circleC", scale=scale, up="z", lineWidth=2
         )
         self.tangent_fore_ctl = CurveNode(
-            "tangent_fore_ctl", pf=rID, shape="stickS", scale=rSz, color=CDY
+            "tangent_fore_ctl", pf=rID, shape="stickS", scale=rSz, color=Color.D_YELLOW
         )
         self.tangent_base_ctl = CurveNode(
-            "tangent_base_ctl", pf=rID, shape="stickS", scale=rSz, color=CDY
+            "tangent_base_ctl", pf=rID, shape="stickS", scale=rSz, color=Color.D_YELLOW
         )
         self.rigNode.setMsg(
             {
@@ -120,7 +112,7 @@ class SpineQd(RigModule):
         self.build_ik(sliding=1)
         self.post_setup()
 
-    def makeJC(self, name, alongCrv=1, addEndJ=0, size=1, color=0):
+    def makeJC(self, name, alongCrv=1, addEndJ=0, size=1, color=Color.BLUE):
         jc = JointNode.makeJCFrCrv(
             self.LINE_GUIDE,
             pf=self.rigID,
@@ -175,14 +167,12 @@ class SpineQd(RigModule):
             )
         else:
             # joint chain A
-            self.fkJ_A = self.makeJC("fkJ_A", addEndJ=1, size=rSz * 2, color=CLB)
+            self.fkJ_A = self.makeJC("fkJ_A", addEndJ=1, size=rSz * 2)
             ikH_A = self.makeStretchyIk(
                 "spA", sj=self.fkJ_A[0], ej=self.fkJ_A[-2], crv=self.rbCrv
             )
             # joint chain B
-            self.fkJ_B = self.makeJC(
-                "fkJ_B", addEndJ=1, alongCrv=0, size=rSz * 3, color=CPK
-            )
+            self.fkJ_B = self.makeJC("fkJ_B", addEndJ=1, alongCrv=0, size=rSz * 2.5)
             self.rbCrvR = self.rbCrv.duplicate(n=rID + "_spCrvR_#").reverse()
             ikH_B = self.makeStretchyIk(
                 "spB", sj=self.fkJ_B[-1], ej=self.fkJ_B[1], crv=self.rbCrvR, axisDir=-1
@@ -214,7 +204,7 @@ class SpineQd(RigModule):
         base_gimbal = self.base_ctl.addGimbal()
 
         self.ctlJnts = self.createCtlJ(
-            [self.base_ctl, self.mid_ctl, self.fore_ctl], color=CBL, r=rSz * 8
+            [self.base_ctl, self.mid_ctl, self.fore_ctl], r=rSz * 8
         )
         # Orient control last fkJ by tip ctl
         self.fkJnt[-1].a.r.disconnect()

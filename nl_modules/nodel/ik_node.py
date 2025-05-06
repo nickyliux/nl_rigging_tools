@@ -34,6 +34,7 @@ class IkNode(DagNode):
         self,
         node,
         pf="",
+        rSz=1,
         sf="_ikh",
         sj=None,
         ee=None,
@@ -77,6 +78,7 @@ class IkNode(DagNode):
         self.scaleFix = scaleFix
         self.scaleFix2 = scaleFix2
         self.pf = pf
+        self.rSz = rSz
         self.softJ = None
         self.pvChainJ = None
         self.createIK(
@@ -360,7 +362,7 @@ class IkNode(DagNode):
         dist = self.sj.o.distanceTo(self.ee)
         ofs = (self.x_dir * dist, 0, 0)
         pvChainJ = JointNode.makeTwoJChain(
-            "pvChainJ", pf=self.pf, snap=self.sj, ofs=ofs, p=self.sj.parent
+            "pvChainJ", pf=self.pf, snap=self.sj, ofs=ofs, p=self.sj.parent, r=self.rSz
         )
         self.ee.cstAim(pvChainJ[0], aim=(self.x_dir, 0, 0), keep=False)
         pvChainJ[0].freezeXf()
