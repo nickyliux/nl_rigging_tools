@@ -3,13 +3,11 @@ import logging
 
 from nl_modules.build.rig_module import RigModule
 
-# from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.joint_node import JointNode
-from nl_modules.utils import common
 
-# from nl_modules.utils.color import Color
+from nl_modules.utils import common
 
 
 class Hand(RigModule):
@@ -25,7 +23,7 @@ class Hand(RigModule):
         self.fgrRootCtlArr = None
 
     def gen_guide_sk(self):
-        self.gen_sk_module(["handJ"])
+        self.gen_guide_sk_module(["handJ"])
         all_fgrs_names = [
             ["fgr00_1", "fgr00_2", "fgr00_3", "fgr00_4"],
             ["fgr01_1", "fgr01_2", "fgr01_3", "fgr01_4", "fgr01_5"],
@@ -65,7 +63,7 @@ class Hand(RigModule):
 
             self.build_fk()
             self.build_ik()
-            self.smart_setup()
+            self.build_fgr_logic()
             self.post_setup()
 
     def build_fk(self):
@@ -108,7 +106,7 @@ class Hand(RigModule):
         self.rootJ.a.s >> self.PRX_GRP.a.s
         self.rootJ.cstSca(self.RIG_DATA)
 
-    def smart_setup(self):
+    def build_fgr_logic(self):
         rID = self.rigID
         rSz = self.rigSize
         xDr = self.x_dir
@@ -257,7 +255,7 @@ class Hand(RigModule):
         # common.sdk(drv, ofs, "ty", "rx", 20, 180)
         # common.sdk(drv, ofs, "ty", "rx", -20, -180)
 
-    def space_setup(self):
+    def setup_space(self):
         #
         # Add space to rootJ so that it is driven by ballRoll_loc
         #
@@ -270,25 +268,25 @@ class Hand(RigModule):
         self.rigNode.setMsg({"spaceHolder2": self.hand_grp})
         self.rigNode.a.add("spaceName2", attrType="string", txt="palmIK")
 
-    def proxy_setup(self):
+    def setup_proxy(self):
         aim = (self.x_dir, 0, 0)
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(scale=2, aimDir=aim, skipEnd=1, p=self.PRX_GRP)
 
-    def channel_setup(self):
+    def setup_channel(self):
         self.smart_ctl.a.showAttr(t=1, r=1, s=1)
         [c.a.showAttr(r=1) for c in self.fgrRootCtlArr]
         for fgrCtls in self.ctlsArr:
             for c in fgrCtls:
                 c.a.showAttr(t=1, r=1)
 
-    def ro_setup(self):
+    def setup_rotate_order(self):
         self.smart_ctl.a.ro.set(3)
         for i in range(5):
             for j in [0, 1]:
                 self.ctlsArr[i][j].offset.a.rotateOrder.set(3)
 
-    def vis_setup(self):
+    def setup_vis(self):
         showCtls = self.smart_ctl.a.add("showCtls", k=0, min=0, max=1, dv=1)
         for fgrCtls in self.ctlsArr:
             showCtls >> fgrCtls[0].a.v
@@ -300,10 +298,10 @@ class Hand(RigModule):
         [ctlSet.extend(x) for x in self.ctlsArr]
         self.addBindJntSet(self.bindJnts)
         self.addCtlSet(ctlSet)
-        self.space_setup()
-        self.anchor_setup_module({"anchorF1": self.rootJ})
-        self.proxy_setup()
-        self.vis_setup()
-        self.channel_setup()
-        self.ro_setup()
+        self.setup_space()
+        self.setup_anchor_module({"anchorF1": self.rootJ})
+        self.setup_proxy()
+        self.setup_vis()
+        self.setup_channel()
+        self.setup_rotate_order()
         self.post_module()

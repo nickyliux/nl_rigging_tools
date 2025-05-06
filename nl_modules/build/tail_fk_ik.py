@@ -41,7 +41,7 @@ class TailFkIk(RigModule):
         self.bindJnts = []
 
     def gen_guide_sk(self):
-        self.gen_sk_module(["rt", "md", "tp"])
+        self.gen_guide_sk_module(["rt", "md", "tp"])
 
     def build(self):
         """
@@ -303,7 +303,7 @@ class TailFkIk(RigModule):
 
         self.bindJnts = self.rbJnt
 
-    def vis_setup(self):
+    def setup_vis(self):
         self.ctl_vis_toggle(
             self.setting.a.add("ikCtl", k=0, min=0, max=1, dv=1),
             onList=[self.ikCtl[0]],
@@ -318,16 +318,16 @@ class TailFkIk(RigModule):
         )
         # mc.hide(self.ikJnt, self.fkJnt, self.ikOffsetJnt, self.rbJnt)
 
-    def channel_setup(self):
+    def setup_channel(self):
         for ctl in self.fkCtl + self.ikCtl:
             ctl.a.showAttr(t=1, r=1)
         self.setting.a.showAttr()
 
-    def ro_setup(self):
+    def setup_rotate_order(self):
         for ctl in self.fkCtl:
             ctl.a.ro.set(3)
 
-    def proxy_setup(self):
+    def setup_proxy(self):
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(
                 p=self.PRX_GRP, scaler=self.setting.a["tailScale"]
@@ -336,9 +336,9 @@ class TailFkIk(RigModule):
     def post_setup(self):
         self.addBindJntSet(self.bindJnts)
         self.addCtlSet(self.ikCtl + self.fkCtl + self.ikOffsetCtl + [self.setting])
-        self.anchor_setup_module({"anchorF1": self.ikCtl[0].offset.offset})
-        self.proxy_setup()
-        self.vis_setup()
-        self.channel_setup()
-        self.ro_setup()
+        self.setup_anchor_module({"anchorF1": self.ikCtl[0].offset.offset})
+        self.setup_proxy()
+        self.setup_vis()
+        self.setup_channel()
+        self.setup_rotate_order()
         self.post_module()

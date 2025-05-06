@@ -1,14 +1,15 @@
 import maya.cmds as mc
 import logging
 from nl_modules.build.rig_module import RigModule
+
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.joint_node import JointNode
-
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.ribbon_node import RibbonNode
 from nl_modules.nodel.surf_node import SurfNode
+
 from nl_modules.utils import common
 from nl_modules.utils.color import Color
 
@@ -34,7 +35,7 @@ class TailFk(RigModule):
         self.REVERSE = 0
 
     def gen_guide_sk(self):
-        self.gen_sk_module(["rt", "md", "tp"])
+        self.gen_guide_sk_module(["rt", "md", "tp"])
 
     def build(self):
         """
@@ -168,32 +169,32 @@ class TailFk(RigModule):
 
         self.setting.a.add("tailScale", min=0.01, dv=1) >> self.fkCtl[0].a.s
 
-    def vis_setup(self):
+    def setup_vis(self):
         self.ctl_vis_toggle(
             self.setting.a.add("fkCtl", k=0, min=0, max=1, dv=1),
             onList=[self.fkCtl[0]],
         )
         mc.hide(self.allClusters)
 
-    def channel_setup(self):
+    def setup_channel(self):
         for ctl in self.fkCtl:
             ctl.a.showAttr(t=1, r=1)
         self.setting.a.showAttr()
 
-    def ro_setup(self):
+    def setup_rotate_order(self):
         for ctl in self.fkCtl:
             ctl.a.ro.set(3)
 
-    def proxy_setup(self):
+    def setup_proxy(self):
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(scale=1, p=self.PRX_GRP)
 
     def post_setup(self):
         self.addBindJntSet(self.bindJnts)
         self.addCtlSet(self.fkCtl)
-        self.anchor_setup_module({"anchorF1": self.fkCtl[0].offset})
-        self.proxy_setup()
-        self.vis_setup()
-        self.channel_setup()
-        self.ro_setup()
+        self.setup_anchor_module({"anchorF1": self.fkCtl[0].offset})
+        self.setup_proxy()
+        self.setup_vis()
+        self.setup_channel()
+        self.setup_rotate_order()
         self.post_module()

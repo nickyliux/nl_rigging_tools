@@ -1,18 +1,16 @@
 import maya.cmds as mc
 import logging
+from nl_modules.build.rig_module import RigModule
+
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.ik_node import IkNode
 from nl_modules.nodel.joint_node import JointNode
 from nl_modules.nodel.loc_node import LocNode
+
 from nl_modules.utils import common
 from nl_modules.utils.color import Color
-from nl_modules.build.rig_module import RigModule
-
-CYL = Color.YELLOW
-CRD = Color.RED
-CPK = Color.PINK
 
 
 class Head(RigModule):
@@ -32,7 +30,7 @@ class Head(RigModule):
         self.fkCtl = None
 
     def gen_guide_sk(self):
-        self.gen_sk_module(["st", "ed"])
+        self.gen_guide_sk_module(["st", "ed"])
         jaw_list = self.gen_sk_fr_names(["jaw", "jawEnd"])
         jaw_list[0] | self.rootJ
         lf_eye = self.gen_sk_fr_names("lf_eye")[0]
@@ -55,9 +53,16 @@ class Head(RigModule):
         rID = self.rigID
         rSz = self.rigSize
         self.head_fkc = CurveNode(
-            "head", pf=rID, sf="_fkc", shape="circleC", scale=rSz * 5, color=CYL
+            "head",
+            pf=rID,
+            sf="_fkc",
+            shape="circleC",
+            scale=rSz * 5,
+            color=Color.YELLOW,
         )
-        self.jaw_fkc = CurveNode("jaw", pf=rID, sf="_fkc", up="z", scale=rSz, color=CYL)
+        self.jaw_fkc = CurveNode(
+            "jaw", pf=rID, sf="_fkc", up="z", scale=rSz, color=Color.YELLOW
+        )
 
         self.rigNode.setMsg(
             {
@@ -85,26 +90,26 @@ class Head(RigModule):
 
         self.isolate_align(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC])
 
-    def proxy_setup(self):
+    def setup_proxy(self):
         aim = (0, 1, 0)
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(scale=3, aimDir=aim, p=self.PRX_GRP)
 
-    def vis_setup(self):
+    def setup_vis(self):
         pass
 
-    def ro_setup(self):
+    def setup_rotate_order(self):
         pass
 
-    def space_setup(self):
+    def setup_space(self):
         self.rigNode.setMsg({"space_head": self.head_fkc})
 
     def post_setup(self):
         self.addBindJntSet(self.bindJnts)
         self.addCtlSet(self.fkCtl)
-        self.space_setup()
-        self.anchor_setup_module({"anchorF1": self.head_fkc.offset})
-        self.proxy_setup()
-        self.vis_setup()
-        self.ro_setup()
+        self.setup_space()
+        self.setup_anchor_module({"anchorF1": self.head_fkc.offset})
+        self.setup_proxy()
+        self.setup_vis()
+        self.setup_rotate_order()
         self.post_module()

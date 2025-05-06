@@ -2,13 +2,11 @@ import os.path
 import maya.cmds as mc
 import logging
 
-# from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.utils.color import Color
 
 MAYA_TPL_DIR = "D:/_PROJECT/GIT/nl_rigging_tools/nl_modules/build/components"
 BASE_FILE = "base.ma"
-# CBK = Color.BLACK
 
 
 class TplLoader:

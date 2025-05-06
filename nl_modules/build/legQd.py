@@ -11,11 +11,6 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 from nl_modules.build.rig_module import RigModule
 
-CBK = Color.BLACK
-CBL = Color.BLUE
-CDY = Color.D_YELLOW
-CRD = Color.RED
-
 
 class LegQd(RigModule):
     """Build LegQd component with given rigNode.
@@ -78,7 +73,7 @@ class LegQd(RigModule):
         self.extra_ikc = None
 
     def gen_guide_sk(self):
-        self.gen_sk_module(["hip", "upr", "lwr", "palm", "digit", "ball", "tip"])
+        self.gen_guide_sk_module(["hip", "upr", "lwr", "palm", "digit", "ball", "tip"])
 
         if self.TOE_BONES:
             self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
@@ -105,7 +100,7 @@ class LegQd(RigModule):
             pf=rID,
             shape="stick",
             scale=rSz * -xDr,
-            color=CBK,
+            color=Color.BLACK,
             top=1,
         )
         self.hip_fkc = CurveNode(
@@ -170,7 +165,7 @@ class LegQd(RigModule):
             self.patella_setup()
 
         if self.TWIST_BONES:
-            self.twistBones_setup()
+            self.build_twist_bones()
         else:
             if self.KNEE_FIX:
                 self.bindJnts.append(self.boneFix)
@@ -196,7 +191,7 @@ class LegQd(RigModule):
         rSz = self.rigSize
         logging.info(self.rigID)
         self.joints_fk = common.extractSk(
-            self.joints, "_fk", p=self.FK_PART, color=CBL, r=2 * rSz
+            self.joints, "_fk", p=self.FK_PART, color=Color.BLUE, r=2 * rSz
         )
         self.fkCtl = [
             self.hip_fkc,
@@ -222,7 +217,7 @@ class LegQd(RigModule):
         self.ikc.alignTo(mG)
         self.pvc.alignTo(pvc_guide)
         self.joints_ik = common.extractSk(
-            self.joints, "_ik", p=self.IK_PART, color=CRD, r=3 * rSz
+            self.joints, "_ik", p=self.IK_PART, color=Color.RED, r=3 * rSz
         )
         ikH1 = IkNode(
             "1",
@@ -401,7 +396,7 @@ class LegQd(RigModule):
         #     common.sdk2(splay, tgt, -5, splayRange * (-1 + 2 / (toeCount - 1) * i))
         #     common.sdk2(splay, tgt, 5, -splayRange * (-1 + 2 / (toeCount - 1) * i))
 
-    def twistBones_setup(self):
+    def build_twist_bones(self):
         rID = self.rigID
         rSz = self.rigSize
 
@@ -485,7 +480,7 @@ class LegQd(RigModule):
             mo=1,
         )
 
-    def ribbon_setup(self):
+    def build_ribbon(self):
         """
                     upr
         upr_bend     --
@@ -530,7 +525,7 @@ class LegQd(RigModule):
 
         self.all_bend = [upr_bend, lwr_bend, mid_bend]
         for b in self.all_bend:
-            b(shape="square", up="x", color=CDY, scale=rSz)
+            b(shape="square", up="x", color=Color.D_YELLOW, scale=rSz)
 
         upLoc.cstPar(upr_bend.offset, mo=1)
         lwLoc.cstPar(lwr_bend.offset, mo=1)
@@ -553,12 +548,12 @@ class LegQd(RigModule):
 
         self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
-    def proxy_setup(self):
+    def setup_proxy(self):
         aim = (self.x_dir, 0, 0)
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(scale=1.5, aimDir=aim, p=self.PRX_GRP)
 
-    def vis_setup(self):
+    def setup_vis(self):
 
         self.ctl_vis_toggle(
             self.setting.a["fkIkBlend"],
@@ -581,7 +576,7 @@ class LegQd(RigModule):
         #     onList=self.joints_fk + self.joints_ik,
         # )
 
-    def channel_setup(self):
+    def setup_channel(self):
         self.setting.a.showAttr()
         self.pvc.a.showAttr(t=1)
         self.extra_ikc.a.showAttr(r=1)
@@ -590,11 +585,11 @@ class LegQd(RigModule):
         for ctl in self.all_bend or []:
             ctl.a.showAttr(t=1, r=1, s=1)
 
-    def ro_setup(self):
+    def setup_rotate_order(self):
         for c in self.fkCtl + self.ikCtl + [self.lwr]:
             c.a.ro.set(2)
 
-    def space_setup(self):
+    def setup_space(self):
         self.rigNode.setMsg({"spaceHolder1": self.ikc})
         self.rigNode.a.add("spaceName1", attrType="string", txt="master, hip, COG")
         self.rigNode.setMsg({"spaceHolder2": self.pvc})
@@ -612,12 +607,12 @@ class LegQd(RigModule):
             [ctlSet.extend(s) for s in self.toesCtlsList or []]
         self.addCtlSet(ctlSet)
         self.addBindJntSet(self.bindJnts)
-        self.space_setup()
-        self.anchor_setup_module({"anchorF1": self.hip_fkc})
-        self.proxy_setup()
-        self.vis_setup()
-        self.channel_setup()
-        self.ro_setup()
+        self.setup_space()
+        self.setup_anchor_module({"anchorF1": self.hip_fkc})
+        self.setup_proxy()
+        self.setup_vis()
+        self.setup_channel()
+        self.setup_rotate_order()
         self.post_module()
 
     def custom_setup(self):

@@ -32,7 +32,7 @@ class SpineQdCrv(rig_module.RigModule):
         self.joints = []
 
     def gen_guide_sk(self):
-        self.gen_sk_module(["st", "md", "ed"])
+        self.gen_guide_sk_module(["st", "md", "ed"])
 
     def build(self):
 
@@ -173,7 +173,7 @@ class SpineQdCrv(rig_module.RigModule):
         spIkH.stretchySp()
         spIkH.hide()
 
-    def anchor_setup(self):
+    def setup_anchor(self):
         s = self.rigSize
         B = Color.L_BLUE
         anchorM1 = LocNode(self.rigID + "_anchorM1", size=s, color=B, p=self.masterC)
@@ -202,6 +202,6 @@ class SpineQdCrv(rig_module.RigModule):
         self.addBindJntSet(self.joints)
         self.addCtlSet(self.ctls + [self.setting])
 
-        self.anchor_setup()
+        self.setup_anchor()
 
         self.post_module()

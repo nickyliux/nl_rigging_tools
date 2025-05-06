@@ -41,7 +41,7 @@
 #             fgr_jnts[0].freezeXf()
 #             fgr_jnts[0] | root
 #             fgr_roots.append(fgr_jnts[0])
-#         self.gen_sk_module()
+#         self.gen_guide_sk_module()
 #
 #
 #
@@ -89,7 +89,7 @@
 #
 #         self.x_dir = 1 if self.fgrsArr[1][2].a.tx.get() > 0 else -1
 #
-#     def anchor_setup(self):
+#     def setup_anchor(self):
 #
 #         s = self.rigSize
 #         # anchorF1 = LocNode("anchorF1", pf=self.rigID, size=s, color=Color.PINK)
@@ -148,7 +148,7 @@
 #         # [ctlSet.extend(x) for x in self.ctlsArr]
 #         # self.addCtlSet(ctlSet, pf=self.rigID)
 #         #
-#         self.anchor_setup()
+#         self.setup_anchor()
 #
 #         self.post_module()
 #

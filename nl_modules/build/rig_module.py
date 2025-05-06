@@ -1,11 +1,13 @@
 import maya.cmds as mc
 import logging
 from nl_modules.build.rig_base import RigBase
+
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.joint_node import JointNode
 from nl_modules.nodel.loc_node import LocNode
+
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
@@ -311,7 +313,7 @@ class RigModule(RigBase):
         else:
             tgt.addOffsetGrp()
 
-    def gen_sk_module(self, jnt_names):
+    def gen_guide_sk_module(self, jnt_names):
         self.rigNode.a.nodeState.set(1)
 
         rootCtl = self.masterC.parent.parent
@@ -378,7 +380,7 @@ class RigModule(RigBase):
         if prx:
             mc.delete(prx)
 
-    def anchor_setup_module(self, anchorDict=None):
+    def setup_anchor_module(self, anchorDict=None):
         """
         F is female, for driven plugs. e.g. hand has 1 F anchor
         M is male, for driver plugs. e.g spine has 2 M anchors

@@ -38,7 +38,7 @@ class SpinePro(rig_module.RigModule):
         self.fkCtl = None
 
     def gen_guide_sk(self):
-        self.gen_sk_module(["st", "ed"])
+        self.gen_guide_sk_module(["st", "ed"])
 
     def build(self):
 
@@ -83,7 +83,7 @@ class SpinePro(rig_module.RigModule):
 
         self.build_fk()
         self.build_spine()
-        self.ribbon_setup()
+        self.build_ribbon()
         self.post_setup()
 
     def build_fk(self):
@@ -166,7 +166,7 @@ class SpinePro(rig_module.RigModule):
 
         # self.followAlignTwo(self.upr_fkc, [self.upr_fkc.parent, self.masterC], 1)
 
-    def ribbon_setup(self):
+    def build_ribbon(self):
         logging.info(self.rigID)
 
         dummyG1 = GroupNode("g#", snap=self.rootJ)
@@ -212,11 +212,11 @@ class SpinePro(rig_module.RigModule):
             self.fkCtl + self.ikCtl + [self.setting, self.cog_ctl, self.cog_gmb]
         )
 
-        self.anchor_setup()
+        self.setup_anchor()
 
         self.post_module()
 
-    def anchor_setup(self):
+    def setup_anchor(self):
         s = self.rigSize
         B = Color.L_BLUE
         anchorM1 = LocNode(self.rigID + "_anchorM1", size=s, color=B, p=self.masterC)

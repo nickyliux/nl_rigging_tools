@@ -11,14 +11,6 @@ from nl_modules.nodel.ribbon_node import RibbonNode
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
-CBK = Color.BLACK
-CBL = Color.BLUE
-CDR = Color.D_RED
-CDY = Color.D_YELLOW
-CGY = Color.GREY
-CRD = Color.RED
-CYL = Color.YELLOW
-
 
 class Arm(RigModule):
     """Build arm component with given rigNode.
@@ -74,7 +66,7 @@ class Arm(RigModule):
         self.ikH1 = None
 
     def gen_guide_sk(self):
-        self.gen_sk_module(["clavicle", "upr", "lwr", "palm", "ball"])
+        self.gen_guide_sk_module(["clavicle", "upr", "lwr", "palm", "ball"])
         # for i, name in enumerate(jnt_names):
         #     if name == "lwr":
         #         jnt_list[i].a.preferredAngleY.set(-90 * self.x_dir)
@@ -98,7 +90,7 @@ class Arm(RigModule):
 
         self.bindJnts = []
         if self.RBN_BONES:
-            self.ribbon_setup()
+            self.build_ribbon()
         else:
             self.bindJnts.append(self.upr)
 
@@ -106,10 +98,10 @@ class Arm(RigModule):
             self.bindJnts.append(self.lwr)
 
         if self.TWIST_BONES:
-            self.twistBones_setup()
+            self.build_twist_bones()
 
         if self.SCAPULAR_BONE:
-            self.scapular_setup()
+            self.build_scapular()
         else:
             self.bindJnts.append(self.clavicle)
 
@@ -121,7 +113,12 @@ class Arm(RigModule):
         xDr = self.x_dir
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="stick", scale=rSz * xDr / 2, color=CBK, top=1
+            "setting",
+            pf=rID,
+            shape="stick",
+            scale=rSz * xDr / 2,
+            color=Color.BLACK,
+            top=1,
         )
         # lineWidth=2
         self.clavicle_fkc = CurveNode(
@@ -159,7 +156,7 @@ class Arm(RigModule):
             }
         )
 
-    def scapular_setup(self):
+    def build_scapular(self):
         rID = self.rigID
         rSz = self.rigSize
         xDr = self.x_dir
@@ -173,7 +170,7 @@ class Arm(RigModule):
             align=scapular_guide,
             r=rSz,
             p=self.clavicle,
-            color=CDR,
+            color=Color.D_RED,
         )
         scapularJnt.freezeXf()
         scapularLoc = LocNode(
@@ -203,12 +200,14 @@ class Arm(RigModule):
         self.clavBone = twoJ[0]
         self.bindJnts.append(self.clavBone)
 
-    def twistBones_setup(self):
+    def build_twist_bones(self):
 
         rID = self.rigID
         rSz = self.rigSize
-        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], color=CDR, scale=2)
-        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], color=CDR, scale=2)
+        radius_JC = self.gen_sk_fr_names(
+            ["radius", "radiusEnd"], color=Color.D_RED, scale=2
+        )
+        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], color=Color.D_RED, scale=2)
 
         (radius_JC[0], ulna_JC[0]) | self.lwr
 
@@ -235,7 +234,7 @@ class Arm(RigModule):
         logging.info(self.rigID)
 
         self.joints_fk = common.extractSk(
-            self.joints, "_fk", p=self.FK_PART, color=CBL, r=rSz * 2
+            self.joints, "_fk", p=self.FK_PART, color=Color.BLUE, r=rSz * 2
         )
         self.fkCtl = [self.clavicle_fkc, self.upr_fkc, self.lwr_fkc, self.palm_fkc]
         self.build_fk_with_ctl2(self.joints_fk, self.fkCtl, p=self.FK_PART)
@@ -254,7 +253,7 @@ class Arm(RigModule):
         # self.pvc.alignTo(self.lwr)
 
         self.joints_ik = common.extractSk(
-            self.joints, "_ik", p=self.IK_PART, color=CRD, r=3 * rSz
+            self.joints, "_ik", p=self.IK_PART, color=Color.RED, r=3 * rSz
         )
         ikH1 = IkNode(
             "1",
@@ -331,7 +330,7 @@ class Arm(RigModule):
         # xDr = self.x_dir
         logging.info(rID)
         self.joints_bf = common.extractSk(
-            self.joints, "_bf", p=self.BF_PART, color=CGY, r=4 * rSz
+            self.joints, "_bf", p=self.BF_PART, color=Color.L_GREY, r=4 * rSz
         )
 
         palmIn_guide = DagNode(rID + "_palmIn_guide")
@@ -393,7 +392,7 @@ class Arm(RigModule):
 
         GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.palm_fkc)
 
-    def ribbon_setup(self):
+    def build_ribbon(self):
         """
                     upr
         upr_bend     --
@@ -448,7 +447,7 @@ class Arm(RigModule):
 
         self.all_bend = [upr_bend, lwr_bend, mid_bend]
         for ctl in self.all_bend:
-            ctl(shape="square", up="x", color=CDY, scale=rSz)
+            ctl(shape="square", up="x", color=Color.YELLOW, scale=rSz)
             # ctl.a.rotateOrder.set(1)  # yzx
 
         upLoc.cstPar(upr_bend.offset, mo=1)
@@ -473,7 +472,7 @@ class Arm(RigModule):
 
         self.bindJnts.extend(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
-    def vis_setup(self):
+    def setup_vis(self):
         self.ctl_vis_toggle(
             self.setting.a["fkIkBlend"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
@@ -492,12 +491,12 @@ class Arm(RigModule):
             )
         mc.hide(self.all_ikHs)
 
-    def proxy_setup(self):
+    def setup_proxy(self):
         aim = (self.x_dir, 0, 0)
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(aimDir=aim, p=self.PRX_GRP)
 
-    def channel_setup(self):
+    def setup_channel(self):
         self.setting.a.showAttr()
         self.palm_ikc.a.showAttr(r=1)
 
@@ -506,14 +505,14 @@ class Arm(RigModule):
         for ctl in self.all_bend or []:
             ctl.a.showAttr(t=1, r=1, s=1)
 
-    def ro_setup(self):
+    def setup_rotate_order(self):
         for c in [self.ikc, self.clavicle_fkc]:
             c.a.ro.set(2)
         self.lwr_fkc.a.ro.set(3)
         self.upr_fkc.a.ro.set(4)
         self.palm_fkc.a.ro.set(5)
 
-    def space_setup(self):
+    def setup_space(self):
         self.rigNode.setMsg({"spaceHolder1": self.ikc})
         spaces = "master, COG, uprBody, lwrBody, head"
         self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
@@ -539,20 +538,20 @@ class Arm(RigModule):
 
         self.addBindJntSet(self.bindJnts)
         self.addCtlSet(ctlSet)
-        self.space_setup()
-        self.anchor_setup_module(
+        self.setup_space()
+        self.setup_anchor_module(
             {
                 "anchorM1": self.joints_bf[-2],
                 "anchorF1": self.clavicle_fkc.offset,
             }
         )
-        # self.anchor_setup_module(
+        # self.setup_anchor_module(
         #     {"anchorM1": self.joints[-2], "anchorF1": self.clavicle_fkc}
         # )
-        self.proxy_setup()
-        self.vis_setup()
-        self.channel_setup()
-        self.ro_setup()
+        self.setup_proxy()
+        self.setup_vis()
+        self.setup_channel()
+        self.setup_rotate_order()
         self.post_module()
         # self.pvc.alignTo(DagNode(rID + "_pvc_guide"))
 

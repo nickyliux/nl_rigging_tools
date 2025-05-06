@@ -11,14 +11,6 @@ from nl_modules.utils.color import Color
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.build.rig_module import RigModule
 
-CBK = Color.BLACK
-CGY = Color.GREY
-CBL = Color.BLUE
-CDR = Color.D_RED
-CDY = Color.D_YELLOW
-CRD = Color.RED
-CYL = Color.YELLOW
-
 
 class Leg(RigModule):
     """Build leg component with given rigNode.
@@ -92,7 +84,7 @@ class Leg(RigModule):
         self.toeIKHs = []
 
     def gen_guide_sk(self):
-        self.gen_sk_module(["hip", "upr", "lwr", "palm", "ball", "tip"])
+        self.gen_guide_sk_module(["hip", "upr", "lwr", "palm", "ball", "tip"])
 
         if self.TOE_BONES:
             self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
@@ -117,7 +109,12 @@ class Leg(RigModule):
         xDr = self.x_dir
 
         self.setting = CurveNode(
-            "setting", pf=rID, shape="stick", scale=-rSz * xDr / 2, color=CBK, top=1
+            "setting",
+            pf=rID,
+            shape="stick",
+            scale=-rSz * xDr / 2,
+            color=Color.BLACK,
+            top=1,
         )
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
@@ -184,7 +181,7 @@ class Leg(RigModule):
 
         self.bindJnts = [self.hip]
         if self.RBN_BONES:
-            self.ribbon_setup()
+            self.build_ribbon()
         else:
             self.bindJnts.append(self.upr)
 
@@ -202,7 +199,7 @@ class Leg(RigModule):
             self.patellaJ = self.patella_setup()
 
         if self.TWIST_BONES:
-            self.twistBones_setup()
+            self.build_twist_bones()
 
         if self.TOE_BONES:
             self.toesRootJ | self.palm
@@ -235,7 +232,7 @@ class Leg(RigModule):
         rSz = self.rigSize
         logging.info(self.rigID)
         self.joints_fk = common.extractSk(
-            self.joints, "_fk", p=self.FK_PART, color=CBL, r=2 * rSz
+            self.joints, "_fk", p=self.FK_PART, color=Color.BLUE, r=2 * rSz
         )
         self.fkCtl = [
             self.hip_fkc,
@@ -261,7 +258,7 @@ class Leg(RigModule):
         self.ikc.alignTo(mG)
         self.pvc.alignTo(pvc_guide)
         self.joints_ik = common.extractSk(
-            self.joints, "_ik", p=self.IK_PART, color=CRD, r=3 * rSz
+            self.joints, "_ik", p=self.IK_PART, color=Color.RED, r=3 * rSz
         )
 
         ikH1 = IkNode(
@@ -409,10 +406,12 @@ class Leg(RigModule):
         #     common.sdk2(splay, tgt, -5, splayRange * (-1 + 2 / (toeCount - 1) * i))
         #     common.sdk2(splay, tgt, 5, -splayRange * (-1 + 2 / (toeCount - 1) * i))
 
-    def twistBones_setup(self):
+    def build_twist_bones(self):
         rID = self.rigID
-        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], color=CDR, scale=2)
-        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], color=CDR, scale=2)
+        radius_JC = self.gen_sk_fr_names(
+            ["radius", "radiusEnd"], color=Color.D_RED, scale=2
+        )
+        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], color=Color.D_RED, scale=2)
 
         parent = self.boneFix if self.KNEE_FIX else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent
@@ -438,7 +437,7 @@ class Leg(RigModule):
         rSz = self.rigSize
         logging.info(rID)
         self.joints_bf = common.extractSk(
-            self.joints, "_bf", p=self.BF_PART, color=CGY, r=4 * rSz
+            self.joints, "_bf", p=self.BF_PART, color=Color.L_GREY, r=4 * rSz
         )
 
         self.setting | self.CTL_DATA
@@ -487,7 +486,7 @@ class Leg(RigModule):
 
         GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.palm_fkc)
 
-    def ribbon_setup(self):
+    def build_ribbon(self):
         """
                     upr
         upr_bend     --
@@ -542,7 +541,7 @@ class Leg(RigModule):
 
         self.all_bend = [upr_bend, lwr_bend, mid_bend]
         for ctl in self.all_bend:
-            ctl(shape="square", up="x", color=CDY, scale=rSz)
+            ctl(shape="square", up="x", color=Color.D_YELLOW, scale=rSz)
             # ctl.a.rotateOrder.set(1)  # yzx
 
         upLoc.cstPar(upr_bend.offset, mo=1)
@@ -571,7 +570,7 @@ class Leg(RigModule):
 
         self.bindJnts.extend(self.ribbonUp.rbJnt + self.ribbonLw.rbJnt)
 
-    def proxy_setup(self):
+    def setup_proxy(self):
         aim = (self.x_dir, 0, 0)
         for j in self.bindJnts:
             scaler = (
@@ -581,7 +580,7 @@ class Leg(RigModule):
             )
             JointNode(j).addProxyMesh(aimDir=aim, p=self.PRX_GRP, scaler=scaler)
 
-    def vis_setup(self):
+    def setup_vis(self):
 
         self.pvc.a["fkPin"] >> self.pin_fkc.a.v
 
@@ -601,7 +600,7 @@ class Leg(RigModule):
             )
         mc.hide(self.all_ikHs, self.toeIKHs)
 
-    def channel_setup(self):
+    def setup_channel(self):
         self.setting.a.showAttr()
         self.pvc.a.showAttr(t=1, r=1)
         self.smart_ctl.a.showAttr(r=1)
@@ -611,7 +610,7 @@ class Leg(RigModule):
         for ctl in self.all_bend or []:
             ctl.a.showAttr(t=1, r=1, s=1)
 
-    def ro_setup(self):
+    def setup_rotate_order(self):
         for c in (
             self.fkCtl
             + self.ikCtl
@@ -626,7 +625,7 @@ class Leg(RigModule):
             c.a.ro.set(2)
         self.smart_ctl.a.ro.set(3)
 
-    def space_setup(self):
+    def setup_space(self):
         self.rigNode.setMsg({"spaceHolder1": self.ikc})
         # spaces = "master, hip, COG"
         spaces = "master, COG, lwrBody"
@@ -659,12 +658,12 @@ class Leg(RigModule):
 
         self.addBindJntSet(self.bindJnts)
         self.addCtlSet(ctlSet)
-        self.space_setup()
-        self.anchor_setup_module({"anchorF1": self.hip_fkc.offset})
-        self.proxy_setup()
-        self.vis_setup()
-        self.channel_setup()
-        self.ro_setup()
+        self.setup_space()
+        self.setup_anchor_module({"anchorF1": self.hip_fkc.offset})
+        self.setup_proxy()
+        self.setup_vis()
+        self.setup_channel()
+        self.setup_rotate_order()
         self.post_module()
 
         # self.pvc.alignTo(DagNode(rID + "_pvc_guide"))

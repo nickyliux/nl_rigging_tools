@@ -6,8 +6,8 @@ class NeckQd(SpineQd):
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
-    def anchor_setup(self):
-        self.anchor_setup_module(
+    def setup_anchor(self):
+        self.setup_anchor_module(
             {
                 "anchorF1": self.base_ctl,
                 "anchorM1": self.fkJnt[-1],

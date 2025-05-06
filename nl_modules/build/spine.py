@@ -1,6 +1,7 @@
 import maya.cmds as mc
 import logging
 from nl_modules.build.rig_module import RigModule
+
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
@@ -8,6 +9,7 @@ from nl_modules.nodel.ik_node import IkNode
 from nl_modules.nodel.joint_node import JointNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.surf_node import SurfNode
+
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
@@ -38,7 +40,7 @@ class Spine(RigModule):
         self.rbSrf = None
 
     def gen_guide_sk(self):
-        self.gen_sk_module(["rt", "md", "tp"])
+        self.gen_guide_sk_module(["rt", "md", "tp"])
 
     def create_ctl(self):
         rSz = self.rigSize
@@ -211,7 +213,7 @@ class Spine(RigModule):
             ratio >> self.bindJnts[i].a.sx
             ratio >> self.bindJnts[i].a.sz
 
-    def vis_setup(self):
+    def setup_vis(self):
 
         self.ctl_vis_toggle(
             self.setting.a.add("fkCtl", min=0, max=1, dv=1, k=0),
@@ -228,7 +230,7 @@ class Spine(RigModule):
         #         self.masterC2.a["debug"], onList=[self.rbSrf] + self.ctlJnts
         #     )
 
-    def channel_setup(self):
+    def setup_channel(self):
         self.setting.a.showAttr()
         for ctl in [
             self.cog_gmb,
@@ -239,34 +241,34 @@ class Spine(RigModule):
             ctl.a.showAttr(t=1, r=1)
         self.cog_ctl.a.showAttr(t=1, r=1, s=1)
 
-    def ro_setup(self):
+    def setup_rotate_order(self):
         for ctl in self.fkCtl + self.ikCtl + [self.cog_ctl, self.cog_gmb]:
             ctl.a.ro.set(2)
 
-    def proxy_setup(self):
+    def setup_proxy(self):
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(
                 scale=1, aimDir=(0, 1, 0), p=self.PRX_GRP, scaler=JointNode(j).a.s
             )
 
-    def space_setup(self):
+    def setup_space(self):
         self.rigNode.setMsg({"space_COG": self.cog_ctl})
         self.rigNode.setMsg({"space_lwrBody": self.hip_ctl})
         self.rigNode.setMsg({"space_uprBody": self.chest_ctl})
 
-    def anchor_setup(self):
+    def setup_anchor(self):
         anchorM2Tgt = self.bindJnts[-1] if self.RBN_BONES else self.chest_ctl
-        self.anchor_setup_module({"anchorM1": self.hip_ctl, "anchorM2": anchorM2Tgt})
+        self.setup_anchor_module({"anchorM1": self.hip_ctl, "anchorM2": anchorM2Tgt})
 
     def post_setup(self):
         self.addBindJntSet(self.bindJnts)
         self.addCtlSet(
             self.fkCtl + self.ikCtl + [self.setting, self.cog_ctl, self.cog_gmb]
         )
-        self.space_setup()
-        self.anchor_setup()
-        self.proxy_setup()
-        self.vis_setup()
-        self.channel_setup()
-        self.ro_setup()
+        self.setup_space()
+        self.setup_anchor()
+        self.setup_proxy()
+        self.setup_vis()
+        self.setup_channel()
+        self.setup_rotate_order()
         self.post_module()

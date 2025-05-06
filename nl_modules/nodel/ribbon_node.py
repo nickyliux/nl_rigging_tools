@@ -379,17 +379,17 @@ class RibbonNode:
 
         self.d = d
 
-    def ro_setup(self):
+    def setup_rotate_order(self):
         for j in (self.stt_loc, self.end_loc, self.stt_twistJ, self.end_twistJ):
             j.a.rotateOrder.set(1)  # yzx
 
-    def vis_setup(self):
+    def setup_vis(self):
         # mc.hide(self.BSE_GRP, self.AIM_GRP, self.CTL_GRP)
         mc.hide(self.all_ikHs)
 
     def post_setup(self):
-        self.ro_setup()
-        self.vis_setup()
+        self.setup_rotate_order()
+        self.setup_vis()
 
 
 # def buildRibbon(pf):

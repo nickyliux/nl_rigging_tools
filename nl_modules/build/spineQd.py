@@ -1,16 +1,17 @@
 import maya.cmds as mc
 import logging
+from nl_modules.build.rig_module import RigModule
+
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.ik_node import IkNode
 from nl_modules.nodel.joint_node import JointNode
-
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.surf_node import SurfNode
+
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
-from nl_modules.build.rig_module import RigModule
 
 
 class SpineQd(RigModule):
@@ -52,7 +53,7 @@ class SpineQd(RigModule):
         self.rbCrvR = None
 
     def gen_guide_sk(self):
-        self.gen_sk_module(["rt", "md", "tp"])
+        self.gen_guide_sk_module(["rt", "md", "tp"])
 
     def create_ctl(self):
         rID = self.rigID
@@ -356,7 +357,7 @@ class SpineQd(RigModule):
             ratio >> self.bindJnts[i].a.sx
             ratio >> self.bindJnts[i].a.sy
 
-    def vis_setup(self):
+    def setup_vis(self):
 
         # if self.bindJnts:
         #     # mc.hide(self.bindJnts, self.rbSrf)
@@ -370,21 +371,21 @@ class SpineQd(RigModule):
         # )
         pass
 
-    def proxy_setup(self):
+    def setup_proxy(self):
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(scale=2, p=self.PRX_GRP, scaler=JointNode(j).a.s)
 
-    def ro_setup(self):
+    def setup_rotate_order(self):
         [c.a.ro.set(2) for c in self.ctls]
 
-    def channel_setup(self):
+    def setup_channel(self):
         [ctl.a.showAttr(t=1, r=1) for ctl in self.ctls]
         self.setting.a.showAttr()
         self.tangent_fore_ctl.a.showAttr(r=1)
         self.tangent_base_ctl.a.showAttr(r=1)
 
-    def anchor_setup(self):
-        self.anchor_setup_module(
+    def setup_anchor(self):
+        self.setup_anchor_module(
             {
                 "anchorM1": self.rootJ,
                 "anchorM2": self.rootJ.allChildrenJt[-1],
@@ -395,9 +396,9 @@ class SpineQd(RigModule):
         if self.RBN_JNT_NUM > 1:
             self.addBindJntSet(self.bindJnts)
         self.addCtlSet(self.ctls)
-        self.anchor_setup()
-        self.proxy_setup()
-        self.vis_setup()
-        self.channel_setup()
-        self.ro_setup()
+        self.setup_anchor()
+        self.setup_proxy()
+        self.setup_vis()
+        self.setup_channel()
+        self.setup_rotate_order()
         self.post_module()
