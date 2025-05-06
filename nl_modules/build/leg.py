@@ -140,7 +140,7 @@ class Leg(RigModule):
         self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=scale)
         self.ikc.cv_move(0, 0, rSz * 8)
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz)
-        self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz * 0.6)
+        self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
 
         self.rigNode.setMsg(
             {

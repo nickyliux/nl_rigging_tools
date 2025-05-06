@@ -25,9 +25,9 @@ class Spine(RigModule):
 
         self.cog_ctl = None
         self.cog_gmb = None
-        self.rt_ctl = None
-        self.md_ctl = None
-        self.tp_ctl = None
+        self.hip_ctl = None
+        self.mid_ctl = None
+        self.chest_ctl = None
         self.ikCtl = None
         self.fkCtl = None
         self.setting = None
@@ -47,34 +47,27 @@ class Spine(RigModule):
         self.setting = CurveNode(
             "setting",
             pf=rID,
-            shape="stick",
-            up="-z",
+            shape="diamond",
             scale=rSz * 2,
             color=Color.BLACK,
             top=1,
             lineWidth=2,
+            p=self.CTL_DATA,
         )
         self.cog_ctl = CurveNode(
             "cog_ctl", pf=rID, shape="cog2", scale=rSz * 2, color=Color.YELLOW
         )
-        self.tp_ctl = CurveNode(
-            "tp_ctl", pf=rID, shape="squareR", scale=rSz * 4, lineWidth=2
-        )
-        self.md_ctl = CurveNode(
-            "_md_ctl", pf=rID, shape="cube", up="-z", scale=rSz, lineWidth=2
-        )
-        self.rt_ctl = CurveNode(
-            "rt_ctl", pf=rID, shape="squareR", scale=rSz * 4, lineWidth=2
-        )
-        self.md_ctl.cv_move(0, 0, rSz * -70)
+        self.chest_ctl = CurveNode("chest_ctl", pf=rID, shape="squareR", scale=rSz * 4)
+        self.mid_ctl = CurveNode("_mid_ctl", pf=rID, shape="squareR", scale=rSz * 4)
+        self.hip_ctl = CurveNode("hip_ctl", pf=rID, shape="squareR", scale=rSz * 4)
 
         self.rigNode.setMsg(
             {
                 "setting": self.setting,
                 "cog_ctl": self.cog_ctl,
-                "rt_ctl": self.rt_ctl,
-                "md_ctl": self.md_ctl,
-                "tp_ctl": self.tp_ctl,
+                "hip_ctl": self.hip_ctl,
+                "mid_ctl": self.mid_ctl,
+                "chest_ctl": self.chest_ctl,
             }
         )
 
@@ -98,7 +91,8 @@ class Spine(RigModule):
             aimV=(0, 1, 0),
             upV=(0, 0, 1),
             wuV=(0, 0, 1),
-            size=rSz,
+            size=rSz * 2,
+            color=Color.BLUE,
             p=self.SKL_DATA,
         )
         mc.delete(self.rootJ)
@@ -107,7 +101,9 @@ class Spine(RigModule):
 
         self.fkCtl = []
         for i, j in enumerate(self.fkJnt[:-1]):
-            c = CurveNode(f"fkc_{i + 1}", pf=rID, shape="circleC", scale=rSz * 5)
+            c = CurveNode(
+                f"{i + 1}_fkc", pf=rID, shape="circleC", scale=rSz * 5, lineWidth=2
+            )
             self.fkCtl.append(c)
 
         self.build_fk_with_ctl2(self.fkJnt[1:], self.fkCtl[1:], p=self.CTL_DATA)
@@ -125,26 +121,30 @@ class Spine(RigModule):
         logging.info(rID)
 
         mG = self.master_guide
-        self.rt_ctl.snapAlignTo(self.fkJnt[0], mG)
-        self.md_ctl.snapAlignTo(self.MD_GUIDE, mG)
-        self.tp_ctl.snapAlignTo(self.fkJnt[-1], mG)
-        self.cog_ctl.snapAlignTo(self.rt_ctl, mG)
-        self.setting.alignTo(self.cog_ctl)  # , offset=(0, 0, rSz * -100))
+        self.hip_ctl.snapAlignTo(self.fkJnt[0], mG)
+        self.mid_ctl.snapAlignTo(self.MD_GUIDE, mG)
+        self.chest_ctl.snapAlignTo(self.fkJnt[-1], mG)
+        self.cog_ctl.snapAlignTo(self.hip_ctl, mG)
+
+        self.setting.alignTo(self.cog_ctl)
+        self.setting.a.tz.set(rSz * -100)
+        self.cog_ctl.cstPar(self.setting, mo=1)
+
         self.cog_gmb = CurveNode(self.cog_ctl).addGimbal()  # attrTgt=self.setting)
-        self.setting | self.cog_ctl | self.CTL_DATA
+        self.cog_ctl | self.CTL_DATA
         self.cog_gmb.cstPar(self.fkCtl[0].offset, mo=1)
         self.cog_gmb.cstPar(self.fkCtl[1].offset, mo=1)
 
-        self.rt_ctl | self.fkCtl[0]
-        self.tp_ctl | self.fkCtl[-1]
-        self.md_ctl | self.fkCtl[len(self.fkCtl) // 2]
-        self.rt_ctl.addOffsetGrp()
-        self.md_ctl.addOffsetGrp(count=2)
-        self.tp_ctl.addOffsetGrp()
+        self.hip_ctl | self.fkCtl[0]
+        self.chest_ctl | self.fkCtl[-1]
+        self.mid_ctl | self.fkCtl[len(self.fkCtl) // 2]
+        self.hip_ctl.addOffsetGrp()
+        self.mid_ctl.addOffsetGrp(count=2)
+        self.chest_ctl.addOffsetGrp()
         self.cog_ctl.addOffsetGrp()
-        self.rt_ctl.a.ry @ self.tp_ctl.a.ry >> self.md_ctl.offset.a.ry
+        self.hip_ctl.a.ry @ self.chest_ctl.a.ry >> self.mid_ctl.offset.a.ry
 
-        self.tp_ctl.cstOri(self.fkJnt[-1], mo=1)
+        self.chest_ctl.cstOri(self.fkJnt[-1], mo=1)
         self.cog_gmb.cstSca(self.fkJnt[0])
         self.fkJnt[0].childrenJt[0].a.segmentScaleCompensate.set(0)
 
@@ -160,7 +160,7 @@ class Spine(RigModule):
             self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
             self.ctlJnts = self.create_ctl_jnt(
-                [self.rt_ctl, self.md_ctl, self.tp_ctl], r=rSz * 5
+                [self.hip_ctl, self.mid_ctl, self.chest_ctl], r=rSz * 10
             )
             self.rbSrf.weightTo(self.ctlJnts, chain=0, mi=2, dr=6)
             self.bindJnts = SurfNode.buildRbJnt(
@@ -178,9 +178,9 @@ class Spine(RigModule):
             self.cog_ctl.a.s >> ctl.offset.a.s
 
         self.cog_ctl.a.s >> self.PRX_GRP.a.s
-        self.ikCtl = [self.rt_ctl, self.md_ctl, self.tp_ctl]
+        self.ikCtl = [self.hip_ctl, self.mid_ctl, self.chest_ctl]
 
-        self.tp_ctl
+        self.chest_ctl
 
     def volume_setup(self):
         """Scale ribbon joints according to length of the surface"""
@@ -191,8 +191,8 @@ class Spine(RigModule):
         D = d.get()
 
         autoVol = self.setting.a.add("autoVol", dv=1)
-        self.tp_ctl.a.add("autoVol", proxy=autoVol)
-        self.rt_ctl.a.add("autoVol", proxy=autoVol)
+        self.chest_ctl.a.add("autoVol", proxy=autoVol)
+        self.hip_ctl.a.add("autoVol", proxy=autoVol)
 
         # keys for volume squash
         volGraph = self.setting.a.add("volGraph", dv=0)
@@ -209,7 +209,7 @@ class Spine(RigModule):
 
             ratio = (D / (d / scaleFix)) ** (fc.a.varying * autoVol)
             ratio >> self.bindJnts[i].a.sx
-            ratio >> self.bindJnts[i].a.sy
+            ratio >> self.bindJnts[i].a.sz
 
     def vis_setup(self):
 
@@ -230,7 +230,12 @@ class Spine(RigModule):
 
     def channel_setup(self):
         self.setting.a.showAttr()
-        for ctl in [self.cog_gmb, self.rt_ctl, self.md_ctl, self.tp_ctl] + self.fkCtl:
+        for ctl in [
+            self.cog_gmb,
+            self.hip_ctl,
+            self.mid_ctl,
+            self.chest_ctl,
+        ] + self.fkCtl:
             ctl.a.showAttr(t=1, r=1)
         self.cog_ctl.a.showAttr(t=1, r=1, s=1)
 
@@ -246,12 +251,12 @@ class Spine(RigModule):
 
     def space_setup(self):
         self.rigNode.setMsg({"space_COG": self.cog_ctl})
-        self.rigNode.setMsg({"space_lwrBody": self.rt_ctl})
-        self.rigNode.setMsg({"space_uprBody": self.tp_ctl})
+        self.rigNode.setMsg({"space_lwrBody": self.hip_ctl})
+        self.rigNode.setMsg({"space_uprBody": self.chest_ctl})
 
     def anchor_setup(self):
-        anchorM2Tgt = self.bindJnts[-1] if self.RBN_BONES else self.tp_ctl
-        self.anchor_setup_module({"anchorM1": self.rt_ctl, "anchorM2": anchorM2Tgt})
+        anchorM2Tgt = self.bindJnts[-1] if self.RBN_BONES else self.chest_ctl
+        self.anchor_setup_module({"anchorM1": self.hip_ctl, "anchorM2": anchorM2Tgt})
 
     def post_setup(self):
         self.addBindJntSet(self.bindJnts)
