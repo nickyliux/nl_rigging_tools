@@ -114,7 +114,7 @@ class TailFkIk(RigModule):
                 f"{i}_ikc",
                 pf=rID,
                 shape="sphere2",
-                scale=rSz * 6,
+                scale=rSz * 4,
                 align=self.ikJnt[i],
                 addOfs=1,
                 p=self.IK_PART,
@@ -164,7 +164,7 @@ class TailFkIk(RigModule):
                 pf=rID,
                 shape="circleC",
                 up="z",
-                scale=rSz,
+                scale=rSz / 2,
                 align=self.fkJnt[i],
                 color=Color.YELLOW,
             )
@@ -330,7 +330,7 @@ class TailFkIk(RigModule):
     def setup_proxy(self):
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(
-                p=self.PRX_GRP, scaler=self.setting.a["tailScale"]
+                p=self.PRX_GRP, scaler=self.setting.a["tailScale"], scale=0.6
             )
 
     def post_setup(self):

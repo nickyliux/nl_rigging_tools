@@ -192,15 +192,24 @@ def nlRivet(
 
     pinLocs = []
 
-    for i in range(len(coordList)):
+    for i, coord in enumerate(coordList):
         loc = LocNode("rivetLoc_#", size=size)
         scaleAttr >> loc.a.scaleX
         scaleAttr >> loc.a.scaleY
         scaleAttr >> loc.a.scaleZ
         uvPinN.a.outputMatrix >> loc.a.offsetParentMatrix
-        mc.setAttr(uvPinN + f".coordinate[{i}].coordinateU", coordList[i][0])
-        mc.setAttr(uvPinN + f".coordinate[{i}].coordinateV", coordList[i][1])
+        mc.setAttr(uvPinN + f".coordinate[{i}].coordinateU", coord[0])
+        mc.setAttr(uvPinN + f".coordinate[{i}].coordinateV", coord[1])
         pinLocs.append(loc)
+        if i > 0:
+            pinLocs[i - 1].cstAim(
+                loc,
+                aim=(0, 1, 0),
+                u=(1, 0, 0),
+                wu=(1, 0, 0),
+                worldUpType="objectrotation",
+                worldUpObject=pinLocs[i - 1],
+            )
         if p:
             loc | p
 
