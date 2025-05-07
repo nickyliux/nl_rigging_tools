@@ -76,7 +76,7 @@ class Arm(RigModule):
         self.build_module()
         self.joints = self.rootJ.allChildrenJt2
         self.clavicle, self.upr, self.lwr, self.palm, self.ball = self.joints
-        self.create_ctl()
+        self.build_ctl()
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
@@ -107,7 +107,7 @@ class Arm(RigModule):
 
         self.post_setup()
 
-    def create_ctl(self):
+    def build_ctl(self):
         rSz = self.rigSize
         rID = self.rigID
         xDr = self.x_dir
@@ -120,7 +120,7 @@ class Arm(RigModule):
             color=Color.BLACK,
             top=1,
         )
-        # lineWidth=2
+        # width=2
         self.clavicle_fkc = CurveNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
         )

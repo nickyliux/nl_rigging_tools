@@ -65,13 +65,13 @@ class TailFkIk(RigModule):
 
         self.rigNode.setMsg({"rbSrf": self.rbSrf2})
 
-        self.create_ctl()
+        self.build_ctl()
         self.build_ik()
         self.build_fk()
         self.build_stretchy_rbj()
         self.post_setup()
 
-    def create_ctl(self):
+    def build_ctl(self):
         rID = self.rigID
         rSz = self.rigSize
         logging.info(rID)
@@ -83,7 +83,7 @@ class TailFkIk(RigModule):
             scale=rSz * 3,
             color=Color.BLACK,
             top=1,
-            lineWidth=2,
+            width=2,
             p=self.CTL_DATA,
         )
         self.rigNode.setMsg(
@@ -114,7 +114,7 @@ class TailFkIk(RigModule):
                 f"{i}_ikc",
                 pf=rID,
                 shape="sphere2",
-                scale=rSz * 5,
+                scale=rSz * 6,
                 align=self.ikJnt[i],
                 addOfs=1,
                 p=self.IK_PART,
@@ -126,7 +126,7 @@ class TailFkIk(RigModule):
 
             self.rigNode.setMsg({f"ikc{i}": ctl})
 
-        SurfNode(self.rbSrf1).weightTo(self.ikJnt, chain=0)
+        SurfNode(self.rbSrf1).weightTo(self.ikJnt, mi=4, dr=6, chain=0)
 
     def build_fk(self):
         rID = self.rigID

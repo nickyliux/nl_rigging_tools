@@ -280,7 +280,7 @@ class RigModule(RigBase):
             )
 
     @classmethod
-    def isolateNeckToSpine(cls, neckCog, spineCtl, wSpaceObj):
+    def isolate_neck_to_spine(cls, neckCog, spineCtl, wSpaceObj):
         """Add 'isolateT' & 'isolateR' to tgt to allow separate cst specially for the neck"""
         cls.isolate_align(
             neckCog, spaces=[spineCtl, wSpaceObj], attrName="isolateR", cstType="ori"
@@ -420,34 +420,34 @@ class RigModule(RigBase):
         else:
             mc.sets(tgtList, n=BIND_JNT_SET)
 
-    def addPivOffset(self, tgt, scale=1, inRange=10, maxOfs=120, frontBack=1, upDown=0):
+    def add_movable_pivot(self, tgt, scale=1, inRange=10, maxOfs=120, tz=1, ty=0):
         """Add pivot offset to target ctl"""
         piv_ref = CurveNode(
             tgt + "_pivRef", shape="locator", align=tgt, scale=scale, p=tgt
         )
         piv_ref.dspType = 2
 
-        if frontBack:
-            pivotForward = tgt.a.add("pivotForward", min=-inRange, max=inRange, dv=0)
+        if tz:
+            pivotTz = tgt.a.add("pivotTz", min=-inRange, max=inRange, dv=0)
             rmN = DagNode("rmpZ_#", nodeType="remapValue")
             rmN.a.inputMin.set(inRange)
             rmN.a.inputMax.set(-inRange)
             rmN.a.outputMin.set(maxOfs)
             rmN.a.outputMax.set(-maxOfs)
 
-            pivotForward >> rmN.a.inputValue
+            pivotTz >> rmN.a.inputValue
             rmN.a.outValue >> tgt.a.rotatePivotZ
             rmN.a.outValue >> piv_ref.a.tz
 
-        if upDown:
-            pivotDownward = tgt.a.add("pivotDownward", min=-inRange, max=inRange, dv=0)
+        if ty:
+            pivotTy = tgt.a.add("pivotTy", min=-inRange, max=inRange, dv=0)
             rmN = DagNode("rmpY_#", nodeType="remapValue")
             rmN.a.inputMin.set(-inRange)
             rmN.a.inputMax.set(inRange)
             rmN.a.outputMin.set(-maxOfs)
             rmN.a.outputMax.set(maxOfs)
 
-            pivotDownward >> rmN.a.inputValue
+            pivotTy >> rmN.a.inputValue
             rmN.a.outValue >> tgt.a.rotatePivotY
             rmN.a.outValue >> piv_ref.a.ty
 
@@ -514,7 +514,7 @@ class RigModule(RigBase):
             patella_sdk(self.lwr, j)
             return j
 
-    def create_ctl_jnt(self, ctls, r=1, color=Color.BLACK):
+    def build_ctl_jnt(self, ctls, r=1, color=Color.BLACK):
         result = []
         for ctl in ctls:
             jnt = JointNode(ctl, sf="_ctlJ", r=r, color=color, p=ctl)
@@ -763,7 +763,7 @@ class RigModule(RigBase):
                 align=ctl_grp,
                 p=ctl_main,
                 scale=rSz / 3,
-                lineWidth=2,
+                width=2,
                 top=1,
             )
             ctl.a.showAttr(t=1, r=1)

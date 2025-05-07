@@ -42,7 +42,7 @@ class Spine(RigModule):
     def gen_guide_sk(self):
         self.gen_guide_sk_module(["rt", "md", "tp"])
 
-    def create_ctl(self):
+    def build_ctl(self):
         rSz = self.rigSize
         rID = self.rigID
 
@@ -53,7 +53,7 @@ class Spine(RigModule):
             scale=rSz * 2,
             color=Color.BLACK,
             top=1,
-            lineWidth=2,
+            width=2,
             p=self.CTL_DATA,
         )
         self.cog_ctl = CurveNode(
@@ -76,7 +76,7 @@ class Spine(RigModule):
     def build(self):
         self.build_module()
         self.rigSize = rSz = CurveNode(self.LINE_GUIDE).length / 100
-        self.create_ctl()
+        self.build_ctl()
         self.build_fk()
         self.build_ik()
         self.post_setup()
@@ -104,7 +104,7 @@ class Spine(RigModule):
         self.fkCtl = []
         for i, j in enumerate(self.fkJnt[:-1]):
             c = CurveNode(
-                f"{i + 1}_fkc", pf=rID, shape="circleC", scale=rSz * 5, lineWidth=2
+                f"{i + 1}_fkc", pf=rID, shape="circleC", scale=rSz * 5, width=2
             )
             self.fkCtl.append(c)
 
@@ -161,7 +161,7 @@ class Spine(RigModule):
             )
             self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
-            self.ctlJnts = self.create_ctl_jnt(
+            self.ctlJnts = self.build_ctl_jnt(
                 [self.hip_ctl, self.mid_ctl, self.chest_ctl], r=rSz * 10
             )
             self.rbSrf.weightTo(self.ctlJnts, chain=0, mi=2, dr=6)
@@ -172,7 +172,6 @@ class Spine(RigModule):
                 surf=self.rbSrf,
                 rigData=self.RIG_DATA,
                 sklData=self.SKL_DATA,
-                color=Color.D_RED,
             )
             self.volume_setup()
 

@@ -11,7 +11,7 @@ from nl_modules.utils.color import Color
 def addAwesomeSpine_createCtlJ(jointList, r=8, pf="", color=Color.RED, p=None):
     """create control joint at start, mid, end for a joint chain
     e.g.
-        create_ctl_jnt(jntList, 10)
+        build_ctl_jnt(jntList, 10)
     """
     from nl_modules.nodel.joint_node import JointNode
     from nl_modules.utils.color import Color

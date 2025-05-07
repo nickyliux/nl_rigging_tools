@@ -91,7 +91,7 @@ class LegQd(RigModule):
                 fgr_jnts[0].freezeXf()
                 fgr_jnts[0] | self.toesRootJ
 
-    def create_ctl(self):
+    def build_ctl(self):
         rSz = self.rigSize
         rID = self.rigID
         xDr = self.x_dir
@@ -151,7 +151,7 @@ class LegQd(RigModule):
         self.hip, self.upr, self.lwr, self.palm, self.digit, self.ball, self.tip = (
             self.joints
         )
-        self.create_ctl()
+        self.build_ctl()
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()

@@ -44,12 +44,12 @@ class Head(RigModule):
             self.joints
         )
         self.bindJnts = [self.head, self.jaw]
-        self.create_ctl()
+        self.build_ctl()
         self.fkCtl = [self.head_fkc, self.jaw_fkc]
         self.build_fk()
         self.post_setup()
 
-    def create_ctl(self):
+    def build_ctl(self):
         rID = self.rigID
         rSz = self.rigSize
         self.head_fkc = CurveNode(

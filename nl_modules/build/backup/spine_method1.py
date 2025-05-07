@@ -95,7 +95,7 @@ class Spine(rig_module.RigModule):
             ptMM.a.outputX >> joints[i + 1].a.sy
             ptMM.a.outputX >> joints[i + 1].a.sz
 
-    def create_ctl_jnt(self, jointList, NUM, p=None):
+    def build_ctl_jnt(self, jointList, NUM, p=None):
 
         staJ = JointNode("sta_ikj", pf=self.rigID, r=8, color=Color.RED)
         staJ.snapTo(jointList[0])
@@ -138,7 +138,7 @@ class Spine(rig_module.RigModule):
 
         self.joints_as = common.extractSk(joints, "_as")
 
-        self.ctlJnts = self.create_ctl_jnt(joints, NUM, p=cog_ctl)
+        self.ctlJnts = self.build_ctl_jnt(joints, NUM, p=cog_ctl)
         staJ, midJ, endJ = self.ctlJnts
 
         sta_ikc, mid_ikc, end_ikc = ikCtl

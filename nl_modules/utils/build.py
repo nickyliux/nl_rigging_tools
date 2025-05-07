@@ -204,7 +204,7 @@ def updateAnchorConn():
     # spineCtl = DagNode("spineQd0_tp_ctl")
     # wSpaceObj = DagNode("master_ctl")
     # if all([neckCog.exists(), spineCtl.exists(), wSpaceObj.exists()]):
-    #     RigModule.isolateNeckToSpine(neckCog, spineCtl, wSpaceObj)
+    #     RigModule.isolate_neck_to_spine(neckCog, spineCtl, wSpaceObj)
 
 
 # "{ string $selection[]=`ls -sl`;string $attr, $udAttr[];float $dfv[];for ($c in $selection) {\

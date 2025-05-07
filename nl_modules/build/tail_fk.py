@@ -58,7 +58,7 @@ class TailFk(RigModule):
         )
         self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
-        self.create_ctl()
+        self.build_ctl()
         self.build_fk()
 
         if self.RBN_BONES:
@@ -77,7 +77,7 @@ class TailFk(RigModule):
 
         self.post_setup()
 
-    def create_ctl(self):
+    def build_ctl(self):
         rID = self.rigID
         rSz = self.rigSize
         logging.info(rID)
@@ -90,7 +90,7 @@ class TailFk(RigModule):
             color=Color.BLACK,
             p=self.CTL_DATA,
             top=1,
-            lineWidth=2,
+            width=2,
         )
         self.rigNode.setMsg(
             {
@@ -174,7 +174,8 @@ class TailFk(RigModule):
             self.setting.a.add("fkCtl", k=0, min=0, max=1, dv=1),
             onList=[self.fkCtl[0]],
         )
-        mc.hide(self.allClusters)
+        if self.RBN_BONES:
+            mc.hide(self.allClusters)
 
     def setup_channel(self):
         for ctl in self.fkCtl:

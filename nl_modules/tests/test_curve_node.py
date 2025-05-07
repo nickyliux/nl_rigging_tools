@@ -80,9 +80,9 @@ class Test_CurveNode_Main(Test_CurveNode_Base):
         self.assertEqual(CurveNode(crv).length, 3)
 
     def test_lineW(self):
-        self.circle.lineWidth = 10
+        self.circle.width = 10
         self.assertEqual(self.circle.a.lineWidth.get(), 10)
-        self.assertEqual(self.circle.lineWidth, 10)
+        self.assertEqual(self.circle.width, 10)
 
 
 class Test_CurveNode_Advanced(Test_CurveNode_Base):

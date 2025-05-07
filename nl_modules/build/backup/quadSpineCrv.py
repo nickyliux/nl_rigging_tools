@@ -71,7 +71,7 @@ class SpineQdCrv(rig_module.RigModule):
         self.tigerSpine()
         self.post_setup()
 
-    def create_ctl_jnt(
+    def build_ctl_jnt(
         self,
         st_ctl,
         md_ctl,
@@ -143,7 +143,7 @@ class SpineQdCrv(rig_module.RigModule):
         (self.setting, st_ctl, md_ctl, ed_ctl) | cog_ctl | self.CTL_DATA
 
         # SKINNING CRV
-        ctlJnts = self.create_ctl_jnt(st_ctl, md_ctl, ed_ctl)
+        ctlJnts = self.build_ctl_jnt(st_ctl, md_ctl, ed_ctl)
         spCrv.weightTo(ctlJnts, mi=3, dr=5)
         spCrv.a.inheritsTransform.set(0)
         mc.hide(ctlJnts)

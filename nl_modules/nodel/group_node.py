@@ -333,15 +333,15 @@ class GroupNode(DagNode):
         return mc.ls(self + ".cv[*]", fl=1)
 
     @property
-    def lineWidth(self):
+    def width(self):
         """Return line width"""
         if self.shape:
             return self.shape.a.lineWidth
         else:
             return -1
 
-    @lineWidth.setter
-    def lineWidth(self, w):
+    @width.setter
+    def width(self, w):
         """Set line width"""
         if self.shape:
             self.shape.a.lineWidth.set(w)

@@ -38,7 +38,7 @@ class Hand(RigModule):
             fgr_jnts[0] | self.rootJ
             fgr_roots.append(fgr_jnts[0])
 
-    def create_ctl(self):
+    def build_ctl(self):
         rSz = self.rigSize
         rID = self.rigID
         # xDr = self.x_dir
@@ -50,7 +50,7 @@ class Hand(RigModule):
 
     def build(self):
         self.build_module()
-        self.create_ctl()
+        self.build_ctl()
 
         self.bindJnts = [self.rootJ]
         if self.rootJ:
