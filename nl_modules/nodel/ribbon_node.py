@@ -29,7 +29,7 @@ class RibbonNode:
     ):
         self.tgtN = DagNode(tgt) if isinstance(tgt, str) else tgt
         self.tgtChild = self.tgtN.children[0]
-        self.x_dir = 1 if self.tgtChild.a.tx.get() > 0 else -1
+        self.xDir = 1 if self.tgtChild.a.tx.get() > 0 else -1
         self.D = self.tgtN.o.distanceTo(self.tgtChild)
 
         if self.D == 0:
@@ -98,7 +98,7 @@ class RibbonNode:
     def build_surf(self, pf):
 
         rSz = self.rigSize
-        xDr = self.x_dir
+        xDr = self.xDir
 
         surf = SurfNode(
             "rb_surf",
@@ -135,7 +135,7 @@ class RibbonNode:
     def build_locs(self, pf):
         offset = self.D / 4
         size = self.D / 15
-        Dx = self.D * self.x_dir
+        Dx = self.D * self.xDir
 
         self.stt_loc = LocNode("stt_loc", pf=pf, p=self.CTL_GRP, size=size)
         self.stt_loc_upVec = LocNode("stt_loc_upVec", pf=pf, p=self.stt_loc, size=size)
@@ -169,7 +169,7 @@ class RibbonNode:
         g = self.AIM_GRP
         rSz = self.rigSize
 
-        ofsX = self.D / 4 * self.x_dir
+        ofsX = self.D / 4 * self.xDir
         ofsX2 = ofsX * 2
 
         stt_aimJ, stt_aimJ_end = JointNode.makeTwoJChain(
@@ -265,9 +265,9 @@ class RibbonNode:
 
     def build_twist_chains(self, pf):
 
-        ofsX = self.D / 10 * self.x_dir
-        aimV = (self.x_dir, 0, 0)
-        aimVN = (-self.x_dir, 0, 0)
+        ofsX = self.D / 10 * self.xDir
+        aimV = (self.xDir, 0, 0)
+        aimVN = (-self.xDir, 0, 0)
         upV = (0, 1, 0)
         rSz = self.rigSize
 

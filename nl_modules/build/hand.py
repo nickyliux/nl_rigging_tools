@@ -1,12 +1,9 @@
 import maya.cmds as mc
 import logging
-
 from nl_modules.build.rig_module import RigModule
-
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.joint_node import JointNode
-
 from nl_modules.utils import common
 
 
@@ -41,8 +38,6 @@ class Hand(RigModule):
     def build_ctl(self):
         rSz = self.rigSize
         rID = self.rigID
-        # xDr = self.x_dir
-
         self.smart_ctl = CurveNode(
             "smart_ctl", pf=rID, shape="roll", up="x", scale=rSz * 2
         )
@@ -69,9 +64,8 @@ class Hand(RigModule):
     def build_fk(self):
         rID = self.rigID
         rSz = self.rigSize
-        xDr = self.x_dir
+        xDr = self.xDir
         logging.info(rID)
-
         self.ctlsArr = []
         for fgrs in self.fgrsArr:
             ctlList = []
@@ -89,8 +83,7 @@ class Hand(RigModule):
     def build_ik(self):
         rID = self.rigID
         rSz = self.rigSize
-        xDr = self.x_dir
-
+        xDr = self.xDir
         self.fgrRootCtlArr = []
         self.hand_grp = GroupNode(rID + "_grp", align=self.rootJ, p=self.RIG_DATA)
 
@@ -109,9 +102,8 @@ class Hand(RigModule):
     def build_fgr_logic(self):
         rID = self.rigID
         rSz = self.rigSize
-        xDr = self.x_dir
+        xDr = self.xDir
         logging.info(rID)
-
         if len(self.fgrsArr) != 5:
             logging.info("Smart setup for 5-fgr only")
             return
@@ -269,7 +261,7 @@ class Hand(RigModule):
         self.rigNode.a.add("spaceName2", attrType="string", txt="palmIK")
 
     def setup_proxy(self):
-        aim = (self.x_dir, 0, 0)
+        aim = (self.xDir, 0, 0)
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(scale=2, aimDir=aim, skipEnd=1, p=self.PRX_GRP)
 

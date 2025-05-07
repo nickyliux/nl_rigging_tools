@@ -87,7 +87,7 @@
 #
 #             self.ctlsArr.append(ctlList)
 #
-#         self.x_dir = 1 if self.fgrsArr[1][2].a.tx.get() > 0 else -1
+#         self.xDir = 1 if self.fgrsArr[1][2].a.tx.get() > 0 else -1
 #
 #     def setup_anchor(self):
 #
@@ -110,9 +110,9 @@
 #         for fgrs in self.fgrsArr:
 #             for j in fgrs:
 #                 JointNode(j).addProxyMesh(
-#                     size=self.rigSize / 2, aimDir=(self.x_dir, 0, 0), skipEnd=1
+#                     size=self.rigSize / 2, aimDir=(self.xDir, 0, 0), skipEnd=1
 #                 )
-#         # self.rootJ.addProxyMesh(size=self.rigSize, aimDir=(self.x_dir, 0, 0))
+#         # self.rootJ.addProxyMesh(size=self.rigSize, aimDir=(self.xDir, 0, 0))
 #
 #         # fgrCtlVis = self.smart_ctl.a.add("toeCtl", k=0, min=0, max=1)
 #         # for fgrCtls in self.ctlsArr:

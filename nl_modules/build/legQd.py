@@ -57,7 +57,7 @@ class LegQd(RigModule):
         self.ikCtl = None
         self.fkCtl = None
         self.palmScale = None
-        self.toeWiggleG = None
+        self.toe_wiggle_grp = None
         self.ikc_gimbal = None
         self.pvc_line = None
         self.pvRota_line = None
@@ -94,7 +94,7 @@ class LegQd(RigModule):
     def build_ctl(self):
         rSz = self.rigSize
         rID = self.rigID
-        xDr = self.x_dir
+        xDr = self.xDir
         self.setting = CurveNode(
             "setting",
             pf=rID,
@@ -239,19 +239,19 @@ class LegQd(RigModule):
         self.ikCstG = GroupNode("ikCstG", pf=rID, snap=self.palm, alignR=mG)
         extraRollG = GroupNode("extraRollG", pf=rID, snap=self.digit, alignR=mG)
         ballRollG = GroupNode("ballRollG", pf=rID, snap=self.ball, alignR=mG)
-        toeWiggleG = GroupNode("toeWiggleG", pf=rID, align=self.ball)
+        toe_wiggle_grp = GroupNode("toe_wiggle_grp", pf=rID, align=self.ball)
         footRollG = GroupNode("footRollG", pf=rID, snap=toePos_guide, alignR=mG)
         toeRollG = GroupNode("toeRollG", pf=rID, snap=toePos_guide, alignR=mG)
         inRollG = GroupNode("inRollG", pf=rID, snap=inPos_guide, alignR=mG)
         outRollG = GroupNode("outRollG", pf=rID, snap=outPos_guide, alignR=mG)
         heelRollG = GroupNode("heelRollG", pf=rID, snap=heelPos_guide, alignR=mG)
 
-        if self.x_dir == 1:
+        if self.xDir == 1:
             for g in (
                 self.ikCstG,
                 extraRollG,
                 ballRollG,
-                toeWiggleG,
+                toe_wiggle_grp,
                 footRollG,
                 toeRollG,
                 inRollG,
@@ -261,7 +261,7 @@ class LegQd(RigModule):
                 g.a.rx.set2(180, add=1)
 
         (ikH1, ikHX) | extraRollG | ballRollG | inRollG
-        (ikH2, ikH3) | toeWiggleG | inRollG
+        (ikH2, ikH3) | toe_wiggle_grp | inRollG
         inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG
 
         self.ikc_gimbal = CurveNode(self.ikc).addGimbal()  # attrTgt=self.setting)
@@ -273,7 +273,7 @@ class LegQd(RigModule):
         self.foot_roll_logic(self.ikc, heelRollG, ballRollG, footRollG, toeRollG)
         self.foot_bank_logic(self.ikc, inRollG, outRollG)
 
-        self.ikc.a.add("kneeTwist") * self.x_dir >> ikH1.a.twist
+        self.ikc.a.add("kneeTwist") * self.xDir >> ikH1.a.twist
         (self.ikc, self.pvc, self.ikCstG) | self.IK_PART
         self.pvc_line = CurveNode.buildLineLinked(
             self.joints_ik[2], self.pvc, pf=rID, dspType=2, p=self.IK_PART
@@ -283,7 +283,7 @@ class LegQd(RigModule):
 
         ikH1.stretchyIk(soft=1)
         self.all_ikH = {"main": ikH1, "ball": ikH2, "toe": ikH3}
-        self.toeWiggleG = toeWiggleG
+        self.toe_wiggle_grp = toe_wiggle_grp
         self.hip_fkc.cstPar(self.joints_ik[0], mo=1)
 
         self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal]
@@ -294,7 +294,7 @@ class LegQd(RigModule):
     def extra_roll_logic(self, ballRollG, extraRollG, grp):
         rID = self.rigID
         rSz = self.rigSize
-        xDr = self.x_dir
+        xDr = self.xDir
         # Setup aim logic
         aimGrp = extraRollG.addOffsetGrp(below=1, relink=0)
         aimGrp | extraRollG.offset
@@ -333,7 +333,7 @@ class LegQd(RigModule):
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
         rID = self.rigID
         rSz = self.rigSize
-        xDr = self.x_dir
+        xDr = self.xDir
 
         for g in [toeRollG, inRollG, outRollG, heelRollG]:
             ctl = g.addOffsetGrp(below=1)
@@ -353,7 +353,7 @@ class LegQd(RigModule):
     def digits_setup(self):
         rID = self.rigID
         rSz = self.rigSize
-        xDr = self.x_dir
+        xDr = self.xDir
         logging.info(rID)
         self.toesCtlsList = []
         scale = xDr * rSz / 8
@@ -415,7 +415,7 @@ class LegQd(RigModule):
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
         uType = "objectrotation"
-        aim = (self.x_dir, 0, 0)
+        aim = (self.xDir, 0, 0)
         z = (0, 0, 1)
 
         radius_loc.cstAim(
@@ -460,7 +460,7 @@ class LegQd(RigModule):
 
         self.spaceAlign(
             self.ball_fkc,
-            spaces=[ball_fkj.offset, self.toeWiggleG],
+            spaces=[ball_fkj.offset, self.toe_wiggle_grp],
             w=fkIkBlend,
             cstType="par",
         )
@@ -549,7 +549,7 @@ class LegQd(RigModule):
         self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def setup_proxy(self):
-        aim = (self.x_dir, 0, 0)
+        aim = (self.xDir, 0, 0)
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(scale=1.5, aimDir=aim, p=self.PRX_GRP)
 

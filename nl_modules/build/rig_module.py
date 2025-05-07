@@ -42,7 +42,7 @@ class RigModule(RigBase):
         if not self.master_guide:
             logging.info("master_guide not found in RigNode !")
 
-        self.x_dir = 1
+        self.xDir = 1
         self.rigSize = 1
         self.boneFix = None
         self.bindJnts = []
@@ -333,7 +333,7 @@ class RigModule(RigBase):
         self.rigNode.a.nodeState.set(2)
         children = self.rootJ.childrenJt
         if children:
-            self.x_dir = 1 if children[0].a.tx.get() > 0 else -1
+            self.xDir = 1 if children[0].a.tx.get() > 0 else -1
 
         # update all joints' radius
         joints = self.rootJ.allChildrenJt2
@@ -453,7 +453,7 @@ class RigModule(RigBase):
 
     def boneFix_setup(self, tgt, tgtChild):
         rSz = self.rigSize
-        xDr = self.x_dir
+        xDr = self.xDir
         upLoc = LocNode(
             "lwrLimb_up", pf=self.rigID, align=tgtChild, addOfs=1, p=tgt, size=rSz
         )
@@ -478,7 +478,7 @@ class RigModule(RigBase):
     #     pass
 
     def boneFix_sdk(self, driver, driven):
-        s = self.rigSize * self.x_dir
+        s = self.rigSize * self.xDir
         common.sdk(driver, driven, "ry", "tz", 0, 0)
         common.sdk(driver, driven, "ry", "tz", -60, 0, tangent=1)
         common.sdk(driver, driven, "ry", "tz", -80, -0.8 * s, tangent=1)

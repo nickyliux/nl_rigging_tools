@@ -1,5 +1,6 @@
 import maya.cmds as mc
 import logging
+from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
@@ -9,7 +10,6 @@ from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.ribbon_node import RibbonNode
 from nl_modules.utils.color import Color
 from nl_modules.utils import common, utils_node as ut
-from nl_modules.build.rig_module import RigModule
 
 
 class Leg(RigModule):
@@ -64,7 +64,7 @@ class Leg(RigModule):
         self.ikCtl = None
         self.fkCtl = None
         self.palmScale = None
-        self.toeWiggleG = None
+        self.toe_wiggle_grp = None
         self.ikc_gimbal = None
         self.pvc_line = None
         self.pvRota_line = None
@@ -106,7 +106,7 @@ class Leg(RigModule):
     def build_ctl(self):
         rSz = self.rigSize
         rID = self.rigID
-        xDr = self.x_dir
+        xDr = self.xDir
 
         self.setting = CurveNode(
             "setting",
@@ -278,19 +278,21 @@ class Leg(RigModule):
         )
         ikH2 = IkNode("2", pf=rID, sj=self.palm, ee=self.ball, jsf="_ik")
         ikH3 = IkNode("3", pf=rID, sj=self.ball, ee=self.tip, jsf="_ik")
+
         self.ikCstG = GroupNode("ikCstG", pf=rID, snap=self.palm, alignR=mG)
         ballRollG = GroupNode("ballRollG", pf=rID, snap=self.ball, alignR=mG)
-        toeWiggleG = GroupNode("toeWiggleG", pf=rID, align=self.ball)
+        toe_wiggle_grp = GroupNode("toe_wiggle_grp", pf=rID, align=self.ball)
         footRollG = GroupNode("footRollG", pf=rID, snap=toePos_guide, alignR=mG)
         toeRollG = GroupNode("toeRollG", pf=rID, snap=toePos_guide, alignR=mG)
         inRollG = GroupNode("inRollG", pf=rID, snap=inPos_guide, alignR=mG)
         outRollG = GroupNode("outRollG", pf=rID, snap=outPos_guide, alignR=mG)
         heelRollG = GroupNode("heelRollG", pf=rID, snap=heelPos_guide, alignR=mG)
-        if self.x_dir == 1:
+
+        if self.xDir == 1:
             for g in (
                 self.ikCstG,
                 ballRollG,
-                toeWiggleG,
+                toe_wiggle_grp,
                 footRollG,
                 toeRollG,
                 inRollG,
@@ -300,7 +302,7 @@ class Leg(RigModule):
                 g.a.rx.set2(180, add=1)
 
         ikH1 | ballRollG | inRollG
-        (ikH2, ikH3) | toeWiggleG | inRollG
+        (ikH2, ikH3) | toe_wiggle_grp | inRollG
         inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG
         self.ikc_gimbal = CurveNode(self.ikc).addGimbal()
         self.ikc.snapTo(self.palm)
@@ -324,7 +326,7 @@ class Leg(RigModule):
         self.foot_roll_logic(self.smart_ctl, heelRollG, ballRollG, footRollG, toeRollG)
         self.foot_bank_logic(self.smart_ctl, inRollG, outRollG)
 
-        self.ikc.a.add("kneeTwist") * self.x_dir >> ikH1.a.twist
+        self.ikc.a.add("kneeTwist") * self.xDir >> ikH1.a.twist
         (self.ikc, self.pvc, self.ikCstG) | self.IK_PART
         self.pvc_line = CurveNode.buildLineLinked(
             self.joints_ik[2], self.pvc, pf=rID, dspType=2, p=self.IK_PART
@@ -339,14 +341,14 @@ class Leg(RigModule):
         self.all_ikHs = [ikH1, ikH2, ikH3]
         self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal]
         self.ikH1 = ikH1
-        self.toeWiggleG = toeWiggleG
+        self.toe_wiggle_grp = toe_wiggle_grp
 
         self.subCtl_setup(ballRollG, toeRollG, inRollG, outRollG, heelRollG)
 
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
         rID = self.rigID
         rSz = self.rigSize
-        xDr = self.x_dir
+        xDr = self.xDir
 
         for g in [toeRollG, inRollG, outRollG, heelRollG]:
             ctl = g.addOffsetGrp(below=1)
@@ -376,7 +378,7 @@ class Leg(RigModule):
     def build_toes(self):
         rID = self.rigID
         rSz = self.rigSize
-        xDr = self.x_dir
+        xDr = self.xDir
         logging.info(rID)
         self.toesCtlsList = []
         scale = xDr * rSz / 10
@@ -421,7 +423,7 @@ class Leg(RigModule):
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
         uType = "objectrotation"
-        aim = (self.x_dir, 0, 0)
+        aim = (self.xDir, 0, 0)
         z = (0, 0, 1)
 
         radius_loc.cstAim(
@@ -571,7 +573,7 @@ class Leg(RigModule):
         self.bindJnts.extend(self.ribbonUp.rbJnt + self.ribbonLw.rbJnt)
 
     def setup_proxy(self):
-        aim = (self.x_dir, 0, 0)
+        aim = (self.xDir, 0, 0)
         for j in self.bindJnts:
             scaler = (
                 self.smart_ctl.a["footScale"]
@@ -665,5 +667,3 @@ class Leg(RigModule):
         self.setup_channel()
         self.setup_rotate_order()
         self.post_module()
-
-        # self.pvc.alignTo(DagNode(rID + "_pvc_guide"))

@@ -93,7 +93,7 @@ class IkNode(DagNode):
         self.jnt = [DagNode(j) for j in ikJnt]
         self.chainLen = self.calcChainLen()
         self.localStretch = limbScale
-        self.x_dir = 1 if self.ee.a.tx.get() > 0 else -1
+        self.xDir = 1 if self.ee.a.tx.get() > 0 else -1
         self.RIG_DATA = RIG_DATA
         if vis == 0:
             mc.hide(self)
@@ -292,7 +292,7 @@ class IkNode(DagNode):
                 ut.distDim_(self.pvc, dist_loc) / self.scaleFix,
             ]
             for i in range(1, len(self.jnt)):
-                result = ut.blend2_(ratio * Di[i - 1], di[i - 1], w=kp) * self.x_dir
+                result = ut.blend2_(ratio * Di[i - 1], di[i - 1], w=kp) * self.xDir
                 if self.localStretch:
                     result *= self.ikc.a[f"limbScale{i}"]
                 result >> self.jnt[i].a.tx
@@ -304,7 +304,7 @@ class IkNode(DagNode):
             ratioSoft = ratio
 
             for i in range(1, len(self.jnt)):
-                result = ratio * Di[i - 1] * self.x_dir
+                result = ratio * Di[i - 1] * self.xDir
                 if self.localStretch:
                     result *= self.ikc.a[f"limbScale{i}"]
                 result >> self.jnt[i].a.tx
@@ -328,11 +328,11 @@ class IkNode(DagNode):
             "softJ",
             pf=self.pf,
             snap=self.sj,
-            ofs=(self.x_dir * dist, 0, 0),
+            ofs=(self.xDir * dist, 0, 0),
             r=dist / 100,
             p=softParent,
         )
-        self.ee.cstAim(softJ[0], aim=(self.x_dir, 0, 0), keep=False)
+        self.ee.cstAim(softJ[0], aim=(self.xDir, 0, 0), keep=False)
         softJ[0].freezeXf()
 
         ikH = IkNode(
@@ -351,7 +351,7 @@ class IkNode(DagNode):
         D = self.chainLen
         Ds = D * (1 - s)
         ds = D * (1 - s * math.e ** -(d - Ds))
-        (((d > Ds).setCdn(ifTrue=ds, ifFalse=d)) * ratio * self.x_dir >> softJ[1].a.tx)
+        (((d > Ds).setCdn(ifTrue=ds, ifFalse=d)) * ratio * self.xDir >> softJ[1].a.tx)
         ikH.hide()
         self.softJ = softJ
 
@@ -360,11 +360,11 @@ class IkNode(DagNode):
         from nl_modules.nodel.joint_node import JointNode
 
         dist = self.sj.o.distanceTo(self.ee)
-        ofs = (self.x_dir * dist, 0, 0)
+        ofs = (self.xDir * dist, 0, 0)
         pvChainJ = JointNode.makeTwoJChain(
             "pvChainJ", pf=self.pf, snap=self.sj, ofs=ofs, p=self.sj.parent, r=self.rSz
         )
-        self.ee.cstAim(pvChainJ[0], aim=(self.x_dir, 0, 0), keep=False)
+        self.ee.cstAim(pvChainJ[0], aim=(self.xDir, 0, 0), keep=False)
         pvChainJ[0].freezeXf()
 
         pinIk = IkNode(

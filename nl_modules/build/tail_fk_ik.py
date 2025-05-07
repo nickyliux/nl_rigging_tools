@@ -80,7 +80,7 @@ class TailFkIk(RigModule):
             "setting",
             pf=rID,
             shape="diamond",
-            scale=rSz * 3,
+            scale=rSz * 2,
             color=Color.BLACK,
             top=1,
             width=2,
@@ -164,7 +164,7 @@ class TailFkIk(RigModule):
                 pf=rID,
                 shape="circleC",
                 up="z",
-                scale=rSz / 2,
+                scale=rSz,
                 align=self.fkJnt[i],
                 color=Color.YELLOW,
             )

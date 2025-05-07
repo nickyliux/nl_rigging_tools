@@ -1,14 +1,12 @@
 import maya.cmds as mc
 import logging
 from nl_modules.build.rig_module import RigModule
-
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.ik_node import IkNode
 from nl_modules.nodel.joint_node import JointNode
 from nl_modules.nodel.loc_node import LocNode
-
 from nl_modules.utils import common
 from nl_modules.utils.color import Color
 
@@ -63,7 +61,6 @@ class Head(RigModule):
         self.jaw_fkc = CurveNode(
             "jaw", pf=rID, sf="_fkc", up="z", scale=rSz, color=Color.YELLOW
         )
-
         self.rigNode.setMsg(
             {
                 "head_fkc": self.head_fkc,
@@ -74,7 +71,6 @@ class Head(RigModule):
     def build_fk(self):
         logging.info(self.rigID)
         (self.head_fkc, self.jaw_fkc) | self.CTL_DATA
-
         self.head_fkc.alignTo(self.head)
         self.head_fkc.addOffsetGrp()
         self.head_fkc.cstPar(self.head, mo=1)

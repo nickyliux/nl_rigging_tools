@@ -57,7 +57,7 @@ class Arm(RigModule):
         self.ballRoll_loc = None
         self.ikCtl = None
         self.fkCtl = None
-        self.toeWiggleG = None
+        self.toe_wiggle_grp = None
         self.pvc_line = None
         self.pvRota_line = None
         self.all_ikHs = None
@@ -67,12 +67,8 @@ class Arm(RigModule):
 
     def gen_guide_sk(self):
         self.gen_guide_sk_module(["clavicle", "upr", "lwr", "palm", "ball"])
-        # for i, name in enumerate(jnt_names):
-        #     if name == "lwr":
-        #         jnt_list[i].a.preferredAngleY.set(-90 * self.x_dir)
 
     def build(self):
-
         self.build_module()
         self.joints = self.rootJ.allChildrenJt2
         self.clavicle, self.upr, self.lwr, self.palm, self.ball = self.joints
@@ -110,7 +106,7 @@ class Arm(RigModule):
     def build_ctl(self):
         rSz = self.rigSize
         rID = self.rigID
-        xDr = self.x_dir
+        xDr = self.xDir
 
         self.setting = CurveNode(
             "setting",
@@ -120,7 +116,6 @@ class Arm(RigModule):
             color=Color.BLACK,
             top=1,
         )
-        # width=2
         self.clavicle_fkc = CurveNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
         )
@@ -159,7 +154,7 @@ class Arm(RigModule):
     def build_scapular(self):
         rID = self.rigID
         rSz = self.rigSize
-        xDr = self.x_dir
+        xDr = self.xDir
         clavEnd_guide = DagNode(rID + "_clavEnd_guide")
         scapular_guide = DagNode(rID + "_scapular_guide")
 
@@ -201,7 +196,6 @@ class Arm(RigModule):
         self.bindJnts.append(self.clavBone)
 
     def build_twist_bones(self):
-
         rID = self.rigID
         rSz = self.rigSize
         radius_JC = self.gen_sk_fr_names(
@@ -219,7 +213,7 @@ class Arm(RigModule):
         ulna_loc.cstPoi(ulna_JC[1])
 
         uType = "objectrotation"
-        aim = (self.x_dir, 0, 0)
+        aim = (self.xDir, 0, 0)
         z = (0, 0, 1)
         radius_loc.cstAim(
             radius_JC[0], worldUpType=uType, worldUpObject=self.palm, aim=aim, u=z, wu=z
@@ -250,7 +244,6 @@ class Arm(RigModule):
 
         pvc_guide = DagNode(rID + "_pvc_guide")
         self.pvc.alignTo(pvc_guide)
-        # self.pvc.alignTo(self.lwr)
 
         self.joints_ik = common.extractSk(
             self.joints, "_ik", p=self.IK_PART, color=Color.RED, r=3 * rSz
@@ -271,7 +264,7 @@ class Arm(RigModule):
             RIG_DATA=self.RIG_DATA,
         )
         self.ikCstG = GroupNode("ikCstG", pf=rID, align=self.palm)
-        if self.x_dir == 1:
+        if self.xDir == 1:
             for g in (self.ikCstG,):
                 g.a.rx.set2(180, add=1)
         ikH1 | self.ikCstG
@@ -327,7 +320,6 @@ class Arm(RigModule):
     def blend_fk_ik(self):
         rID = self.rigID
         rSz = self.rigSize
-        # xDr = self.x_dir
         logging.info(rID)
         self.joints_bf = common.extractSk(
             self.joints, "_bf", p=self.BF_PART, color=Color.L_GREY, r=4 * rSz
@@ -347,7 +339,7 @@ class Arm(RigModule):
         )
 
         self.setting | self.CTL_DATA
-        self.setting.alignTo(self.palm)  # , offset=(rSz * xDr * 40, 0, 0))
+        self.setting.alignTo(self.palm)
         ofs = self.setting.addOffsetGrp()
         self.palm.cstPar(ofs, mo=1)
 
@@ -492,7 +484,7 @@ class Arm(RigModule):
         mc.hide(self.all_ikHs)
 
     def setup_proxy(self):
-        aim = (self.x_dir, 0, 0)
+        aim = (self.xDir, 0, 0)
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(aimDir=aim, p=self.PRX_GRP)
 
@@ -545,25 +537,8 @@ class Arm(RigModule):
                 "anchorF1": self.clavicle_fkc.offset,
             }
         )
-        # self.setup_anchor_module(
-        #     {"anchorM1": self.joints[-2], "anchorF1": self.clavicle_fkc}
-        # )
         self.setup_proxy()
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()
         self.post_module()
-        # self.pvc.alignTo(DagNode(rID + "_pvc_guide"))
-
-    # def alignOrient_setup(self):
-    #     """
-    #     Let palm to follow ikH orientation or not
-    #     """
-    #     rID = self.rigID
-    #     palmIkJ = self.joints_ik[-2]
-    #     lwrIkJ = self.joints_ik[2]
-
-    #     alignOrient = self.ikc.a.add("alignOrient", min=0, max=1, dv=1)
-    #     nonAlign = LocNode("nonAlign_loc#", pf=rID, align=self.palm, p=lwrIkJ, addOfs=1)
-    #     palmIkJ.cstPoi(nonAlign.offset)
-    #     common.cstMulti(nonAlign, self.ikc, palmIkJ, mo=1, w=alignOrient, cstType="ori")
