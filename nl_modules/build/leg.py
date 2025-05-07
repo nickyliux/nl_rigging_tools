@@ -21,6 +21,7 @@ class Leg(RigModule):
     """
 
     def __init__(self, rigNode):
+
         if isinstance(rigNode, str):
             rigNode = DagNode(rigNode)
 
@@ -32,13 +33,14 @@ class Leg(RigModule):
         self.TWIST_BONES = self.master_guide.a.twistBones.get()
         self.KNEE_FIX = self.master_guide.a.kneeFix.get()
 
-        hip_guide = DagNode(self.rigID + "_hip_guide")
+        rID, rSz, xDr = self.getMyVar()
+        hip_guide = DagNode(rID + "_hip_guide")
         self.CTL_DATA.snapTo(hip_guide)
 
-        self.FK_PART = GroupNode("FK", pf=self.rigID, p=self.CTL_DATA)
-        self.IK_PART = GroupNode("IK", pf=self.rigID, p=self.CTL_DATA)
-        self.BF_PART = GroupNode("BF", pf=self.rigID, p=self.CTL_DATA)
-        self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
+        self.FK_PART = GroupNode("FK", pf=rID, p=self.CTL_DATA)
+        self.IK_PART = GroupNode("IK", pf=rID, p=self.CTL_DATA)
+        self.BF_PART = GroupNode("BF", pf=rID, p=self.CTL_DATA)
+        self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
 
         self.setting = None
         self.joints = []
@@ -104,9 +106,7 @@ class Leg(RigModule):
                 fgr_jnts[0] | self.toesRootJ
 
     def build_ctl(self):
-        rSz = self.rigSize
-        rID = self.rigID
-        xDr = self.xDir
+        rID, rSz, xDr = self.getMyVar()
 
         self.setting = CurveNode(
             "setting",
@@ -229,8 +229,8 @@ class Leg(RigModule):
         self.post_setup()
 
     def build_fk(self):
-        rSz = self.rigSize
-        logging.info(self.rigID)
+        rID, rSz, xDr = self.getMyVar()
+
         self.joints_fk = common.extractSk(
             self.joints, "_fk", p=self.FK_PART, color=Color.BLUE, r=2 * rSz
         )
@@ -245,9 +245,8 @@ class Leg(RigModule):
         self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.CTL_DATA])
 
     def build_ik(self):
-        rID = self.rigID
-        rSz = self.rigSize
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
+
         mG = self.master_guide
         inPos_guide = DagNode(rID + "_palm_inPos_guide")
         outPos_guide = DagNode(rID + "_palm_outPos_guide")
@@ -288,7 +287,7 @@ class Leg(RigModule):
         outRollG = GroupNode("outRollG", pf=rID, snap=outPos_guide, alignR=mG)
         heelRollG = GroupNode("heelRollG", pf=rID, snap=heelPos_guide, alignR=mG)
 
-        if self.xDir == 1:
+        if xDr == 1:
             for g in (
                 self.ikCstG,
                 ballRollG,
@@ -326,7 +325,7 @@ class Leg(RigModule):
         self.foot_roll_logic(self.smart_ctl, heelRollG, ballRollG, footRollG, toeRollG)
         self.foot_bank_logic(self.smart_ctl, inRollG, outRollG)
 
-        self.ikc.a.add("kneeTwist") * self.xDir >> ikH1.a.twist
+        self.ikc.a.add("kneeTwist") * xDr >> ikH1.a.twist
         (self.ikc, self.pvc, self.ikCstG) | self.IK_PART
         self.pvc_line = CurveNode.buildLineLinked(
             self.joints_ik[2], self.pvc, pf=rID, dspType=2, p=self.IK_PART
@@ -346,9 +345,7 @@ class Leg(RigModule):
         self.subCtl_setup(ballRollG, toeRollG, inRollG, outRollG, heelRollG)
 
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
-        rID = self.rigID
-        rSz = self.rigSize
-        xDr = self.xDir
+        rID, rSz, xDr = self.getMyVar()
 
         for g in [toeRollG, inRollG, outRollG, heelRollG]:
             ctl = g.addOffsetGrp(below=1)
@@ -376,10 +373,8 @@ class Leg(RigModule):
         -xDr * self.smart_ctl.a.rz >> self.smart_ctl.a["footBank"]
 
     def build_toes(self):
-        rID = self.rigID
-        rSz = self.rigSize
-        xDr = self.xDir
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
+
         self.toesCtlsList = []
         scale = xDr * rSz / 10
 
@@ -409,7 +404,8 @@ class Leg(RigModule):
         #     common.sdk2(splay, tgt, 5, -splayRange * (-1 + 2 / (toeCount - 1) * i))
 
     def build_twist_bones(self):
-        rID = self.rigID
+        rID, rSz, xDr = self.getMyVar()
+
         radius_JC = self.gen_sk_fr_names(
             ["radius", "radiusEnd"], color=Color.D_RED, scale=2
         )
@@ -423,7 +419,7 @@ class Leg(RigModule):
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
         uType = "objectrotation"
-        aim = (self.xDir, 0, 0)
+        aim = (xDr, 0, 0)
         z = (0, 0, 1)
 
         radius_loc.cstAim(
@@ -435,9 +431,8 @@ class Leg(RigModule):
         self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
 
     def blend_fk_ik(self):
-        rID = self.rigID
-        rSz = self.rigSize
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
+
         self.joints_bf = common.extractSk(
             self.joints, "_bf", p=self.BF_PART, color=Color.L_GREY, r=4 * rSz
         )
@@ -496,9 +491,7 @@ class Leg(RigModule):
         lwr_bend     --
                     foot
         """
-        rID = self.rigID
-        rSz = self.rigSize
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
 
         self.ribbonUp = RibbonNode(
             self.upr,
@@ -573,19 +566,18 @@ class Leg(RigModule):
         self.bindJnts.extend(self.ribbonUp.rbJnt + self.ribbonLw.rbJnt)
 
     def setup_proxy(self):
-        aim = (self.xDir, 0, 0)
+        rID, rSz, xDr = self.getMyVar()
+        aim = (xDr, 0, 0)
         for j in self.bindJnts:
             scaler = (
                 self.smart_ctl.a["footScale"]
-                if j.name.startswith(self.rigID + "_toe")
+                if j.name.startswith(rID + "_toe")
                 else None
             )
             JointNode(j).addProxyMesh(aimDir=aim, p=self.PRX_GRP, scaler=scaler)
 
     def setup_vis(self):
-
         self.pvc.a["fkPin"] >> self.pin_fkc.a.v
-
         self.ctl_vis_toggle(
             self.setting.a["fkIkBlend"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
@@ -658,8 +650,8 @@ class Leg(RigModule):
         if self.TOE_BONES:
             [ctlSet.extend(s) for s in self.toesCtlsList]
 
-        self.addBindJntSet(self.bindJnts)
-        self.addCtlSet(ctlSet)
+        self.add_bind_jnt_set(self.bindJnts)
+        self.add_ctl_set(ctlSet)
         self.setup_space()
         self.setup_anchor_module({"anchorF1": self.hip_fkc.offset})
         self.setup_proxy()

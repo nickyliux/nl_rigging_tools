@@ -101,8 +101,8 @@ class Head(RigModule):
         self.rigNode.setMsg({"space_head": self.head_fkc})
 
     def post_setup(self):
-        self.addBindJntSet(self.bindJnts)
-        self.addCtlSet(self.fkCtl)
+        self.add_bind_jnt_set(self.bindJnts)
+        self.add_ctl_set(self.fkCtl)
         self.setup_space()
         self.setup_anchor_module({"anchorF1": self.head_fkc.offset})
         self.setup_proxy()

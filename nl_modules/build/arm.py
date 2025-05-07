@@ -21,6 +21,7 @@ class Arm(RigModule):
     """
 
     def __init__(self, rigNode):
+
         if isinstance(rigNode, str):
             rigNode = DagNode(rigNode)
 
@@ -30,10 +31,11 @@ class Arm(RigModule):
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
         self.SCAPULAR_BONE = self.master_guide.a.scapularBone.get()
 
-        self.FK_PART = GroupNode("FK", pf=self.rigID, p=self.CTL_DATA)
-        self.IK_PART = GroupNode("IK", pf=self.rigID, p=self.CTL_DATA)
-        self.BF_PART = GroupNode("BF", pf=self.rigID, p=self.CTL_DATA)
-        self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
+        rID, rSz, xDr = self.getMyVar()
+        self.FK_PART = GroupNode("FK", pf=rID, p=self.CTL_DATA)
+        self.IK_PART = GroupNode("IK", pf=rID, p=self.CTL_DATA)
+        self.BF_PART = GroupNode("BF", pf=rID, p=self.CTL_DATA)
+        self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
 
         self.setting = None
         self.joints = []
@@ -104,10 +106,7 @@ class Arm(RigModule):
         self.post_setup()
 
     def build_ctl(self):
-        rSz = self.rigSize
-        rID = self.rigID
-        xDr = self.xDir
-
+        rID, rSz, xDr = self.getMyVar()
         self.setting = CurveNode(
             "setting",
             pf=rID,
@@ -152,9 +151,7 @@ class Arm(RigModule):
         )
 
     def build_scapular(self):
-        rID = self.rigID
-        rSz = self.rigSize
-        xDr = self.xDir
+        rID, rSz, xDr = self.getMyVar()
         clavEnd_guide = DagNode(rID + "_clavEnd_guide")
         scapular_guide = DagNode(rID + "_scapular_guide")
 
@@ -196,8 +193,7 @@ class Arm(RigModule):
         self.bindJnts.append(self.clavBone)
 
     def build_twist_bones(self):
-        rID = self.rigID
-        rSz = self.rigSize
+        rID, rSz, xDr = self.getMyVar()
         radius_JC = self.gen_sk_fr_names(
             ["radius", "radiusEnd"], color=Color.D_RED, scale=2
         )
@@ -213,7 +209,7 @@ class Arm(RigModule):
         ulna_loc.cstPoi(ulna_JC[1])
 
         uType = "objectrotation"
-        aim = (self.xDir, 0, 0)
+        aim = (xDr, 0, 0)
         z = (0, 0, 1)
         radius_loc.cstAim(
             radius_JC[0], worldUpType=uType, worldUpObject=self.palm, aim=aim, u=z, wu=z
@@ -224,8 +220,7 @@ class Arm(RigModule):
         self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
 
     def build_fk(self):
-        rSz = self.rigSize
-        logging.info(self.rigID)
+        rID, rSz, xDr = self.getMyVar()
 
         self.joints_fk = common.extractSk(
             self.joints, "_fk", p=self.FK_PART, color=Color.BLUE, r=rSz * 2
@@ -235,9 +230,7 @@ class Arm(RigModule):
         self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
-        rID = self.rigID
-        rSz = self.rigSize
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
 
         self.ikc.alignTo(self.palm)
         self.palm_ikc.alignTo(self.palm, p=self.IK_PART)
@@ -264,7 +257,7 @@ class Arm(RigModule):
             RIG_DATA=self.RIG_DATA,
         )
         self.ikCstG = GroupNode("ikCstG", pf=rID, align=self.palm)
-        if self.xDir == 1:
+        if xDr == 1:
             for g in (self.ikCstG,):
                 g.a.rx.set2(180, add=1)
         ikH1 | self.ikCstG
@@ -318,9 +311,8 @@ class Arm(RigModule):
         common.cstMulti(self.palm_ikc, self.pin_fkc, palm_ik, w=fkPin, cstType="ori")
 
     def blend_fk_ik(self):
-        rID = self.rigID
-        rSz = self.rigSize
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
+
         self.joints_bf = common.extractSk(
             self.joints, "_bf", p=self.BF_PART, color=Color.L_GREY, r=4 * rSz
         )
@@ -392,9 +384,7 @@ class Arm(RigModule):
         lwr_bend     --
                     foot
         """
-        rID = self.rigID
-        rSz = self.rigSize
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
 
         ribbonUp = RibbonNode(
             self.upr,
@@ -484,9 +474,8 @@ class Arm(RigModule):
         mc.hide(self.all_ikHs)
 
     def setup_proxy(self):
-        aim = (self.xDir, 0, 0)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(aimDir=aim, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(aimDir=(self.xDir, 0, 0), p=self.PRX_GRP)
 
     def setup_channel(self):
         self.setting.a.showAttr()
@@ -528,8 +517,8 @@ class Arm(RigModule):
         if self.RBN_BONES:
             ctlSet.extend(self.all_bend)
 
-        self.addBindJntSet(self.bindJnts)
-        self.addCtlSet(ctlSet)
+        self.add_bind_jnt_set(self.bindJnts)
+        self.add_ctl_set(ctlSet)
         self.setup_space()
         self.setup_anchor_module(
             {

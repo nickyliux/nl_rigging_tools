@@ -191,8 +191,8 @@ class TailFk(RigModule):
             JointNode(j).addProxyMesh(scale=1, p=self.PRX_GRP)
 
     def post_setup(self):
-        self.addBindJntSet(self.bindJnts)
-        self.addCtlSet(self.fkCtl)
+        self.add_bind_jnt_set(self.bindJnts)
+        self.add_ctl_set(self.fkCtl)
         self.setup_anchor_module({"anchorF1": self.fkCtl[0].offset})
         self.setup_proxy()
         self.setup_vis()

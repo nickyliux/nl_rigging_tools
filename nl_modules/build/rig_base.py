@@ -34,14 +34,12 @@ class RigBase:
         self.PRX = GroupNode("PRX", p=self.MDL)
         self.SKL = GroupNode("SKL", p=self.CHR)
         self.CTL = GroupNode("CTL", p=self.CHR)
-        # self.MOD = GroupNode("MOD", p=self.CHR)
         self.DIM = GroupNode("distDim_GRP")
 
         if self.SKL.a.s.settable():
             self.masterC.a["globalScale"] >> self.SKL.a.s
         if self.PRX.a.s.settable():
             self.masterC.a["globalScale"] >> self.PRX.a.s
-        # self.visC.a.proxyMesh >> self.PRX.a.v
 
         root = self.masterC2
         if not root.parent:

@@ -260,8 +260,8 @@ class Spine(RigModule):
         self.setup_anchor_module({"anchorM1": self.hip_ctl, "anchorM2": anchorM2Tgt})
 
     def post_setup(self):
-        self.addBindJntSet(self.bindJnts)
-        self.addCtlSet(
+        self.add_bind_jnt_set(self.bindJnts)
+        self.add_ctl_set(
             self.fkCtl + self.ikCtl + [self.setting, self.cog_ctl, self.cog_gmb]
         )
         self.setup_space()

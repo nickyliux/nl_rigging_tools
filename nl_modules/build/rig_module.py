@@ -1,13 +1,11 @@
 import maya.cmds as mc
 import logging
 from nl_modules.build.rig_base import RigBase
-
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.joint_node import JointNode
 from nl_modules.nodel.loc_node import LocNode
-
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
@@ -34,9 +32,6 @@ class RigModule(RigBase):
         self.moduleG = rigNode.a.moduleG.inConnNode
         if not self.moduleG:
             logging.info("moduleG not found in RigNode !")
-
-        # if self.moduleG and self.moduleG.parent is None:
-        #     self.moduleG | self.MOD
 
         self.master_guide = rigNode.a.master_guide.inConnNode
         if not self.master_guide:
@@ -73,10 +68,8 @@ class RigModule(RigBase):
         joints = []
         currClass = self.__class__.__name__
 
-        # for i, key in enumerate(guideDict):
         for key in guideDict:
             jN = JointNode(f"{pf}_{key}", align=guideDict[key], color=color)
-
             if (currClass == "Arm" or currClass == "Leg") and key == "lwr":
                 # side = -1 if mc.xform(jN, q=1, ws=1, t=1)[0] > 0 else 1
                 # jN.a.preferredAngleY.set(45 * side)
@@ -88,7 +81,7 @@ class RigModule(RigBase):
             joints.append(jN)
 
         # set all joints' radius based on current root as a group
-        rigSize = self.getRigSize(joints[0])
+        rigSize = self.calc_rig_size(joints[0])
         for j in joints:
             j.a.radius.set(rigSize * scale)
 
@@ -184,7 +177,6 @@ class RigModule(RigBase):
         for ctl, jnt in zip(ctlList, jntList):
             ctl = DagNode(ctl)
             jnt = DagNode(jnt)
-
             if p and last_ctl is None:
                 ctl | p
 
@@ -290,7 +282,9 @@ class RigModule(RigBase):
         )
 
     @staticmethod
-    def spaceAlign(tgt, names=None, spaces=None, dv=0, cstType="par", w=None, **kwargs):
+    def space_align(
+        tgt, names=None, spaces=None, dv=0, cstType="par", w=None, **kwargs
+    ):
         allSpacesGrp = []
         for space in spaces:
             spaceG = GroupNode(tgt + "_SPACE_#", align=tgt, p=space)
@@ -302,10 +296,10 @@ class RigModule(RigBase):
 
         common.cstMulti(*allSpacesGrp, tgt_ofs, cstType=cstType, w=w, **kwargs)
 
-    def getRigSize(self, rootJ):
+    def calc_rig_size(self, rootJ):
         return rootJ.o.diagonal2 / 100 or 1
 
-    def addMinusScaleGrp(self, tgt):
+    def add_minus_scale_grp(self, tgt):
         if self.rigID.startswith("rt_"):
             tgt.a.rx.set2(180, add=1)
             tgt.a.ry.set2(180, add=1)
@@ -329,7 +323,7 @@ class RigModule(RigBase):
 
     def build_module(self):
         logging.info(self.rigID)
-        self.rigSize = self.getRigSize(self.rootJ)
+        self.rigSize = self.calc_rig_size(self.rootJ)
         self.rigNode.a.nodeState.set(2)
         children = self.rootJ.childrenJt
         if children:
@@ -353,22 +347,22 @@ class RigModule(RigBase):
         self.ctl_vis_toggle(self.masterC2.a["debug"], onList=[self.RIG, self.SKL])
 
     def unbuild_module(self):
-        logging.info(self.rigID)
+        rID = self.rigID
+        logging.info(rID)
         self.moduleG.show()
         self.CTL_DATA.delete()
         self.SKL_DATA.delete()
         self.RIG_DATA.delete()
+
         rootJ = self.rigNode.a.rootJ.inConnNode
         if rootJ:
             rootJ.delete()
         for xf in self.DIM.children:
-            if xf.name.startswith(self.rigID):
+            if xf.name.startswith(rID):
                 xf.delete()
         for xf in self.masterC.children:
-            if xf.name.startswith(self.rigID):
+            if xf.name.startswith(rID):
                 xf.delete()
-        # if self.visC and self.visC.a[self.rigID].exists():
-        #     mc.deleteAttr(f"{self.visC}.{self.rigID}")
 
         for attr in ["anchorF1", "anchorM1", "anchorM2"]:
             anchor = self.rigNode.a[attr]
@@ -376,7 +370,7 @@ class RigModule(RigBase):
                 anchor.inConnNode.delete()
 
         self.rigNode.a.nodeState.set(0)
-        prx = mc.ls(self.rigID + "_*_pxGeo*")
+        prx = mc.ls(rID + "_*_pxGeo*")
         if prx:
             mc.delete(prx)
 
@@ -384,7 +378,6 @@ class RigModule(RigBase):
         """
         F is female, for driven plugs. e.g. hand has 1 F anchor
         M is male, for driver plugs. e.g spine has 2 M anchors
-
         e.g.
         { 'anchorM1': loc1, 'anchorM2': loc2, }
         or
@@ -392,9 +385,11 @@ class RigModule(RigBase):
         or
         { 'anchorF1': loc1, }
         """
+        rID = self.rigID
         rSz = self.rigSize
+
         for name, tgt in anchorDict.items():
-            loc = LocNode(name, pf=self.rigID, size=rSz * 2, p=self.masterC)
+            loc = LocNode(name, pf=rID, size=rSz * 2, p=self.masterC)
             self.rigNode.setMsg({name: loc})
 
             if name.startswith("anchorM"):  # Blue for Male
@@ -405,14 +400,14 @@ class RigModule(RigBase):
                 loc.alignTo(tgt)
                 loc.cstPar(tgt.offset, mo=1)
 
-    def addCtlSet(self, tgtList):
+    def add_ctl_set(self, tgtList):
         setName = self.rigID + "_ctl_set"
         if DagNode(setName).exists():
             mc.sets(tgtList, add=setName)
         else:
             mc.sets(tgtList, n=setName)
 
-    def addBindJntSet(self, tgtList):
+    def add_bind_jnt_set(self, tgtList):
         """Add bind joint set for target joints"""
 
         if DagNode(BIND_JNT_SET).exists():
@@ -472,10 +467,6 @@ class RigModule(RigBase):
         mc.hide(upLoc)
         self.boneFix = tgtDup
         self.boneFix_sdk(tgt, tgtDup)
-        # self.carpalFix(tgt)
-
-    # def carpalFix(self, tgt):
-    #     pass
 
     def boneFix_sdk(self, driver, driven):
         s = self.rigSize * self.xDir
@@ -489,16 +480,15 @@ class RigModule(RigBase):
         common.sdk(driver, driven, "ry", "tx", -170, -3 * s)
 
     def patella_setup(self):
+        rID = self.rigID
+        rSz = self.rigSize
+        patella_guide = DagNode(rID + "_patella_guide")
 
         def patella_sdk(driver, driven):
             common.sdk(driver, driven, "ry", "ry", 0, 0)
             common.sdk(driver, driven, "ry", "ry", -20, -1, tangent=1)
             common.sdk(driver, driven, "ry", "ry", -90, -45, tangent=1)
             common.sdk(driver, driven, "ry", "ry", -180, -90)
-
-        rID = self.rigID
-        rSz = self.rigSize
-        patella_guide = DagNode(rID + "_patella_guide")
 
         if patella_guide.exists():
             j = JointNode(
@@ -523,29 +513,13 @@ class RigModule(RigBase):
             result.append(jnt)
         return result
 
-    # def visByCondition(self, attr, autoVis, manualVis, targets=None, v=0):
-    #     """Setup vis logic with auto / manual mode like Advanced Skeleton"""
-    #     cond = DagNode("visCond" + str(v) + "__#", nodeType="condition")
-    #     attr >> cond.a.firstTerm
-    #     cond.a.secondTerm.set(1 - v)
-    #     # [cond.a.outColor >> target.a.v for target in targets]
-
-    #     condF = DagNode("visCondF" + str(v) + "__#", nodeType="floatCondition")
-    #     cond.a.outColorR >> condF.a.floatA
-    #     autoVis >> condF.a.condition
-    #     manualVis >> condF.a.floatB
-    #     [condF.a.outFloat >> target.a.v for target in targets]
-
     def hand_roll_logic(self, attrHolder, fkc, fkPin, locRoll):
-
         palmRoll = attrHolder.a.add("palmRoll")
         palmRoll * -1 >> locRoll.a.rz
-
         fkc.a.add("palmRoll", proxy=palmRoll)
         fkPin.a.add("palmRoll", proxy=palmRoll)
 
     def hand_bank_logic(self, attrHolder, fkc, fkPin, locIn, locOut):
-
         palmBank = attrHolder.a.add("palmBank")
         ut.min_(palmBank, 0) * -1 >> locIn.a.rx
         ut.max_(0, palmBank) * -1 >> locOut.a.rx
@@ -608,20 +582,18 @@ class RigModule(RigBase):
             scaleFix=self.masterC.a["globalScale"],
             RIG_DATA=self.RIG_DATA,
             p=ctl,
-            # vis=0,
         )
-        # mc.hide(ikJ)
         return ctl, ikJ, ikH
 
     def get_autoAim_preset(self):
+        rID = self.rigID
+        preset = [1, 1, 1, 1]
 
         upW = self.master_guide.a.autoUpWeight.get()
         fwW = self.master_guide.a.autoFwWeight.get()
         dnW = self.master_guide.a.autoDnWeight.get()
         bkW = self.master_guide.a.autoBkWeight.get()
 
-        rID = self.rigID
-        preset = [1, 1, 1, 1]
         if rID.startswith("lfArm") or rID.startswith("rtArm"):
             preset = [upW, fwW, dnW, bkW]
         elif rID.startswith("lfLeg") or rID.startswith("rtLeg"):
@@ -662,7 +634,7 @@ class RigModule(RigBase):
             ikc.cstPoi(auto_ikH)
 
         # setup PSD & cst
-        autoAim = ikc.a.add("autoAim", min=0, max=1)  # , dv=1)
+        autoAim = ikc.a.add("autoAim", min=0, max=1)
         psdAttr = self.build_uvPSD(
             tgtJ=endJ,
             ikc=ikc,
@@ -808,7 +780,7 @@ class RigModule(RigBase):
             common.sdk2(hit, driven, 0.9, Color.YELLOW.value, tangent=2)
 
         self.add_mirror_attr(allPsdCtl)
-        self.addCtlSet(allPsdCtl + [ctl_main])
+        self.add_ctl_set(allPsdCtl + [ctl_main])
 
         showAimCtl = self.masterC2.a.add("showAimCtl", min=0, max=1, dv=1, k=0)
         showAimCtl >> psd_grp.a.v
@@ -824,3 +796,6 @@ class RigModule(RigBase):
             [attr >> ctl.a.v for ctl in onList]
         if offList:
             [~attr >> ctl.a.v for ctl in offList]
+
+    def getMyVar(self):
+        return str(self.rigID), float(self.rigSize), int(self.xDir)

@@ -288,8 +288,8 @@ class Hand(RigModule):
     def post_setup(self):
         ctlSet = [self.smart_ctl] + self.fgrRootCtlArr
         [ctlSet.extend(x) for x in self.ctlsArr]
-        self.addBindJntSet(self.bindJnts)
-        self.addCtlSet(ctlSet)
+        self.add_bind_jnt_set(self.bindJnts)
+        self.add_ctl_set(ctlSet)
         self.setup_space()
         self.setup_anchor_module({"anchorF1": self.rootJ})
         self.setup_proxy()

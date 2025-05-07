@@ -334,8 +334,8 @@ class TailFkIk(RigModule):
             )
 
     def post_setup(self):
-        self.addBindJntSet(self.bindJnts)
-        self.addCtlSet(self.ikCtl + self.fkCtl + self.ikOffsetCtl + [self.setting])
+        self.add_bind_jnt_set(self.bindJnts)
+        self.add_ctl_set(self.ikCtl + self.fkCtl + self.ikOffsetCtl + [self.setting])
         self.setup_anchor_module({"anchorF1": self.ikCtl[0].offset.offset})
         self.setup_proxy()
         self.setup_vis()

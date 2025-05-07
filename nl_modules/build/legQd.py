@@ -458,7 +458,7 @@ class LegQd(RigModule):
         self.all_ikH["toe"] | self.ball_fkc
         ball_fkj = self.joints_fk[5]
 
-        self.spaceAlign(
+        self.space_align(
             self.ball_fkc,
             spaces=[ball_fkj.offset, self.toe_wiggle_grp],
             w=fkIkBlend,
@@ -472,7 +472,7 @@ class LegQd(RigModule):
         )
         ball_fkc_ofs | ballOfsG
         ball_fkj.removeCstNodes()
-        self.spaceAlign(
+        self.space_align(
             ball_fkj,
             spaces=[self.ball_fkc, ball_fkj.offset],
             w=fkIkBlend,
@@ -546,7 +546,7 @@ class LegQd(RigModule):
         volPower >> ribbonUp.volPower
         volPower >> ribbonLw.volPower
 
-        self.addBindJntSet(ribbonUp.rbJnt + ribbonLw.rbJnt)
+        self.add_bind_jnt_set(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def setup_proxy(self):
         aim = (self.xDir, 0, 0)
@@ -605,8 +605,8 @@ class LegQd(RigModule):
         #     ctlSet.extend(self.all_bend)
         if self.TOE_BONES:
             [ctlSet.extend(s) for s in self.toesCtlsList or []]
-        self.addCtlSet(ctlSet)
-        self.addBindJntSet(self.bindJnts)
+        self.add_ctl_set(ctlSet)
+        self.add_bind_jnt_set(self.bindJnts)
         self.setup_space()
         self.setup_anchor_module({"anchorF1": self.hip_fkc})
         self.setup_proxy()

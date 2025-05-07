@@ -403,8 +403,8 @@ class SpineQd(RigModule):
 
     def post_setup(self):
         if self.RBN_JNT_NUM > 1:
-            self.addBindJntSet(self.bindJnts)
-        self.addCtlSet(self.ctls)
+            self.add_bind_jnt_set(self.bindJnts)
+        self.add_ctl_set(self.ctls)
         self.setup_anchor()
         self.setup_proxy()
         self.setup_vis()

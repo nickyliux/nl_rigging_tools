@@ -119,7 +119,7 @@
 #         #     for c in fgrCtls:
 #         #         fgrCtlVis >> c.shape.a.v
 #
-#         # self.addMinusScaleGrp(self.smart_ctl)
+#         # self.add_minus_scale_grp(self.smart_ctl)
 #
 #         #
 #         # # Vis Attr
@@ -146,7 +146,7 @@
 #         #
 #         # ctlSet = []
 #         # [ctlSet.extend(x) for x in self.ctlsArr]
-#         # self.addCtlSet(ctlSet, pf=self.rigID)
+#         # self.add_ctl_set(ctlSet, pf=self.rigID)
 #         #
 #         self.setup_anchor()
 #

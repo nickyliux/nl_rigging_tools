@@ -298,7 +298,7 @@ def updateSpaceSwitch():
 
         if resultDict:
             # print(ctl.name, resultDict)
-            RigModule.spaceAlign(
+            RigModule.space_align(
                 ctl,
                 names=":".join(resultDict.keys()),
                 spaces=resultDict.values(),
