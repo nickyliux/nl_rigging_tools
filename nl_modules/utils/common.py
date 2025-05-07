@@ -193,7 +193,7 @@ def nlRivet(
     pinLocs = []
 
     for i, coord in enumerate(coordList):
-        loc = LocNode("rivetLoc_#", size=size)
+        loc = LocNode(f"rivetLoc_{i}_#", size=size)
         scaleAttr >> loc.a.scaleX
         scaleAttr >> loc.a.scaleY
         scaleAttr >> loc.a.scaleZ
@@ -201,6 +201,7 @@ def nlRivet(
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateU", coord[0])
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateV", coord[1])
         pinLocs.append(loc)
+
         if i > 0:
             pinLocs[i - 1].cstAim(
                 loc,
@@ -259,16 +260,18 @@ def ribbonAttach(tgtList=None, geo=None, scaleAttr=None, p=None):
             vId = cpos.a.closestVertexIndex.get()
             mc.select(f"{geo}.vtx[{vId}]")
             mc.ConvertSelectionToUVs()
-            coordList = [mc.polyEditUV(q=1)]
+            coordList.append(mc.polyEditUV(q=1))
         elif geoType == "nurbsSurface":
             u = cpos.a.parameterU.get()
             v = cpos.a.parameterV.get()
-            coordList = [(u, v)]
+            coordList.append((u, v))
 
-        grp = GroupNode(geo + "_rvtGrp", p=p)
-        pin, pinXf = nlRivet(geo=geo, coordList=coordList, scaleAttr=scaleAttr, p=grp)
-        if pinXf:
-            tgt | pinXf[0]
+    grp = GroupNode(geo + "_rvtGrp", p=p)
+    pin, pinXf = nlRivet(geo=geo, coordList=coordList, scaleAttr=scaleAttr, p=grp)
+
+    for i, pin in enumerate(pinXf):
+        DagNode(tgtList[i]) | pin
+
     cpos.delete()
 
 
