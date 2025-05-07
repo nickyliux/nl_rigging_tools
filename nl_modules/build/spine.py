@@ -1,7 +1,6 @@
 import maya.cmds as mc
 import logging
 from nl_modules.build.rig_module import RigModule
-
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
@@ -9,7 +8,6 @@ from nl_modules.nodel.ik_node import IkNode
 from nl_modules.nodel.joint_node import JointNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.surf_node import SurfNode
-
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
@@ -21,9 +19,10 @@ class Spine(RigModule):
         self.RBN_BONES = self.master_guide.a.rbnBones.get()
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
 
-        self.LINE_GUIDE = DagNode(self.rigID + "_line_guide")
-        self.MD_GUIDE = DagNode(self.rigID + "_md_guide")
-        self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
+        rID, rSz, xDr = self.getMyVar()
+        self.LINE_GUIDE = DagNode(rID + "_line_guide")
+        self.MD_GUIDE = DagNode(rID + "_md_guide")
+        self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
 
         self.cog_ctl = None
         self.cog_gmb = None
@@ -34,7 +33,6 @@ class Spine(RigModule):
         self.fkCtl = None
         self.setting = None
         self.ctlJnts = None
-
         self.bindJnts = []
         self.fkJnt = []
         self.rbSrf = None
@@ -43,8 +41,7 @@ class Spine(RigModule):
         self.gen_guide_sk_module(["rt", "md", "tp"])
 
     def build_ctl(self):
-        rSz = self.rigSize
-        rID = self.rigID
+        rID, rSz, xDr = self.getMyVar()
 
         self.setting = CurveNode(
             "setting",
@@ -82,9 +79,7 @@ class Spine(RigModule):
         self.post_setup()
 
     def build_fk(self):
-        rSz = self.rigSize
-        rID = self.rigID
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
 
         self.fkJnt = JointNode.makeJCFrCrv(
             self.LINE_GUIDE,
@@ -118,9 +113,7 @@ class Spine(RigModule):
         self.bindJnts = self.fkJnt
 
     def build_ik(self):
-        rID = self.rigID
-        rSz = self.rigSize
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
 
         mG = self.master_guide
         self.hip_ctl.snapAlignTo(self.fkJnt[0], mG)
@@ -213,7 +206,6 @@ class Spine(RigModule):
             ratio >> self.bindJnts[i].a.sz
 
     def setup_vis(self):
-
         self.ctl_vis_toggle(
             self.setting.a.add("fkCtl", min=0, max=1, dv=1, k=0),
             onList=self.fkCtl,

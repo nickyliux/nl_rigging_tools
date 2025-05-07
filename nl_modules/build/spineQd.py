@@ -1,7 +1,6 @@
 import maya.cmds as mc
 import logging
 from nl_modules.build.rig_module import RigModule
-
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
@@ -9,7 +8,6 @@ from nl_modules.nodel.ik_node import IkNode
 from nl_modules.nodel.joint_node import JointNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.surf_node import SurfNode
-
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
@@ -20,17 +18,19 @@ class SpineQd(RigModule):
         self.CTL_NUM = 3
         self.FK_JNT_NUM = self.master_guide.a.fkJntNum.get()
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
-        self.LINE_GUIDE = CurveNode(self.rigID + "_line_guide")
-        self.TP_GUIDE = DagNode(self.rigID + "_tp_guide")
-        self.MD_GUIDE = DagNode(self.rigID + "_md_guide")
-        self.RT_GUIDE = DagNode(self.rigID + "_rt_guide")
+
+        rID, rSz, xDr = self.getMyVar()
+        self.LINE_GUIDE = CurveNode(rID + "_line_guide")
+        self.TP_GUIDE = DagNode(rID + "_tp_guide")
+        self.MD_GUIDE = DagNode(rID + "_md_guide")
+        self.RT_GUIDE = DagNode(rID + "_rt_guide")
 
         self.PV_GUIDE = None
-        pvtGuide = DagNode(self.rigID + "_pivot_guide")
+        pvtGuide = DagNode(rID + "_pivot_guide")
         if pvtGuide.exists():
             self.PV_GUIDE = pvtGuide
 
-        self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
+        self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
 
         self.cog_ctl = None
         self.fore_ctl = None
@@ -56,8 +56,8 @@ class SpineQd(RigModule):
         self.gen_guide_sk_module(["rt", "md", "tp"])
 
     def build_ctl(self):
-        rID = self.rigID
-        rSz = self.rigSize
+        rID, rSz, xDr = self.getMyVar()
+
         scale = (rSz * 4, rSz * 4, rSz)
         scale2 = (rSz * 3.5, rSz * 3.5, rSz)
 
@@ -119,15 +119,15 @@ class SpineQd(RigModule):
 
     def build(self):
         self.build_module()
-        self.rigSize = rSz = CurveNode(self.LINE_GUIDE).length / 100
+        self.rigSize = CurveNode(self.LINE_GUIDE).length / 100
         self.build_ctl()
         self.build_fk()
         self.build_ik(sliding=0)
         self.post_setup()
 
     def build_fk(self):
-        rID = self.rigID
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
+
         self.fkJnt = self.make_jc_fr_crv("fkJ")
         mc.delete(self.rootJ)
         self.rootJ = self.fkJnt[0]
@@ -165,9 +165,7 @@ class SpineQd(RigModule):
         return ikH
 
     def build_ik(self, sliding=1):
-        rID = self.rigID
-        rSz = self.rigSize
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
 
         self.rbCrv = self.LINE_GUIDE.duplicate(n=rID + "_spCrv_#")
         self.rbCrv | self.RIG_DATA
@@ -334,8 +332,8 @@ class SpineQd(RigModule):
         self.setting.alignTo(self.cog_ctl, offset=(0, rSz * 90, 0))
         self.cog_ctl.cstPar(self.setting, mo=1)
 
-        self.add_movable_pivot(self.fore_ctl, scale=self.rigSize)
-        self.add_movable_pivot(self.base_ctl, scale=self.rigSize)
+        self.add_movable_pivot(self.fore_ctl, scale=rSz)
+        self.add_movable_pivot(self.base_ctl, scale=rSz)
 
     def volume_setup(self):
         """Scale ribbon joints according to length of the surface"""

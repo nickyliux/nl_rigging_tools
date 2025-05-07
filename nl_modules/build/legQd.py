@@ -31,9 +31,11 @@ class LegQd(RigModule):
         self.TOE_BONES = self.master_guide.a.toeBones.get()
         self.TWIST_BONES = self.master_guide.a.twistBones.get()
         self.KNEE_FIX = self.master_guide.a.kneeFix.get()
-        self.FK_PART = GroupNode("FK", pf=self.rigID, p=self.CTL_DATA)
-        self.IK_PART = GroupNode("IK", pf=self.rigID, p=self.CTL_DATA)
-        self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
+        rID, rSz, xDr = self.getMyVar()
+
+        self.FK_PART = GroupNode("FK", pf=rID, p=self.CTL_DATA)
+        self.IK_PART = GroupNode("IK", pf=rID, p=self.CTL_DATA)
+        self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
 
         self.setting = None
         self.joints = []
@@ -92,9 +94,8 @@ class LegQd(RigModule):
                 fgr_jnts[0] | self.toesRootJ
 
     def build_ctl(self):
-        rSz = self.rigSize
-        rID = self.rigID
-        xDr = self.xDir
+        rID, rSz, xDr = self.getMyVar()
+
         self.setting = CurveNode(
             "setting",
             pf=rID,
@@ -188,8 +189,8 @@ class LegQd(RigModule):
         self.custom_setup()
 
     def build_fk(self):
-        rSz = self.rigSize
-        logging.info(self.rigID)
+        rID, rSz, xDr = self.getMyVar()
+
         self.joints_fk = common.extractSk(
             self.joints, "_fk", p=self.FK_PART, color=Color.BLUE, r=2 * rSz
         )
@@ -205,9 +206,8 @@ class LegQd(RigModule):
         self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
-        rID = self.rigID
-        rSz = self.rigSize
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
+
         mG = self.master_guide
         pvc_guide = DagNode(rID + "_pvc_guide")
         inPos_guide = DagNode(rID + "_palm_inPos_guide")
@@ -246,7 +246,7 @@ class LegQd(RigModule):
         outRollG = GroupNode("outRollG", pf=rID, snap=outPos_guide, alignR=mG)
         heelRollG = GroupNode("heelRollG", pf=rID, snap=heelPos_guide, alignR=mG)
 
-        if self.xDir == 1:
+        if xDr == 1:
             for g in (
                 self.ikCstG,
                 extraRollG,
@@ -273,7 +273,7 @@ class LegQd(RigModule):
         self.foot_roll_logic(self.ikc, heelRollG, ballRollG, footRollG, toeRollG)
         self.foot_bank_logic(self.ikc, inRollG, outRollG)
 
-        self.ikc.a.add("kneeTwist") * self.xDir >> ikH1.a.twist
+        self.ikc.a.add("kneeTwist") * xDr >> ikH1.a.twist
         (self.ikc, self.pvc, self.ikCstG) | self.IK_PART
         self.pvc_line = CurveNode.buildLineLinked(
             self.joints_ik[2], self.pvc, pf=rID, dspType=2, p=self.IK_PART
@@ -292,9 +292,8 @@ class LegQd(RigModule):
         self.extra_roll_logic(ballRollG, extraRollG, self.IK_PART)
 
     def extra_roll_logic(self, ballRollG, extraRollG, grp):
-        rID = self.rigID
-        rSz = self.rigSize
-        xDr = self.xDir
+        rID, rSz, xDr = self.getMyVar()
+
         # Setup aim logic
         aimGrp = extraRollG.addOffsetGrp(below=1, relink=0)
         aimGrp | extraRollG.offset
@@ -331,9 +330,7 @@ class LegQd(RigModule):
         CurveNode(self.extra_ikc)(name=cName, shape="rotator", scale=-rSz * xDr)
 
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
-        rID = self.rigID
-        rSz = self.rigSize
-        xDr = self.xDir
+        rID, rSz, xDr = self.getMyVar()
 
         for g in [toeRollG, inRollG, outRollG, heelRollG]:
             ctl = g.addOffsetGrp(below=1)
@@ -351,10 +348,8 @@ class LegQd(RigModule):
         self.subCtls.append(self.ballG_ikc)
 
     def digits_setup(self):
-        rID = self.rigID
-        rSz = self.rigSize
-        xDr = self.xDir
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
+
         self.toesCtlsList = []
         scale = xDr * rSz / 8
 
@@ -397,8 +392,7 @@ class LegQd(RigModule):
         #     common.sdk2(splay, tgt, 5, -splayRange * (-1 + 2 / (toeCount - 1) * i))
 
     def build_twist_bones(self):
-        rID = self.rigID
-        rSz = self.rigSize
+        rID, rSz, xDr = self.getMyVar()
 
         jnt_names = ["radius", "radiusEnd"]
         radius_JC = self.gen_sk_fr_names(jnt_names, scale=2)
@@ -409,13 +403,13 @@ class LegQd(RigModule):
         (radius_JC[0], ulna_JC[0]) | parent
 
         radius_loc = LocNode(
-            "radius_loc", pf=self.rigID, align=radius_JC[1], p=self.palm, size=rSz
+            "radius_loc", pf=rID, align=radius_JC[1], p=self.palm, size=rSz
         )
         ulna_loc = LocNode("ulna_loc", pf=rID, align=ulna_JC[1], p=self.palm, size=rSz)
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
         uType = "objectrotation"
-        aim = (self.xDir, 0, 0)
+        aim = (xDr, 0, 0)
         z = (0, 0, 1)
 
         radius_loc.cstAim(
@@ -427,8 +421,8 @@ class LegQd(RigModule):
         self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
 
     def blend_fk_ik(self):
-        rID = self.rigID
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
+
         self.setting | self.CTL_DATA
         self.setting.alignTo(self.digit)  # , offset=(0, rSz * -xDr * 20, 0))
         ofs = self.setting.addOffsetGrp()
@@ -449,9 +443,9 @@ class LegQd(RigModule):
 
     def singleBallCtl_setup(self):
         """Make ball ctl the single ctl in both FK IK"""
-        rID = self.rigID
-        fkIkBlend = self.setting.a["fkIkBlend"]
+        rID, rSz, xDr = self.getMyVar()
 
+        fkIkBlend = self.setting.a["fkIkBlend"]
         ball_fkc_ofs = self.ball_fkc.offset
         ball_fkc_ofs.removeCstNodes()
 
@@ -488,10 +482,8 @@ class LegQd(RigModule):
         lwr_bend     --
                     foot
         """
-        rID = self.rigID
-        rSz = self.rigSize
+        rID, rSz, xDr = self.getMyVar()
 
-        logging.info(rID)
         num = self.RBN_JNT_NUM
         scale = self.masterC.a["globalScale"]
         data = self.RIG_DATA
@@ -549,9 +541,10 @@ class LegQd(RigModule):
         self.add_bind_jnt_set(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def setup_proxy(self):
-        aim = (self.xDir, 0, 0)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(scale=1.5, aimDir=aim, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(
+                scale=1.5, aimDir=(self.xDir, 0, 0), p=self.PRX_GRP
+            )
 
     def setup_vis(self):
 
