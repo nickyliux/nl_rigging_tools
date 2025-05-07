@@ -800,7 +800,7 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>144</x>
-        <y>64</y>
+        <y>114</y>
         <width>62</width>
         <height>16</height>
        </rect>
@@ -836,7 +836,7 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>144</x>
-        <y>170</y>
+        <y>243</y>
         <width>62</width>
         <height>16</height>
        </rect>
@@ -855,7 +855,7 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>144</x>
-        <y>190</y>
+        <y>263</y>
         <width>62</width>
         <height>16</height>
        </rect>
@@ -882,9 +882,9 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>144</x>
-        <y>130</y>
+        <y>66</y>
         <width>62</width>
-        <height>16</height>
+        <height>41</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -896,7 +896,7 @@ Mesh(es)</string>
       <property name="maximumSize">
        <size>
         <width>9999</width>
-        <height>16</height>
+        <height>9999</height>
        </size>
       </property>
       <property name="font">
@@ -918,7 +918,7 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>144</x>
-        <y>150</y>
+        <y>223</y>
         <width>62</width>
         <height>16</height>
        </rect>
