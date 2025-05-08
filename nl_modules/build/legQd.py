@@ -491,11 +491,25 @@ class LegQd(RigModule):
 
         pf = rID + "_up_"
         ribbonUp = RibbonNode(
-            self.upr, pf=pf, rbJNum=num, volMode=1, scaleFix=scale, p=data, proxyP=g
+            self.upr,
+            pf=pf,
+            rbJNum=num,
+            volMode=1,
+            scaleFix=scale,
+            p=data,
+            size=rSz,
+            proxyP=g,
         )
         pf = rID + "_lw_"
         ribbonLw = RibbonNode(
-            self.lwr, pf=pf, rbJNum=num, volMode=2, scaleFix=scale, p=data, proxyP=g
+            self.lwr,
+            pf=pf,
+            rbJNum=num,
+            volMode=2,
+            scaleFix=scale,
+            p=data,
+            size=rSz,
+            proxyP=g,
         )
         # Upper Ribbon
         # --------------------------------

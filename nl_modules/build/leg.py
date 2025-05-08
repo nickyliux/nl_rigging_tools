@@ -500,7 +500,7 @@ class Leg(RigModule):
             volMode="upr",
             scaleFix=self.masterC.a["globalScale"],
             proxyP=self.PRX_GRP,
-            rigSize=rSz,
+            size=rSz,
             p=self.RIG_DATA,
         )
         self.ribbonLw = RibbonNode(
@@ -510,7 +510,7 @@ class Leg(RigModule):
             volMode="lwr",
             scaleFix=self.masterC.a["globalScale"],
             proxyP=self.PRX_GRP,
-            rigSize=rSz,
+            size=rSz,
             p=self.RIG_DATA,
         )
         # --------------------------------

@@ -153,7 +153,8 @@ class NeckPro(rig_module.RigModule):
         # self.followAlignTwo(self.upr_fkc, [self.upr_fkc.parent, self.masterC], 1)
 
     def build_ribbon(self):
-        logging.info(self.rigID)
+        rID, rSz, xDr = self.getMyVar()
+        logging.info(rID)
 
         dummyG1 = GroupNode("g#", snap=self.rootJ)
         dummyG2 = GroupNode("g#", snap=self.rootJ.allChildren[-1])
@@ -166,6 +167,7 @@ class NeckPro(rig_module.RigModule):
             rbJNum=self.BIND_JNT_NUM,
             forSpine=1,
             scaleFix=self.masterC.a["globalScale"],
+            size=rSz,
             p=self.RIG_DATA,
         )
 

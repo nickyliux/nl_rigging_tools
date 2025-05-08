@@ -24,7 +24,7 @@ class RibbonNode:
         scaleFix=None,
         forSpine=0,
         proxyP=None,
-        rigSize=1,
+        size=1,
         p=None,
     ):
         self.tgtN = DagNode(tgt) if isinstance(tgt, str) else tgt
@@ -71,7 +71,7 @@ class RibbonNode:
         self.rbJNum = rbJNum
         self.all_ikHs = []
         self.proxyP = proxyP
-        self.rigSize = rigSize
+        self.size = size
 
         self.build()
 
@@ -97,9 +97,7 @@ class RibbonNode:
 
     def build_surf(self, pf):
 
-        rSz = self.rigSize
         xDr = self.xDir
-
         surf = SurfNode(
             "rb_surf",
             pf=pf,
@@ -118,12 +116,21 @@ class RibbonNode:
             coord.append(((2 * i + 1) / (2 * self.rbJNum), 0.5))
 
         pin, pinXf = common.nlRivet(
-            geo=surf, coordList=coord, normal=1, tangent=0, p=self.BSE_GRP, size=rSz
+            geo=surf,
+            coordList=coord,
+            normal=1,
+            tangent=0,
+            p=self.BSE_GRP,
+            size=self.size,
         )
         rbJnt = []
         for i in range(self.rbJNum):
             jnt = JointNode(
-                f"rbj_{i}", pf=pf, p=self.JNT_GRP, r=rSz / self.rbJNum * 5, addOfs=1
+                f"rbj_{i}",
+                pf=pf,
+                p=self.JNT_GRP,
+                r=self.size / self.rbJNum * 5,
+                addOfs=1,
             )
             pinXf[i].cstPar(jnt.parent)
             pinXf[i].a.inheritsTransform.set(0)
@@ -167,7 +174,6 @@ class RibbonNode:
 
     def build_aim_chains(self, pf):
         g = self.AIM_GRP
-        rSz = self.rigSize
 
         ofsX = self.D / 4 * self.xDir
         ofsX2 = ofsX * 2
@@ -178,7 +184,7 @@ class RibbonNode:
             snap=self.stt_loc,
             ofs=(ofsX, 0, 0),
             p=g,
-            r=rSz * 2,
+            r=self.size * 2,
             color=COR,
         )
         stt_sknJ = stt_aimJ_end.duplicate(n=pf + "stt_sknJ")
@@ -190,7 +196,7 @@ class RibbonNode:
             snap=self.end_loc,
             ofs=(-ofsX, 0, 0),
             p=g,
-            r=rSz * 2,
+            r=self.size * 2,
             color=COR,
         )
         end_sknJ = end_aimJ_end.duplicate(n=pf + "end_sknJ")
@@ -202,7 +208,7 @@ class RibbonNode:
             snap=self.stt_loc,
             ofs=(ofsX2, 0, 0),
             p=g,
-            r=rSz * 2,
+            r=self.size * 2,
             color=COR,
         )
         mid_sknJ = mid_aimJ_end.duplicate(n=pf + "mid_sknJ")
@@ -269,7 +275,6 @@ class RibbonNode:
         aimV = (self.xDir, 0, 0)
         aimVN = (-self.xDir, 0, 0)
         upV = (0, 1, 0)
-        rSz = self.rigSize
 
         # From
         stt_twistJ, stt_twistJ_end = JointNode.makeTwoJChain(
@@ -278,7 +283,7 @@ class RibbonNode:
             snap=self.stt_loc,
             ofs=(-ofsX, 0, 0),
             p=self.AIM_GRP,
-            r=rSz / 2,
+            r=self.size / 2,
             color=CYL,
         )
         stt_twistG = GroupNode("stt_twistG", pf=pf, align=stt_twistJ, p=stt_twistJ)
@@ -298,7 +303,7 @@ class RibbonNode:
             snap=self.end_loc,
             ofs=(ofsX, 0, 0),
             p=self.AIM_GRP,
-            r=rSz / 2,
+            r=self.size / 2,
             color=CYL,
         )
         end_twistG = GroupNode("end_twistG", pf=pf, align=end_twistJ, p=end_twistJ)

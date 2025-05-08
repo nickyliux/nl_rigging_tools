@@ -6,7 +6,6 @@ from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.joint_node import JointNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.ribbon_node import RibbonNode
 from nl_modules.nodel.surf_node import SurfNode
 from nl_modules.utils import common
 from nl_modules.utils.color import Color
