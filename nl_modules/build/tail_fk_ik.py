@@ -20,12 +20,12 @@ class TailFkIk(RigModule):
         self.RBN_BONES = self.master_guide.a.rbnBones.get()
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
 
-        self.LINE_GUIDE = CurveNode(self.rigID + "_line_guide")
-        self.RT_GUIDE = CurveNode(self.rigID + "_rt_guide")
-        self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
-
-        self.FK_PART = GroupNode("FK", pf=self.rigID, p=self.CTL_DATA)
-        self.IK_PART = GroupNode("IK", pf=self.rigID, p=self.CTL_DATA)
+        rID, rSz, xDr = self.getMyVar()
+        self.LINE_GUIDE = CurveNode(rID + "_line_guide")
+        self.RT_GUIDE = CurveNode(rID + "_rt_guide")
+        self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
+        self.FK_PART = GroupNode("FK", pf=rID, p=self.CTL_DATA)
+        self.IK_PART = GroupNode("IK", pf=rID, p=self.CTL_DATA)
 
         self.setting = None
         self.fkCtl = []
@@ -49,10 +49,9 @@ class TailFkIk(RigModule):
             FK -> rbSrf by skin
             rbSrf -> joints by pin
         """
-        rID = self.rigID
+        rID, rSz, xDr = self.getMyVar()
 
         self.build_module()
-
         self.rbSrf1 = SurfNode.buildRbSrf(
             pf=rID,
             crv=self.LINE_GUIDE,
@@ -61,8 +60,8 @@ class TailFkIk(RigModule):
             p=self.RIG_DATA,
             snap=self.RT_GUIDE,
         )
-        self.rbSrf2 = self.rbSrf1.duplicate()
 
+        self.rbSrf2 = self.rbSrf1.duplicate()
         self.rigNode.setMsg({"rbSrf": self.rbSrf2})
 
         self.build_ctl()
@@ -72,9 +71,7 @@ class TailFkIk(RigModule):
         self.post_setup()
 
     def build_ctl(self):
-        rID = self.rigID
-        rSz = self.rigSize
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
 
         self.setting = CurveNode(
             "setting",
@@ -93,9 +90,7 @@ class TailFkIk(RigModule):
         )
 
     def build_ik(self):
-        rID = self.rigID
-        rSz = self.rigSize
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
 
         self.ikJnt = JointNode.makeJCFrCrv(
             self.LINE_GUIDE,
@@ -129,9 +124,7 @@ class TailFkIk(RigModule):
         SurfNode(self.rbSrf1).weightTo(self.ikJnt, mi=4, dr=6, chain=0)
 
     def build_fk(self):
-        rID = self.rigID
-        rSz = self.rigSize
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
 
         # ------------------------------------------
         # Build fkJ
@@ -226,9 +219,7 @@ class TailFkIk(RigModule):
         self.ikCtl[0].a.s >> self.FK_PART.a.s
 
     def build_stretchy_rbj(self):
-        rID = self.rigID
-        rSz = self.rigSize
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
 
         self.setting.snapTo(self.ikCtl[0])
         self.setting.addOffsetGrp(snapIt=1)
@@ -330,7 +321,7 @@ class TailFkIk(RigModule):
     def setup_proxy(self):
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(
-                p=self.PRX_GRP, scaler=self.setting.a["tailScale"], scale=0.6
+                p=self.PRX_GRP, scaler=self.setting.a["tailScale"], scale=1
             )
 
     def post_setup(self):

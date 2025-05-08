@@ -25,9 +25,11 @@ class RigModule(RigBase):
             rigNode = DagNode(rigNode)
 
         super().__init__(rigNode)
-        self.RIG_DATA = GroupNode(self.rigID + "_rig_data", p=self.RIG)
-        self.CTL_DATA = GroupNode(self.rigID + "_ctl_data", p=self.masterC)
-        self.SKL_DATA = GroupNode(self.rigID + "_skl_data", p=self.SKL)
+
+        rID = self.rigID
+        self.RIG_DATA = GroupNode(rID + "_rig_data", p=self.RIG)
+        self.CTL_DATA = GroupNode(rID + "_ctl_data", p=self.masterC)
+        self.SKL_DATA = GroupNode(rID + "_skl_data", p=self.SKL)
 
         self.moduleG = rigNode.a.moduleG.inConnNode
         if not self.moduleG:
@@ -37,10 +39,11 @@ class RigModule(RigBase):
         if not self.master_guide:
             logging.info("master_guide not found in RigNode !")
 
-        self.xDir = 1
         self.rigSize = 1
+        self.xDir = 1
         self.boneFix = None
         self.bindJnts = []
+
         if rigNode.a.rootJ.exists():
             self.rootJ = rigNode.a.rootJ.inConnNode
 
@@ -52,7 +55,8 @@ class RigModule(RigBase):
                                       # given lfArm0_{n}_guide exists
         """
         guides = []
-        pf = self.rigID
+        rID, rSz, xDr = self.getMyVar()
+        pf = rID
         if isinstance(names, str):
             names = [names]
 
@@ -300,7 +304,8 @@ class RigModule(RigBase):
         return rootJ.o.diagonal2 / 100 or 1
 
     def add_minus_scale_grp(self, tgt):
-        if self.rigID.startswith("rt_"):
+        rID, rSz, xDr = self.getMyVar()
+        if rID.startswith("rt_"):
             tgt.a.rx.set2(180, add=1)
             tgt.a.ry.set2(180, add=1)
             tgt.addOffsetGrp().a.sz.set(-1)
@@ -322,7 +327,9 @@ class RigModule(RigBase):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_module(self):
-        logging.info(self.rigID)
+        rID, rSz, xDr = self.getMyVar()
+
+        logging.info(rID)
         self.rigSize = self.calc_rig_size(self.rootJ)
         self.rigNode.a.nodeState.set(2)
         children = self.rootJ.childrenJt
@@ -332,10 +339,12 @@ class RigModule(RigBase):
         # update all joints' radius
         joints = self.rootJ.allChildrenJt2
         for j in joints:
-            j.a.radius.set(self.rigSize)
+            j.a.radius.set(rSz)
 
     def post_module(self):
-        logging.info(self.rigID)
+        rID, rSz, xDr = self.getMyVar()
+
+        logging.info(rID)
         self.moduleG.hide()
 
         for obj in mc.ls(tr=1):
@@ -347,7 +356,8 @@ class RigModule(RigBase):
         self.ctl_vis_toggle(self.masterC2.a["debug"], onList=[self.RIG, self.SKL])
 
     def unbuild_module(self):
-        rID = self.rigID
+        rID, rSz, xDr = self.getMyVar()
+
         logging.info(rID)
         self.moduleG.show()
         self.CTL_DATA.delete()
@@ -385,8 +395,7 @@ class RigModule(RigBase):
         or
         { 'anchorF1': loc1, }
         """
-        rID = self.rigID
-        rSz = self.rigSize
+        rID, rSz, xDr = self.getMyVar()
 
         for name, tgt in anchorDict.items():
             loc = LocNode(name, pf=rID, size=rSz * 2, p=self.masterC)
@@ -401,7 +410,8 @@ class RigModule(RigBase):
                 loc.cstPar(tgt.offset, mo=1)
 
     def add_ctl_set(self, tgtList):
-        setName = self.rigID + "_ctl_set"
+        rID, rSz, xDr = self.getMyVar()
+        setName = rID + "_ctl_set"
         if DagNode(setName).exists():
             mc.sets(tgtList, add=setName)
         else:
@@ -447,11 +457,9 @@ class RigModule(RigBase):
             rmN.a.outValue >> piv_ref.a.ty
 
     def boneFix_setup(self, tgt, tgtChild):
-        rSz = self.rigSize
-        xDr = self.xDir
-        upLoc = LocNode(
-            "lwrLimb_up", pf=self.rigID, align=tgtChild, addOfs=1, p=tgt, size=rSz
-        )
+        rID, rSz, xDr = self.getMyVar()
+
+        upLoc = LocNode("lwrLimb_up", pf=rID, align=tgtChild, addOfs=1, p=tgt, size=rSz)
         tgtChild.cstPoi(upLoc.offset)
         upLoc.a.ty.set(rSz * 10 * xDr)
 
@@ -469,7 +477,8 @@ class RigModule(RigBase):
         self.boneFix_sdk(tgt, tgtDup)
 
     def boneFix_sdk(self, driver, driven):
-        s = self.rigSize * self.xDir
+        rID, rSz, xDr = self.getMyVar()
+        s = rSz * xDr
         common.sdk(driver, driven, "ry", "tz", 0, 0)
         common.sdk(driver, driven, "ry", "tz", -60, 0, tangent=1)
         common.sdk(driver, driven, "ry", "tz", -80, -0.8 * s, tangent=1)
@@ -480,8 +489,8 @@ class RigModule(RigBase):
         common.sdk(driver, driven, "ry", "tx", -170, -3 * s)
 
     def patella_setup(self):
-        rID = self.rigID
-        rSz = self.rigSize
+        rID, rSz, xDr = self.getMyVar()
+
         patella_guide = DagNode(rID + "_patella_guide")
 
         def patella_sdk(driver, driven):
@@ -586,7 +595,7 @@ class RigModule(RigBase):
         return ctl, ikJ, ikH
 
     def get_autoAim_preset(self):
-        rID = self.rigID
+        rID, rSz, xDr = self.getMyVar()
         preset = [1, 1, 1, 1]
 
         upW = self.master_guide.a.autoUpWeight.get()
@@ -610,8 +619,7 @@ class RigModule(RigBase):
         """
         from nl_modules.nodel.ik_node import IkNode
 
-        rID = self.rigID
-        rSz = self.rigSize
+        rID, rSz, xDr = self.getMyVar()
 
         # create aim chain
         self.joints_am = common.extractSk([startJ, endJ], "_am", p=fkc.offset)
@@ -697,8 +705,7 @@ class RigModule(RigBase):
         if not tgtJ.children:
             return
 
-        rID = self.rigID
-        rSz = self.rigSize
+        rID, rSz, xDr = self.getMyVar()
 
         # create group & loc
         tgtJ_child = tgtJ.children[0]

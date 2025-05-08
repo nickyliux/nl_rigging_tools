@@ -72,7 +72,7 @@ class Spine(RigModule):
 
     def build(self):
         self.build_module()
-        self.rigSize = rSz = CurveNode(self.LINE_GUIDE).length / 100
+        self.rigSize = CurveNode(self.LINE_GUIDE).length / 100
         self.build_ctl()
         self.build_fk()
         self.build_ik()

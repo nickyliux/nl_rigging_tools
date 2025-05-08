@@ -1,12 +1,9 @@
-import os.path
 import maya.cmds as mc
+import os.path
 import logging
 
-from nl_modules.nodel.group_node import GroupNode
-from nl_modules.utils.color import Color
-
 MAYA_TPL_DIR = "D:/_PROJECT/GIT/nl_rigging_tools/nl_modules/build/components"
-BASE_FILE = "base.ma"
+# BASE_FILE = "base.ma"
 
 
 class TplLoader:
@@ -24,10 +21,12 @@ class TplLoader:
         self.masterC = None
 
     def load_base_tpl(self):
-
         from nl_modules.nodel.base.dag_node import DagNode
+        from nl_modules.nodel.group_node import GroupNode
 
-        rigNodeStr = self.rigID + "_RGN"
+        rID = self.rigID
+        rigNodeStr = rID + "_RGN"
+
         if mc.objExists(rigNodeStr):
             logging.error(f"{rigNodeStr} already exist")
             return
@@ -35,22 +34,23 @@ class TplLoader:
         if self.load_tpl(self.tpl_name):
 
             scale_grp = GroupNode("modules_scale_grp")
+            mod_grp = DagNode(rID + "_module_grp")
 
-            mod_grp = DagNode(self.rigID + "_module_grp")
             if mod_grp.exists():
                 mod_grp | scale_grp
 
             n = DagNode(rigNodeStr)
             if n.exists():
-                n.a.rigID.set(self.rigID, type="string")
+                n.a["rigID"].set(rID, type="string")
                 self.rigNode = n
             else:
                 logging.error(f"{rigNodeStr} not found")
 
     def load_tpl(self, name):
+        rID = self.rigID
         f = f"{MAYA_TPL_DIR}/{name}"
         if os.path.exists(f):
-            mc.file(f, i=1, mnc=0, renameAll=1, renamingPrefix=self.rigID)
+            mc.file(f, i=1, mnc=0, renameAll=1, renamingPrefix=rID)
             return True
         else:
             logging.error(f"Tpl file not found: {f}")

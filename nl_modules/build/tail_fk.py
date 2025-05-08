@@ -1,7 +1,6 @@
 import maya.cmds as mc
 import logging
 from nl_modules.build.rig_module import RigModule
-
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
@@ -9,7 +8,6 @@ from nl_modules.nodel.joint_node import JointNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.ribbon_node import RibbonNode
 from nl_modules.nodel.surf_node import SurfNode
-
 from nl_modules.utils import common
 from nl_modules.utils.color import Color
 
@@ -21,9 +19,10 @@ class TailFk(RigModule):
         self.RBN_BONES = self.master_guide.a.rbnBones.get()
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
 
-        self.LINE_GUIDE = CurveNode(self.rigID + "_line_guide")
-        self.RT_GUIDE = CurveNode(self.rigID + "_rt_guide")
-        self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
+        rID, rSz, xDr = self.getMyVar()
+        self.LINE_GUIDE = CurveNode(rID + "_line_guide")
+        self.RT_GUIDE = CurveNode(rID + "_rt_guide")
+        self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
 
         self.setting = None
         self.fkCtl = []
@@ -43,11 +42,9 @@ class TailFk(RigModule):
             FK -> rbSrf by skin
             rbSrf -> joints by pin
         """
-        rID = self.rigID
-        rSz = self.rigSize
+        rID, rSz, xDr = self.getMyVar()
 
         self.build_module()
-
         self.rbSrf = SurfNode.buildRbSrf(
             pf=rID,
             crv=self.LINE_GUIDE,
@@ -78,9 +75,7 @@ class TailFk(RigModule):
         self.post_setup()
 
     def build_ctl(self):
-        rID = self.rigID
-        rSz = self.rigSize
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
 
         self.setting = CurveNode(
             "setting",
@@ -99,11 +94,9 @@ class TailFk(RigModule):
         )
 
     def build_fk(self):
-        rID = self.rigID
-        rSz = self.rigSize
-        logging.info(rID)
-        cluName = rID + "clu_#"
+        rID, rSz, xDr = self.getMyVar()
 
+        cluName = rID + "clu_#"
         self.fkJnt = JointNode.makeJCFrCrv(
             self.LINE_GUIDE,
             jntNum=self.FK_BONE_NUM + 1,

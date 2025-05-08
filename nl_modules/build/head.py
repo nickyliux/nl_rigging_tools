@@ -15,7 +15,9 @@ class Head(RigModule):
 
     def __init__(self, rigNode):
         super().__init__(rigNode)
-        self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
+
+        rID, rSz, xDr = self.getMyVar()
+        self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
         self.joints = []
         self.head = None
         self.headEnd = None
@@ -48,8 +50,7 @@ class Head(RigModule):
         self.post_setup()
 
     def build_ctl(self):
-        rID = self.rigID
-        rSz = self.rigSize
+        rID, rSz, xDr = self.getMyVar()
         self.head_fkc = CurveNode(
             "head",
             pf=rID,
@@ -69,7 +70,7 @@ class Head(RigModule):
         )
 
     def build_fk(self):
-        logging.info(self.rigID)
+        rID, rSz, xDr = self.getMyVar()
         (self.head_fkc, self.jaw_fkc) | self.CTL_DATA
         self.head_fkc.alignTo(self.head)
         self.head_fkc.addOffsetGrp()
@@ -87,9 +88,8 @@ class Head(RigModule):
         self.isolate_align(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC])
 
     def setup_proxy(self):
-        aim = (0, 1, 0)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(scale=3, aimDir=aim, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(scale=1, aimDir=(0, 1, 0), p=self.PRX_GRP)
 
     def setup_vis(self):
         pass

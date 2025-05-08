@@ -58,8 +58,8 @@ class SpineQd(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        scale = (rSz * 4, rSz * 4, rSz)
-        scale2 = (rSz * 3.5, rSz * 3.5, rSz)
+        # scale = (rSz * 4, rSz * 4, rSz)
+        # scale2 = (rSz * 3.5, rSz * 3.5, rSz)
 
         self.setting = CurveNode(
             "setting",
@@ -81,14 +81,20 @@ class SpineQd(RigModule):
         self.cog_ctl.cv_move(0, 70 * rSz, 40 * rSz)
 
         self.fore_ctl = CurveNode(
-            "fore_ctl", pf=rID, shape="circleC", scale=scale, up="z", width=2
+            "fore_ctl", pf=rID, shape="fk_rotator", scale=rSz * 8, width=2
         )
+        # "fore_ctl", pf=rID, shape="fk_rotator", scale=scale, up="z", width=2
+        self.fore_ctl.cv_rotate(0, 90, 0)
+
         self.mid_ctl = CurveNode(
-            "_mid_ctl", pf=rID, shape="circleC", scale=scale2, up="z", width=2
+            "_mid_ctl", pf=rID, shape="circleC", scale=rSz * 4, up="z", width=2
         )
         self.base_ctl = CurveNode(
-            "base_ctl", pf=rID, shape="circleC", scale=scale, up="z", width=2
+            "base_ctl", pf=rID, shape="fk_rotator", scale=rSz * 8, width=2
         )
+        self.base_ctl.cv_rotate(0, 90, 0)
+        # "base_ctl", pf=rID, shape="circleC", scale=scale, up="z", width=2
+
         self.fore2_ctl = CurveNode(
             "fore2_ctl",
             pf=rID,
@@ -126,9 +132,7 @@ class SpineQd(RigModule):
         self.post_setup()
 
     def build_fk(self):
-        rID, rSz, xDr = self.getMyVar()
-
-        self.fkJnt = self.make_jc_fr_crv("fkJ")
+        self.fkJnt = self.make_jc_fr_crv("fkj")
         mc.delete(self.rootJ)
         self.rootJ = self.fkJnt[0]
         self.rigNode.setMsg({"rootJ": self.rootJ})
@@ -226,7 +230,7 @@ class SpineQd(RigModule):
 
         self.ctlJnts = self.build_ctl_jnt(
             [base_gimbal, self.mid_ctl, fore_gimbal],
-            r=rSz * 8,
+            r=rSz * 12,
         )
         # Orient control last fkJ by tip ctl
         self.fkJnt[-1].a.r.disconnect()
@@ -329,7 +333,7 @@ class SpineQd(RigModule):
             ctl.a.add("stretchMax", proxy=self.cog_ctl.a.stretchMax, k=0)
 
         self.volume_setup()
-        self.setting.alignTo(self.cog_ctl, offset=(0, rSz * 90, 0))
+        self.setting.alignTo(self.cog_ctl, offset=(0, rSz * 70, 0))
         self.cog_ctl.cstPar(self.setting, mo=1)
 
         self.add_movable_pivot(self.fore_ctl, scale=rSz)
@@ -380,7 +384,7 @@ class SpineQd(RigModule):
 
     def setup_proxy(self):
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(scale=2, p=self.PRX_GRP, scaler=JointNode(j).a.s)
+            JointNode(j).addProxyMesh(scale=1, p=self.PRX_GRP, scaler=JointNode(j).a.s)
 
     def setup_rotate_order(self):
         [c.a.ro.set(2) for c in self.ctls]

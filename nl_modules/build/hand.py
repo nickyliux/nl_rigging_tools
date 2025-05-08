@@ -10,7 +10,9 @@ from nl_modules.utils import common
 class Hand(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
-        self.PRX_GRP = GroupNode("PRX", pf=self.rigID, p=self.PRX)
+
+        rID, rSz, xDr = self.getMyVar()
+        self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
         self.smart_ctl = None
         self.fgrsArr = None
         self.ctlsArr = None
@@ -36,8 +38,7 @@ class Hand(RigModule):
             fgr_roots.append(fgr_jnts[0])
 
     def build_ctl(self):
-        rSz = self.rigSize
-        rID = self.rigID
+        rID, rSz, xDr = self.getMyVar()
         self.smart_ctl = CurveNode(
             "smart_ctl", pf=rID, shape="roll", up="x", scale=rSz * 2
         )
@@ -62,10 +63,8 @@ class Hand(RigModule):
             self.post_setup()
 
     def build_fk(self):
-        rID = self.rigID
-        rSz = self.rigSize
-        xDr = self.xDir
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
+
         self.ctlsArr = []
         for fgrs in self.fgrsArr:
             ctlList = []
@@ -81,9 +80,8 @@ class Hand(RigModule):
             self.rootJ.a.s >> ctlList[0].offset.offset.a.s
 
     def build_ik(self):
-        rID = self.rigID
-        rSz = self.rigSize
-        xDr = self.xDir
+        rID, rSz, xDr = self.getMyVar()
+
         self.fgrRootCtlArr = []
         self.hand_grp = GroupNode(rID + "_grp", align=self.rootJ, p=self.RIG_DATA)
 
@@ -100,10 +98,8 @@ class Hand(RigModule):
         self.rootJ.cstSca(self.RIG_DATA)
 
     def build_fgr_logic(self):
-        rID = self.rigID
-        rSz = self.rigSize
-        xDr = self.xDir
-        logging.info(rID)
+        rID, rSz, xDr = self.getMyVar()
+
         if len(self.fgrsArr) != 5:
             logging.info("Smart setup for 5-fgr only")
             return
@@ -261,9 +257,10 @@ class Hand(RigModule):
         self.rigNode.a.add("spaceName2", attrType="string", txt="palmIK")
 
     def setup_proxy(self):
-        aim = (self.xDir, 0, 0)
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(scale=2, aimDir=aim, skipEnd=1, p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(
+                scale=1, aimDir=(self.xDir, 0, 0), skipEnd=1, p=self.PRX_GRP
+            )
 
     def setup_channel(self):
         self.smart_ctl.a.showAttr(t=1, r=1, s=1)
@@ -282,8 +279,7 @@ class Hand(RigModule):
         showCtls = self.smart_ctl.a.add("showCtls", k=0, min=0, max=1, dv=1)
         for fgrCtls in self.ctlsArr:
             showCtls >> fgrCtls[0].a.v
-
-        # self.ctl_vis_toggle(self.masterC2.a["debug"], onList=self.allIkJ + self.allIkH)
+        mc.hide(self.allIkH)
 
     def post_setup(self):
         ctlSet = [self.smart_ctl] + self.fgrRootCtlArr

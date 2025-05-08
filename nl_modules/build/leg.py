@@ -129,7 +129,7 @@ class Leg(RigModule):
             "palm_fkc", pf=rID, shape="circleC", up="x", scale=rSz * -xDr
         )
         self.ball_fkc = CurveNode(
-            "ball_fkc", pf=rID, shape="fk_rotator", up="-z", scale=rSz * xDr * 1.5
+            "ball_fkc", pf=rID, shape="fk_rotator", up="-z", scale=rSz * xDr * 2
         )
         self.ball_fkc.cv_scale(0.7, 1, 1)
 
