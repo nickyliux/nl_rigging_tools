@@ -84,7 +84,7 @@ class RigModule(RigBase):
             lastJ = jN
             joints.append(jN)
 
-        # set all joints' radius based on current root as a group
+        # Set joints' radius based on current root as a group
         rigSize = self.calc_rig_size(joints[0])
         for j in joints:
             j.a.radius.set(rigSize * scale)

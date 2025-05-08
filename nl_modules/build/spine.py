@@ -239,7 +239,9 @@ class Spine(RigModule):
     def setup_proxy(self):
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(
-                scale=1, aimDir=(0, 1, 0), p=self.PRX_GRP, scaler=JointNode(j).a.s
+                aimDir=(0, 1, 0),
+                p=self.PRX_GRP,
+                scaler=JointNode(j).a.s,
             )
 
     def setup_space(self):

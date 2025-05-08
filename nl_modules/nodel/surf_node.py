@@ -198,7 +198,7 @@ class SurfNode(GroupNode):
                     f"{i}_rbj",
                     pf=pf,
                     align=loc,
-                    r=size / num * 8,
+                    r=size / num * 12,
                     color=color,
                     p=sklData,
                 )

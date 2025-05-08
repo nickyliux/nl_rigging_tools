@@ -55,7 +55,7 @@ class Head(RigModule):
             "head",
             pf=rID,
             sf="_fkc",
-            shape="circleC",
+            shape="squareR",
             scale=rSz * 5,
             color=Color.YELLOW,
         )
@@ -89,7 +89,7 @@ class Head(RigModule):
 
     def setup_proxy(self):
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(scale=1, aimDir=(0, 1, 0), p=self.PRX_GRP)
+            JointNode(j).addProxyMesh(aimDir=(0, 1, 0), p=self.PRX_GRP)
 
     def setup_vis(self):
         pass

@@ -232,7 +232,7 @@ class Hand(RigModule):
             common.sdk(drv, ofs, "sx", "rx", *cupList[i - 1][0])
             common.sdk(drv, ofs, "sx", "rx", *cupList[i - 1][1])
 
-        self.smart_ctl.a.add("handScale", min=0, dv=1) >> self.rootJ.a.scale
+        self.smart_ctl.a.add("palmScale", min=0, dv=1) >> self.rootJ.a.scale
 
         # thumb
         # ------------------------
@@ -257,9 +257,10 @@ class Hand(RigModule):
         self.rigNode.a.add("spaceName2", attrType="string", txt="palmIK")
 
     def setup_proxy(self):
+        rID, rSz, xDr = self.getMyVar()
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(
-                scale=1, aimDir=(self.xDir, 0, 0), skipEnd=1, p=self.PRX_GRP
+                aimDir=(xDr, 0, 0), skipEnd=1, scale=rSz * 2, p=self.PRX_GRP
             )
 
     def setup_channel(self):

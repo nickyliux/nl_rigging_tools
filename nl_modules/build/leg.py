@@ -65,7 +65,6 @@ class Leg(RigModule):
         self.pin_fkc = None
         self.ikCtl = None
         self.fkCtl = None
-        self.palmScale = None
         self.toe_wiggle_grp = None
         self.ikc_gimbal = None
         self.pvc_line = None
@@ -133,7 +132,7 @@ class Leg(RigModule):
         )
         self.ball_fkc.cv_scale(0.7, 1, 1)
 
-        scale = (rSz * 1.5, rSz * 1.5, rSz * 3.5)
+        scale = (rSz * 1.5, rSz * 0.5, rSz * 3.5)
         self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=scale)
         self.ikc.cv_move(0, 0, rSz * 8)
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz)
@@ -215,16 +214,15 @@ class Leg(RigModule):
         self.CTL_DATA.a.s >> self.RIG_DATA.a.s
         self.CTL_DATA.a.s >> self.PRX_GRP.a.s
         self.CTL_DATA.a.s >> self.SKL_DATA.a.s
-        legScale = self.smart_ctl.a.add("legScale", min=0.01, dv=1)
-        legScale >> self.CTL_DATA.a.sx
-        legScale >> self.CTL_DATA.a.sy
-        legScale >> self.CTL_DATA.a.sz
+        limbScale = self.setting.a.add("limbScale", min=0.01, dv=1)
+        limbScale >> self.CTL_DATA.a.s
 
-        footScale = self.smart_ctl.a.add("footScale", min=0.01, dv=1)
-        footScale >> self.ball_fkc.offset.a.s
-        footScale >> self.joints_bf[3].a.s  # palm
-        footScale >> self.palm.a.s
-        footScale >> self.ikc.a.s
+        palmScale = self.setting.a.add("palmScale", min=0.01, dv=1)
+        self.ikc.a.add("palmScale", min=0.01, proxy=palmScale)
+        palmScale >> self.ball_fkc.offset.a.s
+        palmScale >> self.joints_bf[3].a.s  # palm
+        palmScale >> self.palm.a.s
+        palmScale >> self.ikc.a.s
 
         self.post_setup()
 
@@ -567,14 +565,11 @@ class Leg(RigModule):
 
     def setup_proxy(self):
         rID, rSz, xDr = self.getMyVar()
-        aim = (xDr, 0, 0)
         for j in self.bindJnts:
             scaler = (
-                self.smart_ctl.a["footScale"]
-                if j.name.startswith(rID + "_toe")
-                else None
+                self.setting.a["palmScale"] if j.name.startswith(rID + "_toe") else None
             )
-            JointNode(j).addProxyMesh(aimDir=aim, p=self.PRX_GRP, scaler=scaler)
+            JointNode(j).addProxyMesh(p=self.PRX_GRP, scaler=scaler)
 
     def setup_vis(self):
         self.pvc.a["fkPin"] >> self.pin_fkc.a.v

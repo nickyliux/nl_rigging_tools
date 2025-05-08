@@ -556,9 +556,7 @@ class LegQd(RigModule):
 
     def setup_proxy(self):
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(
-                scale=1.5, aimDir=(self.xDir, 0, 0), p=self.PRX_GRP
-            )
+            JointNode(j).addProxyMesh(p=self.PRX_GRP)
 
     def setup_vis(self):
 

@@ -384,7 +384,7 @@ class SpineQd(RigModule):
 
     def setup_proxy(self):
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(scale=1, p=self.PRX_GRP, scaler=JointNode(j).a.s)
+            JointNode(j).addProxyMesh(p=self.PRX_GRP, scaler=JointNode(j).a.s)
 
     def setup_rotate_order(self):
         [c.a.ro.set(2) for c in self.ctls]
