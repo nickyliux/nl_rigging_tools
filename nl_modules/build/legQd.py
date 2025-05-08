@@ -56,6 +56,7 @@ class LegQd(RigModule):
         self.ball_fkc = None
         self.pvc = None
         self.ikc = None
+        self.smart_ctl = None
         self.ikCtl = None
         self.fkCtl = None
         self.palmScale = None
@@ -120,12 +121,16 @@ class LegQd(RigModule):
             pf=rID,
             scale=xDr * rSz / 2,
         )
-        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 2)
-        self.ikc.lowerCubeFrontCV()
+        scale = (rSz * 1.5, rSz * 0.5, rSz * 2)
+        self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=scale)
+        self.ikc.cv_move(0, 0, rSz * 4)
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz * 0.8)
+        self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
+
         self.rigNode.setMsg(
             {
                 "setting": self.setting,
+                "smart_ctl": self.smart_ctl,
                 "hip_fkc": self.hip_fkc,
                 "upr_fkc": self.upr_fkc,
                 "lwr_fkc": self.lwr_fkc,
@@ -264,14 +269,14 @@ class LegQd(RigModule):
         (ikH2, ikH3) | toe_wiggle_grp | inRollG
         inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG
 
-        self.ikc_gimbal = CurveNode(self.ikc).addGimbal()  # attrTgt=self.setting)
         self.ikc.snapTo(self.digit)
-        self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
-        # self.ikc.cv_drop()
-        # self.ikc_gimbal.cv_drop()
+        self.ikc.cv_drop()
 
-        self.foot_roll_logic(self.ikc, heelRollG, ballRollG, footRollG, toeRollG)
-        self.foot_bank_logic(self.ikc, inRollG, outRollG)
+        self.ikc_gimbal = CurveNode(self.ikc).addGimbal()  # attrTgt=self.setting)
+        self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
+
+        self.foot_roll_logic(self.smart_ctl, heelRollG, ballRollG, footRollG, toeRollG)
+        self.foot_bank_logic(self.smart_ctl, inRollG, outRollG)
 
         self.ikc.a.add("kneeTwist") * xDr >> ikH1.a.twist
         (self.ikc, self.pvc, self.ikCstG) | self.IK_PART
@@ -346,6 +351,17 @@ class LegQd(RigModule):
             rotate=(0, 90, 0),
         )
         self.subCtls.append(self.ballG_ikc)
+
+        # Smart Ctl setup
+        # self.smart_ctl.snapTo(self.ikc)
+        self.smart_ctl.alignTo(self.master_guide)
+        self.smart_ctl.a.ty.set(0)
+        self.smart_ctl | self.ikc_gimbal
+        self.smart_ctl.a.tz.set(rSz * 20)
+        self.smart_ctl.addOffsetGrp()
+        self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
+        -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry  # self.ikc.a["toeTwist"]
+        -xDr * self.smart_ctl.a.rz >> self.smart_ctl.a["footBank"]
 
     def digits_setup(self):
         rID, rSz, xDr = self.getMyVar()
@@ -436,7 +452,8 @@ class LegQd(RigModule):
             common.cstMulti(fkJ, ikJ, jnt, w=fkIkBlend)
 
         # Useful for fk ik switch popUp menu
-        for ctl in self.fkCtl + self.ikCtl:
+        for ctl in self.fkCtl + self.ikCtl + [self.smart_ctl]:
+            ctl.a.addSep()
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
         GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.digit_fkc)
@@ -559,31 +576,28 @@ class LegQd(RigModule):
             JointNode(j).addProxyMesh(p=self.PRX_GRP)
 
     def setup_vis(self):
-
         self.ctl_vis_toggle(
             self.setting.a["fkIkBlend"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             offList=self.fkCtl[1:-1],
         )
-        if self.all_bend:
-            self.ctl_vis_toggle(
-                self.setting.a.add("bowCtls", min=0, max=1, dv=1, k=0),
-                onList=self.all_bend,
-            )
-
-        # subCtls = self.setting.a.add("subCtls", min=0, max=1, dv=1, k=0)
-        # [subCtls >> self.ikCstG.children[0].a.v]
-
+        self.ctl_vis_toggle(
+            self.ikc.a.add("extraCtl", dv=1, min=0, max=1, k=0),
+            onList=self.subCtls,
+        )
+        # if self.all_bend:
+        #     self.ctl_vis_toggle(
+        #         self.setting.a.add("bowCtls", min=0, max=1, dv=1, k=0),
+        #         onList=self.all_bend,
+        #     )
         [ikh.hide() for ikh in self.all_ikH.values()]
-
-        # self.ctl_vis_toggle(
-        #     self.masterC2.a["debug"],
-        #     onList=self.joints_fk + self.joints_ik,
-        # )
+        mc.hide(self.joints_fk, self.joints_ik)
 
     def setup_channel(self):
         self.setting.a.showAttr()
         self.pvc.a.showAttr(t=1)
+        self.smart_ctl.a.showAttr(r=1)
+
         self.extra_ikc.a.showAttr(r=1)
         for ctl in self.fkCtl + self.subCtls + [self.ikc, self.pvc]:
             ctl.a.showAttr(t=1, r=1)
@@ -593,6 +607,7 @@ class LegQd(RigModule):
     def setup_rotate_order(self):
         for c in self.fkCtl + self.ikCtl + [self.lwr]:
             c.a.ro.set(2)
+        self.smart_ctl.a.ro.set(3)
 
     def setup_space(self):
         self.rigNode.setMsg({"spaceHolder1": self.ikc})
@@ -604,8 +619,13 @@ class LegQd(RigModule):
         self.rigNode.setMsg({"space_leg": self.ikH1.softJ[0]})
 
     def post_setup(self):
-        self.add_mirror_attr([self.ikc, self.ikc_gimbal, self.pvc])
-        ctlSet = self.fkCtl + self.ikCtl + self.subCtls + [self.setting, self.extra_ikc]
+        self.add_mirror_attr([self.ikc, self.ikc_gimbal, self.pvc, self.smart_ctl])
+        ctlSet = (
+            self.fkCtl
+            + self.ikCtl
+            + self.subCtls
+            + [self.smart_ctl, self.setting, self.extra_ikc]
+        )
         # if self.RBN_BONES:
         #     ctlSet.extend(self.all_bend)
         if self.TOE_BONES:

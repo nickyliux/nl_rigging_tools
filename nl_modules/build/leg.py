@@ -132,9 +132,9 @@ class Leg(RigModule):
         )
         self.ball_fkc.cv_scale(0.7, 1, 1)
 
-        scale = (rSz * 1.5, rSz * 0.5, rSz * 3.5)
+        scale = (rSz * 1.5, rSz * 0.5, rSz * 3)
         self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=scale)
-        self.ikc.cv_move(0, 0, rSz * 8)
+        self.ikc.cv_move(0, 0, rSz * 7)
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz)
         self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
 
@@ -301,8 +301,9 @@ class Leg(RigModule):
         ikH1 | ballRollG | inRollG
         (ikH2, ikH3) | toe_wiggle_grp | inRollG
         inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG
-        self.ikc_gimbal = CurveNode(self.ikc).addGimbal()
         self.ikc.snapTo(self.palm)
+        self.ikc.cv_drop()
+        self.ikc_gimbal = CurveNode(self.ikc).addGimbal()
         #   Constrain ikCstG supporting fk limb
         #   self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
         self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
@@ -588,6 +589,7 @@ class Leg(RigModule):
                 onList=self.all_bend,
             )
         mc.hide(self.all_ikHs, self.toeIKHs)
+        mc.hide(self.joints_fk, self.joints_ik, self.joints_bf)
 
     def setup_channel(self):
         self.setting.a.showAttr()
@@ -632,7 +634,7 @@ class Leg(RigModule):
         self.rigNode.setMsg({"space_leg": self.ikH1.pvChainJ[0]})
 
     def post_setup(self):
-        self.add_mirror_attr([self.ikc, self.smart_ctl, self.ikc_gimbal])
+        self.add_mirror_attr([self.ikc, self.ikc_gimbal, self.smart_ctl])
         ctlSet = []
         ctlSet.extend(
             self.fkCtl

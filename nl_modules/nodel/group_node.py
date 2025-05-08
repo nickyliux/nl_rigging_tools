@@ -81,7 +81,7 @@ class GroupNode(DagNode):
     def cv_move(self, *args, **kwargs):
         """Move all cvs of the curve"""
         kwargs = kwargs or {"r": 1}
-        mc.move(*args, self.cvs, os=1, **kwargs)
+        mc.move(*args, self.cvs, **kwargs)
 
     def cv_moveTo(self, pos):
         """Move all cvs to position

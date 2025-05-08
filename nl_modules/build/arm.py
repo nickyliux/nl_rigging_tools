@@ -130,7 +130,8 @@ class Arm(RigModule):
             "palm_fkc", pf=rID, shape="circleC", up="x", scale=rSz * 1.5 * xDr
         )
 
-        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz * 1.5)
+        self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=rSz * 1.5 * xDr)
+        self.ikc.cv_rotate(0, 90, 0)
         self.palm_ikc = CurveNode(
             "palm_ikc", pf=rID, shape="squareR", up="x", scale=rSz * 1.2 * xDr
         )
@@ -471,7 +472,7 @@ class Arm(RigModule):
                 self.setting.a.add("showRibbonCtl", min=0, max=1, dv=1, k=0),
                 onList=self.all_bend,
             )
-        mc.hide(self.all_ikHs)
+        mc.hide(self.all_ikHs, self.joints_fk, self.joints_ik, self.joints_bf)
 
     def setup_proxy(self):
         for j in self.bindJnts:
