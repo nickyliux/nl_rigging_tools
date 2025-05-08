@@ -1,39 +1,44 @@
 # nl-rigging-tools
 
-## About
-There are a few great auto-rigging tools available freely online. As a rigger I'm interested in building my own.
+## Intro
+The origin of the development is because of the few ziva animation rigs I once used in a project. I found a few interesting techniques and tricks in rigging the actual "skeleton". So a auto rigging tool for skeleton would be great as the first step of creature creation with muscles ...
 
-One thing I learn throughout the development is the use of custom framework. Thanks to the Udemy course <b>"Python for Maya: Beginner to Advanced Rigging Automation"</b> by Nick Hughes, I learn to write codes that is more concise, easier to read, while independent on PyMEL.
-
-The lines below generate all utility nodes and connections, and read like expression.
+I have been writing autorigs with MEL and Maxscript for years but not in Python. Thanks to the great sharing of Nick Hughes in his Udemy course <b>"Python for Maya: Beginner to Advanced Rigging Automation"</b>, I learn the proper way of tools dev using custom framework.
 
 
 ## Features
-General
-* Modular build / unbuild
-* Scalable
+### Components
+#### Neck / Spine
+- FK > IK > Ribbon
+- Stretchy with volume control
+#### Arm
+- FK / IK with ribbon
+- Auto clavicle
+- Soft IK
+- Elbow pinning
+- Free / aligned wrist
+- Twist bones
+#### Hand
+- Smart finger control
+- Palm roll control
+- Scalable hand
+#### Leg
+- FK / IK with ribbon
+- Auto hip
+- Soft IK
+- Knee pinning
+- Twist bones
+- Toe & Patella bones
+- Knee correction
+- Smart foot roll control
+- Scalable foot
+#### NeckQd / SpineQd
+- IK > FK > Ribbon
+- Stretchy with volume control
+#### LegQd
+- FK / IK with ribbon
+- Smart foot roll control
 
-Spine
-* hybrid fk/ik
-* squash/stretch
-* lower hip ctl
-* volume ctl
-
-Limbs
-* fk/ik
-* squash/stretch
-* space switch
-* auto clavicle/hip
-* soft ik ( biped )
-* smart ctl ( biped )
-* palm roll/bank ( biped )
-* elbow/knee pin with fk ctl ( biped )
-* -------- ( Optional ) --------
-* twist bones
-* patella bone
-* toe bones
-* knee correction
-* ribbon ctl ( biped )
 
 
 ## Framework Classes
@@ -78,7 +83,7 @@ classDiagram
 ```
 
 
-## Marking Menus
+## Marking menus
 
 #### Rig Operation ( ctrl + MMB )
 ![The Autorig](nl_modules/doc/marking_menu_autorig.png)
@@ -88,17 +93,14 @@ classDiagram
 
 ## Installation
 1. Download the repository zip file.
-2. Extract to storage location.
+2. Extract it.
 3. Locate install/dragAndDrop.py.
 4. Drag and drop it onto a Maya viewport.
-5. Run the lines below
+5. Run the lines
     ```python
     from nl_modules import nl_rigging_tools
     nl_rigging_tools.main()
     ```
 
-## To do
-
-* Study matrix for more efficient constraint calculation.
-* Understand more about how professional animators work.
-* Visit my blog at [nickyliu.com](http://www.nickyliu.com) for more info.
+## Support
+For more information, visit my blog at [www.nickyliu.com](http://www.nickyliu.com)
