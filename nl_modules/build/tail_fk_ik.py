@@ -6,8 +6,6 @@ from nl_modules.nodel.curve_node import CurveNode
 from nl_modules.nodel.group_node import GroupNode
 from nl_modules.nodel.joint_node import JointNode
 from nl_modules.nodel.loc_node import LocNode
-
-# from nl_modules.nodel.ribbon_node import RibbonNode
 from nl_modules.nodel.surf_node import SurfNode
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
@@ -306,7 +304,7 @@ class TailFkIk(RigModule):
             self.setting.a.add("extraCtl", k=0, min=0, max=1, dv=1),
             onList=self.ikOffsetCtl,
         )
-        # mc.hide(self.ikJnt, self.fkJnt, self.ikOffsetJnt, self.rbJnt)
+        mc.hide(self.ikJnt, self.fkJnt, self.ikOffsetJnt, self.rbJnt)
 
     def setup_channel(self):
         for ctl in self.fkCtl + self.ikCtl:
