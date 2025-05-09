@@ -123,7 +123,7 @@ class SpineQd(RigModule):
         self.rigSize = CurveNode(self.LINE_GUIDE).length / 100
         self.build_ctl()
         self.build_fk()
-        self.build_ik(sliding=0)
+        self.build_ik()
         self.post_setup()
 
     def build_fk(self):
@@ -157,7 +157,7 @@ class SpineQd(RigModule):
         ikH.stretchySp(axis=axis, axisDir=axisDir)
         return ikH
 
-    def build_ik(self, sliding=1):
+    def build_ik(self, sliding=0):
         rID, rSz, xDr = self.getMyVar()
 
         self.rbCrv = self.LINE_GUIDE.duplicate(n=rID + "_spCrv_#")
@@ -198,14 +198,14 @@ class SpineQd(RigModule):
                 "spB", sj=self.fkJ_B[-1], ej=self.fkJ_B[1], crv=self.rbCrvR, axisDir=-1
             )
 
-            baseAttach = self.cog_ctl.a.add("baseAttach", min=0, max=1, dv=1)
+            attachToBase = self.cog_ctl.a.add("attachToBase", min=0, max=1, dv=1)
             for i in range(self.FK_JNT_NUM):
                 if i == 0:
                     common.cstMulti(
                         self.fkJ_B[i + 1],
                         self.fkJ_A[i],
                         self.fkJnt[i],
-                        w=baseAttach,
+                        w=attachToBase,
                         cstType="poi",
                     )
                     self.base2_ctl.cstOri(self.fkJnt[0], mo=1)
@@ -214,7 +214,7 @@ class SpineQd(RigModule):
                         self.fkJ_B[i + 1],
                         self.fkJ_A[i],
                         self.fkJnt[i],
-                        w=baseAttach,
+                        w=attachToBase,
                         cstType="par",
                     )
 
@@ -229,6 +229,9 @@ class SpineQd(RigModule):
 
         (self.chest_ctl, self.mid_ctl, self.base_ctl) | self.cog_ctl | self.CTL_DATA
         self.cog_ctl.addOffsetGrp()
+
+        self.setting.alignTo(self.cog_ctl, offset=(0, rSz * 70, 0))
+        self.cog_ctl.cstPar(self.setting, mo=1)
 
         chest_gimbal = self.chest_ctl.add_gimbal()
         base_gimbal = self.base_ctl.add_gimbal()
@@ -266,22 +269,19 @@ class SpineQd(RigModule):
 
         # Mid ctl setup
         common.cstMulti(
-            chest_gimbal,
-            base_gimbal,
-            self.mid_ctl.offset.offset,
-            cstType="par",
-            mo=1,
+            chest_gimbal, base_gimbal, self.mid_ctl.offset.offset, cstType="par", mo=1
         )
         self.chest_ctl.a.rz * 0.3 >> self.mid_ctl.offset.a.rz
 
         self.rbSrf = SurfNode.buildRbSrf(
             pf=rID,
             crv=self.LINE_GUIDE,
-            snap=self.rootJ,
+            snap=self.RT_GUIDE,
             spans=self.FK_JNT_NUM - 1,
             p=self.RIG_DATA,
         )
         self.rigNode.setMsg({"rbSrf": self.rbSrf})
+
         self.bindJnts = SurfNode.buildRbJnt(
             self.RBN_JNT_NUM,
             pf=rID,
@@ -301,14 +301,9 @@ class SpineQd(RigModule):
 
         self.base2_ctl.a.r >> self.ctlJnts[0].a.r
         self.chest2_ctl.a.r >> self.ctlJnts[2].a.r
-        (
-            self.base2_ctl.a.add("tangentScale", min=0, max=5, dv=1)
-            >> self.ctlJnts[0].a.s
-        )
-        (
-            self.chest2_ctl.a.add("tangentScale", min=0, max=5, dv=1)
-            >> self.ctlJnts[2].a.s
-        )
+        self.base2_ctl.a.add("tangentScale", min=0, dv=1) >> self.ctlJnts[0].a.s
+        self.chest2_ctl.a.add("tangentScale", min=0, dv=1) >> self.ctlJnts[2].a.s
+
         self.ctls = [
             self.chest_ctl,
             self.mid_ctl,
@@ -326,14 +321,12 @@ class SpineQd(RigModule):
             ctl.a.add("stretchMin", proxy=self.cog_ctl.a.stretchMin, k=0)
             ctl.a.add("stretchMax", proxy=self.cog_ctl.a.stretchMax, k=0)
 
-        self.volume_setup()
-        self.setting.alignTo(self.cog_ctl, offset=(0, rSz * 70, 0))
-        self.cog_ctl.cstPar(self.setting, mo=1)
+        self.build_volume()
 
         self.add_movable_pivot(self.chest_ctl, scale=rSz)
         self.add_movable_pivot(self.base_ctl, scale=rSz)
 
-    def volume_setup(self):
+    def build_volume(self):
         """Scale ribbon joints according to length of the surface"""
 
         scaleFix = self.masterC.a["globalScale"]
