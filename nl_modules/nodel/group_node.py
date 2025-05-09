@@ -32,7 +32,7 @@ class GroupNode(DagNode):
         if node is None:
             logging.info("Fail to create group for None")
             return
-        if pf and pf[-1] != "_":
+        if str(pf) and str(pf)[-1] != "_":
             pf += "_"
         name = pf + node + sf
 
@@ -123,7 +123,7 @@ class GroupNode(DagNode):
             else:
                 mc.scale(*args, self.cvs, **kwargs)
 
-    def getSideColor(self):
+    def get_side_color(self):
         """Return color depending on side"""
         color = Color.D_YELLOW
         if str(self.node).startswith("lf"):
@@ -132,7 +132,7 @@ class GroupNode(DagNode):
             color = Color.PINK
         return color
 
-    def addGimbal(self, relScale=0.8, attrTgt=None, color=0):
+    def add_gimbal(self, relScale=0.9, attrTgt=None):
         """Add a gimbal control below itself and attr at attrOn to link its visibility
         e.g.
             gbc = crv.addGimbal()        # crv.gimbalCtl  -> gbc.v
@@ -244,7 +244,7 @@ class GroupNode(DagNode):
         if typeName == "str":  # preset name
             crvDictList = self.shape_getDictListFrLib(crv)
             crvObj = self.shape_buildFrDictList(crvDictList, crv)
-            crvObj.copyShapeAsInst([self], keepSrc=0)
+            crvObj.copy_shape_as_inst([self], keepSrc=0)
 
         elif typeName == "GroupNode":  # another curve
             crv.copyShapeAsInst([self])
@@ -263,9 +263,9 @@ class GroupNode(DagNode):
 
         # elif isinstance(crv, GroupNode):
         else:
-            self.copyShapeAsInst([crv])
+            self.copy_shape_as_inst([crv])
 
-    def copyShapeAsInst(self, targets, keepSrc=1):
+    def copy_shape_as_inst(self, targets, keepSrc=1):
         """Copy shapes to all as instance
         e.g.
             crv.copyShapeAsInst(['a', 'b'])
@@ -301,12 +301,12 @@ class GroupNode(DagNode):
 
     def uninstanceFromOthers(self):
         """Un-instance itself from other instances"""
-        otherXf = self.uninstanceAll()
+        otherXf = self.uninstance_all()
         if otherXf:
             dup = self.duplicate()
             dup.copyShapeAsInst(otherXf, keepSrc=0)
 
-    def uninstanceAll(self):
+    def uninstance_all(self):
         """Un-instance all curves sharing the same shape
         return transforms of all objects sharing shapes before un-instance
         """
@@ -346,7 +346,7 @@ class GroupNode(DagNode):
         if self.shape:
             self.shape.a.lineWidth.set(w)
 
-    def showLocalAxis(self, state):
+    def show_local_axis(self, state):
         attr = self.a["displayLocalAxis"]
         if attr.exists():
             attr.set(state)

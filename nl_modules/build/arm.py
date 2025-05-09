@@ -375,7 +375,7 @@ class Arm(RigModule):
             ctl.a.addSep()
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
-        GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.palm_fkc)
+        GroupNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
 
     def build_ribbon(self):
         """

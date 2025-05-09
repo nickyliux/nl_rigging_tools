@@ -94,11 +94,11 @@ class TailFk(RigModule):
 
     def build_fk(self):
         rID, rSz, xDr = self.getMyVar()
-
         cluName = rID + "clu_#"
+
         self.fkJnt = JointNode.makeJCFrCrv(
             self.LINE_GUIDE,
-            jntNum=self.FK_BONE_NUM + 1,
+            num=self.FK_BONE_NUM + 1,
             pf=rID,
             aimV=(0, 0, -1),
             upV=(0, 1, 0),

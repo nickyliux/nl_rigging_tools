@@ -25,18 +25,18 @@ class SpineQd(RigModule):
         self.MD_GUIDE = DagNode(rID + "_md_guide")
         self.RT_GUIDE = DagNode(rID + "_rt_guide")
 
-        self.PV_GUIDE = None
+        self.PVT_GUIDE = None
         pvtGuide = DagNode(rID + "_pivot_guide")
         if pvtGuide.exists():
-            self.PV_GUIDE = pvtGuide
+            self.PVT_GUIDE = pvtGuide
 
         self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
 
         self.cog_ctl = None
-        self.fore_ctl = None
+        self.chest_ctl = None
         self.mid_ctl = None
         self.base_ctl = None
-        self.fore2_ctl = None
+        self.chest2_ctl = None
         self.base2_ctl = None
         self.setting = None
         self.ctls = []
@@ -58,9 +58,6 @@ class SpineQd(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        # scale = (rSz * 4, rSz * 4, rSz)
-        # scale2 = (rSz * 3.5, rSz * 3.5, rSz)
-
         self.setting = CurveNode(
             "setting",
             pf=rID,
@@ -80,11 +77,10 @@ class SpineQd(RigModule):
         )
         self.cog_ctl.cv_move(0, 70 * rSz, 40 * rSz)
 
-        self.fore_ctl = CurveNode(
-            "fore_ctl", pf=rID, shape="fk_rotator", scale=rSz * 8, width=2
+        self.chest_ctl = CurveNode(
+            "chest_ctl", pf=rID, shape="fk_rotator", scale=rSz * 8, width=2
         )
-        # "fore_ctl", pf=rID, shape="fk_rotator", scale=scale, up="z", width=2
-        self.fore_ctl.cv_rotate(0, 90, 0)
+        self.chest_ctl.cv_rotate(0, 90, 0)
 
         self.mid_ctl = CurveNode(
             "_mid_ctl", pf=rID, shape="circleC", scale=rSz * 4, up="z", width=2
@@ -93,10 +89,9 @@ class SpineQd(RigModule):
             "base_ctl", pf=rID, shape="fk_rotator", scale=rSz * 8, width=2
         )
         self.base_ctl.cv_rotate(0, 90, 0)
-        # "base_ctl", pf=rID, shape="circleC", scale=scale, up="z", width=2
 
-        self.fore2_ctl = CurveNode(
-            "fore2_ctl",
+        self.chest2_ctl = CurveNode(
+            "chest2_ctl",
             pf=rID,
             shape="squareR",
             up="z",
@@ -115,10 +110,10 @@ class SpineQd(RigModule):
             {
                 "setting": self.setting,
                 "cog_ctl": self.cog_ctl,
-                "fore_ctl": self.fore_ctl,
+                "chest_ctl": self.chest_ctl,
                 "mid_ctl": self.mid_ctl,
                 "base_ctl": self.base_ctl,
-                "fore2_ctl": self.fore2_ctl,
+                "chest2_ctl": self.chest2_ctl,
                 "base2_ctl": self.base2_ctl,
             }
         )
@@ -132,24 +127,18 @@ class SpineQd(RigModule):
         self.post_setup()
 
     def build_fk(self):
-        self.fkJnt = self.make_jc_fr_crv("fkj")
+        rID, rSz, xDr = self.getMyVar()
+        self.fkJnt = JointNode.makeJCFrCrv(
+            self.LINE_GUIDE,
+            pf=rID,
+            name="fkj",
+            num=self.FK_JNT_NUM,
+            size=rSz,
+            p=self.SKL_DATA,
+        )
         mc.delete(self.rootJ)
         self.rootJ = self.fkJnt[0]
         self.rigNode.setMsg({"rootJ": self.rootJ})
-
-    def make_jc_fr_crv(self, name, addEndJ=0, rev=0, size=1, color=Color.BLUE):
-        jc = JointNode.makeJCFrCrv(
-            self.LINE_GUIDE,
-            pf=self.rigID,
-            name=name,
-            rev=rev,
-            jntNum=self.FK_JNT_NUM,
-            p=self.SKL_DATA,
-            size=size,
-            addEndJ=addEndJ,
-            color=color,
-        )
-        return jc
 
     def make_stretchy_ik(self, name, sj=None, ej=None, crv=None, axis="tz", axisDir=1):
         """Build stretcy IK for given joints and curve"""
@@ -183,9 +172,25 @@ class SpineQd(RigModule):
                 "sp", sj=self.fkJnt[0], ej=self.fkJnt[-1], crv=self.rbCrv
             )
         else:
-            self.fkJ_A = self.make_jc_fr_crv("fkJ_A", addEndJ=1, size=rSz)
-            self.fkJ_B = self.make_jc_fr_crv("fkJ_B", addEndJ=1, rev=1, size=rSz)
-
+            self.fkJ_A = JointNode.makeJCFrCrv(
+                self.LINE_GUIDE,
+                pf=rID,
+                name="fkj_A",
+                num=self.FK_JNT_NUM,
+                size=rSz,
+                p=self.SKL_DATA,
+                addEndJ=1,
+            )
+            self.fkJ_B = JointNode.makeJCFrCrv(
+                self.LINE_GUIDE,
+                pf=rID,
+                name="fkj_B",
+                num=self.FK_JNT_NUM,
+                size=rSz,
+                p=self.SKL_DATA,
+                addEndJ=1,
+                rev=1,
+            )
             ikH_A = self.make_stretchy_ik(
                 "spA", sj=self.fkJ_A[0], ej=self.fkJ_A[-2], crv=self.rbCrv
             )
@@ -215,26 +220,26 @@ class SpineQd(RigModule):
 
         self.base_ctl.snapAlignTo(self.fkJnt[0], self.RT_GUIDE)
         self.mid_ctl.alignTo(self.MD_GUIDE)
-        self.fore_ctl.snapAlignTo(self.fkJnt[-1], self.TP_GUIDE)
+        self.chest_ctl.snapAlignTo(self.fkJnt[-1], self.TP_GUIDE)
 
-        if self.PV_GUIDE:
-            self.cog_ctl.alignTo(self.PV_GUIDE)
+        if self.PVT_GUIDE:
+            self.cog_ctl.alignTo(self.PVT_GUIDE)
         else:
             self.cog_ctl.alignTo(self.RT_GUIDE)
 
-        (self.fore_ctl, self.mid_ctl, self.base_ctl) | self.cog_ctl | self.CTL_DATA
+        (self.chest_ctl, self.mid_ctl, self.base_ctl) | self.cog_ctl | self.CTL_DATA
         self.cog_ctl.addOffsetGrp()
 
-        fore_gimbal = self.fore_ctl.addGimbal()
-        base_gimbal = self.base_ctl.addGimbal()
+        chest_gimbal = self.chest_ctl.add_gimbal()
+        base_gimbal = self.base_ctl.add_gimbal()
 
         self.ctlJnts = self.build_ctl_jnt(
-            [base_gimbal, self.mid_ctl, fore_gimbal],
+            [base_gimbal, self.mid_ctl, chest_gimbal],
             r=rSz * 12,
         )
         # Orient control last fkJ by tip ctl
         self.fkJnt[-1].a.r.disconnect()
-        self.fore_ctl.cstOri(self.fkJnt[-1], mo=1)
+        self.chest_ctl.cstOri(self.fkJnt[-1], mo=1)
 
         # Bind curve to ctl joints
         self.rbCrv.weightTo(self.ctlJnts, weightDir=1)
@@ -244,33 +249,30 @@ class SpineQd(RigModule):
             self.rbCrvR.a.inheritsTransform.set(0)
 
         # Setup spline ik twist
-        self.fore_ctl.addOffsetGrp(below=1)
+        self.chest_ctl.addOffsetGrp(below=1)
         self.base_ctl.addOffsetGrp(below=1)
 
         if sliding:
-            ikH_A.spline_twist_setup(self.base_ctl, self.fore_ctl, twistAxis="+z")
-            ikH_B.spline_twist_setup(self.fore_ctl, self.base_ctl, twistAxis="-z")
+            ikH_A.spline_twist_setup(self.base_ctl, self.chest_ctl, twistAxis="+z")
+            ikH_B.spline_twist_setup(self.chest_ctl, self.base_ctl, twistAxis="-z")
             mc.hide(ikH_A, ikH_B)
         else:
-            ikH_1.spline_twist_setup(self.base_ctl, self.fore_ctl, twistAxis="+z")
+            ikH_1.spline_twist_setup(self.base_ctl, self.chest_ctl, twistAxis="+z")
             mc.hide(ikH_1)
 
         self.base_ctl.addOffsetGrp()
         self.mid_ctl.addOffsetGrp(count=2)
-        self.fore_ctl.addOffsetGrp()
+        self.chest_ctl.addOffsetGrp()
 
         # Mid ctl setup
         common.cstMulti(
-            # self.fore_ctl,
-            # self.base_ctl,
-            fore_gimbal,
+            chest_gimbal,
             base_gimbal,
             self.mid_ctl.offset.offset,
             cstType="par",
             mo=1,
         )
-        self.fore_ctl.a.rz * 0.3 >> self.mid_ctl.offset.a.rz
-        # self.fore_ctl.a.rz @ self.base_ctl.a.rz >> self.mid_ctl.offset.a.rz
+        self.chest_ctl.a.rz * 0.3 >> self.mid_ctl.offset.a.rz
 
         self.rbSrf = SurfNode.buildRbSrf(
             pf=rID,
@@ -291,42 +293,34 @@ class SpineQd(RigModule):
         self.rbSrf.weightTo(self.rootJ.allChildrenJt2, mi=1, chain=0)
 
         # ----------------------
-        #  Add gimbal
-        # ----------------------
-        # fore_gimbal = self.fore_ctl.addGimbal()
-        # base_gimbal = self.base_ctl.addGimbal()
-        # fore_gimbal.cstPar(self.fore2_ctl.addOffsetGrp())
-        # self.base_ctl.cstPar(self.base2_ctl.addOffsetGrp())
-
-        # ----------------------
         #  Setup tangent ctls
         # ----------------------
-        (self.fore2_ctl, self.base2_ctl) | self.CTL_DATA
+        (self.chest2_ctl, self.base2_ctl) | self.CTL_DATA
         base_gimbal.cstPar(self.base2_ctl.addOffsetGrp())
-        fore_gimbal.cstPar(self.fore2_ctl.addOffsetGrp())
+        chest_gimbal.cstPar(self.chest2_ctl.addOffsetGrp())
 
         self.base2_ctl.a.r >> self.ctlJnts[0].a.r
-        self.fore2_ctl.a.r >> self.ctlJnts[2].a.r
+        self.chest2_ctl.a.r >> self.ctlJnts[2].a.r
         (
             self.base2_ctl.a.add("tangentScale", min=0, max=5, dv=1)
             >> self.ctlJnts[0].a.s
         )
         (
-            self.fore2_ctl.a.add("tangentScale", min=0, max=5, dv=1)
+            self.chest2_ctl.a.add("tangentScale", min=0, max=5, dv=1)
             >> self.ctlJnts[2].a.s
         )
         self.ctls = [
-            self.fore_ctl,
+            self.chest_ctl,
             self.mid_ctl,
             self.base_ctl,
             self.cog_ctl,
-            fore_gimbal,
+            chest_gimbal,
             base_gimbal,
-            self.fore2_ctl,
+            self.chest2_ctl,
             self.base2_ctl,
         ]
 
-        for ctl in [self.base_ctl, self.mid_ctl, self.fore_ctl]:
+        for ctl in [self.base_ctl, self.mid_ctl, self.chest_ctl]:
             ctl.a.addSep()
             ctl.a.add("stretchy", proxy=self.cog_ctl.a.stretchy)
             ctl.a.add("stretchMin", proxy=self.cog_ctl.a.stretchMin, k=0)
@@ -336,7 +330,7 @@ class SpineQd(RigModule):
         self.setting.alignTo(self.cog_ctl, offset=(0, rSz * 70, 0))
         self.cog_ctl.cstPar(self.setting, mo=1)
 
-        self.add_movable_pivot(self.fore_ctl, scale=rSz)
+        self.add_movable_pivot(self.chest_ctl, scale=rSz)
         self.add_movable_pivot(self.base_ctl, scale=rSz)
 
     def volume_setup(self):
@@ -348,7 +342,7 @@ class SpineQd(RigModule):
         D = d.get()
 
         autoVol = self.setting.a.add("autoVol", dv=1)
-        self.fore_ctl.a.add("autoVol", proxy=autoVol)
+        self.chest_ctl.a.add("autoVol", proxy=autoVol)
         self.base_ctl.a.add("autoVol", proxy=autoVol)
 
         # keys for volume squash
@@ -369,17 +363,6 @@ class SpineQd(RigModule):
             ratio >> self.bindJnts[i].a.sy
 
     def setup_vis(self):
-
-        # if self.bindJnts:
-        #     # mc.hide(self.bindJnts, self.rbSrf)
-        #     self.ctl_vis_toggle(
-        #         self.masterC2.a["debug"], onList=self.bindJnts + [self.rbSrf]
-        #     )
-
-        # self.ctl_vis_toggle(
-        #     self.masterC2.a["debug"],
-        #     onList=self.ctlJnts + self.fkJ_A + self.fkJ_B + [self.RIG_DATA],
-        # )
         pass
 
     def setup_proxy(self):
@@ -392,7 +375,7 @@ class SpineQd(RigModule):
     def setup_channel(self):
         [ctl.a.showAttr(t=1, r=1) for ctl in self.ctls]
         self.setting.a.showAttr()
-        self.fore2_ctl.a.showAttr(r=1)
+        self.chest2_ctl.a.showAttr(r=1)
         self.base2_ctl.a.showAttr(r=1)
 
     def setup_anchor(self):

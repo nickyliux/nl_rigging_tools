@@ -137,7 +137,7 @@ class NeckPro(rig_module.RigModule):
 
         common.cstMulti(self.up_ikc, self.lw_ikc, self.md_ikc, cstType="poi", delete=1)
 
-        self.cog_gmb = CurveNode(self.cog_ctl).addGimbal()
+        self.cog_gmb = CurveNode(self.cog_ctl).add_gimbal()
 
         self.lw_ikc | self.fkCtl[0]
         self.up_ikc | self.fkCtl[-1]

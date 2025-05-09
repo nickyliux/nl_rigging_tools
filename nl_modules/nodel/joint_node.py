@@ -155,17 +155,17 @@ class JointNode(GroupNode):
     @staticmethod
     def makeJCFrCrv(
         crv,
-        name="fkJ",
-        jntNum=2,
+        name="fkj",
+        pf="",
+        num=2,
         rev=0,
         aimV=(0, 0, 1),
         upV=(0, 1, 0),
         wuV=(0, 1, 0),
         size=1,
-        pf="",
-        p=None,
-        color=0,
+        color=Color.BLUE,
         addEndJ=0,
+        p=None,
     ):
         """Build joint chain from curve
         e.g.
@@ -182,8 +182,8 @@ class JointNode(GroupNode):
         mc.select(cl=1)
         if pf and pf[-1] != "_":
             pf += "_"
-        for i in range(jntNum):
-            mp.a.uValue.set(i / (jntNum - 1))
+        for i in range(num):
+            mp.a.uValue.set(i / (num - 1))
             j = JointNode(f"{i}_{name}", pf=pf, snap=loc, r=size, color=color)
             joints.append(j)
 
@@ -191,7 +191,7 @@ class JointNode(GroupNode):
         last = joints[0] if rev else joints[-1]
         mc.delete(loc, mp)
 
-        for i in range(jntNum - 1):
+        for i in range(num - 1):
             if not rev:
                 # j1 > j2 > ... > jn
                 joints[i + 1].cstAim(joints[i], aim=aimV, u=upV, wu=wuV, keep=0)

@@ -28,7 +28,6 @@ class CurveNode(GroupNode):
         snap=None,
         addOfs=0,
         p=None,
-        # for crv
         color=0,
         shape="circle",
         rotate=None,
@@ -63,7 +62,7 @@ class CurveNode(GroupNode):
             #     mc.rename(parentedSh, self.name + "Shape#")
             #     mc.delete(obj)
 
-            self.color = color or self.getSideColor()
+            self.color = color or self.get_side_color()
             self.dspType = dspType
 
         if not existing:
@@ -256,7 +255,7 @@ class CurveNode(GroupNode):
             self.cv_scale(*scale)
         elif isinstance(scale, (int, float)):
             self.cv_scale(scale)
-        self.color = color or self.getSideColor()
+        self.color = color or self.get_side_color()
 
         if p:
             self | p

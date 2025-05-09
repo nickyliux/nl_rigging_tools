@@ -153,7 +153,7 @@ def use_last_crv_shapes(*args):
     if len(sel) > 1:
         from nl_modules.nodel.curve_node import CurveNode
 
-        CurveNode(sel[-1]).copyShapeAsInst(sel[:-1])
+        CurveNode(sel[-1]).copy_shape_as_inst(sel[:-1])
 
 
 def add_ofs(*args):

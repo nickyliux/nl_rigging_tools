@@ -74,10 +74,10 @@ class Test_JointNode_Main(Test_JointNode_Base):
 
     def test_makeJChainFrCrv(self):
         crv = mc.circle()[0]
-        jnts = JointNode.makeJCFrCrv(crv, jntNum=6)
+        jnts = JointNode.makeJCFrCrv(crv, num=6)
         self.assertEqual(len(jnts), 6)
 
-        jnts = JointNode.makeJCFrCrv(crv, jntNum=6, addEndJ=1)
+        jnts = JointNode.makeJCFrCrv(crv, num=6, addEndJ=1)
         self.assertEqual(len(jnts), 7)
 
     def test_duplicate(self):

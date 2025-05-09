@@ -303,7 +303,7 @@ class Leg(RigModule):
         inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG
         self.ikc.snapTo(self.palm)
         self.ikc.cv_drop()
-        self.ikc_gimbal = CurveNode(self.ikc).addGimbal()
+        self.ikc_gimbal = CurveNode(self.ikc).add_gimbal()
         #   Constrain ikCstG supporting fk limb
         #   self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
         self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
@@ -335,7 +335,6 @@ class Leg(RigModule):
         ikH1.stretchyIk(soft=1)
         self.hip_fkc.cstPar(self.joints_ik[0], mo=1)
 
-        # self.all_ikH = {"main": ikH1, "ball": ikH2, "toe": ikH3}
         self.all_ikHs = [ikH1, ikH2, ikH3]
         self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal]
         self.ikH1 = ikH1
@@ -361,14 +360,13 @@ class Leg(RigModule):
         self.ikCtl.append(self.ballG_ikc)
 
         # Smart Ctl setup
-        # self.smart_ctl.snapTo(self.ikc)
         self.smart_ctl.alignTo(self.master_guide)
         self.smart_ctl.a.ty.set(0)
         self.smart_ctl | self.ikc_gimbal
         self.smart_ctl.a.tz.set(rSz * 35)
         self.smart_ctl.addOffsetGrp()
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
-        -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry  # self.ikc.a["toeTwist"]
+        -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry
         -xDr * self.smart_ctl.a.rz >> self.smart_ctl.a["footBank"]
 
     def build_toes(self):
@@ -480,7 +478,7 @@ class Leg(RigModule):
             ctl.a.addSep()
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
-        GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.palm_fkc)
+        GroupNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
 
     def build_ribbon(self):
         """

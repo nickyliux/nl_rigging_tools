@@ -404,7 +404,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if sel and items:
             itemText = items[0].text()
             shape = CurveNode(itemText, shape=itemText)
-            shape.copyShapeAsInst(sel, keepSrc=0)
+            shape.copy_shape_as_inst(sel, keepSrc=0)
             mc.select(sel)
 
     def crvShape_refresh_BN_clicked(self):

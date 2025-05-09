@@ -29,12 +29,13 @@ class Spine(RigModule):
         self.hip_ctl = None
         self.mid_ctl = None
         self.chest_ctl = None
-        self.ikCtl = None
-        self.fkCtl = None
+        self.ikCtls = None
+        self.fkCtls = None
         self.setting = None
         self.ctlJnts = None
         self.bindJnts = []
-        self.fkJnt = []
+        self.fkJnts = []
+        self.rbJnts = []
         self.rbSrf = None
 
     def gen_guide_sk(self):
@@ -57,7 +58,7 @@ class Spine(RigModule):
             "cog_ctl", pf=rID, shape="cog2", scale=rSz * 2, color=Color.YELLOW
         )
         self.chest_ctl = CurveNode("chest_ctl", pf=rID, shape="squareR", scale=rSz * 4)
-        self.mid_ctl = CurveNode("_mid_ctl", pf=rID, shape="squareR", scale=rSz * 4)
+        self.mid_ctl = CurveNode("mid_ctl", pf=rID, shape="squareR", scale=rSz * 4)
         self.hip_ctl = CurveNode("hip_ctl", pf=rID, shape="squareR", scale=rSz * 4)
 
         self.rigNode.setMsg(
@@ -81,9 +82,9 @@ class Spine(RigModule):
     def build_fk(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.fkJnt = JointNode.makeJCFrCrv(
+        self.fkJnts = JointNode.makeJCFrCrv(
             self.LINE_GUIDE,
-            jntNum=self.FK_JNT_NUM,
+            num=self.FK_JNT_NUM,
             pf=rID,
             aimV=(0, 1, 0),
             upV=(0, 0, 1),
@@ -93,55 +94,60 @@ class Spine(RigModule):
             p=self.SKL_DATA,
         )
         mc.delete(self.rootJ)
-        self.rootJ = self.fkJnt[0]
+        self.rootJ = self.fkJnts[0]
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
-        self.fkCtl = []
-        for i, j in enumerate(self.fkJnt[:-1]):
+        self.fkCtls = []
+        for i, j in enumerate(self.fkJnts[:-1]):
             c = CurveNode(
-                f"{i + 1}_fkc", pf=rID, shape="circleC", scale=rSz * 5, width=2
+                f"{i + 1}_fkc",
+                pf=rID,
+                shape="circleC",
+                scale=rSz * 5,
+                width=2,
+                color=Color.YELLOW,
             )
-            self.fkCtl.append(c)
+            self.fkCtls.append(c)
 
-        self.build_fk_with_ctl2(self.fkJnt[1:], self.fkCtl[1:], p=self.CTL_DATA)
+        self.build_fk_with_ctl2(self.fkJnts[1:], self.fkCtls[1:], p=self.CTL_DATA)
 
-        hipCtl = self.fkCtl[0]
+        hipCtl = self.fkCtls[0]
         hipCtl(p=self.CTL_DATA, addOfs=1, color=Color.D_RED)
-        hipCtl.offset.snapAlignTo(self.fkJnt[1], self.fkJnt[0])
+        hipCtl.offset.snapAlignTo(self.fkJnts[1], self.fkJnts[0])
         hipCtl.cv_move(0, rSz * -20, 0)
-        hipCtl.cstPar(self.fkJnt[0], mo=1)
-        self.bindJnts = self.fkJnt
+        hipCtl.cstPar(self.fkJnts[0], mo=1)
+        self.bindJnts = self.fkJnts
 
     def build_ik(self):
         rID, rSz, xDr = self.getMyVar()
 
         mG = self.master_guide
-        self.hip_ctl.snapAlignTo(self.fkJnt[0], mG)
+        self.hip_ctl.snapAlignTo(self.fkJnts[0], mG)
         self.mid_ctl.snapAlignTo(self.MD_GUIDE, mG)
-        self.chest_ctl.snapAlignTo(self.fkJnt[-1], mG)
+        self.chest_ctl.snapAlignTo(self.fkJnts[-1], mG)
         self.cog_ctl.snapAlignTo(self.hip_ctl, mG)
 
         self.setting.alignTo(self.cog_ctl)
         self.setting.a.tz.set(rSz * -100)
         self.cog_ctl.cstPar(self.setting, mo=1)
 
-        self.cog_gmb = CurveNode(self.cog_ctl).addGimbal()  # attrTgt=self.setting)
+        self.cog_gmb = CurveNode(self.cog_ctl).add_gimbal()
         self.cog_ctl | self.CTL_DATA
-        self.cog_gmb.cstPar(self.fkCtl[0].offset, mo=1)
-        self.cog_gmb.cstPar(self.fkCtl[1].offset, mo=1)
+        self.cog_gmb.cstPar(self.fkCtls[0].offset, mo=1)
+        self.cog_gmb.cstPar(self.fkCtls[1].offset, mo=1)
 
-        self.hip_ctl | self.fkCtl[0]
-        self.chest_ctl | self.fkCtl[-1]
-        self.mid_ctl | self.fkCtl[len(self.fkCtl) // 2]
+        self.hip_ctl | self.fkCtls[0]
+        self.chest_ctl | self.fkCtls[-1]
+        self.mid_ctl | self.fkCtls[len(self.fkCtls) // 2]
         self.hip_ctl.addOffsetGrp()
         self.mid_ctl.addOffsetGrp(count=2)
         self.chest_ctl.addOffsetGrp()
         self.cog_ctl.addOffsetGrp()
         self.hip_ctl.a.ry @ self.chest_ctl.a.ry >> self.mid_ctl.offset.a.ry
 
-        self.chest_ctl.cstOri(self.fkJnt[-1], mo=1)
-        self.cog_gmb.cstSca(self.fkJnt[0])
-        self.fkJnt[0].childrenJt[0].a.segmentScaleCompensate.set(0)
+        self.chest_ctl.cstOri(self.fkJnts[-1], mo=1)
+        self.cog_gmb.cstSca(self.fkJnts[0])
+        self.fkJnts[0].childrenJt[0].a.segmentScaleCompensate.set(0)
 
         if self.RBN_BONES:
             self.rbSrf = SurfNode.buildRbSrf(
@@ -158,7 +164,7 @@ class Spine(RigModule):
                 [self.hip_ctl, self.mid_ctl, self.chest_ctl], r=rSz * 10
             )
             self.rbSrf.weightTo(self.ctlJnts, chain=0, mi=2, dr=6)
-            self.bindJnts = SurfNode.buildRbJnt(
+            self.rbJnts = SurfNode.buildRbJnt(
                 self.RBN_JNT_NUM,
                 pf=rID,
                 size=rSz,
@@ -168,11 +174,13 @@ class Spine(RigModule):
             )
             self.volume_setup()
 
-        for ctl in self.fkCtl:
+            self.bindJnts = self.rbJnts
+
+        for ctl in self.fkCtls:
             self.cog_ctl.a.s >> ctl.offset.a.s
 
         self.cog_ctl.a.s >> self.PRX_GRP.a.s
-        self.ikCtl = [self.hip_ctl, self.mid_ctl, self.chest_ctl]
+        self.ikCtls = [self.hip_ctl, self.mid_ctl, self.chest_ctl]
 
         self.chest_ctl
 
@@ -184,9 +192,9 @@ class Spine(RigModule):
         d = arcLD.a.arcLengthInV
         D = d.get()
 
-        autoVol = self.setting.a.add("autoVol", dv=1)
-        self.chest_ctl.a.add("autoVol", proxy=autoVol)
-        self.hip_ctl.a.add("autoVol", proxy=autoVol)
+        volume = self.setting.a.add("volume", min=0, dv=1)
+        self.chest_ctl.a.add("volume", proxy=volume)
+        self.hip_ctl.a.add("volume", proxy=volume)
 
         # keys for volume squash
         volGraph = self.setting.a.add("volGraph", dv=0)
@@ -201,25 +209,20 @@ class Spine(RigModule):
             volGraph >> fc.a.stream
             fc.a.varyTime.set(i)
 
-            ratio = (D / (d / scaleFix)) ** (fc.a.varying * autoVol)
-            ratio >> self.bindJnts[i].a.sx
-            ratio >> self.bindJnts[i].a.sz
+            ratio = (D / (d / scaleFix)) ** (fc.a.varying * volume)
+            ratio >> self.rbJnts[i].a.sx
+            ratio >> self.rbJnts[i].a.sz
 
     def setup_vis(self):
         self.ctl_vis_toggle(
-            self.setting.a.add("fkCtl", min=0, max=1, dv=1, k=0),
-            onList=self.fkCtl,
+            self.setting.a.add("fkCtls", min=0, max=1, dv=1, k=0),
+            onList=self.fkCtls,
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("ikCtl", min=0, max=1, dv=1, k=0),
-            onList=self.ikCtl,
+            self.setting.a.add("ikCtls", min=0, max=1, dv=1, k=0),
+            onList=self.ikCtls,
         )
-        # self.ctl_vis_toggle(self.masterC2.a["debug"], onList=[self.RIG_DATA])
-
-        # if self.RBN_BONES:
-        #     self.ctl_vis_toggle(
-        #         self.masterC2.a["debug"], onList=[self.rbSrf] + self.ctlJnts
-        #     )
+        mc.hide(self.ctlJnts, self.fkJnts, self.rbJnts)
 
     def setup_channel(self):
         self.setting.a.showAttr()
@@ -228,12 +231,12 @@ class Spine(RigModule):
             self.hip_ctl,
             self.mid_ctl,
             self.chest_ctl,
-        ] + self.fkCtl:
+        ] + self.fkCtls:
             ctl.a.showAttr(t=1, r=1)
         self.cog_ctl.a.showAttr(t=1, r=1, s=1)
 
     def setup_rotate_order(self):
-        for ctl in self.fkCtl + self.ikCtl + [self.cog_ctl, self.cog_gmb]:
+        for ctl in self.fkCtls + self.ikCtls + [self.cog_ctl, self.cog_gmb]:
             ctl.a.ro.set(2)
 
     def setup_proxy(self):
@@ -250,14 +253,14 @@ class Spine(RigModule):
         self.rigNode.setMsg({"space_uprBody": self.chest_ctl})
 
     def setup_anchor(self):
-        anchorM2Tgt = self.bindJnts[-1] if self.RBN_BONES else self.chest_ctl
+        anchorM2Tgt = self.rbJnts[-1] if self.RBN_BONES else self.chest_ctl
         self.setup_anchor_module({"anchorM1": self.hip_ctl, "anchorM2": anchorM2Tgt})
 
     def post_setup(self):
-        self.add_bind_jnt_set(self.bindJnts)
         self.add_ctl_set(
-            self.fkCtl + self.ikCtl + [self.setting, self.cog_ctl, self.cog_gmb]
+            self.fkCtls + self.ikCtls + [self.setting, self.cog_ctl, self.cog_gmb]
         )
+        self.add_bind_jnt_set(self.bindJnts)
         self.setup_space()
         self.setup_anchor()
         self.setup_proxy()

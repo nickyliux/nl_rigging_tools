@@ -141,12 +141,12 @@ class Test_CurveNode_Advanced(Test_CurveNode_Base):
         self.assertEqual(len(crv.cvs), 6)
 
     def test_addGimbal(self):
-        gim = self.circle.addGimbal()
+        gim = self.circle.add_gimbal()
         self.assertEqual(gim.parent, self.circle)
         self.assertEqual(self.circle.a.gimbalCtl.exists(), True)
 
     def test_addGimbal2(self):
-        gim = self.circle.addGimbal(attrTgt=self.crv)
+        gim = self.circle.add_gimbal(attrTgt=self.crv)
         self.crv.a.gimbalCtl.set(0)
         self.assertEqual(gim.a.v.get(), False)
 

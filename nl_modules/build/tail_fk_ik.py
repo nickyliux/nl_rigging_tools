@@ -91,10 +91,9 @@ class TailFkIk(RigModule):
 
     def build_ik(self):
         rID, rSz, xDr = self.getMyVar()
-
         self.ikJnt = JointNode.makeJCFrCrv(
             self.LINE_GUIDE,
-            jntNum=5,
+            num=5,
             name="ikj",
             pf=rID,
             aimV=(0, 0, -1),
@@ -131,7 +130,7 @@ class TailFkIk(RigModule):
         # ------------------------------------------
         self.fkJnt = JointNode.makeJCFrCrv(
             self.LINE_GUIDE,
-            jntNum=self.FK_BONE_NUM + 1,
+            num=self.FK_BONE_NUM + 1,
             pf=rID,
             aimV=(0, 0, -1),
             upV=(0, 1, 0),

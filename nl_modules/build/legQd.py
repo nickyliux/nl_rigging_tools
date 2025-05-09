@@ -272,7 +272,7 @@ class LegQd(RigModule):
         self.ikc.snapTo(self.digit)
         self.ikc.cv_drop()
 
-        self.ikc_gimbal = CurveNode(self.ikc).addGimbal()  # attrTgt=self.setting)
+        self.ikc_gimbal = CurveNode(self.ikc).add_gimbal()  # attrTgt=self.setting)
         self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
 
         self.foot_roll_logic(self.smart_ctl, heelRollG, ballRollG, footRollG, toeRollG)
