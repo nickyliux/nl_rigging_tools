@@ -1,9 +1,9 @@
 # nl-rigging-tools
 
 ## Intro
-The origin of the development is because of the few ziva animation rigs I once used in a project. I found a few interesting techniques and tricks in rigging the actual "skeleton". So a auto rigging tool for skeleton would be great as the first step of creature creation with muscles ...
+The starting point of the development is from some Ziva bone rigs I used in a movie project. The techniques in rigging the actual "skeleton" are inspiring. So it would be great to automate it for every animal in the world ...
 
-I have been writing autorigs with MEL and Maxscript for years but not in Python. Thanks to the great sharing of Nick Hughes in his Udemy course <b>"Python for Maya: Beginner to Advanced Rigging Automation"</b>, I learn the proper way of tools dev using custom framework.
+I know Python but have not used it in making autorig yet. Thanks to the great sharing of Nick Hughes in his course <b>"Python for Maya: Beginner to Advanced Rigging Automation"</b>, I learn to build custom framework to simplify things and make tools the professional way.
 
 
 ## Features
