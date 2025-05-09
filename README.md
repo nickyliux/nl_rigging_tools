@@ -1,13 +1,12 @@
 # nl-rigging-tools
 
 ## Intro
-The origin of this tool is a few Ziva bone rigs I used in a movie project. The techniques in rigging the actual "skeleton" are inspiring. Isn't it great to automate the rigging the skeletons for every vertebral animal in the world ?
+The starting point is the Ziva horse bone rig. During a movie project I had to study the rig and I find that rigging the actual "skeleton" is tricky but fulfilling.
 
-I know Python but have not used it in making autorig yet. Thanks to the great sharing of Nick Hughes in his course <b>"Python for Maya: Beginner to Advanced Rigging Automation"</b>, I learn to build custom framework to simplify things and make tools the professional way.
+I knew some Python at the moment but hadn't used it in building autorig. Thanks to the sharing of Nick Hughes thru his course <b>"Python for Maya: Beginner to Advanced Rigging Automation"</b>, I learn to build custom framework. It simplifies things so I see the beauty of writing tools the professional way.
 
 
-## Features
-### Components
+## Components
 #### Neck / Spine
 - FK > IK > Ribbon
 - Stretchy with volume control
@@ -41,7 +40,7 @@ I know Python but have not used it in making autorig yet. Thanks to the great sh
 
 
 
-## Framework Classes
+## Framework Python Classes
 
 ```mermaid
 classDiagram
@@ -65,7 +64,7 @@ classDiagram
     
 ```
 
-## Component Classes
+## Component Python Classes
 ```mermaid
 classDiagram
     RigBase <|-- RigModule
@@ -83,11 +82,10 @@ classDiagram
 ```
 
 
-## Marking menus
+## Marking menus : Rig Building ( ctrl + MMB )
 
-#### Rig Operation ( ctrl + MMB )
 ![The Autorig](nl_modules/doc/marking_menu_autorig.png)
-#### General Rigging ( ctrl + alt + MMB )
+## Marking menus : General ( ctrl + alt + MMB )
 ![General Rigging](nl_modules/doc/marking_menu_rigging.png)
 
 
