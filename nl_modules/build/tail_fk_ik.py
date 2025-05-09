@@ -250,7 +250,7 @@ class TailFkIk(RigModule):
 
         for i in range(self.RBN_JNT_NUM):
 
-            mp = DagNode("mp#", nodeType="motionPath")
+            mp = DagNode("mp_#", nodeType="motionPath")
             #
             #   Parametric Length at motionPath must be OFF for
             #   even sliding to work along the whole curve
@@ -260,11 +260,11 @@ class TailFkIk(RigModule):
 
             (i * sep) / ratioOut >> mp.a.uValue
 
-            cpos = DagNode("cpos#", nodeType="closestPointOnSurface")
-            posi = DagNode("posi#", nodeType="pointOnSurfaceInfo")
+            cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
+            posi = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
             posi.a.turnOnPercentage.set(1)
 
-            aimCst = DagNode("aimCst#", nodeType="aimConstraint")
+            aimCst = DagNode("aimCst_#", nodeType="aimConstraint")
             aimCst | self.RIG_DATA
             loc = LocNode(f"{i}_loc", pf=rID, p=locGrp)
             crv.shape.a.worldSpace >> mp.a.geometryPath

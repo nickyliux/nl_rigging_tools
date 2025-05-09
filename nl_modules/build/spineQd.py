@@ -52,6 +52,9 @@ class SpineQd(RigModule):
         self.rbCrv = None
         self.rbCrvR = None
 
+        self.endFix1_loc = None
+        self.endFix2_loc = None
+
     def gen_guide_sk(self):
         self.gen_guide_sk_module(["rt", "md", "tp"])
 
@@ -267,12 +270,17 @@ class SpineQd(RigModule):
         self.mid_ctl.addOffsetGrp(count=2)
         self.chest_ctl.addOffsetGrp()
 
+        #
         # Mid ctl setup
+        #
         common.cstMulti(
             chest_gimbal, base_gimbal, self.mid_ctl.offset.offset, cstType="par", mo=1
         )
         self.chest_ctl.a.rz * 0.3 >> self.mid_ctl.offset.a.rz
 
+        #
+        # Build Srf
+        #
         self.rbSrf = SurfNode.buildRbSrf(
             pf=rID,
             crv=self.LINE_GUIDE,
@@ -281,6 +289,18 @@ class SpineQd(RigModule):
             p=self.RIG_DATA,
         )
         self.rigNode.setMsg({"rbSrf": self.rbSrf})
+
+        #
+        # Use closestPointOnSurface to fix wiggle at both ends
+        #
+        if sliding:
+            self.endFix1_loc = self.fix_crv_wiggle(
+                jnt=self.fkJnt[0], srf=self.rbSrf, p=self.RIG_DATA
+            )
+
+        self.endFix2_loc = self.fix_crv_wiggle(
+            jnt=self.fkJnt[-1], srf=self.rbSrf, p=self.RIG_DATA
+        )
 
         self.bindJnts = SurfNode.buildRbJnt(
             self.RBN_JNT_NUM,
@@ -325,6 +345,20 @@ class SpineQd(RigModule):
 
         self.add_movable_pivot(self.chest_ctl, scale=rSz)
         self.add_movable_pivot(self.base_ctl, scale=rSz)
+
+    def fix_crv_wiggle(self, jnt=None, srf=None, p=None):
+
+        cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
+        dcmp = DagNode("dcmp_#", nodeType="decomposeMatrix")
+        loc = LocNode(f"fix_loc_#", pf=self.rigID, p=p)
+
+        srf.shape.a.worldSpace >> cpos.a.inputSurface
+        jnt.a.worldMatrix >> dcmp.a.inputMatrix
+        dcmp.a.outputTranslate >> cpos.a.inPosition
+        cpos.a.position >> loc.a.t
+
+        jnt.cstOri(loc, mo=1)
+        return loc
 
     def build_volume(self):
         """Scale ribbon joints according to length of the surface"""
@@ -375,7 +409,8 @@ class SpineQd(RigModule):
         self.setup_anchor_module(
             {
                 "anchorM1": self.rootJ,
-                "anchorM2": self.rootJ.allChildrenJt[-1],
+                # "anchorM2": self.rootJ.allChildrenJt[-1],
+                "anchorM2": self.endFix2_loc,
             }
         )
 
