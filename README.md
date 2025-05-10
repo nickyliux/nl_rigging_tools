@@ -1,9 +1,7 @@
 # nl-rigging-tools
 
 ## Intro
-The starting point is the Ziva horse bone rig. During a movie project I had to study the rig and I find that rigging the actual "skeleton" is tricky but fulfilling.
-
-I knew some Python at the moment but hadn't used it in building autorig. Thanks to the sharing of Nick Hughes thru his course <b>"Python for Maya: Beginner to Advanced Rigging Automation"</b>, I learn to build custom framework. It simplifies things so I see the beauty of writing tools the professional way.
+The origin of this project is the Ziva horse rig. As a rigger it is fascinating to see the tricks and techniques of how a skeleton is rigged. I knew Python at the moment but I hadn't used it in building autorig. Thanks to the great sharing of Nick Hughes in his course <b>"Python for Maya: Beginner to Advanced Rigging Automation"</b>, I start to write my own framework, and see the beauty of creating tools the professional way.
 
 
 ## Components
