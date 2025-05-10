@@ -89,7 +89,8 @@ class CurveNode(GroupNode):
 
             self.width = width
             if top:
-                mc.setAttr(self.name + ".alwaysDrawOnTop", 1)
+                for s in self.shapes:
+                    s.a["alwaysDrawOnTop"].set(1)
 
     @property
     def length(self):

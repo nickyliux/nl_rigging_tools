@@ -81,21 +81,19 @@ class SurfNode(GroupNode):
     def weightTo(self, joints, chain=1, **kwargs):
         if self.exists():
             skin_clu = mc.skinCluster(self, joints, tsb=1, **kwargs)[0]
-
             #
-            # chain : 1 is fk chain,  0 is ctlJ
+            #   For each joint set cv weight
             #
             if chain:
-                spansUV = self.a.spansUV.get()[0]
-                degUV = self.a.degreeUV.get()[0]
-                last = spansUV + degUV - 1
-                cv = f"{self.shape}.cv[{last}][*]"
+                spansUV = self.a.spansUV.get()[1]
+                degUV = self.a.degreeUV.get()[1]
+                cv = f"{self.shape}.cv[*][{spansUV + degUV - 1}]"
                 mc.skinPercent(skin_clu, cv, transformValue=[(joints[-1], 1)])
 
-                for i in range(self.uSeg + 1):
+                for i in range(len(joints)):
                     mc.skinPercent(
                         skin_clu,
-                        f"{self.shape}.cv[{i+1}][*]",
+                        f"{self.shape}.cv[*][{i+1}]",
                         transformValue=[(joints[i], 1)],
                     )
 

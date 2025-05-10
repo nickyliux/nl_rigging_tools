@@ -363,7 +363,7 @@ class Leg(RigModule):
         self.smart_ctl.alignTo(self.master_guide)
         self.smart_ctl.a.ty.set(0)
         self.smart_ctl | self.ikc_gimbal
-        self.smart_ctl.a.tz.set(rSz * 35)
+        self.smart_ctl.a.tz.set(rSz * 20)
         self.smart_ctl.addOffsetGrp()
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry

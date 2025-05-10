@@ -123,6 +123,7 @@ class MarkingMenuRigging:
         # mc.menuItem(p=menu, l="---------------------", en=0)
         # mc.menuItem(p=menu, l="Del Keys", c="mc.cutKey()")
         mc.menuItem(p=menu, l="Use Last Shape", c=use_last_crv_shapes)
+        mc.menuItem(p=menu, l="Add Last Shape", c=add_last_crv_shapes)
         mc.menuItem(p=menu, l="--------------------", en=0)
         mc.menuItem(p=menu, l="Reload Menu", c=reload_marking_menu)
 
@@ -154,6 +155,14 @@ def use_last_crv_shapes(*args):
         from nl_modules.nodel.curve_node import CurveNode
 
         CurveNode(sel[-1]).copy_shape_as_inst(sel[:-1])
+
+
+def add_last_crv_shapes(*args):
+    sel = mc.ls(sl=1)
+    if len(sel) == 2:
+        last = DagNode(sel[-1])
+        mc.parent(last.shape, sel[0], s=1, r=1)
+        mc.delete(last)
 
 
 def add_ofs(*args):

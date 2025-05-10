@@ -207,7 +207,7 @@ def nlRivet(
                 loc,
                 aim=(0, 1, 0),
                 u=(1, 0, 0),
-                wu=(1, 0, 0),
+                wu=(0, 0, 1),
                 worldUpType="objectrotation",
                 worldUpObject=pinLocs[i - 1],
             )

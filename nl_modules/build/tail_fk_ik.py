@@ -301,7 +301,7 @@ class TailFkIk(RigModule):
             onList=[self.fkCtl[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("extraCtl", k=0, min=0, max=1, dv=1),
+            self.setting.a.add("subCtl", k=0, min=0, max=1, dv=0),
             onList=self.ikOffsetCtl,
         )
         mc.hide(self.ikJnt, self.fkJnt, self.ikOffsetJnt, self.rbJnt)

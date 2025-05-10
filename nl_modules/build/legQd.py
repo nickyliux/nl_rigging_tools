@@ -100,10 +100,11 @@ class LegQd(RigModule):
         self.setting = CurveNode(
             "setting",
             pf=rID,
-            shape="stick",
-            scale=rSz * -xDr,
+            shape="diamond",
+            scale=rSz * 1.5,
             color=Color.BLACK,
-            top=1,
+            width=2,
+            p=self.RIG_DATA,
         )
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
@@ -272,7 +273,7 @@ class LegQd(RigModule):
         self.ikc.snapTo(self.digit)
         self.ikc.cv_drop()
 
-        self.ikc_gimbal = CurveNode(self.ikc).add_gimbal()  # attrTgt=self.setting)
+        self.ikc_gimbal = CurveNode(self.ikc).add_gimbal()
         self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
 
         self.foot_roll_logic(self.smart_ctl, heelRollG, ballRollG, footRollG, toeRollG)
@@ -440,9 +441,8 @@ class LegQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting | self.CTL_DATA
-        self.setting.alignTo(self.digit)  # , offset=(0, rSz * -xDr * 20, 0))
-        ofs = self.setting.addOffsetGrp()
-        self.palm.cstPar(ofs, mo=1)
+        self.setting.snapTo(self.digit, offset=(rSz * xDr * 20, 0, 0))
+        self.palm.cstPar(self.setting, mo=1)
 
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
         for i in range(len(self.joints) - 1):

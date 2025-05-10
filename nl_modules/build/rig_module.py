@@ -425,7 +425,23 @@ class RigModule(RigBase):
         else:
             mc.sets(tgtList, n=BIND_JNT_SET)
 
-    def add_movable_pivot(
+    def add_movable_pivot(self, tgt, snap=None, hide=1):
+        """Add movable pivot ctl under tgt"""
+
+        pvt_ctl = LocNode(tgt + "_pvt", align=tgt, p=tgt)
+        # shape="pivot",
+        # scale=scale,
+        # color=Color.YELLOW,
+        # top=1,
+        pvt_ctl.a.t >> tgt.a.rotatePivot
+        if snap:
+            pvt_ctl.snapTo(snap)
+        if hide:
+            pvt_ctl.hide()
+
+        return pvt_ctl
+
+    def add_movable_pivotX(
         self, tgt, scale=1, inRange=500, maxOfs=500, ty=1, tz=1, settable=1
     ):
         """Add pivot offset to target ctl"""

@@ -9,7 +9,9 @@ class NeckQd(SpineQd):
     def setup_anchor(self):
         self.setup_anchor_module(
             {
-                "anchorF1": self.base_ctl,
-                "anchorM1": self.fkJnt[-1],
+                # "anchorF1": self.base_ctl,
+                # "anchorM1": self.fkJnt[-1],
+                "anchorF1": self.base_ctl.offset,
+                "anchorM1": self.endFix_chest,
             }
         )
