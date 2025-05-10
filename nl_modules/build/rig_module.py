@@ -425,36 +425,46 @@ class RigModule(RigBase):
         else:
             mc.sets(tgtList, n=BIND_JNT_SET)
 
-    def add_movable_pivot(self, tgt, scale=1, inRange=10, maxOfs=120, tz=1, ty=0):
+    def add_movable_pivot(
+        self, tgt, scale=1, inRange=500, maxOfs=500, ty=1, tz=1, settable=1
+    ):
         """Add pivot offset to target ctl"""
-        piv_ref = CurveNode(
-            tgt + "_pivRef", shape="locator", align=tgt, scale=scale, p=tgt
-        )
-        piv_ref.dspType = 2
+        if settable:
+            piv_ref = CurveNode(
+                tgt + "_pvt_ctl",
+                shape="locator",
+                align=tgt,
+                scale=scale,
+                p=tgt,
+                # dspType=2,
+            )
+            # piv_ref.dspType = 2
 
         if tz:
-            pivotTz = tgt.a.add("pivotTz", min=-inRange, max=inRange, dv=0)
             rmN = DagNode("rmpZ_#", nodeType="remapValue")
             rmN.a.inputMin.set(inRange)
             rmN.a.inputMax.set(-inRange)
             rmN.a.outputMin.set(maxOfs)
             rmN.a.outputMax.set(-maxOfs)
-
-            pivotTz >> rmN.a.inputValue
             rmN.a.outValue >> tgt.a.rotatePivotZ
-            rmN.a.outValue >> piv_ref.a.tz
+
+            if settable:
+                rmN.a.outValue >> piv_ref.a.tz
+                pivotTz = tgt.a.add("pivotTz", min=-inRange, max=inRange, dv=0)
+                pivotTz >> rmN.a.inputValue
 
         if ty:
-            pivotTy = tgt.a.add("pivotTy", min=-inRange, max=inRange, dv=0)
             rmN = DagNode("rmpY_#", nodeType="remapValue")
             rmN.a.inputMin.set(-inRange)
             rmN.a.inputMax.set(inRange)
             rmN.a.outputMin.set(-maxOfs)
             rmN.a.outputMax.set(maxOfs)
-
-            pivotTy >> rmN.a.inputValue
             rmN.a.outValue >> tgt.a.rotatePivotY
-            rmN.a.outValue >> piv_ref.a.ty
+
+            if settable:
+                rmN.a.outValue >> piv_ref.a.ty
+                pivotTy = tgt.a.add("pivotTy", min=-inRange, max=inRange, dv=0)
+                pivotTy >> rmN.a.inputValue
 
     def boneFix_setup(self, tgt, tgtChild):
         rID, rSz, xDr = self.getMyVar()

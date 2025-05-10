@@ -99,7 +99,7 @@ class SpineQd(RigModule):
             shape="squareR",
             up="z",
             scale=rSz * 3,
-            color=Color.D_YELLOW,
+            color=Color.YELLOW,
         )
         self.base2_ctl = CurveNode(
             "base2_ctl",
@@ -107,7 +107,7 @@ class SpineQd(RigModule):
             shape="squareR",
             up="z",
             scale=rSz * 3,
-            color=Color.D_YELLOW,
+            color=Color.YELLOW,
         )
         self.rigNode.setMsg(
             {
@@ -225,10 +225,7 @@ class SpineQd(RigModule):
         self.mid_ctl.alignTo(self.MD_GUIDE)
         self.chest_ctl.snapAlignTo(self.fkJnt[-1], self.TP_GUIDE)
 
-        if self.PVT_GUIDE:
-            self.cog_ctl.alignTo(self.PVT_GUIDE)
-        else:
-            self.cog_ctl.alignTo(self.RT_GUIDE)
+        self.cog_ctl.alignTo(self.RT_GUIDE)
 
         (self.chest_ctl, self.mid_ctl, self.base_ctl) | self.cog_ctl | self.CTL_DATA
         self.cog_ctl.addOffsetGrp()
@@ -344,7 +341,7 @@ class SpineQd(RigModule):
         self.build_volume()
 
         self.add_movable_pivot(self.chest_ctl, scale=rSz)
-        self.add_movable_pivot(self.base_ctl, scale=rSz)
+        self.add_movable_pivot(self.base_ctl, scale=rSz, settable=0)
 
     def fix_crv_wiggle(self, jnt=None, srf=None, p=None):
 
