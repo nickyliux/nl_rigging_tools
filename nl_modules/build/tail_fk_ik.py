@@ -42,13 +42,7 @@ class TailFkIk(RigModule):
         self.gen_guide_sk_module(["rt", "md", "tp"])
 
     def build(self):
-        """
-        Logic for ribbon tail
-            FK -> rbSrf by skin
-            rbSrf -> joints by pin
-        """
         rID, rSz, xDr = self.getMyVar()
-
         self.build_module()
         self.rbSrf1 = SurfNode.buildRbSrf(
             pf=rID,
