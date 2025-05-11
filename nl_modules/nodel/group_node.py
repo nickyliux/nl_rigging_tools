@@ -132,7 +132,7 @@ class GroupNode(DagNode):
             color = Color.PINK
         return color
 
-    def add_gimbal(self, relScale=0.8, attrTgt=None):
+    def add_gimbal(self, relScale=0.8, attrTgt=None, dv=0):
         """Add a gimbal control below itself and attr at attrOn to link its visibility
         e.g.
             gbc = crv.addGimbal()        # crv.gimbalCtl  -> gbc.v
@@ -142,7 +142,7 @@ class GroupNode(DagNode):
         gmb_ctl | self
         gmb_ctl.cv_scale(relScale, atCVCetner=1)
         attrTgt = attrTgt or self
-        attrTgt.a.add("gimbalCtl", min=0, max=1, dv=0, k=0) >> gmb_ctl.shape.a.v
+        attrTgt.a.add("gimbalCtl", min=0, max=1, dv=dv, k=0) >> gmb_ctl.shape.a.v
         return gmb_ctl
 
     def shape_saveToLib(self, dictList, name):

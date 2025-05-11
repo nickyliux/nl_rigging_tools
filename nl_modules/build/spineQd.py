@@ -33,29 +33,16 @@ class SpineQd(RigModule):
 
         self.setting = None
         self.cog_ctl = None
-        self.chest_ctl = None
-        self.mid_ctl = None
-        self.base_ctl = None
-        self.chest2_ctl = None
-        self.base2_ctl = None
-        self.ctls = []
+        self.chest_local_ctl = None
+        self.base_local_ctl = None
         self.fkCtl = []
         self.fkJnt = []
         self.ikCtl = []
         self.ikJnt = []
-        # self.ikOffsetCtl = []
-        # self.ikOffsetJnt = []
         self.rbJnt = []
         self.bindJnts = []
         self.fkJnt = []
-        self.fkJ_A = []
-        self.fkJ_B = []
-        self.ctlJnts = []
         self.rbSrf = None
-        self.crv = None
-        self.crvRev = None
-        self.rbCrv = None
-        self.rbCrvR = None
 
     def gen_guide_sk(self):
         self.gen_guide_sk_module(["rt", "md", "tp"])
@@ -79,32 +66,20 @@ class SpineQd(RigModule):
             shape="trapezoid",
             scale=(rSz * 0.8, rSz * 1.5, rSz * 2.5),
             color=Color.YELLOW,
+            p=self.IK_PART,
         )
         self.cog_ctl.cv_move(0, 70 * rSz, 40 * rSz)
 
-        self.chest_ctl = CurveNode(
-            "chest_ctl", pf=rID, shape="fk_rotator", scale=rSz * 8, width=2
-        )
-        self.chest_ctl.cv_rotate(0, 90, 0)
-
-        self.mid_ctl = CurveNode(
-            "mid_ctl", pf=rID, shape="circleC", scale=rSz * 4, up="z", width=2
-        )
-        self.base_ctl = CurveNode(
-            "base_ctl", pf=rID, shape="fk_rotator", scale=rSz * 8, width=2
-        )
-        self.base_ctl.cv_rotate(0, 90, 0)
-
-        self.chest2_ctl = CurveNode(
-            "chest2_ctl",
+        self.chest_local_ctl = CurveNode(
+            "chest_ctl",
             pf=rID,
             shape="squareR",
             up="z",
             scale=rSz * 3,
             color=Color.YELLOW,
         )
-        self.base2_ctl = CurveNode(
-            "base2_ctl",
+        self.base_local_ctl = CurveNode(
+            "base_ctl",
             pf=rID,
             shape="squareR",
             up="z",
@@ -115,11 +90,6 @@ class SpineQd(RigModule):
             {
                 "setting": self.setting,
                 "cog_ctl": self.cog_ctl,
-                "chest_ctl": self.chest_ctl,
-                "mid_ctl": self.mid_ctl,
-                "base_ctl": self.base_ctl,
-                "chest2_ctl": self.chest2_ctl,
-                "base2_ctl": self.base2_ctl,
             }
         )
 
@@ -148,11 +118,12 @@ class SpineQd(RigModule):
 
         self.setting.snapTo(self.ikCtl[0])
         self.setting.addOffsetGrp(snapIt=1)
-        self.setting.a.t.set(0, rSz * 50, 0)
+        self.setting.a.t.set(0, rSz * 70, 0)
         self.ikCtl[0].cstPar(self.setting.offset, mo=1)
 
         spineScale = self.setting.a.add("spineScale", min=0.01, dv=1)
         spineScale >> self.IK_PART.a.s
+        spineScale >> self.PRX_GRP.a.s
 
         stretchy = self.setting.a.add("stretchy", min=0, max=1)
 
@@ -237,31 +208,37 @@ class SpineQd(RigModule):
             size=rSz * 4,
             color=Color.BLUE,
         )
+        self.cog_ctl.snapTo(self.RT_GUIDE)
+        self.cog_ctl.addOffsetGrp()
         #
         #   build 5 ik ctls
         #
-        for i in range(0, 5):
+        for i in range(3):
             ctl = CurveNode(
                 f"{i}_ikc",
                 pf=rID,
                 shape="fk_rotator",
-                scale=rSz * 4,
-                align=self.ikJnt[i],
+                scale=rSz * 10,
+                align=self.ikJnt[i * 2],
                 addOfs=1,
-                p=self.IK_PART,
+                p=self.cog_ctl,
                 width=2,
             )
             ctl.cv_rotate(0, 90, 0)
-            self.ikJnt[i] | ctl
             self.ikCtl.append(ctl)
+
+        self.base_local_ctl.alignTo(self.ikCtl[0], p=self.ikCtl[0])
+        self.chest_local_ctl.alignTo(self.ikCtl[2], p=self.ikCtl[2])
+
+        (self.ikJnt[1], self.ikJnt[0]) | self.base_local_ctl
+        self.ikJnt[2] | self.ikCtl[1]
+        (self.ikJnt[3], self.ikJnt[4]) | self.chest_local_ctl
         #
         #   parenting for spine
         #
-        self.ikCtl[1].offset | self.ikCtl[0]
-        self.ikCtl[-2].offset | self.ikCtl[-1]
-        loc0 = LocNode("loc#", pf=rID, align=self.ikCtl[2], p=self.ikCtl[0])
-        loc1 = LocNode("loc#", pf=rID, align=self.ikCtl[2], p=self.ikCtl[-1])
-        common.cstMulti(loc0, loc1, self.ikCtl[2].offset, cstType="par")
+        loc0 = LocNode("loc#", pf=rID, align=self.ikCtl[1], p=self.ikCtl[0])
+        loc1 = LocNode("loc#", pf=rID, align=self.ikCtl[1], p=self.ikCtl[2])
+        common.cstMulti(loc0, loc1, self.ikCtl[1].offset, cstType="par")
 
     def build_volume(self):
         """Scale ribbon joints according to length of the surface"""
@@ -272,8 +249,6 @@ class SpineQd(RigModule):
         D = d.get()
 
         autoVol = self.setting.a.add("autoVol", dv=1)
-        self.chest_ctl.a.add("autoVol", proxy=autoVol)
-        self.base_ctl.a.add("autoVol", proxy=autoVol)
         #
         #   add graph keys
         #
@@ -290,24 +265,24 @@ class SpineQd(RigModule):
             fc.a.varyTime.set(i)
 
             ratio = (D / (d / scaleFix)) ** (fc.a.varying * autoVol)
-            ratio >> self.bindJnts[i].a.sx
             ratio >> self.bindJnts[i].a.sy
+            ratio >> self.bindJnts[i].a.sz
 
     def setup_vis(self):
         pass
 
     def setup_proxy(self):
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(p=self.PRX_GRP, scaler=JointNode(j).a.s)
+            JointNode(j).addProxyMesh(p=self.PRX_GRP)  # , scaler=JointNode(j).a.s)
 
     def setup_rotate_order(self):
-        [c.a.ro.set(2) for c in self.ctls]
+        [c.a.ro.set(2) for c in self.ikCtl]
 
     def setup_channel(self):
-        [ctl.a.showAttr(t=1, r=1) for ctl in self.ctls]
+        [ctl.a.showAttr(t=1, r=1) for ctl in self.ikCtl]
         self.setting.a.showAttr()
-        self.chest2_ctl.a.showAttr(r=1)
-        self.base2_ctl.a.showAttr(r=1)
+        self.chest_local_ctl.a.showAttr(t=1, r=1)
+        self.base_local_ctl.a.showAttr(t=1, r=1)
 
     def setup_anchor(self):
         self.setup_anchor_module(
