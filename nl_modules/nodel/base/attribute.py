@@ -175,6 +175,10 @@ class Attribute:
             obj1.a.r  -> obj2.a.ry    # rx -> ry
                                        (rx is the 1st child)
         """
+        if other.__class__ != Attribute:
+            logging.error(f"Error: {self.attr} >> {other.name}")
+            return
+
         if mc.isConnected(self, other, iuc=1):
             return self
 

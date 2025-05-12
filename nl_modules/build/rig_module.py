@@ -48,46 +48,42 @@ class RigModule(RigBase):
             self.rootJ = rigNode.a.rootJ.inConnNode
 
     def gen_sk_fr_names(self, names, color=None, scale=1):
-        """Create joints by finding object : pf_name_guide' from name list
-        e.g.
-            jnt_names = ["clavicle", "upr", "lwr", "palm", "ball"]
-            gen_sk_fr_names(jnt_names)   # [j1, j2, j3, j4, j5]
-                                      # given lfArm0_{n}_guide exists
-        """
-        guides = []
+        """Create joints by finding object : pf_name_guide' from name list"""
         rID, rSz, xDr = self.getMyVar()
-        pf = rID
+
         if isinstance(names, str):
             names = [names]
-
+        #
+        #   add tgt to dict
+        #
+        guides = []
         for n in names:
-            guide_name = f"{pf}_{n}_guide"
+            guide_name = f"{rID}_{n}_guide"
             if not mc.objExists(guide_name):
                 logging.error(f"missing object: {guide_name}")
                 return
             guides.append(DagNode(guide_name))
-
+        #
+        #   create joints
+        #
         guideDict = dict(zip(names, guides))
-        lastJ = None
-        joints = []
         currClass = self.__class__.__name__
-
+        joints = []
+        lastJ = None
         for key in guideDict:
-            jN = JointNode(f"{pf}_{key}", align=guideDict[key], color=color)
+            jN = JointNode(f"{rID}_{key}", align=guideDict[key], color=color)
             if (currClass == "Arm" or currClass == "Leg") and key == "lwr":
-                # side = -1 if mc.xform(jN, q=1, ws=1, t=1)[0] > 0 else 1
-                # jN.a.preferredAngleY.set(45 * side)
                 jN.a.preferredAngleY.set(-45)
-
             if lastJ:
                 jN | lastJ
             lastJ = jN
             joints.append(jN)
-
-        # Set joints' radius based on current root as a group
-        rigSize = self.calc_rig_size(joints[0])
+        #
+        #   set joint radius from rigSize
+        #
+        self.rigSize = self.calc_rig_size(joints[0])
         for j in joints:
-            j.a.radius.set(rigSize * scale)
+            j.a.radius.set(self.rigSize * scale)
 
         return joints
 
@@ -330,7 +326,7 @@ class RigModule(RigBase):
         rID, rSz, xDr = self.getMyVar()
 
         logging.info(rID)
-        self.rigSize = self.calc_rig_size(self.rootJ)
+        # self.rigSize = self.calc_rig_size(self.rootJ)
         self.rigNode.a.nodeState.set(2)
         children = self.rootJ.childrenJt
         if children:

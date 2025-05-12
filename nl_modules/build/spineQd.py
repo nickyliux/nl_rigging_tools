@@ -33,8 +33,8 @@ class SpineQd(RigModule):
 
         self.setting = None
         self.cog_ctl = None
-        self.chest_local_ctl = None
-        self.base_local_ctl = None
+        self.chest_ctl = None
+        self.base_ctl = None
         self.fkCtl = []
         self.fkJnt = []
         self.ikCtl = []
@@ -43,6 +43,8 @@ class SpineQd(RigModule):
         self.bindJnts = []
         self.fkJnt = []
         self.rbSrf = None
+        self.rbCrv = None
+        self.lenRatio = None
 
     def gen_guide_sk(self):
         self.gen_guide_sk_module(["rt", "md", "tp"])
@@ -60,6 +62,8 @@ class SpineQd(RigModule):
             width=2,
             p=self.CTL_DATA,
         )
+        self.setting.a.add("spineScale", min=0.01, dv=1)
+
         self.cog_ctl = CurveNode(
             "cog_ctl",
             pf=rID,
@@ -70,7 +74,7 @@ class SpineQd(RigModule):
         )
         self.cog_ctl.cv_move(0, 70 * rSz, 40 * rSz)
 
-        self.chest_local_ctl = CurveNode(
+        self.chest_ctl = CurveNode(
             "chest_ctl",
             pf=rID,
             shape="squareR",
@@ -78,7 +82,7 @@ class SpineQd(RigModule):
             scale=rSz * 3,
             color=Color.YELLOW,
         )
-        self.base_local_ctl = CurveNode(
+        self.base_ctl = CurveNode(
             "base_ctl",
             pf=rID,
             shape="squareR",
@@ -95,7 +99,9 @@ class SpineQd(RigModule):
 
     def build(self):
         rID, rSz, xDr = self.getMyVar()
+
         self.build_module()
+        mc.delete(self.rootJ)
         self.rigSize = CurveNode(self.LINE_GUIDE).length / 100
         self.rbSrf = SurfNode.buildRbSrf(
             pf=rID,
@@ -115,32 +121,32 @@ class SpineQd(RigModule):
 
     def build_ribbon_jnt(self):
         rID, rSz, xDr = self.getMyVar()
+        #
+        #   create crv on srf
+        #
+        self.rbCrv = CurveNode(
+            mc.duplicateCurve(self.rbSrf + ".u[0.5]", rn=0, local=0)[0]
+        )
+        self.rbCrv | self.RIG_DATA
 
-        self.setting.snapTo(self.ikCtl[0])
-        self.setting.addOffsetGrp(snapIt=1)
-        self.setting.a.t.set(0, rSz * 70, 0)
-        self.ikCtl[0].cstPar(self.setting.offset, mo=1)
-
-        spineScale = self.setting.a.add("spineScale", min=0.01, dv=1)
+        spineScale = self.setting.a["spineScale"]
         spineScale >> self.IK_PART.a.s
         spineScale >> self.PRX_GRP.a.s
 
-        stretchy = self.setting.a.add("stretchy", min=0, max=1)
-
-        crv = CurveNode(mc.duplicateCurve(self.rbSrf + ".u[0.5]", rn=0, local=0)[0])
-        crv | self.RIG_DATA
-
         crvInfo = DagNode("crvInfo#", nodeType="curveInfo")
-        crv.shape.a.worldSpace >> crvInfo.a.inputCurve
+        self.rbCrv.shape.a.worldSpace >> crvInfo.a.inputCurve
 
-        ratio = (
+        self.lenRatio = (
             crvInfo.a.arcLength
             / self.masterC.a.globalScale
-            / self.setting.a["spineScale"]
-            / crv.length
+            / spineScale
+            / self.rbCrv.length
         )
-        ratioOut = ut.blend2_(ratio, 1, stretchy)
+        stretchy = self.setting.a.add("stretchy", min=0, max=1)
+        for c in self.ikCtl:
+            stretchy = c.a.add("stretchy", min=0, max=1, proxy=stretchy)
 
+        ratioOut = ut.blend2_(self.lenRatio, 1, stretchy)
         sep = 1 / (self.RBN_JNT_NUM - 1)
         locGrp = GroupNode("loc_grp", pf=rID, p=self.RIG_DATA)
         for i in range(self.RBN_JNT_NUM):
@@ -151,8 +157,6 @@ class SpineQd(RigModule):
             #   even sliding to work along the whole curve
             #
             mp.a.fm.set(1)
-            # mp.a.uValue.set(i * sep)
-
             (i * sep) / ratioOut >> mp.a.uValue
 
             cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
@@ -162,7 +166,7 @@ class SpineQd(RigModule):
             aimCst = DagNode("aimCst_#", nodeType="aimConstraint")
             aimCst | self.RIG_DATA
             loc = LocNode(f"{i}_loc", pf=rID, p=locGrp)
-            crv.shape.a.worldSpace >> mp.a.geometryPath
+            self.rbCrv.shape.a.worldSpace >> mp.a.geometryPath
             mp.a.allCoordinates >> cpos.a.inPosition
 
             self.rbSrf.shape.a.worldSpace >> cpos.a.inputSurface
@@ -208,8 +212,14 @@ class SpineQd(RigModule):
             size=rSz * 4,
             color=Color.BLUE,
         )
+        #
+        #   position cog & setting
+        #
         self.cog_ctl.snapTo(self.RT_GUIDE)
         self.cog_ctl.addOffsetGrp()
+        self.setting.snapTo(self.RT_GUIDE, offset=(0, rSz * 70, 0))
+        self.cog_ctl.cstPar(self.setting, mo=1)
+
         #
         #   build 5 ik ctls
         #
@@ -227,44 +237,54 @@ class SpineQd(RigModule):
             ctl.cv_rotate(0, 90, 0)
             self.ikCtl.append(ctl)
 
-        self.base_local_ctl.alignTo(self.ikCtl[0], p=self.ikCtl[0])
-        self.chest_local_ctl.alignTo(self.ikCtl[2], p=self.ikCtl[2])
+        self.base_ctl.alignTo(self.ikCtl[0], p=self.ikCtl[0])
+        self.chest_ctl.alignTo(self.ikCtl[2], p=self.ikCtl[2])
 
-        (self.ikJnt[1], self.ikJnt[0]) | self.base_local_ctl
+        (self.ikJnt[1], self.ikJnt[0]) | self.base_ctl
         self.ikJnt[2] | self.ikCtl[1]
-        (self.ikJnt[3], self.ikJnt[4]) | self.chest_local_ctl
+        (self.ikJnt[3], self.ikJnt[4]) | self.chest_ctl
         #
         #   parenting for spine
         #
-        loc0 = LocNode("loc#", pf=rID, align=self.ikCtl[1], p=self.ikCtl[0])
-        loc1 = LocNode("loc#", pf=rID, align=self.ikCtl[1], p=self.ikCtl[2])
+        loc0 = LocNode("loc#", pf=rID, align=self.ikCtl[1], p=self.ikCtl[0], v=0)
+        loc1 = LocNode("loc#", pf=rID, align=self.ikCtl[1], p=self.ikCtl[2], v=0)
         common.cstMulti(loc0, loc1, self.ikCtl[1].offset, cstType="par")
+        #
+        #   set tanget joint's distance depending on total length
+        #
+        d = ut.distDim_(self.base_ctl, self.chest_ctl)
+        tz = self.ikJnt[1].a.tz.get()
+        (
+            d
+            * (tz / d.get())
+            / self.setting.a["spineScale"]
+            / self.masterC.a["globalScale"]
+            >> self.ikJnt[1].a.tz
+        )
+        self.ikJnt[1].a.tz * -1 >> self.ikJnt[3].a.tz
+
+        self.add_movable_pivot(self.ikCtl[2], snap=self.MD_GUIDE)
+        self.add_movable_pivot(self.ikCtl[0], snap=self.PVT_GUIDE)
 
     def build_volume(self):
-        """Scale ribbon joints according to length of the surface"""
-
-        scaleFix = self.masterC.a["globalScale"]
-        arcLD = ut.arcLenDim_(self.rbSrf)
-        d = arcLD.a.arcLengthInV
-        D = d.get()
-
-        autoVol = self.setting.a.add("autoVol", dv=1)
         #
-        #   add graph keys
+        #   add volume graph keys
         #
         volGraph = self.setting.a.add("volGraph", dv=0)
         mc.setKeyframe(volGraph, t=0, v=0)
         mc.setKeyframe(volGraph, t=(self.RBN_JNT_NUM - 1) / 2, v=1)
         mc.setKeyframe(volGraph, t=self.RBN_JNT_NUM - 1, v=0)
         mc.setAttr(volGraph, l=1)
-
+        #
+        #   set rbj scale acc to surf length
+        #
+        autoVol = self.setting.a.add("autoVol", dv=1)
         for i in range(self.RBN_JNT_NUM):
 
             fc = DagNode("fc__#", nodeType="frameCache")
             volGraph >> fc.a.stream
             fc.a.varyTime.set(i)
-
-            ratio = (D / (d / scaleFix)) ** (fc.a.varying * autoVol)
+            ratio = (1 / self.lenRatio) ** (fc.a.varying * autoVol)
             ratio >> self.bindJnts[i].a.sy
             ratio >> self.bindJnts[i].a.sz
 
@@ -273,7 +293,7 @@ class SpineQd(RigModule):
 
     def setup_proxy(self):
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(p=self.PRX_GRP)  # , scaler=JointNode(j).a.s)
+            JointNode(j).addProxyMesh(p=self.PRX_GRP)
 
     def setup_rotate_order(self):
         [c.a.ro.set(2) for c in self.ikCtl]
@@ -281,8 +301,8 @@ class SpineQd(RigModule):
     def setup_channel(self):
         [ctl.a.showAttr(t=1, r=1) for ctl in self.ikCtl]
         self.setting.a.showAttr()
-        self.chest_local_ctl.a.showAttr(t=1, r=1)
-        self.base_local_ctl.a.showAttr(t=1, r=1)
+        self.chest_ctl.a.showAttr("sz", t=1, r=1)
+        self.base_ctl.a.showAttr("sz", t=1, r=1)
 
     def setup_anchor(self):
         self.setup_anchor_module(

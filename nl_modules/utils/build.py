@@ -59,7 +59,7 @@ def getAnchors(rigNodes, name):
 def buildTgt(rigN):
     if rigN:
         rigClass = rigN.a.rigClass.get()
-        rigObj = eval(rigClass)(rigN)  # Create component object of class 'rigClass'
+        rigObj = eval(rigClass)(rigN)
         if rigObj:
             state = rigN.a.nodeState.get()
             if state == 0:
@@ -83,7 +83,6 @@ def loadBase():
 
 
 def preRig():
-    # mc.refresh(su=1)
     if not mc.objExists("master_ctl"):
         loadBase()
     m = DagNode("master_ctl")
@@ -113,7 +112,6 @@ def postRig():
     resetAllPvCtl()
     mc.select(cl=1)
     print()
-    # mc.refresh(su=0)
 
 
 def unbuildTgt(rigN):
@@ -141,7 +139,6 @@ def unbuildSelOrAll(*arg):
 
 def deleteTgt(rigNode):
     """Delete guide component for input rigNode"""
-    # rN = DagNode(rigNode) if isinstance(rigNode, str) else rigNode
     rigNode = DagNode(rigNode)
     if rigNode.exists():
         rigID = rigNode.a.rigID.get()

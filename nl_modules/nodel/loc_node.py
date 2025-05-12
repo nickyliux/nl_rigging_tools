@@ -22,10 +22,10 @@ class LocNode(GroupNode):
         snap=None,
         addOfs=0,
         p=None,
-        # for loc
         color=0,
         size=None,
         matchOffset=None,
+        v=1,
     ):
         GroupNode.__init__(
             self,
@@ -50,6 +50,8 @@ class LocNode(GroupNode):
 
         if matchOffset:
             mc.move(*matchOffset, self, objectSpace=1, r=1)
+        if not v:
+            mc.hide(self)
 
     def localScale(self, val):
         """Set locator local scale"""
