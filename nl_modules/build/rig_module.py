@@ -830,27 +830,30 @@ class RigModule(RigBase):
         return str(self.rigID), float(self.rigSize), int(self.xDir)
 
     # def genCrvLenRatio(self, rbSrf=None, scaleAttr=None):
-    #     rbCrv = CurveNode(mc.duplicateCurve(rbSrf + ".u[0.5]", rn=0, local=0)[0])
-    #     rbCrv | self.RIG_DATA
+    #     crv = CurveNode(mc.duplicateCurve(rbSrf + ".u[0.5]", rn=0, local=0)[0])
+    #     crv | self.RIG_DATA
     #     crvInfo = DagNode("crvInfo#", nodeType="curveInfo")
     #     return (
-    #         crvInfo.a.arcLength / self.masterC.a.globalScale / scaleAttr / rbCrv.length
+    #         crvInfo.a.arcLength / self.masterC.a.globalScale / scaleAttr / crv.length
     #     )
 
     def build_ribbon_jnt(self, rbSrf=None, jntNum=5, scaleAttr=None, stretchyAttr=None):
         rID, rSz, xDr = self.getMyVar()
         #
-        #   create crv on srf
+        #   create crv on srf & calc crv len ratio
         #
-        rbCrv = CurveNode(mc.duplicateCurve(rbSrf + ".u[0.5]", rn=0, local=0)[0])
-        rbCrv | self.RIG_DATA
+        crv = CurveNode(mc.duplicateCurve(rbSrf + ".u[0.5]", rn=0, local=0)[0])
+        crv | self.RIG_DATA
 
         crvInfo = DagNode("crvInfo#", nodeType="curveInfo")
-        rbCrv.shape.a.worldSpace >> crvInfo.a.inputCurve
+        crv.shape.a.worldSpace >> crvInfo.a.inputCurve
 
         crvLenRatio = (
-            crvInfo.a.arcLength / self.masterC.a.globalScale / scaleAttr / rbCrv.length
+            crvInfo.a.arcLength / self.masterC.a.globalScale / scaleAttr / crv.length
         )
+        #
+        #   add joints onto surf which can stretch and slider
+        #
         ratioOut = ut.blend2_(crvLenRatio, 1, stretchyAttr)
         sep = 1 / (jntNum - 1)
         locGrp = GroupNode("loc_grp", pf=rID, p=self.RIG_DATA)
@@ -868,7 +871,7 @@ class RigModule(RigBase):
             aimCst = DagNode("aimCst_#", nodeType="aimConstraint")
             aimCst | self.RIG_DATA
             loc = LocNode(f"{i}_loc", pf=rID, p=locGrp)
-            rbCrv.shape.a.worldSpace >> mp.a.geometryPath
+            crv.shape.a.worldSpace >> mp.a.geometryPath
             mp.a.allCoordinates >> cpos.a.inPosition
 
             rbSrf.shape.a.worldSpace >> cpos.a.inputSurface
