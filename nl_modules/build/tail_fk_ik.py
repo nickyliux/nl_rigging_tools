@@ -22,8 +22,8 @@ class TailFkIk(RigModule):
         self.LINE_GUIDE = CurveNode(rID + "_line_guide")
         self.RT_GUIDE = CurveNode(rID + "_rt_guide")
         self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
-        self.FK_PART = GroupNode("FK", pf=rID, p=self.CTL_DATA)
-        self.IK_PART = GroupNode("IK", pf=rID, p=self.CTL_DATA)
+        self.FK_PART = GroupNode("FK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
+        self.IK_PART = GroupNode("IK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
 
         self.setting = None
         self.fkCtl = []
@@ -33,7 +33,6 @@ class TailFkIk(RigModule):
         self.ikOffsetCtl = []
         self.ikOffsetJnt = []
         self.rbJnt = []
-        self.rbCrv = None
         self.rbSrf1 = None
         self.rbSrf2 = None
         self.REVERSE = 0
@@ -60,7 +59,13 @@ class TailFkIk(RigModule):
         self.build_ctl()
         self.build_ik()
         self.build_fk()
-        self.build_ribbon_jnt()
+        crvLenRatio, self.rbJnts = self.build_ribbon_jnt(
+            rbSrf=self.rbSrf2,
+            jntNum=self.RBN_JNT_NUM,
+            scaleAttr=self.setting.a.tailScale,
+            stretchyAttr=self.setting.a.stretchy,
+        )
+        self.bindJnts = self.rbJnts
         self.post_setup()
 
     def build_ctl(self):
@@ -76,6 +81,12 @@ class TailFkIk(RigModule):
             width=2,
             p=self.CTL_DATA,
         )
+        self.setting.a.add("stretchy", min=0, max=1)
+        tailScale = self.setting.a.add("tailScale", min=0.01, dv=1)
+        tailScale >> self.IK_PART.a.s
+        tailScale >> self.FK_PART.a.s
+        tailScale >> self.PRX_GRP.a.s
+
         self.rigNode.setMsg(
             {
                 "setting": self.setting,
@@ -115,10 +126,8 @@ class TailFkIk(RigModule):
 
         SurfNode(self.rbSrf1).weightTo(self.ikJnt, mi=4, dr=6, chain=0)
 
-        self.setting.snapTo(self.ikCtl[0])
-        self.setting.addOffsetGrp(snapIt=1)
-        self.setting.a.t.set(0, rSz * 50, 0)
-        self.ikCtl[0].cstPar(self.setting.offset, mo=1)
+        self.setting.snapTo(self.ikCtl[0], offset=(0, rSz * 50, 0))
+        self.ikCtl[0].cstPar(self.setting, mo=1)
 
     def build_fk(self):
         rID, rSz, xDr = self.getMyVar()
@@ -214,85 +223,6 @@ class TailFkIk(RigModule):
 
         # scalable
         self.ikCtl[0].a.s >> self.FK_PART.a.s
-
-    def build_ribbon_jnt(self):
-        rID, rSz, xDr = self.getMyVar()
-        #
-        #   create crv on srf
-        #
-        self.rbCrv = CurveNode(
-            mc.duplicateCurve(self.rbSrf2 + ".u[0.5]", rn=0, local=0)[0]
-        )
-        self.rbCrv | self.RIG_DATA
-
-        tailScale = self.setting.a.add("tailScale", min=0.01, dv=1)
-        tailScale >> self.ikCtl[0].a.s
-        tailScale >> self.setting.offset.a.s
-        tailScale >> self.PRX_GRP.a.s
-
-        crvInfo = DagNode("crvInfo#", nodeType="curveInfo")
-        self.rbCrv.shape.a.worldSpace >> crvInfo.a.inputCurve
-
-        lenRatio = (
-            crvInfo.a.arcLength
-            / self.masterC.a.globalScale
-            / self.setting.a.tailScale
-            / self.rbCrv.length
-        )
-        stretchy = self.setting.a.add("stretchy", min=0, max=1)
-        self.ikCtl[-1].a.add("stretchy", proxy=stretchy)
-        self.fkCtl[-1].a.add("stretchy", proxy=stretchy)
-
-        ratioOut = ut.blend2_(lenRatio, 1, stretchy)
-        sep = 1 / (self.RBN_JNT_NUM - 1)
-        locGrp = GroupNode("loc_grp", pf=rID, p=self.RIG_DATA)
-
-        for i in range(self.RBN_JNT_NUM):
-
-            mp = DagNode("mp_#", nodeType="motionPath")
-            #
-            #   Parametric Length at motionPath must be OFF for
-            #   even sliding to work along the whole curve
-            #
-            mp.a.fm.set(1)
-            (i * sep) / ratioOut >> mp.a.uValue
-
-            cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
-            posi = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
-            posi.a.turnOnPercentage.set(1)
-
-            aimCst = DagNode("aimCst_#", nodeType="aimConstraint")
-            aimCst | self.RIG_DATA
-            loc = LocNode(f"{i}_loc", pf=rID, p=locGrp)
-            self.rbCrv.shape.a.worldSpace >> mp.a.geometryPath
-            mp.a.allCoordinates >> cpos.a.inPosition
-
-            self.rbSrf2.shape.a.worldSpace >> cpos.a.inputSurface
-            cpos.a.parameterU >> posi.a.parameterU
-            cpos.a.parameterV >> posi.a.parameterV
-
-            self.rbSrf2.shape.a.worldSpace >> posi.a.inputSurface
-            mc.connectAttr(f"{posi}.tangentV", f"{aimCst}.target[0].targetTranslate")
-            posi.a.tangentU >> aimCst.a.worldUpVector
-            posi.a.position >> loc.a.translate
-
-            aimCst.a.constraintRotateX >> loc.a.rx
-            aimCst.a.constraintRotateY >> loc.a.ry
-            aimCst.a.constraintRotateZ >> loc.a.rz
-
-            jnt = JointNode(
-                f"{i}_rbj",
-                pf=rID,
-                align=loc,
-                r=rSz / self.RBN_JNT_NUM * 12,
-                p=loc,
-                reset=1,
-                color=Color.D_RED,
-            )
-            self.rbJnt.append(jnt)
-            self.ikCtl[0].a.s >> loc.a.s
-
-        self.bindJnts = self.rbJnt
 
     def setup_vis(self):
         self.ctl_vis_toggle(

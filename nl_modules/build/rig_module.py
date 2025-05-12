@@ -828,3 +828,72 @@ class RigModule(RigBase):
 
     def getMyVar(self):
         return str(self.rigID), float(self.rigSize), int(self.xDir)
+
+    # def genCrvLenRatio(self, rbSrf=None, scaleAttr=None):
+    #     rbCrv = CurveNode(mc.duplicateCurve(rbSrf + ".u[0.5]", rn=0, local=0)[0])
+    #     rbCrv | self.RIG_DATA
+    #     crvInfo = DagNode("crvInfo#", nodeType="curveInfo")
+    #     return (
+    #         crvInfo.a.arcLength / self.masterC.a.globalScale / scaleAttr / rbCrv.length
+    #     )
+
+    def build_ribbon_jnt(self, rbSrf=None, jntNum=5, scaleAttr=None, stretchyAttr=None):
+        rID, rSz, xDr = self.getMyVar()
+        #
+        #   create crv on srf
+        #
+        rbCrv = CurveNode(mc.duplicateCurve(rbSrf + ".u[0.5]", rn=0, local=0)[0])
+        rbCrv | self.RIG_DATA
+
+        crvInfo = DagNode("crvInfo#", nodeType="curveInfo")
+        rbCrv.shape.a.worldSpace >> crvInfo.a.inputCurve
+
+        crvLenRatio = (
+            crvInfo.a.arcLength / self.masterC.a.globalScale / scaleAttr / rbCrv.length
+        )
+        ratioOut = ut.blend2_(crvLenRatio, 1, stretchyAttr)
+        sep = 1 / (jntNum - 1)
+        locGrp = GroupNode("loc_grp", pf=rID, p=self.RIG_DATA)
+        rbJnts = []
+        for i in range(jntNum):
+
+            mp = DagNode("mp_#", nodeType="motionPath")
+            mp.a.fm.set(1)
+            (i * sep) / ratioOut >> mp.a.uValue
+
+            cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
+            posi = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
+            posi.a.turnOnPercentage.set(1)
+
+            aimCst = DagNode("aimCst_#", nodeType="aimConstraint")
+            aimCst | self.RIG_DATA
+            loc = LocNode(f"{i}_loc", pf=rID, p=locGrp)
+            rbCrv.shape.a.worldSpace >> mp.a.geometryPath
+            mp.a.allCoordinates >> cpos.a.inPosition
+
+            rbSrf.shape.a.worldSpace >> cpos.a.inputSurface
+            cpos.a.parameterU >> posi.a.parameterU
+            cpos.a.parameterV >> posi.a.parameterV
+
+            rbSrf.shape.a.worldSpace >> posi.a.inputSurface
+            mc.connectAttr(f"{posi}.tangentV", f"{aimCst}.target[0].targetTranslate")
+            posi.a.tangentU >> aimCst.a.worldUpVector
+            posi.a.position >> loc.a.translate
+
+            aimCst.a.constraintRotateX >> loc.a.rx
+            aimCst.a.constraintRotateY >> loc.a.ry
+            aimCst.a.constraintRotateZ >> loc.a.rz
+
+            jnt = JointNode(
+                f"{i}_rbj",
+                pf=rID,
+                align=loc,
+                r=rSz / jntNum * 12,
+                p=loc,
+                reset=1,
+                color=Color.D_RED,
+            )
+            rbJnts.append(jnt)
+            # self.ikCtl[0].a.s >> loc.a.s
+
+        return crvLenRatio, rbJnts
