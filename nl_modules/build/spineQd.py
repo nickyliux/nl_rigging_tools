@@ -60,13 +60,10 @@ class SpineQd(RigModule):
             color=Color.BLACK,
             top=1,
             width=2,
-            p=self.CTL_DATA,
+            p=self.IK_PART,
         )
-        spineScale = self.setting.a.add("spineScale", min=0.01, dv=1)
-        # spineScale >> self.IK_PART.a.s
-        # spineScale >> self.PRX_GRP.a.s
-
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
+        self.setting.a.add("spineScale", min=0.01, dv=1)
 
         self.cog_ctl = CurveNode(
             "cog_ctl",
@@ -133,11 +130,12 @@ class SpineQd(RigModule):
         #
         #   scaling
         #
-        # self.setting.a.spineScale >> self.SKL_DATA.a.s
+        self.setting.a.spineScale >> self.IK_PART.a.s
+        self.setting.a.spineScale >> self.PRX_GRP.a.s
 
         self.post_setup()
 
-    def build_spik_ribbon(self, rbSrf=None, jntNum=5, scaleAttr=None, setting=None):
+    def build_spik_ribbon(self, rbSrf=None, jntNum=5, setting=None, scaleAttr=None):
         rID, rSz, xDr = self.getMyVar()
         #
         #   create crv & joints on it
@@ -150,7 +148,7 @@ class SpineQd(RigModule):
             name="spikj",
             num=jntNum,
             size=rSz * 2,
-            p=self.SKL_DATA,
+            p=self.RIG_DATA,
             color=Color.D_RED,
         )
         #
@@ -167,6 +165,7 @@ class SpineQd(RigModule):
             inputCrv=rbCrv,
             setting=setting,
             scaleFix=globalScale,
+            scaleFix2=self.setting.a.spineScale,
             p=self.RIG_DATA,
         )
         ikH.stretchySp(axis="tz", axisDir=1)
@@ -236,12 +235,14 @@ class SpineQd(RigModule):
             color=Color.BLACK,
             p=self.base_ctl,
         )
+
         self.two_ikH = IkNode(
             "two_ikj",
             pf=rID,
             sj=self.two_ikJnts[0],
             ee=self.two_ikJnts[1],
             p=self.chest_ctl,
+            vis=0,
         )
         self.two_ikJnts[1].cstPoi(self.ikJnts[-1])
         #
@@ -348,7 +349,7 @@ class SpineQd(RigModule):
             ratio >> self.rbJnts[i].a.sz
 
     def setup_vis(self):
-        pass
+        mc.hide(self.ikJnts, self.rbJnts, self.fkJnts, self.spIkJnts, self.two_ikJnts)
 
     def setup_proxy(self):
         for j in self.bindJnts:
@@ -358,7 +359,7 @@ class SpineQd(RigModule):
         [c.a.ro.set(2) for c in self.ikCtls]
 
     def setup_channel(self):
-        [ctl.a.showAttr(t=1, r=1) for ctl in self.ikCtls]
+        [ctl.a.showAttr(t=1, r=1) for ctl in self.ikCtls + [self.cog_ctl]]
         self.setting.a.showAttr()
         self.chest_ctl.a.showAttr("sz", t=1, r=1)
         self.base_ctl.a.showAttr("sz", t=1, r=1)
@@ -374,7 +375,9 @@ class SpineQd(RigModule):
     def post_setup(self):
         if self.RBN_JNT_NUM > 1:
             self.add_bind_jnt_set(self.bindJnts)
-        self.add_ctl_set(self.ikCtls)
+        self.add_ctl_set(
+            self.ikCtls + [self.chest_ctl, self.base_ctl, self.cog_ctl, self.setting]
+        )
         self.setup_anchor()
         self.setup_proxy()
         self.setup_vis()

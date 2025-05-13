@@ -38,8 +38,8 @@ class IkNode(DagNode):
         sf="_ikh",
         sj=None,
         ee=None,
-        jsf="",  # joint suffix
-        sol=0,  # solver
+        jsf="",
+        sol=0,
         setting=None,
         ikc=None,
         pvc=None,
@@ -231,8 +231,13 @@ class IkNode(DagNode):
         for i in range(1, len(self.jnt)):
             Di = self.jnt[i - 1].o.distanceTo(self.jnt[i])
             result = ut.clp_(ratio, min=ksMin, max=ksMax) * Di
+            if self.scaleFix2:
+                result *= self.scaleFix2
             tAttr = self.jnt[i].a[axis]
-            result * axisDir >> tAttr
+            if axisDir == 1:
+                result >> tAttr
+            elif axisDir == -1:
+                result * -1 >> tAttr
 
         return ratio
 

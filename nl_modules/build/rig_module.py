@@ -324,10 +324,10 @@ class RigModule(RigBase):
 
     def build_module(self):
         rID, rSz, xDr = self.getMyVar()
-
         logging.info(rID)
-        # self.rigSize = self.calc_rig_size(self.rootJ)
+
         self.rigNode.a.nodeState.set(2)
+
         children = self.rootJ.childrenJt
         if children:
             self.xDir = 1 if children[0].a.tx.get() > 0 else -1
@@ -336,6 +336,8 @@ class RigModule(RigBase):
         joints = self.rootJ.allChildrenJt2
         for j in joints:
             j.a.radius.set(rSz)
+
+        self.rigSize = self.calc_rig_size(self.rootJ)
 
     def post_module(self):
         rID, rSz, xDr = self.getMyVar()
