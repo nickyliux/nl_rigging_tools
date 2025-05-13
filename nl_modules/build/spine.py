@@ -82,7 +82,7 @@ class Spine(RigModule):
     def build_fk(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.fkJnts = JointNode.makeJCFrCrv(
+        self.fkJnts = JointNode.createJntFrCrv(
             self.LINE_GUIDE,
             num=self.FK_JNT_NUM,
             pf=rID,

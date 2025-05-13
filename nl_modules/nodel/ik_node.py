@@ -103,8 +103,9 @@ class IkNode(DagNode):
         self, node, quat=False, createCrv=1, inputCrv=None, numSpans=3, p=None
     ):
         solverName = IkNode.SOL_DICT[self.solver]
-        ikh = (
-            mc.ikHandle(
+        ikh = None
+        if createCrv:
+            ikh = mc.ikHandle(
                 n=node,
                 sj=self.sj,
                 ee=self.ee,
@@ -119,8 +120,8 @@ class IkNode(DagNode):
                 numSpans=numSpans,
                 rootTwistMode=0,
             )
-            if createCrv
-            else mc.ikHandle(
+        else:
+            ikh = mc.ikHandle(
                 n=node,
                 sj=self.sj,
                 ee=self.ee,
@@ -135,7 +136,6 @@ class IkNode(DagNode):
                 c=inputCrv,
                 rootTwistMode=0,
             )
-        )
         if ikh:
             self.node = DagNode(ikh[0])
         else:
@@ -163,7 +163,9 @@ class IkNode(DagNode):
             return CurveNode(crvSh.parent)
 
     @classmethod
-    def stretchySpSS(cls, ikH=None, ctl=None, axis="tx", axisDir=1):
+    def stretchySpSS(
+        cls, ikH=None, ctl=None, axis="tx", axisDir=1, minDv=0.8, maxDv=1.2
+    ):
         """
         Add stretchy funciton for splineIK
         e.g.
@@ -193,8 +195,8 @@ class IkNode(DagNode):
         crvInfo = DepNode(mc.arclen(crv, ch=1))
         d = crvInfo.a.arcLength
         ks = ctl.a.add("stretchy", min=0, max=1, dv=1)
-        ksMin = ctl.a.add("stretchMin", k=0, min=0, max=1, dv=1)
-        ksMax = ctl.a.add("stretchMax", k=0, min=0, dv=1.1)
+        ksMin = ctl.a.add("stretchMin", k=0, min=0, max=1, dv=minDv)
+        ksMax = ctl.a.add("stretchMax", k=0, min=0, dv=maxDv)
         ratio = (d / D - 1) * ks + 1
 
         for i in range(1, len(jl)):
@@ -202,7 +204,7 @@ class IkNode(DagNode):
             result = ut.clp_(ratio, min=ksMin, max=ksMax) * Di
             result * axisDir >> jl[i].a[axis]
 
-    def stretchySp(self, on=0, axis="tx", axisDir=1):
+    def stretchySp(self, on=0, axis="tx", axisDir=1, minDv=0.8, maxDv=1.2):
         """Add stretchy logic to translate channel of joint chain"""
         if self.solver != 2:
             logging.error("Incorrect solver")
@@ -222,8 +224,8 @@ class IkNode(DagNode):
 
         self.setting.a.addSep()
         ks = self.setting.a.add("stretchy", min=0, max=1, dv=1)
-        ksMin = self.setting.a.add("stretchMin", k=0, min=0, max=1, dv=1)
-        ksMax = self.setting.a.add("stretchMax", k=0, min=0, dv=1.1)
+        ksMin = self.setting.a.add("stretchMin", k=0, min=0, max=1, dv=minDv)
+        ksMax = self.setting.a.add("stretchMax", k=0, min=0, dv=maxDv)
         ratio = (d / D - 1) * ks + 1
 
         for i in range(1, len(self.jnt)):

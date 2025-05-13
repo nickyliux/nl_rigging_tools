@@ -116,7 +116,7 @@ class SpineQd(RigModule):
         self.build_ik()
         self.rbSrf.weightTo(self.ikJnts, mi=4, dr=6, chain=0)
 
-        crvLenRatio, self.rbJnts = self.build_ribbon_jnt(
+        crvLenRatio, self.rbJnts = self.build_motionPath_ribbon(
             rbSrf=self.rbSrf,
             jntNum=self.RBN_JNT_NUM,
             scaleAttr=self.setting.a.spineScale,
@@ -131,7 +131,7 @@ class SpineQd(RigModule):
         #
         #   build chain from crv
         #
-        self.ikJnts = JointNode.makeJCFrCrv(
+        self.ikJnts = JointNode.createJntFrCrv(
             self.LINE_GUIDE,
             num=5,
             name="ikj",

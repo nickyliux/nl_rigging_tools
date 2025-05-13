@@ -59,7 +59,7 @@ class TailFkIk(RigModule):
         self.build_ctl()
         self.build_ik()
         self.build_fk()
-        crvLenRatio, self.rbJnts = self.build_ribbon_jnt(
+        crvLenRatio, self.rbJnts = self.build_motionPath_ribbon(
             rbSrf=self.rbSrf2,
             jntNum=self.RBN_JNT_NUM,
             scaleAttr=self.setting.a.tailScale,
@@ -95,7 +95,7 @@ class TailFkIk(RigModule):
 
     def build_ik(self):
         rID, rSz, xDr = self.getMyVar()
-        self.ikJnt = JointNode.makeJCFrCrv(
+        self.ikJnt = JointNode.createJntFrCrv(
             self.LINE_GUIDE,
             num=5,
             name="ikj",
@@ -135,7 +135,7 @@ class TailFkIk(RigModule):
         # ------------------------------------------
         # Build fkJ
         # ------------------------------------------
-        self.fkJnt = JointNode.makeJCFrCrv(
+        self.fkJnt = JointNode.createJntFrCrv(
             self.LINE_GUIDE,
             num=self.FK_BONE_NUM + 1,
             pf=rID,

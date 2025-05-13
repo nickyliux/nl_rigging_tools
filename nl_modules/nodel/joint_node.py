@@ -154,7 +154,7 @@ class JointNode(GroupNode):
         return [j0, j1]
 
     @staticmethod
-    def makeJCFrCrv(
+    def createJntFrCrv(
         crv,
         name="fkj",
         pf="",
@@ -166,6 +166,7 @@ class JointNode(GroupNode):
         size=1,
         color=Color.BLUE,
         addEndJ=0,
+        chain=1,
         p=None,
     ):
         """Build joint chain from curve
@@ -196,12 +197,15 @@ class JointNode(GroupNode):
             if not rev:
                 # j1 > j2 > ... > jn
                 joints[i + 1].cstAim(joints[i], aim=aimV, u=upV, wu=wuV, keep=0)
-                joints[i + 1] | joints[i]
+                if chain:
+                    joints[i + 1] | joints[i]
             else:
                 # j1 < j2 < ... < jn
                 negAim = (-aimV[0], -aimV[1], -aimV[2])
                 joints[i].cstAim(joints[i + 1], aim=negAim, u=upV, wu=wuV, keep=0)
-                joints[i] | joints[i + 1]
+                if chain:
+                    joints[i] | joints[i + 1]
+
         last.resetOrient()
         if addEndJ:
             endJ = last.duplicate(n=last + "_end")
@@ -212,12 +216,19 @@ class JointNode(GroupNode):
                 joints.append(endJ)
             else:
                 joints = [endJ] + joints  # first in list is end joint
-        if p:
-            root | p
-        if not rev:
-            joints[0].freezeXf()
+
+        if chain:
+            if p:
+                root | p
+            if not rev:
+                joints[0].freezeXf()
+            else:
+                joints[-1].freezeXf()
         else:
-            joints[-1].freezeXf()
+            if p:
+                [j | p for j in joints]
+            [j.freezeXf() for j in joints]
+
         return joints
 
     @staticmethod

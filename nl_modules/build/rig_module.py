@@ -837,7 +837,9 @@ class RigModule(RigBase):
     #         crvInfo.a.arcLength / self.masterC.a.globalScale / scaleAttr / crv.length
     #     )
 
-    def build_ribbon_jnt(self, rbSrf=None, jntNum=5, scaleAttr=None, stretchyAttr=None):
+    def build_motionPath_ribbon(
+        self, rbSrf=None, jntNum=5, scaleAttr=None, stretchyAttr=None
+    ):
         rID, rSz, xDr = self.getMyVar()
         #
         #   create crv on srf & calc crv len ratio
