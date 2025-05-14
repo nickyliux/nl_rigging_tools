@@ -97,11 +97,11 @@ class Spine(rig_module.RigModule):
 
     def build_ctl_jnt(self, jointList, NUM, p=None):
 
-        staJ = JointNode("sta_ikj", pf=self.rigID, r=8, color=Color.RED)
+        staJ = JointNode("sta_ikj", pf=self.rigID, r=8, color=13)
         staJ.snapTo(jointList[0])
-        midJ = JointNode("mid_ikj", pf=self.rigID, r=8, color=Color.RED)
+        midJ = JointNode("mid_ikj", pf=self.rigID, r=8, color=13)
         midJ.snapTo(jointList[int(NUM / 2)])
-        endJ = JointNode("end_ikj", pf=self.rigID, r=8, color=Color.RED)
+        endJ = JointNode("end_ikj", pf=self.rigID, r=8, color=13)
         endJ.snapTo(jointList[-1])
 
         if p:

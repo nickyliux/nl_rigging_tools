@@ -164,7 +164,7 @@ class JointNode(GroupNode):
         upV=(0, 1, 0),
         wuV=(0, 1, 0),
         size=1,
-        color=Color.BLUE,
+        color=6,
         addEndJ=0,
         chain=1,
         p=None,

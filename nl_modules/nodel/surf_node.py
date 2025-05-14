@@ -172,7 +172,7 @@ class SurfNode(GroupNode):
         rigData=None,
         normalize=1,
         sklData=None,
-        color=Color.D_RED,
+        color=4,
     ):
         """Build ribbon joints chain
         e.g.

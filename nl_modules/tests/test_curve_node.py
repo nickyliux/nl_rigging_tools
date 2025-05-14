@@ -35,7 +35,7 @@ class Test_CurveNode_Main(Test_CurveNode_Base):
     def test_color(self):
         crv1 = CurveNode("crv1")
         self.assertEqual(crv1.shape.a.overrideColor.get(), 22)
-        crv2 = CurveNode("crv2", color=Color.RED)
+        crv2 = CurveNode("crv2", color=13)
         self.assertEqual(crv2.shape.a.overrideColor.get(), 13)
 
     def test_shape(self):

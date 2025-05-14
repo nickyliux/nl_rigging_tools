@@ -66,7 +66,7 @@ class SpineQd(RigModule):
             pf=rID,
             shape="diamond",
             scale=rSz * 2,
-            color=Color.BLACK,
+            color=1,
             top=1,
             width=2,
             p=self.CTL_DATA,
@@ -76,7 +76,7 @@ class SpineQd(RigModule):
             pf=rID,
             shape="trapezoid",
             scale=(rSz * 0.8, rSz * 1.5, rSz * 2.5),
-            color=Color.YELLOW,
+            color=22,
         )
         self.cog_ctl.cv_move(0, 70 * rSz, 40 * rSz)
 
@@ -94,20 +94,10 @@ class SpineQd(RigModule):
         self.base_ctl.cv_rotate(0, 90, 0)
 
         self.chest2_ctl = CurveNode(
-            "chest2_ctl",
-            pf=rID,
-            shape="squareR",
-            up="z",
-            scale=rSz * 3,
-            color=Color.YELLOW,
+            "chest2_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3, color=22
         )
         self.base2_ctl = CurveNode(
-            "base2_ctl",
-            pf=rID,
-            shape="squareR",
-            up="z",
-            scale=rSz * 3,
-            color=Color.YELLOW,
+            "base2_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3, color=22
         )
         self.rigNode.setMsg(
             {

@@ -102,7 +102,7 @@ class LegQd(RigModule):
             pf=rID,
             shape="diamond",
             scale=rSz * 1.5,
-            color=Color.BLACK,
+            color=1,
             width=2,
             p=self.RIG_DATA,
         )
@@ -198,7 +198,7 @@ class LegQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.joints_fk = common.extractSk(
-            self.joints, "_fk", p=self.FK_PART, color=Color.BLUE, r=2 * rSz
+            self.joints, "_fk", p=self.FK_PART, color=6, r=2 * rSz
         )
         self.fkCtl = [
             self.hip_fkc,
@@ -223,7 +223,7 @@ class LegQd(RigModule):
         self.ikc.alignTo(mG)
         self.pvc.alignTo(pvc_guide)
         self.joints_ik = common.extractSk(
-            self.joints, "_ik", p=self.IK_PART, color=Color.RED, r=3 * rSz
+            self.joints, "_ik", p=self.IK_PART, color=13, r=3 * rSz
         )
         ikH1 = IkNode(
             "1",

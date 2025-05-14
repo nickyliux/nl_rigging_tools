@@ -112,7 +112,7 @@ class Leg(RigModule):
             pf=rID,
             shape="diamond",
             scale=-rSz,
-            color=Color.BLACK,
+            color=1,
             p=self.CTL_DATA,
             width=2,
         )
@@ -231,7 +231,7 @@ class Leg(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.joints_fk = common.extractSk(
-            self.joints, "_fk", p=self.FK_PART, color=Color.BLUE, r=2 * rSz
+            self.joints, "_fk", p=self.FK_PART, color=6, r=2 * rSz
         )
         self.fkCtl = [
             self.hip_fkc,
@@ -256,7 +256,7 @@ class Leg(RigModule):
         self.ikc.alignTo(mG)
         self.pvc.alignTo(pvc_guide)
         self.joints_ik = common.extractSk(
-            self.joints, "_ik", p=self.IK_PART, color=Color.RED, r=3 * rSz
+            self.joints, "_ik", p=self.IK_PART, color=13, r=3 * rSz
         )
 
         ikH1 = IkNode(
@@ -404,10 +404,8 @@ class Leg(RigModule):
     def build_twist_bones(self):
         rID, rSz, xDr = self.getMyVar()
 
-        radius_JC = self.gen_sk_fr_names(
-            ["radius", "radiusEnd"], color=Color.D_RED, scale=2
-        )
-        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], color=Color.D_RED, scale=2)
+        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], color=4, scale=2)
+        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], color=4, scale=2)
 
         parent = self.boneFix if self.KNEE_FIX else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent

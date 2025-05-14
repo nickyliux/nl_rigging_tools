@@ -60,7 +60,7 @@ class SpineQd(RigModule):
             pf=rID,
             shape="diamond",
             scale=rSz * 2,
-            color=Color.BLACK,
+            color=1,
             top=1,
             width=2,
             p=self.IK_PART,
@@ -73,46 +73,28 @@ class SpineQd(RigModule):
             pf=rID,
             shape="trapezoid",
             scale=(rSz * 0.8, rSz * 1.5, rSz * 2.5),
-            color=Color.YELLOW,
+            color=22,
             p=self.IK_PART,
         )
         self.cog_ctl.cv_move(0, 70 * rSz, 0)
 
         self.fore_ctl = CurveNode(
-            "fore_ctl",
-            pf=rID,
-            shape="fk_rotator",
-            scale=rSz * 10,
-            color=Color.YELLOW,
+            "fore_ctl", pf=rID, shape="fk_rotator", scale=rSz * 10, color=22
         )
         self.fore_ctl.cv_rotate(0, 90, 0)
         self.mid_ctl = CurveNode(
             "mid_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 4
         )
         self.base_ctl = CurveNode(
-            "base_ctl",
-            pf=rID,
-            shape="fk_rotator",
-            scale=rSz * 10,
-            color=Color.YELLOW,
+            "base_ctl", pf=rID, shape="fk_rotator", scale=rSz * 10, color=22
         )
         self.base_ctl.cv_rotate(0, 90, 0)
 
         self.foreLocal_ctl = CurveNode(
-            "foreLocal_ctl",
-            pf=rID,
-            shape="squareR",
-            up="z",
-            scale=rSz * 3,
-            color=Color.YELLOW,
+            "foreLocal_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3
         )
         self.baseLocal_ctl = CurveNode(
-            "baseLocal_ctl",
-            pf=rID,
-            shape="squareR",
-            up="z",
-            scale=rSz * 3,
-            color=Color.YELLOW,
+            "baseLocal_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3
         )
         self.rigNode.setMsg(
             {
@@ -140,7 +122,7 @@ class SpineQd(RigModule):
         self.build_ctl()
         self.build_ik()
 
-        self.rbSrf.weightTo(self.ikJnts, mi=4, dr=6, chain=0)
+        self.rbSrf.weightTo(self.ikJnts, mi=4, dr=10, chain=0)
 
         crvLenRatio, self.spIkJnts, self.rbJnts = self.build_spik_ribbon(
             rbSrf=self.rbSrf,
@@ -160,6 +142,52 @@ class SpineQd(RigModule):
 
         self.post_setup()
 
+    def build_ik(self):
+        rID, rSz, xDr = self.getMyVar()
+        #
+        #   build chain from crv
+        #
+        self.ikJnts = JointNode.createJntFrCrv(
+            self.LINE_GUIDE,
+            num=5,
+            name="ikj",
+            pf=rID,
+            aimV=(0, 0, -1),
+            upV=(0, 1, 0),
+            wuV=(0, 1, 0),
+            size=rSz * 4,
+            chain=0,
+            color=6,
+        )
+        #
+        #   position cog & setting
+        #
+        self.cog_ctl.snapTo(self.RT_GUIDE)
+        self.cog_ctl.addOffsetGrp()
+        self.setting.snapTo(self.RT_GUIDE, offset=(0, rSz * 50, 0))
+        self.cog_ctl.cstPar(self.setting, mo=1)
+        #
+        #   build ik ctls
+        #
+        self.base_ctl.alignTo(self.ikJnts[0], p=self.cog_ctl)
+        self.mid_ctl.alignTo(self.ikJnts[2], p=self.cog_ctl)
+        self.fore_ctl.alignTo(self.ikJnts[4], p=self.cog_ctl)
+
+        self.ikCtls = [self.base_ctl, self.mid_ctl, self.fore_ctl]
+        [ctl.addOffsetGrp() for ctl in self.ikCtls]
+        #
+        #   parenting ctls and jnts
+        #
+        self.baseLocal_ctl.alignTo(self.base_ctl, p=self.base_ctl)
+        self.foreLocal_ctl.alignTo(self.fore_ctl, p=self.fore_ctl)
+
+        self.ikJnts[1] | self.ikJnts[0] | self.baseLocal_ctl
+        self.ikJnts[2] | self.mid_ctl
+        self.ikJnts[3] | self.ikJnts[4] | self.foreLocal_ctl
+
+        # self.add_movable_pivot(self.fore_ctl, snap=self.MD_GUIDE)
+        self.add_movable_pivot(self.base_ctl, snap=self.PVT_GUIDE)
+
     def build_spik_ribbon(self, rbSrf=None, jntNum=5, setting=None, scaleAttr=None):
         rID, rSz, xDr = self.getMyVar()
         #
@@ -174,7 +202,7 @@ class SpineQd(RigModule):
             num=jntNum,
             size=rSz * 2,
             p=self.RIG_DATA,
-            color=Color.D_RED,
+            color=4,
         )
         #
         #   stretchy spline ik
@@ -239,7 +267,7 @@ class SpineQd(RigModule):
                 r=rSz / jntNum * 12,
                 p=loc,
                 reset=1,
-                color=Color.RED,
+                color=13,
             )
             rbJnts.append(jnt)
 
@@ -259,7 +287,7 @@ class SpineQd(RigModule):
             upV=(0, 1, 0),
             wuV=(0, 1, 0),
             size=rSz * 20,
-            color=Color.BLACK,
+            color=1,
             p=self.baseLocal_ctl,
         )
 
@@ -298,52 +326,6 @@ class SpineQd(RigModule):
         #
         self.two_ikJnts[0].a.sz >> self.ikJnts[0].a.sz
         self.two_ikJnts[0].a.sz >> self.ikJnts[4].a.sz
-
-    def build_ik(self):
-        rID, rSz, xDr = self.getMyVar()
-        #
-        #   build chain from crv
-        #
-        self.ikJnts = JointNode.createJntFrCrv(
-            self.LINE_GUIDE,
-            num=5,
-            name="ikj",
-            pf=rID,
-            aimV=(0, 0, -1),
-            upV=(0, 1, 0),
-            wuV=(0, 1, 0),
-            size=rSz * 4,
-            chain=0,
-            color=Color.BLUE,
-        )
-        #
-        #   position cog & setting
-        #
-        self.cog_ctl.snapTo(self.RT_GUIDE)
-        self.cog_ctl.addOffsetGrp()
-        self.setting.snapTo(self.MD_GUIDE, offset=(0, rSz * 70, 0))
-        self.cog_ctl.cstPar(self.setting, mo=1)
-        #
-        #   build ik ctls
-        #
-        self.base_ctl.alignTo(self.ikJnts[0], p=self.cog_ctl)
-        self.mid_ctl.alignTo(self.ikJnts[2], p=self.cog_ctl)
-        self.fore_ctl.alignTo(self.ikJnts[4], p=self.cog_ctl)
-
-        self.ikCtls = [self.base_ctl, self.mid_ctl, self.fore_ctl]
-        [ctl.addOffsetGrp() for ctl in self.ikCtls]
-        #
-        #   parenting ctls and jnts
-        #
-        self.baseLocal_ctl.alignTo(self.base_ctl, p=self.base_ctl)
-        self.foreLocal_ctl.alignTo(self.fore_ctl, p=self.fore_ctl)
-
-        self.ikJnts[1] | self.ikJnts[0] | self.baseLocal_ctl
-        self.ikJnts[2] | self.mid_ctl
-        self.ikJnts[3] | self.ikJnts[4] | self.foreLocal_ctl
-
-        # self.add_movable_pivot(self.fore_ctl, snap=self.MD_GUIDE)
-        self.add_movable_pivot(self.base_ctl, snap=self.PVT_GUIDE)
 
     def build_volume(self, crvLenRatio):
         #

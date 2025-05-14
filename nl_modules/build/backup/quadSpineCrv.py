@@ -80,13 +80,13 @@ class SpineQdCrv(rig_module.RigModule):
         s = self.rigSize * 2
 
         st_skinJ = JointNode(
-            "st_skinJ", pf=self.rigID, r=s, color=Color.RED, align=st_ctl, p=st_ctl
+            "st_skinJ", pf=self.rigID, r=s, color=13, align=st_ctl, p=st_ctl
         )
         md_skinJ = JointNode(
-            "md_skinJ", pf=self.rigID, r=s, color=Color.RED, align=md_ctl, p=md_ctl
+            "md_skinJ", pf=self.rigID, r=s, color=13, align=md_ctl, p=md_ctl
         )
         ed_skinJ = JointNode(
-            "ed_skinJ", pf=self.rigID, r=s, color=Color.RED, align=ed_ctl, p=ed_ctl
+            "ed_skinJ", pf=self.rigID, r=s, color=13, align=ed_ctl, p=ed_ctl
         )
 
         return [

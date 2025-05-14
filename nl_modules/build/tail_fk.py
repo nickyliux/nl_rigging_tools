@@ -81,7 +81,7 @@ class TailFk(RigModule):
             pf=rID,
             shape="diamond",
             scale=rSz * 3,
-            color=Color.BLACK,
+            color=1,
             p=self.CTL_DATA,
             top=1,
             width=2,
@@ -104,7 +104,7 @@ class TailFk(RigModule):
             upV=(0, 1, 0),
             wuV=(0, 1, 0),
             size=rSz * 2,
-            color=Color.BLUE,
+            color=6,
         )
         for i in range(0, self.FK_BONE_NUM + 1):
             currJnt = self.fkJnt[i]

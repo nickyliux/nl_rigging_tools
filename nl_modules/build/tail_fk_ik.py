@@ -76,7 +76,7 @@ class TailFkIk(RigModule):
             pf=rID,
             shape="diamond",
             scale=rSz * 2,
-            color=Color.BLACK,
+            color=1,
             top=1,
             width=2,
             p=self.CTL_DATA,
@@ -104,7 +104,7 @@ class TailFkIk(RigModule):
             upV=(0, 1, 0),
             wuV=(0, 1, 0),
             size=rSz * 4,
-            color=Color.BLUE,
+            color=6,
         )
 
         for i in range(0, 5):
@@ -165,7 +165,7 @@ class TailFkIk(RigModule):
                 up="z",
                 scale=rSz,
                 align=self.fkJnt[i],
-                color=Color.YELLOW,
+                color=22,
             )
             self.rigNode.setMsg({f"fkc{i}": ctl})
             self.fkCtl.append(ctl)
@@ -206,9 +206,7 @@ class TailFkIk(RigModule):
                 p=self.fkCtl[i],
             )
             ctl.cv_move(0, rSz * 18, 0)
-            jnt = JointNode(
-                f"{i}_offset_ikj", pf=rID, align=ctl, p=ctl, color=Color.RED
-            )
+            jnt = JointNode(f"{i}_offset_ikj", pf=rID, align=ctl, p=ctl, color=13)
 
             self.ikOffsetCtl.append(ctl)
             self.ikOffsetJnt.append(jnt)

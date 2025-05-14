@@ -49,13 +49,13 @@ class Spine(RigModule):
             pf=rID,
             shape="diamond",
             scale=rSz * 2,
-            color=Color.BLACK,
+            color=1,
             top=1,
             width=2,
             p=self.CTL_DATA,
         )
         self.cog_ctl = CurveNode(
-            "cog_ctl", pf=rID, shape="cog2", scale=rSz * 2, color=Color.YELLOW, width=2
+            "cog_ctl", pf=rID, shape="cog2", scale=rSz * 2, color=22, width=2
         )
         self.chest_ctl = CurveNode("chest_ctl", pf=rID, shape="squareR", scale=rSz * 4)
         self.mid_ctl = CurveNode("mid_ctl", pf=rID, shape="squareR", scale=rSz * 4)
@@ -90,7 +90,7 @@ class Spine(RigModule):
             upV=(0, 0, 1),
             wuV=(0, 0, 1),
             size=rSz * 2,
-            color=Color.BLUE,
+            color=6,
             p=self.SKL_DATA,
         )
         mc.delete(self.rootJ)
@@ -105,14 +105,14 @@ class Spine(RigModule):
                 shape="circleC",
                 scale=rSz * 5,
                 width=2,
-                color=Color.YELLOW,
+                color=22,
             )
             self.fkCtls.append(c)
 
         self.build_fk_with_ctl2(self.fkJnts[1:], self.fkCtls[1:], p=self.CTL_DATA)
 
         hipCtl = self.fkCtls[0]
-        hipCtl(p=self.CTL_DATA, addOfs=1, color=Color.D_RED)
+        hipCtl(p=self.CTL_DATA, addOfs=1, color=4)
         hipCtl.offset.snapAlignTo(self.fkJnts[1], self.fkJnts[0])
         hipCtl.cv_move(0, rSz * -20, 0)
         hipCtl.cstPar(self.fkJnts[0], mo=1)

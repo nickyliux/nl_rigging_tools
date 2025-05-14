@@ -108,12 +108,7 @@ class Arm(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
         self.setting = CurveNode(
-            "setting",
-            pf=rID,
-            shape="stick",
-            scale=rSz * xDr / 2,
-            color=Color.BLACK,
-            top=1,
+            "setting", pf=rID, shape="stick", scale=rSz * xDr / 2, color=1, top=1
         )
         self.clavicle_fkc = CurveNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
@@ -163,7 +158,7 @@ class Arm(RigModule):
             align=scapular_guide,
             r=rSz,
             p=self.clavicle,
-            color=Color.D_RED,
+            color=4,
         )
         scapularJnt.freezeXf()
         scapularLoc = LocNode(
@@ -195,10 +190,8 @@ class Arm(RigModule):
 
     def build_twist_bones(self):
         rID, rSz, xDr = self.getMyVar()
-        radius_JC = self.gen_sk_fr_names(
-            ["radius", "radiusEnd"], color=Color.D_RED, scale=2
-        )
-        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], color=Color.D_RED, scale=2)
+        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], color=4, scale=2)
+        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], color=4, scale=2)
 
         (radius_JC[0], ulna_JC[0]) | self.lwr
 
@@ -224,7 +217,7 @@ class Arm(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.joints_fk = common.extractSk(
-            self.joints, "_fk", p=self.FK_PART, color=Color.BLUE, r=rSz * 2
+            self.joints, "_fk", p=self.FK_PART, color=6, r=rSz * 2
         )
         self.fkCtl = [self.clavicle_fkc, self.upr_fkc, self.lwr_fkc, self.palm_fkc]
         self.build_fk_with_ctl2(self.joints_fk, self.fkCtl, p=self.FK_PART)
@@ -240,7 +233,7 @@ class Arm(RigModule):
         self.pvc.alignTo(pvc_guide)
 
         self.joints_ik = common.extractSk(
-            self.joints, "_ik", p=self.IK_PART, color=Color.RED, r=3 * rSz
+            self.joints, "_ik", p=self.IK_PART, color=13, r=3 * rSz
         )
         ikH1 = IkNode(
             "1",
@@ -430,7 +423,7 @@ class Arm(RigModule):
 
         self.all_bend = [upr_bend, lwr_bend, mid_bend]
         for ctl in self.all_bend:
-            ctl(shape="square", up="x", color=Color.YELLOW, scale=rSz)
+            ctl(shape="square", up="x", color=22, scale=rSz)
             # ctl.a.rotateOrder.set(1)  # yzx
 
         upLoc.cstPar(upr_bend.offset, mo=1)

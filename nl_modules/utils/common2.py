@@ -8,7 +8,7 @@ from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
 
 
-def addAwesomeSpine_createCtlJ(jointList, r=8, pf="", color=Color.RED, p=None):
+def addAwesomeSpine_createCtlJ(jointList, r=8, pf="", color=13, p=None):
     """create control joint at start, mid, end for a joint chain
     e.g.
         build_ctl_jnt(jntList, 10)

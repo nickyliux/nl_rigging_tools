@@ -150,9 +150,7 @@ class Ribbon(rig_module.RigModule):
             locN = LocNode(loc)
             locN.scaleLocal(3)
 
-            jnt = JointNode(
-                "rb_jnt_#", pf=rID, r=1, color=Color.BLACK, align=locN, p=locN
-            )
+            jnt = JointNode("rb_jnt_#", pf=rID, r=1, color=1, align=locN, p=locN)
             jnt.displayLocalAxis()
             jnt.addProxyMesh(p=self.PRX)
 
@@ -253,10 +251,10 @@ class Ribbon(rig_module.RigModule):
     #
     #         for i in range(seg):
     #             loc = LocNode(
-    #                 "rb_loc_#", pf=self.rigID, color=Color.L_BLUE, p=self.RB_GRP
+    #                 "rb_loc_#", pf=self.rigID, color=18, p=self.RB_GRP
     #             )
     #             loc.displayLocalAxis()
-    #             jnt = JointNode("rb_jnt_#", pf=self.rigID, r=1, color=Color.BLACK, p=loc)
+    #             jnt = JointNode("rb_jnt_#", pf=self.rigID, r=1, color=1, p=loc)
     #             jnt.addProxyCube(size=2)
     #
     #             ut.motionPath_(

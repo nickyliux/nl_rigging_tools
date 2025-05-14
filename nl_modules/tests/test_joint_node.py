@@ -33,7 +33,7 @@ class Test_JointNode_Main(Test_JointNode_Base):
         self.assertEqual(j, "|joint|b_joint2")
 
     def test_color(self):
-        j = JointNode("joint1", color=Color.YELLOW)
+        j = JointNode("joint1", color=22)
         self.assertEqual(j.a.overrideColor.get(), 22)
 
     def test_setRadius(self):

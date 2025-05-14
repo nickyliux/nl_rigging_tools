@@ -427,10 +427,6 @@ class RigModule(RigBase):
         """Add movable pivot ctl under tgt"""
 
         pvt_ctl = LocNode(tgt + "_pvt", align=tgt, p=tgt)
-        # shape="pivot",
-        # scale=scale,
-        # color=Color.YELLOW,
-        # top=1,
         pvt_ctl.a.t >> tgt.a.rotatePivot
         if snap:
             pvt_ctl.snapTo(snap)
@@ -525,19 +521,14 @@ class RigModule(RigBase):
 
         if patella_guide.exists():
             j = JointNode(
-                "patella",
-                pf=rID,
-                align=patella_guide,
-                color=Color.RED,
-                r=rSz,
-                p=self.upr,
+                "patella", pf=rID, align=patella_guide, color=13, r=rSz, p=self.upr
             )
             j.freezeXf()
             self.bindJnts.append(j)
             patella_sdk(self.lwr, j)
             return j
 
-    def build_ctl_jnt(self, ctls, r=1, color=Color.BLACK):
+    def build_ctl_jnt(self, ctls, r=1, color=1):
         result = []
         for ctl in ctls:
             jnt = JointNode(ctl, sf="_ctlJ", r=r, color=color, p=ctl)
@@ -898,7 +889,7 @@ class RigModule(RigBase):
                 r=rSz / jntNum * 12,
                 p=loc,
                 reset=1,
-                color=Color.D_RED,
+                color=4,
             )
             rbJnts.append(jnt)
             # self.ikCtl[0].a.s >> loc.a.s

@@ -31,7 +31,7 @@ class Test_LocNode_Main(Test_LocNode_Base):
         self.assertEqual(loc2, "|loc|loc2")
 
     def test_color(self):
-        loc1 = LocNode("loc1", color=Color.YELLOW)
+        loc1 = LocNode("loc1", color=22)
         self.assertEqual(loc1.shape.a.overrideColor.get(), 22)
 
     def test_size(self):
