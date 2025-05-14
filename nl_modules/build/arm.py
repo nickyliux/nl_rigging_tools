@@ -511,6 +511,14 @@ class Arm(RigModule):
         self.rigNode.setMsg({"space_palm": self.ballRoll_loc})
         self.rigNode.setMsg({"space_palmIK": self.joints_bf[3]})
 
+    def setup_anchor(self):
+        self.setup_anchor_module(
+            {
+                "anchorM1": self.joints_bf[-2],
+                "anchorF1": self.clavicle_fkc.offset,
+            }
+        )
+
     def post_setup(self):
         ctlSet = []
         ctlSet.extend(self.fkCtl + self.ikCtl + [self.setting, self.pin_fkc])
@@ -521,12 +529,7 @@ class Arm(RigModule):
         self.add_bind_jnt_set(self.bindJnts)
         self.add_ctl_set(ctlSet)
         self.setup_space()
-        self.setup_anchor_module(
-            {
-                "anchorM1": self.joints_bf[-2],
-                "anchorF1": self.clavicle_fkc.offset,
-            }
-        )
+        self.setup_anchor()
         self.setup_proxy()
         self.setup_vis()
         self.setup_channel()

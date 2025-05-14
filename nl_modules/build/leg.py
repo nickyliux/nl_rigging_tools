@@ -110,10 +110,11 @@ class Leg(RigModule):
         self.setting = CurveNode(
             "setting",
             pf=rID,
-            shape="stick",
-            scale=-rSz * xDr / 2,
+            shape="diamond",
+            scale=-rSz,
             color=Color.BLACK,
-            top=1,
+            p=self.CTL_DATA,
+            width=2,
         )
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
@@ -214,8 +215,8 @@ class Leg(RigModule):
         self.CTL_DATA.a.s >> self.RIG_DATA.a.s
         self.CTL_DATA.a.s >> self.PRX_GRP.a.s
         self.CTL_DATA.a.s >> self.SKL_DATA.a.s
-        limbScale = self.setting.a.add("limbScale", min=0.01, dv=1)
-        limbScale >> self.CTL_DATA.a.s
+        moduleScale = self.setting.a.add("moduleScale", min=0.01, dv=1)
+        moduleScale >> self.CTL_DATA.a.s
 
         palmScale = self.setting.a.add("palmScale", min=0.01, dv=1)
         self.ikc.a.add("palmScale", min=0.01, proxy=palmScale)
@@ -434,12 +435,11 @@ class Leg(RigModule):
             self.joints, "_bf", p=self.BF_PART, color=Color.L_GREY, r=4 * rSz
         )
 
-        self.setting | self.CTL_DATA
         # self.setting.alignTo(self.master_guide)
-        self.setting.alignTo(self.palm)
-        ofs = self.setting.addOffsetGrp()
+        self.setting.alignTo(self.palm, offset=(0, rSz * 15 * -xDr, 0))
+        # ofs = self.setting.addOffsetGrp()
         # self.ball.cstPar(ofs, mo=1)
-        self.palm.cstPar(ofs, mo=1)
+        self.palm.cstPar(self.setting, mo=1)
 
         self.setting.a.addSep()
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)

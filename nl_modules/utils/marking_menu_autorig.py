@@ -109,13 +109,13 @@ class MarkingMenuAutorig:
 
     def selectCtlSelOrAll(self, *args):
         rigNodes = []
-
         sel = mc.ls(sl=1, tr=1)
         if sel:
             selN = DagNode(sel[0])
             nodes = selN.a.message.outConnNode
             if nodes:
-                rN = nodes[0]
+                filteredNodes = [n for n in nodes if n.type == "script"]
+                rN = filteredNodes[0]
                 if rN.exists():
                     rigNodes = [rN]
         else:

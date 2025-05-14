@@ -32,7 +32,7 @@ class SpineQd(RigModule):
 
         self.setting = None
         self.cog_ctl = None
-        self.chest_ctl = None
+        self.fore_ctl = None
         self.base_ctl = None
         self.fkCtls = []
         self.ikCtls = []
@@ -63,7 +63,7 @@ class SpineQd(RigModule):
             p=self.IK_PART,
         )
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
-        self.setting.a.add("spineScale", min=0.01, dv=1)
+        self.setting.a.add("moduleScale", min=0.01, dv=1)
 
         self.cog_ctl = CurveNode(
             "cog_ctl",
@@ -75,8 +75,8 @@ class SpineQd(RigModule):
         )
         self.cog_ctl.cv_move(0, 70 * rSz, 0)
 
-        self.chest_ctl = CurveNode(
-            "chest_ctl",
+        self.fore_ctl = CurveNode(
+            "fore_ctl",
             pf=rID,
             shape="squareR",
             up="z",
@@ -120,7 +120,7 @@ class SpineQd(RigModule):
         crvLenRatio, self.spIkJnts, self.rbJnts = self.build_spik_ribbon(
             rbSrf=self.rbSrf,
             jntNum=self.RBN_JNT_NUM,
-            scaleAttr=self.setting.a.spineScale,
+            scaleAttr=self.setting.a.moduleScale,
             setting=self.setting,
         )
         self.build_two_ik()
@@ -130,8 +130,8 @@ class SpineQd(RigModule):
         #
         #   scaling
         #
-        self.setting.a.spineScale >> self.IK_PART.a.s
-        self.setting.a.spineScale >> self.PRX_GRP.a.s
+        self.setting.a.moduleScale >> self.IK_PART.a.s
+        self.setting.a.moduleScale >> self.PRX_GRP.a.s
 
         self.post_setup()
 
@@ -165,12 +165,16 @@ class SpineQd(RigModule):
             inputCrv=rbCrv,
             setting=setting,
             scaleFix=globalScale,
-            scaleFix2=self.setting.a.spineScale,
+            scaleFix2=self.setting.a.moduleScale,
             scaleFix3=self.masterC2.a.sy,
             p=self.RIG_DATA,
         )
         ikH.stretchySp(axis="tz", axisDir=1)
         self.setting.a.stretchy.lock = 1
+        self.ikCtls[0].a.add("stretchMin", min=0, proxy=self.setting.a.stretchMin)
+        self.ikCtls[0].a.add("stretchMax", min=1, proxy=self.setting.a.stretchMax)
+        self.ikCtls[2].a.add("stretchMin", min=0, proxy=self.setting.a.stretchMin)
+        self.ikCtls[2].a.add("stretchMax", min=1, proxy=self.setting.a.stretchMax)
         #
         #   create ribbon jnts on top of spline ik joints
         #
@@ -243,16 +247,16 @@ class SpineQd(RigModule):
             pf=rID,
             sj=self.two_ikJnts[0],
             ee=self.two_ikJnts[1],
-            p=self.chest_ctl,
+            p=self.fore_ctl,
             vis=0,
         )
         self.two_ikJnts[1].cstPoi(self.ikJnts[-1])
         #
         #   ctl two jnt's scale
         #
-        d = ut.distDim_(self.chest_ctl, self.base_ctl)
+        d = ut.distDim_(self.fore_ctl, self.base_ctl)
         crvLenRatio = (
-            d / d.get() / self.masterC.a.globalScale / self.setting.a.spineScale
+            d / d.get() / self.masterC.a.globalScale / self.setting.a.moduleScale
         )
         (
             ut.clp_(
@@ -314,24 +318,25 @@ class SpineQd(RigModule):
             )
             ctl.cv_rotate(0, 90, 0)
             self.ikCtls.append(ctl)
-
+            self.rigNode.setMsg({f"ikc{i}": ctl})
         #
         #   parenting ctls and jnts
         #
         self.base_ctl.alignTo(self.ikCtls[0], p=self.ikCtls[0])
-        self.chest_ctl.alignTo(self.ikCtls[2], p=self.ikCtls[2])
+        self.fore_ctl.alignTo(self.ikCtls[2], p=self.ikCtls[2])
 
         self.ikJnts[1] | self.ikJnts[0] | self.base_ctl
         self.ikJnts[2] | self.ikCtls[1]
-        self.ikJnts[3] | self.ikJnts[4] | self.chest_ctl
+        self.ikJnts[3] | self.ikJnts[4] | self.fore_ctl
 
-        self.add_movable_pivot(self.ikCtls[2], snap=self.MD_GUIDE)
+        # self.add_movable_pivot(self.ikCtls[2], snap=self.MD_GUIDE)
         self.add_movable_pivot(self.ikCtls[0], snap=self.PVT_GUIDE)
 
     def build_volume(self, crvLenRatio):
         #
         #   add volume graph keys
         #
+        volumeScale = self.setting.a.add("volumeScale", dv=1)
         volumeGraph = self.setting.a.add("volumeGraph", dv=0)
         mc.setKeyframe(volumeGraph, t=0, v=0)
         mc.setKeyframe(volumeGraph, t=(self.RBN_JNT_NUM - 1) / 2, v=1)
@@ -340,9 +345,7 @@ class SpineQd(RigModule):
         #
         #   set rbj scale acc to surf length
         #
-        volumeScale = self.setting.a.add("volumeScale", dv=1)
         for i in range(self.RBN_JNT_NUM):
-
             fc = DagNode("fc__#", nodeType="frameCache")
             volumeGraph >> fc.a.stream
             fc.a.varyTime.set(i)
@@ -352,6 +355,10 @@ class SpineQd(RigModule):
 
     def setup_vis(self):
         mc.hide(self.ikJnts, self.rbJnts, self.fkJnts, self.spIkJnts, self.two_ikJnts)
+        if self.__class__.__name__ == "NeckQd":
+            self.cog_ctl.shape.hide()
+            self.base_ctl.shape.hide()
+            self.ikCtls[0].shape.hide()
 
     def setup_proxy(self):
         for j in self.bindJnts:
@@ -363,7 +370,7 @@ class SpineQd(RigModule):
     def setup_channel(self):
         [ctl.a.showAttr(t=1, r=1) for ctl in self.ikCtls + [self.cog_ctl]]
         self.setting.a.showAttr()
-        self.chest_ctl.a.showAttr("sz", t=1, r=1)
+        self.fore_ctl.a.showAttr("sz", t=1, r=1)
         self.base_ctl.a.showAttr("sz", t=1, r=1)
 
     def setup_anchor(self):
@@ -374,15 +381,29 @@ class SpineQd(RigModule):
             }
         )
 
+    def setup_space(self):
+        self.rigNode.setMsg({"spaceHolder1": self.ikCtls[2]})
+        spaces = "COG, master"
+        self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
+
+        self.rigNode.setMsg({"space_master": self.masterC})
+        self.rigNode.setMsg({"space_COG": self.cog_ctl})
+
     def post_setup(self):
-        if self.RBN_JNT_NUM > 1:
-            self.add_bind_jnt_set(self.bindJnts)
-        self.add_ctl_set(
-            self.ikCtls + [self.chest_ctl, self.base_ctl, self.cog_ctl, self.setting]
-        )
+        self.add_bind_jnt_set(self.bindJnts)
+
+        ctls = self.ikCtls + [self.fore_ctl, self.base_ctl, self.cog_ctl, self.setting]
+        if self.__class__.__name__ == "NeckQd":
+            ctls.remove(self.cog_ctl)
+            ctls.remove(self.base_ctl)
+            ctls.remove(self.ikCtls[0])
+        self.add_ctl_set(ctls)
+
+        self.setup_space()
         self.setup_anchor()
         self.setup_proxy()
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()
+
         self.post_module()
