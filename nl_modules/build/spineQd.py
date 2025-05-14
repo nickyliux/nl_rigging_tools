@@ -166,9 +166,11 @@ class SpineQd(RigModule):
             setting=setting,
             scaleFix=globalScale,
             scaleFix2=self.setting.a.spineScale,
+            scaleFix3=self.masterC2.a.sy,
             p=self.RIG_DATA,
         )
         ikH.stretchySp(axis="tz", axisDir=1)
+        self.setting.a.stretchy.lock = 1
         #
         #   create ribbon jnts on top of spline ik joints
         #
@@ -330,21 +332,21 @@ class SpineQd(RigModule):
         #
         #   add volume graph keys
         #
-        volGraph = self.setting.a.add("volGraph", dv=0)
-        mc.setKeyframe(volGraph, t=0, v=0)
-        mc.setKeyframe(volGraph, t=(self.RBN_JNT_NUM - 1) / 2, v=1)
-        mc.setKeyframe(volGraph, t=self.RBN_JNT_NUM - 1, v=0)
-        mc.setAttr(volGraph, l=1)
+        volumeGraph = self.setting.a.add("volumeGraph", dv=0)
+        mc.setKeyframe(volumeGraph, t=0, v=0)
+        mc.setKeyframe(volumeGraph, t=(self.RBN_JNT_NUM - 1) / 2, v=1)
+        mc.setKeyframe(volumeGraph, t=self.RBN_JNT_NUM - 1, v=0)
+        volumeGraph.lock = 1
         #
         #   set rbj scale acc to surf length
         #
-        autoVol = self.setting.a.add("autoVol", dv=1)
+        volumeScale = self.setting.a.add("volumeScale", dv=1)
         for i in range(self.RBN_JNT_NUM):
 
             fc = DagNode("fc__#", nodeType="frameCache")
-            volGraph >> fc.a.stream
+            volumeGraph >> fc.a.stream
             fc.a.varyTime.set(i)
-            ratio = (1 / crvLenRatio) ** (fc.a.varying * autoVol)
+            ratio = (1 / crvLenRatio) ** (fc.a.varying * volumeScale)
             ratio >> self.rbJnts[i].a.sy
             ratio >> self.rbJnts[i].a.sz
 

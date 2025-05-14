@@ -49,6 +49,7 @@ class IkNode(DagNode):
         limbScale=False,
         scaleFix=None,
         scaleFix2=None,
+        scaleFix3=None,
         quat=None,
         RIG_DATA=None,
         vis=1,
@@ -77,6 +78,7 @@ class IkNode(DagNode):
         self.setting = setting
         self.scaleFix = scaleFix
         self.scaleFix2 = scaleFix2
+        self.scaleFix3 = scaleFix3
         self.pf = pf
         self.rSz = rSz
         self.softJ = None
@@ -233,6 +235,8 @@ class IkNode(DagNode):
             result = ut.clp_(ratio, min=ksMin, max=ksMax) * Di
             if self.scaleFix2:
                 result *= self.scaleFix2
+            if self.scaleFix3:
+                result *= self.scaleFix3
             tAttr = self.jnt[i].a[axis]
             if axisDir == 1:
                 result >> tAttr
