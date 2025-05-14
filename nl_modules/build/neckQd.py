@@ -13,3 +13,10 @@ class NeckQd(SpineQd):
                 "anchorM1": self.rbJnts[-1],
             }
         )
+
+    def setup_space(self):
+        self.rigNode.setMsg({"spaceHolder1": self.ikCtls[2]})
+        spaces = "chest, COG, master"
+        self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
+
+        self.rigNode.setMsg({"space_neck": self.rbJnts[-1]})

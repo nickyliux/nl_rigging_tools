@@ -85,7 +85,7 @@ class Head(RigModule):
         self.head_fkc.a.s >> self.SKL_DATA.a.s
         self.head_fkc.a.s >> self.PRX_GRP.a.s
 
-        self.isolate_align(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC])
+        # self.isolate_align(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC])
 
     def setup_proxy(self):
         for j in self.bindJnts:
@@ -98,6 +98,10 @@ class Head(RigModule):
         pass
 
     def setup_space(self):
+        self.rigNode.setMsg({"spaceHolder1": self.head_fkc})
+        spaces = "neck, COG, master"
+        self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
+
         self.rigNode.setMsg({"space_head": self.head_fkc})
 
     def post_setup(self):

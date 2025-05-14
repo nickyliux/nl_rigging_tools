@@ -171,10 +171,6 @@ class SpineQd(RigModule):
         )
         ikH.stretchySp(axis="tz", axisDir=1)
         self.setting.a.stretchy.lock = 1
-        self.ikCtls[0].a.add("stretchMin", min=0, proxy=self.setting.a.stretchMin)
-        self.ikCtls[0].a.add("stretchMax", min=1, proxy=self.setting.a.stretchMax)
-        self.ikCtls[2].a.add("stretchMin", min=0, proxy=self.setting.a.stretchMin)
-        self.ikCtls[2].a.add("stretchMax", min=1, proxy=self.setting.a.stretchMax)
         #
         #   create ribbon jnts on top of spline ik joints
         #
@@ -336,6 +332,7 @@ class SpineQd(RigModule):
         #
         #   add volume graph keys
         #
+        self.setting.a.addSep()
         volumeScale = self.setting.a.add("volumeScale", dv=1)
         volumeGraph = self.setting.a.add("volumeGraph", dv=0)
         mc.setKeyframe(volumeGraph, t=0, v=0)
@@ -388,6 +385,7 @@ class SpineQd(RigModule):
 
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_COG": self.cog_ctl})
+        self.rigNode.setMsg({"space_chest": self.fore_ctl})
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)

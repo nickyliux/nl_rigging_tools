@@ -224,7 +224,6 @@ class IkNode(DagNode):
         if self.scaleFix2:
             d /= self.scaleFix2
 
-        self.setting.a.addSep()
         ks = self.setting.a.add("stretchy", min=0, max=1, dv=1)
         ksMin = self.setting.a.add("stretchMin", k=1, min=0, max=1, dv=minDv)
         ksMax = self.setting.a.add("stretchMax", k=1, min=0, dv=maxDv)

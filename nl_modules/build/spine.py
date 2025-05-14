@@ -55,7 +55,7 @@ class Spine(RigModule):
             p=self.CTL_DATA,
         )
         self.cog_ctl = CurveNode(
-            "cog_ctl", pf=rID, shape="cog2", scale=rSz * 2, color=Color.YELLOW
+            "cog_ctl", pf=rID, shape="cog2", scale=rSz * 2, color=Color.YELLOW, width=2
         )
         self.chest_ctl = CurveNode("chest_ctl", pf=rID, shape="squareR", scale=rSz * 4)
         self.mid_ctl = CurveNode("mid_ctl", pf=rID, shape="squareR", scale=rSz * 4)
