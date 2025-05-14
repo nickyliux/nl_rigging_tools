@@ -27,8 +27,11 @@ class SpineQd(RigModule):
         self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
         self.IK_PART = GroupNode("IK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
 
-        pvtGuide = DagNode(rID + "_pivot_guide")
-        self.PVT_GUIDE = pvtGuide if pvtGuide.exists() else None
+        guide = DagNode(rID + "_base_pivot_guide")
+        self.BASE_PVT_GUIDE = guide if guide.exists() else None
+
+        guide = DagNode(rID + "_fore_pivot_guide")
+        self.FORE_PVT_GUIDE = guide if guide.exists() else None
 
         self.setting = None
         self.cog_ctl = None
@@ -62,7 +65,6 @@ class SpineQd(RigModule):
             scale=rSz * 2,
             color=1,
             top=1,
-            width=2,
             p=self.IK_PART,
         )
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
@@ -82,6 +84,8 @@ class SpineQd(RigModule):
             "fore_ctl", pf=rID, shape="fk_rotator", scale=rSz * 10, color=22
         )
         self.fore_ctl.cv_rotate(0, 90, 0)
+        self.fore_ctl.cv_move(0, 0, 20 * rSz)
+
         self.mid_ctl = CurveNode(
             "mid_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 4
         )
@@ -93,6 +97,8 @@ class SpineQd(RigModule):
         self.foreLocal_ctl = CurveNode(
             "foreLocal_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3
         )
+        self.foreLocal_ctl.cv_move(0, 0, 20 * rSz)
+
         self.baseLocal_ctl = CurveNode(
             "baseLocal_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3
         )
@@ -119,6 +125,7 @@ class SpineQd(RigModule):
             snap=self.RT_GUIDE,
         )
         self.rigNode.setMsg({"rbSrf": self.rbSrf})
+
         self.build_ctl()
         self.build_ik()
 
@@ -169,24 +176,41 @@ class SpineQd(RigModule):
         #
         #   build ik ctls
         #
-        self.base_ctl.alignTo(self.ikJnts[0], p=self.cog_ctl)
-        self.mid_ctl.alignTo(self.ikJnts[2], p=self.cog_ctl)
-        self.fore_ctl.alignTo(self.ikJnts[4], p=self.cog_ctl)
+        # (self.base_ctl, self.mid_ctl, self.fore_ctl) | p=self.cog_ctl
+
+        self.base_ctl | self.cog_ctl
+        self.mid_ctl | self.cog_ctl
+        self.fore_ctl | self.cog_ctl
+
+        if self.BASE_PVT_GUIDE:
+            self.base_ctl.alignTo(self.BASE_PVT_GUIDE)
+        else:
+            self.base_ctl.alignTo(self.ikJnts[0])
+
+        self.mid_ctl.alignTo(self.ikJnts[2])
+
+        if self.FORE_PVT_GUIDE:
+            self.fore_ctl.alignTo(self.FORE_PVT_GUIDE)
+        else:
+            self.fore_ctl.alignTo(self.ikJnts[4])
 
         self.ikCtls = [self.base_ctl, self.mid_ctl, self.fore_ctl]
         [ctl.addOffsetGrp() for ctl in self.ikCtls]
         #
         #   parenting ctls and jnts
         #
-        self.baseLocal_ctl.alignTo(self.base_ctl, p=self.base_ctl)
+        self.baseLocal_ctl.alignTo(self.ikJnts[0], p=self.base_ctl)
         self.foreLocal_ctl.alignTo(self.fore_ctl, p=self.fore_ctl)
 
         self.ikJnts[1] | self.ikJnts[0] | self.baseLocal_ctl
         self.ikJnts[2] | self.mid_ctl
         self.ikJnts[3] | self.ikJnts[4] | self.foreLocal_ctl
 
+        self.baseLocal_ctl.addOffsetGrp()
+        self.foreLocal_ctl.addOffsetGrp()
+
         # self.add_movable_pivot(self.fore_ctl, snap=self.MD_GUIDE)
-        self.add_movable_pivot(self.base_ctl, snap=self.PVT_GUIDE)
+        # self.add_movable_pivot(self.base_ctl, snap=self.BASE_PVT_GUIDE)
 
     def build_spik_ribbon(self, rbSrf=None, jntNum=5, setting=None, scaleAttr=None):
         rID, rSz, xDr = self.getMyVar()

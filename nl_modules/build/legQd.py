@@ -103,7 +103,6 @@ class LegQd(RigModule):
             shape="diamond",
             scale=rSz * 1.5,
             color=1,
-            width=2,
             p=self.RIG_DATA,
         )
         self.hip_fkc = CurveNode(
