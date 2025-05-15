@@ -32,6 +32,7 @@ class CurveNode(GroupNode):
         shape="circle",
         rotate=None,
         scale=None,
+        move=None,
         dspType=0,
         width=-1,
         up="",
@@ -86,6 +87,8 @@ class CurveNode(GroupNode):
                     self.cv_scale(*scale)
                 elif isinstance(scale, (int, float)):
                     self.cv_scale(scale)
+            if move:
+                self.cv_move(*move)
 
             self.width = width
             if top:
