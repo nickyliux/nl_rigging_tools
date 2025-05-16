@@ -156,8 +156,9 @@ class JointNode(GroupNode):
     @staticmethod
     def createJntFrCrv(
         crv,
+        chain=1,
         name="fkj",
-        pf="",
+        pf="temp",
         num=2,
         rev=0,
         aimV=(0, 0, 1),
@@ -166,7 +167,6 @@ class JointNode(GroupNode):
         size=1,
         color=6,
         addEndJ=0,
-        chain=1,
         p=None,
     ):
         """Build joint chain from curve
@@ -174,24 +174,44 @@ class JointNode(GroupNode):
             makeChainFrCrv(crv, jntNum=10)           # curve direction
             makeChainFrCrv(crv, jntNum=10, crvDir=0) # reverse direction
         """
-        loc = DagNode("_#", nodeType="transform")
-        mp = DagNode("_#", nodeType="motionPath")
-        DagNode(crv).shape.a.worldSpace >> mp.a.geometryPath
-        mp.a.allCoordinates >> loc.a.t
-        mp.a.fractionMode.set(1)
 
         joints = []
         mc.select(cl=1)
         if pf and pf[-1] != "_":
             pf += "_"
+
         for i in range(num):
+
+            loc = DagNode("_#", nodeType="transform")
+            mp = DagNode("_#", nodeType="motionPath")
+            DagNode(crv).shape.a.worldSpace >> mp.a.geometryPath
+            # mp.a.allCoordinates >> loc.a.t
+            mp.a.fractionMode.set(1)
+
+            poci = DagNode("poci_#", nodeType="pointOnCurveInfo")
+            poci.a.turnOnPercentage.set(1)
+            poci.a.parameter.set(i / (num - 1))
+            DagNode(crv).shape.a.worldSpace >> poci.a.inputCurve
+            aimCst = DagNode("aimCst_#", nodeType="aimConstraint")
+
             mp.a.uValue.set(i / (num - 1))
-            j = JointNode(f"{i}_{name}", pf=pf, snap=loc, r=size, color=color)
+            mc.connectAttr(
+                f"{poci}.tangent", f"{aimCst}.target[0].targetTranslate", f=1
+            )
+            poci.a.position >> loc.a.translate
+
+            aimCst.a.aimVector.set(0, 0, 1)
+            aimCst.a.constraintRotateX >> loc.a.rx
+            aimCst.a.constraintRotateY >> loc.a.ry
+            aimCst.a.constraintRotateZ >> loc.a.rz
+
+            j = JointNode(f"{i}_{name}", pf=pf, align=loc, r=size, color=color)
             joints.append(j)
+
+            mc.delete(mp, poci, aimCst, loc)
 
         root = joints[-1] if rev else joints[0]
         last = joints[0] if rev else joints[-1]
-        mc.delete(loc, mp)
 
         for i in range(num - 1):
             if not rev:
@@ -227,7 +247,7 @@ class JointNode(GroupNode):
         else:
             if p:
                 [j | p for j in joints]
-            [j.freezeXf() for j in joints]
+            # [j.freezeXf() for j in joints]
 
         return joints
 

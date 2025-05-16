@@ -180,6 +180,7 @@ class SpineQd(RigModule):
             scaleAttr=self.setting.a.moduleScale,
             setting=self.setting,
         )
+
         self.build_two_ik()
 
         self.bindJnts.extend(self.rbJnts)
@@ -202,7 +203,7 @@ class SpineQd(RigModule):
             num=3,
             name="ikj",
             pf=rID,
-            aimV=(0, 0, -1),
+            aimV=(0, 0, 1),
             upV=(0, 1, 0),
             wuV=(0, 1, 0),
             size=rSz * 4,
@@ -401,7 +402,13 @@ class SpineQd(RigModule):
         #
         loc0 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.base_ctl, v=0)
         loc1 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.fore_ctl, v=0)
-        common.cstMulti(loc0, loc1, self.mid_ctl.offset, cstType="parT")
+        common.cstMulti(loc0, loc1, self.mid_ctl.offset, cstType="par")
+        # self.fore_ctl.cstAim(
+        #     self.mid_ctl.offset,
+        #     aim=(0, 0, -1),
+        #     worldUpType="objectrotation",
+        #     worldUpObject=self.foreFk_ctl,
+        # )
         #
         #   adjust tanget joint's scale acc to length
         #
