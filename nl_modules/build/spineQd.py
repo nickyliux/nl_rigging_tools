@@ -445,6 +445,9 @@ class SpineQd(RigModule):
         self.foreLocal_ctl.a.showAttr("sz", t=1, r=1)
         self.baseLocal_ctl.a.showAttr("sz", t=1, r=1)
 
+        if self.END_CTL:
+            self.end_ctl.a.showAttr(r=1)
+
     def setup_anchor(self):
         self.setup_anchor_module(
             {
