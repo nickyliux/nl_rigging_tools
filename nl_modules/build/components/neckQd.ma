@@ -88,12 +88,12 @@ createNode transform -n "master_guide" -p "module_grp";
 	rename -uid "177DBE6B-4E8E-B711-3C19-589C4E949A6A";
 	addAttr -ci true -sn "__________" -ln "__________" -min 0 -max 0 -en "__________" 
 		-at "enum";
-	addAttr -ci true -sn "fkJntNum" -ln "fkJntNum" -dv 3 -min 0 -at "long";
+	addAttr -ci true -sn "endCtl" -ln "endCtl" -min 0 -max 1 -at "bool";
 	addAttr -ci true -sn "rbnJntNum" -ln "rbnJntNum" -dv 7 -min 0 -at "long";
 	setAttr ".t" -type "double3" 0 95 55 ;
 	setAttr ".s" -type "double3" 0.5 0.5 0.5 ;
 	setAttr -l on -k on ".__________";
-	setAttr -cb on ".fkJntNum";
+	setAttr -cb on ".endCtl" no;
 	setAttr -cb on ".rbnJntNum" 4;
 createNode transform -n "st_guide_ofs" -p "master_guide";
 	rename -uid "F0DCF307-4AFE-F9B7-4833-678378A04ECB";

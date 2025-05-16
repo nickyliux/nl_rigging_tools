@@ -166,7 +166,7 @@ class IkNode(DagNode):
 
     @classmethod
     def stretchySpSS(
-        cls, ikH=None, ctl=None, axis="tx", axisDir=1, minDv=0.8, maxDv=1.2
+        cls, ikH=None, ctl=None, axis="tx", axisDir=1, minDv=0.9, maxDv=1.1
     ):
         """
         Add stretchy funciton for splineIK
@@ -206,7 +206,7 @@ class IkNode(DagNode):
             result = ut.clp_(ratio, min=ksMin, max=ksMax) * Di
             result * axisDir >> jl[i].a[axis]
 
-    def stretchySp(self, on=0, axis="tx", axisDir=1, minDv=0.8, maxDv=1.2):
+    def stretchySp(self, on=0, axis="tx", axisDir=1, minDv=0.9, maxDv=1.1):
         """Add stretchy logic to translate channel of joint chain"""
         if self.solver != 2:
             logging.error("Incorrect solver")

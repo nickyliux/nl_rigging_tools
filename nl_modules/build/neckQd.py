@@ -15,7 +15,7 @@ class NeckQd(SpineQd):
         )
 
     def setup_space(self):
-        self.rigNode.setMsg({"spaceHolder1": self.ikCtls[2]})
+        self.rigNode.setMsg({"spaceHolder1": self.foreFk_ctl})
         spaces = "chest, COG, master"
         self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
 
