@@ -30,6 +30,9 @@ class SpineQd(RigModule):
         guide = DagNode(rID + "_base_pivot_guide")
         self.BASE_PVT_GUIDE = guide if guide.exists() else None
 
+        # guide = DagNode(rID + "_pelvis_guide")
+        # self.PELVIS_GUIDE = guide if guide.exists() else None
+
         self.setting = None
         self.cog_ctl = None
         self.fore_ctl = None
@@ -38,6 +41,7 @@ class SpineQd(RigModule):
         self.base_ctl = None
         self.foreLocal_ctl = None
         self.baseLocal_ctl = None
+        self.pelvis_ctl = None
         self.fkCtls = []
         self.ikCtls = []
         self.fkJnts = []
@@ -105,11 +109,28 @@ class SpineQd(RigModule):
             rotate=(0, 90, 0),
         )
         self.foreLocal_ctl = CurveNode(
-            "foreLocal_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3
+            "foreLocal_ctl",
+            pf=rID,
+            shape="arrow",
+            # up="z",
+            scale=rSz,
+            rotate=(0, 0, 90),
+            move=(0, rSz * 30, 0),
         )
         self.baseLocal_ctl = CurveNode(
-            "baseLocal_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3
+            "baseLocal_ctl",
+            pf=rID,
+            shape="arrow",
+            # up="z",
+            scale=rSz,
+            rotate=(0, 0, 90),
+            move=(0, rSz * 30, 0),
         )
+
+        self.pelvis_ctl = CurveNode(
+            "pelvis_ctl", pf=rID, shape="fk_rotator", scale=rSz * 5
+        )
+
         self.rigNode.setMsg(
             {
                 "setting": self.setting,
@@ -131,7 +152,7 @@ class SpineQd(RigModule):
         self.rbSrf = SurfNode.buildRbSrf(
             pf=rID,
             crv=self.LINE_GUIDE,
-            spans=self.FK_BONE_NUM + 1,
+            spans=2,
             p=self.RIG_DATA,
             snap=self.RT_GUIDE,
         )
@@ -140,7 +161,7 @@ class SpineQd(RigModule):
         self.build_ctl()
         self.build_ik()
 
-        self.rbSrf.weightTo(self.ikJnts, mi=4, dr=10, chain=0)
+        self.rbSrf.weightTo(self.ikJnts, mi=1, chain=0)
 
         crvLenRatio, self.spIkJnts, self.rbJnts = self.build_spik_ribbon(
             rbSrf=self.rbSrf,
@@ -150,7 +171,7 @@ class SpineQd(RigModule):
         )
         self.build_two_ik()
 
-        self.bindJnts = self.rbJnts
+        self.bindJnts.extend(self.rbJnts)
         self.build_volume(crvLenRatio)
         #
         #   scaling
@@ -167,7 +188,7 @@ class SpineQd(RigModule):
         #
         self.ikJnts = JointNode.createJntFrCrv(
             self.LINE_GUIDE,
-            num=5,
+            num=3,
             name="ikj",
             pf=rID,
             aimV=(0, 0, -1),
@@ -192,13 +213,13 @@ class SpineQd(RigModule):
         self.fore_ctl | self.foreFk_ctl | self.cog_ctl
 
         if self.BASE_PVT_GUIDE:
-            self.base_ctl.snapTo(self.BASE_PVT_GUIDE)
+            self.base_ctl.alignTo(self.BASE_PVT_GUIDE)
         else:
-            self.base_ctl.snapTo(self.ikJnts[0])
+            self.base_ctl.alignTo(self.ikJnts[0])
 
-        self.foreFk_ctl.snapTo(self.ikJnts[2])
-        self.mid_ctl.alignTo(self.ikJnts[2])
-        self.fore_ctl.snapTo(self.ikJnts[4])
+        self.foreFk_ctl.alignTo(self.ikJnts[1])
+        self.mid_ctl.alignTo(self.ikJnts[1])
+        self.fore_ctl.alignTo(self.ikJnts[2])
 
         #
         #   parenting ctls and jnts
@@ -206,9 +227,9 @@ class SpineQd(RigModule):
         self.baseLocal_ctl.alignTo(self.ikJnts[0], p=self.base_ctl)
         self.foreLocal_ctl.alignTo(self.fore_ctl, p=self.fore_ctl)
 
-        self.ikJnts[1] | self.ikJnts[0] | self.baseLocal_ctl
-        self.ikJnts[2] | self.mid_ctl
-        self.ikJnts[3] | self.ikJnts[4] | self.foreLocal_ctl
+        self.ikJnts[0] | self.baseLocal_ctl
+        self.ikJnts[1] | self.mid_ctl
+        self.ikJnts[2] | self.foreLocal_ctl
 
         self.ikCtls = [
             self.base_ctl,
@@ -219,6 +240,13 @@ class SpineQd(RigModule):
         ]
         [ctl.addOffsetGrp() for ctl in self.ikCtls]
         self.foreFk_ctl.addOffsetGrp()
+
+        # if self.PELVIS_GUIDE:
+        #     pelvisJnt = JointNode(
+        #         "pelvis", pf=rID, align=self.PELVIS_GUIDE, p=self.ikJnts[0], r=rSz * 2
+        #     )
+        #     pelvisJnt.freezeXf()
+        #     self.bindJnts.append(pelvisJnt)
 
         # self.add_movable_pivot(self.fore_ctl, snap=self.MD_GUIDE)
         # self.add_movable_pivot(self.base_ctl, snap=self.BASE_PVT_GUIDE)
@@ -307,6 +335,9 @@ class SpineQd(RigModule):
             rbJnts.append(jnt)
 
         self.foreLocal_ctl.cstOri(rbJnts[-1], mo=1)
+        self.pelvis_ctl.alignTo(self.baseLocal_ctl, p=self.base_ctl)
+        self.pelvis_ctl.addOffsetGrp()
+        self.pelvis_ctl.cstOri(rbJnts[0], mo=1)
 
         return crvLenRatio, spIkJnts, rbJnts
 
@@ -325,7 +356,7 @@ class SpineQd(RigModule):
             wuV=(0, 1, 0),
             size=rSz * 20,
             color=1,
-            p=self.baseLocal_ctl,
+            p=self.base_ctl,
         )
 
         self.two_ikH = IkNode(
@@ -336,7 +367,7 @@ class SpineQd(RigModule):
             p=self.foreLocal_ctl,
             vis=0,
         )
-        self.two_ikJnts[1].cstPoi(self.ikJnts[-1])
+        self.two_ikJnts[1].cstPoi(self.ikJnts[2])
         #
         #   ctl two jnt's scale
         #
@@ -356,14 +387,15 @@ class SpineQd(RigModule):
         #   contraint mid ik ctl
         #
         loc0 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.base_ctl, v=0)
-        loc1 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.ikJnts[-1], v=0)
+        # loc1 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.ikJnts[2], v=0)
+        loc1 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.fore_ctl, v=0)
         common.cstMulti(loc0, loc1, self.mid_ctl.offset, cstType="par")
 
         #
         #   adjust tanget joint's scale acc to length
         #
         self.two_ikJnts[0].a.sz >> self.ikJnts[0].a.sz
-        self.two_ikJnts[0].a.sz >> self.ikJnts[4].a.sz
+        self.two_ikJnts[0].a.sz >> self.ikJnts[2].a.sz
 
     def build_volume(self, crvLenRatio):
         #
@@ -402,7 +434,10 @@ class SpineQd(RigModule):
         [c.a.ro.set(2) for c in self.ikCtls]
 
     def setup_channel(self):
-        [ctl.a.showAttr(t=1, r=1) for ctl in self.ikCtls + [self.cog_ctl]]
+        [
+            ctl.a.showAttr(t=1, r=1)
+            for ctl in self.ikCtls + [self.cog_ctl, self.foreFk_ctl]
+        ]
         self.setting.a.showAttr()
         self.foreLocal_ctl.a.showAttr("sz", t=1, r=1)
         self.baseLocal_ctl.a.showAttr("sz", t=1, r=1)
@@ -416,9 +451,9 @@ class SpineQd(RigModule):
         )
 
     def setup_space(self):
-        # self.rigNode.setMsg({"spaceHolder1": self.fore_ctl})
-        # spaces = "COG, master"
-        # self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
+        self.rigNode.setMsg({"spaceHolder1": self.foreFk_ctl})
+        spaces = "COG, master"
+        self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_COG": self.cog_ctl})
@@ -427,7 +462,7 @@ class SpineQd(RigModule):
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
 
-        ctls = self.ikCtls + [self.cog_ctl, self.setting]
+        ctls = self.ikCtls + [self.cog_ctl, self.setting, self.pelvis_ctl]
         if self.__class__.__name__ == "NeckQd":
             ctls.remove(self.cog_ctl)
             ctls.remove(self.baseLocal_ctl)
