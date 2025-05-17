@@ -54,6 +54,7 @@ class SpineQd(RigModule):
         self.rbCrv = None
         self.two_ikJnts = []
         self.two_ikH = None
+        self.rbOutPos = None
 
     def gen_guide_sk(self):
         self.gen_guide_sk_module(["rt", "md", "tp"])
@@ -87,8 +88,8 @@ class SpineQd(RigModule):
             pf=rID,
             shape="rotator",
             scale=rSz,
-            color=20,
             move=(0, 30 * rSz, 0),
+            color=20,
         )
         self.fore_ctl = CurveNode(
             "fore_ctl",
@@ -99,11 +100,7 @@ class SpineQd(RigModule):
             rotate=(0, 90, 0),
         )
         self.mid_ctl = CurveNode(
-            "mid_ctl",
-            pf=rID,
-            shape="squareR",
-            up="z",
-            scale=rSz * 3,
+            "mid_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3
         )
         self.base_ctl = CurveNode(
             "base_ctl",
@@ -112,7 +109,6 @@ class SpineQd(RigModule):
             scale=rSz * 10,
             color=22,
             rotate=(0, 90, 0),
-            move=(0, 0, rSz * -20),
         )
         self.foreLocal_ctl = CurveNode(
             "foreLocal_ctl",
@@ -128,19 +124,13 @@ class SpineQd(RigModule):
             pf=rID,
             shape="arrow",
             scale=rSz,
-            rotate=(0, 0, 90),
+            rotate=(0, 180, 90),
             move=(0, rSz * 25, 0),
             color=20,
         )
         if self.END_CTL:
             self.end_ctl = CurveNode(
-                "end_ctl",
-                pf=rID,
-                shape="arrow",
-                scale=rSz,
-                rotate=(0, 0, 90),
-                move=(0, rSz * 20, rSz * -20),
-                color=20,
+                "end_ctl", pf=rID, shape="squareR", scale=rSz * 3, up="z"
             )
         self.rigNode.setMsg(
             {
@@ -215,7 +205,7 @@ class SpineQd(RigModule):
         #
         self.cog_ctl.snapTo(self.RT_GUIDE)
         self.cog_ctl.addOffsetGrp()
-        self.setting.snapTo(self.RT_GUIDE, offset=(0, rSz * 50, 0))
+        self.setting.snapTo(self.RT_GUIDE, offset=(0, rSz * 70, 0))
         self.cog_ctl.cstPar(self.setting, mo=1)
         #
         #   build ik ctls
@@ -254,6 +244,10 @@ class SpineQd(RigModule):
 
         # self.add_movable_pivot(self.fore_ctl, snap=self.MD_GUIDE)
         # self.add_movable_pivot(self.base_ctl, snap=self.BASE_PVT_GUIDE)
+        self.reparenting()
+
+    def reparenting(self):
+        pass
 
     def build_spik_ribbon(self, rbSrf=None, jntNum=5, setting=None, scaleAttr=None):
         rID, rSz, xDr = self.getMyVar()
@@ -338,7 +332,8 @@ class SpineQd(RigModule):
             )
             rbJnts.append(jnt)
 
-        self.foreLocal_ctl.cstOri(rbJnts[-1], mo=1)
+        self.rbOutPos = LocNode("rbOutPos", pf=rID, snap=rbJnts[-1], p=self.fore_ctl)
+        rbJnts[-1].cstPoi(self.rbOutPos)
 
         #
         #   setup end_ctl & end_jnt
@@ -349,10 +344,10 @@ class SpineQd(RigModule):
             self.end_jnt = JointNode(
                 "end", pf=rID, snap=self.END_JNT_GUIDE, p=self.SKL_DATA, r=rSz * 2
             )
-            # self.masterC.a.globalScale >> self.end_jnt.a.s
             self.end_ctl.cstPar(self.end_jnt, mo=1)
             self.bindJnts.append(self.end_jnt)
 
+        ikH.hide()
         return crvLenRatio, spIkJnts, rbJnts
 
     def build_two_ik(self):
@@ -402,13 +397,13 @@ class SpineQd(RigModule):
         #
         loc0 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.base_ctl, v=0)
         loc1 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.fore_ctl, v=0)
-        common.cstMulti(loc0, loc1, self.mid_ctl.offset, cstType="par")
-        # self.fore_ctl.cstAim(
-        #     self.mid_ctl.offset,
-        #     aim=(0, 0, -1),
-        #     worldUpType="objectrotation",
-        #     worldUpObject=self.foreFk_ctl,
-        # )
+        common.cstMulti(loc0, loc1, self.mid_ctl.offset, cstType="parT")
+        self.fore_ctl.cstAim(
+            self.mid_ctl.offset,
+            aim=(0, 0, 1),
+            worldUpType="objectrotation",
+            worldUpObject=self.foreFk_ctl,
+        )
         #
         #   adjust tanget joint's scale acc to length
         #
@@ -441,6 +436,7 @@ class SpineQd(RigModule):
         mc.hide(self.ikJnts, self.rbJnts, self.fkJnts, self.spIkJnts, self.two_ikJnts)
         if self.__class__.__name__ == "NeckQd":
             self.cog_ctl.shape.hide()
+            # self.base_ctl.shape.hide()
             self.baseLocal_ctl.shape.hide()
 
     def setup_proxy(self):
@@ -468,7 +464,7 @@ class SpineQd(RigModule):
         else:
             self.setup_anchor_module({"anchorM1": self.rbJnts[0]})
 
-        self.setup_anchor_module({"anchorM2": self.rbJnts[-1]})
+        self.setup_anchor_module({"anchorM2": self.rbOutPos})
 
     def setup_space(self):
         self.rigNode.setMsg({"spaceHolder1": self.foreFk_ctl})
@@ -485,6 +481,7 @@ class SpineQd(RigModule):
         ctls = self.ikCtls + [self.cog_ctl, self.setting]
         if self.__class__.__name__ == "NeckQd":
             ctls.remove(self.cog_ctl)
+            # ctls.remove(self.base_ctl)
             ctls.remove(self.baseLocal_ctl)
         if self.END_CTL:
             ctls.append(self.end_ctl)
