@@ -98,9 +98,9 @@ class Head(RigModule):
         pass
 
     def setup_space(self):
-        self.rigNode.setMsg({"spaceHolder1": self.head_fkc})
-        spaces = "neck, COG, master"
-        self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
+        # self.rigNode.setMsg({"spaceHolder1": self.head_fkc})
+        # spaces = "neck, COG, master"
+        # self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"space_head": self.head_fkc})
 

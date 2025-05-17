@@ -285,6 +285,7 @@ class RigModule(RigBase):
     def space_align(
         tgt, names=None, spaces=None, dv=0, cstType="par", w=None, **kwargs
     ):
+        """Add space attr to tgt, to switch between spaces"""
         allSpacesGrp = []
         for space in spaces:
             spaceG = GroupNode(tgt + "_SPACE_#", align=tgt, p=space)
@@ -293,6 +294,11 @@ class RigModule(RigBase):
         tgt_ofs = tgt.addOffsetGrp()
         if w is None:
             w = tgt.a.add("space", attrType="enum", dv=dv, enumName=names)
+            tgt.a.add("spaceType", attrType="string", txt=cstType)
+
+        spaceType = tgt.a["spaceType"]
+        if spaceType.exists():
+            cstType = spaceType.get()
 
         common.cstMulti(*allSpacesGrp, tgt_ofs, cstType=cstType, w=w, **kwargs)
 

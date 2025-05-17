@@ -129,9 +129,7 @@ class SpineQd(RigModule):
             color=20,
         )
         if self.END_CTL:
-            self.end_ctl = CurveNode(
-                "end_ctl", pf=rID, shape="squareR", scale=rSz * 3, up="z"
-            )
+            self.end_ctl = CurveNode("end_ctl", pf=rID, shape="cube", scale=rSz * 3)
         self.rigNode.setMsg(
             {
                 "setting": self.setting,

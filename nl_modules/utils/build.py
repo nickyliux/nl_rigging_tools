@@ -295,8 +295,10 @@ def updateSpaceSwitch():
 
         if resultDict:
             # print(ctl.name, resultDict)
+            cstType = ctl.a["spaceType"]
             RigModule.space_align(
                 ctl,
+                cstType=cstType if cstType.exists() else "par",
                 names=":".join(resultDict.keys()),
                 spaces=resultDict.values(),
             )

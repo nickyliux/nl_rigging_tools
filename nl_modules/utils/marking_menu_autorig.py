@@ -56,6 +56,8 @@ class MarkingMenuAutorig:
                     # -----------------------------
                     spaceAttr = selN.a.space
                     if spaceAttr.exists():
+                        mc.menuItem(p=menu, l="SPACES", en=0)
+                        mc.menuItem(p=menu, l="-" * 15, en=0)
                         curr = spaceAttr.get()
                         allSpaceAttr = spaceAttr.query(le=1)[0].split(":")
                         for i, attr in enumerate(allSpaceAttr):
