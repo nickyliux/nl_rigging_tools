@@ -54,7 +54,7 @@ class SpineQd(RigModule):
         self.rbCrv = None
         self.two_ikJnts = []
         self.two_ikH = None
-        self.rbOutPos = None
+        self.rbAnchor = None
 
     def gen_guide_sk(self):
         self.gen_guide_sk_module(["rt", "md", "tp"])
@@ -333,8 +333,8 @@ class SpineQd(RigModule):
             )
             rbJnts.append(jnt)
 
-        self.rbOutPos = LocNode("rbOutPos", pf=rID, snap=rbJnts[-1], p=self.fore_ctl)
-        rbJnts[-1].cstPoi(self.rbOutPos)
+        self.rbAnchor = LocNode("rbAnchor", pf=rID, snap=rbJnts[-1], p=self.fore_ctl)
+        rbJnts[-1].cstPoi(self.rbAnchor)
 
         #
         #   setup end_ctl & end_jnt
@@ -437,8 +437,10 @@ class SpineQd(RigModule):
         mc.hide(self.ikJnts, self.rbJnts, self.fkJnts, self.spIkJnts, self.two_ikJnts)
         if self.__class__.__name__ == "NeckQd":
             self.cog_ctl.shape.hide()
-            self.tangent0_ctl.shape.hide()
-        self.rbOutPos.hide()
+            # mc.hide(
+            #     self.cog_ctl.shape, self.tangent0_ctl.shape, self.tangent1_ctl.shape
+            # )
+        self.rbAnchor.hide()
 
     def setup_proxy(self):
         for j in self.bindJnts:
@@ -458,6 +460,14 @@ class SpineQd(RigModule):
 
         if self.END_CTL:
             self.end_ctl.a.showAttr(r=1)
+        (
+            self.base_ctl.a.add("tangentCtl", min=0, max=1, k=0)
+            >> self.tangent0_ctl.shape.a.v
+        )
+        (
+            self.fore_ctl.a.add("tangentCtl", min=0, max=1, k=0)
+            >> self.tangent1_ctl.shape.a.v
+        )
 
     def setup_anchor(self):
         if self.END_CTL:
@@ -465,7 +475,8 @@ class SpineQd(RigModule):
         else:
             self.setup_anchor_module({"anchorM1": self.rbJnts[0]})
 
-        self.setup_anchor_module({"anchorM2": self.rbOutPos})
+        # self.setup_anchor_module({"anchorM2": self.rbJnts[-1]})
+        self.setup_anchor_module({"anchorM2": self.rbAnchor})
 
     def setup_space(self):
         # self.rigNode.setMsg({"spaceHolder1": self.foreFk_ctl})
@@ -482,7 +493,6 @@ class SpineQd(RigModule):
         ctls = self.ikCtls + [self.cog_ctl, self.setting]
         if self.__class__.__name__ == "NeckQd":
             ctls.remove(self.cog_ctl)
-            ctls.remove(self.tangent0_ctl)
         if self.END_CTL:
             ctls.append(self.end_ctl)
         self.add_ctl_set(ctls)

@@ -57,6 +57,7 @@ class Head(RigModule):
             sf="_fkc",
             shape="squareR",
             scale=rSz * 5,
+            move=(0, rSz * 8, 0),
             color=22,
         )
         self.jaw_fkc = CurveNode(
@@ -98,8 +99,9 @@ class Head(RigModule):
         pass
 
     def setup_space(self):
+        self.head_fkc.a.add("spaceType", attrType="string", txt="ori")
         self.rigNode.setMsg({"spaceHolder1": self.head_fkc})
-        spaces = "neck"
+        spaces = "neck, COG, master"
         self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"space_head": self.head_fkc})
