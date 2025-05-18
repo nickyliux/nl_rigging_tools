@@ -292,15 +292,16 @@ class RigModule(RigBase):
             spaceG.addOffsetGrp()
             allSpacesGrp.append(spaceG)
         tgt_ofs = tgt.addOffsetGrp()
-        if w is None:
-            w = tgt.a.add("space", attrType="enum", dv=dv, enumName=names)
-            tgt.a.add("spaceType", attrType="string", txt=cstType)
+        tgt.a.add("spaceType", attrType="string", txt=cstType)
 
-        spaceType = tgt.a["spaceType"]
-        if spaceType.exists():
-            cstType = spaceType.get()
+        weight = w or tgt.a.add("space", attrType="enum", dv=dv, enumName=names)
 
-        common.cstMulti(*allSpacesGrp, tgt_ofs, cstType=cstType, w=w, **kwargs)
+        tgtCstType = tgt.a["spaceType"].get()
+        common.cstMulti(*allSpacesGrp, tgt_ofs, cstType=tgtCstType, w=weight, **kwargs)
+
+        if tgtCstType == "ori" and w is None:
+            weight = tgt.a.add("posSpace", attrType="enum", dv=dv, enumName=names)
+            common.cstMulti(*allSpacesGrp, tgt_ofs, cstType="poi", w=weight, **kwargs)
 
     def calc_rig_size(self, rootJ):
         return rootJ.o.diagonal2 / 100 or 1
@@ -402,7 +403,7 @@ class RigModule(RigBase):
         rID, rSz, xDr = self.getMyVar()
 
         for name, tgt in anchorDict.items():
-            loc = LocNode(name, pf=rID, size=rSz * 2, p=self.masterC)
+            loc = LocNode(name, pf=rID, size=rSz * 4, p=self.masterC)
             self.rigNode.setMsg({name: loc})
 
             if name.startswith("anchorM"):  # Blue for Male
@@ -412,6 +413,7 @@ class RigModule(RigBase):
                 loc.color = Color.PINK
                 loc.alignTo(tgt)
                 loc.cstPar(tgt.offset, mo=1)
+            loc.hide()
 
     def add_ctl_set(self, tgtList):
         rID, rSz, xDr = self.getMyVar()

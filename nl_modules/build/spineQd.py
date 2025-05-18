@@ -94,10 +94,8 @@ class SpineQd(RigModule):
         self.fore_ctl = CurveNode(
             "fore_ctl",
             pf=rID,
-            shape="fk_rotator",
-            scale=rSz * 10,
-            color=22,
-            rotate=(0, 90, 0),
+            shape="cube",
+            scale=(rSz * 5, rSz * 5, rSz * 2),
         )
         self.mid_ctl = CurveNode(
             "mid_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3
@@ -105,10 +103,8 @@ class SpineQd(RigModule):
         self.base_ctl = CurveNode(
             "base_ctl",
             pf=rID,
-            shape="fk_rotator",
-            scale=rSz * 10,
-            color=22,
-            rotate=(0, 90, 0),
+            shape="cube",
+            scale=(rSz * 5, rSz * 5, rSz * 2),
         )
         self.tangent0_ctl = CurveNode(
             "tangent0_ctl",
@@ -129,7 +125,13 @@ class SpineQd(RigModule):
             color=20,
         )
         if self.END_CTL:
-            self.end_ctl = CurveNode("end_ctl", pf=rID, shape="cube", scale=rSz * 3)
+            self.end_ctl = CurveNode(
+                "end_ctl",
+                pf=rID,
+                shape="cube",
+                scale=(rSz * 4, rSz * 4, rSz * 3),
+                move=(0, 0, -rSz * 1.5),
+            )
         self.rigNode.setMsg(
             {
                 "setting": self.setting,
@@ -204,7 +206,7 @@ class SpineQd(RigModule):
         #
         self.cog_ctl.snapTo(self.RT_GUIDE)
         self.cog_ctl.addOffsetGrp()
-        self.setting.snapTo(self.RT_GUIDE, offset=(0, rSz * 70, 0))
+        self.setting.snapTo(self.RT_GUIDE, offset=(0, rSz * 70, -rSz * 20))
         self.cog_ctl.cstPar(self.setting, mo=1)
         #
         #   build ik ctls
@@ -466,9 +468,9 @@ class SpineQd(RigModule):
         self.setup_anchor_module({"anchorM2": self.rbOutPos})
 
     def setup_space(self):
-        self.rigNode.setMsg({"spaceHolder1": self.foreFk_ctl})
-        spaces = "COG, master"
-        self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
+        # self.rigNode.setMsg({"spaceHolder1": self.foreFk_ctl})
+        # spaces = "COG, master"
+        # self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_COG": self.cog_ctl})

@@ -64,7 +64,9 @@ class AttributeHolder:
         attr = self.node.name + "." + name
 
         if mc.objExists(attr):
-            # mc.deleteAttr(attr)
+            #
+            #   just return current, without deleting original
+            #
             return Attribute(self.node, name)
 
         if attrType == "string":

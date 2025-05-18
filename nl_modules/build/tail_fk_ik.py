@@ -165,7 +165,6 @@ class TailFkIk(RigModule):
                 up="z",
                 scale=rSz,
                 align=self.fkJnt[i],
-                color=22,
             )
             self.rigNode.setMsg({f"fkc{i}": ctl})
             self.fkCtl.append(ctl)
