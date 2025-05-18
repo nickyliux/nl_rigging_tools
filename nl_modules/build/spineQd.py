@@ -128,9 +128,10 @@ class SpineQd(RigModule):
             self.end_ctl = CurveNode(
                 "end_ctl",
                 pf=rID,
-                shape="cube",
-                scale=(rSz * 4, rSz * 4, rSz * 3),
-                move=(0, 0, -rSz * 1.5),
+                shape="rotator",
+                scale=rSz,
+                move=(0, rSz * 30, rSz * -20),
+                color=20,
             )
         self.rigNode.setMsg(
             {

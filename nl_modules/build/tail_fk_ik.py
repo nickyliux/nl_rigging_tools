@@ -78,7 +78,6 @@ class TailFkIk(RigModule):
             scale=rSz * 2,
             color=1,
             top=1,
-            width=2,
             p=self.CTL_DATA,
         )
         self.setting.a.add("stretchy", min=0, max=1)
@@ -126,7 +125,7 @@ class TailFkIk(RigModule):
 
         SurfNode(self.rbSrf1).weightTo(self.ikJnt, mi=4, dr=6, chain=0)
 
-        self.setting.snapTo(self.ikCtl[0], offset=(0, rSz * 50, 0))
+        self.setting.snapTo(self.ikCtl[0], offset=(0, rSz * 30, 0))
         self.ikCtl[0].cstPar(self.setting, mo=1)
 
     def build_fk(self):
