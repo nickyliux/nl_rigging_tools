@@ -9,7 +9,7 @@ class NeckQd(SpineQd):
     def reparenting(self):
         """change parenting for neck setup"""
         self.foreFk_ctl.offset | self.base_ctl
-        self.baseLocal_ctl.offset | self.cog_ctl
+        self.tangent0_ctl.offset | self.cog_ctl
 
     def setup_anchor(self):
         self.setup_anchor_module(

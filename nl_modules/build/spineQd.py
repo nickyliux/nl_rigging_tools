@@ -36,11 +36,11 @@ class SpineQd(RigModule):
         self.setting = None
         self.cog_ctl = None
         self.fore_ctl = None
-        self.foreFk_ctl = None
         self.mid_ctl = None
         self.base_ctl = None
-        self.foreLocal_ctl = None
-        self.baseLocal_ctl = None
+        self.foreFk_ctl = None
+        self.tangent0_ctl = None
+        self.tangent1_ctl = None
         self.end_ctl = None
         self.end_jnt = None
         self.fkCtls = []
@@ -110,21 +110,21 @@ class SpineQd(RigModule):
             color=22,
             rotate=(0, 90, 0),
         )
-        self.foreLocal_ctl = CurveNode(
-            "foreLocal_ctl",
-            pf=rID,
-            shape="arrow",
-            scale=rSz,
-            rotate=(0, 0, 90),
-            move=(0, rSz * 25, 0),
-            color=20,
-        )
-        self.baseLocal_ctl = CurveNode(
-            "baseLocal_ctl",
+        self.tangent0_ctl = CurveNode(
+            "tangent0_ctl",
             pf=rID,
             shape="arrow",
             scale=rSz,
             rotate=(0, 180, 90),
+            move=(0, rSz * 25, 0),
+            color=20,
+        )
+        self.tangent1_ctl = CurveNode(
+            "tangent1_ctl",
+            pf=rID,
+            shape="arrow",
+            scale=rSz,
+            rotate=(0, 0, 90),
             move=(0, rSz * 25, 0),
             color=20,
         )
@@ -137,8 +137,9 @@ class SpineQd(RigModule):
                 "fore_ctl": self.fore_ctl,
                 "mid_ctl": self.mid_ctl,
                 "base_ctl": self.base_ctl,
-                "foreLocal_ctl": self.foreLocal_ctl,
-                "baseLocal_ctl": self.baseLocal_ctl,
+                "foreFk_ctl": self.foreFk_ctl,
+                "tangent0_ctl": self.tangent0_ctl,
+                "tangent1_ctl": self.tangent1_ctl,
             }
         )
 
@@ -223,19 +224,19 @@ class SpineQd(RigModule):
         #
         #   parenting ctls and jnts
         #
-        self.baseLocal_ctl.alignTo(self.ikJnts[0], p=self.base_ctl)
-        self.foreLocal_ctl.alignTo(self.fore_ctl, p=self.fore_ctl)
+        self.tangent0_ctl.alignTo(self.ikJnts[0], p=self.base_ctl)
+        self.tangent1_ctl.alignTo(self.fore_ctl, p=self.fore_ctl)
 
-        self.ikJnts[0] | self.baseLocal_ctl
+        self.ikJnts[0] | self.tangent0_ctl
         self.ikJnts[1] | self.mid_ctl
-        self.ikJnts[2] | self.foreLocal_ctl
+        self.ikJnts[2] | self.tangent1_ctl
 
         self.ikCtls = [
             self.base_ctl,
             self.mid_ctl,
             self.fore_ctl,
-            self.baseLocal_ctl,
-            self.foreLocal_ctl,
+            self.tangent0_ctl,
+            self.tangent1_ctl,
         ]
         [ctl.addOffsetGrp() for ctl in self.ikCtls]
         self.foreFk_ctl.addOffsetGrp()
@@ -371,14 +372,14 @@ class SpineQd(RigModule):
             pf=rID,
             sj=self.two_ikJnts[0],
             ee=self.two_ikJnts[1],
-            p=self.foreLocal_ctl,
+            p=self.tangent1_ctl,
             vis=0,
         )
         self.two_ikJnts[1].cstPoi(self.ikJnts[2])
         #
         #   ctl two jnt's scale
         #
-        d = ut.distDim_(self.foreLocal_ctl, self.baseLocal_ctl)
+        d = ut.distDim_(self.tangent0_ctl, self.tangent1_ctl)
         crvLenRatio = (
             d / d.get() / self.masterC.a.globalScale / self.setting.a.moduleScale
         )
@@ -434,8 +435,8 @@ class SpineQd(RigModule):
         mc.hide(self.ikJnts, self.rbJnts, self.fkJnts, self.spIkJnts, self.two_ikJnts)
         if self.__class__.__name__ == "NeckQd":
             self.cog_ctl.shape.hide()
-            # self.base_ctl.shape.hide()
-            self.baseLocal_ctl.shape.hide()
+            self.tangent0_ctl.shape.hide()
+        self.rbOutPos.hide()
 
     def setup_proxy(self):
         for j in self.bindJnts:
@@ -450,8 +451,8 @@ class SpineQd(RigModule):
             for ctl in self.ikCtls + [self.cog_ctl, self.foreFk_ctl]
         ]
         self.setting.a.showAttr()
-        self.foreLocal_ctl.a.showAttr("sz", r=1)
-        self.baseLocal_ctl.a.showAttr("sz", r=1)
+        self.tangent0_ctl.a.showAttr("sz", r=1)
+        self.tangent1_ctl.a.showAttr("sz", r=1)
 
         if self.END_CTL:
             self.end_ctl.a.showAttr(r=1)
@@ -471,7 +472,7 @@ class SpineQd(RigModule):
 
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_COG": self.cog_ctl})
-        self.rigNode.setMsg({"space_chest": self.foreLocal_ctl})
+        self.rigNode.setMsg({"space_chest": self.tangent1_ctl})
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
@@ -479,8 +480,7 @@ class SpineQd(RigModule):
         ctls = self.ikCtls + [self.cog_ctl, self.setting]
         if self.__class__.__name__ == "NeckQd":
             ctls.remove(self.cog_ctl)
-            # ctls.remove(self.base_ctl)
-            ctls.remove(self.baseLocal_ctl)
+            ctls.remove(self.tangent0_ctl)
         if self.END_CTL:
             ctls.append(self.end_ctl)
         self.add_ctl_set(ctls)
