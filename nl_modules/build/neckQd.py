@@ -6,11 +6,6 @@ class NeckQd(SpineQd):
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
-    def reparenting(self):
-        """change parenting for neck setup"""
-        self.foreFk_ctl.offset | self.base_ctl
-        self.tangent0_ctl.offset | self.cog_ctl
-
     def setup_anchor(self):
         self.setup_anchor_module(
             {
@@ -20,9 +15,14 @@ class NeckQd(SpineQd):
         )
 
     def setup_space(self):
-        self.foreFk_ctl.a.add("spaceType", k=0, dv=2)
-        self.rigNode.setMsg({"spaceHolder2": self.foreFk_ctl})
+        self.fore_ctl.a.add("spaceType", k=0, dv=2)
+        self.rigNode.setMsg({"spaceHolder1": self.fore_ctl})
         spaces = "neckbase, COG, master"
+        self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
+
+        self.cog_ctl.a.add("spaceType", k=0, dv=1)
+        self.rigNode.setMsg({"spaceHolder2": self.cog_ctl})
+        spaces = "COG, master"
         self.rigNode.a.add("spaceName2", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"space_neck": self.rbAnchor})
