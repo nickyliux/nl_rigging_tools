@@ -129,7 +129,7 @@ class SpineQd(RigModule):
                 pf=rID,
                 shape="rotator",
                 scale=rSz,
-                move=(0, rSz * 10, rSz * -10),
+                move=(0, rSz * 10, rSz * -20),
                 color=20,
             )
         self.rigNode.setMsg(
@@ -201,6 +201,7 @@ class SpineQd(RigModule):
             chain=0,
             color=6,
         )
+        self.ikJnts[-1].a.r.set(0, 0, 0)
         #
         #   position cog & setting
         #

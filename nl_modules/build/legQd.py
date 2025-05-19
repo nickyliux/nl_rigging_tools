@@ -103,6 +103,7 @@ class LegQd(RigModule):
             shape="diamond",
             scale=rSz * 1.5,
             color=1,
+            top=1,
             p=self.RIG_DATA,
         )
         self.hip_fkc = CurveNode(
@@ -124,7 +125,7 @@ class LegQd(RigModule):
         scale = (rSz * 1.5, rSz * 0.5, rSz * 2)
         self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=rSz)
         self.ikc.cv_move(0, 0, rSz * 4)
-        self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz * 0.8)
+        self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz)
         self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
 
         self.rigNode.setMsg(
@@ -332,7 +333,7 @@ class LegQd(RigModule):
 
         self.extra_ikc = extraRollG.addOffsetGrp(below=1)
         cName = rID + "_extra_ikc"
-        CurveNode(self.extra_ikc)(name=cName, shape="rotator", scale=-rSz * xDr)
+        CurveNode(self.extra_ikc)(name=cName, shape="rotator", scale=-rSz * xDr / 2)
 
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
         rID, rSz, xDr = self.getMyVar()
