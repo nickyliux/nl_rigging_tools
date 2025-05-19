@@ -292,15 +292,20 @@ class RigModule(RigBase):
             spaceG.addOffsetGrp()
             allSpacesGrp.append(spaceG)
         tgt_ofs = tgt.addOffsetGrp()
-        tgt.a.add("spaceType", attrType="string", txt=cstType)
+
+        if cstType == "par":
+            tgt.a.add("spaceType", k=0)
+        elif cstType == "ori":
+            tgt.a.add("spaceType", k=0, dv=1)
 
         weight = w or tgt.a.add("space", attrType="enum", dv=dv, enumName=names)
 
-        tgtCstType = tgt.a["spaceType"].get()
+        v = tgt.a["spaceType"].get()
+        tgtCstType = "par" if v == 0 else "ori"
         common.cstMulti(*allSpacesGrp, tgt_ofs, cstType=tgtCstType, w=weight, **kwargs)
 
-        if tgtCstType == "ori" and w is None:
-            weight = tgt.a.add("posSpace", attrType="enum", dv=dv, enumName=names)
+        if v == 2 and w is None:
+            weight = tgt.a.add("positionSpace", attrType="enum", dv=dv, enumName=names)
             common.cstMulti(*allSpacesGrp, tgt_ofs, cstType="poi", w=weight, **kwargs)
 
     def calc_rig_size(self, rootJ):
@@ -812,7 +817,7 @@ class RigModule(RigBase):
         self.add_mirror_attr(allPsdCtl)
         self.add_ctl_set(allPsdCtl + [ctl_main])
 
-        showAimCtl = self.masterC2.a.add("showAimCtl", min=0, max=1, dv=1, k=0)
+        showAimCtl = self.masterC2.a.add("showAimCtl", min=0, max=1, k=0, dv=0)
         showAimCtl >> psd_grp.a.v
 
         # Connect total weight

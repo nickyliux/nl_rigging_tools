@@ -16,19 +16,13 @@ class NeckQd(SpineQd):
             {
                 "anchorF1": self.cog_ctl,
                 "anchorM1": self.rbAnchor,
-                # "anchorM1": self.rbJnts[-1],
             }
         )
 
     def setup_space(self):
-        # self.base_ctl.a.add("spaceType", attrType="string", txt="ori")
-        # self.rigNode.setMsg({"spaceHolder1": self.base_ctl})
-        # spaces = "chest, COG, master"
-        # self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
-
-        self.foreFk_ctl.a.add("spaceType", attrType="string", txt="ori")
+        self.foreFk_ctl.a.add("spaceType", k=0, dv=2)
         self.rigNode.setMsg({"spaceHolder2": self.foreFk_ctl})
-        spaces = "neckbase, master"
+        spaces = "neckbase, COG, master"
         self.rigNode.a.add("spaceName2", attrType="string", txt=spaces)
 
         self.rigNode.setMsg({"space_neck": self.rbAnchor})

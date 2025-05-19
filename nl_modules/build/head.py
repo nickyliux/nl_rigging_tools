@@ -56,7 +56,7 @@ class Head(RigModule):
             pf=rID,
             sf="_fkc",
             shape="squareR",
-            scale=rSz * 5,
+            scale=rSz * 4,
             move=(0, rSz * 8, 0),
             color=22,
         )
@@ -75,6 +75,7 @@ class Head(RigModule):
         (self.head_fkc, self.jaw_fkc) | self.CTL_DATA
         self.head_fkc.alignTo(self.head)
         self.head_fkc.addOffsetGrp()
+        self.head_fkc.cv_moveTo(self.headEnd.o.pos)
         self.head_fkc.cstPar(self.head, mo=1)
 
         self.jaw_fkc.snapTo(self.jaw, p=self.head_fkc)
@@ -99,7 +100,7 @@ class Head(RigModule):
         pass
 
     def setup_space(self):
-        self.head_fkc.a.add("spaceType", attrType="string", txt="ori")
+        self.head_fkc.a.add("spaceType", k=0, dv=1)
         self.rigNode.setMsg({"spaceHolder1": self.head_fkc})
         spaces = "neck, COG, master"
         self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)

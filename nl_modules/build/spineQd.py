@@ -87,30 +87,31 @@ class SpineQd(RigModule):
             "foreFk_ctl",
             pf=rID,
             shape="rotator",
-            scale=rSz,
-            move=(0, 30 * rSz, 0),
+            scale=rSz * 3,
             color=20,
         )
         self.fore_ctl = CurveNode(
             "fore_ctl",
             pf=rID,
-            shape="cube",
-            scale=(rSz * 5, rSz * 5, rSz * 2),
+            shape="arrowR",
+            rotate=(90, 0, 0),
+            scale=rSz * 4,
         )
         self.mid_ctl = CurveNode(
-            "mid_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3
+            "mid_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 4
         )
         self.base_ctl = CurveNode(
             "base_ctl",
             pf=rID,
-            shape="cube",
-            scale=(rSz * 5, rSz * 5, rSz * 2),
+            shape="arrowR",
+            rotate=(90, 0, 0),
+            scale=rSz * 4,
         )
         self.tangent0_ctl = CurveNode(
             "tangent0_ctl",
             pf=rID,
             shape="arrow",
-            scale=rSz,
+            scale=rSz / 2,
             rotate=(0, 180, 90),
             move=(0, rSz * 25, 0),
             color=20,
@@ -119,7 +120,7 @@ class SpineQd(RigModule):
             "tangent1_ctl",
             pf=rID,
             shape="arrow",
-            scale=rSz,
+            scale=rSz / 2,
             rotate=(0, 0, 90),
             move=(0, rSz * 25, 0),
             color=20,
@@ -130,7 +131,7 @@ class SpineQd(RigModule):
                 pf=rID,
                 shape="rotator",
                 scale=rSz,
-                move=(0, rSz * 30, rSz * -20),
+                move=(0, rSz * 10, rSz * -10),
                 color=20,
             )
         self.rigNode.setMsg(
@@ -207,7 +208,7 @@ class SpineQd(RigModule):
         #
         self.cog_ctl.snapTo(self.RT_GUIDE)
         self.cog_ctl.addOffsetGrp()
-        self.setting.snapTo(self.RT_GUIDE, offset=(0, rSz * 70, -rSz * 20))
+        self.setting.snapTo(self.RT_GUIDE, offset=(0, rSz * 40, 0))
         self.cog_ctl.cstPar(self.setting, mo=1)
         #
         #   build ik ctls
@@ -362,7 +363,7 @@ class SpineQd(RigModule):
             num=2,
             name="two_ikj",
             pf=rID,
-            aimV=(0, 0, -1),
+            aimV=(0, 0, 1),
             upV=(0, 1, 0),
             wuV=(0, 1, 0),
             size=rSz * 20,
@@ -398,9 +399,11 @@ class SpineQd(RigModule):
         #   contraint mid ik ctl
         #
         loc0 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.base_ctl, v=0)
-        loc1 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.fore_ctl, v=0)
+        # loc1 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.fore_ctl, v=0)
+        loc1 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.two_ikJnts[1], v=0)
+        self.fore_ctl.a.r >> self.two_ikJnts[1].a.r
         common.cstMulti(loc0, loc1, self.mid_ctl.offset, cstType="parT")
-        self.fore_ctl.cstAim(
+        self.two_ikJnts[1].cstAim(
             self.mid_ctl.offset,
             aim=(0, 0, 1),
             worldUpType="objectrotation",
@@ -438,9 +441,6 @@ class SpineQd(RigModule):
         mc.hide(self.ikJnts, self.rbJnts, self.fkJnts, self.spIkJnts, self.two_ikJnts)
         if self.__class__.__name__ == "NeckQd":
             self.cog_ctl.shape.hide()
-            # mc.hide(
-            #     self.cog_ctl.shape, self.tangent0_ctl.shape, self.tangent1_ctl.shape
-            # )
         self.rbAnchor.hide()
 
     def setup_proxy(self):
@@ -476,14 +476,9 @@ class SpineQd(RigModule):
         else:
             self.setup_anchor_module({"anchorM1": self.rbJnts[0]})
 
-        # self.setup_anchor_module({"anchorM2": self.rbJnts[-1]})
         self.setup_anchor_module({"anchorM2": self.rbAnchor})
 
     def setup_space(self):
-        # self.rigNode.setMsg({"spaceHolder1": self.foreFk_ctl})
-        # spaces = "COG, master"
-        # self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
-
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_COG": self.cog_ctl})
         self.rigNode.setMsg({"space_chest": self.tangent1_ctl})
