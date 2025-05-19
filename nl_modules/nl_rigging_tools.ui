@@ -454,7 +454,7 @@ Mesh(es)</string>
    </widget>
    <widget class="QWidget" name="main_TB">
     <attribute name="title">
-     <string>Guide</string>
+     <string>Main</string>
     </attribute>
     <widget class="QGroupBox" name="groupBox_5">
      <property name="geometry">
