@@ -305,7 +305,7 @@ class RigModule(RigBase):
         common.cstMulti(*allSpacesGrp, tgt_ofs, cstType=tgtCstType, w=weight, **kwargs)
 
         if v == 2 and w is None:
-            weight = tgt.a.add("positionSpace", attrType="enum", dv=dv, enumName=names)
+            weight = tgt.a.add("posSpace", attrType="enum", dv=dv, enumName=names)
             common.cstMulti(*allSpacesGrp, tgt_ofs, cstType="poi", w=weight, **kwargs)
 
     def calc_rig_size(self, rootJ):
