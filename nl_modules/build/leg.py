@@ -114,7 +114,6 @@ class Leg(RigModule):
             scale=-rSz,
             color=1,
             p=self.CTL_DATA,
-            width=2,
         )
         self.hip_fkc = CurveNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
@@ -134,8 +133,9 @@ class Leg(RigModule):
         self.ball_fkc.cv_scale(0.7, 1, 1)
 
         scale = (rSz * 1.5, rSz * 0.5, rSz * 3)
-        self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=scale)
-        self.ikc.cv_move(0, 0, rSz * 7)
+        self.ikc = CurveNode(
+            "ikc", pf=rID, shape="trapezoid", scale=scale, move=(0, 0, rSz * 7)
+        )
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz)
         self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
 

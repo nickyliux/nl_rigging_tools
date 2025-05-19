@@ -122,7 +122,7 @@ class LegQd(RigModule):
             scale=xDr * rSz / 2,
         )
         scale = (rSz * 1.5, rSz * 0.5, rSz * 2)
-        self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=scale)
+        self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=rSz)
         self.ikc.cv_move(0, 0, rSz * 4)
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz * 0.8)
         self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
@@ -270,7 +270,7 @@ class LegQd(RigModule):
         inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG
 
         self.ikc.snapTo(self.digit)
-        self.ikc.cv_drop()
+        # self.ikc.cv_drop()
 
         self.ikc_gimbal = CurveNode(self.ikc).add_gimbal()
         self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)

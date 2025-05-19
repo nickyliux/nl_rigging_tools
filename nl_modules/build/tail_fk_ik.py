@@ -62,7 +62,7 @@ class TailFkIk(RigModule):
         crvLenRatio, self.rbJnts = self.build_motionPath_ribbon(
             rbSrf=self.rbSrf2,
             jntNum=self.RBN_JNT_NUM,
-            scaleAttr=self.setting.a.tailScale,
+            scaleAttr=self.setting.a.moduleScale,
             stretchyAttr=self.setting.a.stretchy,
         )
         self.bindJnts = self.rbJnts
@@ -81,10 +81,10 @@ class TailFkIk(RigModule):
             p=self.CTL_DATA,
         )
         self.setting.a.add("stretchy", min=0, max=1)
-        tailScale = self.setting.a.add("tailScale", min=0.01, dv=1)
-        tailScale >> self.IK_PART.a.s
-        tailScale >> self.FK_PART.a.s
-        tailScale >> self.PRX_GRP.a.s
+        moduleScale = self.setting.a.add("moduleScale", min=0.01, dv=1)
+        moduleScale >> self.IK_PART.a.s
+        moduleScale >> self.FK_PART.a.s
+        moduleScale >> self.PRX_GRP.a.s
 
         self.rigNode.setMsg(
             {

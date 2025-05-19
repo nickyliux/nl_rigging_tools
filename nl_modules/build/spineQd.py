@@ -110,20 +110,18 @@ class SpineQd(RigModule):
         self.tangent0_ctl = CurveNode(
             "tangent0_ctl",
             pf=rID,
-            shape="arrow",
+            shape="triangleR",
             scale=rSz / 2,
             rotate=(0, 180, 90),
             move=(0, rSz * 25, 0),
-            color=20,
         )
         self.tangent1_ctl = CurveNode(
             "tangent1_ctl",
             pf=rID,
-            shape="arrow",
+            shape="triangleR",
             scale=rSz / 2,
             rotate=(0, 0, 90),
             move=(0, rSz * 25, 0),
-            color=20,
         )
         if self.END_CTL:
             self.end_ctl = CurveNode(

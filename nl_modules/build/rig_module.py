@@ -361,7 +361,7 @@ class RigModule(RigBase):
             mc.setAttr(obj + ".ro", cb=1)
 
         if self.PRX:
-            self.masterC2.a["showProxy"] >> self.PRX.a.v
+            self.masterC2.a["proxy"] >> self.PRX.a.v
 
         self.ctl_vis_toggle(self.masterC2.a["debug"], onList=[self.RIG, self.SKL])
 
@@ -817,7 +817,7 @@ class RigModule(RigBase):
         self.add_mirror_attr(allPsdCtl)
         self.add_ctl_set(allPsdCtl + [ctl_main])
 
-        showAimCtl = self.masterC2.a.add("showAimCtl", min=0, max=1, k=0, dv=0)
+        showAimCtl = self.masterC2.a.add("showAimCtl", attrType="bool")
         showAimCtl >> psd_grp.a.v
 
         # Connect total weight

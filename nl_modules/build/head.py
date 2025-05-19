@@ -56,7 +56,7 @@ class Head(RigModule):
             pf=rID,
             sf="_fkc",
             shape="squareR",
-            scale=rSz * 4,
+            scale=rSz * 3,
             move=(0, rSz * 8, 0),
             color=22,
         )
