@@ -336,6 +336,7 @@ class LegQd(RigModule):
         CurveNode(self.extra_ikc)(
             name=cName, shape="rotator", scale=-rSz * xDr / 2, top=1
         )
+        aimG_loc.hide()
 
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
         rID, rSz, xDr = self.getMyVar()

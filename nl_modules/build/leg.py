@@ -134,11 +134,8 @@ class Leg(RigModule):
             shape="squareR",
             scale=rSz * xDr / 2,
         )
-        scale = (rSz * 1.5, rSz * 0.5, rSz * 3)
-        self.ikc = CurveNode(
-            "ikc", pf=rID, shape="trapezoid", scale=scale, move=(0, 0, rSz * 7)
-        )
-        self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz)
+        self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=rSz)
+        self.pvc = CurveNode("pvc", pf=rID, shape="triangleR", scale=rSz)
         self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
 
         self.rigNode.setMsg(
@@ -350,7 +347,7 @@ class Leg(RigModule):
 
         for g in [toeRollG, inRollG, outRollG, heelRollG]:
             ctl = g.addOffsetGrp(below=1)
-            CurveNode(ctl)(name=g.name + "_ctl", shape="diamond", scale=rSz / 2)
+            CurveNode(ctl)(name=g.name + "_ctl", shape="cube", scale=rSz / 8)
             self.subCtls.append(ctl)
 
         self.ballG_ikc = ballRollG.addOffsetGrp(below=1)
@@ -630,6 +627,9 @@ class Leg(RigModule):
         self.ikH1.build_pvfkPinSetup(ikTarget=self.ikc_gimbal)
         self.rigNode.setMsg({"space_leg": self.ikH1.pvChainJ[0]})
 
+    def setup_anchor(self):
+        self.setup_anchor_module({"anchorF1": self.hip_fkc.offset})
+
     def post_setup(self):
         self.add_mirror_attr([self.ikc, self.ikc_gimbal, self.smart_ctl])
         ctlSet = []
@@ -647,7 +647,7 @@ class Leg(RigModule):
         self.add_bind_jnt_set(self.bindJnts)
         self.add_ctl_set(ctlSet)
         self.setup_space()
-        self.setup_anchor_module({"anchorF1": self.hip_fkc.offset})
+        self.setup_anchor()
         self.setup_proxy()
         self.setup_vis()
         self.setup_channel()
