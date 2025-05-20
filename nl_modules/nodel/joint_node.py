@@ -216,13 +216,13 @@ class JointNode(GroupNode):
         for i in range(num - 1):
             if not rev:
                 # j1 > j2 > ... > jn
-                joints[i + 1].cstAim(joints[i], aim=aimV, u=upV, wu=wuV, keep=0)
+                # joints[i + 1].cstAim(joints[i], aim=aimV, u=upV, wu=wuV, keep=0)
                 if chain:
                     joints[i + 1] | joints[i]
             else:
                 # j1 < j2 < ... < jn
-                negAim = (-aimV[0], -aimV[1], -aimV[2])
-                joints[i].cstAim(joints[i + 1], aim=negAim, u=upV, wu=wuV, keep=0)
+                # negAim = (-aimV[0], -aimV[1], -aimV[2])
+                # joints[i].cstAim(joints[i + 1], aim=negAim, u=upV, wu=wuV, keep=0)
                 if chain:
                     joints[i] | joints[i + 1]
 

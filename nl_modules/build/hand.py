@@ -32,7 +32,7 @@ class Hand(RigModule):
         ]
         fgr_roots = []
         for fgrs_names in all_fgrs_names:
-            fgr_jnts = self.gen_sk_fr_names(fgrs_names)
+            fgr_jnts = self.gen_sk_fr_names(fgrs_names, scale=2)
             fgr_jnts[0].freezeXf()
             fgr_jnts[0] | self.rootJ
             fgr_roots.append(fgr_jnts[0])
@@ -49,18 +49,18 @@ class Hand(RigModule):
         self.build_ctl()
 
         self.bindJnts = [self.rootJ]
-        if self.rootJ:
-            self.fgrsArr = []
-            for root in self.rootJ.childrenJt:
-                fgrJnts = [fgr for fgr in root.allChildrenJt2]
-                self.fgrsArr.append(fgrJnts)
-                self.bindJnts.extend(fgrJnts)
-                root.a.segmentScaleCompensate.set(0)
+        self.fgrsArr = []
+        # if self.rootJ:
+        for root in self.rootJ.childrenJt:
+            fgrJnts = [fgr for fgr in root.allChildrenJt2]
+            self.fgrsArr.append(fgrJnts)
+            self.bindJnts.extend(fgrJnts)
+            root.a.segmentScaleCompensate.set(0)
 
-            self.build_fk()
-            self.build_ik()
-            self.build_fgr_logic()
-            self.post_setup()
+        self.build_fk()
+        self.build_ik()
+        self.build_fgr_logic()
+        self.post_setup()
 
     def build_fk(self):
         rID, rSz, xDr = self.getMyVar()
@@ -115,9 +115,9 @@ class Hand(RigModule):
         self.rootJ.a.s >> scaleGrp.a.s
 
         drv = self.smart_ctl
-
+        #
         # fist
-        # ------------------------
+        #
         for i in range(1, 5):
             for j in [1, 2, 3]:
                 ofs = self.ctlsArr[i][j].offset
@@ -132,9 +132,9 @@ class Hand(RigModule):
             ofs = self.ctlsArr[0][i].offset
             common.sdk(drv, ofs, "ry", "ry", *fistList[i][0])
             common.sdk(drv, ofs, "ry", "ry", *fistList[i][1])
-
-        # fist palm
-        # ------------------------
+        #
+        #   fist palm
+        #
         for i in range(2, 5):
             fistPalmList = [
                 [(0, -10), (2, 10)],
@@ -144,16 +144,16 @@ class Hand(RigModule):
             ofs = self.ctlsArr[i][0].offset
             common.sdk(drv, ofs, "sz", "ry", *fistPalmList[i - 2][0])
             common.sdk(drv, ofs, "sz", "ry", *fistPalmList[i - 2][1])
-
-        # side
-        # ------------------------
+        #
+        #   side
+        #
         # for i in range(1, 5):
         #     ofs = self.ctlsArr[i][1].offset
         #     common.sdk(drv, ofs, "rz", "rz", -90, -90)
         #     common.sdk(drv, ofs, "rz", "rz", 90, 90)
-
-        # flap
-        # ------------------------
+        #
+        #   flap
+        #
         for i in range(1, 5):
             flapList = [
                 [(-180, 180), (180, -180)],
@@ -173,9 +173,9 @@ class Hand(RigModule):
             ofs = self.ctlsArr[i][0].offset
             common.sdk(drv, ofs, "rx", "ry", *flapList[i - 1][0])
             common.sdk(drv, ofs, "rx", "ry", *flapList[i - 1][1])
-
-        # spread
-        # ------------------------
+        #
+        #   spread
+        #
         for i in range(5):
             spreadList = [
                 [(0, -10), (1, 0), (2, 60)],
@@ -199,18 +199,18 @@ class Hand(RigModule):
             common.sdk(drv, ofs, "sy", "rz", *spreadList[i][0])
             common.sdk(drv, ofs, "sy", "rz", *spreadList[i][1])
             common.sdk(drv, ofs, "sy", "rz", *spreadList[i][2])
-
-        # up/dn
-        # ------------------------
+        #
+        #    up/dn
+        #
         for i in range(1, 5):
             ofs = self.ctlsArr[i][1].offset
             common.sdk(drv, ofs, "tz", "ry", 60, -180 * xDr)
             common.sdk(drv, ofs, "tz", "ry", -60, 180 * xDr)
             common.sdk(drv, ofs, "ty", "rz", 60, 180 * xDr)
             common.sdk(drv, ofs, "ty", "rz", -60, -180 * xDr)
-
-        # cup
-        # ------------------------
+        #
+        #    cup
+        #
         for i in range(1, 5):
             cupList = [
                 [(0, 30), (2, -30)],
@@ -233,9 +233,9 @@ class Hand(RigModule):
             common.sdk(drv, ofs, "sx", "rx", *cupList[i - 1][1])
 
         self.smart_ctl.a.add("palmScale", min=0, dv=1) >> self.rootJ.a.scale
-
-        # thumb
-        # ------------------------
+        #
+        #   thumb
+        #
         # ofs = self.ctlsArr[0][0].offset
 
         # common.sdk(drv, ofs, "tx", "rz", 20, -90)
@@ -259,9 +259,8 @@ class Hand(RigModule):
     def setup_proxy(self):
         rID, rSz, xDr = self.getMyVar()
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(
-                aimDir=(xDr, 0, 0), skipEnd=1, scale=rSz * 2, p=self.PRX_GRP
-            )
+            JointNode(j).addProxyMesh(aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP)
+            # , scale=rSz
 
     def setup_channel(self):
         self.smart_ctl.a.showAttr(t=1, r=1, s=1)

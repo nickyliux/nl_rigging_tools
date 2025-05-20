@@ -1141,9 +1141,9 @@ or groups containing them</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>140</y>
+       <y>100</y>
        <width>211</width>
-       <height>461</height>
+       <height>501</height>
       </rect>
      </property>
      <property name="title">
@@ -1158,7 +1158,7 @@ or groups containing them</string>
         <x>7</x>
         <y>43</y>
         <width>198</width>
-        <height>275</height>
+        <height>381</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -1186,7 +1186,7 @@ or groups containing them</string>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>330</y>
+        <y>454</y>
         <width>60</width>
         <height>16</height>
        </rect>
@@ -1252,7 +1252,7 @@ or groups containing them</string>
       <property name="geometry">
        <rect>
         <x>75</x>
-        <y>330</y>
+        <y>454</y>
         <width>60</width>
         <height>16</height>
        </rect>
@@ -1288,7 +1288,7 @@ or groups containing them</string>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>390</y>
+        <y>476</y>
         <width>191</width>
         <height>17</height>
        </rect>
@@ -1327,7 +1327,7 @@ or groups containing them</string>
       <property name="geometry">
        <rect>
         <x>140</x>
-        <y>330</y>
+        <y>454</y>
         <width>60</width>
         <height>16</height>
        </rect>
@@ -1349,7 +1349,7 @@ or groups containing them</string>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>351</y>
+        <y>431</y>
         <width>191</width>
         <height>16</height>
        </rect>
@@ -1374,7 +1374,7 @@ or groups containing them</string>
        <x>0</x>
        <y>10</y>
        <width>211</width>
-       <height>121</height>
+       <height>81</height>
       </rect>
      </property>
      <property name="title">
@@ -1390,7 +1390,7 @@ or groups containing them</string>
       <property name="geometry">
        <rect>
         <x>137</x>
-        <y>40</y>
+        <y>20</y>
         <width>60</width>
         <height>16</height>
        </rect>
@@ -1414,7 +1414,7 @@ or groups containing them</string>
        <string notr="true"/>
       </property>
       <property name="text">
-       <string>Rota Z</string>
+       <string>RZ</string>
       </property>
      </widget>
      <widget class="QPushButton" name="shapeRotaX_BN">
@@ -1424,7 +1424,7 @@ or groups containing them</string>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>40</y>
+        <y>20</y>
         <width>60</width>
         <height>16</height>
        </rect>
@@ -1448,7 +1448,7 @@ or groups containing them</string>
        <string notr="true"/>
       </property>
       <property name="text">
-       <string>Rota X</string>
+       <string>RX</string>
       </property>
      </widget>
      <widget class="QPushButton" name="shapeRotaY_BN">
@@ -1458,7 +1458,7 @@ or groups containing them</string>
       <property name="geometry">
        <rect>
         <x>74</x>
-        <y>40</y>
+        <y>20</y>
         <width>60</width>
         <height>16</height>
        </rect>
@@ -1482,7 +1482,7 @@ or groups containing them</string>
        <string notr="true"/>
       </property>
       <property name="text">
-       <string>Rota Y</string>
+       <string>RY</string>
       </property>
      </widget>
      <widget class="QPushButton" name="shapeScaleDn_BN">
@@ -1492,7 +1492,7 @@ or groups containing them</string>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>20</y>
+        <y>40</y>
         <width>92</width>
         <height>16</height>
        </rect>
@@ -1506,7 +1506,9 @@ or groups containing them</string>
       <property name="font">
        <font>
         <family>Segoe UI</family>
-        <pointsize>8</pointsize>
+        <pointsize>12</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
        </font>
       </property>
       <property name="toolTip">
@@ -1516,7 +1518,7 @@ or groups containing them</string>
        <string notr="true"/>
       </property>
       <property name="text">
-       <string>&lt;&lt; Size</string>
+       <string>-</string>
       </property>
      </widget>
      <widget class="QPushButton" name="shapeScaleUp_BN">
@@ -1526,7 +1528,7 @@ or groups containing them</string>
       <property name="geometry">
        <rect>
         <x>106</x>
-        <y>20</y>
+        <y>40</y>
         <width>92</width>
         <height>16</height>
        </rect>
@@ -1540,7 +1542,9 @@ or groups containing them</string>
       <property name="font">
        <font>
         <family>Segoe UI</family>
-        <pointsize>8</pointsize>
+        <pointsize>12</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
        </font>
       </property>
       <property name="toolTip">
@@ -1550,7 +1554,7 @@ or groups containing them</string>
        <string notr="true"/>
       </property>
       <property name="text">
-       <string>Size &gt;&gt;</string>
+       <string>+</string>
       </property>
      </widget>
     </widget>

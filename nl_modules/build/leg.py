@@ -128,10 +128,12 @@ class Leg(RigModule):
             "palm_fkc", pf=rID, shape="circleC", up="x", scale=rSz * -xDr
         )
         self.ball_fkc = CurveNode(
-            "ball_fkc", pf=rID, shape="fk_rotator", up="-z", scale=rSz * xDr * 2
+            "ball_fkc",
+            pf=rID,
+            up="x",
+            shape="squareR",
+            scale=rSz * xDr / 2,
         )
-        self.ball_fkc.cv_scale(0.7, 1, 1)
-
         scale = (rSz * 1.5, rSz * 0.5, rSz * 3)
         self.ikc = CurveNode(
             "ikc", pf=rID, shape="trapezoid", scale=scale, move=(0, 0, rSz * 7)
@@ -241,7 +243,7 @@ class Leg(RigModule):
             self.ball_fkc,
         ]
         self.build_fk_with_ctl2(self.joints_fk[:-1], self.fkCtl[:-1], p=self.FK_PART)
-        self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.CTL_DATA])
+        self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
         rID, rSz, xDr = self.getMyVar()
@@ -354,9 +356,8 @@ class Leg(RigModule):
         self.ballG_ikc = ballRollG.addOffsetGrp(below=1)
         CurveNode(self.ballG_ikc)(
             name=rID + "_ballG_ikc",
-            shape="stickC",
-            scale=-rSz * xDr / 2,
-            rotate=(0, 90, 0),
+            shape="fk_rotator",
+            scale=-rSz * xDr * 2,
         )
         self.ikCtl.append(self.ballG_ikc)
 
@@ -364,7 +365,7 @@ class Leg(RigModule):
         self.smart_ctl.alignTo(self.master_guide)
         self.smart_ctl.a.ty.set(0)
         self.smart_ctl | self.ikc_gimbal
-        self.smart_ctl.a.tz.set(rSz * 20)
+        self.smart_ctl.a.tz.set(rSz * 30)
         self.smart_ctl.addOffsetGrp()
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry

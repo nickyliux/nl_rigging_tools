@@ -333,7 +333,9 @@ class LegQd(RigModule):
 
         self.extra_ikc = extraRollG.addOffsetGrp(below=1)
         cName = rID + "_extra_ikc"
-        CurveNode(self.extra_ikc)(name=cName, shape="rotator", scale=-rSz * xDr / 2)
+        CurveNode(self.extra_ikc)(
+            name=cName, shape="rotator", scale=-rSz * xDr / 2, top=1
+        )
 
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
         rID, rSz, xDr = self.getMyVar()

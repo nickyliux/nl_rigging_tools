@@ -111,9 +111,10 @@ class TailFkIk(RigModule):
                 f"{i}_ikc",
                 pf=rID,
                 shape="sphere2",
-                scale=rSz * 4,
+                scale=rSz * 5,
                 align=self.ikJnt[i],
                 addOfs=1,
+                color=20,
                 p=self.IK_PART,
             )
             self.ikJnt[i] | ctl

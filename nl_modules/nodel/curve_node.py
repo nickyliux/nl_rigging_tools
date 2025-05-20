@@ -236,6 +236,7 @@ class CurveNode(GroupNode):
         color=0,
         addOfs=0,
         p=None,
+        top=0,
         *args,
         **kwargs,
     ):
@@ -265,6 +266,9 @@ class CurveNode(GroupNode):
             self | p
         if addOfs:
             self.addOffsetGrp()
+        if top:
+            for s in self.shapes:
+                s.a["alwaysDrawOnTop"].set(1)
         return self
 
     def reverse(self):

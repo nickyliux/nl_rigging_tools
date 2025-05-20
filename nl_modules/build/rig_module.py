@@ -294,9 +294,9 @@ class RigModule(RigBase):
         tgt_ofs = tgt.addOffsetGrp()
 
         if cstType == "par":
-            tgt.a.add("spaceType", k=0)
+            tgt.a.add("spaceType", k=0, cb=0)
         elif cstType == "ori":
-            tgt.a.add("spaceType", k=0, dv=1)
+            tgt.a.add("spaceType", k=0, dv=1, cb=0)
 
         weight = w or tgt.a.add("space", attrType="enum", dv=dv, enumName=names)
 
@@ -335,11 +335,12 @@ class RigModule(RigBase):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_module(self):
+        self.rigSize = self.calc_rig_size(self.rootJ)
+
         rID, rSz, xDr = self.getMyVar()
         logging.info(rID)
 
         self.rigNode.a.nodeState.set(2)
-
         children = self.rootJ.childrenJt
         if children:
             self.xDir = 1 if children[0].a.tx.get() > 0 else -1
@@ -349,20 +350,15 @@ class RigModule(RigBase):
         for j in joints:
             j.a.radius.set(rSz)
 
-        self.rigSize = self.calc_rig_size(self.rootJ)
-
     def post_module(self):
         rID, rSz, xDr = self.getMyVar()
-
         logging.info(rID)
-        self.moduleG.hide()
 
-        for obj in mc.ls(tr=1):
-            mc.setAttr(obj + ".ro", cb=1)
-
+        [mc.setAttr(obj + ".ro", cb=1) for obj in mc.ls(tr=1)]
         if self.PRX:
             self.masterC2.a["proxy"] >> self.PRX.a.v
 
+        self.moduleG.hide()
         self.ctl_vis_toggle(self.masterC2.a["debug"], onList=[self.RIG, self.SKL])
 
     def unbuild_module(self):

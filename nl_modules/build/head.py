@@ -31,7 +31,7 @@ class Head(RigModule):
 
     def gen_guide_sk(self):
         self.gen_guide_sk_module(["st", "ed"])
-        jaw_list = self.gen_sk_fr_names(["jaw", "jawEnd"])
+        jaw_list = self.gen_sk_fr_names(["jaw", "jawEnd"], scale=2)
         jaw_list[0] | self.rootJ
         lf_eye = self.gen_sk_fr_names("lf_eye")[0]
         rt_eye = self.gen_sk_fr_names("rt_eye")[0]
@@ -58,11 +58,8 @@ class Head(RigModule):
             shape="squareR",
             scale=rSz * 3,
             move=(0, rSz * 8, 0),
-            color=22,
         )
-        self.jaw_fkc = CurveNode(
-            "jaw", pf=rID, sf="_fkc", up="x", scale=rSz / 2, color=22
-        )
+        self.jaw_fkc = CurveNode("jaw", pf=rID, sf="_fkc", up="x", scale=rSz, color=22)
         self.rigNode.setMsg(
             {
                 "head_fkc": self.head_fkc,
@@ -71,7 +68,7 @@ class Head(RigModule):
         )
 
     def build_fk(self):
-        rID, rSz, xDr = self.getMyVar()
+        # rID, rSz, xDr = self.getMyVar()
         (self.head_fkc, self.jaw_fkc) | self.CTL_DATA
         self.head_fkc.alignTo(self.head)
         self.head_fkc.addOffsetGrp()
@@ -88,19 +85,24 @@ class Head(RigModule):
         self.head_fkc.a.s >> self.PRX_GRP.a.s
 
         # self.isolate_align(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC])
+        # self.isolate_align(self.head_fkc, spaces=[self.head_fkc.parent, self.masterC])
+
+    def setup_vis(self):
+        pass
 
     def setup_proxy(self):
         for j in self.bindJnts:
             JointNode(j).addProxyMesh(aimDir=(0, 1, 0), p=self.PRX_GRP)
 
-    def setup_vis(self):
-        pass
-
     def setup_rotate_order(self):
         pass
 
+    def setup_channel(self):
+        self.head_fkc.a.showAttr(r=1, s=1)
+        self.jaw_fkc.a.showAttr(t=1, r=1)
+
     def setup_space(self):
-        self.head_fkc.a.add("spaceType", k=0, dv=1)
+        self.head_fkc.a.add("spaceType", k=0, cb=0, dv=1)
         self.rigNode.setMsg({"spaceHolder1": self.head_fkc})
         spaces = "neck, COG, master"
         self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
@@ -114,5 +116,6 @@ class Head(RigModule):
         self.setup_anchor_module({"anchorF1": self.head_fkc.offset})
         self.setup_proxy()
         self.setup_vis()
+        self.setup_channel()
         self.setup_rotate_order()
         self.post_module()
