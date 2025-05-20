@@ -84,24 +84,13 @@ class SpineQd(RigModule):
         )
 
         self.fore_ctl = CurveNode(
-            "fore_ctl",
-            pf=rID,
-            shape="arrowR",
-            rotate=(90, 0, 0),
-            move=(0, 0, -rSz * 20),
-            scale=rSz * 4,
-            color=22,
+            "fore_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 6, rSz)
         )
         self.mid_ctl = CurveNode(
-            "mid_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 4
+            "mid_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3
         )
         self.base_ctl = CurveNode(
-            "base_ctl",
-            pf=rID,
-            shape="arrowR",
-            rotate=(90, 0, 0),
-            scale=rSz * 4,
-            color=22,
+            "base_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 6, rSz)
         )
         self.tangent0_ctl = CurveNode(
             "tangent0_ctl",
@@ -121,12 +110,7 @@ class SpineQd(RigModule):
         )
         if self.END_CTL:
             self.end_ctl = CurveNode(
-                "end_ctl",
-                pf=rID,
-                shape="rotator",
-                scale=rSz,
-                move=(0, rSz * 10, rSz * -20),
-                color=20,
+                "end_ctl", pf=rID, shape="rotator", scale=rSz, move=(0, 0, rSz * -10)
             )
         self.rigNode.setMsg(
             {
@@ -202,7 +186,7 @@ class SpineQd(RigModule):
         #
         if self.__class__.__name__ == "NeckQd":
             self.cog_ctl.alignTo(self.RT_GUIDE)
-            self.cog_ctl(shape="squareR", scale=rSz * 7, rotate=(90, 0, 0), color=20)
+            self.cog_ctl(shape="squareR", scale=rSz * 6, rotate=(90, 0, 0), color=20)
         else:
             self.cog_ctl.snapTo(self.RT_GUIDE)
 

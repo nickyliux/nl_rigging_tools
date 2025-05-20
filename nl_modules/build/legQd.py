@@ -123,7 +123,7 @@ class LegQd(RigModule):
             scale=xDr * rSz / 2,
         )
         scale = (rSz * 1.5, rSz * 0.5, rSz * 2)
-        self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=rSz)
+        self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=rSz * 2)
         self.ikc.cv_move(0, 0, rSz * 4)
         self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz)
         self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
@@ -162,6 +162,14 @@ class LegQd(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
+        self.build_autoAim(
+            self.hip,
+            self.upr,
+            fkc=self.hip_fkc,
+            ikc=self.ikc,
+            ikcGim=self.ikc_gimbal,
+            setting=self.setting,
+        )
         self.singleBallCtl_setup()
 
         self.bindJnts = [self.hip, self.upr]
@@ -614,12 +622,17 @@ class LegQd(RigModule):
 
     def setup_space(self):
         self.rigNode.setMsg({"spaceHolder1": self.ikc})
-        self.rigNode.a.add("spaceName1", attrType="string", txt="master, hip, COG")
+        self.rigNode.a.add("spaceName1", attrType="string", txt="master, COG")  # hip,
         self.rigNode.setMsg({"spaceHolder2": self.pvc})
-        self.rigNode.a.add("spaceName2", attrType="string", txt="leg, master, hip, COG")
+        self.rigNode.a.add(
+            "spaceName2", attrType="string", txt="leg, master, COG"
+        )  # hip,
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_hip": self.hip_fkc})
         self.rigNode.setMsg({"space_leg": self.ikH1.softJ[0]})
+
+    def setup_anchor(self):
+        self.setup_anchor_module({"anchorF1": self.hip_fkc.offset})
 
     def post_setup(self):
         self.add_mirror_attr([self.ikc, self.ikc_gimbal, self.pvc, self.smart_ctl])
@@ -636,7 +649,7 @@ class LegQd(RigModule):
         self.add_ctl_set(ctlSet)
         self.add_bind_jnt_set(self.bindJnts)
         self.setup_space()
-        self.setup_anchor_module({"anchorF1": self.hip_fkc})
+        self.setup_anchor()
         self.setup_proxy()
         self.setup_vis()
         self.setup_channel()

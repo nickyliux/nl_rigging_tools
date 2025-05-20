@@ -666,7 +666,7 @@ class RigModule(RigBase):
             ikc.cstPoi(auto_ikH)
 
         # setup PSD & cst
-        autoAim = ikc.a.add("autoAim", min=0, max=1)
+        autoAim = ikc.a.add("autoAim", min=0, max=1, dv=0.5)
         psdAttr = self.build_uvPSD(
             tgtJ=endJ,
             ikc=ikc,
@@ -703,7 +703,7 @@ class RigModule(RigBase):
         #     common.sdk(self.joints_am[0], auto_dvn, "rz", "rz", _, _)
 
         auto_ikH.hide()
-        self.joints_am[0].hide()
+        # self.joints_am[0].hide()
 
     # @staticmethod
     def build_uvPSD(
@@ -813,8 +813,8 @@ class RigModule(RigBase):
         self.add_mirror_attr(allPsdCtl)
         self.add_ctl_set(allPsdCtl + [ctl_main])
 
-        showAimCtl = self.masterC2.a.add("showAimCtl", attrType="bool")
-        showAimCtl >> psd_grp.a.v
+        aimCtl = self.masterC2.a.add("aimCtl", attrType="bool", dv=1)
+        aimCtl >> psd_grp.a.v
 
         # Connect total weight
         autoWeight = ikc.a.add("autoWeight", k=0, cb=0)
