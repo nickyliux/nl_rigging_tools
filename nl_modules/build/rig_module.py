@@ -609,8 +609,6 @@ class RigModule(RigBase):
         return ctl, ikJ, ikH
 
     def get_autoAim_preset(self):
-        rID, rSz, xDr = self.getMyVar()
-
         upW_attr = self.master_guide.a.autoUpWeight
         fwW_attr = self.master_guide.a.autoFwWeight
         dnW_attr = self.master_guide.a.autoDnWeight
@@ -622,11 +620,11 @@ class RigModule(RigBase):
         bkW = bkW_attr.get() if bkW_attr.exists() else 1
 
         preset = []
+        rID, rSz, xDr = self.getMyVar()
         if rID.startswith("lfArmBp") or rID.startswith("rtArmBp"):
             preset = [upW, fwW, dnW, bkW]
         else:
             preset = [dnW, bkW, upW, fwW]
-
         return preset
 
     def build_autoAim(
@@ -729,11 +727,10 @@ class RigModule(RigBase):
         ctl_main = CurveNode(
             "psd_ctl",
             pf=rID,
-            shape="diamond",
+            shape="cube",
             align=tgtJ,
             p=ctl_grp,
-            scale=rSz * 4,
-            top=1,
+            scale=(rSz / 2, rSz, rSz),
         )
         ctl_main.a.showAttr(t=1, r=1)
 
@@ -753,7 +750,8 @@ class RigModule(RigBase):
                 "psd_ctl_#",
                 pf=rID,
                 shape="stick",
-                align=ctl_grp,
+                # align=ctl_grp,
+                align=ctl_main,
                 scale=rSz / 4,
                 p=ctl_main,
                 top=1,
@@ -761,10 +759,9 @@ class RigModule(RigBase):
             allPsdCtl.append(ctl)
 
             rx = i * 90
-            if rID.startswith("rtArmBp"):
+            if rID.startswith("rt"):
                 rx -= 180
             ctl.a.rx.set(rx)
-
             ctl.addOffsetGrp()
             ctl.a.showAttr(t=1, r=1)
             #

@@ -24,7 +24,7 @@ COMPONENT_DICT = {
     "arm q": ["lfArmQd", "rtArmQd"],
     "leg q": ["lfLegQd", "rtLegQd"],
     "tail fk": ["tailFk"],
-    "tail": ["Tail"],
+    "tail": ["tail"],
     "wing": [""],
 }
 MOD_DIR = os.path.dirname(nl_modules.__file__)

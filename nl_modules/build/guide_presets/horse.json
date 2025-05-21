@@ -3450,8 +3450,8 @@
             ]
         }
     },
-    "Tail0":{
-        "Tail0_line_guide":{
+    "tail0":{
+        "tail0_line_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -3468,7 +3468,7 @@
                 0.0
             ]
         },
-        "Tail0_master_guide":{
+        "tail0_master_guide":{
             "fkBoneNum":10,
             "r":[
                 0.0,
@@ -3488,7 +3488,7 @@
                 -51.28553348469835
             ]
         },
-        "Tail0_md_guide":{
+        "tail0_md_guide":{
             "r":[
                 8.442225827385222,
                 0.0,
@@ -3505,7 +3505,7 @@
                 0.5436366178746633
             ]
         },
-        "Tail0_module_grp":{
+        "tail0_module_grp":{
             "r":[
                 0.0,
                 0.0,
@@ -3522,7 +3522,7 @@
                 0.0
             ]
         },
-        "Tail0_rt_guide":{
+        "tail0_rt_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -3539,7 +3539,7 @@
                 -9.44914468812777
             ]
         },
-        "Tail0_tp_guide":{
+        "tail0_tp_guide":{
             "r":[
                 -77.13537389458756,
                 0.0,

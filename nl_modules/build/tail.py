@@ -74,8 +74,8 @@ class Tail(RigModule):
         self.setting = CurveNode(
             "setting",
             pf=rID,
-            shape="diamond",
-            scale=rSz * 2,
+            shape="sphere2",
+            scale=rSz * 3,
             color=1,
             top=1,
             p=self.CTL_DATA,

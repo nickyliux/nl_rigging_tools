@@ -110,8 +110,8 @@ class LegBp(RigModule):
         self.setting = CurveNode(
             "setting",
             pf=rID,
-            shape="diamond",
-            scale=-rSz,
+            shape="sphere2",
+            scale=-rSz * 2,
             color=1,
             p=self.CTL_DATA,
         )

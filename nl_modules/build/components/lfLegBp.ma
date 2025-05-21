@@ -46,7 +46,7 @@ createNode transform -n "master_guide" -p "module_grp";
 	setAttr -cb on ".twistBones" yes;
 	setAttr -cb on ".kneeFix" yes;
 	setAttr -l on -k on ".____________";
-	setAttr -cb on ".autoUpWeight" 0.8;
+	setAttr -cb on ".autoUpWeight" 0.3;
 	setAttr -cb on ".autoFwWeight" 0.8;
 	setAttr -cb on ".autoDnWeight" 0.1;
 	setAttr -cb on ".autoBkWeight" 0.5;

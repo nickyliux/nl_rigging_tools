@@ -3,15 +3,16 @@ import maya.cmds as mc
 import logging
 from nl_modules.nodel.base.dag_node import DagNode
 
-# from nl_modules.utils import common
-
-# Must keep it ------------------------------
-from nl_modules.build.leg_bp import LegBp
-from nl_modules.build.hand import Hand
-from nl_modules.build.arm_bp import ArmBp
+#
+#   Require for eval(rigClass)
+#
 from nl_modules.build.head import Head
 from nl_modules.build.neck import Neck
 from nl_modules.build.spine import Spine
+from nl_modules.build.arm_bp import ArmBp
+from nl_modules.build.hand import Hand
+
+from nl_modules.build.leg_bp import LegBp
 from nl_modules.build.leg_qd import LegQd
 from nl_modules.build.neck_qd import NeckQd
 from nl_modules.build.spine_qd import SpineQd
@@ -350,7 +351,7 @@ def collectSpaceObj(rigNode):
         if r != rigNode:
             spaceDict.update(getSpaceObj(DagNode(r)))
     #
-    # Get driving rigNode
+    #   Get driving rigNode
     #
     femaleAnchors = getAnchors([rigNode], "anchorF")
     if femaleAnchors:
@@ -359,7 +360,7 @@ def collectSpaceObj(rigNode):
             drivingRN = getRigNode(drivingAnchors[0])
             spaceDict.update(getSpaceObj(drivingRN))
     #
-    # lf & rt arm ctl can have the same 'arm' space, so update its rigNode at last
+    #   lf & rt arm ctl can have the same 'arm' space, so update its rigNode at last
     #
     spaceDict.update(getSpaceObj(rigNode))
     return spaceDict
@@ -383,7 +384,9 @@ def collectSpaceData():
     for r in mc.ls("*RGN", type="script"):
         rN = DagNode(r)
         for udAttr in rN.a.list(ud=1):
-            # Get spaceHolder* & spaceName*
+            #
+            #   Get spaceHolder* & spaceName*
+            #
             if udAttr.attr.startswith("spaceHolder"):
                 obj = udAttr.inConnNode
                 spaceNameAttr = rN.a["spaceName" + udAttr.attr[-1]]

@@ -45,7 +45,7 @@ createNode transform -n "master_guide" -p "module_grp";
 	setAttr -l on -k on ".____________";
 	setAttr -cb on ".autoUpWeight" 0.3;
 	setAttr -cb on ".autoFwWeight" 0.8;
-	setAttr -cb on ".autoDnWeight" 0;
+	setAttr -cb on ".autoDnWeight" 0.1;
 	setAttr -cb on ".autoBkWeight" 0.8;
 createNode transform -n "hip_guide_ofs" -p "master_guide";
 	rename -uid "1B251669-4809-99CF-2AA5-B291D2C0C8FF";

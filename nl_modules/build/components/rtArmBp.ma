@@ -43,7 +43,7 @@ createNode transform -n "master_guide" -p "master_guide_ofs";
 	setAttr -l on -k on ".____________";
 	setAttr -cb on ".autoUpWeight" 0.8;
 	setAttr -cb on ".autoFwWeight" 0.8;
-	setAttr -cb on ".autoDnWeight" 0.0;
+	setAttr -cb on ".autoDnWeight" 0.1;
 	setAttr -cb on ".autoBkWeight" 0.5;
 createNode transform -n "clavicle_guide_ofs" -p "master_guide";
 	rename -uid "0CE9E75F-4875-A16B-190C-3A8F77759082";

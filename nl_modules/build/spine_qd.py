@@ -64,7 +64,7 @@ class SpineQd(RigModule):
         self.setting = CurveNode(
             "setting",
             pf=rID,
-            shape="diamond",
+            shape="sphere2",
             scale=rSz * 2,
             color=1,
             top=1,
@@ -110,7 +110,12 @@ class SpineQd(RigModule):
         )
         if self.END_CTL:
             self.end_ctl = CurveNode(
-                "end_ctl", pf=rID, shape="rotator", scale=rSz, move=(0, 0, rSz * -10)
+                "end_ctl",
+                pf=rID,
+                shape="fk_rotator",
+                scale=rSz * 4,
+                rotate=(0, 90, 0),
+                move=(0, rSz * 10, 0),
             )
         self.rigNode.setMsg(
             {
