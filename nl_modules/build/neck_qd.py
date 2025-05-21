@@ -1,5 +1,5 @@
 import maya.cmds as mc
-from nl_modules.build.spineQd import SpineQd
+from nl_modules.build.spine_qd import SpineQd
 
 
 class NeckQd(SpineQd):

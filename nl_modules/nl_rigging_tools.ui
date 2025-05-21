@@ -585,22 +585,22 @@ Mesh(es)</string>
       </item>
       <item>
        <property name="text">
-        <string>neck / quad</string>
+        <string>neck q</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>spine / quad</string>
+        <string>spine q</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>arm / quad</string>
+        <string>arm q</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>leg / quad</string>
+        <string>leg q</string>
        </property>
       </item>
       <item>
@@ -610,7 +610,7 @@ Mesh(es)</string>
       </item>
       <item>
        <property name="text">
-        <string>tail fk ik</string>
+        <string>tail</string>
        </property>
       </item>
      </widget>

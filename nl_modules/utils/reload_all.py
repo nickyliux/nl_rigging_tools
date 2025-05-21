@@ -118,21 +118,21 @@ reload(test_utils_node)
 
 # ----------------------------------------------------
 from nl_modules.build import (
-    legQd,
+    arm_bp,
+    leg_bp,
+    leg_qd,
+    neck_qd,
     rig_base,
     rig_module,
-    spineQd,
+    spine_qd,
+    tail,
     tail_fk,
-    tail_fk_ik,
     tpl_loader,
     ribbon,
     head,
     neck,
     spine,
-    arm,
     hand,
-    leg,
-    neckQd,
 )
 
 reload(rig_base)
@@ -142,14 +142,14 @@ reload(ribbon)
 reload(head)
 reload(neck)
 reload(spine)
-reload(arm)
+reload(arm_bp)
 reload(hand)
-reload(leg)
-reload(legQd)
-reload(neckQd)
-reload(spineQd)
+reload(leg_bp)
+reload(leg_qd)
+reload(neck_qd)
+reload(spine_qd)
 reload(tail_fk)
-reload(tail_fk_ik)
+reload(tail)
 
 if __name__ == "__main__":
     logging.info("reload modules")

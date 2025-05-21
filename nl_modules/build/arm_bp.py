@@ -12,10 +12,10 @@ from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
 
-class Arm(RigModule):
+class ArmBp(RigModule):
     """Build arm component with given rigNode.
     e.g.
-        n = Arm('lfArm0_RGN')  # n.__dict__
+        n = ArmBp('lfArmBp0_RGN')  # n.__dict__
         n.gen_guide_sk()
         n.build()
     """

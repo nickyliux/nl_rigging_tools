@@ -6,17 +6,17 @@ from nl_modules.nodel.base.dag_node import DagNode
 # from nl_modules.utils import common
 
 # Must keep it ------------------------------
-from nl_modules.build.leg import Leg
+from nl_modules.build.leg_bp import LegBp
 from nl_modules.build.hand import Hand
-from nl_modules.build.arm import Arm
+from nl_modules.build.arm_bp import ArmBp
 from nl_modules.build.head import Head
 from nl_modules.build.neck import Neck
 from nl_modules.build.spine import Spine
-from nl_modules.build.legQd import LegQd
-from nl_modules.build.neckQd import NeckQd
-from nl_modules.build.spineQd import SpineQd
+from nl_modules.build.leg_qd import LegQd
+from nl_modules.build.neck_qd import NeckQd
+from nl_modules.build.spine_qd import SpineQd
 from nl_modules.build.tail_fk import TailFk
-from nl_modules.build.tail_fk_ik import TailFkIk
+from nl_modules.build.tail import Tail
 from nl_modules.build.rig_module import RigModule
 from contextlib import ContextDecorator
 

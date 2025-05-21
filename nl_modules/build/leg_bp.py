@@ -12,7 +12,7 @@ from nl_modules.utils.color import Color
 from nl_modules.utils import common, utils_node as ut
 
 
-class Leg(RigModule):
+class LegBp(RigModule):
     """Build leg component with given rigNode.
     e.g.
         n = Leg('lfArm0_RGN')  # n.__dict__

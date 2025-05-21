@@ -72,7 +72,7 @@ class RigModule(RigBase):
         lastJ = None
         for key in guideDict:
             jN = JointNode(f"{rID}_{key}", align=guideDict[key], color=color)
-            if (currClass == "Arm" or currClass == "Leg") and key == "lwr":
+            if (currClass == "ArmBp" or currClass == "LegBp") and key == "lwr":
                 jN.a.preferredAngleY.set(-45)
             if lastJ:
                 jN | lastJ
@@ -622,15 +622,10 @@ class RigModule(RigBase):
         bkW = bkW_attr.get() if bkW_attr.exists() else 1
 
         preset = []
-        if (
-            rID.startswith("lfLeg")
-            or rID.startswith("rtLeg")
-            or rID.startswith("lfArmQd")
-            or rID.startswith("rtArmQd")
-        ):
-            preset = [dnW, bkW, upW, fwW]
-        elif rID.startswith("lfArm") or rID.startswith("rtArm"):
+        if rID.startswith("lfArmBp") or rID.startswith("rtArmBp"):
             preset = [upW, fwW, dnW, bkW]
+        else:
+            preset = [dnW, bkW, upW, fwW]
 
         return preset
 
@@ -766,13 +761,10 @@ class RigModule(RigBase):
             allPsdCtl.append(ctl)
 
             rx = i * 90
-            if rID.startswith("rtArm"):  # rtArmBp #
+            if rID.startswith("rtArmBp"):
                 rx -= 180
-            print(rx)
             ctl.a.rx.set(rx)
 
-            # if rID.startswith("rt"):
-            #     ctl.a.sx.set(-1)
             ctl.addOffsetGrp()
             ctl.a.showAttr(t=1, r=1)
             #
