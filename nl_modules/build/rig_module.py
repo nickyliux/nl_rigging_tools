@@ -245,11 +245,6 @@ class RigModule(RigBase):
 
             if drvList and len(drvList) > i:
                 drvList[i].cstPar(last_dbl, mo=1)
-
-                # if i == 0:
-                #     drvList[i].a.s >> ctl_ofs[i].a.s
-                #
-                # drvList[i].a.s >> dbl_ctl_ofs[0].a.s
                 i += 1
 
     @staticmethod
@@ -344,8 +339,9 @@ class RigModule(RigBase):
         children = self.rootJ.childrenJt
         if children:
             self.xDir = 1 if children[0].a.tx.get() > 0 else -1
-
-        # update all joints' radius
+        #
+        #   update all joints' radius
+        #
         joints = self.rootJ.allChildrenJt2
         for j in joints:
             j.a.radius.set(rSz)
@@ -406,12 +402,11 @@ class RigModule(RigBase):
         for name, tgt in anchorDict.items():
             loc = LocNode(name, pf=rID, size=rSz * 4, p=self.masterC)
             self.rigNode.setMsg({name: loc})
-
-            if name.startswith("anchorM"):  # Blue for Male
-                loc.color = Color.L_BLUE
+            if name.startswith("anchorM"):  # male color
+                loc.color = 18
                 tgt.cstPar(loc)
-            elif name.startswith("anchorF"):  # Pink for Female
-                loc.color = Color.PINK
+            elif name.startswith("anchorF"):  # female color
+                loc.color = 20
                 loc.alignTo(tgt)
                 loc.cstPar(tgt.offset, mo=1)
             loc.hide()
@@ -450,12 +445,7 @@ class RigModule(RigBase):
         """Add pivot offset to target ctl"""
         if settable:
             piv_ref = CurveNode(
-                tgt + "_pvt_ctl",
-                shape="locator",
-                align=tgt,
-                scale=scale,
-                p=tgt,
-                # dspType=2,
+                tgt + "_pvt_ctl", shape="locator", align=tgt, scale=scale, p=tgt
             )
             # piv_ref.dspType = 2
 
@@ -620,17 +610,27 @@ class RigModule(RigBase):
 
     def get_autoAim_preset(self):
         rID, rSz, xDr = self.getMyVar()
-        preset = [1, 1, 1, 1]
 
-        upW = self.master_guide.a.autoUpWeight.get()
-        fwW = self.master_guide.a.autoFwWeight.get()
-        dnW = self.master_guide.a.autoDnWeight.get()
-        bkW = self.master_guide.a.autoBkWeight.get()
+        upW_attr = self.master_guide.a.autoUpWeight
+        fwW_attr = self.master_guide.a.autoFwWeight
+        dnW_attr = self.master_guide.a.autoDnWeight
+        bkW_attr = self.master_guide.a.autoBkWeight
 
-        if rID.startswith("lfArm") or rID.startswith("rtArm"):
-            preset = [upW, fwW, dnW, bkW]
-        elif rID.startswith("lfLeg") or rID.startswith("rtLeg"):
+        upW = upW_attr.get() if upW_attr.exists() else 1
+        fwW = fwW_attr.get() if fwW_attr.exists() else 1
+        dnW = dnW_attr.get() if dnW_attr.exists() else 1
+        bkW = bkW_attr.get() if bkW_attr.exists() else 1
+
+        preset = []
+        if (
+            rID.startswith("lfLeg")
+            or rID.startswith("rtLeg")
+            or rID.startswith("lfArmQd")
+            or rID.startswith("rtArmQd")
+        ):
             preset = [dnW, bkW, upW, fwW]
+        elif rID.startswith("lfArm") or rID.startswith("rtArm"):
+            preset = [upW, fwW, dnW, bkW]
 
         return preset
 
@@ -644,14 +644,16 @@ class RigModule(RigBase):
         from nl_modules.nodel.ik_node import IkNode
 
         rID, rSz, xDr = self.getMyVar()
-
-        # create aim chain
+        #
+        #   create aim chain
+        #
         self.joints_am = common.extractSk([startJ, endJ], "_am", p=fkc.offset)
         base_loc = LocNode(
             "base_loc", pf=rID, align=self.joints_am[0], p=fkc.offset, size=rSz
         )
-
-        # setup IK
+        #
+        #   setup IK
+        #
         auto_ikH = IkNode(
             "autoAim",
             pf=rID,
@@ -664,19 +666,20 @@ class RigModule(RigBase):
             ikcGim.cstPoi(auto_ikH)
         else:
             ikc.cstPoi(auto_ikH)
-
-        # setup PSD & cst
-        autoAim = ikc.a.add("autoAim", min=0, max=1, dv=0.5)
+        #
+        #   setup PSD & cst
+        #
+        autoAim = ikc.a.add("autoAim", min=0, max=1)
         psdAttr = self.build_uvPSD(
             tgtJ=endJ,
             ikc=ikc,
             ikcGim=ikcGim,
             ctlNum=4,
             cst=fkc.offset,
-            setting=setting,
             preset=self.get_autoAim_preset(),
             p=self.CTL_DATA,
         )
+        # setting=setting,
 
         fkc_ofs = fkc.addOffsetGrp()
         common.cstMulti(
@@ -707,21 +710,13 @@ class RigModule(RigBase):
 
     # @staticmethod
     def build_uvPSD(
-        self,
-        tgtJ=None,
-        ikc=None,
-        ikcGim=None,
-        ctlNum=1,
-        cst=None,
-        setting=None,
-        preset=None,
-        size=1,
-        p=None,
+        self, tgtJ=None, ikc=None, ikcGim=None, ctlNum=1, cst=None, preset=None, p=None
     ):
+        # setting=None,
+        # size=1,
         """
         Create uv based pose base setup, useful for corrective blendshape fix
         or auto clav or hip
-
         Note:
             Since this is not using translate to rotate method for upper joint,
             moving the ikc toward the uv ball doesn't affect the target orientation
@@ -739,10 +734,10 @@ class RigModule(RigBase):
         ctl_main = CurveNode(
             "psd_ctl",
             pf=rID,
-            shape="cube",
+            shape="diamond",
             align=tgtJ,
             p=ctl_grp,
-            scale=rSz,
+            scale=rSz * 4,
             top=1,
         )
         ctl_main.a.showAttr(t=1, r=1)
@@ -762,61 +757,69 @@ class RigModule(RigBase):
             ctl = CurveNode(
                 "psd_ctl_#",
                 pf=rID,
-                shape="stickS",
+                shape="stick",
                 align=ctl_grp,
+                scale=rSz / 4,
                 p=ctl_main,
-                scale=rSz / 3,
-                width=2,
                 top=1,
             )
-            ctl.a.showAttr(t=1, r=1)
             allPsdCtl.append(ctl)
 
             rx = i * 90
-            # correct right side by offset -180
-            if rID.startswith("rt"):
+            if rID.startswith("rtArm"):  # rtArmBp #
                 rx -= 180
+            print(rx)
             ctl.a.rx.set(rx)
+
+            # if rID.startswith("rt"):
+            #     ctl.a.sx.set(-1)
             ctl.addOffsetGrp()
-
-            # setup output value
+            ctl.a.showAttr(t=1, r=1)
+            #
+            #   setup output value
+            #
             hit = ctl.a.add("hit", min=0, max=1, k=0)
-            weight = ctl.a.add("weight", min=0, max=1, dv=0.5)  # , k=0
-            hitWeighted = ctl.a.add("hitWeighted", min=0, max=1, dv=0.5)  # , k=0)
+            weight_dv = 0.5
             if preset:
-                weight.set(preset[i])
+                weight_dv = preset[i]
+            weight = ctl.a.add("weight", min=0, max=1, dv=weight_dv)
+            hitWeighted = ctl.a.add("hitWeighted", min=0, max=1, dv=0.5)
             hit * weight >> hitWeighted
-            # (hit * weight) >> productSum.a.input1D
             hitWeighted >> productSum.a.input1D
-
-            # create uv sphere
+            #
+            #   create uv sphere
+            #
             psd_ball = DagNode(
                 mc.sphere(n=rID + "_psdBall_#", r=rSz, d=3, s=4, spans=2, ch=0)[0]
             )
             psd_ball.alignTo(ctl, offsetR=(0, 0, -90), p=ctl)
-
-            # create cpos
+            #
+            #   create cpos
+            #
             cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
             psd_ball.shape.a.worldSpace >> cpos.a.inputSurface
             psd_loc.shape.a.worldPosition >> cpos.a.inPosition
-
-            # create setRange
+            #
+            #   create setRange
+            #
             hitRange = ut.setRange_(cpos.a.parameterU, 0, 2, 1, 0)
             ut.setRange_(hitRange, 0.5, 1, 0, 1) >> hit
-
-            # color debug
+            #
+            #   color debug
+            #
             driven = ctl.shape.a.overrideColor
-            common.sdk2(hit, driven, 0.1, Color.BLACK.value, tangent=2)
-            common.sdk2(hit, driven, 0.5, Color.L_GREY.value, tangent=2)
-            common.sdk2(hit, driven, 0.9, Color.YELLOW.value, tangent=2)
+            common.sdk2(hit, driven, 0.1, 2, tangent=2)
+            common.sdk2(hit, driven, 0.5, 1, tangent=2)
+            common.sdk2(hit, driven, 0.9, 22, tangent=2)
 
         self.add_mirror_attr(allPsdCtl)
         self.add_ctl_set(allPsdCtl + [ctl_main])
 
         aimCtl = self.masterC2.a.add("aimCtl", attrType="bool", dv=1)
         aimCtl >> psd_grp.a.v
-
-        # Connect total weight
+        #
+        #   Connect total weight
+        #
         autoWeight = ikc.a.add("autoWeight", k=0, cb=0)
         productSum.a.output1D >> autoWeight
 
@@ -901,6 +904,5 @@ class RigModule(RigBase):
                 color=4,
             )
             rbJnts.append(jnt)
-            # self.ikCtl[0].a.s >> loc.a.s
 
         return crvLenRatio, rbJnts
