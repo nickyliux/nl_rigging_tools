@@ -84,13 +84,13 @@ class SpineQd(RigModule):
         )
 
         self.fore_ctl = CurveNode(
-            "fore_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 6, rSz)
+            "fore_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 6, rSz), color=22
         )
         self.mid_ctl = CurveNode(
             "mid_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3
         )
         self.base_ctl = CurveNode(
-            "base_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 6, rSz)
+            "base_ctl", pf=rID, shape="cube", scale=(rSz * 6, rSz * 6, rSz), color=22
         )
         self.tangent0_ctl = CurveNode(
             "tangent0_ctl",
@@ -402,7 +402,6 @@ class SpineQd(RigModule):
                 worldUpType="objectrotation",
                 worldUpObject=self.cog_ctl,
             )
-            # self.fore_ctl.a.rz @ self.base_ctl.a.rz >> self.mid_ctl.offset.a.rz
         else:
             loc0 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.base_ctl, v=0)
             loc1 = LocNode(
@@ -412,9 +411,10 @@ class SpineQd(RigModule):
                 loc0,
                 loc1,
                 self.mid_ctl.offset,
-                cstType="par",
+                cstType="parT",
                 mo=1,
             )
+            self.fore_ctl.a.rz @ self.base_ctl.a.rz >> self.mid_ctl.offset.a.rz
         #
         #   adjust tanget joint's scale acc to length
         #

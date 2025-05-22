@@ -121,17 +121,17 @@ from nl_modules.build import (
     arm_bp,
     leg_bp,
     leg_qd,
+    neck_bp,
     neck_qd,
     rig_base,
     rig_module,
+    spine_bp,
     spine_qd,
     tail,
     tail_fk,
     tpl_loader,
     ribbon,
     head,
-    neck,
-    spine,
     hand,
 )
 
@@ -140,8 +140,8 @@ reload(rig_module)
 reload(tpl_loader)
 reload(ribbon)
 reload(head)
-reload(neck)
-reload(spine)
+reload(neck_bp)
+reload(spine_bp)
 reload(arm_bp)
 reload(hand)
 reload(leg_bp)

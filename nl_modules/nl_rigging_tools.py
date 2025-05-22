@@ -26,8 +26,8 @@ from nl_modules.build.leg_bp import LegBp
 from nl_modules.build.hand import Hand
 from nl_modules.build.arm_bp import ArmBp
 from nl_modules.build.head import Head
-from nl_modules.build.neck import Neck
-from nl_modules.build.spine import Spine
+from nl_modules.build.neck_bp import NeckBp
+from nl_modules.build.spine_bp import Spine
 from nl_modules.build.leg_qd import LegQd
 from nl_modules.build.neck_qd import NeckQd
 from nl_modules.build.spine_qd import SpineQd

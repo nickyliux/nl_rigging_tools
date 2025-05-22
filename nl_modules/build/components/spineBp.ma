@@ -480,7 +480,7 @@ createNode script -n "RGN";
 	addAttr -s false -ci true -k true -sn "master_guide" -ln "master_guide" -at "message";
 	addAttr -ci true -sn "rbJntSet" -ln "rbJntSet" -dt "string";
 	setAttr ".rigID" -type "string" "";
-	setAttr ".rigClass" -type "string" "Spine";
+	setAttr ".rigClass" -type "string" "SpineBp";
 	setAttr -cb on ".rbJntSet" -type "string" "spine_rbj_set";
 createNode nodeGraphEditorInfo -n "MayaNodeEditorSavedTabsInfo";
 	rename -uid "6C39977F-4DEB-D0B5-F643-7DB07DDEE93E";

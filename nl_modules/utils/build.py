@@ -7,8 +7,8 @@ from nl_modules.nodel.base.dag_node import DagNode
 #   Require for eval(rigClass)
 #
 from nl_modules.build.head import Head
-from nl_modules.build.neck import Neck
-from nl_modules.build.spine import Spine
+from nl_modules.build.neck_bp import NeckBp
+from nl_modules.build.spine_bp import Spine
 from nl_modules.build.arm_bp import ArmBp
 from nl_modules.build.hand import Hand
 

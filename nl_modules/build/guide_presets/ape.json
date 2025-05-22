@@ -3261,8 +3261,8 @@
             ]
         }
     },
-    "spine0":{
-        "spine0_line_guide":{
+    "spineBp0":{
+        "spineBp0_line_guide":{
             "r":[
                 0.0,
                 0.0,
@@ -3279,7 +3279,7 @@
                 0.0
             ]
         },
-        "spine0_master_guide":{
+        "spineBp0_master_guide":{
             "fkJntNum":4,
             "r":[
                 0.0,
@@ -3299,7 +3299,7 @@
                 -17.558999971073295
             ]
         },
-        "spine0_md_guide":{
+        "spineBp0_md_guide":{
             "r":[
                 4.378816434144333,
                 0.0,
@@ -3316,7 +3316,7 @@
                 -2.128309005146135
             ]
         },
-        "spine0_module_grp":{
+        "spineBp0_module_grp":{
             "r":[
                 0.0,
                 0.0,
@@ -3333,7 +3333,7 @@
                 0.0
             ]
         },
-        "spine0_rt_guide":{
+        "spineBp0_rt_guide":{
             "r":[
                 -19.58236344945238,
                 0.0,
@@ -3350,7 +3350,7 @@
                 -0.6676213931563382
             ]
         },
-        "spine0_tp_guide":{
+        "spineBp0_tp_guide":{
             "r":[
                 35.88240453788578,
                 0.0,

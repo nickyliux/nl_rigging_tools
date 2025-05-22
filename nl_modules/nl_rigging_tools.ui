@@ -539,11 +539,6 @@ Mesh(es)</string>
       </property>
       <item>
        <property name="text">
-        <string>head</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
         <string>--------  Biped</string>
        </property>
        <property name="flags">
@@ -552,27 +547,22 @@ Mesh(es)</string>
       </item>
       <item>
        <property name="text">
-        <string>neck</string>
+        <string>neck bp</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>spine</string>
+        <string>spine bp</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>arm</string>
+        <string>arm bp</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>hand</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>leg</string>
+        <string>leg bp</string>
        </property>
       </item>
       <item>
@@ -585,22 +575,37 @@ Mesh(es)</string>
       </item>
       <item>
        <property name="text">
-        <string>neck q</string>
+        <string>neck qd</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>spine q</string>
+        <string>spine qd</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>arm q</string>
+        <string>arm qd</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>leg q</string>
+        <string>leg qd</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>--------</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>head</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>hand</string>
        </property>
       </item>
       <item>
@@ -660,7 +665,7 @@ Mesh(es)</string>
      <widget class="QPushButton" name="component_explore_BN">
       <property name="geometry">
        <rect>
-        <x>144</x>
+        <x>178</x>
         <y>256</y>
         <width>25</width>
         <height>16</height>
@@ -949,8 +954,8 @@ Mesh(es)</string>
      <widget class="QPushButton" name="component_exploreSkel_BN">
       <property name="geometry">
        <rect>
-        <x>144</x>
-        <y>210</y>
+        <x>175</x>
+        <y>224</y>
         <width>25</width>
         <height>16</height>
        </rect>

@@ -1,8 +1,8 @@
 import maya.cmds as mc
-from nl_modules.build.spine import Spine
+from nl_modules.build.spine_bp import Spine
 
 
-class Neck(Spine):
+class NeckBp(Spine):
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
