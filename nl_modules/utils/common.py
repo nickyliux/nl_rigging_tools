@@ -435,15 +435,13 @@ def addVisOption(ctl, attrName):
     return [v0, v1]
 
 
-def sdk(dvr, dvn, attr1, attr2, v1, v2, tangent=0):
+def sdk(dvr, dvn, attr1, attr2, v1, v2, tangent=0, infinity=0):
     """Create set driven key, using object, attr
     e.g.
         sdk2(obj1, obj2, 'ty', 'ty', 0, 0)
         sdk2(obj1, obj2, 'ty', 'ty', 1, 2)
     """
-    opt = ["linear", "auto", "stepnext"]
-    # itt = "linear" if auto == 0 else "auto"
-    # ott = "linear" if auto == 0 else "auto"
+    opt = ["linear", "auto", "stepnext", "spline"]
     mc.setDrivenKeyframe(
         f"{dvn}.{attr2}",
         cd=f"{dvr}.{attr1}",
@@ -452,7 +450,8 @@ def sdk(dvr, dvn, attr1, attr2, v1, v2, tangent=0):
         itt=opt[tangent],
         ott=opt[tangent],
     )
-    # mc.setInfinity(dvr, pri="linear", poi="linear")
+    if infinity:
+        mc.setInfinity(dvn, pri="linear", poi="linear", attribute=attr2)
 
 
 def sdk2(attr1, attr2, v1, v2, tangent=0):
