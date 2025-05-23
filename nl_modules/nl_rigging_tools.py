@@ -21,7 +21,9 @@ from nl_modules.nodel.joint_node import JointNode
 from nl_modules.utils import common, file, guide, log, modeling
 from nl_modules.utils.color import Color
 
-# Must keep it ------------------------------
+#
+#   must keep it to use eval(cls)
+#
 from nl_modules.build.leg_bp import LegBp
 from nl_modules.build.hand import Hand
 from nl_modules.build.arm_bp import ArmBp
@@ -174,7 +176,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.crvShape_refresh_BN_clicked()
 
     def clickDrag_CB_stateChanged(self, state):
-        # mc.selectPref(clickDrag=1, q=1)
         mc.selectPref(clickDrag=state)
 
     def pickMaskCrv_BN_clicked(self):
@@ -496,15 +497,18 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def skin_oneClick(self):
 
         meshSel = common.getMeshBelow(MODEL_GRP)
-
-        # Bind to cloeset refJnt in MODEL_GRP
+        #
+        #   bind to closest refJnt in MODEL_GRP
+        #
         self.bindRefJnts(meshSel, closestSet=BIND_JNT_SET, threshold=15)
-
-        # Bind to _rbnJnt For each in MODEL GRP,
+        #
+        #   bind to _rbnJnt For each in MODEL GRP
+        #
         self.bindRbnJnts(meshSel)
-
-        # Search the attr rbSrf & rbJSet for each rigNode and attach joints
-        # to surface with 'closest point on surface' node
+        #
+        #   search the attr rbSrf & rbJSet for each rigNode and attach joints
+        #   to surface with 'closest point on surface' node
+        #
         self.autoAttachJntToSurf()
 
         common.setViewport()
@@ -513,7 +517,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def skin_delForAllMeshes(self):
         from nl_modules.nodel.mesh_node import MeshNode
 
-        # Collect all skincluster and delete
+        #
+        #   collect all skincluster and delete
+        #
         allSkin = []
         for m in set(mc.ls(type="mesh")):
             sk = MeshNode(m).skinCluster
@@ -541,8 +547,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         for rigNode in mc.ls("*RGN", type="script"):
             rN = DagNode(rigNode)
             if rN.a.nodeState.get() == 2:
-
-                # Process only if rbJntSet found
+                #
+                #   Process only if rbJntSet found
+                #
                 rbJntSetAttr = rN.a["rbJntSet"]
                 if rbJntSetAttr.exists():
 
@@ -550,8 +557,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                     if not rbSrfAttr.exists():
                         logging.info(f"Attr rbSrf NOT found in {rN}.")
                         continue
-
-                    # Check set rbJntSet
+                    #
+                    #   check set rbJntSet
+                    #
                     rbJntSetName = rbJntSetAttr.get()
                     rbJntSet = DagNode(rbJntSetName)
                     if not rbJntSet.exists():
@@ -562,14 +570,16 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                     if not rbJnts:
                         logging.info(f"No joints found in Set {rbJntSet}.")
                         continue
-
-                    # Check surface rbSrf
+                    #
+                    #   check surface rbSrf
+                    #
                     rbSrf = rbSrfAttr.inConnNode
                     if not rbSrf:
                         logging.info(f"Surface object NOT found.")
                         continue
-
-                    # Attach joints in set to srf
+                    #
+                    #   attach joints in set to srf
+                    #
                     if rbSrf and rbJnts:
                         common.ribbonAttach(
                             geo=rbSrf,
