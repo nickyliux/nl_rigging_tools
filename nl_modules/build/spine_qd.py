@@ -84,12 +84,8 @@ class SpineQd(RigModule):
         )
 
         scale = (rSz * 6, rSz * 6, rSz * 2)
-        self.fore_ctl = CurveNode(
-            "fore_ctl", pf=rID, shape="cube", scale=scale, color=22
-        )
-        self.base_ctl = CurveNode(
-            "base_ctl", pf=rID, shape="cube", scale=scale, color=22
-        )
+        self.fore_ctl = CurveNode("fore_ctl", pf=rID, shape="cube", scale=scale)
+        self.base_ctl = CurveNode("base_ctl", pf=rID, shape="cube", scale=scale)
         self.mid_ctl = CurveNode(
             "mid_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3
         )

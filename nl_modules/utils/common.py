@@ -201,19 +201,20 @@ def nlRivet(
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateU", coord[0])
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateV", coord[1])
         pinLocs.append(loc)
-
-        if i > 0:
-            pinLocs[i - 1].cstAim(
-                loc,
-                aim=(0, 1, 0),
-                u=(1, 0, 0),
-                wu=(0, 0, 1),
-                worldUpType="objectrotation",
-                worldUpObject=pinLocs[i - 1],
-            )
         if p:
             loc | p
-
+    #
+    #   no aim needed for rivet
+    #
+    # if i > 0:
+    #     pinLocs[i - 1].cstAim(
+    #         loc,
+    #         aim=(0, 1, 0),
+    #         u=(1, 0, 0),
+    #         wu=(0, 0, 1),
+    #         worldUpType="objectrotation",
+    #         worldUpObject=pinLocs[i - 1],
+    #     )
     return uvPinN, pinLocs
 
 
