@@ -128,9 +128,13 @@ class ArmBp(RigModule):
         self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=rSz * 1.5 * xDr)
         self.ikc.cv_rotate(0, 90, 0)
         self.palm_ikc = CurveNode(
-            "palm_ikc", pf=rID, shape="squareR", up="x", scale=rSz * 1.2 * xDr
+            "palm_ikc",
+            pf=rID,
+            shape="squareR",
+            up="x",
+            scale=rSz * 1.2 * xDr,
+            move=(xDr * rSz * 7, 0, 0),
         )
-        self.palm_ikc.cv_move(xDr * rSz * 7, 0, 0)
         self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz)
 
         self.rigNode.setMsg(

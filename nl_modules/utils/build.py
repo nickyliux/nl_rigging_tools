@@ -93,7 +93,7 @@ def preRig():
         ctl.a.showAttr(t=1, r=1)
 
     m2.a.add("proxy", k=0, attrType="bool", dv=1)
-    m2.a.add("debug", k=0, attrType="bool")
+    m2.a.add("debug", k=0, attrType="bool", dv=1)
 
 
 @Undo("buildSelOrAll")

@@ -188,10 +188,6 @@ class Tail(RigModule):
         for i in range(self.FK_BONE_NUM + 1):
             chainGrps[i].a.t >> self.fkCtl[i].offset.a.t
             chainGrps[i].a.r >> self.fkCtl[i].offset.a.r
-
-        # SurfNode(self.rbSrf2).weightTo(self.fkJnt)
-        # mc.delete(self.fkJnt)
-
         # ------------------------------------------
         # Build lowest ikCtl layer
         # ------------------------------------------
@@ -203,8 +199,8 @@ class Tail(RigModule):
                 scale=rSz / 2,
                 align=self.fkCtl[i],
                 p=self.fkCtl[i],
+                move=(0, rSz * 18, 0),
             )
-            ctl.cv_move(0, rSz * 18, 0)
             jnt = JointNode(f"{i}_offset_ikj", pf=rID, align=ctl, p=ctl, color=13)
 
             self.ikOffsetCtl.append(ctl)

@@ -70,9 +70,13 @@ class Hand(RigModule):
             ctlList = []
             for fgr in fgrs[:-1]:
                 ctl = CurveNode(
-                    fgr + "_ctl", shape="squareR", align=fgr, scale=rSz / 3, up="z"
+                    fgr + "_ctl",
+                    shape="squareR",
+                    align=fgr,
+                    scale=rSz / 3,
+                    up="z",
+                    move=(0, 0, xDr * rSz * -10),
                 )
-                ctl.cv_move(0, 0, xDr * rSz * -10)
                 ctlList.append(ctl)
             self.build_fk_with_ctl3(fgrs, ctlList, count=2, p=self.CTL_DATA)
             self.ctlsArr.append(ctlList)
