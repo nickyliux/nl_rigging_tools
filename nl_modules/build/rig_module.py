@@ -627,9 +627,7 @@ class RigModule(RigBase):
             preset = [dnW, bkW, upW, fwW]
         return preset
 
-    def build_autoAim(
-        self, startJ, endJ, fkc=None, ikc=None, ikcGim=None, setting=None
-    ):
+    def build_autoAim(self, startJ, endJ, fkc=None, ikc=None, ikcGim=None):
         """
         Setup auto clavicle / hip using simple ik and orient cst
         Limit on side is calculted with the uvPSD setup
@@ -641,10 +639,8 @@ class RigModule(RigBase):
         #   create aim chain
         #
         self.joints_am = common.extractSk([startJ, endJ], "_am", p=fkc.offset)
-        # self.joints_am[0].freezeXf()
-        base_loc = LocNode(
-            "base_loc", pf=rID, align=self.joints_am[0], p=fkc.offset, size=rSz
-        )
+        # "base_loc", pf=rID, align=self.joints_am[0], p=fkc.offset, size=rSz
+        base_loc = LocNode("base_loc", pf=rID, align=startJ, p=fkc.offset, size=rSz)
         #
         #   setup IK
         #
@@ -653,13 +649,13 @@ class RigModule(RigBase):
             pf=rID,
             sj=self.joints_am[0],
             ee=self.joints_am[1],
-            quat=1,
+            sol=1,
             p=self.RIG_DATA,
         )
         if ikcGim:
-            ikcGim.cstPoi(auto_ikH)
+            ikcGim.cstPoi(auto_ikH)  # , mo=1)
         else:
-            ikc.cstPoi(auto_ikH)
+            ikc.cstPoi(auto_ikH)  # , mo=1)
         auto_ikH.a.r.reset()
         #
         #   setup PSD & cst
@@ -732,7 +728,7 @@ class RigModule(RigBase):
             shape="cube",
             align=tgtJ,
             p=ctl_grp,
-            scale=(rSz / 2, rSz, rSz),
+            scale=(rSz / 5, rSz * 2, rSz * 2),
         )
         ctl_main.a.showAttr(t=1, r=1)
 

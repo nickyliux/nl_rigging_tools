@@ -4,9 +4,6 @@ from nl_modules.nodel.group_node import GroupNode
 from nl_modules.utils.color import Color
 import logging
 
-CDR = Color.D_RED
-CBL = Color.BLUE
-
 
 class JointNode(GroupNode):
     """Joint Node Class
@@ -125,15 +122,7 @@ class JointNode(GroupNode):
 
     @staticmethod
     def makeTwoJChain(
-        n,
-        align=None,
-        snap=None,
-        align_end=None,
-        pf="",
-        ofs=None,
-        r=1,
-        color=CDR,
-        p=None,
+        n, align=None, snap=None, align_end=None, pf="", ofs=None, r=1, color=4, p=None
     ):
         """Make two-joint chain according to aligning objects
         e.g.
@@ -263,7 +252,7 @@ class JointNode(GroupNode):
         """
         parentJ = None
         for s in mc.ls(sl=1):
-            j = JointNode(s + "_lineJnt", r=0, snap=s, p=parentJ, color=CBL)
+            j = JointNode(s + "_lineJnt", r=0, snap=s, p=parentJ, color=Color.BLUE)
             DagNode(s).cstPoi(j)
             parentJ = j
             j.a.showAttr()

@@ -78,13 +78,7 @@ class ArmBp(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        self.build_autoAim(
-            self.clavicle,
-            self.upr,
-            fkc=self.clavicle_fkc,
-            ikc=self.ikc,
-            setting=self.setting,
-        )
+        self.build_autoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
 
         self.bindJnts = []
         if self.RBN_BONES:

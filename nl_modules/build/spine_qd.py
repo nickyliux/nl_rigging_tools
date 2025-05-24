@@ -158,7 +158,7 @@ class SpineQd(RigModule):
             setting=self.setting,
         )
 
-        self.build_two_ik()
+        self.build_twoJ_ik()
 
         self.bindJnts.extend(self.rbJnts)
         self.build_volume(crvLenRatio)
@@ -343,24 +343,20 @@ class SpineQd(RigModule):
         ikH.hide()
         return crvLenRatio, spIkJnts, rbJnts
 
-    def build_two_ik(self):
+    def build_twoJ_ik(self):
         rID, rSz, xDr = self.getMyVar()
         #
         #   build chain from crv
         #
-        self.two_ikJnts = JointNode.createJntFrCrv(
-            self.LINE_GUIDE,
-            num=2,
-            name="two_ikj",
+        self.two_ikJnts = JointNode.makeTwoJChain(
+            "two_ikj",
             pf=rID,
-            aimV=(0, 0, 1),
-            upV=(0, 1, 0),
-            wuV=(0, 1, 0),
-            size=rSz * 20,
-            color=1,
+            align=self.RT_GUIDE,
+            align_end=self.TP_GUIDE,
             p=self.base_ctl,
+            r=rSz * 20,
+            color=1,
         )
-
         self.two_ikH = IkNode(
             "two_ikj",
             pf=rID,
