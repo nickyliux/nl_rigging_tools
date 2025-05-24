@@ -641,6 +641,7 @@ class RigModule(RigBase):
         #   create aim chain
         #
         self.joints_am = common.extractSk([startJ, endJ], "_am", p=fkc.offset)
+        # self.joints_am[0].freezeXf()
         base_loc = LocNode(
             "base_loc", pf=rID, align=self.joints_am[0], p=fkc.offset, size=rSz
         )
@@ -659,6 +660,7 @@ class RigModule(RigBase):
             ikcGim.cstPoi(auto_ikH)
         else:
             ikc.cstPoi(auto_ikH)
+        auto_ikH.a.r.reset()
         #
         #   setup PSD & cst
         #

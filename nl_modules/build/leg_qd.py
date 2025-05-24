@@ -122,7 +122,7 @@ class LegQd(RigModule):
             pf=rID,
             scale=xDr * rSz / 2,
         )
-        self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=rSz)
+        self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=rSz * 1.5)
         self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz)
         self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
 
