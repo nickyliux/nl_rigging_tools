@@ -113,6 +113,7 @@ class MarkingMenuRigging:
         mc.menuItem(p=freeze_MI, l="R", c=partial(frz_xform, "r"))
         mc.menuItem(p=freeze_MI, l="S", c=partial(frz_xform, "s"))
 
+        mc.menuItem(p=menu, l="Select Constrainer", c=select_cst_objects)
         mc.menuItem(p=menu, l="Match All", c=match_all)
         mc.menuItem(p=menu, l="Match Pos", c=match_pos)
         mc.menuItem(p=menu, l="Bind Skin", c=mc.SmoothBindSkin)
@@ -163,6 +164,14 @@ def add_last_crv_shapes(*args):
         last = DagNode(sel[-1])
         mc.parent(last.shape, sel[0], s=1, r=1)
         mc.delete(last)
+
+
+def select_cst_objects(*args):
+    sel = mc.ls(sl=1)
+    if sel:
+        cstObj = DagNode(sel[0]).getCstObjects()
+        if cstObj:
+            mc.select(cstObj)
 
 
 def add_ofs(*args):

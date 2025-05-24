@@ -400,16 +400,16 @@ class RigModule(RigBase):
         rID, rSz, xDr = self.getMyVar()
 
         for name, tgt in anchorDict.items():
-            loc = LocNode(name, pf=rID, size=rSz * 4, p=self.masterC)
+            loc = LocNode(name, pf=rID, size=rSz * 15, p=self.masterC)
             self.rigNode.setMsg({name: loc})
             if name.startswith("anchorM"):  # male color
                 loc.color = 18
                 tgt.cstPar(loc)
             elif name.startswith("anchorF"):  # female color
-                loc.color = 20
+                loc.color = 13
                 loc.alignTo(tgt)
                 loc.cstPar(tgt.offset, mo=1)
-            loc.hide()
+            # loc.hide()
 
     def add_ctl_set(self, tgtList):
         rID, rSz, xDr = self.getMyVar()
