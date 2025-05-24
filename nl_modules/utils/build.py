@@ -8,7 +8,7 @@ from nl_modules.nodel.base.dag_node import DagNode
 #
 from nl_modules.build.head import Head
 from nl_modules.build.neck_bp import NeckBp
-from nl_modules.build.spine_bp import Spine
+from nl_modules.build.spine_bp import SpineBp
 from nl_modules.build.arm_bp import ArmBp
 from nl_modules.build.hand import Hand
 
@@ -18,6 +18,7 @@ from nl_modules.build.neck_qd import NeckQd
 from nl_modules.build.spine_qd import SpineQd
 from nl_modules.build.tail_fk import TailFk
 from nl_modules.build.tail import Tail
+
 from nl_modules.build.rig_module import RigModule
 from contextlib import ContextDecorator
 
@@ -33,26 +34,16 @@ class Undo(ContextDecorator):
         mc.undoInfo(closeChunk=True)
 
 
-def getAnchors(rigNodes, name):
-    """Return objects from all rigNodes connected thru attr, starting with name
-    e.g.
-        spine0_RGN
-            AnchorM1 -> aa
-            AnchorF1 -> bb
-        lfLeg0_RGN
-            AnchorM1 -> cc
-
-        getAnchors('AnchorM')  # Return [aa, cc]
-        getAnchors('AnchorF')  # Return [bb]
-    """
+def getAnchors(rigNodes, startStr=""):
+    """Return objects from all rigNodes having attr starts with str"""
     linkedObjs = []
     for rigNode in rigNodes:
         rN = DagNode(rigNode)
         if rN.a.nodeState.get() == 2:
             userAttrs = rN.a.list(ud=1, at="message")
-            for ud in userAttrs:
-                obj = ud.inConnNode
-                if obj and type(obj) != list and ud.attr.startswith(name):
+            for uAttr in userAttrs:
+                obj = uAttr.inConnNode
+                if obj and type(obj) != list and uAttr.name.startswith(startStr):
                     linkedObjs.append(obj)
     return linkedObjs
 
@@ -169,16 +160,16 @@ def updateAnchorConn():
     if not rigNodes or len(rigNodes) < 2:
         return
 
-    maleAnchors = getAnchors(rigNodes, "anchorM")
-    femaleAnchors = getAnchors(rigNodes, "anchorF")
+    maleAnchors = getAnchors(rigNodes, startStr="anchorM")
+    femaleAnchors = getAnchors(rigNodes, startStr="anchorF")
     [fAnchor.removeCstNodes() for fAnchor in femaleAnchors]
 
     if femaleAnchors and maleAnchors:
         for fAnchor in femaleAnchors:
-            # ---------------------------------------------------------------
-            #  Find the closest male anchor for each female to constrain
-            #  Ignore those from the same rigNode
-            # ---------------------------------------------------------------
+            #
+            #   Find the closest male anchor for each female to constrain
+            #   Ignore those from the same rigNode
+            #
             distList = []
             [distList.append(fAnchor.o.distanceTo(m)) for m in maleAnchors]
             tgtID = distList.index(min(distList))
@@ -264,9 +255,9 @@ def updateSpaceSwitch():
 
     for ctl, spaceList, rigNode in spaceData:
         if ctl.a.space.exists():
-            # ------------------------------------
-            #   Delete space and related groups
-            # ------------------------------------
+            #
+            #   delete space and related groups
+            #
             ctl.a.space.delete()
             cstNode = ctl.parent.getCstNodes(cstType="parentConstraint")
             if cstNode:
@@ -276,26 +267,24 @@ def updateSpaceSwitch():
                         [mc.delete(g.parent) for g in spaceG]
                     else:
                         mc.delete(spaceG.parent)
-
-        # Collect space items
-        # e.g.
-        #   'COG': cog_ikc,
-        #   'master': master_ctl,
-        #   'arm': lf_arm_ikc
+        #
+        #   collect space items
+        #       'COG': cog_ikc,
+        #       'master': master_ctl,
+        #       'arm': lf_arm_ikc
+        #
         spaceDict = collectSpaceObj(rigNode)
-
-        # Filter non-existing item
-        # e.g.
-        #   'master': master_ctl,
-        #   'arm': lf_arm_ikc
-        # ------------------------------------
+        #
+        #   filter non-existing item
+        #       'master': master_ctl,
+        #       'arm': lf_arm_ikc
+        #
         resultDict = {}
         for s in spaceList:
             if s in spaceDict and spaceDict[s]:
                 resultDict[s] = spaceDict[s]
 
         if resultDict:
-            # print(ctl.name, resultDict)
             v = ctl.a["spaceType"]
 
             tgtCstType = "par"
@@ -326,16 +315,18 @@ def getSpaceObj(rigNode):
     """
     spaceDict = {}
     for udAttr in rigNode.a.list(ud=1):
-        if udAttr.attr.startswith("space_"):
+        if udAttr.name.startswith("space_"):
             obj = udAttr.inConnNode
             if obj and obj.exists():
-                spaceName = udAttr.attr.split("_")[1]
+                spaceName = udAttr.name.split("_")[1]
                 spaceDict[spaceName] = obj
     return spaceDict
 
 
 def collectSpaceObj(rigNode):
-    """Return space:obj dict for all rigNodes.
+    """
+    Return space:obj dict for all rigNodes.
+
     For cases like palm roll, driving rigNode updated second last
     For cases like arm poleVector, its rigNode is updated last
     e.g.
@@ -351,16 +342,17 @@ def collectSpaceObj(rigNode):
         if r != rigNode:
             spaceDict.update(getSpaceObj(DagNode(r)))
     #
-    #   Get driving rigNode
+    #   get all driving rigNodes
     #
-    femaleAnchors = getAnchors([rigNode], "anchorF")
+    femaleAnchors = getAnchors([rigNode], startStr="anchorF")
     if femaleAnchors:
         drivingAnchors = femaleAnchors[0].getCstObjects(cstType="parentConstraint")
         if drivingAnchors:
             drivingRN = getRigNode(drivingAnchors[0])
             spaceDict.update(getSpaceObj(drivingRN))
     #
-    #   lf & rt arm ctl can have the same 'arm' space, so update its rigNode at last
+    #   as lf & rt arm ctl can have the same 'arm' space
+    #   so its rigNode will be updated last
     #
     spaceDict.update(getSpaceObj(rigNode))
     return spaceDict
@@ -385,11 +377,11 @@ def collectSpaceData():
         rN = DagNode(r)
         for udAttr in rN.a.list(ud=1):
             #
-            #   Get spaceHolder* & spaceName*
+            #   get spaceHolder* & spaceName*
             #
-            if udAttr.attr.startswith("spaceHolder"):
+            if udAttr.name.startswith("spaceHolder"):
                 obj = udAttr.inConnNode
-                spaceNameAttr = rN.a["spaceName" + udAttr.attr[-1]]
+                spaceNameAttr = rN.a["spaceName" + udAttr.name[-1]]
                 if obj and obj.exists() and spaceNameAttr.exists():
                     ctlList.append(
                         (

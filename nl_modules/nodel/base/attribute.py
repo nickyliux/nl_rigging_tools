@@ -40,7 +40,7 @@ class Attribute:
         """Return path
         e.g. 'obj1.rx'
         """
-        attrPath = f"{self.node.path}.{self.attr}"
+        attrPath = f"{self.node.path}.{self.name}"
         if self.node.path and mc.objExists(attrPath):
             return attrPath
 
@@ -49,12 +49,12 @@ class Attribute:
         """Return full path
         e.g. '|obj1.rx'
         """
-        attrPath = f"{self.node.fullPath}.{self.attr}"
+        attrPath = f"{self.node.fullPath}.{self.name}"
         if self.node.fullPath and mc.objExists(attrPath):
             return attrPath
 
     @property
-    def attr(self):
+    def name(self):
         """Return attribute
         e.g. 'rx'
         """
@@ -70,7 +70,7 @@ class Attribute:
 
     def reset(self):
         """Reset to default value"""
-        dv = mc.attributeQuery(self.attr, node=self.node, listDefault=1)
+        dv = mc.attributeQuery(self.name, node=self.node, listDefault=1)
         mc.setAttr(self, *dv)
 
     @property
@@ -144,14 +144,14 @@ class Attribute:
             else:
                 return result
         else:
-            raise NameError(f'Attribute "{self.attr}" NOT found')
+            raise NameError(f'Attribute "{self.name}" NOT found')
 
     def query(self, **kwargs):
         """Query attribute data
         e.g.
             obj1.a.t.query(listChildren=1)  # tx, ty, tz
         """
-        return mc.attributeQuery(self.attr, node=self.node, **kwargs)
+        return mc.attributeQuery(self.name, node=self.node, **kwargs)
 
     def delete(self):
         """Delete attribute
@@ -176,7 +176,7 @@ class Attribute:
                                        (rx is the 1st child)
         """
         if other.__class__ != Attribute:
-            logging.error(f"Error: {self.attr} >> {other.name}")
+            logging.error(f"Error: {self.name} >> {other.name}")
             return
 
         if mc.isConnected(self, other, iuc=1):
@@ -319,7 +319,7 @@ class Attribute:
 
             if self.query(multi=1):
                 index = mc.getAttr(self, size=1)
-                chn = f"{self.attr}[{index}]"
+                chn = f"{self.name}[{index}]"
                 plug = self.node.a[chn]
 
             if isinstance(val, (int, float)):
@@ -420,7 +420,7 @@ class Attribute:
             indexInUsed = mc.getAttr(self, multiIndices=1)
             index = len(indexInUsed) if indexInUsed else 0
 
-            indexedAttr = f"{self.attr}[{index}]"
+            indexedAttr = f"{self.name}[{index}]"
             childAttr = self.query(listChildren=1)
             if childAttr:
                 return [self.node.a[indexedAttr + "." + a] for a in childAttr]

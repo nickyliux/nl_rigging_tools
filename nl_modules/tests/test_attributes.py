@@ -55,8 +55,8 @@ class Test_AttributeHolder_Main(Test_Attribute_Base):
         self.assertTrue(self.sphere.a.rx.__class__.__name__, "Attribute")
 
     def test_list(self):
-        self.assertEqual(self.sphere.a.list()[0].attr, "message")
-        self.assertEqual(self.sphere.a.list()[1].attr, "caching")
+        self.assertEqual(self.sphere.a.list()[0].name, "message")
+        self.assertEqual(self.sphere.a.list()[1].name, "caching")
         self.assertEqual(len(self.sphere.a.list()), 232)
 
     def test_add(self):
@@ -128,9 +128,9 @@ class Test_Attribute_Main(Test_Attribute_Base):
         self.assertEqual(self.sphere.a.rxx.fullPath, None)
 
     def test_attr(self):
-        self.assertEqual(self.sphere.a.s.attr, "s")
-        self.assertEqual(self.sphere.a.sx.attr, "sx")
-        self.assertEqual(self.sphere.a.sxx.attr, "sxx")
+        self.assertEqual(self.sphere.a.s.name, "s")
+        self.assertEqual(self.sphere.a.sx.name, "sx")
+        self.assertEqual(self.sphere.a.sxx.name, "sxx")
 
     def test_exists(self):
         self.assertTrue(self.sphere.a.r.exists())

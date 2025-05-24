@@ -1,14 +1,10 @@
+import maya.cmds as mc
+import logging
 import os
 import re
-import maya.cmds as mc
-
 from nl_modules.build.tpl_loader import TplLoader
-
 from nl_modules.nodel.base.dag_node import DagNode
-
 from nl_modules.utils import file
-
-import logging
 import nl_modules
 
 COMPONENT_DICT = {
@@ -139,9 +135,9 @@ def copyAttr(A, B, wsMirror=0, mirror=0, skipMasterXf=0):
         B.a.s.set(sx, sy, sz)
 
     udAttrs = A.a.list(ud=1, u=1) or []
-    for udA in udAttrs:
+    for ud in udAttrs:
         try:
-            B.a[udA.attr].set(udA.get())
+            B.a[ud.name].set(ud.get())
         except Exception as e:
             print(e)
 
@@ -220,7 +216,7 @@ def genAttrDict(obj):
         "s": obj.a.s.get(),
     }
     for ua in obj.a.list(ud=1, u=1) or []:
-        uaName = ua.attr
+        uaName = ua.name
         attrDict[uaName] = obj.a[uaName].get()
     return attrDict
 
@@ -234,7 +230,6 @@ def savePreset(fName):
         mc.confirmDialog(t="Info", m="No rigNode found.       \nSave ignored.", b="OK")
         return
 
-    # i = 0
     for rN in rigNodes:
         rN = DagNode(rN)
         rigID = rN.a.rigID.get()
@@ -242,9 +237,6 @@ def savePreset(fName):
             DagNode(obj) for obj in mc.ls(rigID + "_*_guide", type="transform")
         ]
         objsToSave.append(rN.a.moduleG.inConnNode)
-        # if i == 0:
-        #     objsToSave.append(DagNode("master2_ctl"))
-        #     i = 1
 
         guideDict = {}
         for obj in objsToSave:
