@@ -10,7 +10,7 @@ I had built a few biped autorig over the years. In production I find modularity 
 ### 2. Use of Framework
 For a long time I know nothing about framework. Thanks to the course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by Nick Hughes, I learn the way to write custom framework to build tools the professional way.
 ### 3. Use of Python
-I have autoRig written in MEL and Maxscript. I always want to rewrite them in Python, with more advanced features.
+I have autoRig written in MEL and Maxscript. I always want to rewrite them in Python, with more useful features.
 
 ## Components
 #### Neck / Spine
