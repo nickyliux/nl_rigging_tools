@@ -5,11 +5,11 @@
 There were time I worked on muscle simulation with Ziva horses. Rigging the "skeleton" was the first step that I found tricky but interesting. So how about rigging some other animals with skeleton ?
 
 ## Missions
-### Modular
+### 1. Modular
 I had built a few biped autorig over the years. In production I find modularity is better as I may need only an arm or leg in a shot. Building an entire rig and deleting unwanted part may break it somehow.
-### Use of framework
+### 2. Use of Framework
 For a long time I know nothing about framework. Thanks to the course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by Nick Hughes, I learn the way to write custom framework to build tools the professional way.
-### Use of Python
+### 3. Use of Python
 I have autoRig written in MEL and Maxscript. I always want to rewrite them in Python, with more advanced features.
 
 ## Components
