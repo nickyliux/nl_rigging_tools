@@ -8,7 +8,7 @@ There were time I worked on muscle simulation with Ziva horses. Rigging the "ske
 ### Modular
 I had built a few biped autorig over the years. In production I find modularity is better as I may need only an arm or leg in a shot. Building an entire rig and deleting unwanted part may break it somehow.
 ### Use of framework
-For a long time I know nothing about framework. Thanks to the course <b>[Python for Maya: Beginner to Advanced Rigging Automation](https://www.udemy.com/course/python-for-maya-beginner-to-advanced-rigging-automation){:target="_blank"}</b> by Nick Hughes, I learn the way to write custom framework to build tools the professional way.
+For a long time I know nothing about framework. Thanks to the course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by Nick Hughes, I learn the way to write custom framework to build tools the professional way.
 ### Use of Python
 I have autoRig written in MEL and Maxscript. I always want to rewrite them in Python, with more advanced features.
 
