@@ -108,3 +108,7 @@ classDiagram
 
 ## Support
 For more information, visit my blog at [www.nickyliu.com](http://www.nickyliu.com)
+
+
+## Reference
+[BoneClones](https://boneclones.com/category/all-zoology-skeletons/fields-of-study)
