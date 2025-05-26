@@ -31,6 +31,7 @@ class LegQd(RigModule):
         self.TOE_BONES = self.master_guide.a.toeBones.get()
         self.TWIST_BONES = self.master_guide.a.twistBones.get()
         self.KNEE_FIX = self.master_guide.a.kneeFix.get()
+        self.SCAPULAR_CTL = self.master_guide.a.scapularCtl.get()
         rID, rSz, xDr = self.getMyVar()
 
         self.FK_PART = GroupNode("FK", pf=rID, p=self.CTL_DATA)
@@ -74,6 +75,7 @@ class LegQd(RigModule):
         self.ikH1 = None
         self.ballG_ikc = None
         self.extra_ikc = None
+        self.scapularG = None
 
     def gen_guide_sk(self):
         self.gen_guide_sk_module(["hip", "upr", "lwr", "palm", "digit", "ball", "tip"])
@@ -106,9 +108,8 @@ class LegQd(RigModule):
             top=1,
             p=self.RIG_DATA,
         )
-        self.hip_fkc = CurveNode(
-            "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
-        )
+        self.hip_fkc = CurveNode("hip_fkc", pf=rID, up="-y", shape="cube", scale=rSz)
+        # "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
         self.upr_fkc = CurveNode("upr_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
         self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
         self.palm_fkc = CurveNode(
@@ -163,6 +164,8 @@ class LegQd(RigModule):
         # self.build_autoAim(
         #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
         # )
+        if self.SCAPULAR_CTL:
+            self.build_scapularCtl()
         self.singleBallCtl_setup()
 
         self.bindJnts = [self.hip, self.upr]
@@ -454,13 +457,47 @@ class LegQd(RigModule):
             ikJ = self.joints_ik[i]
             jnt = self.joints[i]
             common.cstMulti(fkJ, ikJ, jnt, w=fkIkBlend)
-
-        # Useful for fk ik switch popUp menu
+        #
+        #   add proxy attr for easy fk/ik switch
+        #
         for ctl in self.fkCtl + self.ikCtl + [self.smart_ctl]:
             ctl.a.addSep()
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
         GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.digit_fkc)
+
+    def build_scapularCtl(self):
+        """
+        Add leg lock, auto aim functions
+        """
+        rID, rSz, xDr = self.getMyVar()
+        #
+        #   add scapular group
+        #
+        self.scapularG = GroupNode(
+            "scapularCtl", pf=rID, align=self.joints[0], p=self.FK_PART, addOfs=1
+        )
+        self.fkCtl[0].offset | self.scapularG
+        #
+        #   create leg lock joint chain with ik
+        #
+        ofs = (xDr, 0, 0)
+        legLockJ = JointNode.makeTwoJChain(
+            "legLock", pf=rID, snap=self.ikc, ofs=ofs, p=self.ikc, r=rSz, color=13
+        )
+        self.joints[0].cstAim(legLockJ[0], keep=0)
+        self.joints[0].cstPoi(legLockJ[1], keep=0)
+        legLockJ[0].freezeXf()
+        IkNode(
+            "legLock", pf=rID, sj=legLockJ[0], ee=legLockJ[1], p=self.scapularG.offset
+        )
+        #
+        #   constraint
+        #
+        legLock = self.fkCtl[0].a.add("legLock", min=0, max=1)
+        common.cstMulti(
+            self.scapularG.offset, legLockJ[1], self.scapularG, w=legLock, cstType="poi"
+        )
 
     def singleBallCtl_setup(self):
         """Make ball ctl the single ctl in both FK IK"""
@@ -625,7 +662,8 @@ class LegQd(RigModule):
         self.rigNode.setMsg({"space_leg": self.ikH1.softJ[0]})
 
     def setup_anchor(self):
-        self.setup_anchor_module({"anchorF1": self.hip_fkc.offset})
+        anchor = self.scapularG if self.SCAPULAR_CTL else self.hip_fkc.offset
+        self.setup_anchor_module({"anchorF1": anchor})
 
     def post_setup(self):
         self.add_mirror_attr([self.ikc, self.ikc_gimbal, self.pvc, self.smart_ctl])
