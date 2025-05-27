@@ -31,7 +31,7 @@ class LegQd(RigModule):
         self.TOE_BONES = self.master_guide.a.toeBones.get()
         self.TWIST_BONES = self.master_guide.a.twistBones.get()
         self.KNEE_FIX = self.master_guide.a.kneeFix.get()
-        self.SCAPULAR_CTL = self.master_guide.a.scapularCtl.get()
+        self.SCAPULAR_EXTRA = self.master_guide.a.scapularExtra.get()
         rID, rSz, xDr = self.getMyVar()
 
         self.FK_PART = GroupNode("FK", pf=rID, p=self.CTL_DATA)
@@ -76,6 +76,7 @@ class LegQd(RigModule):
         self.ballG_ikc = None
         self.extra_ikc = None
         self.scapularG = None
+        self.scap_fkc = None
 
     def gen_guide_sk(self):
         self.gen_guide_sk_module(["hip", "upr", "lwr", "palm", "digit", "ball", "tip"])
@@ -109,14 +110,8 @@ class LegQd(RigModule):
             p=self.RIG_DATA,
         )
         self.hip_fkc = CurveNode(
-            "hip_fkc",
-            pf=rID,
-            shape="trapezoid2",
-            up="x",
-            scale=(-xDr * rSz, rSz / 2, -xDr * rSz),
-            move=(0, -xDr * rSz * 20, 0),
+            "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
         )
-        # "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
         self.upr_fkc = CurveNode("upr_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
         self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
         self.palm_fkc = CurveNode(
@@ -131,7 +126,7 @@ class LegQd(RigModule):
             scale=xDr * rSz / 2,
         )
         self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=rSz * 2)
-        self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz)
+        self.pvc = CurveNode("pvc", pf=rID, shape="triangleR", scale=rSz / 2)
         self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
 
         self.rigNode.setMsg(
@@ -148,6 +143,15 @@ class LegQd(RigModule):
                 "pvc": self.pvc,
             }
         )
+        if self.SCAPULAR_EXTRA:
+            self.scap_fkc = CurveNode(
+                "scap_fkc",
+                pf=rID,
+                shape="rotator",
+                up="x",
+                scale=(rSz * -xDr, rSz, rSz),
+                move=(rSz * 15 * -xDr, 0, 0),
+            )
 
     def build(self):
         """Build rig for joints
@@ -171,13 +175,20 @@ class LegQd(RigModule):
         # self.build_autoAim(
         #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
         # )
-        if self.SCAPULAR_CTL:
-            self.scapularG = self.build_scapularCtl(
-                ikc=self.ikc, fkc=self.fkCtl[0], jnt0=self.joints[0]
-            )
+        self.bindJnts = [self.upr]
+        if not self.SCAPULAR_EXTRA:
+            self.bindJnts.append(self.hip)
+
+        self.scapularG = self.build_scapularExtra(
+            ikc=self.ikc,
+            fkc=self.fkCtl[0],
+            jnts=self.joints,
+            advanced=self.SCAPULAR_EXTRA,
+            scap_fkc=self.scap_fkc,
+        )
+
         self.singleBallCtl_setup()
 
-        self.bindJnts = [self.hip, self.upr]
         if self.KNEE_FIX:
             self.boneFix_setup(self.lwr, self.palm)
 
@@ -309,6 +320,28 @@ class LegQd(RigModule):
         self.ikH1 = ikH1
         self.subCtl_setup(ballRollG, toeRollG, inRollG, outRollG, heelRollG)
         self.extra_roll_logic(ballRollG, extraRollG, self.IK_PART)
+
+    def blend_fk_ik(self):
+        rID, rSz, xDr = self.getMyVar()
+
+        self.setting | self.CTL_DATA
+        self.setting.snapTo(self.digit, offset=(rSz * xDr * 20, 0, 0))
+        self.palm.cstPar(self.setting, mo=1)
+
+        fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
+        for i in range(len(self.joints) - 1):
+            fkJ = self.joints_fk[i]
+            ikJ = self.joints_ik[i]
+            jnt = self.joints[i]
+            common.cstMulti(fkJ, ikJ, jnt, w=fkIkBlend)
+        #
+        #   add proxy attr for easy fk/ik switch
+        #
+        for ctl in self.fkCtl + self.ikCtl + [self.smart_ctl]:
+            ctl.a.addSep()
+            ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
+
+        GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.digit_fkc)
 
     def extra_roll_logic(self, ballRollG, extraRollG, grp):
         rID, rSz, xDr = self.getMyVar()
@@ -452,28 +485,6 @@ class LegQd(RigModule):
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
         self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
-
-    def blend_fk_ik(self):
-        rID, rSz, xDr = self.getMyVar()
-
-        self.setting | self.CTL_DATA
-        self.setting.snapTo(self.digit, offset=(rSz * xDr * 20, 0, 0))
-        self.palm.cstPar(self.setting, mo=1)
-
-        fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
-        for i in range(len(self.joints) - 1):
-            fkJ = self.joints_fk[i]
-            ikJ = self.joints_ik[i]
-            jnt = self.joints[i]
-            common.cstMulti(fkJ, ikJ, jnt, w=fkIkBlend)
-        #
-        #   add proxy attr for easy fk/ik switch
-        #
-        for ctl in self.fkCtl + self.ikCtl + [self.smart_ctl]:
-            ctl.a.addSep()
-            ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
-
-        GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.digit_fkc)
 
     def singleBallCtl_setup(self):
         """Make ball ctl the single ctl in both FK IK"""
@@ -621,6 +632,9 @@ class LegQd(RigModule):
         for ctl in self.all_bend or []:
             ctl.a.showAttr(t=1, r=1, s=1)
 
+        if self.SCAPULAR_EXTRA:
+            self.scap_fkc.a.showAttr(t=1, r=1)
+
     def setup_rotate_order(self):
         for c in self.fkCtl + self.ikCtl + [self.lwr]:
             c.a.ro.set(2)
@@ -638,8 +652,7 @@ class LegQd(RigModule):
         self.rigNode.setMsg({"space_leg": self.ikH1.softJ[0]})
 
     def setup_anchor(self):
-        anchor = self.scapularG if self.SCAPULAR_CTL else self.hip_fkc.offset
-        self.setup_anchor_module({"anchorF1": anchor})
+        self.setup_anchor_module({"anchorF1": self.scapularG.offset})
 
     def post_setup(self):
         self.add_mirror_attr([self.ikc, self.ikc_gimbal, self.pvc, self.smart_ctl])

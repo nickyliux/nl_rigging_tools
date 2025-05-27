@@ -79,7 +79,7 @@ class SpineQd(RigModule):
             shape="trapezoid",
             move=(0, 70 * rSz, 0),
             scale=(rSz, rSz * 2, rSz * 2),
-            color=20,
+            color=22,
             p=self.IK_PART,
         )
 

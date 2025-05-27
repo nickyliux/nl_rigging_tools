@@ -32,7 +32,7 @@ class LegBp(RigModule):
         self.TOE_BONES = self.master_guide.a.toeBones.get()
         self.TWIST_BONES = self.master_guide.a.twistBones.get()
         self.KNEE_FIX = self.master_guide.a.kneeFix.get()
-        self.SCAPULAR_CTL = self.master_guide.a.scapularCtl.get()
+        self.SCAPULAR_EXTRA = self.master_guide.a.scapularExtra.get()
 
         rID, rSz, xDr = self.getMyVar()
         hip_guide = DagNode(rID + "_hip_guide")
@@ -85,6 +85,7 @@ class LegBp(RigModule):
         self.ribbonLw = None
         self.toeIKHs = []
         self.scapularG = None
+        self.scap_fkc = None
 
     def gen_guide_sk(self):
         self.gen_guide_sk_module(["hip", "upr", "lwr", "palm", "ball", "tip"])
@@ -118,14 +119,8 @@ class LegBp(RigModule):
             p=self.CTL_DATA,
         )
         self.hip_fkc = CurveNode(
-            "hip_fkc",
-            pf=rID,
-            shape="trapezoid2",
-            up="x",
-            scale=(-xDr * rSz, rSz / 2, -xDr * rSz),
-            move=(0, -xDr * rSz * 20, 0),
+            "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
         )
-        # "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
         self.upr_fkc = CurveNode(
             "upr_fkc", pf=rID, shape="circleC", up="x", scale=rSz * -xDr
         )
@@ -159,6 +154,15 @@ class LegBp(RigModule):
                 "pvc": self.pvc,
             }
         )
+        if self.SCAPULAR_EXTRA:
+            self.scap_fkc = CurveNode(
+                "scap_fkc",
+                pf=rID,
+                shape="stickC",
+                up="x",
+                scale=(rSz * -xDr, rSz, rSz),
+                rotate=(90, 0, 0),
+            )
 
     def build(self):
         """Build rig for joints
@@ -180,12 +184,16 @@ class LegBp(RigModule):
         # self.build_autoAim(
         #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
         # )
-        if self.SCAPULAR_CTL:
-            self.scapularG = self.build_scapularCtl(
-                ikc=self.ikc, fkc=self.fkCtl[0], jnt0=self.joints[0]
-            )
-
         self.bindJnts = [self.hip]
+
+        self.scapularG = self.build_scapularExtra(
+            ikc=self.ikc,
+            fkc=self.fkCtl[0],
+            jnts=self.joints,
+            advanced=self.SCAPULAR_EXTRA,
+            scap_fkc=self.scap_fkc,
+        )
+
         if self.RBN_BONES:
             self.build_ribbon()
         else:
@@ -633,8 +641,7 @@ class LegBp(RigModule):
         self.rigNode.setMsg({"space_leg": self.ikH1.pvChainJ[0]})
 
     def setup_anchor(self):
-        anchor = self.scapularG if self.SCAPULAR_CTL else self.hip_fkc.offset
-        self.setup_anchor_module({"anchorF1": anchor})
+        self.setup_anchor_module({"anchorF1": self.scapularG.offset})
 
     def post_setup(self):
         self.add_mirror_attr([self.ikc, self.ikc_gimbal, self.smart_ctl])

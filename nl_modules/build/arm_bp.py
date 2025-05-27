@@ -144,7 +144,7 @@ class ArmBp(RigModule):
             self.build_twist_bones()
 
         if self.SCAPULAR_BONE:
-            self.build_scapular()
+            self.build_armScapular()
         else:
             self.bindJnts.append(self.clavicle)
 
@@ -305,7 +305,7 @@ class ArmBp(RigModule):
 
         GroupNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
 
-    def build_scapular(self):
+    def build_armScapular(self):
         rID, rSz, xDr = self.getMyVar()
         clavEnd_guide = DagNode(rID + "_clavEnd_guide")
         scapular_guide = DagNode(rID + "_scapular_guide")

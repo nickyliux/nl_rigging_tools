@@ -346,7 +346,7 @@
                 1.0,
                 1.0
             ],
-            "scapularCtl":false,
+            "scapularExtra":false,
             "t":[
                 19.650770053102452,
                 0.0,
@@ -1088,7 +1088,7 @@
                 1.0,
                 1.0
             ],
-            "scapularCtl":true,
+            "scapularExtra":true,
             "t":[
                 15.0,
                 0.0,
@@ -1936,7 +1936,7 @@
                 1.0,
                 1.0
             ],
-            "scapularCtl":false,
+            "scapularExtra":false,
             "t":[
                 -19.650770053102452,
                 0.0,
@@ -2678,7 +2678,7 @@
                 1.0,
                 1.0
             ],
-            "scapularCtl":true,
+            "scapularExtra":true,
             "t":[
                 -15.0,
                 0.0,
