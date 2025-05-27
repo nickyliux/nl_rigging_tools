@@ -70,39 +70,16 @@ class ArmBp(RigModule):
     def gen_guide_sk(self):
         self.gen_guide_sk_module(["clavicle", "upr", "lwr", "palm", "ball"])
 
-    def build(self):
-        self.build_module()
-        self.joints = self.rootJ.allChildrenJt2
-        self.clavicle, self.upr, self.lwr, self.palm, self.ball = self.joints
-        self.build_ctl()
-        self.build_fk()
-        self.build_ik()
-        self.blend_fk_ik()
-        # self.build_autoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
-
-        self.bindJnts = []
-        if self.RBN_BONES:
-            self.build_ribbon()
-        else:
-            self.bindJnts.append(self.upr)
-
-        if not self.RBN_BONES and not self.TWIST_BONES:
-            self.bindJnts.append(self.lwr)
-
-        if self.TWIST_BONES:
-            self.build_twist_bones()
-
-        if self.SCAPULAR_BONE:
-            self.build_scapular()
-        else:
-            self.bindJnts.append(self.clavicle)
-
-        self.post_setup()
-
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
         self.setting = CurveNode(
-            "setting", pf=rID, shape="stick", scale=rSz * xDr / 2, color=1, top=1
+            "setting",
+            pf=rID,
+            shape="sphere2",
+            scale=rSz * 2,
+            color=1,
+            top=1,
+            p=self.CTL_DATA,
         )
         self.clavicle_fkc = CurveNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
@@ -144,72 +121,34 @@ class ArmBp(RigModule):
             }
         )
 
-    def build_scapular(self):
-        rID, rSz, xDr = self.getMyVar()
-        clavEnd_guide = DagNode(rID + "_clavEnd_guide")
-        scapular_guide = DagNode(rID + "_scapular_guide")
+    def build(self):
+        self.build_module()
+        self.joints = self.rootJ.allChildrenJt2
+        self.clavicle, self.upr, self.lwr, self.palm, self.ball = self.joints
+        self.build_ctl()
+        self.build_fk()
+        self.build_ik()
+        self.blend_fk_ik()
+        # self.build_autoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
 
-        # scapular setup
-        scapularJnt = JointNode(
-            "scapular",
-            pf=rID,
-            align=scapular_guide,
-            r=rSz,
-            p=self.clavicle,
-            color=4,
-        )
-        scapularJnt.freezeXf()
-        scapularLoc = LocNode(
-            "scapularLoc", pf=rID, snap=clavEnd_guide, p=scapularJnt, size=rSz
-        )
-        twoJ = JointNode.makeTwoJChainFrz(
-            "clav",
-            pf=rID,
-            snap=self.clavicle,
-            aim=(xDr, 0, 0),
-            up=(0, xDr, 0),
-            p=self.clavicle,
-            r=rSz,
-            aimTgt=scapularLoc,
-        )
-        twoJ_ik = IkNode(
-            "ik",
-            sol=1,
-            pvc=scapularJnt,
-            pf=twoJ[0].name,
-            sj=twoJ[0],
-            ee=twoJ[1],
-            p=self.RIG_DATA,
-            vis=0,
-        )
-        scapularLoc.cstPoi(twoJ_ik)
-        self.clavBone = twoJ[0]
-        self.bindJnts.append(self.clavBone)
+        self.bindJnts = []
+        if self.RBN_BONES:
+            self.build_ribbon()
+        else:
+            self.bindJnts.append(self.upr)
 
-    def build_twist_bones(self):
-        rID, rSz, xDr = self.getMyVar()
-        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], color=4, scale=2)
-        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], color=4, scale=2)
+        if not self.RBN_BONES and not self.TWIST_BONES:
+            self.bindJnts.append(self.lwr)
 
-        (radius_JC[0], ulna_JC[0]) | self.lwr
+        if self.TWIST_BONES:
+            self.build_twist_bones()
 
-        radius_loc = LocNode(
-            "radius_loc", pf=rID, align=radius_JC[1], p=self.palm, size=rSz
-        )
-        ulna_loc = LocNode("ulna_loc", pf=rID, align=ulna_JC[1], p=self.palm, size=rSz)
-        radius_loc.cstPoi(radius_JC[1])
-        ulna_loc.cstPoi(ulna_JC[1])
+        if self.SCAPULAR_BONE:
+            self.build_scapular()
+        else:
+            self.bindJnts.append(self.clavicle)
 
-        uType = "objectrotation"
-        aim = (xDr, 0, 0)
-        z = (0, 0, 1)
-        radius_loc.cstAim(
-            radius_JC[0], worldUpType=uType, worldUpObject=self.palm, aim=aim, u=z, wu=z
-        )
-        ulna_loc.cstAim(
-            ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
-        )
-        self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
+        self.post_setup()
 
     def build_fk(self):
         rID, rSz, xDr = self.getMyVar()
@@ -322,10 +261,8 @@ class ArmBp(RigModule):
             "ballRoll", pf=rID, align=ball_guide, p=palmOut_loc, size=rSz
         )
 
-        self.setting | self.CTL_DATA
-        self.setting.alignTo(self.palm)
-        ofs = self.setting.addOffsetGrp()
-        self.palm.cstPar(ofs, mo=1)
+        self.setting.alignTo(self.palm, offset=(0, rSz * 15 * xDr, 0))
+        self.palm.cstPar(self.setting, mo=1)
 
         self.setting.a.addSep()
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
@@ -367,6 +304,73 @@ class ArmBp(RigModule):
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
         GroupNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
+
+    def build_scapular(self):
+        rID, rSz, xDr = self.getMyVar()
+        clavEnd_guide = DagNode(rID + "_clavEnd_guide")
+        scapular_guide = DagNode(rID + "_scapular_guide")
+
+        # scapular setup
+        scapularJnt = JointNode(
+            "scapular",
+            pf=rID,
+            align=scapular_guide,
+            r=rSz,
+            p=self.clavicle,
+            color=4,
+        )
+        scapularJnt.freezeXf()
+        scapularLoc = LocNode(
+            "scapularLoc", pf=rID, snap=clavEnd_guide, p=scapularJnt, size=rSz
+        )
+        twoJ = JointNode.makeTwoJChainFrz(
+            "clav",
+            pf=rID,
+            snap=self.clavicle,
+            aim=(xDr, 0, 0),
+            up=(0, xDr, 0),
+            p=self.clavicle,
+            r=rSz,
+            aimTgt=scapularLoc,
+        )
+        twoJ_ik = IkNode(
+            "ik",
+            sol=1,
+            pvc=scapularJnt,
+            pf=twoJ[0].name,
+            sj=twoJ[0],
+            ee=twoJ[1],
+            p=self.RIG_DATA,
+            vis=0,
+        )
+        scapularLoc.cstPoi(twoJ_ik)
+        self.clavBone = twoJ[0]
+        self.bindJnts.append(self.clavBone)
+
+    def build_twist_bones(self):
+        rID, rSz, xDr = self.getMyVar()
+        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], color=4, scale=2)
+        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], color=4, scale=2)
+
+        (radius_JC[0], ulna_JC[0]) | self.lwr
+
+        radius_loc = LocNode(
+            "radius_loc", pf=rID, align=radius_JC[1], p=self.palm, size=rSz
+        )
+        ulna_loc = LocNode("ulna_loc", pf=rID, align=ulna_JC[1], p=self.palm, size=rSz)
+        radius_loc.cstPoi(radius_JC[1])
+        ulna_loc.cstPoi(ulna_JC[1])
+
+        uType = "objectrotation"
+        aim = (xDr, 0, 0)
+        z = (0, 0, 1)
+        radius_loc.cstAim(
+            radius_JC[0], worldUpType=uType, worldUpObject=self.palm, aim=aim, u=z, wu=z
+        )
+        ulna_loc.cstAim(
+            ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
+        )
+        self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
 
     def build_ribbon(self):
         """
@@ -460,7 +464,8 @@ class ArmBp(RigModule):
 
         if self.RBN_BONES:
             self.ctl_vis_toggle(
-                self.setting.a.add("showRibbonCtl", min=0, max=1, dv=1, k=0),
+                # self.setting.a.add("bendyCtl", min=0, max=1, dv=1, k=0),
+                self.setting.a.add("bendyCtl", attrType="bool", dv=0),
                 onList=self.all_bend,
             )
         mc.hide(self.all_ikHs, self.joints_fk, self.joints_ik, self.joints_bf)

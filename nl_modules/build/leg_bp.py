@@ -349,6 +349,55 @@ class LegBp(RigModule):
 
         self.subCtl_setup(ballRollG, toeRollG, inRollG, outRollG, heelRollG)
 
+    def blend_fk_ik(self):
+        rID, rSz, xDr = self.getMyVar()
+
+        self.joints_bf = common.extractSk(
+            self.joints, "_bf", p=self.BF_PART, color=Color.L_GREY, r=4 * rSz
+        )
+
+        self.setting.alignTo(self.palm, offset=(0, rSz * 15 * -xDr, 0))
+        self.palm.cstPar(self.setting, mo=1)
+
+        self.setting.a.addSep()
+        fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
+        total = len(self.joints) - 1
+
+        for i in range(total):
+            fkj = self.joints_fk[i]
+            ikj = self.joints_ik[i]
+            bfj = self.joints_bf[i]
+            jnt = self.joints[i]
+            # common.cstMulti(fkj, ikj, bfj, w=fkIkBlend)
+            if i > 0:
+                # ut.blendN_(fkj.a.tx, ikj.a.tx, w=fkIkBlend) >> bfj.a.tx
+                ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> bfj.a.t
+                ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
+
+            if i == 0:
+                self.hip_fkc.cstPar(jnt, mo=1)
+                self.hip_fkc.cstPar(bfj, mo=1)
+                bfj.a.r >> jnt.a.r
+            elif i < total - 1:
+                bfj.a.t >> jnt.a.t
+                bfj.a.r >> jnt.a.r
+            else:
+                #   ballJ_bfj --> ball_fkc's parent
+                #   ball_fkc --> ball_jnt
+                self.ball_fkc.alignTo(self.ball, p=self.FK_PART)
+                ofg = self.ball_fkc.addOffsetGrp()
+                bfj.cstPar(ofg, mo=1)
+                self.ball_fkc.cstPar(jnt)
+
+        # self.hip_fkc.cstPar(self.joints_bf[0], mo=1)
+
+        # Useful for fk ik switch popUp menu
+        for ctl in self.fkCtl + self.ikCtl + [self.smart_ctl]:
+            ctl.a.addSep()
+            ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
+
+        GroupNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
+
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
         rID, rSz, xDr = self.getMyVar()
 
@@ -430,58 +479,6 @@ class LegBp(RigModule):
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
         self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
-
-    def blend_fk_ik(self):
-        rID, rSz, xDr = self.getMyVar()
-
-        self.joints_bf = common.extractSk(
-            self.joints, "_bf", p=self.BF_PART, color=Color.L_GREY, r=4 * rSz
-        )
-
-        # self.setting.alignTo(self.master_guide)
-        self.setting.alignTo(self.palm, offset=(0, rSz * 15 * -xDr, 0))
-        # ofs = self.setting.addOffsetGrp()
-        # self.ball.cstPar(ofs, mo=1)
-        self.palm.cstPar(self.setting, mo=1)
-
-        self.setting.a.addSep()
-        fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
-        total = len(self.joints) - 1
-
-        for i in range(total):
-            fkj = self.joints_fk[i]
-            ikj = self.joints_ik[i]
-            bfj = self.joints_bf[i]
-            jnt = self.joints[i]
-            # common.cstMulti(fkj, ikj, bfj, w=fkIkBlend)
-            if i > 0:
-                # ut.blendN_(fkj.a.tx, ikj.a.tx, w=fkIkBlend) >> bfj.a.tx
-                ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> bfj.a.t
-                ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
-
-            if i == 0:
-                self.hip_fkc.cstPar(jnt, mo=1)
-                self.hip_fkc.cstPar(bfj, mo=1)
-                bfj.a.r >> jnt.a.r
-            elif i < total - 1:
-                bfj.a.t >> jnt.a.t
-                bfj.a.r >> jnt.a.r
-            else:
-                #   ballJ_bfj --> ball_fkc's parent
-                #   ball_fkc --> ball_jnt
-                self.ball_fkc.alignTo(self.ball, p=self.FK_PART)
-                ofg = self.ball_fkc.addOffsetGrp()
-                bfj.cstPar(ofg, mo=1)
-                self.ball_fkc.cstPar(jnt)
-
-        # self.hip_fkc.cstPar(self.joints_bf[0], mo=1)
-
-        # Useful for fk ik switch popUp menu
-        for ctl in self.fkCtl + self.ikCtl + [self.smart_ctl]:
-            ctl.a.addSep()
-            ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
-
-        GroupNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
 
     def build_ribbon(self):
         """
@@ -586,9 +583,10 @@ class LegBp(RigModule):
         )
         if self.RBN_BONES:
             self.ctl_vis_toggle(
-                self.setting.a.add("showRibbonCtl", min=0, max=1, dv=1, k=0),
+                self.setting.a.add("bendyCtl", attrType="bool", dv=0),
                 onList=self.all_bend,
             )
+            # min=0, max=1, dv=1, k=0),
         mc.hide(self.all_ikHs, self.toeIKHs)
         mc.hide(self.joints_fk, self.joints_ik, self.joints_bf)
 

@@ -65,10 +65,8 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
         palm_fkc = rN.a.palm_fkc.inConnNode
         ikc = rN.a.ikc.inConnNode
         pvc = rN.a.pvc.inConnNode
-
         #
-        # To IK Mode
-        # Snap ikc to matchers under fkc
+        #   To IK Mode : Snap ikc to matchers under fkc
         #
         if toIKMode == 1:
             ikcMatcher = DagNode(ikc + "_matcher")
@@ -80,22 +78,26 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
             if ikc and pvc:
                 pos1 = upr.o.pos
                 pos2 = lwr.o.pos
-                # pos3 = palm_fkc.o.pos
-                pos3 = palm_bf.o.pos
+                pos3 = palm.o.pos
+
                 if smartCtl.exists():
                     smartCtl.resetXf()
-                ikc.alignTo(ikcMatcher)
-                pvc.a["fkPin"].set(0)
 
-                if pvc.a["pvPin"].get() > 0.5:
+                ikc.alignTo(ikcMatcher)
+
+                fkPin = pvc.a["fkPin"]
+                if fkPin.exists():
+                    fkPin.set(0)
+
+                pvPin = pvc.a["pvPin"]
+                if pvPin.exists() and pvPin.get() > 0.5:
                     pvc.alignTo(lwr)
                 else:
                     pvc_pos_grp = switchToFkIk_calcPvcPos(pos1, pos2, pos3)
                     pvc.snapTo(pvc_pos_grp)
                     pvc_pos_grp.delete()
         #
-        # To FK Mode
-        # Snap fkc to current limb
+        #   To FK Mode : Snap fkc to current limb
         #
         else:
             if upr_fkc and lwr_fkc and palm_fkc and upr and lwr and ikc:
