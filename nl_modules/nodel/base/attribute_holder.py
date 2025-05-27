@@ -10,9 +10,10 @@ class AttributeHolder:
     """
 
     def __init__(self, node):
-        if not mc.objExists(node):
-            node = None
-        self.node = node
+        if mc.objExists(node):
+            self.node = node
+        else:
+            self.node = None
 
     def __repr__(self):
         """Attribute_Holder('obj')"""

@@ -25,7 +25,7 @@ class LegQd(RigModule):
             rigNode = DagNode(rigNode)
 
         super().__init__(rigNode)
-        self.RBN_BONES = self.master_guide.a.rbnBones.get()
+        # self.RBN_BONES = self.master_guide.a.rbnBones.get()
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
         self.PATELLA_BONE = self.master_guide.a.patellaBone.get()
         self.TOE_BONES = self.master_guide.a.toeBones.get()
@@ -130,7 +130,7 @@ class LegQd(RigModule):
             pf=rID,
             scale=xDr * rSz / 2,
         )
-        self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=rSz * 1.5)
+        self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=rSz * 2)
         self.pvc = CurveNode("pvc", pf=rID, shape="locator", scale=rSz)
         self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
 
@@ -508,85 +508,85 @@ class LegQd(RigModule):
             mo=1,
         )
 
-    def build_ribbon(self):
-        """
-                    upr
-        upr_bend     --
-        mid_bend     lwr
-        lwr_bend     --
-                    foot
-        """
-        rID, rSz, xDr = self.getMyVar()
+    # def build_ribbon(self):
+    #     """
+    #                 upr
+    #     upr_bend     --
+    #     mid_bend     lwr
+    #     lwr_bend     --
+    #                 foot
+    #     """
+    #     rID, rSz, xDr = self.getMyVar()
 
-        num = self.RBN_JNT_NUM
-        scale = self.masterC.a["globalScale"]
-        data = self.RIG_DATA
-        g = self.PRX_GRP
+    #     num = self.RBN_JNT_NUM
+    #     scale = self.masterC.a["globalScale"]
+    #     data = self.RIG_DATA
+    #     g = self.PRX_GRP
 
-        pf = rID + "_up_"
-        ribbonUp = RibbonNode(
-            self.upr,
-            pf=pf,
-            rbJNum=num,
-            volMode=1,
-            scaleFix=scale,
-            p=data,
-            size=rSz,
-            proxyP=g,
-        )
-        pf = rID + "_lw_"
-        ribbonLw = RibbonNode(
-            self.lwr,
-            pf=pf,
-            rbJNum=num,
-            volMode=2,
-            scaleFix=scale,
-            p=data,
-            size=rSz,
-            proxyP=g,
-        )
-        # Upper Ribbon
-        # --------------------------------
-        self.upr.cstPoi(ribbonUp.stt_loc)
-        self.hip.cstOri(ribbonUp.stt_loc, mo=1)
-        # Lower Ribbon
-        # --------------------------------
-        self.palm.cstPar(ribbonLw.end_loc, mo=1)
-        # Ribbon Controls
-        # --------------------------------
+    #     pf = rID + "_up_"
+    #     ribbonUp = RibbonNode(
+    #         self.upr,
+    #         pf=pf,
+    #         rbJNum=num,
+    #         volMode=1,
+    #         scaleFix=scale,
+    #         p=data,
+    #         size=rSz,
+    #         proxyP=g,
+    #     )
+    #     pf = rID + "_lw_"
+    #     ribbonLw = RibbonNode(
+    #         self.lwr,
+    #         pf=pf,
+    #         rbJNum=num,
+    #         volMode=2,
+    #         scaleFix=scale,
+    #         p=data,
+    #         size=rSz,
+    #         proxyP=g,
+    #     )
+    #     # Upper Ribbon
+    #     # --------------------------------
+    #     self.upr.cstPoi(ribbonUp.stt_loc)
+    #     self.hip.cstOri(ribbonUp.stt_loc, mo=1)
+    #     # Lower Ribbon
+    #     # --------------------------------
+    #     self.palm.cstPar(ribbonLw.end_loc, mo=1)
+    #     # Ribbon Controls
+    #     # --------------------------------
 
-        # Bend Ctl Setup
-        upLoc = ribbonUp.mid_loc
-        lwLoc = ribbonLw.mid_loc
-        cData = self.CTL_DATA
-        upr_bend = CurveNode("upr_bend", pf=rID, align=upLoc, addOfs=1, p=cData)
-        lwr_bend = CurveNode("lwr_bend", pf=rID, align=lwLoc, addOfs=1, p=cData)
-        mid_bend = CurveNode("mid_bend", pf=rID, align=self.lwr, addOfs=1, p=cData)
+    #     # Bend Ctl Setup
+    #     upLoc = ribbonUp.mid_loc
+    #     lwLoc = ribbonLw.mid_loc
+    #     cData = self.CTL_DATA
+    #     upr_bend = CurveNode("upr_bend", pf=rID, align=upLoc, addOfs=1, p=cData)
+    #     lwr_bend = CurveNode("lwr_bend", pf=rID, align=lwLoc, addOfs=1, p=cData)
+    #     mid_bend = CurveNode("mid_bend", pf=rID, align=self.lwr, addOfs=1, p=cData)
 
-        self.all_bend = [upr_bend, lwr_bend, mid_bend]
-        for b in self.all_bend:
-            b(shape="square", up="x", color=Color.D_YELLOW, scale=rSz)
+    #     self.all_bend = [upr_bend, lwr_bend, mid_bend]
+    #     for b in self.all_bend:
+    #         b(shape="square", up="x", color=Color.D_YELLOW, scale=rSz)
 
-        upLoc.cstPar(upr_bend.offset, mo=1)
-        lwLoc.cstPar(lwr_bend.offset, mo=1)
-        upr_bend.cstParSca(upLoc.children[0], mo=1)
-        lwr_bend.cstParSca(lwLoc.children[0], mo=1)
+    #     upLoc.cstPar(upr_bend.offset, mo=1)
+    #     lwLoc.cstPar(lwr_bend.offset, mo=1)
+    #     upr_bend.cstParSca(upLoc.children[0], mo=1)
+    #     lwr_bend.cstParSca(lwLoc.children[0], mo=1)
 
-        self.lwr.cstPar(mid_bend.offset, mo=1)
-        mid_bend.cstParSca(ribbonUp.end_loc, mo=1)
+    #     self.lwr.cstPar(mid_bend.offset, mo=1)
+    #     mid_bend.cstParSca(ribbonUp.end_loc, mo=1)
 
-        stt_ofs = ribbonLw.stt_loc.addOffsetGrp(count=2)
-        mid_bend.cstParSca(stt_ofs[0], mo=1)
+    #     stt_ofs = ribbonLw.stt_loc.addOffsetGrp(count=2)
+    #     mid_bend.cstParSca(stt_ofs[0], mo=1)
 
-        if self.KNEE_FIX:
-            self.boneFix_sdk(self.lwr, stt_ofs[1])
+    #     if self.KNEE_FIX:
+    #         self.boneFix_sdk(self.lwr, stt_ofs[1])
 
-        # Add Ctl Attr to mid_bend
-        volPower = self.setting.a.add("volume", min=0, max=2, dv=1, k=0)
-        volPower >> ribbonUp.volPower
-        volPower >> ribbonLw.volPower
+    #     # Add Ctl Attr to mid_bend
+    #     volPower = self.setting.a.add("volume", min=0, max=2, dv=1, k=0)
+    #     volPower >> ribbonUp.volPower
+    #     volPower >> ribbonLw.volPower
 
-        self.add_bind_jnt_set(ribbonUp.rbJnt + ribbonLw.rbJnt)
+    #     self.add_bind_jnt_set(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def setup_proxy(self):
         for j in self.bindJnts:
