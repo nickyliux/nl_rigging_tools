@@ -32,6 +32,7 @@ class LegBp(RigModule):
         self.TOE_BONES = self.master_guide.a.toeBones.get()
         self.TWIST_BONES = self.master_guide.a.twistBones.get()
         self.KNEE_FIX = self.master_guide.a.kneeFix.get()
+        self.SCAPULAR_CTL = self.master_guide.a.scapularCtl.get()
 
         rID, rSz, xDr = self.getMyVar()
         hip_guide = DagNode(rID + "_hip_guide")
@@ -83,6 +84,7 @@ class LegBp(RigModule):
         self.ribbonUp = None
         self.ribbonLw = None
         self.toeIKHs = []
+        self.scapularG = None
 
     def gen_guide_sk(self):
         self.gen_guide_sk_module(["hip", "upr", "lwr", "palm", "ball", "tip"])
@@ -116,8 +118,14 @@ class LegBp(RigModule):
             p=self.CTL_DATA,
         )
         self.hip_fkc = CurveNode(
-            "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
+            "hip_fkc",
+            pf=rID,
+            shape="trapezoid2",
+            up="x",
+            scale=(-xDr * rSz, rSz / 2, -xDr * rSz),
+            move=(0, -xDr * rSz * 20, 0),
         )
+        # "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
         self.upr_fkc = CurveNode(
             "upr_fkc", pf=rID, shape="circleC", up="x", scale=rSz * -xDr
         )
@@ -169,9 +177,13 @@ class LegBp(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        self.build_autoAim(
-            self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
-        )
+        # self.build_autoAim(
+        #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
+        # )
+        if self.SCAPULAR_CTL:
+            self.scapularG = self.build_scapularCtl(
+                ikc=self.ikc, fkc=self.fkCtl[0], jnt0=self.joints[0]
+            )
 
         self.bindJnts = [self.hip]
         if self.RBN_BONES:
@@ -235,7 +247,7 @@ class LegBp(RigModule):
             self.ball_fkc,
         ]
         self.build_fk_with_ctl2(self.joints_fk[:-1], self.fkCtl[:-1], p=self.FK_PART)
-        self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
+        # self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
         rID, rSz, xDr = self.getMyVar()
@@ -623,7 +635,8 @@ class LegBp(RigModule):
         self.rigNode.setMsg({"space_leg": self.ikH1.pvChainJ[0]})
 
     def setup_anchor(self):
-        self.setup_anchor_module({"anchorF1": self.hip_fkc.offset})
+        anchor = self.scapularG if self.SCAPULAR_CTL else self.hip_fkc.offset
+        self.setup_anchor_module({"anchorF1": anchor})
 
     def post_setup(self):
         self.add_mirror_attr([self.ikc, self.ikc_gimbal, self.smart_ctl])

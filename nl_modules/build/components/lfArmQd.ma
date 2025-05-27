@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: lfArmQd.ma
-//Last modified: Mon, May 26, 2025 04:16:17 PM
+//Last modified: Mon, May 26, 2025 07:18:01 PM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "HIKSolverNode" -nodeType "HIKCharacterNode" -nodeType "HIKState2SK"
@@ -15,7 +15,7 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26100)";
-fileInfo "UUID" "24EF1082-4C6F-1719-E6B8-549211C84C00";
+fileInfo "UUID" "829ED63E-4CDE-13F2-82B7-E2B7EB35E5EE";
 createNode transform -n "module_grp";
 	rename -uid "3F6958F6-4253-676A-51E6-CA9FE9573FBE";
 	addAttr -ci true -sn "mirrorCode" -ln "mirrorCode" -dt "string";
@@ -41,7 +41,7 @@ createNode transform -n "master_guide" -p "module_grp";
 	setAttr -cb on ".toeBones" yes;
 	setAttr -cb on ".twistBones" yes;
 	setAttr -cb on ".kneeFix" yes;
-	setAttr -cb on ".scapularCtl";
+	setAttr -cb on ".scapularCtl" yes;
 createNode transform -n "hip_guide_ofs" -p "master_guide";
 	rename -uid "1B251669-4809-99CF-2AA5-B291D2C0C8FF";
 	setAttr ".t" -type "double3" 0 90 5 ;
@@ -2021,7 +2021,7 @@ createNode nurbsCurve -n "line_08Shape" -p "line_08";
 createNode transform -s -n "persp";
 	rename -uid "2CFF45DD-487A-9CD1-767B-A089B899D93C";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 240.73772452313742 135.41997611317515 173.47694073946676 ;
+	setAttr ".t" -type "double3" 240.81315495336412 138.71571202897363 170.83620990028339 ;
 	setAttr ".r" -type "double3" -21.938352728905549 -301.79999999997744 0 ;
 	setAttr -cb on ".ro";
 	setAttr ".rp" -type "double3" 9.0523144535836764e-12 -9.5923269327613525e-13 -1.4551915228366852e-11 ;
@@ -2125,20 +2125,20 @@ parent -s -nc -r -add "|module_grp|master_guide|toesRoot_guide|toesRoot_guide_of
 parent -s -nc -r -add "|module_grp|master_guide|toesRoot_guide|toesRoot_guide_ofs|toe00_2_guide_ZRO|toe00_2_guide|toe00_2_guideShape" "toe03_2_guide" ;
 parent -s -nc -r -add "|module_grp|master_guide|toesRoot_guide|toesRoot_guide_ofs|toe00_2_guide_ZRO|toe00_2_guide|toe00_2_guideShape" "toe04_2_guide" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "A40A3FF6-4075-E5A6-F052-C4B915A0D5D7";
+	rename -uid "759996E2-4E0B-A586-B509-F4A542810A99";
 	setAttr -s 2 ".lnk";
 	setAttr -s 2 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "F69B82D3-41F5-3D7F-79C0-53BBFD2AB1B3";
+	rename -uid "B51BB121-401B-AF90-686D-249264599765";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "64CF0F92-4AA3-C073-7799-80BA033B5885";
+	rename -uid "26ABE3B3-4D0B-4E92-C564-BBB49995FA25";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "680F0F74-4401-2EEE-72B0-40BF7B4B2EBD";
+	rename -uid "4F962714-4C14-FAD3-1DD2-DA8AFCBB4B9D";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "BC19330E-4E8B-4910-BB8A-238FB66CBBA1";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "9BB71C2E-41B7-669D-CF40-6DBA481A9179";
+	rename -uid "94871153-4B10-3B2C-CFCC-6AA91C1C156F";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "47ABDCF5-4400-C307-437A-E4AF35DAB19B";
 	setAttr ".g" yes;

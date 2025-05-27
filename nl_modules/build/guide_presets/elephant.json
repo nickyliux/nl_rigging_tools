@@ -225,10 +225,6 @@
             ]
         },
         "lfLegBp0_master_guide":{
-            "autoBkWeight":0.5,
-            "autoDnWeight":0.10000000149011612,
-            "autoFwWeight":0.800000011920929,
-            "autoUpWeight":0.800000011920929,
             "kneeFix":false,
             "patellaBone":false,
             "r":[
@@ -243,6 +239,7 @@
                 2.4,
                 2.4
             ],
+            "scapularCtl":false,
             "t":[
                 37.014562611460136,
                 0.0,
@@ -970,10 +967,6 @@
             ]
         },
         "lfLegBp1_master_guide":{
-            "autoBkWeight":0.5,
-            "autoDnWeight":0.10000000149011612,
-            "autoFwWeight":0.800000011920929,
-            "autoUpWeight":0.800000011920929,
             "kneeFix":false,
             "patellaBone":false,
             "r":[
@@ -988,6 +981,7 @@
                 2.5887027437591166,
                 2.5887027437591166
             ],
+            "scapularCtl":true,
             "t":[
                 46.12099106950509,
                 0.0,
@@ -1821,10 +1815,6 @@
             ]
         },
         "rtLegBp0_master_guide":{
-            "autoBkWeight":0.5,
-            "autoDnWeight":0.10000000149011612,
-            "autoFwWeight":0.800000011920929,
-            "autoUpWeight":0.800000011920929,
             "kneeFix":false,
             "patellaBone":false,
             "r":[
@@ -1839,6 +1829,7 @@
                 2.4,
                 2.4
             ],
+            "scapularCtl":false,
             "t":[
                 -37.014562611460136,
                 0.0,
@@ -2566,10 +2557,6 @@
             ]
         },
         "rtLegBp1_master_guide":{
-            "autoBkWeight":0.5,
-            "autoDnWeight":0.10000000149011612,
-            "autoFwWeight":0.800000011920929,
-            "autoUpWeight":0.800000011920929,
             "kneeFix":false,
             "patellaBone":false,
             "r":[
@@ -2584,6 +2571,7 @@
                 2.5887027437591166,
                 2.5887027437591166
             ],
+            "scapularCtl":true,
             "t":[
                 -46.12099106950509,
                 0.0,

@@ -252,7 +252,6 @@ class IkNode(DagNode):
             d1 \   |   > Di[1]
                    J2
         """
-        # from nl_modules.nodel.loc_node import LocNode
         if not self.ikc:
             logging.error("ikc undefined !")
             return
@@ -278,7 +277,7 @@ class IkNode(DagNode):
 
         if pvPin:
             #
-            #   With Pv pinning
+            #   Pv pinning
             #
             if not self.pvc:
                 logging.error("pvc undefined !")
@@ -333,18 +332,16 @@ class IkNode(DagNode):
         """
         from nl_modules.nodel.joint_node import JointNode
 
-        dist = self.sj.o.distanceTo(self.ee)
-        softJ = JointNode.makeTwoJChain(
+        softJ = JointNode.makeTwoJChainFrz(
             "softJ",
             pf=self.pf,
             snap=self.sj,
-            ofs=(self.xDir * dist, 0, 0),
-            r=dist / 100,
+            aim=(self.xDir, 0, 0),
+            up=(0, self.xDir, 0),
             p=softParent,
+            aimTgt=self.ee,
+            color=22,
         )
-        self.ee.cstAim(softJ[0], aim=(self.xDir, 0, 0), keep=False)
-        softJ[0].freezeXf()
-
         ikH = IkNode(
             "soft",
             pf=softJ[0].name,
@@ -369,14 +366,17 @@ class IkNode(DagNode):
         """Build a two-joint chain for pv space"""
         from nl_modules.nodel.joint_node import JointNode
 
-        dist = self.sj.o.distanceTo(self.ee)
-        ofs = (self.xDir * dist, 0, 0)
-        pvChainJ = JointNode.makeTwoJChain(
-            "pvChainJ", pf=self.pf, snap=self.sj, ofs=ofs, p=self.sj.parent, r=self.rSz
+        pvChainJ = JointNode.makeTwoJChainFrz(
+            "pvChainJ",
+            pf=self.pf,
+            snap=self.sj,
+            p=self.sj.parent,
+            r=self.rSz,
+            aim=(self.xDir, 0, 0),
+            up=(0, self.xDir, 0),
+            aimTgt=self.ee,
+            color=5,
         )
-        self.ee.cstAim(pvChainJ[0], aim=(self.xDir, 0, 0), keep=False)
-        pvChainJ[0].freezeXf()
-
         pinIk = IkNode(
             "pvChain",
             pf=pvChainJ[0].name,
@@ -394,17 +394,17 @@ class IkNode(DagNode):
             self.a.dTwistControlEnable.set(1)
             if upAxis == "z":
                 self.a.dWorldUpAxis.set(3)
-            # ----------------
-            # One ctl
-            # ----------------
+            #
+            #   1 ctl
+            #
             if len(driver) == 1:
                 self.a.dWorldUpType.set(3)
                 driver[0].a.worldMatrix >> self.a.dWorldUpMatrix
                 if upAxis == "z":
                     self.a.dWorldUpVector.set(0, 0, 1)
-            # ----------------
-            # Two ctl
-            # ----------------
+            #
+            #   2 ctl
+            #
             elif len(driver) == 2:
                 self.a.dWorldUpType.set(4)
                 driver[0].a.worldMatrix >> self.a.dWorldUpMatrix

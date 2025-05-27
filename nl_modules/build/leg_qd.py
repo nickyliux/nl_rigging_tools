@@ -108,7 +108,14 @@ class LegQd(RigModule):
             top=1,
             p=self.RIG_DATA,
         )
-        self.hip_fkc = CurveNode("hip_fkc", pf=rID, up="-y", shape="cube", scale=rSz)
+        self.hip_fkc = CurveNode(
+            "hip_fkc",
+            pf=rID,
+            shape="trapezoid2",
+            up="x",
+            scale=(-xDr * rSz, rSz / 2, -xDr * rSz),
+            move=(0, -xDr * rSz * 20, 0),
+        )
         # "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
         self.upr_fkc = CurveNode("upr_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
         self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
@@ -165,7 +172,9 @@ class LegQd(RigModule):
         #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
         # )
         if self.SCAPULAR_CTL:
-            self.build_scapularCtl()
+            self.scapularG = self.build_scapularCtl(
+                ikc=self.ikc, fkc=self.fkCtl[0], jnt0=self.joints[0]
+            )
         self.singleBallCtl_setup()
 
         self.bindJnts = [self.hip, self.upr]
@@ -213,7 +222,7 @@ class LegQd(RigModule):
             self.ball_fkc,
         ]
         self.build_fk_with_ctl2(self.joints_fk, self.fkCtl, p=self.FK_PART)
-        self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
+        # self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
         rID, rSz, xDr = self.getMyVar()
@@ -465,39 +474,6 @@ class LegQd(RigModule):
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
         GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.digit_fkc)
-
-    def build_scapularCtl(self):
-        """
-        Add leg lock, auto aim functions
-        """
-        rID, rSz, xDr = self.getMyVar()
-        #
-        #   add scapular group
-        #
-        self.scapularG = GroupNode(
-            "scapularCtl", pf=rID, align=self.joints[0], p=self.FK_PART, addOfs=1
-        )
-        self.fkCtl[0].offset | self.scapularG
-        #
-        #   create leg lock joint chain with ik
-        #
-        ofs = (xDr, 0, 0)
-        legLockJ = JointNode.makeTwoJChain(
-            "legLock", pf=rID, snap=self.ikc, ofs=ofs, p=self.ikc, r=rSz, color=13
-        )
-        self.joints[0].cstAim(legLockJ[0], keep=0)
-        self.joints[0].cstPoi(legLockJ[1], keep=0)
-        legLockJ[0].freezeXf()
-        IkNode(
-            "legLock", pf=rID, sj=legLockJ[0], ee=legLockJ[1], p=self.scapularG.offset
-        )
-        #
-        #   constraint
-        #
-        legLock = self.fkCtl[0].a.add("legLock", min=0, max=1)
-        common.cstMulti(
-            self.scapularG.offset, legLockJ[1], self.scapularG, w=legLock, cstType="poi"
-        )
 
     def singleBallCtl_setup(self):
         """Make ball ctl the single ctl in both FK IK"""

@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: rtArmQd.ma
-//Last modified: Mon, May 26, 2025 04:16:43 PM
+//Last modified: Mon, May 26, 2025 07:18:08 PM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,7 +12,7 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26100)";
-fileInfo "UUID" "00598325-4607-88C8-D747-BF954FB03C77";
+fileInfo "UUID" "DC0EA097-4FFB-855A-EAC5-F49709DE466D";
 createNode transform -n "module_grp";
 	rename -uid "3F6958F6-4253-676A-51E6-CA9FE9573FBE";
 	addAttr -ci true -sn "mirrorCode" -ln "mirrorCode" -dt "string";
@@ -38,7 +38,7 @@ createNode transform -n "master_guide" -p "module_grp";
 	setAttr -cb on ".toeBones" yes;
 	setAttr -cb on ".twistBones" yes;
 	setAttr -cb on ".kneeFix" yes;
-	setAttr -cb on ".scapularCtl";
+	setAttr -cb on ".scapularCtl" yes;
 createNode transform -n "hip_guide_ofs" -p "master_guide";
 	rename -uid "1B251669-4809-99CF-2AA5-B291D2C0C8FF";
 	setAttr ".t" -type "double3" 0 90 5 ;
@@ -2119,20 +2119,20 @@ parent -s -nc -r -add "|module_grp|master_guide|rtLeg0_toesRoot_guide_ofs|toesRo
 parent -s -nc -r -add "|module_grp|master_guide|rtLeg0_toesRoot_guide_ofs|toesRoot_guide|toesRoot_guide_ofs|toe00_2_guide_ZRO|toe00_2_guide|toe00_2_guideShape" "toe04_2_guide" ;
 parent -s -nc -r -add "|module_grp|master_guide|rtLeg0_toesRoot_guide_ofs|toesRoot_guide|toesRoot_guide_ofs|toe00_2_guide_ZRO|toe00_2_guide|toe00_2_guideShape" "toe02_2_guide" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "E3BD5269-4E9D-E7CD-E834-50B5455B80B3";
+	rename -uid "560D6574-4987-54A8-E782-6581A8E55BCD";
 	setAttr -s 2 ".lnk";
 	setAttr -s 2 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "882607CF-481C-0247-02AE-51ADBA7F5A24";
+	rename -uid "12275886-45CD-5D37-DA85-86B547D76EDE";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "527C5AB9-460A-FF7B-1C18-75B9DE6359AC";
+	rename -uid "4F4040A6-426C-8949-1C6F-2684E3EB5A5A";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "0E4826E4-4B2D-CFBD-532F-C4BA4013AFAC";
+	rename -uid "CE95FE4C-4B4F-0A3F-A999-82B25539B7F6";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "BC19330E-4E8B-4910-BB8A-238FB66CBBA1";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "196ECFF4-4604-B735-EB42-EEBDDC07B9A6";
+	rename -uid "E360002A-4866-FB36-6B41-B0837332BDFE";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "47ABDCF5-4400-C307-437A-E4AF35DAB19B";
 	setAttr ".g" yes;

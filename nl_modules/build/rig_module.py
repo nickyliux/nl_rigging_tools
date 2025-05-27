@@ -639,7 +639,6 @@ class RigModule(RigBase):
         #   create aim chain
         #
         self.joints_am = common.extractSk([startJ, endJ], "_am", p=fkc.offset)
-        # "base_loc", pf=rID, align=self.joints_am[0], p=fkc.offset, size=rSz
         base_loc = LocNode("base_loc", pf=rID, align=startJ, p=fkc.offset, size=rSz)
         #
         #   setup IK
@@ -653,9 +652,9 @@ class RigModule(RigBase):
             p=self.RIG_DATA,
         )
         if ikcGim:
-            ikcGim.cstPoi(auto_ikH)  # , mo=1)
+            ikcGim.cstPoi(auto_ikH)
         else:
-            ikc.cstPoi(auto_ikH)  # , mo=1)
+            ikc.cstPoi(auto_ikH)
         auto_ikH.a.r.reset()
         #
         #   setup PSD & cst
@@ -670,7 +669,6 @@ class RigModule(RigBase):
             preset=self.get_autoAim_preset(),
             p=self.CTL_DATA,
         )
-        # setting=setting,
 
         fkc_ofs = fkc.addOffsetGrp()
         common.cstMulti(
@@ -699,12 +697,68 @@ class RigModule(RigBase):
         auto_ikH.hide()
         # self.joints_am[0].hide()
 
+    def build_scapularCtl(self, ikc=None, fkc=None, jnt0=None):
+        """
+        Add leg lock, auto aim functions
+        """
+        from nl_modules.nodel.ik_node import IkNode
+
+        rID, rSz, xDr = self.getMyVar()
+        #
+        #   add scapular group
+        #
+        mainGrp = GroupNode("scapularCtl", pf=rID, align=jnt0, p=self.FK_PART, addOfs=1)
+        fkc.offset | mainGrp
+        #
+        #   leg lock joint chain with ik and point cst
+        #
+        legLockJ = JointNode.makeTwoJChainFrz(
+            "legLock",
+            pf=rID,
+            snap=ikc,
+            aim=(xDr, 0, 0),
+            up=(0, xDr, 0),
+            p=ikc,
+            r=rSz * 3,
+            color=11,
+            aimTgt=jnt0,
+        )
+        IkNode(
+            "legLock", pf=rID, sj=legLockJ[0], ee=legLockJ[1], p=mainGrp.offset, vis=0
+        )
+        legLock = fkc.a.add("legLock", min=0, max=1)
+        common.cstMulti(mainGrp.offset, legLockJ[1], mainGrp, w=legLock, cstType="poi")
+        #
+        #   auto aim joint chain with ik and parent cst
+        #
+        autoAimJ = JointNode.makeTwoJChainFrz(
+            "autoAim",
+            pf=rID,
+            snap=jnt0,
+            aim=(xDr, 0, 0),
+            up=(0, xDr, 0),
+            p=mainGrp.offset,
+            r=rSz * 2,
+            color=26,
+            aimTgt=ikc,
+        )
+        IkNode("autoAimJ", pf=rID, sj=autoAimJ[0], ee=autoAimJ[1], p=ikc, vis=0)
+        autoAim = fkc.a.add("autoAim", min=0, max=1, dv=0.5)
+        common.cstMulti(
+            mainGrp.offset,
+            autoAimJ[0],
+            mainGrp,
+            w=autoAim,
+            cstType="parR",
+            mo=1,
+        )
+        mc.hide(legLockJ, autoAimJ)
+        return mainGrp
+
     # @staticmethod
     def build_uvPSD(
         self, tgtJ=None, ikc=None, ikcGim=None, ctlNum=1, cst=None, preset=None, p=None
     ):
-        # setting=None,
-        # size=1,
         """
         Create uv based pose base setup, useful for corrective blendshape fix
         or auto clav or hip
@@ -716,8 +770,9 @@ class RigModule(RigBase):
             return
 
         rID, rSz, xDr = self.getMyVar()
-
-        # create group & loc
+        #
+        #   create group & loc
+        #
         tgtJ_child = tgtJ.children[0]
         psd_grp = GroupNode("PSD", pf=rID, p=p)
         psd_loc = LocNode("psd_loc_#", pf=rID, align=tgtJ_child, p=psd_grp)

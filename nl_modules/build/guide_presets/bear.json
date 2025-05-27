@@ -332,10 +332,6 @@
             ]
         },
         "lfLegBp0_master_guide":{
-            "autoBkWeight":0.30000001192092896,
-            "autoDnWeight":0.10000000149011612,
-            "autoFwWeight":0.5,
-            "autoUpWeight":0.5,
             "kneeFix":true,
             "patellaBone":false,
             "r":[
@@ -350,6 +346,7 @@
                 1.0,
                 1.0
             ],
+            "scapularCtl":false,
             "t":[
                 19.650770053102452,
                 0.0,
@@ -1077,10 +1074,6 @@
             ]
         },
         "lfLegBp1_master_guide":{
-            "autoBkWeight":0.30000001192092896,
-            "autoDnWeight":0.10000000149011612,
-            "autoFwWeight":0.5,
-            "autoUpWeight":0.5,
             "kneeFix":true,
             "patellaBone":false,
             "r":[
@@ -1095,6 +1088,7 @@
                 1.0,
                 1.0
             ],
+            "scapularCtl":true,
             "t":[
                 15.0,
                 0.0,
@@ -1928,10 +1922,6 @@
             ]
         },
         "rtLegBp0_master_guide":{
-            "autoBkWeight":0.30000001192092896,
-            "autoDnWeight":0.10000000149011612,
-            "autoFwWeight":0.5,
-            "autoUpWeight":0.5,
             "kneeFix":true,
             "patellaBone":false,
             "r":[
@@ -1946,6 +1936,7 @@
                 1.0,
                 1.0
             ],
+            "scapularCtl":false,
             "t":[
                 -19.650770053102452,
                 0.0,
@@ -2673,10 +2664,6 @@
             ]
         },
         "rtLegBp1_master_guide":{
-            "autoBkWeight":0.30000001192092896,
-            "autoDnWeight":0.10000000149011612,
-            "autoFwWeight":0.5,
-            "autoUpWeight":0.5,
             "kneeFix":true,
             "patellaBone":false,
             "r":[
@@ -2691,6 +2678,7 @@
                 1.0,
                 1.0
             ],
+            "scapularCtl":true,
             "t":[
                 -15.0,
                 0.0,

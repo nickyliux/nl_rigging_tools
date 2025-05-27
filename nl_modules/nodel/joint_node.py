@@ -143,6 +143,42 @@ class JointNode(GroupNode):
         return [j0, j1]
 
     @staticmethod
+    def makeTwoJChainFrz(
+        n,
+        align=None,
+        snap=None,
+        align_end=None,
+        pf="",
+        aim=(1, 0, 0),
+        up=(0, 1, 0),
+        r=1,
+        color=4,
+        p=None,
+        aimTgt=None,
+    ):
+        """Make two-joint chain according to aligning objects
+        e.g.
+            makeTwoJChain('myJ')
+            makeTwoJChain('myJ', snap=pt1, ofs=(1,0,0))
+        """
+        j0 = JointNode(n, pf=pf, r=r, color=color, p=p)
+        j1 = JointNode(n + "_end", pf=pf, r=r, color=color, p=j0)
+
+        if align:
+            j0.alignTo(align)
+        if snap:
+            j0.snapTo(snap)
+        if align_end:
+            j1.alignTo(align_end)
+        if aim:
+            j1.a.t.set(*aim)
+
+        aimTgt.cstAim(j0, keep=0, aim=aim, u=up)
+        aimTgt.cstPoi(j1, keep=0)
+        j0.freezeXf()
+        return [j0, j1]
+
+    @staticmethod
     def createJntFrCrv(
         crv,
         chain=1,
@@ -189,7 +225,7 @@ class JointNode(GroupNode):
             )
             poci.a.position >> loc.a.translate
 
-            aimCst.a.aimVector.set(0, 0, 1)
+            aimCst.a.aimVector.set(*aimV)
             aimCst.a.constraintRotateX >> loc.a.rx
             aimCst.a.constraintRotateY >> loc.a.ry
             aimCst.a.constraintRotateZ >> loc.a.rz

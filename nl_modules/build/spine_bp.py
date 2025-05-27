@@ -86,8 +86,8 @@ class SpineBp(RigModule):
             num=self.FK_JNT_NUM,
             pf=rID,
             aimV=(0, 1, 0),
-            upV=(0, 0, 1),
-            wuV=(0, 0, 1),
+            upV=(1, 0, 0),
+            wuV=(1, 0, 0),
             size=rSz * 2,
             color=6,
             p=self.SKL_DATA,
@@ -106,7 +106,6 @@ class SpineBp(RigModule):
                 color=22,
             )
             self.fkCtls.append(c)
-
         self.build_fk_with_ctl2(self.fkJnts[1:], self.fkCtls[1:], p=self.CTL_DATA)
 
         hipCtl = self.fkCtls[0]

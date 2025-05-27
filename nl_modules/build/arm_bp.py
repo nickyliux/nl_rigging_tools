@@ -78,7 +78,7 @@ class ArmBp(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        self.build_autoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
+        # self.build_autoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
 
         self.bindJnts = []
         if self.RBN_BONES:
@@ -162,16 +162,16 @@ class ArmBp(RigModule):
         scapularLoc = LocNode(
             "scapularLoc", pf=rID, snap=clavEnd_guide, p=scapularJnt, size=rSz
         )
-
-        # clav chain
-        dist = self.clavicle.o.distanceTo(scapularLoc)
-        ofs = (xDr * dist, 0, 0)
-        twoJ = JointNode.makeTwoJChain(
-            "clav", pf=rID, snap=self.clavicle, ofs=ofs, p=self.clavicle, r=rSz
+        twoJ = JointNode.makeTwoJChainFrz(
+            "clav",
+            pf=rID,
+            snap=self.clavicle,
+            aim=(xDr, 0, 0),
+            up=(0, xDr, 0),
+            p=self.clavicle,
+            r=rSz,
+            aimTgt=scapularLoc,
         )
-        scapularLoc.cstAim(twoJ[0], aim=(xDr, 0, 0), u=(0, xDr, 0), keep=False)
-        twoJ[0].freezeXf()
-
         twoJ_ik = IkNode(
             "ik",
             sol=1,
