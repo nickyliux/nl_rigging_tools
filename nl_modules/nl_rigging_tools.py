@@ -170,6 +170,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.shapeRotaX_BN.clicked.connect(partial(self.shapeRota, 90, 0, 0))
         self.UI.shapeRotaY_BN.clicked.connect(partial(self.shapeRota, 0, 90, 0))
         self.UI.shapeRotaZ_BN.clicked.connect(partial(self.shapeRota, 0, 0, 90))
+        self.UI.onTop_BN.clicked.connect(partial(self.alwaysOnTop, 1))
+        self.UI.onTopOff_BN.clicked.connect(partial(self.alwaysOnTop, 0))
 
         self.rigNode_refresh_BN_clicked()
         self.preset_refresh_BN_clicked()
@@ -194,6 +196,10 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             sel = DagNode(sel)
             if sel.type == "nurbsCurve":
                 CurveNode(sel).cv_rotate(*args)
+
+    def alwaysOnTop(self, value):
+        for sel in mc.ls(sl=1):
+            DagNode(sel).shape.a.alwaysDrawOnTop.set(value)
 
     def shapeScale(self, value):
         for sel in mc.ls(sl=1, tr=1):
