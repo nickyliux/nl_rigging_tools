@@ -29,6 +29,7 @@ class LegQd(RigModule):
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
         self.PATELLA_BONE = self.master_guide.a.patellaBone.get()
         self.TOE_BONES = self.master_guide.a.toeBones.get()
+        self.TOE_NUM = self.master_guide.a.toeNum.get()
         self.TWIST_BONES = self.master_guide.a.twistBones.get()
         self.KNEE_FIX = self.master_guide.a.kneeFix.get()
         self.SCAPULAR_EXTRA = self.master_guide.a.scapularExtra.get()
@@ -92,6 +93,13 @@ class LegQd(RigModule):
                 ["toe03_1", "toe03_2", "toe03_3", "toe03_4", "toe03_5"],
                 ["toe04_1", "toe04_2", "toe04_3", "toe04_4", "toe04_5"],
             ]
+            if self.TOE_NUM == 2:
+                toe_names = toe_names[2:4]
+            elif self.TOE_NUM == 3:
+                toe_names = toe_names[2:5]
+            elif self.TOE_NUM == 4:
+                toe_names = toe_names[1:5]
+
             for names in toe_names:
                 fgr_jnts = self.gen_sk_fr_names(names, scale=1.2)
                 fgr_jnts[0].freezeXf()
@@ -215,7 +223,7 @@ class LegQd(RigModule):
             for rJ in self.toesRootJ.childrenJt:
                 self.toesJntList.append([fgr for fgr in rJ.allChildrenJt2])
                 rJ.a.segmentScaleCompensate.set(0)
-            self.digits_setup()
+            self.build_digits()
         else:
             self.bindJnts.extend([self.palm, self.digit, self.ball])
 
@@ -419,7 +427,7 @@ class LegQd(RigModule):
         -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry  # self.ikc.a["toeTwist"]
         -xDr * self.smart_ctl.a.rz >> self.smart_ctl.a["footBank"]
 
-    def digits_setup(self):
+    def build_digits(self):
         rID, rSz, xDr = self.getMyVar()
 
         self.toesCtlsList = []

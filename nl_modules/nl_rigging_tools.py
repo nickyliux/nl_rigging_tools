@@ -639,8 +639,20 @@ mc.evalDeferred("reloadMenus()")
 mc.scriptJob(permanent=1, runOnce=1, event=["SelectionChanged", "reloadMenusAutorig"])
 
 """
-import importlib
-from nl_modules import nl_rigging_tools
-importlib.reload(nl_rigging_tools)
-nl_rigging_tools.main()
+    import importlib
+    from nl_modules import nl_rigging_tools
+    importlib.reload(nl_rigging_tools)
+    nl_rigging_tools.main()
+"""
+"""
+    toeNum = DagNode('master_guide').a.toeNum
+    cond = (toeNum <= 4)
+    for c in mc.ls('toe00_*_guide', 'toe_line_grp1'):
+        cond >> DagNode(c).a.v
+    cond = (toeNum <= 3)
+    for c in mc.ls('toe04_*_guide', 'toe_line_grp5'):
+        cond >> DagNode(c).a.v
+    cond = (toeNum <= 2)
+    for c in mc.ls('toe01_*_guide', 'toe_line_grp2'):
+        cond >> DagNode(c).a.v
 """
