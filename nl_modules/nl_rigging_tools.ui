@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>439</width>
-    <height>749</height>
+    <height>827</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -220,7 +220,7 @@ Mesh(es)</string>
        <x>0</x>
        <y>100</y>
        <width>211</width>
-       <height>141</height>
+       <height>111</height>
       </rect>
      </property>
      <property name="title">
@@ -229,10 +229,10 @@ Mesh(es)</string>
      <widget class="QPushButton" name="misc_buildJntLineSel_BN">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>40</y>
-        <width>193</width>
-        <height>16</height>
+        <x>110</x>
+        <y>20</y>
+        <width>95</width>
+        <height>15</height>
        </rect>
       </property>
       <property name="font">
@@ -245,7 +245,7 @@ Mesh(es)</string>
        <string>Build joint line for selected objects</string>
       </property>
       <property name="text">
-       <string>Build Joint Line</string>
+       <string>+ Joint Line</string>
       </property>
      </widget>
      <widget class="QPushButton" name="misc_buildLineSel_BN">
@@ -253,8 +253,8 @@ Mesh(es)</string>
        <rect>
         <x>10</x>
         <y>20</y>
-        <width>193</width>
-        <height>16</height>
+        <width>95</width>
+        <height>15</height>
        </rect>
       </property>
       <property name="font">
@@ -267,14 +267,14 @@ Mesh(es)</string>
        <string>Build line for selected objects</string>
       </property>
       <property name="text">
-       <string>Build Line</string>
+       <string>+ Line</string>
       </property>
      </widget>
      <widget class="QPushButton" name="misc_importEnvAndShd_BN">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>70</y>
+        <y>40</y>
         <width>193</width>
         <height>17</height>
        </rect>
@@ -293,7 +293,7 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>142</x>
-        <y>120</y>
+        <y>90</y>
         <width>60</width>
         <height>15</height>
        </rect>
@@ -321,7 +321,7 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>77</x>
-        <y>120</y>
+        <y>90</y>
         <width>60</width>
         <height>15</height>
        </rect>
@@ -349,7 +349,7 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>120</y>
+        <y>90</y>
         <width>60</width>
         <height>15</height>
        </rect>
@@ -377,7 +377,7 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>100</y>
+        <y>70</y>
         <width>191</width>
         <height>16</height>
        </rect>
@@ -391,9 +391,9 @@ Mesh(es)</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>250</y>
+       <y>230</y>
        <width>211</width>
-       <height>351</height>
+       <height>371</height>
       </rect>
      </property>
      <property name="title">
@@ -405,7 +405,7 @@ Mesh(es)</string>
         <x>7</x>
         <y>40</y>
         <width>198</width>
-        <height>301</height>
+        <height>321</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -625,7 +625,7 @@ Mesh(es)</string>
         <x>144</x>
         <y>90</y>
         <width>62</width>
-        <height>41</height>
+        <height>22</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -817,9 +817,9 @@ Mesh(es)</string>
      <widget class="QPushButton" name="preset_importSkel_BN">
       <property name="geometry">
        <rect>
-        <x>144</x>
-        <y>114</y>
-        <width>62</width>
+        <x>145</x>
+        <y>224</y>
+        <width>30</width>
         <height>16</height>
        </rect>
       </property>
@@ -854,15 +854,15 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>144</x>
-        <y>169</y>
+        <y>114</y>
         <width>62</width>
-        <height>16</height>
+        <height>22</height>
        </rect>
       </property>
       <property name="maximumSize">
        <size>
         <width>9999</width>
-        <height>16</height>
+        <height>9999</height>
        </size>
       </property>
       <property name="text">
@@ -873,15 +873,15 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>144</x>
-        <y>189</y>
+        <y>170</y>
         <width>62</width>
-        <height>16</height>
+        <height>22</height>
        </rect>
       </property>
       <property name="maximumSize">
        <size>
         <width>9999</width>
-        <height>16</height>
+        <height>9999</height>
        </size>
       </property>
       <property name="font">
@@ -900,9 +900,9 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>144</x>
-        <y>66</y>
+        <y>47</y>
         <width>62</width>
-        <height>41</height>
+        <height>22</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -936,15 +936,15 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>144</x>
-        <y>149</y>
+        <y>142</y>
         <width>62</width>
-        <height>16</height>
+        <height>22</height>
        </rect>
       </property>
       <property name="maximumSize">
        <size>
         <width>9999</width>
-        <height>16</height>
+        <height>9999</height>
        </size>
       </property>
       <property name="text">
@@ -954,7 +954,7 @@ Mesh(es)</string>
      <widget class="QPushButton" name="component_exploreSkel_BN">
       <property name="geometry">
        <rect>
-        <x>175</x>
+        <x>179</x>
         <y>224</y>
         <width>25</width>
         <height>16</height>
@@ -994,7 +994,7 @@ Mesh(es)</string>
         <x>144</x>
         <y>19</y>
         <width>62</width>
-        <height>41</height>
+        <height>22</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -1060,8 +1060,8 @@ Mesh(es)</string>
       <font>
        <family>Segoe UI</family>
        <pointsize>8</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
      <property name="toolTip">
@@ -1082,7 +1082,7 @@ or groups containing them</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>580</y>
+       <y>586</y>
        <width>195</width>
        <height>17</height>
       </rect>
@@ -1124,7 +1124,7 @@ or groups containing them</string>
        <x>10</x>
        <y>570</y>
        <width>195</width>
-       <height>8</height>
+       <height>5</height>
       </rect>
      </property>
      <property name="value">
@@ -1511,7 +1511,7 @@ or groups containing them</string>
       <property name="font">
        <font>
         <family>Segoe UI</family>
-        <pointsize>12</pointsize>
+        <pointsize>8</pointsize>
         <weight>50</weight>
         <bold>false</bold>
        </font>
@@ -1523,7 +1523,7 @@ or groups containing them</string>
        <string notr="true"/>
       </property>
       <property name="text">
-       <string>-</string>
+       <string>Size &lt;</string>
       </property>
      </widget>
      <widget class="QPushButton" name="shapeScaleUp_BN">
@@ -1547,7 +1547,7 @@ or groups containing them</string>
       <property name="font">
        <font>
         <family>Segoe UI</family>
-        <pointsize>12</pointsize>
+        <pointsize>8</pointsize>
         <weight>50</weight>
         <bold>false</bold>
        </font>
@@ -1559,7 +1559,79 @@ or groups containing them</string>
        <string notr="true"/>
       </property>
       <property name="text">
-       <string>+</string>
+       <string>Size &gt;</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="onTop_BN">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>92</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>8</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>Scale down</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>On Top</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="onTopOff_BN">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>106</x>
+        <y>60</y>
+        <width>92</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>8</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>Scale down</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>On Top X</string>
       </property>
      </widget>
     </widget>
