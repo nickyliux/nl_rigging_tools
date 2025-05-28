@@ -105,13 +105,20 @@ class LegQd(RigModule):
             pf=rID,
             shape="sphere2",
             scale=rSz * 2,
-            color=1,
+            color=25,
             top=1,
             p=self.RIG_DATA,
         )
         self.hip_fkc = CurveNode(
-            "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr * 0.8
+            "hip_fkc",
+            pf=rID,
+            up="x",
+            shape="trapezoid2",
+            scale=(rSz * -xDr * 2, rSz, rSz * 2),
         )
+        # self.hip_fkc = CurveNode(
+        #     "hip_fkc", pf=rID, up="-y", shape="stick", scale=rSz * xDr * 0.8
+        # )
         self.upr_fkc = CurveNode("upr_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
         self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
         self.palm_fkc = CurveNode(
@@ -147,10 +154,9 @@ class LegQd(RigModule):
             self.scap_fkc = CurveNode(
                 "scap_fkc",
                 pf=rID,
-                shape="rotator",
-                up="x",
-                scale=(rSz * -xDr, rSz, rSz),
-                move=(rSz * 15 * -xDr, 0, 0),
+                shape="triangleR",
+                scale=(rSz / 4, rSz / 4, rSz / 4 * xDr),
+                move=(rSz * 40 * -xDr, 0, 0),
             )
 
     def build(self):

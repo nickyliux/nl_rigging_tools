@@ -115,12 +115,19 @@ class LegBp(RigModule):
             pf=rID,
             shape="sphere2",
             scale=-rSz * 2,
-            color=1,
+            color=25,
             p=self.CTL_DATA,
         )
         self.hip_fkc = CurveNode(
-            "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
+            "hip_fkc",
+            pf=rID,
+            up="x",
+            shape="trapezoid2",
+            scale=(rSz * -xDr * 2, rSz, rSz * 2),
         )
+        # self.hip_fkc = CurveNode(
+        #     "hip_fkc", pf=rID, up="-y", shape="stick", scale=rSz * xDr
+        # )
         self.upr_fkc = CurveNode(
             "upr_fkc", pf=rID, shape="circleC", up="x", scale=rSz * -xDr
         )
@@ -158,10 +165,10 @@ class LegBp(RigModule):
             self.scap_fkc = CurveNode(
                 "scap_fkc",
                 pf=rID,
-                shape="stickC",
+                shape="rotator",
                 up="x",
                 scale=(rSz * -xDr, rSz, rSz),
-                rotate=(90, 0, 0),
+                move=(rSz * 40 * -xDr, 0, 0),
             )
 
     def build(self):

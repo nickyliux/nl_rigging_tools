@@ -37,18 +37,6 @@ class Head(RigModule):
         rt_eye = self.gen_sk_fr_names("rt_eye")[0]
         (lf_eye, rt_eye) | self.rootJ
 
-    def build(self):
-        self.build_module()
-        self.joints = self.rootJ.allChildrenJt2
-        self.head, self.headEnd, self.jaw, self.jawEnd, self.lf_eye, self.rt_eye = (
-            self.joints
-        )
-        self.bindJnts = [self.head, self.jaw]
-        self.build_ctl()
-        self.fkCtl = [self.head_fkc, self.jaw_fkc]
-        self.build_fk()
-        self.post_setup()
-
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
         self.head_fkc = CurveNode(
@@ -66,6 +54,18 @@ class Head(RigModule):
                 "jaw_fkc": self.jaw_fkc,
             }
         )
+
+    def build(self):
+        self.build_module()
+        self.joints = self.rootJ.allChildrenJt2
+        self.head, self.headEnd, self.jaw, self.jawEnd, self.lf_eye, self.rt_eye = (
+            self.joints
+        )
+        self.bindJnts = [self.head, self.jaw]
+        self.build_ctl()
+        self.fkCtl = [self.head_fkc, self.jaw_fkc]
+        self.build_fk()
+        self.post_setup()
 
     def build_fk(self):
         # rID, rSz, xDr = self.getMyVar()

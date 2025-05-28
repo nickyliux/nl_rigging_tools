@@ -66,7 +66,7 @@ class SpineQd(RigModule):
             pf=rID,
             shape="sphere2",
             scale=rSz * 2,
-            color=1,
+            color=25,
             top=1,
             p=self.IK_PART,
         )

@@ -41,6 +41,30 @@ class Tail(RigModule):
     def gen_guide_sk(self):
         self.gen_guide_sk_module(["rt", "md", "tp"])
 
+    def build_ctl(self):
+        rID, rSz, xDr = self.getMyVar()
+
+        self.setting = CurveNode(
+            "setting",
+            pf=rID,
+            shape="sphere2",
+            scale=rSz * 3,
+            color=25,
+            top=1,
+            p=self.CTL_DATA,
+        )
+        self.setting.a.add("stretchy", min=0, max=1)
+        moduleScale = self.setting.a.add("moduleScale", min=0.01, dv=1)
+        moduleScale >> self.IK_PART.a.s
+        moduleScale >> self.FK_PART.a.s
+        moduleScale >> self.PRX_GRP.a.s
+
+        self.rigNode.setMsg(
+            {
+                "setting": self.setting,
+            }
+        )
+
     def build(self):
         rID, rSz, xDr = self.getMyVar()
         self.build_module()
@@ -67,30 +91,6 @@ class Tail(RigModule):
         )
         self.bindJnts = self.rbJnts
         self.post_setup()
-
-    def build_ctl(self):
-        rID, rSz, xDr = self.getMyVar()
-
-        self.setting = CurveNode(
-            "setting",
-            pf=rID,
-            shape="sphere2",
-            scale=rSz * 3,
-            color=1,
-            top=1,
-            p=self.CTL_DATA,
-        )
-        self.setting.a.add("stretchy", min=0, max=1)
-        moduleScale = self.setting.a.add("moduleScale", min=0.01, dv=1)
-        moduleScale >> self.IK_PART.a.s
-        moduleScale >> self.FK_PART.a.s
-        moduleScale >> self.PRX_GRP.a.s
-
-        self.rigNode.setMsg(
-            {
-                "setting": self.setting,
-            }
-        )
 
     def build_ik(self):
         rID, rSz, xDr = self.getMyVar()
