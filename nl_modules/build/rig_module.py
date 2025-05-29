@@ -701,45 +701,41 @@ class RigModule(RigBase):
         self, ikc=None, fkc=None, jnts=None, advanced=0, scap_fkc=None
     ):
         """
-        Add leg lock, auto aim functions
+        Add scapular functions
         """
         from nl_modules.nodel.ik_node import IkNode
 
         rID, rSz, xDr = self.getMyVar()
+        hipJ = jnts[0]
+        uprJ = jnts[1]
         #
         #   add scapular group
         #
-        mainGrp = GroupNode("quadScap", pf=rID, align=jnts[0], p=self.FK_PART, addOfs=1)
+        mainGrp = GroupNode("quadScap", pf=rID, align=hipJ, p=self.FK_PART, addOfs=1)
         fkc.offset | mainGrp
         #
         #   add auto aim function
         #
-        autoAimJ = JointNode.makeTwoJChainFrz(
+        j0, j1 = JointNode.makeTwoJC2(
             "autoAim",
             pf=rID,
-            snap=jnts[0],
+            snap=hipJ,
             aim=(xDr, 0, 0),
             up=(0, xDr, 0),
             p=mainGrp.offset,
             r=rSz * 3,
-            color=26,
+            color=6,
             aimTgt=ikc,
         )
-        IkNode("autoAimJ", pf=rID, sj=autoAimJ[0], ee=autoAimJ[1], p=ikc, vis=0)
-        autoAim = fkc.a.add("autoAim", min=0, max=1)
-        common.cstMulti(
-            mainGrp.offset,
-            autoAimJ[0],
-            mainGrp,
-            w=autoAim,
-            cstType="parR",
-            mo=1,
-        )
+        autoAimJ_ikh = IkNode("autoAimJ", pf=rID, sj=j0, ee=j1, p=ikc, quat=1, vis=0)
+        autoAim = fkc.a.add("autoAim", min=0, max=1, dv=0.3)
+        common.cstMulti(mainGrp.offset, j0, mainGrp, w=autoAim, cstType="parR", mo=1)
+
         if advanced:
             #
             #   add leg lock function
             #
-            legLockJ = JointNode.makeTwoJChainFrz(
+            j0, j1 = JointNode.makeTwoJC2(
                 "legLock",
                 pf=rID,
                 snap=ikc,
@@ -748,38 +744,32 @@ class RigModule(RigBase):
                 p=ikc,
                 r=rSz * 2,
                 color=13,
-                aimTgt=jnts[0],
+                aimTgt=hipJ,
             )
-            IkNode(
-                "legLock",
-                pf=rID,
-                sj=legLockJ[0],
-                ee=legLockJ[1],
-                p=mainGrp.offset,
-                vis=0,
+            legLock_ikh = IkNode(
+                "legLock", pf=rID, sj=j0, ee=j1, quat=1, p=mainGrp.offset, vis=0
             )
             legLock = ikc.a.add("legLock", min=0, max=1)
             ikc.a.add("legLockLen") * self.xDir >> fkc.offset.a.tx
-            common.cstMulti(
-                mainGrp.offset, legLockJ[1], mainGrp, w=legLock, cstType="poi"
-            )
+            common.cstMulti(mainGrp.offset, j1, mainGrp, w=legLock, cstType="poi")
             #
             #   add extra scapular joint
             #
-            scap_fkc.snapAlignTo(jnts[1], fkc, p=fkc)
-            scapularTipJ = JointNode.makeTwoJChainFrz(
+            scap_fkc.snapAlignTo(uprJ, fkc, p=fkc)
+            scap_fkc.addOffsetGrp()
+            j0, j1 = JointNode.makeTwoJC2(
                 "scapTip",
                 pf=rID,
-                snap=jnts[1],
+                snap=uprJ,
                 aim=(xDr, 0, 0),
                 up=(0, xDr, 0),
-                p=scap_fkc,
+                p=uprJ,
                 r=rSz,
-                aimTgt=jnts[0],
+                color=1,
+                aimTgt=hipJ,
             )
-            self.bindJnts.append(scapularTipJ[1])
-            mc.hide(legLockJ, scapularTipJ)
-        mc.hide(autoAimJ)
+            self.scap_fkc.cstOri(j0, mo=1)
+            self.bindJnts.append(j1)
 
         return mainGrp
 

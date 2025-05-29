@@ -239,7 +239,7 @@
                 2.4,
                 2.4
             ],
-            "scapularCtl":false,
+            "scapularExtra":false,
             "t":[
                 37.014562611460136,
                 0.0,
@@ -981,7 +981,7 @@
                 2.5887027437591166,
                 2.5887027437591166
             ],
-            "scapularCtl":true,
+            "scapularExtra":true,
             "t":[
                 46.12099106950509,
                 0.0,
@@ -1829,7 +1829,7 @@
                 2.4,
                 2.4
             ],
-            "scapularCtl":false,
+            "scapularExtra":false,
             "t":[
                 -37.014562611460136,
                 0.0,
@@ -2571,7 +2571,7 @@
                 2.5887027437591166,
                 2.5887027437591166
             ],
-            "scapularCtl":true,
+            "scapularExtra":true,
             "t":[
                 -46.12099106950509,
                 0.0,

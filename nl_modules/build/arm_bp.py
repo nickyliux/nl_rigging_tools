@@ -323,7 +323,7 @@ class ArmBp(RigModule):
         scapularLoc = LocNode(
             "scapularLoc", pf=rID, snap=clavEnd_guide, p=scapularJnt, size=rSz
         )
-        twoJ = JointNode.makeTwoJChainFrz(
+        twoJ = JointNode.makeTwoJC2(
             "clav",
             pf=rID,
             snap=self.clavicle,

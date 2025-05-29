@@ -332,7 +332,7 @@ class IkNode(DagNode):
         """
         from nl_modules.nodel.joint_node import JointNode
 
-        softJ = JointNode.makeTwoJChainFrz(
+        softJ = JointNode.makeTwoJC2(
             "softJ",
             pf=self.pf,
             snap=self.sj,
@@ -366,7 +366,7 @@ class IkNode(DagNode):
         """Build a two-joint chain for pv space"""
         from nl_modules.nodel.joint_node import JointNode
 
-        pvChainJ = JointNode.makeTwoJChainFrz(
+        pvChainJ = JointNode.makeTwoJC2(
             "pvChainJ",
             pf=self.pf,
             snap=self.sj,

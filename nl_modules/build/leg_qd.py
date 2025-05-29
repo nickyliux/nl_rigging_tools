@@ -140,7 +140,7 @@ class LegQd(RigModule):
             pf=rID,
             scale=xDr * rSz / 2,
         )
-        self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=rSz * 2)
+        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz)
         self.pvc = CurveNode("pvc", pf=rID, shape="triangleR", scale=rSz / 2)
         self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
 
@@ -162,9 +162,9 @@ class LegQd(RigModule):
             self.scap_fkc = CurveNode(
                 "scap_fkc",
                 pf=rID,
-                shape="triangleR",
-                scale=(rSz / 4, rSz / 4, rSz / 4 * xDr),
-                move=(rSz * 40 * -xDr, 0, 0),
+                shape="sphere",
+                scale=rSz,
+                move=(rSz * 43 * -xDr, 0, 0),
             )
 
     def build(self):

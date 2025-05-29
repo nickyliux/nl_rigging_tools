@@ -124,6 +124,9 @@ class DagNode(DepNode):
         """Create and return constraint based on cstType"""
         if isinstance(tgt, str):
             tgt = DagNode(tgt)
+        elif isinstance(tgt, list):
+            logging.error("Input tgt can't be a list")
+            return
 
         n = f"{tgt.name}_{cstType}Cst"
 

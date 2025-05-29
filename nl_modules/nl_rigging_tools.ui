@@ -665,9 +665,9 @@ Mesh(es)</string>
      <widget class="QPushButton" name="component_explore_BN">
       <property name="geometry">
        <rect>
-        <x>178</x>
+        <x>144</x>
         <y>256</y>
-        <width>25</width>
+        <width>62</width>
         <height>16</height>
        </rect>
       </property>
@@ -817,9 +817,9 @@ Mesh(es)</string>
      <widget class="QPushButton" name="preset_importSkel_BN">
       <property name="geometry">
        <rect>
-        <x>145</x>
-        <y>224</y>
-        <width>30</width>
+        <x>144</x>
+        <y>200</y>
+        <width>62</width>
         <height>16</height>
        </rect>
       </property>
@@ -847,14 +847,14 @@ Mesh(es)</string>
        <string>import preset skel</string>
       </property>
       <property name="text">
-       <string>+ SK</string>
+       <string>( SK )</string>
       </property>
      </widget>
      <widget class="QPushButton" name="preset_new_BN">
       <property name="geometry">
        <rect>
         <x>144</x>
-        <y>114</y>
+        <y>94</y>
         <width>62</width>
         <height>22</height>
        </rect>
@@ -873,7 +873,7 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>144</x>
-        <y>170</y>
+        <y>150</y>
         <width>62</width>
         <height>22</height>
        </rect>
@@ -936,7 +936,7 @@ Mesh(es)</string>
       <property name="geometry">
        <rect>
         <x>144</x>
-        <y>142</y>
+        <y>122</y>
         <width>62</width>
         <height>22</height>
        </rect>
@@ -954,9 +954,9 @@ Mesh(es)</string>
      <widget class="QPushButton" name="component_exploreSkel_BN">
       <property name="geometry">
        <rect>
-        <x>179</x>
-        <y>224</y>
-        <width>25</width>
+        <x>144</x>
+        <y>220</y>
+        <width>62</width>
         <height>16</height>
        </rect>
       </property>

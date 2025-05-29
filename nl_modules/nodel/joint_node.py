@@ -143,7 +143,7 @@ class JointNode(GroupNode):
         return [j0, j1]
 
     @staticmethod
-    def makeTwoJChainFrz(
+    def makeTwoJC2(
         n,
         align=None,
         snap=None,

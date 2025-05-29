@@ -449,7 +449,7 @@ class SpineQd(RigModule):
             ratio >> self.rbJnts[i].a.sz
 
     def setup_vis(self):
-        mc.hide(self.ikJnts, self.rbJnts, self.fkJnts, self.spIkJnts, self.two_ikJnts)
+        # mc.hide(self.ikJnts, self.rbJnts, self.fkJnts, self.spIkJnts, self.two_ikJnts)
         if self.__class__.__name__ == "NeckQd":
             self.base_ctl.shape.hide()
             self.tangent0_ctl.shape.hide()

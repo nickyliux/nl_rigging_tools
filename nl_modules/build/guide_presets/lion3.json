@@ -1071,7 +1071,7 @@
         },
         "lfLegQd1_master_guide":{
             "kneeFix":true,
-            "patellaBone":true,
+            "patellaBone":false,
             "r":[
                 0.0,
                 0.0,
@@ -2833,7 +2833,7 @@
         },
         "rtLegQd1_master_guide":{
             "kneeFix":true,
-            "patellaBone":true,
+            "patellaBone":false,
             "r":[
                 0.0,
                 -0.0,
