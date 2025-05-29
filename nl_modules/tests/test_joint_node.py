@@ -57,8 +57,8 @@ class Test_JointNode_Main(Test_JointNode_Base):
         px = self.j2.addProxyMesh(skipEnd=1)
         self.assertEqual(px, None)
 
-    def test_makeTwoJChain(self):
-        newJ1, newJ2 = JointNode.makeTwoJChain(
+    def test_makeTwoJC(self):
+        newJ1, newJ2 = JointNode.makeTwoJC(
             "new",
             align=self.j1,
             align_end=self.j2,
@@ -67,8 +67,8 @@ class Test_JointNode_Main(Test_JointNode_Base):
         self.assertEqual(newJ2.a.t.get(), self.j2.a.t.get())
         self.assertEqual(newJ2.parent, newJ1)
 
-    def test_makeTwoJChain2(self):
-        newJ1, newJ2 = JointNode.makeTwoJChain("new", snap=self.j1, ofs=(2, 0, 0))
+    def test_makeTwoJC2(self):
+        newJ1, newJ2 = JointNode.makeTwoJC("new", snap=self.j1, ofs=(2, 0, 0))
         self.assertEqual(newJ2.a.t.get(), (2, 0, 0))
         self.assertEqual(newJ2.o.pos, (2, 0, 0))
 

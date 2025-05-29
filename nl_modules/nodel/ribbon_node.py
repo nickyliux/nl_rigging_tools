@@ -178,7 +178,7 @@ class RibbonNode:
         ofsX = self.D / 4 * self.xDir
         ofsX2 = ofsX * 2
 
-        stt_aimJ, stt_aimJ_end = JointNode.makeTwoJChain(
+        stt_aimJ, stt_aimJ_end = JointNode.makeTwoJC(
             "stt_aimJ",
             pf=pf,
             snap=self.stt_loc,
@@ -190,7 +190,7 @@ class RibbonNode:
         stt_sknJ = stt_aimJ_end.duplicate(n=pf + "stt_sknJ")
         stt_sknJ.alignTo(self.stt_loc)
 
-        end_aimJ, end_aimJ_end = JointNode.makeTwoJChain(
+        end_aimJ, end_aimJ_end = JointNode.makeTwoJC(
             "end_aimJ",
             pf=pf,
             snap=self.end_loc,
@@ -202,7 +202,7 @@ class RibbonNode:
         end_sknJ = end_aimJ_end.duplicate(n=pf + "end_sknJ")
         end_sknJ.alignTo(self.end_loc)
 
-        mid_aimJ, mid_aimJ_end = JointNode.makeTwoJChain(
+        mid_aimJ, mid_aimJ_end = JointNode.makeTwoJC(
             "mid_aimJ",
             pf=pf,
             snap=self.stt_loc,
@@ -277,7 +277,7 @@ class RibbonNode:
         upV = (0, 1, 0)
 
         # From
-        stt_twistJ, stt_twistJ_end = JointNode.makeTwoJChain(
+        stt_twistJ, stt_twistJ_end = JointNode.makeTwoJC(
             "stt_twistJ",
             pf=pf,
             snap=self.stt_loc,
@@ -297,7 +297,7 @@ class RibbonNode:
             u=upV,
         )
         # To
-        end_twistJ, end_twistJ_end = JointNode.makeTwoJChain(
+        end_twistJ, end_twistJ_end = JointNode.makeTwoJC(
             "end_twistJ",
             pf=pf,
             snap=self.end_loc,

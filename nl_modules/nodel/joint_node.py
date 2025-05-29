@@ -121,13 +121,13 @@ class JointNode(GroupNode):
             return proxyN
 
     @staticmethod
-    def makeTwoJChain(
+    def makeTwoJC(
         n, align=None, snap=None, align_end=None, pf="", ofs=None, r=1, color=4, p=None
     ):
         """Make two-joint chain according to aligning objects
         e.g.
-            makeTwoJChain('myJ')
-            makeTwoJChain('myJ', snap=pt1, ofs=(1,0,0))
+            makeTwoJC('myJ')
+            makeTwoJC('myJ', snap=pt1, ofs=(1,0,0))
         """
         j0 = JointNode(n, pf=pf, r=r, color=color, p=p)
         j1 = JointNode(n + "_end", pf=pf, r=r, color=color, p=j0)
@@ -158,8 +158,8 @@ class JointNode(GroupNode):
     ):
         """Make two-joint chain according to aligning objects
         e.g.
-            makeTwoJChain('myJ')
-            makeTwoJChain('myJ', snap=pt1, ofs=(1,0,0))
+            makeTwoJC('myJ')
+            makeTwoJC('myJ', snap=pt1, ofs=(1,0,0))
         """
         j0 = JointNode(n, pf=pf, r=r, color=color, p=p)
         j1 = JointNode(n + "_end", pf=pf, r=r, color=color, p=j0)

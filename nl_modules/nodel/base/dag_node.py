@@ -33,11 +33,6 @@ class DagNode(DepNode):
             return True
         return False
 
-    # @property
-    # def dag(self):
-    #     """get dag name"""
-    #     return self._dag
-
     @property
     def path(self):
         """Get path from API"""
