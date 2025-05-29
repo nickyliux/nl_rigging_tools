@@ -1,7 +1,5 @@
-# import os
 import maya.cmds as mc
 
-# import nl_modules as nl_modules
 from nl_modules.nodel.base.attribute import Attribute
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.base.dep_node import DepNode
@@ -52,7 +50,9 @@ class CrvNode(GrpNode):
             addOfs=addOfs,
             p=p,
         )
-        # Add crv shape under group transform
+        #
+        #   add crv shape under group transform
+        #
         if not self.shape:
             if shape:
                 crvDictList = self.shape_getDictListFrLib(shape)
@@ -89,11 +89,10 @@ class CrvNode(GrpNode):
                     self.cv_scale(scale)
             if move:
                 self.cv_move(*move)
-
-            self.width = width
             if top:
                 for s in self.shapes:
                     s.a["alwaysDrawOnTop"].set(1)
+            self.width = width
 
     @property
     def length(self):
@@ -296,7 +295,6 @@ class CrvNode(GrpNode):
         return self
 
     def lowerCubeFrontCV(self, up="z"):
-
         ids = [1, 12, 15, 16]
         targetCV = [self.shape + f".cv[{id}]" for id in ids]
 

@@ -193,11 +193,11 @@ class LegBp(RigModule):
         # )
         self.bindJnts = [self.hip]
 
-        self.scapularG = self.build_scapularExtra(
+        self.scapularG = self.build_scapular(
             ikc=self.ikc,
             fkc=self.fkCtl[0],
             jnts=self.joints,
-            advanced=self.SCAPULAR_EXTRA,
+            EXTRA=self.SCAPULAR_EXTRA,
             scap_fkc=self.scap_fkc,
         )
 

@@ -697,9 +697,7 @@ class RigModule(RigBase):
         auto_ikH.hide()
         # self.joints_am[0].hide()
 
-    def build_scapularExtra(
-        self, ikc=None, fkc=None, jnts=None, advanced=0, scap_fkc=None
-    ):
+    def build_scapular(self, ikc=None, fkc=None, jnts=None, EXTRA=0, scap_fkc=None):
         """
         Add scapular functions
         """
@@ -708,9 +706,7 @@ class RigModule(RigBase):
         rID, rSz, xDr = self.getMyVar()
         hipJ = jnts[0]
         uprJ = jnts[1]
-        #
-        #   add scapular group
-        #
+
         mainGrp = GrpNode("quadScap", pf=rID, align=hipJ, p=self.FK_PART, addOfs=1)
         fkc.offset | mainGrp
         #
@@ -721,17 +717,17 @@ class RigModule(RigBase):
             pf=rID,
             snap=hipJ,
             aim=(xDr, 0, 0),
-            up=(0, xDr, 0),
+            u=(0, xDr, 0),
             p=mainGrp.offset,
             r=rSz * 3,
             color=6,
             aimTgt=ikc,
         )
-        autoAimJ_ikh = IkNode("autoAimJ", pf=rID, sj=j0, ee=j1, p=ikc, quat=1, vis=0)
+        IkNode("autoAimJ", pf=rID, sj=j0, ee=j1, p=ikc, quat=1, vis=0)
         autoAim = fkc.a.add("autoAim", min=0, max=1, dv=0.3)
         common.cstMulti(mainGrp.offset, j0, mainGrp, w=autoAim, cstType="parR", mo=1)
 
-        if advanced:
+        if EXTRA:
             #
             #   add leg lock function
             #
@@ -740,15 +736,13 @@ class RigModule(RigBase):
                 pf=rID,
                 snap=ikc,
                 aim=(xDr, 0, 0),
-                up=(0, xDr, 0),
+                u=(0, xDr, 0),
                 p=ikc,
                 r=rSz * 2,
                 color=13,
                 aimTgt=hipJ,
             )
-            legLock_ikh = IkNode(
-                "legLock", pf=rID, sj=j0, ee=j1, quat=1, p=mainGrp.offset, vis=0
-            )
+            IkNode("legLock", pf=rID, sj=j0, ee=j1, quat=1, p=mainGrp.offset, vis=0)
             legLock = ikc.a.add("legLock", min=0, max=1)
             ikc.a.add("legLockLen") * self.xDir >> fkc.offset.a.tx
             common.cstMulti(mainGrp.offset, j1, mainGrp, w=legLock, cstType="poi")
@@ -762,7 +756,8 @@ class RigModule(RigBase):
                 pf=rID,
                 snap=uprJ,
                 aim=(xDr, 0, 0),
-                up=(0, xDr, 0),
+                u=(0, xDr, 0),
+                wu=(0, 0, xDr),
                 p=uprJ,
                 r=rSz,
                 color=1,
@@ -773,7 +768,6 @@ class RigModule(RigBase):
 
         return mainGrp
 
-    # @staticmethod
     def build_uvPSD(
         self, tgtJ=None, ikc=None, ikcGim=None, ctlNum=1, cst=None, preset=None, p=None
     ):

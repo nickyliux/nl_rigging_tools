@@ -370,8 +370,8 @@ class SpineQd(RigModule):
         if self.__class__.__name__ == "NeckQd":
             common.cstMulti(self.base_ctl, j1, self.mid_ctl.offset, cstType="poi", mo=1)
         else:
-            loc0 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.base_ctl, v=0)
-            loc1 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=j1, v=0)
+            loc0 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.base_ctl, vis=0)
+            loc1 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=j1, vis=0)
             common.cstMulti(loc0, loc1, self.mid_ctl.offset, cstType="parT", mo=1)
         #
         #   make mid ctl aiming forward

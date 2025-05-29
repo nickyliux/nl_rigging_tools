@@ -171,8 +171,8 @@ class SpineQd(RigModule):
         #
         #   parenting for spine
         #
-        loc0 = LocNode("loc#", pf=rID, align=self.ikCtls[1], p=self.ikCtls[0], v=0)
-        loc1 = LocNode("loc#", pf=rID, align=self.ikCtls[1], p=self.ikCtls[2], v=0)
+        loc0 = LocNode("loc#", pf=rID, align=self.ikCtls[1], p=self.ikCtls[0], vis=0)
+        loc1 = LocNode("loc#", pf=rID, align=self.ikCtls[1], p=self.ikCtls[2], vis=0)
         common.cstMulti(loc0, loc1, self.ikCtls[1].offset, cstType="par")
         #
         #   set tanget joint's distance depending on total length

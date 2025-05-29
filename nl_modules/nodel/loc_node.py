@@ -25,7 +25,7 @@ class LocNode(GrpNode):
         color=0,
         size=None,
         matchOffset=None,
-        v=1,
+        vis=1,
     ):
         GrpNode.__init__(
             self,
@@ -50,7 +50,7 @@ class LocNode(GrpNode):
 
         if matchOffset:
             mc.move(*matchOffset, self, objectSpace=1, r=1)
-        if not v:
+        if not vis:
             mc.hide(self)
 
     def localScale(self, val):

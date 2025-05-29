@@ -6,9 +6,7 @@ from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.rbn_node import RbnNode
 from nl_modules.utils import common, utils_node as ut
-from nl_modules.utils.color import Color
 from nl_modules.build.rig_module import RigModule
 
 
@@ -115,7 +113,7 @@ class LegQd(RigModule):
             scale=rSz * 2,
             color=25,
             top=1,
-            p=self.RIG_DATA,
+            p=self.CTL_DATA,
         )
         self.hip_fkc = CrvNode(
             "hip_fkc",
@@ -133,11 +131,7 @@ class LegQd(RigModule):
         self.digit_fkc = CrvNode(
             "digit_fkc", pf=rID, shape="squareR", up="x", scale=rSz
         )
-        self.ball_fkc = CrvNode(
-            "ball_fkc",
-            pf=rID,
-            scale=xDr * rSz / 2,
-        )
+        self.ball_fkc = CrvNode("ball_fkc", pf=rID, scale=xDr * rSz / 2)
         self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=rSz)
         self.pvc = CrvNode("pvc", pf=rID, shape="triangleR", scale=rSz / 2)
         self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
@@ -167,13 +161,13 @@ class LegQd(RigModule):
 
     def build(self):
         """Build rig for joints
-        hip 0
-            upr 1
-                lwr 2
-                    palm 3
-                        digit 4
-                            ball 5
-                                tip 6
+        hip
+            upr
+                lwr
+                    palm
+                        digit
+                            ball
+                                tip
         """
         self.build_module()
         self.joints = self.rootJ.allChildrenJt2
@@ -191,11 +185,11 @@ class LegQd(RigModule):
         if not self.SCAPULAR_EXTRA:
             self.bindJnts.append(self.hip)
 
-        self.scapularG = self.build_scapularExtra(
+        self.scapularG = self.build_scapular(
             ikc=self.ikc,
             fkc=self.fkCtl[0],
             jnts=self.joints,
-            advanced=self.SCAPULAR_EXTRA,
+            EXTRA=self.SCAPULAR_EXTRA,
             scap_fkc=self.scap_fkc,
         )
 
@@ -225,10 +219,7 @@ class LegQd(RigModule):
         else:
             self.bindJnts.extend([self.palm, self.digit, self.ball])
 
-        # scaling
-
         self.post_setup()
-        self.custom_setup()
 
     def build_fk(self):
         rID, rSz, xDr = self.getMyVar()
@@ -256,6 +247,7 @@ class LegQd(RigModule):
         outPos_guide = DagNode(rID + "_palm_outPos_guide")
         heelPos_guide = DagNode(rID + "_palm_heelPos_guide")
         toePos_guide = DagNode(rID + "_palm_toePos_guide")
+
         self.ikc.alignTo(mG)
         self.pvc.alignTo(pvc_guide)
         self.joints_ik = common.extractSk(
@@ -278,6 +270,7 @@ class LegQd(RigModule):
         ikHX = IkNode("X", pf=rID, sj=self.palm, ee=self.digit, jsf="_ik")
         ikH2 = IkNode("2", pf=rID, sj=self.digit, ee=self.ball, jsf="_ik")
         ikH3 = IkNode("3", pf=rID, sj=self.ball, ee=self.tip, jsf="_ik")
+
         self.ikCstG = GrpNode("ikCstG", pf=rID, snap=self.palm, alignR=mG)
         extraRollG = GrpNode("extraRollG", pf=rID, snap=self.digit, alignR=mG)
         ballRollG = GrpNode("ballRollG", pf=rID, snap=self.ball, alignR=mG)
@@ -307,7 +300,6 @@ class LegQd(RigModule):
         inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG
 
         self.ikc.snapTo(self.digit)
-        # self.ikc.cv_drop()
 
         self.ikc_gimbal = CrvNode(self.ikc).add_gimbal()
         self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
@@ -336,7 +328,6 @@ class LegQd(RigModule):
     def blend_fk_ik(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting | self.CTL_DATA
         self.setting.snapTo(self.digit, offset=(rSz * xDr * 20, 0, 0))
         self.palm.cstPar(self.setting, mo=1)
 
@@ -407,22 +398,19 @@ class LegQd(RigModule):
         self.ballG_ikc = ballRollG.addOffsetGrp(below=1)
         cName = rID + "_ballG_ikc"
         CrvNode(self.ballG_ikc)(
-            name=cName,
-            shape="stickC",
-            scale=-rSz * xDr / 3,
-            rotate=(0, 90, 0),
+            name=cName, shape="stickC", scale=-rSz * xDr / 3, rotate=(0, 90, 0)
         )
         self.subCtls.append(self.ballG_ikc)
-
-        # Smart Ctl setup
-        # self.smart_ctl.snapTo(self.ikc)
+        #
+        #   smart ctl setup
+        #
         self.smart_ctl.alignTo(self.master_guide)
         self.smart_ctl.a.ty.set(0)
         self.smart_ctl | self.ikc_gimbal
         self.smart_ctl.a.tz.set(rSz * 20)
         self.smart_ctl.addOffsetGrp()
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
-        -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry  # self.ikc.a["toeTwist"]
+        -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry
         -xDr * self.smart_ctl.a.rz >> self.smart_ctl.a["footBank"]
 
     def build_digits(self):
@@ -637,10 +625,11 @@ class LegQd(RigModule):
         self.setting.a.showAttr()
         self.pvc.a.showAttr(t=1)
         self.smart_ctl.a.showAttr(r=1)
-
         self.extra_ikc.a.showAttr(r=1)
+
         for ctl in self.fkCtl + self.subCtls + [self.ikc, self.pvc]:
             ctl.a.showAttr(t=1, r=1)
+
         for ctl in self.all_bend or []:
             ctl.a.showAttr(t=1, r=1, s=1)
 
@@ -654,11 +643,9 @@ class LegQd(RigModule):
 
     def setup_space(self):
         self.rigNode.setMsg({"spaceHolder1": self.ikc})
-        self.rigNode.a.add("spaceName1", attrType="string", txt="master, COG")  # hip,
+        self.rigNode.a.add("spaceName1", attrType="string", txt="master, COG")
         self.rigNode.setMsg({"spaceHolder2": self.pvc})
-        self.rigNode.a.add(
-            "spaceName2", attrType="string", txt="leg, master, COG"
-        )  # hip,
+        self.rigNode.a.add("spaceName2", attrType="string", txt="leg, master, COG")
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_hip": self.hip_fkc})
         self.rigNode.setMsg({"space_leg": self.ikH1.softJ[0]})
@@ -687,6 +674,3 @@ class LegQd(RigModule):
         self.setup_channel()
         self.setup_rotate_order()
         self.post_module()
-
-    def custom_setup(self):
-        pass

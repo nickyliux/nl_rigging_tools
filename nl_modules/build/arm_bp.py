@@ -328,7 +328,7 @@ class ArmBp(RigModule):
             pf=rID,
             snap=self.clavicle,
             aim=(xDr, 0, 0),
-            up=(0, xDr, 0),
+            u=(0, xDr, 0),
             p=self.clavicle,
             r=rSz,
             aimTgt=scapularLoc,

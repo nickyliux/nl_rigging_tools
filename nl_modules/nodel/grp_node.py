@@ -260,8 +260,6 @@ class GrpNode(DagNode):
         if isinstance(crv, str):
             crvDictList = self.shape_getDictListFrObj(self)
             self.shape_saveToLib(crvDictList, crv)
-
-        # elif isinstance(crv, GrpNode):
         else:
             self.copy_shape_as_inst([crv])
 

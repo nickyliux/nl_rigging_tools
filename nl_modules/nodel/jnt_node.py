@@ -150,7 +150,8 @@ class JntNode(GrpNode):
         align_end=None,
         pf="",
         aim=(1, 0, 0),
-        up=(0, 1, 0),
+        u=(0, 1, 0),
+        wu=(0, 1, 0),
         r=1,
         color=4,
         p=None,
@@ -173,7 +174,7 @@ class JntNode(GrpNode):
         if aim:
             j1.a.t.set(*aim)
 
-        aimTgt.cstAim(j0, keep=0, aim=aim, u=up)
+        aimTgt.cstAim(j0, keep=0, aim=aim, u=u, wu=wu)
         aimTgt.cstPoi(j1, keep=0)
         j0.freezeXf()
         return [j0, j1]

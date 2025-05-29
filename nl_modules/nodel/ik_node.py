@@ -337,7 +337,7 @@ class IkNode(DagNode):
             pf=self.pf,
             snap=self.sj,
             aim=(self.xDir, 0, 0),
-            up=(0, self.xDir, 0),
+            u=(0, self.xDir, 0),
             p=softParent,
             aimTgt=self.ee,
             color=22,
@@ -373,7 +373,7 @@ class IkNode(DagNode):
             p=self.sj.parent,
             r=self.rSz,
             aim=(self.xDir, 0, 0),
-            up=(0, self.xDir, 0),
+            u=(0, self.xDir, 0),
             aimTgt=self.ee,
             color=5,
         )
