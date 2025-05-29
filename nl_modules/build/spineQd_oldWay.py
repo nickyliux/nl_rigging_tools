@@ -253,10 +253,10 @@ class SpineQd(RigModule):
 
             ikH_A.spline_twist_setup(self.base_ctl, self.chest_ctl, twistAxis="+z")
             ikH_B.spline_twist_setup(self.chest_ctl, self.base_ctl, twistAxis="-z")
-            mc.hide(ikH_A, ikH_B)
+            # mc.hide(ikH_A, ikH_B)
         else:
             ikH_1.spline_twist_setup(self.base_ctl, self.chest_ctl, twistAxis="+z")
-            mc.hide(ikH_1)
+            # mc.hide(ikH_1)
 
         self.base_ctl.addOffsetGrp()
         self.mid_ctl.addOffsetGrp(count=2)

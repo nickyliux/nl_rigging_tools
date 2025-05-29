@@ -491,7 +491,7 @@ class RigModule(RigBase):
         tgtChild.cstAim(
             tgtDup, worldUpType="object", worldUpObject=upLoc, aim=(xDr, 0, 0)
         )
-        mc.hide(upLoc)
+        # mc.hide(upLoc)
         self.boneFix = tgtDup
         self.boneFix_sdk(tgt, tgtDup)
 

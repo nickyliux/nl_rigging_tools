@@ -468,7 +468,7 @@ class ArmBp(RigModule):
                 self.setting.a.add("bendyCtl", attrType="bool", dv=0),
                 onList=self.all_bend,
             )
-        mc.hide(self.all_ikHs, self.joints_fk, self.joints_ik, self.joints_bf)
+        # mc.hide(self.all_ikHs, self.joints_fk, self.joints_ik, self.joints_bf)
 
     def setup_proxy(self):
         for j in self.bindJnts:

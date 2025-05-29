@@ -230,7 +230,7 @@ class Tail(RigModule):
             self.setting.a.add("subCtl", k=0, min=0, max=1, dv=0),
             onList=self.ikOffsetCtl,
         )
-        mc.hide(self.ikJnt, self.fkJnt, self.ikOffsetJnt, self.rbJnt)
+        # mc.hide(self.ikJnt, self.fkJnt, self.ikOffsetJnt, self.rbJnt)
 
     def setup_channel(self):
         for ctl in self.fkCtl + self.ikCtl:

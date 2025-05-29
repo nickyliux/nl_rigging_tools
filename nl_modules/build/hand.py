@@ -283,7 +283,7 @@ class Hand(RigModule):
         showCtls = self.smart_ctl.a.add("showCtls", k=0, min=0, max=1, dv=1)
         for fgrCtls in self.ctlsArr:
             showCtls >> fgrCtls[0].a.v
-        mc.hide(self.allIkH, self.allIkJ)
+        # mc.hide(self.allIkH, self.allIkJ)
 
     def post_setup(self):
         ctlSet = [self.smart_ctl] + self.fgrRootCtlArr

@@ -633,7 +633,7 @@ class LegQd(RigModule):
         #         onList=self.all_bend,
         #     )
         [ikh.hide() for ikh in self.all_ikH.values()]
-        mc.hide(self.joints_fk, self.joints_ik)
+        # mc.hide(self.joints_fk, self.joints_ik)
 
     def setup_channel(self):
         self.setting.a.showAttr()

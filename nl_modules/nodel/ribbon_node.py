@@ -390,7 +390,8 @@ class RibbonNode:
 
     def setup_vis(self):
         # mc.hide(self.BSE_GRP, self.AIM_GRP, self.CTL_GRP)
-        mc.hide(self.all_ikHs)
+        # mc.hide(self.all_ikHs)
+        pass
 
     def post_setup(self):
         self.setup_rotate_order()

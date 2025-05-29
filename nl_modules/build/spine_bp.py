@@ -219,7 +219,7 @@ class SpineBp(RigModule):
             self.setting.a.add("ikCtls", min=0, max=1, dv=1, k=0),
             onList=self.ikCtls,
         )
-        mc.hide(self.ctlJnts, self.fkJnts, self.rbJnts)
+        # mc.hide(self.ctlJnts, self.fkJnts, self.rbJnts)
 
     def setup_channel(self):
         self.setting.a.showAttr()

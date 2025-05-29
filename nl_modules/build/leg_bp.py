@@ -602,8 +602,8 @@ class LegBp(RigModule):
                 onList=self.all_bend,
             )
             # min=0, max=1, dv=1, k=0),
-        mc.hide(self.all_ikHs, self.toeIKHs)
-        mc.hide(self.joints_fk, self.joints_ik, self.joints_bf)
+        # mc.hide(self.all_ikHs, self.toeIKHs)
+        # mc.hide(self.joints_fk, self.joints_ik, self.joints_bf)
 
     def setup_channel(self):
         self.setting.a.showAttr()
