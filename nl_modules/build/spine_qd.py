@@ -82,21 +82,22 @@ class SpineQd(RigModule):
             color=22,
             p=self.IK_PART,
         )
-
-        scale = maths.mul(6, 6, 2, rSz)
-        self.base_ctl = CrvNode("base_ctl", pf=rID, shape="cube", scale=scale)
-        self.fore_ctl = CrvNode("fore_ctl", pf=rID, shape="cube", scale=scale)
+        self.base_ctl = CrvNode(
+            "base_ctl", pf=rID, shape="cube", scale=maths.mul(6, 6, 2, rSz)
+        )
+        self.fore_ctl = CrvNode(
+            "fore_ctl", pf=rID, shape="cube", scale=maths.mul(6, 6, 2, rSz)
+        )
         self.mid_ctl = CrvNode(
             "mid_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3
         )
-        move = maths.mul(0, 25, 0, rSz)
         self.tangent0_ctl = CrvNode(
             "tangent0_ctl",
             pf=rID,
             shape="triangleR",
             scale=rSz / 2,
             rotate=(0, 180, 90),
-            move=move,
+            move=maths.mul(0, 25, 0, rSz),
             color=22,
         )
         self.tangent1_ctl = CrvNode(
@@ -105,7 +106,7 @@ class SpineQd(RigModule):
             shape="triangleR",
             scale=rSz / 2,
             rotate=(0, 0, 90),
-            move=move,
+            move=maths.mul(0, 25, 0, rSz),
             color=22,
         )
         if self.END_CTL:
