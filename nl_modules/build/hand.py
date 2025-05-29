@@ -1,9 +1,9 @@
 import maya.cmds as mc
 import logging
 from nl_modules.build.rig_module import RigModule
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.utils import common
 
 
@@ -12,7 +12,7 @@ class Hand(RigModule):
         super().__init__(rigNode)
 
         rID, rSz, xDr = self.getMyVar()
-        self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
+        self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
         self.smart_ctl = None
         self.fgrsArr = None
         self.ctlsArr = None
@@ -39,7 +39,7 @@ class Hand(RigModule):
 
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
-        self.smart_ctl = CurveNode(
+        self.smart_ctl = CrvNode(
             "smart_ctl", pf=rID, shape="roll", up="x", scale=rSz * 2
         )
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
@@ -69,7 +69,7 @@ class Hand(RigModule):
         for fgrs in self.fgrsArr:
             ctlList = []
             for fgr in fgrs[:-1]:
-                ctl = CurveNode(
+                ctl = CrvNode(
                     fgr + "_ctl",
                     shape="squareR",
                     align=fgr,
@@ -87,7 +87,7 @@ class Hand(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.fgrRootCtlArr = []
-        self.hand_grp = GroupNode(rID + "_grp", align=self.rootJ, p=self.RIG_DATA)
+        self.hand_grp = GrpNode(rID + "_grp", align=self.rootJ, p=self.RIG_DATA)
 
         for fgrs, ctls in zip(self.fgrsArr, self.ctlsArr):
             scale = xDr * rSz * 0.8
@@ -109,7 +109,7 @@ class Hand(RigModule):
             return
 
         # smart_ctl, with group scaling with rootJ
-        scaleGrp = GroupNode("smartScale", pf=rID, align=self.rootJ, p=self.CTL_DATA)
+        scaleGrp = GrpNode("smartScale", pf=rID, align=self.rootJ, p=self.CTL_DATA)
         offset = (rSz * xDr * 110, 0, 0)
         self.smart_ctl.alignTo(self.rootJ, offset=offset, p=scaleGrp)
         self.smart_ctl.addOffsetGrp()
@@ -263,7 +263,7 @@ class Hand(RigModule):
     def setup_proxy(self):
         rID, rSz, xDr = self.getMyVar()
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP)
+            JntNode(j).addProxyMesh(aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP)
             # , scale=rSz
 
     def setup_channel(self):

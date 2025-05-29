@@ -4,8 +4,8 @@ import maya.cmds as mc
 import math
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.base.dep_node import DepNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils.color import Color
 from nl_modules.utils import common, utils_node as ut
@@ -162,7 +162,7 @@ class IkNode(DagNode):
         """Return curve data of SplineIK"""
         if self.solver == 2:
             crvSh = self.a.inCurve.inConnNode
-            return CurveNode(crvSh.parent)
+            return CrvNode(crvSh.parent)
 
     @classmethod
     def stretchySpSS(
@@ -330,9 +330,9 @@ class IkNode(DagNode):
         """
         softJ    <- cstP  leg IK
         """
-        from nl_modules.nodel.joint_node import JointNode
+        from nl_modules.nodel.jnt_node import JntNode
 
-        softJ = JointNode.makeTwoJC2(
+        softJ = JntNode.makeTwoJC2(
             "softJ",
             pf=self.pf,
             snap=self.sj,
@@ -350,7 +350,7 @@ class IkNode(DagNode):
             p=self.RIG_DATA,
             quat=True,
         )
-        softIkPosGrp = GroupNode(softJ[0].name + "_posGrp", snap=self.ee, p=self.parent)
+        softIkPosGrp = GrpNode(softJ[0].name + "_posGrp", snap=self.ee, p=self.parent)
         softIkPosGrp.cstPoi(ikH)
         softJ[1].cstPoi(self.node.addOffsetGrp())
 
@@ -364,9 +364,9 @@ class IkNode(DagNode):
 
     def build_pvfkPinSetup(self, ikTarget=None):
         """Build a two-joint chain for pv space"""
-        from nl_modules.nodel.joint_node import JointNode
+        from nl_modules.nodel.jnt_node import JntNode
 
-        pvChainJ = JointNode.makeTwoJC2(
+        pvChainJ = JntNode.makeTwoJC2(
             "pvChainJ",
             pf=self.pf,
             snap=self.sj,

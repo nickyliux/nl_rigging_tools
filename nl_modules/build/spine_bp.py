@@ -2,12 +2,12 @@ import maya.cmds as mc
 import logging
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.surf_node import SurfNode
+from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
@@ -22,7 +22,7 @@ class SpineBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
         self.LINE_GUIDE = DagNode(rID + "_line_guide")
         self.MD_GUIDE = DagNode(rID + "_md_guide")
-        self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
+        self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
 
         self.cog_ctl = None
         self.cog_gmb = None
@@ -44,7 +44,7 @@ class SpineBp(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting = CurveNode(
+        self.setting = CrvNode(
             "setting",
             pf=rID,
             shape="diamond",
@@ -53,12 +53,10 @@ class SpineBp(RigModule):
             top=1,
             p=self.CTL_DATA,
         )
-        self.cog_ctl = CurveNode(
-            "cog_ctl", pf=rID, shape="cog2", scale=rSz * 2, color=22
-        )
-        self.chest_ctl = CurveNode("chest_ctl", pf=rID, shape="squareR", scale=rSz * 4)
-        self.mid_ctl = CurveNode("mid_ctl", pf=rID, shape="squareR", scale=rSz * 4)
-        self.hip_ctl = CurveNode("hip_ctl", pf=rID, shape="squareR", scale=rSz * 4)
+        self.cog_ctl = CrvNode("cog_ctl", pf=rID, shape="cog2", scale=rSz * 2, color=22)
+        self.chest_ctl = CrvNode("chest_ctl", pf=rID, shape="squareR", scale=rSz * 4)
+        self.mid_ctl = CrvNode("mid_ctl", pf=rID, shape="squareR", scale=rSz * 4)
+        self.hip_ctl = CrvNode("hip_ctl", pf=rID, shape="squareR", scale=rSz * 4)
 
         self.rigNode.setMsg(
             {
@@ -72,7 +70,7 @@ class SpineBp(RigModule):
 
     def build(self):
         self.build_module()
-        self.rigSize = CurveNode(self.LINE_GUIDE).length / 100
+        self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
         self.build_ctl()
         self.build_fk()
         self.build_ik()
@@ -81,7 +79,7 @@ class SpineBp(RigModule):
     def build_fk(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.fkJnts = JointNode.createJntFrCrv(
+        self.fkJnts = JntNode.createJntFrCrv(
             self.LINE_GUIDE,
             num=self.FK_JNT_NUM,
             pf=rID,
@@ -98,7 +96,7 @@ class SpineBp(RigModule):
 
         self.fkCtls = []
         for i, j in enumerate(self.fkJnts[:-1]):
-            c = CurveNode(
+            c = CrvNode(
                 f"{i + 1}_fkc",
                 pf=rID,
                 shape="circleC",
@@ -128,7 +126,7 @@ class SpineBp(RigModule):
         self.setting.a.tz.set(rSz * -100)
         self.cog_ctl.cstPar(self.setting, mo=1)
 
-        self.cog_gmb = CurveNode(self.cog_ctl).add_gimbal()
+        self.cog_gmb = CrvNode(self.cog_ctl).add_gimbal()
         self.cog_ctl | self.CTL_DATA
         self.cog_gmb.cstPar(self.fkCtls[0].offset, mo=1)
         self.cog_gmb.cstPar(self.fkCtls[1].offset, mo=1)
@@ -147,7 +145,7 @@ class SpineBp(RigModule):
         self.fkJnts[0].childrenJt[0].a.segmentScaleCompensate.set(0)
 
         if self.RBN_BONES:
-            self.rbSrf = SurfNode.buildRbSrf(
+            self.rbSrf = SrfNode.buildRbSrf(
                 pf=rID,
                 crv=self.LINE_GUIDE,
                 normal=1,
@@ -161,7 +159,7 @@ class SpineBp(RigModule):
                 [self.hip_ctl, self.mid_ctl, self.chest_ctl], r=rSz * 10
             )
             self.rbSrf.weightTo(self.ctlJnts, chain=0, mi=2, dr=6)
-            self.rbJnts = SurfNode.buildRbJnt(
+            self.rbJnts = SrfNode.buildRbJnt(
                 self.RBN_JNT_NUM,
                 pf=rID,
                 size=rSz,
@@ -238,10 +236,10 @@ class SpineBp(RigModule):
 
     def setup_proxy(self):
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(
+            JntNode(j).addProxyMesh(
                 aimDir=(0, 1, 0),
                 p=self.PRX_GRP,
-                scaler=JointNode(j).a.s,
+                scaler=JntNode(j).a.s,
             )
 
     def setup_space(self):

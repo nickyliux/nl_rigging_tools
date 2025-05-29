@@ -2,8 +2,8 @@
 # import logging
 # from nl_modules.build import rig_module
 # from nl_modules.nodel.base.dag_node import DagNode
-# from nl_modules.nodel.curve_node import CurveNode
-# from nl_modules.nodel.joint_node import JointNode
+# from nl_modules.nodel.crv_node import CrvNode
+# from nl_modules.nodel.jnt_node import JntNode
 # from nl_modules.nodel.loc_node import LocNode
 # from nl_modules.utils import common
 # from nl_modules.utils.color import Color
@@ -55,7 +55,7 @@
 #
 #         s = self.rigSize
 #
-#         # self.setting = CurveNode("setting", pf=self.rigID, shape="sphere", scale=s * 0.3)
+#         # self.setting = CrvNode("setting", pf=self.rigID, shape="sphere", scale=s * 0.3)
 #         # self.setting.a.message >> self.rigNode.a.setting
 #
 #         if not self.rootJ:
@@ -79,7 +79,7 @@
 #         for fgrs in self.fgrsArr:
 #             ctlList = []
 #             for fgr in fgrs[:-1]:
-#                 c = CurveNode(fgr + "_ctl", align=fgr, up="x", scale=-s * 0.5)
+#                 c = CrvNode(fgr + "_ctl", align=fgr, up="x", scale=-s * 0.5)
 #                 # c.scale(1,1,0.6)
 #                 ctlList.append(c)
 #
@@ -109,7 +109,7 @@
 #         # Proxy Mesh
 #         for fgrs in self.fgrsArr:
 #             for j in fgrs:
-#                 JointNode(j).addProxyMesh(
+#                 JntNode(j).addProxyMesh(
 #                     size=self.rigSize / 2, aimDir=(self.xDir, 0, 0), skipEnd=1
 #                 )
 #         # self.rootJ.addProxyMesh(size=self.rigSize, aimDir=(self.xDir, 0, 0))

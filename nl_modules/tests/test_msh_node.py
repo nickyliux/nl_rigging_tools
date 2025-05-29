@@ -3,10 +3,10 @@ import maya.cmds as mc
 
 from nl_modules.nodel.base.dep_node import DepNode
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.mesh_node import MeshNode
+from nl_modules.nodel.msh_node import MshNode
 
 
-class Test_MeshNode_Base(unittest.TestCase):
+class Test_MshNode_Base(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         mc.refresh(su=1)
@@ -19,9 +19,9 @@ class Test_MeshNode_Base(unittest.TestCase):
         mc.file(new=1, f=1)
 
         self.sphere_name = "sphere"
-        self.sphere = MeshNode(mc.polySphere(n=self.sphere_name, r=1)[0])
+        self.sphere = MshNode(mc.polySphere(n=self.sphere_name, r=1)[0])
         self.cube_name = "cube"
-        self.cube = MeshNode(mc.polyCube(n=self.cube_name, w=1, h=2, d=3)[0])
+        self.cube = MshNode(mc.polyCube(n=self.cube_name, w=1, h=2, d=3)[0])
 
         self.joint1_name = "joint1"
         self.joint2_name = "joint2"
@@ -33,7 +33,7 @@ class Test_MeshNode_Base(unittest.TestCase):
         )
 
 
-class Test_MeshNode_Main(Test_MeshNode_Base):
+class Test_MshNode_Main(Test_MshNode_Base):
 
     def test_verts(self):
         self.assertEqual(self.sphere.verts[0], self.sphere_name + ".vtx[0]")
@@ -78,7 +78,7 @@ class Test_MeshNode_Main(Test_MeshNode_Base):
 
     def test_duplicate(self):
         sphere2 = self.sphere.duplicate(n="dup")
-        self.assertEqual(sphere2.__class__.__name__, "MeshNode")
+        self.assertEqual(sphere2.__class__.__name__, "MshNode")
 
     # def test_deleteTweaks(self):
     #     sphere2 = self.sphere.duplicate(n="dup")
@@ -93,4 +93,4 @@ class Test_MeshNode_Main(Test_MeshNode_Base):
 
 if __name__ == "__main__":
     unittest.TestLoader.sortTestMethodsUsing = lambda self, a, b: (a < b) - (a > b)
-    unittest.main(defaultTest="Test_MeshNode_Main", exit=False)
+    unittest.main(defaultTest="Test_MshNode_Main", exit=False)

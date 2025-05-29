@@ -2,11 +2,11 @@ import maya.cmds as mc
 import logging
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.surf_node import SurfNode
+from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common
 from nl_modules.utils.color import Color
 
@@ -19,9 +19,9 @@ class TailFk(RigModule):
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
 
         rID, rSz, xDr = self.getMyVar()
-        self.LINE_GUIDE = CurveNode(rID + "_line_guide")
-        self.RT_GUIDE = CurveNode(rID + "_rt_guide")
-        self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
+        self.LINE_GUIDE = CrvNode(rID + "_line_guide")
+        self.RT_GUIDE = CrvNode(rID + "_rt_guide")
+        self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
 
         self.setting = None
         self.fkCtl = []
@@ -44,7 +44,7 @@ class TailFk(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.build_module()
-        self.rbSrf = SurfNode.buildRbSrf(
+        self.rbSrf = SrfNode.buildRbSrf(
             pf=rID,
             crv=self.LINE_GUIDE,
             normal=1,
@@ -58,7 +58,7 @@ class TailFk(RigModule):
         self.build_fk()
 
         if self.RBN_BONES:
-            self.rbJnt = SurfNode.buildRbJnt(
+            self.rbJnt = SrfNode.buildRbJnt(
                 self.RBN_JNT_NUM,
                 pf=rID,
                 surf=self.rbSrf,
@@ -76,7 +76,7 @@ class TailFk(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting = CurveNode(
+        self.setting = CrvNode(
             "setting",
             pf=rID,
             shape="diamond",
@@ -96,7 +96,7 @@ class TailFk(RigModule):
         rID, rSz, xDr = self.getMyVar()
         cluName = rID + "clu_#"
 
-        self.fkJnt = JointNode.createJntFrCrv(
+        self.fkJnt = JntNode.createJntFrCrv(
             self.LINE_GUIDE,
             num=self.FK_BONE_NUM + 1,
             pf=rID,
@@ -119,7 +119,7 @@ class TailFk(RigModule):
             clu = DagNode(
                 mc.cluster(cv, n=cluName)[1],
             )
-            ctl = CurveNode(
+            ctl = CrvNode(
                 f"{i}_fkc_#",
                 pf=rID,
                 shape="circleC",
@@ -144,9 +144,9 @@ class TailFk(RigModule):
 
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
-        cluGrp1 = GroupNode("cluGrp1", pf=rID, p=self.RIG_DATA)
+        cluGrp1 = GrpNode("cluGrp1", pf=rID, p=self.RIG_DATA)
         [self.masterC.a["globalScale"] >> cluGrp1.a[x] for x in ["sx", "sy", "sz"]]
-        cluGrp2 = GroupNode("cluGrp2", pf=rID, p=cluGrp1)
+        cluGrp2 = GrpNode("cluGrp2", pf=rID, p=cluGrp1)
         [x | cluGrp2 for x in self.allClusters]
 
         # scalable
@@ -180,7 +180,7 @@ class TailFk(RigModule):
 
     def setup_proxy(self):
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(scale=1, p=self.PRX_GRP)
+            JntNode(j).addProxyMesh(scale=1, p=self.PRX_GRP)
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)

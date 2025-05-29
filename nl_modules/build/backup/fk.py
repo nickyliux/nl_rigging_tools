@@ -1,6 +1,6 @@
 # import maya.cmds as mc
 # from nl_modules.build.parts.base.joint_chain import JointChain
-# from nl_modules.nodel.curve_node import CurveNode
+# from nl_modules.nodel.crv_node import CrvNode
 #
 #
 # class Fk:
@@ -39,7 +39,7 @@
 #             name = f"{part}_{i+1:0{pad}}"
 #
 #             # main ctrl
-#             crvN = CurveNode(
+#             crvN = CrvNode(
 #                 name,
 #                 prefix=side,
 #                 suffix="_fk",
@@ -54,7 +54,7 @@
 #
 #             # gimbal ctrl
 #             if gimbal:
-#                 crvN = CurveNode(
+#                 crvN = CrvNode(
 #                     name,
 #                     prefix=side,
 #                     suffix="_gim",
@@ -68,7 +68,7 @@
 #
 #             # offset ctrl
 #             if offset:
-#                 crvN = CurveNode(
+#                 crvN = CrvNode(
 #                     name,
 #                     prefix=side,
 #                     suffix="_ofs",

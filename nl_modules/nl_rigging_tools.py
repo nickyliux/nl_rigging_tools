@@ -15,9 +15,9 @@ from PySide2.QtUiTools import QUiLoader
 from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
 
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.utils import common, file, guide, log, modeling
 from nl_modules.utils.color import Color
 
@@ -151,8 +151,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.misc_retopo500_BN.clicked.connect(
             partial(modeling.mesh_retopo, faceNum=500)
         )
-        self.UI.misc_buildLineSel_BN.clicked.connect(CurveNode.buildLineLinkedSel)
-        self.UI.misc_buildJntLineSel_BN.clicked.connect(JointNode.buildJntLineSel)
+        self.UI.misc_buildLineSel_BN.clicked.connect(CrvNode.buildLineLinkedSel)
+        self.UI.misc_buildJntLineSel_BN.clicked.connect(JntNode.buildJntLineSel)
         self.UI.misc_importEnvAndShd_BN.clicked.connect(
             self.misc_importEnvAndShd_BN_clicked
         )
@@ -195,7 +195,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         for sel in mc.ls(sl=1, tr=1):
             sel = DagNode(sel)
             if sel.type == "nurbsCurve":
-                CurveNode(sel).cv_rotate(*args)
+                CrvNode(sel).cv_rotate(*args)
 
     def alwaysOnTop(self, value):
         for sel in mc.ls(sl=1):
@@ -205,7 +205,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         for sel in mc.ls(sl=1, tr=1):
             sel = DagNode(sel)
             if sel.type == "nurbsCurve":
-                CurveNode(sel).cv_scale(value)  # , atCVCetner=1)
+                CrvNode(sel).cv_scale(value)  # , atCVCetner=1)
 
     def component_load_BN_doubleClicked(self, item):
         names = guide.COMPONENT_DICT[item.text()]
@@ -342,14 +342,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def crvShape_LW_dblClicked(self, item):
         """Add curve object"""
-        crv = CurveNode(item.text(), shape=item.text())
+        crv = CrvNode(item.text(), shape=item.text())
         mc.select(crv)
 
     def crvShape_save_BN_clicked(self):
         """Save selected shape to highlighted"""
         sel = mc.ls(sl=1, tr=1)
         if sel:
-            tgt = CurveNode(sel[0])
+            tgt = CrvNode(sel[0])
             if tgt.type == "nurbsCurve":
                 item = self.UI.crvShape_LW.selectedItems()
                 if item:
@@ -373,7 +373,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 )
                 if result == "OK":
                     newName = mc.promptDialog(q=1, t=1)
-                    CurveNode(tgt) >> newName
+                    CrvNode(tgt) >> newName
                     self.crvShape_refresh_BN_clicked()
 
     def crvShape_del_BN_clicked(self):
@@ -396,12 +396,12 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     #     items = self.UI.crvShape_LW.selectedItems()
     #     if items:
     #         itemText = items[0].text()
-    #         return CurveNode(itemText, shape=itemText)
+    #         return CrvNode(itemText, shape=itemText)
 
     def crvShape_removeFrInst_BN_clicked(self):
         sel = mc.ls(sl=1, tr=1)
         if sel:
-            CurveNode(sel[0]).uninstanceFromOthers()
+            CrvNode(sel[0]).uninstanceFromOthers()
 
     @Undo("crvShape_copyAsInst_BN_clicked")
     def crvShape_copyAsInst_BN_clicked(self):
@@ -410,7 +410,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         items = self.UI.crvShape_LW.selectedItems()
         if sel and items:
             itemText = items[0].text()
-            shape = CurveNode(itemText, shape=itemText)
+            shape = CrvNode(itemText, shape=itemText)
             shape.copy_shape_as_inst(sel, keepSrc=0)
             mc.select(sel)
 
@@ -433,11 +433,11 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         [meshSel.append(DagNode(s).parent) for s in sel]
 
         if meshSel:
-            jnt_grp = GroupNode("jnt_grp")
+            jnt_grp = GrpNode("jnt_grp")
             for sN in meshSel:
                 sf = "_rbJnt" if rb else "_refJnt"
                 color = Color.RED if rb else Color.L_BLUE
-                jnt = JointNode(sN + sf, color=color, p=jnt_grp)
+                jnt = JntNode(sN + sf, color=color, p=jnt_grp)
                 jnt.a.t.set(*sN.o.bbCenter)
         mc.select(cl=1)
 
@@ -521,14 +521,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         mc.select(cl=1)
 
     def skin_delForAllMeshes(self):
-        from nl_modules.nodel.mesh_node import MeshNode
+        from nl_modules.nodel.msh_node import MshNode
 
         #
         #   collect all skincluster and delete
         #
         allSkin = []
         for m in set(mc.ls(type="mesh")):
-            sk = MeshNode(m).skinCluster
+            sk = MshNode(m).skinCluster
             if sk and sk not in allSkin:
                 allSkin.append(sk)
 

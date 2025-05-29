@@ -1,15 +1,15 @@
 import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.utils.color import Color
 import logging
 
 
-class JointNode(GroupNode):
+class JntNode(GrpNode):
     """Joint Node Class
     e.g.
-        n = JointNode('existing')
-        n = JointNode('new', r=5)
+        n = JntNode('existing')
+        n = JntNode('new', r=5)
     """
 
     def __init__(
@@ -32,7 +32,7 @@ class JointNode(GroupNode):
         if mc.objExists(name):
             nodeExists = 1
 
-        GroupNode.__init__(
+        GrpNode.__init__(
             self,
             node,
             nodeType="joint",
@@ -46,9 +46,9 @@ class JointNode(GroupNode):
             p=p,
         )
         if shape:
-            from nl_modules.nodel.curve_node import CurveNode
+            from nl_modules.nodel.crv_node import CrvNode
 
-            CurveNode(self) << shape
+            CrvNode(self) << shape
 
         if not nodeExists:
             self.color = color or 0
@@ -129,8 +129,8 @@ class JointNode(GroupNode):
             makeTwoJC('myJ')
             makeTwoJC('myJ', snap=pt1, ofs=(1,0,0))
         """
-        j0 = JointNode(n, pf=pf, r=r, color=color, p=p)
-        j1 = JointNode(n + "_end", pf=pf, r=r, color=color, p=j0)
+        j0 = JntNode(n, pf=pf, r=r, color=color, p=p)
+        j1 = JntNode(n + "_end", pf=pf, r=r, color=color, p=j0)
 
         if align:
             j0.alignTo(align)
@@ -161,8 +161,8 @@ class JointNode(GroupNode):
             makeTwoJC('myJ')
             makeTwoJC('myJ', snap=pt1, ofs=(1,0,0))
         """
-        j0 = JointNode(n, pf=pf, r=r, color=color, p=p)
-        j1 = JointNode(n + "_end", pf=pf, r=r, color=color, p=j0)
+        j0 = JntNode(n, pf=pf, r=r, color=color, p=p)
+        j1 = JntNode(n + "_end", pf=pf, r=r, color=color, p=j0)
 
         if align:
             j0.alignTo(align)
@@ -230,7 +230,7 @@ class JointNode(GroupNode):
             aimCst.a.constraintRotateY >> loc.a.ry
             aimCst.a.constraintRotateZ >> loc.a.rz
 
-            j = JointNode(f"{i}_{name}", pf=pf, align=loc, r=size, color=color)
+            j = JntNode(f"{i}_{name}", pf=pf, align=loc, r=size, color=color)
             joints.append(j)
 
             mc.delete(mp, poci, aimCst, loc)
@@ -288,7 +288,7 @@ class JointNode(GroupNode):
         """
         parentJ = None
         for s in mc.ls(sl=1):
-            j = JointNode(s + "_lineJnt", r=0, snap=s, p=parentJ, color=Color.BLUE)
+            j = JntNode(s + "_lineJnt", r=0, snap=s, p=parentJ, color=Color.BLUE)
             DagNode(s).cstPoi(j)
             parentJ = j
             j.a.showAttr()

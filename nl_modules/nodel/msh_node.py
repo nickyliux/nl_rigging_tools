@@ -5,10 +5,10 @@ from nl_modules.nodel.base.dag_node import DagNode
 import logging
 
 
-class MeshNode(DagNode):
+class MshNode(DagNode):
     """Mesh Node Class
     e.g.
-        n = MeshNode('existing')
+        n = MshNode('existing')
     """
 
     def __init__(self, node):
@@ -61,7 +61,7 @@ class MeshNode(DagNode):
     def copyWeightsTo(self, items):
         if self.skinCluster.exists():
             items = items if isinstance(items, (list, tuple)) else [items]
-            for item in [MeshNode(i) for i in items]:
+            for item in [MshNode(i) for i in items]:
                 if item.skinCluster:
                     item.skinCluster.delete()
 
@@ -75,7 +75,7 @@ class MeshNode(DagNode):
                 )
 
     def copyWeightsFr(self, item):
-        MeshNode(item).copyWeightsTo(self)
+        MshNode(item).copyWeightsTo(self)
 
     def deleteTweaks(self):
         if self.exists():

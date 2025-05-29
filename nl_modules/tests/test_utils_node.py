@@ -1,6 +1,6 @@
 import unittest
 import maya.cmds as mc
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.utils import utils_node as ut
 
 
@@ -15,9 +15,9 @@ class Test_utils_node_Base(unittest.TestCase):
 
     def setUp(self):
         mc.file(new=1, f=1)
-        self.grp1 = GroupNode("grp1")
-        self.grp2 = GroupNode("grp2")
-        self.weight = GroupNode("w")
+        self.grp1 = GrpNode("grp1")
+        self.grp2 = GrpNode("grp2")
+        self.weight = GrpNode("w")
         self.grp1.a.tx.set(1)
         self.grp2.a.tx.set(2)
         self.weight.a.tx.set(0.5)

@@ -7,11 +7,11 @@ from nl_modules.utils.color import Color
 import logging
 
 
-class GroupNode(DagNode):
+class GrpNode(DagNode):
     """Group Node Class
     e.g.
-        n = GroupNode('existing')
-        n = GroupNode('new')
+        n = GrpNode('existing')
+        n = GrpNode('new')
     """
 
     PATH_SHAPE = os.path.join(os.path.dirname(nl_modules.__file__), "build/shapes")
@@ -150,7 +150,7 @@ class GroupNode(DagNode):
         e.g.
             saveToLib(list, 'arrow')
         """
-        f = f"{GroupNode.PATH_SHAPE}/{name}.json"
+        f = f"{GrpNode.PATH_SHAPE}/{name}.json"
 
         file.saveJson(f, dictList, force=True)
         logging.info(f"Saved to {f}")
@@ -160,7 +160,7 @@ class GroupNode(DagNode):
         e.g.
             list = loadFrLib('arrow')
         """
-        f = f"{GroupNode.PATH_SHAPE}/{name}.json"
+        f = f"{GrpNode.PATH_SHAPE}/{name}.json"
         return file.loadJson(f)
 
     def shape_getDictListFrObj(self, crv):
@@ -198,7 +198,7 @@ class GroupNode(DagNode):
         xf = xf or mc.createNode("transform", n=name)
 
         for i, crvShapeDict in enumerate(dictList):
-            tmp = GroupNode(
+            tmp = GrpNode(
                 mc.curve(
                     p=crvShapeDict["points"],
                     d=crvShapeDict["degree"],
@@ -213,13 +213,13 @@ class GroupNode(DagNode):
             shape.a.overrideColor.set(crvShapeDict["color"])
 
         mc.select(cl=1)
-        return GroupNode(xf)
+        return GrpNode(xf)
 
     def __le__(self, crv):
         """Copy shape from preset/another
         e.g.
-           CurveNode('a') <= 'circle'          # from preset
-           CurveNode('a') <= CurveNode('b')    # from another curve
+           CrvNode('a') <= 'circle'          # from preset
+           CrvNode('a') <= CrvNode('b')    # from another curve
         """
         self << crv
         self.uninstanceFromOthers()
@@ -227,17 +227,17 @@ class GroupNode(DagNode):
     def __ge__(self, crv):
         """Copy shape to another
         e.g.
-            CurveNode('a') >= CurveNode('b')    # copy to another
+            CrvNode('a') >= CrvNode('b')    # copy to another
         """
-        # if isinstance(crv, GroupNode):
+        # if isinstance(crv, GrpNode):
         self >> crv
         crv.uninstanceFromOthers()
 
     def __lshift__(self, crv):
         """Instance shape from preset/another
         e.g.
-           CurveNode('a') << 'circle'          # from preset
-           CurveNode('a') << CurveNode('b')    # from another curve
+           CrvNode('a') << 'circle'          # from preset
+           CrvNode('a') << CrvNode('b')    # from another curve
         """
         typeName = type(crv).__name__
 
@@ -246,7 +246,7 @@ class GroupNode(DagNode):
             crvObj = self.shape_buildFrDictList(crvDictList, crv)
             crvObj.copy_shape_as_inst([self], keepSrc=0)
 
-        elif typeName == "GroupNode":  # another curve
+        elif typeName == "GrpNode":  # another curve
             crv.copyShapeAsInst([self])
 
         # self.color = self.getSideColor()
@@ -254,14 +254,14 @@ class GroupNode(DagNode):
     def __rshift__(self, crv):
         """Copy shape to preset/another
         e.g.
-            CurveNode('a') >> 'circle'          # save to preset
-            CurveNode('a') >> CurveNode('b')    # copy to another
+            CrvNode('a') >> 'circle'          # save to preset
+            CrvNode('a') >> CrvNode('b')    # copy to another
         """
         if isinstance(crv, str):
             crvDictList = self.shape_getDictListFrObj(self)
             self.shape_saveToLib(crvDictList, crv)
 
-        # elif isinstance(crv, GroupNode):
+        # elif isinstance(crv, GrpNode):
         else:
             self.copy_shape_as_inst([crv])
 

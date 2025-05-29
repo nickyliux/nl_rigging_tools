@@ -1,6 +1,6 @@
 import unittest
 import maya.cmds as mc
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.ik_node import IkNode
 from nl_modules.utils.color import Color
 
@@ -17,9 +17,9 @@ class Test_ikNode_Base(unittest.TestCase):
     def setUp(self):
         mc.file(new=1, f=1)
 
-        self.j1 = JointNode("j1")
-        self.j2 = JointNode("j2")
-        self.j3 = JointNode("j3")
+        self.j1 = JntNode("j1")
+        self.j2 = JntNode("j2")
+        self.j3 = JntNode("j3")
         self.j1.a.t.set(0, 10, 0)
         self.j2.a.t.set(0, 5, 1)
 

@@ -153,9 +153,9 @@ def showHidden(*args):
 def use_last_crv_shapes(*args):
     sel = mc.ls(sl=1)
     if len(sel) > 1:
-        from nl_modules.nodel.curve_node import CurveNode
+        from nl_modules.nodel.crv_node import CrvNode
 
-        CurveNode(sel[-1]).copy_shape_as_inst(sel[:-1])
+        CrvNode(sel[-1]).copy_shape_as_inst(sel[:-1])
 
 
 def add_last_crv_shapes(*args):

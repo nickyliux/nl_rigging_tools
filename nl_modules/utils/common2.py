@@ -13,17 +13,17 @@ def addAwesomeSpine_createCtlJ(jointList, r=8, pf="", color=13, p=None):
     e.g.
         build_ctl_jnt(jntList, 10)
     """
-    from nl_modules.nodel.joint_node import JointNode
+    from nl_modules.nodel.jnt_node import JntNode
     from nl_modules.utils.color import Color
 
     name = ["staJ", "midJ", "endJ"]
-    j1 = JointNode(name[0], pf=pf, r=r, color=color, p=p)
+    j1 = JntNode(name[0], pf=pf, r=r, color=color, p=p)
     j1.alignTo(jointList[0])
 
-    j2 = JointNode(name[1], pf=pf, r=r, color=color, p=p)
+    j2 = JntNode(name[1], pf=pf, r=r, color=color, p=p)
     j2.alignTo(jointList[int(len(jointList) / 2)])
 
-    j3 = JointNode(name[2], pf=pf, r=r, color=color, p=p)
+    j3 = JntNode(name[2], pf=pf, r=r, color=color, p=p)
     j3.alignTo(jointList[-1])
 
     j1.freezeXf()
@@ -33,8 +33,8 @@ def addAwesomeSpine_createCtlJ(jointList, r=8, pf="", color=13, p=None):
 
 
 def addAwesomeSpine(targetJ, scaleGrp=None, reader=None, ctlParent=None, grp=None):
-    from nl_modules.nodel.curve_node import CurveNode
-    from nl_modules.nodel.joint_node import JointNode
+    from nl_modules.nodel.crv_node import CrvNode
+    from nl_modules.nodel.jnt_node import JntNode
 
     targetJChild = targetJ.childrenJt[0]
     refSize = abs(targetJChild.a.tx.get()) * 0.2 if targetJChild else 1
@@ -47,9 +47,7 @@ def addAwesomeSpine(targetJ, scaleGrp=None, reader=None, ctlParent=None, grp=Non
     ikCtl = []
     for i in range(3):
         ikCtl.append(
-            CurveNode(
-                "jc", pf=targetJ.name, scale=refSize, align=ctlJnts[i], p=ctlParent
-            )
+            CrvNode("jc", pf=targetJ.name, scale=refSize, align=ctlJnts[i], p=ctlParent)
         )
         ikCtl[i].cstPar(ctlJnts[i])
 
@@ -72,16 +70,16 @@ def addAwesomeSpine(targetJ, scaleGrp=None, reader=None, ctlParent=None, grp=Non
     #     reader.a.rx >> ikCtl[2].a.rx
 
     for j in chain:
-        JointNode(j).addProxyMesh()
+        JntNode(j).addProxyMesh()
 
 
 def clusterSetup(crv, ikCtl):
     """create cluster on cv for ctls to drive the curve"""
 
-    from nl_modules.nodel.curve_node import CurveNode
+    from nl_modules.nodel.crv_node import CrvNode
     from nl_modules.nodel.base.dag_node import DagNode
 
-    allCV = CurveNode(crv).cvs
+    allCV = CrvNode(crv).cvs
     clu = []
     if len(allCV) == 5 and len(ikCtl) == 3:
         [clu.append(DagNode(mc.cluster(c)[1])) for c in allCV]
@@ -157,11 +155,11 @@ def addAwesomeIK(
 #         Ribbon group from given locators
 #     """
 #     from nl_modules.nodel.base.dag_node import DagNode
-#     from nl_modules.nodel.group_node import GroupNode
-#     from nl_modules.nodel.surf_node import SurfNode
+#     from nl_modules.nodel.group_node import GrpNode
+#     from nl_modules.nodel.surf_node import SrfNode
 #     from nl_modules.nodel.loc_node import LocNode
 #     from nl_modules.nodel.ik_node import IkNode
-#     from nl_modules.nodel.joint_node import JointNode
+#     from nl_modules.nodel.jnt_node import JntNode
 #
 #     fr_locN = DagNode(fr_loc) if isinstance(fr_loc, str) else fr_loc
 #     to_locN = DagNode(to_loc) if isinstance(to_loc, str) else to_loc
@@ -172,13 +170,13 @@ def addAwesomeIK(
 #     # ------------------------------
 #     # Build Groups
 #     # ------------------------------
-#     DATA_GRP = GroupNode("data_grp", pf=pf)
-#     RB_GRP = GroupNode("rb_grp", pf=pf, p=DATA_GRP)
+#     DATA_GRP = GrpNode("data_grp", pf=pf)
+#     RB_GRP = GrpNode("rb_grp", pf=pf, p=DATA_GRP)
 #
-#     BSE_GRP = GroupNode("bse_grp", pf=pf)
-#     JNT_GRP = GroupNode("jnt_grp", pf=pf)
-#     CTL_GRP = GroupNode("ctl_grp", pf=pf)
-#     AIM_GRP = GroupNode("aim_grp", pf=pf)
+#     BSE_GRP = GrpNode("bse_grp", pf=pf)
+#     JNT_GRP = GrpNode("jnt_grp", pf=pf)
+#     CTL_GRP = GrpNode("ctl_grp", pf=pf)
+#     AIM_GRP = GrpNode("aim_grp", pf=pf)
 #
 #     for g in (RB_GRP, JNT_GRP, CTL_GRP, AIM_GRP):
 #         g.a.r.set(180, 0, 90)
@@ -188,7 +186,7 @@ def addAwesomeIK(
 #     # ------------------------------
 #     # Build Surf
 #     # ------------------------------
-#     surf = SurfNode(
+#     surf = SrfNode(
 #         "rb_nurbs", pf=pf, seg=seg, ax=(1, 0, 0), lr=seg, width=DIST / seg, p=BSE_GRP
 #     )
 #     surf.a.inheritsTransform.set(0)
@@ -205,7 +203,7 @@ def addAwesomeIK(
 #
 #     rbJnt = []
 #     for i in range(len(pinXf)):
-#         j = JointNode("rbJnt_#", pf=pf, p=JNT_GRP, addOfs=1)
+#         j = JntNode("rbJnt_#", pf=pf, p=JNT_GRP, addOfs=1)
 #
 #         pinXf[i].cstPar(j.parent)
 #         pinXf[i].a.inheritsTransform.set(0)
@@ -298,7 +296,7 @@ def addAwesomeIK(
 #         "lw_twist", pf=pf, snap=lw_loc, offsetX=DIST / -10, p=AIM_GRP
 #     )
 #
-#     lw_twistG = GroupNode("lw_twistG", pf=pf, align=lw_twistJ, p=lw_twistJ)
+#     lw_twistG = GrpNode("lw_twistG", pf=pf, align=lw_twistJ, p=lw_twistJ)
 #     lw_twistG.a.rx >> lw_aim_skn.a.rx
 #
 #     lw_twistJ_end.cstAim(
@@ -316,7 +314,7 @@ def addAwesomeIK(
 #         "up_twist", pf=pf, snap=up_loc, offsetX=DIST / 10, p=AIM_GRP
 #     )
 #
-#     up_twistG = GroupNode("up_twistG", pf=pf, align=up_twistJ, p=up_twistJ)
+#     up_twistG = GrpNode("up_twistG", pf=pf, align=up_twistJ, p=up_twistJ)
 #     up_twistG.a.rx >> up_aim_skn.a.rx
 #
 #     up_twistJ_end.cstAim(
@@ -386,11 +384,11 @@ def addAwesomeIK(
 #         Ribbon group from given locators
 #     """
 #     from nl_modules.nodel.base.dag_node import DagNode
-#     from nl_modules.nodel.group_node import GroupNode
-#     from nl_modules.nodel.surf_node import SurfNode
+#     from nl_modules.nodel.group_node import GrpNode
+#     from nl_modules.nodel.surf_node import SrfNode
 #     from nl_modules.nodel.loc_node import LocNode
 #     from nl_modules.nodel.ik_node import IkNode
-#     from nl_modules.nodel.joint_node import JointNode
+#     from nl_modules.nodel.jnt_node import JntNode
 #
 #     fr_locN = DagNode(fr_loc) if isinstance(fr_loc, str) else fr_loc
 #     to_locN = DagNode(to_loc) if isinstance(to_loc, str) else to_loc
@@ -401,13 +399,13 @@ def addAwesomeIK(
 #     # ------------------------------
 #     # Build Groups
 #     # ------------------------------
-#     # DATA_GRP = GroupNode("data_grp", pf=pf)
-#     RB_GRP = GroupNode("rb_grp", pf=pf)
+#     # DATA_GRP = GrpNode("data_grp", pf=pf)
+#     RB_GRP = GrpNode("rb_grp", pf=pf)
 #
-#     BSE_GRP = GroupNode("bse_grp", pf=pf)
-#     JNT_GRP = GroupNode("jnt_grp", pf=pf)
-#     CTL_GRP = GroupNode("ctl_grp", pf=pf)
-#     AIM_GRP = GroupNode("aim_grp", pf=pf)
+#     BSE_GRP = GrpNode("bse_grp", pf=pf)
+#     JNT_GRP = GrpNode("jnt_grp", pf=pf)
+#     CTL_GRP = GrpNode("ctl_grp", pf=pf)
+#     AIM_GRP = GrpNode("aim_grp", pf=pf)
 #
 #     # for g in (RB_GRP, JNT_GRP, CTL_GRP, AIM_GRP):
 #     #     g.a.r.set(180, 0, 90)
@@ -417,7 +415,7 @@ def addAwesomeIK(
 #     # ------------------------------
 #     # Build Surf
 #     # ------------------------------
-#     surf = SurfNode(
+#     surf = SrfNode(
 #         "rb_nurbs", pf=pf, uSeg=seg, ax=(0, 1, 0), lr=1 / seg, width=DIST, p=BSE_GRP
 #     )
 #     surf.a.inheritsTransform.set(0)
@@ -432,7 +430,7 @@ def addAwesomeIK(
 #
 #     rbJnt = []
 #     for i in range(len(pinXf)):
-#         j = JointNode("rbJnt_#", pf=pf, p=JNT_GRP, addOfs=1)
+#         j = JntNode("rbJnt_#", pf=pf, p=JNT_GRP, addOfs=1)
 #
 #         pinXf[i].cstPar(j.parent)
 #         pinXf[i].a.inheritsTransform.set(0)
@@ -525,7 +523,7 @@ def addAwesomeIK(
 #         "lw_twist", pf=pf, snap=lw_loc, offsetX=DIST / -10, p=AIM_GRP
 #     )
 #
-#     lw_twistG = GroupNode("lw_twistG", pf=pf, align=lw_twistJ, p=lw_twistJ)
+#     lw_twistG = GrpNode("lw_twistG", pf=pf, align=lw_twistJ, p=lw_twistJ)
 #     lw_twistG.a.rx >> lw_aim_skn.a.rx
 #
 #     lw_twistJ_end.cstAim(
@@ -543,7 +541,7 @@ def addAwesomeIK(
 #         "up_twist", pf=pf, snap=up_loc, offsetX=DIST / 10, p=AIM_GRP
 #     )
 #
-#     up_twistG = GroupNode("up_twistG", pf=pf, align=up_twistJ, p=up_twistJ)
+#     up_twistG = GrpNode("up_twistG", pf=pf, align=up_twistJ, p=up_twistJ)
 #     up_twistG.a.rx >> up_aim_skn.a.rx
 #
 #     up_twistJ_end.cstAim(

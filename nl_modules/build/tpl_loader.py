@@ -22,7 +22,7 @@ class TplLoader:
 
     def load_base_tpl(self):
         from nl_modules.nodel.base.dag_node import DagNode
-        from nl_modules.nodel.group_node import GroupNode
+        from nl_modules.nodel.grp_node import GrpNode
 
         rID = self.rigID
         rigNodeStr = rID + "_RGN"
@@ -33,7 +33,7 @@ class TplLoader:
 
         if self.load_tpl(self.tpl_name):
 
-            scale_grp = GroupNode("modules_scale_grp")
+            scale_grp = GrpNode("modules_scale_grp")
             mod_grp = DagNode(rID + "_module_grp")
 
             if mod_grp.exists():

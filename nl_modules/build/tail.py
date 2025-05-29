@@ -2,11 +2,11 @@ import maya.cmds as mc
 import logging
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.surf_node import SurfNode
+from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
@@ -19,11 +19,11 @@ class Tail(RigModule):
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
 
         rID, rSz, xDr = self.getMyVar()
-        self.LINE_GUIDE = CurveNode(rID + "_line_guide")
-        self.RT_GUIDE = CurveNode(rID + "_rt_guide")
-        self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
-        self.FK_PART = GroupNode("FK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
-        self.IK_PART = GroupNode("IK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
+        self.LINE_GUIDE = CrvNode(rID + "_line_guide")
+        self.RT_GUIDE = CrvNode(rID + "_rt_guide")
+        self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
+        self.FK_PART = GrpNode("FK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
+        self.IK_PART = GrpNode("IK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
 
         self.setting = None
         self.fkCtl = []
@@ -44,7 +44,7 @@ class Tail(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting = CurveNode(
+        self.setting = CrvNode(
             "setting",
             pf=rID,
             shape="sphere2",
@@ -68,7 +68,7 @@ class Tail(RigModule):
     def build(self):
         rID, rSz, xDr = self.getMyVar()
         self.build_module()
-        self.rbSrf1 = SurfNode.buildRbSrf(
+        self.rbSrf1 = SrfNode.buildRbSrf(
             pf=rID,
             crv=self.LINE_GUIDE,
             normal=1,
@@ -94,7 +94,7 @@ class Tail(RigModule):
 
     def build_ik(self):
         rID, rSz, xDr = self.getMyVar()
-        self.ikJnt = JointNode.createJntFrCrv(
+        self.ikJnt = JntNode.createJntFrCrv(
             self.LINE_GUIDE,
             num=5,
             name="ikj",
@@ -107,7 +107,7 @@ class Tail(RigModule):
         )
 
         for i in range(0, 5):
-            ctl = CurveNode(
+            ctl = CrvNode(
                 f"{i}_ikc",
                 pf=rID,
                 shape="sphere2",
@@ -124,7 +124,7 @@ class Tail(RigModule):
 
             self.rigNode.setMsg({f"ikc{i}": ctl})
 
-        SurfNode(self.rbSrf1).weightTo(self.ikJnt, mi=4, dr=6, chain=0)
+        SrfNode(self.rbSrf1).weightTo(self.ikJnt, mi=4, dr=6, chain=0)
 
         self.setting.snapTo(self.ikCtl[0], offset=(0, rSz * 30, 0))
         self.ikCtl[0].cstPar(self.setting, mo=1)
@@ -135,7 +135,7 @@ class Tail(RigModule):
         # ------------------------------------------
         # Build fkJ
         # ------------------------------------------
-        self.fkJnt = JointNode.createJntFrCrv(
+        self.fkJnt = JntNode.createJntFrCrv(
             self.LINE_GUIDE,
             num=self.FK_BONE_NUM + 1,
             pf=rID,
@@ -158,7 +158,7 @@ class Tail(RigModule):
         # Build fkCtls
         # ------------------------------------------
         for i in range(self.FK_BONE_NUM + 1):
-            ctl = CurveNode(
+            ctl = CrvNode(
                 f"{i}_fkc",
                 pf=rID,
                 shape="circleC",
@@ -175,7 +175,7 @@ class Tail(RigModule):
         chainGrps = []
         lastGrp = self.FK_PART
         for i in range(self.FK_BONE_NUM + 1):
-            grp = GroupNode(f"{i}_chainGrp", pf=rID, align=self.fkCtl[i], p=lastGrp)
+            grp = GrpNode(f"{i}_chainGrp", pf=rID, align=self.fkCtl[i], p=lastGrp)
             pinXf[i].cstPar(grp, mo=1)
             chainGrps.append(grp)
             lastGrp = grp
@@ -192,7 +192,7 @@ class Tail(RigModule):
         # Build lowest ikCtl layer
         # ------------------------------------------
         for i in range(self.FK_BONE_NUM + 1):
-            ctl = CurveNode(
+            ctl = CrvNode(
                 f"{i}_offset_ikc",
                 pf=rID,
                 shape="sphere2",
@@ -201,12 +201,12 @@ class Tail(RigModule):
                 p=self.fkCtl[i],
                 move=(0, rSz * 18, 0),
             )
-            jnt = JointNode(f"{i}_offset_ikj", pf=rID, align=ctl, p=ctl, color=13)
+            jnt = JntNode(f"{i}_offset_ikj", pf=rID, align=ctl, p=ctl, color=13)
 
             self.ikOffsetCtl.append(ctl)
             self.ikOffsetJnt.append(jnt)
 
-        SurfNode(self.rbSrf2).weightTo(self.ikOffsetJnt, chain=0, mi=2, dr=6)
+        SrfNode(self.rbSrf2).weightTo(self.ikOffsetJnt, chain=0, mi=2, dr=6)
 
         self.isolate_align(self.ikCtl[0], [self.ikCtl[0].offset, self.masterC])
 
@@ -243,7 +243,7 @@ class Tail(RigModule):
 
     def setup_proxy(self):
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(p=self.PRX_GRP)
+            JntNode(j).addProxyMesh(p=self.PRX_GRP)
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)

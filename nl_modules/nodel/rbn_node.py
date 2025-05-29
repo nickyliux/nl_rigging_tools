@@ -1,11 +1,11 @@
 import logging
 import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.surf_node import SurfNode
+from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
@@ -14,7 +14,7 @@ CYL = Color.YELLOW
 COR = Color.ORANGE
 
 
-class RibbonNode:
+class RbnNode:
     def __init__(
         self,
         tgt,
@@ -89,16 +89,16 @@ class RibbonNode:
         self.tgtN.cstPar(self.ribbonG, keep=0)
 
     def build_grps(self, pf):
-        self.ribbonG = GroupNode("ribbon", pf=pf, p=self.ribbonP)
-        self.BSE_GRP = GroupNode("bse", pf=pf, p=self.ribbonG)
-        self.JNT_GRP = GroupNode("jnt", pf=pf, p=self.ribbonG)
-        self.CTL_GRP = GroupNode("ctl", pf=pf, p=self.ribbonG)
-        self.AIM_GRP = GroupNode("aim", pf=pf, p=self.ribbonG)
+        self.ribbonG = GrpNode("ribbon", pf=pf, p=self.ribbonP)
+        self.BSE_GRP = GrpNode("bse", pf=pf, p=self.ribbonG)
+        self.JNT_GRP = GrpNode("jnt", pf=pf, p=self.ribbonG)
+        self.CTL_GRP = GrpNode("ctl", pf=pf, p=self.ribbonG)
+        self.AIM_GRP = GrpNode("aim", pf=pf, p=self.ribbonG)
 
     def build_surf(self, pf):
 
         xDr = self.xDir
-        surf = SurfNode(
+        surf = SrfNode(
             "rb_surf",
             pf=pf,
             uSeg=5,
@@ -125,7 +125,7 @@ class RibbonNode:
         )
         rbJnt = []
         for i in range(self.rbJNum):
-            jnt = JointNode(
+            jnt = JntNode(
                 f"rbj_{i}",
                 pf=pf,
                 p=self.JNT_GRP,
@@ -178,7 +178,7 @@ class RibbonNode:
         ofsX = self.D / 4 * self.xDir
         ofsX2 = ofsX * 2
 
-        stt_aimJ, stt_aimJ_end = JointNode.makeTwoJC(
+        stt_aimJ, stt_aimJ_end = JntNode.makeTwoJC(
             "stt_aimJ",
             pf=pf,
             snap=self.stt_loc,
@@ -190,7 +190,7 @@ class RibbonNode:
         stt_sknJ = stt_aimJ_end.duplicate(n=pf + "stt_sknJ")
         stt_sknJ.alignTo(self.stt_loc)
 
-        end_aimJ, end_aimJ_end = JointNode.makeTwoJC(
+        end_aimJ, end_aimJ_end = JntNode.makeTwoJC(
             "end_aimJ",
             pf=pf,
             snap=self.end_loc,
@@ -202,7 +202,7 @@ class RibbonNode:
         end_sknJ = end_aimJ_end.duplicate(n=pf + "end_sknJ")
         end_sknJ.alignTo(self.end_loc)
 
-        mid_aimJ, mid_aimJ_end = JointNode.makeTwoJC(
+        mid_aimJ, mid_aimJ_end = JntNode.makeTwoJC(
             "mid_aimJ",
             pf=pf,
             snap=self.stt_loc,
@@ -277,7 +277,7 @@ class RibbonNode:
         upV = (0, 1, 0)
 
         # From
-        stt_twistJ, stt_twistJ_end = JointNode.makeTwoJC(
+        stt_twistJ, stt_twistJ_end = JntNode.makeTwoJC(
             "stt_twistJ",
             pf=pf,
             snap=self.stt_loc,
@@ -286,7 +286,7 @@ class RibbonNode:
             r=self.size / 2,
             color=CYL,
         )
-        stt_twistG = GroupNode("stt_twistG", pf=pf, align=stt_twistJ, p=stt_twistJ)
+        stt_twistG = GrpNode("stt_twistG", pf=pf, align=stt_twistJ, p=stt_twistJ)
         stt_twistG.a.rx >> self.stt_sknJ.a.rx
 
         stt_twistJ_end.cstAim(
@@ -297,7 +297,7 @@ class RibbonNode:
             u=upV,
         )
         # To
-        end_twistJ, end_twistJ_end = JointNode.makeTwoJC(
+        end_twistJ, end_twistJ_end = JntNode.makeTwoJC(
             "end_twistJ",
             pf=pf,
             snap=self.end_loc,
@@ -306,7 +306,7 @@ class RibbonNode:
             r=self.size / 2,
             color=CYL,
         )
-        end_twistG = GroupNode("end_twistG", pf=pf, align=end_twistJ, p=end_twistJ)
+        end_twistG = GrpNode("end_twistG", pf=pf, align=end_twistJ, p=end_twistJ)
         end_twistG.a.rx >> self.end_sknJ.a.rx
         end_twistJ_end.cstAim(
             end_twistG,
@@ -423,7 +423,7 @@ class RibbonNode:
 #         mc.setAttr(f"{uvP}.coordinate[{i}].coordinateU", 0.5)
 #         mc.setAttr(f"{uvP}.coordinate[{i}].coordinateV", i / 5 + 0.1)
 #
-#         j = JointNode(f"{pf}joint_{i}", align=loc, addOfs=1, p=jGrp)
+#         j = JntNode(f"{pf}joint_{i}", align=loc, addOfs=1, p=jGrp)
 #         loc.cstParSca(j)
 #
 #     topLoc = LocNode(f"{pf}top_loc", addOfs=1, p=cGrp)
@@ -433,8 +433,8 @@ class RibbonNode:
 #     mc.parent(jGrp, sGrp, cGrp, dGrp)
 #
 #     for i in range(3):
-#         fkj = JointNode(f"{pf}{i}_fk", p=dGrp)
-#         ikj = JointNode(f"{pf}{i}_ik", p=dGrp)
-#         jnt = JointNode(f"{pf}{i}_jnt", p=dGrp)
+#         fkj = JntNode(f"{pf}{i}_fk", p=dGrp)
+#         ikj = JntNode(f"{pf}{i}_ik", p=dGrp)
+#         jnt = JntNode(f"{pf}{i}_jnt", p=dGrp)
 #         (fkj.a.t ^ ikj.a.t) >> jnt.a.t
 # buildRibbon("mySpine_")

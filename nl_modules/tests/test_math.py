@@ -1,7 +1,7 @@
 import unittest
 import maya.cmds as mc
 
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.utils import maths
 
 
@@ -16,8 +16,8 @@ class Test_math_Base(unittest.TestCase):
 
     def setUp(self):
         mc.file(new=1, f=1)
-        self.obj1 = GroupNode("grp1")
-        self.obj2 = GroupNode("grp2")
+        self.obj1 = GrpNode("grp1")
+        self.obj2 = GrpNode("grp2")
         self.obj2.a.ty.set(10)
 
 

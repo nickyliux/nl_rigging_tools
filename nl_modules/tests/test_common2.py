@@ -1,9 +1,9 @@
 import unittest
 import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common2
 
@@ -20,9 +20,9 @@ class Test_common2_Base(unittest.TestCase):
     def setUp(self):
         mc.file(new=1, f=1)
 
-        self.obj1 = CurveNode("crv1")
-        self.obj2 = CurveNode("crv2")
-        self.obj3 = CurveNode("crv3")
+        self.obj1 = CrvNode("crv1")
+        self.obj2 = CrvNode("crv2")
+        self.obj3 = CrvNode("crv3")
 
         self.obj1.a.ty.set(1)
         self.obj1.a.ry.set(10)
@@ -43,14 +43,14 @@ class Test_common2_Base(unittest.TestCase):
 class Test_common2_Main(Test_common2_Base):
 
     def test_clusterSetup(self):
-        crv = CurveNode(
+        crv = CrvNode(
             mc.curve(p=[(0, 5, 0), (0, 6, 0), (0, 7, 0), (0, 8, 0), (0, 9, 0)])
         )
-        ctl1 = CurveNode("ctl1")
+        ctl1 = CrvNode("ctl1")
         ctl1.a.t.set(0, 5, 0)
-        ctl2 = CurveNode("ctl2")
+        ctl2 = CrvNode("ctl2")
         ctl2.a.t.set(0, 7, 0)
-        ctl3 = CurveNode("ctl3")
+        ctl3 = CrvNode("ctl3")
         ctl3.a.t.set(0, 9, 0)
         common2.clusterSetup(crv, [ctl1, ctl2, ctl3])
 

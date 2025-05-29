@@ -2,11 +2,11 @@ import maya.cmds as mc
 import nl_modules.build.rig_module as rig_module
 
 # from nl_modules.build.ribbon import Ribbon
-from nl_modules.nodel.group_node import GroupNode
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.surf_node import SurfNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.base.dep_node import DepNode
 
@@ -32,9 +32,9 @@ class Spine(rig_module.RigModule):
 
         logging.info("load rigNode's connected into attr")
 
-        self.SPINE_SETUP = GroupNode("spine_setup", pf=self.rigID, p=self.CTL_DATA)
+        self.SPINE_SETUP = GrpNode("spine_setup", pf=self.rigID, p=self.CTL_DATA)
 
-        self.rootJ: JointNode = rigNode.a.rootJ.inConnNode
+        self.rootJ: JntNode = rigNode.a.rootJ.inConnNode
         self.cog_ctl = rigNode.a.cog_ctl.inConnNode
 
         self.sta_fkc = rigNode.a.sta_fkc.inConnNode
@@ -74,10 +74,10 @@ class Spine(rig_module.RigModule):
             nurbs surface with pinned locators with squash
 
         """
-        SPINE_VOL_SETUP = GroupNode("spine_vol_setup", pf=self.rigID, p=self.RIG)
+        SPINE_VOL_SETUP = GrpNode("spine_vol_setup", pf=self.rigID, p=self.RIG)
 
         # Create surface & squash
-        surf = SurfNode("volume", pf=self.rigID, v=len(joints) - 2, p=SPINE_VOL_SETUP)
+        surf = SrfNode("volume", pf=self.rigID, v=len(joints) - 2, p=SPINE_VOL_SETUP)
         squash, squashHdl = ut.nonlinear_(surf, nodeType="squash")
         squashHdl | SPINE_VOL_SETUP
 
@@ -97,11 +97,11 @@ class Spine(rig_module.RigModule):
 
     def build_ctl_jnt(self, jointList, NUM, p=None):
 
-        staJ = JointNode("sta_ikj", pf=self.rigID, r=8, color=13)
+        staJ = JntNode("sta_ikj", pf=self.rigID, r=8, color=13)
         staJ.snapTo(jointList[0])
-        midJ = JointNode("mid_ikj", pf=self.rigID, r=8, color=13)
+        midJ = JntNode("mid_ikj", pf=self.rigID, r=8, color=13)
         midJ.snapTo(jointList[int(NUM / 2)])
-        endJ = JointNode("end_ikj", pf=self.rigID, r=8, color=13)
+        endJ = JntNode("end_ikj", pf=self.rigID, r=8, color=13)
         endJ.snapTo(jointList[-1])
 
         if p:
@@ -204,13 +204,13 @@ class Spine(rig_module.RigModule):
         self.volumeSetup(joints, ratio)
 
         for jnt in joints:
-            JointNode(jnt).addProxyMesh(p=self.PRX)
+            JntNode(jnt).addProxyMesh(p=self.PRX)
 
         spCrv.hide()
         spIkH.hide()
 
     def clusterSetup(self, crv, ikCtl):
-        allCV = CurveNode(crv).cvs
+        allCV = CrvNode(crv).cvs
         clu = []
         if len(allCV) == 5:
             [clu.append(DagNode(mc.cluster(c)[1])) for c in allCV]

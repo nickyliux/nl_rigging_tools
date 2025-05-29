@@ -231,7 +231,7 @@ def ribbonAttach(tgtList=None, geo=None, scaleAttr=None, p=None):
     """Attach objects to geometry (nurbs / meshes)"""
 
     from nl_modules.nodel.base.dag_node import DagNode
-    from nl_modules.nodel.group_node import GroupNode
+    from nl_modules.nodel.grp_node import GrpNode
 
     geo = DagNode(geo)
     geoType = geo.shape.type
@@ -267,7 +267,7 @@ def ribbonAttach(tgtList=None, geo=None, scaleAttr=None, p=None):
             v = cpos.a.parameterV.get()
             coordList.append((u, v))
 
-    grp = GroupNode(geo + "_rvtGrp", p=p)
+    grp = GrpNode(geo + "_rvtGrp", p=p)
     pin, pinXf = nlRivet(geo=geo, coordList=coordList, scaleAttr=scaleAttr, p=grp)
 
     for i, pin in enumerate(pinXf):
@@ -308,7 +308,7 @@ def extractSk(tgtJList, sf="", p=None, color=None, r=1):
         ikJList = extractSk(jointList, sf='_ik)
     """
     # from nl_modules.nodel.base.dag_node import DagNode
-    from nl_modules.nodel.joint_node import JointNode
+    from nl_modules.nodel.jnt_node import JntNode
 
     dupJList = mc.duplicate(tgtJList, po=1, rc=1)
     # newJList = [
@@ -316,7 +316,7 @@ def extractSk(tgtJList, sf="", p=None, color=None, r=1):
     # ]
     newJList = []
     for dupJ, tgtJ in zip(dupJList, tgtJList):
-        j = JointNode(dupJ).rename(tgtJ + sf)
+        j = JntNode(dupJ).rename(tgtJ + sf)
         j.setRadius(r)
         newJList.append(j)
 
@@ -496,7 +496,7 @@ def addTwistReader(target, pf="", p=None):
 
 
 def getMeshBelow(grp):
-    from nl_modules.nodel.mesh_node import MeshNode
+    from nl_modules.nodel.msh_node import MshNode
 
     if mc.objExists(grp):
         mc.select(grp)
@@ -507,7 +507,7 @@ def getMeshBelow(grp):
     mc.select(hi=1)
     meshes = mc.ls(sl=1, et="mesh") or []
     mc.select(cl=1)
-    return [MeshNode(mesh) for mesh in meshes] or []
+    return [MshNode(mesh) for mesh in meshes] or []
 
 
 def setViewport(jx=0, xray=0, wos=1):
@@ -551,10 +551,10 @@ def setViewport(jx=0, xray=0, wos=1):
 #     cstType=None,
 #     **kwargs,
 # ):
-#     from nl_modules.nodel.group_node import GroupNode
+#     from nl_modules.nodel.group_node import GrpNode
 #
-#     g1 = GroupNode("space_#", pf=space.name, align=space, p=sp1, addOfs=1)
-#     g2 = GroupNode("space_#", pf=space.name, align=space, p=sp2, addOfs=1)
+#     g1 = GrpNode("space_#", pf=space.name, align=space, p=sp1, addOfs=1)
+#     g2 = GrpNode("space_#", pf=space.name, align=space, p=sp2, addOfs=1)
 #
 #     cstType = [cstType] if not isinstance(cstType, list) else cstType
 #     for c in cstType:

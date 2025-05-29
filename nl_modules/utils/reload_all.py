@@ -8,24 +8,24 @@ import logging
 
 # ----------------------------------------------------
 from nl_modules.nodel import (
-    curve_node,
-    group_node,
+    crv_node,
+    grp_node,
     ik_node,
-    joint_node,
+    jnt_node,
     loc_node,
-    mesh_node,
-    ribbon_node,
-    surf_node,
+    msh_node,
+    rbn_node,
+    srf_node,
 )
 
-reload(curve_node)
-reload(group_node)
+reload(crv_node)
+reload(grp_node)
 reload(ik_node)
-reload(joint_node)
+reload(jnt_node)
 reload(loc_node)
-reload(mesh_node)
-reload(ribbon_node)
-reload(surf_node)
+reload(msh_node)
+reload(rbn_node)
+reload(srf_node)
 
 # ----------------------------------------------------
 from nl_modules.nodel.base import (
@@ -85,15 +85,15 @@ from nl_modules.tests import (
     test_color,
     test_common,
     test_common2,
-    test_curve_node,
+    test_crv_node,
     test_dag_node,
     test_dep_node,
     test_dimension,
-    test_group_node,
-    test_joint_node,
+    test_grp_node,
+    test_jnt_node,
     test_loc_node,
     test_math,
-    test_mesh_node,
+    test_msh_node,
     test_open_maya_api,
     test_path,
     test_utils_node,
@@ -103,15 +103,15 @@ reload(test_attributes)
 reload(test_color)
 reload(test_common)
 reload(test_common2)
-reload(test_curve_node)
+reload(test_crv_node)
 reload(test_dag_node)
 reload(test_dep_node)
 reload(test_dimension)
-reload(test_group_node)
-reload(test_joint_node)
+reload(test_grp_node)
+reload(test_jnt_node)
 reload(test_loc_node)
 reload(test_math)
-reload(test_mesh_node)
+reload(test_msh_node)
 reload(test_open_maya_api)
 reload(test_path)
 reload(test_utils_node)

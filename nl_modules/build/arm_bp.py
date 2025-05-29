@@ -2,12 +2,12 @@ import maya.cmds as mc
 import logging
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.ribbon_node import RibbonNode
+from nl_modules.nodel.rbn_node import RbnNode
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
@@ -32,10 +32,10 @@ class ArmBp(RigModule):
         self.SCAPULAR_BONE = self.master_guide.a.scapularBone.get()
 
         rID, rSz, xDr = self.getMyVar()
-        self.FK_PART = GroupNode("FK", pf=rID, p=self.CTL_DATA)
-        self.IK_PART = GroupNode("IK", pf=rID, p=self.CTL_DATA)
-        self.BF_PART = GroupNode("BF", pf=rID, p=self.CTL_DATA)
-        self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
+        self.FK_PART = GrpNode("FK", pf=rID, p=self.CTL_DATA)
+        self.IK_PART = GrpNode("IK", pf=rID, p=self.CTL_DATA)
+        self.BF_PART = GrpNode("BF", pf=rID, p=self.CTL_DATA)
+        self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
 
         self.setting = None
         self.joints = []
@@ -72,7 +72,7 @@ class ArmBp(RigModule):
 
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
-        self.setting = CurveNode(
+        self.setting = CrvNode(
             "setting",
             pf=rID,
             shape="sphere2",
@@ -81,24 +81,24 @@ class ArmBp(RigModule):
             top=1,
             p=self.CTL_DATA,
         )
-        self.clavicle_fkc = CurveNode(
+        self.clavicle_fkc = CrvNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
         )
         self.clavicle_fkc.cv_rotate(0, 0, -45)
 
-        self.upr_fkc = CurveNode(
+        self.upr_fkc = CrvNode(
             "upr_fkc", pf=rID, shape="circleC", up="x", scale=rSz * 1.5 * xDr
         )
-        self.lwr_fkc = CurveNode(
+        self.lwr_fkc = CrvNode(
             "lwr_fkc", pf=rID, shape="circleC", up="x", scale=rSz * 1.5 * xDr
         )
-        self.palm_fkc = CurveNode(
+        self.palm_fkc = CrvNode(
             "palm_fkc", pf=rID, shape="circleC", up="x", scale=rSz * 1.5 * xDr
         )
 
-        self.ikc = CurveNode("ikc", pf=rID, shape="trapezoid", scale=rSz * 1.5 * xDr)
+        self.ikc = CrvNode("ikc", pf=rID, shape="trapezoid", scale=rSz * 1.5 * xDr)
         self.ikc.cv_rotate(0, 90, 0)
-        self.palm_ikc = CurveNode(
+        self.palm_ikc = CrvNode(
             "palm_ikc",
             pf=rID,
             shape="squareR",
@@ -106,7 +106,7 @@ class ArmBp(RigModule):
             scale=rSz * 1.2 * xDr,
             move=(xDr * rSz * 7, 0, 0),
         )
-        self.pvc = CurveNode("pvc", pf=rID, shape="diamond", scale=rSz)
+        self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=rSz)
 
         self.rigNode.setMsg(
             {
@@ -187,7 +187,7 @@ class ArmBp(RigModule):
             scaleFix=self.masterC.a["globalScale"],
             RIG_DATA=self.RIG_DATA,
         )
-        self.ikCstG = GroupNode("ikCstG", pf=rID, align=self.palm)
+        self.ikCstG = GrpNode("ikCstG", pf=rID, align=self.palm)
         if xDr == 1:
             for g in (self.ikCstG,):
                 g.a.rx.set2(180, add=1)
@@ -197,7 +197,7 @@ class ArmBp(RigModule):
         #   self.ikc.cstParSca(self.ikCstG, mo=1)
         self.ikc.cstSca(self.ikCstG, mo=1)
         fkPin = self.pvc.a.add("fkPin", min=0, max=1)
-        self.pin_fkc = CurveNode(
+        self.pin_fkc = CrvNode(
             "pin_fkc",
             pf=rID,
             shape="squareR",
@@ -212,7 +212,7 @@ class ArmBp(RigModule):
         )
 
         (self.ikc, self.pvc, self.ikCstG) | self.IK_PART
-        self.pvc_line = CurveNode.buildLineLinked(
+        self.pvc_line = CrvNode.buildLineLinked(
             self.joints_ik[2],
             self.pvc,
             pf=rID,
@@ -303,7 +303,7 @@ class ArmBp(RigModule):
             ctl.a.addSep()
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
-        GroupNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
+        GrpNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
 
     def build_armScapular(self):
         rID, rSz, xDr = self.getMyVar()
@@ -311,7 +311,7 @@ class ArmBp(RigModule):
         scapular_guide = DagNode(rID + "_scapular_guide")
 
         # scapular setup
-        scapularJnt = JointNode(
+        scapularJnt = JntNode(
             "scapular",
             pf=rID,
             align=scapular_guide,
@@ -323,7 +323,7 @@ class ArmBp(RigModule):
         scapularLoc = LocNode(
             "scapularLoc", pf=rID, snap=clavEnd_guide, p=scapularJnt, size=rSz
         )
-        twoJ = JointNode.makeTwoJC2(
+        twoJ = JntNode.makeTwoJC2(
             "clav",
             pf=rID,
             snap=self.clavicle,
@@ -382,7 +382,7 @@ class ArmBp(RigModule):
         """
         rID, rSz, xDr = self.getMyVar()
 
-        ribbonUp = RibbonNode(
+        ribbonUp = RbnNode(
             self.upr,
             pf=rID + "_up_",
             rbJNum=self.RBN_JNT_NUM,
@@ -392,7 +392,7 @@ class ArmBp(RigModule):
             size=rSz,
             p=self.RIG_DATA,
         )
-        ribbonLw = RibbonNode(
+        ribbonLw = RbnNode(
             self.lwr,
             pf=rID + "_lw_",
             rbJNum=self.RBN_JNT_NUM,
@@ -419,9 +419,9 @@ class ArmBp(RigModule):
         upLoc = ribbonUp.mid_loc
         lwLoc = ribbonLw.mid_loc
         grp = self.CTL_DATA
-        upr_bend = CurveNode("upr_bend", pf=rID, align=upLoc, addOfs=1, p=grp)
-        lwr_bend = CurveNode("lwr_bend", pf=rID, align=lwLoc, addOfs=1, p=grp)
-        mid_bend = CurveNode("mid_bend", pf=rID, align=self.lwr, addOfs=1, p=grp)
+        upr_bend = CrvNode("upr_bend", pf=rID, align=upLoc, addOfs=1, p=grp)
+        lwr_bend = CrvNode("lwr_bend", pf=rID, align=lwLoc, addOfs=1, p=grp)
+        mid_bend = CrvNode("mid_bend", pf=rID, align=self.lwr, addOfs=1, p=grp)
 
         self.all_bend = [upr_bend, lwr_bend, mid_bend]
         for ctl in self.all_bend:
@@ -472,7 +472,7 @@ class ArmBp(RigModule):
 
     def setup_proxy(self):
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(p=self.PRX_GRP)
+            JntNode(j).addProxyMesh(p=self.PRX_GRP)
 
     def setup_channel(self):
         self.setting.a.showAttr()

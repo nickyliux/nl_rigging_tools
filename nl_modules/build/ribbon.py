@@ -1,12 +1,12 @@
 import maya.cmds as mc
 import logging
 import nl_modules.build.rig_module as rig_module
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.base.dag_node import DagNode
 
 # from nl_modules.nodel.base.dep_node import DepNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils.color import Color
 import nl_modules.utils.common as common
@@ -34,15 +34,15 @@ class Ribbon(rig_module.RigModule):
         super().__init__(rigNode)
 
         logging.info("load rigNode's connected into attr")
-        self.startJ: JointNode = rigNode.a.upr.inConnNode
-        self.midJ: JointNode = rigNode.a.lwr.inConnNode
-        self.endJ: JointNode = rigNode.a.foot.inConnNode
+        self.startJ: JntNode = rigNode.a.upr.inConnNode
+        self.midJ: JntNode = rigNode.a.lwr.inConnNode
+        self.endJ: JntNode = rigNode.a.foot.inConnNode
 
         rID, rSz, xDr = self.getMyVar()
-        self.RB_GRP = GroupNode("RB_GRP", pf=rID, p=self.RIG)
-        self.RB_DEFORM = GroupNode("RB_DEFORM", pf=rID, p=self.RB_GRP)
-        self.RB_SCALE = GroupNode("RB_SCALE", pf=rID, p=self.RB_GRP)
-        self.RB_JOINT = GroupNode("RB_JOINT", pf=rID, p=self.RB_GRP)
+        self.RB_GRP = GrpNode("RB_GRP", pf=rID, p=self.RIG)
+        self.RB_DEFORM = GrpNode("RB_DEFORM", pf=rID, p=self.RB_GRP)
+        self.RB_SCALE = GrpNode("RB_SCALE", pf=rID, p=self.RB_GRP)
+        self.RB_JOINT = GrpNode("RB_JOINT", pf=rID, p=self.RB_GRP)
 
         self.masterC.cstSca(self.RB_SCALE)
 
@@ -104,10 +104,10 @@ class Ribbon(rig_module.RigModule):
     def buildSurf(self, startJ, endJ, segNum=5, p=None):
         rID, rSz, xDr = self.getMyVar()
 
-        rbCrv = CurveNode.buildLine(
+        rbCrv = CrvNode.buildLine(
             startJ, endJ, n="rbCrv_#", bezier=1, insertMid=1, pf=rID
         )
-        rbCrvLine = CurveNode.buildLine((0, 0, -2), (0, 0, 2), n="rbCrvWidth_#", pf=rID)
+        rbCrvLine = CrvNode.buildLine((0, 0, -2), (0, 0, 2), n="rbCrvWidth_#", pf=rID)
         startJ.cstPoi(rbCrvLine, keep=0)
         rbCrvLine | startJ
 
@@ -150,7 +150,7 @@ class Ribbon(rig_module.RigModule):
             locN = LocNode(loc)
             locN.scaleLocal(3)
 
-            jnt = JointNode("rb_jnt_#", pf=rID, r=1, color=1, align=locN, p=locN)
+            jnt = JntNode("rb_jnt_#", pf=rID, r=1, color=1, align=locN, p=locN)
             jnt.displayLocalAxis()
             jnt.addProxyMesh(p=self.PRX)
 
@@ -174,8 +174,8 @@ class Ribbon(rig_module.RigModule):
         """
         rID, rSz, xDr = self.getMyVar()
 
-        bow_grp = GroupNode(f"bow_{idx}_grp", pf=rID, p=self.RB_SCALE)
-        bow_ctl = CurveNode(
+        bow_grp = GrpNode(f"bow_{idx}_grp", pf=rID, p=self.RB_SCALE)
+        bow_ctl = CrvNode(
             f"bow_{idx}", pf=rID, color=Color.PINK, scale=3, p=bow_grp, addOfs=1
         )
         # bow_ctl.a.lockHide("sy", "sz", t=1, r=1, s=1)
@@ -254,7 +254,7 @@ class Ribbon(rig_module.RigModule):
     #                 "rb_loc_#", pf=self.rigID, color=18, p=self.RB_GRP
     #             )
     #             loc.displayLocalAxis()
-    #             jnt = JointNode("rb_jnt_#", pf=self.rigID, r=1, color=1, p=loc)
+    #             jnt = JntNode("rb_jnt_#", pf=self.rigID, r=1, color=1, p=loc)
     #             jnt.addProxyCube(size=2)
     #
     #             ut.motionPath_(

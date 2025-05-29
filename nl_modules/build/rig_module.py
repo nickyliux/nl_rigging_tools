@@ -2,9 +2,9 @@ import maya.cmds as mc
 import logging
 from nl_modules.build.rig_base import RigBase
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
@@ -27,9 +27,9 @@ class RigModule(RigBase):
         super().__init__(rigNode)
 
         rID = self.rigID
-        self.RIG_DATA = GroupNode(rID + "_rig_data", p=self.RIG)
-        self.CTL_DATA = GroupNode(rID + "_ctl_data", p=self.masterC)
-        self.SKL_DATA = GroupNode(rID + "_skl_data", p=self.SKL)
+        self.RIG_DATA = GrpNode(rID + "_rig_data", p=self.RIG)
+        self.CTL_DATA = GrpNode(rID + "_ctl_data", p=self.masterC)
+        self.SKL_DATA = GrpNode(rID + "_skl_data", p=self.SKL)
 
         self.moduleG = rigNode.a.moduleG.inConnNode
         if not self.moduleG:
@@ -71,7 +71,7 @@ class RigModule(RigBase):
         joints = []
         lastJ = None
         for key in guideDict:
-            jN = JointNode(f"{rID}_{key}", align=guideDict[key], color=color)
+            jN = JntNode(f"{rID}_{key}", align=guideDict[key], color=color)
             if (currClass == "ArmBp" or currClass == "LegBp") and key == "lwr":
                 jN.a.preferredAngleY.set(-45)
             if lastJ:
@@ -102,7 +102,7 @@ class RigModule(RigBase):
         j1 <- c1
             j2 <- c2
         """
-        ctlList = ctlList or [CurveNode(j + "_fkc") for j in jntList]
+        ctlList = ctlList or [CrvNode(j + "_fkc") for j in jntList]
 
         for jnt, ctl in zip(jntList, ctlList):
 
@@ -137,7 +137,7 @@ class RigModule(RigBase):
         j1 <- c1
             j2 <- c2
         """
-        ctlList = ctlList or [CurveNode(j + "_fkc") for j in jntList]
+        ctlList = ctlList or [CrvNode(j + "_fkc") for j in jntList]
         last_ctl = None
 
         for jnt, ctl in zip(jntList, ctlList):
@@ -171,7 +171,7 @@ class RigModule(RigBase):
         j1 <- c2
             j2 <- c2
         """
-        ctlList = ctlList or [CurveNode(j + "_fkc") for j in jntList]
+        ctlList = ctlList or [CrvNode(j + "_fkc") for j in jntList]
         last_ctl = None
 
         for ctl, jnt in zip(ctlList, jntList):
@@ -208,7 +208,7 @@ class RigModule(RigBase):
         if ctlList is None:
             newCtl = []
             for j in jntList:
-                newCtl.append(CurveNode(j + "_fkc"))
+                newCtl.append(CrvNode(j + "_fkc"))
             ctlList = newCtl
 
         last_ctl = None
@@ -253,7 +253,7 @@ class RigModule(RigBase):
         allSpaces = []
         if len(spaces) == 2:
             for space in spaces:
-                spaceG = GroupNode(tgt + "_SPACE_#", align=tgt, p=space)
+                spaceG = GrpNode(tgt + "_SPACE_#", align=tgt, p=space)
                 spaceG.addOffsetGrp()
                 allSpaces.append(spaceG)
 
@@ -283,7 +283,7 @@ class RigModule(RigBase):
         """Add space attr to tgt, to switch between spaces"""
         allSpacesGrp = []
         for space in spaces:
-            spaceG = GroupNode(tgt + "_SPACE_#", align=tgt, p=space)
+            spaceG = GrpNode(tgt + "_SPACE_#", align=tgt, p=space)
             spaceG.addOffsetGrp()
             allSpacesGrp.append(spaceG)
         tgt_ofs = tgt.addOffsetGrp()
@@ -444,7 +444,7 @@ class RigModule(RigBase):
     ):
         """Add pivot offset to target ctl"""
         if settable:
-            piv_ref = CurveNode(
+            piv_ref = CrvNode(
                 tgt + "_pvt_ctl", shape="locator", align=tgt, scale=scale, p=tgt
             )
             # piv_ref.dspType = 2
@@ -519,7 +519,7 @@ class RigModule(RigBase):
             common.sdk(driver, driven, "ry", "ry", -180, -90)
 
         if patella_guide.exists():
-            j = JointNode(
+            j = JntNode(
                 "patella", pf=rID, align=patella_guide, color=13, r=rSz, p=self.upr
             )
             j.freezeXf()
@@ -530,7 +530,7 @@ class RigModule(RigBase):
     def build_ctl_jnt(self, ctls, r=1, color=1):
         result = []
         for ctl in ctls:
-            jnt = JointNode(ctl, sf="_ctlJ", r=r, color=color, p=ctl)
+            jnt = JntNode(ctl, sf="_ctlJ", r=r, color=color, p=ctl)
             jnt.resetOrient()
             jnt.resetXf()
             result.append(jnt)
@@ -578,8 +578,8 @@ class RigModule(RigBase):
         """IK setup for single digit"""
         from nl_modules.nodel.ik_node import IkNode
 
-        dupTgt = JointNode(dupTgt)
-        ctl = CurveNode(
+        dupTgt = JntNode(dupTgt)
+        ctl = CrvNode(
             dupTgt + "_ikc",
             shape="stickC",
             align=dupTgt,
@@ -711,12 +711,12 @@ class RigModule(RigBase):
         #
         #   add scapular group
         #
-        mainGrp = GroupNode("quadScap", pf=rID, align=hipJ, p=self.FK_PART, addOfs=1)
+        mainGrp = GrpNode("quadScap", pf=rID, align=hipJ, p=self.FK_PART, addOfs=1)
         fkc.offset | mainGrp
         #
         #   add auto aim function
         #
-        j0, j1 = JointNode.makeTwoJC2(
+        j0, j1 = JntNode.makeTwoJC2(
             "autoAim",
             pf=rID,
             snap=hipJ,
@@ -735,7 +735,7 @@ class RigModule(RigBase):
             #
             #   add leg lock function
             #
-            j0, j1 = JointNode.makeTwoJC2(
+            j0, j1 = JntNode.makeTwoJC2(
                 "legLock",
                 pf=rID,
                 snap=ikc,
@@ -757,7 +757,7 @@ class RigModule(RigBase):
             #
             scap_fkc.snapAlignTo(uprJ, fkc, p=fkc)
             scap_fkc.addOffsetGrp()
-            j0, j1 = JointNode.makeTwoJC2(
+            j0, j1 = JntNode.makeTwoJC2(
                 "scapTip",
                 pf=rID,
                 snap=uprJ,
@@ -792,10 +792,10 @@ class RigModule(RigBase):
         #   create group & loc
         #
         tgtJ_child = tgtJ.children[0]
-        psd_grp = GroupNode("PSD", pf=rID, p=p)
+        psd_grp = GrpNode("PSD", pf=rID, p=p)
         psd_loc = LocNode("psd_loc_#", pf=rID, align=tgtJ_child, p=psd_grp)
-        ctl_grp = GroupNode("ctl_grp", pf=rID, align=tgtJ, p=psd_grp)
-        ctl_main = CurveNode(
+        ctl_grp = GrpNode("ctl_grp", pf=rID, align=tgtJ, p=psd_grp)
+        ctl_main = CrvNode(
             "psd_ctl",
             pf=rID,
             shape="cube",
@@ -817,7 +817,7 @@ class RigModule(RigBase):
 
         for i in range(ctlNum):
             # create ctl
-            ctl = CurveNode(
+            ctl = CrvNode(
                 "psd_ctl_#",
                 pf=rID,
                 shape="stick",
@@ -895,7 +895,7 @@ class RigModule(RigBase):
         return str(self.rigID), float(self.rigSize), int(self.xDir)
 
     # def genCrvLenRatio(self, rbSrf=None, scaleAttr=None):
-    #     crv = CurveNode(mc.duplicateCurve(rbSrf + ".u[0.5]", rn=0, local=0)[0])
+    #     crv = CrvNode(mc.duplicateCurve(rbSrf + ".u[0.5]", rn=0, local=0)[0])
     #     crv | self.RIG_DATA
     #     crvInfo = DagNode("crvInfo#", nodeType="curveInfo")
     #     return (
@@ -909,7 +909,7 @@ class RigModule(RigBase):
         #
         #   create crv on srf & calc crv len ratio
         #
-        crv = CurveNode(mc.duplicateCurve(rbSrf + ".u[0.5]", rn=0, local=0)[0])
+        crv = CrvNode(mc.duplicateCurve(rbSrf + ".u[0.5]", rn=0, local=0)[0])
         crv | self.RIG_DATA
 
         crvInfo = DagNode("crvInfo#", nodeType="curveInfo")
@@ -923,7 +923,7 @@ class RigModule(RigBase):
         #
         ratioOut = ut.blend2_(crvLenRatio, 1, stretchyAttr)
         sep = 1 / (jntNum - 1)
-        locGrp = GroupNode("loc_grp", pf=rID, p=self.RIG_DATA)
+        locGrp = GrpNode("loc_grp", pf=rID, p=self.RIG_DATA)
         rbJnts = []
         for i in range(jntNum):
 
@@ -954,7 +954,7 @@ class RigModule(RigBase):
             aimCst.a.constraintRotateY >> loc.a.ry
             aimCst.a.constraintRotateZ >> loc.a.rz
 
-            jnt = JointNode(
+            jnt = JntNode(
                 f"{i}_rbj",
                 pf=rID,
                 align=loc,

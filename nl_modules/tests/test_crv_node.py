@@ -1,11 +1,11 @@
 import unittest
 import maya.cmds as mc
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.utils.color import Color
 
 
-class Test_CurveNode_Base(unittest.TestCase):
+class Test_CrvNode_Base(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         mc.refresh(su=1)
@@ -17,29 +17,29 @@ class Test_CurveNode_Base(unittest.TestCase):
     def setUp(self):
         mc.file(new=1, f=1)
         self.name = "crv"
-        self.crv = CurveNode(self.name)
+        self.crv = CrvNode(self.name)
         self.crv.a.t.set(1, 2, 3)
         self.crv.a.r.set(10, 20, 30)
-        self.circle = CurveNode("myCircle")
+        self.circle = CrvNode("myCircle")
 
 
-class Test_CurveNode_Main(Test_CurveNode_Base):
+class Test_CrvNode_Main(Test_CrvNode_Base):
 
     def test__init__(self):
-        crv1 = CurveNode("crv1", addOfs=1)
+        crv1 = CrvNode("crv1", addOfs=1)
         self.assertEqual(crv1, "|crv1_ofs|crv1")
 
-        crv2 = CurveNode("crv2", p=self.crv)
+        crv2 = CrvNode("crv2", p=self.crv)
         self.assertEqual(crv2, "|crv|crv2")
 
     def test_color(self):
-        crv1 = CurveNode("crv1")
+        crv1 = CrvNode("crv1")
         self.assertEqual(crv1.shape.a.overrideColor.get(), 22)
-        crv2 = CurveNode("crv2", color=13)
+        crv2 = CrvNode("crv2", color=13)
         self.assertEqual(crv2.shape.a.overrideColor.get(), 13)
 
     def test_shape(self):
-        crv1 = CurveNode("myC", shape="square")
+        crv1 = CrvNode("myC", shape="square")
         self.assertEqual(len(crv1.cvs), 5)
 
     def test_type(self):
@@ -47,12 +47,12 @@ class Test_CurveNode_Main(Test_CurveNode_Base):
 
     def test_duplicate(self):
         dup = self.crv.duplicate()
-        self.assertEqual(dup.__class__.__name__, "CurveNode")
+        self.assertEqual(dup.__class__.__name__, "CrvNode")
 
     def test_getSideColor(self):
-        lf_crv = CurveNode("lf_crv")
+        lf_crv = CrvNode("lf_crv")
         self.assertEqual(lf_crv.shape.a.overrideColor.get(), 18)
-        rt_crv = CurveNode("rt_crv")
+        rt_crv = CrvNode("rt_crv")
         self.assertEqual(rt_crv.shape.a.overrideColor.get(), 20)
 
     def test_move(self):
@@ -77,7 +77,7 @@ class Test_CurveNode_Main(Test_CurveNode_Base):
         crv = mc.curve(
             p=[(0, 5, 0), (0, 6, 0), (0, 7, 0), (0, 8, 0)], d=1, k=[0, 1, 2, 3]
         )
-        self.assertEqual(CurveNode(crv).length, 3)
+        self.assertEqual(CrvNode(crv).length, 3)
 
     def test_lineW(self):
         self.circle.width = 10
@@ -85,33 +85,33 @@ class Test_CurveNode_Main(Test_CurveNode_Base):
         self.assertEqual(self.circle.width, 10)
 
 
-class Test_CurveNode_Advanced(Test_CurveNode_Base):
+class Test_CrvNode_Advanced(Test_CrvNode_Base):
     def test_zbuildLine(self):
-        crv = CurveNode.buildLine((0, 0, 0), (0, 5, 0))
+        crv = CrvNode.buildLine((0, 0, 0), (0, 5, 0))
         self.assertEqual(crv.length, 5)
 
     def test_buildLine2(self):
-        pt1 = GroupNode("a")
-        pt2 = GroupNode("b")
+        pt1 = GrpNode("a")
+        pt2 = GrpNode("b")
         pt2.a.ty.set(9)
-        crv = CurveNode.buildLine(pt1, pt2, insertMid=1)
+        crv = CrvNode.buildLine(pt1, pt2, insertMid=1)
         self.assertEqual(crv.length, 9)
         self.assertEqual(len(crv.cvs), 3)
 
     def test_buildLineLinked(self):
-        pt1 = GroupNode("a")
-        pt2 = GroupNode("b")
+        pt1 = GrpNode("a")
+        pt2 = GrpNode("b")
         pt2.a.t.set(0, 8, 0)
-        crv = CurveNode.buildLineLinked(pt1, pt2)
+        crv = CrvNode.buildLineLinked(pt1, pt2)
         self.assertEqual(crv.length, 8)
         pt2.a.ty.set(10)
         self.assertEqual(crv.length, 10)
 
     def test_weightTo(self):
-        from nl_modules.nodel.joint_node import JointNode
+        from nl_modules.nodel.jnt_node import JntNode
 
-        myJ = JointNode("myJ")
-        myJ2 = JointNode("myJ2", p=myJ)
+        myJ = JntNode("myJ")
+        myJ2 = JntNode("myJ2", p=myJ)
         myJ2.a.t.set(0, 5, 0)
         self.circle.weightTo([myJ, myJ2])
         myJ.a.t.set(0, 10, 0)
@@ -130,14 +130,14 @@ class Test_CurveNode_Advanced(Test_CurveNode_Base):
         self.assertEqual(self.circle.parent, "new_ofs")
 
     def test_reverse(self):
-        crv = CurveNode(mc.curve(p=[(0, 0, 0), (0, 10, 0)], d=1, k=[0, 1]))
+        crv = CrvNode(mc.curve(p=[(0, 0, 0), (0, 10, 0)], d=1, k=[0, 1]))
         self.assertEqual(mc.xform(crv.cvs[1], t=1, q=1)[1], 10)
         crv.reverse()
         self.assertEqual(mc.xform(crv.cvs[1], t=1, q=1)[1], 0)
 
     def test_rebuild(self):
-        crv = CurveNode(mc.curve(p=[(0, 0, 0), (0, 10, 0)], d=1, k=[0, 1]))
-        CurveNode(crv).rebuild()
+        crv = CrvNode(mc.curve(p=[(0, 0, 0), (0, 10, 0)], d=1, k=[0, 1]))
+        CrvNode(crv).rebuild()
         self.assertEqual(len(crv.cvs), 6)
 
     def test_addGimbal(self):
@@ -153,5 +153,5 @@ class Test_CurveNode_Advanced(Test_CurveNode_Base):
 
 if __name__ == "__main__":
     unittest.TestLoader.sortTestMethodsUsing = lambda self, a, b: (a < b) - (a > b)
-    unittest.main(defaultTest="Test_CurveNode_Main", exit=False)
-    unittest.main(defaultTest="Test_CurveNode_Advanced", exit=False)
+    unittest.main(defaultTest="Test_CrvNode_Main", exit=False)
+    unittest.main(defaultTest="Test_CrvNode_Advanced", exit=False)

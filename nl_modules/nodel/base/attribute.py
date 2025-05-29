@@ -271,8 +271,8 @@ class Attribute:
             obj2.a.rx.getConnNodes()   # [DagNode('obj1')]
             obj2.a.r.getConnNodes()    # [DagNode('obj0'), DagNode('obj1')]
         """
-        from nl_modules.nodel.joint_node import JointNode
-        from nl_modules.nodel.curve_node import CurveNode
+        from nl_modules.nodel.jnt_node import JntNode
+        from nl_modules.nodel.crv_node import CrvNode
         from nl_modules.nodel.loc_node import LocNode
         from nl_modules.nodel.base.dag_node import DagNode
 

@@ -1,8 +1,8 @@
 import logging
 import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.utils.color import Color
 
 
@@ -18,7 +18,7 @@ class RigBase:
             logging.warning("Missing master_ctl")
             return
 
-        self.masterC = CurveNode("master_ctl")
+        self.masterC = CrvNode("master_ctl")
         self.masterC1 = self.masterC.offset
         self.masterC2 = self.masterC1.offset
 
@@ -28,13 +28,13 @@ class RigBase:
         self.rigNode = rigNode
         self.rigID = rigNode.a.rigID.get()
 
-        self.CHR = GroupNode("CHR")
-        self.RIG = GroupNode("RIG", p=self.CHR)
-        self.MDL = GroupNode("MDL", p=self.CHR)
-        self.PRX = GroupNode("PRX", p=self.MDL)
-        self.SKL = GroupNode("SKL", p=self.CHR)
-        self.CTL = GroupNode("CTL", p=self.CHR)
-        self.DIM = GroupNode("distDim_GRP")
+        self.CHR = GrpNode("CHR")
+        self.RIG = GrpNode("RIG", p=self.CHR)
+        self.MDL = GrpNode("MDL", p=self.CHR)
+        self.PRX = GrpNode("PRX", p=self.MDL)
+        self.SKL = GrpNode("SKL", p=self.CHR)
+        self.CTL = GrpNode("CTL", p=self.CHR)
+        self.DIM = GrpNode("distDim_GRP")
 
         if self.SKL.a.s.settable():
             self.masterC.a["globalScale"] >> self.SKL.a.s

@@ -2,12 +2,12 @@ import maya.cmds as mc
 import logging
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.surf_node import SurfNode
+from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 
@@ -20,7 +20,7 @@ class SpineQd(RigModule):
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
 
         rID, rSz, xDr = self.getMyVar()
-        self.LINE_GUIDE = CurveNode(rID + "_line_guide")
+        self.LINE_GUIDE = CrvNode(rID + "_line_guide")
         self.TP_GUIDE = DagNode(rID + "_tp_guide")
         self.MD_GUIDE = DagNode(rID + "_md_guide")
         self.RT_GUIDE = DagNode(rID + "_rt_guide")
@@ -30,7 +30,7 @@ class SpineQd(RigModule):
         if pvtGuide.exists():
             self.PVT_GUIDE = pvtGuide
 
-        self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
+        self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
 
         self.cog_ctl = None
         self.chest_ctl = None
@@ -61,7 +61,7 @@ class SpineQd(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting = CurveNode(
+        self.setting = CrvNode(
             "setting",
             pf=rID,
             shape="diamond",
@@ -71,7 +71,7 @@ class SpineQd(RigModule):
             width=2,
             p=self.CTL_DATA,
         )
-        self.cog_ctl = CurveNode(
+        self.cog_ctl = CrvNode(
             "cog_ctl",
             pf=rID,
             shape="trapezoid",
@@ -80,23 +80,23 @@ class SpineQd(RigModule):
         )
         self.cog_ctl.cv_move(0, 70 * rSz, 40 * rSz)
 
-        self.chest_ctl = CurveNode(
+        self.chest_ctl = CrvNode(
             "chest_ctl", pf=rID, shape="fk_rotator", scale=rSz * 8, width=2
         )
         self.chest_ctl.cv_rotate(0, 90, 0)
 
-        self.mid_ctl = CurveNode(
+        self.mid_ctl = CrvNode(
             "mid_ctl", pf=rID, shape="circleC", scale=rSz * 4, up="z", width=2
         )
-        self.base_ctl = CurveNode(
+        self.base_ctl = CrvNode(
             "base_ctl", pf=rID, shape="fk_rotator", scale=rSz * 8, width=2
         )
         self.base_ctl.cv_rotate(0, 90, 0)
 
-        self.chest2_ctl = CurveNode(
+        self.chest2_ctl = CrvNode(
             "chest2_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3, color=22
         )
-        self.base2_ctl = CurveNode(
+        self.base2_ctl = CrvNode(
             "base2_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3, color=22
         )
         self.rigNode.setMsg(
@@ -113,7 +113,7 @@ class SpineQd(RigModule):
 
     def build(self):
         self.build_module()
-        self.rigSize = CurveNode(self.LINE_GUIDE).length / 100
+        self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
         self.build_ctl()
         self.build_fk()
         self.build_ik(sliding=0)
@@ -121,7 +121,7 @@ class SpineQd(RigModule):
 
     def build_fk(self):
         rID, rSz, xDr = self.getMyVar()
-        self.fkJnt = JointNode.createJntFrCrv(
+        self.fkJnt = JntNode.createJntFrCrv(
             self.LINE_GUIDE,
             pf=rID,
             name="fkj",
@@ -165,7 +165,7 @@ class SpineQd(RigModule):
                 "sp", sj=self.fkJnt[0], ej=self.fkJnt[-1], crv=self.rbCrv
             )
         else:
-            self.fkJ_A = JointNode.createJntFrCrv(
+            self.fkJ_A = JntNode.createJntFrCrv(
                 self.LINE_GUIDE,
                 pf=rID,
                 name="fkj_A",
@@ -174,7 +174,7 @@ class SpineQd(RigModule):
                 p=self.SKL_DATA,
                 addEndJ=1,
             )
-            self.fkJ_B = JointNode.createJntFrCrv(
+            self.fkJ_B = JntNode.createJntFrCrv(
                 self.LINE_GUIDE,
                 pf=rID,
                 name="fkj_B",
@@ -271,7 +271,7 @@ class SpineQd(RigModule):
         #
         #   build Srf
         #
-        self.rbSrf = SurfNode.buildRbSrf(
+        self.rbSrf = SrfNode.buildRbSrf(
             pf=rID,
             crv=self.LINE_GUIDE,
             snap=self.RT_GUIDE,
@@ -289,7 +289,7 @@ class SpineQd(RigModule):
             jnt=self.fkJnt[-1], srf=self.rbSrf, p=self.RIG_DATA, ctl=self.chest2_ctl
         )
 
-        self.bindJnts = SurfNode.buildRbJnt(
+        self.bindJnts = SrfNode.buildRbJnt(
             self.RBN_JNT_NUM,
             pf=rID,
             size=rSz,
@@ -382,7 +382,7 @@ class SpineQd(RigModule):
 
     def setup_proxy(self):
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(p=self.PRX_GRP, scaler=JointNode(j).a.s)
+            JntNode(j).addProxyMesh(p=self.PRX_GRP, scaler=JntNode(j).a.s)
 
     def setup_rotate_order(self):
         [c.a.ro.set(2) for c in self.ctls]

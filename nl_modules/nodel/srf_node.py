@@ -1,14 +1,14 @@
 import maya.cmds as mc
 import logging
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.utils.color import Color
 
 
-class SurfNode(GroupNode):
+class SrfNode(GrpNode):
     """Surface Node Class
     e.g.
-        n = SurfNode('existing')
+        n = SrfNode('existing')
     """
 
     def __init__(
@@ -29,7 +29,7 @@ class SurfNode(GroupNode):
         lr=1,
         d=3,
     ):
-        GroupNode.__init__(
+        GrpNode.__init__(
             self,
             node,
             pf=pf,
@@ -140,20 +140,20 @@ class SurfNode(GroupNode):
     @staticmethod
     def buildRbSrf(pf="", crv=None, normal=0, snap=None, spans=3, p=None):
         """Build ribbon surface"""
-        from nl_modules.nodel.curve_node import CurveNode
+        from nl_modules.nodel.crv_node import CrvNode
 
-        crvLen = CurveNode(crv).length
+        crvLen = CrvNode(crv).length
         sign = 1 if normal else -1
         p1 = (crvLen * 0.1 * -sign, 0, 0)
         p2 = (crvLen * 0.1 * sign, 0, 0)
-        sweepLine = CurveNode.buildLine(p1, p2, pf=pf, snap=snap)
+        sweepLine = CrvNode.buildLine(p1, p2, pf=pf, snap=snap)
 
-        pathLine = CurveNode(
+        pathLine = CrvNode(
             mc.rebuildCurve(crv, rpo=0, rt=0, end=1, kr=0, kcp=0, kep=1, kt=0, s=spans)[
                 0
             ]
         )
-        rbSrf = SurfNode(
+        rbSrf = SrfNode(
             mc.extrude(
                 pathLine, sweepLine, fixedPath=1, n=pf + "_rbSrf", extrudeType=1
             )[0]
@@ -178,7 +178,7 @@ class SurfNode(GroupNode):
         e.g.
             Create pin at coord and constraint joint to the pins
         """
-        from nl_modules.nodel.joint_node import JointNode
+        from nl_modules.nodel.jnt_node import JntNode
         from nl_modules.utils import common
 
         if num > 1:
@@ -192,7 +192,7 @@ class SurfNode(GroupNode):
 
             returnJnt = []
             for i, loc in enumerate(pinXf):
-                jnt = JointNode(
+                jnt = JntNode(
                     f"{i}_rbj",
                     pf=pf,
                     align=loc,

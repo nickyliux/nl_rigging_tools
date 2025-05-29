@@ -1,9 +1,9 @@
 import unittest
 import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common, utils_node as ut
 
@@ -20,9 +20,9 @@ class Test_common_Base(unittest.TestCase):
     def setUp(self):
         mc.file(new=1, f=1)
 
-        self.obj1 = CurveNode("crv1")
-        self.obj2 = CurveNode("crv2")
-        self.obj3 = CurveNode("crv3")
+        self.obj1 = CrvNode("crv1")
+        self.obj2 = CrvNode("crv2")
+        self.obj3 = CrvNode("crv3")
 
         self.obj1.a.ty.set(1)
         self.obj1.a.ry.set(10)
@@ -137,10 +137,8 @@ class Test_common_Main(Test_common_Base):
 class Test_common_Advanced(Test_common_Base):
 
     def test_motionPath_(self):
-        crv = CurveNode(mc.curve(p=[(0, 5, 0), (0, 6, 0), (0, 7, 0), (0, 8, 0)]))
-        mp = ut.motionPath_(
-            crv, uValue=0, worldUpObject=self.loc1, driven=self.loc2
-        )
+        crv = CrvNode(mc.curve(p=[(0, 5, 0), (0, 6, 0), (0, 7, 0), (0, 8, 0)]))
+        mp = ut.motionPath_(crv, uValue=0, worldUpObject=self.loc1, driven=self.loc2)
         self.assertEqual(self.loc2.a.ty.get(), 5)
         mp.a.uValue.set(1)
         self.assertEqual(self.loc2.a.ty.get(), 8)

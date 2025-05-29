@@ -5,17 +5,17 @@ import maya.cmds as mc
 from nl_modules.nodel.base.attribute import Attribute
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.base.dep_node import DepNode
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.utils import common, file, path, open_maya_api
 from nl_modules.utils.color import Color
 import logging
 
 
-class CurveNode(GroupNode):
+class CrvNode(GrpNode):
     """Curve Node Class
     e.g.
-        n = CurveNode('existing')
-        n = CurveNode('new', shape='square')
+        n = CrvNode('existing')
+        n = CrvNode('new', shape='square')
     """
 
     def __init__(
@@ -41,7 +41,7 @@ class CurveNode(GroupNode):
         thisName = pf + node + sf
         existing = DagNode(thisName).exists()
 
-        GroupNode.__init__(
+        GrpNode.__init__(
             self,
             node,
             pf=pf,
@@ -116,8 +116,8 @@ class CurveNode(GroupNode):
     ):
         """Build line from object/position from tgt1 to tgt2
         e.g.
-            line = CurveNode.buildLine(obj1, obj2, width=5)
-            line = CurveNode.buildLine((0,0,0), (3,3,3), n='crv')
+            line = CrvNode.buildLine(obj1, obj2, width=5)
+            line = CrvNode.buildLine((0,0,0), (3,3,3), n='crv')
         """
 
         def getPos(tgt):
@@ -134,7 +134,7 @@ class CurveNode(GroupNode):
         if pf and pf[-1] != "_":
             pf += "_"
 
-        crv = CurveNode(
+        crv = CrvNode(
             mc.curve(n=f"{pf}{n}", p=[pos1, pos2], d=1, k=[0, 1]),
             color=1,
             width=width,
@@ -159,11 +159,11 @@ class CurveNode(GroupNode):
         e.g.
             sel = mc.ls(sl=1)
             for a, b in zip(sel[:-1], sel[1:]):
-                CurveNode.buildLineLinked(a,b)
+                CrvNode.buildLineLinked(a,b)
         """
         obj1 = DagNode(obj1)
         obj2 = DagNode(obj2)
-        line = CurveNode.buildLine(
+        line = CrvNode.buildLine(
             obj1,
             obj2,
             pf=pf,
@@ -190,7 +190,7 @@ class CurveNode(GroupNode):
         """Build linked lines in selection order"""
         sel = mc.ls(sl=1, tr=1)
         for a, b in zip(sel[:-1], sel[1:]):
-            CurveNode.buildLineLinked(a, b)
+            CrvNode.buildLineLinked(a, b)
         mc.select(cl=1)
 
     def weightTo(self, joints, weightDir=0, **kwargs):
@@ -242,7 +242,7 @@ class CurveNode(GroupNode):
     ):
         """Update multiple data of the curve
         e.g.
-            crv = CurveNode('new')
+            crv = CrvNode('new')
             crv(n='crv2', scale=2, color=3, addOfs=1)
         """
         if name:

@@ -2,10 +2,10 @@ import maya.cmds as mc
 import logging
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
 from nl_modules.utils.color import Color
@@ -17,7 +17,7 @@ class Head(RigModule):
         super().__init__(rigNode)
 
         rID, rSz, xDr = self.getMyVar()
-        self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
+        self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
         self.joints = []
         self.head = None
         self.headEnd = None
@@ -39,7 +39,7 @@ class Head(RigModule):
 
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
-        self.head_fkc = CurveNode(
+        self.head_fkc = CrvNode(
             "head",
             pf=rID,
             sf="_fkc",
@@ -47,7 +47,7 @@ class Head(RigModule):
             scale=rSz * 3,
             move=(0, rSz * 8, 0),
         )
-        self.jaw_fkc = CurveNode("jaw", pf=rID, sf="_fkc", up="x", scale=rSz, color=22)
+        self.jaw_fkc = CrvNode("jaw", pf=rID, sf="_fkc", up="x", scale=rSz, color=22)
         self.rigNode.setMsg(
             {
                 "head_fkc": self.head_fkc,
@@ -92,7 +92,7 @@ class Head(RigModule):
 
     def setup_proxy(self):
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(aimDir=(0, 1, 0), p=self.PRX_GRP)
+            JntNode(j).addProxyMesh(aimDir=(0, 1, 0), p=self.PRX_GRP)
 
     def setup_rotate_order(self):
         pass

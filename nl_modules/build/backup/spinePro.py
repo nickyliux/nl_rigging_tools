@@ -1,11 +1,11 @@
 import maya.cmds as mc
 import logging
 from nl_modules.build import rig_module
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.ribbon_node import RibbonNode
+from nl_modules.nodel.rbn_node import RbnNode
 from nl_modules.utils import common
 from nl_modules.utils.color import Color
 
@@ -48,28 +48,26 @@ class SpinePro(rig_module.RigModule):
 
         DY = Color.D_YELLOW
 
-        self.setting = CurveNode(
-            "setting", pf=self.rigID, shape="sphere", scale=s * 0.4
-        )
+        self.setting = CrvNode("setting", pf=self.rigID, shape="sphere", scale=s * 0.4)
         self.setting.a.message >> self.rigNode.a.setting
 
-        self.cog_ctl = CurveNode(
+        self.cog_ctl = CrvNode(
             "cog_ctl", pf=self.rigID, shape="cog", scale=s * 8, color=DY
         )
         self.cog_ctl.a.message >> self.rigNode.a.cog_ctl
 
-        self.up_ikc = CurveNode(
+        self.up_ikc = CrvNode(
             "up_ikc", pf=self.rigID, shape="cube", scale=s * 7, color=DY
         )
         self.up_ikc.cv_scale(1.2, 0.3, 1)
         self.up_ikc.a.message >> self.rigNode.a.up_ikc
 
-        self.md_ikc = CurveNode(
+        self.md_ikc = CrvNode(
             "md_ikc", pf=self.rigID, shape="square", scale=s * 4, color=DY
         )
         self.md_ikc.a.message >> self.rigNode.a.md_ikc
 
-        self.lw_ikc = CurveNode(
+        self.lw_ikc = CrvNode(
             "lw_ikc", pf=self.rigID, shape="cube", scale=s * 7, color=DY
         )
         self.lw_ikc.cv_scale(1.2, 0.3, 1)
@@ -95,7 +93,7 @@ class SpinePro(rig_module.RigModule):
         self.fkJnt = []
         parentJ = None
         for i in range(self.FK_JNT_NUM):
-            j = JointNode("fkj_#", pf=self.rigID)
+            j = JntNode("fkj_#", pf=self.rigID)
             self.fkJnt.append(j)
             if parentJ:
                 j | parentJ
@@ -109,7 +107,7 @@ class SpinePro(rig_module.RigModule):
 
         self.fkCtl = []
         for j in self.fkJnt[:-1]:
-            c = CurveNode(
+            c = CrvNode(
                 "fkc_#",
                 pf=self.rigID,
                 scale=s * 4,
@@ -148,7 +146,7 @@ class SpinePro(rig_module.RigModule):
 
         common.cstMulti(self.up_ikc, self.lw_ikc, self.md_ikc, cstType="poi", delete=1)
 
-        self.cog_gmb = CurveNode(self.cog_ctl).add_gimbal()
+        self.cog_gmb = CrvNode(self.cog_ctl).add_gimbal()
 
         self.lw_ikc | self.fkCtl[0]
         self.up_ikc | self.fkCtl[-1]
@@ -169,12 +167,12 @@ class SpinePro(rig_module.RigModule):
     def build_ribbon(self):
         logging.info(self.rigID)
 
-        dummyG1 = GroupNode("g#", snap=self.rootJ)
-        dummyG2 = GroupNode("g#", snap=self.rootJ.allChildren[-1])
+        dummyG1 = GrpNode("g#", snap=self.rootJ)
+        dummyG2 = GrpNode("g#", snap=self.rootJ.allChildren[-1])
         dummyG2.cstAim(dummyG1, keep=0, worldUpVector=(0, 0, 1))
         dummyG2 | dummyG1
 
-        spine_RB = RibbonNode(
+        spine_RB = RbnNode(
             dummyG1,
             pf=self.rigID,
             rbJNum=self.BIND_JNT_NUM,

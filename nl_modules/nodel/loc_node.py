@@ -1,11 +1,11 @@
 import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.utils.color import Color
 import logging
 
 
-class LocNode(GroupNode):
+class LocNode(GrpNode):
     """Loc Node Class
     e.g.
         n = LocNode('existing')
@@ -27,7 +27,7 @@ class LocNode(GroupNode):
         matchOffset=None,
         v=1,
     ):
-        GroupNode.__init__(
+        GrpNode.__init__(
             self,
             node,
             pf=pf,

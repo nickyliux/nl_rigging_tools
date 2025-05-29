@@ -1,6 +1,6 @@
 import maya.cmds as mc
 import nl_modules.build.rig_module as rig_module
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.ik_node import IkNode
 from nl_modules.utils import common
@@ -26,8 +26,8 @@ class Spd3Leg(rig_module.RigModule):
 
         logging.info("load rigNode's connected into attr")
 
-        self.FK_SETUP = GroupNode("FK_SETUP", pf=self.rigID, p=self.CTL_DATA)
-        self.IK_SETUP = GroupNode("IK_SETUP", pf=self.rigID, p=self.CTL_DATA)
+        self.FK_SETUP = GrpNode("FK_SETUP", pf=self.rigID, p=self.CTL_DATA)
+        self.IK_SETUP = GrpNode("IK_SETUP", pf=self.rigID, p=self.CTL_DATA)
 
         self.leg_01 = rigNode.a.leg_01.inConnNode
         self.leg_02 = rigNode.a.leg_02.inConnNode
@@ -119,7 +119,7 @@ class Spd3Leg(rig_module.RigModule):
             pvc=pvc,
         )
 
-        foot_ik_cst = GroupNode("ik_cst", pf=rigID, snap=self.leg_05)
+        foot_ik_cst = GrpNode("ik_cst", pf=rigID, snap=self.leg_05)
 
         # Foot ik setup
         ikH1.parentTo(foot_ik_cst)

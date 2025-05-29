@@ -4,10 +4,10 @@ import logging
 from nl_modules.build import rig_module
 
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 
 from nl_modules.utils import common
@@ -42,26 +42,24 @@ class SpineQdCrv(rig_module.RigModule):
         Y = Color.YELLOW
         DY = Color.D_YELLOW
 
-        self.setting = CurveNode(
-            "setting", pf=self.rigID, shape="sphere", scale=s * 0.3
-        )
+        self.setting = CrvNode("setting", pf=self.rigID, shape="sphere", scale=s * 0.3)
         self.setting.a.message >> self.rigNode.a.setting
 
-        self.cog_ctl = CurveNode(
+        self.cog_ctl = CrvNode(
             "cog_ctl", pf=self.rigID, up="x", shape="cube", scale=s, color=Y
         )
         self.cog_ctl.cv_move(0, self.rigSize * 6, 0)
         self.cog_ctl.a.message >> self.rigNode.a.cog_ctl
 
-        self.st_ctl = CurveNode(
+        self.st_ctl = CrvNode(
             "st_ctl", pf=self.rigID, up="x", shape="cube", scale=s * 4, color=DY
         )
         self.st_ctl.a.message >> self.rigNode.a.st_ctl
 
-        self.md_ctl = CurveNode("_md_ctl", pf=self.rigID, up="z", scale=s * 3, color=DY)
+        self.md_ctl = CrvNode("_md_ctl", pf=self.rigID, up="z", scale=s * 3, color=DY)
         self.md_ctl.a.message >> self.rigNode.a.md_ctl
 
-        self.ed_ctl = CurveNode(
+        self.ed_ctl = CrvNode(
             "ed_ctl", pf=self.rigID, up="x", shape="cube", scale=s * 4, color=DY
         )
         self.ed_ctl.a.message >> self.rigNode.a.ed_ctl
@@ -79,13 +77,13 @@ class SpineQdCrv(rig_module.RigModule):
     ):
         s = self.rigSize * 2
 
-        st_skinJ = JointNode(
+        st_skinJ = JntNode(
             "st_skinJ", pf=self.rigID, r=s, color=13, align=st_ctl, p=st_ctl
         )
-        md_skinJ = JointNode(
+        md_skinJ = JntNode(
             "md_skinJ", pf=self.rigID, r=s, color=13, align=md_ctl, p=md_ctl
         )
-        ed_skinJ = JointNode(
+        ed_skinJ = JntNode(
             "ed_skinJ", pf=self.rigID, r=s, color=13, align=ed_ctl, p=ed_ctl
         )
 
@@ -105,7 +103,7 @@ class SpineQdCrv(rig_module.RigModule):
             return
 
         # BUILD JOINT CHAIN
-        self.joints = JointNode.createJntFrCrv(
+        self.joints = JntNode.createJntFrCrv(
             crv, num=self.mg_jntNum, pf=self.rigID, p=self.SKL_DATA
         )
 
@@ -158,8 +156,8 @@ class SpineQdCrv(rig_module.RigModule):
         cog_ctl.addOffsetGrp()
 
         # MID TWIST
-        st_cstG = GroupNode("st_cstG", pf=self.rigID, snap=md_ctl, p=st_ctl)
-        ed_cstG = GroupNode("ed_cstG", pf=self.rigID, snap=md_ctl, p=ed_ctl)
+        st_cstG = GrpNode("st_cstG", pf=self.rigID, snap=md_ctl, p=st_ctl)
+        ed_cstG = GrpNode("ed_cstG", pf=self.rigID, snap=md_ctl, p=ed_ctl)
         mid_ofs = md_ctl.addOffsetGrp()
         common.cstMulti(st_cstG, ed_cstG, mid_ofs, cstType="par")
         st_ctl.a.rz @ ed_ctl.a.rz >> mid_ofs.a.rz
@@ -189,7 +187,7 @@ class SpineQdCrv(rig_module.RigModule):
 
         # PROXY MESH
         for j in self.rootJ.allChildrenJt2:
-            JointNode(j).addProxyMesh(skipEnd=1, p=self.PRX)
+            JntNode(j).addProxyMesh(skipEnd=1, p=self.PRX)
 
         # [x.a.lockHide(t=1, r=1) for x in [self.cog_ctl, self.st_ctl, self.ed_ctl]]
         # self.md_ctl.a.lockHide(t=1)

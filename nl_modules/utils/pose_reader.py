@@ -1,13 +1,13 @@
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.joint_node import JointNode
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.jnt_node import JntNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.base.dep_node import DepNode
 import maya.cmds as mc
 
 
-def createPoseReader(targetJ: JointNode):
+def createPoseReader(targetJ: JntNode):
     """
     Args:
         targetJ:
@@ -21,11 +21,11 @@ def createPoseReader(targetJ: JointNode):
     if childJ and parentJ:
 
         # Prepare setup at origin
-        grp = GroupNode("psd_grp_#")
+        grp = GrpNode("psd_grp_#")
         psd_loc = LocNode("psd_loc_#", p=grp)
         childJ[0].cstPoi(psd_loc)
 
-        ctl = CurveNode("psd_ctl_#", p=grp, addOfs=1)
+        ctl = CrvNode("psd_ctl_#", p=grp, addOfs=1)
         ctl.a.add("psdOutValue")
 
         ball = DagNode(mc.sphere(n="psdBall_#")[0])

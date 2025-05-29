@@ -1,12 +1,12 @@
 import maya.cmds as mc
 import logging
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.ribbon_node import RibbonNode
+from nl_modules.nodel.rbn_node import RbnNode
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
 from nl_modules.build.rig_module import RigModule
@@ -35,9 +35,9 @@ class LegQd(RigModule):
         self.SCAPULAR_EXTRA = self.master_guide.a.scapularExtra.get()
         rID, rSz, xDr = self.getMyVar()
 
-        self.FK_PART = GroupNode("FK", pf=rID, p=self.CTL_DATA)
-        self.IK_PART = GroupNode("IK", pf=rID, p=self.CTL_DATA)
-        self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
+        self.FK_PART = GrpNode("FK", pf=rID, p=self.CTL_DATA)
+        self.IK_PART = GrpNode("IK", pf=rID, p=self.CTL_DATA)
+        self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
 
         self.setting = None
         self.joints = []
@@ -108,7 +108,7 @@ class LegQd(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting = CurveNode(
+        self.setting = CrvNode(
             "setting",
             pf=rID,
             shape="sphere2",
@@ -117,32 +117,30 @@ class LegQd(RigModule):
             top=1,
             p=self.RIG_DATA,
         )
-        self.hip_fkc = CurveNode(
+        self.hip_fkc = CrvNode(
             "hip_fkc",
             pf=rID,
             up="x",
             shape="trapezoid2",
             scale=(rSz * -xDr * 2, rSz, rSz * 2),
         )
-        # self.hip_fkc = CurveNode(
+        # self.hip_fkc = CrvNode(
         #     "hip_fkc", pf=rID, up="-y", shape="stick", scale=rSz * xDr * 0.8
         # )
-        self.upr_fkc = CurveNode("upr_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
-        self.lwr_fkc = CurveNode("lwr_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
-        self.palm_fkc = CurveNode(
-            "palm_fkc", pf=rID, shape="squareR", up="x", scale=rSz
-        )
-        self.digit_fkc = CurveNode(
+        self.upr_fkc = CrvNode("upr_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
+        self.lwr_fkc = CrvNode("lwr_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
+        self.palm_fkc = CrvNode("palm_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
+        self.digit_fkc = CrvNode(
             "digit_fkc", pf=rID, shape="squareR", up="x", scale=rSz
         )
-        self.ball_fkc = CurveNode(
+        self.ball_fkc = CrvNode(
             "ball_fkc",
             pf=rID,
             scale=xDr * rSz / 2,
         )
-        self.ikc = CurveNode("ikc", pf=rID, shape="cube", scale=rSz)
-        self.pvc = CurveNode("pvc", pf=rID, shape="triangleR", scale=rSz / 2)
-        self.smart_ctl = CurveNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
+        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=rSz)
+        self.pvc = CrvNode("pvc", pf=rID, shape="triangleR", scale=rSz / 2)
+        self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
 
         self.rigNode.setMsg(
             {
@@ -159,7 +157,7 @@ class LegQd(RigModule):
             }
         )
         if self.SCAPULAR_EXTRA:
-            self.scap_fkc = CurveNode(
+            self.scap_fkc = CrvNode(
                 "scap_fkc",
                 pf=rID,
                 shape="sphere",
@@ -280,15 +278,15 @@ class LegQd(RigModule):
         ikHX = IkNode("X", pf=rID, sj=self.palm, ee=self.digit, jsf="_ik")
         ikH2 = IkNode("2", pf=rID, sj=self.digit, ee=self.ball, jsf="_ik")
         ikH3 = IkNode("3", pf=rID, sj=self.ball, ee=self.tip, jsf="_ik")
-        self.ikCstG = GroupNode("ikCstG", pf=rID, snap=self.palm, alignR=mG)
-        extraRollG = GroupNode("extraRollG", pf=rID, snap=self.digit, alignR=mG)
-        ballRollG = GroupNode("ballRollG", pf=rID, snap=self.ball, alignR=mG)
-        toe_wiggle_grp = GroupNode("toe_wiggle_grp", pf=rID, align=self.ball)
-        footRollG = GroupNode("footRollG", pf=rID, snap=toePos_guide, alignR=mG)
-        toeRollG = GroupNode("toeRollG", pf=rID, snap=toePos_guide, alignR=mG)
-        inRollG = GroupNode("inRollG", pf=rID, snap=inPos_guide, alignR=mG)
-        outRollG = GroupNode("outRollG", pf=rID, snap=outPos_guide, alignR=mG)
-        heelRollG = GroupNode("heelRollG", pf=rID, snap=heelPos_guide, alignR=mG)
+        self.ikCstG = GrpNode("ikCstG", pf=rID, snap=self.palm, alignR=mG)
+        extraRollG = GrpNode("extraRollG", pf=rID, snap=self.digit, alignR=mG)
+        ballRollG = GrpNode("ballRollG", pf=rID, snap=self.ball, alignR=mG)
+        toe_wiggle_grp = GrpNode("toe_wiggle_grp", pf=rID, align=self.ball)
+        footRollG = GrpNode("footRollG", pf=rID, snap=toePos_guide, alignR=mG)
+        toeRollG = GrpNode("toeRollG", pf=rID, snap=toePos_guide, alignR=mG)
+        inRollG = GrpNode("inRollG", pf=rID, snap=inPos_guide, alignR=mG)
+        outRollG = GrpNode("outRollG", pf=rID, snap=outPos_guide, alignR=mG)
+        heelRollG = GrpNode("heelRollG", pf=rID, snap=heelPos_guide, alignR=mG)
 
         if xDr == 1:
             for g in (
@@ -311,7 +309,7 @@ class LegQd(RigModule):
         self.ikc.snapTo(self.digit)
         # self.ikc.cv_drop()
 
-        self.ikc_gimbal = CurveNode(self.ikc).add_gimbal()
+        self.ikc_gimbal = CrvNode(self.ikc).add_gimbal()
         self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
 
         self.foot_roll_logic(self.smart_ctl, heelRollG, ballRollG, footRollG, toeRollG)
@@ -319,7 +317,7 @@ class LegQd(RigModule):
 
         self.ikc.a.add("kneeTwist") * xDr >> ikH1.a.twist
         (self.ikc, self.pvc, self.ikCstG) | self.IK_PART
-        self.pvc_line = CurveNode.buildLineLinked(
+        self.pvc_line = CrvNode.buildLineLinked(
             self.joints_ik[2], self.pvc, pf=rID, dspType=2, p=self.IK_PART
         )
         self.ikc.addOffsetGrp()
@@ -355,7 +353,7 @@ class LegQd(RigModule):
             ctl.a.addSep()
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
-        GroupNode(self.ikc + "_matcher", align=self.ikc, p=self.digit_fkc)
+        GrpNode(self.ikc + "_matcher", align=self.ikc, p=self.digit_fkc)
 
     def extra_roll_logic(self, ballRollG, extraRollG, grp):
         rID, rSz, xDr = self.getMyVar()
@@ -393,7 +391,7 @@ class LegQd(RigModule):
 
         self.extra_ikc = extraRollG.addOffsetGrp(below=1)
         cName = rID + "_extra_ikc"
-        CurveNode(self.extra_ikc)(
+        CrvNode(self.extra_ikc)(
             name=cName, shape="rotator", scale=-rSz * xDr / 2, top=1
         )
         aimG_loc.hide()
@@ -403,12 +401,12 @@ class LegQd(RigModule):
 
         for g in [toeRollG, inRollG, outRollG, heelRollG]:
             ctl = g.addOffsetGrp(below=1)
-            CurveNode(ctl)(name=g.name + "_ctl", shape="diamond", scale=rSz / 4)
+            CrvNode(ctl)(name=g.name + "_ctl", shape="diamond", scale=rSz / 4)
             self.subCtls.append(ctl)
 
         self.ballG_ikc = ballRollG.addOffsetGrp(below=1)
         cName = rID + "_ballG_ikc"
-        CurveNode(self.ballG_ikc)(
+        CrvNode(self.ballG_ikc)(
             name=cName,
             shape="stickC",
             scale=-rSz * xDr / 3,
@@ -441,7 +439,7 @@ class LegQd(RigModule):
             self.bindJnts.extend(toeJs[:-1])
             fkToeList = toeJs[3:-1]
             for jnt in fkToeList:
-                c = CurveNode(
+                c = CrvNode(
                     jnt + "_ctl", shape="stickC", align=jnt, up="-z", scale=scale
                 )
                 ctlList.append(c)
@@ -517,7 +515,7 @@ class LegQd(RigModule):
             w=fkIkBlend,
             cstType="par",
         )
-        ballOfsG = GroupNode(
+        ballOfsG = GrpNode(
             "ballOfsG",
             pf=rID,
             snap=self.ball.offset,
@@ -549,7 +547,7 @@ class LegQd(RigModule):
     #     g = self.PRX_GRP
 
     #     pf = rID + "_up_"
-    #     ribbonUp = RibbonNode(
+    #     ribbonUp = RbnNode(
     #         self.upr,
     #         pf=pf,
     #         rbJNum=num,
@@ -560,7 +558,7 @@ class LegQd(RigModule):
     #         proxyP=g,
     #     )
     #     pf = rID + "_lw_"
-    #     ribbonLw = RibbonNode(
+    #     ribbonLw = RbnNode(
     #         self.lwr,
     #         pf=pf,
     #         rbJNum=num,
@@ -584,9 +582,9 @@ class LegQd(RigModule):
     #     upLoc = ribbonUp.mid_loc
     #     lwLoc = ribbonLw.mid_loc
     #     cData = self.CTL_DATA
-    #     upr_bend = CurveNode("upr_bend", pf=rID, align=upLoc, addOfs=1, p=cData)
-    #     lwr_bend = CurveNode("lwr_bend", pf=rID, align=lwLoc, addOfs=1, p=cData)
-    #     mid_bend = CurveNode("mid_bend", pf=rID, align=self.lwr, addOfs=1, p=cData)
+    #     upr_bend = CrvNode("upr_bend", pf=rID, align=upLoc, addOfs=1, p=cData)
+    #     lwr_bend = CrvNode("lwr_bend", pf=rID, align=lwLoc, addOfs=1, p=cData)
+    #     mid_bend = CrvNode("mid_bend", pf=rID, align=self.lwr, addOfs=1, p=cData)
 
     #     self.all_bend = [upr_bend, lwr_bend, mid_bend]
     #     for b in self.all_bend:
@@ -615,7 +613,7 @@ class LegQd(RigModule):
 
     def setup_proxy(self):
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(p=self.PRX_GRP)
+            JntNode(j).addProxyMesh(p=self.PRX_GRP)
 
     def setup_vis(self):
         self.ctl_vis_toggle(

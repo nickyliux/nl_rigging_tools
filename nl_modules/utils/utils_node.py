@@ -110,11 +110,11 @@ def distDim_(obj1, obj2):
     e.g.
         d = distDim_(obj1, obj2)
     """
-    from nl_modules.nodel.group_node import GroupNode
+    from nl_modules.nodel.grp_node import GrpNode
     from nl_modules.nodel.loc_node import LocNode
     from nl_modules.nodel.base.dag_node import DagNode
 
-    grpN = GroupNode("distDim_grp#", p="distDim_GRP", pf=obj2.name)
+    grpN = GrpNode("distDim_grp#", p="distDim_GRP", pf=obj2.name)
     locA = LocNode("distLocA__#", p=grpN)
     locB = LocNode("distLocB__#", p=grpN)
     distDim = DagNode(mc.distanceDimension(locA, locB))
@@ -128,16 +128,16 @@ def distDim_(obj1, obj2):
 def arcLenDim_(srfOrCrv):
     """Return arcLengthDimension node for srf/crv"""
     from nl_modules.nodel.base.dag_node import DagNode
-    from nl_modules.nodel.surf_node import SurfNode
-    from nl_modules.nodel.curve_node import CurveNode
+    from nl_modules.nodel.srf_node import SrfNode
+    from nl_modules.nodel.crv_node import CrvNode
 
     arcLD = DagNode(srfOrCrv + "_arcLD__#", nodeType="arcLengthDimension")
     arcLD.parent | srfOrCrv
     srfOrCrv.shape.a.worldSpace >> arcLD.a.nurbsGeometry
 
     if srfOrCrv.type == "nurbsSurface":
-        arcLD.a.uParamValue.set(SurfNode(srfOrCrv).uSeg)
-        arcLD.a.vParamValue.set(SurfNode(srfOrCrv).vSeg)
+        arcLD.a.uParamValue.set(SrfNode(srfOrCrv).uSeg)
+        arcLD.a.vParamValue.set(SrfNode(srfOrCrv).vSeg)
     elif srfOrCrv.type == "nurbsCurve":
         arcLD.a.uParamValue.set(1)
         arcLD.a.vParamValue.set(1)

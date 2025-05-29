@@ -468,11 +468,11 @@ class DagNode(DepNode):
 
     def duplicate(self, name=None, **kwargs):
         """Duplicate itself"""
-        from nl_modules.nodel.joint_node import JointNode
+        from nl_modules.nodel.jnt_node import JntNode
         from nl_modules.nodel.loc_node import LocNode
-        from nl_modules.nodel.mesh_node import MeshNode
-        from nl_modules.nodel.curve_node import CurveNode
-        from nl_modules.nodel.surf_node import SurfNode
+        from nl_modules.nodel.msh_node import MshNode
+        from nl_modules.nodel.crv_node import CrvNode
+        from nl_modules.nodel.srf_node import SrfNode
 
         if not self.exists():
             raise ValueError("Can not duplicate None !")

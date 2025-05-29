@@ -2,12 +2,12 @@ import maya.cmds as mc
 import logging
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.surf_node import SurfNode
+from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common, utils_node as ut, maths
 from nl_modules.utils.color import Color
 
@@ -20,12 +20,12 @@ class SpineQd(RigModule):
 
         self.END_CTL = self.master_guide.a.endCtl.get()
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
-        self.LINE_GUIDE = CurveNode(rID + "_line_guide")
+        self.LINE_GUIDE = CrvNode(rID + "_line_guide")
         self.TP_GUIDE = DagNode(rID + "_tp_guide")
         self.MD_GUIDE = DagNode(rID + "_md_guide")
         self.RT_GUIDE = DagNode(rID + "_rt_guide")
-        self.PRX_GRP = GroupNode("PRX", pf=rID, p=self.PRX)
-        self.IK_PART = GroupNode("IK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
+        self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
+        self.IK_PART = GrpNode("IK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
 
         guide = DagNode(rID + "_base_pivot_guide")
         self.BASE_PVT_GUIDE = guide if guide.exists() else None
@@ -61,7 +61,7 @@ class SpineQd(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting = CurveNode(
+        self.setting = CrvNode(
             "setting",
             pf=rID,
             shape="sphere2",
@@ -73,7 +73,7 @@ class SpineQd(RigModule):
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
         self.setting.a.add("moduleScale", min=0.01, dv=1)
 
-        self.cog_ctl = CurveNode(
+        self.cog_ctl = CrvNode(
             "cog_ctl",
             pf=rID,
             shape="trapezoid",
@@ -84,13 +84,13 @@ class SpineQd(RigModule):
         )
 
         scale = maths.mul(6, 6, 2, rSz)
-        self.base_ctl = CurveNode("base_ctl", pf=rID, shape="cube", scale=scale)
-        self.fore_ctl = CurveNode("fore_ctl", pf=rID, shape="cube", scale=scale)
-        self.mid_ctl = CurveNode(
+        self.base_ctl = CrvNode("base_ctl", pf=rID, shape="cube", scale=scale)
+        self.fore_ctl = CrvNode("fore_ctl", pf=rID, shape="cube", scale=scale)
+        self.mid_ctl = CrvNode(
             "mid_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3
         )
         move = maths.mul(0, 25, 0, rSz)
-        self.tangent0_ctl = CurveNode(
+        self.tangent0_ctl = CrvNode(
             "tangent0_ctl",
             pf=rID,
             shape="triangleR",
@@ -99,7 +99,7 @@ class SpineQd(RigModule):
             move=move,
             color=22,
         )
-        self.tangent1_ctl = CurveNode(
+        self.tangent1_ctl = CrvNode(
             "tangent1_ctl",
             pf=rID,
             shape="triangleR",
@@ -109,7 +109,7 @@ class SpineQd(RigModule):
             color=22,
         )
         if self.END_CTL:
-            self.end_ctl = CurveNode(
+            self.end_ctl = CrvNode(
                 "end_ctl",
                 pf=rID,
                 shape="rotator",
@@ -136,8 +136,8 @@ class SpineQd(RigModule):
 
         self.build_module()
         mc.delete(self.rootJ)
-        self.rigSize = CurveNode(self.LINE_GUIDE).length / 100
-        self.rbSrf = SurfNode.buildRbSrf(
+        self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
+        self.rbSrf = SrfNode.buildRbSrf(
             pf=rID,
             crv=self.LINE_GUIDE,
             spans=2,
@@ -174,7 +174,7 @@ class SpineQd(RigModule):
         #
         #   build chain from crv
         #
-        self.ikJnts = JointNode.createJntFrCrv(
+        self.ikJnts = JntNode.createJntFrCrv(
             self.LINE_GUIDE, num=3, name="ikj", pf=rID, size=rSz * 4, chain=0, color=6
         )
         j0, j1, j2 = self.ikJnts
@@ -223,9 +223,9 @@ class SpineQd(RigModule):
         #
         #   create crv & joints on it
         #
-        rbCrv = CurveNode(mc.duplicateCurve(rbSrf + ".u[0.5]", rn=0, local=0)[0])
+        rbCrv = CrvNode(mc.duplicateCurve(rbSrf + ".u[0.5]", rn=0, local=0)[0])
         rbCrv | self.RIG_DATA
-        spIkJnts = JointNode.createJntFrCrv(
+        spIkJnts = JntNode.createJntFrCrv(
             rbCrv,
             pf=rID,
             name="spikj",
@@ -261,7 +261,7 @@ class SpineQd(RigModule):
         rbCrv.shape.a.worldSpace >> crvInfo.a.inputCurve
 
         crvLenRatio = crvInfo.a.arcLength / globalScale / scaleAttr / rbCrv.length
-        locGrp = GroupNode("loc_grp", pf=rID, p=self.RIG_DATA)
+        locGrp = GrpNode("loc_grp", pf=rID, p=self.RIG_DATA)
         rbJnts = []
         for i in range(jntNum):
 
@@ -290,7 +290,7 @@ class SpineQd(RigModule):
             aimCst.a.constraintRotateY >> loc.a.ry
             aimCst.a.constraintRotateZ >> loc.a.rz
 
-            jnt = JointNode(
+            jnt = JntNode(
                 f"{i}_rbj",
                 pf=rID,
                 align=loc,
@@ -310,7 +310,7 @@ class SpineQd(RigModule):
             self.end_ctl.alignTo(self.END_JNT_GUIDE, p=self.base_ctl)
             self.end_ctl.addOffsetGrp()
 
-            self.end_jnt = JointNode(
+            self.end_jnt = JntNode(
                 "end",
                 pf=rID,
                 snap=self.END_JNT_GUIDE,
@@ -329,7 +329,7 @@ class SpineQd(RigModule):
         #
         #   build chain from crv
         #
-        self.two_ikJnts = JointNode.makeTwoJC(
+        self.two_ikJnts = JntNode.makeTwoJC(
             "two_ikj",
             pf=rID,
             align=self.RT_GUIDE,
@@ -418,7 +418,7 @@ class SpineQd(RigModule):
 
     def setup_proxy(self):
         for j in self.bindJnts:
-            JointNode(j).addProxyMesh(p=self.PRX_GRP)
+            JntNode(j).addProxyMesh(p=self.PRX_GRP)
 
     def setup_rotate_order(self):
         [ctl.a.ro.set(3) for ctl in [self.fore_ctl, self.base_ctl, self.cog_ctl]]

@@ -2,8 +2,8 @@ import maya.cmds as mc
 import logging
 
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.curve_node import CurveNode
-from nl_modules.nodel.group_node import GroupNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
 
 # def applyOrder(name):
 #
@@ -122,7 +122,7 @@ def switchToFkIk_calcPvcPos(pos1, pos2, pos3):
     """
     from nl_modules.utils import maths
 
-    crv = CurveNode(mc.curve(p=[pos1, pos2, pos3], d=1, k=[0, 1, 2]))
+    crv = CrvNode(mc.curve(p=[pos1, pos2, pos3], d=1, k=[0, 1, 2]))
     d1 = maths.getDistBetwPt(pos1, pos2)
     d2 = maths.getDistBetwPt(pos2, pos3)
     distToMove = (d1 + d2) * 0.5
@@ -130,7 +130,7 @@ def switchToFkIk_calcPvcPos(pos1, pos2, pos3):
     mid_cv = crv + ".cv[1]"
     mc.moveVertexAlongDirection(mid_cv, n=distToMove)
 
-    pvc_pos_grp = GroupNode("grp#")
+    pvc_pos_grp = GrpNode("grp#")
     mc.xform(pvc_pos_grp, t=mc.xform(mid_cv, t=1, ws=1, q=1))
     crv.delete()
 

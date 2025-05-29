@@ -1,7 +1,7 @@
 import unittest
 import maya.cmds as mc
 
-from nl_modules.nodel.curve_node import CurveNode
+from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils.color import Color
 
@@ -17,8 +17,8 @@ class Test_color_Base(unittest.TestCase):
 
     def setUp(self):
         mc.file(new=1, f=1)
-        self.obj1 = CurveNode("crv1")
-        self.obj2 = CurveNode("crv2")
+        self.obj1 = CrvNode("crv1")
+        self.obj2 = CrvNode("crv2")
         tmp = LocNode("loc")
         mc.parent(tmp.shape, self.obj2, r=1, s=1)
 

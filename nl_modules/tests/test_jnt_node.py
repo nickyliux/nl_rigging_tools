@@ -1,10 +1,10 @@
 import unittest
 import maya.cmds as mc
-from nl_modules.nodel.joint_node import JointNode
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.utils.color import Color
 
 
-class Test_JointNode_Base(unittest.TestCase):
+class Test_JntNode_Base(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         mc.refresh(su=1)
@@ -16,24 +16,24 @@ class Test_JointNode_Base(unittest.TestCase):
     def setUp(self):
         mc.file(new=1, f=1)
         self.name = "joint"
-        self.j0 = JointNode(self.name)
+        self.j0 = JntNode(self.name)
         self.j0.a.t.set(1, 2, 3)
         self.j0.a.r.set(10, 20, 30)
-        self.j1 = JointNode("j1")
-        self.j2 = JointNode("j2", p=self.j1)
+        self.j1 = JntNode("j1")
+        self.j2 = JntNode("j2", p=self.j1)
         self.j2.a.t.set(10, 10, 0)
 
 
-class Test_JointNode_Main(Test_JointNode_Base):
+class Test_JntNode_Main(Test_JntNode_Base):
 
     def test__init__(self):
-        j = JointNode("joint1", pf="a_", addOfs=1)
+        j = JntNode("joint1", pf="a_", addOfs=1)
         self.assertEqual(j, "|a_joint1_ofs|a_joint1")
-        j = JointNode("joint2", pf="b_", p=self.j0)
+        j = JntNode("joint2", pf="b_", p=self.j0)
         self.assertEqual(j, "|joint|b_joint2")
 
     def test_color(self):
-        j = JointNode("joint1", color=22)
+        j = JntNode("joint1", color=22)
         self.assertEqual(j.a.overrideColor.get(), 22)
 
     def test_setRadius(self):
@@ -58,7 +58,7 @@ class Test_JointNode_Main(Test_JointNode_Base):
         self.assertEqual(px, None)
 
     def test_makeTwoJC(self):
-        newJ1, newJ2 = JointNode.makeTwoJC(
+        newJ1, newJ2 = JntNode.makeTwoJC(
             "new",
             align=self.j1,
             align_end=self.j2,
@@ -68,23 +68,23 @@ class Test_JointNode_Main(Test_JointNode_Base):
         self.assertEqual(newJ2.parent, newJ1)
 
     def test_makeTwoJC2(self):
-        newJ1, newJ2 = JointNode.makeTwoJC("new", snap=self.j1, ofs=(2, 0, 0))
+        newJ1, newJ2 = JntNode.makeTwoJC("new", snap=self.j1, ofs=(2, 0, 0))
         self.assertEqual(newJ2.a.t.get(), (2, 0, 0))
         self.assertEqual(newJ2.o.pos, (2, 0, 0))
 
     def test_makeJChainFrCrv(self):
         crv = mc.circle()[0]
-        jnts = JointNode.createJntFrCrv(crv, num=6)
+        jnts = JntNode.createJntFrCrv(crv, num=6)
         self.assertEqual(len(jnts), 6)
 
-        jnts = JointNode.createJntFrCrv(crv, num=6, addEndJ=1)
+        jnts = JntNode.createJntFrCrv(crv, num=6, addEndJ=1)
         self.assertEqual(len(jnts), 7)
 
     def test_duplicate(self):
         dup = self.j0.duplicate()
-        self.assertEqual(dup.__class__.__name__, "JointNode")
+        self.assertEqual(dup.__class__.__name__, "JntNode")
 
 
 if __name__ == "__main__":
     unittest.TestLoader.sortTestMethodsUsing = lambda self, a, b: (a < b) - (a > b)
-    unittest.main(defaultTest="Test_JointNode_Main", exit=False)
+    unittest.main(defaultTest="Test_JntNode_Main", exit=False)

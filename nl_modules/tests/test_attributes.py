@@ -3,8 +3,8 @@ import maya.cmds as mc
 from nl_modules.nodel.base.attribute import Attribute
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.joint_node import JointNode
-from nl_modules.nodel.curve_node import CurveNode
+from nl_modules.nodel.jnt_node import JntNode
+from nl_modules.nodel.crv_node import CrvNode
 
 
 class Test_Attribute_Base(unittest.TestCase):
@@ -257,8 +257,8 @@ class Test_Attribute_Connect(Test_Attribute_Base):
 
     def test_inConnNode3(self):
         loc = LocNode("loc")
-        jnt = JointNode("jnt")
-        crv = CurveNode("crv")
+        jnt = JntNode("jnt")
+        crv = CrvNode("crv")
         loc.a.rx >> self.sphere.a.rx
         jnt.a.ry >> self.sphere.a.ry
         crv.a.rz >> self.sphere.a.rz
@@ -275,8 +275,8 @@ class Test_Attribute_Connect(Test_Attribute_Base):
 
     def test_outConnNode3(self):
         loc = LocNode("loc")
-        jnt = JointNode("jnt")
-        crv = CurveNode("crv")
+        jnt = JntNode("jnt")
+        crv = CrvNode("crv")
         self.sphere.a.rx >> loc.a.rx
         self.sphere.a.ry >> jnt.a.ry
         self.sphere.a.rz >> crv.a.rz

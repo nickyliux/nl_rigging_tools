@@ -1,5 +1,5 @@
-# from nl_modules.nodel.group_node import GroupNode
-# from nl_modules.nodel.curve_node import CurveNode
+# from nl_modules.nodel.group_node import GrpNode
+# from nl_modules.nodel.crv_node import CrvNode
 #
 #
 # class Ik:
@@ -22,15 +22,15 @@
 #
 #     def build_controls(self, side, part, scale, pv_guide):
 #         name = side + "_" + part
-#         ik_grp = GroupNode(name + "_IK_CTRL_GRP")
-#         base_ctl = CurveNode(
+#         ik_grp = GrpNode(name + "_IK_CTRL_GRP")
+#         base_ctl = CrvNode(
 #             name + "_IK_base",
 #             parent=ik_grp,
 #             shape="cube",
 #             scale=scale,
 #             match=self.guide_list[0],
 #         )
-#         main_ctl = CurveNode(
+#         main_ctl = CrvNode(
 #             name + "_IK_main",
 #             parent=ik_grp,
 #             shape="cube",

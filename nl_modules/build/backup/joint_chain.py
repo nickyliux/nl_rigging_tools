@@ -1,8 +1,8 @@
 # import maya.cmds as mc
 # from nl_modules.nodel.base.dep_node import DepNode
 # from nl_modules.nodel.base.dag_node import DagNode
-# from nl_modules.nodel.curve_node import CurveNode
-# from nl_modules.nodel.joint_node import JointNode
+# from nl_modules.nodel.crv_node import CrvNode
+# from nl_modules.nodel.jnt_node import JntNode
 #
 #
 # class JointChain(object):
@@ -52,7 +52,7 @@
 #             name = f"{prefix}{part}_{i+1:0{pad}}{suffix}"
 #             pos = JointChain.posOnCurve(curve, i / (jointNum - 1))
 #
-#             jN = JointNode(name, match=pos)
+#             jN = JntNode(name, match=pos)
 #
 #             if parent:
 #                 jN.cstAim(
@@ -96,7 +96,7 @@
 #         # Loop creating joint, parent to previous
 #         for i, obj in enumerate(guide_list):
 #             name = f"{prefix}{part}_{i+1:0{pad}}_fkj"
-#             jN = JointNode(
+#             jN = JntNode(
 #                 name,
 #                 match=obj if match else mc.xform(obj, q=1, t=1, ws=1),
 #                 parent=parent,
@@ -127,7 +127,7 @@
 #     @staticmethod
 #     def posOnCurve(curve, u):
 #         """Get world position of cv at parameter u"""
-#         crv = CurveNode(curve)
+#         crv = CrvNode(curve)
 #         poc = DepNode("poc", nodeType="pointOnCurveInfo")
 #
 #         crv.shape.a.worldSpace >> poc.a.inputCurve

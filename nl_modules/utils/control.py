@@ -2,7 +2,7 @@ def mirrorCtlShape(ctl):
     """Mirror ctl shape and return opposite"""
 
     from nl_modules.utils import guide
-    from nl_modules.nodel.group_node import GroupNode
+    from nl_modules.nodel.grp_node import GrpNode
     from nl_modules.nodel.base.dag_node import DagNode
     import maya.cmds as mc
     import logging
@@ -32,7 +32,7 @@ def mirrorCtlShape(ctl):
     # Group the duplicated
     # Neg scale it
     # Blend to opposite
-    myGrp = GroupNode("myG", align=mG, snap=dup)
+    myGrp = GrpNode("myG", align=mG, snap=dup)
     dup | myGrp
 
     if dup.a.wsMirror.exists():
