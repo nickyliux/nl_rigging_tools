@@ -734,7 +734,7 @@ select -ne :initialParticleSE;
 	setAttr -cb on ".ai_volume_shaderr";
 	setAttr -cb on ".ai_volume_shaderg";
 	setAttr -cb on ".ai_volume_shaderb";
-lockNode -l 0 -lu 1;
+
 select -ne :defaultRenderGlobals;
 	addAttr -ci true -h true -sn "dss" -ln "defaultSurfaceShader" -dt "string";
 	setAttr -av -k on ".cch";
