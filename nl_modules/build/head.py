@@ -40,12 +40,7 @@ class Head(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
         self.head_fkc = CrvNode(
-            "head",
-            pf=rID,
-            sf="_fkc",
-            shape="squareR",
-            scale=rSz * 3,
-            move=(0, rSz * 8, 0),
+            "head", pf=rID, sf="_fkc", shape="squR", scale=rSz * 3, move=(0, rSz * 8, 0)
         )
         self.jaw_fkc = CrvNode("jaw", pf=rID, sf="_fkc", up="x", scale=rSz, color=22)
         self.rigNode.setMsg(
@@ -102,7 +97,7 @@ class Head(RigModule):
         self.jaw_fkc.a.showAttr(t=1, r=1)
 
     def setup_space(self):
-        self.head_fkc.a.add("spaceType", dv=1, cb=0)
+        self.head_fkc.a.add("spaceType", dv=1, k=0, cb=0)
         self.rigNode.setMsg({"spaceHolder1": self.head_fkc})
         spaces = "neck, COG, master"
         self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)

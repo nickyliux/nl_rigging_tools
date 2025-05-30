@@ -101,7 +101,7 @@ class ArmBp(RigModule):
         self.palm_ikc = CrvNode(
             "palm_ikc",
             pf=rID,
-            shape="squareR",
+            shape="squR",
             up="x",
             scale=rSz * 1.2 * xDr,
             move=(xDr * rSz * 7, 0, 0),
@@ -200,7 +200,7 @@ class ArmBp(RigModule):
         self.pin_fkc = CrvNode(
             "pin_fkc",
             pf=rID,
-            shape="squareR",
+            shape="squR",
             up="x",
             scale=rSz,
             align=self.palm,
@@ -425,7 +425,7 @@ class ArmBp(RigModule):
 
         self.all_bend = [upr_bend, lwr_bend, mid_bend]
         for ctl in self.all_bend:
-            ctl(shape="square", up="x", color=22, scale=rSz)
+            ctl(shape="squR", up="x", color=22, scale=rSz)
             # ctl.a.rotateOrder.set(1)  # yzx
 
         upLoc.cstPar(upr_bend.offset, mo=1)

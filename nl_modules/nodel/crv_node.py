@@ -13,7 +13,7 @@ class CrvNode(GrpNode):
     """Curve Node Class
     e.g.
         n = CrvNode('existing')
-        n = CrvNode('new', shape='square')
+        n = CrvNode('new', shape='squR')
     """
 
     def __init__(
@@ -236,6 +236,7 @@ class CrvNode(GrpNode):
         addOfs=0,
         p=None,
         top=0,
+        width=-1,
         *args,
         **kwargs,
     ):
@@ -268,6 +269,8 @@ class CrvNode(GrpNode):
         if top:
             for s in self.shapes:
                 s.a["alwaysDrawOnTop"].set(1)
+        if width > 0:
+            self.width = width
         return self
 
     def reverse(self):

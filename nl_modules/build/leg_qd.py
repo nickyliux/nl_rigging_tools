@@ -6,7 +6,7 @@ from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.utils import common, utils_node as ut
+from nl_modules.utils import common, utils_node as ut, maths
 from nl_modules.build.rig_module import RigModule
 
 
@@ -115,25 +115,30 @@ class LegQd(RigModule):
             top=1,
             p=self.CTL_DATA,
         )
-        self.hip_fkc = CrvNode(
-            "hip_fkc",
-            pf=rID,
-            up="x",
-            shape="trapezoid2",
-            scale=(rSz * -xDr * 2, rSz, rSz * 2),
-        )
+        # self.hip_fkc = CrvNode(
+        #     "hip_fkc",
+        #     pf=rID,
+        #     up="x",
+        #     shape="trapezoid2",
+        #     scale=maths.mul(-xDr * 2, 1, 2, rSz),
+        # )
         # self.hip_fkc = CrvNode(
         #     "hip_fkc", pf=rID, up="-y", shape="stick", scale=rSz * xDr * 0.8
         # )
-        self.upr_fkc = CrvNode("upr_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
-        self.lwr_fkc = CrvNode("lwr_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
-        self.palm_fkc = CrvNode("palm_fkc", pf=rID, shape="squareR", up="x", scale=rSz)
-        self.digit_fkc = CrvNode(
-            "digit_fkc", pf=rID, shape="squareR", up="x", scale=rSz
+        self.hip_fkc = CrvNode(
+            "hip_fkc",
+            pf=rID,
+            shape="squR",
+            scale=rSz / 2,
+            move=maths.mul(0, xDr * -20, 0, rSz),
         )
+        self.upr_fkc = CrvNode("upr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
+        self.lwr_fkc = CrvNode("lwr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
+        self.palm_fkc = CrvNode("palm_fkc", pf=rID, shape="squR", up="x", scale=rSz)
+        self.digit_fkc = CrvNode("digit_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.ball_fkc = CrvNode("ball_fkc", pf=rID, scale=xDr * rSz / 2)
-        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=rSz * 2)
-        self.pvc = CrvNode("pvc", pf=rID, shape="triangleR", scale=rSz / 2)
+        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=maths.mul(2, 1, 2, rSz))
+        self.pvc = CrvNode("pvc", pf=rID, shape="triR", scale=rSz / 2)
         self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
 
         self.rigNode.setMsg(
@@ -178,9 +183,7 @@ class LegQd(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        # self.build_autoAim(
-        #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
-        # )
+
         self.bindJnts = [self.upr]
         if not self.SCAPULAR_EXTRA:
             self.bindJnts.append(self.hip)
@@ -300,7 +303,7 @@ class LegQd(RigModule):
         inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG
 
         self.ikc.snapTo(self.digit)
-
+        self.ikc.cv_drop()
         self.ikc_gimbal = CrvNode(self.ikc).add_gimbal()
         self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
 
@@ -576,7 +579,7 @@ class LegQd(RigModule):
 
     #     self.all_bend = [upr_bend, lwr_bend, mid_bend]
     #     for b in self.all_bend:
-    #         b(shape="square", up="x", color=Color.D_YELLOW, scale=rSz)
+    #         b(shape="squR", up="x", color=Color.D_YELLOW, scale=rSz)
 
     #     upLoc.cstPar(upr_bend.offset, mo=1)
     #     lwLoc.cstPar(lwr_bend.offset, mo=1)
@@ -619,7 +622,8 @@ class LegQd(RigModule):
         #         onList=self.all_bend,
         #     )
         [ikh.hide() for ikh in self.all_ikH.values()]
-        # mc.hide(self.joints_fk, self.joints_ik)
+
+        mc.hide(self.joints_fk, self.joints_ik)
 
     def setup_channel(self):
         self.setting.a.showAttr()

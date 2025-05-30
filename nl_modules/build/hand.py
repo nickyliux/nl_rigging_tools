@@ -71,7 +71,7 @@ class Hand(RigModule):
             for fgr in fgrs[:-1]:
                 ctl = CrvNode(
                     fgr + "_ctl",
-                    shape="squareR",
+                    shape="squR",
                     align=fgr,
                     scale=rSz / 3,
                     up="z",

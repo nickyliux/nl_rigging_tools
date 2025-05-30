@@ -289,9 +289,9 @@ class RigModule(RigBase):
         tgt_ofs = tgt.addOffsetGrp()
 
         if cstType == "par":
-            tgt.a.add("spaceType", cb=0)
+            tgt.a.add("spaceType", k=0, cb=0)
         elif cstType == "ori":
-            tgt.a.add("spaceType", dv=1, cb=0)
+            tgt.a.add("spaceType", dv=1, k=0, cb=0)
 
         weight = w or tgt.a.add("space", attrType="enum", dv=dv, enumName=names)
 
@@ -520,9 +520,7 @@ class RigModule(RigBase):
             common.sdk(driver, driven, "ry", "ry", -180, -90)
 
         if patella_guide.exists():
-            j = JntNode(
-                "patella", pf=rID, align=patella_guide, color=13, r=rSz, p=self.upr
-            )
+            j = JntNode("patella", pf=rID, align=patella_guide, r=rSz, p=self.upr)
             j.freezeXf()
             self.bindJnts.append(j)
             patella_sdk(self.lwr, j)
@@ -727,6 +725,7 @@ class RigModule(RigBase):
         IkNode("autoAimJ", pf=rID, sj=j0, ee=j1, p=ikc, quat=1, vis=0)
         autoAim = fkc.a.add("autoAim", min=0, max=1, dv=0.3)
         common.cstMulti(mainGrp.offset, j0, mainGrp, w=autoAim, cstType="parR", mo=1)
+        j0.hide()
 
         if EXTRA:
             #
@@ -747,6 +746,7 @@ class RigModule(RigBase):
             legLock = ikc.a.add("legLock", min=0, max=1)
             ikc.a.add("legLockLen") * self.xDir >> fkc.offset.a.tx
             common.cstMulti(mainGrp.offset, j1, mainGrp, w=legLock, cstType="poi")
+            j0.hide()
             #
             #   add extra scapular joint
             #
@@ -766,6 +766,7 @@ class RigModule(RigBase):
             )
             self.scap_fkc.cstOri(j0, mo=1)
             self.bindJnts.append(j1)
+            j0.hide()
 
         return mainGrp
 

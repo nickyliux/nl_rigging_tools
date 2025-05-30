@@ -88,13 +88,11 @@ class SpineQd(RigModule):
         self.fore_ctl = CrvNode(
             "fore_ctl", pf=rID, shape="cube", scale=maths.mul(6, 6, 0.8, rSz)
         )
-        self.mid_ctl = CrvNode(
-            "mid_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3
-        )
+        self.mid_ctl = CrvNode("mid_ctl", pf=rID, shape="squR", up="z", scale=rSz * 3)
         self.tangent0_ctl = CrvNode(
             "tangent0_ctl",
             pf=rID,
-            shape="triangleR",
+            shape="triR",
             scale=rSz / 2,
             rotate=(0, 180, 90),
             move=maths.mul(0, 25, 0, rSz),
@@ -103,7 +101,7 @@ class SpineQd(RigModule):
         self.tangent1_ctl = CrvNode(
             "tangent1_ctl",
             pf=rID,
-            shape="triangleR",
+            shape="triR",
             scale=rSz / 2,
             rotate=(0, 0, 90),
             move=maths.mul(0, 25, 0, rSz),
@@ -185,7 +183,7 @@ class SpineQd(RigModule):
 
         if self.is_neck():
             self.cog_ctl.alignTo(self.RT_GUIDE, addOfs=1)
-            self.cog_ctl(shape="squareR", scale=rSz * 6, rotate=(90, 0, 0), color=20)
+            self.cog_ctl(shape="squR", scale=rSz * 6, rotate=(90, 0, 0), color=20)
         else:
             self.cog_ctl.snapTo(self.RT_GUIDE, addOfs=1)
 
@@ -423,7 +421,7 @@ class SpineQd(RigModule):
         [ctl.a.showAttr(t=1, r=1) for ctl in self.ikCtls]
 
         self.setting.a.showAttr()
-        self.cog_ctl.a.showAttr(t=self.is_neck(), r=1)
+        self.cog_ctl.a.showAttr(t=not self.is_neck(), r=1)
         self.tangent0_ctl.a.showAttr("sz", r=1)
         self.tangent1_ctl.a.showAttr("sz", r=1)
 

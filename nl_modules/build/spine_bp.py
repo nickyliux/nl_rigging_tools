@@ -54,9 +54,9 @@ class SpineBp(RigModule):
             p=self.CTL_DATA,
         )
         self.cog_ctl = CrvNode("cog_ctl", pf=rID, shape="cog2", scale=rSz * 2, color=22)
-        self.chest_ctl = CrvNode("chest_ctl", pf=rID, shape="squareR", scale=rSz * 4)
-        self.mid_ctl = CrvNode("mid_ctl", pf=rID, shape="squareR", scale=rSz * 4)
-        self.hip_ctl = CrvNode("hip_ctl", pf=rID, shape="squareR", scale=rSz * 4)
+        self.chest_ctl = CrvNode("chest_ctl", pf=rID, shape="squR", scale=rSz * 4)
+        self.mid_ctl = CrvNode("mid_ctl", pf=rID, shape="squR", scale=rSz * 4)
+        self.hip_ctl = CrvNode("hip_ctl", pf=rID, shape="squR", scale=rSz * 4)
 
         self.rigNode.setMsg(
             {
@@ -105,9 +105,11 @@ class SpineBp(RigModule):
             )
             self.fkCtls.append(c)
         self.build_fk_with_ctl2(self.fkJnts[1:], self.fkCtls[1:], p=self.CTL_DATA)
-
+        #
+        #   modify hipCtl specific for hip rotation
+        #
         hipCtl = self.fkCtls[0]
-        hipCtl(p=self.CTL_DATA, addOfs=1, color=4)
+        hipCtl(p=self.CTL_DATA, addOfs=1, width=3)
         hipCtl.offset.snapAlignTo(self.fkJnts[1], self.fkJnts[0])
         hipCtl.cv_move(0, rSz * -20, 0)
         hipCtl.cstPar(self.fkJnts[0], mo=1)

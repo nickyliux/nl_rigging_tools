@@ -4,28 +4,36 @@ import maya.cmds as mc
 
 class Color(Enum):
 
+    #   YELLOW    22
+    #   D_YELLOW  25
+    #   RED       13
+    #   D_RED     4
+    #   BLUE      6
+    #   L_BLUE    18
+    #   PINK      20
+    #
     OFF = 0
-    BLACK = 1  #
+    BLACK = 1
     GREY = 2
     L_GREY = 3
-    D_RED = 4  #
+    D_RED = 4
     D_BLUE = 5
-    BLUE = 6  #
+    BLUE = 6
     VD_GREEN = 7
     D_PURPLE = 8
     HOT_PINK = 9
     BROWN = 10
     D_BROWN = 11
     APPLE = 12
-    RED = 13  #
-    GREEN = 14  #
+    RED = 13
+    GREEN = 14
     COBALT = 15
     WHITE = 16
-    L_BLUE = 18  #
+    L_BLUE = 18
     ARCTIC = 19
-    PINK = 20  #
+    PINK = 20
     ORANGE = 21
-    YELLOW = 22  #
+    YELLOW = 22
     FERN = 23
     L_BROWN = 24
     D_YELLOW = 25

@@ -9,7 +9,7 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.rbn_node import RbnNode
 from nl_modules.utils.color import Color
-from nl_modules.utils import common, utils_node as ut
+from nl_modules.utils import common, utils_node as ut, maths
 
 
 class LegBp(RigModule):
@@ -118,16 +118,16 @@ class LegBp(RigModule):
             color=25,
             p=self.CTL_DATA,
         )
-        self.hip_fkc = CrvNode(
-            "hip_fkc",
-            pf=rID,
-            up="x",
-            shape="trapezoid2",
-            scale=(rSz * -xDr * 2, rSz, rSz * 2),
-        )
         # self.hip_fkc = CrvNode(
-        #     "hip_fkc", pf=rID, up="-y", shape="stick", scale=rSz * xDr
+        #     "hip_fkc",
+        #     pf=rID,
+        #     up="x",
+        #     shape="trapezoid2",
+        #     scale=maths.mul(1, 1, 2, rSz)
         # )
+        self.hip_fkc = CrvNode(
+            "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
+        )
         self.upr_fkc = CrvNode(
             "upr_fkc", pf=rID, shape="circleC", up="x", scale=rSz * -xDr
         )
@@ -138,14 +138,10 @@ class LegBp(RigModule):
             "palm_fkc", pf=rID, shape="circleC", up="x", scale=rSz * -xDr
         )
         self.ball_fkc = CrvNode(
-            "ball_fkc",
-            pf=rID,
-            up="x",
-            shape="squareR",
-            scale=rSz * xDr / 2,
+            "ball_fkc", pf=rID, up="x", shape="squR", scale=rSz * xDr / 2
         )
-        self.ikc = CrvNode("ikc", pf=rID, shape="trapezoid", scale=rSz * 2)
-        self.pvc = CrvNode("pvc", pf=rID, shape="triangleR", scale=rSz / 2)
+        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=rSz * 2)
+        self.pvc = CrvNode("pvc", pf=rID, shape="triR", scale=rSz / 2)
         self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
 
         self.rigNode.setMsg(
@@ -167,7 +163,7 @@ class LegBp(RigModule):
                 pf=rID,
                 shape="sphere",
                 scale=rSz,
-                move=(rSz * 40 * -xDr, 0, 0),
+                move=(rSz * 45 * -xDr, 0, 0),
             )
 
     def build(self):
@@ -190,7 +186,8 @@ class LegBp(RigModule):
         # self.build_autoAim(
         #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
         # )
-        self.bindJnts = [self.hip]
+        if not self.SCAPULAR_EXTRA:
+            self.bindJnts.append(self.hip)
 
         self.scapularG = self.build_scapular(
             ikc=self.ikc,
@@ -331,7 +328,7 @@ class LegBp(RigModule):
         fkPin = self.pvc.a.add("fkPin", min=0, max=1)
         self.pin_fkc = CrvNode(
             rID + "_pin_fkc",
-            shape="squareR",
+            shape="squR",
             up="x",
             scale=rSz,
             align=self.palm,
@@ -547,7 +544,7 @@ class LegBp(RigModule):
 
         self.all_bend = [upr_bend, lwr_bend, mid_bend]
         for ctl in self.all_bend:
-            ctl(shape="square", up="x", color=Color.D_YELLOW, scale=rSz)
+            ctl(shape="squR", up="x", color=Color.D_YELLOW, scale=rSz)
             # ctl.a.rotateOrder.set(1)  # yzx
 
         upLoc.cstPar(upr_bend.offset, mo=1)
@@ -634,7 +631,6 @@ class LegBp(RigModule):
 
     def setup_space(self):
         self.rigNode.setMsg({"spaceHolder1": self.ikc})
-        # spaces = "master, hip, COG"
         spaces = "master, COG, lwrBody"
         self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
 
@@ -642,9 +638,8 @@ class LegBp(RigModule):
         spaces = "leg, master, hip, COG"
         self.rigNode.a.add("spaceName2", attrType="string", txt=spaces)
 
-        # self.rigNode.setMsg({"space_master": self.masterC})
-        self.rigNode.setMsg({"space_master": self.CTL_DATA})
-        # self.rigNode.setMsg({"space_hip": self.hip_fkc})
+        # self.rigNode.setMsg({"space_master": self.CTL_DATA})
+        self.rigNode.setMsg({"space_master": self.masterC})
 
         self.ikH1.build_pvfkPinSetup(ikTarget=self.ikc_gimbal)
         self.rigNode.setMsg({"space_leg": self.ikH1.pvChainJ[0]})

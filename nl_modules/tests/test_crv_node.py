@@ -39,7 +39,7 @@ class Test_CrvNode_Main(Test_CrvNode_Base):
         self.assertEqual(crv2.shape.a.overrideColor.get(), 13)
 
     def test_shape(self):
-        crv1 = CrvNode("myC", shape="square")
+        crv1 = CrvNode("myC", shape="squR")
         self.assertEqual(len(crv1.cvs), 5)
 
     def test_type(self):
