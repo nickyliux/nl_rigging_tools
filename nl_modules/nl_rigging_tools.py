@@ -18,6 +18,7 @@ from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
+from nl_modules.nodel.msh_node import MshNode
 from nl_modules.utils import common, file, guide, log, modeling
 from nl_modules.utils.color import Color
 
@@ -466,7 +467,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                     closest = jnt.getClosestInList(mc.sets(closestSet, q=1))
                     if closest:
                         if closest.o.distanceTo(jnt) < threshold:
-                            mN.weightTo(closest, mi=1, tsb=1)
+                            MshNode(mN).weightTo(closest, mi=1, tsb=1)
                             weighted += 1
                         else:
                             ignored += 1

@@ -111,7 +111,7 @@ class Hand(RigModule):
         # smart_ctl, with group scaling with rootJ
         scaleGrp = GrpNode("smartScale", pf=rID, align=self.rootJ, p=self.CTL_DATA)
         offset = (rSz * xDr * 110, 0, 0)
-        self.smart_ctl.alignTo(self.rootJ, offset=offset, p=scaleGrp)
+        self.smart_ctl.alignTo(self.rootJ, ofs=offset, p=scaleGrp)
         self.smart_ctl.addOffsetGrp()
 
         # self.rootJ.cstPar(scaleGrp, mo=1)

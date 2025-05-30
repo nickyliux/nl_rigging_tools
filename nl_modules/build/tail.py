@@ -7,7 +7,7 @@ from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
-from nl_modules.utils import common, utils_node as ut
+from nl_modules.utils import common, utils_node as ut, maths
 from nl_modules.utils.color import Color
 
 
@@ -47,9 +47,9 @@ class Tail(RigModule):
         self.setting = CrvNode(
             "setting",
             pf=rID,
-            shape="sphere2",
-            scale=rSz * 3,
-            color=25,
+            shape="diamond",
+            scale=rSz,
+            color=1,
             top=1,
             p=self.CTL_DATA,
         )
@@ -111,10 +111,10 @@ class Tail(RigModule):
                 f"{i}_ikc",
                 pf=rID,
                 shape="sphere2",
-                scale=rSz * 5,
+                scale=rSz * 4,
                 align=self.ikJnt[i],
                 addOfs=1,
-                color=20,
+                color=25,
                 p=self.IK_PART,
             )
             self.ikJnt[i] | ctl
@@ -126,7 +126,8 @@ class Tail(RigModule):
 
         SrfNode(self.rbSrf1).weightTo(self.ikJnt, mi=4, dr=6, chain=0)
 
-        self.setting.snapTo(self.ikCtl[0], offset=(0, rSz * 30, 0))
+        # self.setting.snapTo(self.ikCtl[0], ofs=(0, rSz * 30, 0))
+        self.setting.snapTo(self.ikCtl[0], ofs=maths.mul(0, 20, -20, rSz))
         self.ikCtl[0].cstPar(self.setting, mo=1)
 
     def build_fk(self):

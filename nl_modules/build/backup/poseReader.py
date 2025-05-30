@@ -20,8 +20,8 @@ def nl_poseReader(startJ, midJ, endJ):
 
     grp1 = GrpNode("poseReader_GRP", align=midJN, p=startJN)
 
-    bend_main = LocNode("bend_main_LOC", p=grp1, align=midJN, matchOffset=(-L, 0, 0))
-    bend_up = LocNode("bend_up_LOC", p=grp1, align=midJN, matchOffset=(-L, L, 0))
+    bend_main = LocNode("bend_main_LOC", p=grp1, align=midJN, matchOfs=(-L, 0, 0))
+    bend_up = LocNode("bend_up_LOC", p=grp1, align=midJN, matchOfs=(-L, L, 0))
     bend_tgt = LocNode("bend_tgt_LOC", p=midJN, align=endJN)
 
     bend_tgt.cstAim(
@@ -43,7 +43,7 @@ def nl_poseReader(startJ, midJ, endJ):
 
     twist_main = LocNode("twist_main_LOC", p=grp2, align=midJN, size=0.5)
     twist_tgt = LocNode(
-        "twist_tgt_LOC", p=midJN, align=midJN, matchOffset=(0, 0, L), size=0.5
+        "twist_tgt_LOC", p=midJN, align=midJN, matchOfs=(0, 0, L), size=0.5
     )
 
     twist_tgt.cstAim(

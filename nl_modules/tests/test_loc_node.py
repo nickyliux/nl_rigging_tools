@@ -39,7 +39,7 @@ class Test_LocNode_Main(Test_LocNode_Base):
         self.assertEqual(loc1.shape.a.localScaleX.get(), 5)
 
     def test_matchOffset(self):
-        loc1 = LocNode("loc1", matchOffset=(1, 2, 3))
+        loc1 = LocNode("loc1", matchOfs=(1, 2, 3))
         self.assertEqual(loc1.a.t.get(), (1, 2, 3))
 
     def test_scale(self):

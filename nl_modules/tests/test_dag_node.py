@@ -300,7 +300,7 @@ class Test_DagNode_Parent(Test_DagNode_Base):
 
     def test_parentTo(self):
         self.sphere.a.t.set(1, 2, 3)
-        self.sphere.parentTo(self.cube, reset=0, offset=(3, 4, 5))
+        self.sphere.parentTo(self.cube, reset=0, ofs=(3, 4, 5))
 
         self.assertEqual(self.sphere.parent, self.cube)
         self.assertEqual(self.sphere.a.t.get(), (3, 4, 5))

@@ -10,7 +10,7 @@ class NeckQd(SpineQd):
         self.setup_anchor_module(
             {
                 "anchorF1": self.cog_ctl,
-                "anchorM1": self.rbAnchor,
+                "anchorM1": self.anchorToRbj,
             }
         )
 
@@ -25,5 +25,5 @@ class NeckQd(SpineQd):
         spaces = "chest, COG, master"
         self.rigNode.a.add("spaceName2", attrType="string", txt=spaces)
 
-        self.rigNode.setMsg({"space_neck": self.rbAnchor})
+        self.rigNode.setMsg({"space_neck": self.anchorToRbj})
         self.rigNode.setMsg({"space_neckBase": self.base_ctl})

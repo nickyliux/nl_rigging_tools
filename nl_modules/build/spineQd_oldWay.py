@@ -222,7 +222,7 @@ class SpineQd(RigModule):
         (self.chest_ctl, self.mid_ctl, self.base_ctl) | self.cog_ctl | self.CTL_DATA
         self.cog_ctl.addOffsetGrp()
 
-        self.setting.alignTo(self.cog_ctl, offset=(0, rSz * 70, 0))
+        self.setting.alignTo(self.cog_ctl, ofs=(0, rSz * 70, 0))
         self.cog_ctl.cstPar(self.setting, mo=1)
 
         chest_gimbal = self.chest_ctl.add_gimbal()

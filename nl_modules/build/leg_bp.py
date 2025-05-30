@@ -165,9 +165,8 @@ class LegBp(RigModule):
             self.scap_fkc = CrvNode(
                 "scap_fkc",
                 pf=rID,
-                shape="rotator",
-                up="x",
-                scale=(rSz * -xDr, rSz, rSz),
+                shape="sphere",
+                scale=rSz,
                 move=(rSz * 40 * -xDr, 0, 0),
             )
 
@@ -371,7 +370,7 @@ class LegBp(RigModule):
             self.joints, "_bf", p=self.BF_PART, color=Color.L_GREY, r=4 * rSz
         )
 
-        self.setting.alignTo(self.palm, offset=(0, rSz * 15 * -xDr, 0))
+        self.setting.alignTo(self.palm, ofs=(0, rSz * 15 * -xDr, 0))
         self.palm.cstPar(self.setting, mo=1)
 
         self.setting.a.addSep()
@@ -614,6 +613,9 @@ class LegBp(RigModule):
             ctl.a.showAttr(t=1, r=1)
         for ctl in self.all_bend or []:
             ctl.a.showAttr(t=1, r=1, s=1)
+
+        if self.SCAPULAR_EXTRA:
+            self.scap_fkc.a.showAttr(t=1, r=1)
 
     def setup_rotate_order(self):
         for c in (

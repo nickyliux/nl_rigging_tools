@@ -142,7 +142,7 @@ class SpineQd(RigModule):
         #
         self.cog_ctl.snapTo(self.RT_GUIDE)
         self.cog_ctl.addOffsetGrp()
-        self.setting.snapTo(self.RT_GUIDE, offset=(0, rSz * 70, 0))
+        self.setting.snapTo(self.RT_GUIDE, ofs=(0, rSz * 70, 0))
         self.cog_ctl.cstPar(self.setting, mo=1)
         #
         #   build 5 ik ctls

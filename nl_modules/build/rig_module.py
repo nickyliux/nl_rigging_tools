@@ -846,7 +846,7 @@ class RigModule(RigBase):
             psd_ball = DagNode(
                 mc.sphere(n=rID + "_psdBall_#", r=rSz, d=3, s=4, spans=2, ch=0)[0]
             )
-            psd_ball.alignTo(ctl, offsetR=(0, 0, -90), p=ctl)
+            psd_ball.alignTo(ctl, ofsR=(0, 0, -90), p=ctl)
             #
             #   create cpos
             #

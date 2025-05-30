@@ -53,7 +53,7 @@ class SpineQd(RigModule):
         self.rbCrv = None
         self.two_ikJnts = []
         self.two_ikH = None
-        self.rbAnchor = None
+        self.anchorToRbj = None
 
     def gen_guide_sk(self):
         self.gen_guide_sk_module(["rt", "md", "tp"])
@@ -64,9 +64,9 @@ class SpineQd(RigModule):
         self.setting = CrvNode(
             "setting",
             pf=rID,
-            shape="sphere2",
-            scale=rSz * 2,
-            color=25,
+            shape="diamond",
+            scale=rSz,
+            color=1,
             top=1,
             p=self.IK_PART,
         )
@@ -83,10 +83,10 @@ class SpineQd(RigModule):
             p=self.IK_PART,
         )
         self.base_ctl = CrvNode(
-            "base_ctl", pf=rID, shape="cube", scale=maths.mul(6, 6, 2, rSz)
+            "base_ctl", pf=rID, shape="cube", scale=maths.mul(6, 6, 0.8, rSz)
         )
         self.fore_ctl = CrvNode(
-            "fore_ctl", pf=rID, shape="cube", scale=maths.mul(6, 6, 2, rSz)
+            "fore_ctl", pf=rID, shape="cube", scale=maths.mul(6, 6, 0.8, rSz)
         )
         self.mid_ctl = CrvNode(
             "mid_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3
@@ -136,14 +136,15 @@ class SpineQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.build_module()
+
         mc.delete(self.rootJ)
         self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
         self.rbSrf = SrfNode.buildRbSrf(
             pf=rID,
             crv=self.LINE_GUIDE,
             spans=2,
-            p=self.RIG_DATA,
             snap=self.RT_GUIDE,
+            p=self.RIG_DATA,
         )
         self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
@@ -173,38 +174,35 @@ class SpineQd(RigModule):
     def build_ik(self):
         rID, rSz, xDr = self.getMyVar()
         #
-        #   build chain from crv
+        #   build 3 ik joints from crv
         #
         self.ikJnts = JntNode.createJntFrCrv(
             self.LINE_GUIDE, num=3, name="ikj", pf=rID, size=rSz * 4, chain=0, color=6
         )
-        j0, j1, j2 = self.ikJnts
+        ikj0, ikj1, ikj2 = self.ikJnts
 
-        j2.a.r.set(0, 0, 0)
-        #
-        #   position cog & setting
-        #
-        if self.__class__.__name__ == "NeckQd":
-            self.cog_ctl.alignTo(self.RT_GUIDE)
+        ikj2.a.r.set(0, 0, 0)
+
+        if self.is_neck():
+            self.cog_ctl.alignTo(self.RT_GUIDE, addOfs=1)
             self.cog_ctl(shape="squareR", scale=rSz * 6, rotate=(90, 0, 0), color=20)
         else:
-            self.cog_ctl.snapTo(self.RT_GUIDE)
+            self.cog_ctl.snapTo(self.RT_GUIDE, addOfs=1)
 
-        self.cog_ctl.addOffsetGrp()
-        self.setting.snapTo(self.RT_GUIDE, offset=(0, rSz * 40, 0))
+        self.setting.snapTo(self.RT_GUIDE, ofs=(0, rSz * 40, 0))
         self.cog_ctl.cstPar(self.setting, mo=1)
         #
         #   parenting
         #
-        self.base_ctl.alignTo(self.BASE_PVT_GUIDE or j0)
-        self.mid_ctl.alignTo(j1)
-        self.fore_ctl.alignTo(j2)
-        self.tangent0_ctl.alignTo(j0)
-        self.tangent1_ctl.alignTo(j2)
+        self.base_ctl.alignTo(self.BASE_PVT_GUIDE or ikj0)
+        self.mid_ctl.alignTo(ikj1)
+        self.fore_ctl.alignTo(ikj2)
+        self.tangent0_ctl.alignTo(ikj0)
+        self.tangent1_ctl.alignTo(ikj2)
 
-        j0 | self.tangent0_ctl | self.base_ctl | self.cog_ctl
-        j1 | self.mid_ctl | self.cog_ctl
-        j2 | self.tangent1_ctl | self.fore_ctl | self.cog_ctl
+        ikj0 | self.tangent0_ctl | self.base_ctl | self.cog_ctl
+        ikj1 | self.mid_ctl | self.cog_ctl
+        ikj2 | self.tangent1_ctl | self.fore_ctl | self.cog_ctl
 
         self.ikCtls = [
             self.base_ctl,
@@ -291,32 +289,24 @@ class SpineQd(RigModule):
             aimCst.a.constraintRotateY >> loc.a.ry
             aimCst.a.constraintRotateZ >> loc.a.rz
 
+            rad = rSz / jntNum * 12
             jnt = JntNode(
-                f"{i}_rbj",
-                pf=rID,
-                align=loc,
-                r=rSz / jntNum * 12,
-                p=loc,
-                reset=1,
-                color=13,
+                f"{i}_rbj", pf=rID, align=loc, r=rad, p=loc, reset=1, color=13
             )
             rbJnts.append(jnt)
 
-        self.rbAnchor = LocNode("rbAnchor", pf=rID, snap=rbJnts[-1], p=self.fore_ctl)
-        rbJnts[-1].cstPoi(self.rbAnchor)
+        self.anchorToRbj = LocNode(
+            "anchorToRbj", pf=rID, snap=rbJnts[-1], p=self.fore_ctl
+        )
+        rbJnts[-1].cstPoi(self.anchorToRbj)
         #
         #   setup end_ctl & end_jnt
         #
         if self.END_CTL:
-            self.end_ctl.alignTo(self.END_JNT_GUIDE, p=self.base_ctl)
-            self.end_ctl.addOffsetGrp()
+            self.end_ctl.alignTo(self.END_JNT_GUIDE, p=self.base_ctl, addOfs=1)
 
             self.end_jnt = JntNode(
-                "end",
-                pf=rID,
-                snap=self.END_JNT_GUIDE,
-                r=rSz * 2,
-                p=self.SKL_DATA,
+                "end", pf=rID, r=rSz * 2, p=self.SKL_DATA, snap=self.END_JNT_GUIDE
             )
             self.end_ctl.cstPar(self.end_jnt, mo=1)
             self.bindJnts.append(self.end_jnt)
@@ -367,7 +357,7 @@ class SpineQd(RigModule):
         #
         #   use poi cst for Neck, parT cst for spine
         #
-        if self.__class__.__name__ == "NeckQd":
+        if self.is_neck():
             common.cstMulti(self.base_ctl, j1, self.mid_ctl.offset, cstType="poi", mo=1)
         else:
             loc0 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.base_ctl, vis=0)
@@ -411,11 +401,12 @@ class SpineQd(RigModule):
             ratio >> self.rbJnts[i].a.sz
 
     def setup_vis(self):
-        # mc.hide(self.ikJnts, self.rbJnts, self.fkJnts, self.spIkJnts, self.two_ikJnts)
-        if self.__class__.__name__ == "NeckQd":
-            self.base_ctl.shape.hide()
-            self.tangent0_ctl.shape.hide()
-        self.rbAnchor.hide()
+        if self.is_neck():
+            mc.hide(self.base_ctl.shape, self.tangent0_ctl.shape)
+
+        mc.hide(
+            self.ikJnts, self.fkJnts, self.spIkJnts, self.two_ikJnts, self.anchorToRbj
+        )
 
     def setup_proxy(self):
         for j in self.bindJnts:
@@ -428,10 +419,12 @@ class SpineQd(RigModule):
 
     def setup_channel(self):
         [ctl.a.showAttr(t=1, r=1) for ctl in self.ikCtls]
-        if self.__class__.__name__ == "NeckQd":
+
+        if self.is_neck():
             self.cog_ctl.a.showAttr(r=1)
         else:
             self.cog_ctl.a.showAttr(t=1, r=1)
+
         self.setting.a.showAttr()
         self.tangent0_ctl.a.showAttr("sz", r=1)
         self.tangent1_ctl.a.showAttr("sz", r=1)
@@ -453,18 +446,21 @@ class SpineQd(RigModule):
         else:
             self.setup_anchor_module({"anchorM1": self.rbJnts[0]})
 
-        self.setup_anchor_module({"anchorM2": self.rbAnchor})
+        self.setup_anchor_module({"anchorM2": self.anchorToRbj})
 
     def setup_space(self):
         self.rigNode.setMsg({"space_master": self.masterC})
         self.rigNode.setMsg({"space_COG": self.cog_ctl})
         self.rigNode.setMsg({"space_chest": self.fore_ctl})
 
+    def is_neck(self):
+        return self.__class__.__name__ == "NeckQd"
+
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
 
         ctls = self.ikCtls + [self.cog_ctl, self.setting]
-        if self.__class__.__name__ == "NeckQd":
+        if self.is_neck():
             ctls.remove(self.base_ctl)
             ctls.remove(self.tangent0_ctl)
         if self.END_CTL:

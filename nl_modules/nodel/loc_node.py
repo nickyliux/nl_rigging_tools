@@ -24,7 +24,7 @@ class LocNode(GrpNode):
         p=None,
         color=0,
         size=None,
-        matchOffset=None,
+        matchOfs=None,
         vis=1,
     ):
         GrpNode.__init__(
@@ -48,8 +48,8 @@ class LocNode(GrpNode):
         self.color = color or 0
         self.localScale(size or 1)
 
-        if matchOffset:
-            mc.move(*matchOffset, self, objectSpace=1, r=1)
+        if matchOfs:
+            mc.move(*matchOfs, self, objectSpace=1, r=1)
         if not vis:
             mc.hide(self)
 

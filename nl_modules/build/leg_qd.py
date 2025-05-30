@@ -109,9 +109,9 @@ class LegQd(RigModule):
         self.setting = CrvNode(
             "setting",
             pf=rID,
-            shape="sphere2",
-            scale=rSz * 2,
-            color=25,
+            shape="diamond",
+            scale=rSz,
+            color=1,
             top=1,
             p=self.CTL_DATA,
         )
@@ -132,7 +132,7 @@ class LegQd(RigModule):
             "digit_fkc", pf=rID, shape="squareR", up="x", scale=rSz
         )
         self.ball_fkc = CrvNode("ball_fkc", pf=rID, scale=xDr * rSz / 2)
-        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=rSz)
+        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=rSz * 2)
         self.pvc = CrvNode("pvc", pf=rID, shape="triangleR", scale=rSz / 2)
         self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
 
@@ -156,7 +156,7 @@ class LegQd(RigModule):
                 pf=rID,
                 shape="sphere",
                 scale=rSz,
-                move=(rSz * 43 * -xDr, 0, 0),
+                move=(rSz * 40 * -xDr, 0, 0),
             )
 
     def build(self):
@@ -328,8 +328,8 @@ class LegQd(RigModule):
     def blend_fk_ik(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting.snapTo(self.digit, offset=(rSz * xDr * 20, 0, 0))
-        self.palm.cstPar(self.setting, mo=1)
+        self.setting.snapTo(self.digit, ofs=(rSz * xDr * 20, 0, 0))
+        self.digit.cstPar(self.setting, mo=1)
 
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
         for i in range(len(self.joints) - 1):

@@ -368,15 +368,15 @@ def addNonRollJ(tgtJ):
     rollJ = twistJ.duplicate(n="rollJ", po=1)
     rollJ_end = twistJ.duplicate(n="rollEnd_jnt", po=1)
     rollJ_end | rollJ
-    rollJ_end.alignTo(rollJ, offset=(5, 0, 0))
+    rollJ_end.alignTo(rollJ, ofs=(5, 0, 0))
 
     mc.select(rollJ)
     mc.move(0, 0, -2, os=1, r=1)
 
     roll_loc = LocNode("roll_loc")
-    roll_loc.alignTo(rollJ, p=rollJ, offset=(0, 0, -5))
+    roll_loc.alignTo(rollJ, p=rollJ, ofs=(0, 0, -5))
     roll_ikh = IkNode("roll", sj=rollJ, ee=rollJ_end, sol=1, quat=1)
-    roll_ikh.alignTo(tgtJ.children[0], p=child, offset=(0, 0, 0))
+    roll_ikh.alignTo(tgtJ.children[0], p=child)
 
 
 def addAnnotation(frObj=None, toObj=None, p=None):

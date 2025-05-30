@@ -261,7 +261,7 @@ class ArmBp(RigModule):
             "ballRoll", pf=rID, align=ball_guide, p=palmOut_loc, size=rSz
         )
 
-        self.setting.alignTo(self.palm, offset=(0, rSz * 15 * xDr, 0))
+        self.setting.alignTo(self.palm, ofs=(0, rSz * 15 * xDr, 0))
         self.palm.cstPar(self.setting, mo=1)
 
         self.setting.a.addSep()

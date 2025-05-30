@@ -136,7 +136,7 @@ class SpinePro(rig_module.RigModule):
         self.md_ikc.snapAlignTo(self.fkJnt[-1], mG)
         self.up_ikc.snapAlignTo(self.fkJnt[-1], mG)
         self.cog_ctl.snapAlignTo(self.lw_ikc, mG)
-        self.setting.alignTo(self.cog_ctl, offset=(0, 0, -s * 10))
+        self.setting.alignTo(self.cog_ctl, ofs=(0, 0, -s * 10))
 
         (
             self.fkCtl[0].offset,

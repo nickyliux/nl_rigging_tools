@@ -136,7 +136,7 @@ class SpineQdCrv(rig_module.RigModule):
         md_ctl.snapTo(self.joints[int(len(self.joints) / 2)])
         cog_ctl.snapTo(md_ctl)
         ed_ctl.snapTo(self.joints[-1])
-        self.setting.snapTo(md_ctl, offset=(0, self.rigSize * 8, 0))
+        self.setting.snapTo(md_ctl, ofs=(0, self.rigSize * 8, 0))
 
         (self.setting, st_ctl, md_ctl, ed_ctl) | cog_ctl | self.CTL_DATA
 

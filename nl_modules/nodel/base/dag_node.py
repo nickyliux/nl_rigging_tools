@@ -297,7 +297,7 @@ class DagNode(DepNode):
         """Return parent"""
         return self.parent
 
-    def parentTo(self, target, reset=0, offset=None):
+    def parentTo(self, target, reset=0, ofs=None):
         """Parent to target
         options:
             reset:  reset xform
@@ -307,8 +307,8 @@ class DagNode(DepNode):
             mc.parent(self, target)
             if reset:
                 mc.makeIdentity(self)
-            if offset:
-                self.a.t.set(*offset)
+            if ofs:
+                self.a.t.set(*ofs)
 
     def parentToWorld(self):
         """Parent itself to world"""
@@ -419,7 +419,7 @@ class DagNode(DepNode):
         else:
             return resultGrps
 
-    def alignTo(self, obj, offset=None, offsetR=None, rotate=0, p=None):
+    def alignTo(self, obj, ofs=None, ofsR=None, rotate=0, p=None, addOfs=0):
         """Align to obj"""
         obj = DagNode(obj) if isinstance(obj, str) else obj
         if rotate:
@@ -428,26 +428,30 @@ class DagNode(DepNode):
             common.matchMove([self, obj])
         if p:
             mc.parent(self, p)
-        if offsetR:
-            mc.rotate(*offsetR, self, objectSpace=1, r=1)
-        if offset:
-            mc.move(*offset, self, objectSpace=1, r=1)
+        if ofsR:
+            mc.rotate(*ofsR, self, objectSpace=1, r=1)
+        if ofs:
+            mc.move(*ofs, self, objectSpace=1, r=1)
+        if addOfs:
+            self.addOffsetGrp()
 
-    def snapTo(self, obj, offset=None, p=None):
+    def snapTo(self, obj, ofs=None, p=None, addOfs=0):
         """Snap to obj"""
         obj = DagNode(obj) if isinstance(obj, str) else obj
         common.matchMove([self, obj], mode="t")
         if p:
             mc.parent(self, p)
-        if offset:
-            mc.move(*offset, self, objectSpace=1, r=1)
+        if ofs:
+            mc.move(*ofs, self, objectSpace=1, r=1)
+        if addOfs:
+            self.addOffsetGrp()
 
     def alignHere(self, objs):
         """Align objects to itself"""
         objsList = objs if type(objs) == "list" else [objs]
         common.matchMove([DagNode(obj) for obj in objsList] + [self])
 
-    def snapAlignTo(self, obj1, obj2, offset=None, p=None):
+    def snapAlignTo(self, obj1, obj2, ofs=None, p=None):
         """Snap to obj1, align to obj2"""
         obj1 = DagNode(obj1) if isinstance(obj1, str) else obj1
         obj2 = DagNode(obj2) if isinstance(obj2, str) else obj2
@@ -455,8 +459,8 @@ class DagNode(DepNode):
         common.matchMove([self, obj1], mode="t")
         if p:
             mc.parent(self, p)
-        if offset:
-            mc.move(*offset, self, objectSpace=1, r=1)
+        if ofs:
+            mc.move(*ofs, self, objectSpace=1, r=1)
 
     def freezeXf(self, t=True, r=True, s=True):
         """Freeze object transform"""
