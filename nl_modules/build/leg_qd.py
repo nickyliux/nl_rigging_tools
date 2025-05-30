@@ -115,16 +115,6 @@ class LegQd(RigModule):
             top=1,
             p=self.CTL_DATA,
         )
-        # self.hip_fkc = CrvNode(
-        #     "hip_fkc",
-        #     pf=rID,
-        #     up="x",
-        #     shape="trapezoid2",
-        #     scale=maths.mul(-xDr * 2, 1, 2, rSz),
-        # )
-        # self.hip_fkc = CrvNode(
-        #     "hip_fkc", pf=rID, up="-y", shape="stick", scale=rSz * xDr * 0.8
-        # )
         self.hip_fkc = CrvNode(
             "hip_fkc",
             pf=rID,
@@ -163,18 +153,6 @@ class LegQd(RigModule):
                 scale=rSz,
                 move=(rSz * 40 * -xDr, 0, 0),
             )
-            # self.scap_fkc = CrvNode(
-            #     "scap_fkc",
-            #     pf=rID,
-            #     shape="stickC",
-            #     up="x",
-            #     top=1,
-            #     # width=3,
-            #     scale=-xDr * rSz * 1.5,
-            #     rotate=(90, 0, 0),
-            # )
-            # shape="sphere",
-            # move=(rSz * 40 * -xDr, 0, 0),
 
     def build(self):
         """Build rig for joints

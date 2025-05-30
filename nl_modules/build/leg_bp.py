@@ -140,7 +140,7 @@ class LegBp(RigModule):
         self.ball_fkc = CrvNode(
             "ball_fkc", pf=rID, up="x", shape="squR", scale=rSz * xDr / 2
         )
-        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=rSz * 2)
+        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=maths.mul(1.5, 1, 2, rSz))
         self.pvc = CrvNode("pvc", pf=rID, shape="triR", scale=rSz / 2)
         self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
 
