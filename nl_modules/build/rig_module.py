@@ -289,9 +289,9 @@ class RigModule(RigBase):
         tgt_ofs = tgt.addOffsetGrp()
 
         if cstType == "par":
-            tgt.a.add("spaceType", k=0, cb=0)
+            tgt.a.add("spaceType", cb=0)
         elif cstType == "ori":
-            tgt.a.add("spaceType", k=0, dv=1, cb=0)
+            tgt.a.add("spaceType", dv=1, cb=0)
 
         weight = w or tgt.a.add("space", attrType="enum", dv=dv, enumName=names)
 
@@ -573,7 +573,7 @@ class RigModule(RigBase):
     def add_mirror_attr(self, targets):
         for t in targets:
             if t.exists():
-                t.a.add("wsMirror", k=0, lock=1, cb=0)
+                t.a.add("wsMirror", lock=1, cb=0)
 
     def build_digit_ik(self, dupTgt, scale=1, p=None):
         """IK setup for single digit"""
@@ -875,7 +875,7 @@ class RigModule(RigBase):
         #
         #   Connect total weight
         #
-        autoWeight = ikc.a.add("autoWeight", k=0, cb=0)
+        autoWeight = ikc.a.add("autoWeight", cb=0)
         productSum.a.output1D >> autoWeight
 
         return autoWeight

@@ -52,7 +52,9 @@ class AttributeHolder:
 
         return attrList
 
-    def add(self, name, attrType="float", lock=False, k=1, txt=None, cb=1, **kwargs):
+    def add(
+        self, name, attrType="double", lock=False, k=True, txt=None, cb=True, **kwargs
+    ):
         """Add attribute to it's node and return it
         e.g.
             obj.a.add('myAttr', dv=1, min=0, max=1)
@@ -62,27 +64,27 @@ class AttributeHolder:
         """
         from nl_modules.nodel.base.attribute import Attribute
 
-        attr = self.node.name + "." + name
+        attrStr = f"{self.node.name}.{name}"
 
-        if mc.objExists(attr):
-            #
-            #   just return current, without deleting original
-            #
+        if mc.objExists(attrStr):
             return Attribute(self.node, name)
 
         if attrType == "string":
             mc.addAttr(self.node, ln=name, sn=name, dt=attrType, **kwargs)
             if txt:
-                mc.setAttr(f"{self.node.name}.{name}", txt, type="string")
+                mc.setAttr(attrStr, txt, type="string")
         else:
             mc.addAttr(self.node, ln=name, sn=name, at=attrType, **kwargs)
 
+        attrStr = f"{self.node}.{name}"
         if lock:
-            mc.setAttr(f"{self.node}.{name}", lock=1)
+            mc.setAttr(attrStr, lock=1)
         if cb:
-            mc.setAttr(f"{self.node}.{name}", cb=1)
-        if k:
-            mc.setAttr(f"{self.node}.{name}", k=1)
+            mc.setAttr(attrStr, k=1)
+        if k == 0:
+            mc.setAttr(attrStr, k=0)
+
+        #     mc.setAttr(f"{self.node}.{name}", cb=1)
 
         return Attribute(self.node, name)
 

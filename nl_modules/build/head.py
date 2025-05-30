@@ -102,7 +102,7 @@ class Head(RigModule):
         self.jaw_fkc.a.showAttr(t=1, r=1)
 
     def setup_space(self):
-        self.head_fkc.a.add("spaceType", k=0, cb=0, dv=1)
+        self.head_fkc.a.add("spaceType", dv=1, cb=0)
         self.rigNode.setMsg({"spaceHolder1": self.head_fkc})
         spaces = "neck, COG, master"
         self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
