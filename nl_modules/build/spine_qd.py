@@ -65,7 +65,7 @@ class SpineQd(RigModule):
             "setting",
             pf=rID,
             shape="diamond",
-            scale=rSz,
+            scale=rSz * 2,
             color=1,
             top=1,
             p=self.IK_PART,
@@ -290,9 +290,7 @@ class SpineQd(RigModule):
             aimCst.a.constraintRotateZ >> loc.a.rz
 
             rad = rSz / jntNum * 12
-            jnt = JntNode(
-                f"{i}_rbj", pf=rID, align=loc, r=rad, p=loc, reset=1, color=13
-            )
+            jnt = JntNode(f"{i}_rbj", pf=rID, align=loc, r=rad, p=loc, reset=1, color=1)
             rbJnts.append(jnt)
 
         self.anchorToRbj = LocNode(
@@ -401,12 +399,16 @@ class SpineQd(RigModule):
             ratio >> self.rbJnts[i].a.sz
 
     def setup_vis(self):
-        if self.is_neck():
-            mc.hide(self.base_ctl.shape, self.tangent0_ctl.shape)
-
         mc.hide(
             self.ikJnts, self.fkJnts, self.spIkJnts, self.two_ikJnts, self.anchorToRbj
         )
+        attr = self.base_ctl.a.add("tangentCtl", min=0, max=1, k=0)
+        attr >> self.tangent0_ctl.shape.a.v
+        attr = self.fore_ctl.a.add("tangentCtl", min=0, max=1, k=0)
+        attr >> self.tangent1_ctl.shape.a.v
+
+        if self.is_neck():
+            mc.hide(self.base_ctl.shape, self.tangent0_ctl.shape)
 
     def setup_proxy(self):
         for j in self.bindJnts:
@@ -420,32 +422,18 @@ class SpineQd(RigModule):
     def setup_channel(self):
         [ctl.a.showAttr(t=1, r=1) for ctl in self.ikCtls]
 
-        if self.is_neck():
-            self.cog_ctl.a.showAttr(r=1)
-        else:
-            self.cog_ctl.a.showAttr(t=1, r=1)
-
         self.setting.a.showAttr()
+        self.cog_ctl.a.showAttr(t=self.is_neck(), r=1)
         self.tangent0_ctl.a.showAttr("sz", r=1)
         self.tangent1_ctl.a.showAttr("sz", r=1)
 
         if self.END_CTL:
             self.end_ctl.a.showAttr(r=1)
-        (
-            self.base_ctl.a.add("tangentCtl", min=0, max=1, k=0)
-            >> self.tangent0_ctl.shape.a.v
-        )
-        (
-            self.fore_ctl.a.add("tangentCtl", min=0, max=1, k=0)
-            >> self.tangent1_ctl.shape.a.v
-        )
 
     def setup_anchor(self):
-        if self.END_CTL:
-            self.setup_anchor_module({"anchorM1": self.end_jnt})
-        else:
-            self.setup_anchor_module({"anchorM1": self.rbJnts[0]})
-
+        self.setup_anchor_module(
+            {"anchorM1": self.end_jnt if self.END_CTL else self.rbJnts[0]}
+        )
         self.setup_anchor_module({"anchorM2": self.anchorToRbj})
 
     def setup_space(self):
