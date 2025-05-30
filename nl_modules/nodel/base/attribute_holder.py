@@ -75,11 +75,13 @@ class AttributeHolder:
         else:
             mc.addAttr(self.node, ln=name, sn=name, at=attrType, **kwargs)
 
-        attrStr = f"{self.node}.{name}"
-        if cb:
-            mc.setAttr(attrStr, k=k, lock=lock)
+        if k == 1:
+            mc.setAttr(attrStr, k=1)
+            # NO NEED TO SET FOR CB AS k=1 => cb=1
         else:
-            mc.setAttr(attrStr, k=k, cb=0, lock=lock)
+            mc.setAttr(attrStr, cb=cb)
+
+        mc.setAttr(attrStr, lock=lock)
 
         return Attribute(self.node, name)
 

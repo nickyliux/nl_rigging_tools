@@ -77,7 +77,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             if uiObj in i:
                 print(i)
         """
-        self.setWindowTitle("NL | ATRS")
+        self.setWindowTitle("nlRT v1")
         self.setCentralWidget(self.UI)
         self.setGeometry(0, 0, 220, 650)
         self.connect_UI()
