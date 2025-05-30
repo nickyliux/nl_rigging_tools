@@ -65,7 +65,6 @@ class AttributeHolder:
         from nl_modules.nodel.base.attribute import Attribute
 
         attrStr = f"{self.node.name}.{name}"
-
         if mc.objExists(attrStr):
             return Attribute(self.node, name)
 
@@ -77,15 +76,10 @@ class AttributeHolder:
             mc.addAttr(self.node, ln=name, sn=name, at=attrType, **kwargs)
 
         attrStr = f"{self.node}.{name}"
-        # if lock:
-        #     mc.setAttr(attrStr, lock=1)
-        # if cb:
-        #     mc.setAttr(attrStr, cb=1)
-        # if k == False:
-        #     mc.setAttr(attrStr, k=0)
-        mc.setAttr(attrStr, k=k, cb=cb, lock=lock)
-
-        #     mc.setAttr(f"{self.node}.{name}", cb=1)
+        if cb:
+            mc.setAttr(attrStr, k=k, lock=lock)
+        else:
+            mc.setAttr(attrStr, k=k, cb=0, lock=lock)
 
         return Attribute(self.node, name)
 

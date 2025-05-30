@@ -128,8 +128,8 @@ class LegQd(RigModule):
         self.hip_fkc = CrvNode(
             "hip_fkc",
             pf=rID,
-            shape="squR",
-            scale=rSz / 2,
+            shape="arrow",
+            scale=maths.mul(1, 1, xDr, rSz / 2),
             move=maths.mul(0, xDr * -20, 0, rSz),
         )
         self.upr_fkc = CrvNode("upr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
@@ -163,6 +163,18 @@ class LegQd(RigModule):
                 scale=rSz,
                 move=(rSz * 40 * -xDr, 0, 0),
             )
+            # self.scap_fkc = CrvNode(
+            #     "scap_fkc",
+            #     pf=rID,
+            #     shape="stickC",
+            #     up="x",
+            #     top=1,
+            #     # width=3,
+            #     scale=-xDr * rSz * 1.5,
+            #     rotate=(90, 0, 0),
+            # )
+            # shape="sphere",
+            # move=(rSz * 40 * -xDr, 0, 0),
 
     def build(self):
         """Build rig for joints
