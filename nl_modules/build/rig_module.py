@@ -411,7 +411,7 @@ class RigModule(RigBase):
                 loc.color = 13
                 loc.alignTo(tgt)
                 loc.cstPar(tgt.offset, mo=1)
-            # mc.hide(loc)
+            mc.hide(loc)
 
     def add_ctl_set(self, tgtList):
         rID, rSz, xDr = self.getMyVar()

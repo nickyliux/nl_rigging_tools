@@ -142,7 +142,7 @@ class GrpNode(DagNode):
         gmb_ctl | self
         gmb_ctl.cv_scale(relScale, atCVCetner=1)
         attrTgt = attrTgt or self
-        attrTgt.a.add("gimbalCtl", min=0, max=1, dv=dv, k=0) >> gmb_ctl.shape.a.v
+        attrTgt.a.add("gimbalCtl", attrType="bool", dv=dv, k=0) >> gmb_ctl.shape.a.v
         return gmb_ctl
 
     def shape_saveToLib(self, dictList, name):

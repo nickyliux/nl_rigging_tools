@@ -109,28 +109,23 @@ class LegQd(RigModule):
         self.setting = CrvNode(
             "setting",
             pf=rID,
-            shape="diamond",
+            shape="spiral",
             scale=rSz,
-            color=1,
+            color=22,
             top=1,
-            width=2,
             p=self.CTL_DATA,
         )
         self.hip_fkc = CrvNode(
-            "hip_fkc",
-            pf=rID,
-            shape="arrowR",
-            scale=maths.mul(1, 1, xDr, rSz / 2),
-            moveY=xDr * rSz * -20,
+            "hip_fkc", pf=rID, shape="arrow", scaleZ=xDr * rSz / 4, top=1
         )
         self.upr_fkc = CrvNode("upr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.lwr_fkc = CrvNode("lwr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.palm_fkc = CrvNode("palm_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.digit_fkc = CrvNode("digit_fkc", pf=rID, shape="squR", up="x", scale=rSz)
-        self.ball_fkc = CrvNode("ball_fkc", pf=rID, scale=xDr * rSz / 2)
+        self.ball_fkc = CrvNode("ball_fkc", pf=rID, shape="squR", up="x", scale=rSz / 2)
         self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=maths.mul(1.5, 1, 2, rSz))
         self.extra_ikc = CrvNode(
-            "extra_ikc", pf=rID, shape="squR", moveY=-xDr * 10 * rSz
+            "extra_ikc", pf=rID, shape="squR", moveY=-xDr * 15 * rSz, top=1, scale=rSz
         )
         self.pvc = CrvNode("pvc", pf=rID, shape="triR", scale=rSz / 2)
         self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
@@ -310,7 +305,7 @@ class LegQd(RigModule):
         self.pvc.addOffsetGrp()
 
         ikH1.stretchyIk(soft=1)
-        self.all_ikH = {"main": ikH1, "ball": ikH2, "toe": ikH3}
+        self.all_ikH = {"main": ikH1, "ball": ikH2, "toe": ikH3, "else": ikHX}
         self.toe_wiggle_grp = toe_wiggle_grp
         self.hip_fkc.cstPar(self.joints_ik[0], mo=1)
 
@@ -322,8 +317,8 @@ class LegQd(RigModule):
     def blend_fk_ik(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting.snapTo(self.digit, ofs=(rSz * xDr * 15, 0, 0))
-        self.digit.cstPar(self.setting, mo=1)
+        self.setting.snapTo(self.hip)  # , ofs=(rSz * xDr * 15, 0, 0))
+        self.hip.cstPar(self.setting, mo=1)
 
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
         for i in range(len(self.joints) - 1):
@@ -351,9 +346,9 @@ class LegQd(RigModule):
         aimG_loc = LocNode(aimGrp + "_loc", align=uprIkJ, p=grp)
         self.ikc.cstPoi(aimG_loc, mo=1)
 
-        palmAim = self.ikc.a.add("palmAim", min=0, max=1, dv=1)
+        palmAim = self.extra_ikc.a.add("palmAim", min=0, max=1, dv=1)
         dv = -0.5 if "Arm" in rID else 0.5
-        rollDistRatio = self.extra_ikc.a.add("rollDistRatio", dv=dv)
+        palmAimRatio = self.extra_ikc.a.add("palmAimRatio", dv=dv)
         common.cstMulti(
             aimG_loc,
             uprIkJ,
@@ -371,7 +366,7 @@ class LegQd(RigModule):
         d = ut.distDim_(self.ikc, self.joints_ik[1])
         D = d.get()
         d /= self.masterC.a["globalScale"]
-        (d - D) * rollDistRatio * palmAim >> extraRollG.a.rx
+        (d - D) * palmAimRatio * palmAim >> extraRollG.a.rx
 
         grp = extraRollG.addOffsetGrp(below=1)
         self.extra_ikc.alignTo(grp, p=extraRollG)

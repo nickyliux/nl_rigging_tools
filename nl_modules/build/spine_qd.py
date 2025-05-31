@@ -64,11 +64,10 @@ class SpineQd(RigModule):
         self.setting = CrvNode(
             "setting",
             pf=rID,
-            shape="diamond",
+            shape="spiral",
             scale=rSz * 2,
-            color=1,
+            color=22,
             top=1,
-            width=2,
             p=self.IK_PART,
         )
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
@@ -97,30 +96,28 @@ class SpineQd(RigModule):
             "tangent0_ctl",
             pf=rID,
             shape="triR",
-            scale=rSz / 2,
+            scale=rSz,
             rotate=(0, 180, 90),
-            moveY=25 * rSz,
+            top=1,
             color=22,
         )
+        # moveY=25 * rSz,
         self.tangent1_ctl = CrvNode(
             "tangent1_ctl",
             pf=rID,
             shape="triR",
-            scale=rSz / 2,
+            scale=rSz,
             rotate=(0, 0, 90),
-            moveY=25 * rSz,
+            top=1,
             color=22,
         )
+        # moveY=25 * rSz,
         if self.END_CTL:
             self.end_ctl = CrvNode(
-                "end_ctl",
-                pf=rID,
-                shape="rotator",
-                scale=rSz,
-                rotate=(-30, 0, 0),
-                moveY=5 * rSz,
-                color=22,
+                "end_ctl", pf=rID, shape="squR", scale=rSz / 2, moveY=20 * rSz
             )
+            # shape="rotator",
+            # rotate=(-30, 0, 0),
 
         self.rigNode.setMsg(
             {
@@ -191,7 +188,7 @@ class SpineQd(RigModule):
         else:
             self.cog_ctl.snapTo(self.RT_GUIDE, addOfs=1)
 
-        self.setting.snapTo(self.RT_GUIDE, ofs=(0, rSz * 30, 0))
+        self.setting.snapTo(self.RT_GUIDE)  # , ofs=(0, rSz * 30, 0))
         self.cog_ctl.cstPar(self.setting, mo=1)
         #
         #   parenting
@@ -404,9 +401,9 @@ class SpineQd(RigModule):
         mc.hide(
             self.ikJnts, self.fkJnts, self.spIkJnts, self.two_ikJnts, self.anchorToRbj
         )
-        attr = self.base_ctl.a.add("tangentCtl", min=0, max=1, k=0)
+        attr = self.base_ctl.a.add("tangentCtl", attrType="bool", k=0)
         attr >> self.tangent0_ctl.shape.a.v
-        attr = self.fore_ctl.a.add("tangentCtl", min=0, max=1, k=0)
+        attr = self.fore_ctl.a.add("tangentCtl", attrType="bool", k=0)
         attr >> self.tangent1_ctl.shape.a.v
 
         if self.is_neck():

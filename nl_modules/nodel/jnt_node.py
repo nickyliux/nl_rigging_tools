@@ -91,7 +91,6 @@ class JntNode(GrpNode):
             return
 
         size = self.a.radius.get() * 5 * scale
-
         name = self.name + "_pxGeo"
         child = self.childrenJt
 
@@ -100,6 +99,7 @@ class JntNode(GrpNode):
             cube = mc.polyCube(n=name, ax=aimDir, h=dist, w=size, d=size, cuv=4)[0]
             proxyN = DagNode(cube)
             proxyN.alignTo(self, p=p)
+
             if scaler:
                 scaler >> proxyN.a.s
 
@@ -108,16 +108,20 @@ class JntNode(GrpNode):
                 common.cstMulti(self, tgtChild, proxyN, cstType="poi", delete=1)
                 tgtChild.cstAim(
                     proxyN,
-                    keep=0,
                     aim=aimDir,
                     worldUpType="objectrotation",
                     worldUpObject=self,
+                    keep=0,
                 )
-
-            # NOTE:  constraint must be after shader assignment, otherwise mc.sets(..) will sohw error
+            #
+            #   NOTE:  constraint must be after shader assignment,
+            #   otherwise mc.sets(..) will show error
+            #
             common.assignProxyShader(proxyN)
             self.cstPar(proxyN, mo=1)
             self.a.s >> proxyN.a.s
+
+            proxyN.dspType = 2
             return proxyN
 
     @staticmethod

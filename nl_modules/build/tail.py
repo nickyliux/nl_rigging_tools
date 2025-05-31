@@ -47,11 +47,10 @@ class Tail(RigModule):
         self.setting = CrvNode(
             "setting",
             pf=rID,
-            shape="diamond",
-            scale=rSz * 2,
-            color=1,
+            shape="spiral",
+            scale=rSz * 3,
+            color=22,
             top=1,
-            width=2,
             p=self.CTL_DATA,
         )
         self.setting.a.add("stretchy", min=0, max=1)
@@ -127,16 +126,14 @@ class Tail(RigModule):
 
         SrfNode(self.rbSrf1).weightTo(self.ikJnt, mi=4, dr=6, chain=0)
 
-        # self.setting.snapTo(self.ikCtl[0], ofs=(0, rSz * 30, 0))
-        self.setting.snapTo(self.ikCtl[0], ofs=maths.mul(0, 20, -20, rSz))
+        self.setting.snapTo(self.ikCtl[0], ofs=maths.mul(0, 20, 0, rSz))
         self.ikCtl[0].cstPar(self.setting, mo=1)
 
     def build_fk(self):
         rID, rSz, xDr = self.getMyVar()
-
-        # ------------------------------------------
-        # Build fkJ
-        # ------------------------------------------
+        #
+        #   build fkJ
+        #
         self.fkJnt = JntNode.createJntFrCrv(
             self.LINE_GUIDE,
             num=self.FK_BONE_NUM + 1,
@@ -147,18 +144,17 @@ class Tail(RigModule):
             size=rSz,
             p=self.SKL_DATA,
         )
-        # ------------------------------------------
-        # Build pins for fkCtl
-        # ------------------------------------------
+        #
+        #   build pins for fkCtl
+        #
         coord = []
         for i in range(self.FK_BONE_NUM + 1):
             coord.append((0.5, i / self.FK_BONE_NUM))
 
         pin, pinXf = common.nlRivet(geo=self.rbSrf1, coordList=coord, p=self.RIG_DATA)
-
-        # ------------------------------------------
-        # Build fkCtls
-        # ------------------------------------------
+        #
+        #   build fkCtls
+        #
         for i in range(self.FK_BONE_NUM + 1):
             ctl = CrvNode(
                 f"{i}_fkc",
@@ -170,10 +166,9 @@ class Tail(RigModule):
             )
             self.rigNode.setMsg({f"fkc{i}": ctl})
             self.fkCtl.append(ctl)
-
-        # ------------------------------------------
-        # Build group chain
-        # ------------------------------------------
+        #
+        #   build group chain
+        #
         chainGrps = []
         lastGrp = self.FK_PART
         for i in range(self.FK_BONE_NUM + 1):
@@ -183,16 +178,15 @@ class Tail(RigModule):
             lastGrp = grp
 
         self.build_fk_with_ctl3(self.fkJnt, self.fkCtl, p=self.FK_PART)
-
-        # ------------------------------------------
-        # Cnnnect chain grps to fkCtl offset
-        # ------------------------------------------
+        #
+        #   cnnnect chain grps to fkCtl offset
+        #
         for i in range(self.FK_BONE_NUM + 1):
             chainGrps[i].a.t >> self.fkCtl[i].offset.a.t
             chainGrps[i].a.r >> self.fkCtl[i].offset.a.r
-        # ------------------------------------------
-        # Build lowest ikCtl layer
-        # ------------------------------------------
+        #
+        #   build lowest ikCtl layer
+        #
         for i in range(self.FK_BONE_NUM + 1):
             ctl = CrvNode(
                 f"{i}_offset_ikc",
@@ -201,7 +195,7 @@ class Tail(RigModule):
                 scale=rSz / 2,
                 align=self.fkCtl[i],
                 p=self.fkCtl[i],
-                move=(0, rSz * 18, 0),
+                moveY=rSz * 18,
             )
             jnt = JntNode(f"{i}_offset_ikj", pf=rID, align=ctl, p=ctl, color=13)
 
@@ -232,7 +226,7 @@ class Tail(RigModule):
             self.setting.a.add("subCtl", k=0, min=0, max=1, dv=0),
             onList=self.ikOffsetCtl,
         )
-        # mc.hide(self.ikJnt, self.fkJnt, self.ikOffsetJnt, self.rbJnt)
+        mc.hide(self.ikJnt, self.fkJnt, self.ikOffsetJnt)
 
     def setup_channel(self):
         for ctl in self.fkCtl + self.ikCtl:
