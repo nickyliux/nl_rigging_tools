@@ -113,21 +113,25 @@ class LegQd(RigModule):
             scale=rSz,
             color=1,
             top=1,
+            width=2,
             p=self.CTL_DATA,
         )
         self.hip_fkc = CrvNode(
             "hip_fkc",
             pf=rID,
-            shape="arrow",
+            shape="arrowR",
             scale=maths.mul(1, 1, xDr, rSz / 2),
-            move=maths.mul(0, xDr * -20, 0, rSz),
+            moveY=xDr * rSz * -20,
         )
         self.upr_fkc = CrvNode("upr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.lwr_fkc = CrvNode("lwr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.palm_fkc = CrvNode("palm_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.digit_fkc = CrvNode("digit_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.ball_fkc = CrvNode("ball_fkc", pf=rID, scale=xDr * rSz / 2)
-        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=maths.mul(2, 1, 2, rSz))
+        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=maths.mul(1.5, 1, 2, rSz))
+        self.extra_ikc = CrvNode(
+            "extra_ikc", pf=rID, shape="squR", moveY=-xDr * 10 * rSz
+        )
         self.pvc = CrvNode("pvc", pf=rID, shape="triR", scale=rSz / 2)
         self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
 
@@ -147,11 +151,7 @@ class LegQd(RigModule):
         )
         if self.SCAPULAR_EXTRA:
             self.scap_fkc = CrvNode(
-                "scap_fkc",
-                pf=rID,
-                shape="sphere",
-                scale=rSz,
-                move=(rSz * 40 * -xDr, 0, 0),
+                "scap_fkc", pf=rID, shape="sphere", scale=rSz, moveX=rSz * 40 * -xDr
             )
 
     def build(self):
@@ -273,6 +273,7 @@ class LegQd(RigModule):
         inRollG = GrpNode("inRollG", pf=rID, snap=inPos_guide, alignR=mG)
         outRollG = GrpNode("outRollG", pf=rID, snap=outPos_guide, alignR=mG)
         heelRollG = GrpNode("heelRollG", pf=rID, snap=heelPos_guide, alignR=mG)
+        self.extra_ikc.alignTo(extraRollG)
 
         if xDr == 1:
             for g in (
@@ -321,7 +322,7 @@ class LegQd(RigModule):
     def blend_fk_ik(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting.snapTo(self.digit, ofs=(rSz * xDr * 20, 0, 0))
+        self.setting.snapTo(self.digit, ofs=(rSz * xDr * 15, 0, 0))
         self.digit.cstPar(self.setting, mo=1)
 
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
@@ -352,7 +353,7 @@ class LegQd(RigModule):
 
         palmAim = self.ikc.a.add("palmAim", min=0, max=1, dv=1)
         dv = -0.5 if "Arm" in rID else 0.5
-        rollDistRatio = self.setting.a.add("rollDistRatio", dv=dv)
+        rollDistRatio = self.extra_ikc.a.add("rollDistRatio", dv=dv)
         common.cstMulti(
             aimG_loc,
             uprIkJ,
@@ -365,7 +366,6 @@ class LegQd(RigModule):
             wu=(1, 0, 0),
         )
 
-        # setup palm rotate logic, after aimGrp is ready
         ofs = extraRollG.addOffsetGrp()
         ofs | aimGrp
         d = ut.distDim_(self.ikc, self.joints_ik[1])
@@ -373,11 +373,10 @@ class LegQd(RigModule):
         d /= self.masterC.a["globalScale"]
         (d - D) * rollDistRatio * palmAim >> extraRollG.a.rx
 
-        self.extra_ikc = extraRollG.addOffsetGrp(below=1)
-        cName = rID + "_extra_ikc"
-        CrvNode(self.extra_ikc)(
-            name=cName, shape="rotator", scale=-rSz * xDr / 2, top=1
-        )
+        grp = extraRollG.addOffsetGrp(below=1)
+        self.extra_ikc.alignTo(grp, p=extraRollG)
+        grp | self.extra_ikc
+
         aimG_loc.hide()
 
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):

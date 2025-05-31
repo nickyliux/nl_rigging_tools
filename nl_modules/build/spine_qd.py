@@ -68,6 +68,7 @@ class SpineQd(RigModule):
             scale=rSz * 2,
             color=1,
             top=1,
+            width=2,
             p=self.IK_PART,
         )
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
@@ -77,17 +78,20 @@ class SpineQd(RigModule):
             "cog_ctl",
             pf=rID,
             shape="trapezoid",
-            scale=maths.mul(1, 2, 2, rSz),
-            move=maths.mul(0, 70, 0, rSz),
+            scale=maths.mul(1, 1, 2, rSz),
+            moveY=60 * rSz,
             color=22,
             p=self.IK_PART,
         )
         self.base_ctl = CrvNode(
-            "base_ctl", pf=rID, shape="cube", scale=maths.mul(6, 6, 0.8, rSz)
+            "base_ctl", pf=rID, shape="circleC", scale=rSz * 4, up="z", width=3, top=1
         )
         self.fore_ctl = CrvNode(
-            "fore_ctl", pf=rID, shape="cube", scale=maths.mul(6, 6, 0.8, rSz)
+            "fore_ctl", pf=rID, shape="circleC", scale=rSz * 4, up="z", width=3, top=1
         )
+        if self.is_neck():
+            self.fore_ctl(shape="cube", scale=maths.mul(4, 4, 6, rSz))
+
         self.mid_ctl = CrvNode("mid_ctl", pf=rID, shape="squR", up="z", scale=rSz * 3)
         self.tangent0_ctl = CrvNode(
             "tangent0_ctl",
@@ -95,7 +99,7 @@ class SpineQd(RigModule):
             shape="triR",
             scale=rSz / 2,
             rotate=(0, 180, 90),
-            move=maths.mul(0, 25, 0, rSz),
+            moveY=25 * rSz,
             color=22,
         )
         self.tangent1_ctl = CrvNode(
@@ -104,7 +108,7 @@ class SpineQd(RigModule):
             shape="triR",
             scale=rSz / 2,
             rotate=(0, 0, 90),
-            move=maths.mul(0, 25, 0, rSz),
+            moveY=25 * rSz,
             color=22,
         )
         if self.END_CTL:
@@ -114,7 +118,7 @@ class SpineQd(RigModule):
                 shape="rotator",
                 scale=rSz,
                 rotate=(-30, 0, 0),
-                move=maths.mul(0, 5, 0, rSz),
+                moveY=5 * rSz,
                 color=22,
             )
 
@@ -187,7 +191,7 @@ class SpineQd(RigModule):
         else:
             self.cog_ctl.snapTo(self.RT_GUIDE, addOfs=1)
 
-        self.setting.snapTo(self.RT_GUIDE, ofs=(0, rSz * 40, 0))
+        self.setting.snapTo(self.RT_GUIDE, ofs=(0, rSz * 30, 0))
         self.cog_ctl.cstPar(self.setting, mo=1)
         #
         #   parenting

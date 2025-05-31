@@ -48,9 +48,10 @@ class Tail(RigModule):
             "setting",
             pf=rID,
             shape="diamond",
-            scale=rSz,
+            scale=rSz * 2,
             color=1,
             top=1,
+            width=2,
             p=self.CTL_DATA,
         )
         self.setting.a.add("stretchy", min=0, max=1)

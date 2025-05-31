@@ -30,7 +30,13 @@ class CrvNode(GrpNode):
         shape="circle",
         rotate=None,
         scale=None,
+        scaleX=1,
+        scaleY=1,
+        scaleZ=1,
         move=None,
+        moveX=0,
+        moveY=0,
+        moveZ=0,
         dspType=0,
         width=-1,
         up="",
@@ -87,8 +93,18 @@ class CrvNode(GrpNode):
                     self.cv_scale(*scale)
                 elif isinstance(scale, (int, float)):
                     self.cv_scale(scale)
+            else:
+                vec = [moveX, moveY, moveZ]
+                if vec != [1, 1, 1]:
+                    self.cv_move(*vec)
+
             if move:
                 self.cv_move(*move)
+            else:
+                vec = [moveX, moveY, moveZ]
+                if any(vec):
+                    self.cv_move(*vec)
+
             if top:
                 for s in self.shapes:
                     s.a["alwaysDrawOnTop"].set(1)

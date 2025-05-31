@@ -48,32 +48,33 @@ class RigModule(RigBase):
             self.rootJ = rigNode.a.rootJ.inConnNode
 
     def gen_sk_fr_names(self, names, color=None, scale=1):
-        """Create joints by finding object : pf_name_guide' from name list"""
+        """
+        Given n in names, create joint if "pf_n_guide" is found
+        return the joint chain
+        """
         rID, rSz, xDr = self.getMyVar()
 
         if isinstance(names, str):
             names = [names]
-        #
-        #   add tgt to dict
-        #
-        guides = []
+
+        guideList = []
         for n in names:
             guide_name = f"{rID}_{n}_guide"
             if not mc.objExists(guide_name):
                 logging.error(f"missing object: {guide_name}")
                 return
-            guides.append(DagNode(guide_name))
-        #
-        #   create joints
-        #
-        guideDict = dict(zip(names, guides))
+            guideList.append(DagNode(guide_name))
+
+        guideDict = dict(zip(names, guideList))
         currClass = self.__class__.__name__
         joints = []
         lastJ = None
-        for key in guideDict:
-            jN = JntNode(f"{rID}_{key}", align=guideDict[key], color=color)
-            if (currClass == "ArmBp" or currClass == "LegBp") and key == "lwr":
+        for name in guideDict:
+            jN = JntNode(f"{rID}_{name}", align=guideDict[name], color=color)
+            if (currClass == "ArmBp" or currClass == "LegBp") and name == "lwr":
                 jN.a.preferredAngleY.set(-45)
+            # elif currClass.startswith("LegQd") and name == "palm":
+            #     jN.a.preferredAngleY.set(45)
             if lastJ:
                 jN | lastJ
             lastJ = jN
