@@ -141,7 +141,7 @@ class LegBp(RigModule):
             "ball_fkc", pf=rID, up="x", shape="squR", scale=rSz * xDr / 2
         )
         self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=maths.mul(1.5, 1, 2, rSz))
-        self.pvc = CrvNode("pvc", pf=rID, shape="triR", scale=rSz / 2)
+        self.pvc = CrvNode("pvc", pf=rID, shape="pvc", scale=rSz)
         self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
 
         self.rigNode.setMsg(
@@ -597,9 +597,8 @@ class LegBp(RigModule):
                 self.setting.a.add("bendyCtl", attrType="bool", dv=0),
                 onList=self.all_bend,
             )
-            # min=0, max=1, dv=1, k=0),
-        # mc.hide(self.all_ikHs, self.toeIKHs)
-        # mc.hide(self.joints_fk, self.joints_ik, self.joints_bf)
+        mc.hide(self.all_ikHs, self.toeIKHs)
+        mc.hide(self.joints_fk, self.joints_ik, self.joints_bf)
 
     def setup_channel(self):
         self.setting.a.showAttr()
