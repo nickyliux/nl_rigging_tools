@@ -40,7 +40,7 @@ class RigModule(RigBase):
             logging.info("master_guide not found in RigNode !")
 
         self.rigSize = 1
-        self.xDir = 1
+        self.xDir = 1 if rID.startswith("lf") else -1
         self.boneFix = None
         self.bindJnts = []
 

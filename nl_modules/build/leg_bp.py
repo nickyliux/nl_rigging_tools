@@ -88,6 +88,7 @@ class LegBp(RigModule):
         self.scap_fkc = None
 
     def gen_guide_sk(self):
+        rID, rSz, xDr = self.getMyVar()
         self.gen_guide_sk_module(["hip", "upr", "lwr", "palm", "ball", "tip"])
 
         if self.TOE_BONES:
@@ -104,27 +105,15 @@ class LegBp(RigModule):
             ]
             for names in toe_names:
                 fgr_jnts = self.gen_sk_fr_names(names, scale=2)
-                fgr_jnts[0].freezeXf()
+                fgr_jnts[0].orientJnt(aim=(xDr, 0, 0), u=(0, 0, -xDr))
                 fgr_jnts[0] | self.toesRootJ
 
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting = CrvNode(
-            "setting",
-            pf=rID,
-            shape="sphere2",
-            scale=-rSz * 2,
-            color=25,
-            p=self.CTL_DATA,
+            "setting", pf=rID, shape="spiral", scale=-rSz * 2, color=22, top=1
         )
-        # self.hip_fkc = CrvNode(
-        #     "hip_fkc",
-        #     pf=rID,
-        #     up="x",
-        #     shape="trapezoid2",
-        #     scale=maths.mul(1, 1, 2, rSz)
-        # )
         self.hip_fkc = CrvNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
         )
@@ -367,8 +356,8 @@ class LegBp(RigModule):
             self.joints, "_bf", p=self.BF_PART, color=Color.L_GREY, r=4 * rSz
         )
 
-        self.setting.alignTo(self.palm, ofs=(0, rSz * 15 * -xDr, 0))
-        self.palm.cstPar(self.setting, mo=1)
+        self.setting.snapTo(self.hip, p=self.CTL_DATA)
+        self.hip.cstPar(self.setting, mo=1)
 
         self.setting.a.addSep()
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
@@ -414,14 +403,16 @@ class LegBp(RigModule):
 
         for g in [toeRollG, inRollG, outRollG, heelRollG]:
             ctl = g.addOffsetGrp(below=1)
-            CrvNode(ctl)(name=g.name + "_ctl", shape="cube", scale=rSz / 8)
+            CrvNode(ctl)(name=g.name + "_ctl", shape="diamond", scale=rSz / 2)
             self.subCtls.append(ctl)
 
         self.ballG_ikc = ballRollG.addOffsetGrp(below=1)
         CrvNode(self.ballG_ikc)(
-            name=rID + "_ballG_ikc",
-            shape="fk_rotator",
-            scale=-rSz * xDr * 2,
+            name="ballG_ikc",
+            pf=rID,
+            shape="stickC",
+            scale=-rSz * xDr / 2,
+            rotate=(0, 90, 0),
         )
         self.ikCtl.append(self.ballG_ikc)
 

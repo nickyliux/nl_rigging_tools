@@ -244,6 +244,7 @@ class CrvNode(GrpNode):
     def __call__(
         self,
         name="",
+        pf="",
         shape=None,
         up=None,
         rotate=None,
@@ -262,7 +263,9 @@ class CrvNode(GrpNode):
             crv(n='crv2', scale=2, color=3, addOfs=1)
         """
         if name:
-            self.rename(name)
+            if pf:
+                pf += "_"
+            self.rename(pf + name)
         if shape:
             self << shape
         if up == "x":

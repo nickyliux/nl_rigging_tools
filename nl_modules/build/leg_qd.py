@@ -78,6 +78,7 @@ class LegQd(RigModule):
         self.scap_fkc = None
 
     def gen_guide_sk(self):
+        rID, rSz, xDr = self.getMyVar()
         self.gen_guide_sk_module(["hip", "upr", "lwr", "palm", "digit", "ball", "tip"])
 
         if self.TOE_BONES:
@@ -100,7 +101,7 @@ class LegQd(RigModule):
 
             for names in toe_names:
                 fgr_jnts = self.gen_sk_fr_names(names, scale=1.2)
-                fgr_jnts[0].freezeXf()
+                fgr_jnts[0].orientJnt(aim=(xDr, 0, 0), u=(0, 0, -xDr))
                 fgr_jnts[0] | self.toesRootJ
 
     def build_ctl(self):
@@ -404,7 +405,7 @@ class LegQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.toesCtlsList = []
-        scale = xDr * rSz / 8
+        scale = xDr * rSz / 2
 
         for toeJs in self.toesJntList:
             dupTgt = DagNode(toeJs[2])
