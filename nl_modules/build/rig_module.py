@@ -581,7 +581,7 @@ class RigModule(RigBase):
         dupTgt = JntNode(dupTgt)
         ctl = CrvNode(
             dupTgt + "_ikc",
-            shape="line",
+            shape="squR",
             align=dupTgt,
             up="x",
             scale=scale,

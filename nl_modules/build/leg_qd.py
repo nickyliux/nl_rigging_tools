@@ -117,7 +117,12 @@ class LegQd(RigModule):
             p=self.CTL_DATA,
         )
         self.hip_fkc = CrvNode(
-            "hip_fkc", pf=rID, shape="arrow", scale=xDr * rSz / 2, top=1, width=2
+            "hip_fkc",
+            pf=rID,
+            shape="squR",
+            scale=xDr * rSz / 3,
+            top=1,
+            moveX=-xDr * rSz * 10,
         )
         self.upr_fkc = CrvNode("upr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.lwr_fkc = CrvNode("lwr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
@@ -134,12 +139,16 @@ class LegQd(RigModule):
         self.extra_ikc = CrvNode(
             "extra_ikc",
             pf=rID,
-            shape="stick",
-            scale=maths.mul(1, -xDr, 1, rSz / 2),
+            shape="sphere2",
+            scale=rSz,
+            moveY=-xDr * rSz * 13,
             top=1,
         )
         self.pvc = CrvNode("pvc", pf=rID, shape="pvc", scale=rSz)
-        self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 3)
+        # self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 3)
+        self.smart_ctl = CrvNode(
+            "smart_ctl", pf=rID, shape="squR", top=1, scale=rSz / 4
+        )
 
         self.rigNode.setMsg(
             {
@@ -157,7 +166,7 @@ class LegQd(RigModule):
         )
         if self.SCAPULAR_EXTRA:
             self.scap_fkc = CrvNode(
-                "scap_fkc", pf=rID, shape="sphere", scale=rSz, moveX=rSz * 40 * -xDr
+                "scap_fkc", pf=rID, shape="sphere", scale=rSz, moveX=rSz * 43 * -xDr
             )
 
     def build(self):
@@ -359,7 +368,7 @@ class LegQd(RigModule):
 
         palmAim = self.extra_ikc.a.add("palmAim", min=0, max=1, dv=1)
         dv = -0.5 if "Arm" in rID else 0.5
-        palmAimRatio = self.extra_ikc.a.add("palmAimRatio", dv=dv)
+        palmAimRatio = self.extra_ikc.a.add("palmAimRatio", min=-2, max=2, dv=dv)
         common.cstMulti(
             aimG_loc,
             uprIkJ,
@@ -400,10 +409,11 @@ class LegQd(RigModule):
         #
         #   smart ctl setup
         #
-        self.smart_ctl.alignTo(self.master_guide)
-        self.smart_ctl.a.ty.set(0)
+        # self.smart_ctl.alignTo(self.master_guide)
+        self.smart_ctl.snapAlignTo(toeRollG, self.master_guide)
+        # self.smart_ctl.a.ty.set(0)
         self.smart_ctl | self.ikc_gimbal
-        self.smart_ctl.a.tz.set(rSz * 20)
+        # self.smart_ctl.a.tz.set(rSz * 20)
         self.smart_ctl.addOffsetGrp()
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry
@@ -416,7 +426,7 @@ class LegQd(RigModule):
 
         for toeJs in self.toesJntList:
             dupTgt = DagNode(toeJs[2])
-            ctl, ikJ, ikH = self.build_digit_ik(dupTgt, xDr * rSz, p=self.ball_fkc)
+            ctl, ikJ, ikH = self.build_digit_ik(dupTgt, xDr * rSz / 10, p=self.ball_fkc)
             ikJ.a.r >> dupTgt.a.r
             ctlList = []
             self.bindJnts.extend(toeJs[:-1])
@@ -424,10 +434,10 @@ class LegQd(RigModule):
             for jnt in fkToeList:
                 c = CrvNode(
                     jnt + "_ctl",
-                    shape="line",
+                    shape="squR",
                     up="x",
                     align=jnt,
-                    scale=xDr * rSz,
+                    scale=xDr * rSz / 10,
                     top=1,
                     width=2,
                 )
@@ -611,7 +621,7 @@ class LegQd(RigModule):
             offList=self.fkCtl[1:-1],
         )
         self.ctl_vis_toggle(
-            self.ikc.a.add("extraCtl", dv=1, min=0, max=1, k=0),
+            self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
             onList=self.subCtls,
         )
         # if self.all_bend:

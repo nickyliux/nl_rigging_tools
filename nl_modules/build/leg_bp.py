@@ -580,7 +580,7 @@ class LegBp(RigModule):
             offList=self.fkCtl[1:-1],
         )
         self.ctl_vis_toggle(
-            self.ikc.a.add("extraCtl", dv=1, min=0, max=1, k=0),
+            self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
             onList=self.subCtls,
         )
         if self.RBN_BONES:
