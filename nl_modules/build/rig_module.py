@@ -581,11 +581,13 @@ class RigModule(RigBase):
         dupTgt = JntNode(dupTgt)
         ctl = CrvNode(
             dupTgt + "_ikc",
-            shape="stickC",
+            shape="line",
             align=dupTgt,
-            up="-z",
+            up="x",
             scale=scale,
             addOfs=1,
+            top=1,
+            width=2,
             p=p,
         )
         ikJ = dupTgt.duplicate()
@@ -597,15 +599,11 @@ class RigModule(RigBase):
             ikJ.children[0].delete()
         ikJ.rename(ikJ.name + "_ikJ")
         endJ.rename(ikJ.name + "_end_ikJ")
+        fix = self.masterC.a["globalScale"]
         ikH = IkNode(
-            ikJ,
-            sj=ikJ,
-            ee=endJ,
-            sol=0,
-            scaleFix=self.masterC.a["globalScale"],
-            RIG_DATA=self.RIG_DATA,
-            p=ctl,
+            ikJ, sj=ikJ, ee=endJ, scaleFix=fix, RIG_DATA=self.RIG_DATA, vis=0, p=ctl
         )
+
         return ctl, ikJ, ikH
 
     def get_autoAim_preset(self):

@@ -147,7 +147,6 @@ class SrfNode(GrpNode):
         p1 = (crvLen * 0.1 * -sign, 0, 0)
         p2 = (crvLen * 0.1 * sign, 0, 0)
         sweepLine = CrvNode.buildLine(p1, p2, pf=pf, snap=snap)
-
         pathLine = CrvNode(
             mc.rebuildCurve(crv, rpo=0, rt=0, end=1, kr=0, kcp=0, kep=1, kt=0, s=spans)[
                 0
@@ -155,12 +154,12 @@ class SrfNode(GrpNode):
         )
         rbSrf = SrfNode(
             mc.extrude(
-                pathLine, sweepLine, fixedPath=1, n=pf + "_rbSrf", extrudeType=1
+                pathLine, sweepLine, fixedPath=1, n=pf + "_rbSrf_#", extrudeType=1
             )[0]
         )
-        mc.delete(pathLine, sweepLine)
         if p:
             rbSrf | p
+        mc.delete(pathLine, sweepLine)
         return rbSrf
 
     @staticmethod

@@ -110,26 +110,36 @@ class LegQd(RigModule):
         self.setting = CrvNode(
             "setting",
             pf=rID,
-            shape="spiral",
+            shape="bagua",
             scale=rSz,
             color=22,
             top=1,
             p=self.CTL_DATA,
         )
         self.hip_fkc = CrvNode(
-            "hip_fkc", pf=rID, shape="arrow", scaleZ=xDr * rSz / 4, top=1
+            "hip_fkc", pf=rID, shape="arrow", scale=xDr * rSz / 2, top=1, width=2
         )
         self.upr_fkc = CrvNode("upr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.lwr_fkc = CrvNode("lwr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.palm_fkc = CrvNode("palm_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.digit_fkc = CrvNode("digit_fkc", pf=rID, shape="squR", up="x", scale=rSz)
-        self.ball_fkc = CrvNode("ball_fkc", pf=rID, shape="squR", up="x", scale=rSz / 2)
-        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=maths.mul(1.5, 1, 2, rSz))
-        self.extra_ikc = CrvNode(
-            "extra_ikc", pf=rID, shape="squR", moveY=-xDr * 15 * rSz, top=1, scale=rSz
+        self.ball_fkc = CrvNode(
+            "ball_fkc",
+            pf=rID,
+            shape="fk_rotator",
+            up="x",
+            scale=maths.mul(-xDr, 1, 1, rSz),
         )
-        self.pvc = CrvNode("pvc", pf=rID, shape="triR", scale=rSz / 2)
-        self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
+        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=rSz)
+        self.extra_ikc = CrvNode(
+            "extra_ikc",
+            pf=rID,
+            shape="stick",
+            scale=maths.mul(1, -xDr, 1, rSz / 2),
+            top=1,
+        )
+        self.pvc = CrvNode("pvc", pf=rID, shape="pvc", scale=rSz)
+        self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 3)
 
         self.rigNode.setMsg(
             {
@@ -290,7 +300,7 @@ class LegQd(RigModule):
         inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG
 
         self.ikc.snapTo(self.digit)
-        self.ikc.cv_drop()
+        # self.ikc.cv_drop()
         self.ikc_gimbal = CrvNode(self.ikc).add_gimbal()
         self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
 
@@ -385,9 +395,7 @@ class LegQd(RigModule):
 
         self.ballG_ikc = ballRollG.addOffsetGrp(below=1)
         cName = rID + "_ballG_ikc"
-        CrvNode(self.ballG_ikc)(
-            name=cName, shape="stickC", scale=-rSz * xDr / 3, rotate=(0, 90, 0)
-        )
+        CrvNode(self.ballG_ikc)(name=cName, shape="stickC", scale=-rSz * xDr / 3)
         self.subCtls.append(self.ballG_ikc)
         #
         #   smart ctl setup
@@ -405,18 +413,23 @@ class LegQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.toesCtlsList = []
-        scale = xDr * rSz / 2
 
         for toeJs in self.toesJntList:
             dupTgt = DagNode(toeJs[2])
-            ctl, ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
+            ctl, ikJ, ikH = self.build_digit_ik(dupTgt, xDr * rSz, p=self.ball_fkc)
             ikJ.a.r >> dupTgt.a.r
             ctlList = []
             self.bindJnts.extend(toeJs[:-1])
             fkToeList = toeJs[3:-1]
             for jnt in fkToeList:
                 c = CrvNode(
-                    jnt + "_ctl", shape="stickC", align=jnt, up="-z", scale=scale
+                    jnt + "_ctl",
+                    shape="line",
+                    up="x",
+                    align=jnt,
+                    scale=xDr * rSz,
+                    top=1,
+                    width=2,
                 )
                 ctlList.append(c)
 

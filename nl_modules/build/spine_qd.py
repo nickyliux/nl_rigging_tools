@@ -64,8 +64,8 @@ class SpineQd(RigModule):
         self.setting = CrvNode(
             "setting",
             pf=rID,
-            shape="spiral",
-            scale=rSz * 2,
+            shape="bagua",
+            scale=rSz,
             color=22,
             top=1,
             p=self.IK_PART,
@@ -77,47 +77,38 @@ class SpineQd(RigModule):
             "cog_ctl",
             pf=rID,
             shape="trapezoid",
-            scale=maths.mul(1, 1, 2, rSz),
+            scale=maths.mul(0.5, 1, 2, rSz),
             moveY=60 * rSz,
             color=22,
             p=self.IK_PART,
         )
         self.base_ctl = CrvNode(
-            "base_ctl", pf=rID, shape="circleC", scale=rSz * 4, up="z", width=3, top=1
+            "base_ctl", pf=rID, shape="cube", scale=maths.mul(4, 4, 2, rSz)
         )
         self.fore_ctl = CrvNode(
-            "fore_ctl", pf=rID, shape="circleC", scale=rSz * 4, up="z", width=3, top=1
+            "fore_ctl", pf=rID, shape="cube", scale=maths.mul(4, 4, 2, rSz)
         )
         if self.is_neck():
-            self.fore_ctl(shape="cube", scale=maths.mul(4, 4, 6, rSz))
+            self.fore_ctl(shape="cube", scale=8 * rSz)
 
-        self.mid_ctl = CrvNode("mid_ctl", pf=rID, shape="squR", up="z", scale=rSz * 3)
+        self.mid_ctl = CrvNode(
+            "mid_ctl", pf=rID, shape="cube", scale=maths.mul(4, 4, 1, rSz)
+        )
         self.tangent0_ctl = CrvNode(
-            "tangent0_ctl",
-            pf=rID,
-            shape="triR",
-            scale=rSz,
-            rotate=(0, 180, 90),
-            top=1,
-            color=22,
+            "tangent0_ctl", pf=rID, shape="triR", scale=rSz, rotate=(0, 180, 90), top=1
         )
-        # moveY=25 * rSz,
         self.tangent1_ctl = CrvNode(
-            "tangent1_ctl",
-            pf=rID,
-            shape="triR",
-            scale=rSz,
-            rotate=(0, 0, 90),
-            top=1,
-            color=22,
+            "tangent1_ctl", pf=rID, shape="triR", scale=rSz, rotate=(0, 0, 90), top=1
         )
-        # moveY=25 * rSz,
         if self.END_CTL:
             self.end_ctl = CrvNode(
-                "end_ctl", pf=rID, shape="squR", scale=rSz / 2, moveY=20 * rSz
+                "end_ctl",
+                pf=rID,
+                shape="cube",
+                scale=maths.mul(3, 1, 1, rSz),
+                top=1,
+                moveY=16 * rSz,
             )
-            # shape="rotator",
-            # rotate=(-30, 0, 0),
 
         self.rigNode.setMsg(
             {

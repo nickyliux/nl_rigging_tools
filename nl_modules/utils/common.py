@@ -193,7 +193,7 @@ def nlRivet(
     pinLocs = []
 
     for i, coord in enumerate(coordList):
-        loc = LocNode(f"rivetLoc_{i}_#", size=size)
+        loc = LocNode(f"rivetLoc_{i}_#", size=size, color=13)
         scaleAttr >> loc.a.scaleX
         scaleAttr >> loc.a.scaleY
         scaleAttr >> loc.a.scaleZ

@@ -125,11 +125,11 @@ class GrpNode(DagNode):
 
     def get_side_color(self):
         """Return color depending on side"""
-        color = Color.D_YELLOW
+        color = 25
         if str(self.node).startswith("lf"):
-            color = Color.L_BLUE
+            color = 6
         elif str(self.node).startswith("rt"):
-            color = Color.PINK
+            color = 4
         return color
 
     def add_gimbal(self, relScale=0.8, attrTgt=None, dv=0):

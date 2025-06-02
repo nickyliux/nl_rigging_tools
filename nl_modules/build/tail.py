@@ -30,8 +30,8 @@ class Tail(RigModule):
         self.fkJnt = []
         self.ikCtl = []
         self.ikJnt = []
-        self.ikOffsetCtl = []
-        self.ikOffsetJnt = []
+        self.ofsCtl = []
+        self.ofsJnt = []
         self.rbJnt = []
         self.rbSrf1 = None
         self.rbSrf2 = None
@@ -45,13 +45,7 @@ class Tail(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting = CrvNode(
-            "setting",
-            pf=rID,
-            shape="spiral",
-            scale=rSz * 3,
-            color=22,
-            top=1,
-            p=self.CTL_DATA,
+            "setting", pf=rID, shape="bagua", scale=rSz, color=22, top=1
         )
         self.setting.a.add("stretchy", min=0, max=1)
         moduleScale = self.setting.a.add("moduleScale", min=0.01, dv=1)
@@ -105,13 +99,15 @@ class Tail(RigModule):
             size=rSz * 4,
             color=6,
         )
+        print(self.ikJnt)
+        SrfNode(self.rbSrf1).weightTo(self.ikJnt, mi=4, dr=6, chain=0)
 
         for i in range(0, 5):
             ctl = CrvNode(
                 f"{i}_ikc",
                 pf=rID,
-                shape="sphere2",
-                scale=rSz * 4,
+                shape="sphere",
+                scale=rSz * 3,
                 align=self.ikJnt[i],
                 addOfs=1,
                 color=25,
@@ -124,9 +120,7 @@ class Tail(RigModule):
 
             self.rigNode.setMsg({f"ikc{i}": ctl})
 
-        SrfNode(self.rbSrf1).weightTo(self.ikJnt, mi=4, dr=6, chain=0)
-
-        self.setting.snapTo(self.ikCtl[0], ofs=maths.mul(0, 20, 0, rSz))
+        self.setting.snapTo(self.ikCtl[0], p=self.FK_PART)
         self.ikCtl[0].cstPar(self.setting, mo=1)
 
     def build_fk(self):
@@ -181,52 +175,52 @@ class Tail(RigModule):
         #
         #   cnnnect chain grps to fkCtl offset
         #
+        # for ctl in self.fkCtl:
+        #     ctl.addOffsetGrp()
+
         for i in range(self.FK_BONE_NUM + 1):
             chainGrps[i].a.t >> self.fkCtl[i].offset.a.t
             chainGrps[i].a.r >> self.fkCtl[i].offset.a.r
         #
-        #   build lowest ikCtl layer
+        #   build offset ctl layer
         #
         for i in range(self.FK_BONE_NUM + 1):
             ctl = CrvNode(
-                f"{i}_offset_ikc",
+                f"{i}_ofs_ctl",
                 pf=rID,
                 shape="sphere2",
                 scale=rSz / 2,
                 align=self.fkCtl[i],
                 p=self.fkCtl[i],
-                moveY=rSz * 18,
+                moveY=rSz * 25,
             )
-            jnt = JntNode(f"{i}_offset_ikj", pf=rID, align=ctl, p=ctl, color=13)
+            jnt = JntNode(f"{i}_ofs_jnt", pf=rID, align=ctl, p=ctl, color=13)
 
-            self.ikOffsetCtl.append(ctl)
-            self.ikOffsetJnt.append(jnt)
+            self.ofsCtl.append(ctl)
+            self.ofsJnt.append(jnt)
 
-        SrfNode(self.rbSrf2).weightTo(self.ikOffsetJnt, chain=0, mi=2, dr=6)
+        SrfNode(self.rbSrf2).weightTo(self.ofsJnt, chain=0, mi=2, dr=6)
 
-        self.isolate_align(self.ikCtl[0], [self.ikCtl[0].offset, self.masterC])
+        # self.isolate_align(self.ikCtl[0], [self.ikCtl[0].offset, self.masterC])
 
         mc.delete(self.rootJ)
         self.rootJ = self.fkJnt[0]
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
-        # scalable
-        self.ikCtl[0].a.s >> self.FK_PART.a.s
-
     def setup_vis(self):
         self.ctl_vis_toggle(
-            self.setting.a.add("ikCtl", k=0, min=0, max=1, dv=1),
+            self.setting.a.add("ikCtl", k=0, attrType="bool", dv=1),
             onList=[self.ikCtl[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("fkCtl", k=0, min=0, max=1, dv=1),
+            self.setting.a.add("fkCtl", k=0, attrType="bool", dv=1),
             onList=[self.fkCtl[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("subCtl", k=0, min=0, max=1, dv=0),
-            onList=self.ikOffsetCtl,
+            self.setting.a.add("subCtl", k=0, attrType="bool", dv=1),
+            onList=self.ofsCtl,
         )
-        mc.hide(self.ikJnt, self.fkJnt, self.ikOffsetJnt)
+        mc.hide(self.ikJnt, self.fkJnt, self.ofsJnt)
 
     def setup_channel(self):
         for ctl in self.fkCtl + self.ikCtl:
@@ -243,7 +237,7 @@ class Tail(RigModule):
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
-        self.add_ctl_set(self.ikCtl + self.fkCtl + self.ikOffsetCtl + [self.setting])
+        self.add_ctl_set(self.ikCtl + self.fkCtl + self.ofsCtl + [self.setting])
         self.setup_anchor_module({"anchorF1": self.ikCtl[0].offset.offset})
         self.setup_proxy()
         self.setup_vis()

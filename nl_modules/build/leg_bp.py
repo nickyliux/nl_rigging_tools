@@ -112,7 +112,7 @@ class LegBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting = CrvNode(
-            "setting", pf=rID, shape="spiral", scale=-rSz * 2, color=22, top=1
+            "setting", pf=rID, shape="bagua", scale=-rSz, color=22, top=1
         )
         self.hip_fkc = CrvNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
@@ -129,7 +129,7 @@ class LegBp(RigModule):
         self.ball_fkc = CrvNode(
             "ball_fkc", pf=rID, up="x", shape="squR", scale=rSz * xDr / 2
         )
-        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=maths.mul(1.5, 1, 2, rSz))
+        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=rSz)
         self.pvc = CrvNode("pvc", pf=rID, shape="pvc", scale=rSz)
         self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
 
