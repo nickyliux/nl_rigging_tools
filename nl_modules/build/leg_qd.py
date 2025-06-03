@@ -128,28 +128,15 @@ class LegQd(RigModule):
         self.lwr_fkc = CrvNode("lwr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.palm_fkc = CrvNode("palm_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.digit_fkc = CrvNode("digit_fkc", pf=rID, shape="squR", up="x", scale=rSz)
-        self.ball_fkc = CrvNode(
-            "ball_fkc",
-            pf=rID,
-            shape="fk_rotator",
-            up="x",
-            scale=maths.mul(-xDr, 1, 1, rSz),
-        )
+        self.ball_fkc = CrvNode("ball_fkc", pf=rID, shape="squR", up="x", scale=rSz / 2)
         self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=rSz)
         self.extra_ikc = CrvNode(
-            "extra_ikc",
-            pf=rID,
-            shape="sphere2",
-            scale=rSz,
-            moveY=-xDr * rSz * 13,
-            top=1,
+            "extra_ikc", pf=rID, shape="fk_rotator2", scale=-xDr * rSz * 3, top=1
         )
-        self.pvc = CrvNode("pvc", pf=rID, shape="pvc", scale=rSz)
-        # self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 3)
+        self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=rSz)
         self.smart_ctl = CrvNode(
             "smart_ctl", pf=rID, shape="squR", top=1, scale=rSz / 4
         )
-
         self.rigNode.setMsg(
             {
                 "setting": self.setting,
@@ -404,7 +391,9 @@ class LegQd(RigModule):
 
         self.ballG_ikc = ballRollG.addOffsetGrp(below=1)
         cName = rID + "_ballG_ikc"
-        CrvNode(self.ballG_ikc)(name=cName, shape="stickC", scale=-rSz * xDr / 3)
+        CrvNode(self.ballG_ikc)(
+            name=cName, shape="stickC", scale=-rSz * xDr / 3, rotate=(0, 90, 0)
+        )
         self.subCtls.append(self.ballG_ikc)
         #
         #   smart ctl setup
@@ -638,6 +627,7 @@ class LegQd(RigModule):
         self.pvc.a.showAttr(t=1)
         self.smart_ctl.a.showAttr(r=1)
         self.extra_ikc.a.showAttr(r=1)
+        self.ballG_ikc.a.showAttr(r=1)
 
         for ctl in self.fkCtl + self.subCtls + [self.ikc, self.pvc]:
             ctl.a.showAttr(t=1, r=1)

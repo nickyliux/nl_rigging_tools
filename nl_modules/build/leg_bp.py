@@ -130,8 +130,8 @@ class LegBp(RigModule):
             "ball_fkc", pf=rID, up="x", shape="squR", scale=rSz * xDr / 2
         )
         self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=rSz)
-        self.pvc = CrvNode("pvc", pf=rID, shape="pvc", scale=rSz)
-        self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="roll", scale=rSz / 2)
+        self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=rSz)
+        self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="squR", scale=rSz / 2)
 
         self.rigNode.setMsg(
             {
@@ -417,10 +417,8 @@ class LegBp(RigModule):
         self.ikCtl.append(self.ballG_ikc)
 
         # Smart Ctl setup
-        self.smart_ctl.alignTo(self.master_guide)
-        self.smart_ctl.a.ty.set(0)
+        self.smart_ctl.snapAlignTo(toeRollG, self.master_guide)
         self.smart_ctl | self.ikc_gimbal
-        self.smart_ctl.a.tz.set(rSz * 30)
         self.smart_ctl.addOffsetGrp()
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry
