@@ -78,14 +78,14 @@ class JntNode(GrpNode):
         self.a.r.set(0, 0, 0)
         self.a.s.set(1, 1, 1)
 
-    def orientJnt(self, aim=(1, 0, 0), u=(0, 1, 0)):
+    def orientJnt(self, aim=(1, 0, 0), u=(0, 1, 0), **kwargs):
         """Orient joint"""
         # tgtRoot = JntNode(tgtRoot)
         for jnt in self.allChildrenJt2:
             child = jnt.children
             if len(child) > 0:
                 child[0].parentToWorld()
-                child[0].cstAim(jnt, aim=aim, u=u, keep=0)
+                child[0].cstAim(jnt, aim=aim, u=u, keep=0, **kwargs)
                 child[0] | jnt
             else:
                 JntNode(jnt).resetOrient()
