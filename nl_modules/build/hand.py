@@ -74,8 +74,7 @@ class Hand(RigModule):
                     shape="squR",
                     align=fgr,
                     scale=rSz / 3,
-                    up="z",
-                    move=(0, 0, xDr * rSz * -10),
+                    up="x",
                 )
                 ctlList.append(ctl)
             self.build_fk_with_ctl3(fgrs, ctlList, count=2, p=self.CTL_DATA)

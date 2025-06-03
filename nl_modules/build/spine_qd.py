@@ -66,6 +66,7 @@ class SpineQd(RigModule):
             pf=rID,
             shape="bagua",
             scale=rSz,
+            moveY=rSz * 10,
             color=22,
             top=1,
             p=self.IK_PART,
@@ -104,10 +105,10 @@ class SpineQd(RigModule):
             self.end_ctl = CrvNode(
                 "end_ctl",
                 pf=rID,
-                shape="cube",
-                scale=maths.mul(3, 1, 1, rSz),
+                shape="fk_rotator2",
+                scale=rSz * 3,
                 top=1,
-                moveY=16 * rSz,
+                rotate=(0, 90, 0),
             )
 
         self.rigNode.setMsg(

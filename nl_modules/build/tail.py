@@ -45,7 +45,13 @@ class Tail(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting = CrvNode(
-            "setting", pf=rID, shape="bagua", scale=rSz, color=22, top=1
+            "setting",
+            pf=rID,
+            shape="bagua",
+            scale=rSz * 2,
+            color=22,
+            top=1,
+            moveY=rSz * 10,
         )
         self.setting.a.add("stretchy", min=0, max=1)
         moduleScale = self.setting.a.add("moduleScale", min=0.01, dv=1)
@@ -209,7 +215,7 @@ class Tail(RigModule):
 
     def setup_vis(self):
         self.ctl_vis_toggle(
-            self.setting.a.add("ikCtl", k=0, attrType="bool", dv=1),
+            self.setting.a.add("ikCtl", k=0, attrType="bool", dv=0),
             onList=[self.ikCtl[0]],
         )
         self.ctl_vis_toggle(
@@ -217,7 +223,7 @@ class Tail(RigModule):
             onList=[self.fkCtl[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("subCtl", k=0, attrType="bool", dv=1),
+            self.setting.a.add("subCtl", k=0, attrType="bool", dv=0),
             onList=self.ofsCtl,
         )
         mc.hide(self.ikJnt, self.fkJnt, self.ofsJnt)

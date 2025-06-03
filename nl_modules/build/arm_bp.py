@@ -73,14 +73,9 @@ class ArmBp(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
         self.setting = CrvNode(
-            "setting",
-            pf=rID,
-            shape="sphere2",
-            scale=rSz * 2,
-            color=1,
-            top=1,
-            p=self.CTL_DATA,
+            "setting", pf=rID, shape="bagua", scale=rSz * 2, color=22, top=1
         )
+        # p=self.CTL_DATA,
         self.clavicle_fkc = CrvNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
         )
@@ -261,8 +256,8 @@ class ArmBp(RigModule):
             "ballRoll", pf=rID, align=ball_guide, p=palmOut_loc, size=rSz
         )
 
-        self.setting.alignTo(self.palm, ofs=(0, rSz * 15 * xDr, 0))
-        self.palm.cstPar(self.setting, mo=1)
+        self.setting.snapTo(self.clavicle, p=self.CTL_DATA)
+        self.clavicle.cstPar(self.setting, mo=1)
 
         self.setting.a.addSep()
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)

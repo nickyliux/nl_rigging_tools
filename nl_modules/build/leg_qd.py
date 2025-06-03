@@ -112,6 +112,7 @@ class LegQd(RigModule):
             pf=rID,
             shape="bagua",
             scale=rSz,
+            moveY=rSz * 10,
             color=22,
             top=1,
             p=self.CTL_DATA,
@@ -415,7 +416,8 @@ class LegQd(RigModule):
 
         for toeJs in self.toesJntList:
             dupTgt = DagNode(toeJs[2])
-            ctl, ikJ, ikH = self.build_digit_ik(dupTgt, xDr * rSz / 10, p=self.ball_fkc)
+            scale = xDr * rSz / 8
+            ctl, ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
             ikJ.a.r >> dupTgt.a.r
             ctlList = []
             self.bindJnts.extend(toeJs[:-1])
@@ -426,7 +428,7 @@ class LegQd(RigModule):
                     shape="squR",
                     up="x",
                     align=jnt,
-                    scale=xDr * rSz / 10,
+                    scale=scale,
                     top=1,
                     width=2,
                 )

@@ -6,7 +6,7 @@ from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.utils import common, utils_node as ut
+from nl_modules.utils import common, utils_node as ut, maths
 from nl_modules.utils.color import Color
 
 BIND_JNT_SET = "bind_jnt_set"
