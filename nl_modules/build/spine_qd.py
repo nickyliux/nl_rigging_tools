@@ -106,7 +106,7 @@ class SpineQd(RigModule):
                 "end_ctl",
                 pf=rID,
                 shape="fk_rotator2",
-                scale=rSz * 3,
+                scale=rSz * 4,
                 top=1,
                 rotate=(0, 90, 0),
             )

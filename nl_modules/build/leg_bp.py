@@ -131,7 +131,9 @@ class LegBp(RigModule):
         )
         self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=rSz)
         self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=rSz)
-        self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="squR", scale=rSz / 2)
+        self.smart_ctl = CrvNode(
+            "smart_ctl", pf=rID, shape="squR", scale=rSz / 2, width=2
+        )
 
         self.rigNode.setMsg(
             {
@@ -413,6 +415,7 @@ class LegBp(RigModule):
             shape="stickC",
             scale=-rSz * xDr / 2,
             rotate=(0, 90, 0),
+            width=2,
         )
         self.ikCtl.append(self.ballG_ikc)
 
@@ -428,7 +431,7 @@ class LegBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.toesCtlsList = []
-        scale = xDr * rSz / 10
+        scale = xDr * rSz / 5
 
         for toeJs in self.toesJntList:
             dupTgt = DagNode(toeJs[1])

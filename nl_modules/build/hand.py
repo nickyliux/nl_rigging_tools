@@ -39,9 +39,7 @@ class Hand(RigModule):
 
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
-        self.smart_ctl = CrvNode(
-            "smart_ctl", pf=rID, shape="roll", up="x", scale=rSz * 2
-        )
+        self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="roll", up="x", scale=rSz)
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
 
     def build(self):
