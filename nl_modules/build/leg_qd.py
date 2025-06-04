@@ -130,13 +130,15 @@ class LegQd(RigModule):
         self.palm_fkc = CrvNode("palm_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.digit_fkc = CrvNode("digit_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.ball_fkc = CrvNode("ball_fkc", pf=rID, shape="squR", up="x", scale=rSz / 2)
-        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=rSz)
+        self.ikc = CrvNode(
+            "ikc", pf=rID, shape="cube", scale=maths.mul(1, 0.5, 1, rSz * 2)
+        )
         self.extra_ikc = CrvNode(
             "extra_ikc", pf=rID, shape="fk_rotator2", scale=-xDr * rSz * 3, top=1
         )
         self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=rSz)
         self.smart_ctl = CrvNode(
-            "smart_ctl", pf=rID, shape="squR", top=1, scale=rSz / 4
+            "smart_ctl", pf=rID, shape="squR", width=2, scale=rSz / 4
         )
         self.rigNode.setMsg(
             {
