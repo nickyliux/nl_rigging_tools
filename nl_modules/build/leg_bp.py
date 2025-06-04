@@ -132,7 +132,7 @@ class LegBp(RigModule):
         self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=rSz)
         self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=rSz)
         self.smart_ctl = CrvNode(
-            "smart_ctl", pf=rID, shape="squR", scale=rSz / 2, width=2
+            "smart_ctl", pf=rID, shape="squR", scale=rSz / 4, width=2
         )
 
         self.rigNode.setMsg(
@@ -434,15 +434,17 @@ class LegBp(RigModule):
         scale = xDr * rSz / 5
 
         for toeJs in self.toesJntList:
-            dupTgt = DagNode(toeJs[1])
-            ctl, ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
+            ikTgt = JntNode(toeJs[1])
+            ctl, ikJ, ikH = self.build_digit_ik(ikTgt, scale=scale, p=self.ball_fkc)
             self.toeIKHs.append(ikH)
-            ikJ.a.r >> dupTgt.a.r
+            ikJ.a.r >> ikTgt.a.r
             ctlList = []
             self.bindJnts.extend(toeJs[:-1])
             fkToeList = toeJs[2:-1]
             for jnt in fkToeList:
-                c = CrvNode(jnt + "_ctl", align=jnt, up="x", scale=scale)
+                c = CrvNode(
+                    jnt + "_ctl", shape="squR", align=jnt, up="x", scale=scale, top=1
+                )
                 ctlList.append(c)
 
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, ori=1)

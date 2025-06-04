@@ -574,15 +574,15 @@ class RigModule(RigBase):
             if t.exists():
                 t.a.add("wsMirror", lock=1, cb=0)
 
-    def build_digit_ik(self, dupTgt, scale=1, p=None):
+    def build_digit_ik(self, ikTgt, scale=1, p=None):
         """IK setup for single digit"""
         from nl_modules.nodel.ik_node import IkNode
 
-        dupTgt = JntNode(dupTgt)
+        # ikTgt = JntNode(ikTgt)
         ctl = CrvNode(
-            dupTgt + "_ikc",
+            ikTgt + "_ikc",
             shape="stickS",
-            align=dupTgt,
+            align=ikTgt,
             up="-z",
             scale=scale,
             addOfs=1,
@@ -590,9 +590,9 @@ class RigModule(RigBase):
             width=2,
             p=p,
         )
-        j1 = JntNode(dupTgt + "_1_ikj", align=ctl, r=self.rigSize, p=dupTgt.parent)
+        j1 = JntNode(ikTgt + "_1_ikj", align=ctl, r=self.rigSize, p=ikTgt.parent)
         j2 = JntNode(
-            dupTgt + "_2_ikj", align=dupTgt.allChildrenJt[-1], r=self.rigSize, p=j1
+            ikTgt + "_2_ikj", align=ikTgt.allChildrenJt[-1], r=self.rigSize, p=j1
         )
         ikH = IkNode(
             j1,
