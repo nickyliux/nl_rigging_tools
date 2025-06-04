@@ -581,30 +581,29 @@ class RigModule(RigBase):
         dupTgt = JntNode(dupTgt)
         ctl = CrvNode(
             dupTgt + "_ikc",
-            shape="squR",
+            shape="stickS",
             align=dupTgt,
-            up="x",
+            up="-z",
             scale=scale,
             addOfs=1,
             top=1,
             width=2,
             p=p,
         )
-        ikJ = dupTgt.duplicate()
-        ikJ.setRadius(2, rel=1)
-
-        endJ = ikJ.allChildrenJt[-1]
-        if endJ not in ikJ.children:
-            endJ | ikJ
-            ikJ.children[0].delete()
-        ikJ.rename(ikJ.name + "_ikJ")
-        endJ.rename(ikJ.name + "_end_ikJ")
-        fix = self.masterC.a["globalScale"]
-        ikH = IkNode(
-            ikJ, sj=ikJ, ee=endJ, scaleFix=fix, RIG_DATA=self.RIG_DATA, vis=0, p=ctl
+        j1 = JntNode(dupTgt + "_1_ikj", align=ctl, r=self.rigSize, p=dupTgt.parent)
+        j2 = JntNode(
+            dupTgt + "_2_ikj", align=dupTgt.allChildrenJt[-1], r=self.rigSize, p=j1
         )
-
-        return ctl, ikJ, ikH
+        ikH = IkNode(
+            j1,
+            sj=j1,
+            ee=j2,
+            scaleFix=self.masterC.a["globalScale"],
+            RIG_DATA=self.RIG_DATA,
+            vis=0,
+            p=ctl,
+        )
+        return ctl, j1, ikH
 
     def get_autoAim_preset(self):
         upW_attr = self.master_guide.a.autoUpWeight

@@ -4,7 +4,7 @@ from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
-from nl_modules.utils import common
+from nl_modules.utils import common, maths
 
 
 class Hand(RigModule):
@@ -73,7 +73,8 @@ class Hand(RigModule):
                     fgr + "_ctl",
                     shape="squR",
                     align=fgr,
-                    scale=rSz / 3,
+                    scale=maths.mul(1, 0.2, 1, rSz / 2),
+                    width=2,
                     up="x",
                 )
                 ctlList.append(ctl)
@@ -86,15 +87,15 @@ class Hand(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.fgrRootCtlArr = []
-        self.hand_grp = GrpNode(rID + "_grp", align=self.rootJ, p=self.RIG_DATA)
+        self.hand_grp = GrpNode(rID + "_grp", align=self.rootJ, p=self.CTL_DATA)
 
         for fgrs, ctls in zip(self.fgrsArr, self.ctlsArr):
-            scale = xDr * rSz * 0.8
+            scale = xDr * rSz / 2
             ctl, ikJ, ikH = self.build_digit_ik(fgrs[1], scale=scale, p=self.hand_grp)
             self.fgrRootCtlArr.append(ctl)
             self.allIkJ.append(ikJ)
             self.allIkH.append(ikH)
-            ikJ.a.r >> ctls[1].parent.parent.a.r
+            ikJ.cstOri(ctls[1].parent.parent, mo=1)
 
         # scalable
         self.rootJ.a.s >> self.PRX_GRP.a.s
