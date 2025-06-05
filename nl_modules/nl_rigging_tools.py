@@ -77,9 +77,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             if uiObj in i:
                 print(i)
         """
-        self.setWindowTitle("skeRT v1")
+        self.setWindowTitle("SkelRT v1.0.0")
         self.setCentralWidget(self.UI)
-        self.setGeometry(0, 0, 220, 650)
+        self.setGeometry(0, 0, 233, 680)
         self.connect_UI()
 
     def connect_UI(self):

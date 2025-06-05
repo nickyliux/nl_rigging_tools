@@ -578,7 +578,6 @@ class RigModule(RigBase):
         """IK setup for single digit"""
         from nl_modules.nodel.ik_node import IkNode
 
-        # ikTgt = JntNode(ikTgt)
         ctl = CrvNode(
             ikTgt + "_ikc",
             shape="stickS",
@@ -588,8 +587,11 @@ class RigModule(RigBase):
             addOfs=1,
             top=1,
             width=2,
-            p=p,
+            p=p.offset,
         )
+        ctl.addOffsetGrp()
+        p.a.ry >> ctl.offset.a.ry
+
         j1 = JntNode(ikTgt + "_1_ikj", align=ctl, r=self.rigSize, p=ikTgt.parent)
         j2 = JntNode(
             ikTgt + "_2_ikj", align=ikTgt.allChildrenJt[-1], r=self.rigSize, p=j1

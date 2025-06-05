@@ -405,7 +405,9 @@ class LegBp(RigModule):
 
         for g in [toeRollG, inRollG, outRollG, heelRollG]:
             ctl = g.addOffsetGrp(below=1)
-            CrvNode(ctl)(name=g.name + "_ctl", shape="diamond", scale=rSz / 2)
+            CrvNode(ctl)(
+                name=g.name + "_ctl", shape="diamond", scale=rSz / 4, color=1, width=2
+            )
             self.subCtls.append(ctl)
 
         self.ballG_ikc = ballRollG.addOffsetGrp(below=1)
