@@ -596,6 +596,7 @@ class RigModule(RigBase):
         j2 = JntNode(
             ikTgt + "_2_ikj", align=ikTgt.allChildrenJt[-1], r=self.rigSize, p=j1
         )
+        j1.cstPoi(ctl.offset)
         ikH = IkNode(
             j1,
             sj=j1,

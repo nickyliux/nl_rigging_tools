@@ -600,6 +600,7 @@ class LegBp(RigModule):
         self.setting.a.showAttr()
         self.pvc.a.showAttr(t=1, r=1)
         self.smart_ctl.a.showAttr(r=1)
+        self.ballG_ikc.a.showAttr(r=1)
 
         for ctl in self.fkCtl + self.subCtls + [self.ikc, self.pvc, self.pin_fkc]:
             ctl.a.showAttr(t=1, r=1)

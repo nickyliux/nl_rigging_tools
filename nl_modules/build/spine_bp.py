@@ -47,9 +47,9 @@ class SpineBp(RigModule):
         self.setting = CrvNode(
             "setting",
             pf=rID,
-            shape="diamond",
-            scale=rSz * 2,
-            color=1,
+            shape="bagua",
+            scale=rSz * 4,
+            color=22,
             top=1,
             p=self.CTL_DATA,
         )
@@ -109,7 +109,7 @@ class SpineBp(RigModule):
         #   modify hipCtl specific for hip rotation
         #
         hipCtl = self.fkCtls[0]
-        hipCtl(p=self.CTL_DATA, addOfs=1, width=3)
+        hipCtl(p=self.CTL_DATA, addOfs=1, width=2)
         hipCtl.offset.snapAlignTo(self.fkJnts[1], self.fkJnts[0])
         hipCtl.cv_move(0, rSz * -20, 0)
         hipCtl.cstPar(self.fkJnts[0], mo=1)

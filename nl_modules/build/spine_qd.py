@@ -65,7 +65,7 @@ class SpineQd(RigModule):
             "setting",
             pf=rID,
             shape="bagua",
-            scale=rSz,
+            scale=rSz * 2,
             moveY=rSz * 10,
             color=22,
             top=1,
@@ -90,7 +90,7 @@ class SpineQd(RigModule):
             "fore_ctl", pf=rID, shape="cube", scale=maths.mul(4, 4, 2, rSz)
         )
         if self.is_neck():
-            self.fore_ctl(shape="cube", scale=8 * rSz)
+            self.fore_ctl(shape="cube", scale=maths.mul(5, 8, 8, rSz))
 
         self.mid_ctl = CrvNode(
             "mid_ctl", pf=rID, shape="cube", scale=maths.mul(4, 4, 1, rSz)

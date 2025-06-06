@@ -49,9 +49,9 @@ class Tail(RigModule):
             pf=rID,
             shape="bagua",
             scale=rSz * 2,
+            moveY=rSz * 10,
             color=22,
             top=1,
-            moveY=rSz * 10,
         )
         self.setting.a.add("stretchy", min=0, max=1)
         moduleScale = self.setting.a.add("moduleScale", min=0.01, dv=1)
@@ -159,7 +159,7 @@ class Tail(RigModule):
             ctl = CrvNode(
                 f"{i}_fkc",
                 pf=rID,
-                shape="circleC",
+                shape="squR",
                 up="z",
                 scale=rSz,
                 align=self.fkJnt[i],

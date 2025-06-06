@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>703</width>
+    <width>395</width>
     <height>827</height>
    </rect>
   </property>
@@ -55,7 +55,7 @@
        <x>0</x>
        <y>10</y>
        <width>220</width>
-       <height>71</height>
+       <height>61</height>
       </rect>
      </property>
      <property name="title">
@@ -166,7 +166,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string/>
+          <string>Mirror reference joints from left to right</string>
          </property>
          <property name="statusTip">
           <string/>
@@ -186,64 +186,32 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>80</y>
+       <y>70</y>
        <width>220</width>
-       <height>161</height>
+       <height>51</height>
       </rect>
      </property>
      <property name="title">
       <string>Misc</string>
      </property>
-     <widget class="QLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>110</y>
-        <width>191</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Retopo  Poly Count #</string>
-      </property>
-     </widget>
-     <widget class="QWidget" name="gridLayoutWidget_3">
+     <widget class="QWidget" name="horizontalLayoutWidget">
       <property name="geometry">
        <rect>
         <x>10</x>
         <y>20</y>
         <width>201</width>
-        <height>83</height>
+        <height>21</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="gridLayout_3">
-       <property name="verticalSpacing">
-        <number>0</number>
-       </property>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="misc_buildJntLineSel_BN">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Build joint line for selected objects</string>
-         </property>
-         <property name="text">
-          <string>+ Joint Line</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
         <widget class="QPushButton" name="misc_buildLineSel_BN">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -257,15 +225,21 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Build line for selected objects</string>
+          <string>Selected objects and create lines between</string>
          </property>
          <property name="text">
           <string>+ Line</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item>
         <widget class="QPushButton" name="misc_importEnvAndShd_BN">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -278,110 +252,11 @@
            <pointsize>8</pointsize>
           </font>
          </property>
-         <property name="text">
-          <string>Import Env / Shd</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="gridLayoutWidget_2">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>130</y>
-        <width>201</width>
-        <height>25</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_2" rowstretch="0">
-       <property name="sizeConstraint">
-        <enum>QLayout::SetFixedSize</enum>
-       </property>
-       <property name="verticalSpacing">
-        <number>0</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QPushButton" name="misc_retopo50_BN">
-         <property name="minimumSize">
-          <size>
-           <width>20</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>99999</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-          </font>
-         </property>
          <property name="toolTip">
-          <string>poly count = 50</string>
+          <string>Import Env scene for better viewport quality</string>
          </property>
          <property name="text">
-          <string>50</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="misc_retopo150_BN">
-         <property name="minimumSize">
-          <size>
-           <width>20</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>99999</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>poly count = 150</string>
-         </property>
-         <property name="text">
-          <string>150</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QPushButton" name="misc_retopo500_BN">
-         <property name="minimumSize">
-          <size>
-           <width>20</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>99999</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>poly count = 500</string>
-         </property>
-         <property name="text">
-          <string>500</string>
+          <string>+ Env</string>
          </property>
         </widget>
        </item>
@@ -392,9 +267,9 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>240</y>
+       <y>180</y>
        <width>220</width>
-       <height>401</height>
+       <height>461</height>
       </rect>
      </property>
      <property name="title">
@@ -406,7 +281,7 @@
         <x>10</x>
         <y>20</y>
         <width>201</width>
-        <height>361</height>
+        <height>421</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_8">
@@ -458,6 +333,149 @@
          </property>
          <property name="text">
           <string>Refresh</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>120</y>
+       <width>221</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Retopo</string>
+     </property>
+     <widget class="QWidget" name="gridLayoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>201</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2" rowstretch="0">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetDefaultConstraint</enum>
+       </property>
+       <property name="verticalSpacing">
+        <number>0</number>
+       </property>
+       <item row="0" column="3">
+        <widget class="QPushButton" name="misc_retopo500_BN">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>99999</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Retopo with poly count 500</string>
+         </property>
+         <property name="text">
+          <string>500</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="misc_retopo50_BN">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>99999</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Retopo with poly count 50</string>
+         </property>
+         <property name="text">
+          <string>50</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="misc_retopo150_BN">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>99999</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Retopo with poly count 150</string>
+         </property>
+         <property name="text">
+          <string>150</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="misc_retopo20_BN">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>99999</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Retopo with poly count 50</string>
+         </property>
+         <property name="text">
+          <string>20</string>
          </property>
         </widget>
        </item>
@@ -552,6 +570,11 @@
       </property>
       <item>
        <property name="text">
+        <string>head</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
         <string>--------  Biped</string>
        </property>
        <property name="flags">
@@ -598,11 +621,6 @@
       </item>
       <item>
        <property name="text">
-        <string>arm qd</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
         <string>leg qd</string>
        </property>
       </item>
@@ -610,20 +628,13 @@
        <property name="text">
         <string>--------</string>
        </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>head</string>
+       <property name="flags">
+        <set>ItemIsDragEnabled|ItemIsUserCheckable</set>
        </property>
       </item>
       <item>
        <property name="text">
         <string>hand</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>tail fk</string>
        </property>
       </item>
       <item>
@@ -638,7 +649,7 @@
         <x>140</x>
         <y>20</y>
         <width>77</width>
-        <height>123</height>
+        <height>111</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_5">
@@ -669,7 +680,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>load component</string>
+          <string>Load component</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -730,7 +741,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>open component</string>
+          <string>open component folder</string>
          </property>
          <property name="text">
           <string>. . .</string>
@@ -746,7 +757,7 @@
        <x>0</x>
        <y>290</y>
        <width>220</width>
-       <height>271</height>
+       <height>241</height>
       </rect>
      </property>
      <property name="font">
@@ -770,7 +781,7 @@
         <x>7</x>
         <y>20</y>
         <width>130</width>
-        <height>241</height>
+        <height>211</height>
        </rect>
       </property>
       <property name="font">
@@ -818,7 +829,7 @@
         <x>140</x>
         <y>20</y>
         <width>77</width>
-        <height>211</height>
+        <height>199</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
@@ -828,29 +839,71 @@
        <property name="verticalSpacing">
         <number>6</number>
        </property>
-       <item row="4" column="0">
-        <widget class="QPushButton" name="preset_del_BN">
+       <item row="1" column="0">
+        <widget class="QPushButton" name="preset_load_BN">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
            <width>60</width>
            <height>9999</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+           <kerning>true</kerning>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Load preset</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
          <property name="text">
-          <string>Del</string>
+          <string>Load</string>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
-        <widget class="QPushButton" name="preset_new_BN">
+       <item row="8" column="0">
+        <widget class="QPushButton" name="component_exploreSkel_BN">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
            <width>60</width>
            <height>9999</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+           <kerning>true</kerning>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>open skeleton scene folder</string>
+         </property>
          <property name="text">
-          <string>New</string>
+          <string>. . .</string>
          </property>
         </widget>
        </item>
@@ -877,78 +930,42 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>import preset skel</string>
+          <string>Import skeleton scene</string>
          </property>
          <property name="text">
           <string>SK</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="preset_load_BN">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
+       <item row="4" column="0">
+        <widget class="QPushButton" name="preset_del_BN">
          <property name="maximumSize">
           <size>
            <width>60</width>
            <height>9999</height>
           </size>
          </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-           <kerning>true</kerning>
-          </font>
-         </property>
          <property name="toolTip">
-          <string>load component</string>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
+          <string>Delete preset</string>
          </property>
          <property name="text">
-          <string>Load</string>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
+          <string>Del</string>
          </property>
         </widget>
        </item>
-       <item row="7" column="0">
-        <widget class="QPushButton" name="component_exploreSkel_BN">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
+       <item row="3" column="0">
+        <widget class="QPushButton" name="preset_new_BN">
          <property name="maximumSize">
           <size>
            <width>60</width>
            <height>9999</height>
           </size>
          </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-           <kerning>true</kerning>
-          </font>
-         </property>
          <property name="toolTip">
-          <string>open component</string>
+          <string>New preset</string>
          </property>
          <property name="text">
-          <string>. . .</string>
+          <string>New</string>
          </property>
         </widget>
        </item>
@@ -975,14 +992,14 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Save Preset</string>
+          <string>Save preset</string>
          </property>
          <property name="text">
           <string>Save</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
+       <item row="7" column="0">
         <widget class="QPushButton" name="preset_refresh_BN">
          <property name="maximumSize">
           <size>
@@ -1006,113 +1023,127 @@
       </layout>
      </widget>
     </widget>
-    <widget class="QWidget" name="gridLayoutWidget_6">
+    <widget class="QGroupBox" name="groupBox_7">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>570</y>
-       <width>202</width>
-       <height>41</height>
+       <x>0</x>
+       <y>530</y>
+       <width>221</width>
+       <height>61</height>
       </rect>
      </property>
-     <layout class="QGridLayout" name="gridLayout_6">
-      <property name="verticalSpacing">
-       <number>6</number>
+     <property name="title">
+      <string>Main</string>
+     </property>
+     <widget class="QWidget" name="gridLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>201</width>
+        <height>21</height>
+       </rect>
       </property>
-      <item row="1" column="0">
-       <widget class="QProgressBar" name="oneClick_PB">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>8</height>
-         </size>
-        </property>
-        <property name="value">
-         <number>0</number>
-        </property>
-        <property name="textVisible">
-         <bool>false</bool>
-        </property>
-        <property name="invertedAppearance">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QPushButton" name="skin_oneClick_BN">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>999</width>
-          <height>999</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Segoe UI</family>
-          <pointsize>8</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>Select ribbon / mesh, 
-or groups containing them</string>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(255, 130, 130);</string>
-        </property>
-        <property name="text">
-         <string>Auto Skin</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="skin_delForAllMeshes_BN">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>999</width>
-          <height>999</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Segoe UI</family>
-          <pointsize>8</pointsize>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>Select ribbon / mesh, 
-or groups containing them</string>
-        </property>
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
-        <property name="text">
-         <string>Del Skin Nodes</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="1">
+        <widget class="QPushButton" name="skin_delForAllMeshes_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>9999</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Delete all skincluster nodes for all meshes</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Del Skin</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="skin_oneClick_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>9999</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Auto skin meshes under mdl_grp</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(255, 130, 130);</string>
+         </property>
+         <property name="text">
+          <string>Auto Skin</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QProgressBar" name="oneClick_PB">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>46</y>
+        <width>200</width>
+        <height>8</height>
+       </rect>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>8</height>
+       </size>
+      </property>
+      <property name="value">
+       <number>0</number>
+      </property>
+      <property name="textVisible">
+       <bool>false</bool>
+      </property>
+      <property name="invertedAppearance">
+       <bool>false</bool>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QWidget" name="curveShape_TB">
@@ -1123,13 +1154,13 @@ or groups containing them</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>110</y>
+       <y>80</y>
        <width>220</width>
-       <height>531</height>
+       <height>551</height>
       </rect>
      </property>
      <property name="title">
-      <string>Shape Library</string>
+      <string>Library</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1140,7 +1171,7 @@ or groups containing them</string>
         <x>10</x>
         <y>100</y>
         <width>206</width>
-        <height>410</height>
+        <height>436</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -1221,7 +1252,7 @@ or groups containing them</string>
           </font>
          </property>
          <property name="toolTip">
-          <string>Replace ctrl shape</string>
+          <string/>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -1272,7 +1303,7 @@ or groups containing them</string>
           </font>
          </property>
          <property name="toolTip">
-          <string>Save selection to library</string>
+          <string>Save (Overwrite) selected to library</string>
          </property>
          <property name="text">
           <string>Save</string>
@@ -1294,7 +1325,7 @@ or groups containing them</string>
           </size>
          </property>
          <property name="toolTip">
-          <string>Delete item in library</string>
+          <string>Delete shape in library</string>
          </property>
          <property name="text">
           <string>Del</string>
@@ -1324,7 +1355,7 @@ or groups containing them</string>
           </font>
          </property>
          <property name="toolTip">
-          <string>Replace ctrl shape</string>
+          <string>Load (Replace) shape to selected</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -1349,7 +1380,7 @@ or groups containing them</string>
           </size>
          </property>
          <property name="toolTip">
-          <string>Add selection to library</string>
+          <string>New selected to library</string>
          </property>
          <property name="text">
           <string>New</string>
@@ -1365,11 +1396,11 @@ or groups containing them</string>
        <x>0</x>
        <y>10</y>
        <width>220</width>
-       <height>101</height>
+       <height>71</height>
       </rect>
      </property>
      <property name="title">
-      <string>Curve Shape</string>
+      <string> Edit</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1384,46 +1415,6 @@ or groups containing them</string>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_9">
-       <item row="0" column="1">
-        <widget class="QPushButton" name="shapeRotaY_BN">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>20</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>9999</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Rotate Y</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>RY</string>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="0">
         <widget class="QPushButton" name="shapeRotaX_BN">
          <property name="enabled">
@@ -1460,7 +1451,47 @@ or groups containing them</string>
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>RX</string>
+          <string>Rx</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="shapeRotaY_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>9999</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Rotate Y</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Ry</string>
          </property>
         </widget>
        </item>
@@ -1500,26 +1531,11 @@ or groups containing them</string>
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>RZ</string>
+          <string>Rz</string>
          </property>
         </widget>
        </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="gridLayoutWidget_10">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>40</y>
-        <width>201</width>
-        <height>54</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_10">
-       <property name="verticalSpacing">
-        <number>0</number>
-       </property>
-       <item row="0" column="1">
+       <item row="0" column="3">
         <widget class="QPushButton" name="onTop_BN">
          <property name="enabled">
           <bool>true</bool>
@@ -1530,6 +1546,12 @@ or groups containing them</string>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -1545,17 +1567,17 @@ or groups containing them</string>
           </font>
          </property>
          <property name="toolTip">
-          <string>Scale down</string>
+          <string>Always on top</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>On Top</string>
+          <string>Top On</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
+       <item row="0" column="4">
         <widget class="QPushButton" name="onTopOff_BN">
          <property name="enabled">
           <bool>true</bool>
@@ -1566,6 +1588,12 @@ or groups containing them</string>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -1581,17 +1609,29 @@ or groups containing them</string>
           </font>
          </property>
          <property name="toolTip">
-          <string>Scale down</string>
+          <string>Always on top off</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>On Top Off</string>
+          <string>Top Off</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
+      </layout>
+     </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>44</y>
+        <width>201</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
         <widget class="QPushButton" name="shapeScaleDn_BN">
          <property name="enabled">
           <bool>true</bool>
@@ -1602,6 +1642,12 @@ or groups containing them</string>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -1623,11 +1669,11 @@ or groups containing them</string>
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Size -</string>
+          <string>&lt;&lt; Size</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
+       <item>
         <widget class="QPushButton" name="shapeScaleUp_BN">
          <property name="enabled">
           <bool>true</bool>
@@ -1637,6 +1683,12 @@ or groups containing them</string>
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
          </property>
          <property name="maximumSize">
           <size>
@@ -1659,7 +1711,7 @@ or groups containing them</string>
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Size +</string>
+          <string>Size &gt;&gt;</string>
          </property>
         </widget>
        </item>
@@ -2040,10 +2092,10 @@ or groups containing them</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>550</y>
-     <width>150</width>
-     <height>17</height>
+     <x>279</x>
+     <y>537</y>
+     <width>111</width>
+     <height>20</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -2083,10 +2135,10 @@ or groups containing them</string>
   <widget class="QPushButton" name="skin_refJnt_BN">
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>573</y>
-     <width>150</width>
-     <height>17</height>
+     <x>279</x>
+     <y>560</y>
+     <width>111</width>
+     <height>20</height>
     </rect>
    </property>
    <property name="sizePolicy">

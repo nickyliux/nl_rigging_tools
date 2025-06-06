@@ -143,17 +143,13 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.skin_oneClick_BN.clicked.connect(self.skin_oneClick)
         self.UI.skin_delForAllMeshes_BN.clicked.connect(self.skin_delForAllMeshes)
 
-        self.UI.misc_retopo50_BN.clicked.connect(
-            partial(modeling.mesh_retopo, faceNum=50)
-        )
-        self.UI.misc_retopo150_BN.clicked.connect(
-            partial(modeling.mesh_retopo, faceNum=150)
-        )
-        self.UI.misc_retopo500_BN.clicked.connect(
-            partial(modeling.mesh_retopo, faceNum=500)
-        )
+        self.UI.misc_retopo20_BN.clicked.connect(partial(modeling.retopo, faceNum=20))
+        self.UI.misc_retopo50_BN.clicked.connect(partial(modeling.retopo, faceNum=50))
+        self.UI.misc_retopo150_BN.clicked.connect(partial(modeling.retopo, faceNum=150))
+        self.UI.misc_retopo500_BN.clicked.connect(partial(modeling.retopo, faceNum=500))
+
         self.UI.misc_buildLineSel_BN.clicked.connect(CrvNode.buildLineLinkedSel)
-        self.UI.misc_buildJntLineSel_BN.clicked.connect(JntNode.buildJntLineSel)
+        # self.UI.misc_buildJntLineSel_BN.clicked.connect(JntNode.buildJntLineSel)
         self.UI.misc_importEnvAndShd_BN.clicked.connect(
             self.misc_importEnvAndShd_BN_clicked
         )

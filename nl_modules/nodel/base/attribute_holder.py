@@ -100,7 +100,7 @@ class AttributeHolder:
         """
         mc.makeIdentity(self.node, **kwargs)
 
-    def showAttr(self, *args, show=True, t=False, r=False, s=False, v=False):
+    def showAttr(self, *args, show=True, t=0, r=0, s=0, v=0):
         """Show/(Hide & Lock) attribute
         e.g.
             obj.a.showAttr()         # hide & lock t, r, s
