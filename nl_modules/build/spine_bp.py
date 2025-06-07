@@ -51,16 +51,12 @@ class SpineBp(RigModule):
         self.setting = CrvNode(
             "setting", pf=rID, shape="bagua", scale=rSz * 4, top=1, moveZ=rSz * -100
         )
-        self.cog_ctl = CrvNode("cog_ctl", pf=rID, shape="cog2", scale=rSz * 2, color=22)
+        self.cog_ctl = CrvNode("cog_ctl", pf=rID, shape="cog2", scale=rSz * 2)
         self.chest_ctl = CrvNode(
             "chest_ctl", pf=rID, shape="cube", scale=maths.mul(1, 0.5, 1, rSz * 6)
         )
         self.mid_ctl = CrvNode(
-            "mid_ctl",
-            pf=rID,
-            shape="cube",
-            scale=maths.mul(1, 0.3, 1, rSz * 6),
-            color=25,
+            "mid_ctl", pf=rID, shape="cube", scale=maths.mul(1, 0.3, 1, rSz * 6)
         )
         self.hip_ctl = CrvNode(
             "hip_ctl", pf=rID, shape="cube", scale=maths.mul(1, 0.5, 1, rSz * 6)

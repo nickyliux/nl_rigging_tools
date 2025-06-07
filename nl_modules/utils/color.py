@@ -75,17 +75,30 @@ class Color(Enum):
             setColor('obj1', 13)
             setColor(['obj1', 'obj2'], Color.RED)
         """
-        colorInt = val or 0
-        state = colorInt != 0
+        colorToSet = val or 0
+        state = colorToSet != 0
 
-        if isinstance(val, Enum):
-            if val.name == "OFF":
-                state = False
+        if isinstance(val, (Enum, int)):
+            if isinstance(val, Enum):
+                if val.name == "OFF":
+                    state = False
+                else:
+                    colorToSet = val.value
             else:
-                colorInt = val.value
+                colorToSet = val
 
-        for node in cls._getExpanded(objs):
-            if mc.objExists(f"{node}.overrideEnabled"):
-                mc.setAttr(f"{node}.overrideEnabled", state)
-                if mc.objExists(f"{node}.overrideColor"):
-                    mc.setAttr(f"{node}.overrideColor", colorInt)
+            for node in cls._getExpanded(objs):
+                if mc.objExists(f"{node}.overrideEnabled"):
+                    mc.setAttr(f"{node}.overrideEnabled", state)
+                    if mc.objExists(f"{node}.overrideColor"):
+                        mc.setAttr(f"{node}.overrideColor", colorToSet)
+
+        elif isinstance(val, (list, tuple)):
+
+            for node in cls._getExpanded(objs):
+                if mc.objExists(f"{node}.overrideEnabled"):
+                    mc.setAttr(f"{node}.overrideEnabled", 1)
+                    if mc.objExists(f"{node}.overrideRGBColors"):
+                        mc.setAttr(f"{node}.overrideRGBColors", 1)
+                        if mc.objExists(f"{node}.overrideColorRGB"):
+                            mc.setAttr(f"{node}.overrideColorRGB", *val, type="double3")

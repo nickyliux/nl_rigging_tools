@@ -123,15 +123,6 @@ class GrpNode(DagNode):
             else:
                 mc.scale(*args, self.cvs, **kwargs)
 
-    def get_side_color(self):
-        """Return color depending on side"""
-        color = 22
-        if str(self.node).startswith("lf"):
-            color = 6
-        elif str(self.node).startswith("rt"):
-            color = 13
-        return color
-
     def add_gimbal(self, relScale=0.8, attrTgt=None, dv=0):
         """Add a gimbal control below itself and attr at attrOn to link its visibility
         e.g.

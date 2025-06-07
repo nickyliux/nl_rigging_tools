@@ -114,7 +114,7 @@ class LegQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting = CrvNode(
-            "setting", pf=rID, shape="bagua", scale=rSz, top=1, moveY=rSz * 10
+            "setting", pf=rID, shape="bagua", scale=rSz, top=1, moveY=rSz * 10, color=22
         )
         self.hip_fkc = CrvNode(
             "hip_fkc",
@@ -122,18 +122,22 @@ class LegQd(RigModule):
             shape="squR",
             scale=xDr * rSz / 3,
             top=1,
-            moveX=-xDr * rSz * 10,
+            moveY=-xDr * rSz * 20,
         )
         self.upr_fkc = CrvNode("upr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.lwr_fkc = CrvNode("lwr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.palm_fkc = CrvNode("palm_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.digit_fkc = CrvNode("digit_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.ball_fkc = CrvNode("ball_fkc", pf=rID, shape="squR", up="x", scale=rSz / 2)
-        self.ikc = CrvNode(
-            "ikc", pf=rID, shape="cube", scale=maths.mul(1, 0.5, 1, rSz * 2)
-        )
+        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=maths.mul(1, 1, 1, rSz))
         self.extra_ikc = CrvNode(
-            "extra_ikc", pf=rID, shape="fk_rotator2", scale=-xDr * rSz * 3, top=1
+            "extra_ikc",
+            pf=rID,
+            shape="cube",
+            scale=rSz,
+            top=1,
+            moveY=-xDr * rSz * 10,
+            # "extra_ikc", pf=rID, shape="fk_rotator2", scale=-xDr * rSz * 3, top=1
         )
         self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=rSz)
         self.smart_ctl = CrvNode(
