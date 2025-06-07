@@ -55,21 +55,18 @@ class SpineQd(RigModule):
         self.two_ikH = None
         self.anchorToRbj = None
 
-    def gen_guide_sk(self):
-        self.gen_guide_sk_module(["rt", "md", "tp"])
+    def genSk(self):
+        self.genSk_module()
+        root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
+
+        self.rootJ = root_list[0]
+        self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting = CrvNode(
-            "setting",
-            pf=rID,
-            shape="bagua",
-            scale=rSz * 2,
-            moveY=rSz * 10,
-            color=22,
-            top=1,
-            p=self.IK_PART,
+            "setting", pf=rID, shape="bagua", scale=rSz * 2, top=1, moveY=rSz * 10
         )
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
         self.setting.a.add("moduleScale", min=0.01, dv=1)
@@ -80,7 +77,6 @@ class SpineQd(RigModule):
             shape="trapezoid",
             scale=maths.mul(0.5, 1, 2, rSz),
             moveY=60 * rSz,
-            color=22,
             p=self.IK_PART,
         )
         self.base_ctl = CrvNode(
@@ -93,7 +89,7 @@ class SpineQd(RigModule):
             self.fore_ctl(shape="cube", scale=maths.mul(5, 8, 8, rSz))
 
         self.mid_ctl = CrvNode(
-            "mid_ctl", pf=rID, shape="cube", scale=maths.mul(4, 4, 1, rSz)
+            "mid_ctl", pf=rID, shape="cube", scale=maths.mul(4, 4, 1, rSz), color=25
         )
         self.tangent0_ctl = CrvNode(
             "tangent0_ctl", pf=rID, shape="triR", scale=rSz, rotate=(0, 180, 90), top=1
@@ -180,7 +176,7 @@ class SpineQd(RigModule):
         else:
             self.cog_ctl.snapTo(self.RT_GUIDE, addOfs=1)
 
-        self.setting.snapTo(self.RT_GUIDE)  # , ofs=(0, rSz * 30, 0))
+        self.setting.snapTo(self.RT_GUIDE, p=self.IK_PART)
         self.cog_ctl.cstPar(self.setting, mo=1)
         #
         #   parenting

@@ -16,7 +16,7 @@ class LegBp(RigModule):
     """Build leg component with given rigNode.
     e.g.
         n = Leg('lfArm0_RGN')  # n.__dict__
-        n.gen_guide_sk()
+        n.genSk()
         n.build()
     """
 
@@ -87,9 +87,10 @@ class LegBp(RigModule):
         self.scapularG = None
         self.scap_fkc = None
 
-    def gen_guide_sk(self):
+    def genSk(self):
         rID, rSz, xDr = self.getMyVar()
-        self.gen_guide_sk_module(["hip", "upr", "lwr", "palm", "ball", "tip"])
+        self.genSk_module()
+        root_list = self.gen_sk_fr_names(["hip", "upr", "lwr", "palm", "ball", "tip"])
 
         if self.TOE_BONES:
             self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
@@ -108,11 +109,14 @@ class LegBp(RigModule):
                 fgr_jnts[0].orientJnt(aim=(xDr, 0, 0), u=(0, 0, -xDr))
                 fgr_jnts[0] | self.toesRootJ
 
+            self.rootJ = root_list[0]
+            self.rigNode.setMsg({"rootJ": self.rootJ})
+
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting = CrvNode(
-            "setting", pf=rID, shape="bagua", scale=-rSz, color=22, top=1
+            "setting", pf=rID, shape="bagua", scale=-rSz * 2, top=1, color=22
         )
         self.hip_fkc = CrvNode(
             "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr

@@ -22,7 +22,7 @@
 #
 #
 #
-#     def gen_guide_sk(self):
+#     def genSk(self):
 #         s = self.rigSize
 #         root = self.gen_sk_fr_names(["root"], pf=self.rigID)[0]
 #         root | self.SKL
@@ -41,7 +41,7 @@
 #             fgr_jnts[0].freezeXf()
 #             fgr_jnts[0] | root
 #             fgr_roots.append(fgr_jnts[0])
-#         self.gen_guide_sk_module()
+#         self.genSk_module()
 #
 #
 #

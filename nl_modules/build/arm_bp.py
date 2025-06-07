@@ -16,7 +16,7 @@ class ArmBp(RigModule):
     """Build arm component with given rigNode.
     e.g.
         n = ArmBp('lfArmBp0_RGN')  # n.__dict__
-        n.gen_guide_sk()
+        n.genSk()
         n.build()
     """
 
@@ -67,21 +67,17 @@ class ArmBp(RigModule):
         self.ikCstG = None
         self.ikH1 = None
 
-    def gen_guide_sk(self):
-        self.gen_guide_sk_module(["clavicle", "upr", "lwr", "palm", "ball"])
+    def genSk(self):
+        self.genSk_module()
+        root_list = self.gen_sk_fr_names(["clavicle", "upr", "lwr", "palm", "ball"])
+        self.rootJ = root_list[0]
+        self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
         self.setting = CrvNode(
-            "setting",
-            pf=rID,
-            shape="bagua",
-            scale=rSz,
-            color=22,
-            top=1,
-            moveY=rSz * 10,
+            "setting", pf=rID, shape="bagua", scale=rSz, color=22, top=1
         )
-        # p=self.CTL_DATA,
         self.clavicle_fkc = CrvNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
         )
@@ -263,7 +259,8 @@ class ArmBp(RigModule):
         )
 
         self.setting.snapTo(self.clavicle, p=self.CTL_DATA)
-        self.clavicle.cstPar(self.setting, mo=1)
+        # self.clavicle.cstPar(self.setting, mo=1)
+        self.clavicle_fkc.offset.cstPar(self.setting, mo=1)
 
         self.setting.a.addSep()
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
@@ -312,41 +309,57 @@ class ArmBp(RigModule):
         scapular_guide = DagNode(rID + "_scapular_guide")
 
         # scapular setup
-        scapularJnt = JntNode(
-            "scapular",
-            pf=rID,
-            align=scapular_guide,
-            r=rSz,
-            p=self.clavicle,
-            color=4,
+        scapularJ = JntNode(
+            "scapularJ", pf=rID, align=scapular_guide, r=rSz * 10, color=4
         )
-        scapularJnt.freezeXf()
-        scapularLoc = LocNode(
-            "scapularLoc", pf=rID, snap=clavEnd_guide, p=scapularJnt, size=rSz
+        scapularJ.freezeXf()
+        scapularJ | self.clavicle
+
+        scapuLoc = LocNode(
+            "scapuLoc", pf=rID, snap=clavEnd_guide, p=scapularJ, size=rSz * 10
         )
-        twoJ = JntNode.makeTwoJC2(
+
+        clavJnts = self.gen_sk_fr_names(["clavicle", "upr"], scale=3)
+        scapuLoc.cstAim(clavJnts[0], aim=(xDr, 0, 0), u=(0, xDr, 0), keep=0)
+        clavJnts[0].freezeXf()
+
+        clav_ikh = IkNode(
             "clav",
-            pf=rID,
-            snap=self.clavicle,
-            aim=(xDr, 0, 0),
-            u=(0, xDr, 0),
-            p=self.clavicle,
-            r=rSz,
-            aimTgt=scapularLoc,
-        )
-        twoJ_ik = IkNode(
-            "ik",
             sol=1,
-            pvc=scapularJnt,
-            pf=twoJ[0].name,
-            sj=twoJ[0],
-            ee=twoJ[1],
-            p=self.RIG_DATA,
+            pvc=scapularJ,
+            pf=rID,
+            sj=clavJnts[0],
+            ee=clavJnts[1],
             vis=0,
+            p=self.RIG_DATA,
         )
-        scapularLoc.cstPoi(twoJ_ik)
-        self.clavBone = twoJ[0]
+        scapuLoc.cstPoi(clav_ikh)
+        self.clavBone = clavJnts[0]
         self.bindJnts.append(self.clavBone)
+
+        # twoJ = JntNode.makeTwoJC2(
+        #     "clav",
+        #     pf=rID,
+        #     snap=self.clavicle,
+        #     aim=(xDr, 0, 0),
+        #     u=(0, xDr, 0),
+        #     p=self.clavicle,
+        #     r=rSz,
+        #     aimTgt=scapularLoc,
+        # )
+        # twoJ_ik = IkNode(
+        #     "ik",
+        #     sol=1,
+        #     pvc=scapularJnt,
+        #     pf=twoJ[0].name,
+        #     sj=twoJ[0],
+        #     ee=twoJ[1],
+        #     p=self.RIG_DATA,
+        #     vis=0,
+        # )
+        # scapularLoc.cstPoi(twoJ_ik)
+        # self.clavBone = twoJ[0]
+        # self.bindJnts.append(self.clavBone)
 
     def build_twist_bones(self):
         rID, rSz, xDr = self.getMyVar()

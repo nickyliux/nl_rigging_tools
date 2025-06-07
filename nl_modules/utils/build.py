@@ -55,7 +55,7 @@ def buildTgt(rigN):
         if rigObj:
             state = rigN.a.nodeState.get()
             if state == 0:
-                rigObj.gen_guide_sk()
+                rigObj.genSk()
                 rigObj.build()
             elif state == 1:
                 rigObj.build()

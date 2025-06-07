@@ -21,8 +21,9 @@ class Hand(RigModule):
         self.hand_grp = None
         self.fgrRootCtlArr = None
 
-    def gen_guide_sk(self):
-        self.gen_guide_sk_module(["handJ"])
+    def genSk(self):
+        self.genSk_module()
+        root_list = self.gen_sk_fr_names(["handJ"], scale=0.2)
         all_fgrs_names = [
             ["fgr00_1", "fgr00_2", "fgr00_3", "fgr00_4"],
             ["fgr01_1", "fgr01_2", "fgr01_3", "fgr01_4", "fgr01_5"],
@@ -34,8 +35,11 @@ class Hand(RigModule):
         for fgrs_names in all_fgrs_names:
             fgr_jnts = self.gen_sk_fr_names(fgrs_names, scale=2)
             fgr_jnts[0].freezeXf()
-            fgr_jnts[0] | self.rootJ
+            fgr_jnts[0] | root_list[0]
             fgr_roots.append(fgr_jnts[0])
+
+        self.rootJ = root_list[0]
+        self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()

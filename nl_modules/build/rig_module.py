@@ -70,7 +70,10 @@ class RigModule(RigBase):
         joints = []
         lastJ = None
         for name in guideDict:
-            jN = JntNode(f"{rID}_{name}", align=guideDict[name], color=color)
+            n = f"{rID}_{name}"
+            if mc.objExists(n):
+                n += "#"
+            jN = JntNode(n, align=guideDict[name], color=color)
             if (currClass == "ArmBp" or currClass == "LegBp") and name == "lwr":
                 jN.a.preferredAngleY.set(-45)
             # elif currClass.startswith("LegQd") and name == "palm":
@@ -79,13 +82,12 @@ class RigModule(RigBase):
                 jN | lastJ
             lastJ = jN
             joints.append(jN)
-        #
-        #   set joint radius from rigSize
-        #
+
         self.rigSize = self.calc_rig_size(joints[0])
         for j in joints:
             j.a.radius.set(self.rigSize * scale)
 
+        joints[0].freezeXf()
         return joints
 
     @staticmethod
@@ -316,36 +318,38 @@ class RigModule(RigBase):
         else:
             tgt.addOffsetGrp()
 
-    def gen_guide_sk_module(self, jnt_names):
+    def genSk_module(self):
+        rID, rSz, xDr = self.getMyVar()
+        logging.info(rID)
         self.rigNode.a.nodeState.set(1)
 
         rootCtl = self.masterC.parent.parent
         if rootCtl.a.sx.get() != 1:
             rootCtl.freezeXf(t=0, r=0, s=1)
 
-        jnt_list = self.gen_sk_fr_names(jnt_names)
+        # jnt_list = self.gen_sk_fr_names(jnt_names)
 
-        self.rootJ = jnt_list[0]
-        self.rootJ | self.SKL_DATA
-        self.rootJ.freezeXf()
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        # self.rootJ = jnt_list[0]
+        # self.rootJ | self.SKL_DATA
+        # self.rootJ.freezeXf()
+        # self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_module(self):
-        self.rigSize = self.calc_rig_size(self.rootJ)
-
         rID, rSz, xDr = self.getMyVar()
         logging.info(rID)
-
         self.rigNode.a.nodeState.set(2)
+
+        self.rigSize = self.calc_rig_size(self.rootJ)
+
         children = self.rootJ.childrenJt
         if children:
             self.xDir = 1 if children[0].a.tx.get() > 0 else -1
         #
         #   update all joints' radius
         #
-        joints = self.rootJ.allChildrenJt2
-        for j in joints:
-            j.a.radius.set(rSz)
+        # joints = self.rootJ.allChildrenJt2
+        # for j in joints:
+        #     j.a.radius.set(rSz)
 
     def post_module(self):
         rID, rSz, xDr = self.getMyVar()
@@ -410,7 +414,7 @@ class RigModule(RigBase):
             elif name.startswith("anchorF"):  # female color
                 loc.color = 13
                 loc.alignTo(tgt)
-                loc.cstPar(tgt.offset, mo=1)
+                loc.cstPar(tgt, mo=1)
             mc.hide(loc)
 
     def add_ctl_set(self, tgtList):
@@ -592,10 +596,13 @@ class RigModule(RigBase):
         ctl.addOffsetGrp()
         p.a.ry >> ctl.offset.a.ry
 
-        j1 = JntNode(ikTgt + "_1_ikj", align=ctl, r=self.rigSize, p=ikTgt.parent)
-        j2 = JntNode(
-            ikTgt + "_2_ikj", align=ikTgt.allChildrenJt[-1], r=self.rigSize, p=j1
-        )
+        j1 = JntNode(ikTgt).duplicate(po=1)
+        j1.rename(ikTgt + "_1_ikj")
+
+        j2 = JntNode(ikTgt.allChildrenJt[-1]).duplicate(po=1)
+        j2.rename(ikTgt + "_2_ikj")
+        j2 | j1
+
         j1.cstPoi(ctl.offset)
         ikH = IkNode(
             j1,

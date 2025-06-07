@@ -38,20 +38,18 @@ class Tail(RigModule):
         self.REVERSE = 0
         self.bindJnts = []
 
-    def gen_guide_sk(self):
-        self.gen_guide_sk_module(["rt", "md", "tp"])
+    def genSk(self):
+        self.genSk_module()
+        root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
+
+        self.rootJ = root_list[0]
+        self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting = CrvNode(
-            "setting",
-            pf=rID,
-            shape="bagua",
-            scale=rSz * 2,
-            moveY=rSz * 10,
-            color=22,
-            top=1,
+            "setting", pf=rID, shape="bagua", scale=rSz * 2, top=1, moveY=rSz * 10
         )
         self.setting.a.add("stretchy", min=0, max=1)
         moduleScale = self.setting.a.add("moduleScale", min=0.01, dv=1)

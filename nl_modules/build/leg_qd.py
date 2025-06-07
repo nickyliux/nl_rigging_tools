@@ -14,7 +14,7 @@ class LegQd(RigModule):
     """Build LegQd component with given rigNode.
     e.g.
         n = LegQd('lfQDLeg0_RGN')  # n.__dict__
-        n.gen_guide_sk()
+        n.genSk()
         n.build()
     """
 
@@ -77,9 +77,12 @@ class LegQd(RigModule):
         self.scapularG = None
         self.scap_fkc = None
 
-    def gen_guide_sk(self):
+    def genSk(self):
         rID, rSz, xDr = self.getMyVar()
-        self.gen_guide_sk_module(["hip", "upr", "lwr", "palm", "digit", "ball", "tip"])
+        self.genSk_module()
+        root_list = self.gen_sk_fr_names(
+            ["hip", "upr", "lwr", "palm", "digit", "ball", "tip"]
+        )
 
         if self.TOE_BONES:
             self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
@@ -104,18 +107,14 @@ class LegQd(RigModule):
                 fgr_jnts[0].orientJnt(aim=(xDr, 0, 0), u=(0, 0, -xDr))
                 fgr_jnts[0] | self.toesRootJ
 
+            self.rootJ = root_list[0]
+            self.rigNode.setMsg({"rootJ": self.rootJ})
+
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting = CrvNode(
-            "setting",
-            pf=rID,
-            shape="bagua",
-            scale=rSz,
-            moveY=rSz * 10,
-            color=22,
-            top=1,
-            p=self.CTL_DATA,
+            "setting", pf=rID, shape="bagua", scale=rSz, top=1, moveY=rSz * 10
         )
         self.hip_fkc = CrvNode(
             "hip_fkc",
@@ -327,7 +326,7 @@ class LegQd(RigModule):
     def blend_fk_ik(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting.snapTo(self.hip)  # , ofs=(rSz * xDr * 15, 0, 0))
+        self.setting.snapTo(self.hip, p=self.CTL_DATA)
         self.hip.cstPar(self.setting, mo=1)
 
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
@@ -631,11 +630,10 @@ class LegQd(RigModule):
         self.pvc.a.showAttr(t=1)
         self.smart_ctl.a.showAttr(r=1)
         self.extra_ikc.a.showAttr(t=1, r=1)
-        self.ballG_ikc.a.showAttr(r=1)
 
         for ctl in self.fkCtl + self.subCtls + [self.ikc, self.pvc]:
             ctl.a.showAttr(t=1, r=1)
-
+        self.ballG_ikc.a.showAttr(r=1)
         for ctl in self.all_bend or []:
             ctl.a.showAttr(t=1, r=1, s=1)
 

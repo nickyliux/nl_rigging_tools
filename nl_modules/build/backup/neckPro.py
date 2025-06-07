@@ -37,8 +37,12 @@ class NeckPro(rig_module.RigModule):
         self.ikCtl = None
         self.fkCtl = None
 
-    def gen_guide_sk(self):
-        self.gen_guide_sk_module(["st", "ed"])
+    def genSk(self):
+        self.genSk_module()
+        root_list = self.gen_sk_fr_names(["st", "ed"])
+
+        self.rootJ = root_list[0]
+        self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build(self):
 

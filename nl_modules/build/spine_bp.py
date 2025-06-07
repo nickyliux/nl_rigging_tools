@@ -8,7 +8,7 @@ from nl_modules.nodel.ik_node import IkNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
-from nl_modules.utils import common, utils_node as ut
+from nl_modules.utils import common, utils_node as ut, maths
 from nl_modules.utils.color import Color
 
 
@@ -38,26 +38,33 @@ class SpineBp(RigModule):
         self.rbJnts = []
         self.rbSrf = None
 
-    def gen_guide_sk(self):
-        self.gen_guide_sk_module(["rt", "md", "tp"])
+    def genSk(self):
+        self.genSk_module()
+        root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
+
+        self.rootJ = root_list[0]
+        self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting = CrvNode(
-            "setting",
-            pf=rID,
-            shape="bagua",
-            scale=rSz * 4,
-            color=22,
-            top=1,
-            p=self.CTL_DATA,
+            "setting", pf=rID, shape="bagua", scale=rSz * 4, top=1, moveZ=rSz * -100
         )
         self.cog_ctl = CrvNode("cog_ctl", pf=rID, shape="cog2", scale=rSz * 2, color=22)
-        self.chest_ctl = CrvNode("chest_ctl", pf=rID, shape="squR", scale=rSz * 4)
-        self.mid_ctl = CrvNode("mid_ctl", pf=rID, shape="squR", scale=rSz * 4)
-        self.hip_ctl = CrvNode("hip_ctl", pf=rID, shape="squR", scale=rSz * 4)
-
+        self.chest_ctl = CrvNode(
+            "chest_ctl", pf=rID, shape="cube", scale=maths.mul(1, 0.5, 1, rSz * 6)
+        )
+        self.mid_ctl = CrvNode(
+            "mid_ctl",
+            pf=rID,
+            shape="cube",
+            scale=maths.mul(1, 0.3, 1, rSz * 6),
+            color=25,
+        )
+        self.hip_ctl = CrvNode(
+            "hip_ctl", pf=rID, shape="cube", scale=maths.mul(1, 0.5, 1, rSz * 6)
+        )
         self.rigNode.setMsg(
             {
                 "setting": self.setting,
@@ -109,7 +116,7 @@ class SpineBp(RigModule):
         #   modify hipCtl specific for hip rotation
         #
         hipCtl = self.fkCtls[0]
-        hipCtl(p=self.CTL_DATA, addOfs=1, width=2)
+        hipCtl(p=self.CTL_DATA, addOfs=1, color=20)
         hipCtl.offset.snapAlignTo(self.fkJnts[1], self.fkJnts[0])
         hipCtl.cv_move(0, rSz * -20, 0)
         hipCtl.cstPar(self.fkJnts[0], mo=1)
@@ -124,8 +131,7 @@ class SpineBp(RigModule):
         self.chest_ctl.snapAlignTo(self.fkJnts[-1], mG)
         self.cog_ctl.snapAlignTo(self.hip_ctl, mG)
 
-        self.setting.alignTo(self.cog_ctl)
-        self.setting.a.tz.set(rSz * -100)
+        self.setting.alignTo(self.cog_ctl, p=self.CTL_DATA)
         self.cog_ctl.cstPar(self.setting, mo=1)
 
         self.cog_gmb = CrvNode(self.cog_ctl).add_gimbal()

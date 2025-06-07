@@ -32,8 +32,12 @@ class TailFk(RigModule):
         self.allClusters = []
         self.REVERSE = 0
 
-    def gen_guide_sk(self):
-        self.gen_guide_sk_module(["rt", "md", "tp"])
+    def genSk(self):
+        self.genSk_module()
+        root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
+
+        self.rootJ = root_list[0]
+        self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build(self):
         """

@@ -29,20 +29,23 @@ class Head(RigModule):
         self.jaw_fkc = None
         self.fkCtl = None
 
-    def gen_guide_sk(self):
-        self.gen_guide_sk_module(["st", "ed"])
-        jaw_list = self.gen_sk_fr_names(["jaw", "jawEnd"], scale=2)
-        jaw_list[0] | self.rootJ
+    def genSk(self):
+        self.genSk_module()
+        root_list = self.gen_sk_fr_names(["st", "ed"], scale=10)
+        jaw_list = self.gen_sk_fr_names(["jaw", "jawEnd"], scale=5)
         lf_eye = self.gen_sk_fr_names("lf_eye")[0]
         rt_eye = self.gen_sk_fr_names("rt_eye")[0]
-        (lf_eye, rt_eye) | self.rootJ
+        (jaw_list[0], lf_eye, rt_eye) | root_list[0]
+
+        self.rootJ = root_list[0]
+        self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
         self.head_fkc = CrvNode(
-            "head", pf=rID, sf="_fkc", shape="squR", scale=rSz, moveY=rSz * 8
+            "head_fkc", pf=rID, shape="squR", scale=rSz, moveY=rSz * 10
         )
-        self.jaw_fkc = CrvNode("jaw", pf=rID, sf="_fkc", up="x", scale=rSz / 2)
+        self.jaw_fkc = CrvNode("jaw_fkc", pf=rID, up="x", scale=rSz)
         self.rigNode.setMsg(
             {
                 "head_fkc": self.head_fkc,
