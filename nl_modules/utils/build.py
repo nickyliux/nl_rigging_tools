@@ -85,6 +85,14 @@ def preRig():
 
     m2.a.add("proxy", k=0, attrType="bool", dv=1)
     m2.a.add("debug", k=0, attrType="bool", dv=1)
+    m2.a.addSep()
+    # m2.a.add("primCtls", k=0, attrType="bool", dv=1)
+    # m2.a.add("secCtls", k=0, attrType="bool", dv=1)
+    # m2.a.add("facialCtls", k=0, attrType="bool", dv=1)
+    m2.a.add("bodyTweakers1", k=0, attrType="bool", dv=1)
+    m2.a.add("bodyTweakers2", k=0, attrType="bool", dv=1)
+    # m2.a.add("tailIk", k=0, attrType="bool", dv=1)
+    # m2.a.add("tailFk", k=0, attrType="bool", dv=1)
 
 
 @Undo("buildSelOrAll")

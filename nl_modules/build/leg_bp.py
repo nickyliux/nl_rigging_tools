@@ -115,11 +115,14 @@ class LegBp(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting = CrvNode(
-            "setting", pf=rID, shape="bagua", scale=-rSz * 2, top=1, color=22
-        )
+        self.setting = CrvNode("setting", pf=rID, shape="bagua", scale=-rSz * 2, top=1)
         self.hip_fkc = CrvNode(
-            "hip_fkc", pf=rID, up="-y", shape="stickC", scale=rSz * xDr
+            "hip_fkc",
+            pf=rID,
+            up="-y",
+            shape="squR",
+            scale=rSz * xDr,
+            moveY=rSz * xDr * -15,
         )
         self.upr_fkc = CrvNode(
             "upr_fkc", pf=rID, shape="circleC", up="x", scale=rSz * -xDr

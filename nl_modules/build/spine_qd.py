@@ -79,17 +79,11 @@ class SpineQd(RigModule):
             moveY=60 * rSz,
             p=self.IK_PART,
         )
-        self.base_ctl = CrvNode(
-            "base_ctl", pf=rID, shape="cube", scale=maths.mul(4, 4, 2, rSz)
-        )
-        self.fore_ctl = CrvNode(
-            "fore_ctl", pf=rID, shape="cube", scale=maths.mul(4, 4, 2, rSz)
-        )
-        if self.is_neck():
-            self.fore_ctl(shape="cube", scale=maths.mul(5, 8, 8, rSz))
+        self.base_ctl = CrvNode("base_ctl", pf=rID, up="z", scale=rSz * 3)
+        self.fore_ctl = CrvNode("fore_ctl", pf=rID, up="z", scale=rSz * 3)
 
         self.mid_ctl = CrvNode(
-            "mid_ctl", pf=rID, shape="cube", scale=maths.mul(4, 4, 1, rSz), color=25
+            "mid_ctl", pf=rID, shape="fk_rotator2", scale=rSz * 4, rotate=(0, 90, 0)
         )
         self.tangent0_ctl = CrvNode(
             "tangent0_ctl", pf=rID, shape="triR", scale=rSz, rotate=(0, 180, 90), top=1

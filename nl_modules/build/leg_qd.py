@@ -114,13 +114,13 @@ class LegQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting = CrvNode(
-            "setting", pf=rID, shape="bagua", scale=rSz, top=1, moveY=rSz * 10, color=22
+            "setting", pf=rID, shape="bagua", scale=rSz, top=1, moveY=rSz * 10
         )
         self.hip_fkc = CrvNode(
             "hip_fkc",
             pf=rID,
             shape="squR",
-            scale=xDr * rSz / 3,
+            scale=xDr * rSz / 2,
             top=1,
             moveY=-xDr * rSz * 20,
         )
@@ -131,13 +131,7 @@ class LegQd(RigModule):
         self.ball_fkc = CrvNode("ball_fkc", pf=rID, shape="squR", up="x", scale=rSz / 2)
         self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=maths.mul(1, 1, 1, rSz))
         self.extra_ikc = CrvNode(
-            "extra_ikc",
-            pf=rID,
-            shape="cube",
-            scale=rSz,
-            top=1,
-            moveY=-xDr * rSz * 10,
-            # "extra_ikc", pf=rID, shape="fk_rotator2", scale=-xDr * rSz * 3, top=1
+            "extra_ikc", pf=rID, shape="sphere2", scale=rSz * 2, moveY=-xDr * rSz * 10
         )
         self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=rSz)
         self.smart_ctl = CrvNode(

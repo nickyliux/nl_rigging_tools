@@ -48,19 +48,13 @@ class SpineBp(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting = CrvNode(
-            "setting", pf=rID, shape="bagua", scale=rSz * 4, top=1, moveZ=rSz * -100
-        )
+        self.setting = CrvNode("setting", pf=rID, shape="bagua", scale=rSz * 4, top=1)
         self.cog_ctl = CrvNode("cog_ctl", pf=rID, shape="cog2", scale=rSz * 2)
-        self.chest_ctl = CrvNode(
-            "chest_ctl", pf=rID, shape="cube", scale=maths.mul(1, 0.5, 1, rSz * 6)
-        )
+        self.chest_ctl = CrvNode("chest_ctl", pf=rID, scale=rSz * 6)
         self.mid_ctl = CrvNode(
             "mid_ctl", pf=rID, shape="cube", scale=maths.mul(1, 0.3, 1, rSz * 6)
         )
-        self.hip_ctl = CrvNode(
-            "hip_ctl", pf=rID, shape="cube", scale=maths.mul(1, 0.5, 1, rSz * 6)
-        )
+        self.hip_ctl = CrvNode("hip_ctl", pf=rID, scale=rSz * 6)
         self.rigNode.setMsg(
             {
                 "setting": self.setting,
@@ -102,7 +96,7 @@ class SpineBp(RigModule):
             c = CrvNode(
                 f"{i + 1}_fkc",
                 pf=rID,
-                shape="circleC",
+                shape="squR",
                 scale=rSz * 5,
                 color=22,
             )
