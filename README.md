@@ -1,16 +1,16 @@
 
 # nl-rigging-tools
 
-## Problem
-There were time I worked on muscle simulation with Ziva horses. Rigging the "skeleton" was the first step that I found tricky but interesting. So how about rigging some other animals with skeleton ?
+## Background
+I have been rigging characters with my own autorigger for years. Once in a project I had to use Ziva and I found it challenging rigging the actual "skeleton". Meanwhile I'd like to try python object-oriented way instead of mel/maxscript, and learn more about animal anatomy through the project.
 
-## Missions
+## Features
 ### 1. Modular
-I had built a few biped autorig over the years. In production I find modularity is better as I may need only an arm or leg in a shot. Building an entire rig and deleting unwanted part may break it somehow.
-### 2. Use of Framework
-For a long time I know nothing about framework. Thanks to the course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by Nick Hughes, I learn the way to write custom framework to build tools the professional way.
-### 3. Use of Python
-I have autoRig written in MEL and Maxscript. I always want to rewrite them in Python, with more useful features.
+In production, we see only single arm or leg in a shot. Building an entire rig and deleting unwanted part may break the rig.
+### 2. Custom Framework
+Thanks to the course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by Nick Hughes, I learn about custom framework so I can build tools with much less code.
+### 3. Auto Bone Skinning
+Skinning corresponding bones models is also automated with minimum setup and fast referenced joints positioning
 
 ## Components
 #### Neck / Spine
