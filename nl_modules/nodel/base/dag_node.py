@@ -615,7 +615,7 @@ class DagNode(DepNode):
     def get_side_color(self):
         """Return color depending on side"""
         # color = 22
-        color = (0.86, 0.60, 0.26)  # middle orange
+        color = (0.86, 0.62, 0.12)  # middle orange
         if str(self.node).startswith("lf"):
             # color = 6
             color = (0.12, 0.44, 0.86)  # left blue

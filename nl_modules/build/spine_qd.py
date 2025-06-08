@@ -166,7 +166,7 @@ class SpineQd(RigModule):
 
         if self.is_neck():
             self.cog_ctl.alignTo(self.RT_GUIDE, addOfs=1)
-            self.cog_ctl(shape="squR", scale=rSz * 6, rotate=(90, 0, 0), color=20)
+            self.cog_ctl(shape="squR", scale=rSz * 6, rotate=(90, 0, 0))
         else:
             self.cog_ctl.snapTo(self.RT_GUIDE, addOfs=1)
 
