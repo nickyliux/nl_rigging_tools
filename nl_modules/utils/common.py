@@ -510,8 +510,8 @@ def getMeshBelow(grp):
     return [MshNode(mesh) for mesh in meshes] or []
 
 
-def setViewport(jx=1, xray=0, wos=1):
-    mc.viewFit(all=1)
+def setViewport(jx=1, xray=0, wos=0):
+    # mc.viewFit(all=1)
     mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
     # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
     for p in mc.getPanel(type="modelPanel"):

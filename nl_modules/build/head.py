@@ -45,7 +45,7 @@ class Head(RigModule):
         self.head_fkc = CrvNode(
             "head_fkc", pf=rID, shape="squR", scale=rSz, moveY=rSz * 10
         )
-        self.jaw_fkc = CrvNode("jaw_fkc", pf=rID, up="x", scale=rSz)
+        self.jaw_fkc = CrvNode("jaw_fkc", pf=rID, scale=rSz)
         self.rigNode.setMsg(
             {
                 "head_fkc": self.head_fkc,

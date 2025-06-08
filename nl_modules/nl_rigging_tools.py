@@ -494,7 +494,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             self.UI.oneClick_PB.setValue(i)
 
         self.UI.oneClick_PB.setValue(0)
-        logging.info(f"{weighted} weighted. {ignored} ignored. {notFound} notFound.")
+        logging.info(f"{weighted} weighted. {ignored} ignored. {notFound} not found.")
 
     @Undo("skin_oneClick")
     def skin_oneClick(self):

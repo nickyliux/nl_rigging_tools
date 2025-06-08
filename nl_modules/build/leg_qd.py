@@ -113,9 +113,7 @@ class LegQd(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting = CrvNode(
-            "setting", pf=rID, shape="bagua", scale=rSz * 2, top=1, moveY=rSz * 10
-        )
+        self.setting = CrvNode("setting", pf=rID, shape="bagua", scale=rSz * 2, top=1)
         self.hip_fkc = CrvNode(
             "hip_fkc",
             pf=rID,
@@ -154,7 +152,11 @@ class LegQd(RigModule):
         )
         if self.SCAPULAR_EXTRA:
             self.scap_fkc = CrvNode(
-                "scap_fkc", pf=rID, shape="sphere", scale=rSz, moveX=rSz * 43 * -xDr
+                "scap_fkc",
+                pf=rID,
+                shape="arrow",
+                moveX=rSz * 35 * -xDr,
+                scale=maths.mul(1, 1, xDr, rSz / 4),
             )
 
     def build(self):

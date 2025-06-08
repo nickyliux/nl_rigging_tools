@@ -48,9 +48,7 @@ class Tail(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting = CrvNode(
-            "setting", pf=rID, shape="bagua", scale=rSz * 2, top=1, moveY=rSz * 10
-        )
+        self.setting = CrvNode("setting", pf=rID, shape="bagua", scale=rSz * 2, top=1)
         self.setting.a.add("stretchy", min=0, max=1)
         moduleScale = self.setting.a.add("moduleScale", min=0.01, dv=1)
         moduleScale >> self.IK_PART.a.s
