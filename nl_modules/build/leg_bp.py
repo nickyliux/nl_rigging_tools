@@ -115,7 +115,9 @@ class LegBp(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting = CrvNode("setting", pf=rID, shape="bagua", scale=-rSz * 2, top=1)
+        self.setting = CrvNode(
+            "setting", pf=rID, shape="bagua", scale=-rSz * 2, top=1, moveY=rSz * 5
+        )
         self.hip_fkc = CrvNode(
             "hip_fkc",
             pf=rID,
@@ -136,7 +138,8 @@ class LegBp(RigModule):
         self.ball_fkc = CrvNode(
             "ball_fkc", pf=rID, up="x", shape="squR", scale=rSz * xDr / 2
         )
-        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=rSz)
+        # self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=rSz)
+        self.ikc = CrvNode("ikc", pf=rID, shape="foot", scale=rSz * 2)
         self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=rSz)
         self.smart_ctl = CrvNode(
             "smart_ctl", pf=rID, shape="squR", scale=rSz / 4, width=2

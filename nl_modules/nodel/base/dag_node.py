@@ -618,7 +618,7 @@ class DagNode(DepNode):
         color = (0.86, 0.62, 0.12)  # middle orange
         if str(self.node).startswith("lf"):
             # color = 6
-            color = (0.12, 0.44, 0.86)  # left blue
+            color = (0.28, 0.53, 0.86)  # left blue
         elif str(self.node).startswith("rt"):
             # color = 13
             color = (0.74, 0.21, 0.21)  # right red

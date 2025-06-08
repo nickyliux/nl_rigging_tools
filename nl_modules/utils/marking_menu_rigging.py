@@ -42,6 +42,8 @@ class MarkingMenuRigging:
         display_MI = mc.menuItem(p=menu, l="Display", rp="W", subMenu=1)
         mc.menuItem(p=display_MI, l="Show All", c=showHidden)
         mc.menuItem(p=display_MI, l="--------------------", en=0)
+        mc.menuItem(p=display_MI, l="Curve CV", c=partial(display_CV, 1))
+        mc.menuItem(p=display_MI, l="Curve CV Off", c=partial(display_CV, 0), ob=1)
         mc.menuItem(p=display_MI, l="LRA", c=partial(display_LRA, 1, 0))
         mc.menuItem(p=display_MI, l="LRA Off", c=partial(display_LRA, 0, 0), ob=1)
         mc.menuItem(p=display_MI, l="LRA -hi", c=partial(display_LRA, 1, 1))
@@ -217,6 +219,17 @@ def make_joint_chain(size):
         if i > 0:
             mc.setAttr(".tx", 5)
     return jnt
+
+
+def display_CV(*args):
+    state = args[0]
+    sel = mc.ls(sl=1)
+    for s in sel:
+        shape = DagNode(s).shape
+        if shape:
+            attr = shape.a.dispCV
+            if attr.exists():
+                attr.set(state)
 
 
 def display_LRA(*args):

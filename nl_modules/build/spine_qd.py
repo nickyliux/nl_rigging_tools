@@ -66,7 +66,7 @@ class SpineQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting = CrvNode(
-            "setting", pf=rID, shape="bagua", scale=rSz * 2, top=1, moveY=rSz * 10
+            "setting", pf=rID, shape="bagua", scale=rSz * 3, top=1, moveY=rSz * 10
         )
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
         self.setting.a.add("moduleScale", min=0.01, dv=1)
@@ -81,24 +81,32 @@ class SpineQd(RigModule):
         )
         self.base_ctl = CrvNode("base_ctl", pf=rID, up="z", scale=rSz * 3)
         self.fore_ctl = CrvNode("fore_ctl", pf=rID, up="z", scale=rSz * 3)
+        self.mid_ctl = CrvNode("mid_ctl", pf=rID, up="z", scale=rSz * 3)
 
-        self.mid_ctl = CrvNode(
-            "mid_ctl", pf=rID, shape="fk_rotator2", scale=rSz * 4, rotate=(0, 90, 0)
-        )
         self.tangent0_ctl = CrvNode(
-            "tangent0_ctl", pf=rID, shape="triR", scale=rSz, rotate=(0, 180, 90), top=1
+            "tangent0_ctl",
+            pf=rID,
+            shape="triR",
+            scale=rSz / 2,
+            rotate=(0, 180, 90),
+            top=1,
         )
         self.tangent1_ctl = CrvNode(
-            "tangent1_ctl", pf=rID, shape="triR", scale=rSz, rotate=(0, 0, 90), top=1
+            "tangent1_ctl",
+            pf=rID,
+            shape="triR",
+            scale=rSz / 2,
+            rotate=(0, 0, 90),
+            top=1,
         )
         if self.END_CTL:
             self.end_ctl = CrvNode(
                 "end_ctl",
                 pf=rID,
-                shape="fk_rotator2",
-                scale=rSz * 4,
+                shape="cube",
                 top=1,
-                rotate=(0, 90, 0),
+                moveY=rSz * 20,
+                scale=maths.mul(2, 1, 1, rSz),
             )
 
         self.rigNode.setMsg(
@@ -166,7 +174,7 @@ class SpineQd(RigModule):
 
         if self.is_neck():
             self.cog_ctl.alignTo(self.RT_GUIDE, addOfs=1)
-            self.cog_ctl(shape="squR", scale=rSz * 6, rotate=(90, 0, 0))
+            self.cog_ctl(shape="squR", scale=rSz * 5, rotate=(90, 0, 0))
         else:
             self.cog_ctl.snapTo(self.RT_GUIDE, addOfs=1)
 
@@ -383,9 +391,9 @@ class SpineQd(RigModule):
         mc.hide(
             self.ikJnts, self.fkJnts, self.spIkJnts, self.two_ikJnts, self.anchorToRbj
         )
-        attr = self.base_ctl.a.add("tangentCtl", attrType="bool", k=0)
+        attr = self.base_ctl.a.add("tangentCtl", attrType="bool", k=0, dv=1)
         attr >> self.tangent0_ctl.shape.a.v
-        attr = self.fore_ctl.a.add("tangentCtl", attrType="bool", k=0)
+        attr = self.fore_ctl.a.add("tangentCtl", attrType="bool", k=0, dv=1)
         attr >> self.tangent1_ctl.shape.a.v
 
         if self.is_neck():

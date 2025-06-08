@@ -114,7 +114,7 @@ class LegQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting = CrvNode(
-            "setting", pf=rID, shape="bagua", scale=rSz, top=1, moveY=rSz * 10
+            "setting", pf=rID, shape="bagua", scale=rSz * 2, top=1, moveY=rSz * 10
         )
         self.hip_fkc = CrvNode(
             "hip_fkc",
@@ -129,8 +129,8 @@ class LegQd(RigModule):
         self.palm_fkc = CrvNode("palm_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.digit_fkc = CrvNode("digit_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.ball_fkc = CrvNode("ball_fkc", pf=rID, shape="squR", up="x", scale=rSz / 2)
-        # self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=maths.mul(1, 1, 1, rSz))
-        self.ikc = CrvNode("ikc", pf=rID, shape="foot3", scale=rSz * 1.5)
+
+        self.ikc = CrvNode("ikc", pf=rID, shape="foot", scale=rSz * 1.5)
         self.extra_ikc = CrvNode(
             "extra_ikc", pf=rID, shape="sphere2", scale=rSz * 2, moveY=-xDr * rSz * 10
         )
