@@ -13,6 +13,7 @@ reload(reload_all)
 from PySide2 import QtWidgets
 from PySide2.QtUiTools import QUiLoader
 from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
+from PySide2 import QtGui
 
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
@@ -40,6 +41,7 @@ from nl_modules.build.tail import Tail
 log.updateRootLogger()
 
 MOD_DIR = os.path.dirname(nl_modules.__file__)
+IMAGES_PATH = MOD_DIR + "/images"
 PATH_PRESET = MOD_DIR + "/build/guide_presets"
 CTL_PRESET = MOD_DIR + "/build/control_presets"
 PATH_SHAPE = MOD_DIR + "/build/shapes"
@@ -81,12 +83,15 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.setWindowTitle("nlRT v1.0.0")
         self.setCentralWidget(self.UI)
         self.setGeometry(0, 0, 233, 680)
+        QtWidgets.QApplication.setStyle(QtWidgets.QStyleFactory.create("compact"))
         self.connect_UI()
 
     def connect_UI(self):
 
         self.UI.component_load_BN.clicked.connect(self.component_load_BN_clicked)
+        self.UI.component_load_BN.setIcon(QtGui.QIcon(":fileOpen.png"))
         self.UI.component_explore_BN.clicked.connect(self.component_explore_BN_clicked)
+        self.UI.component_explore_BN.setIcon(QtGui.QIcon(":openScript.png"))
         self.UI.component_LW.itemDoubleClicked.connect(self.component_load_BN_clicked)
 
         # self.UI.component_buildAll_BN.clicked.connect(build.buildSelOrAll)
@@ -95,32 +100,41 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # self.UI.component_copy_BN.clicked.connect(guide.copyGuideSel)
         # ------------------------------
         self.UI.preset_save_BN.clicked.connect(self.preset_save_BN_clicked)
+        self.UI.preset_save_BN.setIcon(QtGui.QIcon(":fileSave.png"))
         self.UI.preset_new_BN.clicked.connect(self.preset_new_BN_clicked)
+        self.UI.preset_new_BN.setIcon(QtGui.QIcon(":fileNew.png"))
         self.UI.preset_del_BN.clicked.connect(self.preset_del_BN_clicked)
-        self.UI.component_exploreSkel_BN.clicked.connect(
-            self.component_exploreSkel_BN_clicked
-        )
-        self.UI.preset_importSkel_BN.clicked.connect(self.preset_importSkel_BN_clicked)
+        self.UI.preset_del_BN.setIcon(QtGui.QIcon(":delete.png"))
+        self.UI.viewSkel_BN.clicked.connect(self.viewSkel_BN_clicked)
+        self.UI.viewSkel_BN.setIcon(QtGui.QIcon(":openScript.png"))
+        self.UI.importSkel_BN.clicked.connect(self.importSkel_BN_clicked)
+        self.UI.importSkel_BN.setIcon(QtGui.QIcon(":HIKCharacterToolSkeleton.png"))
         # self.UI.preset_openSkel_BN.clicked.connect(self.preset_openSkel_BN_clicked)
-        self.UI.preset_refresh_BN.clicked.connect(self.preset_refresh_BN_clicked)
+        # self.UI.preset_refresh_BN.clicked.connect(self.preset_refresh_BN_clicked)
+        # self.UI.preset_refresh_BN.setIcon(QtGui.QIcon(":refresh.png"))
         self.UI.preset_LW.itemDoubleClicked.connect(self.preset_load_BN_dbClicked)
         self.UI.preset_load_BN.clicked.connect(self.preset_load_BN_clicked)
+        self.UI.preset_load_BN.setIcon(QtGui.QIcon(":fileOpen.png"))
         # ------------------------------
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
-        self.UI.rigNode_refresh_BN.clicked.connect(self.rigNode_refresh_BN_clicked)
+        # self.UI.rigNode_refresh_BN.clicked.connect(self.rigNode_refresh_BN_clicked)
+        # self.UI.rigNode_refresh_BN.setIcon(QtGui.QIcon(":refresh.png"))
         # ------------------------------
         self.UI.crvShape_LW.itemDoubleClicked.connect(self.crvShape_LW_dblClicked)
-        self.UI.crvShape_copyAsInst_BN.clicked.connect(
-            self.crvShape_copyAsInst_BN_clicked
-        )
         self.UI.crvShape_removeFrInst_BN.clicked.connect(
             self.crvShape_removeFrInst_BN_clicked
         )
         # self.UI.crvShape_create_BN.clicked.connect(self.crvShape_create_BN_clicked)
+        self.UI.crvShape_load_BN.clicked.connect(self.crvShape_load_BN_clicked)
+        self.UI.crvShape_load_BN.setIcon(QtGui.QIcon(":openScript.png"))
         self.UI.crvShape_save_BN.clicked.connect(self.crvShape_save_BN_clicked)
+        self.UI.crvShape_save_BN.setIcon(QtGui.QIcon(":fileSave.png"))
         self.UI.crvShape_new_BN.clicked.connect(self.crvShape_new_BN_clicked)
+        self.UI.crvShape_new_BN.setIcon(QtGui.QIcon(":fileNew.png"))
         self.UI.crvShape_del_BN.clicked.connect(self.crvShape_del_BN_clicked)
-        self.UI.crvShape_refresh_BN.clicked.connect(self.crvShape_refresh_BN_clicked)
+        self.UI.crvShape_del_BN.setIcon(QtGui.QIcon(":delete.png"))
+        # self.UI.crvShape_refresh_BN.clicked.connect(self.crvShape_refresh_BN_clicked)
+        # self.UI.crvShape_refresh_BN.setIcon(QtGui.QIcon(":refresh.png"))
         # self.UI.leadColor_0_BN.clicked.connect(partial(self.setLeadColor, 0))
         # self.UI.leadColor_1_BN.clicked.connect(partial(self.setLeadColor, 1))
         # self.UI.refColor_0_BN.clicked.connect(partial(self.setRefColor, 0))
@@ -143,7 +157,10 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # self.UI.skin_refJnt_BN.clicked.connect(self.bindJnts)
         self.UI.skin_oneClick_BN.clicked.connect(self.skin_oneClick)
         self.UI.skin_delForAllMeshes_BN.clicked.connect(self.skin_delForAllMeshes)
+
+        self.UI.saveCtl_BN.setIcon(QtGui.QIcon(":fileSave.png"))
         self.UI.saveCtl_BN.clicked.connect(self.saveCtl)
+        self.UI.loadCtl_BN.setIcon(QtGui.QIcon(":fileOpen.png"))
         self.UI.loadCtl_BN.clicked.connect(self.loadCtl)
 
         self.UI.misc_retopo20_BN.clicked.connect(partial(modeling.retopo, faceNum=20))
@@ -213,8 +230,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def component_load_BN_clicked(self):
         items = self.UI.component_LW.selectedItems()
-        side_L = self.UI.component_L_RB.isChecked()
-        side_R = self.UI.component_R_RB.isChecked()
+        side_L = self.UI.component_left_RB.isChecked()
+        side_R = self.UI.component_right_RB.isChecked()
         if items:
             for item in items:
                 names = guide.COMPONENT_DICT[item.text()]
@@ -231,7 +248,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         path = os.path.realpath(MAYA_TPL_DIR)
         subprocess.Popen(f'explorer "{path}"')
 
-    def component_exploreSkel_BN_clicked(self):
+    def viewSkel_BN_clicked(self):
         path = os.path.realpath(PATH_SKEL)
         subprocess.Popen(f'explorer "{path}"')
 
@@ -295,7 +312,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 file.deleteFile(tgtFile)
                 self.preset_refresh_BN_clicked()
 
-    def preset_importSkel_BN_clicked(self):
+    def importSkel_BN_clicked(self):
         items = self.UI.preset_LW.selectedItems()
         if items:
             itemText = items[0].text()
@@ -403,8 +420,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if sel:
             CrvNode(sel[0]).uninstanceFromOthers()
 
-    @Undo("crvShape_copyAsInst_BN_clicked")
-    def crvShape_copyAsInst_BN_clicked(self):
+    @Undo("crvShape_load_BN_clicked")
+    def crvShape_load_BN_clicked(self):
         """Copy item shape as instance to selected"""
         sel = mc.ls(sl=1, tr=1)
         items = self.UI.crvShape_LW.selectedItems()
@@ -674,6 +691,7 @@ def main():
         UI_win.close()
     except:
         pass
+
     UI_win = MainWindow()
     UI_win.show(dockable=1)
 
@@ -701,4 +719,23 @@ mc.scriptJob(permanent=1, runOnce=1, event=["SelectionChanged", "reloadMenusAuto
     cond = (toeNum <= 2)
     for c in mc.ls('toe01_*_guide', 'toe_line_grp2'):
         cond >> DagNode(c).a.v
+
+        from PySide2 import QtCore, QtGui, QtWidgets
+
+button = QtWidgets.QPushButton("X")
+button.setStyleSheet("font-size: 100px")
+
+layout = QtWidgets.QVBoxLayout()
+layout.addWidget(button)
+
+window = QtWidgets.QWidget()
+window.setLayout(layout)
+window.show()
+#
+import maya.cmds as cmds
+for item in cmds.resourceManager(nf='*png'):
+    cmds.resourceManager(s=(item, "C:/temp/mayaicons/{0}".format(item)))
+#
+getenv "XBMLANGPATH" ;
+
 """
