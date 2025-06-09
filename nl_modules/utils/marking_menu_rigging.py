@@ -225,9 +225,9 @@ def display_CV(*args):
     state = args[0]
     sel = mc.ls(sl=1)
     for s in sel:
-        shape = DagNode(s).shape
-        if shape:
-            attr = shape.a.dispCV
+        shapes = DagNode(s).shapes
+        for sh in shapes:
+            attr = sh.a.dispCV
             if attr.exists():
                 attr.set(state)
 

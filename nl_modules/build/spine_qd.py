@@ -66,7 +66,7 @@ class SpineQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting = CrvNode(
-            "setting", pf=rID, shape="bagua", scale=rSz * 2, top=1, moveY=rSz * 10
+            "setting", pf=rID, shape="bagua", scale=rSz * 3, top=1, moveY=rSz * 10
         )
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
         self.setting.a.add("moduleScale", min=0.01, dv=1)
@@ -106,7 +106,7 @@ class SpineQd(RigModule):
                 shape="fk_rotator2",
                 top=1,
                 scale=rSz,
-                rotate=(0, 50, 0),
+                rotate=(0, 90, 0),
             )
             # shape="cube",
 

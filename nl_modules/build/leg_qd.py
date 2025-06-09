@@ -130,7 +130,7 @@ class LegQd(RigModule):
 
         self.ikc = CrvNode("ikc", pf=rID, shape="foot", scale=rSz * 1.5)
         self.extra_ikc = CrvNode(
-            "extra_ikc", pf=rID, shape="sphere2", scale=rSz * 2, moveY=-xDr * rSz * 10
+            "extra_ikc", pf=rID, shape="sphere2", scale=rSz * 3, moveY=-xDr * rSz * 10
         )
         self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=rSz)
         self.smart_ctl = CrvNode(

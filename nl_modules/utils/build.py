@@ -83,6 +83,7 @@ def preRig():
     for ctl in [m, m1]:
         ctl.a.showAttr(t=1, r=1)
 
+    m2.a.addSep()
     m2.a.add("proxy", k=0, attrType="bool", dv=1)
     m2.a.add("debug", k=0, attrType="bool", dv=1)
     # m2.a.addSep()
