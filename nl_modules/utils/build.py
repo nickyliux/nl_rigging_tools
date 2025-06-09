@@ -83,10 +83,8 @@ def preRig():
     for ctl in [m, m1]:
         ctl.a.showAttr(t=1, r=1)
 
-    m2.a.addSep()
     m2.a.add("proxy", k=0, attrType="bool", dv=1)
     m2.a.add("debug", k=0, attrType="bool", dv=1)
-    # m2.a.addSep()
     # m2.a.add("primCtls", k=0, attrType="bool", dv=1)
     # m2.a.add("secCtls", k=0, attrType="bool", dv=1)
     # m2.a.add("facialCtls", k=0, attrType="bool", dv=1)
@@ -220,8 +218,13 @@ def updateAnchorConn():
 # 		if (`getAttr -se ($c + \".sy\")`) catch(`setAttr ($c + \".sy\") 1`);\
 # 		if (`getAttr -se ($c + \".sz\")`) catch(`setAttr ($c + \".sz\") 1`);}\
 # 		}\
+
+
 def getAllRigCtls():
-    rigNodes = mc.ls("*RGN", type="script")
+    return getRigCtls(mc.ls("*RGN", type="script"))
+
+
+def getRigCtls(rigNodes):
     setList = []
     for rigNode in rigNodes:
         ctlSet = DagNode(rigNode).a.rigID.get() + "_ctl_set"
@@ -229,15 +232,17 @@ def getAllRigCtls():
         if ctlSet:
             setList.append(ctlSet[0])
     if setList:
-        return mc.sets(setList, q=1)
-    return []
+        objs = mc.sets(setList, q=1)
+        if objs:
+            return [DagNode(obj) for obj in objs]
+    else:
+        return []
 
 
 def resetAllCtl():
     """Reset all ctl's attr to default"""
-    for sel in getAllRigCtls():
-        selN = DagNode(sel)
-        for attr in selN.a.list(k=1, u=1, se=1, s=1):
+    for ctl in getAllRigCtls():
+        for attr in ctl.a.list(k=1, u=1, se=1, s=1):
             if attr.settable():
                 attr.reset()
 

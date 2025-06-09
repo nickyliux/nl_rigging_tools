@@ -123,12 +123,7 @@ class MarkingMenuAutorig:
         else:
             rigNodes = mc.ls("*RGN", type="script")
 
-        setList = []
-        for rigNode in rigNodes:
-            ctlSet = DagNode(rigNode).a.rigID.get() + "_ctl_set"
-            ctlSet = mc.ls(ctlSet, type="objectSet")
-            if ctlSet:
-                setList.append(ctlSet[0])
+        setList = build.getRigCtls(rigNodes)
         if setList:
             mc.select(setList)
 

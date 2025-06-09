@@ -41,6 +41,7 @@ log.updateRootLogger()
 
 MOD_DIR = os.path.dirname(nl_modules.__file__)
 PATH_PRESET = MOD_DIR + "/build/guide_presets"
+CTL_PRESET = MOD_DIR + "/build/control_presets"
 PATH_SHAPE = MOD_DIR + "/build/shapes"
 PATH_LIGHT = MOD_DIR + "/build/others"
 PATH_SKEL = "D:/_PROJECT/GIT/nl_rigging_tools_skeletons/"
@@ -142,6 +143,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # self.UI.skin_refJnt_BN.clicked.connect(self.bindJnts)
         self.UI.skin_oneClick_BN.clicked.connect(self.skin_oneClick)
         self.UI.skin_delForAllMeshes_BN.clicked.connect(self.skin_delForAllMeshes)
+        self.UI.saveCtl_BN.clicked.connect(self.saveCtl)
+        self.UI.loadCtl_BN.clicked.connect(self.loadCtl)
 
         self.UI.misc_retopo20_BN.clicked.connect(partial(modeling.retopo, faceNum=20))
         self.UI.misc_retopo50_BN.clicked.connect(partial(modeling.retopo, faceNum=50))
@@ -534,6 +537,52 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             sk.delete()
 
         logging.info(f"{num} skinClusters deleted.")
+
+    def saveCtl(self):
+
+        from nl_modules.utils import build
+
+        allCtls = build.getAllRigCtls()
+        if allCtls:
+            mc.select(allCtls)
+            crvFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2)
+            if crvFile:
+                mc.file(
+                    crvFile,
+                    type="mayaAscii",
+                    exportSelected=1,
+                    constructionHistory=0,
+                    channels=0,
+                    expressions=0,
+                    constraints=0,
+                )
+                mc.select(cl=1)
+                logging.info("Curve shape exported OK.")
+
+    def loadCtl(self):
+        from nl_modules.utils import build
+
+        ctlFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, fileMode=1)
+        if ctlFile:
+            #
+            #    import ctl file
+            #
+            imported = mc.file(ctlFile, i=1, ns="ctl", returnNewNodes=1)
+            ns = ""
+            if imported:
+                ns = imported[0].split(":")[0] + ":"
+            #
+            #    replace shape
+            #
+            allCtls = build.getAllRigCtls()
+            for ctl in allCtls:
+                importCtl = DagNode(ns + ctl)
+                if importCtl.exists():
+                    mc.delete(ctl.shapes)
+                    mc.parent(importCtl.shapes, ctl, s=1, r=1)
+            for obj in imported:
+                if mc.objExists(obj):
+                    mc.delete(obj)
 
     def autoAttachJntToSurf(self):
 
