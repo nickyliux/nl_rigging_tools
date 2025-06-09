@@ -91,7 +91,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.component_load_BN.clicked.connect(self.component_load_BN_clicked)
         self.UI.component_load_BN.setIcon(QtGui.QIcon(":fileOpen.png"))
         self.UI.component_explore_BN.clicked.connect(self.component_explore_BN_clicked)
-        self.UI.component_explore_BN.setIcon(QtGui.QIcon(":openScript.png"))
+        self.UI.component_explore_BN.setIcon(QtGui.QIcon(":searchEngine.png"))
         self.UI.component_LW.itemDoubleClicked.connect(self.component_load_BN_clicked)
 
         # self.UI.component_buildAll_BN.clicked.connect(build.buildSelOrAll)
@@ -106,7 +106,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.preset_del_BN.clicked.connect(self.preset_del_BN_clicked)
         self.UI.preset_del_BN.setIcon(QtGui.QIcon(":delete.png"))
         self.UI.viewSkel_BN.clicked.connect(self.viewSkel_BN_clicked)
-        self.UI.viewSkel_BN.setIcon(QtGui.QIcon(":openScript.png"))
+        self.UI.viewSkel_BN.setIcon(QtGui.QIcon(":searchEngine.png"))
         self.UI.importSkel_BN.clicked.connect(self.importSkel_BN_clicked)
         self.UI.importSkel_BN.setIcon(QtGui.QIcon(":HIKCharacterToolSkeleton.png"))
         # self.UI.preset_openSkel_BN.clicked.connect(self.preset_openSkel_BN_clicked)
@@ -175,7 +175,10 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         )
 
         self.UI.pickMaskCrv_BN.clicked.connect(self.pickMaskCrv_BN_clicked)
+        self.UI.pickMaskCrv_BN.setIcon(QtGui.QIcon(":pickCurveObj.png"))
         self.UI.pickMaskMsh_BN.clicked.connect(self.pickMaskMsh_BN_clicked)
+        self.UI.pickMaskMsh_BN.setIcon(QtGui.QIcon(":pickGeometryObj.png"))
+
         self.UI.pickMaskAll_BN.clicked.connect(self.pickMaskAll_BN_clicked)
         self.UI.clickDrag_CB.stateChanged.connect(self.clickDrag_CB_stateChanged)
 
