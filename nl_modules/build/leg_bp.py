@@ -109,8 +109,8 @@ class LegBp(RigModule):
                 fgr_jnts[0].orientJnt(aim=(xDr, 0, 0), u=(0, 0, -xDr))
                 fgr_jnts[0] | self.toesRootJ
 
-            self.rootJ = root_list[0]
-            self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.rootJ = root_list[0]
+        self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
