@@ -328,7 +328,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         items = self.UI.preset_LW.selectedItems()
         if items:
             itemText = items[0].text()
-            skelFile = f"{PATH_SKEL}/{itemText}_low.ma"
+            skelFile = f"{PATH_SKEL}/{itemText}_mdl.ma"
 
             if os.path.isfile(skelFile):
                 file.importFile(skelFile)
@@ -340,7 +340,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     #     items = self.UI.preset_LW.selectedItems()
     #     if items:
     #         itemText = items[0].text()
-    #         skelFile = f"{PATH_SKEL}/{itemText}_low.ma"
+    #         skelFile = f"{PATH_SKEL}/{itemText}_mdl.ma"
     #         if os.path.isfile(skelFile):
     #             file.openFile(skelFile)
     #         else:

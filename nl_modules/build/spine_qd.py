@@ -181,7 +181,7 @@ class SpineQd(RigModule):
             self.cog_ctl.snapTo(self.RT_GUIDE, addOfs=1)
 
         self.setting.snapTo(self.RT_GUIDE, p=self.IK_PART)
-        self.cog_ctl.cstPar(self.setting, mo=1)
+        self.base_ctl.cstPar(self.setting, mo=1)
         #
         #   parenting
         #

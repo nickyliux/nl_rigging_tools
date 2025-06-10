@@ -156,7 +156,7 @@ class Tail(RigModule):
                 pf=rID,
                 shape="squR",
                 up="z",
-                scale=rSz,
+                scale=rSz * 2,
                 align=self.fkJnt[i],
             )
             self.rigNode.setMsg({f"fkc{i}": ctl})

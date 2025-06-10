@@ -50,12 +50,10 @@ class SpineBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting = CrvNode("setting", pf=rID, shape="bagua", scale=rSz * 4, top=1)
-        self.cog_ctl = CrvNode("cog_ctl", pf=rID, shape="cog2", scale=rSz * 2)
-        self.chest_ctl = CrvNode("chest_ctl", pf=rID, scale=rSz * 6)
-        self.mid_ctl = CrvNode(
-            "mid_ctl", pf=rID, shape="cube", scale=maths.mul(1, 0.3, 1, rSz * 6)
-        )
-        self.hip_ctl = CrvNode("hip_ctl", pf=rID, scale=rSz * 6)
+        self.cog_ctl = CrvNode("cog_ctl", pf=rID, shape="cog2", scale=rSz * 8)
+        self.chest_ctl = CrvNode("chest_ctl", pf=rID, scale=rSz * 7)
+        self.mid_ctl = CrvNode("mid_ctl", pf=rID, scale=rSz * 7)
+        self.hip_ctl = CrvNode("hip_ctl", pf=rID, scale=rSz * 7)
         self.rigNode.setMsg(
             {
                 "setting": self.setting,
