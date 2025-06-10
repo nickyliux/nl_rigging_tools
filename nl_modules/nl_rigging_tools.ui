@@ -99,7 +99,7 @@
        <rect>
         <x>7</x>
         <y>21</y>
-        <width>171</width>
+        <width>161</width>
         <height>251</height>
        </rect>
       </property>
@@ -220,24 +220,27 @@
        </property>
       </item>
      </widget>
-     <widget class="QWidget" name="gridLayoutWidget_5">
+     <widget class="QWidget" name="gridLayoutWidget">
       <property name="geometry">
        <rect>
-        <x>185</x>
+        <x>180</x>
         <y>20</y>
         <width>31</width>
-        <height>131</height>
+        <height>251</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="gridLayout_5">
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetDefaultConstraint</enum>
+       </property>
        <property name="horizontalSpacing">
         <number>0</number>
        </property>
        <property name="verticalSpacing">
-        <number>5</number>
+        <number>3</number>
        </property>
-       <item row="3" column="0">
-        <widget class="QPushButton" name="component_load_BN">
+       <item row="1" column="0">
+        <widget class="QRadioButton" name="component_left_RB">
          <property name="minimumSize">
           <size>
            <width>10</width>
@@ -246,8 +249,55 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>9999</width>
-           <height>9999</height>
+           <width>16777215</width>
+           <height>15</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Left side</string>
+         </property>
+         <property name="text">
+          <string>L</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QRadioButton" name="component_both_RB">
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>15</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Both side</string>
+         </property>
+         <property name="text">
+          <string>LR</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QPushButton" name="component_load_BN">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>28</width>
+           <height>28</height>
           </size>
          </property>
          <property name="font">
@@ -273,51 +323,18 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QRadioButton" name="component_right_RB">
-         <property name="toolTip">
-          <string>Right side</string>
-         </property>
-         <property name="text">
-          <string>R</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QRadioButton" name="component_left_RB">
-         <property name="toolTip">
-          <string>Left side</string>
-         </property>
-         <property name="text">
-          <string>L</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QRadioButton" name="component_both_RB">
-         <property name="toolTip">
-          <string>Both side</string>
-         </property>
-         <property name="text">
-          <string>LR</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="4" column="0">
         <widget class="QPushButton" name="component_explore_BN">
          <property name="minimumSize">
           <size>
-           <width>10</width>
-           <height>0</height>
+           <width>20</width>
+           <height>20</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>9999</width>
-           <height>9999</height>
+           <width>28</width>
+           <height>28</height>
           </size>
          </property>
          <property name="font">
@@ -334,6 +351,176 @@
          </property>
          <property name="text">
           <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QRadioButton" name="component_right_RB">
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>15</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Right side</string>
+         </property>
+         <property name="text">
+          <string>R</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QPushButton" name="component_delete_BN">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>28</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+           <kerning>true</kerning>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Delete component(s)</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QPushButton" name="component_unbuildAll_BN">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>28</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+           <kerning>true</kerning>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Unbuild component(s)</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QPushButton" name="component_buildAll_BN">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>28</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+           <kerning>true</kerning>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Build components</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QPushButton" name="component_copy_BN">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>28</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+           <kerning>true</kerning>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Copy from 1st to 2nd component</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -369,8 +556,8 @@
        <rect>
         <x>7</x>
         <y>20</y>
-        <width>171</width>
-        <height>211</height>
+        <width>161</width>
+        <height>201</height>
        </rect>
       </property>
       <property name="font">
@@ -415,7 +602,7 @@
      <widget class="QWidget" name="gridLayoutWidget_4">
       <property name="geometry">
        <rect>
-        <x>186</x>
+        <x>180</x>
         <y>20</y>
         <width>31</width>
         <height>201</height>
@@ -426,14 +613,20 @@
         <number>0</number>
        </property>
        <property name="verticalSpacing">
-        <number>6</number>
+        <number>3</number>
        </property>
        <item row="3" column="0">
         <widget class="QPushButton" name="preset_new_BN">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
-           <width>60</width>
-           <height>9999</height>
+           <width>28</width>
+           <height>28</height>
           </size>
          </property>
          <property name="toolTip">
@@ -448,14 +641,14 @@
         <widget class="QPushButton" name="importSkel_BN">
          <property name="minimumSize">
           <size>
-           <width>0</width>
-           <height>0</height>
+           <width>20</width>
+           <height>20</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>60</width>
-           <height>9999</height>
+           <width>28</width>
+           <height>28</height>
           </size>
          </property>
          <property name="font">
@@ -478,14 +671,14 @@
         <widget class="QPushButton" name="viewSkel_BN">
          <property name="minimumSize">
           <size>
-           <width>0</width>
-           <height>0</height>
+           <width>20</width>
+           <height>20</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>60</width>
-           <height>9999</height>
+           <width>28</width>
+           <height>28</height>
           </size>
          </property>
          <property name="font">
@@ -507,10 +700,16 @@
        </item>
        <item row="8" column="0">
         <widget class="QPushButton" name="preset_del_BN">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
-           <width>60</width>
-           <height>9999</height>
+           <width>28</width>
+           <height>28</height>
           </size>
          </property>
          <property name="toolTip">
@@ -525,14 +724,14 @@
         <widget class="QPushButton" name="preset_load_BN">
          <property name="minimumSize">
           <size>
-           <width>0</width>
-           <height>0</height>
+           <width>20</width>
+           <height>20</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>60</width>
-           <height>9999</height>
+           <width>28</width>
+           <height>28</height>
           </size>
          </property>
          <property name="font">
@@ -562,14 +761,14 @@
         <widget class="QPushButton" name="preset_save_BN">
          <property name="minimumSize">
           <size>
-           <width>0</width>
-           <height>0</height>
+           <width>20</width>
+           <height>20</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>60</width>
-           <height>9999</height>
+           <width>28</width>
+           <height>28</height>
           </size>
          </property>
          <property name="font">
@@ -1902,114 +2101,6 @@
    </property>
    <property name="text">
     <string/>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="component_unbuildAll_BN">
-   <property name="geometry">
-    <rect>
-     <x>270</x>
-     <y>230</y>
-     <width>30</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Segoe UI</family>
-     <pointsize>9</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>Unbuild All Components</string>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string>U</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="component_delete_BN">
-   <property name="geometry">
-    <rect>
-     <x>270</x>
-     <y>170</y>
-     <width>30</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Segoe UI</family>
-     <pointsize>9</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>Delete Component</string>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string>X</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="component_copy_BN">
-   <property name="geometry">
-    <rect>
-     <x>270</x>
-     <y>200</y>
-     <width>30</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Segoe UI</family>
-     <pointsize>9</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>Copy Component</string>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string>C</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="component_buildAll_BN">
-   <property name="geometry">
-    <rect>
-     <x>270</x>
-     <y>130</y>
-     <width>30</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Segoe UI</family>
-     <pointsize>9</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>Build All Components</string>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">color: rgb(255, 128, 130);</string>
-   </property>
-   <property name="text">
-    <string>B</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pickMaskCrv_BN">

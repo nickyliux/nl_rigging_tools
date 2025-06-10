@@ -20,7 +20,7 @@ from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.msh_node import MshNode
-from nl_modules.utils import common, file, guide, log, modeling
+from nl_modules.utils import common, file, guide, log, modeling, build
 from nl_modules.utils.color import Color
 
 #
@@ -87,34 +87,41 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect_UI()
 
     def connect_UI(self):
-
+        #
+        #   component
+        #
         self.UI.component_load_BN.clicked.connect(self.component_load_BN_clicked)
-        self.UI.component_load_BN.setIcon(QtGui.QIcon(":fileOpen.png"))
+        self.UI.component_load_BN.setIcon(QtGui.QIcon(":openScript.png"))
         self.UI.component_explore_BN.clicked.connect(self.component_explore_BN_clicked)
         self.UI.component_explore_BN.setIcon(QtGui.QIcon(":searchEngine.png"))
         self.UI.component_LW.itemDoubleClicked.connect(self.component_load_BN_clicked)
 
-        # self.UI.component_buildAll_BN.clicked.connect(build.buildSelOrAll)
-        # self.UI.component_unbuildAll_BN.clicked.connect(build.unbuildSelOrAll)
-        # self.UI.component_delete_BN.clicked.connect(build.deleteSelOrAll)
-        # self.UI.component_copy_BN.clicked.connect(guide.copyGuideSel)
+        self.UI.component_buildAll_BN.clicked.connect(build.buildSelOrAll)
+        self.UI.component_buildAll_BN.setIcon(QtGui.QIcon(":play_hover.png"))
+        self.UI.component_unbuildAll_BN.clicked.connect(build.unbuildSelOrAll)
+        self.UI.component_unbuildAll_BN.setIcon(QtGui.QIcon(":undo_s.png"))
+        self.UI.component_delete_BN.clicked.connect(build.deleteSelOrAll)
+        self.UI.component_delete_BN.setIcon(QtGui.QIcon(":smallTrash.png"))
+        self.UI.component_copy_BN.clicked.connect(guide.copyGuideSel)
+        self.UI.component_copy_BN.setIcon(QtGui.QIcon(":copySkinWeight.png"))
         # ------------------------------
         self.UI.preset_save_BN.clicked.connect(self.preset_save_BN_clicked)
         self.UI.preset_save_BN.setIcon(QtGui.QIcon(":fileSave.png"))
         self.UI.preset_new_BN.clicked.connect(self.preset_new_BN_clicked)
         self.UI.preset_new_BN.setIcon(QtGui.QIcon(":fileNew.png"))
         self.UI.preset_del_BN.clicked.connect(self.preset_del_BN_clicked)
-        self.UI.preset_del_BN.setIcon(QtGui.QIcon(":delete.png"))
+        self.UI.preset_del_BN.setIcon(QtGui.QIcon(":smallTrash.png"))
         self.UI.viewSkel_BN.clicked.connect(self.viewSkel_BN_clicked)
         self.UI.viewSkel_BN.setIcon(QtGui.QIcon(":searchEngine.png"))
         self.UI.importSkel_BN.clicked.connect(self.importSkel_BN_clicked)
-        self.UI.importSkel_BN.setIcon(QtGui.QIcon(":HIKCharacterToolSkeleton.png"))
+        self.UI.importSkel_BN.setIcon(QtGui.QIcon(":kinReroot.png"))
+        # self.UI.importSkel_BN.setIcon(QtGui.QIcon(":character.svg"))
         # self.UI.preset_openSkel_BN.clicked.connect(self.preset_openSkel_BN_clicked)
         # self.UI.preset_refresh_BN.clicked.connect(self.preset_refresh_BN_clicked)
         # self.UI.preset_refresh_BN.setIcon(QtGui.QIcon(":refresh.png"))
         self.UI.preset_LW.itemDoubleClicked.connect(self.preset_load_BN_dbClicked)
         self.UI.preset_load_BN.clicked.connect(self.preset_load_BN_clicked)
-        self.UI.preset_load_BN.setIcon(QtGui.QIcon(":fileOpen.png"))
+        self.UI.preset_load_BN.setIcon(QtGui.QIcon(":openScript.png"))
         # ------------------------------
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
         # self.UI.rigNode_refresh_BN.clicked.connect(self.rigNode_refresh_BN_clicked)
@@ -132,7 +139,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.crvShape_new_BN.clicked.connect(self.crvShape_new_BN_clicked)
         self.UI.crvShape_new_BN.setIcon(QtGui.QIcon(":fileNew.png"))
         self.UI.crvShape_del_BN.clicked.connect(self.crvShape_del_BN_clicked)
-        self.UI.crvShape_del_BN.setIcon(QtGui.QIcon(":delete.png"))
+        self.UI.crvShape_del_BN.setIcon(QtGui.QIcon(":smallTrash.png"))
         # self.UI.crvShape_refresh_BN.clicked.connect(self.crvShape_refresh_BN_clicked)
         # self.UI.crvShape_refresh_BN.setIcon(QtGui.QIcon(":refresh.png"))
         # self.UI.leadColor_0_BN.clicked.connect(partial(self.setLeadColor, 0))
@@ -160,7 +167,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         self.UI.saveCtl_BN.setIcon(QtGui.QIcon(":fileSave.png"))
         self.UI.saveCtl_BN.clicked.connect(self.saveCtl)
-        self.UI.loadCtl_BN.setIcon(QtGui.QIcon(":fileOpen.png"))
+        self.UI.loadCtl_BN.setIcon(QtGui.QIcon(":openScript.png"))
         self.UI.loadCtl_BN.clicked.connect(self.loadCtl)
 
         self.UI.misc_retopo20_BN.clicked.connect(partial(modeling.retopo, faceNum=20))
