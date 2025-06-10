@@ -277,19 +277,20 @@ class JntNode(GrpNode):
             if not rev:
                 joints.append(endJ)
             else:
-                joints = [endJ] + joints  # first in list is end joint
+                joints = [endJ] + joints  # 1st in list is the end joint
 
         if chain:
             if p:
                 root | p
             if not rev:
                 joints[0].freezeXf()
+                joints[-1].resetOrient()
             else:
                 joints[-1].freezeXf()
+                joints[0].resetOrient()
         else:
             if p:
                 [j | p for j in joints]
-            # [j.freezeXf() for j in joints]
 
         return joints
 

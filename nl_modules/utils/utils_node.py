@@ -141,7 +141,7 @@ def arcLenDim_(srfOrCrv):
     elif srfOrCrv.type == "nurbsCurve":
         arcLD.a.uParamValue.set(1)
         arcLD.a.vParamValue.set(1)
-    # arcLD.hide()
+    arcLD.hide()
     return arcLD
 
 

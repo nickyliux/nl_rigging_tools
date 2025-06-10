@@ -239,53 +239,6 @@
        <property name="verticalSpacing">
         <number>3</number>
        </property>
-       <item row="1" column="0">
-        <widget class="QRadioButton" name="component_left_RB">
-         <property name="minimumSize">
-          <size>
-           <width>10</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>15</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Left side</string>
-         </property>
-         <property name="text">
-          <string>L</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QRadioButton" name="component_both_RB">
-         <property name="minimumSize">
-          <size>
-           <width>10</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>15</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Both side</string>
-         </property>
-         <property name="text">
-          <string>LR</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="3" column="0">
         <widget class="QPushButton" name="component_load_BN">
          <property name="minimumSize">
@@ -323,8 +276,8 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
-        <widget class="QPushButton" name="component_explore_BN">
+       <item row="5" column="0">
+        <widget class="QPushButton" name="component_buildAll_BN">
          <property name="minimumSize">
           <size>
            <width>20</width>
@@ -347,10 +300,63 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Explore component files</string>
+          <string>Build components</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
           <string/>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QRadioButton" name="component_both_RB">
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>15</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Both side</string>
+         </property>
+         <property name="text">
+          <string>LR</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QRadioButton" name="component_left_RB">
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>15</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Left side</string>
+         </property>
+         <property name="text">
+          <string>L</string>
          </property>
         </widget>
        </item>
@@ -373,6 +379,43 @@
          </property>
          <property name="text">
           <string>R</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QPushButton" name="component_copy_BN">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>28</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+           <kerning>true</kerning>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Copy from 1st to 2nd component</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -450,8 +493,8 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="0">
-        <widget class="QPushButton" name="component_buildAll_BN">
+       <item row="9" column="0">
+        <widget class="QPushButton" name="component_explore_BN">
          <property name="minimumSize">
           <size>
            <width>20</width>
@@ -474,53 +517,10 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Build components</string>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
+          <string>Explore component files</string>
          </property>
          <property name="text">
           <string/>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="0">
-        <widget class="QPushButton" name="component_copy_BN">
-         <property name="minimumSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>28</width>
-           <height>28</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-           <kerning>true</kerning>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Copy from 1st to 2nd component</string>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -962,7 +962,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Ctl Load</string>
+          <string>Control</string>
          </property>
         </widget>
        </item>
@@ -998,7 +998,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Ctl Save</string>
+          <string>Control</string>
          </property>
         </widget>
        </item>
@@ -1189,7 +1189,7 @@
           <string>Selected objects and create lines between</string>
          </property>
          <property name="text">
-          <string>+ Line</string>
+          <string>Build Line</string>
          </property>
         </widget>
        </item>
@@ -1217,7 +1217,7 @@
           <string>Import Env scene for better viewport quality</string>
          </property>
          <property name="text">
-          <string>+ Env</string>
+          <string>Load Env</string>
          </property>
         </widget>
        </item>
@@ -1928,7 +1928,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>&lt;&lt; Size</string>
+          <string>Size</string>
          </property>
         </widget>
        </item>
@@ -1970,7 +1970,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Size &gt;&gt;</string>
+          <string>Size</string>
          </property>
         </widget>
        </item>

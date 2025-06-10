@@ -80,7 +80,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             if uiObj in i:
                 print(i)
         """
-        self.setWindowTitle("nlRT v1.0.0")
+        self.setWindowTitle("nlRT 0.1.0")
         self.setCentralWidget(self.UI)
         self.setGeometry(0, 0, 233, 680)
         QtWidgets.QApplication.setStyle(QtWidgets.QStyleFactory.create("compact"))
@@ -114,8 +114,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.viewSkel_BN.clicked.connect(self.viewSkel_BN_clicked)
         self.UI.viewSkel_BN.setIcon(QtGui.QIcon(":searchEngine.png"))
         self.UI.importSkel_BN.clicked.connect(self.importSkel_BN_clicked)
-        self.UI.importSkel_BN.setIcon(QtGui.QIcon(":kinReroot.png"))
-        # self.UI.importSkel_BN.setIcon(QtGui.QIcon(":character.svg"))
+        self.UI.importSkel_BN.setIcon(QtGui.QIcon(":polySphere.png"))  # kinReroot
         # self.UI.preset_openSkel_BN.clicked.connect(self.preset_openSkel_BN_clicked)
         # self.UI.preset_refresh_BN.clicked.connect(self.preset_refresh_BN_clicked)
         # self.UI.preset_refresh_BN.setIcon(QtGui.QIcon(":refresh.png"))
@@ -192,8 +191,11 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if mc.selectPref(clickDrag=1, q=1):
             self.UI.clickDrag_CB.setChecked(1)
 
-        self.UI.shapeScaleDn_BN.clicked.connect(partial(self.shapeScale, 3 / 4))
         self.UI.shapeScaleUp_BN.clicked.connect(partial(self.shapeScale, 4 / 3))
+        self.UI.shapeScaleUp_BN.setIcon(QtGui.QIcon(":moveUVUp.png"))
+        self.UI.shapeScaleDn_BN.clicked.connect(partial(self.shapeScale, 3 / 4))
+        self.UI.shapeScaleDn_BN.setIcon(QtGui.QIcon(":moveUVDown.png"))
+
         self.UI.shapeRotaX_BN.clicked.connect(partial(self.shapeRota, 90, 0, 0))
         self.UI.shapeRotaY_BN.clicked.connect(partial(self.shapeRota, 0, 90, 0))
         self.UI.shapeRotaZ_BN.clicked.connect(partial(self.shapeRota, 0, 0, 90))
@@ -566,9 +568,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         logging.info(f"{num} skinClusters deleted.")
 
     def saveCtl(self):
-
-        from nl_modules.utils import build
-
+        """
+        Save all the control curves, without connection or any unwanted
+        """
         allCtls = build.getAllRigCtls()
         if allCtls:
             mc.select(allCtls)
@@ -587,9 +589,12 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 logging.info("Curve shape exported OK.")
 
     def loadCtl(self):
-        from nl_modules.utils import build
-
-        ctlFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, fileMode=1)
+        """
+        Replace all the control curve shapes by those found in the file
+        """
+        ctlFile = mc.fileDialog2(
+            fileFilter="*.ma", dialogStyle=2, fileMode=1, dir=CTL_PRESET
+        )
         if ctlFile:
             #
             #    import ctl file

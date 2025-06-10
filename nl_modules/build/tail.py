@@ -101,7 +101,6 @@ class Tail(RigModule):
             size=rSz * 4,
             color=6,
         )
-        print(self.ikJnt)
         SrfNode(self.rbSrf1).weightTo(self.ikJnt, mi=4, dr=6, chain=0)
 
         for i in range(0, 5):
@@ -202,7 +201,7 @@ class Tail(RigModule):
             self.ofsJnt.append(jnt)
 
         SrfNode(self.rbSrf2).weightTo(self.ofsJnt, chain=0, mi=2, dr=6)
-
+        # self.fkCtl[-1].a.add("stretchy", proxy=self.setting.a.stretchy)
         # self.isolate_align(self.ikCtl[0], [self.ikCtl[0].offset, self.masterC])
 
         mc.delete(self.rootJ)
