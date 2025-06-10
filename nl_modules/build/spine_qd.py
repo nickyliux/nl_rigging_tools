@@ -154,6 +154,10 @@ class SpineQd(RigModule):
         self.build_twoJ_ik()
         self.build_volume(crvLenRatio)
         self.bindJnts.extend(self.rbJnts)
+
+        self.setting.snapTo(self.rbJnts[0], p=self.CTL_DATA)
+        self.rbJnts[0].cstPar(self.setting, mo=1)
+
         #
         #   scaling
         #
@@ -179,9 +183,6 @@ class SpineQd(RigModule):
             self.cog_ctl(shape="squR", scale=rSz * 5, rotate=(90, 0, 0))
         else:
             self.cog_ctl.snapTo(self.RT_GUIDE, addOfs=1)
-
-        self.setting.snapTo(self.RT_GUIDE, p=self.IK_PART)
-        self.base_ctl.cstPar(self.setting, mo=1)
         #
         #   parenting
         #

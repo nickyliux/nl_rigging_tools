@@ -2,52 +2,17 @@
 # nl-rigging-tools
 
 ## Background
-I have been rigging characters with my own autorigger for years. Once in a project I had to use Ziva and I found it challenging rigging the actual "skeleton". Meanwhile I'd like to try python object-oriented way instead of mel/maxscript, and learn more about animal anatomy through the project.
+For years, I have been rigging characters with my own autorigger . Once in a project I was working on realistic character with Ziva. I found it challenging rigging the actual "skeleton". Meanwhile I would like to try building with python and learn more about anatomy through the project.
 
 ## Features
-### 1. Modular
-In production, we see only single arm or leg in a shot. Building an entire rig and deleting unwanted part may break the rig.
-### 2. Custom Framework
-Thanks to the course <b>Python for Maya: Beginner to Advanced Rigging Automation</b> by Nick Hughes, I learn about custom framework so I can build tools with much less code.
-### 3. Auto Bone Skinning
-Skinning corresponding bones models is also automated with minimum setup and fast referenced joints positioning
-
-## Components
-#### Neck / Spine
-- FK > IK > Ribbon
-- Stretchy with volume control
-#### Arm
-- FK / IK with ribbon
-- Auto clavicle
-- Soft IK
-- Elbow pinning
-- Free / aligned wrist
-- Twist bones
-#### Hand
-- Smart finger control
-- Palm roll control
-- Scalable hand
-#### Leg
-- FK / IK with ribbon
-- Auto hip
-- Soft IK
-- Knee pinning
-- Twist bones
-- Toe & Patella bones
-- Knee correction
-- Smart foot roll control
-- Scalable foot
-#### NeckQd / SpineQd
-- IK > FK > Ribbon
-- Stretchy with volume control
-#### LegQd
-- FK / IK with ribbon
-- Smart foot roll control
-
-
+### :: Modular
+There are times only part of the body is visible or needed. Modular build avoids building entire rig and deleting unwanted parts which may break the rig.
+### :: Custom Framework
+Thanks to the course <b>"Python for Maya: Beginner to Advanced Rigging Automation"</b> by Nick Hughes, I learn to build custom framework for faster development and cleaner codes.
+### :: Auto Bone Skinning
+Minimum setup by positioning reference / ribbon joints for the skeletal meshes.
 
 ## Framework Python Classes
-
 ```mermaid
 classDiagram
     
@@ -88,17 +53,30 @@ classDiagram
 ```
 
 
-## Marking menus : Rig Building ( ctrl + MMB )
+## Components Features
 
-![The Autorig](nl_modules/doc/marking_menu_autorig.png)
-## Marking menus : General ( ctrl + alt + MMB )
-![General Rigging](nl_modules/doc/marking_menu_rigging.png)
+Part | FK | IK | Ribbon | Stretchy | Volume | Soft Ik | Pv Pin | Twist bones | Palm Roll | Patella Bone | Local Scaling
+--- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- 
+Head |+||||||||||+
+Spine |+|+|+|+|+||||+
+Hand |+|+|+|+|||||||+
+Arm |+|+|+|+|+|+|+|+|||+
+Leg |+|+|+|+|+|+|+|+|+|+|+
+Tail |+|+|+|+|||||||+
+
+
+## Marking menus
+Two Marking menus are made to speed up rigging work.
+|||
+|---|---|
+|Rig Building | Ctrl + MMB ![The Autorig](nl_modules/doc/marking_menu_autorig.png)|
+|Daily Rigging Operations | Ctrl + Alt + MMB ![General Rigging](nl_modules/doc/marking_menu_rigging.png)|
 
 
 ## Installation
 1. Download the repository zip file.
 2. Extract it.
-3. Locate install/dragAndDrop.py.
+3. Locate install / dragAndDrop.py.
 4. Drag and drop it onto a Maya viewport.
 5. Run the lines
     ```python
