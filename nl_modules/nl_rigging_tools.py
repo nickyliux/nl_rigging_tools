@@ -572,6 +572,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         Save all the control curves, without connection or any unwanted
         """
         allCtls = build.getAllRigCtls()
+        allCtls.extend(["master_ctl", "master1_ctl", "master2_ctl"])
         if allCtls:
             mc.select(allCtls)
             crvFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2)
@@ -599,22 +600,33 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             #
             #    import ctl file
             #
-            imported = mc.file(ctlFile, i=1, ns="ctl", returnNewNodes=1)
+            ns = "ctl"
+            imported = mc.file(ctlFile, i=1, ns=ns, returnNewNodes=1)
             ns = ""
             if imported:
-                ns = imported[0].split(":")[0] + ":"
+                ns = imported[0].split(":")[0]
+            else:
+                return
             #
             #    replace shape
             #
             allCtls = build.getAllRigCtls()
+            allCtls.extend(
+                [DagNode("master2_ctl"), DagNode("master1_ctl"), DagNode("master_ctl")]
+            )
             for ctl in allCtls:
-                importCtl = DagNode(ns + ctl)
+                importCtl = DagNode(ns + ":" + ctl)
                 if importCtl.exists():
                     mc.delete(ctl.shapes)
                     mc.parent(importCtl.shapes, ctl, s=1, r=1)
-            for obj in imported:
-                if mc.objExists(obj):
-                    mc.delete(obj)
+                    for s in ctl.shapes:
+                        s.rename(ctl + "Shape#")
+
+            if imported:
+                rootGrp = DagNode(ns + ":CHR")
+                if rootGrp.exists():
+                    print(rootGrp)
+                    # mc.delete(rootGrp)
 
     def autoAttachJntToSurf(self):
 

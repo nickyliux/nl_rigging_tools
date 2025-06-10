@@ -39,6 +39,7 @@ class Hand(RigModule):
             fgr_roots.append(fgr_jnts[0])
 
         self.rootJ = root_list[0]
+        self.rootJ | self.SKL_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):

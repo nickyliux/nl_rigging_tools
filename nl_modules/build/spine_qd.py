@@ -60,6 +60,7 @@ class SpineQd(RigModule):
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
         self.rootJ = root_list[0]
+        self.rootJ | self.SKL_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
