@@ -518,6 +518,68 @@ def loadCtl():
             # mc.delete(rootGrp)
 
 
+def autoAttachJntToSurf():
+
+    masterCtl = DagNode("master_ctl")
+    if not masterCtl.exists():
+        logging.info(f"master_ctl NOT found")
+        return
+
+    globalScale = masterCtl.a["globalScale"]
+    if not globalScale.exists():
+        logging.info(f"globalScale attr NOT found")
+        return
+
+    for rigNode in mc.ls("*RGN", type="script"):
+        rN = DagNode(rigNode)
+        if rN.a.nodeState.get() == 2:
+            #
+            #   Process only if rbJntSet found
+            #
+            rbJntSetAttr = rN.a["rbJntSet"]
+            if rbJntSetAttr.exists():
+
+                rbSrfAttr = rN.a["rbSrf"]
+                if not rbSrfAttr.exists():
+                    logging.info(f"Attr rbSrf NOT found in {rN}.")
+                    continue
+                #
+                #   check set rbJntSet
+                #
+                rbJntSetName = rbJntSetAttr.get()
+                rbJntSet = DagNode(rbJntSetName)
+                if not rbJntSet.exists():
+                    logging.info(f"Set {rbJntSetName} NOT found.")
+                    continue
+
+                rbJnts = mc.sets(rbJntSet, q=1)
+                if not rbJnts:
+                    logging.info(f"No joints found in Set {rbJntSet}.")
+                    continue
+                #
+                #   check surface rbSrf
+                #
+                rbSrf = rbSrfAttr.inConnNode
+                if not rbSrf:
+                    logging.info(f"Surface object NOT found.")
+                    continue
+                #
+                #   attach joints in set to srf
+                #
+                if rbSrf and rbJnts:
+                    from nl_modules.utils import common
+
+                    common.ribbonAttach(
+                        geo=rbSrf,
+                        tgtList=rbJnts,
+                        scaleAttr=globalScale,
+                        p=DagNode("RIG"),
+                    )
+                else:
+                    logging.info("Ignore invalid surf and joints")
+                logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")
+
+
 # def getRigNodes(objList):
 #     rigNodes = []
 #     for obj in objList:

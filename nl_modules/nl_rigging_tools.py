@@ -523,18 +523,15 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         meshSel = common.getMeshBelow(MODEL_GRP)
         #
         #   bind to closest refJnt in MODEL_GRP
-        #
-        self.bindRefJnts(meshSel, closestSet=BIND_JNT_SET, threshold=15)
-        #
         #   bind to _rbnJnt For each in MODEL GRP
         #
+        self.bindRefJnts(meshSel, closestSet=BIND_JNT_SET, threshold=15)
         self.bindRbnJnts(meshSel)
         #
         #   search the attr rbSrf & rbJSet for each rigNode and attach joints
         #   to surface with 'closest point on surface' node
         #
-        self.autoAttachJntToSurf()
-
+        build.autoAttachJntToSurf()
         common.setViewport()
         mc.select(cl=1)
 
@@ -558,65 +555,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def genProxy(self):
         build.genProxyMesh()
-
-    def autoAttachJntToSurf(self):
-
-        masterCtl = DagNode("master_ctl")
-        if not masterCtl.exists():
-            logging.info(f"master_ctl NOT found")
-            return
-
-        globalScale = masterCtl.a["globalScale"]
-        if not globalScale.exists():
-            logging.info(f"globalScale attr NOT found")
-            return
-
-        for rigNode in mc.ls("*RGN", type="script"):
-            rN = DagNode(rigNode)
-            if rN.a.nodeState.get() == 2:
-                #
-                #   Process only if rbJntSet found
-                #
-                rbJntSetAttr = rN.a["rbJntSet"]
-                if rbJntSetAttr.exists():
-
-                    rbSrfAttr = rN.a["rbSrf"]
-                    if not rbSrfAttr.exists():
-                        logging.info(f"Attr rbSrf NOT found in {rN}.")
-                        continue
-                    #
-                    #   check set rbJntSet
-                    #
-                    rbJntSetName = rbJntSetAttr.get()
-                    rbJntSet = DagNode(rbJntSetName)
-                    if not rbJntSet.exists():
-                        logging.info(f"Set {rbJntSetName} NOT found.")
-                        continue
-
-                    rbJnts = mc.sets(rbJntSet, q=1)
-                    if not rbJnts:
-                        logging.info(f"No joints found in Set {rbJntSet}.")
-                        continue
-                    #
-                    #   check surface rbSrf
-                    #
-                    rbSrf = rbSrfAttr.inConnNode
-                    if not rbSrf:
-                        logging.info(f"Surface object NOT found.")
-                        continue
-                    #
-                    #   attach joints in set to srf
-                    #
-                    if rbSrf and rbJnts:
-                        common.ribbonAttach(
-                            geo=rbSrf,
-                            tgtList=rbJnts,
-                            scaleAttr=globalScale,
-                            p=DagNode("RIG"),
-                        )
-                    else:
-                        logging.info("Ignore invalid surf and joints")
-                    logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")
 
     def misc_importEnvAndShd_BN_clicked(self):
         """Import lighting & shader scenes for better look"""
