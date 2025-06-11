@@ -501,6 +501,33 @@ def setViewport(jx=1, xray=0, wos=0):
     mc.refresh(f=1)
 
 
+def setOnTopForSel(state):
+    from nl_modules.nodel.base.dag_node import DagNode
+
+    for sel in mc.ls(sl=1):
+        DagNode(sel).shape.a.alwaysDrawOnTop.set(state)
+
+
+def rotaCVForSel(*args):
+    from nl_modules.nodel.base.dag_node import DagNode
+    from nl_modules.nodel.crv_node import CrvNode
+
+    for sel in mc.ls(sl=1, tr=1):
+        sel = DagNode(sel)
+        if sel.type == "nurbsCurve":
+            CrvNode(sel).cv_rotate(*args)
+
+
+def scaleCVForSel(value):
+    from nl_modules.nodel.base.dag_node import DagNode
+    from nl_modules.nodel.crv_node import CrvNode
+
+    for sel in mc.ls(sl=1, tr=1):
+        sel = DagNode(sel)
+        if sel.type == "nurbsCurve":
+            CrvNode(sel).cv_scale(value)  # , atCVCetner=1)
+
+
 # def calcBB(tgt):
 #     from nl_modules.nodel.base.dag_node import DagNode
 #

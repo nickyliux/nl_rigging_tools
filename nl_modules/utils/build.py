@@ -1,8 +1,6 @@
 import os.path
 import maya.cmds as mc
 import logging
-
-# import nl_modules
 from nl_modules.nodel.base.dag_node import DagNode
 
 #
@@ -24,8 +22,10 @@ from nl_modules.build.tail import Tail
 from nl_modules.build.rig_module import RigModule
 from contextlib import ContextDecorator
 
-# MOD_DIR = os.path.dirname(nl_modules.__file__)
-# CTL_PRESET = MOD_DIR + "/build/control_presets"
+import nl_modules
+
+MOD_DIR = os.path.dirname(nl_modules.__file__)
+CTL_PRESET = MOD_DIR + "/build/control_presets"
 
 
 class Undo(ContextDecorator):
@@ -453,6 +453,69 @@ def genProxyMesh():
             grpStr = str(j).split("_")[0]
             PRX_GRP = GrpNode(grpStr + "_PRX", p=PRX)
             JntNode(j).addProxyMesh(p=PRX_GRP)
+
+
+def saveCtl():
+    """
+    Save all the control curves, without connection or any unwanted
+    """
+    allCtls = getAllRigCtls()
+    allCtls.extend(["master_ctl", "master1_ctl", "master2_ctl"])
+    if allCtls:
+        mc.select(allCtls)
+        crvFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, dir=CTL_PRESET)
+        if crvFile:
+            mc.file(
+                crvFile,
+                type="mayaAscii",
+                exportSelected=1,
+                constructionHistory=0,
+                channels=0,
+                expressions=0,
+                constraints=0,
+            )
+            mc.select(cl=1)
+            logging.info("Curve shape exported OK.")
+
+
+def loadCtl():
+    """
+    Replace all the control curve shapes by those found in the file
+    """
+    ctlFile = mc.fileDialog2(
+        fileFilter="*.ma", dialogStyle=2, fileMode=1, dir=CTL_PRESET
+    )
+    if ctlFile:
+        #
+        #    import ctl file
+        #
+        ns = "ctl"
+        imported = mc.file(ctlFile, i=1, ns=ns, returnNewNodes=1)
+        ns = ""
+        if imported:
+            ns = imported[0].split(":")[0]
+        else:
+            return
+        #
+        #    replace shape
+        #
+        allCtls = getAllRigCtls()
+        allCtls.extend(
+            [DagNode("master2_ctl"), DagNode("master1_ctl"), DagNode("master_ctl")]
+        )
+        for ctl in allCtls:
+            importCtl = DagNode(ns + ":" + ctl)
+            if importCtl.exists():
+                mc.delete(ctl.shapes)
+                mc.parent(importCtl.shapes, ctl, s=1, r=1)
+                for s in ctl.shapes:
+                    s.rename(ctl + "Shape#")
+
+        if imported:
+            rootGrp = DagNode(ns + ":CHR")
+            # if rootGrp.exists():
+            #     print(rootGrp)
+            # mc.delete(rootGrp)
 
 
 # def getRigNodes(objList):

@@ -1,8 +1,10 @@
 """
 File: nl_rigging_tools.py
 Author: Nicky Liu
-Contact: nickyliux@gmail.com, www.nickyliu.com
-Description: Main file to load Qt UI file and connect functions for "nl_rigging_tools"
+Date: 2024-06-11
+Version: 0.1.0
+Contact: nickyliux@gmail.com / www.nickyliu.com
+Description: Main file to load Qt UI file and connect functions
 """
 
 import os
@@ -121,7 +123,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.viewSkel_BN.clicked.connect(self.viewSkel_BN_clicked)
         self.UI.viewSkel_BN.setIcon(QtGui.QIcon(":searchEngine.png"))
         self.UI.importSkel_BN.clicked.connect(self.importSkel_BN_clicked)
-        self.UI.importSkel_BN.setIcon(QtGui.QIcon(":polySphere.png"))  # kinReroot
+        self.UI.importSkel_BN.setIcon(QtGui.QIcon(":polySphere.png"))
         # self.UI.preset_openSkel_BN.clicked.connect(self.preset_openSkel_BN_clicked)
         # self.UI.preset_refresh_BN.clicked.connect(self.preset_refresh_BN_clicked)
         # self.UI.preset_refresh_BN.setIcon(QtGui.QIcon(":refresh.png"))
@@ -164,18 +166,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             self.joint_mirrorAllRef_BN_clicked
         )
 
-        # self.UI.skin_attachJntsToSurf_BN.clicked.connect(
-        #     self.skin_attachJntsToSurf_BN_clicked
-        # )
-        # self.UI.skin_refJnt_BN.clicked.connect(self.bindJnts)
         self.UI.autoSkin_BN.clicked.connect(self.autoSkin)
         self.UI.delSkinForAllMeshes_BN.clicked.connect(self.delSkinForAllMeshes)
         self.UI.genProxy_BN.clicked.connect(self.genProxy)
 
         self.UI.saveCtl_BN.setIcon(QtGui.QIcon(":fileSave.png"))
-        self.UI.saveCtl_BN.clicked.connect(self.saveCtl)
+        self.UI.saveCtl_BN.clicked.connect(build.saveCtl)
         self.UI.loadCtl_BN.setIcon(QtGui.QIcon(":openScript.png"))
-        self.UI.loadCtl_BN.clicked.connect(self.loadCtl)
+        self.UI.loadCtl_BN.clicked.connect(build.loadCtl)
 
         self.UI.misc_retopo20_BN.clicked.connect(partial(modeling.retopo, faceNum=20))
         self.UI.misc_retopo50_BN.clicked.connect(partial(modeling.retopo, faceNum=50))
@@ -183,7 +181,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.misc_retopo500_BN.clicked.connect(partial(modeling.retopo, faceNum=500))
 
         self.UI.misc_buildLineSel_BN.clicked.connect(CrvNode.buildLineLinkedSel)
-        # self.UI.misc_buildJntLineSel_BN.clicked.connect(JntNode.buildJntLineSel)
         self.UI.misc_importEnvAndShd_BN.clicked.connect(
             self.misc_importEnvAndShd_BN_clicked
         )
@@ -199,16 +196,16 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if mc.selectPref(clickDrag=1, q=1):
             self.UI.clickDrag_CB.setChecked(1)
 
-        self.UI.shapeScaleUp_BN.clicked.connect(partial(self.shapeScale, 4 / 3))
+        self.UI.shapeScaleUp_BN.clicked.connect(partial(common.scaleCVForSel, 4 / 3))
         self.UI.shapeScaleUp_BN.setIcon(QtGui.QIcon(":moveUVUp.png"))
-        self.UI.shapeScaleDn_BN.clicked.connect(partial(self.shapeScale, 3 / 4))
+        self.UI.shapeScaleDn_BN.clicked.connect(partial(common.scaleCVForSel, 3 / 4))
         self.UI.shapeScaleDn_BN.setIcon(QtGui.QIcon(":moveUVDown.png"))
 
-        self.UI.shapeRotaX_BN.clicked.connect(partial(self.shapeRota, 90, 0, 0))
-        self.UI.shapeRotaY_BN.clicked.connect(partial(self.shapeRota, 0, 90, 0))
-        self.UI.shapeRotaZ_BN.clicked.connect(partial(self.shapeRota, 0, 0, 90))
-        self.UI.onTop_BN.clicked.connect(partial(self.alwaysOnTop, 1))
-        self.UI.onTopOff_BN.clicked.connect(partial(self.alwaysOnTop, 0))
+        self.UI.shapeRotaX_BN.clicked.connect(partial(common.rotaCVForSel, 90, 0, 0))
+        self.UI.shapeRotaY_BN.clicked.connect(partial(common.rotaCVForSel, 0, 90, 0))
+        self.UI.shapeRotaZ_BN.clicked.connect(partial(common.rotaCVForSel, 0, 0, 90))
+        self.UI.onTop_BN.clicked.connect(partial(common.setOnTopForSel, 1))
+        self.UI.onTopOff_BN.clicked.connect(partial(common.setOnTopForSel, 0))
 
         self.rigNode_refresh_BN_clicked()
         self.preset_refresh_BN_clicked()
@@ -227,22 +224,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def pickMaskAll_BN_clicked(self):
         mel.eval('setObjectPickMask "All" 1')
-
-    def shapeRota(self, *args):
-        for sel in mc.ls(sl=1, tr=1):
-            sel = DagNode(sel)
-            if sel.type == "nurbsCurve":
-                CrvNode(sel).cv_rotate(*args)
-
-    def alwaysOnTop(self, value):
-        for sel in mc.ls(sl=1):
-            DagNode(sel).shape.a.alwaysDrawOnTop.set(value)
-
-    def shapeScale(self, value):
-        for sel in mc.ls(sl=1, tr=1):
-            sel = DagNode(sel)
-            if sel.type == "nurbsCurve":
-                CrvNode(sel).cv_scale(value)  # , atCVCetner=1)
 
     def component_load_BN_doubleClicked(self, item):
         names = guide.COMPONENT_DICT[item.text()]
@@ -577,67 +558,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def genProxy(self):
         build.genProxyMesh()
-
-    def saveCtl(self):
-        """
-        Save all the control curves, without connection or any unwanted
-        """
-        allCtls = build.getAllRigCtls()
-        allCtls.extend(["master_ctl", "master1_ctl", "master2_ctl"])
-        if allCtls:
-            mc.select(allCtls)
-            crvFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, dir=CTL_PRESET)
-            if crvFile:
-                mc.file(
-                    crvFile,
-                    type="mayaAscii",
-                    exportSelected=1,
-                    constructionHistory=0,
-                    channels=0,
-                    expressions=0,
-                    constraints=0,
-                )
-                mc.select(cl=1)
-                logging.info("Curve shape exported OK.")
-
-    def loadCtl(self):
-        """
-        Replace all the control curve shapes by those found in the file
-        """
-        ctlFile = mc.fileDialog2(
-            fileFilter="*.ma", dialogStyle=2, fileMode=1, dir=CTL_PRESET
-        )
-        if ctlFile:
-            #
-            #    import ctl file
-            #
-            ns = "ctl"
-            imported = mc.file(ctlFile, i=1, ns=ns, returnNewNodes=1)
-            ns = ""
-            if imported:
-                ns = imported[0].split(":")[0]
-            else:
-                return
-            #
-            #    replace shape
-            #
-            allCtls = build.getAllRigCtls()
-            allCtls.extend(
-                [DagNode("master2_ctl"), DagNode("master1_ctl"), DagNode("master_ctl")]
-            )
-            for ctl in allCtls:
-                importCtl = DagNode(ns + ":" + ctl)
-                if importCtl.exists():
-                    mc.delete(ctl.shapes)
-                    mc.parent(importCtl.shapes, ctl, s=1, r=1)
-                    for s in ctl.shapes:
-                        s.rename(ctl + "Shape#")
-
-            if imported:
-                rootGrp = DagNode(ns + ":CHR")
-                if rootGrp.exists():
-                    print(rootGrp)
-                    # mc.delete(rootGrp)
 
     def autoAttachJntToSurf(self):
 
