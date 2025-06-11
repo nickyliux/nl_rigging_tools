@@ -3749,14 +3749,14 @@
             ]
         },
         "tail0_master_guide":{
-            "fkBoneNum":8,
+            "fkBoneNum":6,
             "r":[
                 0.0,
                 0.0,
                 0.0
             ],
             "rbnBones":true,
-            "rbnJntNum":7,
+            "rbnJntNum":6,
             "s":[
                 0.3,
                 0.3,
