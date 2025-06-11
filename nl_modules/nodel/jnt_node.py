@@ -99,7 +99,7 @@ class JntNode(GrpNode):
         from nl_modules.utils import common
 
         if self.type != "joint":
-            logging.error(f"{self.name} is NOT a joint !")
+            logging.error(f"{self.name} is NOT joint !")
             return
 
         size = self.a.radius.get() * 5 * scale
@@ -108,18 +108,32 @@ class JntNode(GrpNode):
 
         if child or (not skipEnd):
             dist = self.o.distanceTo(child[0]) if child else size
-            cube = mc.polyCube(n=name, ax=aimDir, h=dist, w=size, d=size, cuv=4)[0]
-            proxyN = DagNode(cube)
-            proxyN.alignTo(self, p=p)
+            proxy = DagNode(
+                mc.polyCube(n=name, ax=aimDir, h=dist, w=size, d=size, cuv=4)[0]
+            )
+            # proxy = DagNode(
+            #     mc.polyCylinder(
+            #         n=name,
+            #         r=size / 2,
+            #         h=dist,
+            #         ax=aimDir,
+            #         subdivisionsAxis=8,
+            #         subdivisionsHeight=3,
+            #         subdivisionsCaps=1,
+            #         ch=0,
+            #     )[0]
+            # )
+            proxy.alignTo(self, p=p)
+            proxyOfs = proxy.addOffsetGrp()
 
             if scaler:
-                scaler >> proxyN.a.s
+                scaler >> proxy.a.s
 
             if len(child) >= 1:
                 tgtChild = child[0]
-                common.cstMulti(self, tgtChild, proxyN, cstType="poi", delete=1)
+                common.cstMulti(self, tgtChild, proxyOfs, cstType="poi", delete=1)
                 tgtChild.cstAim(
-                    proxyN,
+                    proxyOfs,
                     aim=aimDir,
                     worldUpType="objectrotation",
                     worldUpObject=self,
@@ -129,12 +143,14 @@ class JntNode(GrpNode):
             #   NOTE:  constraint must be after shader assignment,
             #   otherwise mc.sets(..) will show error
             #
-            common.assignProxyShader(proxyN)
-            self.cstPar(proxyN, mo=1)
-            self.a.s >> proxyN.a.s
+            common.assignShader("proxy_default_shd", geo=proxy, color=(0.5, 0.5, 0.5))
+            common.assignShader(
+                "proxy_side_shd", geo=proxy, color=(0.1, 0.1, 0.1), faceID=[0, 2]
+            )
+            self.cstPar(proxyOfs, mo=1)
+            self.a.s >> proxyOfs.a.s
 
-            proxyN.dspType = 2
-            return proxyN
+            return proxy
 
     @staticmethod
     def makeTwoJC(

@@ -161,8 +161,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         #     self.skin_attachJntsToSurf_BN_clicked
         # )
         # self.UI.skin_refJnt_BN.clicked.connect(self.bindJnts)
-        self.UI.skin_oneClick_BN.clicked.connect(self.skin_oneClick)
-        self.UI.skin_delForAllMeshes_BN.clicked.connect(self.skin_delForAllMeshes)
+        self.UI.autoSkin_BN.clicked.connect(self.autoSkin)
+        self.UI.delSkinForAllMeshes_BN.clicked.connect(self.delSkinForAllMeshes)
+        self.UI.genProxy_BN.clicked.connect(self.genProxy)
 
         self.UI.saveCtl_BN.setIcon(QtGui.QIcon(":fileSave.png"))
         self.UI.saveCtl_BN.clicked.connect(self.saveCtl)
@@ -528,8 +529,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.oneClick_PB.setValue(0)
         logging.info(f"{weighted} weighted. {ignored} ignored. {notFound} not found.")
 
-    @Undo("skin_oneClick")
-    def skin_oneClick(self):
+    @Undo("autoSkin")
+    def autoSkin(self):
 
         meshSel = common.getMeshBelow(MODEL_GRP)
         #
@@ -549,7 +550,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         common.setViewport()
         mc.select(cl=1)
 
-    def skin_delForAllMeshes(self):
+    def delSkinForAllMeshes(self):
         from nl_modules.nodel.msh_node import MshNode
 
         #
@@ -567,6 +568,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         logging.info(f"{num} skinClusters deleted.")
 
+    def genProxy(self):
+        build.genProxyMesh()
+
     def saveCtl(self):
         """
         Save all the control curves, without connection or any unwanted
@@ -575,7 +579,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         allCtls.extend(["master_ctl", "master1_ctl", "master2_ctl"])
         if allCtls:
             mc.select(allCtls)
-            crvFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2)
+            crvFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, dir=CTL_PRESET)
             if crvFile:
                 mc.file(
                     crvFile,

@@ -53,31 +53,14 @@ def matchMove(targetList, mode=None):
     mc.matchTransform(*others, last, position=t, rotation=r, scale=s)
 
 
-def assignProxyShader(geo):
-    """Assign shaders to proxy mesh"""
-    from nl_modules.nodel.base.dag_node import DagNode
-
-    COLOR1 = (0.5, 0.5, 0.5)
-    COLOR2 = (0.7, 0.3, 0.3)
-
-    geo = DagNode(geo)
-    # SHADER FOR ENTIRE
-    shd, sg = addShader("proxy_default_shd", color=COLOR1)
-    mc.sets(geo, forceElement=sg)
-
-    # SHADER FOR LEFT / RIGHT
-    name = "proxy_md_shd"
-    faceID = [4, 5]
-    if geo.name.startswith("lf") or geo.name.startswith("rt"):
-        name = "proxy_side_shd"
-        faceID = [0, 2]
-    # elif geo.name.startswith("rt"):
-    #     name = "proxy_rt_shd"
-    #     faceID = [0, 2]
-
-    shd, sg = addShader(name, color=COLOR2)
-    for fID in faceID:
-        mc.sets(f"{geo}.f[{fID}]", forceElement=sg)
+def assignShader(n, geo=None, color=(0, 0, 0), faceID=None):
+    """Assign shader to entire or faceID"""
+    shd, sg = addShader(n, color=color)
+    if faceID:
+        for fID in faceID:
+            mc.sets(f"{geo}.f[{fID}]", forceElement=sg)
+    else:
+        mc.sets(geo, forceElement=sg)
 
 
 def addShader(n, shaderType="lambert", color=(1, 1, 1)):
@@ -95,7 +78,6 @@ def addShader(n, shaderType="lambert", color=(1, 1, 1)):
         shd = DepNode(mc.shadingNode(shaderType, name=n, asShader=1))
         shd.a.color.set(*color)
         shd.a.ambientColor.set(0.5, 0.5, 0.5)
-        # create shadingEngine (shading group)
         sg = DepNode(mc.sets(name=f"{n}SG", empty=1, renderable=1, noSurfaceShader=1))
         mc.connectAttr(f"{shd}.outColor", f"{sg}.surfaceShader")
     return shd, sg

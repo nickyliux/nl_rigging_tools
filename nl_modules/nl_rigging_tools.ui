@@ -840,14 +840,14 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>50</y>
+        <y>45</y>
         <width>201</width>
         <height>21</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
-        <widget class="QPushButton" name="skin_oneClick_BN">
+        <widget class="QPushButton" name="autoSkin_BN">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -883,7 +883,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="skin_delForAllMeshes_BN">
+        <widget class="QPushButton" name="delSkinForAllMeshes_BN">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -1003,6 +1003,48 @@
         </widget>
        </item>
       </layout>
+     </widget>
+     <widget class="QPushButton" name="genProxy_BN">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>80</y>
+        <width>97</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>20</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>9999</width>
+        <height>18</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>8</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>Auto skin meshes under mdl_grp</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>Gen Proxy</string>
+      </property>
      </widget>
     </widget>
    </widget>
