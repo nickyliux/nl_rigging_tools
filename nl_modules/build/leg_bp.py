@@ -35,8 +35,6 @@ class LegBp(RigModule):
         self.SCAPULAR_EXTRA = self.master_guide.a.scapularExtra.get()
 
         rID, rSz, xDr = self.getMyVar()
-        hip_guide = DagNode(rID + "_hip_guide")
-        self.CTL_DATA.snapTo(hip_guide)
 
         self.FK_PART = GrpNode("FK", pf=rID, p=self.CTL_DATA)
         self.IK_PART = GrpNode("IK", pf=rID, p=self.CTL_DATA)
@@ -234,8 +232,8 @@ class LegBp(RigModule):
         self.CTL_DATA.a.s >> self.RIG_DATA.a.s
         self.CTL_DATA.a.s >> self.PRX_GRP.a.s
         self.CTL_DATA.a.s >> self.SKL_DATA.a.s
-        moduleScale = self.setting.a.add("moduleScale", min=0.01, dv=1)
-        moduleScale >> self.CTL_DATA.a.s
+        # localScale = self.setting.a.add("localScale", min=0.01, dv=1)
+        # localScale >> self.CTL_DATA.a.s
 
         palmScale = self.setting.a.add("palmScale", min=0.01, dv=1)
         self.ikc.a.add("palmScale", min=0.01, proxy=palmScale)
@@ -580,14 +578,6 @@ class LegBp(RigModule):
 
         self.bindJnts.extend(self.ribbonUp.rbJnt + self.ribbonLw.rbJnt)
 
-    def setup_proxy(self):
-        rID, rSz, xDr = self.getMyVar()
-        for j in self.bindJnts:
-            scaler = (
-                self.setting.a["palmScale"] if j.name.startswith(rID + "_toe") else None
-            )
-            JntNode(j).addProxyMesh(p=self.PRX_GRP, scaler=scaler)
-
     def setup_vis(self):
         self.pvc.a["fkPin"] >> self.pin_fkc.a.v
         self.ctl_vis_toggle(
@@ -672,7 +662,6 @@ class LegBp(RigModule):
         self.add_ctl_set(ctlSet)
         self.setup_space()
         self.setup_anchor()
-        self.setup_proxy()
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()

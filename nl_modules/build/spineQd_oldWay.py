@@ -384,10 +384,6 @@ class SpineQd(RigModule):
     def setup_vis(self):
         pass
 
-    def setup_proxy(self):
-        for j in self.bindJnts:
-            JntNode(j).addProxyMesh(p=self.PRX_GRP, scaler=JntNode(j).a.s)
-
     def setup_rotate_order(self):
         [c.a.ro.set(2) for c in self.ctls]
 
@@ -410,7 +406,6 @@ class SpineQd(RigModule):
             self.add_bind_jnt_set(self.bindJnts)
         self.add_ctl_set(self.ctls)
         self.setup_anchor()
-        self.setup_proxy()
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()

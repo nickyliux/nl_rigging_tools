@@ -182,15 +182,10 @@ class TailFk(RigModule):
         for ctl in self.fkCtl:
             ctl.a.ro.set(3)
 
-    def setup_proxy(self):
-        for j in self.bindJnts:
-            JntNode(j).addProxyMesh(scale=1, p=self.PRX_GRP)
-
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
         self.add_ctl_set(self.fkCtl)
         self.setup_anchor_module({"anchorF1": self.fkCtl[0].offset})
-        self.setup_proxy()
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()

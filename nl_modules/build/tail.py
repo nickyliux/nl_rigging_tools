@@ -48,12 +48,14 @@ class Tail(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting = CrvNode("setting", pf=rID, shape="bagua", scale=rSz * 2, top=1)
+        self.setting = CrvNode(
+            "setting", pf=rID, shape="bagua", scale=rSz * 2, top=1, moveY=rSz * 5
+        )
         self.setting.a.add("stretchy", min=0, max=1)
-        moduleScale = self.setting.a.add("moduleScale", min=0.01, dv=1)
-        moduleScale >> self.IK_PART.a.s
-        moduleScale >> self.FK_PART.a.s
-        moduleScale >> self.PRX_GRP.a.s
+        localScale = self.setting.a.add("localScale", min=0.01, dv=1)
+        localScale >> self.IK_PART.a.s
+        localScale >> self.FK_PART.a.s
+        localScale >> self.PRX_GRP.a.s
 
         self.rigNode.setMsg(
             {
@@ -82,7 +84,7 @@ class Tail(RigModule):
         crvLenRatio, self.rbJnts = self.build_motionPath_ribbon(
             rbSrf=self.rbSrf2,
             jntNum=self.RBN_JNT_NUM,
-            scaleAttr=self.setting.a.moduleScale,
+            scaleAttr=self.setting.a.localScale,
             stretchyAttr=self.setting.a.stretchy,
         )
         self.bindJnts = self.rbJnts
@@ -232,15 +234,10 @@ class Tail(RigModule):
         for ctl in self.fkCtl:
             ctl.a.ro.set(3)
 
-    def setup_proxy(self):
-        for j in self.bindJnts:
-            JntNode(j).addProxyMesh(p=self.PRX_GRP)
-
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
         self.add_ctl_set(self.ikCtl + self.fkCtl + self.ofsCtl + [self.setting])
         self.setup_anchor_module({"anchorF1": self.ikCtl[0].offset.offset})
-        self.setup_proxy()
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()

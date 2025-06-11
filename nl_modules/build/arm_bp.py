@@ -32,6 +32,7 @@ class ArmBp(RigModule):
         self.SCAPULAR_BONE = self.master_guide.a.scapularBone.get()
 
         rID, rSz, xDr = self.getMyVar()
+
         self.FK_PART = GrpNode("FK", pf=rID, p=self.CTL_DATA)
         self.IK_PART = GrpNode("IK", pf=rID, p=self.CTL_DATA)
         self.BF_PART = GrpNode("BF", pf=rID, p=self.CTL_DATA)
@@ -77,7 +78,7 @@ class ArmBp(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
         self.setting = CrvNode(
-            "setting", pf=rID, shape="bagua", scale=rSz, color=22, top=1
+            "setting", pf=rID, shape="bagua", scale=rSz, top=1, moveY=rSz * 5
         )
         self.clavicle_fkc = CrvNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
@@ -260,8 +261,8 @@ class ArmBp(RigModule):
         )
 
         self.setting.snapTo(self.clavicle, p=self.CTL_DATA)
-        # self.clavicle.cstPar(self.setting, mo=1)
-        self.clavicle_fkc.offset.cstPar(self.setting, mo=1)
+        self.clavicle.cstPar(self.setting, mo=1)
+        # self.clavicle_fkc.offset.cstPar(self.setting, mo=1)
 
         self.setting.a.addSep()
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
@@ -336,6 +337,9 @@ class ArmBp(RigModule):
         )
         scapuLoc.cstPoi(clav_ikh)
         self.clavBone = clavJnts[0]
+        self.clavBone | self.SKL_DATA
+        self.clavicle.cstPoi(self.clavBone)
+
         self.bindJnts.append(self.clavBone)
 
         # twoJ = JntNode.makeTwoJC2(
@@ -485,10 +489,6 @@ class ArmBp(RigModule):
             )
         mc.hide(self.all_ikHs, self.joints_fk, self.joints_ik, self.joints_bf)
 
-    def setup_proxy(self):
-        for j in self.bindJnts:
-            JntNode(j).addProxyMesh(p=self.PRX_GRP)
-
     def setup_channel(self):
         self.setting.a.showAttr()
         self.palm_ikc.a.showAttr(r=1)
@@ -541,7 +541,6 @@ class ArmBp(RigModule):
         self.add_ctl_set(ctlSet)
         self.setup_space()
         self.setup_anchor()
-        self.setup_proxy()
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()

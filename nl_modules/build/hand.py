@@ -251,23 +251,11 @@ class Hand(RigModule):
         # common.sdk(drv, ofs, "ty", "rx", -20, -180)
 
     def setup_space(self):
-        #
-        # Add space to rootJ so that it is driven by ballRoll_loc
-        #
         self.rigNode.setMsg({"spaceHolder1": self.rootJ})
         self.rigNode.a.add("spaceName1", attrType="string", txt="palm")
 
-        #
-        # Add space to hand_grp so that it is driven by palm_ikc
-        #
         self.rigNode.setMsg({"spaceHolder2": self.hand_grp})
         self.rigNode.a.add("spaceName2", attrType="string", txt="palmIK")
-
-    def setup_proxy(self):
-        rID, rSz, xDr = self.getMyVar()
-        for j in self.bindJnts:
-            JntNode(j).addProxyMesh(aimDir=(xDr, 0, 0), skipEnd=1, p=self.PRX_GRP)
-            # , scale=rSz
 
     def setup_channel(self):
         self.smart_ctl.a.showAttr(t=1, r=1, s=1)
@@ -295,7 +283,6 @@ class Hand(RigModule):
         self.add_ctl_set(ctlSet)
         self.setup_space()
         self.setup_anchor_module({"anchorF1": self.rootJ})
-        self.setup_proxy()
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()

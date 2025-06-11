@@ -730,7 +730,7 @@ class RigModule(RigBase):
             color=6,
             aimTgt=ikc,
         )
-        IkNode("autoAimJ", pf=rID, sj=j0, ee=j1, p=ikc, quat=1, vis=0)
+        IkNode("autoAimJ", sol=1, pf=rID, sj=j0, ee=j1, p=ikc, quat=1, vis=0)
         autoAim = fkc.a.add("autoAim", min=0, max=1, dv=0.3)
         common.cstMulti(mainGrp.offset, j0, mainGrp, w=autoAim, cstType="parR", mo=1)
         j0.hide()

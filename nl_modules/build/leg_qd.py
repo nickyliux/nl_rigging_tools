@@ -114,7 +114,9 @@ class LegQd(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting = CrvNode("setting", pf=rID, shape="bagua", scale=rSz * 2, top=1)
+        self.setting = CrvNode(
+            "setting", pf=rID, shape="bagua", scale=rSz * 2, top=1, moveY=rSz * 5
+        )
         self.hip_fkc = CrvNode(
             "hip_fkc",
             pf=rID,
@@ -604,10 +606,6 @@ class LegQd(RigModule):
 
     #     self.add_bind_jnt_set(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
-    def setup_proxy(self):
-        for j in self.bindJnts:
-            JntNode(j).addProxyMesh(p=self.PRX_GRP)
-
     def setup_vis(self):
         self.ctl_vis_toggle(
             self.setting.a["fkIkBlend"],
@@ -675,7 +673,6 @@ class LegQd(RigModule):
         self.add_bind_jnt_set(self.bindJnts)
         self.setup_space()
         self.setup_anchor()
-        self.setup_proxy()
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()

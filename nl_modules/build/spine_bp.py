@@ -49,7 +49,7 @@ class SpineBp(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting = CrvNode("setting", pf=rID, shape="bagua", scale=rSz * 4, top=1)
+        self.setting = CrvNode("setting", pf=rID, shape="bagua", scale=rSz * 5, top=1)
         self.cog_ctl = CrvNode("cog_ctl", pf=rID, shape="cog2", scale=rSz * 8)
         self.chest_ctl = CrvNode("chest_ctl", pf=rID, scale=rSz * 7)
         self.mid_ctl = CrvNode("mid_ctl", pf=rID, scale=rSz * 7)
@@ -231,14 +231,6 @@ class SpineBp(RigModule):
         for ctl in self.fkCtls + self.ikCtls + [self.cog_ctl, self.cog_gmb]:
             ctl.a.ro.set(2)
 
-    def setup_proxy(self):
-        for j in self.bindJnts:
-            JntNode(j).addProxyMesh(
-                aimDir=(0, 1, 0),
-                p=self.PRX_GRP,
-                scaler=JntNode(j).a.s,
-            )
-
     def setup_space(self):
         self.rigNode.setMsg({"space_COG": self.cog_ctl})
         self.rigNode.setMsg({"space_lwrBody": self.hip_ctl})
@@ -255,7 +247,6 @@ class SpineBp(RigModule):
         self.add_bind_jnt_set(self.bindJnts)
         self.setup_space()
         self.setup_anchor()
-        self.setup_proxy()
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()

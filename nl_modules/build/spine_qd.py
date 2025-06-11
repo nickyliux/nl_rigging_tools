@@ -70,7 +70,7 @@ class SpineQd(RigModule):
             "setting", pf=rID, shape="bagua", scale=rSz * 3, top=1, moveY=rSz * 10
         )
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
-        self.setting.a.add("moduleScale", min=0.01, dv=1)
+        # self.setting.a.add("localScale", min=0.01, dv=1)
 
         self.cog_ctl = CrvNode(
             "cog_ctl",
@@ -147,7 +147,7 @@ class SpineQd(RigModule):
         crvLenRatio, self.spIkJnts, self.rbJnts = self.build_spik_ribbon(
             rbSrf=self.rbSrf,
             jntNum=self.RBN_JNT_NUM,
-            scaleAttr=self.setting.a.moduleScale,
+            # scaleAttr=self.setting.a.localScale,
             setting=self.setting,
         )
 
@@ -155,14 +155,14 @@ class SpineQd(RigModule):
         self.build_volume(crvLenRatio)
         self.bindJnts.extend(self.rbJnts)
 
-        self.setting.snapTo(self.rbJnts[0], p=self.CTL_DATA)
+        self.setting.snapTo(self.rbJnts[0], p=self.IK_PART)
         self.rbJnts[0].cstPar(self.setting, mo=1)
 
         #
         #   scaling
         #
-        self.setting.a.moduleScale >> self.IK_PART.a.s
-        self.setting.a.moduleScale >> self.PRX_GRP.a.s
+        # self.setting.a.localScale >> self.IK_PART.a.s
+        # self.setting.a.localScale >> self.PRX_GRP.a.s
 
         self.post_setup()
 
@@ -239,7 +239,8 @@ class SpineQd(RigModule):
             inputCrv=rbCrv,
             setting=setting,
             scaleFix=globalScale,
-            scaleFix2=self.setting.a.moduleScale,
+            # scaleFix2=self.setting.a.localScale,
+            scaleFix2=None,
             scaleFix3=self.masterC2.a.sy,
             p=self.RIG_DATA,
         )
@@ -254,6 +255,7 @@ class SpineQd(RigModule):
         crvLenRatio = crvInfo.a.arcLength / globalScale / scaleAttr / rbCrv.length
         locGrp = GrpNode("loc_grp", pf=rID, p=self.RIG_DATA)
         rbJnts = []
+        inScale = self.masterC.a.globalScale  # * self.setting.a.localScale
         for i in range(jntNum):
 
             cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
@@ -285,6 +287,8 @@ class SpineQd(RigModule):
             jnt = JntNode(f"{i}_rbj", pf=rID, align=loc, r=rad, p=loc, reset=1, color=1)
             rbJnts.append(jnt)
 
+            inScale >> loc.a.s
+
         self.anchorToRbj = LocNode(
             "anchorToRbj", pf=rID, snap=rbJnts[-1], p=self.fore_ctl
         )
@@ -296,7 +300,7 @@ class SpineQd(RigModule):
             self.end_ctl.alignTo(self.END_JNT_GUIDE, p=self.base_ctl, addOfs=1)
 
             self.end_jnt = JntNode(
-                "end", pf=rID, r=rSz * 2, p=self.SKL_DATA, snap=self.END_JNT_GUIDE
+                "end", pf=rID, r=rSz * 2, p=self.IK_PART, snap=self.END_JNT_GUIDE
             )
             self.end_ctl.cstPar(self.end_jnt, mo=1)
             self.bindJnts.append(self.end_jnt)
@@ -330,7 +334,7 @@ class SpineQd(RigModule):
         #
         d = ut.distDim_(self.tangent0_ctl, self.tangent1_ctl)
         crvLenRatio = (
-            d / d.get() / self.masterC.a.globalScale / self.setting.a.moduleScale
+            d / d.get() / self.masterC.a.globalScale  # / self.setting.a.localScale
         )
         (
             ut.clp_(
@@ -402,10 +406,6 @@ class SpineQd(RigModule):
         if self.is_neck():
             mc.hide(self.base_ctl.shape, self.tangent0_ctl.shape)
 
-    def setup_proxy(self):
-        for j in self.bindJnts:
-            JntNode(j).addProxyMesh(p=self.PRX_GRP)
-
     def setup_rotate_order(self):
         [ctl.a.ro.set(3) for ctl in [self.fore_ctl, self.base_ctl, self.cog_ctl]]
         if self.END_CTL:
@@ -449,7 +449,6 @@ class SpineQd(RigModule):
 
         self.setup_space()
         self.setup_anchor()
-        self.setup_proxy()
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()

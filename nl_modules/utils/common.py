@@ -53,7 +53,7 @@ def matchMove(targetList, mode=None):
     mc.matchTransform(*others, last, position=t, rotation=r, scale=s)
 
 
-def assignShader(n, geo=None, color=(0, 0, 0), faceID=None):
+def assignShd(n, geo=None, color=(0, 0, 0), faceID=None):
     """Assign shader to entire or faceID"""
     shd, sg = addShader(n, color=color)
     if faceID:

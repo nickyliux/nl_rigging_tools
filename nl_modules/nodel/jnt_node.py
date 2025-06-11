@@ -143,13 +143,12 @@ class JntNode(GrpNode):
             #   NOTE:  constraint must be after shader assignment,
             #   otherwise mc.sets(..) will show error
             #
-            common.assignShader("proxy_default_shd", geo=proxy, color=(0.5, 0.5, 0.5))
-            common.assignShader(
-                "proxy_side_shd", geo=proxy, color=(0.1, 0.1, 0.1), faceID=[0, 2]
-            )
-            self.cstPar(proxyOfs, mo=1)
-            self.a.s >> proxyOfs.a.s
+            GREY = (0.5, 0.5, 0.5)
+            COLOR = (0.7, 0.3, 0.3)
+            common.assignShd("proxy_grey_shd", geo=proxy, color=GREY)
+            common.assignShd("proxy_color_shd", geo=proxy, color=COLOR, faceID=[0, 2])
 
+            self.cstParSca(proxyOfs, mo=1)
             return proxy
 
     @staticmethod

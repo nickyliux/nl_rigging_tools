@@ -89,10 +89,6 @@ class Head(RigModule):
     def setup_vis(self):
         pass
 
-    def setup_proxy(self):
-        for j in self.bindJnts:
-            JntNode(j).addProxyMesh(aimDir=(0, 1, 0), p=self.PRX_GRP)
-
     def setup_rotate_order(self):
         pass
 
@@ -113,7 +109,6 @@ class Head(RigModule):
         self.add_ctl_set(self.fkCtl)
         self.setup_space()
         self.setup_anchor_module({"anchorF1": self.head_fkc.offset})
-        self.setup_proxy()
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()
