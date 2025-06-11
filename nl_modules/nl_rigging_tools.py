@@ -1,3 +1,10 @@
+"""
+File: nl_rigging_tools.py
+Author: Nicky Liu
+Contact: nickyliux@gmail.com, www.nickyliu.com
+Description: Main file to load Qt UI file and connect functions for "nl_rigging_tools"
+"""
+
 import os
 import maya.cmds as mc
 import maya.mel as mel
@@ -24,7 +31,7 @@ from nl_modules.utils import common, file, guide, log, modeling, build
 from nl_modules.utils.color import Color
 
 #
-#   must keep it to use eval(cls)
+#   Must keep for valid call eval(cls)
 #
 from nl_modules.build.leg_bp import LegBp
 from nl_modules.build.hand import Hand
@@ -44,7 +51,7 @@ MOD_DIR = os.path.dirname(nl_modules.__file__)
 IMAGES_PATH = MOD_DIR + "/images"
 PATH_PRESET = MOD_DIR + "/build/guide_presets"
 CTL_PRESET = MOD_DIR + "/build/control_presets"
-PATH_SHAPE = MOD_DIR + "/build/shapes"
+SHAPE_PRESET = MOD_DIR + "/build/shape_presets"
 PATH_LIGHT = MOD_DIR + "/build/others"
 PATH_SKEL = "D:/_PROJECT/GIT/nl_rigging_tools_skeletons/"
 MAYA_TPL_DIR = MOD_DIR + "/build/components"
@@ -131,12 +138,12 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             self.crvShape_removeFrInst_BN_clicked
         )
         # self.UI.crvShape_create_BN.clicked.connect(self.crvShape_create_BN_clicked)
-        self.UI.crvShape_load_BN.clicked.connect(self.crvShape_load_BN_clicked)
-        self.UI.crvShape_load_BN.setIcon(QtGui.QIcon(":openScript.png"))
-        self.UI.crvShape_save_BN.clicked.connect(self.crvShape_save_BN_clicked)
-        self.UI.crvShape_save_BN.setIcon(QtGui.QIcon(":fileSave.png"))
         self.UI.crvShape_new_BN.clicked.connect(self.crvShape_new_BN_clicked)
         self.UI.crvShape_new_BN.setIcon(QtGui.QIcon(":fileNew.png"))
+        self.UI.crvShape_apply_BN.clicked.connect(self.crvShape_apply_BN_clicked)
+        self.UI.crvShape_apply_BN.setIcon(QtGui.QIcon(":openScript.png"))
+        self.UI.crvShape_save_BN.clicked.connect(self.crvShape_save_BN_clicked)
+        self.UI.crvShape_save_BN.setIcon(QtGui.QIcon(":fileSave.png"))
         self.UI.crvShape_del_BN.clicked.connect(self.crvShape_del_BN_clicked)
         self.UI.crvShape_del_BN.setIcon(QtGui.QIcon(":smallTrash.png"))
         # self.UI.crvShape_refresh_BN.clicked.connect(self.crvShape_refresh_BN_clicked)
@@ -417,7 +424,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 db="No",
             )
             if result == "Yes":
-                tgtFile = f"{PATH_SHAPE}\\{itemText}.json"
+                tgtFile = f"{SHAPE_PRESET}\\{itemText}.json"
                 file.deleteFile(tgtFile)
                 self.crvShape_refresh_BN_clicked()
 
@@ -433,8 +440,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if sel:
             CrvNode(sel[0]).uninstanceFromOthers()
 
-    @Undo("crvShape_load_BN_clicked")
-    def crvShape_load_BN_clicked(self):
+    @Undo("crvShape_apply_BN_clicked")
+    def crvShape_apply_BN_clicked(self):
         """Copy item shape as instance to selected"""
         sel = mc.ls(sl=1, tr=1)
         items = self.UI.crvShape_LW.selectedItems()
@@ -449,8 +456,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.crvShape_LW.clear()
         items = [
             f.split(".")[0]
-            for f in os.listdir(PATH_SHAPE)
-            if os.path.isfile(PATH_SHAPE + "/" + f)
+            for f in os.listdir(SHAPE_PRESET)
+            if os.path.isfile(SHAPE_PRESET + "/" + f)
         ]
         self.UI.crvShape_LW.addItems(items)
 

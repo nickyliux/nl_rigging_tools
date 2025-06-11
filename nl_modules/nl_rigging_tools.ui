@@ -1011,7 +1011,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>80</y>
+        <y>84</y>
         <width>97</width>
         <height>18</height>
        </rect>
@@ -1578,8 +1578,8 @@
        <property name="verticalSpacing">
         <number>0</number>
        </property>
-       <item row="0" column="2">
-        <widget class="QPushButton" name="crvShape_save_BN">
+       <item row="0" column="0">
+        <widget class="QPushButton" name="crvShape_new_BN">
          <property name="minimumSize">
           <size>
            <width>10</width>
@@ -1592,16 +1592,8 @@
            <height>18</height>
           </size>
          </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
          <property name="toolTip">
-          <string>Save (Overwrite) selected to library</string>
+          <string>New selected to library</string>
          </property>
          <property name="text">
           <string/>
@@ -1630,30 +1622,8 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QPushButton" name="crvShape_new_BN">
-         <property name="minimumSize">
-          <size>
-           <width>10</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>New selected to library</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="1">
-        <widget class="QPushButton" name="crvShape_load_BN">
+        <widget class="QPushButton" name="crvShape_apply_BN">
          <property name="minimumSize">
           <size>
            <width>10</width>
@@ -1679,6 +1649,36 @@
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="crvShape_save_BN">
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Save (Overwrite) selected to library</string>
          </property>
          <property name="text">
           <string/>

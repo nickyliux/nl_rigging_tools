@@ -1,6 +1,8 @@
 import os.path
 import maya.cmds as mc
 import logging
+
+# import nl_modules
 from nl_modules.nodel.base.dag_node import DagNode
 
 #
@@ -21,6 +23,9 @@ from nl_modules.build.tail import Tail
 
 from nl_modules.build.rig_module import RigModule
 from contextlib import ContextDecorator
+
+# MOD_DIR = os.path.dirname(nl_modules.__file__)
+# CTL_PRESET = MOD_DIR + "/build/control_presets"
 
 
 class Undo(ContextDecorator):

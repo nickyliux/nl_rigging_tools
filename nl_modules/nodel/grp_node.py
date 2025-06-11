@@ -6,6 +6,9 @@ from nl_modules.utils import common, file, path, open_maya_api
 from nl_modules.utils.color import Color
 import logging
 
+MOD_DIR = os.path.dirname(nl_modules.__file__)
+SHAPE_PRESET = MOD_DIR + "/build/shape_presets"
+
 
 class GrpNode(DagNode):
     """Group Node Class
@@ -13,8 +16,6 @@ class GrpNode(DagNode):
         n = GrpNode('existing')
         n = GrpNode('new')
     """
-
-    PATH_SHAPE = os.path.join(os.path.dirname(nl_modules.__file__), "build/shapes")
 
     def __init__(
         self,
@@ -141,7 +142,7 @@ class GrpNode(DagNode):
         e.g.
             saveToLib(list, 'arrow')
         """
-        f = f"{GrpNode.PATH_SHAPE}/{name}.json"
+        f = f"{SHAPE_PRESET}/{name}.json"
 
         file.saveJson(f, dictList, force=True)
         logging.info(f"Saved to {f}")
@@ -151,7 +152,7 @@ class GrpNode(DagNode):
         e.g.
             list = loadFrLib('arrow')
         """
-        f = f"{GrpNode.PATH_SHAPE}/{name}.json"
+        f = f"{SHAPE_PRESET}/{name}.json"
         return file.loadJson(f)
 
     def shape_getDictListFrObj(self, crv):
