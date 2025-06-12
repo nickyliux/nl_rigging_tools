@@ -103,26 +103,32 @@ class JntNode(GrpNode):
             return
 
         size = self.a.radius.get() * 5 * scale
+
+        proxyRatio = self.a.proxyRatio
+        proxyRatio = proxyRatio.get() if proxyRatio.exists() else 1
+        proxyDiv = self.a.proxyDiv
+        proxyDiv = proxyDiv.get() if proxyDiv.exists() else 3
+
         name = self.name + "_pxGeo"
         child = self.childrenJt
 
         if child or (not skipEnd):
             dist = self.o.distanceTo(child[0]) if child else size
-            proxy = DagNode(
-                mc.polyCube(n=name, ax=aimDir, h=dist, w=size, d=size, cuv=4)[0]
-            )
             # proxy = DagNode(
-            #     mc.polyCylinder(
-            #         n=name,
-            #         r=size / 2,
-            #         h=dist,
-            #         ax=aimDir,
-            #         subdivisionsAxis=8,
-            #         subdivisionsHeight=3,
-            #         subdivisionsCaps=1,
-            #         ch=0,
-            #     )[0]
+            #     mc.polyCube(n=name, ax=aimDir, h=dist, w=size, d=size, cuv=4)[0]
             # )
+            proxy = DagNode(
+                mc.polyCylinder(
+                    n=name,
+                    r=size / 2 * proxyRatio,
+                    h=dist * 0.8,
+                    ax=aimDir,
+                    subdivisionsAxis=8,
+                    subdivisionsCaps=1,
+                    subdivisionsHeight=proxyDiv,
+                    ch=0,
+                )[0]
+            )
             proxy.alignTo(self, p=p)
             proxyOfs = proxy.addOffsetGrp()
 
@@ -146,7 +152,12 @@ class JntNode(GrpNode):
             GREY = (0.5, 0.5, 0.5)
             COLOR = (0.7, 0.3, 0.3)
             common.assignShd("proxy_grey_shd", geo=proxy, color=GREY)
-            common.assignShd("proxy_color_shd", geo=proxy, color=COLOR, faceID=[0, 2])
+            # common.assignShd("proxy_color_shd", geo=proxy, color=COLOR, faceID=[0, 2])
+            faceID = [0, 1, 4, 5]
+            if mc.polyEvaluate(proxy, f=1) > 24:
+                faceID = [0, 1, 4, 5, 8, 9, 12, 13, 16, 17, 20, 21]
+
+            common.assignShd("proxy_color_shd", geo=proxy, color=COLOR, faceID=faceID)
 
             self.cstParSca(proxyOfs, mo=1)
             return proxy

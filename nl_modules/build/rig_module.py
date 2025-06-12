@@ -359,8 +359,8 @@ class RigModule(RigBase):
         if self.PRX:
             self.masterC2.a["proxy"] >> self.PRX.a.v
 
-        self.moduleG.hide()
-        self.ctl_vis_toggle(self.masterC2.a["debug"], onList=[self.RIG, self.SKL])
+        mc.hide(self.moduleG, self.RIG, self.SKL)
+        # self.ctl_vis_toggle(self.masterC2.a["debug"], onList=[self.RIG, self.SKL])
 
     def unbuild_module(self):
         rID, rSz, xDr = self.getMyVar()
@@ -970,3 +970,8 @@ class RigModule(RigBase):
             rbJnts.append(jnt)
 
         return crvLenRatio, rbJnts
+
+    def add_proxy_attr(self, tgtJnts, ratio=1, div=3):
+        for jnt in tgtJnts:
+            jnt.a.add("proxyRatio", k=0, dv=ratio)
+            jnt.a.add("proxyDiv", k=0, dv=div)

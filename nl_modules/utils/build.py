@@ -89,7 +89,7 @@ def preRig():
         ctl.a.showAttr(t=1, r=1)
 
     m2.a.add("proxy", k=0, attrType="bool", dv=1)
-    m2.a.add("debug", k=0, attrType="bool", dv=1)
+    # m2.a.add("debug", k=0, attrType="bool", dv=1)
     # m2.a.add("primCtls", k=0, attrType="bool", dv=1)
     # m2.a.add("secCtls", k=0, attrType="bool", dv=1)
     # m2.a.add("facialCtls", k=0, attrType="bool", dv=1)
@@ -468,14 +468,15 @@ def saveCtl():
             mc.file(
                 crvFile,
                 type="mayaAscii",
+                f=1,
                 exportSelected=1,
                 constructionHistory=0,
                 channels=0,
                 expressions=0,
                 constraints=0,
             )
-            mc.select(cl=1)
             logging.info("Curve shape exported OK.")
+            mc.select(cl=1)
 
 
 def loadCtl():

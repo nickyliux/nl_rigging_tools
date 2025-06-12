@@ -241,10 +241,12 @@ class SpineBp(RigModule):
         self.setup_anchor_module({"anchorM1": self.hip_ctl, "anchorM2": anchorM2Tgt})
 
     def post_setup(self):
+        self.add_bind_jnt_set(self.bindJnts)
+        self.add_proxy_attr(self.bindJnts, ratio=4, div=1)
+
         self.add_ctl_set(
             self.fkCtls + self.ikCtls + [self.setting, self.cog_ctl, self.cog_gmb]
         )
-        self.add_bind_jnt_set(self.bindJnts)
         self.setup_space()
         self.setup_anchor()
         self.setup_vis()

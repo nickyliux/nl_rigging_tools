@@ -645,6 +645,9 @@ class LegBp(RigModule):
         self.setup_anchor_module({"anchorF1": self.scapularG.offset})
 
     def post_setup(self):
+        self.add_bind_jnt_set(self.bindJnts)
+        self.add_proxy_attr(self.bindJnts, ratio=3)
+
         self.add_mirror_attr([self.ikc, self.ikc_gimbal, self.smart_ctl])
         ctlSet = []
         ctlSet.extend(
@@ -658,7 +661,6 @@ class LegBp(RigModule):
         if self.TOE_BONES:
             [ctlSet.extend(s) for s in self.toesCtlsList]
 
-        self.add_bind_jnt_set(self.bindJnts)
         self.add_ctl_set(ctlSet)
         self.setup_space()
         self.setup_anchor()

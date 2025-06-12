@@ -531,13 +531,15 @@ class ArmBp(RigModule):
         )
 
     def post_setup(self):
+        self.add_bind_jnt_set(self.bindJnts)
+        self.add_proxy_attr(self.bindJnts, ratio=3)
+
         ctlSet = []
         ctlSet.extend(self.fkCtl + self.ikCtl + [self.setting, self.pin_fkc])
 
         if self.RBN_BONES:
             ctlSet.extend(self.all_bend)
 
-        self.add_bind_jnt_set(self.bindJnts)
         self.add_ctl_set(ctlSet)
         self.setup_space()
         self.setup_anchor()

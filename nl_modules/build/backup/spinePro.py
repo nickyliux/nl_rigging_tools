@@ -116,7 +116,6 @@ class SpinePro(rig_module.RigModule):
                 pf=self.rigID,
                 scale=s * 4,
             )
-            # c.rotate(90, 0, 0)
             self.fkCtl.append(c)
 
         self.build_fk_with_ctl2(self.fkJnt[1:], self.fkCtl[1:], p=self.CTL_DATA)

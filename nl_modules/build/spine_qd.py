@@ -106,8 +106,8 @@ class SpineQd(RigModule):
                 pf=rID,
                 shape="fk_rotator2",
                 top=1,
-                scale=rSz,
-                rotate=(0, 90, 0),
+                scale=rSz * 1.5,
+                rotate=(-45, 0, 0),
             )
             # shape="cube",
 
@@ -438,11 +438,12 @@ class SpineQd(RigModule):
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
+        self.add_proxy_attr(self.bindJnts, ratio=5, div=1)
 
         ctls = self.ikCtls + [self.cog_ctl, self.setting]
-        if self.is_neck():
-            ctls.remove(self.base_ctl)
-            ctls.remove(self.tangent0_ctl)
+        # if self.is_neck():
+        #     ctls.remove(self.base_ctl)
+        #     ctls.remove(self.tangent0_ctl)
         if self.END_CTL:
             ctls.append(self.end_ctl)
         self.add_ctl_set(ctls)
