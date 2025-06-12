@@ -13,9 +13,9 @@ def mirrorCtlShape(ctl):
         return
 
     pf = ctl.name.split("_")[0]
-    mG = DagNode(pf + "_master_guide")
+    mg = DagNode(pf + "_master_guide")
 
-    if not mG.exists():
+    if not mg.exists():
         logging.info(f"Missing master guide for {ctl}")
         return
 
@@ -32,7 +32,7 @@ def mirrorCtlShape(ctl):
     # Group the duplicated
     # Neg scale it
     # Blend to opposite
-    myGrp = GrpNode("myG", align=mG, snap=dup)
+    myGrp = GrpNode("myG", align=mg, snap=dup)
     dup | myGrp
 
     if dup.a.wsMirror.exists():

@@ -178,8 +178,8 @@ def loadPreset(path, removeUnused=1):
     pattern = re.compile(rf"^([a-zA-Z_]+)")  # letter without digi
 
     for rigID in idDict:
-        mG = DagNode(rigID + "_master_guide")
-        if mG.exists():
+        mg = DagNode(rigID + "_master_guide")
+        if mg.exists():
             logging.info(f"master_guide for {rigID} already exists!")
         else:
             fName = re.match(pattern, str(rigID))  # e.g. lfLeg0 => 'lfLeg'

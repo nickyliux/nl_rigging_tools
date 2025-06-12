@@ -36,8 +36,8 @@ class LegBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
 
-        self.FK_PART = GrpNode("FK", pf=rID, p=self.CTL_DATA)
-        self.IK_PART = GrpNode("IK", pf=rID, p=self.CTL_DATA)
+        self.FK_GRP = GrpNode("FK", pf=rID, p=self.CTL_DATA)
+        self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA)
         self.BF_PART = GrpNode("BF", pf=rID, p=self.CTL_DATA)
         self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
 
@@ -125,19 +125,10 @@ class LegBp(RigModule):
             scale=rSz * xDr,
             moveY=rSz * xDr * -15,
         )
-        self.upr_fkc = CrvNode(
-            "upr_fkc", pf=rID, shape="circleC", up="x", scale=rSz * -xDr
-        )
-        self.lwr_fkc = CrvNode(
-            "lwr_fkc", pf=rID, shape="circleC", up="x", scale=rSz * -xDr
-        )
-        self.palm_fkc = CrvNode(
-            "palm_fkc", pf=rID, shape="circleC", up="x", scale=rSz * -xDr
-        )
-        self.ball_fkc = CrvNode(
-            "ball_fkc", pf=rID, up="x", shape="squR", scale=rSz * xDr / 2
-        )
-        # self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=rSz)
+        self.upr_fkc = CrvNode("upr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
+        self.lwr_fkc = CrvNode("lwr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
+        self.palm_fkc = CrvNode("palm_fkc", pf=rID, shape="squR", up="x", scale=rSz)
+        self.ball_fkc = CrvNode("ball_fkc", pf=rID, up="x", shape="squR", scale=rSz / 2)
         self.ikc = CrvNode("ikc", pf=rID, shape="foot", scale=rSz * 2)
         self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=rSz)
         self.smart_ctl = CrvNode(
@@ -159,11 +150,7 @@ class LegBp(RigModule):
         )
         if self.SCAPULAR_EXTRA:
             self.scap_fkc = CrvNode(
-                "scap_fkc",
-                pf=rID,
-                shape="sphere",
-                scale=rSz,
-                move=(rSz * 45 * -xDr, 0, 0),
+                "scap_fkc", pf=rID, shape="sphere", scale=rSz, moveX=rSz * 45 * -xDr
             )
 
     def build(self):
@@ -221,9 +208,9 @@ class LegBp(RigModule):
         if self.TOE_BONES:
             self.toesRootJ | self.palm
             self.toesJntList = []
-            for rJ in self.toesRootJ.childrenJt:
-                self.toesJntList.append([fgr for fgr in rJ.allChildrenJt2])
-                rJ.a.segmentScaleCompensate.set(0)
+            for rootJ in self.toesRootJ.childrenJt:
+                self.toesJntList.append([fgr for fgr in rootJ.allChildrenJt2])
+                rootJ.a.segmentScaleCompensate.set(0)
             self.build_toes()
         else:
             self.bindJnts.extend([self.palm, self.ball])
@@ -232,13 +219,11 @@ class LegBp(RigModule):
         self.CTL_DATA.a.s >> self.RIG_DATA.a.s
         self.CTL_DATA.a.s >> self.PRX_GRP.a.s
         self.CTL_DATA.a.s >> self.SKL_DATA.a.s
-        # localScale = self.setting.a.add("localScale", min=0.01, dv=1)
-        # localScale >> self.CTL_DATA.a.s
 
         palmScale = self.setting.a.add("palmScale", min=0.01, dv=1)
         self.ikc.a.add("palmScale", min=0.01, proxy=palmScale)
         palmScale >> self.ball_fkc.offset.a.s
-        palmScale >> self.joints_bf[3].a.s  # palm
+        palmScale >> self.joints_bf[3].a.s
         palmScale >> self.palm.a.s
         palmScale >> self.ikc.a.s
 
@@ -247,9 +232,7 @@ class LegBp(RigModule):
     def build_fk(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.joints_fk = common.extractSk(
-            self.joints, "_fk", p=self.FK_PART, color=6, r=2 * rSz
-        )
+        self.joints_fk = common.extractSk(self.joints, "_fk", p=self.FK_GRP, r=rSz)
         self.fkCtl = [
             self.hip_fkc,
             self.upr_fkc,
@@ -257,24 +240,22 @@ class LegBp(RigModule):
             self.palm_fkc,
             self.ball_fkc,
         ]
-        self.build_fk_with_ctl2(self.joints_fk[:-1], self.fkCtl[:-1], p=self.FK_PART)
+        self.build_fk_with_ctl2(self.joints_fk[:-1], self.fkCtl[:-1], p=self.FK_GRP)
         # self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
         rID, rSz, xDr = self.getMyVar()
 
-        mG = self.master_guide
+        mg = self.master_guide
         inPos_guide = DagNode(rID + "_palm_inPos_guide")
         outPos_guide = DagNode(rID + "_palm_outPos_guide")
         heelPos_guide = DagNode(rID + "_palm_heelPos_guide")
         toePos_guide = DagNode(rID + "_palm_toePos_guide")
         pvc_guide = DagNode(rID + "_pvc_guide")
 
-        self.ikc.alignTo(mG)
+        self.ikc.alignTo(mg)
         self.pvc.alignTo(pvc_guide)
-        self.joints_ik = common.extractSk(
-            self.joints, "_ik", p=self.IK_PART, color=13, r=3 * rSz
-        )
+        self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_GRP, r=rSz)
 
         ikH1 = IkNode(
             "1",
@@ -294,14 +275,14 @@ class LegBp(RigModule):
         ikH2 = IkNode("2", pf=rID, sj=self.palm, ee=self.ball, jsf="_ik")
         ikH3 = IkNode("3", pf=rID, sj=self.ball, ee=self.tip, jsf="_ik")
 
-        self.ikCstG = GrpNode("ikCstG", pf=rID, snap=self.palm, alignR=mG)
-        ballRollG = GrpNode("ballRollG", pf=rID, snap=self.ball, alignR=mG)
+        self.ikCstG = GrpNode("ikCstG", pf=rID, snap=self.palm, alignR=mg)
+        ballRollG = GrpNode("ballRollG", pf=rID, snap=self.ball, alignR=mg)
         toe_wiggle_grp = GrpNode("toe_wiggle_grp", pf=rID, align=self.ball)
-        footRollG = GrpNode("footRollG", pf=rID, snap=toePos_guide, alignR=mG)
-        toeRollG = GrpNode("toeRollG", pf=rID, snap=toePos_guide, alignR=mG)
-        inRollG = GrpNode("inRollG", pf=rID, snap=inPos_guide, alignR=mG)
-        outRollG = GrpNode("outRollG", pf=rID, snap=outPos_guide, alignR=mG)
-        heelRollG = GrpNode("heelRollG", pf=rID, snap=heelPos_guide, alignR=mG)
+        footRollG = GrpNode("footRollG", pf=rID, snap=toePos_guide, alignR=mg)
+        toeRollG = GrpNode("toeRollG", pf=rID, snap=toePos_guide, alignR=mg)
+        inRollG = GrpNode("inRollG", pf=rID, snap=inPos_guide, alignR=mg)
+        outRollG = GrpNode("outRollG", pf=rID, snap=outPos_guide, alignR=mg)
+        heelRollG = GrpNode("heelRollG", pf=rID, snap=heelPos_guide, alignR=mg)
 
         if xDr == 1:
             for g in (
@@ -343,9 +324,9 @@ class LegBp(RigModule):
         self.foot_bank_logic(self.smart_ctl, inRollG, outRollG)
 
         self.ikc.a.add("kneeTwist") * xDr >> ikH1.a.twist
-        (self.ikc, self.pvc, self.ikCstG) | self.IK_PART
+        (self.ikc, self.pvc, self.ikCstG) | self.IK_GRP
         self.pvc_line = CrvNode.buildLineLinked(
-            self.joints_ik[2], self.pvc, pf=rID, dspType=2, p=self.IK_PART
+            self.joints_ik[2], self.pvc, pf=rID, dspType=2, p=self.IK_GRP
         )
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
@@ -363,9 +344,7 @@ class LegBp(RigModule):
     def blend_fk_ik(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.joints_bf = common.extractSk(
-            self.joints, "_bf", p=self.BF_PART, color=Color.L_GREY, r=4 * rSz
-        )
+        self.joints_bf = common.extractSk(self.joints, "_bf", p=self.BF_PART, r=rSz)
 
         self.setting.snapTo(self.hip, p=self.CTL_DATA)
         self.hip.cstPar(self.setting, mo=1)
@@ -395,7 +374,7 @@ class LegBp(RigModule):
             else:
                 #   ballJ_bfj --> ball_fkc's parent
                 #   ball_fkc --> ball_jnt
-                self.ball_fkc.alignTo(self.ball, p=self.FK_PART)
+                self.ball_fkc.alignTo(self.ball, p=self.FK_GRP)
                 ofg = self.ball_fkc.addOffsetGrp()
                 bfj.cstPar(ofg, mo=1)
                 self.ball_fkc.cstPar(jnt)
@@ -646,6 +625,8 @@ class LegBp(RigModule):
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
+        self.add_proxy_attr(self.bindJnts, ratio=2.5)
+
         self.add_proxy_attr(self.bindJnts, ratio=3)
 
         self.add_mirror_attr([self.ikc, self.ikc_gimbal, self.smart_ctl])

@@ -67,6 +67,7 @@ class RigModule(RigBase):
 
         guideDict = dict(zip(names, guideList))
         currClass = self.__class__.__name__
+
         joints = []
         lastJ = None
         for name in guideDict:
@@ -76,8 +77,6 @@ class RigModule(RigBase):
             jN = JntNode(n, align=guideDict[name], color=color)
             if (currClass == "ArmBp" or currClass == "LegBp") and name == "lwr":
                 jN.a.preferredAngleY.set(-45)
-            # elif currClass.startswith("LegQd") and name == "palm":
-            #     jN.a.preferredAngleY.set(45)
             if lastJ:
                 jN | lastJ
             lastJ = jN
@@ -323,16 +322,8 @@ class RigModule(RigBase):
         logging.info(rID)
         self.rigNode.a.nodeState.set(1)
 
-        rootCtl = self.masterC.parent.parent
-        if rootCtl.a.sx.get() != 1:
-            rootCtl.freezeXf(t=0, r=0, s=1)
-
-        # jnt_list = self.gen_sk_fr_names(jnt_names)
-
-        # self.rootJ = jnt_list[0]
-        # self.rootJ | self.SKL_DATA
-        # self.rootJ.freezeXf()
-        # self.rigNode.setMsg({"rootJ": self.rootJ})
+        if self.masterC2.a.sx.get() != 1:
+            self.masterC2.freezeXf(t=0, r=0, s=1)
 
     def build_module(self):
         rID, rSz, xDr = self.getMyVar()
@@ -359,7 +350,7 @@ class RigModule(RigBase):
         if self.PRX:
             self.masterC2.a["proxy"] >> self.PRX.a.v
 
-        mc.hide(self.moduleG, self.RIG, self.SKL)
+        mc.hide(self.moduleG, self.RIG)  # , self.SKL)
         # self.ctl_vis_toggle(self.masterC2.a["debug"], onList=[self.RIG, self.SKL])
 
     def unbuild_module(self):
@@ -714,7 +705,7 @@ class RigModule(RigBase):
         hipJ = jnts[0]
         uprJ = jnts[1]
 
-        mainGrp = GrpNode("quadScap", pf=rID, align=hipJ, p=self.FK_PART, addOfs=1)
+        mainGrp = GrpNode("quadScap", pf=rID, align=hipJ, p=self.FK_GRP, addOfs=1)
         fkc.offset | mainGrp
         #
         #   add auto aim function

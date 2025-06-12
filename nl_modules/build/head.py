@@ -33,8 +33,8 @@ class Head(RigModule):
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["st", "ed"], scale=12)
         jaw_list = self.gen_sk_fr_names(["jaw", "jawEnd"], scale=3)
-        lf_eye = self.gen_sk_fr_names("lf_eye")[0]
-        rt_eye = self.gen_sk_fr_names("rt_eye")[0]
+        lf_eye = self.gen_sk_fr_names("lf_eye", scale=0.5)[0]
+        rt_eye = self.gen_sk_fr_names("rt_eye", scale=0.5)[0]
         (jaw_list[0], lf_eye, rt_eye) | root_list[0]
 
         self.rootJ = root_list[0]
@@ -106,7 +106,7 @@ class Head(RigModule):
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_attr([self.lf_eye, self.rt_eye], div=1)
+        self.add_proxy_attr([self.lf_eye, self.rt_eye], div=1, ratio=0.5)
         self.add_ctl_set(self.fkCtl)
         self.setup_space()
         self.setup_anchor_module({"anchorF1": self.head_fkc.offset})

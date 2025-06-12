@@ -25,7 +25,7 @@ class SpineQd(RigModule):
         self.MD_GUIDE = DagNode(rID + "_md_guide")
         self.RT_GUIDE = DagNode(rID + "_rt_guide")
         self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
-        self.IK_PART = GrpNode("IK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
+        self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
 
         pvtGuide = DagNode(rID + "_pivot_guide")
         self.PVT_GUIDE = pvtGuide if pvtGuide.exists() else None
@@ -63,7 +63,7 @@ class SpineQd(RigModule):
             p=self.CTL_DATA,
         )
         spineScale = self.setting.a.add("spineScale", min=0.01, dv=1)
-        spineScale >> self.IK_PART.a.s
+        spineScale >> self.IK_GRP.a.s
         spineScale >> self.PRX_GRP.a.s
 
         self.setting.a.add("stretchy", min=0, max=1)
@@ -74,7 +74,7 @@ class SpineQd(RigModule):
             shape="trapezoid",
             scale=(rSz * 0.8, rSz * 1.5, rSz * 2.5),
             color=22,
-            p=self.IK_PART,
+            p=self.IK_GRP,
         )
         self.cog_ctl.cv_move(0, 70 * rSz, 40 * rSz)
 

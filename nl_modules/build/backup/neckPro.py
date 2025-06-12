@@ -124,11 +124,11 @@ class NeckPro(rig_module.RigModule):
         s = self.rigSize
         logging.info(self.rigID)
 
-        mG = self.master_guide
-        self.lw_ikc.snapAlignTo(self.fkJnt[0], mG)
-        self.md_ikc.snapAlignTo(self.fkJnt[-1], mG)
-        self.up_ikc.snapAlignTo(self.fkJnt[-1], mG)
-        self.cog_ctl.snapAlignTo(self.lw_ikc, mG)
+        mg = self.master_guide
+        self.lw_ikc.snapAlignTo(self.fkJnt[0], mg)
+        self.md_ikc.snapAlignTo(self.fkJnt[-1], mg)
+        self.up_ikc.snapAlignTo(self.fkJnt[-1], mg)
+        self.cog_ctl.snapAlignTo(self.lw_ikc, mg)
         self.setting.alignTo(self.cog_ctl, ofs=(0, 0, -s * 10))
 
         (

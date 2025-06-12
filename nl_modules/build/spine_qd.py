@@ -25,7 +25,7 @@ class SpineQd(RigModule):
         self.MD_GUIDE = DagNode(rID + "_md_guide")
         self.RT_GUIDE = DagNode(rID + "_rt_guide")
         self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
-        self.IK_PART = GrpNode("IK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
+        self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
 
         guide = DagNode(rID + "_base_pivot_guide")
         self.BASE_PVT_GUIDE = guide if guide.exists() else None
@@ -78,7 +78,7 @@ class SpineQd(RigModule):
             shape="trapezoid",
             scale=maths.mul(0.5, 1, 2, rSz),
             moveY=60 * rSz,
-            p=self.IK_PART,
+            p=self.IK_GRP,
         )
         self.base_ctl = CrvNode("base_ctl", pf=rID, up="z", scale=rSz * 3)
         self.fore_ctl = CrvNode("fore_ctl", pf=rID, up="z", scale=rSz * 3)
@@ -155,13 +155,13 @@ class SpineQd(RigModule):
         self.build_volume(crvLenRatio)
         self.bindJnts.extend(self.rbJnts)
 
-        self.setting.snapTo(self.rbJnts[0], p=self.IK_PART)
+        self.setting.snapTo(self.rbJnts[0], p=self.IK_GRP)
         self.rbJnts[0].cstPar(self.setting, mo=1)
 
         #
         #   scaling
         #
-        # self.setting.a.localScale >> self.IK_PART.a.s
+        # self.setting.a.localScale >> self.IK_GRP.a.s
         # self.setting.a.localScale >> self.PRX_GRP.a.s
 
         self.post_setup()
@@ -300,7 +300,7 @@ class SpineQd(RigModule):
             self.end_ctl.alignTo(self.END_JNT_GUIDE, p=self.base_ctl, addOfs=1)
 
             self.end_jnt = JntNode(
-                "end", pf=rID, r=rSz * 2, p=self.IK_PART, snap=self.END_JNT_GUIDE
+                "end", pf=rID, r=rSz * 2, p=self.IK_GRP, snap=self.END_JNT_GUIDE
             )
             self.end_ctl.cstPar(self.end_jnt, mo=1)
             self.bindJnts.append(self.end_jnt)

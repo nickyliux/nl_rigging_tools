@@ -114,11 +114,11 @@ class SpineBp(RigModule):
     def build_ik(self):
         rID, rSz, xDr = self.getMyVar()
 
-        mG = self.master_guide
-        self.hip_ctl.snapAlignTo(self.fkJnts[0], mG)
-        self.mid_ctl.snapAlignTo(self.MD_GUIDE, mG)
-        self.chest_ctl.snapAlignTo(self.fkJnts[-1], mG)
-        self.cog_ctl.snapAlignTo(self.hip_ctl, mG)
+        mg = self.master_guide
+        self.hip_ctl.snapAlignTo(self.fkJnts[0], mg)
+        self.mid_ctl.snapAlignTo(self.MD_GUIDE, mg)
+        self.chest_ctl.snapAlignTo(self.fkJnts[-1], mg)
+        self.cog_ctl.snapAlignTo(self.hip_ctl, mg)
 
         self.setting.alignTo(self.cog_ctl, p=self.CTL_DATA)
         self.cog_ctl.cstPar(self.setting, mo=1)

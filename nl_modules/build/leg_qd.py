@@ -33,8 +33,8 @@ class LegQd(RigModule):
         self.SCAPULAR_EXTRA = self.master_guide.a.scapularExtra.get()
         rID, rSz, xDr = self.getMyVar()
 
-        self.FK_PART = GrpNode("FK", pf=rID, p=self.CTL_DATA)
-        self.IK_PART = GrpNode("IK", pf=rID, p=self.CTL_DATA)
+        self.FK_GRP = GrpNode("FK", pf=rID, p=self.CTL_DATA)
+        self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA)
         self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
 
         self.setting = None
@@ -225,9 +225,7 @@ class LegQd(RigModule):
     def build_fk(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.joints_fk = common.extractSk(
-            self.joints, "_fk", p=self.FK_PART, color=6, r=2 * rSz
-        )
+        self.joints_fk = common.extractSk(self.joints, "_fk", p=self.FK_GRP, r=rSz)
         self.fkCtl = [
             self.hip_fkc,
             self.upr_fkc,
@@ -236,24 +234,22 @@ class LegQd(RigModule):
             self.digit_fkc,
             self.ball_fkc,
         ]
-        self.build_fk_with_ctl2(self.joints_fk, self.fkCtl, p=self.FK_PART)
+        self.build_fk_with_ctl2(self.joints_fk, self.fkCtl, p=self.FK_GRP)
         # self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
         rID, rSz, xDr = self.getMyVar()
 
-        mG = self.master_guide
+        mg = self.master_guide
         pvc_guide = DagNode(rID + "_pvc_guide")
         inPos_guide = DagNode(rID + "_palm_inPos_guide")
         outPos_guide = DagNode(rID + "_palm_outPos_guide")
         heelPos_guide = DagNode(rID + "_palm_heelPos_guide")
         toePos_guide = DagNode(rID + "_palm_toePos_guide")
 
-        self.ikc.alignTo(mG)
+        self.ikc.alignTo(mg)
         self.pvc.alignTo(pvc_guide)
-        self.joints_ik = common.extractSk(
-            self.joints, "_ik", p=self.IK_PART, color=13, r=3 * rSz
-        )
+        self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_GRP, r=rSz)
         ikH1 = IkNode(
             "1",
             pf=rID,
@@ -272,15 +268,15 @@ class LegQd(RigModule):
         ikH2 = IkNode("2", pf=rID, sj=self.digit, ee=self.ball, jsf="_ik")
         ikH3 = IkNode("3", pf=rID, sj=self.ball, ee=self.tip, jsf="_ik")
 
-        self.ikCstG = GrpNode("ikCstG", pf=rID, snap=self.palm, alignR=mG)
-        extraRollG = GrpNode("extraRollG", pf=rID, snap=self.digit, alignR=mG)
-        ballRollG = GrpNode("ballRollG", pf=rID, snap=self.ball, alignR=mG)
+        self.ikCstG = GrpNode("ikCstG", pf=rID, snap=self.palm, alignR=mg)
+        extraRollG = GrpNode("extraRollG", pf=rID, snap=self.digit, alignR=mg)
+        ballRollG = GrpNode("ballRollG", pf=rID, snap=self.ball, alignR=mg)
         toe_wiggle_grp = GrpNode("toe_wiggle_grp", pf=rID, align=self.ball)
-        footRollG = GrpNode("footRollG", pf=rID, snap=toePos_guide, alignR=mG)
-        toeRollG = GrpNode("toeRollG", pf=rID, snap=toePos_guide, alignR=mG)
-        inRollG = GrpNode("inRollG", pf=rID, snap=inPos_guide, alignR=mG)
-        outRollG = GrpNode("outRollG", pf=rID, snap=outPos_guide, alignR=mG)
-        heelRollG = GrpNode("heelRollG", pf=rID, snap=heelPos_guide, alignR=mG)
+        footRollG = GrpNode("footRollG", pf=rID, snap=toePos_guide, alignR=mg)
+        toeRollG = GrpNode("toeRollG", pf=rID, snap=toePos_guide, alignR=mg)
+        inRollG = GrpNode("inRollG", pf=rID, snap=inPos_guide, alignR=mg)
+        outRollG = GrpNode("outRollG", pf=rID, snap=outPos_guide, alignR=mg)
+        heelRollG = GrpNode("heelRollG", pf=rID, snap=heelPos_guide, alignR=mg)
         self.extra_ikc.alignTo(extraRollG)
 
         if xDr == 1:
@@ -310,9 +306,9 @@ class LegQd(RigModule):
         self.foot_bank_logic(self.smart_ctl, inRollG, outRollG)
 
         self.ikc.a.add("kneeTwist") * xDr >> ikH1.a.twist
-        (self.ikc, self.pvc, self.ikCstG) | self.IK_PART
+        (self.ikc, self.pvc, self.ikCstG) | self.IK_GRP
         self.pvc_line = CrvNode.buildLineLinked(
-            self.joints_ik[2], self.pvc, pf=rID, dspType=2, p=self.IK_PART
+            self.joints_ik[2], self.pvc, pf=rID, dspType=2, p=self.IK_GRP
         )
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
@@ -325,7 +321,7 @@ class LegQd(RigModule):
         self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal]
         self.ikH1 = ikH1
         self.subCtl_setup(ballRollG, toeRollG, inRollG, outRollG, heelRollG)
-        self.extra_roll_logic(ballRollG, extraRollG, self.IK_PART)
+        self.extra_roll_logic(ballRollG, extraRollG, self.IK_GRP)
 
     def blend_fk_ik(self):
         rID, rSz, xDr = self.getMyVar()
@@ -514,7 +510,7 @@ class LegQd(RigModule):
             "ballOfsG",
             pf=rID,
             snap=self.ball.offset,
-            p=self.FK_PART,
+            p=self.FK_GRP,
         )
         ball_fkc_ofs | ballOfsG
         ball_fkj.removeCstNodes()

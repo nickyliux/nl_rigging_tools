@@ -22,8 +22,8 @@ class Tail(RigModule):
         self.LINE_GUIDE = CrvNode(rID + "_line_guide")
         self.RT_GUIDE = CrvNode(rID + "_rt_guide")
         self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
-        self.FK_PART = GrpNode("FK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
-        self.IK_PART = GrpNode("IK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
+        self.FK_GRP = GrpNode("FK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
+        self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
 
         self.setting = None
         self.fkCtl = []
@@ -53,8 +53,8 @@ class Tail(RigModule):
         )
         self.setting.a.add("stretchy", min=0, max=1)
         localScale = self.setting.a.add("localScale", min=0.01, dv=1)
-        localScale >> self.IK_PART.a.s
-        localScale >> self.FK_PART.a.s
+        localScale >> self.IK_GRP.a.s
+        localScale >> self.FK_GRP.a.s
         localScale >> self.PRX_GRP.a.s
 
         self.rigNode.setMsg(
@@ -114,7 +114,7 @@ class Tail(RigModule):
                 align=self.ikJnt[i],
                 addOfs=1,
                 color=25,
-                p=self.IK_PART,
+                p=self.IK_GRP,
             )
             self.ikJnt[i] | ctl
             self.ikCtl.append(ctl)
@@ -123,7 +123,7 @@ class Tail(RigModule):
 
             self.rigNode.setMsg({f"ikc{i}": ctl})
 
-        self.setting.snapTo(self.ikCtl[0], p=self.FK_PART)
+        self.setting.snapTo(self.ikCtl[0], p=self.FK_GRP)
         self.ikCtl[0].cstPar(self.setting, mo=1)
 
     def build_fk(self):
@@ -167,14 +167,14 @@ class Tail(RigModule):
         #   build group chain
         #
         chainGrps = []
-        lastGrp = self.FK_PART
+        lastGrp = self.FK_GRP
         for i in range(self.FK_BONE_NUM + 1):
             grp = GrpNode(f"{i}_chainGrp", pf=rID, align=self.fkCtl[i], p=lastGrp)
             pinXf[i].cstPar(grp, mo=1)
             chainGrps.append(grp)
             lastGrp = grp
 
-        self.build_fk_with_ctl3(self.fkJnt, self.fkCtl, p=self.FK_PART)
+        self.build_fk_with_ctl3(self.fkJnt, self.fkCtl, p=self.FK_GRP)
         #
         #   cnnnect chain grps to fkCtl offset
         #

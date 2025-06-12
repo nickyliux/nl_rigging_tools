@@ -33,8 +33,8 @@ class ArmBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
 
-        self.FK_PART = GrpNode("FK", pf=rID, p=self.CTL_DATA)
-        self.IK_PART = GrpNode("IK", pf=rID, p=self.CTL_DATA)
+        self.FK_GRP = GrpNode("FK", pf=rID, p=self.CTL_DATA)
+        self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA)
         self.BF_PART = GrpNode("BF", pf=rID, p=self.CTL_DATA)
         self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
 
@@ -152,25 +152,21 @@ class ArmBp(RigModule):
     def build_fk(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.joints_fk = common.extractSk(
-            self.joints, "_fk", p=self.FK_PART, color=6, r=rSz * 2
-        )
+        self.joints_fk = common.extractSk(self.joints, "_fk", p=self.FK_GRP, r=rSz)
         self.fkCtl = [self.clavicle_fkc, self.upr_fkc, self.lwr_fkc, self.palm_fkc]
-        self.build_fk_with_ctl2(self.joints_fk, self.fkCtl, p=self.FK_PART)
+        self.build_fk_with_ctl2(self.joints_fk, self.fkCtl, p=self.FK_GRP)
         self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
         rID, rSz, xDr = self.getMyVar()
 
         self.ikc.alignTo(self.palm)
-        self.palm_ikc.alignTo(self.palm, p=self.IK_PART)
+        self.palm_ikc.alignTo(self.palm, p=self.IK_GRP)
 
         pvc_guide = DagNode(rID + "_pvc_guide")
         self.pvc.alignTo(pvc_guide)
 
-        self.joints_ik = common.extractSk(
-            self.joints, "_ik", p=self.IK_PART, color=13, r=3 * rSz
-        )
+        self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_GRP, r=rSz)
         ikH1 = IkNode(
             "1",
             pf=rID,
@@ -210,13 +206,13 @@ class ArmBp(RigModule):
             self.ikc, self.pin_fkc, self.ikCstG, w=fkPin, cstType="par", mo=1
         )
 
-        (self.ikc, self.pvc, self.ikCstG) | self.IK_PART
+        (self.ikc, self.pvc, self.ikCstG) | self.IK_GRP
         self.pvc_line = CrvNode.buildLineLinked(
             self.joints_ik[2],
             self.pvc,
             pf=rID,
             dspType=2,
-            p=self.IK_PART,
+            p=self.IK_GRP,
         )
 
         self.ikc.addOffsetGrp()
@@ -243,9 +239,7 @@ class ArmBp(RigModule):
     def blend_fk_ik(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.joints_bf = common.extractSk(
-            self.joints, "_bf", p=self.BF_PART, color=Color.L_GREY, r=4 * rSz
-        )
+        self.joints_bf = common.extractSk(self.joints, "_bf", p=self.BF_PART, r=rSz)
 
         palmIn_guide = DagNode(rID + "_palmIn_guide")
         palmIn_loc = LocNode(
