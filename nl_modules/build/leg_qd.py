@@ -220,6 +220,8 @@ class LegQd(RigModule):
         else:
             self.bindJnts.extend([self.palm, self.digit, self.ball])
 
+        self.masterC.a.globalScale >> self.SKL_DATA.a.scale
+
         self.post_setup()
 
     def build_fk(self):

@@ -67,10 +67,9 @@ class SpineQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting = CrvNode(
-            "setting", pf=rID, shape="bagua", scale=rSz * 3, top=1, moveY=rSz * 10
+            "setting", pf=rID, shape="bagua", scale=rSz * 2, top=1, moveY=rSz * 10
         )
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
-        # self.setting.a.add("localScale", min=0.01, dv=1)
 
         self.cog_ctl = CrvNode(
             "cog_ctl",
@@ -253,9 +252,8 @@ class SpineQd(RigModule):
         rbCrv.shape.a.worldSpace >> crvInfo.a.inputCurve
 
         crvLenRatio = crvInfo.a.arcLength / globalScale / scaleAttr / rbCrv.length
-        locGrp = GrpNode("loc_grp", pf=rID, p=self.RIG_DATA)
+        locGrp = GrpNode("loc_grp", pf=rID, p=self.SKL_DATA)
         rbJnts = []
-        inScale = self.masterC.a.globalScale  # * self.setting.a.localScale
         for i in range(jntNum):
 
             cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
@@ -287,7 +285,7 @@ class SpineQd(RigModule):
             jnt = JntNode(f"{i}_rbj", pf=rID, align=loc, r=rad, p=loc, reset=1, color=1)
             rbJnts.append(jnt)
 
-            inScale >> loc.a.s
+            self.masterC.a.globalScale >> loc.a.s
 
         self.anchorToRbj = LocNode(
             "anchorToRbj", pf=rID, snap=rbJnts[-1], p=self.fore_ctl
@@ -441,9 +439,6 @@ class SpineQd(RigModule):
         self.add_proxy_attr(self.bindJnts, ratio=5, div=1)
 
         ctls = self.ikCtls + [self.cog_ctl, self.setting]
-        # if self.is_neck():
-        #     ctls.remove(self.base_ctl)
-        #     ctls.remove(self.tangent0_ctl)
         if self.END_CTL:
             ctls.append(self.end_ctl)
         self.add_ctl_set(ctls)

@@ -147,6 +147,7 @@ class ArmBp(RigModule):
         else:
             self.bindJnts.append(self.clavicle)
 
+        self.masterC.a.globalScale >> self.SKL_DATA.a.scale
         self.post_setup()
 
     def build_fk(self):
@@ -526,7 +527,7 @@ class ArmBp(RigModule):
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_attr(self.bindJnts, ratio=3)
+        self.add_proxy_attr(self.bindJnts, ratio=2, div=1)
 
         ctlSet = []
         ctlSet.extend(self.fkCtl + self.ikCtl + [self.setting, self.pin_fkc])

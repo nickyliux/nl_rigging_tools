@@ -36,11 +36,6 @@ class RigBase:
         self.CTL = GrpNode("CTL", p=self.CHR)
         self.DIM = GrpNode("distDim_GRP")
 
-        if self.SKL.a.s.settable():
-            self.masterC.a["globalScale"] >> self.SKL.a.s
-        if self.PRX.a.s.settable():
-            self.masterC.a["globalScale"] >> self.PRX.a.s
-
         root = self.masterC2
         if not root.parent:
             root | self.CTL

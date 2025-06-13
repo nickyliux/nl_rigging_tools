@@ -918,7 +918,7 @@ class RigModule(RigBase):
         #
         ratioOut = ut.blend2_(crvLenRatio, 1, stretchyAttr)
         sep = 1 / (jntNum - 1)
-        locGrp = GrpNode("loc_grp", pf=rID, p=self.RIG_DATA)
+        locGrp = GrpNode("loc_grp", pf=rID, p=self.SKL_DATA)
         rbJnts = []
         for i in range(jntNum):
 
@@ -959,6 +959,8 @@ class RigModule(RigBase):
                 color=4,
             )
             rbJnts.append(jnt)
+
+            self.masterC.a.globalScale >> loc.a.s
 
         return crvLenRatio, rbJnts
 

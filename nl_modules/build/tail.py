@@ -88,6 +88,7 @@ class Tail(RigModule):
             stretchyAttr=self.setting.a.stretchy,
         )
         self.bindJnts = self.rbJnts
+
         self.post_setup()
 
     def build_ik(self):
@@ -139,7 +140,7 @@ class Tail(RigModule):
             upV=(0, 1, 0),
             wuV=(0, 1, 0),
             size=rSz,
-            p=self.SKL_DATA,
+            p=self.FK_GRP,
         )
         #
         #   build pins for fkCtl

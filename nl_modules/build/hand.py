@@ -63,6 +63,8 @@ class Hand(RigModule):
         self.build_fk()
         self.build_ik()
         self.build_fgr_logic()
+
+        self.masterC.a.globalScale >> self.SKL_DATA.a.scale
         self.post_setup()
 
     def build_fk(self):
@@ -101,7 +103,7 @@ class Hand(RigModule):
             ikJ.cstOri(ctls[1].parent.parent, mo=1)
 
         # scalable
-        self.rootJ.a.s >> self.PRX_GRP.a.s
+        # self.rootJ.a.s >> self.PRX_GRP.a.s
         self.rootJ.cstSca(self.RIG_DATA)
 
     def build_fgr_logic(self):
@@ -277,9 +279,10 @@ class Hand(RigModule):
         # mc.hide(self.allIkH, self.allIkJ)
 
     def post_setup(self):
+        self.add_bind_jnt_set(self.bindJnts)
+
         ctlSet = [self.smart_ctl] + self.fgrRootCtlArr
         [ctlSet.extend(x) for x in self.ctlsArr]
-        self.add_bind_jnt_set(self.bindJnts)
         self.add_ctl_set(ctlSet)
         self.setup_space()
         self.setup_anchor_module({"anchorF1": self.rootJ})

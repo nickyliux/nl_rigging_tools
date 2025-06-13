@@ -216,9 +216,8 @@ class LegBp(RigModule):
             self.bindJnts.extend([self.palm, self.ball])
 
         # Scaling
-        self.CTL_DATA.a.s >> self.RIG_DATA.a.s
-        self.CTL_DATA.a.s >> self.PRX_GRP.a.s
-        self.CTL_DATA.a.s >> self.SKL_DATA.a.s
+        self.masterC.a.globalScale >> self.RIG_DATA.a.s
+        self.masterC.a.globalScale >> self.SKL_DATA.a.s
 
         palmScale = self.setting.a.add("palmScale", min=0.01, dv=1)
         self.ikc.a.add("palmScale", min=0.01, proxy=palmScale)
