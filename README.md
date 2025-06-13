@@ -2,17 +2,17 @@
 # nl-rigging-tools
 
 ## Background
-For years, I have been rigging characters with my own autorigger . Once in a project I studied Ziva and rigged the actual "skeleton". I find it interesting and I would like to learn advanced python and anatomy through the project.
+For years, I have been rigging characters with my own autorigger . Once in a project I was using Ziva and find it interesting rigging the actual "skeleton". Menawhile I would like to apply python and anatomy through the project.
 
 ## Overview
 
-nl-rigging-tools is designed to be used with minimum setup time and maximum usability.
+nl-rigging-tools is designed with minimum setup time and maximum usability.
 - <b>Modular : </b>
-There are times only part of the body is visible or needed. Modular build avoids building entire rig and deleting unwanted parts which may break the rig.
+I'm tired of building entire rig and deleting unwanted parts.
 - <b>Custom Framework : </b>
-Thanks to the course "Python for Maya: Beginner to Advanced Rigging Automation" by Nick Hughes, I learn to build custom framework for faster development and cleaner codes.
-- <b>Auto Bone Skinning : </b>
-Minimum setup by positioning reference / ribbon joints for the skeletal meshes.
+Thanks to the course "Python for Maya: Beginner to Advanced Rigging Automation" by Nick Hughes, I learn to build tools without PyMel 
+- <b>Auto Skinning </b>
+
 
 ## Framework Python Classes
 ```mermaid
