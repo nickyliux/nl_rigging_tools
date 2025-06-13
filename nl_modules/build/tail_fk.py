@@ -21,7 +21,6 @@ class TailFk(RigModule):
         rID, rSz, xDr = self.getMyVar()
         self.LINE_GUIDE = CrvNode(rID + "_line_guide")
         self.RT_GUIDE = CrvNode(rID + "_rt_guide")
-        self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
 
         self.setting = None
         self.fkCtl = []
@@ -155,7 +154,6 @@ class TailFk(RigModule):
 
         # scalable
         self.fkCtl[0].a.s >> self.SKL_DATA.a.s
-        self.fkCtl[0].a.s >> self.PRX_GRP.a.s
         self.fkCtl[0].a.s >> cluGrp2.a.s
 
         self.setting.snapTo(self.fkCtl[0])

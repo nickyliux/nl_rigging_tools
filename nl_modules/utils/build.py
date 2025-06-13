@@ -88,7 +88,6 @@ def preRig():
     for ctl in [m, m1]:
         ctl.a.showAttr(t=1, r=1)
 
-    m2.a.add("proxy", k=0, attrType="bool", dv=1)
     # m2.a.add("debug", k=0, attrType="bool", dv=1)
     # m2.a.add("primCtls", k=0, attrType="bool", dv=1)
     # m2.a.add("secCtls", k=0, attrType="bool", dv=1)
@@ -115,6 +114,25 @@ def postRig():
     updateSpaceSwitch()
     resetAllPvCtl()
     mc.select(cl=1)
+
+    m2 = DagNode("master2_ctl")
+    PRX = DagNode("PRX")
+
+    if m2.exists() and PRX.exists():
+        PRX.a.overrideEnabled.set(1)
+
+        m2.a.add("proxy", k=0, attrType="bool", dv=1) >> PRX.a.v
+        (
+            m2.a.add(
+                "proxyDsp", dv=0, attrType="enum", k=0, en="Normal:Template:Reference"
+            )
+            >> PRX.a.overrideDisplayType
+        )
+
+    RIG = DagNode("RIG")
+    if RIG.exists():
+        mc.hide(RIG)
+
     print()
 
 
@@ -453,6 +471,9 @@ def genProxyMesh():
             grpStr = str(j).split("_")[0]
             PRX_GRP = GrpNode(grpStr + "_PRX", p=PRX)
             JntNode(j).addProxyMesh(p=PRX_GRP)
+        mc.select(cl=1)
+    else:
+        logging.info("The set 'bind_jnt_set' NOT found.")
 
 
 def saveCtl():

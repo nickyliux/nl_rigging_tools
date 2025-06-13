@@ -23,7 +23,6 @@ class RbnNode:
         volMode=None,
         scaleFix=None,
         forSpine=0,
-        proxyP=None,
         size=1,
         p=None,
     ):
@@ -70,7 +69,6 @@ class RbnNode:
         self.volMode = volMode
         self.rbJNum = rbJNum
         self.all_ikHs = []
-        self.proxyP = proxyP
         self.size = size
 
         self.build()

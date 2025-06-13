@@ -24,7 +24,6 @@ class SpineQd(RigModule):
         self.TP_GUIDE = DagNode(rID + "_tp_guide")
         self.MD_GUIDE = DagNode(rID + "_md_guide")
         self.RT_GUIDE = DagNode(rID + "_rt_guide")
-        self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
         self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
 
         pvtGuide = DagNode(rID + "_pivot_guide")
@@ -64,7 +63,6 @@ class SpineQd(RigModule):
         )
         spineScale = self.setting.a.add("spineScale", min=0.01, dv=1)
         spineScale >> self.IK_GRP.a.s
-        spineScale >> self.PRX_GRP.a.s
 
         self.setting.a.add("stretchy", min=0, max=1)
 

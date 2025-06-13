@@ -35,8 +35,7 @@ class ArmBp(RigModule):
 
         self.FK_GRP = GrpNode("FK", pf=rID, p=self.CTL_DATA)
         self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA)
-        self.BF_PART = GrpNode("BF", pf=rID, p=self.CTL_DATA)
-        self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
+        self.BF_GRP = GrpNode("BF", pf=rID, p=self.CTL_DATA)
 
         self.setting = None
         self.joints = []
@@ -240,7 +239,7 @@ class ArmBp(RigModule):
     def blend_fk_ik(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.joints_bf = common.extractSk(self.joints, "_bf", p=self.BF_PART, r=rSz)
+        self.joints_bf = common.extractSk(self.joints, "_bf", p=self.BF_GRP, r=rSz)
 
         palmIn_guide = DagNode(rID + "_palmIn_guide")
         palmIn_loc = LocNode(
@@ -402,7 +401,6 @@ class ArmBp(RigModule):
             rbJNum=self.RBN_JNT_NUM,
             volMode="upr",
             scaleFix=self.masterC.a["globalScale"],
-            proxyP=self.PRX_GRP,
             size=rSz,
             p=self.RIG_DATA,
         )
@@ -412,7 +410,6 @@ class ArmBp(RigModule):
             rbJNum=self.RBN_JNT_NUM,
             volMode="lwr",
             scaleFix=self.masterC.a["globalScale"],
-            proxyP=self.PRX_GRP,
             size=rSz,
             p=self.RIG_DATA,
         )
@@ -527,7 +524,7 @@ class ArmBp(RigModule):
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_attr(self.bindJnts, ratio=2, div=1)
+        self.add_proxy_info(self.bindJnts, ratio=2)
 
         ctlSet = []
         ctlSet.extend(self.fkCtl + self.ikCtl + [self.setting, self.pin_fkc])

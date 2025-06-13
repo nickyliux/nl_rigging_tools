@@ -136,8 +136,8 @@ def cstMulti(*args, cstType="par", delete=False, w=None, **kwargs):
 def nlRivet(
     geo=None,
     coordList=None,
-    normal=0,
-    tangent=2,
+    normal=0,  # 0,1,2 => x,y,z
+    tangent=2,  # 0,1,2 => x,y,z
     normalize=0,
     scaleAttr=None,
     p=None,

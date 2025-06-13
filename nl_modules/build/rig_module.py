@@ -335,23 +335,14 @@ class RigModule(RigBase):
         children = self.rootJ.childrenJt
         if children:
             self.xDir = 1 if children[0].a.tx.get() > 0 else -1
-        #
-        #   update all joints' radius
-        #
-        # joints = self.rootJ.allChildrenJt2
-        # for j in joints:
-        #     j.a.radius.set(rSz)
 
     def post_module(self):
         rID, rSz, xDr = self.getMyVar()
         logging.info(rID)
 
         [mc.setAttr(obj + ".ro", cb=1) for obj in mc.ls(tr=1)]
-        if self.PRX:
-            self.masterC2.a["proxy"] >> self.PRX.a.v
 
-        mc.hide(self.moduleG, self.RIG)  # , self.SKL)
-        # self.ctl_vis_toggle(self.masterC2.a["debug"], onList=[self.RIG, self.SKL])
+        mc.hide(self.moduleG)
 
     def unbuild_module(self):
         rID, rSz, xDr = self.getMyVar()
@@ -964,7 +955,7 @@ class RigModule(RigBase):
 
         return crvLenRatio, rbJnts
 
-    def add_proxy_attr(self, tgtJnts, ratio=1, div=3):
+    def add_proxy_info(self, tgtJnts, ratio=1, div=3):
         for jnt in tgtJnts:
             jnt.a.add("proxyRatio", k=0, dv=ratio)
             jnt.a.add("proxyDiv", k=0, dv=div)

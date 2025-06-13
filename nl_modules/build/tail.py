@@ -8,7 +8,6 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common, utils_node as ut, maths
-from nl_modules.utils.color import Color
 
 
 class Tail(RigModule):
@@ -21,7 +20,6 @@ class Tail(RigModule):
         rID, rSz, xDr = self.getMyVar()
         self.LINE_GUIDE = CrvNode(rID + "_line_guide")
         self.RT_GUIDE = CrvNode(rID + "_rt_guide")
-        self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
         self.FK_GRP = GrpNode("FK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
         self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
 
@@ -55,7 +53,6 @@ class Tail(RigModule):
         localScale = self.setting.a.add("localScale", min=0.01, dv=1)
         localScale >> self.IK_GRP.a.s
         localScale >> self.FK_GRP.a.s
-        localScale >> self.PRX_GRP.a.s
 
         self.rigNode.setMsg(
             {
@@ -101,8 +98,7 @@ class Tail(RigModule):
             aimV=(0, 0, -1),
             upV=(0, 1, 0),
             wuV=(0, 1, 0),
-            size=rSz * 4,
-            color=6,
+            size=rSz,
         )
         SrfNode(self.rbSrf1).weightTo(self.ikJnt, mi=4, dr=6, chain=0)
 
@@ -114,7 +110,6 @@ class Tail(RigModule):
                 scale=rSz * 3,
                 align=self.ikJnt[i],
                 addOfs=1,
-                color=25,
                 p=self.IK_GRP,
             )
             self.ikJnt[i] | ctl
@@ -198,7 +193,7 @@ class Tail(RigModule):
                 p=self.fkCtl[i],
                 moveY=rSz * 25,
             )
-            jnt = JntNode(f"{i}_ofs_jnt", pf=rID, align=ctl, p=ctl, color=13)
+            jnt = JntNode(f"{i}_ofs_jnt", pf=rID, align=ctl, p=ctl)
 
             self.ofsCtl.append(ctl)
             self.ofsJnt.append(jnt)
@@ -213,18 +208,18 @@ class Tail(RigModule):
 
     def setup_vis(self):
         self.ctl_vis_toggle(
-            self.setting.a.add("ikCtl", k=0, attrType="bool", dv=0),
+            self.setting.a.add("IKCtl", k=0, attrType="bool", dv=1),
             onList=[self.ikCtl[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("fkCtl", k=0, attrType="bool", dv=1),
+            self.setting.a.add("FKCtl", k=0, attrType="bool", dv=1),
             onList=[self.fkCtl[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("subCtl", k=0, attrType="bool", dv=0),
+            self.setting.a.add("subIkCtl", k=0, attrType="bool", dv=1),
             onList=self.ofsCtl,
         )
-        mc.hide(self.ikJnt, self.fkJnt, self.ofsJnt)
+        mc.hide(self.ikJnt, self.fkJnt, self.ofsJnt, self.rbSrf1, self.rbSrf2)
 
     def setup_channel(self):
         for ctl in self.fkCtl + self.ikCtl:
@@ -237,7 +232,7 @@ class Tail(RigModule):
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_attr(self.bindJnts, div=1)
+        self.add_proxy_info(self.bindJnts, div=1)
         self.add_ctl_set(self.ikCtl + self.fkCtl + self.ofsCtl + [self.setting])
         self.setup_anchor_module({"anchorF1": self.ikCtl[0].offset.offset})
         self.setup_vis()

@@ -22,7 +22,6 @@ class SpineBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
         self.LINE_GUIDE = DagNode(rID + "_line_guide")
         self.MD_GUIDE = DagNode(rID + "_md_guide")
-        self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
 
         self.cog_ctl = None
         self.cog_gmb = None
@@ -171,7 +170,6 @@ class SpineBp(RigModule):
         for ctl in self.fkCtls:
             self.cog_ctl.a.s >> ctl.offset.a.s
 
-        self.cog_ctl.a.s >> self.PRX_GRP.a.s
         self.masterC.a.globalScale >> self.SKL_DATA.a.s
         self.ikCtls = [self.hip_ctl, self.mid_ctl, self.chest_ctl]
 
@@ -201,7 +199,7 @@ class SpineBp(RigModule):
             fc.a.varyTime.set(i)
 
             ratio = (scaleFix * D / d) ** (fc.a.varying * volume)
-            ratio >> self.rbJnts[i].a.sx
+            ratio >> self.rbJnts[i].a.sy
             ratio >> self.rbJnts[i].a.sz
 
     def setup_vis(self):
@@ -213,7 +211,7 @@ class SpineBp(RigModule):
             self.setting.a.add("ikCtls", min=0, max=1, dv=1, k=0),
             onList=self.ikCtls,
         )
-        # mc.hide(self.ctlJnts, self.fkJnts, self.rbJnts)
+        mc.hide(self.ctlJnts, self.fkJnts)
 
     def setup_channel(self):
         self.setting.a.showAttr()
@@ -241,7 +239,7 @@ class SpineBp(RigModule):
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_attr(self.bindJnts, ratio=4, div=1)
+        self.add_proxy_info(self.bindJnts, ratio=6, div=1)
 
         self.add_ctl_set(
             self.fkCtls + self.ikCtls + [self.setting, self.cog_ctl, self.cog_gmb]

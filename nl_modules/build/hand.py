@@ -12,7 +12,6 @@ class Hand(RigModule):
         super().__init__(rigNode)
 
         rID, rSz, xDr = self.getMyVar()
-        self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
         self.smart_ctl = None
         self.fgrsArr = None
         self.ctlsArr = None
@@ -103,7 +102,6 @@ class Hand(RigModule):
             ikJ.cstOri(ctls[1].parent.parent, mo=1)
 
         # scalable
-        # self.rootJ.a.s >> self.PRX_GRP.a.s
         self.rootJ.cstSca(self.RIG_DATA)
 
     def build_fgr_logic(self):

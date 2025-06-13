@@ -35,7 +35,6 @@ class LegQd(RigModule):
 
         self.FK_GRP = GrpNode("FK", pf=rID, p=self.CTL_DATA)
         self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA)
-        self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
 
         self.setting = None
         self.joints = []
@@ -657,7 +656,7 @@ class LegQd(RigModule):
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_attr(self.bindJnts, ratio=2.5)
+        self.add_proxy_info(self.bindJnts, ratio=2.5)
 
         self.add_mirror_attr([self.ikc, self.ikc_gimbal, self.pvc, self.smart_ctl])
         ctlSet = (

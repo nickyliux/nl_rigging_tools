@@ -186,7 +186,12 @@ class SrfNode(GrpNode):
                 coord.append((0.5, i / (num - 1)))
 
             pin, pinXf = common.nlRivet(
-                geo=surf, coordList=coord, normalize=normalize, p=rigData
+                geo=surf,
+                coordList=coord,
+                normalize=normalize,
+                p=rigData,
+                normal=2,
+                tangent=1,
             )
 
             returnJnt = []

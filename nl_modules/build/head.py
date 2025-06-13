@@ -17,7 +17,6 @@ class Head(RigModule):
         super().__init__(rigNode)
 
         rID, rSz, xDr = self.getMyVar()
-        self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
         self.joints = []
         self.head = None
         self.headEnd = None
@@ -81,7 +80,6 @@ class Head(RigModule):
 
         # scalable
         self.head_fkc.a.s * self.masterC.a.globalScale >> self.SKL_DATA.a.s
-        # self.head_fkc.a.s >> self.PRX_GRP.a.s
 
         # self.isolate_align(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC])
         # self.isolate_align(self.head_fkc, spaces=[self.head_fkc.parent, self.masterC])
@@ -106,7 +104,7 @@ class Head(RigModule):
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_attr([self.lf_eye, self.rt_eye], div=1)
+        self.add_proxy_info([self.lf_eye, self.rt_eye], div=1)
         self.add_ctl_set(self.fkCtl)
         self.setup_space()
         self.setup_anchor_module({"anchorF1": self.head_fkc.offset})

@@ -30,8 +30,6 @@ class SpineQd(RigModule):
         if pvtGuide.exists():
             self.PVT_GUIDE = pvtGuide
 
-        self.PRX_GRP = GrpNode("PRX", pf=rID, p=self.PRX)
-
         self.cog_ctl = None
         self.chest_ctl = None
         self.mid_ctl = None

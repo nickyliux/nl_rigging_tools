@@ -239,8 +239,8 @@
        <property name="verticalSpacing">
         <number>3</number>
        </property>
-       <item row="3" column="0">
-        <widget class="QPushButton" name="component_load_BN">
+       <item row="7" column="0">
+        <widget class="QPushButton" name="component_delete_BN">
          <property name="minimumSize">
           <size>
            <width>20</width>
@@ -263,44 +263,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Load component</string>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QPushButton" name="component_buildAll_BN">
-         <property name="minimumSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>28</width>
-           <height>28</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-           <kerning>true</kerning>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Build components</string>
+          <string>Delete component(s)</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -335,50 +298,6 @@
          </property>
          <property name="checked">
           <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QRadioButton" name="component_left_RB">
-         <property name="minimumSize">
-          <size>
-           <width>10</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>15</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Left side</string>
-         </property>
-         <property name="text">
-          <string>L</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QRadioButton" name="component_right_RB">
-         <property name="minimumSize">
-          <size>
-           <width>10</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>15</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Right side</string>
-         </property>
-         <property name="text">
-          <string>R</string>
          </property>
         </widget>
        </item>
@@ -419,8 +338,8 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="0">
-        <widget class="QPushButton" name="component_delete_BN">
+       <item row="10" column="0">
+        <widget class="QPushButton" name="component_buildAll_BN">
          <property name="minimumSize">
           <size>
            <width>20</width>
@@ -443,10 +362,13 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Delete component(s)</string>
+          <string>Build components</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(131,103,45);</string>
          </property>
          <property name="text">
           <string/>
@@ -456,40 +378,25 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="0">
-        <widget class="QPushButton" name="component_unbuildAll_BN">
+       <item row="1" column="0">
+        <widget class="QRadioButton" name="component_left_RB">
          <property name="minimumSize">
           <size>
-           <width>20</width>
-           <height>20</height>
+           <width>10</width>
+           <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>28</width>
-           <height>28</height>
+           <width>16777215</width>
+           <height>15</height>
           </size>
          </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-           <kerning>true</kerning>
-          </font>
-         </property>
          <property name="toolTip">
-          <string>Unbuild component(s)</string>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
+          <string>Left side</string>
          </property>
          <property name="text">
-          <string/>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
+          <string>L</string>
          </property>
         </widget>
        </item>
@@ -521,6 +428,105 @@
          </property>
          <property name="text">
           <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QPushButton" name="component_load_BN">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>28</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+           <kerning>true</kerning>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Load component</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QRadioButton" name="component_right_RB">
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>15</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Right side</string>
+         </property>
+         <property name="text">
+          <string>R</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="0">
+        <widget class="QPushButton" name="component_unbuildAll_BN">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>28</width>
+           <height>28</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+           <kerning>true</kerning>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Unbuild component(s)</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(131,103,45);</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -867,15 +873,15 @@
           <font>
            <family>Segoe UI</family>
            <pointsize>8</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
+           <weight>50</weight>
+           <bold>false</bold>
           </font>
          </property>
          <property name="toolTip">
           <string>Auto skin meshes under mdl_grp</string>
          </property>
          <property name="styleSheet">
-          <string notr="true">color: rgb(255, 130, 130);</string>
+          <string notr="true"/>
          </property>
          <property name="text">
           <string>Auto Skin</string>
