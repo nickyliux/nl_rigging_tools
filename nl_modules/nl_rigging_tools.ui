@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>441</width>
-    <height>792</height>
+    <width>569</width>
+    <height>827</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -70,7 +70,7 @@
        <x>0</x>
        <y>10</y>
        <width>220</width>
-       <height>281</height>
+       <height>241</height>
       </rect>
      </property>
      <property name="font">
@@ -100,7 +100,7 @@
         <x>7</x>
         <y>21</y>
         <width>161</width>
-        <height>251</height>
+        <height>211</height>
        </rect>
       </property>
       <property name="font">
@@ -226,7 +226,7 @@
         <x>180</x>
         <y>20</y>
         <width>31</width>
-        <height>251</height>
+        <height>211</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
@@ -239,8 +239,8 @@
        <property name="verticalSpacing">
         <number>3</number>
        </property>
-       <item row="7" column="0">
-        <widget class="QPushButton" name="component_delete_BN">
+       <item row="3" column="0">
+        <widget class="QPushButton" name="component_load_BN">
          <property name="minimumSize">
           <size>
            <width>20</width>
@@ -263,7 +263,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Delete component(s)</string>
+          <string>Load component</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -276,28 +276,34 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QRadioButton" name="component_both_RB">
+       <item row="9" column="0">
+        <widget class="QPushButton" name="component_explore_BN">
          <property name="minimumSize">
           <size>
-           <width>10</width>
-           <height>0</height>
+           <width>20</width>
+           <height>20</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>16777215</width>
-           <height>15</height>
+           <width>28</width>
+           <height>28</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+           <kerning>true</kerning>
+          </font>
+         </property>
          <property name="toolTip">
-          <string>Both side</string>
+          <string>Explore component files</string>
          </property>
          <property name="text">
-          <string>LR</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
+          <string/>
          </property>
         </widget>
        </item>
@@ -338,43 +344,28 @@
          </property>
         </widget>
        </item>
-       <item row="10" column="0">
-        <widget class="QPushButton" name="component_buildAll_BN">
+       <item row="0" column="0">
+        <widget class="QRadioButton" name="component_both_RB">
          <property name="minimumSize">
           <size>
-           <width>20</width>
-           <height>20</height>
+           <width>10</width>
+           <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>28</width>
-           <height>28</height>
+           <width>16777215</width>
+           <height>15</height>
           </size>
          </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-           <kerning>true</kerning>
-          </font>
-         </property>
          <property name="toolTip">
-          <string>Build components</string>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(131,103,45);</string>
+          <string>Both side</string>
          </property>
          <property name="text">
-          <string/>
+          <string>LR</string>
          </property>
-         <property name="flat">
-          <bool>false</bool>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -400,8 +391,8 @@
          </property>
         </widget>
        </item>
-       <item row="9" column="0">
-        <widget class="QPushButton" name="component_explore_BN">
+       <item row="7" column="0">
+        <widget class="QPushButton" name="component_delete_BN">
          <property name="minimumSize">
           <size>
            <width>20</width>
@@ -424,38 +415,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Explore component files</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QPushButton" name="component_load_BN">
-         <property name="minimumSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>28</width>
-           <height>28</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-           <kerning>true</kerning>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Load component</string>
+          <string>Delete component(s)</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -490,46 +450,6 @@
          </property>
         </widget>
        </item>
-       <item row="11" column="0">
-        <widget class="QPushButton" name="component_unbuildAll_BN">
-         <property name="minimumSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>28</width>
-           <height>28</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-           <kerning>true</kerning>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Unbuild component(s)</string>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(131,103,45);</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
     </widget>
@@ -537,9 +457,9 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>290</y>
+       <y>250</y>
        <width>220</width>
-       <height>241</height>
+       <height>231</height>
       </rect>
      </property>
      <property name="font">
@@ -802,19 +722,19 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>530</y>
+       <y>480</y>
        <width>221</width>
        <height>181</height>
       </rect>
      </property>
      <property name="title">
-      <string>Main</string>
+      <string/>
      </property>
      <widget class="QProgressBar" name="oneClick_PB">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>100</y>
+        <y>160</y>
         <width>200</width>
         <height>8</height>
        </rect>
@@ -844,107 +764,22 @@
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget_3">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>45</y>
-        <width>201</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Bind</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="autoSkin_BN">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>20</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>9999</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Auto skin meshes under mdl_grp</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Auto</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="delSkinForAllMeshes_BN">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>20</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>9999</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Delete all skincluster nodes for all meshes</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Del</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_4">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>20</y>
-        <width>201</width>
-        <height>21</height>
+        <x>110</x>
+        <y>10</y>
+        <width>103</width>
+        <height>30</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QLabel" name="label_2">
          <property name="text">
@@ -959,14 +794,14 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>20</width>
-           <height>0</height>
+           <width>25</width>
+           <height>25</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>9999</width>
-           <height>18</height>
+           <width>25</width>
+           <height>25</height>
           </size>
          </property>
          <property name="font">
@@ -995,14 +830,14 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>20</width>
-           <height>0</height>
+           <width>25</width>
+           <height>25</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>9999</width>
-           <height>18</height>
+           <width>25</width>
+           <height>25</height>
           </size>
          </property>
          <property name="font">
@@ -1030,16 +865,29 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>70</y>
+        <y>110</y>
         <width>201</width>
-        <height>21</height>
+        <height>30</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Proxy</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>Proxy</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -1050,14 +898,14 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>20</width>
-           <height>0</height>
+           <width>25</width>
+           <height>25</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>9999</width>
-           <height>18</height>
+           <width>25</width>
+           <height>25</height>
           </size>
          </property>
          <property name="font">
@@ -1086,14 +934,86 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>20</width>
-           <height>0</height>
+           <width>25</width>
+           <height>25</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>9999</width>
-           <height>18</height>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Auto skin meshes under mdl_grp</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="wrapProxy_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Auto skin meshes under mdl_grp</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="mirrorProxy_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
           </size>
          </property>
          <property name="font">
@@ -1116,6 +1036,250 @@
         </widget>
        </item>
       </layout>
+     </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget_7">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>91</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>Build</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="component_buildAll_BN">
+         <property name="minimumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+           <kerning>true</kerning>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Build components</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="component_unbuildAll_BN">
+         <property name="minimumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+           <kerning>true</kerning>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Unbuild component(s)</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget_3">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>91</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Bind</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="autoSkin_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Auto skin meshes under mdl_grp</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="delSkinForAllMeshes_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Delete all skincluster nodes for all meshes</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QPushButton" name="genProxy_BN_2">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>86</y>
+        <width>201</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>170</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>9999</width>
+        <height>18</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>8</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>Auto skin meshes under mdl_grp</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>Load Wrap Target Mesh</string>
+      </property>
      </widget>
     </widget>
    </widget>
@@ -2390,7 +2554,7 @@
     <string/>
    </property>
    <property name="styleSheet">
-    <string notr="true"/>
+    <string notr="true">background-color: rgb(131,103,45);</string>
    </property>
    <property name="text">
     <string>Attach Jnts to Surf</string>

@@ -58,6 +58,7 @@ from nl_modules.utils import (
     modeling,
     open_maya_api,
     path,
+    proxy,
     utils_node,
     marking_menu_autorig,
     marking_menu_rigging,
@@ -75,6 +76,7 @@ reload(maths)
 reload(modeling)
 reload(open_maya_api)
 reload(path)
+reload(proxy)
 reload(utils_node)
 reload(marking_menu_autorig)
 reload(marking_menu_rigging)

@@ -105,10 +105,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.component_explore_BN.setIcon(QtGui.QIcon(":searchEngine.png"))
         self.UI.component_LW.itemDoubleClicked.connect(self.component_load_BN_clicked)
 
-        self.UI.component_buildAll_BN.clicked.connect(build.buildSelOrAll)
-        self.UI.component_buildAll_BN.setIcon(QtGui.QIcon(":play_hover.png"))
-        self.UI.component_unbuildAll_BN.clicked.connect(build.unbuildSelOrAll)
-        self.UI.component_unbuildAll_BN.setIcon(QtGui.QIcon(":undo_s.png"))
         self.UI.component_delete_BN.clicked.connect(build.deleteSelOrAll)
         self.UI.component_delete_BN.setIcon(QtGui.QIcon(":smallTrash.png"))
         self.UI.component_copy_BN.clicked.connect(guide.copyGuideSel)
@@ -165,13 +161,30 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             self.joint_mirrorAllRef_BN_clicked
         )
 
-        self.UI.autoSkin_BN.clicked.connect(self.autoSkin)
-        self.UI.delSkinForAllMeshes_BN.clicked.connect(self.delSkinForAllMeshes)
-
+        #
+        #   build
+        #
+        self.UI.component_buildAll_BN.clicked.connect(build.buildSelOrAll)
+        self.UI.component_buildAll_BN.setIcon(QtGui.QIcon(":play_S.png"))
+        self.UI.component_unbuildAll_BN.clicked.connect(build.unbuildSelOrAll)
+        self.UI.component_unbuildAll_BN.setIcon(QtGui.QIcon(":smallTrash.png"))
+        #
+        #   ctl
+        #
         self.UI.saveCtl_BN.setIcon(QtGui.QIcon(":fileSave.png"))
         self.UI.saveCtl_BN.clicked.connect(build.saveCtl)
         self.UI.loadCtl_BN.setIcon(QtGui.QIcon(":openScript.png"))
         self.UI.loadCtl_BN.clicked.connect(build.loadCtl)
+        #
+        #   bind
+        #
+        self.UI.autoSkin_BN.clicked.connect(self.autoSkin)
+        self.UI.autoSkin_BN.setIcon(QtGui.QIcon(":play_S.png"))
+        self.UI.delSkinForAllMeshes_BN.clicked.connect(self.delSkinForAllMeshes)
+        self.UI.delSkinForAllMeshes_BN.setIcon(QtGui.QIcon(":smallTrash.png"))
+        #
+        #   proxy
+        #
         self.UI.genProxy_BN.clicked.connect(self.genProxy)
         self.UI.genProxy_BN.setIcon(QtGui.QIcon(":addClip.png"))
         self.UI.delProxy_BN.clicked.connect(self.delProxy)
