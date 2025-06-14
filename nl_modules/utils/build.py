@@ -458,6 +458,10 @@ def getRigNode(obj):
         logging.info("Get rigNode for non-existing object.")
 
 
+def delProxyMesh():
+    pass
+
+
 def genProxyMesh():
     from nl_modules.nodel.grp_node import GrpNode
     from nl_modules.nodel.jnt_node import JntNode
@@ -465,7 +469,7 @@ def genProxyMesh():
     MDL = GrpNode("MDL")
     PRX = GrpNode("PRX", p=MDL)
     bindSet = DagNode("bind_jnt_set")
-    if bindSet:
+    if bindSet.exists():
         bindJnts = mc.sets(bindSet, q=1)
         for j in bindJnts:
             grpStr = str(j).split("_")[0]

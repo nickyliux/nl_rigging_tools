@@ -139,7 +139,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.crvShape_removeFrInst_BN.clicked.connect(
             self.crvShape_removeFrInst_BN_clicked
         )
-        # self.UI.crvShape_create_BN.clicked.connect(self.crvShape_create_BN_clicked)
         self.UI.crvShape_new_BN.clicked.connect(self.crvShape_new_BN_clicked)
         self.UI.crvShape_new_BN.setIcon(QtGui.QIcon(":fileNew.png"))
         self.UI.crvShape_apply_BN.clicked.connect(self.crvShape_apply_BN_clicked)
@@ -168,12 +167,15 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         self.UI.autoSkin_BN.clicked.connect(self.autoSkin)
         self.UI.delSkinForAllMeshes_BN.clicked.connect(self.delSkinForAllMeshes)
-        self.UI.genProxy_BN.clicked.connect(self.genProxy)
 
         self.UI.saveCtl_BN.setIcon(QtGui.QIcon(":fileSave.png"))
         self.UI.saveCtl_BN.clicked.connect(build.saveCtl)
         self.UI.loadCtl_BN.setIcon(QtGui.QIcon(":openScript.png"))
         self.UI.loadCtl_BN.clicked.connect(build.loadCtl)
+        self.UI.genProxy_BN.clicked.connect(self.genProxy)
+        self.UI.genProxy_BN.setIcon(QtGui.QIcon(":addClip.png"))
+        self.UI.delProxy_BN.clicked.connect(self.delProxy)
+        self.UI.delProxy_BN.setIcon(QtGui.QIcon(":smallTrash.png"))
 
         self.UI.misc_retopo20_BN.clicked.connect(partial(modeling.retopo, faceNum=20))
         self.UI.misc_retopo50_BN.clicked.connect(partial(modeling.retopo, faceNum=50))
@@ -362,6 +364,10 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Add curve object"""
         crv = CrvNode(item.text(), shape=item.text())
         mc.select(crv)
+        #     items = self.UI.crvShape_LW.selectedItems()
+        #     if items:
+        #         itemText = items[0].text()
+        #         return CrvNode(itemText, shape=itemText)
 
     def crvShape_save_BN_clicked(self):
         """Save selected shape to highlighted"""
@@ -408,13 +414,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 tgtFile = f"{SHAPE_PRESET}\\{itemText}.json"
                 file.deleteFile(tgtFile)
                 self.crvShape_refresh_BN_clicked()
-
-    # def crvShape_create_BN_clicked(self):
-    #     """Create new shape"""
-    #     items = self.UI.crvShape_LW.selectedItems()
-    #     if items:
-    #         itemText = items[0].text()
-    #         return CrvNode(itemText, shape=itemText)
 
     def crvShape_removeFrInst_BN_clicked(self):
         sel = mc.ls(sl=1, tr=1)
@@ -555,6 +554,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def genProxy(self):
         build.genProxyMesh()
+
+    def delProxy(self):
+        build.delProxyMesh()
 
     def misc_importEnvAndShd_BN_clicked(self):
         """Import lighting & shader scenes for better look"""
