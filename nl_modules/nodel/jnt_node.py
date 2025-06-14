@@ -127,7 +127,7 @@ class JntNode(GrpNode):
                     h=dist * 0.8,
                     ax=aimDir,
                     subdivisionsAxis=8,
-                    subdivisionsCaps=1,
+                    # subdivisionsCaps=1,
                     subdivisionsHeight=proxyDiv,
                     ch=0,
                 )[0]
