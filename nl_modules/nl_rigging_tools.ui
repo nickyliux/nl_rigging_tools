@@ -86,7 +86,7 @@
       <bool>false</bool>
      </property>
      <property name="title">
-      <string>Components</string>
+      <string>Parts</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignBottom|Qt::AlignJustify</set>

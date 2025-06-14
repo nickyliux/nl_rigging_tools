@@ -110,9 +110,12 @@ class JntNode(GrpNode):
         proxyDiv = proxyDiv.get() if proxyDiv.exists() else 3
 
         name = self.name + "_pxGeo"
-        child = self.childrenJt
+        if mc.objExists(name):
+            return
 
+        child = self.childrenJt
         if child or (not skipEnd):
+
             dist = self.o.distanceTo(child[0]) if child else size
             # proxy = DagNode(
             #     mc.polyCube(n=name, ax=aimDir, h=dist, w=size, d=size, cuv=4)[0]
