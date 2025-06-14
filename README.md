@@ -2,16 +2,16 @@
 # nl-rigging-tools
 
 ## Background
-For years, I have been rigging characters with my own autorigger . Once in a project I was using Ziva and find it interesting rigging the actual "skeleton". Menawhile I would like to apply python and anatomy through the project.
+For years, I have been rigging characters with my own autorigger . Once in a project I was using Ziva and find it interesting rigging the actual "skeleton". Meanwhile I would like to apply python and anatomy through the project.
 
 ## Overview
 
-nl-rigging-tools is designed with minimum setup time and maximum usability.
 - <b>Modular : </b>
-I'm tired of building entire rig and deleting unwanted parts.
+Convenient when part of entire rig is needed.
 - <b>Custom Framework : </b>
-Thanks to the course "Python for Maya: Beginner to Advanced Rigging Automation" by Nick Hughes, I learn to build tools without PyMel 
-- <b>Auto Skinning </b>
+Simplify tools development.
+- <b>Auto Skinning : </b> Simplify binding for skeleton meshes.
+- <b>Data Reuse : </b> Guide / proxy / control data can be customized, saved and reused.
 
 
 ## Framework Python Classes
@@ -57,22 +57,22 @@ classDiagram
 
 ## Components Features
 
-Part | FK | IK | Ribbon | Stretchy | Volume | Soft Ik | Pv Pin | Twist bones | Palm Roll | Patella Bone | Local Scaling
---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- 
-Head |+||||||||||+
-Spine |+|+|+|+|+||||+
-Hand |+|+|+|+|||||||+
-Arm |+|+|+|+|+|+|+|+|||+
-Leg |+|+|+|+|+|+|+|+|+|+|+
-Tail |+|+|+|+|||||||+
+Part | FK | IK | Ribbon | Stretchy | Volume | Soft Ik | Pv Pin | Twist bones | Palm Roll | Patella Bone 
+--- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- 
+Head |+|||||||||
+Spine |+|+|+|+|+|||
+Hand |+|+|+|+||||||
+Arm |+|+|+|+|+|+|+|+||
+Leg |+|+|+|+|+|+|+|+|+|+
+Tail |+|+|+|+||||||
 
 
 ## Marking menus
 Two Marking menus are made to speed up rigging work.
-|||
-|---|---|
-|Rig Building | Ctrl + MMB ![The Autorig](nl_modules/doc/marking_menu_autorig.png)|
-|Daily Rigging Operations | Ctrl + Alt + MMB ![General Rigging](nl_modules/doc/marking_menu_rigging.png)|
+|Menu|Shortcut|UI|
+|---|---|---|
+|Rig Building |Ctrl + MMB|![The Autorig](nl_modules/doc/marking_menu_autorig.png)|
+|Daily Rigging Operations|Ctrl + Alt + MMB| ![General Rigging](nl_modules/doc/marking_menu_rigging.png)|
 
 
 ## Installation

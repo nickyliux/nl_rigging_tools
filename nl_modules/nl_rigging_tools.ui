@@ -68,7 +68,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>5</y>
+       <y>10</y>
        <width>220</width>
        <height>281</height>
       </rect>
@@ -89,7 +89,7 @@
       <string>Components</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+      <set>Qt::AlignBottom|Qt::AlignJustify</set>
      </property>
      <property name="flat">
       <bool>false</bool>
@@ -546,13 +546,15 @@
       <font>
        <family>Segoe UI</family>
        <pointsize>8</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="title">
-      <string>Presets</string>
+      <string>Templates</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+      <set>Qt::AlignJustify|Qt::AlignVCenter</set>
      </property>
      <property name="flat">
       <bool>false</bool>
