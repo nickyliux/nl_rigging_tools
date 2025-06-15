@@ -59,7 +59,7 @@ class Head(RigModule):
         self.head, self.headEnd, self.jaw, self.jawEnd, self.lf_eye, self.rt_eye = (
             self.joints
         )
-        self.bindJnts = [self.head, self.jaw, self.lf_eye, self.rt_eye]
+        self.bindJnts = [self.head, self.jaw]
         self.build_ctl()
         self.fkCtl = [self.head_fkc, self.jaw_fkc]
         self.build_fk()

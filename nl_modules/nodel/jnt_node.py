@@ -124,7 +124,7 @@ class JntNode(GrpNode):
                 mc.polyCylinder(
                     n=name,
                     r=size / 2 * proxyRatio,
-                    h=dist * 0.8,
+                    h=dist * 0.9,
                     ax=aimDir,
                     subdivisionsAxis=8,
                     # subdivisionsCaps=1,

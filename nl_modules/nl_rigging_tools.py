@@ -63,6 +63,11 @@ MODEL_GRP = "mdl_grp"
 
 from contextlib import ContextDecorator
 
+#
+# var to store wrap target mesh assigned
+#
+targetWrapMesh
+
 
 class Undo(ContextDecorator):
     def __init__(self, name=None):
@@ -73,9 +78,6 @@ class Undo(ContextDecorator):
 
     def __exit__(self, exc_type, exc_value, traceback):
         mc.undoInfo(closeChunk=True)
-
-
-global targetWrapMesh
 
 
 class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
@@ -100,19 +102,31 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def connect_UI(self):
         #
-        #   component
+        #   Top
         #
+        self.UI.pickMaskCrv_BN.clicked.connect(self.pickMaskCrv_BN_clicked)
+        self.UI.pickMaskCrv_BN.setIcon(QtGui.QIcon(":pickCurveObj.png"))
+        self.UI.pickMaskMsh_BN.clicked.connect(self.pickMaskMsh_BN_clicked)
+        self.UI.pickMaskMsh_BN.setIcon(QtGui.QIcon(":pickGeometryObj.png"))
+        self.UI.pickMaskAll_BN.clicked.connect(self.pickMaskAll_BN_clicked)
+        self.UI.clickDrag_CB.stateChanged.connect(self.clickDrag_CB_stateChanged)
+        if mc.selectPref(clickDrag=1, q=1):
+            self.UI.clickDrag_CB.setChecked(1)
+        #
+        #   Part
+        #
+        self.UI.component_LW.itemDoubleClicked.connect(self.component_load_BN_clicked)
         self.UI.component_load_BN.clicked.connect(self.component_load_BN_clicked)
         self.UI.component_load_BN.setIcon(QtGui.QIcon(":openScript.png"))
         self.UI.component_explore_BN.clicked.connect(self.component_explore_BN_clicked)
         self.UI.component_explore_BN.setIcon(QtGui.QIcon(":searchEngine.png"))
-        self.UI.component_LW.itemDoubleClicked.connect(self.component_load_BN_clicked)
-
         self.UI.component_delete_BN.clicked.connect(build.deleteSelOrAll)
         self.UI.component_delete_BN.setIcon(QtGui.QIcon(":smallTrash.png"))
         self.UI.component_copy_BN.clicked.connect(guide.copyGuideSel)
         self.UI.component_copy_BN.setIcon(QtGui.QIcon(":copySkinWeight.png"))
-        # ------------------------------
+        #
+        #   Template
+        #
         self.UI.preset_save_BN.clicked.connect(self.preset_save_BN_clicked)
         self.UI.preset_save_BN.setIcon(QtGui.QIcon(":fileSave.png"))
         self.UI.preset_new_BN.clicked.connect(self.preset_new_BN_clicked)
@@ -133,8 +147,11 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
         # self.UI.rigNode_refresh_BN.clicked.connect(self.rigNode_refresh_BN_clicked)
         # self.UI.rigNode_refresh_BN.setIcon(QtGui.QIcon(":refresh.png"))
-        # ------------------------------
+        #
+        #   ctl
+        #
         self.UI.crvShape_LW.itemDoubleClicked.connect(self.crvShape_LW_dblClicked)
+
         self.UI.crvShape_removeFrInst_BN.clicked.connect(
             self.crvShape_removeFrInst_BN_clicked
         )
@@ -154,16 +171,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # self.UI.refColor_1_BN.clicked.connect(partial(self.setRefColor, 1))
         # ------------------------------
 
-        self.UI.joint_addForSpine_BN.clicked.connect(
-            partial(self.joint_add_BN_clicked, rb=1)
-        )
-        self.UI.joint_addForRef_BN.clicked.connect(
-            partial(self.joint_add_BN_clicked, rb=0)
-        )
-        self.UI.joint_mirrorAllRef_BN.clicked.connect(
-            self.joint_mirrorAllRef_BN_clicked
-        )
-
         #
         #   build
         #
@@ -172,7 +179,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.component_unbuildAll_BN.clicked.connect(build.unbuildSelOrAll)
         self.UI.component_unbuildAll_BN.setIcon(QtGui.QIcon(":smallTrash.png"))
         #
-        #   ctl
+        #   control
         #
         self.UI.saveCtl_BN.setIcon(QtGui.QIcon(":fileSave.png"))
         self.UI.saveCtl_BN.clicked.connect(build.saveCtl)
@@ -189,6 +196,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         #   proxy
         #
         self.UI.loadWrapTargetMesh_BN.clicked.connect(self.loadWrapTargetMesh)
+        self.UI.templateTarget_BN.clicked.connect(self.templateTarget)
         self.UI.genProxy_BN.clicked.connect(self.genProxy)
         self.UI.genProxy_BN.setIcon(QtGui.QIcon(":play_S.png"))
         self.UI.delProxy_BN.clicked.connect(self.delProxy)
@@ -199,7 +207,18 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.wrapProxy_BN.setIcon(QtGui.QIcon(":shrinkwrap.png"))
         self.UI.mirrorProxy_BN.clicked.connect(self.mirrorProxy)
         self.UI.mirrorProxy_BN.setIcon(QtGui.QIcon(":polyMirrorGeometry.png"))
-
+        #
+        #   prepare
+        #
+        self.UI.joint_addForSpine_BN.clicked.connect(
+            partial(self.joint_add_BN_clicked, rb=1)
+        )
+        self.UI.joint_addForRef_BN.clicked.connect(
+            partial(self.joint_add_BN_clicked, rb=0)
+        )
+        self.UI.joint_mirrorAllRef_BN.clicked.connect(
+            self.joint_mirrorAllRef_BN_clicked
+        )
         self.UI.misc_retopo20_BN.clicked.connect(partial(modeling.retopo, faceNum=20))
         self.UI.misc_retopo50_BN.clicked.connect(partial(modeling.retopo, faceNum=50))
         self.UI.misc_retopo150_BN.clicked.connect(partial(modeling.retopo, faceNum=150))
@@ -209,17 +228,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.misc_importEnvAndShd_BN.clicked.connect(
             self.misc_importEnvAndShd_BN_clicked
         )
-
-        self.UI.pickMaskCrv_BN.clicked.connect(self.pickMaskCrv_BN_clicked)
-        self.UI.pickMaskCrv_BN.setIcon(QtGui.QIcon(":pickCurveObj.png"))
-        self.UI.pickMaskMsh_BN.clicked.connect(self.pickMaskMsh_BN_clicked)
-        self.UI.pickMaskMsh_BN.setIcon(QtGui.QIcon(":pickGeometryObj.png"))
-
-        self.UI.pickMaskAll_BN.clicked.connect(self.pickMaskAll_BN_clicked)
-        self.UI.clickDrag_CB.stateChanged.connect(self.clickDrag_CB_stateChanged)
-
-        if mc.selectPref(clickDrag=1, q=1):
-            self.UI.clickDrag_CB.setChecked(1)
 
         self.UI.shapeScaleUp_BN.clicked.connect(partial(common.scaleCVForSel, 4 / 3))
         self.UI.shapeScaleUp_BN.setIcon(QtGui.QIcon(":moveUVUp.png"))
@@ -240,9 +248,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def updateLoadWrapTargetMesh(self):
         global targetWrapMesh
-        if targetWrapMesh and mc.objExists(targetWrapMesh):
+        if targetWrapMesh:
             tgt = DagNode(targetWrapMesh)
-            if tgt.type == "mesh":
+            if tgt.exists() and tgt.type == "mesh":
                 self.UI.loadWrapTargetMesh_BN.setText(f"[ {tgt.name} ]")
 
     def clickDrag_CB_stateChanged(self, state):
@@ -583,6 +591,12 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             sk.delete()
 
         logging.info(f"{num} skinClusters deleted.")
+
+    def templateTarget(self):
+        global targetWrapMesh
+        if mc.objExists(targetWrapMesh):
+            tgt = DagNode(targetWrapMesh)
+            tgt.dspType = 1 - tgt.dspType
 
     def loadWrapTargetMesh(self):
         sel = mc.ls(sl=1)

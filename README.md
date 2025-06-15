@@ -2,16 +2,16 @@
 # nl-rigging-tools
 
 ## Background
-For years, I have been rigging characters with my own autorigger . Once in a project I was using Ziva and find it interesting rigging the actual "skeleton". Meanwhile I would like to apply python and learn more about anatomy through the project.
+Ages ago I used Ziva intensively in a project. It involves a process of rigging the actual skeletonal meshes. It's a good opportunity to learn anatomy and to make a tool to automate it for more that one species effectively. Meanwhile I hope it's not too late to go for python instead of the limiting Mel/Maxscipt.
 
 ## Overview
 
 nl-rigging-tools is designed with the following key features in mind :
-- <b>Modular : </b>Support character with any number of parts
-- <b>Auto Connect : </b> Each part has it's own in / out plug. Connections made according to distance in each build.
-- <b>Serialization : </b> Templates / proxies / control shapes can be saved and restored.
-- <b>Custom Framework : </b> I was about to use PyMel at the beginning. Thanks to Nick Hughes' Udemy course, "Python for Maya: Beginner to Advanced Rigging Automation" I learn a better way of development and building concise code.
-- <b>Auto binding for skeleton meshes : </b> The number of bones
+- <b>Modular : </b>Character can have any number of parts/
+- <b>Auto Connect : </b> Parts are connected automatically according to distance between anchors.
+- <b>Data Reuse : </b> Guide templates, proxies, and control shapes can be saved and restored.
+- <b>Custom Framework : </b> Thanks to Nick Hughes' Udemy course, "Python for Maya: Beginner to Advanced Rigging Automation" I learn a better way of development and building concise code.
+- <b>Auto Bind : </b> Speed up binding for skeletal meshes using ref / ribbon joints
 
 
 ## Framework Python Classes
