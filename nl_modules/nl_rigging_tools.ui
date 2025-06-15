@@ -48,7 +48,7 @@
      <x>0</x>
      <y>20</y>
      <width>230</width>
-     <height>761</height>
+     <height>661</height>
     </rect>
    </property>
    <property name="font">
@@ -722,54 +722,20 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>480</y>
+       <y>470</y>
        <width>221</width>
-       <height>181</height>
+       <height>161</height>
       </rect>
      </property>
      <property name="title">
       <string/>
      </property>
-     <widget class="QProgressBar" name="progress_PB">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>140</y>
-        <width>200</width>
-        <height>8</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>20</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>999</width>
-        <height>8</height>
-       </size>
-      </property>
-      <property name="value">
-       <number>0</number>
-      </property>
-      <property name="textVisible">
-       <bool>false</bool>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="invertedAppearance">
-       <bool>false</bool>
-      </property>
-     </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_4">
       <property name="geometry">
        <rect>
         <x>110</x>
         <y>10</y>
-        <width>103</width>
+        <width>101</width>
         <height>30</height>
        </rect>
       </property>
@@ -865,7 +831,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>100</y>
+        <y>80</y>
         <width>201</width>
         <height>30</height>
        </rect>
@@ -1000,42 +966,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="wrapProxy_BN">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>25</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>25</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Wrap proxy to target mesh</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="mirrorProxy_BN">
          <property name="enabled">
           <bool>true</bool>
@@ -1062,6 +992,42 @@
          </property>
          <property name="toolTip">
           <string>Mirror proxies from left to right</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="wrapProxy_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Wrap proxy to target mesh</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1279,7 +1245,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>70</y>
+        <y>110</y>
         <width>201</width>
         <height>31</height>
        </rect>
@@ -1292,7 +1258,7 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>170</width>
+           <width>130</width>
            <height>0</height>
           </size>
          </property>
@@ -1328,14 +1294,14 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>0</width>
-           <height>0</height>
+           <width>25</width>
+           <height>25</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>18</width>
-           <height>18</height>
+           <width>25</width>
+           <height>25</height>
           </size>
          </property>
          <property name="font">
@@ -1347,17 +1313,51 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Make target template</string>
+          <string>Make wrap target templated</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>T</string>
+          <string/>
          </property>
         </widget>
        </item>
       </layout>
+     </widget>
+     <widget class="QProgressBar" name="progress_PB">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>50</y>
+        <width>100</width>
+        <height>8</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>10</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>100</width>
+        <height>99999</height>
+       </size>
+      </property>
+      <property name="value">
+       <number>0</number>
+      </property>
+      <property name="textVisible">
+       <bool>false</bool>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="invertedAppearance">
+       <bool>false</bool>
+      </property>
      </widget>
     </widget>
    </widget>

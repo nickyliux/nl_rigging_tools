@@ -74,7 +74,8 @@ def mirrorProxy():
             #
             opp.delete()
             g = GrpNode("temp#")
-            dup = curr.duplicate(name=opp.name)
+            dup = curr.duplicate()
+            dup.rename(opp.name)
             dup | g
             g.a.sx.set(-1)
             dup | oppParent

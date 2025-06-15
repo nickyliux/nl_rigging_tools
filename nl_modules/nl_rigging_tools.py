@@ -63,11 +63,6 @@ MODEL_GRP = "mdl_grp"
 
 from contextlib import ContextDecorator
 
-#
-# var to store wrap target mesh assigned
-#
-targetWrapMesh
-
 
 class Undo(ContextDecorator):
     def __init__(self, name=None):
@@ -195,6 +190,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         #
         self.UI.loadWrapTargetMesh_BN.clicked.connect(self.loadWrapTargetMesh)
         self.UI.templateTarget_BN.clicked.connect(self.templateTarget)
+        self.UI.templateTarget_BN.setIcon(QtGui.QIcon(":templated.png"))
         self.UI.genProxy_BN.clicked.connect(self.genProxy)
         self.UI.genProxy_BN.setIcon(QtGui.QIcon(":play_S.png"))
         self.UI.delProxy_BN.clicked.connect(self.delProxy)
@@ -245,7 +241,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.updateLoadWrapTargetMesh()
 
     def updateLoadWrapTargetMesh(self):
-        global targetWrapMesh
+        targetWrapMesh = mc.optionVar(q="targetWrapMesh")
         if targetWrapMesh:
             tgt = DagNode(targetWrapMesh)
             if tgt.exists() and tgt.type == "mesh":
@@ -591,16 +587,15 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         logging.info(f"{num} skinClusters deleted.")
 
     def templateTarget(self):
-        global targetWrapMesh
-        if mc.objExists(targetWrapMesh):
-            tgt = DagNode(targetWrapMesh)
+        targetWrapMesh = mc.optionVar(q="targetWrapMesh")
+        tgt = DagNode(targetWrapMesh)
+        if tgt.exists():
             tgt.dspType = 1 - tgt.dspType
 
     def loadWrapTargetMesh(self):
         sel = mc.ls(sl=1)
         if sel:
-            global targetWrapMesh
-            targetWrapMesh = sel[0]
+            mc.optionVar(sv=("targetWrapMesh", sel[0]))
             self.updateLoadWrapTargetMesh()
 
     def genProxy(self):
@@ -616,9 +611,10 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def wrapProxy(self):
         sel = mc.ls(sl=1, type="transform")
         if sel:
-            global targetWrapMesh
-            if mc.objExists(targetWrapMesh):
-                proxy.nlShrinkWrap(targetWrapMesh, sel)
+            targetWrapMesh = mc.optionVar(q="targetWrapMesh")
+            tgt = DagNode(targetWrapMesh)
+            if tgt.exists():
+                proxy.nlShrinkWrap(tgt, sel)
             else:
                 logging.error("No target wrap mesh loaded !")
 
