@@ -75,6 +75,9 @@ class Undo(ContextDecorator):
         mc.undoInfo(closeChunk=True)
 
 
+global targetWrapMesh
+
+
 class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def __init__(self, parent=None):
@@ -185,10 +188,17 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         #
         #   proxy
         #
+        self.UI.loadWrapTargetMesh_BN.clicked.connect(self.loadWrapTargetMesh)
         self.UI.genProxy_BN.clicked.connect(self.genProxy)
-        self.UI.genProxy_BN.setIcon(QtGui.QIcon(":addClip.png"))
+        self.UI.genProxy_BN.setIcon(QtGui.QIcon(":play_S.png"))
         self.UI.delProxy_BN.clicked.connect(self.delProxy)
         self.UI.delProxy_BN.setIcon(QtGui.QIcon(":smallTrash.png"))
+        self.UI.selAllProxy_BN.clicked.connect(self.selAllProxy)
+        self.UI.selAllProxy_BN.setIcon(QtGui.QIcon(":aselect.png"))
+        self.UI.wrapProxy_BN.clicked.connect(self.wrapProxy)
+        self.UI.wrapProxy_BN.setIcon(QtGui.QIcon(":shrinkwrap.png"))
+        self.UI.mirrorProxy_BN.clicked.connect(self.mirrorProxy)
+        self.UI.mirrorProxy_BN.setIcon(QtGui.QIcon(":polyMirrorGeometry.png"))
 
         self.UI.misc_retopo20_BN.clicked.connect(partial(modeling.retopo, faceNum=20))
         self.UI.misc_retopo50_BN.clicked.connect(partial(modeling.retopo, faceNum=50))
@@ -225,6 +235,15 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.rigNode_refresh_BN_clicked()
         self.preset_refresh_BN_clicked()
         self.crvShape_refresh_BN_clicked()
+
+        self.updateLoadWrapTargetMesh()
+
+    def updateLoadWrapTargetMesh(self):
+        global targetWrapMesh
+        if targetWrapMesh and mc.objExists(targetWrapMesh):
+            tgt = DagNode(targetWrapMesh)
+            if tgt.type == "mesh":
+                self.UI.loadWrapTargetMesh_BN.setText(f"[ {tgt.name} ]")
 
     def clickDrag_CB_stateChanged(self, state):
         mc.selectPref(clickDrag=state)
@@ -502,9 +521,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                             ignored += 1
                     else:
                         ignored += 1
-            self.UI.oneClick_PB.setValue(i)
+            self.UI.progress_PB.setValue(i)
 
-        self.UI.oneClick_PB.setValue(0)
+        self.UI.progress_PB.setValue(0)
         logging.info(f"{weighted} weighted. {ignored} ignored.")
 
     def bindRbnJnts(self, meshSel):
@@ -524,9 +543,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                     weighted += 1
             else:
                 notFound += 1
-            self.UI.oneClick_PB.setValue(i)
+            self.UI.progress_PB.setValue(i)
 
-        self.UI.oneClick_PB.setValue(0)
+        self.UI.progress_PB.setValue(0)
         logging.info(f"{weighted} weighted. {ignored} ignored. {notFound} not found.")
 
     @Undo("autoSkin")
@@ -565,10 +584,35 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         logging.info(f"{num} skinClusters deleted.")
 
+    def loadWrapTargetMesh(self):
+        sel = mc.ls(sl=1)
+        if sel:
+            global targetWrapMesh
+            targetWrapMesh = sel[0]
+            self.updateLoadWrapTargetMesh()
+
     def genProxy(self):
         build.genProxyMesh()
 
     def delProxy(self):
+        build.delProxyMesh()
+
+    def selAllProxy(self):
+        mc.select("*_pxGeo")
+
+    @Undo("wrapProxy")
+    def wrapProxy(self):
+        from nl_modules.utils import proxy
+
+        sel = mc.ls(sl=1, type="transform")
+        if sel:
+            global targetWrapMesh
+            if mc.objExists(targetWrapMesh):
+                proxy.nlShrinkWrap(targetWrapMesh, sel)
+            else:
+                logging.error("No target wrap mesh loaded !")
+
+    def mirrorProxy(self):
         build.delProxyMesh()
 
     def misc_importEnvAndShd_BN_clicked(self):
@@ -642,11 +686,11 @@ layout.addWidget(button)
 window = QtWidgets.QWidget()
 window.setLayout(layout)
 window.show()
-#
+"""
+"""
 import maya.cmds as cmds
 for item in cmds.resourceManager(nf='*png'):
     cmds.resourceManager(s=(item, "C:/temp/mayaicons/{0}".format(item)))
 #
 getenv "XBMLANGPATH" ;
-
 """

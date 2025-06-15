@@ -730,7 +730,7 @@
      <property name="title">
       <string/>
      </property>
-     <widget class="QProgressBar" name="oneClick_PB">
+     <widget class="QProgressBar" name="progress_PB">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -813,7 +813,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Auto skin meshes under mdl_grp</string>
+          <string>Load ctl shape from file</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -849,7 +849,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Auto skin meshes under mdl_grp</string>
+          <string>Save ctl shape to file</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -917,7 +917,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Auto skin meshes under mdl_grp</string>
+          <string>Add proxies</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -953,7 +953,43 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Auto skin meshes under mdl_grp</string>
+          <string>Delete proxies</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="selAllProxy_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Select all proxy meshes</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -989,7 +1025,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Auto skin meshes under mdl_grp</string>
+          <string>Wrap proxy to target mesh</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1025,7 +1061,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Auto skin meshes under mdl_grp</string>
+          <string>Mirror proxies from left to right</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1124,7 +1160,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Unbuild component(s)</string>
+          <string>Unbuild components</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -1191,7 +1227,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Auto skin meshes under mdl_grp</string>
+          <string>Auto bind skeleton</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1239,7 +1275,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QPushButton" name="genProxy_BN_2">
+     <widget class="QPushButton" name="loadWrapTargetMesh_BN">
       <property name="enabled">
        <bool>true</bool>
       </property>
@@ -1272,7 +1308,7 @@
        </font>
       </property>
       <property name="toolTip">
-       <string>Auto skin meshes under mdl_grp</string>
+       <string/>
       </property>
       <property name="styleSheet">
        <string notr="true"/>

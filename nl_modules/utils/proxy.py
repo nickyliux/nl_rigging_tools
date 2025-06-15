@@ -2,14 +2,19 @@ import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
 
 
-def nlShrinkWrap(target=None, meshes=None, **kwargs):
+def nlShrinkWrap(target=None, meshes=None, keep=0, **kwargs):
     """
     Example
         from nl_modules.utils import proxy
         proxy.create_shrink_wrap('tgtMesh', ['obj1'])
     """
     settings = [
-        ("projection", 4),  #    4: closest
+        ("projection", 4),
+        #   0: To inner
+        #   1: To center
+        #   2: // to axis
+        #   3:  vtx normal
+        #   4: closest
         ("closestIfNoIntersection", 1),
         ("reverse", 0),
         ("bidirectional", 1),
@@ -48,4 +53,7 @@ def nlShrinkWrap(target=None, meshes=None, **kwargs):
     for outPlug, inPlug in connections:
         tgtShape.a[outPlug] >> shWrap.a[inPlug]
 
-    return shWrap
+    if keep:
+        return shWrap
+    else:
+        [DagNode(m).deleteHistory() for m in meshes]
