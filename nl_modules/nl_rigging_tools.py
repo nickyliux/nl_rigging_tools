@@ -29,7 +29,7 @@ from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.msh_node import MshNode
-from nl_modules.utils import common, file, guide, log, modeling, build
+from nl_modules.utils import common, file, guide, log, modeling, build, proxy
 from nl_modules.utils.color import Color
 
 #
@@ -169,8 +169,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # self.UI.leadColor_1_BN.clicked.connect(partial(self.setLeadColor, 1))
         # self.UI.refColor_0_BN.clicked.connect(partial(self.setRefColor, 0))
         # self.UI.refColor_1_BN.clicked.connect(partial(self.setRefColor, 1))
-        # ------------------------------
-
         #
         #   build
         #
@@ -616,8 +614,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     @Undo("wrapProxy")
     def wrapProxy(self):
-        from nl_modules.utils import proxy
-
         sel = mc.ls(sl=1, type="transform")
         if sel:
             global targetWrapMesh
@@ -627,7 +623,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 logging.error("No target wrap mesh loaded !")
 
     def mirrorProxy(self):
-        build.delProxyMesh()
+        proxy.mirrorProxy()
 
     def misc_importEnvAndShd_BN_clicked(self):
         """Import lighting & shader scenes for better look"""

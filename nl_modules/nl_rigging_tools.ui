@@ -1126,7 +1126,7 @@
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="styleSheet">
-          <string notr="true"/>
+          <string notr="true">background-color: rgb(131,103,45);</string>
          </property>
          <property name="text">
           <string/>
