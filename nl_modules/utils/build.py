@@ -25,7 +25,8 @@ from contextlib import ContextDecorator
 import nl_modules
 
 MOD_DIR = os.path.dirname(nl_modules.__file__)
-CTL_PRESET = MOD_DIR + "/build/control_presets"
+CTL_PRESET = MOD_DIR + "/data/control"
+PROXY_PRESET = MOD_DIR + "/data/proxy"
 
 
 class Undo(ContextDecorator):
@@ -490,35 +491,42 @@ def saveCtl():
     allCtls.extend(["master_ctl", "master1_ctl", "master2_ctl"])
     if allCtls:
         mc.select(allCtls)
-        crvFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, dir=CTL_PRESET)
-        if crvFile:
-            mc.file(
-                crvFile,
-                type="mayaAscii",
-                f=1,
-                exportSelected=1,
-                constructionHistory=0,
-                channels=0,
-                expressions=0,
-                constraints=0,
-            )
+        tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, dir=CTL_PRESET)
+        if tgtFile:
+            mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
             logging.info("Curve shape exported OK.")
             mc.select(cl=1)
+
+
+def saveProxy():
+    """
+    Save all the proxies, without connection or any unwanted
+    """
+    mc.select("PRX")
+    tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, dir=PROXY_PRESET)
+    if tgtFile:
+        mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
+        logging.info("Proxies exported OK.")
+        mc.select(cl=1)
+
+
+def loadProxy():
+    pass
 
 
 def loadCtl():
     """
     Replace all the control curve shapes by those found in the file
     """
-    ctlFile = mc.fileDialog2(
+    tgtFile = mc.fileDialog2(
         fileFilter="*.ma", dialogStyle=2, fileMode=1, dir=CTL_PRESET
     )
-    if ctlFile:
+    if tgtFile:
         #
         #    import ctl file
         #
         ns = "ctl"
-        imported = mc.file(ctlFile, i=1, ns=ns, returnNewNodes=1)
+        imported = mc.file(tgtFile, i=1, ns=ns, returnNewNodes=1)
         ns = ""
         if imported:
             ns = imported[0].split(":")[0]
@@ -538,7 +546,6 @@ def loadCtl():
                 mc.parent(importCtl.shapes, ctl, s=1, r=1)
                 for s in ctl.shapes:
                     s.rename(ctl + "Shape#")
-
         if imported:
             rootGrp = DagNode(ns + ":CHR")
             # if rootGrp.exists():

@@ -7,7 +7,7 @@ from nl_modules.utils.color import Color
 import logging
 
 MOD_DIR = os.path.dirname(nl_modules.__file__)
-SHAPE_PRESET = MOD_DIR + "/build/shape_presets"
+SHAPE_PRESET = MOD_DIR + "/build/shape_lib"
 
 
 class GrpNode(DagNode):

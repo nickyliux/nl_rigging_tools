@@ -51,9 +51,9 @@ log.updateRootLogger()
 
 MOD_DIR = os.path.dirname(nl_modules.__file__)
 IMAGES_PATH = MOD_DIR + "/images"
-PATH_PRESET = MOD_DIR + "/build/guide_presets"
-CTL_PRESET = MOD_DIR + "/build/control_presets"
-SHAPE_PRESET = MOD_DIR + "/build/shape_presets"
+PATH_PRESET = MOD_DIR + "/data/guide"
+CTL_PRESET = MOD_DIR + "/data/control"
+SHAPE_PRESET = MOD_DIR + "/build/shape_lib"
 PATH_LIGHT = MOD_DIR + "/build/others"
 PATH_SKEL = "D:/_PROJECT/GIT/nl_rigging_tools_skeletons/"
 MAYA_TPL_DIR = MOD_DIR + "/build/components"
@@ -202,6 +202,10 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.loadWrapTargetMesh_BN.clicked.connect(self.loadWrapTargetMesh)
         self.UI.templateTarget_BN.clicked.connect(self.templateTarget)
 
+        self.UI.loadProxy_BN.clicked.connect(build.loadProxy)
+        self.UI.loadProxy_BN.setIcon(QtGui.QIcon(":openScript.png"))
+        self.UI.saveProxy_BN.clicked.connect(build.saveProxy)
+        self.UI.saveProxy_BN.setIcon(QtGui.QIcon(":fileSave.png"))
         #
         #   prepare
         #

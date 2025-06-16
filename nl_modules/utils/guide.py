@@ -24,7 +24,7 @@ COMPONENT_DICT = {
     "wing": [""],
 }
 MOD_DIR = os.path.dirname(nl_modules.__file__)
-PATH_PRESET = MOD_DIR + "/build/guide_presets"
+PATH_PRESET = MOD_DIR + "/data/guide"
 
 
 def loadGuide(names):
