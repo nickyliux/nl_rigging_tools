@@ -472,7 +472,9 @@ class DagNode(DepNode):
 
     def duplicate(self, name=None, **kwargs):
         """Duplicate itself"""
+        from nl_modules.nodel.base.dag_node import DagNode
         from nl_modules.nodel.jnt_node import JntNode
+        from nl_modules.nodel.grp_node import GrpNode
         from nl_modules.nodel.loc_node import LocNode
         from nl_modules.nodel.msh_node import MshNode
         from nl_modules.nodel.crv_node import CrvNode

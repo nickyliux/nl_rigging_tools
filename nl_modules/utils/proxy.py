@@ -1,6 +1,7 @@
 import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.msh_node import MshNode
 
 
 def nlShrinkWrap(target=None, meshes=None, keep=0, **kwargs):
@@ -61,23 +62,26 @@ def nlShrinkWrap(target=None, meshes=None, keep=0, **kwargs):
 
 
 def mirrorProxy():
-    sel = mc.ls(sl=1)
-    proxies = mc.ls("lf*_*_pxGeo", sl=bool(sel))
-    for p in proxies:
-        curr = DagNode(p)
-        oppName = "rt" + DagNode(p).name[2:]
-        opp = DagNode(oppName)
-        if opp.exists():
-            oppParent = opp.parent
-            #
-            #   delete opposite and create mirrored
-            #
-            opp.delete()
-            g = GrpNode("temp#")
-            dup = curr.duplicate()
-            dup.rename(opp.name)
-            dup | g
-            g.a.sx.set(-1)
-            dup | oppParent
-            g.delete()
+    for p in mc.ls(sl=1):
+
+        curr = MshNode(p)
+        isLf = curr.name.startswith("lf")
+        isRt = curr.name.startswith("rt")
+        if isLf or isRt:
+            oppPf = "rt" if isLf else "lf"
+            oppName = oppPf + DagNode(p).name[2:]
+            opp = DagNode(oppName)
+            if opp.exists():
+                oppParent = opp.parent
+                #
+                #   delete opposite and create mirrored
+                #
+                opp.delete()
+                dup = curr.duplicate()
+                dup.rename(oppName)
+                g = GrpNode("temp#")
+                dup.parentTo(g)
+                g.a.sx.set(-1)
+                dup | oppParent
+                g.delete()
     mc.select(cl=1)

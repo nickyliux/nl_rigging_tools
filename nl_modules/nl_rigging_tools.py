@@ -622,6 +622,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             else:
                 logging.error("No target wrap mesh loaded !")
 
+    @Undo("mirrorProxy")
     def mirrorProxy(self):
         proxy.mirrorProxy()
 
