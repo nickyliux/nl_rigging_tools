@@ -85,3 +85,46 @@ def mirrorProxy():
                 dup | oppParent
                 g.delete()
     mc.select(cl=1)
+
+
+def combineProxy():
+    """
+    Create ptSet for combined proxy using closestPointOnMesh
+    Return combined mesh
+    """
+    proxies = mc.ls("*_pxGeo")
+    dup = mc.duplicate(proxies)
+    combined = DagNode(mc.polyUnite(dup, n="combinedProxy#", ch=0)[0])
+
+    cpom = DagNode("cpom", nodeType="closestPointOnMesh")
+    combined.shape.a.outMesh >> cpom.a.inMesh
+
+    ptSet = []
+    for p in proxies:
+        count = mc.polyEvaluate(p, v=1)
+        for i in range(count):
+            xf = mc.xform(f"{p}.vtx[{i}]", q=1, ws=1, t=1)
+            cpom.a.inPosition.set(*xf)
+            id = cpom.a.closestVertexIndex.get()
+            ptSet.append(f"{p}.vtx[{id}]")
+        mc.sets(ptSet, name=p + "_PS")
+
+    cpom.delete()
+    return combined
+
+
+def setProxyWeight(combined, proxies):
+    import maya.mel as mel
+
+    skinC = mel.eval("findRelatedSkinCluster " + combined)
+    bindJnts = mc.skinCluster(skinC, q=1, inf=1)
+
+    for p in proxies:
+        ptSet = DagNode(p + "_PS")
+        if ptSet.exists():
+            proxyJ = DagNode(mc.substitute("_pxGeo", p, ""))
+            if proxyJ.exists() and proxyJ.type == "joint":
+                pass
+
+
+# 			# mc.skinPercent(proxyJ, tv=1, skinC, ptSet)
