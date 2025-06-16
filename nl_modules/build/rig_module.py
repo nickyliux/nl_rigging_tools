@@ -902,7 +902,10 @@ class RigModule(RigBase):
         crv.shape.a.worldSpace >> crvInfo.a.inputCurve
 
         crvLenRatio = (
-            crvInfo.a.arcLength / self.masterC.a.globalScale / scaleAttr / crv.length
+            # crvInfo.a.arcLength / self.masterC.a.globalScale / scaleAttr / crv.length
+            crvInfo.a.arcLength
+            / scaleAttr
+            / crv.length
         )
         #
         #   add joints onto surf which can stretch and slider
@@ -951,7 +954,8 @@ class RigModule(RigBase):
             )
             rbJnts.append(jnt)
 
-            self.masterC.a.globalScale >> loc.a.s
+            # self.masterC.a.globalScale >> loc.a.s
+            scaleAttr >> loc.a.s
 
         return crvLenRatio, rbJnts
 

@@ -116,7 +116,7 @@ class SpineQd(RigModule):
         crvLenRatio, self.rbJnts = self.build_motionPath_ribbon(
             rbSrf=self.rbSrf,
             jntNum=self.RBN_JNT_NUM,
-            scaleAttr=self.setting.a.spineScale,
+            scaleAttr=self.setting.a.spineScale * self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
         )
         self.bindJnts = self.rbJnts

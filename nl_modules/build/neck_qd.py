@@ -30,7 +30,7 @@ class NeckQd(SpineQd):
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_ratio(self.bindJnts, 2.5)
+        self.add_proxy_ratio(self.bindJnts, 2)
 
         ctls = self.ikCtls + [self.cog_ctl, self.setting]
         ctls.remove(self.base_ctl)

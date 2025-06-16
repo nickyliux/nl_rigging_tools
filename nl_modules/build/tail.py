@@ -47,7 +47,7 @@ class Tail(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting = CrvNode(
-            "setting", pf=rID, shape="bagua", scale=rSz * 2, top=1, moveY=rSz * 5
+            "setting", pf=rID, shape="bagua", scale=rSz * 2, top=1, moveY=rSz * 10
         )
         self.setting.a.add("stretchy", min=0, max=1)
         localScale = self.setting.a.add("localScale", min=0.01, dv=1)
@@ -81,7 +81,7 @@ class Tail(RigModule):
         crvLenRatio, self.rbJnts = self.build_motionPath_ribbon(
             rbSrf=self.rbSrf2,
             jntNum=self.RBN_JNT_NUM,
-            scaleAttr=self.setting.a.localScale,
+            scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
         )
         self.bindJnts = self.rbJnts
@@ -110,6 +110,7 @@ class Tail(RigModule):
                 scale=rSz * 3,
                 align=self.ikJnt[i],
                 addOfs=1,
+                top=1,
                 p=self.IK_GRP,
             )
             self.ikJnt[i] | ctl
