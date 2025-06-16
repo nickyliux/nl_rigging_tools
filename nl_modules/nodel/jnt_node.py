@@ -107,7 +107,7 @@ class JntNode(GrpNode):
         proxyRatio = self.a.proxyRatio
         proxyRatio = proxyRatio.get() if proxyRatio.exists() else 1
         proxyDiv = self.a.proxyDiv
-        proxyDiv = proxyDiv.get() if proxyDiv.exists() else 3
+        proxyDiv = proxyDiv.get() if proxyDiv.exists() else 2
 
         name = self.name + "_pxGeo"
         if mc.objExists(name):
@@ -156,8 +156,13 @@ class JntNode(GrpNode):
             COLOR = (0.7, 0.3, 0.3)
             common.assignShd("proxy_grey_shd", geo=proxy, color=GREY)
             # common.assignShd("proxy_color_shd", geo=proxy, color=COLOR, faceID=[0, 2])
-            faceID = [0, 1, 4, 5]
-            if mc.polyEvaluate(proxy, f=1) > 24:
+            faceCount = mc.polyEvaluate(proxy, f=1)
+            faceID = []
+            if faceCount == 10:
+                faceID = [0, 1, 4, 5]
+            elif faceCount == 18:
+                faceID = [0, 1, 4, 5, 8, 9, 12, 13]
+            elif faceCount == 26:
                 faceID = [0, 1, 4, 5, 8, 9, 12, 13, 16, 17, 20, 21]
 
             common.assignShd("proxy_color_shd", geo=proxy, color=COLOR, faceID=faceID)

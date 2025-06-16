@@ -76,9 +76,7 @@ class ArmBp(RigModule):
 
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
-        self.setting = CrvNode(
-            "setting", pf=rID, shape="bagua", scale=rSz, top=1, moveY=rSz * 5
-        )
+        self.setting = CrvNode("setting", pf=rID, shape="bagua", scale=rSz, top=1)
         self.clavicle_fkc = CrvNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
         )
@@ -524,7 +522,7 @@ class ArmBp(RigModule):
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_info(self.bindJnts, ratio=2)
+        self.add_proxy_ratio(self.bindJnts, 2)
 
         ctlSet = []
         ctlSet.extend(self.fkCtl + self.ikCtl + [self.setting, self.pin_fkc])

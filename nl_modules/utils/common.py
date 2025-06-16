@@ -492,7 +492,7 @@ def getMeshBelow(grp):
     return [MshNode(mesh) for mesh in meshes] or []
 
 
-def setViewport(jx=0, xray=0, wos=0):
+def setViewport(jx=1, xray=0, wos=0):
     mc.viewFit(all=1)
     mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
     # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
@@ -501,11 +501,14 @@ def setViewport(jx=0, xray=0, wos=0):
     mc.refresh(f=1)
 
 
-def setOnTopForSel(state):
+def setOnTopForSel():
     from nl_modules.nodel.base.dag_node import DagNode
 
-    for sel in mc.ls(sl=1):
-        DagNode(sel).shape.a.alwaysDrawOnTop.set(state)
+    sel = mc.ls(sl=1)
+    if sel:
+        state = DagNode(sel[0]).shape.a.alwaysDrawOnTop.get()
+        for s in sel:
+            DagNode(s).shape.a.alwaysDrawOnTop.set(1 - state)
 
 
 def rotaCVForSel(*args):

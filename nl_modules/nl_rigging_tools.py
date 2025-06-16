@@ -188,8 +188,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         #
         #   proxy
         #
-        self.UI.loadWrapTargetMesh_BN.clicked.connect(self.loadWrapTargetMesh)
-        self.UI.templateTarget_BN.clicked.connect(self.templateTarget)
         self.UI.templateTarget_BN.setIcon(QtGui.QIcon(":templated.png"))
         self.UI.genProxy_BN.clicked.connect(self.genProxy)
         self.UI.genProxy_BN.setIcon(QtGui.QIcon(":play_S.png"))
@@ -201,6 +199,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.wrapProxy_BN.setIcon(QtGui.QIcon(":shrinkwrap.png"))
         self.UI.mirrorProxy_BN.clicked.connect(self.mirrorProxy)
         self.UI.mirrorProxy_BN.setIcon(QtGui.QIcon(":polyMirrorGeometry.png"))
+        self.UI.loadWrapTargetMesh_BN.clicked.connect(self.loadWrapTargetMesh)
+        self.UI.templateTarget_BN.clicked.connect(self.templateTarget)
+
         #
         #   prepare
         #
@@ -231,8 +232,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.shapeRotaX_BN.clicked.connect(partial(common.rotaCVForSel, 90, 0, 0))
         self.UI.shapeRotaY_BN.clicked.connect(partial(common.rotaCVForSel, 0, 90, 0))
         self.UI.shapeRotaZ_BN.clicked.connect(partial(common.rotaCVForSel, 0, 0, 90))
-        self.UI.onTop_BN.clicked.connect(partial(common.setOnTopForSel, 1))
-        self.UI.onTopOff_BN.clicked.connect(partial(common.setOnTopForSel, 0))
+        self.UI.onTop_BN.clicked.connect(common.setOnTopForSel)
 
         self.rigNode_refresh_BN_clicked()
         self.preset_refresh_BN_clicked()
@@ -595,6 +595,10 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def loadWrapTargetMesh(self):
         sel = mc.ls(sl=1)
         if sel:
+            targetWrapMesh = mc.optionVar(q="targetWrapMesh")
+            tgt = DagNode(targetWrapMesh)
+            if tgt.exists():
+                tgt.dspType = 0
             mc.optionVar(sv=("targetWrapMesh", sel[0]))
             self.updateLoadWrapTargetMesh()
 

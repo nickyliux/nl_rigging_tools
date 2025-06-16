@@ -239,7 +239,7 @@ class SpineBp(RigModule):
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_info(self.bindJnts, ratio=6, div=1)
+        self.add_proxy_ratio(self.bindJnts, 6)
 
         self.add_ctl_set(
             self.fkCtls + self.ikCtls + [self.setting, self.cog_ctl, self.cog_gmb]

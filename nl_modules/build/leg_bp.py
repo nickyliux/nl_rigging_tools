@@ -113,9 +113,7 @@ class LegBp(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting = CrvNode(
-            "setting", pf=rID, shape="bagua", scale=-rSz * 2, top=1, moveY=rSz * 5
-        )
+        self.setting = CrvNode("setting", pf=rID, shape="bagua", scale=-rSz * 2, top=1)
         self.hip_fkc = CrvNode(
             "hip_fkc",
             pf=rID,
@@ -621,9 +619,7 @@ class LegBp(RigModule):
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_info(self.bindJnts, ratio=2.5)
-
-        self.add_proxy_info(self.bindJnts, ratio=3)
+        self.add_proxy_ratio(self.bindJnts, 3)
 
         self.add_mirror_attr([self.ikc, self.ikc_gimbal, self.smart_ctl])
         ctlSet = []

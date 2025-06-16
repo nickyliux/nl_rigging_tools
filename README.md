@@ -2,17 +2,16 @@
 # nl-rigging-tools
 
 ## Background
-Ages ago I used Ziva intensively in a project. It involves a process of rigging the actual skeletonal meshes. It's a good opportunity to learn anatomy and to make a tool to automate it for more that one species effectively. Meanwhile I hope it's not too late to go for python instead of the limiting Mel/Maxscipt.
+Ages ago I used Ziva intensively in a project. It involves a process of rigging the actual skeletonal meshes. It's a good opportunity to learn anatomy by making automation tool for any kind of creatures.
 
 ## Overview
-
-nl-rigging-tools is designed with the following key features in mind :
-- <b>Modular : </b>Character can have any number of parts/
+nl-rigging-tools is designed with the key features below :
+- <b>Support Both Cartoony & Realistic Setup : </b>
+- <b>Modular : </b>Character can have any number of parts
+- <b>Data Reuse : </b> Templates, proxies, and control shapes can be saved and restored.
 - <b>Auto Connect : </b> Parts are connected automatically according to distance between anchors.
-- <b>Data Reuse : </b> Guide templates, proxies, and control shapes can be saved and restored.
-- <b>Custom Framework : </b> Thanks to Nick Hughes' Udemy course, "Python for Maya: Beginner to Advanced Rigging Automation" I learn a better way of development and building concise code.
-- <b>Auto Bind : </b> Speed up binding for skeletal meshes using ref / ribbon joints
-
+- <b>Auto Bind : </b> Skeletal meshes are auto bound with ref / ribbon joints added.
+- <b>Custom Framework : </b> Thanks to Nick Hughes' Udemy course, "Python for Maya: Beginner to Advanced Rigging Automation", custom modules are built to mimic PyMel but not limited to that.
 
 ## Framework Python Classes
 ```mermaid

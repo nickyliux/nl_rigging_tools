@@ -656,7 +656,7 @@ class LegQd(RigModule):
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_info(self.bindJnts, ratio=2.5)
+        self.add_proxy_ratio(self.bindJnts, 2.5)
 
         self.add_mirror_attr([self.ikc, self.ikc_gimbal, self.pvc, self.smart_ctl])
         ctlSet = (

@@ -459,7 +459,9 @@ def getRigNode(obj):
 
 
 def delProxyMesh():
-    pass
+    proxy = mc.ls("*_pxGeo", type="transform")
+    if proxy:
+        mc.delete(proxy)
 
 
 def genProxyMesh():

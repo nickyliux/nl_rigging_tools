@@ -955,7 +955,10 @@ class RigModule(RigBase):
 
         return crvLenRatio, rbJnts
 
-    def add_proxy_info(self, tgtJnts, ratio=1, div=3):
+    def add_proxy_ratio(self, tgtJnts, ratio):
         for jnt in tgtJnts:
             jnt.a.add("proxyRatio", k=0, dv=ratio)
+
+    def add_proxy_div(self, tgtJnts, div=2):
+        for jnt in tgtJnts:
             jnt.a.add("proxyDiv", k=0, dv=div)

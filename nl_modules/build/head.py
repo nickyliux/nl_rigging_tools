@@ -104,7 +104,8 @@ class Head(RigModule):
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_info([self.lf_eye, self.rt_eye], div=1)
+        self.add_proxy_div(self.bindJnts, 3)
+
         self.add_ctl_set(self.fkCtl)
         self.setup_space()
         self.setup_anchor_module({"anchorF1": self.head_fkc.offset})

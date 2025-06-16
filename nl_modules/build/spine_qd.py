@@ -435,7 +435,7 @@ class SpineQd(RigModule):
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_info(self.bindJnts, ratio=5, div=1)
+        self.add_proxy_ratio(self.bindJnts, 5)
 
         ctls = self.ikCtls + [self.cog_ctl, self.setting]
         if self.END_CTL:
