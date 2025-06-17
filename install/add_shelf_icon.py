@@ -11,7 +11,7 @@ def onMayaDroppedPythonFile(*args):
         raise ImportError("nl_rigging_tools does not support Python 2.")
 
     currDir = os.path.dirname(__file__)
-    iconPath = os.path.join(currDir, "nl_rigging_tools.png")
+    iconPath = os.path.join(currDir, "nl_rigging_tools.bmp")
 
     print("_" * 78)
     print("Drag & drop setup...\n")

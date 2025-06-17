@@ -20,9 +20,11 @@ import subprocess
 reload(reload_all)
 
 from PySide2 import QtWidgets
+
+# from PySide2 import QtGui
+from PySide2.QtGui import QIcon
 from PySide2.QtUiTools import QUiLoader
 from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
-from PySide2 import QtGui
 
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
@@ -55,7 +57,8 @@ PATH_PRESET = MOD_DIR + "/data/guide"
 CTL_PRESET = MOD_DIR + "/data/control"
 SHAPE_PRESET = MOD_DIR + "/build/shape_lib"
 PATH_LIGHT = MOD_DIR + "/build/others"
-PATH_SKEL = "D:/_PROJECT/GIT/nl_rigging_tools_skeletons/"
+PATH_SKEL = "D:/_PROJECT/GIT/nl_rigging_tools_skeletons"
+PATH_INSTALL = "D:/_PROJECT/GIT/nl_rigging_tools/install"
 MAYA_TPL_DIR = MOD_DIR + "/build/components"
 PATH_UI = MOD_DIR + "/nl_rigging_tools.ui"
 BIND_JNT_SET = "bind_jnt_set"
@@ -90,6 +93,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 print(i)
         """
         self.setWindowTitle("nlRT 0.1.0")
+        self.setWindowIcon(QIcon(PATH_INSTALL + "/nl_rigging_tools.bmp"))
+        # self.setWindowIcon(QIcon("/nl_rigging_tools.bmp"))
         self.setCentralWidget(self.UI)
         self.setGeometry(0, 0, 233, 700)
         self.connect_UI()
@@ -99,9 +104,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         #   Top
         #
         self.UI.pickMaskCrv_BN.clicked.connect(self.pickMaskCrv_BN_clicked)
-        self.UI.pickMaskCrv_BN.setIcon(QtGui.QIcon(":pickCurveObj.png"))
+        self.UI.pickMaskCrv_BN.setIcon(QIcon(":pickCurveObj.png"))
         self.UI.pickMaskMsh_BN.clicked.connect(self.pickMaskMsh_BN_clicked)
-        self.UI.pickMaskMsh_BN.setIcon(QtGui.QIcon(":pickGeometryObj.png"))
+        self.UI.pickMaskMsh_BN.setIcon(QIcon(":pickGeometryObj.png"))
         self.UI.pickMaskAll_BN.clicked.connect(self.pickMaskAll_BN_clicked)
         self.UI.clickDrag_CB.stateChanged.connect(self.clickDrag_CB_stateChanged)
         if mc.selectPref(clickDrag=1, q=1):
@@ -111,36 +116,36 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         #
         self.UI.component_LW.itemDoubleClicked.connect(self.component_load_BN_clicked)
         self.UI.component_load_BN.clicked.connect(self.component_load_BN_clicked)
-        self.UI.component_load_BN.setIcon(QtGui.QIcon(":openScript.png"))
+        self.UI.component_load_BN.setIcon(QIcon(":openScript.png"))
         self.UI.component_explore_BN.clicked.connect(self.component_explore_BN_clicked)
-        self.UI.component_explore_BN.setIcon(QtGui.QIcon(":searchEngine.png"))
+        self.UI.component_explore_BN.setIcon(QIcon(":searchEngine.png"))
         self.UI.component_delete_BN.clicked.connect(build.deleteSelOrAll)
-        self.UI.component_delete_BN.setIcon(QtGui.QIcon(":smallTrash.png"))
+        self.UI.component_delete_BN.setIcon(QIcon(":smallTrash.png"))
         self.UI.component_copy_BN.clicked.connect(guide.copyGuideSel)
-        self.UI.component_copy_BN.setIcon(QtGui.QIcon(":copySkinWeight.png"))
+        self.UI.component_copy_BN.setIcon(QIcon(":copySkinWeight.png"))
         #
         #   Template
         #
         self.UI.preset_save_BN.clicked.connect(self.preset_save_BN_clicked)
-        self.UI.preset_save_BN.setIcon(QtGui.QIcon(":fileSave.png"))
+        self.UI.preset_save_BN.setIcon(QIcon(":fileSave.png"))
         self.UI.preset_new_BN.clicked.connect(self.preset_new_BN_clicked)
-        self.UI.preset_new_BN.setIcon(QtGui.QIcon(":fileNew.png"))
+        self.UI.preset_new_BN.setIcon(QIcon(":fileNew.png"))
         self.UI.preset_del_BN.clicked.connect(self.preset_del_BN_clicked)
-        self.UI.preset_del_BN.setIcon(QtGui.QIcon(":smallTrash.png"))
+        self.UI.preset_del_BN.setIcon(QIcon(":smallTrash.png"))
         self.UI.viewSkel_BN.clicked.connect(self.viewSkel_BN_clicked)
-        self.UI.viewSkel_BN.setIcon(QtGui.QIcon(":searchEngine.png"))
+        self.UI.viewSkel_BN.setIcon(QIcon(":searchEngine.png"))
         self.UI.importSkel_BN.clicked.connect(self.importSkel_BN_clicked)
-        self.UI.importSkel_BN.setIcon(QtGui.QIcon(":polySphere.png"))
+        self.UI.importSkel_BN.setIcon(QIcon(":polySphere.png"))
         # self.UI.preset_openSkel_BN.clicked.connect(self.preset_openSkel_BN_clicked)
         # self.UI.preset_refresh_BN.clicked.connect(self.preset_refresh_BN_clicked)
-        # self.UI.preset_refresh_BN.setIcon(QtGui.QIcon(":refresh.png"))
+        # self.UI.preset_refresh_BN.setIcon(QIcon(":refresh.png"))
         self.UI.preset_LW.itemDoubleClicked.connect(self.preset_load_BN_dbClicked)
         self.UI.preset_load_BN.clicked.connect(self.preset_load_BN_clicked)
-        self.UI.preset_load_BN.setIcon(QtGui.QIcon(":openScript.png"))
+        self.UI.preset_load_BN.setIcon(QIcon(":openScript.png"))
         # ------------------------------
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
         # self.UI.rigNode_refresh_BN.clicked.connect(self.rigNode_refresh_BN_clicked)
-        # self.UI.rigNode_refresh_BN.setIcon(QtGui.QIcon(":refresh.png"))
+        # self.UI.rigNode_refresh_BN.setIcon(QIcon(":refresh.png"))
         #
         #   ctl
         #
@@ -150,15 +155,15 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             self.crvShape_removeFrInst_BN_clicked
         )
         self.UI.crvShape_new_BN.clicked.connect(self.crvShape_new_BN_clicked)
-        self.UI.crvShape_new_BN.setIcon(QtGui.QIcon(":fileNew.png"))
+        self.UI.crvShape_new_BN.setIcon(QIcon(":fileNew.png"))
         self.UI.crvShape_apply_BN.clicked.connect(self.crvShape_apply_BN_clicked)
-        self.UI.crvShape_apply_BN.setIcon(QtGui.QIcon(":openScript.png"))
+        self.UI.crvShape_apply_BN.setIcon(QIcon(":openScript.png"))
         self.UI.crvShape_save_BN.clicked.connect(self.crvShape_save_BN_clicked)
-        self.UI.crvShape_save_BN.setIcon(QtGui.QIcon(":fileSave.png"))
+        self.UI.crvShape_save_BN.setIcon(QIcon(":fileSave.png"))
         self.UI.crvShape_del_BN.clicked.connect(self.crvShape_del_BN_clicked)
-        self.UI.crvShape_del_BN.setIcon(QtGui.QIcon(":smallTrash.png"))
+        self.UI.crvShape_del_BN.setIcon(QIcon(":smallTrash.png"))
         # self.UI.crvShape_refresh_BN.clicked.connect(self.crvShape_refresh_BN_clicked)
-        # self.UI.crvShape_refresh_BN.setIcon(QtGui.QIcon(":refresh.png"))
+        # self.UI.crvShape_refresh_BN.setIcon(QIcon(":refresh.png"))
         # self.UI.leadColor_0_BN.clicked.connect(partial(self.setLeadColor, 0))
         # self.UI.leadColor_1_BN.clicked.connect(partial(self.setLeadColor, 1))
         # self.UI.refColor_0_BN.clicked.connect(partial(self.setRefColor, 0))
@@ -167,44 +172,44 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         #   build
         #
         self.UI.component_buildAll_BN.clicked.connect(build.buildSelOrAll)
-        self.UI.component_buildAll_BN.setIcon(QtGui.QIcon(":play_S.png"))
+        self.UI.component_buildAll_BN.setIcon(QIcon(":play_S.png"))
         self.UI.component_unbuildAll_BN.clicked.connect(build.unbuildSelOrAll)
-        self.UI.component_unbuildAll_BN.setIcon(QtGui.QIcon(":smallTrash.png"))
+        self.UI.component_unbuildAll_BN.setIcon(QIcon(":smallTrash.png"))
         #
         #   control
         #
-        self.UI.saveCtl_BN.setIcon(QtGui.QIcon(":fileSave.png"))
+        self.UI.saveCtl_BN.setIcon(QIcon(":fileSave.png"))
         self.UI.saveCtl_BN.clicked.connect(build.saveCtl)
-        self.UI.loadCtl_BN.setIcon(QtGui.QIcon(":openScript.png"))
+        self.UI.loadCtl_BN.setIcon(QIcon(":openScript.png"))
         self.UI.loadCtl_BN.clicked.connect(build.loadCtl)
         #
         #   bind
         #
         self.UI.autoSkin_BN.clicked.connect(self.autoSkin)
-        self.UI.autoSkin_BN.setIcon(QtGui.QIcon(":play_S.png"))
+        self.UI.autoSkin_BN.setIcon(QIcon(":play_S.png"))
         self.UI.delSkinForAllMeshes_BN.clicked.connect(self.delSkinForAllMeshes)
-        self.UI.delSkinForAllMeshes_BN.setIcon(QtGui.QIcon(":smallTrash.png"))
+        self.UI.delSkinForAllMeshes_BN.setIcon(QIcon(":smallTrash.png"))
         #
         #   proxy
         #
-        self.UI.templateTarget_BN.setIcon(QtGui.QIcon(":templated.png"))
+        self.UI.templateTarget_BN.setIcon(QIcon(":templated.png"))
         self.UI.genProxy_BN.clicked.connect(self.genProxy)
-        self.UI.genProxy_BN.setIcon(QtGui.QIcon(":play_S.png"))
+        self.UI.genProxy_BN.setIcon(QIcon(":play_S.png"))
         self.UI.delProxy_BN.clicked.connect(self.delProxy)
-        self.UI.delProxy_BN.setIcon(QtGui.QIcon(":smallTrash.png"))
+        self.UI.delProxy_BN.setIcon(QIcon(":smallTrash.png"))
         self.UI.selAllProxy_BN.clicked.connect(self.selAllProxy)
-        self.UI.selAllProxy_BN.setIcon(QtGui.QIcon(":aselect.png"))
+        self.UI.selAllProxy_BN.setIcon(QIcon(":aselect.png"))
         self.UI.wrapProxy_BN.clicked.connect(self.wrapProxy)
-        self.UI.wrapProxy_BN.setIcon(QtGui.QIcon(":shrinkwrap.png"))
+        self.UI.wrapProxy_BN.setIcon(QIcon(":shrinkwrap.png"))
         self.UI.mirrorProxy_BN.clicked.connect(self.mirrorProxy)
-        self.UI.mirrorProxy_BN.setIcon(QtGui.QIcon(":polyMirrorGeometry.png"))
+        self.UI.mirrorProxy_BN.setIcon(QIcon(":polyMirrorGeometry.png"))
         self.UI.loadWrapTargetMesh_BN.clicked.connect(self.loadWrapTargetMesh)
         self.UI.templateTarget_BN.clicked.connect(self.templateTarget)
 
         self.UI.loadProxy_BN.clicked.connect(build.loadProxy)
-        self.UI.loadProxy_BN.setIcon(QtGui.QIcon(":openScript.png"))
+        self.UI.loadProxy_BN.setIcon(QIcon(":openScript.png"))
         self.UI.saveProxy_BN.clicked.connect(build.saveProxy)
-        self.UI.saveProxy_BN.setIcon(QtGui.QIcon(":fileSave.png"))
+        self.UI.saveProxy_BN.setIcon(QIcon(":fileSave.png"))
         #
         #   prepare
         #
@@ -228,9 +233,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         )
 
         self.UI.shapeScaleUp_BN.clicked.connect(partial(common.scaleCVForSel, 4 / 3))
-        self.UI.shapeScaleUp_BN.setIcon(QtGui.QIcon(":moveUVUp.png"))
+        self.UI.shapeScaleUp_BN.setIcon(QIcon(":moveUVUp.png"))
         self.UI.shapeScaleDn_BN.clicked.connect(partial(common.scaleCVForSel, 3 / 4))
-        self.UI.shapeScaleDn_BN.setIcon(QtGui.QIcon(":moveUVDown.png"))
+        self.UI.shapeScaleDn_BN.setIcon(QIcon(":moveUVDown.png"))
 
         self.UI.shapeRotaX_BN.clicked.connect(partial(common.rotaCVForSel, 90, 0, 0))
         self.UI.shapeRotaY_BN.clicked.connect(partial(common.rotaCVForSel, 0, 90, 0))
