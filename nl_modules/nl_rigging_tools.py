@@ -1,7 +1,7 @@
 """
 File: nl_rigging_tools.py
 Author: Nicky Liu
-Date: 2024-06-11
+Date: 2024-06-18
 Version: 0.1.0
 Contact: nickyliux@gmail.com / www.nickyliu.com
 Description: Main file to load Qt UI file and connect functions
@@ -182,6 +182,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.saveCtl_BN.clicked.connect(build.saveCtl)
         self.UI.loadCtl_BN.setIcon(QIcon(":openScript.png"))
         self.UI.loadCtl_BN.clicked.connect(build.loadCtl)
+        self.UI.shapeRotaX_BN.clicked.connect(partial(common.rotaCVForSel, 90, 0, 0))
+        self.UI.shapeRotaY_BN.clicked.connect(partial(common.rotaCVForSel, 0, 90, 0))
+        self.UI.shapeRotaZ_BN.clicked.connect(partial(common.rotaCVForSel, 0, 0, 90))
+        self.UI.onTop_BN.clicked.connect(common.setOnTopForSel)
+        self.UI.shapeScaleUp_BN.clicked.connect(partial(common.scaleCVForSel, 4 / 3))
+        self.UI.shapeScaleUp_BN.setIcon(QIcon(":SP_DriveCDIcon.png"))
+        self.UI.shapeScaleDn_BN.clicked.connect(partial(common.scaleCVForSel, 3 / 4))
+        self.UI.shapeScaleDn_BN.setIcon(QIcon(":SP_DriveCDIcon_12.png"))
         #
         #   bind
         #
@@ -199,12 +207,15 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.delProxy_BN.setIcon(QIcon(":smallTrash.png"))
         self.UI.selAllProxy_BN.clicked.connect(self.selAllProxy)
         self.UI.selAllProxy_BN.setIcon(QIcon(":aselect.png"))
+        self.UI.showHideProxy_BN.clicked.connect(self.showHideProxy)
+        self.UI.showHideProxy_BN.setIcon(QIcon(":visible.png"))
         self.UI.wrapProxy_BN.clicked.connect(self.wrapProxy)
         self.UI.wrapProxy_BN.setIcon(QIcon(":shrinkwrap.png"))
         self.UI.mirrorProxy_BN.clicked.connect(self.mirrorProxy)
         self.UI.mirrorProxy_BN.setIcon(QIcon(":polyMirrorGeometry.png"))
         self.UI.loadWrapTargetMesh_BN.clicked.connect(self.loadWrapTargetMesh)
         self.UI.templateTarget_BN.clicked.connect(self.templateTarget)
+        self.UI.bindUsingProxy_BN.clicked.connect(self.bindUsingProxy)
 
         self.UI.loadProxy_BN.clicked.connect(build.loadProxy)
         self.UI.loadProxy_BN.setIcon(QIcon(":openScript.png"))
@@ -231,16 +242,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.misc_importEnvAndShd_BN.clicked.connect(
             self.misc_importEnvAndShd_BN_clicked
         )
-
-        self.UI.shapeScaleUp_BN.clicked.connect(partial(common.scaleCVForSel, 4 / 3))
-        self.UI.shapeScaleUp_BN.setIcon(QIcon(":moveUVUp.png"))
-        self.UI.shapeScaleDn_BN.clicked.connect(partial(common.scaleCVForSel, 3 / 4))
-        self.UI.shapeScaleDn_BN.setIcon(QIcon(":moveUVDown.png"))
-
-        self.UI.shapeRotaX_BN.clicked.connect(partial(common.rotaCVForSel, 90, 0, 0))
-        self.UI.shapeRotaY_BN.clicked.connect(partial(common.rotaCVForSel, 0, 90, 0))
-        self.UI.shapeRotaZ_BN.clicked.connect(partial(common.rotaCVForSel, 0, 0, 90))
-        self.UI.onTop_BN.clicked.connect(common.setOnTopForSel)
 
         self.rigNode_refresh_BN_clicked()
         self.preset_refresh_BN_clicked()
@@ -594,6 +595,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         logging.info(f"{num} skinClusters deleted.")
 
+    def bindUsingProxy(self):
+        pass
+
     def templateTarget(self):
         targetWrapMesh = mc.optionVar(q="targetWrapMesh")
         tgt = DagNode(targetWrapMesh)
@@ -617,7 +621,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         build.delProxyMesh()
 
     def selAllProxy(self):
-        mc.select("*_pxGeo")
+        sel = mc.ls("*_pxGeo")
+        if sel:
+            mc.select(sel)
+
+    def showHideProxy(self):
+        m2 = DagNode("master2_ctl")
+        if m2.exists():
+            m2.a.proxy.set(1 - m2.a.proxy.get())
 
     @Undo("wrapProxy")
     def wrapProxy(self):
