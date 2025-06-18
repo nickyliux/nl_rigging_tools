@@ -1,3 +1,13 @@
+import os
+import logging
+import maya.cmds as mc
+from nl_modules.utils import common
+import nl_modules
+
+MOD_DIR = os.path.dirname(nl_modules.__file__)
+CTL_PRESET = MOD_DIR + "/data/control"
+
+
 def mirrorCtlShape(ctl):
     """Mirror ctl shape and return opposite"""
 
@@ -46,3 +56,86 @@ def mirrorCtlShape(ctl):
     mc.delete(dup, myGrp)
 
     return opp
+
+
+def saveCtl():
+    """
+    Save all the control curves, without connection or any unwanted
+    """
+    allCtls = common.getAllRigCtls()
+    allCtls.extend(["master_ctl", "master1_ctl", "master2_ctl"])
+    if allCtls:
+        mc.select(allCtls)
+        tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, dir=CTL_PRESET)
+        if tgtFile:
+            mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
+            logging.info("Curve shape exported OK.")
+            mc.select(cl=1)
+
+
+def loadCtl():
+    """
+    Replace all the control curve shapes by those found in the file
+    """
+    from nl_modules.nodel.base.dag_node import DagNode
+
+    tgtFile = mc.fileDialog2(
+        fileFilter="*.ma", dialogStyle=2, fileMode=1, dir=CTL_PRESET
+    )
+    if tgtFile:
+        ns = "ctl"
+        imported = mc.file(tgtFile, i=1, ns=ns, returnNewNodes=1)
+        ns = ""
+        if imported:
+            ns = imported[0].split(":")[0]
+        else:
+            return
+
+        allCtls = common.getAllRigCtls()
+        allCtls.extend(
+            [DagNode("master2_ctl"), DagNode("master1_ctl"), DagNode("master_ctl")]
+        )
+        for ctl in allCtls:
+            importCtl = DagNode(ns + ":" + ctl)
+            if importCtl.exists():
+                mc.delete(ctl.shapes)
+                mc.parent(importCtl.shapes, ctl, s=1, r=1)
+                for s in ctl.shapes:
+                    s.rename(ctl + "Shape#")
+        if imported:
+            rootGrp = DagNode(ns + ":CHR")
+            if rootGrp.exists():
+                # rootGrp.delete()
+                str = f'mc.delete("{rootGrp}")'
+                print(str)
+        mc.select(cl=1)
+
+
+def setOnTopForSel():
+    from nl_modules.nodel.base.dag_node import DagNode
+
+    sel = mc.ls(sl=1)
+    if sel:
+        state = DagNode(sel[0]).shape.a.alwaysDrawOnTop.get()
+        for s in sel:
+            DagNode(s).shape.a.alwaysDrawOnTop.set(1 - state)
+
+
+def rotaCVForSel(*args):
+    from nl_modules.nodel.base.dag_node import DagNode
+    from nl_modules.nodel.crv_node import CrvNode
+
+    for sel in mc.ls(sl=1, tr=1):
+        sel = DagNode(sel)
+        if sel.type == "nurbsCurve":
+            CrvNode(sel).cv_rotate(*args)
+
+
+def scaleCVForSel(value):
+    from nl_modules.nodel.base.dag_node import DagNode
+    from nl_modules.nodel.crv_node import CrvNode
+
+    for sel in mc.ls(sl=1, tr=1):
+        sel = DagNode(sel)
+        if sel.type == "nurbsCurve":
+            CrvNode(sel).cv_scale(value)  # , atCVCetner=1)

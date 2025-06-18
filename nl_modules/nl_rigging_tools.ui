@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+ <author>Nicky Liu</author>
  <class>nlRT_form</class>
  <widget class="QWidget" name="nlRT_form">
   <property name="windowModality">
@@ -215,9 +216,9 @@
       <widget class="QWidget" name="verticalLayoutWidget">
        <property name="geometry">
         <rect>
-         <x>180</x>
+         <x>190</x>
          <y>72</y>
-         <width>41</width>
+         <width>31</width>
          <height>134</height>
         </rect>
        </property>
@@ -391,7 +392,7 @@
          <x>180</x>
          <y>10</y>
          <width>41</width>
-         <height>51</height>
+         <height>53</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -534,9 +535,9 @@
       <widget class="QWidget" name="verticalLayoutWidget_2">
        <property name="geometry">
         <rect>
-         <x>180</x>
+         <x>190</x>
          <y>10</y>
-         <width>41</width>
+         <width>31</width>
          <height>201</height>
         </rect>
        </property>
@@ -787,18 +788,34 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>20</y>
+        <y>10</y>
         <width>221</width>
-        <height>30</height>
+        <height>35</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_7">
        <property name="spacing">
         <number>6</number>
        </property>
+       <property name="topMargin">
+        <number>6</number>
+       </property>
        <property name="bottomMargin">
         <number>0</number>
        </property>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item>
         <widget class="QPushButton" name="component_buildAll_BN">
          <property name="minimumSize">
@@ -879,19 +896,6 @@
          </property>
         </widget>
        </item>
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
       </layout>
      </widget>
     </widget>
@@ -899,16 +903,16 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>550</y>
+       <y>530</y>
        <width>221</width>
-       <height>81</height>
+       <height>61</height>
       </rect>
      </property>
      <property name="autoFillBackground">
       <bool>false</bool>
      </property>
      <property name="title">
-      <string>SKIN</string>
+      <string>BIND SKELETON</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -923,18 +927,34 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>20</y>
-        <width>230</width>
-        <height>32</height>
+        <y>10</y>
+        <width>221</width>
+        <height>35</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <property name="spacing">
         <number>6</number>
        </property>
+       <property name="topMargin">
+        <number>6</number>
+       </property>
        <property name="bottomMargin">
         <number>0</number>
        </property>
+       <item>
+        <spacer name="horizontalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item>
         <widget class="QPushButton" name="autoSkin_BN">
          <property name="enabled">
@@ -1007,26 +1027,13 @@
          </property>
         </widget>
        </item>
-       <item>
-        <spacer name="horizontalSpacer_5">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
       </layout>
      </widget>
      <widget class="QProgressBar" name="progress_PB">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>54</y>
+        <y>50</y>
         <width>221</width>
         <height>8</height>
        </rect>
@@ -1061,7 +1068,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>420</y>
+       <y>400</y>
        <width>221</width>
        <height>131</height>
       </rect>
@@ -1076,18 +1083,34 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>20</y>
-        <width>226</width>
-        <height>31</height>
+        <y>10</y>
+        <width>221</width>
+        <height>35</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_5">
        <property name="spacing">
         <number>6</number>
        </property>
+       <property name="topMargin">
+        <number>6</number>
+       </property>
        <property name="bottomMargin">
         <number>0</number>
        </property>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item>
         <widget class="QPushButton" name="genProxy_BN">
          <property name="enabled">
@@ -1114,43 +1137,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Add proxies</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="delProxy_BN">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>26</width>
-           <height>26</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>26</width>
-           <height>26</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Delete proxies</string>
+          <string>Generate proxies</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1304,44 +1291,29 @@
          </property>
         </widget>
        </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget_6">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>66</y>
+        <width>221</width>
+        <height>35</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>6</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
-        <widget class="QPushButton" name="mirrorProxy_BN">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>26</width>
-           <height>26</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>26</width>
-           <height>26</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Mirror proxies from left to right</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_3">
+        <spacer name="horizontalSpacer_6">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -1353,27 +1325,6 @@
          </property>
         </spacer>
        </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget_6">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>70</y>
-        <width>221</width>
-        <height>32</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_6">
-       <property name="spacing">
-        <number>6</number>
-       </property>
-       <property name="topMargin">
-        <number>3</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
        <item>
         <widget class="QPushButton" name="templateTarget_BN">
          <property name="enabled">
@@ -1411,6 +1362,78 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="resetProxy_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>26</width>
+           <height>26</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>26</width>
+           <height>26</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Reset selected proxies</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="mirrorProxy_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>26</width>
+           <height>26</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>26</width>
+           <height>26</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Mirror selected proxies, left to right</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="wrapProxy_BN">
          <property name="enabled">
           <bool>true</bool>
@@ -1436,7 +1459,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Wrap proxy to target mesh</string>
+          <string>Wrap selected proxies to target mesh</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1445,19 +1468,6 @@
           <string/>
          </property>
         </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_6">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>
@@ -1468,7 +1478,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>52</y>
+        <y>49</y>
         <width>221</width>
         <height>18</height>
        </rect>
@@ -1510,7 +1520,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>104</y>
+        <y>105</y>
         <width>221</width>
         <height>18</height>
        </rect>
@@ -1536,7 +1546,7 @@
        </font>
       </property>
       <property name="toolTip">
-       <string>Combine proxy</string>
+       <string>Bind wrap target using proxy</string>
       </property>
       <property name="styleSheet">
        <string notr="true"/>
@@ -1550,9 +1560,9 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>330</y>
+       <y>320</y>
        <width>221</width>
-       <height>91</height>
+       <height>81</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -1568,7 +1578,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>20</y>
+        <y>10</y>
         <width>221</width>
         <height>34</height>
        </rect>
@@ -1578,11 +1588,24 @@
         <number>6</number>
        </property>
        <property name="topMargin">
-        <number>0</number>
+        <number>6</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
        </property>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item>
         <widget class="QPushButton" name="loadCtl_BN">
          <property name="enabled">
@@ -1817,8 +1840,29 @@
          </property>
         </widget>
        </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget_8">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>40</y>
+        <width>221</width>
+        <height>35</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_8">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>6</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
-        <spacer name="horizontalSpacer_2">
+        <spacer name="horizontalSpacer_4">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -1830,27 +1874,6 @@
          </property>
         </spacer>
        </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget_8">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>50</y>
-        <width>221</width>
-        <height>35</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_8">
-       <property name="spacing">
-        <number>6</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
        <item>
         <widget class="QPushButton" name="shapeScaleDn_BN">
          <property name="enabled">
@@ -1941,19 +1964,6 @@
           <string/>
          </property>
         </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>

@@ -31,7 +31,7 @@ from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.msh_node import MshNode
-from nl_modules.utils import common, file, guide, log, modeling, build, proxy
+from nl_modules.utils import common, file, guide, log, modeling, build, proxy, control
 from nl_modules.utils.color import Color
 
 #
@@ -54,7 +54,7 @@ log.updateRootLogger()
 MOD_DIR = os.path.dirname(nl_modules.__file__)
 IMAGES_PATH = MOD_DIR + "/images"
 PATH_PRESET = MOD_DIR + "/data/guide"
-CTL_PRESET = MOD_DIR + "/data/control"
+
 SHAPE_PRESET = MOD_DIR + "/build/shape_lib"
 PATH_LIGHT = MOD_DIR + "/build/others"
 PATH_SKEL = "D:/_PROJECT/GIT/nl_rigging_tools_skeletons"
@@ -179,17 +179,17 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         #   control
         #
         self.UI.saveCtl_BN.setIcon(QIcon(":fileSave.png"))
-        self.UI.saveCtl_BN.clicked.connect(build.saveCtl)
+        self.UI.saveCtl_BN.clicked.connect(control.saveCtl)
         self.UI.loadCtl_BN.setIcon(QIcon(":openScript.png"))
-        self.UI.loadCtl_BN.clicked.connect(build.loadCtl)
-        self.UI.shapeRotaX_BN.clicked.connect(partial(common.rotaCVForSel, 90, 0, 0))
-        self.UI.shapeRotaY_BN.clicked.connect(partial(common.rotaCVForSel, 0, 90, 0))
-        self.UI.shapeRotaZ_BN.clicked.connect(partial(common.rotaCVForSel, 0, 0, 90))
-        self.UI.onTop_BN.clicked.connect(common.setOnTopForSel)
-        self.UI.shapeScaleUp_BN.clicked.connect(partial(common.scaleCVForSel, 4 / 3))
+        self.UI.loadCtl_BN.clicked.connect(control.loadCtl)
+        self.UI.shapeRotaX_BN.clicked.connect(partial(control.rotaCVForSel, 90, 0, 0))
+        self.UI.shapeRotaY_BN.clicked.connect(partial(control.rotaCVForSel, 0, 90, 0))
+        self.UI.shapeRotaZ_BN.clicked.connect(partial(control.rotaCVForSel, 0, 0, 90))
+        self.UI.shapeScaleUp_BN.clicked.connect(partial(control.scaleCVForSel, 4 / 3))
         self.UI.shapeScaleUp_BN.setIcon(QIcon(":SP_DriveCDIcon.png"))
-        self.UI.shapeScaleDn_BN.clicked.connect(partial(common.scaleCVForSel, 3 / 4))
+        self.UI.shapeScaleDn_BN.clicked.connect(partial(control.scaleCVForSel, 3 / 4))
         self.UI.shapeScaleDn_BN.setIcon(QIcon(":SP_DriveCDIcon_12.png"))
+        self.UI.onTop_BN.clicked.connect(control.setOnTopForSel)
         #
         #   bind
         #
@@ -203,23 +203,23 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.templateTarget_BN.setIcon(QIcon(":templated.png"))
         self.UI.genProxy_BN.clicked.connect(self.genProxy)
         self.UI.genProxy_BN.setIcon(QIcon(":play_S.png"))
-        self.UI.delProxy_BN.clicked.connect(self.delProxy)
-        self.UI.delProxy_BN.setIcon(QIcon(":smallTrash.png"))
         self.UI.selAllProxy_BN.clicked.connect(self.selAllProxy)
         self.UI.selAllProxy_BN.setIcon(QIcon(":aselect.png"))
         self.UI.showHideProxy_BN.clicked.connect(self.showHideProxy)
         self.UI.showHideProxy_BN.setIcon(QIcon(":visible.png"))
         self.UI.wrapProxy_BN.clicked.connect(self.wrapProxy)
         self.UI.wrapProxy_BN.setIcon(QIcon(":shrinkwrap.png"))
+        self.UI.resetProxy_BN.clicked.connect(self.resetProxy)
+        self.UI.resetProxy_BN.setIcon(QIcon(":refresh.png"))
         self.UI.mirrorProxy_BN.clicked.connect(self.mirrorProxy)
         self.UI.mirrorProxy_BN.setIcon(QIcon(":polyMirrorGeometry.png"))
         self.UI.loadWrapTargetMesh_BN.clicked.connect(self.loadWrapTargetMesh)
         self.UI.templateTarget_BN.clicked.connect(self.templateTarget)
         self.UI.bindUsingProxy_BN.clicked.connect(self.bindUsingProxy)
 
-        self.UI.loadProxy_BN.clicked.connect(build.loadProxy)
+        self.UI.loadProxy_BN.clicked.connect(proxy.loadProxy)
         self.UI.loadProxy_BN.setIcon(QIcon(":openScript.png"))
-        self.UI.saveProxy_BN.clicked.connect(build.saveProxy)
+        self.UI.saveProxy_BN.clicked.connect(proxy.saveProxy)
         self.UI.saveProxy_BN.setIcon(QIcon(":fileSave.png"))
         #
         #   prepare
@@ -254,7 +254,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if targetWrapMesh:
             tgt = DagNode(targetWrapMesh)
             if tgt.exists() and tgt.type == "mesh":
-                self.UI.loadWrapTargetMesh_BN.setText(f"[ {tgt.name} ]")
+                self.UI.loadWrapTargetMesh_BN.setText(f"< {tgt.name} >")
 
     def clickDrag_CB_stateChanged(self, state):
         mc.selectPref(clickDrag=state)
@@ -615,7 +615,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             self.updateLoadWrapTargetMesh()
 
     def genProxy(self):
-        build.genProxyMesh()
+        proxy.genProxyMesh()
 
     def delProxy(self):
         build.delProxyMesh()
@@ -632,14 +632,11 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     @Undo("wrapProxy")
     def wrapProxy(self):
-        sel = mc.ls(sl=1, type="transform")
-        if sel:
-            targetWrapMesh = mc.optionVar(q="targetWrapMesh")
-            tgt = DagNode(targetWrapMesh)
-            if tgt.exists():
-                proxy.nlShrinkWrap(tgt, sel)
-            else:
-                logging.error("No target wrap mesh loaded !")
+        proxy.wrapProxy()
+
+    @Undo("resetProxy")
+    def resetProxy(self):
+        proxy.resetProxy()
 
     @Undo("mirrorProxy")
     def mirrorProxy(self):

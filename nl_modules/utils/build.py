@@ -1,6 +1,7 @@
 import os.path
-import maya.cmds as mc
 import logging
+import maya.cmds as mc
+from nl_modules.utils import common
 from nl_modules.nodel.base.dag_node import DagNode
 
 #
@@ -26,7 +27,6 @@ import nl_modules
 
 MOD_DIR = os.path.dirname(nl_modules.__file__)
 CTL_PRESET = MOD_DIR + "/data/control"
-PROXY_PRESET = MOD_DIR + "/data/proxy"
 
 
 class Undo(ContextDecorator):
@@ -244,28 +244,9 @@ def updateAnchorConn():
 # 		}\
 
 
-def getAllRigCtls():
-    return getRigCtls(mc.ls("*RGN", type="script"))
-
-
-def getRigCtls(rigNodes):
-    setList = []
-    for rigNode in rigNodes:
-        ctlSet = DagNode(rigNode).a.rigID.get() + "_ctl_set"
-        ctlSet = mc.ls(ctlSet, type="objectSet")
-        if ctlSet:
-            setList.append(ctlSet[0])
-    if setList:
-        objs = mc.sets(setList, q=1)
-        if objs:
-            return [DagNode(obj) for obj in objs]
-    else:
-        return []
-
-
 def resetAllCtl():
     """Reset all ctl's attr to default"""
-    for ctl in getAllRigCtls():
+    for ctl in common.getAllRigCtls():
         for attr in ctl.a.list(k=1, u=1, se=1, s=1):
             if attr.settable():
                 attr.reset()
@@ -457,100 +438,6 @@ def getRigNode(obj):
             logging.info(f"No connected rigNode found for {obj}")
     else:
         logging.info("Get rigNode for non-existing object.")
-
-
-def delProxyMesh():
-    proxy = mc.ls("*_pxGeo", type="transform")
-    if proxy:
-        mc.delete(proxy)
-
-
-def genProxyMesh():
-    from nl_modules.nodel.grp_node import GrpNode
-    from nl_modules.nodel.jnt_node import JntNode
-
-    MDL = GrpNode("MDL")
-    PRX = GrpNode("PRX", p=MDL)
-    bindSet = DagNode("bind_jnt_set")
-    if bindSet.exists():
-        bindJnts = mc.sets(bindSet, q=1)
-        for j in bindJnts:
-            grpStr = str(j).split("_")[0]
-            PRX_GRP = GrpNode(grpStr + "_PRX", p=PRX)
-            JntNode(j).addProxyMesh(p=PRX_GRP)
-        mc.select(cl=1)
-    else:
-        logging.info("The set 'bind_jnt_set' NOT found.")
-
-
-def saveCtl():
-    """
-    Save all the control curves, without connection or any unwanted
-    """
-    allCtls = getAllRigCtls()
-    allCtls.extend(["master_ctl", "master1_ctl", "master2_ctl"])
-    if allCtls:
-        mc.select(allCtls)
-        tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, dir=CTL_PRESET)
-        if tgtFile:
-            mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
-            logging.info("Curve shape exported OK.")
-            mc.select(cl=1)
-
-
-def saveProxy():
-    """
-    Save all the proxies, without connection or any unwanted
-    """
-    mc.select("PRX")
-    tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, dir=PROXY_PRESET)
-    if tgtFile:
-        mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
-        logging.info("Proxies exported OK.")
-        mc.select(cl=1)
-
-
-def loadProxy():
-    pass
-
-
-def loadCtl():
-    """
-    Replace all the control curve shapes by those found in the file
-    """
-    tgtFile = mc.fileDialog2(
-        fileFilter="*.ma", dialogStyle=2, fileMode=1, dir=CTL_PRESET
-    )
-    if tgtFile:
-        #
-        #    import ctl file
-        #
-        ns = "ctl"
-        imported = mc.file(tgtFile, i=1, ns=ns, returnNewNodes=1)
-        ns = ""
-        if imported:
-            ns = imported[0].split(":")[0]
-        else:
-            return
-        #
-        #    replace shape
-        #
-        allCtls = getAllRigCtls()
-        allCtls.extend(
-            [DagNode("master2_ctl"), DagNode("master1_ctl"), DagNode("master_ctl")]
-        )
-        for ctl in allCtls:
-            importCtl = DagNode(ns + ":" + ctl)
-            if importCtl.exists():
-                mc.delete(ctl.shapes)
-                mc.parent(importCtl.shapes, ctl, s=1, r=1)
-                for s in ctl.shapes:
-                    s.rename(ctl + "Shape#")
-        if imported:
-            rootGrp = DagNode(ns + ":CHR")
-            # if rootGrp.exists():
-            #     print(rootGrp)
-            # mc.delete(rootGrp)
 
 
 def autoAttachJntToSurf():

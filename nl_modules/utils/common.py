@@ -501,34 +501,26 @@ def setViewport(jx=1, xray=0, wos=0):
     mc.refresh(f=1)
 
 
-def setOnTopForSel():
+def getAllRigCtls():
+    return getRigCtls(mc.ls("*RGN", type="script"))
+
+
+def getRigCtls(rigNodes):
+
     from nl_modules.nodel.base.dag_node import DagNode
 
-    sel = mc.ls(sl=1)
-    if sel:
-        state = DagNode(sel[0]).shape.a.alwaysDrawOnTop.get()
-        for s in sel:
-            DagNode(s).shape.a.alwaysDrawOnTop.set(1 - state)
-
-
-def rotaCVForSel(*args):
-    from nl_modules.nodel.base.dag_node import DagNode
-    from nl_modules.nodel.crv_node import CrvNode
-
-    for sel in mc.ls(sl=1, tr=1):
-        sel = DagNode(sel)
-        if sel.type == "nurbsCurve":
-            CrvNode(sel).cv_rotate(*args)
-
-
-def scaleCVForSel(value):
-    from nl_modules.nodel.base.dag_node import DagNode
-    from nl_modules.nodel.crv_node import CrvNode
-
-    for sel in mc.ls(sl=1, tr=1):
-        sel = DagNode(sel)
-        if sel.type == "nurbsCurve":
-            CrvNode(sel).cv_scale(value)  # , atCVCetner=1)
+    setList = []
+    for rigNode in rigNodes:
+        ctlSet = DagNode(rigNode).a.rigID.get() + "_ctl_set"
+        ctlSet = mc.ls(ctlSet, type="objectSet")
+        if ctlSet:
+            setList.append(ctlSet[0])
+    if setList:
+        objs = mc.sets(setList, q=1)
+        if objs:
+            return [DagNode(obj) for obj in objs]
+    else:
+        return []
 
 
 # def calcBB(tgt):
