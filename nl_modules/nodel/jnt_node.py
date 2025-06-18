@@ -98,22 +98,18 @@ class JntNode(GrpNode):
         """
         from nl_modules.utils import common
 
-        if self.type != "joint":
-            logging.error(f"{self.name} is NOT joint !")
+        pxName = self.name + "_pxGeo"
+        if mc.objExists(pxName):
             return
-
-        size = self.a.radius.get() * 5 * scale
 
         proxyRatio = self.a.proxyRatio
         proxyRatio = proxyRatio.get() if proxyRatio.exists() else 1
         proxyDiv = self.a.proxyDiv
         proxyDiv = proxyDiv.get() if proxyDiv.exists() else 2
 
-        name = self.name + "_pxGeo"
-        if mc.objExists(name):
-            return
-
         child = self.childrenJt
+        size = self.a.radius.get() * 5 * scale
+
         if child or (not skipEnd):
 
             dist = self.o.distanceTo(child[0]) if child else size
@@ -122,7 +118,7 @@ class JntNode(GrpNode):
             # )
             proxy = DagNode(
                 mc.polyCylinder(
-                    n=name,
+                    n=pxName,
                     r=size / 2 * proxyRatio,
                     h=dist * 0.9,
                     ax=aimDir,

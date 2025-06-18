@@ -78,13 +78,13 @@ def genProxyMesh():
     if bindSet.exists():
         bindJnts = mc.sets(bindSet, q=1)
         for j in bindJnts:
-            grpStr = str(j).split("_")[0]
-            PRX_GRP = GrpNode(grpStr + "_PRX", p=PRX)
+            grpName = str(j).split("_")[0]
+            PRX_GRP = GrpNode(grpName + "_PRX", p=PRX)
             JntNode(j).addProxyMesh(p=PRX_GRP)
             mc.refresh()
         mc.select(cl=1)
     else:
-        logging.info("The set 'bind_jnt_set' NOT found.")
+        logging.info("Set 'bind_jnt_set' NOT found.")
 
 
 def saveProxy():
@@ -100,7 +100,38 @@ def saveProxy():
 
 
 def loadProxy():
-    pass
+    """
+    Replace all proxy shapes by those found in file
+    """
+    genProxyMesh()
+    from nl_modules.nodel.base.dag_node import DagNode
+
+    tgtFile = mc.fileDialog2(
+        fileFilter="*.ma", dialogStyle=2, fileMode=1, dir=PROXY_PRESET
+    )
+    if tgtFile:
+        imported = mc.file(tgtFile, i=1, ns="prx", returnNewNodes=1)
+        ns = ""
+        if imported:
+            tempStr = imported[0].replace(":", " ").replace("|", " ")
+            ns = tempStr.split()[0]
+        else:
+            return
+
+        allTgts = mc.ls("*_pxGeo")
+        for tgt in allTgts:
+            tgt = DagNode(tgt)
+            imported = DagNode(ns + ":" + tgt)
+            if imported.exists():
+                mc.delete(tgt.shapes)
+                mc.parent(imported.shapes, tgt, s=1, r=1)
+                for s in tgt.shapes:
+                    s.rename(tgt + "Shape#")
+
+        if imported:
+            rootGrp = DagNode(ns + ":CHR")
+            if rootGrp.exists():
+                rootGrp.delete()
 
 
 def resetProxy():

@@ -83,31 +83,30 @@ def loadCtl():
         fileFilter="*.ma", dialogStyle=2, fileMode=1, dir=CTL_PRESET
     )
     if tgtFile:
-        ns = "ctl"
-        imported = mc.file(tgtFile, i=1, ns=ns, returnNewNodes=1)
+        imported = mc.file(tgtFile, i=1, ns="ctl", returnNewNodes=1)
         ns = ""
         if imported:
-            ns = imported[0].split(":")[0]
+            tempStr = imported[0].replace(":", " ").replace("|", " ")
+            ns = tempStr.split()[0]
         else:
             return
 
-        allCtls = common.getAllRigCtls()
-        allCtls.extend(
+        allTgts = common.getAllRigCtls()
+        allTgts.extend(
             [DagNode("master2_ctl"), DagNode("master1_ctl"), DagNode("master_ctl")]
         )
-        for ctl in allCtls:
-            importCtl = DagNode(ns + ":" + ctl)
-            if importCtl.exists():
-                mc.delete(ctl.shapes)
-                mc.parent(importCtl.shapes, ctl, s=1, r=1)
-                for s in ctl.shapes:
-                    s.rename(ctl + "Shape#")
+        for tgt in allTgts:
+            imported = DagNode(ns + ":" + tgt)
+            if imported.exists():
+                mc.delete(tgt.shapes)
+                mc.parent(imported.shapes, tgt, s=1, r=1)
+                for s in tgt.shapes:
+                    s.rename(tgt + "Shape#")
         if imported:
             rootGrp = DagNode(ns + ":CHR")
             if rootGrp.exists():
                 # rootGrp.delete()
-                str = f'mc.delete("{rootGrp}")'
-                print(str)
+                print(rootGrp)
         mc.select(cl=1)
 
 
