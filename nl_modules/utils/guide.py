@@ -233,9 +233,7 @@ def savePreset(fName):
     for rN in rigNodes:
         rN = DagNode(rN)
         rigID = rN.a.rigID.get()
-        objsToSave = [
-            DagNode(obj) for obj in mc.ls(rigID + "_*_guide", type="transform")
-        ]
+        objsToSave = [DagNode(obj) for obj in mc.ls(rigID + "_*_guide", tr=1)]
         objsToSave.append(rN.a.moduleG.inConnNode)
 
         guideDict = {}

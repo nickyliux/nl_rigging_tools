@@ -241,7 +241,7 @@ def display_LRA(*args):
             mc.select(hi=1)
         sel = mc.ls(sl=1, tr=1)
     else:
-        sel = mc.ls(type="transform")
+        sel = mc.ls(tr=1)
     for s in sel:
         if mc.objExists(s + ".displayLocalAxis"):
             mc.setAttr(s + ".displayLocalAxis", state)

@@ -122,7 +122,7 @@ def postRig():
     if m2.exists() and PRX.exists():
         PRX.a.overrideEnabled.set(1)
 
-        m2.a.add("proxy", k=0, attrType="bool", dv=1) >> PRX.a.v
+        m2.a.add("proxyVis", k=0, attrType="bool", dv=1) >> PRX.a.v
         (
             m2.a.add(
                 "proxyDsp", dv=0, attrType="enum", k=0, en="Normal:Template:Reference"

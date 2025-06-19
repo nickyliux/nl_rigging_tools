@@ -100,7 +100,7 @@ class MarkingMenuAutorig:
     def mirrorShapeSelOrAll(*args):
         from nl_modules.utils import control
 
-        selList = mc.ls(sl=1, type="transform")
+        selList = mc.ls(sl=1, tr=1)
         if not selList:
             selSet = "lf*_ctl_set"
             if mc.ls(selSet):

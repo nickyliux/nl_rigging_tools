@@ -6,6 +6,7 @@ from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.msh_node import MshNode
+from nl_modules.utils import common
 
 MOD_DIR = os.path.dirname(nl_modules.__file__)
 PROXY_PRESET = MOD_DIR + "/data/proxy"
@@ -81,7 +82,7 @@ def genProxyMesh():
             grpName = str(j).split("_")[0]
             PRX_GRP = GrpNode(grpName + "_PRX", p=PRX)
             JntNode(j).addProxyMesh(p=PRX_GRP)
-            mc.refresh()
+            # mc.refresh()
         mc.select(cl=1)
     else:
         logging.info("Set 'bind_jnt_set' NOT found.")
@@ -103,9 +104,6 @@ def loadProxy():
     """
     Replace all proxy shapes by those found in file
     """
-    genProxyMesh()
-    from nl_modules.nodel.base.dag_node import DagNode
-
     tgtFile = mc.fileDialog2(
         fileFilter="*.ma", dialogStyle=2, fileMode=1, dir=PROXY_PRESET
     )
@@ -118,15 +116,15 @@ def loadProxy():
         else:
             return
 
+        genProxyMesh()
         allTgts = mc.ls("*_pxGeo")
         for tgt in allTgts:
             tgt = DagNode(tgt)
             imported = DagNode(ns + ":" + tgt)
             if imported.exists():
-                mc.delete(tgt.shapes)
-                mc.parent(imported.shapes, tgt, s=1, r=1)
-                for s in tgt.shapes:
-                    s.rename(tgt + "Shape#")
+                common.matchMove([tgt, imported], mode="a")
+                mc.blendShape(imported, tgt, w=(0, 1))
+                tgt.deleteHistory()
 
         if imported:
             rootGrp = DagNode(ns + ":CHR")
@@ -135,13 +133,14 @@ def loadProxy():
 
 
 def resetProxy():
-    sel = mc.ls(sl=1, type="transform")
+    sel = mc.ls(sl=1, tr=1)
     for s in sel:
         if s.endswith("_pxGeo"):
             jnt = JntNode(s[:-6])
             if jnt.exists():
                 mc.delete(s)
                 jnt.addProxyMesh(p="PRX")
+    mc.select(cl=1)
 
 
 def mirrorProxy():
@@ -170,7 +169,7 @@ def mirrorProxy():
 
 
 def wrapProxy():
-    sel = mc.ls(sl=1, type="transform")
+    sel = mc.ls(sl=1, tr=1)
     if sel:
         targetWrapMesh = mc.optionVar(q="targetWrapMesh")
         tgt = DagNode(targetWrapMesh)

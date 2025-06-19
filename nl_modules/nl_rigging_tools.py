@@ -628,7 +628,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def showHideProxy(self):
         m2 = DagNode("master2_ctl")
         if m2.exists():
-            m2.a.proxy.set(1 - m2.a.proxy.get())
+            m2.a.proxyVis.set(1 - m2.a.proxyVis.get())
 
     @Undo("wrapProxy")
     def wrapProxy(self):
