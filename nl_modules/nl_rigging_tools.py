@@ -57,7 +57,7 @@ PATH_PRESET = MOD_DIR + "/data/guide"
 
 SHAPE_PRESET = MOD_DIR + "/build/shape_lib"
 PATH_LIGHT = MOD_DIR + "/build/others"
-PATH_SKEL = "D:/_PROJECT/GIT/nl_rigging_tools_skeletons"
+PATH_SKEL = "D:/_PROJECT/GIT/nl_rigging_tools_examples"
 PATH_INSTALL = "D:/_PROJECT/GIT/nl_rigging_tools/install"
 MAYA_TPL_DIR = MOD_DIR + "/build/components"
 PATH_UI = MOD_DIR + "/nl_rigging_tools.ui"
@@ -119,19 +119,19 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.component_load_BN.setIcon(QIcon(":openScript.png"))
         self.UI.component_explore_BN.clicked.connect(self.component_explore_BN_clicked)
         self.UI.component_explore_BN.setIcon(QIcon(":searchEngine.png"))
-        self.UI.component_delete_BN.clicked.connect(build.deleteSelOrAll)
-        self.UI.component_delete_BN.setIcon(QIcon(":smallTrash.png"))
-        self.UI.component_copy_BN.clicked.connect(guide.copyGuideSel)
-        self.UI.component_copy_BN.setIcon(QIcon(":copySkinWeight.png"))
+        # self.UI.component_delete_BN.clicked.connect(build.deleteSelOrAll)
+        # self.UI.component_delete_BN.setIcon(QIcon(":smallTrash.png"))
+        # self.UI.component_copy_BN.clicked.connect(guide.copyGuideSel)
+        # self.UI.component_copy_BN.setIcon(QIcon(":copySkinWeight.png"))
         #
         #   Template
         #
-        self.UI.preset_save_BN.clicked.connect(self.preset_save_BN_clicked)
-        self.UI.preset_save_BN.setIcon(QIcon(":fileSave.png"))
-        self.UI.preset_new_BN.clicked.connect(self.preset_new_BN_clicked)
-        self.UI.preset_new_BN.setIcon(QIcon(":fileNew.png"))
-        self.UI.preset_del_BN.clicked.connect(self.preset_del_BN_clicked)
-        self.UI.preset_del_BN.setIcon(QIcon(":smallTrash.png"))
+        self.UI.template_save_BN.clicked.connect(self.template_save_BN_clicked)
+        self.UI.template_save_BN.setIcon(QIcon(":fileSave.png"))
+        self.UI.template_new_BN.clicked.connect(self.template_new_BN_clicked)
+        self.UI.template_new_BN.setIcon(QIcon(":fileNew.png"))
+        self.UI.template_del_BN.clicked.connect(self.template_del_BN_clicked)
+        self.UI.template_del_BN.setIcon(QIcon(":smallTrash.png"))
         self.UI.viewSkel_BN.clicked.connect(self.viewSkel_BN_clicked)
         self.UI.viewSkel_BN.setIcon(QIcon(":searchEngine.png"))
         self.UI.importSkel_BN.clicked.connect(self.importSkel_BN_clicked)
@@ -139,9 +139,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # self.UI.preset_openSkel_BN.clicked.connect(self.preset_openSkel_BN_clicked)
         # self.UI.preset_refresh_BN.clicked.connect(self.preset_refresh_BN_clicked)
         # self.UI.preset_refresh_BN.setIcon(QIcon(":refresh.png"))
-        self.UI.preset_LW.itemDoubleClicked.connect(self.preset_load_BN_dbClicked)
-        self.UI.preset_load_BN.clicked.connect(self.preset_load_BN_clicked)
-        self.UI.preset_load_BN.setIcon(QIcon(":openScript.png"))
+        self.UI.preset_LW.itemDoubleClicked.connect(self.template_load_BN_dbClicked)
+        self.UI.template_load_BN.clicked.connect(self.template_load_BN_clicked)
+        self.UI.template_load_BN.setIcon(QIcon(":openScript.png"))
         # ------------------------------
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
         # self.UI.rigNode_refresh_BN.clicked.connect(self.rigNode_refresh_BN_clicked)
@@ -186,9 +186,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.shapeRotaY_BN.clicked.connect(partial(control.rotaCVForSel, 0, 90, 0))
         self.UI.shapeRotaZ_BN.clicked.connect(partial(control.rotaCVForSel, 0, 0, 90))
         self.UI.shapeScaleUp_BN.clicked.connect(partial(control.scaleCVForSel, 4 / 3))
-        self.UI.shapeScaleUp_BN.setIcon(QIcon(":SP_DriveCDIcon.png"))
         self.UI.shapeScaleDn_BN.clicked.connect(partial(control.scaleCVForSel, 3 / 4))
-        self.UI.shapeScaleDn_BN.setIcon(QIcon(":SP_DriveCDIcon_12.png"))
         self.UI.onTop_BN.clicked.connect(control.setOnTopForSel)
         #
         #   bind
@@ -298,13 +296,13 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         path = os.path.realpath(PATH_SKEL)
         subprocess.Popen(f'explorer "{path}"')
 
-    def preset_load_BN_clicked(self):
+    def template_load_BN_clicked(self):
         items = self.UI.preset_LW.selectedItems()
         if items:
             itemText = items[0].text()
             self.load_preset(itemText)
 
-    def preset_load_BN_dbClicked(self, item):
+    def template_load_BN_dbClicked(self, item):
         itemText = item.text()
         self.load_preset(itemText)
 
@@ -321,7 +319,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         else:
             logging.info(f"missing file: {f}")
 
-    def preset_save_BN_clicked(self):
+    def template_save_BN_clicked(self):
         items = self.UI.preset_LW.selectedItems()
         if items:
             itemText = items[0].text()
@@ -334,7 +332,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             if result == "Yes":
                 guide.savePreset(itemText)
 
-    def preset_new_BN_clicked(self):
+    def template_new_BN_clicked(self):
         result = mc.promptDialog(
             t="New Preset", m="Enter name:", b=["OK", "Cancel"], db="OK"
         )
@@ -343,7 +341,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             guide.savePreset(newName)
             self.preset_refresh_BN_clicked()
 
-    def preset_del_BN_clicked(self):
+    def template_del_BN_clicked(self):
         items = self.UI.preset_LW.selectedItems()
         if items:
             itemText = items[0].text()

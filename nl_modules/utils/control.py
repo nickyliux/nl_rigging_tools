@@ -105,7 +105,7 @@ def loadCtl():
         if imported:
             rootGrp = DagNode(ns + ":CHR")
             if rootGrp.exists():
-                # rootGrp.delete()
+                # rootGrp.delete() # WHY
                 print(rootGrp)
         mc.select(cl=1)
 

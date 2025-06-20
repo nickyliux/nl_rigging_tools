@@ -493,12 +493,12 @@ def getMeshBelow(grp):
 
 
 def setViewport(jx=1, xray=0, wos=0):
-    mc.viewFit(all=1)
     mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
     # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
     for p in mc.getPanel(type="modelPanel"):
         mc.modelEditor(p, e=1, jx=jx, xray=xray, wos=wos)
     mc.refresh(f=1)
+    mc.viewFit(all=1)
 
 
 def getAllRigCtls():
