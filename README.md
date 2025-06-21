@@ -57,19 +57,19 @@ classDiagram
 
 Part | FK | IK | Ribbon | Stretchy | Volume | Soft Ik | Pv Pin | Twist bones | Palm Roll | Patella Bone | Scale
 --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
-Head |+||||||||||+
-Spine |+|+|+|+|+|||
-Qd Spine |+|+|+|+|+|||
-Hand |+|+|+|+|||||||+
-Arm |+|+|+|+|+|+|+|+||
-Leg |+|+|+|+|+|+|+|+|+|+
-Qd Leg |+|+|+|+|+|+|+|+|+|+
-Tail |+|+|+|+|||||||+
+Head |*||||||||||*
+Spine |*|*|*|*|*|||
+Qd Spine |*|*|*|*|*|||
+Hand |*|*|*|*|||||||*
+Arm |*|*|*|*|*|*|*|*||
+Leg |*|*|*|*|*|*|*|*|*|*
+Qd Leg |*|*|*|*|*|*|*|*|*|*
+Tail |*|*|*|*|||||||*
 
 
 ## Marking menus
 Two Marking menus are made to speed up rigging work.
-|Menu|Shortcut|UI|
+|Menu|Shortcut|Capture|
 |---|---|---|
 |Rig Building |Ctrl + MMB|![The Autorig](nl_modules/doc/marking_menu_autorig.png)|
 |Daily Rigging Operations|Ctrl + Alt + MMB| ![General Rigging](nl_modules/doc/marking_menu_rigging.png)|
