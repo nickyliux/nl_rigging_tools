@@ -2,7 +2,7 @@
 # nl-rigging-tools ( nlRT )
 
 ## Background
-Once in a while I used Ziva intensively in a project. It involves a process of rigging the actual skeletonal meshes. I found it challenging and also a good opportunity to learn anatomy by building an automation tool.
+Once in a while I used Ziva intensively in a project. Rigging the actual skeletonal meshes was challenging and I found it a good opportunity to learn anatomy while building the automation tool.
 
 ## Overview
 nlRT is designed with the key features below :
