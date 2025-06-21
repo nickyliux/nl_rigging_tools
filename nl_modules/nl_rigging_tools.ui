@@ -62,7 +62,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="main_TB">
     <attribute name="title">
@@ -140,66 +140,66 @@
        </property>
        <item>
         <property name="text">
+         <string>Biped -------------------------------</string>
+        </property>
+        <property name="flags">
+         <set>ItemIsDragEnabled|ItemIsUserCheckable</set>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>bp neck</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>bp spine</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>bp arm</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>bp leg</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Quadruped ------------------------</string>
+        </property>
+        <property name="flags">
+         <set>ItemIsDragEnabled|ItemIsUserCheckable</set>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>qd neck</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>qd spine</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>qd leg</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>General -----------------------------</string>
+        </property>
+        <property name="flags">
+         <set>ItemIsDragEnabled|ItemIsUserCheckable</set>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>head</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>--------  Biped</string>
-        </property>
-        <property name="flags">
-         <set>ItemIsDragEnabled|ItemIsUserCheckable</set>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>neck bp</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>spine bp</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>arm bp</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>leg bp</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>--------  Quadruped</string>
-        </property>
-        <property name="flags">
-         <set>ItemIsDragEnabled|ItemIsUserCheckable</set>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>neck qd</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>spine qd</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>leg qd</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>--------</string>
-        </property>
-        <property name="flags">
-         <set>ItemIsDragEnabled|ItemIsUserCheckable</set>
         </property>
        </item>
        <item>
@@ -2696,7 +2696,7 @@
    <property name="font">
     <font>
      <family>Miriam Mono CLM</family>
-     <pointsize>10</pointsize>
+     <pointsize>11</pointsize>
      <weight>50</weight>
      <bold>false</bold>
     </font>
