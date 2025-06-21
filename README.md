@@ -1,11 +1,11 @@
 
-# nl-rigging-tools
+# nl-rigging-tools ( nlRT )
 
 ## Background
-Once in a while I used Ziva intensively in a project. It involves a process of rigging the actual skeletonal meshes. I found it challenging and also a good opportunity to learn anatomy to build an automation tool.
+Once in a while I used Ziva intensively in a project. It involves a process of rigging the actual skeletonal meshes. I found it challenging and also a good opportunity to learn anatomy by building an automation tool.
 
 ## Overview
-nl-rigging-tools is designed with the key features below :
+nlRT is designed with the key features below :
 - <b>Modular | </b>Character can have any number of parts
 - <b>Data Reuse | </b> Templates, controls and proxies can be saved and retored.
 - <b>Auto Connect | </b> Parts are automatically connected  according to distance between anchors.
