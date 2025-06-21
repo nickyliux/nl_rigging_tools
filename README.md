@@ -2,27 +2,27 @@
 # nl-rigging-tools ( nlRT )
 
 ## Background
-Once in a while I used Ziva intensively in a project. Rigging the actual skeletonal meshes was challenging and I found it a good opportunity to learn anatomy while building the automation tool.
+Once in a while I used Ziva intensively in a project. Rigging the actual skeleton meshes was challenging and fun. I feel that it would be a good opportunity to learn anatomy while building a tool to rig every vertebral animal on earth.
 
 ## Overview
 nlRT is designed with the key features below :
-- <b>Modular | </b>Character can have any number of parts
-- <b>Data Reuse | </b> Templates, controls and proxies can be saved and retored.
-- <b>Auto Connect | </b> Parts are automatically connected  according to distance between anchors.
-- <b>Auto Bind | </b> Skeletal meshes are auto bound with ref or ribbon joints added.
-- <b>Concise code | </b> Thanks to Nick Hughes' Udemy course, "Python for Maya : Beginner to Advanced Rigging Automation", I use custom framework to shorten tools development time and difficulty.
+- <b>Modular : </b>Support character of any number of parts.
+- <b>Data Reuse : </b> Templates, controls and proxies can be saved and retored.
+- <b>Auto Connect : </b> Parts are automatically connected  according to distance between anchors.
+- <b>Auto Bind : </b> Skeletal meshes are auto bound with ref or ribbon joints added.
+- <b>Concise code : </b> Thanks to Nick Hughes' Udemy course, "Python for Maya : Beginner to Advanced Rigging Automation", I use my own framework to make tools development more efficient.
 
 ## Framework Python Classes
 ```mermaid
 classDiagram
     
     DepNode <|-- DagNode
-    DagNode <|-- GroupNode
-    GroupNode <|-- CurveNode
-    GroupNode <|-- JointNode
-    GroupNode <|-- LocNode
-    GroupNode <|-- MeshNode
-    GroupNode <|-- SurfNode
+    DagNode <|-- GrpNode
+    GrpNode <|-- CrvNode
+    GrpNode <|-- JntNode
+    GrpNode <|-- LocNode
+    GrpNode <|-- MshNode
+    GrpNode <|-- SrfNode
     
     DepNode *-- Dimension
     AttributeHolder *-- Attribute
@@ -42,10 +42,10 @@ classDiagram
     class RibbonNode
     class IkNode
     RigModule <|-- Head
-    RigModule <|-- Spine
-    Spine <|-- Neck
-    RigModule <|-- Arm
-    RigModule <|-- Leg
+    RigModule <|-- SpineBp
+    SpineBp <|-- NeckBp
+    RigModule <|-- ArmBp
+    RigModule <|-- LegBp
     RigModule <|-- SpineQd
     SpineQd <|-- NeckQd
     RigModule <|-- LegQd
