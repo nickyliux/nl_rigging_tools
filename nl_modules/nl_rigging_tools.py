@@ -8,20 +8,28 @@ Description: Main file to load Qt UI file and connect functions
 """
 
 import os
+import logging
 import maya.cmds as mc
 import maya.mel as mel
 from functools import partial
-import nl_modules
-import logging
 from importlib import reload
-from nl_modules.utils import reload_all
-import subprocess
+import nl_modules
+from nl_modules.utils import (
+    reload_all,
+    common,
+    file,
+    guide,
+    log,
+    modeling,
+    build,
+    proxy,
+    control,
+)
+from nl_modules.utils.color import Color
 
 reload(reload_all)
 
 from PySide2 import QtWidgets
-
-# from PySide2 import QtGui
 from PySide2.QtGui import QIcon
 from PySide2.QtUiTools import QUiLoader
 from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
@@ -31,8 +39,6 @@ from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.msh_node import MshNode
-from nl_modules.utils import common, file, guide, log, modeling, build, proxy, control
-from nl_modules.utils.color import Color
 
 #
 #   Must keep for valid call eval(cls)
@@ -84,17 +90,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         super(MainWindow, self).__init__(parent)
         logging.info("load " + PATH_UI)
         self.UI = QUiLoader().load(PATH_UI)
-        """
-        CHECK UI ELEMENTS
 
-        uiObj = mc.loadUI(f=PATH_UI)
-        for i in mc.lsUI(dumpWidgets=1):
-            if uiObj in i:
-                print(i)
-        """
         self.setWindowTitle("nlRT 0.1.0")
         self.setWindowIcon(QIcon(PATH_INSTALL + "/nl_rigging_tools.bmp"))
-        # self.setWindowIcon(QIcon("/nl_rigging_tools.bmp"))
         self.setCentralWidget(self.UI)
         self.setGeometry(0, 0, 233, 700)
         self.connect_UI()
@@ -289,10 +287,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             common.setViewport()
 
     def component_explore_BN_clicked(self):
+        import subprocess
+
         path = os.path.realpath(MAYA_TPL_DIR)
         subprocess.Popen(f'explorer "{path}"')
 
     def viewSkel_BN_clicked(self):
+        import subprocess
+
         path = os.path.realpath(PATH_SKEL)
         subprocess.Popen(f'explorer "{path}"')
 
