@@ -2,16 +2,15 @@
 # nl-rigging-tools
 
 ## Background
-Ages ago I used Ziva intensively in a project. It involves a process of rigging the actual skeletonal meshes. It's a good opportunity to learn anatomy by making automation tool for any kind of creatures.
+Once in a while I used Ziva intensively in a project. It involves a process of rigging the actual skeletonal meshes. I found it challenging and also a good opportunity to learn anatomy to build an automation tool.
 
 ## Overview
 nl-rigging-tools is designed with the key features below :
-- <b>Support Both Cartoony & Realistic Setup : </b>
-- <b>Modular : </b>Character can have any number of parts
-- <b>Data Reuse : </b> Templates, proxies, and control shapes can be saved and restored.
-- <b>Auto Connect : </b> Parts are connected automatically according to distance between anchors.
-- <b>Auto Bind : </b> Skeletal meshes are auto bound with ref / ribbon joints added.
-- <b>Custom Framework : </b> Thanks to Nick Hughes' Udemy course, "Python for Maya: Beginner to Advanced Rigging Automation", custom modules are built to mimic PyMel but not limited to that.
+- <b>Modular | </b>Character can have any number of parts
+- <b>Data Reuse | </b> Templates, controls and proxies can be saved and retored.
+- <b>Auto Connect | </b> Parts are automatically connected  according to distance between anchors.
+- <b>Auto Bind | </b> Skeletal meshes are auto bound with ref or ribbon joints added.
+- <b>Concise code | </b> Thanks to Nick Hughes' Udemy course, "Python for Maya : Beginner to Advanced Rigging Automation", I use custom framework to shorten tools development time and difficulty.
 
 ## Framework Python Classes
 ```mermaid
@@ -56,14 +55,16 @@ classDiagram
 
 ## Components Features
 
-Part | FK | IK | Ribbon | Stretchy | Volume | Soft Ik | Pv Pin | Twist bones | Palm Roll | Patella Bone 
---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- 
-Head |+|||||||||
+Part | FK | IK | Ribbon | Stretchy | Volume | Soft Ik | Pv Pin | Twist bones | Palm Roll | Patella Bone | Scale
+--- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
+Head |+||||||||||+
 Spine |+|+|+|+|+|||
-Hand |+|+|+|+||||||
+Qd Spine |+|+|+|+|+|||
+Hand |+|+|+|+|||||||+
 Arm |+|+|+|+|+|+|+|+||
 Leg |+|+|+|+|+|+|+|+|+|+
-Tail |+|+|+|+||||||
+Qd Leg |+|+|+|+|+|+|+|+|+|+
+Tail |+|+|+|+|||||||+
 
 
 ## Marking menus
