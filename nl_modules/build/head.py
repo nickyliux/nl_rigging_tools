@@ -30,7 +30,7 @@ class Head(RigModule):
 
     def genSk(self):
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(["st", "ed"], scale=12)
+        root_list = self.gen_sk_fr_names(["st", "ed"], scale=15)
         jaw_list = self.gen_sk_fr_names(["jaw", "jawEnd"], scale=4)
         lf_eye = self.gen_sk_fr_names("lf_eye", scale=0.5)[0]
         rt_eye = self.gen_sk_fr_names("rt_eye", scale=0.5)[0]

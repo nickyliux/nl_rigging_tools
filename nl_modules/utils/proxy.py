@@ -8,8 +8,9 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.msh_node import MshNode
 from nl_modules.utils import common
 
-MOD_DIR = os.path.dirname(nl_modules.__file__)
-PROXY_PRESET = MOD_DIR + "/data/proxy"
+# MOD_DIR = os.path.dirname(nl_modules.__file__)
+# PROXY_PRESET = MOD_DIR + "/data/proxy"
+# PROXY_PRESET = r"D:\_PROJECT\GIT\nl_rigging_tools_examples"
 
 
 def nlShrinkWrap(target=None, meshes=None, keep=0, **kwargs):
@@ -82,8 +83,9 @@ def genProxyMesh():
             grpName = str(j).split("_")[0]
             PRX_GRP = GrpNode(grpName + "_PRX", p=PRX)
             JntNode(j).addProxyMesh(p=PRX_GRP)
-            # mc.refresh()
+            # mc.refresh(cv=1)
         mc.select(cl=1)
+        logging.info("Gen Proxy Mesh")
     else:
         logging.info("Set 'bind_jnt_set' NOT found.")
 
@@ -93,7 +95,7 @@ def saveProxy():
     Save all the proxies, without connection or any unwanted
     """
     mc.select("PRX")
-    tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, dir=PROXY_PRESET)
+    tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2)  # , dir=PROXY_PRESET)
     if tgtFile:
         mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
         logging.info("Proxies exported OK.")
@@ -105,9 +107,10 @@ def loadProxy():
     Replace all proxy shapes by those found in file
     """
     tgtFile = mc.fileDialog2(
-        fileFilter="*.ma", dialogStyle=2, fileMode=1, dir=PROXY_PRESET
+        fileFilter="*_prx.ma", dialogStyle=2, fileMode=1  # , dir=PROXY_PRESET
     )
     if tgtFile:
+        genProxyMesh()
         imported = mc.file(tgtFile, i=1, ns="prx", returnNewNodes=1)
         ns = ""
         if imported:
@@ -116,14 +119,14 @@ def loadProxy():
         else:
             return
 
-        genProxyMesh()
         allTgts = mc.ls("*_pxGeo")
         for tgt in allTgts:
             tgt = DagNode(tgt)
             imported = DagNode(ns + ":" + tgt)
             if imported.exists():
+                # print(imported)
                 common.matchMove([tgt, imported], mode="a")
-                mc.blendShape(imported, tgt, w=(0, 1))
+                mc.blendShape(imported, tgt, w=(0, 1), topologyCheck=0)
                 tgt.deleteHistory()
 
         if imported:

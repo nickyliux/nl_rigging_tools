@@ -94,8 +94,8 @@ class SpineBp(RigModule):
             c = CrvNode(
                 f"{i + 1}_fkc",
                 pf=rID,
-                shape="squR",
-                scale=rSz * 5,
+                shape="cubeR",
+                scale=maths.mul(10, 1, 10, rSz),
                 color=22,
             )
             self.fkCtls.append(c)

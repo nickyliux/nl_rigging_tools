@@ -83,13 +83,13 @@ class ArmBp(RigModule):
         self.clavicle_fkc.cv_rotate(0, 0, -45)
 
         self.upr_fkc = CrvNode(
-            "upr_fkc", pf=rID, shape="circleC", up="x", scale=rSz * 1.5 * xDr
+            "upr_fkc", pf=rID, shape="cubeR", up="x", scale=rSz * 2 * xDr
         )
         self.lwr_fkc = CrvNode(
-            "lwr_fkc", pf=rID, shape="circleC", up="x", scale=rSz * 1.5 * xDr
+            "lwr_fkc", pf=rID, shape="cubeR", up="x", scale=rSz * 2 * xDr
         )
         self.palm_fkc = CrvNode(
-            "palm_fkc", pf=rID, shape="circleC", up="x", scale=rSz * 1.5 * xDr
+            "palm_fkc", pf=rID, shape="cubeR", up="x", scale=rSz * 2 * xDr
         )
 
         self.ikc = CrvNode("ikc", pf=rID, shape="trapezoid", scale=rSz * 1.5 * xDr)

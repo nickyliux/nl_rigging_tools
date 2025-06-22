@@ -122,10 +122,13 @@ class LegBp(RigModule):
             scale=rSz * xDr,
             moveY=rSz * xDr * -15,
         )
-        self.upr_fkc = CrvNode("upr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
-        self.lwr_fkc = CrvNode("lwr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
-        self.palm_fkc = CrvNode("palm_fkc", pf=rID, shape="squR", up="x", scale=rSz)
-        self.ball_fkc = CrvNode("ball_fkc", pf=rID, up="x", shape="squR", scale=rSz / 2)
+        scale = xDr * rSz * 2
+        self.upr_fkc = CrvNode("upr_fkc", pf=rID, shape="cubeR", up="x", scale=scale)
+        self.lwr_fkc = CrvNode("lwr_fkc", pf=rID, shape="cubeR", up="x", scale=scale)
+        self.palm_fkc = CrvNode("palm_fkc", pf=rID, shape="cubeR", up="x", scale=scale)
+        self.ball_fkc = CrvNode(
+            "ball_fkc", pf=rID, up="x", shape="cubeR", scale=scale / 2
+        )
         self.ikc = CrvNode("ikc", pf=rID, shape="foot", scale=rSz * 2)
         self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=rSz)
         self.smart_ctl = CrvNode(

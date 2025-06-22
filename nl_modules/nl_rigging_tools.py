@@ -1,7 +1,7 @@
 """
 File: nl_rigging_tools.py
 Author: Nicky Liu
-Date: 2024-06-18
+Date: 2024-06-22
 Version: 0.1.0
 Contact: nickyliux@gmail.com / www.nickyliu.com
 Description: Main file to load Qt UI file and connect functions
@@ -58,17 +58,15 @@ from nl_modules.build.tail import Tail
 log.updateRootLogger()
 
 MOD_DIR = os.path.dirname(nl_modules.__file__)
-IMAGES_PATH = MOD_DIR + "/images"
-PATH_PRESET = MOD_DIR + "/data/guide"
 
+IMAGES_PATH = MOD_DIR + "/images"
 SHAPE_PRESET = MOD_DIR + "/build/shape_lib"
 PATH_LIGHT = MOD_DIR + "/build/others"
-PATH_SKEL = "D:/_PROJECT/GIT/nl_rigging_tools_examples"
-PATH_INSTALL = "D:/_PROJECT/GIT/nl_rigging_tools/install"
 MAYA_TPL_DIR = MOD_DIR + "/build/components"
 PATH_UI = MOD_DIR + "/nl_rigging_tools.ui"
 BIND_JNT_SET = "bind_jnt_set"
 MODEL_GRP = "mdl_grp"
+PATH_MODEL = "D:/_PROJECT/GIT/nl_rigging_tools_examples"
 
 from contextlib import ContextDecorator
 
@@ -92,14 +90,13 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI = QUiLoader().load(PATH_UI)
 
         self.setWindowTitle("nlRT 0.1.0")
-        self.setWindowIcon(QIcon(PATH_INSTALL + "/nl_rigging_tools.bmp"))
         self.setCentralWidget(self.UI)
-        self.setGeometry(0, 0, 233, 700)
+        self.setGeometry(0, 0, 233, 780)
         self.connect_UI()
 
     def connect_UI(self):
         #
-        #   Top
+        #   Pick mask & click drag
         #
         self.UI.pickMaskCrv_BN.clicked.connect(self.pickMaskCrv_BN_clicked)
         self.UI.pickMaskCrv_BN.setIcon(QIcon(":pickCurveObj.png"))
@@ -110,92 +107,70 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if mc.selectPref(clickDrag=1, q=1):
             self.UI.clickDrag_CB.setChecked(1)
         #
-        #   Part
+        #   Component
         #
         self.UI.component_LW.itemDoubleClicked.connect(self.component_load_BN_clicked)
         self.UI.component_load_BN.clicked.connect(self.component_load_BN_clicked)
         self.UI.component_load_BN.setIcon(QIcon(":openScript.png"))
         self.UI.component_explore_BN.clicked.connect(self.component_explore_BN_clicked)
         self.UI.component_explore_BN.setIcon(QIcon(":searchEngine.png"))
+        #
+        #   RigNode
+        #
+        self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
+
         # self.UI.component_delete_BN.clicked.connect(build.deleteSelOrAll)
         # self.UI.component_delete_BN.setIcon(QIcon(":smallTrash.png"))
         # self.UI.component_copy_BN.clicked.connect(guide.copyGuideSel)
         # self.UI.component_copy_BN.setIcon(QIcon(":copySkinWeight.png"))
-        #
-        #   Template
-        #
-        self.UI.template_save_BN.clicked.connect(self.template_save_BN_clicked)
-        self.UI.template_save_BN.setIcon(QIcon(":fileSave.png"))
-        self.UI.template_new_BN.clicked.connect(self.template_new_BN_clicked)
-        self.UI.template_new_BN.setIcon(QIcon(":fileNew.png"))
-        self.UI.template_del_BN.clicked.connect(self.template_del_BN_clicked)
-        self.UI.template_del_BN.setIcon(QIcon(":smallTrash.png"))
-        self.UI.viewSkel_BN.clicked.connect(self.viewSkel_BN_clicked)
-        self.UI.viewSkel_BN.setIcon(QIcon(":searchEngine.png"))
-        self.UI.importSkel_BN.clicked.connect(self.importSkel_BN_clicked)
-        self.UI.importSkel_BN.setIcon(QIcon(":polySphere.png"))
+
+        # self.UI.template_new_BN.clicked.connect(self.template_new_BN_clicked)
+        # self.UI.template_new_BN.setIcon(QIcon(":fileNew.png"))
+        # self.UI.template_del_BN.clicked.connect(self.template_del_BN_clicked)
+        # self.UI.template_del_BN.setIcon(QIcon(":smallTrash.png"))
+        # self.UI.viewSkel_BN.clicked.connect(self.viewSkel_BN_clicked)
+        # self.UI.viewSkel_BN.setIcon(QIcon(":searchEngine.png"))
+        # self.UI.importSkel_BN.clicked.connect(self.importSkel_BN_clicked)
+        # self.UI.importSkel_BN.setIcon(QIcon(":polySphere.png"))
         # self.UI.preset_openSkel_BN.clicked.connect(self.preset_openSkel_BN_clicked)
         # self.UI.preset_refresh_BN.clicked.connect(self.preset_refresh_BN_clicked)
         # self.UI.preset_refresh_BN.setIcon(QIcon(":refresh.png"))
-        self.UI.preset_LW.itemDoubleClicked.connect(self.template_load_BN_dbClicked)
-        self.UI.template_load_BN.clicked.connect(self.template_load_BN_clicked)
-        self.UI.template_load_BN.setIcon(QIcon(":openScript.png"))
+        # self.UI.preset_LW.itemDoubleClicked.connect(self.loadTemplate_BN_dbClicked)
         # ------------------------------
-        self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
         # self.UI.rigNode_refresh_BN.clicked.connect(self.rigNode_refresh_BN_clicked)
         # self.UI.rigNode_refresh_BN.setIcon(QIcon(":refresh.png"))
-        #
-        #   ctl
-        #
-        self.UI.crvShape_LW.itemDoubleClicked.connect(self.crvShape_LW_dblClicked)
 
-        self.UI.crvShape_removeFrInst_BN.clicked.connect(
-            self.crvShape_removeFrInst_BN_clicked
-        )
-        self.UI.crvShape_new_BN.clicked.connect(self.crvShape_new_BN_clicked)
-        self.UI.crvShape_new_BN.setIcon(QIcon(":fileNew.png"))
-        self.UI.crvShape_apply_BN.clicked.connect(self.crvShape_apply_BN_clicked)
-        self.UI.crvShape_apply_BN.setIcon(QIcon(":openScript.png"))
-        self.UI.crvShape_save_BN.clicked.connect(self.crvShape_save_BN_clicked)
-        self.UI.crvShape_save_BN.setIcon(QIcon(":fileSave.png"))
-        self.UI.crvShape_del_BN.clicked.connect(self.crvShape_del_BN_clicked)
-        self.UI.crvShape_del_BN.setIcon(QIcon(":smallTrash.png"))
-        # self.UI.crvShape_refresh_BN.clicked.connect(self.crvShape_refresh_BN_clicked)
-        # self.UI.crvShape_refresh_BN.setIcon(QIcon(":refresh.png"))
-        # self.UI.leadColor_0_BN.clicked.connect(partial(self.setLeadColor, 0))
-        # self.UI.leadColor_1_BN.clicked.connect(partial(self.setLeadColor, 1))
-        # self.UI.refColor_0_BN.clicked.connect(partial(self.setRefColor, 0))
-        # self.UI.refColor_1_BN.clicked.connect(partial(self.setRefColor, 1))
+        self.UI.loadModel_BN.clicked.connect(self.importModel)
+        self.UI.loadModel_BN.setIcon(QIcon(":openScript.png"))
         #
-        #   build
+        #   Template
+        #
+        self.UI.loadTemplate_BN.clicked.connect(guide.loadPreset)
+        self.UI.loadTemplate_BN.setIcon(QIcon(":openScript.png"))
+        self.UI.saveTemplate_BN.clicked.connect(guide.savePreset)
+        self.UI.saveTemplate_BN.setIcon(QIcon(":fileSave.png"))
+        #
+        #   Build
         #
         self.UI.component_buildAll_BN.clicked.connect(build.buildSelOrAll)
         self.UI.component_buildAll_BN.setIcon(QIcon(":play_S.png"))
         self.UI.component_unbuildAll_BN.clicked.connect(build.unbuildSelOrAll)
         self.UI.component_unbuildAll_BN.setIcon(QIcon(":smallTrash.png"))
         #
-        #   control
+        #   Control
         #
         self.UI.saveCtl_BN.setIcon(QIcon(":fileSave.png"))
         self.UI.saveCtl_BN.clicked.connect(control.saveCtl)
         self.UI.loadCtl_BN.setIcon(QIcon(":openScript.png"))
         self.UI.loadCtl_BN.clicked.connect(control.loadCtl)
-        self.UI.shapeRotaX_BN.clicked.connect(partial(control.rotaCVForSel, 90, 0, 0))
-        self.UI.shapeRotaY_BN.clicked.connect(partial(control.rotaCVForSel, 0, 90, 0))
-        self.UI.shapeRotaZ_BN.clicked.connect(partial(control.rotaCVForSel, 0, 0, 90))
-        self.UI.shapeScaleUp_BN.clicked.connect(partial(control.scaleCVForSel, 4 / 3))
-        self.UI.shapeScaleDn_BN.clicked.connect(partial(control.scaleCVForSel, 3 / 4))
-        self.UI.onTop_BN.clicked.connect(control.setOnTopForSel)
         #
-        #   bind
+        #   Proxy
         #
-        self.UI.autoSkin_BN.clicked.connect(self.autoSkin)
-        self.UI.autoSkin_BN.setIcon(QIcon(":play_S.png"))
-        self.UI.delSkinForAllMeshes_BN.clicked.connect(self.delSkinForAllMeshes)
-        self.UI.delSkinForAllMeshes_BN.setIcon(QIcon(":smallTrash.png"))
-        #
-        #   proxy
-        #
+        self.UI.loadProxy_BN.clicked.connect(proxy.loadProxy)
+        self.UI.loadProxy_BN.setIcon(QIcon(":openScript.png"))
+        self.UI.saveProxy_BN.clicked.connect(proxy.saveProxy)
+        self.UI.saveProxy_BN.setIcon(QIcon(":fileSave.png"))
+
         self.UI.templateTarget_BN.setIcon(QIcon(":templated.png"))
         self.UI.genProxy_BN.clicked.connect(self.genProxy)
         self.UI.genProxy_BN.setIcon(QIcon(":play_S.png"))
@@ -212,11 +187,40 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.loadWrapTargetMesh_BN.clicked.connect(self.loadWrapTargetMesh)
         self.UI.templateTarget_BN.clicked.connect(self.templateTarget)
         self.UI.bindUsingProxy_BN.clicked.connect(self.bindUsingProxy)
+        #
+        #   bind
+        #
+        self.UI.autoSkin_BN.clicked.connect(self.autoSkin)
+        self.UI.delSkinForAllMeshes_BN.clicked.connect(self.delSkinForAllMeshes)
+        #
+        #   ctl
+        #
+        self.UI.crvShape_LW.itemDoubleClicked.connect(self.crvShape_LW_dblClicked)
 
-        self.UI.loadProxy_BN.clicked.connect(proxy.loadProxy)
-        self.UI.loadProxy_BN.setIcon(QIcon(":openScript.png"))
-        self.UI.saveProxy_BN.clicked.connect(proxy.saveProxy)
-        self.UI.saveProxy_BN.setIcon(QIcon(":fileSave.png"))
+        self.UI.crvShape_removeFrInst_BN.clicked.connect(
+            self.crvShape_removeFrInst_BN_clicked
+        )
+        self.UI.crvShape_new_BN.clicked.connect(self.crvShape_new_BN_clicked)
+        self.UI.crvShape_new_BN.setIcon(QIcon(":fileNew.png"))
+        self.UI.crvShape_apply_BN.clicked.connect(self.crvShape_apply_BN_clicked)
+        self.UI.crvShape_apply_BN.setIcon(QIcon(":openScript.png"))
+        self.UI.crvShape_save_BN.clicked.connect(self.crvShape_save_BN_clicked)
+        self.UI.crvShape_save_BN.setIcon(QIcon(":fileSave.png"))
+        self.UI.crvShape_del_BN.clicked.connect(self.crvShape_del_BN_clicked)
+        self.UI.crvShape_del_BN.setIcon(QIcon(":smallTrash.png"))
+
+        self.UI.shapeRotaX_BN.clicked.connect(partial(control.rotaCVForSel, 90, 0, 0))
+        self.UI.shapeRotaY_BN.clicked.connect(partial(control.rotaCVForSel, 0, 90, 0))
+        self.UI.shapeRotaZ_BN.clicked.connect(partial(control.rotaCVForSel, 0, 0, 90))
+        self.UI.shapeScaleUp_BN.clicked.connect(partial(control.scaleCVForSel, 4 / 3))
+        self.UI.shapeScaleDn_BN.clicked.connect(partial(control.scaleCVForSel, 3 / 4))
+        self.UI.onTop_BN.clicked.connect(control.setOnTopForSel)
+        # self.UI.crvShape_refresh_BN.clicked.connect(self.crvShape_refresh_BN_clicked)
+        # self.UI.crvShape_refresh_BN.setIcon(QIcon(":refresh.png"))
+        # self.UI.leadColor_0_BN.clicked.connect(partial(self.setLeadColor, 0))
+        # self.UI.leadColor_1_BN.clicked.connect(partial(self.setLeadColor, 1))
+        # self.UI.refColor_0_BN.clicked.connect(partial(self.setRefColor, 0))
+        # self.UI.refColor_1_BN.clicked.connect(partial(self.setRefColor, 1))
         #
         #   prepare
         #
@@ -239,10 +243,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             self.misc_importEnvAndShd_BN_clicked
         )
 
+        # self.preset_refresh_BN_clicked()
         self.rigNode_refresh_BN_clicked()
-        self.preset_refresh_BN_clicked()
         self.crvShape_refresh_BN_clicked()
-
         self.updateLoadWrapTargetMesh()
 
     def updateLoadWrapTargetMesh(self):
@@ -292,83 +295,95 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         path = os.path.realpath(MAYA_TPL_DIR)
         subprocess.Popen(f'explorer "{path}"')
 
-    def viewSkel_BN_clicked(self):
-        import subprocess
+    # def viewSkel_BN_clicked(self):
+    #     import subprocess
 
-        path = os.path.realpath(PATH_SKEL)
-        subprocess.Popen(f'explorer "{path}"')
+    #     path = os.path.realpath(PATH_SKEL)
+    #     subprocess.Popen(f'explorer "{path}"')
 
-    def template_load_BN_clicked(self):
-        items = self.UI.preset_LW.selectedItems()
-        if items:
-            itemText = items[0].text()
-            self.load_preset(itemText)
+    # def loadTemplate_BN_clicked(self):
+    #     pass
 
-    def template_load_BN_dbClicked(self, item):
-        itemText = item.text()
-        self.load_preset(itemText)
+    #     items = self.UI.preset_LW.selectedItems()
+    #     if items:
+    #         itemText = items[0].text()
+    #         self.load_preset(itemText)
 
-    def load_preset(self, preset_name):
-        f = f"{PATH_PRESET}\\{preset_name}.json"
-        if os.path.isfile(f):
-            mc.refresh(su=1)
-            logging.info(f'load preset "{preset_name}"')
-            guide.loadPreset(f)
-            common.setViewport()
-            mc.refresh(su=0)
-            mc.select(cl=1)
-            self.rigNode_refresh_BN_clicked()
-        else:
-            logging.info(f"missing file: {f}")
+    # def loadTemplate_BN_dbClicked(self, item):
+    #     itemText = item.text()
+    #     self.load_preset(itemText)
 
-    def template_save_BN_clicked(self):
-        items = self.UI.preset_LW.selectedItems()
-        if items:
-            itemText = items[0].text()
-            result = mc.confirmDialog(
-                t="Save Preset",
-                m=f'Overwrite "{itemText}" ?        ',
-                b=["Yes", "No"],
-                db="No",
-            )
-            if result == "Yes":
-                guide.savePreset(itemText)
+    # def load_preset(self, preset_name):
+    #     f = f"{PATH_PRESET}\\{preset_name}.json"
+    #     if os.path.isfile(f):
+    #         mc.refresh(su=1)
+    #         logging.info(f'load preset "{preset_name}"')
+    #         guide.loadPreset(f)
+    #         common.setViewport()
+    #         mc.refresh(su=0)
+    #         mc.select(cl=1)
+    #         self.rigNode_refresh_BN_clicked()
+    #     else:
+    #         logging.info(f"missing file: {f}")
 
-    def template_new_BN_clicked(self):
-        result = mc.promptDialog(
-            t="New Preset", m="Enter name:", b=["OK", "Cancel"], db="OK"
+    # def saveTemplate_BN_clicked(self):
+    #     pass
+
+    # items = self.UI.preset_LW.selectedItems()
+    # if items:
+    #     itemText = items[0].text()
+    #     result = mc.confirmDialog(
+    #         t="Save Preset",
+    #         m=f'Overwrite "{itemText}" ?        ',
+    #         b=["Yes", "No"],
+    #         db="No",
+    #     )
+    #     if result == "Yes":
+    #         guide.savePreset(itemText)
+
+    # def template_new_BN_clicked(self):
+    #     result = mc.promptDialog(
+    #         t="New Preset", m="Enter name:", b=["OK", "Cancel"], db="OK"
+    #     )
+    #     if result == "OK":
+    #         newName = mc.promptDialog(q=1, t=1)
+    #         guide.savePreset(newName)
+    #         self.preset_refresh_BN_clicked()
+
+    # def template_del_BN_clicked(self):
+    #     items = self.UI.preset_LW.selectedItems()
+    #     if items:
+    #         itemText = items[0].text()
+    #         result = mc.confirmDialog(
+    #             t="Delete Preset ",
+    #             m=f'Delete "{itemText}" ?        ',
+    #             b=["Yes", "No"],
+    #             db="No",
+    #         )
+    #         if result == "Yes":
+    #             tgtFile = f"{PATH_PRESET}\\{itemText}.json"
+    #             file.deleteFile(tgtFile)
+    #             self.preset_refresh_BN_clicked()
+
+    def importModel(self):
+        tgtFile = mc.fileDialog2(
+            fileFilter="*.ma", dialogStyle=2, fileMode=1, dir=PATH_MODEL
         )
-        if result == "OK":
-            newName = mc.promptDialog(q=1, t=1)
-            guide.savePreset(newName)
-            self.preset_refresh_BN_clicked()
+        if tgtFile:
+            file.importFile(tgtFile[0])
+            common.setViewport()
 
-    def template_del_BN_clicked(self):
-        items = self.UI.preset_LW.selectedItems()
-        if items:
-            itemText = items[0].text()
-            result = mc.confirmDialog(
-                t="Delete Preset ",
-                m=f'Delete "{itemText}" ?        ',
-                b=["Yes", "No"],
-                db="No",
-            )
-            if result == "Yes":
-                tgtFile = f"{PATH_PRESET}\\{itemText}.json"
-                file.deleteFile(tgtFile)
-                self.preset_refresh_BN_clicked()
+    # def importSkel_BN_clicked(self):
+    #     items = self.UI.preset_LW.selectedItems()
+    #     if items:
+    #         itemText = items[0].text()
+    #         skelFile = f"{PATH_SKEL}/{itemText}_mdl.ma"
 
-    def importSkel_BN_clicked(self):
-        items = self.UI.preset_LW.selectedItems()
-        if items:
-            itemText = items[0].text()
-            skelFile = f"{PATH_SKEL}/{itemText}_mdl.ma"
-
-            if os.path.isfile(skelFile):
-                file.importFile(skelFile)
-                common.setViewport()
-            else:
-                logging.info(f"missing file: {skelFile}")
+    #         if os.path.isfile(skelFile):
+    #             file.importFile(skelFile)
+    #             common.setViewport()
+    #         else:
+    #             logging.info(f"missing file: {skelFile}")
 
     # def preset_openSkel_BN_clicked(self):
     #     items = self.UI.preset_LW.selectedItems()
@@ -380,16 +395,15 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     #         else:
     #             logging.info(f"missing file: {skelFile}")
 
-    def preset_refresh_BN_clicked(self):
-        self.UI.preset_LW.clear()
-        # self.UI.preset_CBB.clear()
-        items = [
-            f.split(".")[0]
-            for f in os.listdir(PATH_PRESET)
-            if os.path.isfile(PATH_PRESET + "/" + f)
-        ]
-        self.UI.preset_LW.addItems(items)
-        # self.UI.preset_CBB.addItems(items)
+    # def preset_refresh_BN_clicked(self):
+    #     self.UI.preset_LW.clear()
+
+    #     items = [
+    #         f.split(".")[0]
+    #         for f in os.listdir(PATH_PRESET)
+    #         if os.path.isfile(PATH_PRESET + "/" + f)
+    #     ]
+    #     self.UI.preset_LW.addItems(items)
 
     def rigNode_LW_dblClicked(self, item):
         """Show attribute editor for rigNode"""
@@ -405,7 +419,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def crvShape_LW_dblClicked(self, item):
         """Add curve object"""
-        crv = CrvNode(item.text(), shape=item.text())
+        crv = CrvNode(item.text() + "#", shape=item.text())
         mc.select(crv)
         #     items = self.UI.crvShape_LW.selectedItems()
         #     if items:

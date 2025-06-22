@@ -4,7 +4,7 @@ import os
 import re
 from nl_modules.build.tpl_loader import TplLoader
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.utils import file
+from nl_modules.utils import common, file
 import nl_modules
 
 COMPONENT_DICT = {
@@ -23,8 +23,9 @@ COMPONENT_DICT = {
     "tail": ["tail"],
     "wing": [""],
 }
-MOD_DIR = os.path.dirname(nl_modules.__file__)
-PATH_PRESET = MOD_DIR + "/data/guide"
+# MOD_DIR = os.path.dirname(nl_modules.__file__)
+# PATH_PRESET = MOD_DIR + "/data/guide"
+PATH_PRESET = r"D:\_PROJECT\GIT\nl_rigging_tools_examples"
 
 
 def loadGuide(names):
@@ -164,11 +165,22 @@ def mirrorPose(*arg):
         mirrorAttr(selList)
 
 
-def loadPreset(path, removeUnused=1):
+TPL_PRESET = r"D:\_PROJECT\GIT\nl_rigging_tools_examples"
+
+
+def loadPreset(removeUnused=1):
     """Load preset from json file"""
     from nl_modules.utils import build
 
-    idDict = file.loadJson(path)
+    tgtFile = mc.fileDialog2(
+        fileFilter="*.json", dialogStyle=2, fileMode=1, dir=TPL_PRESET
+    )
+    if tgtFile is None:
+        return
+    else:
+        tgtFile = tgtFile[0]
+
+    idDict = file.loadJson(tgtFile)
     if removeUnused:  # Remove unused components
         idInPreset = [k + "_RGN" for k in idDict.keys()]
         for rN in mc.ls("*RGN", type="script"):
@@ -205,6 +217,7 @@ def loadPreset(path, removeUnused=1):
                                     guideN.a[attr].set(v, type="string")
                                 elif isinstance(v, list):
                                     guideN.a[attr].set(*v)
+    common.setViewport()
 
 
 def genAttrDict(obj):
@@ -221,9 +234,10 @@ def genAttrDict(obj):
     return attrDict
 
 
-def savePreset(fName):
+def savePreset():
     """Save preset into json file"""
-    fPath = f"{PATH_PRESET}/{fName}.json"
+
+    # fPath = f"{PATH_PRESET}/{fName}.json"
     idDict = {}
     rigNodes = mc.ls("*RGN", type="script")
     if not rigNodes:
@@ -242,5 +256,13 @@ def savePreset(fName):
 
         idDict[rigID] = guideDict
 
-    file.saveJson(fPath, idDict, force=True)
+    tgtFile = mc.fileDialog2(
+        fileFilter="*.json", dialogStyle=2, fileMode=1  # , dir=TPL_PRESET
+    )
+    if tgtFile is None:
+        return
+    else:
+        tgtFile = tgtFile[0]
+
+    file.saveJson(tgtFile, idDict, force=True)
     logging.info("guides saved")
