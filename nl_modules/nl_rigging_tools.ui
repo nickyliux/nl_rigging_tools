@@ -83,13 +83,186 @@
      <property name="flat">
       <bool>true</bool>
      </property>
+     <widget class="QWidget" name="verticalLayoutWidget_3">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>41</width>
+        <height>53</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QRadioButton" name="component_both_RB">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>9999</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Both side</string>
+         </property>
+         <property name="text">
+          <string>L&amp;R</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="component_left_RB">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>9999</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Left side</string>
+         </property>
+         <property name="text">
+          <string>L</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="component_right_RB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>9999</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Right side</string>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>R</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QPushButton" name="component_load_BN">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>80</y>
+        <width>22</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>22</width>
+        <height>22</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>22</width>
+        <height>22</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>8</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+        <kerning>true</kerning>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>Load guide</string>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="component_explore_BN">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>110</y>
+        <width>22</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>22</width>
+        <height>22</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>22</width>
+        <height>22</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>8</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+        <kerning>true</kerning>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>Explore guide files</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
      <widget class="QListWidget" name="component_LW">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>20</y>
+        <x>60</x>
+        <y>10</y>
         <width>163</width>
-        <height>201</height>
+        <height>221</height>
        </rect>
       </property>
       <property name="font">
@@ -187,7 +360,7 @@
       </item>
       <item>
        <property name="text">
-        <string>General --------------------------</string>
+        <string>Common ------------------------</string>
        </property>
        <property name="flags">
         <set>ItemIsDragEnabled|ItemIsUserCheckable</set>
@@ -209,185 +382,12 @@
        </property>
       </item>
      </widget>
-     <widget class="QWidget" name="verticalLayoutWidget_3">
-      <property name="geometry">
-       <rect>
-        <x>170</x>
-        <y>20</y>
-        <width>41</width>
-        <height>53</height>
-       </rect>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QRadioButton" name="component_both_RB">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>9999</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Both side</string>
-         </property>
-         <property name="text">
-          <string>L&amp;R</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="component_left_RB">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>9999</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Left side</string>
-         </property>
-         <property name="text">
-          <string>L</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="component_right_RB">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>9999</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Right side</string>
-         </property>
-         <property name="autoFillBackground">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>R</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QPushButton" name="component_load_BN">
-      <property name="geometry">
-       <rect>
-        <x>170</x>
-        <y>80</y>
-        <width>22</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>22</width>
-        <height>22</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>22</width>
-        <height>22</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Segoe UI</family>
-        <pointsize>8</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-        <kerning>true</kerning>
-       </font>
-      </property>
-      <property name="toolTip">
-       <string>Load guide</string>
-      </property>
-      <property name="layoutDirection">
-       <enum>Qt::LeftToRight</enum>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="flat">
-       <bool>false</bool>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="component_explore_BN">
-      <property name="geometry">
-       <rect>
-        <x>200</x>
-        <y>80</y>
-        <width>22</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>22</width>
-        <height>22</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>22</width>
-        <height>22</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Segoe UI</family>
-        <pointsize>8</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-        <kerning>true</kerning>
-       </font>
-      </property>
-      <property name="toolTip">
-       <string>Explore guide files</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
     </widget>
     <widget class="QGroupBox" name="groupBox_3">
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>240</y>
+       <y>250</y>
        <width>221</width>
        <height>31</height>
       </rect>
@@ -476,7 +476,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>270</y>
+       <y>280</y>
        <width>221</width>
        <height>31</height>
       </rect>
@@ -596,7 +596,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>300</y>
+       <y>310</y>
        <width>221</width>
        <height>31</height>
       </rect>
@@ -729,7 +729,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>330</y>
+       <y>340</y>
        <width>221</width>
        <height>31</height>
       </rect>
@@ -854,7 +854,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>360</y>
+       <y>370</y>
        <width>221</width>
        <height>111</height>
       </rect>
@@ -1342,7 +1342,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>470</y>
+       <y>480</y>
        <width>221</width>
        <height>41</height>
       </rect>
@@ -1496,35 +1496,51 @@
       </property>
      </widget>
     </widget>
-    <widget class="QListWidget" name="rigNode_LW">
+    <widget class="QGroupBox" name="groupBox_12">
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>550</y>
+       <y>520</y>
        <width>221</width>
        <height>161</height>
       </rect>
      </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
+     <property name="title">
+      <string>RigNode</string>
      </property>
-     <property name="font">
-      <font>
-       <family>Segoe UI</family>
-       <pointsize>8</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
+     <property name="flat">
+      <bool>true</bool>
      </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::SingleSelection</enum>
-     </property>
-     <property name="spacing">
-      <number>0</number>
-     </property>
+     <widget class="QListWidget" name="rigNode_LW">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>10</y>
+        <width>161</width>
+        <height>151</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>8</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::SingleSelection</enum>
+      </property>
+      <property name="spacing">
+       <number>0</number>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QWidget" name="curveShape_TB">
@@ -1704,7 +1720,7 @@
        <x>0</x>
        <y>77</y>
        <width>221</width>
-       <height>474</height>
+       <height>641</height>
       </rect>
      </property>
      <property name="minimumSize">

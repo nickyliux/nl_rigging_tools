@@ -77,7 +77,7 @@ def addShader(n, shaderType="lambert", color=(1, 1, 1)):
     else:
         shd = DepNode(mc.shadingNode(shaderType, name=n, asShader=1))
         shd.a.color.set(*color)
-        shd.a.ambientColor.set(0.5, 0.5, 0.5)
+        shd.a.transparency.set(0.5, 0.5, 0.5)
         sg = DepNode(mc.sets(name=f"{n}SG", empty=1, renderable=1, noSurfaceShader=1))
         mc.connectAttr(f"{shd}.outColor", f"{sg}.surfaceShader")
     return shd, sg
