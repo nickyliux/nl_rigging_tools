@@ -32,6 +32,10 @@ reload(reload_all)
 from PySide2 import QtWidgets
 from PySide2.QtGui import QIcon
 from PySide2.QtUiTools import QUiLoader
+
+# from PyQt5.QtWidgets import QMenuBar
+from PySide2.QtWidgets import QMenuBar, QMenu, QAction
+
 from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
 
 from nl_modules.nodel.base.dag_node import DagNode
@@ -91,8 +95,25 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         self.setWindowTitle("nlRT 0.1.0")
         self.setCentralWidget(self.UI)
-        self.setGeometry(0, 0, 233, 780)
+        self.setGeometry(0, 0, 233, 720)
+        # self.addMenuBar()
         self.connect_UI()
+
+    # def addMenuBar(self):
+    #     menuBar = QMenuBar(self)
+
+    #     about_qm = QMenu("&More", self)
+
+    #     self.newAction = QAction(self)
+    #     self.newAction.setText("&About")
+    #     about_qm.addAction(self.newAction)
+    #     about_qm.triggered.connect(self.about_action)
+
+    #     menuBar.addMenu(about_qm)
+    #     self.setMenuBar(menuBar)
+
+    # def about_action(self):
+    #     print("Developed by Nicky Liu")
 
     def connect_UI(self):
         #
