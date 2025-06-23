@@ -52,7 +52,7 @@
      <x>0</x>
      <y>0</y>
      <width>230</width>
-     <height>751</height>
+     <height>691</height>
     </rect>
    </property>
    <property name="font">
@@ -78,7 +78,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>GUIDE</string>
+      <string>Guides</string>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -1517,7 +1517,7 @@
         <x>60</x>
         <y>10</y>
         <width>161</width>
-        <height>151</height>
+        <height>131</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -1720,7 +1720,7 @@
        <x>0</x>
        <y>77</y>
        <width>221</width>
-       <height>615</height>
+       <height>578</height>
       </rect>
      </property>
      <property name="minimumSize">

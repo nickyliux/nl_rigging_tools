@@ -95,7 +95,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         self.setWindowTitle("nlRT 0.1.0")
         self.setCentralWidget(self.UI)
-        self.setGeometry(0, 0, 233, 720)
+        self.setGeometry(0, 0, 233, 700)
         # self.addMenuBar()
         self.connect_UI()
 
