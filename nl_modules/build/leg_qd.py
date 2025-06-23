@@ -130,13 +130,13 @@ class LegQd(RigModule):
         self.digit_fkc = CrvNode("digit_fkc", pf=rID, shape="squR", up="x", scale=rSz)
         self.ball_fkc = CrvNode("ball_fkc", pf=rID, shape="squR", up="x", scale=rSz / 2)
 
-        self.ikc = CrvNode("ikc", pf=rID, shape="foot", scale=rSz * 1.5)
+        self.ikc = CrvNode("ikc", pf=rID, shape="foot", scale=rSz * 2)
         self.extra_ikc = CrvNode(
             "extra_ikc", pf=rID, shape="sphere2", scale=rSz * 3, moveY=-xDr * rSz * 10
         )
-        self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=rSz)
+        self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=rSz * 2)
         self.smart_ctl = CrvNode(
-            "smart_ctl", pf=rID, shape="squR", width=2, scale=rSz / 3
+            "smart_ctl", pf=rID, shape="squR", width=2, scale=rSz / 2
         )
         self.rigNode.setMsg(
             {
@@ -401,11 +401,8 @@ class LegQd(RigModule):
         #
         #   smart ctl setup
         #
-        # self.smart_ctl.alignTo(self.master_guide)
         self.smart_ctl.snapAlignTo(toeRollG, self.master_guide)
-        # self.smart_ctl.a.ty.set(0)
         self.smart_ctl | self.ikc_gimbal
-        # self.smart_ctl.a.tz.set(rSz * 20)
         self.smart_ctl.addOffsetGrp()
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry

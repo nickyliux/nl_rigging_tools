@@ -7,7 +7,7 @@ from nl_modules.utils.color import Color
 import logging
 
 MOD_DIR = os.path.dirname(nl_modules.__file__)
-SHAPE_PRESET = MOD_DIR + "/build/shape_lib"
+SHAPE_PATH = MOD_DIR + "/build/shapes"
 
 
 class GrpNode(DagNode):
@@ -142,7 +142,7 @@ class GrpNode(DagNode):
         e.g.
             saveToLib(list, 'arrow')
         """
-        f = f"{SHAPE_PRESET}/{name}.json"
+        f = f"{SHAPE_PATH}/{name}.json"
 
         file.saveJson(f, dictList, force=True)
         logging.info(f"Saved to {f}")
@@ -152,7 +152,7 @@ class GrpNode(DagNode):
         e.g.
             list = loadFrLib('arrow')
         """
-        f = f"{SHAPE_PRESET}/{name}.json"
+        f = f"{SHAPE_PATH}/{name}.json"
         return file.loadJson(f)
 
     def shape_getDictListFrObj(self, crv):

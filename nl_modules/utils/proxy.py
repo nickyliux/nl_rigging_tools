@@ -8,10 +8,6 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.msh_node import MshNode
 from nl_modules.utils import common
 
-# MOD_DIR = os.path.dirname(nl_modules.__file__)
-# PROXY_PRESET = MOD_DIR + "/data/proxy"
-# PROXY_PRESET = r"D:\_PROJECT\GIT\nl_rigging_tools_examples"
-
 
 def nlShrinkWrap(target=None, meshes=None, keep=0, **kwargs):
     """
@@ -95,7 +91,7 @@ def saveProxy():
     Save all the proxies, without connection or any unwanted
     """
     mc.select("PRX")
-    tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2)  # , dir=PROXY_PRESET)
+    tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2)  # , dir=PROXY_PATH)
     if tgtFile:
         mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
         logging.info("Proxies exported OK.")
@@ -107,7 +103,7 @@ def loadProxy():
     Replace all proxy shapes by those found in file
     """
     tgtFile = mc.fileDialog2(
-        fileFilter="*_prx.ma", dialogStyle=2, fileMode=1  # , dir=PROXY_PRESET
+        fileFilter="*_prx.ma", dialogStyle=2, fileMode=1  # , dir=PROXY_PATH
     )
     if tgtFile:
         genProxyMesh()

@@ -25,10 +25,6 @@ from contextlib import ContextDecorator
 
 import nl_modules
 
-# MOD_DIR = os.path.dirname(nl_modules.__file__)
-# CTL_PRESET = MOD_DIR + "/data/control"
-CTL_PRESET = r"D:\_PROJECT\GIT\nl_rigging_tools_examples"
-
 
 class Undo(ContextDecorator):
     def __init__(self, name=None):

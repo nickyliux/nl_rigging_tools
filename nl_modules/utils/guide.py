@@ -23,9 +23,7 @@ COMPONENT_DICT = {
     "tail": ["tail"],
     "wing": [""],
 }
-# MOD_DIR = os.path.dirname(nl_modules.__file__)
-# PATH_PRESET = MOD_DIR + "/data/guide"
-PATH_PRESET = r"D:\_PROJECT\GIT\nl_rigging_tools_examples"
+TEMPLATE_PATH = r"D:\_PROJECT\GIT\nl_rigging_tools_examples"
 
 
 def loadGuide(names):
@@ -66,7 +64,7 @@ def copyGuideSel():
                 guideList1 = mc.ls(rigID1 + "_*_guide")
                 guideList2 = mc.ls(rigID2 + "_*_guide")
                 for g1, g2 in zip(guideList1, guideList2):
-                    copyAttr(g1, g2, skipMasterXf=1)
+                    copyGuideAttr(g1, g2, skipMasterXf=1)
             else:
                 logging.info("Ignore copy for different rig classes")
         else:
@@ -77,20 +75,20 @@ def mirrorGuideSelOrAll(*arg):
     """Mirror guides for selected / all *lf*_guide"""
     selList = mc.ls(sl=1, ap=1) or mc.ls("*lf*_guide", ap=1)
     if selList:
-        mirrorAttr(selList)
+        mirrorGuideAttr(selList)
 
 
-def getOppositeCtl(tgtN, pfL="lf", pfR="rt", pfB4Pf=1):
+def getOppositeCtl(tgtN, pfL="lf", pfR="rt", strB4Pf=1):
     """Return opposite ctl
     e.g.
         getOppositeCtl(lf_leg0_ikc)              # rt_leg0_ikc
         getOppositeCtl(head0_lf_eye, pfB4Pf=1)   # head0_rt_eye
     """
     patternL = (
-        re.compile(rf"^(\w*){pfL}(\w+)$") if pfB4Pf else re.compile(rf"^{pfL}(\w+)$")
+        re.compile(rf"^(\w*){pfL}(\w+)$") if strB4Pf else re.compile(rf"^{pfL}(\w+)$")
     )
     patternR = (
-        re.compile(rf"^(\w*){pfR}(\w+)$") if pfB4Pf else re.compile(rf"^{pfR}(\w+)$")
+        re.compile(rf"^(\w*){pfR}(\w+)$") if strB4Pf else re.compile(rf"^{pfR}(\w+)$")
     )
     matchL = re.match(patternL, tgtN.name)
     matchR = re.match(patternR, tgtN.name)
@@ -98,7 +96,7 @@ def getOppositeCtl(tgtN, pfL="lf", pfR="rt", pfB4Pf=1):
     if matchL:
         oppName = (
             f"{matchL.group(1)}{pfR}{matchL.group(2)}"
-            if pfB4Pf
+            if strB4Pf
             else f"{pfR}{matchL.group(1)}"
         )
         if mc.objExists(oppName):
@@ -106,14 +104,14 @@ def getOppositeCtl(tgtN, pfL="lf", pfR="rt", pfB4Pf=1):
     elif matchR:
         oppName = (
             f"{matchR.group(1)}{pfL}{matchR.group(2)}"
-            if pfB4Pf
+            if strB4Pf
             else f"{pfL}{matchR.group(1)}"
         )
         if mc.objExists(oppName):
             return DagNode(oppName)
 
 
-def copyAttr(A, B, wsMirror=0, mirror=0, skipMasterXf=0):
+def copyGuideAttr(A, B, wsMirror=0, mirror=0, skipMasterXf=0):
     """Copy/mirror transform & user defined attribute values"""
     A = DagNode(A) if isinstance(A, str) else A
     B = DagNode(B) if isinstance(B, str) else B
@@ -143,13 +141,13 @@ def copyAttr(A, B, wsMirror=0, mirror=0, skipMasterXf=0):
             print(e)
 
 
-def mirrorAttr(tgtList, wsMirror=0):
+def mirrorGuideAttr(tgtList, wsMirror=0):
     """Mirror xform for tgtList objects"""
     for tgt in tgtList:
         tgt = DagNode(tgt)
         oppN = getOppositeCtl(tgt)
         if oppN:
-            copyAttr(tgt, oppN, wsMirror=wsMirror, mirror=1)
+            copyGuideAttr(tgt, oppN, wsMirror=wsMirror, mirror=1)
         else:
             print(f"opposite not found for {tgt.name}")
 
@@ -162,13 +160,13 @@ def mirrorPose(*arg):
         if mc.ls(tgtSet, type="objectSet"):
             selList = mc.sets(tgtSet, q=1)
     if selList:
-        mirrorAttr(selList)
+        mirrorGuideAttr(selList)
 
 
 TPL_PRESET = r"D:\_PROJECT\GIT\nl_rigging_tools_examples"
 
 
-def loadPreset(removeUnused=1):
+def loadTemplate(removeUnused=1):
     """Load preset from json file"""
     from nl_modules.utils import build
 
@@ -234,10 +232,9 @@ def genAttrDict(obj):
     return attrDict
 
 
-def savePreset():
+def saveTemplate():
     """Save preset into json file"""
 
-    # fPath = f"{PATH_PRESET}/{fName}.json"
     idDict = {}
     rigNodes = mc.ls("*RGN", type="script")
     if not rigNodes:

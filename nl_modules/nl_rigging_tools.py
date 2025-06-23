@@ -1,7 +1,7 @@
 """
 File: nl_rigging_tools.py
 Author: Nicky Liu
-Date: 2024-06-22
+Date: 2024-06-23
 Version: 0.1.0
 Contact: nickyliux@gmail.com / www.nickyliu.com
 Description: Main file to load Qt UI file and connect functions
@@ -64,7 +64,7 @@ log.updateRootLogger()
 MOD_DIR = os.path.dirname(nl_modules.__file__)
 
 IMAGES_PATH = MOD_DIR + "/images"
-SHAPE_PRESET = MOD_DIR + "/build/shape_lib"
+SHAPE_PATH = MOD_DIR + "/build/shapes"
 PATH_LIGHT = MOD_DIR + "/build/others"
 MAYA_TPL_DIR = MOD_DIR + "/build/components"
 PATH_UI = MOD_DIR + "/nl_rigging_tools.ui"
@@ -166,9 +166,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         #
         #   Template
         #
-        self.UI.loadTemplate_BN.clicked.connect(guide.loadPreset)
+        self.UI.loadTemplate_BN.clicked.connect(guide.loadTemplate)
         self.UI.loadTemplate_BN.setIcon(QIcon(":openScript.png"))
-        self.UI.saveTemplate_BN.clicked.connect(guide.savePreset)
+        self.UI.saveTemplate_BN.clicked.connect(guide.saveTemplate)
         self.UI.saveTemplate_BN.setIcon(QIcon(":fileSave.png"))
         #
         #   Build
@@ -489,7 +489,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 db="No",
             )
             if result == "Yes":
-                tgtFile = f"{SHAPE_PRESET}\\{itemText}.json"
+                tgtFile = f"{SHAPE_PATH}\\{itemText}.json"
                 file.deleteFile(tgtFile)
                 self.crvShape_refresh_BN_clicked()
 
@@ -514,8 +514,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.crvShape_LW.clear()
         items = [
             f.split(".")[0]
-            for f in os.listdir(SHAPE_PRESET)
-            if os.path.isfile(SHAPE_PRESET + "/" + f)
+            for f in os.listdir(SHAPE_PATH)
+            if os.path.isfile(SHAPE_PATH + "/" + f)
         ]
         self.UI.crvShape_LW.addItems(items)
 
@@ -540,7 +540,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Mirror left reference(*_refJnt) joints"""
         sel = mc.ls("lf_*_refJnt", type="joint")
         if sel:
-            guide.mirrorAttr(sel, wsMirror=1)
+            guide.mirrorGuideAttr(sel, wsMirror=1)
         else:
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 
@@ -652,13 +652,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def genProxy(self):
         proxy.genProxyMesh()
 
-    def delProxy(self):
-        build.delProxyMesh()
-
     def selAllProxy(self):
-        sel = mc.ls("*_pxGeo")
-        if sel:
-            mc.select(sel)
+        mc.select(mc.ls("*_pxGeo") or [])
 
     def showHideProxy(self):
         m2 = DagNode("master2_ctl")

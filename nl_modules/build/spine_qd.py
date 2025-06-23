@@ -64,7 +64,7 @@ class SpineQd(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting = CrvNode("setting", pf=rID, shape="bagua", scale=rSz * 4, top=1)
+        self.setting = CrvNode("setting", pf=rID, shape="bagua", scale=rSz * 3, top=1)
         # , moveY=rSz * 10
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
 

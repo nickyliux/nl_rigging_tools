@@ -113,8 +113,8 @@ class MarkingMenuAutorig:
         rigNodes = []
         sel = mc.ls(sl=1, tr=1)
         if sel:
-            selN = DagNode(sel[0])
-            nodes = selN.a.message.outConnNode
+            sel = DagNode(sel[0])
+            nodes = sel.a.message.outConnNode
             if nodes:
                 filteredNodes = [n for n in nodes if n.type == "script"]
                 rN = filteredNodes[0]
@@ -123,7 +123,9 @@ class MarkingMenuAutorig:
         else:
             rigNodes = mc.ls("*RGN", type="script")
 
-        setList = build.getRigCtls(rigNodes)
+        from nl_modules.utils import common
+
+        setList = common.getRigCtls(rigNodes)
         if setList:
             mc.select(setList)
 
