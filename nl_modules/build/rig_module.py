@@ -756,7 +756,7 @@ class RigModule(RigBase):
             )
             self.scap_fkc.cstOri(j0, mo=1)
             self.bindJnts.append(j0)
-            j0.hide()
+            # j0.hide()
 
         return mainGrp
 

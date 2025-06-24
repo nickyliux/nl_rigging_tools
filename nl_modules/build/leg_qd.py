@@ -116,26 +116,24 @@ class LegQd(RigModule):
         self.setting = CrvNode(
             "setting", pf=rID, shape="bagua", scale=rSz, top=1, width=2, moveY=rSz * 10
         )
-        self.hip_fkc = CrvNode(
-            "hip_fkc",
-            pf=rID,
-            shape="arrow",
-            scale=xDr * rSz / 2,
-            top=1,
-            moveY=-xDr * rSz * 20,
+        scale = xDr * rSz
+        self.hip_fkc = CrvNode("hip_fkc", pf=rID, shape="cubeR", up="x", scale=scale)
+        self.upr_fkc = CrvNode("upr_fkc", pf=rID, shape="cubeR", up="x", scale=scale)
+        self.lwr_fkc = CrvNode("lwr_fkc", pf=rID, shape="cubeR", up="x", scale=scale)
+        self.palm_fkc = CrvNode("palm_fkc", pf=rID, shape="cubeR", up="x", scale=scale)
+        self.digit_fkc = CrvNode(
+            "digit_fkc", pf=rID, shape="cubeR", up="x", scale=scale
         )
-        self.upr_fkc = CrvNode("upr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
-        self.lwr_fkc = CrvNode("lwr_fkc", pf=rID, shape="squR", up="x", scale=rSz)
-        self.palm_fkc = CrvNode("palm_fkc", pf=rID, shape="squR", up="x", scale=rSz)
-        self.digit_fkc = CrvNode("digit_fkc", pf=rID, shape="squR", up="x", scale=rSz)
-        self.ball_fkc = CrvNode("ball_fkc", pf=rID, shape="squR", up="x", scale=rSz / 2)
+        self.ball_fkc = CrvNode(
+            "ball_fkc", pf=rID, shape="cubeR", up="x", scale=rSz / 2
+        )
 
-        self.ikc = CrvNode("ikc", pf=rID, shape="foot2", scale=rSz * 2.5)
-        self.extra_ikc = CrvNode("extra_ikc", pf=rID, shape="rotator", scale=-xDr * rSz)
+        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=scale)
+        self.extra_ikc = CrvNode("extra_ikc", pf=rID, shape="rotator", scale=-scale)
         # , moveY=-xDr * rSz * 10
-        self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=rSz * 2)
+        self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=scale * 2)
         self.smart_ctl = CrvNode(
-            "smart_ctl", pf=rID, shape="squR", width=2, scale=rSz / 2
+            "smart_ctl", pf=rID, shape="squR", width=2, scale=scale / 2
         )
         self.rigNode.setMsg(
             {
@@ -152,13 +150,9 @@ class LegQd(RigModule):
             }
         )
         if self.SCAPULAR_EXTRA:
-            self.scap_fkc = CrvNode(
-                "scap_fkc",
-                pf=rID,
-                shape="arrow",
-                moveX=rSz * 35 * -xDr,
-                scale=maths.mul(1, 1, xDr, rSz / 4),
-            )
+            self.scap_fkc = CrvNode("scap_fkc", pf=rID, shape="arrow", scale=scale / 2)
+            # moveX=rSz * 35 * -xDr,
+            # scale=maths.mul(1, 1, xDr, rSz / 4),
 
     def build(self):
         """Build rig for joints

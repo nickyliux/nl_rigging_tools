@@ -14,6 +14,10 @@ class DagNode(DepNode):
         n = DagNode('new', nodeType='transform')
     """
 
+    YELLOW = (0.995, 1.000, 0.236)  # 253, 255, 60
+    BLUE = (0.484, 0.663, 1)  # 123, 169, 255
+    RED = (0.710, 0.300, 0.300)  # 181, 76, 76
+
     def __init__(self, n, nodeType=None):
         self._dag = None
         DepNode.__init__(self, n)
@@ -616,12 +620,10 @@ class DagNode(DepNode):
 
     def get_side_color(self):
         """Return color depending on side"""
-        # color = 22
-        color = (0.86, 0.62, 0.12)  # middle orange
-        if str(self.node).startswith("lf"):
-            # color = 6
-            color = (0.28, 0.53, 0.86)  # left blue
-        elif str(self.node).startswith("rt"):
-            # color = 13
-            color = (0.74, 0.21, 0.21)  # right red
+        color = self.YELLOW
+        n = str(self.node)
+        if n.startswith("lf"):
+            color = self.BLUE
+        elif n.startswith("rt"):
+            color = self.RED
         return color

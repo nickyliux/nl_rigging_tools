@@ -23,7 +23,6 @@ COMPONENT_DICT = {
     "tail": ["tail"],
     "wing": [""],
 }
-TEMPLATE_PATH = r"D:\_PROJECT\GIT\nl_rigging_tools_examples"
 
 
 def loadGuide(names):
@@ -163,16 +162,11 @@ def mirrorPose(*arg):
         mirrorGuideAttr(selList)
 
 
-TPL_PRESET = r"D:\_PROJECT\GIT\nl_rigging_tools_examples"
-
-
 def loadTemplate(removeUnused=1):
     """Load preset from json file"""
     from nl_modules.utils import build
 
-    tgtFile = mc.fileDialog2(
-        fileFilter="*.json", dialogStyle=2, fileMode=1, dir=TPL_PRESET
-    )
+    tgtFile = mc.fileDialog2(fileFilter="*.json", dialogStyle=2, fileMode=1)
     if tgtFile is None:
         return
     else:
@@ -253,9 +247,7 @@ def saveTemplate():
 
         idDict[rigID] = guideDict
 
-    tgtFile = mc.fileDialog2(
-        fileFilter="*.json", dialogStyle=2, fileMode=0  # , dir=TPL_PRESET
-    )
+    tgtFile = mc.fileDialog2(fileFilter="*.json", dialogStyle=2, fileMode=0)
     if tgtFile is None:
         return
     else:

@@ -67,20 +67,16 @@ def assignShd(n, geo=None, color=(0, 0, 0), faceID=None):
 def assignPresetShd(tgt=None):
     from nl_modules.nodel.base.dag_node import DagNode
 
-    YELLOW = (0.995, 1.000, 0.236)  # 253, 255, 60
-    BLUE = (0.484, 0.663, 1)  # 123, 169, 255
-    RED = (0.710, 0.300, 0.300)  # 181, 76, 76
-
     for t in tgt or []:
         t = DagNode(t)
         if t.type == "mesh":
-            color = YELLOW
+            color = DagNode.YELLOW
             name = "yellow_shd"
             if t.name.startswith("lf"):
-                color = BLUE
+                color = DagNode.BLUE
                 name = "blue_shd"
             elif t.name.startswith("rt"):
-                color = RED
+                color = DagNode.RED
                 name = "red_shd"
             shd, sg = addShader(name, color=color)
             mc.sets(t, forceElement=sg)
@@ -102,7 +98,7 @@ def addShader(n, shaderType="lambert", color=(1, 1, 1)):
         shd = DepNode(mc.shadingNode(shaderType, name=n, asShader=1))
         shd.a.color.set(*color)
         # shd.a.transparency.set(0.5, 0.5, 0.5)
-        shd.a.ambientColor.set(0.1, 0.1, 0.1)
+        # shd.a.ambientColor.set(0.1, 0.1, 0.1)
         sg = DepNode(mc.sets(name=f"{n}SG", empty=1, renderable=1, noSurfaceShader=1))
         mc.connectAttr(f"{shd}.outColor", f"{sg}.surfaceShader")
     return shd, sg
@@ -520,8 +516,8 @@ def getMeshBelow(grp):
 def setViewport(jx=0, xray=0, wos=0):
     mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
     # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
-    for p in mc.getPanel(type="modelPanel"):
-        mc.modelEditor(p, e=1, jx=jx, xray=xray, wos=wos)
+    # for p in mc.getPanel(type="modelPanel"):
+    #     mc.modelEditor(p, e=1, jx=jx, xray=xray, wos=wos)
     mc.refresh(f=1)
     mc.viewFit(all=1)
 

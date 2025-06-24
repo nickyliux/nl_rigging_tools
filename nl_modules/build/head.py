@@ -30,7 +30,7 @@ class Head(RigModule):
 
     def genSk(self):
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(["st", "ed"], scale=15)
+        root_list = self.gen_sk_fr_names(["st", "ed"], scale=10)
         jaw_list = self.gen_sk_fr_names(["jaw", "jawEnd"], scale=4)
         lf_eye = self.gen_sk_fr_names("lf_eye", scale=0.5)[0]
         rt_eye = self.gen_sk_fr_names("rt_eye", scale=0.5)[0]
@@ -43,7 +43,7 @@ class Head(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
         self.head_fkc = CrvNode(
-            "head_fkc", pf=rID, shape="squR", scale=rSz, moveY=rSz * 10
+            "head_fkc", pf=rID, shape="squR", scale=rSz * 2, moveY=rSz * 10
         )
         self.jaw_fkc = CrvNode("jaw_fkc", pf=rID, scale=rSz)
         self.rigNode.setMsg(
@@ -70,7 +70,7 @@ class Head(RigModule):
         (self.head_fkc, self.jaw_fkc) | self.CTL_DATA
         self.head_fkc.alignTo(self.head)
         self.head_fkc.addOffsetGrp()
-        self.head_fkc.cv_moveTo(self.headEnd.o.pos)
+        # self.head_fkc.cv_moveTo(self.headEnd.o.pos)
         self.head_fkc.cstPar(self.head, mo=1)
 
         self.jaw_fkc.snapTo(self.jaw, p=self.head_fkc)
@@ -104,7 +104,7 @@ class Head(RigModule):
 
     def post_setup(self):
         self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_div(self.bindJnts, 3)
+        self.add_proxy_div(self.bindJnts, 4)
 
         self.add_ctl_set(self.fkCtl)
         self.setup_space()
