@@ -101,8 +101,8 @@ def addShader(n, shaderType="lambert", color=(1, 1, 1)):
     else:
         shd = DepNode(mc.shadingNode(shaderType, name=n, asShader=1))
         shd.a.color.set(*color)
-        shd.a.transparency.set(0.5, 0.5, 0.5)
-        shd.a.ambientColor.set(0.2, 0.2, 0.2)
+        # shd.a.transparency.set(0.5, 0.5, 0.5)
+        shd.a.ambientColor.set(0.1, 0.1, 0.1)
         sg = DepNode(mc.sets(name=f"{n}SG", empty=1, renderable=1, noSurfaceShader=1))
         mc.connectAttr(f"{shd}.outColor", f"{sg}.surfaceShader")
     return shd, sg
@@ -517,7 +517,7 @@ def getMeshBelow(grp):
     return [MshNode(mesh) for mesh in meshes] or []
 
 
-def setViewport(jx=0, xray=0, wos=1):
+def setViewport(jx=0, xray=0, wos=0):
     mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
     # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
     for p in mc.getPanel(type="modelPanel"):

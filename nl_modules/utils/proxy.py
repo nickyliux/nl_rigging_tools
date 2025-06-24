@@ -102,9 +102,7 @@ def loadProxy():
     """
     Replace all proxy shapes by those found in file
     """
-    tgtFile = mc.fileDialog2(
-        fileFilter="*_prx.ma", dialogStyle=2, fileMode=1  # , dir=PROXY_PATH
-    )
+    tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, fileMode=1)
     if tgtFile:
         genProxyMesh()
         imported = mc.file(tgtFile, i=1, ns="prx", returnNewNodes=1)
@@ -164,6 +162,7 @@ def mirrorProxy():
                 g.a.sx.set(-1)
                 dup | oppParent
                 g.delete()
+                common.assignPresetShd(tgt=[dup])
     mc.select(cl=1)
 
 

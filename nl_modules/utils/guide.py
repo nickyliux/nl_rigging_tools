@@ -81,8 +81,8 @@ def mirrorGuideSelOrAll(*arg):
 def getOppositeCtl(tgtN, pfL="lf", pfR="rt", strB4Pf=1):
     """Return opposite ctl
     e.g.
-        getOppositeCtl(lf_leg0_ikc)              # rt_leg0_ikc
-        getOppositeCtl(head0_lf_eye, pfB4Pf=1)   # head0_rt_eye
+        lf_leg0_ikc =>              rt_leg0_ikc
+        head0_lf_eye, pfB4Pf=1 =>   head0_rt_eye
     """
     patternL = (
         re.compile(rf"^(\w*){pfL}(\w+)$") if strB4Pf else re.compile(rf"^{pfL}(\w+)$")

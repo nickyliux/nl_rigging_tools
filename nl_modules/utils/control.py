@@ -4,10 +4,6 @@ import maya.cmds as mc
 from nl_modules.utils import common
 import nl_modules
 
-# MOD_DIR = os.path.dirname(nl_modules.__file__)
-# CTL_PATH = MOD_DIR + "/data/control"
-# CTL_PATH = r"D:\_PROJECT\GIT\nl_rigging_tools_examples"
-
 
 def mirrorCtlShape(ctl):
     """Mirror ctl shape and return opposite"""
@@ -67,7 +63,7 @@ def saveCtl():
     allCtls.extend(["master_ctl", "master1_ctl", "master2_ctl"])
     if allCtls:
         mc.select(allCtls)
-        tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2)  # , dir=CTL_PATH)
+        tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2)
         if tgtFile:
             mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
             logging.info("Curve shape exported OK.")
@@ -80,9 +76,7 @@ def loadCtl():
     """
     from nl_modules.nodel.base.dag_node import DagNode
 
-    tgtFile = mc.fileDialog2(
-        fileFilter="*_ctl.ma", dialogStyle=2, fileMode=1
-    )  # , dir=CTL_PATH
+    tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, fileMode=1)
     if tgtFile:
         imported = mc.file(tgtFile, i=1, ns="ctl", returnNewNodes=1)
         ns = ""

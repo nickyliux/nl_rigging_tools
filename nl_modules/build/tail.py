@@ -47,7 +47,7 @@ class Tail(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting = CrvNode(
-            "setting", pf=rID, shape="bagua", scale=rSz * 2, top=1, moveY=rSz * 10
+            "setting", pf=rID, shape="bagua", scale=rSz, top=1, width=2, moveY=rSz * 10
         )
         self.setting.a.add("stretchy", min=0, max=1)
         localScale = self.setting.a.add("localScale", min=0.01, dv=1)
@@ -151,12 +151,7 @@ class Tail(RigModule):
         #
         for i in range(self.FK_BONE_NUM + 1):
             ctl = CrvNode(
-                f"{i}_fkc",
-                pf=rID,
-                shape="squR",
-                up="z",
-                scale=rSz * 2,
-                align=self.fkJnt[i],
+                f"{i}_fkc", pf=rID, shape="squR", up="z", scale=rSz, align=self.fkJnt[i]
             )
             self.rigNode.setMsg({f"fkc{i}": ctl})
             self.fkCtl.append(ctl)
@@ -217,7 +212,7 @@ class Tail(RigModule):
             onList=[self.fkCtl[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("subIkCtl", k=0, attrType="bool", dv=1),
+            self.setting.a.add("subIkCtl", k=0, attrType="bool", dv=0),
             onList=self.ofsCtl,
         )
         mc.hide(self.ikJnt, self.fkJnt, self.ofsJnt, self.rbSrf1, self.rbSrf2)

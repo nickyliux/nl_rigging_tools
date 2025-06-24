@@ -192,7 +192,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.saveProxy_BN.clicked.connect(proxy.saveProxy)
         self.UI.saveProxy_BN.setIcon(QIcon(":fileSave.png"))
 
-        self.UI.templateTarget_BN.setIcon(QIcon(":templated.png"))
         self.UI.genProxy_BN.clicked.connect(self.genProxy)
         self.UI.genProxy_BN.setIcon(QIcon(":play_S.png"))
         self.UI.selAllProxy_BN.clicked.connect(self.selAllProxy)
@@ -207,6 +206,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.mirrorProxy_BN.setIcon(QIcon(":polyMirrorGeometry.png"))
         self.UI.loadWrapTargetMesh_BN.clicked.connect(self.loadWrapTargetMesh)
         self.UI.templateTarget_BN.clicked.connect(self.templateTarget)
+        self.UI.templateTarget_BN.setIcon(QIcon(":templated.png"))
         self.UI.bindUsingProxy_BN.clicked.connect(self.bindUsingProxy)
         #
         #   bind
