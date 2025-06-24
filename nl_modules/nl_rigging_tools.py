@@ -264,10 +264,15 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             self.misc_importEnvAndShd_BN_clicked
         )
 
+        self.UI.assignPresetColor_BN.clicked.connect(self.assignPresetColor)
+
         # self.preset_refresh_BN_clicked()
         self.rigNode_refresh_BN_clicked()
         self.crvShape_refresh_BN_clicked()
         self.updateLoadWrapTargetMesh()
+
+    def assignPresetColor(self):
+        common.assignPresetShd(tgt=mc.ls(sl=1, tr=1))
 
     def updateLoadWrapTargetMesh(self):
         targetWrapMesh = mc.optionVar(q="targetWrapMesh")

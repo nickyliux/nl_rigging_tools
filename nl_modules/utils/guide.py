@@ -254,7 +254,7 @@ def saveTemplate():
         idDict[rigID] = guideDict
 
     tgtFile = mc.fileDialog2(
-        fileFilter="*.json", dialogStyle=2, fileMode=1  # , dir=TPL_PRESET
+        fileFilter="*.json", dialogStyle=2, fileMode=0  # , dir=TPL_PRESET
     )
     if tgtFile is None:
         return

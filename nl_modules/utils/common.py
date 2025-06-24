@@ -55,12 +55,36 @@ def matchMove(targetList, mode=None):
 
 def assignShd(n, geo=None, color=(0, 0, 0), faceID=None):
     """Assign shader to entire or faceID"""
+
     shd, sg = addShader(n, color=color)
     if faceID:
         for fID in faceID:
             mc.sets(f"{geo}.f[{fID}]", forceElement=sg)
     else:
         mc.sets(geo, forceElement=sg)
+
+
+def assignPresetShd(tgt=None):
+    from nl_modules.nodel.base.dag_node import DagNode
+
+    YELLOW = (0.995, 1.000, 0.236)  # 253, 255, 60
+    BLUE = (0.484, 0.663, 1)  # 123, 169, 255
+    RED = (0.710, 0.300, 0.300)  # 181, 76, 76
+
+    for t in tgt or []:
+        t = DagNode(t)
+        if t.type == "mesh":
+            color = YELLOW
+            name = "yellow_shd"
+            if t.name.startswith("lf"):
+                color = BLUE
+                name = "blue_shd"
+            elif t.name.startswith("rt"):
+                color = RED
+                name = "red_shd"
+            shd, sg = addShader(name, color=color)
+            mc.sets(t, forceElement=sg)
+    mc.select(cl=1)
 
 
 def addShader(n, shaderType="lambert", color=(1, 1, 1)):
@@ -78,6 +102,7 @@ def addShader(n, shaderType="lambert", color=(1, 1, 1)):
         shd = DepNode(mc.shadingNode(shaderType, name=n, asShader=1))
         shd.a.color.set(*color)
         shd.a.transparency.set(0.5, 0.5, 0.5)
+        shd.a.ambientColor.set(0.2, 0.2, 0.2)
         sg = DepNode(mc.sets(name=f"{n}SG", empty=1, renderable=1, noSurfaceShader=1))
         mc.connectAttr(f"{shd}.outColor", f"{sg}.surfaceShader")
     return shd, sg

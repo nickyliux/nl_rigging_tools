@@ -148,32 +148,8 @@ class JntNode(GrpNode):
             #   NOTE:  constraint must be after shader assignment,
             #   otherwise mc.sets(..) will show error
             #
-            # GREY = (0.5, 0.5, 0.5)
-            # COLOR = (0.7, 0.3, 0.3)
-            BLUE = (0.484, 0.663, 1)
-            RED = (0.710, 0.300, 0.300)
-            YELLOW = (0.995, 1.000, 0.236)
 
-            tgtColor = YELLOW
-            tgtName = "proxy_yellow_shd"
-            if proxy.name.startswith("lf"):
-                tgtColor = BLUE
-                tgtName = "proxy_blue_shd"
-            elif proxy.name.startswith("rt"):
-                tgtColor = RED
-                tgtName = "proxy_red_shd"
-
-            common.assignShd(tgtName, geo=proxy, color=tgtColor)
-
-            # faceCount = mc.polyEvaluate(proxy, f=1)
-            # faceID = []
-            # if faceCount == 10:
-            #     faceID = [0, 1, 4, 5]
-            # elif faceCount == 18:
-            #     faceID = [0, 1, 4, 5, 8, 9, 12, 13]
-            # elif faceCount == 26:
-            #     faceID = [0, 1, 4, 5, 8, 9, 12, 13, 16, 17, 20, 21]
-            # common.assignShd("proxy_color_shd", geo=proxy, color=COLOR) #, faceID=faceID)
+            common.assignPresetShd(tgt=[proxy])
 
             self.cstParSca(proxyOfs, mo=1)
             return proxy
