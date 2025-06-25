@@ -686,10 +686,7 @@ class RigModule(RigBase):
         auto_ikH.hide()
         # self.joints_am[0].hide()
 
-    def build_scapular(self, ikc=None, fkc=None, jnts=None, EXTRA=0, scap_fkc=None):
-        """
-        Add scapular functions
-        """
+    def build_scapular(self, ikc=None, fkc=None, jnts=None, EXTRA=0, scapCtl=None):
         from nl_modules.nodel.ik_node import IkNode
 
         rID, rSz, xDr = self.getMyVar()
@@ -721,16 +718,12 @@ class RigModule(RigBase):
             #
             #   add leg lock function
             #
+            aim = (xDr, 0, 0)
+            u = (0, xDr, 0)
+            wu = (0, 0, xDr)
+
             j0, j1 = JntNode.makeTwoJC2(
-                "legLock",
-                pf=rID,
-                snap=ikc,
-                aim=(xDr, 0, 0),
-                u=(0, xDr, 0),
-                p=ikc,
-                r=rSz * 2,
-                color=13,
-                aimTgt=hipJ,
+                "legLock", pf=rID, snap=ikc, aim=aim, u=u, p=ikc, r=rSz, aimTgt=hipJ
             )
             IkNode("legLock", pf=rID, sj=j0, ee=j1, quat=1, p=mainGrp.offset, vis=0)
             legLock = ikc.a.add("legLock", min=0, max=1)
@@ -740,23 +733,42 @@ class RigModule(RigBase):
             #
             #   add extra scapular joint
             #
-            scap_fkc.snapAlignTo(uprJ, fkc, p=fkc)
-            scap_fkc.addOffsetGrp()
+            # scap_fkc.snapAlignTo(uprJ, fkc, p=fkc)
+            scapCtl.snapTo(uprJ, p=self.CTL_DATA)
+            if xDr < 0:
+                scapCtl.a.rx.set(180)
+
+            scapCtl.addOffsetGrp()
             j0, j1 = JntNode.makeTwoJC2(
-                "scapTip",
+                "blade",
                 pf=rID,
                 snap=uprJ,
-                aim=(xDr, 0, 0),
-                u=(0, xDr, 0),
-                wu=(0, 0, xDr),
+                aim=aim,
+                u=u,
+                wu=wu,
                 p=uprJ,
                 r=rSz,
-                color=1,
                 aimTgt=hipJ,
             )
-            self.scap_fkc.cstOri(j0, mo=1)
+            scapCtl.cstOri(j0, mo=1)
             self.bindJnts.append(j0)
             # j0.hide()
+
+            scapHelper = DagNode(rID + "_scapHelper_guide")
+            if scapHelper.exists():
+                j0, j1 = JntNode.makeTwoJC(
+                    "scapHelper",
+                    pf=rID,
+                    align=scapHelper,
+                    align_end=uprJ,
+                    r=rSz,
+                    p=self.SKL_DATA,
+                )
+                IkNode("scapHelperJ", pf=rID, sj=j0, ee=j1, p=scapCtl)
+                ofs = fkc.addOffsetGrp()
+                j1.cstPoi(ofs, mo=1)
+                mainGrp.cstPar(scapCtl.offset, mo=1)
+                mainGrp.cstPar(j0, mo=1)
 
         return mainGrp
 

@@ -74,7 +74,7 @@ class LegQd(RigModule):
         self.ballG_ikc = None
         self.extra_ikc = None
         self.scapularG = None
-        self.scap_fkc = None
+        self.quadScap_ikc = None
 
     def genSk(self):
         rID, rSz, xDr = self.getMyVar()
@@ -112,15 +112,23 @@ class LegQd(RigModule):
 
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
+        scale = xDr * rSz
 
         self.setting = CrvNode(
-            "setting", pf=rID, shape="bagua", scale=rSz, top=1, width=2, moveY=rSz * 10
+            "setting", pf=rID, shape="cross", scale=rSz, top=1, width=2
         )
-        scale = xDr * rSz
-        self.hip_fkc = CrvNode("hip_fkc", pf=rID, shape="cubeR", up="x", scale=scale)
-        self.upr_fkc = CrvNode("upr_fkc", pf=rID, shape="cubeR", up="x", scale=scale)
-        self.lwr_fkc = CrvNode("lwr_fkc", pf=rID, shape="cubeR", up="x", scale=scale)
-        self.palm_fkc = CrvNode("palm_fkc", pf=rID, shape="cubeR", up="x", scale=scale)
+        self.hip_fkc = CrvNode(
+            "hip_fkc", pf=rID, shape="cubeR", up="x", scale=scale, top=1
+        )
+        self.upr_fkc = CrvNode(
+            "upr_fkc", pf=rID, shape="cubeR", up="x", scale=scale, top=1
+        )
+        self.lwr_fkc = CrvNode(
+            "lwr_fkc", pf=rID, shape="cubeR", up="x", scale=scale, top=1
+        )
+        self.palm_fkc = CrvNode(
+            "palm_fkc", pf=rID, shape="cubeR", up="x", scale=scale, top=1
+        )
         self.digit_fkc = CrvNode(
             "digit_fkc", pf=rID, shape="cubeR", up="x", scale=scale
         )
@@ -150,9 +158,14 @@ class LegQd(RigModule):
             }
         )
         if self.SCAPULAR_EXTRA:
-            self.scap_fkc = CrvNode("scap_fkc", pf=rID, shape="arrow", scale=scale / 2)
-            # moveX=rSz * 35 * -xDr,
-            # scale=maths.mul(1, 1, xDr, rSz / 4),
+            self.quadScap_ikc = CrvNode(
+                "quadScap_ikc",
+                pf=rID,
+                shape="arrow2",
+                up="x",
+                scale=scale * 2,
+                moveX=scale * 20,
+            )
 
     def build(self):
         """Build rig for joints
@@ -164,6 +177,8 @@ class LegQd(RigModule):
                             ball
                                 tip
         """
+        rID, rSz, xDr = self.getMyVar()
+
         self.build_module()
         self.joints = self.rootJ.allChildrenJt2
         self.hip, self.upr, self.lwr, self.palm, self.digit, self.ball, self.tip = (
@@ -183,7 +198,7 @@ class LegQd(RigModule):
             fkc=self.fkCtl[0],
             jnts=self.joints,
             EXTRA=self.SCAPULAR_EXTRA,
-            scap_fkc=self.scap_fkc,
+            scapCtl=self.quadScap_ikc,
         )
 
         self.singleBallCtl_setup()
@@ -388,7 +403,7 @@ class LegQd(RigModule):
         self.ballG_ikc = ballRollG.addOffsetGrp(below=1)
         cName = rID + "_ballG_ikc"
         CrvNode(self.ballG_ikc)(
-            name=cName, shape="stickC", scale=-rSz * xDr / 3, rotate=(0, 90, 0)
+            name=cName, shape="stickC", scale=-rSz * xDr / 3, rotateY=90
         )
         self.subCtls.append(self.ballG_ikc)
         #
@@ -594,11 +609,11 @@ class LegQd(RigModule):
     #     self.add_bind_jnt_set(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def setup_vis(self):
-        # self.ctl_vis_toggle(
-        #     self.setting.a["fkIkBlend"],
-        #     onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
-        #     offList=self.fkCtl[1:-1],
-        # )
+        self.ctl_vis_toggle(
+            self.setting.a["fkIkBlend"],
+            onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
+            offList=self.fkCtl[1:-1],
+        )
         self.ctl_vis_toggle(
             self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
             onList=self.subCtls,
@@ -620,7 +635,7 @@ class LegQd(RigModule):
             ctl.a.showAttr(t=1, r=1, s=1)
 
         if self.SCAPULAR_EXTRA:
-            self.scap_fkc.a.showAttr(t=1, r=1)
+            self.quadScap_ikc.a.showAttr("ty", "tz", r=1)
 
     def setup_rotate_order(self):
         for c in self.fkCtl + self.ikCtl + [self.lwr]:

@@ -112,27 +112,28 @@ class LegBp(RigModule):
 
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
+        sca = xDr * rSz
 
-        self.setting = CrvNode("setting", pf=rID, shape="bagua", scale=-rSz * 2, top=1)
+        self.setting = CrvNode(
+            "setting", pf=rID, shape="cross", scale=sca, top=1, width=2
+        )
         self.hip_fkc = CrvNode(
-            "hip_fkc",
-            pf=rID,
-            up="-y",
-            shape="squR",
-            scale=rSz * xDr,
-            moveY=rSz * xDr * -15,
+            "hip_fkc", pf=rID, shape="cubeR", up="x", scale=sca, top=1
         )
-        scale = xDr * rSz * 2
-        self.upr_fkc = CrvNode("upr_fkc", pf=rID, shape="cubeR", up="x", scale=scale)
-        self.lwr_fkc = CrvNode("lwr_fkc", pf=rID, shape="cubeR", up="x", scale=scale)
-        self.palm_fkc = CrvNode("palm_fkc", pf=rID, shape="cubeR", up="x", scale=scale)
-        self.ball_fkc = CrvNode(
-            "ball_fkc", pf=rID, up="x", shape="cubeR", scale=scale / 2
+        self.upr_fkc = CrvNode(
+            "upr_fkc", pf=rID, shape="cubeR", up="x", scale=sca, top=1
         )
-        self.ikc = CrvNode("ikc", pf=rID, shape="foot", scale=rSz * 2)
-        self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=rSz)
+        self.lwr_fkc = CrvNode(
+            "lwr_fkc", pf=rID, shape="cubeR", up="x", scale=sca, top=1
+        )
+        self.palm_fkc = CrvNode(
+            "palm_fkc", pf=rID, shape="cubeR", up="x", scale=sca, top=1
+        )
+        self.ball_fkc = CrvNode("ball_fkc", pf=rID, up="x", shape="cubeR", scale=sca)
+        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=sca * 2)
+        self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=sca * 3)
         self.smart_ctl = CrvNode(
-            "smart_ctl", pf=rID, shape="squR", scale=rSz / 4, width=2
+            "smart_ctl", pf=rID, shape="squR", scale=sca / 2, width=2
         )
 
         self.rigNode.setMsg(
@@ -150,7 +151,7 @@ class LegBp(RigModule):
         )
         if self.SCAPULAR_EXTRA:
             self.scap_fkc = CrvNode(
-                "scap_fkc", pf=rID, shape="sphere", scale=rSz, moveX=rSz * 45 * -xDr
+                "scap_fkc", pf=rID, shape="sphere", scale=rSz, moveX=sca * -45
             )
 
     def build(self):
@@ -181,7 +182,7 @@ class LegBp(RigModule):
             fkc=self.fkCtl[0],
             jnts=self.joints,
             EXTRA=self.SCAPULAR_EXTRA,
-            scap_fkc=self.scap_fkc,
+            scapCtl=self.scap_fkc,
         )
 
         if self.RBN_BONES:
@@ -403,7 +404,7 @@ class LegBp(RigModule):
             pf=rID,
             shape="stickC",
             scale=-rSz * xDr / 2,
-            rotate=(0, 90, 0),
+            rotateY=90,
             width=2,
         )
         self.ikCtl.append(self.ballG_ikc)

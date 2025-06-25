@@ -28,15 +28,18 @@ class CrvNode(GrpNode):
         p=None,
         color=0,
         shape="circle",
-        rotate=None,
-        scale=None,
-        scaleX=1,
-        scaleY=1,
-        scaleZ=1,
         move=None,
         moveX=0,
         moveY=0,
         moveZ=0,
+        rotate=None,
+        rotateX=0,
+        rotateY=0,
+        rotateZ=0,
+        scale=None,
+        scaleX=1,
+        scaleY=1,
+        scaleZ=1,
         dspType=0,
         width=-1,
         up="",
@@ -88,15 +91,20 @@ class CrvNode(GrpNode):
 
             if rotate:
                 self.cv_rotate(*rotate)
+            else:
+                vec = [rotateX, rotateY, rotateZ]
+                if any(vec):
+                    self.cv_rotate(*vec)
+
             if scale:
                 if isinstance(scale, (tuple, list)):
                     self.cv_scale(*scale)
                 elif isinstance(scale, (int, float)):
                     self.cv_scale(scale)
             else:
-                vec = [moveX, moveY, moveZ]
+                vec = [scaleX, scaleY, scaleZ]
                 if vec != [1, 1, 1]:
-                    self.cv_move(*vec)
+                    self.cv_scale(*vec)
 
             if move:
                 self.cv_move(*move)

@@ -14,9 +14,10 @@ class DagNode(DepNode):
         n = DagNode('new', nodeType='transform')
     """
 
-    YELLOW = (0.995, 1.000, 0.236)  # 253, 255, 60
-    BLUE = (0.484, 0.663, 1)  # 123, 169, 255
-    RED = (0.710, 0.300, 0.300)  # 181, 76, 76
+    YELLOW = (0.995, 0.8, 0.236)
+    # BLUE = (0.484, 0.663, 1)
+    BLUE = (0.36, 0.66, 1)
+    RED = (0.710, 0.300, 0.300)
 
     def __init__(self, n, nodeType=None):
         self._dag = None
