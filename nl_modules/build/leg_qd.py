@@ -594,20 +594,15 @@ class LegQd(RigModule):
     #     self.add_bind_jnt_set(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def setup_vis(self):
-        self.ctl_vis_toggle(
-            self.setting.a["fkIkBlend"],
-            onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
-            offList=self.fkCtl[1:-1],
-        )
+        # self.ctl_vis_toggle(
+        #     self.setting.a["fkIkBlend"],
+        #     onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
+        #     offList=self.fkCtl[1:-1],
+        # )
         self.ctl_vis_toggle(
             self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
             onList=self.subCtls,
         )
-        # if self.all_bend:
-        #     self.ctl_vis_toggle(
-        #         self.setting.a.add("bowCtls", min=0, max=1, dv=1, k=0),
-        #         onList=self.all_bend,
-        #     )
         [ikh.hide() for ikh in self.all_ikH.values()]
 
         mc.hide(self.joints_fk, self.joints_ik)

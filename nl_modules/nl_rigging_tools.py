@@ -321,15 +321,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         path = os.path.realpath(MAYA_TPL_DIR)
         subprocess.Popen(f'explorer "{path}"')
 
-    # def viewSkel_BN_clicked(self):
-    #     import subprocess
-
-    #     path = os.path.realpath(PATH_SKEL)
-    #     subprocess.Popen(f'explorer "{path}"')
-
-    # def loadTemplate_BN_clicked(self):
-    #     pass
-
     #     items = self.UI.preset_LW.selectedItems()
     #     if items:
     #         itemText = items[0].text()
@@ -338,22 +329,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     # def loadTemplate_BN_dbClicked(self, item):
     #     itemText = item.text()
     #     self.load_preset(itemText)
-
-    # def load_preset(self, preset_name):
-    #     f = f"{PATH_PRESET}\\{preset_name}.json"
-    #     if os.path.isfile(f):
-    #         mc.refresh(su=1)
-    #         logging.info(f'load preset "{preset_name}"')
-    #         guide.loadPreset(f)
-    #         common.setViewport()
-    #         mc.refresh(su=0)
-    #         mc.select(cl=1)
-    #         self.rigNode_refresh_BN_clicked()
-    #     else:
-    #         logging.info(f"missing file: {f}")
-
-    # def saveTemplate_BN_clicked(self):
-    #     pass
 
     # items = self.UI.preset_LW.selectedItems()
     # if items:
@@ -398,38 +373,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if tgtFile:
             file.importFile(tgtFile[0])
             common.setViewport()
-
-    # def importSkel_BN_clicked(self):
-    #     items = self.UI.preset_LW.selectedItems()
-    #     if items:
-    #         itemText = items[0].text()
-    #         skelFile = f"{PATH_SKEL}/{itemText}_mdl.ma"
-
-    #         if os.path.isfile(skelFile):
-    #             file.importFile(skelFile)
-    #             common.setViewport()
-    #         else:
-    #             logging.info(f"missing file: {skelFile}")
-
-    # def preset_openSkel_BN_clicked(self):
-    #     items = self.UI.preset_LW.selectedItems()
-    #     if items:
-    #         itemText = items[0].text()
-    #         skelFile = f"{PATH_SKEL}/{itemText}_mdl.ma"
-    #         if os.path.isfile(skelFile):
-    #             file.openFile(skelFile)
-    #         else:
-    #             logging.info(f"missing file: {skelFile}")
-
-    # def preset_refresh_BN_clicked(self):
-    #     self.UI.preset_LW.clear()
-
-    #     items = [
-    #         f.split(".")[0]
-    #         for f in os.listdir(PATH_PRESET)
-    #         if os.path.isfile(PATH_PRESET + "/" + f)
-    #     ]
-    #     self.UI.preset_LW.addItems(items)
 
     def rigNode_LW_dblClicked(self, item):
         """Show attribute editor for rigNode"""
@@ -494,8 +437,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 db="No",
             )
             if result == "Yes":
-                tgtFile = f"{SHAPE_PATH}\\{itemText}.json"
-                file.deleteFile(tgtFile)
+                file.deleteFile(f"{SHAPE_PATH}\\{itemText}.json")
                 self.crvShape_refresh_BN_clicked()
 
     def crvShape_removeFrInst_BN_clicked(self):
@@ -620,20 +562,11 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def delSkinForAllMeshes(self):
         from nl_modules.nodel.msh_node import MshNode
 
-        #
-        #   collect all skincluster and delete
-        #
-        allSkin = []
-        for m in set(mc.ls(type="mesh")):
-            sk = MshNode(m).skinCluster
-            if sk and sk not in allSkin:
-                allSkin.append(sk)
-
-        num = len(allSkin)
-        for sk in allSkin:
-            sk.delete()
-
-        logging.info(f"{num} skinClusters deleted.")
+        sel = mc.ls(type="mesh") or []
+        count = 0
+        for s in sel:
+            count += MshNode(s).delSkin()
+        logging.info(f"{count} skinClusters deleted.")
 
     def bindUsingProxy(self):
         pass

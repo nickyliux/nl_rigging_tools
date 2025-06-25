@@ -41,6 +41,8 @@ class MshNode(DagNode):
         sc = self.skinCluster
         if sc:
             sc.delete()
+            return 1
+        return 0
 
     @property
     def joints(self):
