@@ -1777,7 +1777,7 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="spacing">
-       <number>4</number>
+       <number>5</number>
       </property>
       <property name="topMargin">
        <number>3</number>
@@ -1935,7 +1935,7 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_10">
       <property name="spacing">
-       <number>4</number>
+       <number>5</number>
       </property>
       <property name="topMargin">
        <number>3</number>
@@ -2209,11 +2209,11 @@
        <x>0</x>
        <y>120</y>
        <width>220</width>
-       <height>51</height>
+       <height>81</height>
       </rect>
      </property>
      <property name="title">
-      <string>Guide Tools</string>
+      <string>GUIDE TOOLS</string>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -2224,12 +2224,12 @@
         <x>0</x>
         <y>20</y>
         <width>221</width>
-        <height>25</height>
+        <height>21</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <property name="spacing">
-        <number>4</number>
+        <number>5</number>
        </property>
        <item>
         <widget class="QPushButton" name="misc_buildLineSel_BN">
@@ -2289,6 +2289,19 @@
        </item>
       </layout>
      </widget>
+     <widget class="QPushButton" name="addMirrorAttr_BN">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>50</y>
+        <width>221</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Add Mirror Attr</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QGroupBox" name="groupBox_11">
      <property name="geometry">
@@ -2300,7 +2313,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Skel Meshes</string>
+      <string>PREPARE FOR SK</string>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -2311,12 +2324,12 @@
         <x>0</x>
         <y>20</y>
         <width>221</width>
-        <height>25</height>
+        <height>21</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="model_LO_7">
        <property name="spacing">
-        <number>4</number>
+        <number>5</number>
        </property>
        <property name="sizeConstraint">
         <enum>QLayout::SetDefaultConstraint</enum>
@@ -2443,7 +2456,7 @@
         <x>0</x>
         <y>50</y>
         <width>221</width>
-        <height>25</height>
+        <height>21</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -2579,13 +2592,13 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>170</y>
+       <y>220</y>
        <width>221</width>
        <height>51</height>
       </rect>
      </property>
      <property name="title">
-      <string>Shader</string>
+      <string>COLOR</string>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -2596,11 +2609,11 @@
         <x>0</x>
         <y>20</y>
         <width>221</width>
-        <height>23</height>
+        <height>20</height>
        </rect>
       </property>
       <property name="text">
-       <string>Assign Preset Color to Sel</string>
+       <string>Assign Preset to Sel</string>
       </property>
      </widget>
     </widget>

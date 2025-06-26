@@ -149,7 +149,7 @@ class JntNode(GrpNode):
             #   otherwise mc.sets(..) will show error
             #
 
-            common.assignPresetShd(tgt=[proxy])
+            common.assignPresetShd([proxy])
 
             self.cstParSca(proxyOfs, mo=1)
             return proxy

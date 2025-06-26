@@ -43,7 +43,7 @@ class Head(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
         self.head_fkc = CrvNode(
-            "head_fkc", pf=rID, shape="squR", scale=rSz * 2, moveY=rSz * 10
+            "head_fkc", pf=rID, shape="squR", scale=rSz * 2, moveY=rSz * 30
         )
         self.jaw_fkc = CrvNode("jaw_fkc", pf=rID, scale=rSz)
         self.rigNode.setMsg(

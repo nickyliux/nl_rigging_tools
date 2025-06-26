@@ -162,7 +162,7 @@ def mirrorProxy():
                 g.a.sx.set(-1)
                 dup | oppParent
                 g.delete()
-                common.assignPresetShd(tgt=[dup])
+                common.assignPresetShd([dup])
     mc.select(cl=1)
 
 

@@ -555,11 +555,6 @@ class RigModule(RigBase):
         (bank < 0).setCdn(ifTrue=bank, ifFalse=0) >> inRollG.a.rz
         (bank > 0).setCdn(ifTrue=bank, ifFalse=0) >> outRollG.a.rz
 
-    def add_mirror_attr(self, targets):
-        for t in targets:
-            if t.exists():
-                t.a.add("wsMirror", lock=1, cb=0)
-
     def build_digit_ik(self, ikTgt, scale=1, p=None):
         """IK setup for single digit"""
         from nl_modules.nodel.ik_node import IkNode
@@ -870,7 +865,7 @@ class RigModule(RigBase):
             common.sdk2(hit, driven, 0.5, 1, tangent=2)
             common.sdk2(hit, driven, 0.9, 22, tangent=2)
 
-        self.add_mirror_attr(allPsdCtl)
+        common.add_mirror_attr(allPsdCtl)
         self.add_ctl_set(allPsdCtl + [ctl_main])
 
         aimCtl = self.masterC2.a.add("aimCtl", attrType="bool", dv=1)

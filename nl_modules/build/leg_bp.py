@@ -625,7 +625,7 @@ class LegBp(RigModule):
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_ratio(self.bindJnts, 3)
 
-        self.add_mirror_attr([self.ikc, self.ikc_gimbal, self.smart_ctl])
+        common.add_mirror_attr([self.ikc, self.ikc_gimbal, self.smart_ctl])
         ctlSet = []
         ctlSet.extend(
             self.fkCtl

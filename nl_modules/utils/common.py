@@ -64,22 +64,27 @@ def assignShd(n, geo=None, color=(0, 0, 0), faceID=None):
         mc.sets(geo, forceElement=sg)
 
 
-def assignPresetShd(tgt=None):
+def assignPresetShd(tgt):
     from nl_modules.nodel.base.dag_node import DagNode
 
     for t in tgt or []:
         t = DagNode(t)
+
+        color = DagNode.YELLOW
+        name = "yellow_shd"
+        if t.name.startswith("lf"):
+            color = DagNode.BLUE
+            name = "blue_shd"
+        elif t.name.startswith("rt"):
+            color = DagNode.RED
+            name = "red_shd"
+
         if t.type == "mesh":
-            color = DagNode.YELLOW
-            name = "yellow_shd"
-            if t.name.startswith("lf"):
-                color = DagNode.BLUE
-                name = "blue_shd"
-            elif t.name.startswith("rt"):
-                color = DagNode.RED
-                name = "red_shd"
             shd, sg = addShader(name, color=color)
             mc.sets(t, forceElement=sg)
+        elif t.type == "nurbsCurve":
+            t.color = color
+
     mc.select(cl=1)
 
 
@@ -542,6 +547,15 @@ def getRigCtls(rigNodes):
             return [DagNode(obj) for obj in objs]
     else:
         return []
+
+
+def add_mirror_attr(tgts):
+    from nl_modules.nodel.base.dag_node import DagNode
+
+    for t in tgts:
+        t = DagNode(t)
+        if t.exists():
+            t.a.add("wsMirror", lock=1, cb=0)
 
 
 # def calcBB(tgt):

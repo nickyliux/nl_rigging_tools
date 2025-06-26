@@ -259,6 +259,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.misc_retopo150_BN.clicked.connect(partial(modeling.retopo, faceNum=150))
         self.UI.misc_retopo500_BN.clicked.connect(partial(modeling.retopo, faceNum=500))
 
+        self.UI.addMirrorAttr_BN.clicked.connect(self.addMirrorAttr)
+
         self.UI.misc_buildLineSel_BN.clicked.connect(CrvNode.buildLineLinkedSel)
         self.UI.misc_importEnvAndShd_BN.clicked.connect(
             self.misc_importEnvAndShd_BN_clicked
@@ -271,8 +273,11 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.crvShape_refresh_BN_clicked()
         self.updateLoadWrapTargetMesh()
 
+    def addMirrorAttr(self):
+        common.add_mirror_attr(mc.ls(sl=1, tr=1))
+
     def assignPresetColor(self):
-        common.assignPresetShd(tgt=mc.ls(sl=1, tr=1))
+        common.assignPresetShd(mc.ls(sl=1, tr=1))
 
     def updateLoadWrapTargetMesh(self):
         targetWrapMesh = mc.optionVar(q="targetWrapMesh")

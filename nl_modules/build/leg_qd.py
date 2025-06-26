@@ -163,7 +163,7 @@ class LegQd(RigModule):
                 pf=rID,
                 shape="arrow2",
                 up="x",
-                scale=scale * 2,
+                scale=scale,
                 moveX=scale * 20,
             )
 
@@ -658,7 +658,7 @@ class LegQd(RigModule):
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_ratio(self.bindJnts, 2.5)
 
-        self.add_mirror_attr([self.ikc, self.ikc_gimbal, self.pvc, self.smart_ctl])
+        common.add_mirror_attr([self.ikc, self.ikc_gimbal, self.pvc, self.smart_ctl])
         ctlSet = (
             self.fkCtl
             + self.ikCtl
