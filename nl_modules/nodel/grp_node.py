@@ -95,7 +95,7 @@ class GrpNode(DagNode):
         mc.xform(self.cvs, r=1, t=pos, ws=1)
 
     def cv_drop(self):
-        self.cv_move(0, -self.o.bb[1], 0)
+        self.cv_move(0, -self.o.bb0[1], 0)
 
     def cv_rotate(self, *args, **kwargs):
         """Rotate all cvs of the curve"""

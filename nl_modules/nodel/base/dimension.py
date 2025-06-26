@@ -20,20 +20,28 @@ class Dimension:
         return self._node.a.worldMatrix.exists()
 
     @property
+    def bb0(self):
+        #
+        #   bb of current object only
+        #
+        dup = self._node.duplicate()
+        mc.delete(dup.children)
+        bb = mc.xform(dup, q=1, ws=1, bb=1)
+        mc.delete(dup)
+        return bb
+
+    @property
     def bb(self):
+        #
+        #   bb including hidden children
+        #
         return mc.xform(self._node, q=1, ws=1, bbi=1)
 
     @property
-    def diagonal2(self):
-        import math
-
-        return math.sqrt(self.width2**2 + self.height2**2 + self.depth2**2)
-
-    @property
     def bb2(self):
-        # calculated bbox
-        from nl_modules.nodel.base.dag_node import DagNode
-
+        #
+        #   calculated bbox using position of all children
+        #
         allX = []
         allY = []
         allZ = []
@@ -67,6 +75,12 @@ class Dimension:
     @property
     def depth2(self):
         return self.bb2[5] - self.bb2[2]
+
+    @property
+    def diagonal2(self):
+        import math
+
+        return math.sqrt(self.width2**2 + self.height2**2 + self.depth2**2)
 
     @property
     def bbCenter(self):
