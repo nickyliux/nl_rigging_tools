@@ -33,8 +33,8 @@ class NeckQd(SpineQd):
         self.add_proxy_ratio(self.bindJnts, 2)
 
         ctls = self.ikCtls + [self.cog_ctl, self.setting]
-        ctls.remove(self.base_ctl)
-        ctls.remove(self.tangent0_ctl)
+        # ctls.remove(self.base_ctl)
+        # ctls.remove(self.tangent0_ctl)
 
         self.add_ctl_set(ctls)
 

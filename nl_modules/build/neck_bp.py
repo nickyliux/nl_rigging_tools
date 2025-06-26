@@ -14,3 +14,8 @@ class NeckBp(SpineBp):
                 "anchorM1": anchorM1Tgt,
             }
         )
+
+    def setup_space(self):
+        self.rigNode.setMsg({"space_COG": self.cog_ctl})
+        self.rigNode.setMsg({"space_neck": self.chest_ctl})
+        # self.rigNode.setMsg({"space_neckBase": self.base_ctl})

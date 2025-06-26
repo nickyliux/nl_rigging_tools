@@ -483,7 +483,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             jnt_grp = GrpNode("jnt_grp")
             for sN in meshSel:
                 sf = "_rbJnt" if rb else "_refJnt"
-                color = Color.RED if rb else Color.L_BLUE
+                color = Color.RED if rb else Color.WHITE
                 jnt = JntNode(sN + sf, color=color, p=jnt_grp)
                 jnt.a.t.set(*sN.o.bbCenter)
         mc.select(cl=1)
@@ -584,13 +584,15 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def loadWrapTargetMesh(self):
         sel = mc.ls(sl=1)
+        targetWrapMesh = mc.optionVar(q="targetWrapMesh")
+        tgt = DagNode(targetWrapMesh)
+        if tgt.exists():
+            tgt.dspType = 0
         if sel:
-            targetWrapMesh = mc.optionVar(q="targetWrapMesh")
-            tgt = DagNode(targetWrapMesh)
-            if tgt.exists():
-                tgt.dspType = 0
             mc.optionVar(sv=("targetWrapMesh", sel[0]))
             self.updateLoadWrapTargetMesh()
+        else:
+            mc.select(tgt)
 
     def genProxy(self):
         proxy.genProxyMesh()

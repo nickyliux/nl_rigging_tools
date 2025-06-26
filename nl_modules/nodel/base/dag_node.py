@@ -488,13 +488,14 @@ class DagNode(DepNode):
         if not self.exists():
             raise ValueError("Can not duplicate None !")
 
-        node = mc.duplicate(self, **kwargs)[0]
-
-        if name:
-            node = DagNode(node).rename(name)
-
-        className = self.__class__.__name__
-        return eval(className)(node)
+        classObj = eval(self.__class__.__name__)
+        if classObj:
+            node = classObj(mc.duplicate(self, **kwargs)[0])
+            if name:
+                node.rename(name)
+            return node
+        else:
+            logging.info("Unknown object type to duplicate !")
 
     def displayLocalAxis(self, state=True):
         """Show/hide display local axis"""

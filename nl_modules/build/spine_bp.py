@@ -51,7 +51,7 @@ class SpineBp(RigModule):
         self.setting = CrvNode("setting", pf=rID, shape="cross", scale=rSz * 5, top=1)
         self.cog_ctl = CrvNode("cog_ctl", pf=rID, shape="cog2", scale=rSz * 8)
         self.chest_ctl = CrvNode("chest_ctl", pf=rID, scale=rSz * 7)
-        self.mid_ctl = CrvNode("mid_ctl", pf=rID, scale=rSz * 7)
+        self.mid_ctl = CrvNode("mid_ctl", shape="square", pf=rID, scale=rSz * 7)
         self.hip_ctl = CrvNode("hip_ctl", pf=rID, scale=rSz * 7)
         self.rigNode.setMsg(
             {

@@ -73,14 +73,14 @@ class SpineQd(RigModule):
             "cog_ctl",
             pf=rID,
             shape="trapezoid",
-            scale=maths.mul(0.5, 1, 2, rSz),
+            scale=maths.mul(1, 1, 2, rSz),
             moveY=50 * rSz,
             p=self.IK_GRP,
         )
         self.base_ctl = CrvNode(
             "base_ctl", pf=rID, up="z", scale=maths.mul(5, 5, 2, rSz)
         )
-        self.fore_ctl = self.base_ctl.duplicate(name="fore_ctl")
+        self.fore_ctl = self.base_ctl.duplicate(name=rID + "_fore_ctl")
 
         self.mid_ctl = CrvNode("mid_ctl", pf=rID, shape="square", up="z", scale=rSz * 4)
         self.tangent0_ctl = CrvNode(
@@ -93,7 +93,7 @@ class SpineQd(RigModule):
             moveY=rSz * 30,
             top=1,
         )
-        self.tangent1_ctl = self.tangent0_ctl.duplicate(name="tangent1_ctl")
+        self.tangent1_ctl = self.tangent0_ctl.duplicate(name=rID + "_tangent1_ctl")
         if self.END_CTL:
             self.end_ctl = CrvNode(
                 "end_ctl",
@@ -164,11 +164,11 @@ class SpineQd(RigModule):
 
         ikj2.a.r.set(0, 0, 0)
 
-        # if self.is_neck():
-        #     self.cog_ctl.alignTo(self.RT_GUIDE, addOfs=1)
+        if self.is_neck():
+            self.cog_ctl.alignTo(self.RT_GUIDE, addOfs=1)
         #     # self.cog_ctl(shape="cube", scale=rSz * 3)  # , rotateX=90)
-        # else:
-        self.cog_ctl.snapTo(self.RT_GUIDE, addOfs=1)
+        else:
+            self.cog_ctl.snapTo(self.RT_GUIDE, addOfs=1)
         #
         #   parenting
         #
@@ -380,10 +380,10 @@ class SpineQd(RigModule):
 
     def setup_vis(self):
 
-        attr = self.base_ctl.a.add("tangentCtl", attrType="bool", k=0, dv=1)
-        attr >> self.tangent0_ctl.shape.a.v
-        attr = self.fore_ctl.a.add("tangentCtl", attrType="bool", k=0, dv=1)
-        attr >> self.tangent1_ctl.shape.a.v
+        attr = self.base_ctl.a.add("tangentCtl", attrType="bool", k=0)  # , dv=1)
+        attr >> self.tangent0_ctl.a.v
+        attr = self.fore_ctl.a.add("tangentCtl", attrType="bool", k=0)  # , dv=1)
+        attr >> self.tangent1_ctl.a.v
 
         if self.is_neck():
             # mc.hide(self.base_ctl.shape, self.tangent0_ctl.shape)
@@ -438,6 +438,7 @@ class SpineQd(RigModule):
         ctls = self.ikCtls + [self.cog_ctl, self.setting]
         if self.END_CTL:
             ctls.append(self.end_ctl)
+
         self.add_ctl_set(ctls)
 
         self.setup_space()
