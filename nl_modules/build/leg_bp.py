@@ -130,7 +130,7 @@ class LegBp(RigModule):
             "palm_fkc", pf=rID, shape="cubeR", up="x", scale=sca, top=1
         )
         self.ball_fkc = CrvNode("ball_fkc", pf=rID, up="x", shape="cubeR", scale=sca)
-        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=sca)
+        self.ikc = CrvNode("ikc", pf=rID, shape="foot", scale=rSz * 2)
         self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=sca * 2)
         self.smart_ctl = CrvNode(
             "smart_ctl", pf=rID, shape="squR", scale=sca / 2, width=2
@@ -404,7 +404,7 @@ class LegBp(RigModule):
             pf=rID,
             shape="stickC",
             scale=-rSz * xDr / 2,
-            rotateY=90,
+            # rotateY=90,
             width=2,
         )
         self.ikCtl.append(self.ballG_ikc)

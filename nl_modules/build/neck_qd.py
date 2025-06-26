@@ -20,8 +20,9 @@ class NeckQd(SpineQd):
         spaces = "neckBase, COG, master"
         self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
 
-        self.cog_ctl.a.add("spaceType", dv=1, k=0, cb=0)
-        self.rigNode.setMsg({"spaceHolder2": self.cog_ctl})
+        # self.cog_ctl.a.add("spaceType", dv=1, k=0, cb=0)
+        self.base_ctl.a.add("spaceType", dv=1, k=0, cb=0)
+        self.rigNode.setMsg({"spaceHolder2": self.base_ctl})
         spaces = "chest, COG, master"
         self.rigNode.a.add("spaceName2", attrType="string", txt=spaces)
 

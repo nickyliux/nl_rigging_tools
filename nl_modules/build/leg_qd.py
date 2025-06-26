@@ -136,12 +136,12 @@ class LegQd(RigModule):
             "ball_fkc", pf=rID, shape="cubeR", up="x", scale=rSz / 2
         )
 
-        self.ikc = CrvNode("ikc", pf=rID, shape="cube", scale=scale)
+        self.ikc = CrvNode("ikc", pf=rID, shape="foot", scale=rSz * 2)
         self.extra_ikc = CrvNode("extra_ikc", pf=rID, shape="rotator", scale=-scale)
         # , moveY=-xDr * rSz * 10
         self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=scale * 2)
         self.smart_ctl = CrvNode(
-            "smart_ctl", pf=rID, shape="squR", width=2, scale=scale / 2
+            "smart_ctl", pf=rID, shape="squR", width=2, scale=scale / 3
         )
         self.rigNode.setMsg(
             {
@@ -161,10 +161,11 @@ class LegQd(RigModule):
             self.quadScap_ikc = CrvNode(
                 "quadScap_ikc",
                 pf=rID,
-                shape="arrow2",
+                shape="arrow4",
                 up="x",
+                width=2,
                 scale=scale,
-                moveX=scale * 20,
+                moveX=scale * 12,
             )
 
     def build(self):

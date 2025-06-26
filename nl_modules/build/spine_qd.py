@@ -82,7 +82,7 @@ class SpineQd(RigModule):
         )
         self.fore_ctl = self.base_ctl.duplicate(name=rID + "_fore_ctl")
 
-        self.mid_ctl = CrvNode("mid_ctl", pf=rID, shape="square", up="z", scale=rSz * 4)
+        self.mid_ctl = CrvNode("mid_ctl", pf=rID, shape="squR", up="z", scale=rSz * 3)
         self.tangent0_ctl = CrvNode(
             "tangent0_ctl",
             pf=rID,
@@ -99,8 +99,7 @@ class SpineQd(RigModule):
                 "end_ctl",
                 pf=rID,
                 shape="cube",
-                top=1,
-                scale=maths.mul(5, 5, 2, rSz),
+                scale=maths.mul(4, 3, 3, rSz),
                 moveZ=rSz * -10,
             )
 

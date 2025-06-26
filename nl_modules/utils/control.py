@@ -105,14 +105,22 @@ def loadCtl():
         mc.select(cl=1)
 
 
-def setOnTopForSel():
+def setOnTopSel():
     from nl_modules.nodel.base.dag_node import DagNode
 
-    sel = mc.ls(sl=1)
+    sel = mc.ls(sl=1, tr=1)
     if sel:
         state = DagNode(sel[0]).shape.a.alwaysDrawOnTop.get()
         for s in sel:
             DagNode(s).shape.a.alwaysDrawOnTop.set(1 - state)
+
+
+def dropSel():
+    from nl_modules.nodel.crv_node import CrvNode
+
+    sel = mc.ls(sl=1, tr=1)
+    for s in sel or []:
+        CrvNode(s).cv_drop()
 
 
 def rotaCVForSel(*args):

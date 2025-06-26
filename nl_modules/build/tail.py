@@ -47,14 +47,9 @@ class Tail(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting = CrvNode(
-            "setting",
-            pf=rID,
-            shape="bagua",
-            scale=rSz * 2,
-            top=1,
-            width=2,
-            moveY=rSz * 10,
+            "setting", pf=rID, shape="cross", scale=rSz, top=1, width=2
         )
+        # moveY=rSz * 10,
         self.setting.a.add("stretchy", min=0, max=1)
         localScale = self.setting.a.add("localScale", min=0.01, dv=1)
         localScale >> self.IK_GRP.a.s
