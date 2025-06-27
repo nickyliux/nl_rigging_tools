@@ -1412,7 +1412,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QPushButton" name="autoSkin_BN">
+        <widget class="QPushButton" name="boneAutoBind_BN">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -2387,7 +2387,7 @@
        <x>0</x>
        <y>10</y>
        <width>221</width>
-       <height>81</height>
+       <height>111</height>
       </rect>
      </property>
      <property name="title">
@@ -2441,7 +2441,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Add ribbon joint for each selected mesh</string>
+          <string>Add a ribbon joint for each selected</string>
          </property>
          <property name="statusTip">
           <string/>
@@ -2450,7 +2450,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>+ Rb Jnt</string>
+          <string>Rb Jnt</string>
          </property>
         </widget>
        </item>
@@ -2477,7 +2477,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Add reference joint for each selected mesh</string>
+          <string>Add a ref joint for each selected</string>
          </property>
          <property name="statusTip">
           <string/>
@@ -2486,43 +2486,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>+ Ref Jnt</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="joint_mirrorAllRef_BN">
-         <property name="minimumSize">
-          <size>
-           <width>20</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>9999</width>
-           <height>9999</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Mirror reference joints from left to right</string>
-         </property>
-         <property name="statusTip">
-          <string/>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Mirr Ref Jnt</string>
+          <string>Ref Jnt</string>
          </property>
         </widget>
        </item>
@@ -2532,7 +2496,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>50</y>
+        <y>80</y>
         <width>221</width>
         <height>25</height>
        </rect>
@@ -2660,6 +2624,93 @@
          </property>
          <property name="text">
           <string>500</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget_4">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>50</y>
+        <width>221</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <property name="spacing">
+        <number>4</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="addBladeAttr_BN">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>999</width>
+           <height>9999</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Add &quot;blade&quot; attribute to selected</string>
+         </property>
+         <property name="statusTip">
+          <string/>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Mark as Blade</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="mirrorAllRefJnt_BN">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>9999</width>
+           <height>9999</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Mirror ref joints, L to R</string>
+         </property>
+         <property name="statusTip">
+          <string/>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Ref Jnt</string>
          </property>
         </widget>
        </item>

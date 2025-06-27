@@ -213,7 +213,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         #
         #   bind
         #
-        self.UI.autoSkin_BN.clicked.connect(self.autoSkin)
+        self.UI.boneAutoBind_BN.clicked.connect(self.boneAutoBind)
         self.UI.delSkinForAllMeshes_BN.clicked.connect(self.delSkinForAllMeshes)
         #
         #   ctl
@@ -251,12 +251,16 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.joint_addForSpine_BN.clicked.connect(
             partial(self.joint_add_BN_clicked, rb=1)
         )
+        self.UI.joint_addForSpine_BN.setIcon(QIcon(":addClip.png"))
+
         self.UI.joint_addForRef_BN.clicked.connect(
             partial(self.joint_add_BN_clicked, rb=0)
         )
-        self.UI.joint_mirrorAllRef_BN.clicked.connect(
-            self.joint_mirrorAllRef_BN_clicked
-        )
+        self.UI.joint_addForRef_BN.setIcon(QIcon(":addClip.png"))
+        self.UI.mirrorAllRefJnt_BN.clicked.connect(self.mirrorAllRefJnt_BN_clicked)
+        self.UI.mirrorAllRefJnt_BN.setIcon(QIcon(":kinMirrorJoint_S.png"))
+        self.UI.addBladeAttr_BN.clicked.connect(self.addBladeAttr_BN_clicked)
+
         self.UI.misc_retopo20_BN.clicked.connect(partial(modeling.retopo, faceNum=20))
         self.UI.misc_retopo50_BN.clicked.connect(partial(modeling.retopo, faceNum=50))
         self.UI.misc_retopo150_BN.clicked.connect(partial(modeling.retopo, faceNum=150))
@@ -321,7 +325,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                         names = [names[1]]
                 guide.loadGuide(names)
             self.rigNode_refresh_BN_clicked()
-            common.setViewport()
+            common.setViewport(fit=1)
 
     def component_explore_BN_clicked(self):
         import subprocess
@@ -380,7 +384,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         )
         if tgtFile:
             file.importFile(tgtFile[0])
-            common.setViewport()
+            common.setViewport(fit=1)
 
     def rigNode_LW_dblClicked(self, item):
         """Show attribute editor for rigNode"""
@@ -491,7 +495,11 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 jnt.a.t.set(*sN.o.bbCenter)
         mc.select(cl=1)
 
-    def joint_mirrorAllRef_BN_clicked(self):
+    def addBladeAttr_BN_clicked(self):
+        for s in mc.ls(sl=1, tr=1) or []:
+            DagNode(s).a.add("isBlade", lock=1, dv=1)
+
+    def mirrorAllRefJnt_BN_clicked(self):
         """Mirror left reference(*_refJnt) joints"""
         sel = mc.ls("lf_*_refJnt", type="joint")
         if sel:
@@ -499,24 +507,26 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         else:
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 
-    def bindRefJnts(self, meshSel, closestSet=None, threshold=5):
+    def bindRefJnts(self, meshSel, searchSet=None, threshold=5):
         weighted = 0
         ignored = 0
 
-        if not DagNode(closestSet).exists():
-            logging.info(f"Set {closestSet} NOT found for auto skin.")
+        if not DagNode(searchSet).exists():
+            logging.info(f"Set {searchSet} NOT found for auto skin.")
             return
 
-        for i, mN in enumerate(meshSel):
-            jnt = DagNode(mN.name + "_refJnt")
+        # searchList =
+
+        for i, mesh in enumerate(meshSel):
+            jnt = DagNode(mesh.name + "_refJnt")
             if jnt.exists():
-                if mN.skinCluster:
+                if mesh.skinCluster:
                     ignored += 1
                 else:
-                    closest = jnt.getClosestInList(mc.sets(closestSet, q=1))
+                    closest = jnt.getClosestInList(mc.sets(searchSet, q=1))
                     if closest:
                         if closest.o.distanceTo(jnt) < threshold:
-                            MshNode(mN).weightTo(closest, mi=1, tsb=1)
+                            MshNode(mesh).weightTo(closest, mi=1, tsb=1)
                             weighted += 1
                         else:
                             ignored += 1
@@ -549,15 +559,15 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.progress_PB.setValue(0)
         logging.info(f"{weighted} weighted. {ignored} ignored. {notFound} not found.")
 
-    @Undo("autoSkin")
-    def autoSkin(self):
+    @Undo("boneAutoBind")
+    def boneAutoBind(self):
 
         meshSel = common.getMeshBelow(MODEL_GRP)
         #
         #   bind to closest refJnt in MODEL_GRP
         #   bind to _rbnJnt For each in MODEL GRP
         #
-        self.bindRefJnts(meshSel, closestSet=BIND_JNT_SET, threshold=15)
+        self.bindRefJnts(meshSel, searchSet=BIND_JNT_SET, threshold=15)
         self.bindRbnJnts(meshSel)
         #
         #   search the attr rbSrf & rbJSet for each rigNode and attach joints

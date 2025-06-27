@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: rtLegQd.ma
-//Last modified: Fri, Jun 27, 2025 08:37:51 PM
+//Last modified: Fri, Jun 27, 2025 07:27:28 PM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,7 +12,7 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26100)";
-fileInfo "UUID" "1462147E-40E8-0C5C-84A5-E7AA60EC0A8F";
+fileInfo "UUID" "54192171-4092-DB52-DE50-EB843D52BE6E";
 createNode transform -n "module_grp";
 	rename -uid "3F6958F6-4253-676A-51E6-CA9FE9573FBE";
 	addAttr -ci true -sn "mirrorCode" -ln "mirrorCode" -dt "string";
@@ -191,6 +191,116 @@ createNode transform -n "scap_guide_ofs" -p "upr_guide";
 	rename -uid "E20C7250-4042-E45E-7C8D-18BBE1E75CA4";
 	setAttr ".t" -type "double3" 3.0000000000000142 -1.7763568394002505e-15 1.4210854715202004e-14 ;
 	setAttr ".s" -type "double3" 1 1 0.99999999999999944 ;
+createNode transform -n "scap_guide" -p "scap_guide_ofs";
+	rename -uid "D2285368-4A17-99D5-897B-F389824DA7D4";
+	setAttr -k off ".v";
+	setAttr ".ovc" 1;
+	setAttr ".t" -type "double3" 0 1.7763568394002505e-15 0 ;
+	setAttr -l on -k off ".rx";
+	setAttr -l on -k off ".ry";
+	setAttr -l on -k off ".rz";
+	setAttr -cb on ".ro";
+	setAttr ".s" -type "double3" 0.99999999999999989 1 1.0000000000000004 ;
+	setAttr -l on -k off ".sx";
+	setAttr -l on -k off ".sy";
+	setAttr -l on -k off ".sz";
+	setAttr ".rp" -type "double3" 0 -4.4408920985006262e-16 8.8817841970012563e-16 ;
+	setAttr ".sp" -type "double3" 0 -4.4408920985006262e-16 8.8817841970012523e-16 ;
+	setAttr ".spt" -type "double3" 0 0 3.9443045261050625e-31 ;
+createNode aimConstraint -n "upr_guide_aimConstraint1" -p "scap_guide";
+	rename -uid "2D44AAF4-4130-87CE-0404-1F84D9F53AF1";
+	addAttr -dcb 0 -ci true -sn "w0" -ln "lwr_guideW0" -dv 1 -at "double";
+	setAttr -k on ".nds";
+	setAttr -k off ".v";
+	setAttr -k off ".tx";
+	setAttr -k off ".ty";
+	setAttr -k off ".tz";
+	setAttr -k off ".rx";
+	setAttr -k off ".ry";
+	setAttr -k off ".rz";
+	setAttr -cb on ".ro";
+	setAttr -k off ".sx";
+	setAttr -k off ".sy";
+	setAttr -k off ".sz";
+	setAttr ".erp" yes;
+	setAttr ".tg[0].tt" -type "double3" 0 0 13 ;
+	setAttr ".tg[0].trp" -type "double3" 0 -4.4408920985006252e-16 8.8817841970012523e-16 ;
+	setAttr ".tg[0].trt" -type "double3" -4.3792105358373804e-23 8.8817841970012504e-16 
+		-1.0745090760029337e-30 ;
+	setAttr ".tg[0].tpm" -type "matrix" 0 1 0 0 -1 0 0 0 0 0 1 0 -10 52.5 -47.5 1;
+	setAttr ".cpim" -type "matrix" 0 -1 0 -0 1.0000000000000002 0 -0 0 0 -0 1 -0 -85.000000000000014 -10 44 1;
+	setAttr ".a" -type "double3" -1 0 0 ;
+	setAttr ".wum" -type "matrix" 0 0.89166676925818122 0.45269235977723038 0 -1 0 0 0
+		 0 -0.45269235977723038 0.89166676925818122 0 -10 52.5 -34.5 1;
+	setAttr ".wut" 2;
+	setAttr ".crp" -type "double3" 0 -4.4408920985006262e-16 8.8817841970012582e-16 ;
+	setAttr -k on ".w0";
+createNode nurbsCurve -n "hip_guideShape" -p "scap_guide";
+	rename -uid "0C8EBA11-4F4D-F815-7DD8-259A92A90CB4";
+	setAttr -k off ".v";
+	setAttr ".ove" yes;
+	setAttr ".ovc" 20;
+	setAttr ".ls" 3;
+	setAttr ".cc" -type "nurbsCurve" 
+		1 52 0 no 3
+		53 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
+		 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52
+		53
+		0.55971561940284364 7.2164496600635175e-15 -2.6090241078691179e-15
+		0.51968211980317869 0.21525937284741345 -2.6090241078691179e-15
+		0.39774749602252496 0.39774749602253218 -2.6090241078691179e-15
+		0.21525937284740623 0.5196821198031859 -2.6090241078691179e-15
+		0 0.55970249440298225 -2.6090241078691179e-15
+		-0.21525937284740623 0.5196821198031859 -2.6090241078691179e-15
+		-0.39774749602252496 0.39774749602253218 -2.6090241078691179e-15
+		-0.51968211980317869 0.21525937284741345 -2.6090241078691179e-15
+		-0.55971561940284364 -2.6518905018361216e-08 -2.6090241078691179e-15
+		-0.51968211980317869 -0.21525937284739902 -2.6090241078691179e-15
+		-0.39774749602252496 -0.39774749602251774 -2.6090241078691179e-15
+		-0.21525937284740623 -0.51968211980317147 -2.6090241078691179e-15
+		2.2351724776482751e-08 -0.55970249440296782 -0.0038058749619438595
+		0.21525937284740623 -0.51968211980317147 -2.6090241078691179e-15
+		0.39774749602252496 -0.39774749602251774 -2.6090241078691179e-15
+		0.51968211980317869 -0.21525937284739902 -2.6090241078691179e-15
+		0.55971561940284364 7.2164496600635175e-15 -2.6090241078691179e-15
+		0.51710961982890369 0.0014564849854423667 -0.21418912285811137
+		0.39577874604221253 0.0026912549730946666 -0.39577012104230136
+		0.21419399785806001 0.0035162999648442167 -0.51709836982901891
+		2.2351724776482751e-08 0.003806024961946966 -0.55970324440297015
+		-0.21419399785806001 0.0035162999648442167 -0.51709836982901891
+		-0.39577874604221253 0.0026912549730946666 -0.39577012104230136
+		-0.51710961982890369 0.0014564849854423667 -0.21418912285811137
+		-0.55971561940284364 -2.6518905018361216e-08 -2.6090241078691179e-15
+		-0.51710961982890369 -0.0014565374854274085 0.21418837285811365
+		-0.39577874604221253 -0.0026913074730797086 0.39576974604229986
+		-0.21419399785806001 -0.0035163524648292592 0.51709761982902114
+		2.2351724776482751e-08 -0.0038060624619321594 0.55970249440297237
+		0.21419399785806001 -0.0035163524648292592 0.51709761982902114
+		0.39577874604221253 -0.0026913074730797086 0.39576974604229986
+		0.51710961982890369 -0.0014565374854274085 0.21418837285811365
+		0.55971561940284364 7.2164496600635175e-15 -2.6090241078691179e-15
+		0.51710961982890369 0.0014564849854423667 -0.21418912285811137
+		0.39577874604221253 0.0026912549730946666 -0.39577012104230136
+		0.21419399785806001 0.0035162999648442167 -0.51709836982901891
+		2.2351724776482751e-08 0.003806024961946966 -0.55970324440297015
+		2.2351724776482751e-08 0.21770512282295598 -0.51564149484358757
+		2.2351724776482751e-08 0.39846074601539971 -0.39307874606921511
+		2.2351724776482751e-08 0.51855411981446597 -0.21067274789327511
+		0 0.55970249440298225 -2.6090241078691179e-15
+		2.2351724776482751e-08 0.51564111984359595 0.21770512282294616
+		2.2351724776482751e-08 0.39307837106922339 0.39846037101539367
+		2.2351724776482751e-08 0.21067274789327972 0.51855411981445609
+		2.2351724776482751e-08 -0.0038060624619321594 0.55970249440297237
+		2.2351724776482751e-08 -0.21770512282294155 0.5156407448435899
+		2.2351724776482751e-08 -0.39846074601538528 0.39307799606921745
+		2.2351724776482751e-08 -0.51855411981445154 0.21067199789327737
+		2.2351724776482751e-08 -0.55970249440296782 -0.0038058749619438595
+		2.2351724776482751e-08 -0.51564111984358152 -0.21770587282294385
+		2.2351724776482751e-08 -0.39307837106920895 -0.39846112101539133
+		2.2351724776482751e-08 -0.21067274789326529 -0.51855486981445387
+		2.2351724776482751e-08 0.003806024961946966 -0.55970324440297015
+		;
+	setAttr ".adot" yes;
 createNode transform -n "lwr_guide_ofs" -p "master_guide";
 	rename -uid "48EA90C2-45F7-4333-B462-92BD0860F021";
 	setAttr -l on ".v";
@@ -2055,8 +2165,8 @@ createNode nurbsCurve -n "curveShape21" -p "line_52";
 createNode transform -s -n "persp";
 	rename -uid "2CFF45DD-487A-9CD1-767B-A089B899D93C";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 67.753766786132815 70.04080736091845 44.370577847015802 ;
-	setAttr ".r" -type "double3" -10.538352728946466 41.800000000052293 -5.3330936925185625e-16 ;
+	setAttr ".t" -type "double3" 65.966639916098018 69.26558899731188 46.176864045595075 ;
+	setAttr ".r" -type "double3" -9.3383527289464183 38.600000000052191 0 ;
 	setAttr -cb on ".ro";
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "82C3F9B2-4980-6719-29B8-159665D78FA8";
@@ -2160,20 +2270,20 @@ parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_1_guide_o
 parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_1_guide_ofs|toe_main_1_guide|toe02_1_guide_ofs|toe02_1_guide|sphere2Shape1" "toe04_5_guide" ;
 parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_1_guide_ofs|toe_main_1_guide|toe02_1_guide_ofs|toe02_1_guide|sphere2Shape1" "toe04_4_guide" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "BCA78FE9-4AF4-A108-C824-87891741F782";
+	rename -uid "65A6B7FF-495C-D41A-ABCC-F599AAA807AE";
 	setAttr -s 2 ".lnk";
 	setAttr -s 2 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "732C6D82-4183-53DD-BCD8-C0A6F6C34129";
+	rename -uid "2829BDE3-4C0F-64AC-980F-D4AA85B44E61";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "9F93E7D5-4EB0-B46A-051F-DDB1C16067EE";
+	rename -uid "CE419629-4AAE-D3E7-4591-E7953C878582";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "FD6C15B0-48BF-4566-89F7-E485B6888728";
+	rename -uid "48DBA88A-4BE4-9993-0514-B797DA258744";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "BC19330E-4E8B-4910-BB8A-238FB66CBBA1";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "509DD633-49D9-34E7-F2DB-DFAF1A49809E";
+	rename -uid "01489CAB-481C-87D1-117F-9FA9DC2698D9";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "47ABDCF5-4400-C307-437A-E4AF35DAB19B";
 	setAttr ".g" yes;
@@ -2838,6 +2948,7 @@ connectAttr "|module_grp|master_guide|upr_guide_ofs|upr_guide|upr_guide_aimConst
 		;
 connectAttr "lwr_guide.wm" "|module_grp|master_guide|upr_guide_ofs|upr_guide|upr_guide_aimConstraint1.wum"
 		;
+connectAttr "master_guide.scapularExtra" "scap_guide.v" -l on;
 connectAttr "lwr_guide_ofs_pointConstraint1.ctx" "lwr_guide_ofs.tx";
 connectAttr "lwr_guide_ofs_pointConstraint1.cty" "lwr_guide_ofs.ty";
 connectAttr "lwr_guide_ofs_pointConstraint1.ctz" "lwr_guide_ofs.tz";
@@ -3135,6 +3246,9 @@ connectAttr "master_guide.toeNum" "le_cdn_3.ft";
 connectAttr "scapHelper_guide.wm" "DCM_61.imat";
 connectAttr "foot_guide_quadShape1.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[0].dn"
 		;
+connectAttr "|module_grp|master_guide|upr_guide_ofs|upr_guide|scap_guide_ofs|scap_guide|hip_guideShape.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[1].dn"
+		;
+connectAttr "scap_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[2].dn";
 connectAttr "master_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[3].dn";
 connectAttr "multiplyDivide1.msg" ":defaultRenderUtilityList1.u" -na;
 connectAttr "defaultRenderLayer.msg" ":defaultRenderingList1.r" -na;

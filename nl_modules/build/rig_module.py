@@ -735,7 +735,7 @@ class RigModule(RigBase):
 
             scapCtl.addOffsetGrp()
             j0, j1 = JntNode.makeTwoJC2(
-                "blade",
+                "scapular",
                 pf=rID,
                 snap=uprJ,
                 aim=aim,
@@ -746,7 +746,7 @@ class RigModule(RigBase):
                 aimTgt=hipJ,
             )
             scapCtl.cstOri(j0, mo=1)
-            # self.bindJnts.append(j0)
+            self.bindJnts.append(j0)
             # j0.hide()
 
             scapHelper = DagNode(rID + "_scapHelper_guide")
