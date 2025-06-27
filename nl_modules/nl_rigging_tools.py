@@ -194,10 +194,12 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         self.UI.genProxy_BN.clicked.connect(self.genProxy)
         self.UI.genProxy_BN.setIcon(QIcon(":play_S.png"))
-        self.UI.selAllProxy_BN.clicked.connect(self.selAllProxy)
-        self.UI.selAllProxy_BN.setIcon(QIcon(":aselect.png"))
+        self.UI.selAllProxyGrp_BN.clicked.connect(self.selAllProxyGrp)
+        self.UI.selAllProxyGrp_BN.setIcon(QIcon(":aselect.png"))
         self.UI.showHideProxy_BN.clicked.connect(self.showHideProxy)
         self.UI.showHideProxy_BN.setIcon(QIcon(":visible.png"))
+        self.UI.refProxy_BN.clicked.connect(self.refProxy)
+        self.UI.refProxy_BN.setIcon(QIcon(":templated.png"))
         self.UI.wrapProxy_BN.clicked.connect(self.wrapProxy)
         self.UI.wrapProxy_BN.setIcon(QIcon(":shrinkwrap.png"))
         self.UI.resetProxy_BN.clicked.connect(self.resetProxy)
@@ -598,13 +600,23 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def genProxy(self):
         proxy.genProxyMesh()
 
-    def selAllProxy(self):
-        mc.select(mc.ls("*_pxGeo") or [])
+    def selAllProxyGrp(self):
+        PRX = DagNode("PRX")
+        if PRX.exists():
+            allBelow = PRX.children
+            if allBelow:
+                mc.select(allBelow)
+
+        # mc.select(mc.ls("*_pxGeo") or [])
 
     def showHideProxy(self):
         m2 = DagNode("master2_ctl")
         if m2.exists():
             m2.a.proxyVis.set(1 - m2.a.proxyVis.get())
+
+    def refProxy(self):
+        for s in mc.ls("*_pxGeo") or []:
+            DagNode(s).dspType = abs(DagNode(s).dspType - 2)
 
     @Undo("wrapProxy")
     def wrapProxy(self):

@@ -12,7 +12,7 @@ def create_hud():
 
     # Get the model view as a QtWidget for python2 and python3
     if sys.version_info.major < 3:
-        model_view_widget = wrapInstance(long(view.widget()), QtWidgets.QWidget)
+        model_view_widget = wrapInstance(int(view.widget()), QtWidgets.QWidget)
     else:
         model_view_widget = wrapInstance(int(view.widget()), QtWidgets.QWidget)
 

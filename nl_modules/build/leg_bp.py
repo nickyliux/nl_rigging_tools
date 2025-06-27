@@ -402,11 +402,12 @@ class LegBp(RigModule):
         CrvNode(self.ballG_ikc)(
             name="ballG_ikc",
             pf=rID,
-            shape="stickC",
-            scale=-rSz * xDr / 2,
+            shape="rotator",
+            scale=-rSz * xDr / 3 * 2,
             # rotateY=90,
             width=2,
         )
+        # shape="stickC",
         self.ikCtl.append(self.ballG_ikc)
 
         # Smart Ctl setup

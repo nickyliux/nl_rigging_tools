@@ -73,7 +73,7 @@ class SpineQd(RigModule):
             "cog_ctl",
             pf=rID,
             shape="trapezoid",
-            scale=maths.mul(1, 1, 2, rSz),
+            scale=maths.mul(1, 2, 3, rSz),
             moveY=50 * rSz,
             p=self.IK_GRP,
         )

@@ -76,7 +76,9 @@ class ArmBp(RigModule):
 
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
-        self.setting = CrvNode("setting", pf=rID, shape="bagua", scale=rSz, top=1)
+        self.setting = CrvNode(
+            "setting", pf=rID, shape="cross", scale=rSz, top=1, width=2
+        )
         self.clavicle_fkc = CrvNode(
             "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
         )

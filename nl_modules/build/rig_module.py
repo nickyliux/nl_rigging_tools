@@ -746,7 +746,7 @@ class RigModule(RigBase):
                 aimTgt=hipJ,
             )
             scapCtl.cstOri(j0, mo=1)
-            self.bindJnts.append(j0)
+            # self.bindJnts.append(j0)
             # j0.hide()
 
             scapHelper = DagNode(rID + "_scapHelper_guide")
