@@ -25,6 +25,9 @@ class DagNode(DepNode):
         if nodeType:
             self.create(nodeType)
 
+    def __hash__(self):
+        return hash(self.name)
+
     @property
     def node(self):
         return self._node

@@ -507,7 +507,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         else:
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 
-    def bindRefJnts(self, meshSel, searchSet=None, threshold=5):
+    def bindRefJnts(self, tgtMeshes, searchSet=None, threshold=5):
+
+        # from nl_modules.utils import skin
         weighted = 0
         ignored = 0
 
@@ -515,15 +517,22 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             logging.info(f"Set {searchSet} NOT found for auto skin.")
             return
 
-        # searchList =
+        searchList = set(mc.sets(searchSet, q=1))
+        searchListNoBlade = set([o for o in searchList if not o.endswith("_scapular")])
+        searchListBlade = searchList - searchListNoBlade
 
-        for i, mesh in enumerate(meshSel):
+        tgtMeshesNoBlade = [o for o in tgtMeshes if not o.a["isBlade"].exists()]
+        tgtMeshesBlade = set(tgtMeshes) - set(tgtMeshesNoBlade)
+
+        self.UI.progress_PB.setMaximum(len(tgtMeshesNoBlade))
+
+        for i, mesh in enumerate(tgtMeshesNoBlade):
             jnt = DagNode(mesh.name + "_refJnt")
             if jnt.exists():
                 if mesh.skinCluster:
                     ignored += 1
                 else:
-                    closest = jnt.getClosestInList(mc.sets(searchSet, q=1))
+                    closest = jnt.getClosestInList(searchListNoBlade)
                     if closest:
                         if closest.o.distanceTo(jnt) < threshold:
                             MshNode(mesh).weightTo(closest, mi=1, tsb=1)
@@ -537,20 +546,22 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.progress_PB.setValue(0)
         logging.info(f"{weighted} weighted. {ignored} ignored.")
 
-    def bindRbnJnts(self, meshSel):
+    def bindRbnJnts(self, tgtMeshes):
         """
         Bind meshes to a joint found which is ended with _rbnJnt
         """
         weighted = 0
         ignored = 0
         notFound = 0
-        for i, mN in enumerate(meshSel):
-            jnt = DagNode(mN.name + "_rbJnt")
+        self.UI.progress_PB.setMaximum(len(tgtMeshes))
+
+        for i, mesh in enumerate(tgtMeshes):
+            jnt = DagNode(mesh.name + "_rbJnt")
             if jnt.exists():
-                if mN.skinCluster:
+                if mesh.skinCluster:
                     ignored += 1
                 else:
-                    mN.weightTo(jnt, mi=1, tsb=1)
+                    mesh.weightTo(jnt, mi=1, tsb=1)
                     weighted += 1
             else:
                 notFound += 1
