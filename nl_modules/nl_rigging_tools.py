@@ -507,55 +507,34 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         else:
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 
-    def bindRefJnts(self, tgtMeshes, searchSet=None, threshold=5):
+    def bindRefJnts(self, meshes, searchSet=None, thld=5):
 
-        # from nl_modules.utils import skin
-        weighted = 0
-        ignored = 0
+        from nl_modules.utils import skin
 
         if not DagNode(searchSet).exists():
             logging.info(f"Set {searchSet} NOT found for auto skin.")
             return
 
-        searchList = set(mc.sets(searchSet, q=1))
-        searchListNoBlade = set([o for o in searchList if not o.endswith("_scapular")])
-        searchListBlade = searchList - searchListNoBlade
+        jntList = set(mc.sets(searchSet, q=1))
+        jntsNoScap = set([o for o in jntList if not o.endswith("_scapular")])
+        jntsScap = jntList - jntsNoScap
 
-        tgtMeshesNoBlade = [o for o in tgtMeshes if not o.a["isBlade"].exists()]
-        tgtMeshesBlade = set(tgtMeshes) - set(tgtMeshesNoBlade)
+        meshesNoScap = [o for o in meshes if not o.a["isBlade"].exists()]
+        meshesScap = set(meshes) - set(meshesNoScap)
 
-        self.UI.progress_PB.setMaximum(len(tgtMeshesNoBlade))
+        skin.skinRefJnts(meshesNoScap, jntsNoScap, thld=thld)
+        skin.skinRefJnts(meshesScap, jntsScap, thld=thld)
 
-        for i, mesh in enumerate(tgtMeshesNoBlade):
-            jnt = DagNode(mesh.name + "_refJnt")
-            if jnt.exists():
-                if mesh.skinCluster:
-                    ignored += 1
-                else:
-                    closest = jnt.getClosestInList(searchListNoBlade)
-                    if closest:
-                        if closest.o.distanceTo(jnt) < threshold:
-                            MshNode(mesh).weightTo(closest, mi=1, tsb=1)
-                            weighted += 1
-                        else:
-                            ignored += 1
-                    else:
-                        ignored += 1
-            self.UI.progress_PB.setValue(i)
-
-        self.UI.progress_PB.setValue(0)
-        logging.info(f"{weighted} weighted. {ignored} ignored.")
-
-    def bindRbnJnts(self, tgtMeshes):
+    def bindRbnJnts(self, meshes):
         """
         Bind meshes to a joint found which is ended with _rbnJnt
         """
         weighted = 0
         ignored = 0
         notFound = 0
-        self.UI.progress_PB.setMaximum(len(tgtMeshes))
+        self.UI.progress_PB.setMaximum(len(meshes))
 
-        for i, mesh in enumerate(tgtMeshes):
+        for i, mesh in enumerate(meshes):
             jnt = DagNode(mesh.name + "_rbJnt")
             if jnt.exists():
                 if mesh.skinCluster:
@@ -578,7 +557,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         #   bind to closest refJnt in MODEL_GRP
         #   bind to _rbnJnt For each in MODEL GRP
         #
-        self.bindRefJnts(meshSel, searchSet=BIND_JNT_SET, threshold=15)
+        self.bindRefJnts(meshSel, searchSet=BIND_JNT_SET, thld=15)
         self.bindRbnJnts(meshSel)
         #
         #   search the attr rbSrf & rbJSet for each rigNode and attach joints
