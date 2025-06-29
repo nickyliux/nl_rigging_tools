@@ -507,8 +507,16 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         else:
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 
-    def bindRefJnts(self, meshes, searchSet=None, thld=5):
+    def bindRefJnts(self, meshes, searchSet=None, thld=5, uiPB=None):
+        """
+        As the scapular joint is overlapping the upper leg joint,
+        attribute "isBlade" is used to identify what is blade which is not.
 
+        So
+        1. meshes with isBlade is skinned to closest _scapular bind joints
+        2. other meshes is skinned to closest non _scapular bind joints
+
+        """
         from nl_modules.utils import skin
 
         if not DagNode(searchSet).exists():
@@ -516,14 +524,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             return
 
         jntList = set(mc.sets(searchSet, q=1))
-        jntsNoScap = set([o for o in jntList if not o.endswith("_scapular")])
-        jntsScap = jntList - jntsNoScap
+        jntsScap = set([o for o in jntList if o.endswith("_scapular")])
+        jntsNoScap = jntList - jntsScap
 
-        meshesNoScap = [o for o in meshes if not o.a["isBlade"].exists()]
-        meshesScap = set(meshes) - set(meshesNoScap)
+        meshesScap = [o for o in meshes if o.a["isBlade"].exists()]
+        meshesNoScap = set(meshes) - set(meshesScap)
 
-        skin.skinRefJnts(meshesNoScap, jntsNoScap, thld=thld)
-        skin.skinRefJnts(meshesScap, jntsScap, thld=thld)
+        skin.skinRefJnts(meshesNoScap, jntsNoScap, thld=thld, uiPB=uiPB)
+        skin.skinRefJnts(meshesScap, jntsScap, thld=thld, uiPB=uiPB)
 
     def bindRbnJnts(self, meshes):
         """
@@ -557,7 +565,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         #   bind to closest refJnt in MODEL_GRP
         #   bind to _rbnJnt For each in MODEL GRP
         #
-        self.bindRefJnts(meshSel, searchSet=BIND_JNT_SET, thld=15)
+        self.bindRefJnts(
+            meshSel, searchSet=BIND_JNT_SET, thld=15, uiPB=self.UI.progress_PB
+        )
         self.bindRbnJnts(meshSel)
         #
         #   search the attr rbSrf & rbJSet for each rigNode and attach joints

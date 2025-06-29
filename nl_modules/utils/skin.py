@@ -3,13 +3,19 @@ from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.msh_node import MshNode
 
 
-def skinRefJnts(tgts, closestSet, thld=5):
-
+def skinRefJnts(tgts, closestSet, thld=5, uiPB=None):
+    """
+    Skin target meshes to joints in closestSet, acc to threshold
+    """
     weighted = 0
     ignored = 0
 
+    if uiPB:
+        uiPB.setMaximum(len(tgts))
+
     for i, mesh in enumerate(tgts):
         jnt = DagNode(mesh.name + "_refJnt")
+
         if jnt.exists():
             if mesh.skinCluster:
                 ignored += 1
@@ -25,6 +31,11 @@ def skinRefJnts(tgts, closestSet, thld=5):
                     ignored += 1
         else:
             ignored += 1
+
+        if uiPB:
+            uiPB.setValue(i)
+    if uiPB:
+        uiPB.setValue(0)
 
     logging.info(f"{weighted} weighted. {ignored} ignored.")
 
