@@ -533,30 +533,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         skin.skinRefJnts(meshesNoScap, jntsNoScap, thld=thld, uiPB=uiPB)
         skin.skinRefJnts(meshesScap, jntsScap, thld=thld, uiPB=uiPB)
 
-    def bindRbnJnts(self, meshes):
-        """
-        Bind meshes to a joint found which is ended with _rbnJnt
-        """
-        weighted = 0
-        ignored = 0
-        notFound = 0
-        self.UI.progress_PB.setMaximum(len(meshes))
-
-        for i, mesh in enumerate(meshes):
-            jnt = DagNode(mesh.name + "_rbJnt")
-            if jnt.exists():
-                if mesh.skinCluster:
-                    ignored += 1
-                else:
-                    mesh.weightTo(jnt, mi=1, tsb=1)
-                    weighted += 1
-            else:
-                notFound += 1
-            self.UI.progress_PB.setValue(i)
-
-        self.UI.progress_PB.setValue(0)
-        logging.info(f"{weighted} weighted. {ignored} ignored. {notFound} not found.")
-
     @Undo("boneAutoBind")
     def boneAutoBind(self):
 
@@ -568,7 +544,10 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.bindRefJnts(
             meshSel, searchSet=BIND_JNT_SET, thld=15, uiPB=self.UI.progress_PB
         )
-        self.bindRbnJnts(meshSel)
+        # self.bindRbnJnts(meshSel, uiPB=self.UI.progress_PB)
+        from nl_modules.utils import skin
+
+        skin.skinRbJnts(meshSel, uiPB=self.UI.progress_PB)
         #
         #   search the attr rbSrf & rbJSet for each rigNode and attach joints
         #   to surface with 'closest point on surface' node
