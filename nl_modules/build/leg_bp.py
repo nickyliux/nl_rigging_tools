@@ -115,7 +115,7 @@ class LegBp(RigModule):
         sca = xDr * rSz
 
         self.setting = CrvNode(
-            "setting", pf=rID, shape="cross", scale=sca, top=1, width=2
+            "setting", pf=rID, shape="bagua", up="z", scale=sca, moveX=sca * 20
         )
         self.hip_fkc = CrvNode(
             "hip_fkc", pf=rID, shape="cubeR", up="x", scale=sca, top=1

@@ -95,13 +95,9 @@ class SpineQd(RigModule):
         )
         self.tangent1_ctl = self.tangent0_ctl.duplicate(name=rID + "_tangent1_ctl")
         if self.END_CTL:
-            self.end_ctl = CrvNode(
-                "end_ctl",
-                pf=rID,
-                shape="cube",
-                scale=maths.mul(4, 3, 3, rSz),
-                moveZ=rSz * -10,
-            )
+            self.end_ctl = CrvNode("end_ctl", pf=rID, scale=rSz * 2, moveY=rSz * 30)
+            # scale=maths.mul(4, 3, 3, rSz),
+            # shape="cube",
 
         self.rigNode.setMsg(
             {

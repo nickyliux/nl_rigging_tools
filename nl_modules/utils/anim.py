@@ -4,6 +4,7 @@ import logging
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.loc_node import LocNode
 
 # def applyOrder(name):
 #
@@ -58,11 +59,14 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
         upr = rootJ.children[0]
         lwr = upr.children[0]
         palm = lwr.children[0]
+        ball = palm.children[0]
         palm_bf = DagNode(palm.name + "_bf")
 
+        hip_fkc = rN.a.hip_fkc.inConnNode
         upr_fkc = rN.a.upr_fkc.inConnNode
         lwr_fkc = rN.a.lwr_fkc.inConnNode
         palm_fkc = rN.a.palm_fkc.inConnNode
+        ball_fkc = rN.a.ball_fkc.inConnNode
         ikc = rN.a.ikc.inConnNode
         pvc = rN.a.pvc.inConnNode
         #
@@ -79,6 +83,13 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
                 pos1 = upr.o.pos
                 pos2 = lwr.o.pos
                 pos3 = palm.o.pos
+
+                autoAimAttr = hip_fkc.a["autoAim"]
+                if autoAimAttr.exists():
+                    loc = LocNode("_#", align=hip_fkc)
+                    autoAimAttr.set(0)
+                    hip_fkc.alignTo(loc)
+                    loc.delete()
 
                 if smartCtl.exists():
                     smartCtl.resetXf()
@@ -101,10 +112,16 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
         #
         else:
             if upr_fkc and lwr_fkc and palm_fkc and upr and lwr and ikc:
+
+                loc = LocNode("_#", align=ball_fkc)
+
                 upr_fkc.alignTo(upr)
                 lwr_fkc.alignTo(lwr)
                 if palm_bf.exists():
                     palm_fkc.alignTo(palm_bf)
+
+                ball_fkc.alignTo(loc)
+                # loc.delete()
 
             # if rigClass == "LegQd":
             #     digit_jnt = ikc.childrenJt[0]

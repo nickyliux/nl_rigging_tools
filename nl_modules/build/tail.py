@@ -111,7 +111,6 @@ class Tail(RigModule):
                 scale=rSz * 3,
                 align=self.ikJnt[i],
                 addOfs=1,
-                top=1,
                 p=self.IK_GRP,
             )
             self.ikJnt[i] | ctl
