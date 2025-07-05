@@ -1,5 +1,5 @@
-import maya.cmds as mc
 import logging
+import maya.cmds as mc
 from collections import OrderedDict
 
 CST_DICT = OrderedDict(
@@ -138,7 +138,6 @@ def cstMulti(*args, cstType="par", delete=False, w=None, **kwargs):
     # Look like that shortest is a better option for orientation transition
     if cstCmd:
         if cstCmd == mc.orientConstraint or cstCmd == mc.parentConstraint:
-            # print(cst)
             mc.setAttr(cst + ".interpType", 2)
 
     weightList = lastObj.getCstWeightAttr(cstType=cstCmd.__name__)
@@ -510,7 +509,7 @@ def getMeshBelow(grp):
     if mc.objExists(grp):
         mc.select(grp)
     else:
-        logging.info(f"Model set {grp} NOT found.")
+        logging.error(f"Model set {grp} NOT found.")
         return []
 
     mc.select(hi=1)

@@ -1,5 +1,5 @@
-import maya.cmds as mc
 import logging
+import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
@@ -318,7 +318,7 @@ class LegQd(RigModule):
         self.ikc.a.add("kneeTwist") * xDr >> ikH1.a.twist
         (self.ikc, self.pvc, self.ikCstG) | self.IK_GRP
         self.pvc_line = CrvNode.buildLineLinked(
-            self.joints_ik[2], self.pvc, pf=rID, dspType=2, p=self.IK_GRP
+            tgt1=self.joints_ik[2], tgt2=self.pvc, pf=rID, dspType=2, p=self.IK_GRP
         )
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()

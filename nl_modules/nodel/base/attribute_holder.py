@@ -1,5 +1,4 @@
 import maya.cmds as mc
-import logging
 from nl_modules.utils import path
 
 

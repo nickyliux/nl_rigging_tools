@@ -1,10 +1,9 @@
+import logging
 import os
 import maya.cmds as mc
 import nl_modules as nl_modules
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.utils import common, file, path, open_maya_api
-from nl_modules.utils.color import Color
-import logging
 
 MOD_DIR = os.path.dirname(nl_modules.__file__)
 SHAPE_PATH = MOD_DIR + "/build/shapes"
@@ -85,14 +84,14 @@ class GrpNode(DagNode):
         mc.move(*args, self.cvs, **kwargs)
 
     def cv_moveTo(self, pos):
-        """Move all cvs to position
+        """Move all cvs to world position
         e.g.
-            cv_moveTo((1,2,3))  # move all cv to position (1,2,3), keeping relative position
+            cv_moveTo((1,2,3))  # move all cv to world position (1,2,3)
         """
-        wsPos = self.o.pos
-        negOfs = (wsPos[0] * -1, wsPos[1] * -1, wsPos[2] * -1)
-        mc.xform(self.cvs, r=1, t=negOfs, ws=1)
-        mc.xform(self.cvs, r=1, t=pos, ws=1)
+        if isinstance(pos, (tuple, list)):
+            wsPos = self.o.pos
+            vec = (pos[0] - wsPos[0], pos[1] - wsPos[1], pos[2] - wsPos[2])
+            mc.xform(self.cvs, r=1, t=vec, ws=1)
 
     def cv_drop(self):
         self.cv_move(0, -self.o.bb0[1], 0)

@@ -1,6 +1,6 @@
+import os
 import unittest
 import nl_modules
-import os
 
 from nl_modules.tests import *
 

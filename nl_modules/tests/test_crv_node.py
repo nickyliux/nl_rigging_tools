@@ -102,7 +102,7 @@ class Test_CrvNode_Advanced(Test_CrvNode_Base):
         pt1 = GrpNode("a")
         pt2 = GrpNode("b")
         pt2.a.t.set(0, 8, 0)
-        crv = CrvNode.buildLineLinked(pt1, pt2)
+        crv = CrvNode.buildLineLinked(tgt1=pt1, tgt2=pt2)
         self.assertEqual(crv.length, 8)
         pt2.a.ty.set(10)
         self.assertEqual(crv.length, 10)

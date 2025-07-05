@@ -1,5 +1,5 @@
-import os.path
 import logging
+import os.path
 import maya.cmds as mc
 from nl_modules.utils import common
 from nl_modules.nodel.base.dag_node import DagNode
@@ -40,10 +40,9 @@ class Undo(ContextDecorator):
 def getAnchors(rigNodes, startStr=""):
     """Return objects from all rigNodes having attr starts with str"""
     linkedObjs = []
-    for rigNode in rigNodes:
-        rN = DagNode(rigNode)
-        if rN.a.nodeState.get() == 2:
-            userAttrs = rN.a.list(ud=1, at="message")
+    for node in [DagNode(r) for r in rigNodes]:
+        if node.a.nodeState.get() == 2:
+            userAttrs = node.a.list(ud=1, at="message")
             for uAttr in userAttrs:
                 obj = uAttr.inConnNode
                 if obj and type(obj) != list and uAttr.name.startswith(startStr):
@@ -70,9 +69,13 @@ def loadBase():
     BASE_FILE = "base.ma"
     f = f"{MAYA_TPL_DIR}/{BASE_FILE}"
     if os.path.exists(f):
-        mc.file(f, i=1)
+        try:
+            mc.file(f, i=1)
+        except Exception as e:
+            logging.error(f"Error loading file {f}: {e}")
+
         if not mc.objExists("master_ctl"):
-            logging.error(f"master_ctl not found")
+            logging.error("master_ctl not found")
     else:
         logging.error(f"{f} not found")
 
@@ -208,7 +211,7 @@ def updateAnchorConn():
                 if F_rigNode != M_rigNode:
                     closestMaleAnchor.cstPar(fAnchor, mo=1)
                 else:
-                    logging.debug("Ignore connecting anchors from the same rigNode.")
+                    logging.warning("Ignore connecting anchors from the same rigNode.")
 
     # ---------------------------------------------------------------
     #
@@ -248,12 +251,12 @@ def resetAllCtl():
 
 
 def resetAllPvCtl():
-    rigNodes = mc.ls("*RGN", type="script")
-    for rigNode in rigNodes:
-        rN = DagNode(rigNode)
-        rID = rN.a.rigID.get()
-        pvc = rN.a.pvc.inConnNode
+    for rigNode in [DagNode(r) for r in mc.ls("*RGN", type="script")]:
+
+        rID = rigNode.a.rigID.get()
+        pvc = rigNode.a.pvc.inConnNode
         guide = DagNode(rID + "_pvc_guide")
+
         if pvc and guide and pvc.exists() and guide.exists():
             pvc.snapTo(guide)
 
@@ -387,21 +390,17 @@ def collectSpaceData():
         }
     """
     ctlList = []
-    for r in mc.ls("*RGN", type="script"):
-        rN = DagNode(r)
-        for udAttr in rN.a.list(ud=1):
-            #
-            #   get spaceHolder* & spaceName*
-            #
+    for node in [DagNode(r) for r in mc.ls("*RGN", type="script")]:
+        for udAttr in node.a.list(ud=1):
             if udAttr.name.startswith("spaceHolder"):
                 obj = udAttr.inConnNode
-                spaceNameAttr = rN.a["spaceName" + udAttr.name[-1]]
+                spaceNameAttr = node.a["spaceName" + udAttr.name[-1]]
                 if obj and obj.exists() and spaceNameAttr.exists():
                     ctlList.append(
                         (
                             obj,
                             spaceNameAttr.get().split(", "),
-                            rN,
+                            node,
                         )
                     )
     return ctlList
@@ -439,26 +438,25 @@ def autoAttachJntToSurf():
 
     masterCtl = DagNode("master_ctl")
     if not masterCtl.exists():
-        logging.info(f"master_ctl NOT found")
+        logging.error("master_ctl NOT found")
         return
 
     globalScale = masterCtl.a["globalScale"]
     if not globalScale.exists():
-        logging.info(f"globalScale attr NOT found")
+        logging.error("globalScale attr NOT found")
         return
 
-    for rigNode in mc.ls("*RGN", type="script"):
-        rN = DagNode(rigNode)
-        if rN.a.nodeState.get() == 2:
+    for node in [DagNode(r) for r in mc.ls("*RGN", type="script")]:
+        if node.a.nodeState.get() == 2:
             #
             #   Process only if rbJntSet found
             #
-            rbJntSetAttr = rN.a["rbJntSet"]
+            rbJntSetAttr = node.a["rbJntSet"]
             if rbJntSetAttr.exists():
 
-                rbSrfAttr = rN.a["rbSrf"]
+                rbSrfAttr = node.a["rbSrf"]
                 if not rbSrfAttr.exists():
-                    logging.info(f"Attr rbSrf NOT found in {rN}.")
+                    logging.error(f"Attr rbSrf NOT found in {node}.")
                     continue
                 #
                 #   check set rbJntSet
@@ -466,7 +464,7 @@ def autoAttachJntToSurf():
                 rbJntSetName = rbJntSetAttr.get()
                 rbJntSet = DagNode(rbJntSetName)
                 if not rbJntSet.exists():
-                    logging.info(f"Set {rbJntSetName} NOT found.")
+                    logging.error(f"Set {rbJntSetName} NOT found.")
                     continue
 
                 rbJnts = mc.sets(rbJntSet, q=1)
@@ -478,7 +476,7 @@ def autoAttachJntToSurf():
                 #
                 rbSrf = rbSrfAttr.inConnNode
                 if not rbSrf:
-                    logging.info(f"Surface object NOT found.")
+                    logging.error("Surface object NOT found.")
                     continue
                 #
                 #   attach joints in set to srf

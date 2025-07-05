@@ -1,13 +1,12 @@
 import logging
+import math
 import maya.mel as mel
 import maya.cmds as mc
-import math
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.base.dep_node import DepNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.utils.color import Color
 from nl_modules.utils import common, utils_node as ut
 
 mel.eval("ikSpringSolver")
@@ -286,7 +285,7 @@ class IkNode(DagNode):
                 logging.error("setting undefined !")
                 return
             if len(self.jnt) != 3:
-                logging.debug("pin is for 3-pt joint chain")
+                logging.error("pin is for 3-pt joint chain")
                 return
 
             kp = self.pvc.a.add("pvPin", min=0, max=1)

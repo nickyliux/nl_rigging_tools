@@ -1,11 +1,9 @@
-import maya.cmds as mc
 import logging
+import maya.cmds as mc
 from collections import OrderedDict
 
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.utils import utils_node as ut
-
-from nl_modules.utils.color import Color
 
 
 def addAwesomeSpine_createCtlJ(jointList, r=8, pf="", color=13, p=None):
@@ -14,7 +12,6 @@ def addAwesomeSpine_createCtlJ(jointList, r=8, pf="", color=13, p=None):
         build_ctl_jnt(jntList, 10)
     """
     from nl_modules.nodel.jnt_node import JntNode
-    from nl_modules.utils.color import Color
 
     name = ["staJ", "midJ", "endJ"]
     j1 = JntNode(name[0], pf=pf, r=r, color=color, p=p)

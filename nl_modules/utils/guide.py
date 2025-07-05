@@ -1,11 +1,11 @@
-import maya.cmds as mc
 import logging
-import os
 import re
+import maya.cmds as mc
 from nl_modules.build.tpl_loader import TplLoader
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.utils import common, file
-import nl_modules
+
+LF_CTL_SET = "lf*_ctl_set"
 
 COMPONENT_DICT = {
     "head": ["head"],
@@ -31,9 +31,8 @@ def loadGuide(names):
     def genNextRigID(n):
         """Generate next rigID name for newly created component"""
         count = 0
-        for rN in mc.ls("*RGN", type="script"):
-            rN = DagNode(rN)
-            if rN.a.rigID.get().startswith(n):
+        for node in [DagNode(r) for r in mc.ls("*RGN", type="script")]:
+            if node.a.rigID.get().startswith(n):
                 count += 1
         return f"{n}{count}"
 
@@ -45,7 +44,7 @@ def loadGuide(names):
 
 
 def copyGuideSel():
-    """Copy guide settings from 1st to 2nd selected"""
+    """Copy guide settings from 1st to 2nd selList"""
     from nl_modules.utils import build
 
     selList = mc.ls(sl=1)
@@ -71,7 +70,7 @@ def copyGuideSel():
 
 
 def mirrorGuideSelOrAll(*arg):
-    """Mirror guides for selected / all *lf*_guide"""
+    """Mirror guides for selList / all *lf*_guide"""
     selList = mc.ls(sl=1, ap=1) or mc.ls("*lf*_guide", ap=1)
     if selList:
         mirrorGuideAttr(selList)
@@ -148,16 +147,15 @@ def mirrorGuideAttr(tgtList, wsMirror=0):
         if oppN:
             copyGuideAttr(tgt, oppN, wsMirror=wsMirror, mirror=1)
         else:
-            print(f"opposite not found for {tgt.name}")
+            logging.error(f"opposite not found for {tgt.name}")
 
 
 def mirrorPose(*arg):
-    """Mirror pose for selected ctl / all in set lf*_ctl_set"""
+    """Mirror pose for selList ctl / all in set lf*_ctl_set"""
     selList = mc.ls(sl=1, ap=1)
     if not selList:
-        tgtSet = "lf*_ctl_set"
-        if mc.ls(tgtSet, type="objectSet"):
-            selList = mc.sets(tgtSet, q=1)
+        if mc.ls(LF_CTL_SET, type="objectSet"):
+            selList = mc.sets(LF_CTL_SET, q=1)
     if selList:
         mirrorGuideAttr(selList)
 
@@ -175,9 +173,9 @@ def loadTemplate(removeUnused=1):
     idDict = file.loadJson(tgtFile)
     if removeUnused:  # Remove unused components
         idInPreset = [k + "_RGN" for k in idDict.keys()]
-        for rN in mc.ls("*RGN", type="script"):
-            if rN not in idInPreset:
-                build.deleteTgt(rN)
+        for node in mc.ls("*RGN", type="script"):
+            if node not in idInPreset:
+                build.deleteTgt(node)
 
     pattern = re.compile(rf"^([a-zA-Z_]+)")  # letter without digi
 
@@ -235,11 +233,10 @@ def saveTemplate():
         mc.confirmDialog(t="Info", m="No rigNode found.       \nSave ignored.", b="OK")
         return
 
-    for rN in rigNodes:
-        rN = DagNode(rN)
-        rigID = rN.a.rigID.get()
-        objsToSave = [DagNode(obj) for obj in mc.ls(rigID + "_*_guide", tr=1)]
-        objsToSave.append(rN.a.moduleG.inConnNode)
+    for node in [DagNode(r) for r in rigNodes]:
+        rigID = node.a.rigID.get()
+        objsToSave = [DagNode(o) for o in mc.ls(rigID + "_*_guide", tr=1)]
+        objsToSave.append(node.a.moduleG.inConnNode)
 
         guideDict = {}
         for obj in objsToSave:

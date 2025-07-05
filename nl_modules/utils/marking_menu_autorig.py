@@ -7,6 +7,7 @@ from nl_modules.utils import anim
 from functools import partial
 
 MENU_NAME = "marking_menu_autorig"
+LF_CTL_SET = "lf*_ctl_set"
 
 
 class MarkingMenuAutorig:
@@ -32,29 +33,42 @@ class MarkingMenuAutorig:
         self.reload_marking_menu()
 
     def setupMenu(self, menu, parent):
+        """
+        Setup the marking menu for the tools
+        """
+        self.addBuildOptions(menu)
+        self.addGuideOptions(menu)
+        self.addExtraOptions(menu)
+        self.addSpaceIKFKOptions(menu)
 
-        # component_MI = mc.menuItem(p=menu, l="Build / Guide", rp="N", subMenu=1)
+    def addBuildOptions(self, menu):
         mc.menuItem(p=menu, l="Build", rp="N", c=build.buildSelOrAll)
         mc.menuItem(p=menu, l="Unbuild", rp="NW", c=build.unbuildSelOrAll)
+
+    def addGuideOptions(self, menu):
         mc.menuItem(p=menu, l="Mirror Guide", rp="NE", c=guide.mirrorGuideSelOrAll)
         mc.menuItem(p=menu, l="Delete Guide", rp="SE", c=build.deleteSelOrAll)
-
-        # shape_MI = mc.menuItem(p=menu, l="Shape", rp="NE", subMenu=1)
         mc.menuItem(p=menu, l="Copy Guide", rp="E", c=self.copyGuideSel)
         mc.menuItem(p=menu, l="Mirror Shape", rp="W", c=self.mirrorShapeSelOrAll)
-        # mc.menuItem(p=menu, l="Select Controls", rp="W", c=self.selectCtlSelOrAll)
 
-        sel = mc.ls(sl=1)
-        if sel:
-            selN = DagNode(sel[0])
-            nodes = selN.a.message.outConnNode
+    def addExtraOptions(self, menu):
+        mc.menuItem(p=menu, l="Mirror Pose", c=guide.mirrorPose)
+        mc.menuItem(p=menu, l="Select Ctls", rp="SW", c=self.selectCtlSelOrAll)
+        mc.menuItem(p=menu, l="Reload Menu", c=self.reload_marking_menu)
+
+    def addSpaceIKFKOptions(self, menu):
+
+        selList = mc.ls(sl=1, tr=1)
+        if selList:
+            firstSelected = DagNode(selList[0])
+            nodes = firstSelected.a.message.outConnNode
             if nodes:
-                rN = nodes[0]
-                if rN.exists():
+                rigNode = nodes[0]
+                if rigNode.exists():
                     # -----------------------------
                     # SPACE SWITCH
                     # -----------------------------
-                    spaceAttr = selN.a.space
+                    spaceAttr = firstSelected.a.space
                     if spaceAttr.exists():
                         mc.menuItem(p=menu, l="SPACES", en=0)
                         mc.menuItem(p=menu, l="-" * 15, en=0)
@@ -73,26 +87,22 @@ class MarkingMenuAutorig:
                     # -----------------------------
                     # IK FK
                     # -----------------------------
-                    fkIkAttr = selN.a["fkIkBlend"]
+                    fkIkAttr = firstSelected.a["fkIkBlend"]
                     if fkIkAttr.exists():
                         if fkIkAttr.get() > 0.5:
                             mc.menuItem(
                                 p=menu,
                                 l="To FK Mode",
                                 rp="S",
-                                c=partial(self.setFkIk, fkIkAttr, 0, rN),
+                                c=partial(self.setFkIk, fkIkAttr, 0, rigNode),
                             )
                         else:
                             mc.menuItem(
                                 p=menu,
                                 l="To IK Mode",
                                 rp="S",
-                                c=partial(self.setFkIk, fkIkAttr, 1, rN),
+                                c=partial(self.setFkIk, fkIkAttr, 1, rigNode),
                             )
-        # pose_MI = mc.menuItem(p=menu, l="Pose", rp="SE", subMenu=1)
-        mc.menuItem(p=menu, l="Mirror Pose", c=guide.mirrorPose)
-        mc.menuItem(p=menu, l="Select Ctls", rp="SW", c=self.selectCtlSelOrAll)
-        mc.menuItem(p=menu, l="Reload Menu", c=self.reload_marking_menu)
 
     def copyGuideSel(*args):
         guide.copyGuideSel()
@@ -102,24 +112,23 @@ class MarkingMenuAutorig:
 
         selList = mc.ls(sl=1, tr=1)
         if not selList:
-            selSet = "lf*_ctl_set"
-            if mc.ls(selSet):
-                selList = mc.sets(selSet, q=1)
+            if mc.ls(LF_CTL_SET):
+                selList = mc.sets(LF_CTL_SET, q=1)
         if selList:
-            for sel in selList:
-                control.mirrorCtlShape(sel)
+            for selList in selList:
+                control.mirrorCtlShape(selList)
 
     def selectCtlSelOrAll(self, *args):
         rigNodes = []
-        sel = mc.ls(sl=1, tr=1)
-        if sel:
-            sel = DagNode(sel[0])
-            nodes = sel.a.message.outConnNode
+        selList = mc.ls(sl=1, tr=1)
+        if selList:
+            firstSelected = DagNode(selList[0])
+            nodes = firstSelected.a.message.outConnNode
             if nodes:
                 filteredNodes = [n for n in nodes if n.type == "script"]
-                rN = filteredNodes[0]
-                if rN.exists():
-                    rigNodes = [rN]
+                node = filteredNodes[0]
+                if node.exists():
+                    rigNodes = [node]
         else:
             rigNodes = mc.ls("*RGN", type="script")
 
@@ -137,14 +146,20 @@ class MarkingMenuAutorig:
         self.reload_marking_menu()
 
     def reload_marking_menu(*args):
-        mc.evalDeferred(
-            """
-from importlib import reload
-import nl_modules.utils.marking_menu_autorig as mma
-reload(mma)
-# mma.MarkingMenuAutorig()
-            """
-        )
+        #         mc.evalDeferred(
+        #             """
+        # from importlib import reload
+        # import nl_modules.utils.marking_menu_autorig as mma
+        # reload(mma)
+        # # mma.MarkingMenuAutorig()
+        #             """
+        #         )
+        from importlib import reload
+        import nl_modules.utils.marking_menu_autorig as mma
+
+        reload(mma)
 
 
 MarkingMenuAutorig()
+
+# mc.inViewMessage(amg="Marking Menu Reloaded", pos="midCenter", fade=True)

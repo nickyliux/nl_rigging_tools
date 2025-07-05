@@ -2,7 +2,6 @@ import maya.cmds as mc
 from maya import mel
 from nl_modules.nodel.base.dep_node import DepNode
 from nl_modules.nodel.base.dag_node import DagNode
-import logging
 
 
 class MshNode(DagNode):

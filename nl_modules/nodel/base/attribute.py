@@ -1,6 +1,6 @@
+import logging
 import maya.cmds as mc
 from nl_modules.utils import path
-import logging
 
 
 class Attribute:

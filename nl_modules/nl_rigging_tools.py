@@ -5,6 +5,9 @@ Date: 2024-06-23
 Version: 0.1.0
 Contact: nickyliux@gmail.com / www.nickyliu.com
 Description: Main file to load Qt UI file and connect functions
+Dependency:
+    maya.cmds
+    nl_modules (internal)
 """
 
 import os
@@ -65,7 +68,11 @@ MOD_DIR = os.path.dirname(nl_modules.__file__)
 
 IMAGES_PATH = MOD_DIR + "/images"
 SHAPE_PATH = MOD_DIR + "/build/shapes"
+
 PATH_LIGHT = MOD_DIR + "/build/others"
+LIGHTING_FILE = PATH_LIGHT + "/lighting3.ma"
+SHADER_FILE = PATH_LIGHT + "/bone_SHD.ma"
+
 MAYA_TPL_DIR = MOD_DIR + "/build/components"
 PATH_UI = MOD_DIR + "/nl_rigging_tools.ui"
 BIND_JNT_SET = "bind_jnt_set"
@@ -388,9 +395,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def rigNode_LW_dblClicked(self, item):
         """Show attribute editor for rigNode"""
-        sel = mc.ls(item.text())
-        if sel:
-            mc.select(sel)
+        textObj = mc.ls(item.text())
+        if textObj:
+            mc.select(textObj)
             mc.AttributeEditor()
 
     def rigNode_refresh_BN_clicked(self):
@@ -408,10 +415,10 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         #         return CrvNode(itemText, shape=itemText)
 
     def crvShape_save_BN_clicked(self):
-        """Save selected shape to highlighted"""
-        sel = mc.ls(sl=1, tr=1)
-        if sel:
-            tgt = CrvNode(sel[0])
+        """Save selList shape to highlighted"""
+        selList = mc.ls(sl=1, tr=1)
+        if selList:
+            tgt = CrvNode(selList[0])
             if tgt.type == "nurbsCurve":
                 item = self.UI.crvShape_LW.selectedItems()
                 if item:
@@ -426,9 +433,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                         tgt >> itemText
 
     def crvShape_new_BN_clicked(self):
-        sel = mc.ls(sl=1, tr=1)
-        if sel:
-            tgt = DagNode(sel[0])
+        selList = mc.ls(sl=1, tr=1)
+        if selList:
+            tgt = DagNode(selList[0])
             if tgt.type == "nurbsCurve":
                 result = mc.promptDialog(
                     t="New Shape", m="Enter name:", b=["OK", "Cancel"], db="OK"
@@ -453,20 +460,20 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 self.crvShape_refresh_BN_clicked()
 
     def crvShape_removeFrInst_BN_clicked(self):
-        sel = mc.ls(sl=1, tr=1)
-        if sel:
-            CrvNode(sel[0]).uninstanceFromOthers()
+        selList = mc.ls(sl=1, tr=1)
+        if selList:
+            CrvNode(selList[0]).uninstanceFromOthers()
 
     @Undo("crvShape_apply_BN_clicked")
     def crvShape_apply_BN_clicked(self):
-        """Copy item shape as instance to selected"""
-        sel = mc.ls(sl=1, tr=1)
+        """Copy item shape as instance to selList"""
+        selList = mc.ls(sl=1, tr=1)
         items = self.UI.crvShape_LW.selectedItems()
-        if sel and items:
+        if selList and items:
             itemText = items[0].text()
             shape = CrvNode(itemText, shape=itemText)
-            shape.copy_shape_as_inst(sel, keepSrc=0)
-            mc.select(sel)
+            shape.copy_shape_as_inst(selList, keepSrc=0)
+            mc.select(selList)
 
     def crvShape_refresh_BN_clicked(self):
         """Refresh crvShape_LW"""
@@ -479,12 +486,12 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.crvShape_LW.addItems(items)
 
     def joint_add_BN_clicked(self, rb=0):
-        """Add ribbon / reference joint at the position of selected mesh.
+        """Add ribbon / reference joint at the position of selList mesh.
         The joints will be parented to 'jnt_grp'"""
         mc.select(hi=1)
-        sel = mc.ls(sl=1, type="mesh")
+        selectedMesh = mc.ls(sl=1, type="mesh")
         meshSel = []
-        [meshSel.append(DagNode(s).parent) for s in sel]
+        [meshSel.append(DagNode(s).parent) for s in selectedMesh]
 
         if meshSel:
             jnt_grp = GrpNode("jnt_grp")
@@ -501,9 +508,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def mirrorAllRefJnt_BN_clicked(self):
         """Mirror left reference(*_refJnt) joints"""
-        sel = mc.ls("lf_*_refJnt", type="joint")
-        if sel:
-            guide.mirrorGuideAttr(sel, wsMirror=1)
+        selectedJnt = mc.ls("lf_*_refJnt", type="joint")
+        if selectedJnt:
+            guide.mirrorGuideAttr(selectedJnt, wsMirror=1)
         else:
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 
@@ -520,7 +527,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         from nl_modules.utils import skin
 
         if not DagNode(searchSet).exists():
-            logging.info(f"Set {searchSet} NOT found for auto skin.")
+            logging.error(f"Set {searchSet} NOT found for auto skin.")
             return
 
         jntList = set(mc.sets(searchSet, q=1))
@@ -559,10 +566,10 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def delSkinForAllMeshes(self):
         from nl_modules.nodel.msh_node import MshNode
 
-        sel = mc.ls(type="mesh") or []
+        allMeshes = mc.ls(type="mesh") or []
         count = 0
-        for s in sel:
-            count += MshNode(s).delSkin()
+        for msh in allMeshes:
+            count += MshNode(msh).delSkin()
         logging.info(f"{count} skinClusters deleted.")
 
     def bindUsingProxy(self):
@@ -575,13 +582,13 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             tgt.dspType = 1 - tgt.dspType
 
     def loadWrapTargetMesh(self):
-        sel = mc.ls(sl=1)
+        selList = mc.ls(sl=1, tr=1)
         targetWrapMesh = mc.optionVar(q="targetWrapMesh")
         tgt = DagNode(targetWrapMesh)
         if tgt.exists():
             tgt.dspType = 0
-        if sel:
-            mc.optionVar(sv=("targetWrapMesh", sel[0]))
+        if selList:
+            mc.optionVar(sv=("targetWrapMesh", selList[0]))
             self.updateLoadWrapTargetMesh()
         else:
             mc.select(tgt)
@@ -622,13 +629,11 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def misc_importEnvAndShd_BN_clicked(self):
         """Import lighting & shader scenes for better look"""
         if not mc.objExists("env_grp"):
-            lighting_file = PATH_LIGHT + "/lighting3.ma"
-            if os.path.isfile(lighting_file):
-                file.importFile(lighting_file)
+            if os.path.isfile(LIGHTING_FILE):
+                file.importFile(LIGHTING_FILE)
         if not mc.objExists("bone_SHD"):
-            shader_file = PATH_LIGHT + "/bone_SHD.ma"
-            if os.path.isfile(shader_file):
-                file.importFile(shader_file)
+            if os.path.isfile(SHADER_FILE):
+                file.importFile(SHADER_FILE)
 
     # def setLeadColor(self, id=0):
     #     """Change wireframe color"""

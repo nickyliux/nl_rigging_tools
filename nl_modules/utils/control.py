@@ -1,8 +1,6 @@
-import os
 import logging
 import maya.cmds as mc
 from nl_modules.utils import common
-import nl_modules
 
 
 def mirrorCtlShape(ctl):
@@ -12,7 +10,6 @@ def mirrorCtlShape(ctl):
     from nl_modules.nodel.grp_node import GrpNode
     from nl_modules.nodel.base.dag_node import DagNode
     import maya.cmds as mc
-    import logging
 
     ctl = DagNode(ctl)
     if not ctl.shape:
@@ -65,9 +62,12 @@ def saveCtl():
         mc.select(allCtls)
         tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2)
         if tgtFile:
-            mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
-            logging.info("Curve shape exported OK.")
-            mc.select(cl=1)
+            try:
+                mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
+                logging.info("Curve shape exported OK.")
+                mc.select(cl=1)
+            except Exception as e:
+                logging.error(f"Error loading file {tgtFile}: {e}")
 
 
 def loadCtl():
@@ -78,7 +78,12 @@ def loadCtl():
 
     tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, fileMode=1)
     if tgtFile:
-        imported = mc.file(tgtFile, i=1, ns="ctl", returnNewNodes=1)
+        imported = None
+        try:
+            imported = mc.file(tgtFile, i=1, ns="ctl", returnNewNodes=1)
+        except Exception as e:
+            logging.error(f"Error loading file {tgtFile}: {e}")
+
         ns = ""
         if imported:
             tempStr = imported[0].replace(":", " ").replace("|", " ")
@@ -108,36 +113,33 @@ def loadCtl():
 def setOnTopSel():
     from nl_modules.nodel.base.dag_node import DagNode
 
-    sel = mc.ls(sl=1, tr=1)
-    if sel:
-        state = DagNode(sel[0]).shape.a.alwaysDrawOnTop.get()
-        for s in sel:
+    selList = mc.ls(sl=1, tr=1)
+    if selList:
+        state = DagNode(selList[0]).shape.a.alwaysDrawOnTop.get()
+        for s in selList:
             DagNode(s).shape.a.alwaysDrawOnTop.set(1 - state)
 
 
 def dropSel():
     from nl_modules.nodel.crv_node import CrvNode
 
-    sel = mc.ls(sl=1, tr=1)
-    for s in sel or []:
-        CrvNode(s).cv_drop()
+    for selList in mc.ls(sl=1, tr=1):
+        CrvNode(selList).cv_drop()
 
 
 def rotaCVForSel(*args):
     from nl_modules.nodel.base.dag_node import DagNode
     from nl_modules.nodel.crv_node import CrvNode
 
-    for sel in mc.ls(sl=1, tr=1):
-        sel = DagNode(sel)
-        if sel.type == "nurbsCurve":
-            CrvNode(sel).cv_rotate(*args)
+    for selList in [DagNode(selList) for selList in mc.ls(sl=1, tr=1)]:
+        if selList.type == "nurbsCurve":
+            CrvNode(selList).cv_rotate(*args)
 
 
 def scaleCVForSel(value):
     from nl_modules.nodel.base.dag_node import DagNode
     from nl_modules.nodel.crv_node import CrvNode
 
-    for sel in mc.ls(sl=1, tr=1):
-        sel = DagNode(sel)
-        if sel.type == "nurbsCurve":
-            CrvNode(sel).cv_scale(value)  # , atCVCetner=1)
+    for selList in [DagNode(selList) for selList in mc.ls(sl=1, tr=1)]:
+        if selList.type == "nurbsCurve":
+            CrvNode(selList).cv_scale(value)  # , atCVCetner=1)

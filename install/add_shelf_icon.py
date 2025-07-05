@@ -1,5 +1,5 @@
-import sys
 import os
+import sys
 import maya.cmds as mc
 import maya.mel as ml
 

@@ -1,5 +1,5 @@
-import maya.cmds as mc
 import logging
+import maya.cmds as mc
 
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
@@ -29,7 +29,7 @@ from nl_modules.nodel.loc_node import LocNode
 
 
 def switchToSpaceTgt(spaceName):
-    """switch space for all selected with attribute "space". World transform is unchanged
+    """switch space for all selList with attribute "space". World transform is unchanged
     e.g.
         switchToSpace("master")
     """
@@ -51,31 +51,30 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
     e.g.
         switchToFkIk(attr=, toIKMode=1, rigNode=)
     """
-    rN = rigNode
-    if rN and rN.a.nodeState.get() == 2:
+    if rigNode and rigNode.a.nodeState.get() == 2:
 
-        rigID = rN.a.rigID.get()
-        rootJ = rN.a.rootJ.inConnNode
+        rigID = rigNode.a.rigID.get()
+        rootJ = rigNode.a.rootJ.inConnNode
         upr = rootJ.children[0]
         lwr = upr.children[0]
         palm = lwr.children[0]
         ball = palm.children[0]
         palm_bf = DagNode(palm.name + "_bf")
 
-        hip_fkc = rN.a.hip_fkc.inConnNode
-        upr_fkc = rN.a.upr_fkc.inConnNode
-        lwr_fkc = rN.a.lwr_fkc.inConnNode
-        palm_fkc = rN.a.palm_fkc.inConnNode
-        ball_fkc = rN.a.ball_fkc.inConnNode
-        ikc = rN.a.ikc.inConnNode
-        pvc = rN.a.pvc.inConnNode
+        hip_fkc = rigNode.a.hip_fkc.inConnNode
+        upr_fkc = rigNode.a.upr_fkc.inConnNode
+        lwr_fkc = rigNode.a.lwr_fkc.inConnNode
+        palm_fkc = rigNode.a.palm_fkc.inConnNode
+        ball_fkc = rigNode.a.ball_fkc.inConnNode
+        ikc = rigNode.a.ikc.inConnNode
+        pvc = rigNode.a.pvc.inConnNode
         #
         #   To IK Mode : Snap ikc to matchers under fkc
         #
         if toIKMode == 1:
             ikcMatcher = DagNode(ikc + "_matcher")
             if not ikcMatcher.exists():
-                logging.info(f"{ikc}_matcher NOT found")
+                logging.error(f"{ikc}_matcher NOT found")
                 return
             smartCtl = DagNode(rigID + "_smart_ctl")
 
@@ -121,12 +120,6 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
                     palm_fkc.alignTo(palm_bf)
 
                 ball_fkc.alignTo(loc)
-                # loc.delete()
-
-            # if rigClass == "LegQd":
-            #     digit_jnt = ikc.childrenJt[0]
-            #     digit_fkc = rN.a["digit_fkc"].inConnNode
-            #     digit_fkc.alignTo(digit_jnt)
 
     attr.set(toIKMode)
     mc.select(cl=1)

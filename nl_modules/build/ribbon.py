@@ -1,5 +1,5 @@
-import maya.cmds as mc
 import logging
+import maya.cmds as mc
 import nl_modules.build.rig_module as rig_module
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.base.dag_node import DagNode

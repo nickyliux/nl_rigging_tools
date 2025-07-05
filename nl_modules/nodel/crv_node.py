@@ -5,8 +5,6 @@ from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.base.dep_node import DepNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.utils import common, file, path, open_maya_api
-from nl_modules.utils.color import Color
-import logging
 
 
 class CrvNode(GrpNode):
@@ -137,7 +135,7 @@ class CrvNode(GrpNode):
         inheritXf=1,
         p=None,
     ):
-        """Build line from object/position from tgt1 to tgt2
+        """Build a line betw two target points
         e.g.
             line = CrvNode.buildLine(obj1, obj2, width=5)
             line = CrvNode.buildLine((0,0,0), (3,3,3), n='crv')
@@ -177,18 +175,15 @@ class CrvNode(GrpNode):
         return crv
 
     @staticmethod
-    def buildLineLinked(obj1, obj2, pf="", width=-1, inheritXf=0, dspType=0, p=None):
-        """Build linked line using decomposeMatrix
-        e.g.
-            sel = mc.ls(sl=1)
-            for a, b in zip(sel[:-1], sel[1:]):
-                CrvNode.buildLineLinked(a,b)
-        """
-        obj1 = DagNode(obj1)
-        obj2 = DagNode(obj2)
+    def buildLineLinked(
+        tgt1=None, tgt2=None, pf="", width=-1, inheritXf=0, dspType=0, p=None
+    ):
+        """Build linked line using decomposeMatrix"""
+        tgt1 = DagNode(tgt1)
+        tgt2 = DagNode(tgt2)
         line = CrvNode.buildLine(
-            obj1,
-            obj2,
+            tgt1,
+            tgt2,
             pf=pf,
             width=width,
             inheritXf=inheritXf,
@@ -197,23 +192,23 @@ class CrvNode(GrpNode):
         )
 
         if line:
-            nodes = obj1.a.worldMatrix.outConnNode
+            nodes = tgt1.a.worldMatrix.outConnNode
             dcm = nodes[0] if nodes else DepNode("DCM_#", nodeType="decomposeMatrix")
-            obj1.a.worldMatrix >> dcm.a.inputMatrix
+            tgt1.a.worldMatrix >> dcm.a.inputMatrix
             mc.connectAttr(dcm + ".outputTranslate", line.shape + ".cv[0]")
 
-            nodes = obj2.a.worldMatrix.outConnNode
+            nodes = tgt2.a.worldMatrix.outConnNode
             dcm = nodes[0] if nodes else DepNode("DCM_#", nodeType="decomposeMatrix")
-            obj2.a.worldMatrix >> dcm.a.inputMatrix
+            tgt2.a.worldMatrix >> dcm.a.inputMatrix
             mc.connectAttr(dcm + ".outputTranslate", line.shape + ".cv[1]")
             return line
 
     @staticmethod
     def buildLineLinkedSel():
         """Build linked lines in selection order"""
-        sel = mc.ls(sl=1, tr=1)
-        for a, b in zip(sel[:-1], sel[1:]):
-            CrvNode.buildLineLinked(a, b)
+        selList = mc.ls(sl=1, tr=1)
+        for obj1, obj2 in zip(selList[:-1], selList[1:]):
+            CrvNode.buildLineLinked(tgt1=obj1, tgt2=obj2)
         mc.select(cl=1)
 
     def weightTo(self, joints, weightDir=0, **kwargs):
@@ -325,8 +320,7 @@ class CrvNode(GrpNode):
         return self
 
     def lowerCubeFrontCV(self, up="z"):
+        """Move target cvs 1/3 lower"""
         ids = [1, 12, 15, 16]
-        targetCV = [self.shape + f".cv[{id}]" for id in ids]
-
-        for cv in targetCV:
-            mc.move(0, -self.o.height * 0.3, 0, cv, os=1, r=1)
+        cvs = [self.shape + f".cv[{id}]" for id in ids]
+        mc.move(0, -self.o.height / 3, 0, cvs, os=1, r=1)

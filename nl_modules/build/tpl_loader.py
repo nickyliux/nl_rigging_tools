@@ -1,9 +1,8 @@
-import maya.cmds as mc
 import os.path
 import logging
+import maya.cmds as mc
 
 MAYA_TPL_DIR = "D:/_PROJECT/GIT/nl_rigging_tools/nl_modules/build/components"
-# BASE_FILE = "base.ma"
 
 
 class TplLoader:

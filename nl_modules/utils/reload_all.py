@@ -1,6 +1,5 @@
-# import maya.cmds as mc
-from importlib import reload
 import logging
+from importlib import reload
 
 # for m in set(sys.modules.values()):
 #     if m.__name__.startswith('nl_modules'):

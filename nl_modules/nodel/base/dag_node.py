@@ -1,10 +1,10 @@
-import maya.cmds as mc
+import logging
 import re
+import maya.cmds as mc
 from collections import OrderedDict
 from nl_modules.nodel.base.dep_node import DepNode
 from nl_modules.utils import common, open_maya_api
 from nl_modules.utils.color import Color
-import logging
 
 
 class DagNode(DepNode):
@@ -373,7 +373,7 @@ class DagNode(DepNode):
     def zeroize(self, below=False, relink=True, alignParent=False, snapIt=False):
         """Add offset group above or below target
         options
-            below:        added below selected
+            below:        added below selList
             relink:       parent direct children to the offset group
             alignParent:  align the offset group to target's parent instead of target
 
@@ -514,7 +514,7 @@ class DagNode(DepNode):
             try:
                 mc.setAttr(self + "." + attr, lock=lock, k=not lock)
             except:
-                logging.debug("Fail to run on this attribute")
+                logging.error("Fail to run on this attribute")
 
     def lockHideAttrXf(self, chn="t", lock=True):
         """Lock and hide transform attribute

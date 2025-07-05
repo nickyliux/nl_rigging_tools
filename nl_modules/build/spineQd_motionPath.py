@@ -1,5 +1,5 @@
-import maya.cmds as mc
 import logging
+import maya.cmds as mc
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
@@ -9,7 +9,6 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common, utils_node as ut
-from nl_modules.utils.color import Color
 
 
 class SpineQd(RigModule):

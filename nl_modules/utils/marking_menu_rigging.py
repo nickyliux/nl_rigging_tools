@@ -153,25 +153,25 @@ def showHidden(*args):
 
 
 def use_last_crv_shapes(*args):
-    sel = mc.ls(sl=1)
-    if len(sel) > 1:
+    selList = mc.ls(sl=1, tr=1)
+    if len(selList) > 1:
         from nl_modules.nodel.crv_node import CrvNode
 
-        CrvNode(sel[-1]).copy_shape_as_inst(sel[:-1])
+        CrvNode(selList[-1]).copy_shape_as_inst(selList[:-1])
 
 
 def add_last_crv_shapes(*args):
-    sel = mc.ls(sl=1)
-    if len(sel) == 2:
-        last = DagNode(sel[-1])
-        mc.parent(last.shape, sel[0], s=1, r=1)
+    selList = mc.ls(sl=1, tr=1)
+    if len(selList) == 2:
+        last = DagNode(selList[-1])
+        mc.parent(last.shape, selList[0], s=1, r=1)
         mc.delete(last)
 
 
 def select_cst_objects(*args):
-    sel = mc.ls(sl=1)
-    if sel:
-        cstObj = DagNode(sel[0]).getCstObjects()
+    selList = mc.ls(sl=1, tr=1)
+    if selList:
+        cstObj = DagNode(selList[0]).getCstObjects()
         if cstObj:
             mc.select(cstObj)
 
@@ -189,11 +189,11 @@ def add_ofs_below(*args):
 def add_IK(*args):
     from nl_modules.utils import common
 
-    sel = mc.ls(sl=1, type="joint")
-    if len(sel) == 2:
+    selectedJnt = mc.ls(sl=1, type="joint")
+    if len(selectedJnt) == 2:
         solver = common.IK_SOLVER[args[0]]
         solverCode = solver[2:5].upper()
-        mc.ikHandle(sol=solver, name=f"{sel[0]}_{solverCode}_ikh", s="sticky")
+        mc.ikHandle(sol=solver, name=f"{selectedJnt[0]}_{solverCode}_ikh", s="sticky")
     else:
         mc.confirmDialog(t="Info", m="Pls select start & end joint", b="OK")
 
@@ -223,11 +223,10 @@ def make_joint_chain(size):
 
 def display_CV(*args):
     state = args[0]
-    sel = mc.ls(sl=1)
-    for s in sel:
-        shapes = DagNode(s).shapes
-        for sh in shapes:
-            attr = sh.a.dispCV
+    for selList in mc.ls(sl=1):
+        shapes = DagNode(selList).shapes
+        for shape in shapes:
+            attr = shape.a.dispCV
             if attr.exists():
                 attr.set(state)
 
@@ -235,29 +234,34 @@ def display_CV(*args):
 def display_LRA(*args):
     state = args[0]
     hi = args[1]
-    sel = mc.ls(sl=1)
-    if sel:
+    selList = mc.ls(sl=1)
+    if selList:
         if hi:
             mc.select(hi=1)
-        sel = mc.ls(sl=1, tr=1)
+        selList = mc.ls(sl=1, tr=1)
     else:
-        sel = mc.ls(tr=1)
-    for s in sel:
-        if mc.objExists(s + ".displayLocalAxis"):
-            mc.setAttr(s + ".displayLocalAxis", state)
+        selList = mc.ls(tr=1)
+
+    for sel in selList:
+        attr = DagNode(sel).a["displayLocalAxis"]
+        if attr.exists():
+            attr.set(state)
 
 
 def joint_LRA(*args):
     state = args[0]
-    sel = mc.ls(sl=1, type="joint") or mc.ls(type="joint")
-    for s in sel:
-        mc.setAttr(s + ".displayLocalAxis", state)
+    selList = mc.ls(sl=1, type="joint") or mc.ls(type="joint")
+
+    for sel in selList:
+        attr = DagNode(sel).a["displayLocalAxis"]
+        if attr.exists():
+            attr.set(state)
 
 
 def connect_mm(attr="t"):
-    sel = mc.ls(sl=1)
-    if len(sel) == 2:
-        mc.connectAttr(f"{sel[0]}.{attr}", f"{sel[1]}.{attr}", f=1)
+    selList = mc.ls(sl=1)
+    if len(selList) == 2:
+        mc.connectAttr(f"{selList[0]}.{attr}", f"{selList[1]}.{attr}", f=1)
 
 
 def connect_channel(*args):
@@ -284,44 +288,43 @@ def lockAttr(*args):
 def cst(*args):
     from nl_modules.utils import common
 
-    sel = mc.ls(sl=1)
-    if len(sel) > 1:
+    selList = mc.ls(sl=1)
+    if len(selList) > 1:
         skipR = ["x", "y", "z"] if args[0] == "parT" else []
         skipT = ["x", "y", "z"] if args[0] == "parR" else []
         cstCmd = common.CST_DICT[args[0]]
 
         if args[0] == "pvt":
-            cstCmd(sel)
+            cstCmd(selList)
         elif args[0].startswith("par"):
-            cstCmd(sel, mo=args[1], st=skipT, sr=skipR)
+            cstCmd(selList, mo=args[1], st=skipT, sr=skipR)
         else:
-            cstCmd(sel, mo=args[1])
+            cstCmd(selList, mo=args[1])
 
 
 def del_cst_mm(*args):
-    sel = mc.ls(sl=1)
-    for s in sel:
-        DagNode(s).removeCstNodes()
+    for selList in mc.ls(sl=1):
+        DagNode(selList).removeCstNodes()
 
 
 def sel_cst_driver(*args):
-    sel = mc.ls(sl=1)
-    if sel:
-        mc.select(DagNode(sel[0]).getCstObjects())
+    selList = mc.ls(sl=1)
+    if selList:
+        mc.select(DagNode(selList[0]).getCstObjects())
 
 
 def match_all(*args):
-    sel = mc.ls(sl=1)
-    if len(sel) > 1:
-        mc.matchTransform(*sel)
-        mc.select(sel[0])
+    selList = mc.ls(sl=1)
+    if len(selList) > 1:
+        mc.matchTransform(*selList)
+        mc.select(selList[0])
 
 
 def match_pos(*args):
-    sel = mc.ls(sl=1)
-    if len(sel) > 1:
-        mc.matchTransform(*sel, pos=1, rot=0, scl=0)
-        mc.select(sel[0])
+    selList = mc.ls(sl=1)
+    if len(selList) > 1:
+        mc.matchTransform(*selList, pos=1, rot=0, scl=0)
+        mc.select(selList[0])
 
 
 def get_nodeType_below(nType):

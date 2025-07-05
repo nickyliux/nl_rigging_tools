@@ -1,7 +1,5 @@
-import os.path
-import maya.cmds as mc
 import logging
-import nl_modules
+import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
@@ -83,7 +81,7 @@ def genProxyMesh():
         mc.select(cl=1)
         logging.info("Gen Proxy Mesh")
     else:
-        logging.info("Set 'bind_jnt_set' NOT found.")
+        logging.error("Set 'bind_jnt_set' NOT found.")
 
 
 def saveProxy():
@@ -91,7 +89,7 @@ def saveProxy():
     Save all the proxies, without connection or any unwanted
     """
     mc.select("PRX")
-    tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2)  # , dir=PROXY_PATH)
+    tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2)
     if tgtFile:
         mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
         logging.info("Proxies exported OK.")
@@ -130,12 +128,11 @@ def loadProxy():
 
 
 def resetProxy():
-    sel = mc.ls(sl=1, tr=1)
-    for s in sel:
-        if s.endswith("_pxGeo"):
-            jnt = JntNode(s[:-6])
+    for selList in mc.ls(sl=1, tr=1):
+        if selList.endswith("_pxGeo"):
+            jnt = JntNode(selList[:-6])
             if jnt.exists():
-                mc.delete(s)
+                mc.delete(selList)
                 jnt.addProxyMesh(p="PRX")
     mc.select(cl=1)
 
@@ -167,12 +164,12 @@ def mirrorProxy():
 
 
 def wrapProxy():
-    sel = mc.ls(sl=1, tr=1)
-    if sel:
+    selList = mc.ls(sl=1, tr=1)
+    if selList:
         targetWrapMesh = mc.optionVar(q="targetWrapMesh")
         tgt = DagNode(targetWrapMesh)
         if tgt.exists():
-            nlShrinkWrap(tgt, sel)
+            nlShrinkWrap(tgt, selList)
         else:
             logging.error("No target wrap mesh loaded !")
 

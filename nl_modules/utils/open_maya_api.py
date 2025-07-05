@@ -33,9 +33,9 @@ def toMDagPath(node):
 def getKnotsList(crvShape):
     """get knots from shape"""
     mObj = om.MObject()
-    sel = om.MSelectionList()
-    sel.add(crvShape)
-    sel.getDependNode(0, mObj)
+    selList = om.MSelectionList()
+    selList.add(crvShape)
+    selList.getDependNode(0, mObj)
 
     fnCrv = om.MFnNurbsCurve(mObj)
     tmp = om.MDoubleArray()

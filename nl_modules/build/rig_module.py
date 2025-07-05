@@ -1,5 +1,5 @@
-import maya.cmds as mc
 import logging
+import maya.cmds as mc
 from nl_modules.build.rig_base import RigBase
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
@@ -7,7 +7,6 @@ from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common, utils_node as ut, maths
-from nl_modules.utils.color import Color
 
 BIND_JNT_SET = "bind_jnt_set"
 
@@ -33,11 +32,11 @@ class RigModule(RigBase):
 
         self.moduleG = rigNode.a.moduleG.inConnNode
         if not self.moduleG:
-            logging.info("moduleG not found in RigNode !")
+            logging.error("moduleG not found in RigNode.")
 
         self.master_guide = rigNode.a.master_guide.inConnNode
         if not self.master_guide:
-            logging.info("master_guide not found in RigNode !")
+            logging.error("master_guide not found in RigNode.")
 
         self.rigSize = 1
         self.xDir = 1 if rID.startswith("lf") else -1
