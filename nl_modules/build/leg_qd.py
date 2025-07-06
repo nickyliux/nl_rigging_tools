@@ -1,13 +1,13 @@
-import logging
 import maya.cmds as mc
+from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.utils import common, utils_node as ut, maths
-from nl_modules.build.rig_module import RigModule
+from nl_modules.utils import common
+from nl_modules.utils import utils_node as ut
 
 
 class LegQd(RigModule):
@@ -18,19 +18,36 @@ class LegQd(RigModule):
         n.build()
     """
 
+    @property
+    def patellaBone(self):
+        return self.master_guide.a.patellaBone.get()
+
+    @property
+    def toeBones(self):
+        return self.master_guide.a.toeBones.get()
+
+    @property
+    def toeNum(self):
+        return self.master_guide.a.toeNum.get()
+
+    @property
+    def twistBones(self):
+        return self.master_guide.a.twistBones.get()
+
+    @property
+    def kneeFix(self):
+        return self.master_guide.a.kneeFix.get()
+
+    @property
+    def scapularExtra(self):
+        return self.master_guide.a.scapularExtra.get()
+
     def __init__(self, rigNode):
         if isinstance(rigNode, str):
             rigNode = DagNode(rigNode)
 
         super().__init__(rigNode)
-        # self.RBN_BONES = self.master_guide.a.rbnBones.get()
-        self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
-        self.PATELLA_BONE = self.master_guide.a.patellaBone.get()
-        self.TOE_BONES = self.master_guide.a.toeBones.get()
-        self.TOE_NUM = self.master_guide.a.toeNum.get()
-        self.TWIST_BONES = self.master_guide.a.twistBones.get()
-        self.KNEE_FIX = self.master_guide.a.kneeFix.get()
-        self.SCAPULAR_EXTRA = self.master_guide.a.scapularExtra.get()
+
         rID, rSz, xDr = self.getMyVar()
 
         self.FK_GRP = GrpNode("FK", pf=rID, p=self.CTL_DATA)
@@ -83,7 +100,7 @@ class LegQd(RigModule):
             ["hip", "upr", "lwr", "palm", "digit", "ball", "tip"]
         )
 
-        if self.TOE_BONES:
+        if self.toeBones:
             self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
             self.toesRootJ | self.SKL_DATA
             self.rigNode.setMsg({"toesRootJ": self.toesRootJ})
@@ -94,11 +111,11 @@ class LegQd(RigModule):
                 ["toe03_1", "toe03_2", "toe03_3", "toe03_4", "toe03_5"],
                 ["toe04_1", "toe04_2", "toe04_3", "toe04_4", "toe04_5"],
             ]
-            if self.TOE_NUM == 2:
+            if self.toeNum == 2:
                 toe_names = toe_names[2:4]
-            elif self.TOE_NUM == 3:
+            elif self.toeNum == 3:
                 toe_names = toe_names[2:5]
-            elif self.TOE_NUM == 4:
+            elif self.toeNum == 4:
                 toe_names = toe_names[1:5]
 
             for names in toe_names:
@@ -157,7 +174,7 @@ class LegQd(RigModule):
                 "pvc": self.pvc,
             }
         )
-        if self.SCAPULAR_EXTRA:
+        if self.scapularExtra:
             self.quadScap_ikc = CrvNode(
                 "quadScap_ikc",
                 pf=rID,
@@ -191,34 +208,34 @@ class LegQd(RigModule):
         self.blend_fk_ik()
 
         self.bindJnts = [self.upr]
-        if not self.SCAPULAR_EXTRA:
+        if not self.scapularExtra:
             self.bindJnts.append(self.hip)
 
         self.scapularG = self.build_scapular(
             ikc=self.ikc,
             fkc=self.fkCtl[0],
             jnts=self.joints,
-            EXTRA=self.SCAPULAR_EXTRA,
+            EXTRA=self.scapularExtra,
             scapCtl=self.quadScap_ikc,
         )
 
         self.singleBallCtl_setup()
 
-        if self.KNEE_FIX:
+        if self.kneeFix:
             self.boneFix_setup(self.lwr, self.palm)
 
-        if self.PATELLA_BONE:
+        if self.patellaBone:
             self.patella_setup()
 
-        if self.TWIST_BONES:
+        if self.twistBones:
             self.build_twist_bones()
         else:
-            if self.KNEE_FIX:
+            if self.kneeFix:
                 self.bindJnts.append(self.boneFix)
             else:
                 self.bindJnts.append(self.lwr)
 
-        if self.TOE_BONES:
+        if self.toeBones:
             self.toesRootJ | self.palm
             self.toesJntList = []
             for rJ in self.toesRootJ.childrenJt:
@@ -474,7 +491,7 @@ class LegQd(RigModule):
         jnt_names = ["ulna", "ulnaEnd"]
         ulna_JC = self.gen_sk_fr_names(jnt_names, scale=2)
 
-        parent = self.boneFix if self.KNEE_FIX else self.lwr
+        parent = self.boneFix if self.kneeFix else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent
 
         radius_loc = LocNode(
@@ -634,7 +651,7 @@ class LegQd(RigModule):
         for ctl in self.all_bend or []:
             ctl.a.showAttr(t=1, r=1, s=1)
 
-        if self.SCAPULAR_EXTRA:
+        if self.scapularExtra:
             self.quadScap_ikc.a.showAttr("ty", "tz", r=1)
 
     def setup_rotate_order(self):
@@ -667,7 +684,7 @@ class LegQd(RigModule):
         )
         # if self.RBN_BONES:
         #     ctlSet.extend(self.all_bend)
-        if self.TOE_BONES:
+        if self.toeBones:
             [ctlSet.extend(s) for s in self.toesCtlsList or []]
         self.add_ctl_set(ctlSet)
 

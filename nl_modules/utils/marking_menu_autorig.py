@@ -146,18 +146,18 @@ class MarkingMenuAutorig:
         self.reload_marking_menu()
 
     def reload_marking_menu(*args):
-        #         mc.evalDeferred(
-        #             """
+        mc.evalDeferred(
+            """
+from importlib import reload
+import nl_modules.utils.marking_menu_autorig as mma
+reload(mma)
+# mma.MarkingMenuAutorig()
+"""
+        )
         # from importlib import reload
         # import nl_modules.utils.marking_menu_autorig as mma
-        # reload(mma)
-        # # mma.MarkingMenuAutorig()
-        #             """
-        #         )
-        from importlib import reload
-        import nl_modules.utils.marking_menu_autorig as mma
 
-        reload(mma)
+        # reload(mma)
 
 
 MarkingMenuAutorig()

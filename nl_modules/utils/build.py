@@ -122,7 +122,9 @@ def postRig():
 
         m2.a.add("proxyVis", k=0, attrType="bool", dv=1) >> PRX.a.v
         (
-            m2.a.add("proxyDsp", attrType="enum", k=0, en="Normal:Template:Reference")
+            m2.a.add(
+                "proxyDsp", attrType="enum", dv=2, k=0, en="Normal:Template:Reference"
+            )
             >> PRX.a.overrideDisplayType
         )
 
