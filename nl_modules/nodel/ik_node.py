@@ -12,22 +12,24 @@ from nl_modules.utils import common, utils_node as ut
 mel.eval("ikSpringSolver")
 mel.eval("ik2Bsolver")
 
+from enum import Enum
+
+
+class Solver(Enum):
+    SC = "ikSCsolver"
+    RP = "ikRPsolver"
+    SPLINE = "ikSplineSolver"
+    SPRING = "ikSpringSolver"
+    TWO_BONE = "ik2Bsolver"
+
 
 class IkNode(DagNode):
     """Build ik component with start and end joint.
     e.g.
         n = IkNode('name', sj=J1, ee=J2)
-        n = IkNode('name', sj=J1, ee=J4, sol=2)
-        n = IkNode('name', sj=J1, ee=J4, ikc=C1, pvc=C2, sol=1)
+        n = IkNode('name', sj=J1, ee=J4, solver=Solver.SPLINE)
+        n = IkNode('name', sj=J1, ee=J4, solver=Solver.RP, ikc=C1, pvc=C2)
     """
-
-    SOL_DICT = {
-        0: "ikSCsolver",
-        1: "ikRPsolver",
-        2: "ikSplineSolver",
-        3: "ikSpringSolver",
-        4: "ik2Bsolver",
-    }
 
     def __init__(
         self,
@@ -38,7 +40,7 @@ class IkNode(DagNode):
         sj=None,
         ee=None,
         jsf="",
-        sol=0,
+        solver=Solver.SC,
         setting=None,
         ikc=None,
         pvc=None,
@@ -71,7 +73,7 @@ class IkNode(DagNode):
 
         self.sj = DagNode(sj1)
         self.ee = DagNode(ee1)
-        self.solver = sol
+        self.solver = solver
         self.ikc = ikc
         self.pvc = pvc
         self.setting = setting
@@ -103,13 +105,11 @@ class IkNode(DagNode):
     def createIK(
         self, node, quat=False, createCrv=1, inputCrv=None, numSpans=3, p=None
     ):
-        solverName = IkNode.SOL_DICT[self.solver]
-
         ikh_args = dict(
             n=node,
             sj=self.sj,
             ee=self.ee,
-            solver=solverName,
+            solver=self.solver.value,
             s="sticky",
             createRootAxis=0,
             rootOnCurve=1,
@@ -126,40 +126,6 @@ class IkNode(DagNode):
             ikh_args["c"] = inputCrv
 
         ikh = mc.ikHandle(**ikh_args)
-
-        # ikh = None
-        # if createCrv:
-        #     ikh = mc.ikHandle(
-        #         n=node,
-        #         sj=self.sj,
-        #         ee=self.ee,
-        #         solver=solverName,
-        #         s="sticky",
-        #         createRootAxis=0,
-        #         rootOnCurve=1,
-        #         snapCurve=0,
-        #         parentCurve=0,
-        #         scv=1,
-        #         createCurve=1,
-        #         numSpans=numSpans,
-        #         rootTwistMode=0,
-        #     )
-        # else:
-        #     ikh = mc.ikHandle(
-        #         n=node,
-        #         sj=self.sj,
-        #         ee=self.ee,
-        #         solver=solverName,
-        #         s="sticky",
-        #         createRootAxis=0,
-        #         rootOnCurve=1,
-        #         snapCurve=0,
-        #         parentCurve=0,
-        #         scv=1,
-        #         createCurve=0,
-        #         c=inputCrv,
-        #         rootTwistMode=0,
-        #     )
         if ikh:
             self.node = DagNode(ikh[0])
         else:
@@ -182,7 +148,7 @@ class IkNode(DagNode):
 
     def getCrv(self):
         """Return curve data of SplineIK"""
-        if self.solver == 2:
+        if self.solver == Solver.SPLINE:
             crvSh = self.a.inCurve.inConnNode
             return CrvNode(crvSh.parent)
 
@@ -230,7 +196,7 @@ class IkNode(DagNode):
 
     def stretchySp(self, on=0, axis="tx", axisDir=1, minDv=0.9, maxDv=1.1):
         """Add stretchy logic to translate channel of joint chain"""
-        if self.solver != 2:
+        if self.solver != Solver.SPLINE:
             logging.error("Incorrect solver")
             return
         if not self.setting:
@@ -412,7 +378,7 @@ class IkNode(DagNode):
         self.pvChainJ = pvChainJ
 
     def spline_twist_setup(self, *driver, upAxis="y", twistAxis="x"):
-        if self.solver == 2:
+        if self.solver == Solver.SPLINE:
             self.a.dTwistControlEnable.set(1)
             if upAxis == "z":
                 self.a.dWorldUpAxis.set(3)
@@ -447,7 +413,7 @@ class IkNode(DagNode):
         start_ctl.rx                >  ik. Roll
         -start_ctl.rx + end_ctl.rx  >  ik. Twist
         """
-        if self.solver == 2:
+        if self.solver == Solver.SPLINE:
             sign = twistAxis[0]
             axis = twistAxis[1]
             attr1 = driver[0].a["r" + axis]

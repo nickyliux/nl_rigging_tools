@@ -37,18 +37,18 @@ def matchMove(targetList, mode=None):
         raise ValueError("matchMove input MUST be a list")
     elif len(targetList) < 2:
         raise ValueError("matchMove input MUST BE > 1")
-    t = r = s = 0
-    if mode is None:
-        t = r = 1
-    elif mode == "t":
-        t = 1
-    elif mode == "r":
-        r = 1
-    elif mode == "s":
-        s = 1
-    elif mode == "a":
-        t = r = s = 1
 
+    mode_dict = {
+        None: (1, 1, 0),
+        "t": (1, 0, 0),
+        "r": (0, 1, 0),
+        "s": (0, 0, 0),
+        "a": (1, 1, 1),
+    }
+    if mode not in mode_dict:
+        raise ValueError(f"Invalid mode: {mode}")
+
+    t, r, s = mode_dict[mode]
     *others, last = targetList
     mc.matchTransform(*others, last, position=t, rotation=r, scale=s)
 
@@ -365,7 +365,7 @@ def printIkStat():
 def addNonRollJ(tgtJ):
     """Add non-roll joint"""
     from nl_modules.utils.color import Color
-    from nl_modules.nodel.ik_node import IkNode
+    from nl_modules.nodel.ik_node import IkNode, Solver
     from nl_modules.nodel.loc_node import LocNode
 
     child = tgtJ.children[0]
@@ -383,7 +383,7 @@ def addNonRollJ(tgtJ):
 
     roll_loc = LocNode("roll_loc")
     roll_loc.alignTo(rollJ, p=rollJ, ofs=(0, 0, -5))
-    roll_ikh = IkNode("roll", sj=rollJ, ee=rollJ_end, sol=1, quat=1)
+    roll_ikh = IkNode("roll", sj=rollJ, ee=rollJ_end, solver=Solver.RP, quat=1)
     roll_ikh.alignTo(tgtJ.children[0], p=child)
 
 

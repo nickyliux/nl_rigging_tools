@@ -4,7 +4,7 @@ from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
-from nl_modules.nodel.ik_node import IkNode
+from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.rbn_node import RbnNode
@@ -174,7 +174,7 @@ class ArmBp(RigModule):
             sj=self.upr,
             ee=self.palm,
             jsf="_ik",
-            sol=1,
+            solver=Solver.RP,
             ikc=self.ikc,
             pvc=self.pvc,
             setting=self.setting,
@@ -321,7 +321,7 @@ class ArmBp(RigModule):
 
         clav_ikh = IkNode(
             "clav",
-            sol=1,
+            solver=Solver.RP,
             pvc=scapularJ,
             pf=rID,
             sj=clavJnts[0],

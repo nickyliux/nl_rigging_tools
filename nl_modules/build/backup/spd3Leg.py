@@ -3,7 +3,7 @@ import maya.cmds as mc
 import nl_modules.build.rig_module as rig_module
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.ik_node import IkNode
+from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.utils import common
 
 # import maya.mel as mel
@@ -114,7 +114,7 @@ class Spd3Leg(rig_module.RigModule):
             sj=self.leg_01,
             ee=self.leg_05,
             jsf="_ik",
-            sol=3,
+            solver=Solver.SPRING,
             ikc=ikc,
             pvc=pvc,
         )

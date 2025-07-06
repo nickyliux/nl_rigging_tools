@@ -2,7 +2,7 @@ import logging
 import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
-from nl_modules.nodel.ik_node import IkNode
+from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
@@ -248,9 +248,15 @@ class RbnNode:
             j.setRadius(self.D / 5)
             j.color = CBL
 
-        stt_ikh = IkNode("stt", pf=pf, sj=stt_aimJ, ee=stt_aimJ_end, sol=1, quat=1, p=g)
-        mid_ikh = IkNode("mid", pf=pf, sj=mid_aimJ, ee=mid_aimJ_end, sol=1, quat=1, p=g)
-        end_ikh = IkNode("end", pf=pf, sj=end_aimJ, ee=end_aimJ_end, sol=1, quat=1, p=g)
+        stt_ikh = IkNode(
+            "stt", pf=pf, sj=stt_aimJ, ee=stt_aimJ_end, solver=Solver.RP, quat=1, p=g
+        )
+        mid_ikh = IkNode(
+            "mid", pf=pf, sj=mid_aimJ, ee=mid_aimJ_end, solver=Solver.RP, quat=1, p=g
+        )
+        end_ikh = IkNode(
+            "end", pf=pf, sj=end_aimJ, ee=end_aimJ_end, solver=Solver.RP, quat=1, p=g
+        )
 
         self.all_ikHs.extend([stt_ikh, mid_ikh, end_ikh])
 
@@ -322,7 +328,7 @@ class RbnNode:
             pf=pf,
             sj=stt_twistJ,
             ee=stt_twistJ_end,
-            sol=1,
+            solver=Solver.RP,
             quat=1,
             p=self.stt_loc,
         )
@@ -331,7 +337,7 @@ class RbnNode:
             pf=pf,
             sj=end_twistJ,
             ee=end_twistJ_end,
-            sol=1,
+            solver=Solver.RP,
             quat=1,
             p=self.end_loc,
         )

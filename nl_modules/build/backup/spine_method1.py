@@ -13,7 +13,7 @@ from nl_modules.nodel.base.dep_node import DepNode
 
 from nl_modules.utils import common, utils_node as ut
 from nl_modules.utils.color import Color
-from nl_modules.nodel.ik_node import IkNode
+from nl_modules.nodel.ik_node import IkNode, Solver
 
 
 class Spine(rig_module.RigModule):
@@ -187,7 +187,7 @@ class Spine(rig_module.RigModule):
             pf=rigID,
             sj=self.joints_as[0],
             ee=self.joints_as[-1],
-            sol=2,
+            solver=Solver.SPLINE,
             setting=setting,
             scaleFix=self.masterC.parent.parent,
         )

@@ -4,7 +4,7 @@ from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
-from nl_modules.nodel.ik_node import IkNode
+from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
@@ -141,7 +141,7 @@ class SpineQd(RigModule):
             pf=self.rigID,
             sj=sj,
             ee=ej,
-            sol=2,
+            solver=Solver.SPLINE,
             createCrv=0,
             inputCrv=crv,
             setting=self.setting,

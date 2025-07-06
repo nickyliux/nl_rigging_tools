@@ -95,7 +95,7 @@ def clusterSetup(crv, ikCtl):
 def addAwesomeIK(
     chain, ctlJnts, ikCtl=None, pf="", setting=None, scaleGrp=None, spIkUpParent=None
 ):
-    from nl_modules.nodel.ik_node import IkNode
+    from nl_modules.nodel.ik_node import IkNode, Solver
     from nl_modules.utils import utils_node as ut
     from nl_modules.utils import common
 
@@ -124,7 +124,7 @@ def addAwesomeIK(
         pf=pf,
         sj=chain_as[0],
         ee=chain_as[-1],
-        sol=2,
+        solver=Solver.SPLINE,
         setting=setting,
         scaleFix=scaleGrp,
     )
@@ -274,13 +274,13 @@ def addAwesomeIK(
 #     # Build IKs
 #     # ------------------------------
 #     lw_ikh = IkNode(
-#         "lw_ikh", pf=pf, sj=lw_aim, ee=lw_aim_end, solver=1, quat=1, p=AIM_GRP
+#         "lw_ikh", pf=pf, sj=lw_aim, ee=lw_aim_end, solver=Solver.RP, quat=1, p=AIM_GRP
 #     )
 #     up_ikh = IkNode(
-#         "up_ikh", pf=pf, sj=up_aim, ee=up_aim_end, solver=1, quat=1, p=AIM_GRP
+#         "up_ikh", pf=pf, sj=up_aim, ee=up_aim_end, solver=Solver.RP, quat=1, p=AIM_GRP
 #     )
 #     md_ikh = IkNode(
-#         "md_ikh", pf=pf, sj=md_aim, ee=md_aim_end, solver=1, quat=1, p=AIM_GRP
+#         "md_ikh", pf=pf, sj=md_aim, ee=md_aim_end, solver=Solver.RP, quat=1, p=AIM_GRP
 #     )
 #     md_loc.cstPoi(up_ikh)
 #     md_loc.cstPoi(lw_ikh)
@@ -329,10 +329,10 @@ def addAwesomeIK(
 #     # Build IKs
 #     # ------------------------------
 #     lw_twist_ikh = IkNode(
-#         "lwTw_ikh", pf=pf, sj=lw_twistJ, ee=lw_twistJ_end, solver=1, quat=1, p=lw_loc
+#         "lwTw_ikh", pf=pf, sj=lw_twistJ, ee=lw_twistJ_end, solver=Solver.RP, quat=1, p=lw_loc
 #     )
 #     up_twist_ikh = IkNode(
-#         "upTw_ikh", pf=pf, sj=up_twistJ, ee=up_twistJ_end, solver=1, quat=1, p=up_loc
+#         "upTw_ikh", pf=pf, sj=up_twistJ, ee=up_twistJ_end, solver=Solver.RP, quat=1, p=up_loc
 #     )
 #     blendColors_(lw_twistG.a.r, up_twistG.a.r) >> md_loc_ofs2.a.r
 #
@@ -384,7 +384,7 @@ def addAwesomeIK(
 #     from nl_modules.nodel.group_node import GrpNode
 #     from nl_modules.nodel.surf_node import SrfNode
 #     from nl_modules.nodel.loc_node import LocNode
-#     from nl_modules.nodel.ik_node import IkNode
+#     from nl_modules.nodel.ik_node import IkNode, Solver
 #     from nl_modules.nodel.jnt_node import JntNode
 #
 #     fr_locN = DagNode(fr_loc) if isinstance(fr_loc, str) else fr_loc

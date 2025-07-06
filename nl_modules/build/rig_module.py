@@ -615,7 +615,7 @@ class RigModule(RigBase):
         Setup auto clavicle / hip using simple ik and orient cst
         Limit on side is calculted with the uvPSD setup
         """
-        from nl_modules.nodel.ik_node import IkNode
+        from nl_modules.nodel.ik_node import IkNode, Solver
 
         rID, rSz, xDr = self.getMyVar()
         #
@@ -631,7 +631,7 @@ class RigModule(RigBase):
             pf=rID,
             sj=self.joints_am[0],
             ee=self.joints_am[1],
-            sol=1,
+            solver=Solver.RP,
             p=self.RIG_DATA,
         )
         if ikcGim:
@@ -681,7 +681,7 @@ class RigModule(RigBase):
         # self.joints_am[0].hide()
 
     def build_scapular(self, ikc=None, fkc=None, jnts=None, EXTRA=0, scapCtl=None):
-        from nl_modules.nodel.ik_node import IkNode
+        from nl_modules.nodel.ik_node import IkNode, Solver
 
         rID, rSz, xDr = self.getMyVar()
         hipJ = jnts[0]
@@ -703,7 +703,7 @@ class RigModule(RigBase):
             color=6,
             aimTgt=ikc,
         )
-        IkNode("autoAimJ", sol=1, pf=rID, sj=j0, ee=j1, p=ikc, quat=1, vis=0)
+        IkNode("autoAimJ", solver=Solver.RP, pf=rID, sj=j0, ee=j1, p=ikc, quat=1, vis=0)
         autoAim = fkc.a.add("autoAim", min=0, max=1, dv=0.3)
         common.cstMulti(mainGrp.offset, j0, mainGrp, w=autoAim, cstType="parR", mo=1)
         j0.hide()

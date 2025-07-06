@@ -6,7 +6,7 @@ from nl_modules.build import rig_module
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
-from nl_modules.nodel.ik_node import IkNode
+from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 
@@ -121,7 +121,7 @@ class SpineQdCrv(rig_module.RigModule):
             pf=self.rigID,
             sj=self.joints[0],
             ee=self.joints[-1],
-            sol=2,
+            solver=Solver.SPLINE,
             numSpans=4,
             setting=self.setting,
             scaleFix=self.masterC.a["globalScale"],
