@@ -104,39 +104,62 @@ class IkNode(DagNode):
         self, node, quat=False, createCrv=1, inputCrv=None, numSpans=3, p=None
     ):
         solverName = IkNode.SOL_DICT[self.solver]
-        ikh = None
+
+        ikh_args = dict(
+            n=node,
+            sj=self.sj,
+            ee=self.ee,
+            solver=solverName,
+            s="sticky",
+            createRootAxis=0,
+            rootOnCurve=1,
+            snapCurve=0,
+            parentCurve=0,
+            scv=1,
+            rootTwistMode=0,
+        )
         if createCrv:
-            ikh = mc.ikHandle(
-                n=node,
-                sj=self.sj,
-                ee=self.ee,
-                solver=solverName,
-                s="sticky",
-                createRootAxis=0,
-                rootOnCurve=1,
-                snapCurve=0,
-                parentCurve=0,
-                scv=1,
-                createCurve=1,
-                numSpans=numSpans,
-                rootTwistMode=0,
-            )
+            ikh_args["createCurve"] = 1
+            ikh_args["numSpans"] = numSpans
         else:
-            ikh = mc.ikHandle(
-                n=node,
-                sj=self.sj,
-                ee=self.ee,
-                solver=solverName,
-                s="sticky",
-                createRootAxis=0,
-                rootOnCurve=1,
-                snapCurve=0,
-                parentCurve=0,
-                scv=1,
-                createCurve=0,
-                c=inputCrv,
-                rootTwistMode=0,
-            )
+            ikh_args["createCurve"] = 0
+            ikh_args["c"] = inputCrv
+
+        ikh = mc.ikHandle(**ikh_args)
+
+        # ikh = None
+        # if createCrv:
+        #     ikh = mc.ikHandle(
+        #         n=node,
+        #         sj=self.sj,
+        #         ee=self.ee,
+        #         solver=solverName,
+        #         s="sticky",
+        #         createRootAxis=0,
+        #         rootOnCurve=1,
+        #         snapCurve=0,
+        #         parentCurve=0,
+        #         scv=1,
+        #         createCurve=1,
+        #         numSpans=numSpans,
+        #         rootTwistMode=0,
+        #     )
+        # else:
+        #     ikh = mc.ikHandle(
+        #         n=node,
+        #         sj=self.sj,
+        #         ee=self.ee,
+        #         solver=solverName,
+        #         s="sticky",
+        #         createRootAxis=0,
+        #         rootOnCurve=1,
+        #         snapCurve=0,
+        #         parentCurve=0,
+        #         scv=1,
+        #         createCurve=0,
+        #         c=inputCrv,
+        #         rootTwistMode=0,
+        #     )
         if ikh:
             self.node = DagNode(ikh[0])
         else:
