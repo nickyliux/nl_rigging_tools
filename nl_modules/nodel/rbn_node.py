@@ -32,8 +32,7 @@ class RbnNode:
         self.D = self.tgtN.o.distanceTo(self.tgtChild)
 
         if self.D == 0:
-            logging.error("Invalid reference group position")
-            return
+            raise ValueError("Invalid distance.")
 
         self.d = None
         self.ribbonP = p

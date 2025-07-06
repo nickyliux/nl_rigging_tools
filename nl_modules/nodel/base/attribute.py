@@ -176,8 +176,7 @@ class Attribute:
                                        (rx is the 1st child)
         """
         if other.__class__ != Attribute:
-            logging.error(f"Error: {self.name} >> {other.name}")
-            return
+            raise TypeError(f"Error: {self.name} >> {other.name}")
 
         if mc.isConnected(self, other, iuc=1):
             return self

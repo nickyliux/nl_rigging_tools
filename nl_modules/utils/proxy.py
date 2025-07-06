@@ -71,17 +71,18 @@ def genProxyMesh():
     MDL = GrpNode("MDL")
     PRX = GrpNode("PRX", p=MDL)
     bindSet = DagNode("bind_jnt_set")
-    if bindSet.exists():
-        bindJnts = mc.sets(bindSet, q=1)
-        for j in bindJnts:
-            grpName = str(j).split("_")[0]
-            PRX_GRP = GrpNode(grpName + "_PRX", p=PRX)
-            JntNode(j).addProxyMesh(p=PRX_GRP)
-            # mc.refresh(cv=1)
-        mc.select(cl=1)
-        logging.info("Gen Proxy Mesh")
-    else:
-        logging.error("Set 'bind_jnt_set' NOT found.")
+
+    if not bindSet.exists():
+        raise ValueError("Set 'bind_jnt_set' NOT found.")
+
+    bindJnts = mc.sets(bindSet, q=1)
+    for j in bindJnts:
+        grpName = str(j).split("_")[0]
+        PRX_GRP = GrpNode(grpName + "_PRX", p=PRX)
+        JntNode(j).addProxyMesh(p=PRX_GRP)
+
+    mc.select(cl=1)
+    logging.info("Gen Proxy Mesh OK")
 
 
 def saveProxy():
@@ -167,11 +168,12 @@ def wrapProxy():
     selList = mc.ls(sl=1, tr=1)
     if selList:
         targetWrapMesh = mc.optionVar(q="targetWrapMesh")
+
         tgt = DagNode(targetWrapMesh)
-        if tgt.exists():
-            nlShrinkWrap(tgt, selList)
-        else:
-            logging.error("No target wrap mesh loaded !")
+        if not tgt.exists():
+            raise ValueError(f"Missing object: {tgt}")
+
+        nlShrinkWrap(tgt, selList)
 
 
 def combineProxy():

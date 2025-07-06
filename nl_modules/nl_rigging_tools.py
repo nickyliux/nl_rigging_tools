@@ -527,8 +527,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         from nl_modules.utils import skin
 
         if not DagNode(searchSet).exists():
-            logging.error(f"Set {searchSet} NOT found for auto skin.")
-            return
+            raise ValueError(f"Set {searchSet} NOT found for auto skin.")
 
         jntList = set(mc.sets(searchSet, q=1))
         jntsScap = set([o for o in jntList if o.endswith("_scapular")])

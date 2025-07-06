@@ -125,12 +125,12 @@ class DagNode(DepNode):
 
     def cstBase(self, tgt, cstType="poi", keep=True, **kwargs):
         """Create and return constraint based on cstType"""
-        if isinstance(tgt, str):
-            tgt = DagNode(tgt)
-        elif isinstance(tgt, list):
-            logging.error("Input tgt can't be a list")
-            return
+        if isinstance(tgt, (tuple, list)):
+            raise TypeError(f"Invalid input: {tgt}")
+        if not mc.objExists(tgt):
+            raise ValueError(f"Missing object: {tgt}")
 
+        tgt = DagNode(tgt)
         n = f"{tgt.name}_{cstType}Cst"
 
         if cstType.startswith("par"):
@@ -513,8 +513,8 @@ class DagNode(DepNode):
         for attr in attrsList:
             try:
                 mc.setAttr(self + "." + attr, lock=lock, k=not lock)
-            except:
-                logging.error("Fail to run on this attribute")
+            except Exception as e:
+                raise AttributeError(f"Fail to set attribute for {attr}: {e}")
 
     def lockHideAttrXf(self, chn="t", lock=True):
         """Lock and hide transform attribute

@@ -73,9 +73,10 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
         #
         if toIKMode == 1:
             ikcMatcher = DagNode(ikc + "_matcher")
+
             if not ikcMatcher.exists():
-                logging.error(f"{ikc}_matcher NOT found")
-                return
+                raise ValueError(f"{ikc}_matcher NOT found")
+
             smartCtl = DagNode(rigID + "_smart_ctl")
 
             if ikc and pvc:

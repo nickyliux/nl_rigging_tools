@@ -64,10 +64,11 @@ def saveCtl():
         if tgtFile:
             try:
                 mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
-                logging.info("Curve shape exported OK.")
-                mc.select(cl=1)
             except Exception as e:
-                logging.error(f"Error loading file {tgtFile}: {e}")
+                raise SystemError(f"Error saving {tgtFile}: {e}")
+
+            logging.info("Curve shape exported OK.")
+            mc.select(cl=1)
 
 
 def loadCtl():
@@ -82,7 +83,7 @@ def loadCtl():
         try:
             imported = mc.file(tgtFile, i=1, ns="ctl", returnNewNodes=1)
         except Exception as e:
-            logging.error(f"Error loading file {tgtFile}: {e}")
+            raise SystemError(f"Error loading {tgtFile}: {e}")
 
         ns = ""
         if imported:

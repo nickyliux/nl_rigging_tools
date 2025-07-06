@@ -238,6 +238,11 @@ def ribbonAttach_reset(tgt):
 def ribbonAttach(tgtList=None, geo=None, scaleAttr=None, p=None):
     """Attach objects to geometry (nurbs / meshes)"""
 
+    if not isinstance(tgtList, list):
+        raise TypeError("Input objects must be in list.")
+    if not mc.objExists(geo):
+        raise ValueError(f"Missing object: {geo}")
+
     from nl_modules.nodel.base.dag_node import DagNode
     from nl_modules.nodel.grp_node import GrpNode
 
@@ -254,8 +259,7 @@ def ribbonAttach(tgtList=None, geo=None, scaleAttr=None, p=None):
         cpos = DagNode("myCPOS_#", nodeType="closestPointOnSurface")
         geo.shape.a.worldSpace >> cpos.a.inputSurface
     else:
-        logging.error("Attachment not working on ", geo)
-        return
+        raise TypeError(f"Attachment not working on {geo}")
     # ------------------------------
     #  create coordList
     # ------------------------------
@@ -416,8 +420,6 @@ def addAnnotation2(frObj=None, toObj=None):
         toObj.shape.a.worldMatrix >> ann.a.dagObjectMatrix
         ann.parent.alignTo(frObj, p=frObj)
         return ann
-    else:
-        logging.error("Obj to point to MUST have shape node")
 
 
 def showHiddenInRig():
@@ -506,16 +508,18 @@ def addTwistReader(target, pf="", p=None):
 def getMeshBelow(grp):
     from nl_modules.nodel.msh_node import MshNode
 
-    if mc.objExists(grp):
-        mc.select(grp)
-    else:
-        logging.error(f"Model set {grp} NOT found.")
+    if not mc.objExists(grp):
+        logging.warning(f"Model set {grp} NOT found.")
         return []
 
-    mc.select(hi=1)
+    mc.select(grp, hi=1)
     meshes = mc.ls(sl=1, et="mesh") or []
     mc.select(cl=1)
-    return [MshNode(mesh) for mesh in meshes] or []
+
+    if meshes:
+        return [MshNode(mesh) for mesh in meshes]
+
+    return []
 
 
 def setViewport(jx=0, xray=0, wos=0, fit=0):

@@ -66,18 +66,16 @@ def buildTgt(rigN):
 
 def loadBase():
     MAYA_TPL_DIR = "D:/_PROJECT/GIT/nl_rigging_tools/nl_modules/build/components"
-    BASE_FILE = "base.ma"
-    f = f"{MAYA_TPL_DIR}/{BASE_FILE}"
-    if os.path.exists(f):
-        try:
-            mc.file(f, i=1)
-        except Exception as e:
-            logging.error(f"Error loading file {f}: {e}")
+    BASE_FILE_NAME = "base.ma"
+    base_file = f"{MAYA_TPL_DIR}/{BASE_FILE_NAME}"
 
-        if not mc.objExists("master_ctl"):
-            logging.error("master_ctl not found")
-    else:
-        logging.error(f"{f} not found")
+    try:
+        mc.file(base_file, i=1)
+    except Exception as e:
+        raise ValueError(f"Error loading {base_file}: {e}")
+
+    if not mc.objExists("master_ctl"):
+        raise ValueError("master_ctl not found.")
 
 
 def preRig():
@@ -438,13 +436,11 @@ def autoAttachJntToSurf():
 
     masterCtl = DagNode("master_ctl")
     if not masterCtl.exists():
-        logging.error("master_ctl NOT found")
-        return
+        raise ValueError("master_ctl NOT found.")
 
     globalScale = masterCtl.a["globalScale"]
     if not globalScale.exists():
-        logging.error("globalScale attr NOT found")
-        return
+        raise ValueError("globalScale attr NOT found")
 
     for node in [DagNode(r) for r in mc.ls("*RGN", type="script")]:
         if node.a.nodeState.get() == 2:
@@ -456,42 +452,39 @@ def autoAttachJntToSurf():
 
                 rbSrfAttr = node.a["rbSrf"]
                 if not rbSrfAttr.exists():
-                    logging.error(f"Attr rbSrf NOT found in {node}.")
-                    continue
+                    raise ValueError(f"Attr rbSrf NOT found in {node}.")
                 #
                 #   check set rbJntSet
                 #
                 rbJntSetName = rbJntSetAttr.get()
                 rbJntSet = DagNode(rbJntSetName)
                 if not rbJntSet.exists():
-                    logging.error(f"Set {rbJntSetName} NOT found.")
-                    continue
+                    raise ValueError(f"Set {rbJntSetName} NOT found.")
 
                 rbJnts = mc.sets(rbJntSet, q=1)
                 if not rbJnts:
-                    logging.info(f"No joints found in Set {rbJntSet}.")
-                    continue
+                    raise ValueError(f"No joints found in Set {rbJntSet}.")
                 #
                 #   check surface rbSrf
                 #
                 rbSrf = rbSrfAttr.inConnNode
                 if not rbSrf:
-                    logging.error("Surface object NOT found.")
-                    continue
+                    raise ValueError("Surface object NOT found.")
                 #
                 #   attach joints in set to srf
                 #
-                if rbSrf and rbJnts:
-                    from nl_modules.utils import common
+                # if rbSrf and rbJnts:
+                from nl_modules.utils import common
 
-                    common.ribbonAttach(
-                        geo=rbSrf,
-                        tgtList=rbJnts,
-                        scaleAttr=globalScale,
-                        p=DagNode("RIG"),
-                    )
-                else:
-                    logging.info("Ignore invalid surf and joints")
+                common.ribbonAttach(
+                    geo=rbSrf,
+                    tgtList=rbJnts,
+                    scaleAttr=globalScale,
+                    p=DagNode("RIG"),
+                )
+                # else:
+                #     logging.info("Ignore invalid surf and joints")
+
                 logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")
 
 

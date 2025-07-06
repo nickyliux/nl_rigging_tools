@@ -147,7 +147,7 @@ def mirrorGuideAttr(tgtList, wsMirror=0):
         if oppN:
             copyGuideAttr(tgt, oppN, wsMirror=wsMirror, mirror=1)
         else:
-            logging.error(f"opposite not found for {tgt.name}")
+            logging.warning(f"opposite not found for {tgt.name}")
 
 
 def mirrorPose(*arg):

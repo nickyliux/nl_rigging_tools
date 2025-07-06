@@ -1,5 +1,3 @@
-import os.path
-import logging
 import maya.cmds as mc
 
 MAYA_TPL_DIR = "D:/_PROJECT/GIT/nl_rigging_tools/nl_modules/build/components"
@@ -24,33 +22,26 @@ class TplLoader:
         from nl_modules.nodel.grp_node import GrpNode
 
         rID = self.rigID
-        rigNodeStr = rID + "_RGN"
+        rigNode_name = rID + "_RGN"
 
-        if mc.objExists(rigNodeStr):
-            logging.error(f"{rigNodeStr} already exist")
-            return
+        if mc.objExists(rigNode_name):
+            raise ValueError(f"{rigNode_name} already exist")
 
-        if self.load_tpl(self.tpl_name):
+        try:
+            tplFile = f"{MAYA_TPL_DIR}/{self.tpl_name}"
+            mc.file(tplFile, i=1, mnc=0, renameAll=1, renamingPrefix=rID)
+        except Exception as e:
+            print(f"Load template file error: {e}")
 
-            scale_grp = GrpNode("modules_scale_grp")
-            mod_grp = DagNode(rID + "_module_grp")
+        scale_grp = GrpNode("modules_scale_grp")
+        mod_grp = DagNode(rID + "_module_grp")
 
-            if mod_grp.exists():
-                mod_grp | scale_grp
+        if mod_grp.exists():
+            mod_grp | scale_grp
 
-            n = DagNode(rigNodeStr)
-            if n.exists():
-                n.a["rigID"].set(rID, type="string")
-                self.rigNode = n
-            else:
-                logging.error(f"{rigNodeStr} not found")
+        rigNode = DagNode(rigNode_name)
+        if not rigNode.exists():
+            raise ValueError(f"{rigNode_name} not found")
 
-    def load_tpl(self, name):
-        rID = self.rigID
-        f = f"{MAYA_TPL_DIR}/{name}"
-        if os.path.exists(f):
-            mc.file(f, i=1, mnc=0, renameAll=1, renamingPrefix=rID)
-            return True
-        else:
-            logging.error(f"Tpl file not found: {f}")
-            return False
+        rigNode.a["rigID"].set(rID, type="string")
+        self.rigNode = rigNode

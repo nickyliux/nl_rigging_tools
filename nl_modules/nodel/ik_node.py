@@ -197,11 +197,9 @@ class IkNode(DagNode):
     def stretchySp(self, on=0, axis="tx", axisDir=1, minDv=0.9, maxDv=1.1):
         """Add stretchy logic to translate channel of joint chain"""
         if self.solver != Solver.SPLINE:
-            logging.error("Incorrect solver")
-            return
+            raise ValueError("Incorrect solver.")
         if not self.setting:
-            logging.error("No setting control provided")
-            return
+            raise ValueError("No setting control given.")
 
         crv = self.getCrv()
         D = mc.arclen(crv.shape)
@@ -241,8 +239,8 @@ class IkNode(DagNode):
                    J2
         """
         if not self.ikc:
-            logging.error("ikc undefined !")
-            return
+            raise ValueError("ikc undefined.")
+
         D = self.chainLen
         Di = []  # The length of each bone
         ks = self.ikc.a.add("stretchy", min=0, max=1, dv=0)
@@ -268,14 +266,11 @@ class IkNode(DagNode):
             #   Pv pinning
             #
             if not self.pvc:
-                logging.error("pvc undefined !")
-                return
+                raise ValueError("pvc undefined.")
             if not self.setting:
-                logging.error("setting undefined !")
-                return
+                raise ValueError("setting undefined !")
             if len(self.jnt) != 3:
-                logging.error("pin is for 3-pt joint chain")
-                return
+                raise ValueError("pin is for 3-pt joint chain")
 
             kp = self.pvc.a.add("pvPin", min=0, max=1)
             div = d / D

@@ -32,11 +32,11 @@ class RigModule(RigBase):
 
         self.moduleG = rigNode.a.moduleG.inConnNode
         if not self.moduleG:
-            logging.error("moduleG not found in RigNode.")
+            raise ValueError(f"moduleG not found at {rigNode}")
 
         self.master_guide = rigNode.a.master_guide.inConnNode
         if not self.master_guide:
-            logging.error("master_guide not found in RigNode.")
+            raise ValueError(f"master_guide not found for {rigNode}")
 
         self.rigSize = 1
         self.xDir = 1 if rID.startswith("lf") else -1
@@ -60,8 +60,7 @@ class RigModule(RigBase):
         for n in names:
             guide_name = f"{rID}_{n}_guide"
             if not mc.objExists(guide_name):
-                logging.error(f"missing object: {guide_name}")
-                return
+                raise ValueError(f"missing object: {guide_name}")
             guideList.append(DagNode(guide_name))
 
         guideDict = dict(zip(names, guideList))
