@@ -20,34 +20,6 @@ class LegBp(RigModule):
         n.build()
     """
 
-    @property
-    def rbnBones(self):
-        return self.master_guide.a.rbnBones.get()
-
-    @property
-    def rbnJntNum(self):
-        return self.master_guide.a.rbnJntNum.get()
-
-    @property
-    def patellaBone(self):
-        return self.master_guide.a.patellaBone.get()
-
-    @property
-    def toeBones(self):
-        return self.master_guide.a.toeBones.get()
-
-    @property
-    def twistBones(self):
-        return self.master_guide.a.twistBones.get()
-
-    @property
-    def kneeFix(self):
-        return self.master_guide.a.kneeFix.get()
-
-    @property
-    def scapularExtra(self):
-        return self.master_guide.a.scapularExtra.get()
-
     def __init__(self, rigNode):
 
         if isinstance(rigNode, str):
@@ -59,6 +31,14 @@ class LegBp(RigModule):
         self.FK_GRP = GrpNode("FK", pf=rID, p=self.CTL_DATA)
         self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA)
         self.BF_GRP = GrpNode("BF", pf=rID, p=self.CTL_DATA)
+
+        self.rbnBones = self.guideAttr("rbnBones")
+        self.rbnJntNum = self.guideAttr("rbnJntNum")
+        self.patellaBone = self.guideAttr("patellaBone")
+        self.toeBones = self.guideAttr("toeBones")
+        self.twistBones = self.guideAttr("twistBones")
+        self.kneeFix = self.guideAttr("kneeFix")
+        self.scapularExtra = self.guideAttr("scapularExtra")
 
         self.setting = None
         self.joints = []
@@ -183,6 +163,7 @@ class LegBp(RigModule):
                         ball 4
                             tip 5
         """
+
         self.build_module()
         self.joints = self.rootJ.allChildrenJt2
         self.hip, self.upr, self.lwr, self.palm, self.ball, self.tip = self.joints

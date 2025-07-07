@@ -18,30 +18,6 @@ class LegQd(RigModule):
         n.build()
     """
 
-    @property
-    def patellaBone(self):
-        return self.master_guide.a.patellaBone.get()
-
-    @property
-    def toeBones(self):
-        return self.master_guide.a.toeBones.get()
-
-    @property
-    def toeNum(self):
-        return self.master_guide.a.toeNum.get()
-
-    @property
-    def twistBones(self):
-        return self.master_guide.a.twistBones.get()
-
-    @property
-    def kneeFix(self):
-        return self.master_guide.a.kneeFix.get()
-
-    @property
-    def scapularExtra(self):
-        return self.master_guide.a.scapularExtra.get()
-
     def __init__(self, rigNode):
         if isinstance(rigNode, str):
             rigNode = DagNode(rigNode)
@@ -52,6 +28,13 @@ class LegQd(RigModule):
 
         self.FK_GRP = GrpNode("FK", pf=rID, p=self.CTL_DATA)
         self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA)
+
+        self.patellaBone = self.guideAttr("patellaBone")
+        self.toeBones = self.guideAttr("toeBones")
+        self.toeNum = self.guideAttr("toeNum")
+        self.twistBones = self.guideAttr("twistBones")
+        self.kneeFix = self.guideAttr("kneeFix")
+        self.scapularExtra = self.guideAttr("scapularExtra")
 
         self.setting = None
         self.joints = []
