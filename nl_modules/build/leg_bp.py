@@ -26,11 +26,6 @@ class LegBp(RigModule):
             rigNode = DagNode(rigNode)
 
         super().__init__(rigNode)
-        rID, rSz, xDr = self.getMyVar()
-
-        self.FK_GRP = GrpNode("FK", pf=rID, p=self.CTL_DATA)
-        self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA)
-        self.BF_GRP = GrpNode("BF", pf=rID, p=self.CTL_DATA)
 
         self.rbnBones = self.guideAttr("rbnBones")
         self.rbnJntNum = self.guideAttr("rbnJntNum")
@@ -39,6 +34,12 @@ class LegBp(RigModule):
         self.twistBones = self.guideAttr("twistBones")
         self.kneeFix = self.guideAttr("kneeFix")
         self.scapularExtra = self.guideAttr("scapularExtra")
+
+        rID, rSz, xDr = self.getMyVar()
+
+        self.FK_GRP = GrpNode("FK", pf=rID, p=self.CTL_DATA)
+        self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA)
+        self.BF_GRP = GrpNode("BF", pf=rID, p=self.CTL_DATA)
 
         self.setting = None
         self.joints = []
@@ -73,7 +74,9 @@ class LegBp(RigModule):
         self.subCtls = []
         self.toesJntList = None
         self.toesCtlsList = None
-        self.toesRootJ = rigNode.a.toesRootJ.inConnNode
+        self.toesRootJ = (
+            rigNode.a["toesRootJ"].inConnNode if rigNode.a["toesRootJ"].exists() else []
+        )
         self.ikH1 = None
         self.ikH_PV = None
         self.ballG_ikc = None
@@ -94,14 +97,14 @@ class LegBp(RigModule):
             self.toesRootJ | self.SKL_DATA
             self.toesRootJ.a.segmentScaleCompensate.set(0)
             self.rigNode.setMsg({"toesRootJ": self.toesRootJ})
-            toe_names = [
+            TOE_NAMES = [
                 ["toe00_1", "toe00_2", "toe00_3", "toe00_4"],
                 ["toe01_1", "toe01_2", "toe01_3", "toe01_4", "toe01_5"],
                 ["toe02_1", "toe02_2", "toe02_3", "toe02_4", "toe02_5"],
                 ["toe03_1", "toe03_2", "toe03_3", "toe03_4", "toe03_5"],
                 ["toe04_1", "toe04_2", "toe04_3", "toe04_4", "toe04_5"],
             ]
-            for names in toe_names:
+            for names in TOE_NAMES:
                 fgr_jnts = self.gen_sk_fr_names(names, scale=2)
                 fgr_jnts[0].orientJnt(aim=(xDr, 0, 0), u=(0, 0, -xDr))
                 fgr_jnts[0] | self.toesRootJ
@@ -114,45 +117,28 @@ class LegBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
 
-        self.setting = CrvNode(
-            "setting", pf=rID, shape="bagua", up="z", scale=scale, moveX=scale * 20
-        )
-        self.hip_fkc = CrvNode(
-            "hip_fkc", pf=rID, shape="cubeR", up="x", scale=scale, top=1
-        )
-        self.upr_fkc = CrvNode(
-            "upr_fkc", pf=rID, shape="cubeR", up="x", scale=scale, top=1
-        )
-        self.lwr_fkc = CrvNode(
-            "lwr_fkc", pf=rID, shape="cubeR", up="x", scale=scale, top=1
-        )
-        self.palm_fkc = CrvNode(
-            "palm_fkc", pf=rID, shape="cubeR", up="x", scale=scale, top=1
-        )
-        self.ball_fkc = CrvNode("ball_fkc", pf=rID, up="x", shape="cubeR", scale=scale)
-        self.ikc = CrvNode("ikc", pf=rID, shape="foot", scale=rSz * 2)
-        self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=scale * 2)
-        self.smart_ctl = CrvNode(
-            "smart_ctl", pf=rID, shape="squR", scale=scale / 2, width=2
-        )
+        ctl_defs = [
+            ("setting", "cross", "z", scale, 1),
+            ("hip_fkc", "cubeR", "x", scale, 1),
+            ("upr_fkc", "cubeR", "x", scale, 1),
+            ("lwr_fkc", "cubeR", "x", scale, 1),
+            ("palm_fkc", "cubeR", "x", scale, 1),
+            ("ball_fkc", "cubeR", "x", scale, 0),
+            ("ikc", "foot", None, rSz * 2, 0),
+            ("pvc", "diamond", None, scale * 2, 0),
+            ("smart_ctl", "squR", None, scale / 2, 0),
+        ]
 
-        self.rigNode.setMsg(
-            {
-                "setting": self.setting,
-                "smart_ctl": self.smart_ctl,
-                "hip_fkc": self.hip_fkc,
-                "upr_fkc": self.upr_fkc,
-                "lwr_fkc": self.lwr_fkc,
-                "palm_fkc": self.palm_fkc,
-                "ball_fkc": self.ball_fkc,
-                "ikc": self.ikc,
-                "pvc": self.pvc,
-            }
-        )
         if self.scapularExtra:
-            self.scap_fkc = CrvNode(
-                "scap_fkc", pf=rID, shape="sphere", scale=rSz, moveX=scale * -45
+            ctl_defs.append(("scap_fkc", "arrow4", "x", scale, 0))
+
+        for name, shape, up, scale, top in ctl_defs:
+            setattr(
+                self,
+                name,
+                CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, top=top),
             )
+            self.rigNode.setMsg({name: getattr(self, name)})
 
     def build(self):
         """Build rig for joints

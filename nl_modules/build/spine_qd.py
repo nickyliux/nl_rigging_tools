@@ -15,10 +15,11 @@ class SpineQd(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
+        self.endCtl = self.guideAttr("endCtl")
+        self.rbnJntNum = self.guideAttr("rbnJntNum")
+
         rID, rSz, xDr = self.getMyVar()
 
-        self.END_CTL = self.master_guide.a.endCtl.get()
-        self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
         self.LINE_GUIDE = CrvNode(rID + "_line_guide")
         self.TP_GUIDE = DagNode(rID + "_tp_guide")
         self.MD_GUIDE = DagNode(rID + "_md_guide")
@@ -38,7 +39,7 @@ class SpineQd(RigModule):
         self.base_ctl = None
         self.tangent0_ctl = None
         self.tangent1_ctl = None
-        self.end_ctl = None
+        self.endCtl = None
         self.end_jnt = None
         self.fkCtls = []
         self.ikCtls = []
@@ -94,8 +95,8 @@ class SpineQd(RigModule):
             top=1,
         )
         self.tangent1_ctl = self.tangent0_ctl.duplicate(name=rID + "_tangent1_ctl")
-        if self.END_CTL:
-            self.end_ctl = CrvNode("end_ctl", pf=rID, scale=rSz * 2, moveY=rSz * 30)
+        if self.endCtl:
+            self.endCtl = CrvNode("end_ctl", pf=rID, scale=rSz * 2, moveY=rSz * 30)
             # scale=maths.mul(4, 3, 3, rSz),
             # shape="cube",
 
@@ -134,7 +135,7 @@ class SpineQd(RigModule):
 
         crvLenRatio, self.spIkJnts, self.rbJnts = self.build_spik_ribbon(
             rbSrf=self.rbSrf,
-            jntNum=self.RBN_JNT_NUM,
+            jntNum=self.rbnJntNum,
             setting=self.setting,
         )
 
@@ -272,7 +273,7 @@ class SpineQd(RigModule):
         #
         #   setup end_ctl & end_jnt
         #
-        if self.END_CTL:
+        if self.endCtl:
             self.end_jnt = JntNode(
                 "end",
                 pf=rID,
@@ -281,10 +282,10 @@ class SpineQd(RigModule):
                 alignR=rbJnts[0],
                 p=self.IK_GRP,
             )
-            self.end_ctl.alignTo(self.END_JNT_GUIDE, p=self.base_ctl, addOfs=1)
-            self.end_ctl.cstPar(self.end_jnt, mo=1)
+            self.endCtl.alignTo(self.END_JNT_GUIDE, p=self.base_ctl, addOfs=1)
+            self.endCtl.cstPar(self.end_jnt, mo=1)
             self.bindJnts.append(self.end_jnt)
-            # self.isolate_align(self.end_ctl, spaces=[self.end_ctl.parent, self.masterC])
+            # self.isolate_align(self.endCtl, spaces=[self.endCtl.parent, self.masterC])
 
         ikH.hide()
         return crvLenRatio, spIkJnts, rbJnts
@@ -359,13 +360,13 @@ class SpineQd(RigModule):
         volumeScale = self.setting.a.add("volumeScale", dv=1)
         volumeGraph = self.setting.a.add("volumeGraph", dv=0)
         mc.setKeyframe(volumeGraph, t=0, v=0)
-        mc.setKeyframe(volumeGraph, t=(self.RBN_JNT_NUM - 1) / 2, v=1)
-        mc.setKeyframe(volumeGraph, t=self.RBN_JNT_NUM - 1, v=0)
+        mc.setKeyframe(volumeGraph, t=(self.rbnJntNum - 1) / 2, v=1)
+        mc.setKeyframe(volumeGraph, t=self.rbnJntNum - 1, v=0)
         volumeGraph.lock = 1
         #
         #   set rbj scale acc to surf length
         #
-        for i in range(self.RBN_JNT_NUM):
+        for i in range(self.rbnJntNum):
             fc = DagNode("fc__#", nodeType="frameCache")
             volumeGraph >> fc.a.stream
             fc.a.varyTime.set(i)
@@ -396,8 +397,8 @@ class SpineQd(RigModule):
 
     def setup_rotate_order(self):
         [ctl.a.ro.set(3) for ctl in [self.fore_ctl, self.base_ctl, self.cog_ctl]]
-        if self.END_CTL:
-            self.end_ctl.a.ro.set(3)
+        if self.endCtl:
+            self.endCtl.a.ro.set(3)
 
     def setup_channel(self):
         [ctl.a.showAttr(t=1, r=1) for ctl in self.ikCtls]
@@ -407,14 +408,14 @@ class SpineQd(RigModule):
         self.tangent0_ctl.a.showAttr("sz", r=1)
         self.tangent1_ctl.a.showAttr("sz", r=1)
 
-        if self.END_CTL:
-            self.end_ctl.a.showAttr(r=1)
+        if self.endCtl:
+            self.endCtl.a.showAttr(r=1)
 
         self.fore_ctl.add_as_proxy_attr(self.setting)
 
     def setup_anchor(self):
         self.setup_anchor_module(
-            {"anchorM1": self.end_jnt if self.END_CTL else self.rbJnts[0]}
+            {"anchorM1": self.end_jnt if self.endCtl else self.rbJnts[0]}
         )
         self.setup_anchor_module({"anchorM2": self.anchorToRbj})
 
@@ -431,8 +432,8 @@ class SpineQd(RigModule):
         self.add_proxy_ratio(self.bindJnts, 5)
 
         ctls = self.ikCtls + [self.cog_ctl, self.setting]
-        if self.END_CTL:
-            ctls.append(self.end_ctl)
+        if self.endCtl:
+            ctls.append(self.endCtl)
 
         self.add_ctl_set(ctls)
 

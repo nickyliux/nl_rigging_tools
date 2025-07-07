@@ -14,9 +14,10 @@ from nl_modules.utils import common, utils_node as ut, maths
 class SpineBp(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
-        self.FK_JNT_NUM = self.master_guide.a.fkJntNum.get()
-        self.RBN_BONES = self.master_guide.a.rbnBones.get()
-        self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
+
+        self.fkJntNum = self.guideAttr("fkJntNum")
+        self.rbnBones = self.guideAttr("rbnBones")
+        self.rbnJntNum = self.guideAttr("rbnJntNum")
 
         rID, rSz, xDr = self.getMyVar()
         self.LINE_GUIDE = DagNode(rID + "_line_guide")
@@ -75,7 +76,7 @@ class SpineBp(RigModule):
 
         self.fkJnts = JntNode.createJntFrCrv(
             self.LINE_GUIDE,
-            num=self.FK_JNT_NUM,
+            num=self.fkJntNum,
             pf=rID,
             aimV=(0, 1, 0),
             upV=(1, 0, 0),
@@ -139,13 +140,13 @@ class SpineBp(RigModule):
         self.cog_gmb.cstSca(self.fkJnts[0])
         self.fkJnts[0].childrenJt[0].a.segmentScaleCompensate.set(0)
 
-        if self.RBN_BONES:
+        if self.rbnBones:
             self.rbSrf = SrfNode.buildRbSrf(
                 pf=rID,
                 crv=self.LINE_GUIDE,
                 normal=1,
                 snap=self.rootJ,
-                spans=self.FK_JNT_NUM - 1,
+                spans=self.fkJntNum - 1,
                 p=self.RIG_DATA,
             )
             self.rigNode.setMsg({"rbSrf": self.rbSrf})
@@ -155,7 +156,7 @@ class SpineBp(RigModule):
             )
             self.rbSrf.weightTo(self.ctlJnts, chain=0, mi=2, dr=6)
             self.rbJnts = SrfNode.buildRbJnt(
-                self.RBN_JNT_NUM,
+                self.rbnJntNum,
                 pf=rID,
                 size=rSz,
                 surf=self.rbSrf,
@@ -187,11 +188,11 @@ class SpineBp(RigModule):
         # keys for volume squash
         volGraph = self.setting.a.add("volGraph", dv=0)
         mc.setKeyframe(volGraph, t=0, v=0)
-        mc.setKeyframe(volGraph, t=(self.RBN_JNT_NUM - 1) / 2, v=1)
-        mc.setKeyframe(volGraph, t=self.RBN_JNT_NUM - 1, v=0)
+        mc.setKeyframe(volGraph, t=(self.rbnJntNum - 1) / 2, v=1)
+        mc.setKeyframe(volGraph, t=self.rbnJntNum - 1, v=0)
         mc.setAttr(volGraph, l=1)
 
-        for i in range(self.RBN_JNT_NUM):
+        for i in range(self.rbnJntNum):
 
             fc = DagNode("fc__#", nodeType="frameCache")
             volGraph >> fc.a.stream
@@ -233,7 +234,7 @@ class SpineBp(RigModule):
         self.rigNode.setMsg({"space_uprBody": self.chest_ctl})
 
     def setup_anchor(self):
-        anchorM2Tgt = self.rbJnts[-1] if self.RBN_BONES else self.chest_ctl
+        anchorM2Tgt = self.rbJnts[-1] if self.rbnBones else self.chest_ctl
         self.setup_anchor_module({"anchorM1": self.hip_ctl, "anchorM2": anchorM2Tgt})
 
     def post_setup(self):

@@ -26,10 +26,11 @@ class ArmBp(RigModule):
             rigNode = DagNode(rigNode)
 
         super().__init__(rigNode)
-        self.TWIST_BONES = self.master_guide.a.twistBones.get()
-        self.RBN_BONES = self.master_guide.a.rbnBones.get()
-        self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
-        self.SCAPULAR_BONE = self.master_guide.a.scapularBone.get()
+
+        self.twistBones = self.guideAttr("twistBones")
+        self.rbnBones = self.guideAttr("rbnBones")
+        self.rbnJntNum = self.guideAttr("rbnJntNum")
+        self.scapularBone = self.guideAttr("scapularBone")
 
         rID, rSz, xDr = self.getMyVar()
 
@@ -130,18 +131,18 @@ class ArmBp(RigModule):
         # self.build_autoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
 
         self.bindJnts = []
-        if self.RBN_BONES:
+        if self.rbnBones:
             self.build_ribbon()
         else:
             self.bindJnts.append(self.upr)
 
-        if not self.RBN_BONES and not self.TWIST_BONES:
+        if not self.rbnBones and not self.twistBones:
             self.bindJnts.append(self.lwr)
 
-        if self.TWIST_BONES:
+        if self.twistBones:
             self.build_twist_bones()
 
-        if self.SCAPULAR_BONE:
+        if self.scapularBone:
             self.build_armScapular()
         else:
             self.bindJnts.append(self.clavicle)
@@ -398,7 +399,7 @@ class ArmBp(RigModule):
         ribbonUp = RbnNode(
             self.upr,
             pf=rID + "_up_",
-            rbJNum=self.RBN_JNT_NUM,
+            rbJNum=self.rbnJntNum,
             volMode="upr",
             scaleFix=self.masterC.a["globalScale"],
             size=rSz,
@@ -407,7 +408,7 @@ class ArmBp(RigModule):
         ribbonLw = RbnNode(
             self.lwr,
             pf=rID + "_lw_",
-            rbJNum=self.RBN_JNT_NUM,
+            rbJNum=self.rbnJntNum,
             volMode="lwr",
             scaleFix=self.masterC.a["globalScale"],
             size=rSz,
@@ -473,7 +474,7 @@ class ArmBp(RigModule):
         )
         self.ikc.a.v >> self.palm_ikc.a.v
 
-        if self.RBN_BONES:
+        if self.rbnBones:
             self.ctl_vis_toggle(
                 # self.setting.a.add("bendyCtl", min=0, max=1, dv=1, k=0),
                 self.setting.a.add("bendyCtl", attrType="bool", dv=0),
@@ -529,7 +530,7 @@ class ArmBp(RigModule):
         ctlSet = []
         ctlSet.extend(self.fkCtl + self.ikCtl + [self.setting, self.pin_fkc])
 
-        if self.RBN_BONES:
+        if self.rbnBones:
             ctlSet.extend(self.all_bend)
 
         self.add_ctl_set(ctlSet)

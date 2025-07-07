@@ -24,17 +24,17 @@ class LegQd(RigModule):
 
         super().__init__(rigNode)
 
-        rID, rSz, xDr = self.getMyVar()
-
-        self.FK_GRP = GrpNode("FK", pf=rID, p=self.CTL_DATA)
-        self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA)
-
         self.patellaBone = self.guideAttr("patellaBone")
         self.toeBones = self.guideAttr("toeBones")
         self.toeNum = self.guideAttr("toeNum")
         self.twistBones = self.guideAttr("twistBones")
         self.kneeFix = self.guideAttr("kneeFix")
         self.scapularExtra = self.guideAttr("scapularExtra")
+
+        rID, rSz, xDr = self.getMyVar()
+
+        self.FK_GRP = GrpNode("FK", pf=rID, p=self.CTL_DATA)
+        self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA)
 
         self.setting = None
         self.joints = []
@@ -87,21 +87,21 @@ class LegQd(RigModule):
             self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
             self.toesRootJ | self.SKL_DATA
             self.rigNode.setMsg({"toesRootJ": self.toesRootJ})
-            toe_names = [
+            ALL_TOE_NAMES = [
                 ["toe00_1", "toe00_2", "toe00_3", "toe00_4"],
                 ["toe01_1", "toe01_2", "toe01_3", "toe01_4", "toe01_5"],
                 ["toe02_1", "toe02_2", "toe02_3", "toe02_4", "toe02_5"],
                 ["toe03_1", "toe03_2", "toe03_3", "toe03_4", "toe03_5"],
                 ["toe04_1", "toe04_2", "toe04_3", "toe04_4", "toe04_5"],
             ]
-            if self.toeNum == 2:
-                toe_names = toe_names[2:4]
-            elif self.toeNum == 3:
-                toe_names = toe_names[2:5]
-            elif self.toeNum == 4:
-                toe_names = toe_names[1:5]
+            TOE_DICT = {
+                2: ALL_TOE_NAMES[2:4],
+                3: ALL_TOE_NAMES[2:5],
+                4: ALL_TOE_NAMES[1:5],
+            }
+            TOE_NAMES = TOE_DICT.get(self.toeNum, [])
 
-            for names in toe_names:
+            for names in TOE_NAMES:
                 fgr_jnts = self.gen_sk_fr_names(names, scale=1.2)
                 fgr_jnts[0].orientJnt(aim=(xDr, 0, 0), u=(0, 0, -xDr))
                 fgr_jnts[0] | self.toesRootJ
@@ -114,59 +114,30 @@ class LegQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
 
-        self.setting = CrvNode(
-            "setting", pf=rID, shape="cross", scale=rSz, top=1, width=2
-        )
-        self.hip_fkc = CrvNode(
-            "hip_fkc", pf=rID, shape="cubeR", up="x", scale=scale, top=1
-        )
-        self.upr_fkc = CrvNode(
-            "upr_fkc", pf=rID, shape="cubeR", up="x", scale=scale, top=1
-        )
-        self.lwr_fkc = CrvNode(
-            "lwr_fkc", pf=rID, shape="cubeR", up="x", scale=scale, top=1
-        )
-        self.palm_fkc = CrvNode(
-            "palm_fkc", pf=rID, shape="cubeR", up="x", scale=scale, top=1
-        )
-        self.digit_fkc = CrvNode(
-            "digit_fkc", pf=rID, shape="cubeR", up="x", scale=scale
-        )
-        self.ball_fkc = CrvNode(
-            "ball_fkc", pf=rID, shape="cubeR", up="x", scale=rSz / 2
-        )
+        ctl_defs = [
+            ("setting", "cross", "x", scale, 1),
+            ("hip_fkc", "cubeR", "x", scale, 1),
+            ("upr_fkc", "cubeR", "x", scale, 1),
+            ("lwr_fkc", "cubeR", "x", scale, 1),
+            ("palm_fkc", "cubeR", "x", scale, 1),
+            ("digit_fkc", "cubeR", "x", scale, 0),
+            ("ball_fkc", "cubeR", "x", scale, 0),
+            ("ikc", "foot", None, rSz * 2, 0),
+            ("extra_ikc", "rotator", None, -scale, 0),
+            ("pvc", "diamond", None, scale * 2, 0),
+            ("smart_ctl", "squR", None, scale / 3, 0),
+        ]
 
-        self.ikc = CrvNode("ikc", pf=rID, shape="foot", scale=rSz * 2)
-        self.extra_ikc = CrvNode("extra_ikc", pf=rID, shape="rotator", scale=-scale)
-        # , moveY=-xDr * rSz * 10
-        self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=scale * 2)
-        self.smart_ctl = CrvNode(
-            "smart_ctl", pf=rID, shape="squR", width=2, scale=scale / 3
-        )
-        self.rigNode.setMsg(
-            {
-                "setting": self.setting,
-                "smart_ctl": self.smart_ctl,
-                "hip_fkc": self.hip_fkc,
-                "upr_fkc": self.upr_fkc,
-                "lwr_fkc": self.lwr_fkc,
-                "palm_fkc": self.palm_fkc,
-                "digit_fkc": self.digit_fkc,
-                "ball_fkc": self.ball_fkc,
-                "ikc": self.ikc,
-                "pvc": self.pvc,
-            }
-        )
         if self.scapularExtra:
-            self.quadScap_ikc = CrvNode(
-                "quadScap_ikc",
-                pf=rID,
-                shape="arrow4",
-                up="x",
-                width=2,
-                scale=scale,
-                moveX=scale * 12,
+            ctl_defs.append(("quadScap_ikc", "arrow4", "x", scale, 0))
+
+        for name, shape, up, scale, top in ctl_defs:
+            setattr(
+                self,
+                name,
+                CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, top=top),
             )
+            self.rigNode.setMsg({name: getattr(self, name)})
 
     def build(self):
         """Build rig for joints
