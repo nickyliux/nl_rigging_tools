@@ -972,5 +972,11 @@ class RigModule(RigBase):
         for jnt in tgtJnts:
             jnt.a.add("proxyDiv", k=0, dv=div)
 
-    def getGuideAttr(self, name):
+    def get_guide_attr(self, name):
         return self.master_guide.a[name].get()
+
+    def create_and_register_ctl(self, name, shape, up, scale, top, rID):
+
+        ctl = CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, top=top)
+        setattr(self, name, ctl)
+        self.rigNode.setMsg({name: ctl})

@@ -15,8 +15,8 @@ class SpineQd(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
-        self.endCtl = self.getGuideAttr("endCtl")
-        self.rbnJntNum = self.getGuideAttr("rbnJntNum")
+        self.endCtl = self.get_guide_attr("endCtl")
+        self.rbnJntNum = self.get_guide_attr("rbnJntNum")
 
         rID, rSz, xDr = self.getMyVar()
 
@@ -78,12 +78,7 @@ class SpineQd(RigModule):
             ctl_defs.append(("end_ctl", "circle", "x", rSz * 2, 0))
 
         for name, shape, up, scale, top in ctl_defs:
-            setattr(
-                self,
-                name,
-                CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, top=top),
-            )
-            self.rigNode.setMsg({name: getattr(self, name)})
+            self.create_and_register_ctl(name, shape, up, scale, top, rID)
 
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
         self.cog_ctl.cv_move(0, rSz * 50, 0)

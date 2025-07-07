@@ -7,7 +7,7 @@ class NeckBp(SpineBp):
         super().__init__(rigNode)
 
     def setup_anchor(self):
-        anchorM1Tgt = self.bindJnts[-1] if self.RBN_BONES else self.tp_ctl
+        anchorM1Tgt = self.bindJnts[-1] if self.rbnBones else self.tp_ctl
         self.setup_anchor_module(
             {
                 "anchorF1": self.cog_ctl,

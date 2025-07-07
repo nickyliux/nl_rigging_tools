@@ -51,12 +51,7 @@ class Head(RigModule):
         ]
 
         for name, shape, up, scale, top in ctl_defs:
-            setattr(
-                self,
-                name,
-                CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, top=top),
-            )
-            self.rigNode.setMsg({name: getattr(self, name)})
+            self.create_and_register_ctl(name, shape, up, scale, top, rID)
 
     def build(self):
         self.build_module()

@@ -24,12 +24,12 @@ class LegQd(RigModule):
 
         super().__init__(rigNode)
 
-        self.patellaBone = self.getGuideAttr("patellaBone")
-        self.toeBones = self.getGuideAttr("toeBones")
-        self.toeNum = self.getGuideAttr("toeNum")
-        self.twistBones = self.getGuideAttr("twistBones")
-        self.kneeFix = self.getGuideAttr("kneeFix")
-        self.scapularExtra = self.getGuideAttr("scapularExtra")
+        self.patellaBone = self.get_guide_attr("patellaBone")
+        self.toeBones = self.get_guide_attr("toeBones")
+        self.toeNum = self.get_guide_attr("toeNum")
+        self.twistBones = self.get_guide_attr("twistBones")
+        self.kneeFix = self.get_guide_attr("kneeFix")
+        self.scapularExtra = self.get_guide_attr("scapularExtra")
 
         rID, rSz, xDr = self.getMyVar()
 
@@ -132,12 +132,7 @@ class LegQd(RigModule):
             ctl_defs.append(("quadScap_ikc", "arrow4", "x", scale, 0))
 
         for name, shape, up, scale, top in ctl_defs:
-            setattr(
-                self,
-                name,
-                CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, top=top),
-            )
-            self.rigNode.setMsg({name: getattr(self, name)})
+            self.create_and_register_ctl(name, shape, up, scale, top, rID)
 
     def build(self):
         """Build rig for joints

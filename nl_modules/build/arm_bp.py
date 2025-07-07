@@ -27,10 +27,10 @@ class ArmBp(RigModule):
 
         super().__init__(rigNode)
 
-        self.twistBones = self.getGuideAttr("twistBones")
-        self.rbnBones = self.getGuideAttr("rbnBones")
-        self.rbnJntNum = self.getGuideAttr("rbnJntNum")
-        self.scapularBone = self.getGuideAttr("scapularBone")
+        self.twistBones = self.get_guide_attr("twistBones")
+        self.rbnBones = self.get_guide_attr("rbnBones")
+        self.rbnJntNum = self.get_guide_attr("rbnJntNum")
+        self.scapularBone = self.get_guide_attr("scapularBone")
 
         rID, rSz, xDr = self.getMyVar()
 
@@ -91,12 +91,7 @@ class ArmBp(RigModule):
         ]
 
         for name, shape, up, scale, top in ctl_defs:
-            setattr(
-                self,
-                name,
-                CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, top=top),
-            )
-            self.rigNode.setMsg({name: getattr(self, name)})
+            self.create_and_register_ctl(name, shape, up, scale, top, rID)
 
         self.clavicle_fkc.cv_rotate(0, 0, -45)
         self.ikc.cv_rotate(0, 90, 0)

@@ -15,9 +15,9 @@ class SpineBp(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
-        self.fkJntNum = self.getGuideAttr("fkJntNum")
-        self.rbnBones = self.getGuideAttr("rbnBones")
-        self.rbnJntNum = self.getGuideAttr("rbnJntNum")
+        self.fkJntNum = self.get_guide_attr("fkJntNum")
+        self.rbnBones = self.get_guide_attr("rbnBones")
+        self.rbnJntNum = self.get_guide_attr("rbnJntNum")
 
         rID, rSz, xDr = self.getMyVar()
         self.LINE_GUIDE = DagNode(rID + "_line_guide")
@@ -57,12 +57,7 @@ class SpineBp(RigModule):
         ]
 
         for name, shape, up, scale, top in ctl_defs:
-            setattr(
-                self,
-                name,
-                CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, top=top),
-            )
-            self.rigNode.setMsg({name: getattr(self, name)})
+            self.create_and_register_ctl(name, shape, up, scale, top, rID)
 
     def build(self):
         self.build_module()

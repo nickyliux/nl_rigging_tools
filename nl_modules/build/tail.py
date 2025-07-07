@@ -14,9 +14,9 @@ class Tail(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
-        self.fkBoneNum = self.getGuideAttr("fkBoneNum")
-        self.rbnBones = self.getGuideAttr("rbnBones")
-        self.rbnJntNum = self.getGuideAttr("rbnJntNum")
+        self.fkBoneNum = self.get_guide_attr("fkBoneNum")
+        self.rbnBones = self.get_guide_attr("rbnBones")
+        self.rbnJntNum = self.get_guide_attr("rbnJntNum")
 
         rID, rSz, xDr = self.getMyVar()
         self.LINE_GUIDE = CrvNode(rID + "_line_guide")
@@ -50,29 +50,12 @@ class Tail(RigModule):
         ctl_defs = [
             ("setting", "cross", None, rSz, 1),
         ]
-
         for name, shape, up, scale, top in ctl_defs:
-            setattr(
-                self,
-                name,
-                CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, top=top),
-            )
-            self.rigNode.setMsg({name: getattr(self, name)})
+            self.create_and_register_ctl(name, shape, up, scale, top, rID)
 
-        # self.setting = CrvNode(
-        #     "setting", pf=rID, shape="cross", scale=rSz, top=1, width=2
-        # )
-        # moveY=rSz * 10,
+        self.setting.cv_move(0, rSz * 50, 0)
         self.setting.a.add("stretchy", min=0, max=1)
-        localScale = self.setting.a.add("localScale", min=0.01, dv=1)
-        localScale >> self.IK_GRP.a.s
-        localScale >> self.FK_GRP.a.s
-
-        # self.rigNode.setMsg(
-        #     {
-        #         "setting": self.setting,
-        #     }
-        # )
+        self.setting.a.add("localScale", min=0.01, dv=1)
 
     def build(self):
         rID, rSz, xDr = self.getMyVar()
@@ -100,6 +83,8 @@ class Tail(RigModule):
         )
         self.bindJnts = self.rbJnts
 
+        self.setting.a["localScale"] >> self.IK_GRP.a.s
+        self.setting.a["localScale"] >> self.FK_GRP.a.s
         self.post_setup()
 
     def build_ik(self):
