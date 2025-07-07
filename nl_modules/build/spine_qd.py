@@ -15,8 +15,8 @@ class SpineQd(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
-        self.endCtl = self.guideAttr("endCtl")
-        self.rbnJntNum = self.guideAttr("rbnJntNum")
+        self.endCtl = self.getGuideAttr("endCtl")
+        self.rbnJntNum = self.getGuideAttr("rbnJntNum")
 
         rID, rSz, xDr = self.getMyVar()
 
@@ -65,52 +65,28 @@ class SpineQd(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting = CrvNode(
-            "setting", pf=rID, shape="cross", scale=rSz, top=1, width=2
-        )
-        self.setting.a.add("stretchy", min=0, max=1, dv=1)
-
-        self.cog_ctl = CrvNode(
-            "cog_ctl",
-            pf=rID,
-            shape="trapezoid",
-            scale=maths.mul(1, 2, 3, rSz),
-            moveY=50 * rSz,
-            p=self.IK_GRP,
-        )
-        self.base_ctl = CrvNode(
-            "base_ctl", pf=rID, up="z", scale=maths.mul(5, 5, 2, rSz)
-        )
-        self.fore_ctl = self.base_ctl.duplicate(name=rID + "_fore_ctl")
-
-        self.mid_ctl = CrvNode("mid_ctl", pf=rID, shape="squR", up="z", scale=rSz * 3)
-        self.tangent0_ctl = CrvNode(
-            "tangent0_ctl",
-            pf=rID,
-            shape="arrow",
-            up="z",
-            scale=rSz,
-            rotateY=90,
-            moveY=rSz * 30,
-            top=1,
-        )
-        self.tangent1_ctl = self.tangent0_ctl.duplicate(name=rID + "_tangent1_ctl")
+        ctl_defs = [
+            ("setting", "cross", "z", rSz, 1),
+            ("cog_ctl", "trapezoid", None, maths.mul(1, 2, 3, rSz), 0),
+            ("base_ctl", "circle", "z", maths.mul(5, 5, 2, rSz), 0),
+            ("mid_ctl", "squR", "z", rSz * 4, 0),
+            ("fore_ctl", "circle", "z", rSz * 5, 0),
+            ("tangent0_ctl", "arrow", "z", rSz, 1),
+            ("tangent1_ctl", "arrow", "z", rSz, 1),
+        ]
         if self.endCtl:
-            self.endCtl = CrvNode("end_ctl", pf=rID, scale=rSz * 2, moveY=rSz * 30)
-            # scale=maths.mul(4, 3, 3, rSz),
-            # shape="cube",
+            ctl_defs.append(("end_ctl", "circle", "x", rSz * 2, 0))
 
-        self.rigNode.setMsg(
-            {
-                "setting": self.setting,
-                "cog_ctl": self.cog_ctl,
-                "base_ctl": self.base_ctl,
-                "mid_ctl": self.mid_ctl,
-                "fore_ctl": self.fore_ctl,
-                "tangent0_ctl": self.tangent0_ctl,
-                "tangent1_ctl": self.tangent1_ctl,
-            }
-        )
+        for name, shape, up, scale, top in ctl_defs:
+            setattr(
+                self,
+                name,
+                CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, top=top),
+            )
+            self.rigNode.setMsg({name: getattr(self, name)})
+
+        self.setting.a.add("stretchy", min=0, max=1, dv=1)
+        self.cog_ctl.cv_move(0, rSz * 50, 0)
 
     def build(self):
         rID, rSz, xDr = self.getMyVar()
@@ -177,6 +153,7 @@ class SpineQd(RigModule):
         ikj0 | self.tangent0_ctl | self.base_ctl | self.cog_ctl
         ikj1 | self.mid_ctl | self.cog_ctl
         ikj2 | self.tangent1_ctl | self.fore_ctl | self.cog_ctl
+        self.cog_ctl | self.IK_GRP
 
         self.ikCtls = [
             self.base_ctl,

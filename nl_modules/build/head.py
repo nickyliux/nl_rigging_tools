@@ -42,16 +42,21 @@ class Head(RigModule):
 
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
-        self.head_fkc = CrvNode(
-            "head_fkc", pf=rID, shape="squR", scale=rSz * 2, moveY=rSz * 30
-        )
-        self.jaw_fkc = CrvNode("jaw_fkc", pf=rID, scale=rSz)
-        self.rigNode.setMsg(
-            {
-                "head_fkc": self.head_fkc,
-                "jaw_fkc": self.jaw_fkc,
-            }
-        )
+
+        ctl_defs = [
+            ("head_fkc", "squR", None, rSz * 2, 0),
+            ("jaw_fkc", "circle", None, rSz, 0),
+            ("lf_eye", "circle", "x", rSz * 0.5, 0),
+            ("rt_eye", "circle", "x", rSz * 0.5, 0),
+        ]
+
+        for name, shape, up, scale, top in ctl_defs:
+            setattr(
+                self,
+                name,
+                CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, top=top),
+            )
+            self.rigNode.setMsg({name: getattr(self, name)})
 
     def build(self):
         self.build_module()

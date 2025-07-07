@@ -15,9 +15,9 @@ class SpineBp(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
-        self.fkJntNum = self.guideAttr("fkJntNum")
-        self.rbnBones = self.guideAttr("rbnBones")
-        self.rbnJntNum = self.guideAttr("rbnJntNum")
+        self.fkJntNum = self.getGuideAttr("fkJntNum")
+        self.rbnBones = self.getGuideAttr("rbnBones")
+        self.rbnJntNum = self.getGuideAttr("rbnJntNum")
 
         rID, rSz, xDr = self.getMyVar()
         self.LINE_GUIDE = DagNode(rID + "_line_guide")
@@ -48,20 +48,21 @@ class SpineBp(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting = CrvNode("setting", pf=rID, shape="cross", scale=rSz * 5, top=1)
-        self.cog_ctl = CrvNode("cog_ctl", pf=rID, shape="cog2", scale=rSz * 8)
-        self.chest_ctl = CrvNode("chest_ctl", pf=rID, scale=rSz * 7)
-        self.mid_ctl = CrvNode("mid_ctl", shape="square", pf=rID, scale=rSz * 7)
-        self.hip_ctl = CrvNode("hip_ctl", pf=rID, scale=rSz * 7)
-        self.rigNode.setMsg(
-            {
-                "setting": self.setting,
-                "cog_ctl": self.cog_ctl,
-                "hip_ctl": self.hip_ctl,
-                "mid_ctl": self.mid_ctl,
-                "chest_ctl": self.chest_ctl,
-            }
-        )
+        ctl_defs = [
+            ("setting", "cross", "z", rSz * 5, 1),
+            ("cog_ctl", "cog2", None, rSz * 8, 0),
+            ("chest_ctl", "circle", None, rSz * 7, 0),
+            ("mid_ctl", "square", None, rSz * 7, 0),
+            ("hip_ctl", "circle", None, rSz * 7, 0),
+        ]
+
+        for name, shape, up, scale, top in ctl_defs:
+            setattr(
+                self,
+                name,
+                CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, top=top),
+            )
+            self.rigNode.setMsg({name: getattr(self, name)})
 
     def build(self):
         self.build_module()

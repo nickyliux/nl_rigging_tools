@@ -27,10 +27,10 @@ class ArmBp(RigModule):
 
         super().__init__(rigNode)
 
-        self.twistBones = self.guideAttr("twistBones")
-        self.rbnBones = self.guideAttr("rbnBones")
-        self.rbnJntNum = self.guideAttr("rbnJntNum")
-        self.scapularBone = self.guideAttr("scapularBone")
+        self.twistBones = self.getGuideAttr("twistBones")
+        self.rbnBones = self.getGuideAttr("rbnBones")
+        self.rbnJntNum = self.getGuideAttr("rbnJntNum")
+        self.scapularBone = self.getGuideAttr("scapularBone")
 
         rID, rSz, xDr = self.getMyVar()
 
@@ -77,48 +77,30 @@ class ArmBp(RigModule):
 
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
-        self.setting = CrvNode(
-            "setting", pf=rID, shape="cross", scale=rSz, top=1, width=2
-        )
-        self.clavicle_fkc = CrvNode(
-            "clavicle_fkc", pf=rID, shape="stickC", scale=rSz * xDr
-        )
+        scale = xDr * rSz
+
+        ctl_defs = [
+            ("setting", "cross", None, scale, 1),
+            ("clavicle_fkc", "stickC", None, scale, 0),
+            ("upr_fkc", "cubeR", "x", scale * 2, 0),
+            ("lwr_fkc", "cubeR", "x", scale * 2, 0),
+            ("palm_fkc", "cubeR", "x", scale * 2, 0),
+            ("ikc", "trapezoid", None, scale * 1.5, 0),
+            ("palm_ikc", "squR", "x", scale * 1.2, 0),
+            ("pvc", "diamond", None, scale, 0),
+        ]
+
+        for name, shape, up, scale, top in ctl_defs:
+            setattr(
+                self,
+                name,
+                CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, top=top),
+            )
+            self.rigNode.setMsg({name: getattr(self, name)})
+
         self.clavicle_fkc.cv_rotate(0, 0, -45)
-
-        self.upr_fkc = CrvNode(
-            "upr_fkc", pf=rID, shape="cubeR", up="x", scale=rSz * 2 * xDr
-        )
-        self.lwr_fkc = CrvNode(
-            "lwr_fkc", pf=rID, shape="cubeR", up="x", scale=rSz * 2 * xDr
-        )
-        self.palm_fkc = CrvNode(
-            "palm_fkc", pf=rID, shape="cubeR", up="x", scale=rSz * 2 * xDr
-        )
-
-        self.ikc = CrvNode("ikc", pf=rID, shape="trapezoid", scale=rSz * 1.5 * xDr)
         self.ikc.cv_rotate(0, 90, 0)
-        self.palm_ikc = CrvNode(
-            "palm_ikc",
-            pf=rID,
-            shape="squR",
-            up="x",
-            scale=rSz * 1.2 * xDr,
-            move=(xDr * rSz * 7, 0, 0),
-        )
-        self.pvc = CrvNode("pvc", pf=rID, shape="diamond", scale=rSz)
-
-        self.rigNode.setMsg(
-            {
-                "setting": self.setting,
-                "clavicle_fkc": self.clavicle_fkc,
-                "upr_fkc": self.upr_fkc,
-                "lwr_fkc": self.lwr_fkc,
-                "palm_fkc": self.palm_fkc,
-                "ikc": self.ikc,
-                "palm_ikc": self.palm_ikc,
-                "pvc": self.pvc,
-            }
-        )
+        self.palm_ikc.cv_move(scale * 7, 0, 0)
 
     def build(self):
         self.build_module()

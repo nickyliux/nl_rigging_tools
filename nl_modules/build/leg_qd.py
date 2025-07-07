@@ -24,12 +24,12 @@ class LegQd(RigModule):
 
         super().__init__(rigNode)
 
-        self.patellaBone = self.guideAttr("patellaBone")
-        self.toeBones = self.guideAttr("toeBones")
-        self.toeNum = self.guideAttr("toeNum")
-        self.twistBones = self.guideAttr("twistBones")
-        self.kneeFix = self.guideAttr("kneeFix")
-        self.scapularExtra = self.guideAttr("scapularExtra")
+        self.patellaBone = self.getGuideAttr("patellaBone")
+        self.toeBones = self.getGuideAttr("toeBones")
+        self.toeNum = self.getGuideAttr("toeNum")
+        self.twistBones = self.getGuideAttr("twistBones")
+        self.kneeFix = self.getGuideAttr("kneeFix")
+        self.scapularExtra = self.getGuideAttr("scapularExtra")
 
         rID, rSz, xDr = self.getMyVar()
 

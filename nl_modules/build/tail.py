@@ -13,9 +13,10 @@ from nl_modules.utils import common, utils_node as ut, maths
 class Tail(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
-        self.FK_BONE_NUM = self.master_guide.a.fkBoneNum.get()
-        self.RBN_BONES = self.master_guide.a.rbnBones.get()
-        self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
+
+        self.fkBoneNum = self.getGuideAttr("fkBoneNum")
+        self.rbnBones = self.getGuideAttr("rbnBones")
+        self.rbnJntNum = self.getGuideAttr("rbnJntNum")
 
         rID, rSz, xDr = self.getMyVar()
         self.LINE_GUIDE = CrvNode(rID + "_line_guide")
@@ -46,20 +47,32 @@ class Tail(RigModule):
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting = CrvNode(
-            "setting", pf=rID, shape="cross", scale=rSz, top=1, width=2
-        )
+        ctl_defs = [
+            ("setting", "cross", None, rSz, 1),
+        ]
+
+        for name, shape, up, scale, top in ctl_defs:
+            setattr(
+                self,
+                name,
+                CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, top=top),
+            )
+            self.rigNode.setMsg({name: getattr(self, name)})
+
+        # self.setting = CrvNode(
+        #     "setting", pf=rID, shape="cross", scale=rSz, top=1, width=2
+        # )
         # moveY=rSz * 10,
         self.setting.a.add("stretchy", min=0, max=1)
         localScale = self.setting.a.add("localScale", min=0.01, dv=1)
         localScale >> self.IK_GRP.a.s
         localScale >> self.FK_GRP.a.s
 
-        self.rigNode.setMsg(
-            {
-                "setting": self.setting,
-            }
-        )
+        # self.rigNode.setMsg(
+        #     {
+        #         "setting": self.setting,
+        #     }
+        # )
 
     def build(self):
         rID, rSz, xDr = self.getMyVar()
@@ -68,7 +81,7 @@ class Tail(RigModule):
             pf=rID,
             crv=self.LINE_GUIDE,
             normal=1,
-            spans=self.FK_BONE_NUM,
+            spans=self.fkBoneNum,
             p=self.RIG_DATA,
             snap=self.RT_GUIDE,
         )
@@ -81,7 +94,7 @@ class Tail(RigModule):
         self.build_fk()
         crvLenRatio, self.rbJnts = self.build_motionPath_ribbon(
             rbSrf=self.rbSrf2,
-            jntNum=self.RBN_JNT_NUM,
+            jntNum=self.rbnJntNum,
             scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
         )
@@ -130,7 +143,7 @@ class Tail(RigModule):
         #
         self.fkJnt = JntNode.createJntFrCrv(
             self.LINE_GUIDE,
-            num=self.FK_BONE_NUM + 1,
+            num=self.fkBoneNum + 1,
             pf=rID,
             aimV=(0, 0, -1),
             upV=(0, 1, 0),
@@ -142,14 +155,14 @@ class Tail(RigModule):
         #   build pins for fkCtl
         #
         coord = []
-        for i in range(self.FK_BONE_NUM + 1):
-            coord.append((0.5, i / self.FK_BONE_NUM))
+        for i in range(self.fkBoneNum + 1):
+            coord.append((0.5, i / self.fkBoneNum))
 
         pin, pinXf = common.nlRivet(geo=self.rbSrf1, coordList=coord, p=self.RIG_DATA)
         #
         #   build fkCtls
         #
-        for i in range(self.FK_BONE_NUM + 1):
+        for i in range(self.fkBoneNum + 1):
             ctl = CrvNode(
                 f"{i}_fkc", pf=rID, shape="squR", up="z", scale=rSz, align=self.fkJnt[i]
             )
@@ -160,7 +173,7 @@ class Tail(RigModule):
         #
         chainGrps = []
         lastGrp = self.FK_GRP
-        for i in range(self.FK_BONE_NUM + 1):
+        for i in range(self.fkBoneNum + 1):
             grp = GrpNode(f"{i}_chainGrp", pf=rID, align=self.fkCtl[i], p=lastGrp)
             pinXf[i].cstPar(grp, mo=1)
             chainGrps.append(grp)
@@ -173,13 +186,13 @@ class Tail(RigModule):
         # for ctl in self.fkCtl:
         #     ctl.addOffsetGrp()
 
-        for i in range(self.FK_BONE_NUM + 1):
+        for i in range(self.fkBoneNum + 1):
             chainGrps[i].a.t >> self.fkCtl[i].offset.a.t
             chainGrps[i].a.r >> self.fkCtl[i].offset.a.r
         #
         #   build offset ctl layer
         #
-        for i in range(self.FK_BONE_NUM + 1):
+        for i in range(self.fkBoneNum + 1):
             ctl = CrvNode(
                 f"{i}_ofs_ctl",
                 pf=rID,

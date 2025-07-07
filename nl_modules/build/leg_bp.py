@@ -27,13 +27,13 @@ class LegBp(RigModule):
 
         super().__init__(rigNode)
 
-        self.rbnBones = self.guideAttr("rbnBones")
-        self.rbnJntNum = self.guideAttr("rbnJntNum")
-        self.patellaBone = self.guideAttr("patellaBone")
-        self.toeBones = self.guideAttr("toeBones")
-        self.twistBones = self.guideAttr("twistBones")
-        self.kneeFix = self.guideAttr("kneeFix")
-        self.scapularExtra = self.guideAttr("scapularExtra")
+        self.rbnBones = self.getGuideAttr("rbnBones")
+        self.rbnJntNum = self.getGuideAttr("rbnJntNum")
+        self.patellaBone = self.getGuideAttr("patellaBone")
+        self.toeBones = self.getGuideAttr("toeBones")
+        self.twistBones = self.getGuideAttr("twistBones")
+        self.kneeFix = self.getGuideAttr("kneeFix")
+        self.scapularExtra = self.getGuideAttr("scapularExtra")
 
         rID, rSz, xDr = self.getMyVar()
 

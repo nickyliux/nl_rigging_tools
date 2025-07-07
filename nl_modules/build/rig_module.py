@@ -972,5 +972,5 @@ class RigModule(RigBase):
         for jnt in tgtJnts:
             jnt.a.add("proxyDiv", k=0, dv=div)
 
-    def guideAttr(self, name):
+    def getGuideAttr(self, name):
         return self.master_guide.a[name].get()
