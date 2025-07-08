@@ -1,10 +1,10 @@
 """
 File: nl_rigging_tools.py
 Author: Nicky Liu
-Date: 2024-06-23
+Date: 2024-07-09
 Version: 0.1.0
 Contact: nickyliux@gmail.com / www.nickyliu.com
-Description: Main file to load Qt UI file and connect functions
+Description: Main file to load Qt UI file and connected functions
 Dependency:
     maya.cmds
     nl_modules (internal)
@@ -81,6 +81,8 @@ from contextlib import ContextDecorator
 
 
 class Undo(ContextDecorator):
+    """Context manager for undo chunk in Maya."""
+
     def __init__(self, name=None):
         self.name = name
 
@@ -92,6 +94,7 @@ class Undo(ContextDecorator):
 
 
 class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
+    """Main window for the rigging tools UI."""
 
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -121,12 +124,13 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     #     print("Developed by Nicky Liu")
 
     def connect(self, btn, func, icon=None):
+        """Connect a button to a function with an optional icon."""
         btn.clicked.connect(func)
         if icon:
             btn.setIcon(QIcon(icon))
 
     def connect_UI(self):
-
+        """Connect UI buttons to their respective functions."""
         # Pick mask & click drag
         self.connect(self.UI.pickMaskCrv_BN, self.pickMaskCrv, ":pickCurveObj.png")
         self.connect(self.UI.pickMaskMsh_BN, self.pickMaskMsh, ":pickGeometryObj.png")
@@ -200,10 +204,10 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         # Prepare
         self.connect(
-            self.UI.joint_addForSpine_BN, partial(self.addJoint, rb=1), ":addClip.png"
+            self.UI.joint_addRb_BN, partial(self.addJoint, rb=1), ":addClip.png"
         )
         self.connect(
-            self.UI.joint_addForRef_BN, partial(self.addJoint, rb=0), ":addClip.png"
+            self.UI.joint_addRef_BN, partial(self.addJoint, rb=0), ":addClip.png"
         )
         self.connect(
             self.UI.mirrorAllRefJnt_BN, self.mirrorAllRefJnt, ":kinMirrorJoint_S.png"
@@ -225,12 +229,15 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.updateLoadWrapTargetMesh()
 
     def addMirrorAttr(self):
+        """Add mirror attributes to selected objects."""
         common.add_mirror_attr(mc.ls(sl=1, tr=1))
 
     def assignPresetColor(self):
+        """Assign preset shader to selected objects."""
         common.assignPresetShd(mc.ls(sl=1, tr=1))
 
     def updateLoadWrapTargetMesh(self):
+        """Update the button text for loading wrap target mesh."""
         targetWrapMesh = mc.optionVar(q="targetWrapMesh")
         if targetWrapMesh:
             tgt = DagNode(targetWrapMesh)
@@ -240,24 +247,26 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 self.UI.loadWrapTargetMesh_BN.setText("< None >")
 
     def clickDrag_CB_stateChanged(self, state):
+        """Set the click drag preference based on the checkbox state."""
         mc.selectPref(clickDrag=state)
 
     def pickMaskCrv(self):
+        """Set the object pick mask to curves."""
         mel.eval('setObjectPickMask "All" 0')
         mel.eval('setObjectPickMask "Curve" 1')
 
     def pickMaskMsh(self):
+        """Set the object pick mask to geometry."""
         mel.eval('setObjectPickMask "All" 0')
         mel.eval('setObjectPickMask "Surface" 1')
 
     def pickMaskAll(self):
+        """Set the object pick mask to all."""
         mel.eval('setObjectPickMask "All" 1')
 
-    # def guide_load_BN_doubleClicked(self, item):
-    #     names = guide.COMPONENT_DICT[item.text()]
-    #     guide.loadGuide(names)
-
+    @Undo("guide_load")
     def guide_load(self):
+        """Load selected guide components."""
         items = self.UI.guide_LW.selectedItems()
         side_L = self.UI.component_left_RB.isChecked()
         side_R = self.UI.component_right_RB.isChecked()
@@ -274,6 +283,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             common.setViewport(fit=1)
 
     def guide_find(self):
+        """Open the directory containing component files in the file explorer."""
         import subprocess
 
         path = os.path.realpath(COMPONENT_PATH)
@@ -332,6 +342,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         return tgtFile[0] if tgtFile else None
 
     def importModel(self):
+        """Import model file into the scene."""
         tgtFile = self.getModelFile()
         if tgtFile:
             file.importFile(tgtFile)
@@ -345,6 +356,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             mc.AttributeEditor()
 
     def rigNode_refresh_BN_clicked(self):
+        """Refresh rigNode list"""
         rigNodes = mc.ls("*RGN", type="script")
         self.UI.rigNode_LW.clear()
         self.UI.rigNode_LW.addItems(rigNodes)
@@ -353,10 +365,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Add curve object"""
         crv = CrvNode(item.text() + "#", shape=item.text())
         mc.select(crv)
-        #     items = self.UI.crvShape_LW.selectedItems()
-        #     if items:
-        #         itemText = items[0].text()
-        #         return CrvNode(itemText, shape=itemText)
 
     def crvShape_save(self):
         """Save selList shape to highlighted"""
@@ -540,14 +548,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             if os.path.isfile(SHADER_FILE):
                 file.importFile(SHADER_FILE)
 
-    # def setLeadColor(self, id=0):
-    #     """Change wireframe color"""
-    #     color = (0, 0, 0) if id == 0 else (0.263, 1, 0.639)
     #     mc.displayRGBColor("lead", *color)
-    #
-    # def setRefColor(self, id=0):
-    #     """Change reference object color"""
-    #     color = (0, 0, 0) if id == 0 else (0.5, 0.9, 1)
     #     mc.displayRGBColor("referenceLayer", *color)
 
 
@@ -555,6 +556,7 @@ global UI_win
 
 
 def main():
+    """Main function to initialize and show the rigging tools UI."""
     global UI_win
     try:
         UI_win.close()
