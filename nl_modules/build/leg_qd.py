@@ -117,7 +117,7 @@ class LegQd(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "X", "z", scale, 1, 2),
+            ("setting", "cross", "z", scale, 1, 2),
             ("hip_fkc", "cubeR", "x", scale, 1, -1),
             ("upr_fkc", "cubeR", "x", scale, 1, -1),
             ("lwr_fkc", "cubeR", "x", scale, 1, -1),

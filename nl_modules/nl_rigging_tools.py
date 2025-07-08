@@ -67,7 +67,6 @@ MOD_DIR = os.path.dirname(nl_modules.__file__)
 MODEL_PATH = "D:/_PROJECT/GIT/nl_rigging_tools_examples"
 SHAPE_PATH = MOD_DIR + "/build/shapes"
 LIGHT_PATH = MOD_DIR + "/build/others"
-COMPONENT_PATH = MOD_DIR + "/build/components"
 UI_PATH = MOD_DIR + "/nl_rigging_tools.ui"
 
 LIGHTING_FILE = LIGHT_PATH + "/lighting3.ma"
@@ -142,7 +141,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         # Guide
         self.connect(self.UI.guide_load_BN, self.guide_load, ":openScript.png")
-        self.connect(self.UI.guide_find_BN, self.guide_find, ":searchEngine.png")
+        self.connect(self.UI.guide_explore_BN, guide.explore, ":searchEngine.png")
         self.UI.guide_LW.itemDoubleClicked.connect(self.guide_load)
 
         # Model
@@ -265,7 +264,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         mel.eval('setObjectPickMask "All" 1')
 
     @Undo("guide_load")
-    def guide_load(self):
+    def guide_load(self, *args):
         """Load selected guide components."""
         items = self.UI.guide_LW.selectedItems()
         side_L = self.UI.component_left_RB.isChecked()
@@ -281,18 +280,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 guide.loadGuide(names)
             self.rigNode_refresh_BN_clicked()
             common.setViewport(fit=1)
-
-    def guide_find(self):
-        """Open the directory containing component files in the file explorer."""
-        import subprocess
-
-        path = os.path.realpath(COMPONENT_PATH)
-        subprocess.Popen(f'explorer "{path}"')
-
-    #     items = self.UI.preset_LW.selectedItems()
-    #     if items:
-    #         itemText = items[0].text()
-    #         self.load_preset(itemText)
 
     # def loadTemplate_BN_dbClicked(self, item):
     #     itemText = item.text()

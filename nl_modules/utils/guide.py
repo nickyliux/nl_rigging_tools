@@ -1,10 +1,14 @@
 import logging
+import os
 import re
 import maya.cmds as mc
+import nl_modules
 from nl_modules.build.tpl_loader import TplLoader
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.utils import common, file
 
+MOD_DIR = os.path.dirname(nl_modules.__file__)
+COMPONENT_PATH = MOD_DIR + "/build/components"
 LF_CTL_SET = "lf*_ctl_set"
 
 COMPONENT_DICT = {
@@ -252,3 +256,11 @@ def saveTemplate():
 
     file.saveJson(tgtFile, idDict, force=True)
     logging.info("guides saved")
+
+
+def explore(*args):
+    """Open the directory containing component files in the file explorer."""
+    import subprocess
+
+    path = os.path.realpath(COMPONENT_PATH)
+    subprocess.Popen(f'explorer "{path}"')

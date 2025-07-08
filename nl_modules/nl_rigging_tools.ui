@@ -219,7 +219,7 @@
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QPushButton" name="guide_find_BN">
+     <widget class="QPushButton" name="guide_explore_BN">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -2302,7 +2302,7 @@
         <x>0</x>
         <y>20</y>
         <width>221</width>
-        <height>21</height>
+        <height>25</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
@@ -2402,7 +2402,7 @@
         <x>0</x>
         <y>20</y>
         <width>221</width>
-        <height>21</height>
+        <height>25</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="model_LO_7">
@@ -2498,7 +2498,7 @@
         <x>0</x>
         <y>80</y>
         <width>221</width>
-        <height>21</height>
+        <height>25</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -2635,7 +2635,7 @@
         <x>0</x>
         <y>50</y>
         <width>221</width>
-        <height>21</height>
+        <height>25</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
