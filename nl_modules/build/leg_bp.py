@@ -1,3 +1,4 @@
+import logging
 import maya.cmds as mc
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
@@ -114,26 +115,27 @@ class LegBp(RigModule):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
+        logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "cross", "z", scale, 1),
-            ("hip_fkc", "cubeR", "x", scale, 1),
-            ("upr_fkc", "cubeR", "x", scale, 1),
-            ("lwr_fkc", "cubeR", "x", scale, 1),
-            ("palm_fkc", "cubeR", "x", scale, 1),
-            ("ball_fkc", "cubeR", "x", scale, 0),
-            ("ikc", "foot", None, rSz * 2, 0),
-            ("pvc", "diamond", None, scale * 2, 0),
-            ("smart_ctl", "squR", None, scale / 2, 0),
+            ("setting", "cross", "z", scale, 1, -1),
+            ("hip_fkc", "cubeR", "x", scale, 1, -1),
+            ("upr_fkc", "cubeR", "x", scale, 1, -1),
+            ("lwr_fkc", "cubeR", "x", scale, 1, -1),
+            ("palm_fkc", "cubeR", "x", scale, 1, -1),
+            ("ball_fkc", "cubeR", "x", scale, 0, -1),
+            ("ikc", "foot", None, rSz * 2, 0, -1),
+            ("pvc", "diamond", None, scale * 2, 0, -1),
+            ("smart_ctl", "squR", None, scale / 2, 0, -1),
         ]
 
         if self.scapularExtra:
-            ctl_defs.append(("scap_fkc", "arrow4", "x", scale, 0))
+            ctl_defs.append(("scap_fkc", "arrow4", "x", scale, 0, -1))
 
-        for name, shape, up, scale, top in ctl_defs:
-            self.create_and_register_ctl(name, shape, up, scale, top, rID)
+        for name, shape, up, scale, top, w in ctl_defs:
+            self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
     def build(self):
         """Build rig for joints
@@ -212,6 +214,7 @@ class LegBp(RigModule):
         self.post_setup()
 
     def build_fk(self):
+        logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
         self.joints_fk = common.extractSk(self.joints, "_fk", p=self.FK_GRP, r=rSz)
@@ -226,6 +229,7 @@ class LegBp(RigModule):
         # self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
+        logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
         mg = self.master_guide
@@ -324,6 +328,7 @@ class LegBp(RigModule):
         self.subCtl_setup(ballRollG, toeRollG, inRollG, outRollG, heelRollG)
 
     def blend_fk_ik(self):
+        logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
         self.joints_bf = common.extractSk(self.joints, "_bf", p=self.BF_GRP, r=rSz)
@@ -371,6 +376,7 @@ class LegBp(RigModule):
         GrpNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
 
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
+        logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
         for g in [toeRollG, inRollG, outRollG, heelRollG]:
@@ -401,6 +407,7 @@ class LegBp(RigModule):
         -xDr * self.smart_ctl.a.rz >> self.smart_ctl.a["footBank"]
 
     def build_toes(self):
+        logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
         self.toesCtlsList = []
@@ -434,6 +441,7 @@ class LegBp(RigModule):
         #     common.sdk2(splay, tgt, 5, -splayRange * (-1 + 2 / (toeCount - 1) * i))
 
     def build_twist_bones(self):
+        logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
         radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], color=4, scale=2)
@@ -466,6 +474,7 @@ class LegBp(RigModule):
         lwr_bend     --
                     foot
         """
+        logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
         self.ribbonUp = RbnNode(

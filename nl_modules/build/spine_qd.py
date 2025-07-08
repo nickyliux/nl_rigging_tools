@@ -8,7 +8,9 @@ from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
-from nl_modules.utils import common, utils_node as ut, maths
+from nl_modules.utils import common
+from nl_modules.utils import utils_node as ut
+from nl_modules.utils import maths
 
 
 class SpineQd(RigModule):
@@ -63,22 +65,24 @@ class SpineQd(RigModule):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
+        logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
 
         ctl_defs = [
-            ("setting", "cross", "z", rSz, 1),
-            ("cog_ctl", "trapezoid", None, maths.mul(1, 2, 3, rSz), 0),
-            ("base_ctl", "circle", "z", maths.mul(5, 5, 2, rSz), 0),
-            ("mid_ctl", "squR", "z", rSz * 4, 0),
-            ("fore_ctl", "circle", "z", rSz * 5, 0),
-            ("tangent0_ctl", "arrow", "z", rSz, 1),
-            ("tangent1_ctl", "arrow", "z", rSz, 1),
+            ("setting", "cross", "z", rSz * 2, 1, 2),
+            ("cog_ctl", "trapezoid", None, maths.mul(1, 2, 3, rSz), 0, -1),
+            ("base_ctl", "circle", "z", maths.mul(5, 5, 2, rSz), 0, -1),
+            ("mid_ctl", "squR", "z", rSz * 4, 0, -1),
+            ("fore_ctl", "circle", "z", rSz * 5, 0, -1),
+            ("tangent0_ctl", "arrow", "z", rSz, 1, -1),
+            ("tangent1_ctl", "arrow", "z", rSz, 1, -1),
         ]
         if self.endCtl:
-            ctl_defs.append(("end_ctl", "circle", "x", rSz * 2, 0))
+            ctl_defs.append(("end_ctl", "circle", "x", rSz * 2, 0, -1))
 
-        for name, shape, up, scale, top in ctl_defs:
-            self.create_and_register_ctl(name, shape, up, scale, top, rID)
+        for name, shape, up, scale, top, w in ctl_defs:
+            self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
         self.cog_ctl.cv_move(0, rSz * 50, 0)
@@ -120,6 +124,8 @@ class SpineQd(RigModule):
         self.post_setup()
 
     def build_ik(self):
+        logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
         #
         #   build 3 ik joints from crv
@@ -164,6 +170,8 @@ class SpineQd(RigModule):
         # self.add_movable_pivot(self.base_ctl, snap=self.BASE_PVT_GUIDE)
 
     def build_spik_ribbon(self, rbSrf=None, jntNum=5, setting=None, scaleAttr=None):
+        logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
         #
         #   create crv & joints on it

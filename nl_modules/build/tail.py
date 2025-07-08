@@ -7,7 +7,7 @@ from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
-from nl_modules.utils import common, utils_node as ut, maths
+from nl_modules.utils import common
 
 
 class Tail(RigModule):
@@ -45,13 +45,14 @@ class Tail(RigModule):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
+        logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
         ctl_defs = [
-            ("setting", "cross", None, rSz, 1),
+            ("setting", "cross", "z", rSz, 1, 2),
         ]
-        for name, shape, up, scale, top in ctl_defs:
-            self.create_and_register_ctl(name, shape, up, scale, top, rID)
+        for name, shape, up, scale, top, w in ctl_defs:
+            self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         self.setting.cv_move(0, rSz * 50, 0)
         self.setting.a.add("stretchy", min=0, max=1)
@@ -88,6 +89,8 @@ class Tail(RigModule):
         self.post_setup()
 
     def build_ik(self):
+        logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
         self.ikJnt = JntNode.createJntFrCrv(
             self.LINE_GUIDE,
@@ -122,6 +125,8 @@ class Tail(RigModule):
         self.ikCtl[0].cstPar(self.setting, mo=1)
 
     def build_fk(self):
+        logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
         #
         #   build fkJ
@@ -225,6 +230,8 @@ class Tail(RigModule):
             ctl.a.ro.set(3)
 
     def post_setup(self):
+        logging.info(self.rigID)
+
         self.add_bind_jnt_set(self.bindJnts)
 
         self.add_ctl_set(self.ikCtl + self.fkCtl + self.ofsCtl + [self.setting])

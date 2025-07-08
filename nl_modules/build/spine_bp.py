@@ -8,7 +8,8 @@ from nl_modules.nodel.ik_node import IkNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
-from nl_modules.utils import common, utils_node as ut, maths
+from nl_modules.utils import utils_node as ut
+from nl_modules.utils import maths
 
 
 class SpineBp(RigModule):
@@ -46,18 +47,20 @@ class SpineBp(RigModule):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
+        logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
 
         ctl_defs = [
-            ("setting", "cross", "z", rSz * 5, 1),
-            ("cog_ctl", "cog2", None, rSz * 8, 0),
-            ("chest_ctl", "circle", None, rSz * 7, 0),
-            ("mid_ctl", "square", None, rSz * 7, 0),
-            ("hip_ctl", "circle", None, rSz * 7, 0),
+            ("setting", "cross", "z", rSz * 5, 1, -1),
+            ("cog_ctl", "cog2", None, rSz * 8, 0, -1),
+            ("chest_ctl", "circle", None, rSz * 7, 0, -1),
+            ("mid_ctl", "square", None, rSz * 7, 0, -1),
+            ("hip_ctl", "circle", None, rSz * 7, 0, -1),
         ]
 
-        for name, shape, up, scale, top in ctl_defs:
-            self.create_and_register_ctl(name, shape, up, scale, top, rID)
+        for name, shape, up, scale, top, w in ctl_defs:
+            self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
     def build(self):
         self.build_module()
@@ -68,6 +71,8 @@ class SpineBp(RigModule):
         self.post_setup()
 
     def build_fk(self):
+        logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
 
         self.fkJnts = JntNode.createJntFrCrv(
@@ -107,6 +112,8 @@ class SpineBp(RigModule):
         self.bindJnts = self.fkJnts
 
     def build_ik(self):
+        logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
 
         mg = self.master_guide

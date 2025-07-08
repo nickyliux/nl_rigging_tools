@@ -64,7 +64,7 @@ def nlShrinkWrap(target=None, meshes=None, keep=0, **kwargs):
         [DagNode(m).deleteHistory() for m in meshes]
 
 
-def genProxyMesh():
+def genProxy():
     from nl_modules.nodel.grp_node import GrpNode
     from nl_modules.nodel.jnt_node import JntNode
 
@@ -103,7 +103,7 @@ def loadProxy():
     """
     tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, fileMode=1)
     if tgtFile:
-        genProxyMesh()
+        genProxy()
         imported = mc.file(tgtFile, i=1, ns="prx", returnNewNodes=1)
         ns = ""
         if imported:
@@ -215,5 +215,23 @@ def setProxyWeight(combined, proxies):
             if proxyJ.exists() and proxyJ.type == "joint":
                 pass
 
+    # mc.skinPercent(proxyJ, tv=1, skinC, ptSet)
 
-# 			# mc.skinPercent(proxyJ, tv=1, skinC, ptSet)
+
+def selAllProxyGrp():
+    PRX = DagNode("PRX")
+    if PRX.exists():
+        allBelow = PRX.children
+        if allBelow:
+            mc.select(allBelow)
+
+
+def showHideProxy():
+    m2 = DagNode("master2_ctl")
+    if m2.exists():
+        m2.a.proxyVis.set(1 - m2.a.proxyVis.get())
+
+
+def refProxy():
+    for s in mc.ls("*_pxGeo") or []:
+        DagNode(s).dspType = abs(DagNode(s).dspType - 2)

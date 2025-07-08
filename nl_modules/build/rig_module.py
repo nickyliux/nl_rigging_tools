@@ -316,18 +316,16 @@ class RigModule(RigBase):
             tgt.addOffsetGrp()
 
     def genSk_module(self):
-        rID, rSz, xDr = self.getMyVar()
-        logging.info(rID)
-        self.rigNode.a.nodeState.set(1)
+        logging.info(self.rigID)
 
+        self.rigNode.a.nodeState.set(1)
         if self.masterC2.a.sx.get() != 1:
             self.masterC2.freezeXf(t=0, r=0, s=1)
 
     def build_module(self):
-        rID, rSz, xDr = self.getMyVar()
-        logging.info(rID)
-        self.rigNode.a.nodeState.set(2)
+        logging.info(self.rigID)
 
+        self.rigNode.a.nodeState.set(2)
         self.rigSize = self.calc_rig_size(self.rootJ)
 
         children = self.rootJ.childrenJt
@@ -975,8 +973,8 @@ class RigModule(RigBase):
     def get_guide_attr(self, name):
         return self.master_guide.a[name].get()
 
-    def create_and_register_ctl(self, name, shape, up, scale, top, rID):
+    def create_and_register_ctl(self, name, shape, up, scale, top, w, rID):
 
-        ctl = CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, top=top)
+        ctl = CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, width=w, top=top)
         setattr(self, name, ctl)
         self.rigNode.setMsg({name: ctl})

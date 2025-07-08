@@ -1,21 +1,19 @@
 import logging
 import maya.cmds as mc
-import nl_modules.build.rig_module as rig_module
+from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.base.dag_node import DagNode
-
-# from nl_modules.nodel.base.dep_node import DepNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
+from nl_modules.utils import common
+from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
-import nl_modules.utils.common as common
-from nl_modules.utils import common, utils_node as ut
 
 # from nl_modules.nodel.ik_node import IkNode
 
 
-class Ribbon(rig_module.RigModule):
+class Ribbon(RigModule):
     def __init__(
         self,
         rigNode,

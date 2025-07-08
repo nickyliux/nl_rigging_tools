@@ -8,8 +8,8 @@ from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.rbn_node import RbnNode
-from nl_modules.utils import common, utils_node as ut
-from nl_modules.utils.color import Color
+from nl_modules.utils import common
+from nl_modules.utils import utils_node as ut
 
 
 class ArmBp(RigModule):
@@ -76,22 +76,24 @@ class ArmBp(RigModule):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
+        logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "cross", None, scale, 1),
-            ("clavicle_fkc", "stickC", None, scale, 0),
-            ("upr_fkc", "cubeR", "x", scale * 2, 0),
-            ("lwr_fkc", "cubeR", "x", scale * 2, 0),
-            ("palm_fkc", "cubeR", "x", scale * 2, 0),
-            ("ikc", "trapezoid", None, scale * 1.5, 0),
-            ("palm_ikc", "squR", "x", scale * 1.2, 0),
-            ("pvc", "diamond", None, scale, 0),
+            ("setting", "cross", None, scale, 1, -1),
+            ("clavicle_fkc", "stickC", None, scale, 0, -1),
+            ("upr_fkc", "cubeR", "x", scale * 2, 0, -1),
+            ("lwr_fkc", "cubeR", "x", scale * 2, 0, -1),
+            ("palm_fkc", "cubeR", "x", scale * 2, 0, -1),
+            ("ikc", "trapezoid", None, scale * 1.5, 0, -1),
+            ("palm_ikc", "squR", "x", scale * 1.2, 0, -1),
+            ("pvc", "diamond", None, scale, 0, -1),
         ]
 
-        for name, shape, up, scale, top in ctl_defs:
-            self.create_and_register_ctl(name, shape, up, scale, top, rID)
+        for name, shape, up, scale, top, w in ctl_defs:
+            self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         self.clavicle_fkc.cv_rotate(0, 0, -45)
         self.ikc.cv_rotate(0, 90, 0)
@@ -128,6 +130,8 @@ class ArmBp(RigModule):
         self.post_setup()
 
     def build_fk(self):
+        logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
 
         self.joints_fk = common.extractSk(self.joints, "_fk", p=self.FK_GRP, r=rSz)
@@ -136,6 +140,8 @@ class ArmBp(RigModule):
         self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
+        logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
 
         self.ikc.alignTo(self.palm)
@@ -339,6 +345,8 @@ class ArmBp(RigModule):
         # self.bindJnts.append(self.clavBone)
 
     def build_twist_bones(self):
+        logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
         radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], color=4, scale=2)
         ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], color=4, scale=2)
@@ -371,6 +379,8 @@ class ArmBp(RigModule):
         lwr_bend     --
                     foot
         """
+        logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
 
         ribbonUp = RbnNode(

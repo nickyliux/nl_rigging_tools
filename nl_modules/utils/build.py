@@ -23,10 +23,10 @@ from nl_modules.build.tail import Tail
 from nl_modules.build.rig_module import RigModule
 from contextlib import ContextDecorator
 
-import nl_modules
-
 
 class Undo(ContextDecorator):
+    """Context manager for undo chunk in Maya"""
+
     def __init__(self, name=None):
         self.name = name
 
@@ -39,6 +39,7 @@ class Undo(ContextDecorator):
 
 def getAnchors(rigNodes, startStr=""):
     """Return objects from all rigNodes having attr starts with str"""
+
     linkedObjs = []
     for node in [DagNode(r) for r in rigNodes]:
         if node.a.nodeState.get() == 2:
@@ -51,6 +52,8 @@ def getAnchors(rigNodes, startStr=""):
 
 
 def buildTgt(rigN):
+    """Build target rigNode"""
+
     if rigN:
         rigClass = rigN.a.rigClass.get()
         rigObj = eval(rigClass)(rigN)
@@ -65,6 +68,8 @@ def buildTgt(rigN):
 
 
 def loadBase():
+    """Load base template file for rigging"""
+
     MAYA_TPL_DIR = "D:/_PROJECT/GIT/nl_rigging_tools/nl_modules/build/components"
     BASE_FILE_NAME = "base.ma"
     base_file = f"{MAYA_TPL_DIR}/{BASE_FILE_NAME}"
@@ -79,26 +84,20 @@ def loadBase():
 
 
 def preRig():
+    """Prepare for rigging"""
+
     if not mc.objExists("master_ctl"):
         loadBase()
     m = DagNode("master_ctl")
     m1 = m.offset
-    m2 = m1.offset
     for ctl in [m, m1]:
         ctl.a.showAttr(t=1, r=1)
-
-    # m2.a.add("debug", k=0, attrType="bool", dv=1)
-    # m2.a.add("primCtls", k=0, attrType="bool", dv=1)
-    # m2.a.add("secCtls", k=0, attrType="bool", dv=1)
-    # m2.a.add("facialCtls", k=0, attrType="bool", dv=1)
-    # m2.a.add("bodyTweakers1", k=0, attrType="bool", dv=1)
-    # m2.a.add("bodyTweakers2", k=0, attrType="bool", dv=1)
-    # m2.a.add("tailIk", k=0, attrType="bool", dv=1)
-    # m2.a.add("tailFk", k=0, attrType="bool", dv=1)
 
 
 @Undo("buildSelOrAll")
 def buildSelOrAll(*arg):
+    """Build rig for selected rigNodes or all if nothing selected"""
+
     rigNodes = getRigNodesSelOrAll()
     if rigNodes:
         preRig()
@@ -108,6 +107,8 @@ def buildSelOrAll(*arg):
 
 
 def postRig():
+    """Post rigging operations"""
+
     resetAllCtl()
     updateAnchorConn()
     updateSpaceSwitch()
@@ -136,6 +137,8 @@ def postRig():
 
 
 def unbuildTgt(rigN):
+    """Unbuild target rigNode"""
+
     if rigN:
         state = rigN.a.nodeState.get()
         if state == 2:
@@ -146,6 +149,8 @@ def unbuildTgt(rigN):
 
 @Undo("unbuildSelOrAll")
 def unbuildSelOrAll(*arg):
+    """Unbuild rig for selected rigNodes or all if nothing selected"""
+
     rigNodes = getRigNodesSelOrAll()
     if rigNodes:
         for rigN in rigNodes:
@@ -160,6 +165,7 @@ def unbuildSelOrAll(*arg):
 
 def deleteTgt(rigNode):
     """Delete guide component for input rigNode"""
+
     rigNode = DagNode(rigNode)
     if rigNode.exists():
         rigID = rigNode.a.rigID.get()
@@ -175,6 +181,8 @@ def deleteTgt(rigNode):
 
 
 def deleteSelOrAll(*arg):
+    """Delete rigNodes for selected objects or all if nothing selected"""
+
     rigNodes = getRigNodesSelOrAll()
     if rigNodes:
         for rigN in rigNodes:
@@ -182,8 +190,10 @@ def deleteSelOrAll(*arg):
 
 
 def updateAnchorConn():
-    """Add/Update constraints between male & female anchors"""
-    logging.info("Auto connect anchors")
+    """Update anchor connections for all rigNodes"""
+
+    logging.info("Update anchor connections")
+
     rigNodes = mc.ls("*RGN", type="script")
 
     if not rigNodes or len(rigNodes) < 2:
@@ -244,6 +254,9 @@ def updateAnchorConn():
 
 def resetAllCtl():
     """Reset all ctl's attr to default"""
+
+    logging.info("Reset all ctl's attr")
+
     for ctl in common.getAllRigCtls():
         for attr in ctl.a.list(k=1, u=1, se=1, s=1):
             if attr.settable():
@@ -251,6 +264,10 @@ def resetAllCtl():
 
 
 def resetAllPvCtl():
+    """Reset all poleVector ctl's attr to default"""
+
+    logging.info("Reset all pv ctl's attr")
+
     for rigNode in [DagNode(r) for r in mc.ls("*RGN", type="script")]:
 
         rID = rigNode.a.rigID.get()
@@ -262,12 +279,12 @@ def resetAllPvCtl():
 
 
 def updateSpaceSwitch():
-    """Add/update space switch for ctl from rigNode's spaceHolder* attr
-    e.g.
-      'lfArm0_ikc', ['master', 'clavicle'], 'lfArm0_RGN'
-      'lfArm0_pvc', ['arm', 'master'], 'lfArm0_RGN'
     """
-    logging.info("Adding space switch")
+    Update space switch for all rigNodes
+    Collect spaceHolder* attr from all rigNodes, then update space switch for each ctl
+    """
+    logging.info("Update space switch for ctl")
+
     spaceData = collectSpaceData()
 
     for ctl, spaceList, rigNode in spaceData:
@@ -407,6 +424,8 @@ def collectSpaceData():
 
 
 def getRigNodesSelOrAll():
+    """Return rigNodes from selected objects or all rigNodes if nothing selected"""
+
     rigNodes = []
     selList = mc.ls(sl=1)
     if selList:
@@ -422,6 +441,8 @@ def getRigNodesSelOrAll():
 
 
 def getRigNode(obj):
+    """Return rigNode for input object"""
+
     if mc.objExists(obj):
         nodes = DagNode(obj).a.message.outConnNode
         if nodes:
@@ -435,6 +456,7 @@ def getRigNode(obj):
 
 
 def autoAttachJntToSurf():
+    """Auto attach joints to surface for all ribbon rigNodes"""
 
     masterCtl = DagNode("master_ctl")
     if not masterCtl.exists():

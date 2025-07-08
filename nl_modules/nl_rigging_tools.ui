@@ -176,7 +176,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QPushButton" name="component_load_BN">
+     <widget class="QPushButton" name="guide_load_BN">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -219,7 +219,7 @@
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QPushButton" name="component_explore_BN">
+     <widget class="QPushButton" name="guide_find_BN">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -256,7 +256,7 @@
        <string/>
       </property>
      </widget>
-     <widget class="QListWidget" name="component_LW">
+     <widget class="QListWidget" name="guide_LW">
       <property name="geometry">
        <rect>
         <x>60</x>

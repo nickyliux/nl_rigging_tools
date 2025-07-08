@@ -1,14 +1,5 @@
 import logging
-import maya.cmds as mc
 from nl_modules.build.rig_module import RigModule
-from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.crv_node import CrvNode
-from nl_modules.nodel.grp_node import GrpNode
-from nl_modules.nodel.ik_node import IkNode
-from nl_modules.nodel.jnt_node import JntNode
-from nl_modules.nodel.loc_node import LocNode
-from nl_modules.utils import common
-from nl_modules.utils.color import Color
 
 
 class Head(RigModule):
@@ -16,7 +7,6 @@ class Head(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
-        rID, rSz, xDr = self.getMyVar()
         self.joints = []
         self.head = None
         self.headEnd = None
@@ -30,6 +20,7 @@ class Head(RigModule):
 
     def genSk(self):
         self.genSk_module()
+
         root_list = self.gen_sk_fr_names(["st", "ed"], scale=10)
         jaw_list = self.gen_sk_fr_names(["jaw", "jawEnd"], scale=4)
         lf_eye = self.gen_sk_fr_names("lf_eye", scale=0.5)[0]
@@ -40,37 +31,37 @@ class Head(RigModule):
         self.rootJ | self.SKL_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
-    def build_ctl(self):
-        rID, rSz, xDr = self.getMyVar()
-
-        ctl_defs = [
-            ("head_fkc", "squR", None, rSz * 2, 0),
-            ("jaw_fkc", "circle", None, rSz, 0),
-            ("lf_eye", "circle", "x", rSz * 0.5, 0),
-            ("rt_eye", "circle", "x", rSz * 0.5, 0),
-        ]
-
-        for name, shape, up, scale, top in ctl_defs:
-            self.create_and_register_ctl(name, shape, up, scale, top, rID)
-
     def build(self):
         self.build_module()
         self.joints = self.rootJ.allChildrenJt2
         self.head, self.headEnd, self.jaw, self.jawEnd, self.lf_eye, self.rt_eye = (
             self.joints
         )
-        self.bindJnts = [self.head, self.jaw, self.lf_eye, self.rt_eye]
         self.build_ctl()
-        self.fkCtl = [self.head_fkc, self.jaw_fkc]
         self.build_fk()
         self.post_setup()
 
+    def build_ctl(self):
+        logging.info(self.rigID)
+
+        rID, rSz, xDr = self.getMyVar()
+        ctl_defs = [
+            ("head_fkc", "squR", None, rSz * 2, 0, -1),
+            ("jaw_fkc", "circle", None, rSz, 0, -1),
+            ("lf_eye", "circle", "x", rSz * 0.5, 0, -1),
+            ("rt_eye", "circle", "x", rSz * 0.5, 0, -1),
+        ]
+
+        for name, shape, up, scale, top, w in ctl_defs:
+            self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
+
     def build_fk(self):
-        # rID, rSz, xDr = self.getMyVar()
+        logging.info(self.rigID)
+
+        self.fkCtl = [self.head_fkc, self.jaw_fkc]
         (self.head_fkc, self.jaw_fkc) | self.CTL_DATA
         self.head_fkc.alignTo(self.head)
         self.head_fkc.addOffsetGrp()
-        # self.head_fkc.cv_moveTo(self.headEnd.o.pos)
         self.head_fkc.cstPar(self.head, mo=1)
 
         self.jaw_fkc.snapTo(self.jaw, p=self.head_fkc)
@@ -103,6 +94,9 @@ class Head(RigModule):
         self.rigNode.setMsg({"space_head": self.head_fkc})
 
     def post_setup(self):
+        logging.info(self.rigID)
+
+        self.bindJnts = [self.head, self.jaw, self.lf_eye, self.rt_eye]
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_div(self.bindJnts, 4)
 
