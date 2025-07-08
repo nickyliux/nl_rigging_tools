@@ -11,9 +11,7 @@ LF_CTL_SET = "lf*_ctl_set"
 
 
 class MarkingMenuAutorig:
-    """autorig marking Menu
-    ideas from http://bindpose.com/custom-marking-menu-maya-python/
-    """
+    """Marking menu for autorigging tools"""
 
     def __init__(self):
         if mc.popupMenu(MENU_NAME, ex=1):
@@ -33,31 +31,32 @@ class MarkingMenuAutorig:
         self.reload_marking_menu()
 
     def setupMenu(self, menu, parent):
-        """
-        Setup the marking menu for the tools
-        """
+        """Setup the marking menu with various options"""
         self.addBuildOptions(menu)
         self.addGuideOptions(menu)
         self.addExtraOptions(menu)
         self.addSpaceIKFKOptions(menu)
 
     def addBuildOptions(self, menu):
+        """Add build options to the marking menu"""
         mc.menuItem(p=menu, l="Build", rp="N", c=build.buildSelOrAll)
         mc.menuItem(p=menu, l="Unbuild", rp="NW", c=build.unbuildSelOrAll)
 
     def addGuideOptions(self, menu):
+        """Add guide options to the marking menu"""
         mc.menuItem(p=menu, l="Mirror Guide", rp="NE", c=guide.mirrorGuideSelOrAll)
         mc.menuItem(p=menu, l="Delete Guide", rp="SE", c=build.deleteSelOrAll)
-        mc.menuItem(p=menu, l="Copy Guide", rp="E", c=self.copyGuideSel)
+        mc.menuItem(p=menu, l="Copy Guide", rp="E", c=guide.copyGuideSel)
         mc.menuItem(p=menu, l="Mirror Shape", rp="W", c=self.mirrorShapeSelOrAll)
 
     def addExtraOptions(self, menu):
+        """Add extra options to the marking menu"""
         mc.menuItem(p=menu, l="Mirror Pose", c=guide.mirrorPose)
         mc.menuItem(p=menu, l="Select Ctls", rp="SW", c=self.selectCtlSelOrAll)
         mc.menuItem(p=menu, l="Reload Menu", c=self.reload_marking_menu)
 
     def addSpaceIKFKOptions(self, menu):
-
+        """Add space switch and IK/FK options to the marking menu"""
         selList = mc.ls(sl=1, tr=1)
         if selList:
             firstSelected = DagNode(selList[0])
@@ -81,7 +80,7 @@ class MarkingMenuAutorig:
                                 p=menu,
                                 l=attr,
                                 # data=i,
-                                c=partial(self.switchToSpace, attr),
+                                c=partial(self.switch_to_space, attr),
                             )
                         mc.menuItem(p=menu, l="-" * 15, en=0)
                     # -----------------------------
@@ -104,10 +103,8 @@ class MarkingMenuAutorig:
                                 c=partial(self.setFkIk, fkIkAttr, 1, rigNode),
                             )
 
-    def copyGuideSel(*args):
-        guide.copyGuideSel()
-
     def mirrorShapeSelOrAll(*args):
+        """Mirror the shape of the selected control or all controls in LF_CTL_SET"""
         from nl_modules.utils import control
 
         selList = mc.ls(sl=1, tr=1)
@@ -119,6 +116,7 @@ class MarkingMenuAutorig:
                 control.mirrorCtlShape(selList)
 
     def selectCtlSelOrAll(self, *args):
+        """Select all controls in the rig node or all controls in LF_CTL_SET"""
         rigNodes = []
         selList = mc.ls(sl=1, tr=1)
         if selList:
@@ -138,14 +136,18 @@ class MarkingMenuAutorig:
         if setList:
             mc.select(setList)
 
-    def switchToSpace(self, *args):
-        anim.switchToSpaceTgt(args[0])
+    def switch_to_space(self, *args):
+        """Switch space for all selected controls to the specified space"""
+        anim.switch_to_space_target(args[0])
 
     def setFkIk(self, *args):
+        """Switch FK/IK mode for the specified rig node"""
         anim.switchToFkIk(attr=args[0], toIKMode=args[1], rigNode=args[2])
         self.reload_marking_menu()
 
     def reload_marking_menu(*args):
+        """Reload the marking menu to reflect any changes made"""
+
         mc.evalDeferred(
             """
 from importlib import reload
@@ -154,10 +156,6 @@ reload(mma)
 # mma.MarkingMenuAutorig()
 """
         )
-        # from importlib import reload
-        # import nl_modules.utils.marking_menu_autorig as mma
-
-        # reload(mma)
 
 
 MarkingMenuAutorig()

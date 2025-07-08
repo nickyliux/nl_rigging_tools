@@ -28,7 +28,7 @@ from nl_modules.nodel.loc_node import LocNode
 #             grp.a.rx.set2(180,add=1)
 
 
-def switchToSpaceTgt(spaceName):
+def switch_to_space_target(spaceName):
     """switch space for all selList with attribute "space". World transform is unchanged
     e.g.
         switchToSpace("master")

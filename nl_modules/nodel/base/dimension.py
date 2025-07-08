@@ -3,11 +3,7 @@ from nl_modules.utils import maths
 
 
 class Dimension:
-    """Dimension Node Class, used by DagNode
-    e.g.
-        obj.o.pos
-        obj.o.bbCenter
-    """
+    """Dimension class to get bounding box and other dimension related info of a Maya object."""
 
     def __init__(self, node):
         self._node = node
@@ -17,31 +13,27 @@ class Dimension:
 
     @property
     def worldMatrix(self):
+        """Check if the object has a worldMatrix attribute."""
         return self._node.a.worldMatrix.exists()
 
     @property
     def bb0(self):
-        #
-        #   bb of current object only
-        #
+        """Return bounding box of the object, excluding hidden children"""
         dup = self._node.duplicate()
-        mc.delete(dup.children)
+        if dup.children:
+            mc.delete(dup.children)
         bb = mc.xform(dup, q=1, ws=1, bb=1)
         mc.delete(dup)
         return bb
 
     @property
     def bb(self):
-        #
-        #   bb including hidden children
-        #
+        """Return bounding box of the object, including hidden children"""
         return mc.xform(self._node, q=1, ws=1, bbi=1)
 
     @property
     def bb2(self):
-        #
-        #   calculated bbox using position of all children
-        #
+        """Return bounding box of the object, including all children in world space"""
         allX = []
         allY = []
         allZ = []
@@ -78,12 +70,14 @@ class Dimension:
 
     @property
     def diagonal2(self):
+        """Return diagonal length of the bounding box in world space"""
         import math
 
         return math.sqrt(self.width2**2 + self.height2**2 + self.depth2**2)
 
     @property
     def bbCenter(self):
+        """Return center of the bounding box in world space"""
         return [
             float(i)
             for i in [
@@ -96,28 +90,26 @@ class Dimension:
 
     @property
     def pos(self):
-        """Return world space position of the object
-        e.g.
-            obj1.o.pos()
-        """
+        """Return position of the object in world space"""
         return tuple(mc.xform(self._node, ws=1, t=1, q=1))
 
     @staticmethod
     def copyPivot(driverObj, drivenObj):
+        """Copy pivot from driverObj to drivenObj"""
         mc.xform(driverObj, ws=1, pivots=mc.xform(drivenObj, q=1, ws=1, t=1))
 
     def getPivotFr(self, item):
+        """Get pivot from item to self._node"""
         return Dimension.copyPivot(self._node, item)
 
     def copyPivotTo(self, item):
+        """Copy pivot from self._node to item"""
         return Dimension.copyPivot(item, self._node)
 
     def centerPivot(self):
+        """Center pivot of the object"""
         mc.xform(self._node, cp=1)
 
     def distanceTo(self, item):
-        """Return distance betw objects
-        e.g.
-            obj1.o.distanceTo(obj2)
-        """
+        """Calculate distance between self._node and item"""
         return maths.getDistBetwObj(self._node, str(item))

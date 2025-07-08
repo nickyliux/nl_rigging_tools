@@ -1,18 +1,12 @@
 import maya.cmds as mc
 
-from nl_modules.nodel.base.attribute import Attribute
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.base.dep_node import DepNode
 from nl_modules.nodel.grp_node import GrpNode
-from nl_modules.utils import common, file, path, open_maya_api
 
 
 class CrvNode(GrpNode):
-    """Curve Node Class
-    e.g.
-        n = CrvNode('existing')
-        n = CrvNode('new', shape='squR')
-    """
+    """Curve node class"""
 
     def __init__(
         self,
@@ -41,7 +35,7 @@ class CrvNode(GrpNode):
         dspType=0,
         width=-1,
         up="",
-        top=0,  # alwaysDrawOnTop
+        top=0,
     ):
         thisName = pf + node + sf
         existing = DagNode(thisName).exists()
@@ -118,7 +112,7 @@ class CrvNode(GrpNode):
 
     @property
     def length(self):
-        """Return curve length"""
+        """Return the length of the curve"""
         return mc.arclen(self)
 
     @staticmethod
@@ -135,11 +129,7 @@ class CrvNode(GrpNode):
         inheritXf=1,
         p=None,
     ):
-        """Build a line betw two target points
-        e.g.
-            line = CrvNode.buildLine(obj1, obj2, width=5)
-            line = CrvNode.buildLine((0,0,0), (3,3,3), n='crv')
-        """
+        """Build a line between two target objects or positions."""
 
         def getPos(tgt):
             if isinstance(tgt, tuple):
@@ -178,7 +168,7 @@ class CrvNode(GrpNode):
     def buildLineLinked(
         tgt1=None, tgt2=None, pf="", width=-1, inheritXf=0, dspType=0, p=None
     ):
-        """Build linked line using decomposeMatrix"""
+        """Build a line between two target objects or positions."""
         tgt1 = DagNode(tgt1)
         tgt2 = DagNode(tgt2)
         line = CrvNode.buildLine(
@@ -205,14 +195,14 @@ class CrvNode(GrpNode):
 
     @staticmethod
     def buildLineLinkedSel():
-        """Build linked lines in selection order"""
+        """Build linked lines from selected objects"""
         selList = mc.ls(sl=1, tr=1)
         for obj1, obj2 in zip(selList[:-1], selList[1:]):
             CrvNode.buildLineLinked(tgt1=obj1, tgt2=obj2)
         mc.select(cl=1)
 
     def weightTo(self, joints, weightDir=0, **kwargs):
-        """Bind this curve to joints"""
+        """Assign weights to the curve's CVs based on the provided joints."""
         if self.exists():
             skin_clu = mc.skinCluster(self, joints, **kwargs)[0]
 
@@ -260,11 +250,7 @@ class CrvNode(GrpNode):
         *args,
         **kwargs,
     ):
-        """Update multiple data of the curve
-        e.g.
-            crv = CrvNode('new')
-            crv(n='crv2', scale=2, color=3, addOfs=1)
-        """
+        """Call the CrvNode to set its properties and return itself"""
         if name:
             if pf:
                 pf += "_"
@@ -296,16 +282,12 @@ class CrvNode(GrpNode):
         return self
 
     def reverse(self):
-        """Reverse curve"""
+        """Reverse the curve direction"""
         mc.reverseCurve(self, ch=0, rpo=1)
         return self
 
     def rebuild(self, spans=3, deg=3):
-        """Rebuild curve with different spans/deg
-        e.g.
-            crv.rebuild()        # result will have 6 cvs
-            crv.rebuild(spans=2) # result will have 5 cvs
-        """
+        """Rebuild the curve with specified spans and degree"""
         mc.rebuildCurve(
             self,
             rpo=1,
@@ -320,7 +302,7 @@ class CrvNode(GrpNode):
         return self
 
     def lowerCubeFrontCV(self, up="z"):
-        """Move target cvs 1/3 lower"""
+        """Lower the front CVs of the cube"""
         ids = [1, 12, 15, 16]
         cvs = [self.shape + f".cv[{id}]" for id in ids]
         mc.move(0, -self.o.height / 3, 0, cvs, os=1, r=1)

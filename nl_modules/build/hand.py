@@ -83,6 +83,7 @@ class Hand(RigModule):
         return ctlList
 
     def build_fk(self):
+        logging.info(self.rigID)
 
         self.finger_ctls = []
         for fgrs in self.fingers:
@@ -292,6 +293,8 @@ class Hand(RigModule):
         # mc.hide(self.allIkH, self.allIkJ)
 
     def post_setup(self):
+        logging.info(self.rigID)
+
         self.add_bind_jnt_set(self.bindJnts)
 
         ctlSet = [self.smart_ctl] + self.fgrRootCtlArr

@@ -120,7 +120,7 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "cross", "z", scale, 1, -1),
+            ("setting", "cross", "z", scale, 1, 2),
             ("hip_fkc", "cubeR", "x", scale, 1, -1),
             ("upr_fkc", "cubeR", "x", scale, 1, -1),
             ("lwr_fkc", "cubeR", "x", scale, 1, -1),
@@ -614,6 +614,8 @@ class LegBp(RigModule):
         self.setup_anchor_module({"anchorF1": self.scapularG.offset})
 
     def post_setup(self):
+        logging.info(self.rigID)
+
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_ratio(self.bindJnts, 3)
 

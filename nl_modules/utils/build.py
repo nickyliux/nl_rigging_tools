@@ -109,10 +109,10 @@ def buildSelOrAll(*arg):
 def postRig():
     """Post rigging operations"""
 
-    resetAllCtl()
-    updateAnchorConn()
-    updateSpaceSwitch()
-    resetAllPvCtl()
+    reset_all_ctl()
+    update_anchor_conn()
+    update_space_switch()
+    reset_all_pv_ctl()
     mc.select(cl=1)
 
     m2 = DagNode("master2_ctl")
@@ -155,10 +155,10 @@ def unbuildSelOrAll(*arg):
     if rigNodes:
         for rigN in rigNodes:
             unbuildTgt(rigN)
-        resetAllCtl()
-        updateAnchorConn()
-        updateSpaceSwitch()
-        resetAllPvCtl()
+        reset_all_ctl()
+        update_anchor_conn()
+        update_space_switch()
+        reset_all_pv_ctl()
         mc.select(cl=1)
         print()
 
@@ -189,13 +189,12 @@ def deleteSelOrAll(*arg):
             deleteTgt(rigN)
 
 
-def updateAnchorConn():
+def update_anchor_conn():
     """Update anchor connections for all rigNodes"""
 
-    logging.info("Update anchor connections")
+    logging.info("Update all anchor connections")
 
     rigNodes = mc.ls("*RGN", type="script")
-
     if not rigNodes or len(rigNodes) < 2:
         return
 
@@ -252,7 +251,7 @@ def updateAnchorConn():
 # 		}\
 
 
-def resetAllCtl():
+def reset_all_ctl():
     """Reset all ctl's attr to default"""
 
     logging.info("Reset all ctl's attr")
@@ -263,7 +262,7 @@ def resetAllCtl():
                 attr.reset()
 
 
-def resetAllPvCtl():
+def reset_all_pv_ctl():
     """Reset all poleVector ctl's attr to default"""
 
     logging.info("Reset all pv ctl's attr")
@@ -278,12 +277,12 @@ def resetAllPvCtl():
             pvc.snapTo(guide)
 
 
-def updateSpaceSwitch():
+def update_space_switch():
     """
     Update space switch for all rigNodes
     Collect spaceHolder* attr from all rigNodes, then update space switch for each ctl
     """
-    logging.info("Update space switch for ctl")
+    logging.info("Update all space switches")
 
     spaceData = collectSpaceData()
 

@@ -5,11 +5,7 @@ from nl_modules.utils.color import Color
 
 
 class JntNode(GrpNode):
-    """Joint Node Class
-    e.g.
-        n = JntNode('existing')
-        n = JntNode('new', r=5)
-    """
+    """Joint Node class, inherits from GrpNode."""
 
     def __init__(
         self,
@@ -57,14 +53,14 @@ class JntNode(GrpNode):
             self.resetXf()
 
     def setRadius(self, v, rel=False):
-        """Set joint radius, rel=True for relative to current value"""
+        """Set the radius of the joint"""
         if rel:
             self.a.radius.set2(v, mul=1)
         else:
             self.a.radius.set(v)
 
     def orientJoint(self, ro="xyz"):
-        """Orient joint to specific axis order"""
+        """Orient joint to the current rotation order"""
         mc.joint(self.name, e=1, orientJoint=ro, zso=1)
 
     def resetOrient(self):
@@ -72,13 +68,13 @@ class JntNode(GrpNode):
         self.a.jointOrient.reset()
 
     def resetXf(self):
-        """Reset joint orient"""
+        """Reset joint transform"""
         self.a.t.set(0, 0, 0)
         self.a.r.set(0, 0, 0)
         self.a.s.set(1, 1, 1)
 
     def orientJnt(self, aim=(1, 0, 0), u=(0, 1, 0), **kwargs):
-        """Orient joint"""
+        """Orient joint to aim direction"""
         # tgtRoot = JntNode(tgtRoot)
         for jnt in self.allChildrenJt2:
             child = jnt.children
@@ -90,11 +86,7 @@ class JntNode(GrpNode):
                 JntNode(jnt).resetOrient()
 
     def addProxyMesh(self, scale=1, scaler=None, aimDir=(1, 0, 0), skipEnd=0, p=None):
-        """Add Proxy Mesh for joint
-        e.g.
-            jnt1.addProxyMesh()                 # proxy cube created
-            jnt1_end.addProxyMesh(skipEnd=1)    # no proxy created
-        """
+        """Add a proxy mesh for the joint."""
         from nl_modules.utils import common
 
         pxName = self.name + "_pxGeo"
@@ -157,11 +149,7 @@ class JntNode(GrpNode):
     def makeTwoJC(
         n, align=None, snap=None, align_end=None, pf="", ofs=None, r=1, color=4, p=None
     ):
-        """Make two-joint chain according to aligning objects
-        e.g.
-            makeTwoJC('myJ')
-            makeTwoJC('myJ', snap=pt1, ofs=(1,0,0))
-        """
+        """Make two-joint chain according to aligning objects"""
         j0 = JntNode(n, pf=pf, r=r, color=color, p=p)
         j1 = JntNode(n + "_end", pf=pf, r=r, color=color, p=j0)
 
@@ -190,11 +178,7 @@ class JntNode(GrpNode):
         p=None,
         aimTgt=None,
     ):
-        """Make two-joint chain according to aligning objects
-        e.g.
-            makeTwoJC('myJ')
-            makeTwoJC('myJ', snap=pt1, ofs=(1,0,0))
-        """
+        """Make two-joint chain according to aligning objects"""
         j0 = JntNode(n, pf=pf, r=r, color=color, p=p)
         j1 = JntNode(n + "_end", pf=pf, r=r, color=color, p=j0)
 
@@ -228,12 +212,7 @@ class JntNode(GrpNode):
         addEndJ=0,
         p=None,
     ):
-        """Build joint chain from curve
-        e.g.
-            makeChainFrCrv(crv, jntNum=10)           # curve direction
-            makeChainFrCrv(crv, jntNum=10, crvDir=0) # reverse direction
-        """
-
+        """Create a joint chain from a curve."""
         joints = []
         mc.select(cl=1)
         if pf and pf[-1] != "_":
@@ -313,14 +292,7 @@ class JntNode(GrpNode):
 
     @staticmethod
     def buildJntLineSel():
-        """Build fake lines with joint chain of radius 0
-        e.g.
-            Select loc1, loc2, loc3, run buildJntLineSel()
-
-            loc1_lineJnt   # poiCst by loc1
-                loc2_lineJnt   # poiCst by loc2
-                    loc3_lineJnt   # poiCst by loc3
-        """
+        """Build a joint line from selected objects."""
         parentJ = None
         for s in mc.ls(sl=1):
             j = JntNode(s + "_lineJnt", r=0, snap=s, p=parentJ, color=Color.BLUE)

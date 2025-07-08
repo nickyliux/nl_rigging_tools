@@ -3,18 +3,15 @@ import os
 import maya.cmds as mc
 import nl_modules as nl_modules
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.utils import common, file, path, open_maya_api
+from nl_modules.utils import file
+from nl_modules.utils import open_maya_api
 
 MOD_DIR = os.path.dirname(nl_modules.__file__)
 SHAPE_PATH = MOD_DIR + "/build/shapes"
 
 
 class GrpNode(DagNode):
-    """Group Node Class
-    e.g.
-        n = GrpNode('existing')
-        n = GrpNode('new')
-    """
+    """Group node class for creating transform or joint nodes with additional functionalities"""
 
     def __init__(
         self,
@@ -61,7 +58,7 @@ class GrpNode(DagNode):
         radius=None,
         p=None,
     ):
-        """Create transform or joint"""
+        """Create a new node of the specified type with optional parameters"""
         self.node = mc.createNode(nodeType, n=node)
         if p:
             self.parentTo(p)
@@ -84,16 +81,14 @@ class GrpNode(DagNode):
         mc.move(*args, self.cvs, **kwargs)
 
     def cv_moveTo(self, pos):
-        """Move all cvs to world position
-        e.g.
-            cv_moveTo((1,2,3))  # move all cv to world position (1,2,3)
-        """
+        """Move all cvs of the curve to the specified position"""
         if isinstance(pos, (tuple, list)):
             wsPos = self.o.pos
             vec = (pos[0] - wsPos[0], pos[1] - wsPos[1], pos[2] - wsPos[2])
             mc.xform(self.cvs, r=1, t=vec, ws=1)
 
     def cv_drop(self):
+        """Drop all cvs of the curve to the ground"""
         self.cv_move(0, -self.o.bb0[1], 0)
 
     def cv_rotate(self, *args, **kwargs):
@@ -124,11 +119,7 @@ class GrpNode(DagNode):
                 mc.scale(*args, self.cvs, **kwargs)
 
     def add_gimbal(self, relScale=0.8, attrTgt=None, dv=0):
-        """Add a gimbal control below itself and attr at attrOn to link its visibility
-        e.g.
-            gbc = crv.addGimbal()        # crv.gimbalCtl  -> gbc.v
-            crv.addGimbal(attrTgt=obj1)  # obj1.gimbalCtl -> gbc.v
-        """
+        """Add a gimbal control to the curve"""
         gmb_ctl = self.duplicate(n=self.node + "_gmb")
         gmb_ctl | self
         gmb_ctl.cv_scale(relScale, atCVCetner=1)
@@ -137,28 +128,19 @@ class GrpNode(DagNode):
         return gmb_ctl
 
     def shape_saveToLib(self, dictList, name):
-        """Save shapes data to library with filename as name
-        e.g.
-            saveToLib(list, 'arrow')
-        """
+        """Save the shape to a JSON file in the library"""
         f = f"{SHAPE_PATH}/{name}.json"
 
         file.saveJson(f, dictList, force=True)
         logging.info(f"Saved to {f}")
 
     def shape_getDictListFrLib(self, name):
-        """Return curveDictList from library with filename as name
-        e.g.
-            list = loadFrLib('arrow')
-        """
+        """Get the shape dictionary list from the library by name"""
         f = f"{SHAPE_PATH}/{name}.json"
         return file.loadJson(f)
 
     def shape_getDictListFrObj(self, crv):
-        """Return curveDictList of shapes from curve
-        e.g.
-            list = crvToList('curve')
-        """
+        """Get the shape dictionary list from the curve object"""
         dictList = []
         shapes = mc.listRelatives(crv, s=1)
 
@@ -182,10 +164,7 @@ class GrpNode(DagNode):
         return dictList
 
     def shape_buildFrDictList(self, dictList, name, xf=None):
-        """Return curve with name from curveDictlist of shapes
-        e.g.
-            crv = crvFrList(list, 'arrow')
-        """
+        """Build curves from a list of dictionaries and return a group node"""
         xf = xf or mc.createNode("transform", n=name)
 
         for i, crvShapeDict in enumerate(dictList):
@@ -290,16 +269,14 @@ class GrpNode(DagNode):
                 self.delete()
 
     def uninstanceFromOthers(self):
-        """Un-instance itself from other instances"""
+        """Un-instance this shape from all other instances"""
         otherXf = self.uninstance_all()
         if otherXf:
             dup = self.duplicate()
             dup.copyShapeAsInst(otherXf, keepSrc=0)
 
     def uninstance_all(self):
-        """Un-instance all curves sharing the same shape
-        return transforms of all objects sharing shapes before un-instance
-        """
+        """Un-instance all instances of this shape"""
         tgtShape = self.shape
         allXf = mc.listRelatives(tgtShape, ap=1)
         otherXf = []
@@ -319,12 +296,12 @@ class GrpNode(DagNode):
 
     @property
     def cvs(self):
-        """Return all cvs"""
+        """Return all cvs of the curve"""
         return mc.ls(self + ".cv[*]", fl=1)
 
     @property
     def width(self):
-        """Return line width"""
+        """Return the line width of the shape"""
         if self.shape:
             return self.shape.a.lineWidth
         else:
@@ -337,11 +314,13 @@ class GrpNode(DagNode):
             self.shape.a.lineWidth.set(w)
 
     def show_local_axis(self, state):
+        """Show or hide the local axis of the group node"""
         attr = self.a["displayLocalAxis"]
         if attr.exists():
             attr.set(state)
 
     def add_as_proxy_attr(self, src=None):
+        """Add proxy attributes from source node"""
         if src and src.exists():
             attrs = src.a.list(ud=1, u=1)
             for attr in attrs:

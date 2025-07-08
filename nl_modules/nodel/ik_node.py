@@ -7,7 +7,7 @@ from nl_modules.nodel.base.dep_node import DepNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.utils import common, utils_node as ut
+from nl_modules.utils import utils_node as ut
 
 mel.eval("ikSpringSolver")
 mel.eval("ik2Bsolver")
@@ -16,6 +16,8 @@ from enum import Enum
 
 
 class Solver(Enum):
+    """Enum for IK solvers"""
+
     SC = "ikSCsolver"
     RP = "ikRPsolver"
     SPLINE = "ikSplineSolver"
@@ -24,12 +26,7 @@ class Solver(Enum):
 
 
 class IkNode(DagNode):
-    """Build ik component with start and end joint.
-    e.g.
-        n = IkNode('name', sj=J1, ee=J2)
-        n = IkNode('name', sj=J1, ee=J4, solver=Solver.SPLINE)
-        n = IkNode('name', sj=J1, ee=J4, solver=Solver.RP, ikc=C1, pvc=C2)
-    """
+    """Class for creating IK handles in Maya. It supports various solvers and can create IK handles"""
 
     def __init__(
         self,
@@ -105,6 +102,7 @@ class IkNode(DagNode):
     def createIK(
         self, node, quat=False, createCrv=1, inputCrv=None, numSpans=3, p=None
     ):
+        """Create an IK handle with the specified parameters."""
         ikh_args = dict(
             n=node,
             sj=self.sj,
@@ -140,14 +138,14 @@ class IkNode(DagNode):
         return self
 
     def calcChainLen(self):
-        """Return total length of all bones"""
+        """Calculate the length of the joint chain"""
         d = 0
         for i in range(1, len(self.jnt)):
             d += self.jnt[i].o.distanceTo(self.jnt[i - 1])
         return d
 
     def getCrv(self):
-        """Return curve data of SplineIK"""
+        """Get the curve associated with the IK handle"""
         if self.solver == Solver.SPLINE:
             crvSh = self.a.inCurve.inConnNode
             return CrvNode(crvSh.parent)
@@ -156,11 +154,8 @@ class IkNode(DagNode):
     def stretchySpSS(
         cls, ikH=None, ctl=None, axis="tx", axisDir=1, minDv=0.9, maxDv=1.1
     ):
-        """
-        Add stretchy funciton for splineIK
-        e.g.
-            IkNode.stretchySpSS(ikH=ikH, ctl='ctl')
-        """
+        """Add stretchy logic to translate channel of ikHandle with spline solver."""
+
         if ikH is None or ctl is None:
             logging.info("Require ikH and ctl input")
             return
@@ -195,7 +190,8 @@ class IkNode(DagNode):
             result * axisDir >> jl[i].a[axis]
 
     def stretchySp(self, on=0, axis="tx", axisDir=1, minDv=0.9, maxDv=1.1):
-        """Add stretchy logic to translate channel of joint chain"""
+        """Add stretchy logic to translate channel of ikHandle with spline solver."""
+
         if self.solver != Solver.SPLINE:
             raise ValueError("Incorrect solver.")
         if not self.setting:
@@ -262,9 +258,6 @@ class IkNode(DagNode):
             d /= self.scaleFix2
 
         if pvPin:
-            #
-            #   Pv pinning
-            #
             if not self.pvc:
                 raise ValueError("pvc undefined.")
             if not self.setting:
@@ -289,9 +282,7 @@ class IkNode(DagNode):
                     result *= self.ikc.a[f"limbScale{i}"]
                 result >> self.jnt[i].a.tx
         else:
-            #
-            #   Without Pv pinning
-            #
+            # Without Pv pinning
             ratio = (ut.max_(d / D, 1) - 1) * ks + 1
             ratioSoft = ratio
 
@@ -310,9 +301,7 @@ class IkNode(DagNode):
         dist_loc.hide()
 
     def addSoft(self, d=None, ratio=None, softParent=None):
-        """
-        softJ    <- cstP  leg IK
-        """
+        """Add a soft IK setup to the IK handle."""
         from nl_modules.nodel.jnt_node import JntNode
 
         softJ = JntNode.makeTwoJC2(
@@ -346,7 +335,7 @@ class IkNode(DagNode):
         self.softJ = softJ
 
     def build_pvfkPinSetup(self, ikTarget=None):
-        """Build a two-joint chain for pv space"""
+        """Build a pole vector FK pin setup for the IK handle."""
         from nl_modules.nodel.jnt_node import JntNode
 
         pvChainJ = JntNode.makeTwoJC2(
@@ -373,6 +362,8 @@ class IkNode(DagNode):
         self.pvChainJ = pvChainJ
 
     def spline_twist_setup(self, *driver, upAxis="y", twistAxis="x"):
+        """Setup twist for spline IK using worldUpMatrix and worldUpVector attributes."""
+
         if self.solver == Solver.SPLINE:
             self.a.dTwistControlEnable.set(1)
             if upAxis == "z":
@@ -404,10 +395,8 @@ class IkNode(DagNode):
                     self.a.dForwardAxis.set(5)
 
     def spline_twist_setup2(self, *driver, twistAxis="+x"):
-        """Add twist for spline IK using ROLL & TWIST attributes
-        start_ctl.rx                >  ik. Roll
-        -start_ctl.rx + end_ctl.rx  >  ik. Twist
-        """
+        """Setup twist for spline IK using roll and twist attributes."""
+
         if self.solver == Solver.SPLINE:
             sign = twistAxis[0]
             axis = twistAxis[1]

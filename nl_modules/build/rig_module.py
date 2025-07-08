@@ -6,7 +6,8 @@ from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.utils import common, utils_node as ut, maths
+from nl_modules.utils import common
+from nl_modules.utils import utils_node as ut
 
 BIND_JNT_SET = "bind_jnt_set"
 
@@ -316,14 +317,12 @@ class RigModule(RigBase):
             tgt.addOffsetGrp()
 
     def genSk_module(self):
-        logging.info(self.rigID)
 
         self.rigNode.a.nodeState.set(1)
         if self.masterC2.a.sx.get() != 1:
             self.masterC2.freezeXf(t=0, r=0, s=1)
 
     def build_module(self):
-        logging.info(self.rigID)
 
         self.rigNode.a.nodeState.set(2)
         self.rigSize = self.calc_rig_size(self.rootJ)
@@ -333,11 +332,8 @@ class RigModule(RigBase):
             self.xDir = 1 if children[0].a.tx.get() > 0 else -1
 
     def post_module(self):
-        rID, rSz, xDr = self.getMyVar()
-        logging.info(rID)
 
         [mc.setAttr(obj + ".ro", cb=1) for obj in mc.ls(tr=1)]
-
         mc.hide(self.moduleG)
 
     def unbuild_module(self):

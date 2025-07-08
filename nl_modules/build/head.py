@@ -32,6 +32,7 @@ class Head(RigModule):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build(self):
+
         self.build_module()
         self.joints = self.rootJ.allChildrenJt2
         self.head, self.headEnd, self.jaw, self.jawEnd, self.lf_eye, self.rt_eye = (

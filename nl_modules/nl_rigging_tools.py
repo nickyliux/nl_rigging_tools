@@ -17,17 +17,15 @@ import maya.mel as mel
 from functools import partial
 from importlib import reload
 import nl_modules
-from nl_modules.utils import (
-    reload_all,
-    common,
-    file,
-    guide,
-    log,
-    modeling,
-    build,
-    proxy,
-    control,
-)
+from nl_modules.utils import reload_all
+from nl_modules.utils import common
+from nl_modules.utils import file
+from nl_modules.utils import guide
+from nl_modules.utils import log
+from nl_modules.utils import modeling
+from nl_modules.utils import build
+from nl_modules.utils import proxy
+from nl_modules.utils import control
 from nl_modules.utils.color import Color
 
 reload(reload_all)
@@ -36,8 +34,9 @@ from PySide2 import QtWidgets
 from PySide2.QtGui import QIcon
 from PySide2.QtUiTools import QUiLoader
 
-# from PyQt5.QtWidgets import QMenuBar
-from PySide2.QtWidgets import QMenuBar, QMenu, QAction
+from PySide2.QtWidgets import QMenuBar
+from PySide2.QtWidgets import QMenu
+from PySide2.QtWidgets import QAction
 
 from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
 
@@ -47,9 +46,8 @@ from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.msh_node import MshNode
 
-#
-#   Must keep for valid call eval(cls)
-#
+# Must keep for valid call eval(cls)
+
 from nl_modules.build.leg_bp import LegBp
 from nl_modules.build.hand import Hand
 from nl_modules.build.arm_bp import ArmBp
@@ -62,7 +60,7 @@ from nl_modules.build.spine_qd import SpineQd
 from nl_modules.build.tail_fk import TailFk
 from nl_modules.build.tail import Tail
 
-log.updateRootLogger()
+log.update_root_logger()
 
 MOD_DIR = os.path.dirname(nl_modules.__file__)
 
@@ -103,8 +101,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.setWindowTitle("nlRT 0.1.0")
         self.setCentralWidget(self.UI)
         self.setGeometry(0, 0, 233, 700)
-        # self.addMenuBar()
         self.connect_UI()
+        # self.addMenuBar()
 
     # def addMenuBar(self):
     #     menuBar = QMenuBar(self)
@@ -130,7 +128,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def connect_UI(self):
 
         # Pick mask & click drag
-
         self.connect(self.UI.pickMaskCrv_BN, self.pickMaskCrv, ":pickCurveObj.png")
         self.connect(self.UI.pickMaskMsh_BN, self.pickMaskMsh, ":pickGeometryObj.png")
         self.connect(self.UI.pickMaskAll_BN, self.pickMaskAll)
@@ -140,34 +137,28 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             self.UI.clickDrag_CB.setChecked(1)
 
         # Guide
-
         self.connect(self.UI.guide_load_BN, self.guide_load, ":openScript.png")
         self.connect(self.UI.guide_find_BN, self.guide_find, ":searchEngine.png")
         self.UI.guide_LW.itemDoubleClicked.connect(self.guide_load)
 
         # Model
-
         self.connect(self.UI.loadModel_BN, self.importModel, ":openScript.png")
 
         # Template
-
         self.connect(self.UI.loadTemplate_BN, guide.loadTemplate, ":openScript.png")
         self.connect(self.UI.saveTemplate_BN, guide.saveTemplate, ":fileSave.png")
 
         # Build
-
         self.connect(self.UI.component_buildAll_BN, build.buildSelOrAll, ":play_S.png")
         self.connect(
             self.UI.component_unbuildAll_BN, build.unbuildSelOrAll, ":smallTrash.png"
         )
 
         # Control
-
         self.connect(self.UI.saveCtl_BN, control.saveCtl, ":fileSave.png")
         self.connect(self.UI.loadCtl_BN, control.loadCtl, ":openScript.png")
 
         # Proxy
-
         self.connect(self.UI.loadProxy_BN, proxy.loadProxy, ":openScript.png")
         self.connect(self.UI.saveProxy_BN, proxy.saveProxy, ":fileSave.png")
         self.connect(self.UI.genProxy_BN, proxy.genProxy, ":play_S.png")
@@ -184,49 +175,35 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.bindUsingProxy_BN, self.bindUsingProxy)
 
         # Bind
-
         self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind)
         self.connect(self.UI.delSkinForAllMeshes_BN, self.delSkinForAllMeshes)
 
         # RigNode
-
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
 
         # Ctl
-
         self.UI.crvShape_LW.itemDoubleClicked.connect(self.crvShape_LW_dblClicked)
-        self.UI.crvShape_removeFrInst_BN.clicked.connect(self.crvShape_removeFrInst)
+        self.connect(self.UI.crvShape_removeFrInst_BN, self.crvShape_removeFrInst)
 
         self.connect(self.UI.crvShape_new_BN, self.crvShape_new, ":fileNew.png")
-        self.connect(
-            self.UI.crvShape_apply_BN,
-            self.crvShape_apply,
-            ":openScript.png",
-        )
+        self.connect(self.UI.crvShape_apply_BN, self.crvShape_apply, ":openScript.png")
         self.connect(self.UI.crvShape_save_BN, self.crvShape_save, ":fileSave.png")
         self.connect(self.UI.crvShape_del_BN, self.crvShape_del, ":smallTrash.png")
+
         self.connect(self.UI.shapeRotaX_BN, partial(control.rotaCVForSel, 90, 0, 0))
         self.connect(self.UI.shapeRotaY_BN, partial(control.rotaCVForSel, 0, 90, 0))
         self.connect(self.UI.shapeRotaZ_BN, partial(control.rotaCVForSel, 0, 0, 90))
         self.connect(self.UI.shapeScaleUp_BN, partial(control.scaleCVForSel, 4 / 3))
         self.connect(self.UI.shapeScaleDn_BN, partial(control.scaleCVForSel, 3 / 4))
-
         self.connect(self.UI.onTop_BN, control.setOnTopSel)
         self.connect(self.UI.drop_BN, control.dropSel)
 
-        # self.UI.leadColor_0_BN.clicked.connect(partial(self.setLeadColor, 0))
-        # self.UI.leadColor_1_BN.clicked.connect(partial(self.setLeadColor, 1))
-        # self.UI.refColor_0_BN.clicked.connect(partial(self.setRefColor, 0))
-        # self.UI.refColor_1_BN.clicked.connect(partial(self.setRefColor, 1))
-        #
-        #   prepare
-        #
-
+        # Prepare
         self.connect(
-            self.UI.joint_addForSpine_BN, partial(self.joint_add, rb=1), ":addClip.png"
+            self.UI.joint_addForSpine_BN, partial(self.addJoint, rb=1), ":addClip.png"
         )
         self.connect(
-            self.UI.joint_addForRef_BN, partial(self.joint_add, rb=0), ":addClip.png"
+            self.UI.joint_addForRef_BN, partial(self.addJoint, rb=0), ":addClip.png"
         )
         self.connect(
             self.UI.mirrorAllRefJnt_BN, self.mirrorAllRefJnt, ":kinMirrorJoint_S.png"
@@ -259,6 +236,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             tgt = DagNode(targetWrapMesh)
             if tgt.exists() and tgt.type == "mesh":
                 self.UI.loadWrapTargetMesh_BN.setText(f"< {tgt.name} >")
+            else:
+                self.UI.loadWrapTargetMesh_BN.setText("< None >")
 
     def clickDrag_CB_stateChanged(self, state):
         mc.selectPref(clickDrag=state)
@@ -274,9 +253,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def pickMaskAll(self):
         mel.eval('setObjectPickMask "All" 1')
 
-    def guide_load_BN_doubleClicked(self, item):
-        names = guide.COMPONENT_DICT[item.text()]
-        guide.loadGuide(names)
+    # def guide_load_BN_doubleClicked(self, item):
+    #     names = guide.COMPONENT_DICT[item.text()]
+    #     guide.loadGuide(names)
 
     def guide_load(self):
         items = self.UI.guide_LW.selectedItems()
@@ -450,7 +429,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         ]
         self.UI.crvShape_LW.addItems(items)
 
-    def joint_add(self, rb=0):
+    def addJoint(self, rb=0):
         """Add reference joint or rb joint for selected mesh."""
         mc.select(hi=1)
         selectedMesh = mc.ls(sl=1, type="mesh")

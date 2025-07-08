@@ -88,6 +88,7 @@ class SpineQd(RigModule):
         self.cog_ctl.cv_move(0, rSz * 50, 0)
 
     def build(self):
+
         rID, rSz, xDr = self.getMyVar()
 
         self.build_module()
@@ -408,6 +409,8 @@ class SpineQd(RigModule):
         return self.__class__.__name__ == "NeckQd"
 
     def post_setup(self):
+        logging.info(self.rigID)
+
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_ratio(self.bindJnts, 5)
 

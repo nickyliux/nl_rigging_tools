@@ -2,7 +2,7 @@ import inspect
 import logging
 
 
-def updateRootLogger():
+def update_root_logger():
     """Updated root logger to print more info"""
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
@@ -48,7 +48,7 @@ def print_all(tgt):
 
     def print_it(items):
         if items:
-            print(' ', ', '.join(items))
+            print(" ", ", ".join(items))
 
     typeList = ["staticmethod", "classmethod", "function", "property", "str"]
     classDict = dict.fromkeys(typeList)
@@ -56,16 +56,16 @@ def print_all(tgt):
     for name, item in tgt.__dict__.items():
         mType = type(item).__name__
         if mType in typeList:
-            if not name.startswith('_'):
+            if not name.startswith("_"):
                 if classDict[mType]:
                     classDict[mType].append(name)
                 else:
                     classDict[mType] = [name]
         else:
-            if classDict['str']:
-                classDict['str'].append(name)
+            if classDict["str"]:
+                classDict["str"].append(name)
             else:
-                classDict['str'] = [name]
+                classDict["str"] = [name]
 
     print("-" * 79)
     print("object attr")

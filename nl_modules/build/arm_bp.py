@@ -82,7 +82,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "cross", None, scale, 1, -1),
+            ("setting", "cross", "z", scale, 1, 2),
             ("clavicle_fkc", "stickC", None, scale, 0, -1),
             ("upr_fkc", "cubeR", "x", scale * 2, 0, -1),
             ("lwr_fkc", "cubeR", "x", scale * 2, 0, -1),
@@ -100,6 +100,7 @@ class ArmBp(RigModule):
         self.palm_ikc.cv_move(scale * 7, 0, 0)
 
     def build(self):
+
         self.build_module()
         self.joints = self.rootJ.allChildrenJt2
         self.clavicle, self.upr, self.lwr, self.palm, self.ball = self.joints
@@ -511,6 +512,8 @@ class ArmBp(RigModule):
         )
 
     def post_setup(self):
+        logging.info(self.rigID)
+
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_ratio(self.bindJnts, 2)
 

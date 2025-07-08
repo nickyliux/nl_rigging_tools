@@ -5,10 +5,7 @@ from nl_modules.nodel.grp_node import GrpNode
 
 
 class SrfNode(GrpNode):
-    """Surface Node Class
-    e.g.
-        n = SrfNode('existing')
-    """
+    """Surface Node class, inherits from GrpNode."""
 
     def __init__(
         self,
@@ -59,7 +56,7 @@ class SrfNode(GrpNode):
 
     @property
     def cvs(self):
-        """Return all cv"""
+        """Return all CVs"""
         return mc.ls(self + ".cv[*]", fl=1)
 
     @property
@@ -121,7 +118,7 @@ class SrfNode(GrpNode):
 
     @staticmethod
     def moveCloseToSurf(objList, surf=None):
-        """Move all objects to the closest position to the surface"""
+        """Move objects close to surface"""
         if objList and surf:
             xf = DagNode("myXf#", nodeType="transform")
             cpos = DagNode("myCPOS#", nodeType="closestPointOnSurface")
@@ -138,7 +135,7 @@ class SrfNode(GrpNode):
 
     @staticmethod
     def buildRbSrf(pf="", crv=None, normal=0, snap=None, spans=3, p=None):
-        """Build ribbon surface"""
+        """Build ribbon surface from curve"""
         from nl_modules.nodel.crv_node import CrvNode
 
         crvLen = CrvNode(crv).length
@@ -172,10 +169,7 @@ class SrfNode(GrpNode):
         sklData=None,
         color=4,
     ):
-        """Build ribbon joints chain
-        e.g.
-            Create pin at coord and constraint joint to the pins
-        """
+        """Build ribbon joints from surface"""
         from nl_modules.nodel.jnt_node import JntNode
         from nl_modules.utils import common
 

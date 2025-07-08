@@ -146,6 +146,7 @@ class LegQd(RigModule):
                             ball
                                 tip
         """
+
         rID, rSz, xDr = self.getMyVar()
 
         self.build_module()
@@ -630,6 +631,8 @@ class LegQd(RigModule):
         self.setup_anchor_module({"anchorF1": self.scapularG.offset})
 
     def post_setup(self):
+        logging.info(self.rigID)
+
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_ratio(self.bindJnts, 2.5)
 

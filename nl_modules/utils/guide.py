@@ -43,7 +43,7 @@ def loadGuide(names):
     mc.select(cl=1)
 
 
-def copyGuideSel():
+def copyGuideSel(*arg):
     """Copy guide settings from 1st to 2nd selList"""
     from nl_modules.utils import build
 

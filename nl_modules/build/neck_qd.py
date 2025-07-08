@@ -1,4 +1,3 @@
-import maya.cmds as mc
 from nl_modules.build.spine_qd import SpineQd
 
 

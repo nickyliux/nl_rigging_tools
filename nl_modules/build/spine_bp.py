@@ -52,7 +52,7 @@ class SpineBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         ctl_defs = [
-            ("setting", "cross", "z", rSz * 5, 1, -1),
+            ("setting", "cross", "z", rSz * 2, 1, 2),
             ("cog_ctl", "cog2", None, rSz * 8, 0, -1),
             ("chest_ctl", "circle", None, rSz * 7, 0, -1),
             ("mid_ctl", "square", None, rSz * 7, 0, -1),
@@ -63,6 +63,7 @@ class SpineBp(RigModule):
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
     def build(self):
+
         self.build_module()
         self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
         self.build_ctl()
@@ -241,6 +242,8 @@ class SpineBp(RigModule):
         self.setup_anchor_module({"anchorM1": self.hip_ctl, "anchorM2": anchorM2Tgt})
 
     def post_setup(self):
+        logging.info(self.rigID)
+
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_ratio(self.bindJnts, 6)
 
