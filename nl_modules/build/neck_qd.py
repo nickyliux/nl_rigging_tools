@@ -1,11 +1,16 @@
+import logging
 from nl_modules.build.spine_qd import SpineQd
 
 
 class NeckQd(SpineQd):
+    """NeckQd class for building a neck rig with quick setup features."""
+
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
     def setup_anchor(self):
+        """Setup the anchor controls for the neck rig."""
+
         self.setup_anchor_module(
             {
                 "anchorF1": self.cog_ctl,
@@ -14,6 +19,8 @@ class NeckQd(SpineQd):
         )
 
     def setup_space(self):
+        """Setup the space switching for the neck rig."""
+
         self.fore_ctl.a.add("spaceType", dv=2, k=0, cb=0)
         self.rigNode.setMsg({"spaceHolder1": self.fore_ctl})
         spaces = "neckBase, COG, master"
@@ -29,6 +36,9 @@ class NeckQd(SpineQd):
         self.rigNode.setMsg({"space_neckBase": self.base_ctl})
 
     def post_setup(self):
+        """Post setup for the neck rig."""
+        logging.info(self.rigID)
+
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_ratio(self.bindJnts, 2)
 

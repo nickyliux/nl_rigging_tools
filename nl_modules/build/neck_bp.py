@@ -1,12 +1,15 @@
-import maya.cmds as mc
 from nl_modules.build.spine_bp import SpineBp
 
 
 class NeckBp(SpineBp):
+    """NeckBp class for building a neck rig with basic setup features."""
+
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
     def setup_anchor(self):
+        """Setup the anchor controls for the neck rig."""
+
         anchorM1Tgt = self.bindJnts[-1] if self.rbnBones else self.tp_ctl
         self.setup_anchor_module(
             {
@@ -16,6 +19,8 @@ class NeckBp(SpineBp):
         )
 
     def setup_space(self):
+        """Setup the space switching for the neck rig."""
+
         self.rigNode.setMsg({"space_COG": self.cog_ctl})
         self.rigNode.setMsg({"space_neck": self.chest_ctl})
         # self.rigNode.setMsg({"space_neckBase": self.base_ctl})
