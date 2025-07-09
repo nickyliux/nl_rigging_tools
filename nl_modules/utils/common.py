@@ -15,14 +15,6 @@ CST_DICT = OrderedDict(
     pvt=mc.poleVectorConstraint,
 )
 
-IK_SOLVER = [
-    "ikSCsolver",
-    "ikRPsolver",
-    "ikSplineSolver",
-    "ikSpringSolver",
-    "ik2Bsolver",
-]
-
 
 def getUniqueCstDictNames():
     """Return unique constraint names from CST_DICT"""
