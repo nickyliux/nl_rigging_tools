@@ -47,11 +47,9 @@ class NeckQd(SpineQd):
         # ctls.remove(self.tangent0_ctl)
 
         self.add_ctl_set(ctls)
-
         self.setup_space()
         self.setup_anchor()
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()
-
         self.post_module()

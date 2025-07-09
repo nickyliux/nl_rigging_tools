@@ -13,12 +13,7 @@ from nl_modules.utils import utils_node as ut
 
 
 class ArmBp(RigModule):
-    """Build arm component with given rigNode.
-    e.g.
-        n = ArmBp('lfArmBp0_RGN')  # n.__dict__
-        n.genSk()
-        n.build()
-    """
+    """Arm rig module class, inherits from RigModule."""
 
     def __init__(self, rigNode):
 
@@ -69,6 +64,7 @@ class ArmBp(RigModule):
         self.ikH1 = None
 
     def genSk(self):
+        """Generate the skeleton for the arm rig."""
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["clavicle", "upr", "lwr", "palm", "ball"])
         self.rootJ = root_list[0]
@@ -76,6 +72,7 @@ class ArmBp(RigModule):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
+        """Build control nodes for the arm rig."""
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
@@ -100,6 +97,7 @@ class ArmBp(RigModule):
         self.palm_ikc.cv_move(scale * 7, 0, 0)
 
     def build(self):
+        """Build the arm rig module."""
 
         self.build_module()
         self.joints = self.rootJ.allChildrenJt2
@@ -131,6 +129,7 @@ class ArmBp(RigModule):
         self.post_setup()
 
     def build_fk(self):
+        """Build the FK controls and joints for the arm rig."""
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
@@ -141,6 +140,7 @@ class ArmBp(RigModule):
         self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
+        """Build the IK controls for the arm rig."""
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
@@ -222,6 +222,7 @@ class ArmBp(RigModule):
         common.cstMulti(self.palm_ikc, self.pin_fkc, palm_ik, w=fkPin, cstType="ori")
 
     def blend_fk_ik(self):
+        """Blend FK and IK joints for the arm rig."""
         rID, rSz, xDr = self.getMyVar()
 
         self.joints_bf = common.extractSk(self.joints, "_bf", p=self.BF_GRP, r=rSz)
@@ -285,6 +286,7 @@ class ArmBp(RigModule):
         GrpNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
 
     def build_armScapular(self):
+        """Build the scapular setup for the arm rig."""
         rID, rSz, xDr = self.getMyVar()
         clavEnd_guide = DagNode(rID + "_clavEnd_guide")
         scapular_guide = DagNode(rID + "_scapular_guide")
@@ -346,6 +348,7 @@ class ArmBp(RigModule):
         # self.bindJnts.append(self.clavBone)
 
     def build_twist_bones(self):
+        """Build twist bones for the arm rig."""
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
@@ -373,7 +376,8 @@ class ArmBp(RigModule):
         self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
 
     def build_ribbon(self):
-        """
+        """Build ribbon bones for the arm rig.
+
                     upr
         upr_bend     --
         mid_bend     lwr
@@ -402,19 +406,15 @@ class ArmBp(RigModule):
             size=rSz,
             p=self.RIG_DATA,
         )
-        # --------------------------------
+
         # Upper Ribbon
-        # --------------------------------
         self.upr.cstPoi(ribbonUp.stt_loc)
         self.clavicle.cstOri(ribbonUp.stt_loc, mo=1)
-        # --------------------------------
-        # Lower Ribbon
-        # --------------------------------
-        self.palm.cstPar(ribbonLw.end_loc, mo=1)
-        # --------------------------------
-        # Ribbon Controls
-        # --------------------------------
 
+        # Lower Ribbon
+        self.palm.cstPar(ribbonLw.end_loc, mo=1)
+
+        # Ribbon Controls
         # Bend Ctl Setup
         upLoc = ribbonUp.mid_loc
         lwLoc = ribbonLw.mid_loc
@@ -451,6 +451,7 @@ class ArmBp(RigModule):
         self.bindJnts.extend(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def setup_vis(self):
+        """Setup visibility toggles for the arm rig controls."""
         self.ctl_vis_toggle(
             self.setting.a["fkIkBlend"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
@@ -471,6 +472,7 @@ class ArmBp(RigModule):
         mc.hide(self.all_ikHs, self.joints_fk, self.joints_ik, self.joints_bf)
 
     def setup_channel(self):
+        """Setup channel attributes for the arm rig controls."""
         self.setting.a.showAttr()
         self.palm_ikc.a.showAttr(r=1)
 
@@ -480,6 +482,7 @@ class ArmBp(RigModule):
             ctl.a.showAttr(t=1, r=1, s=1)
 
     def setup_rotate_order(self):
+        """Setup rotate order for the arm rig controls."""
         for c in [self.ikc, self.clavicle_fkc]:
             c.a.ro.set(2)
         self.lwr_fkc.a.ro.set(3)
@@ -487,6 +490,7 @@ class ArmBp(RigModule):
         self.palm_fkc.a.ro.set(5)
 
     def setup_space(self):
+        """Setup space switching for the arm rig controls."""
         self.rigNode.setMsg({"spaceHolder1": self.ikc})
         spaces = "master, COG, uprBody, lwrBody, head"
         self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
@@ -498,24 +502,29 @@ class ArmBp(RigModule):
         self.rigNode.setMsg({"space_master": self.masterC})
         # self.rigNode.setMsg({"space_clavicle": self.clavicle_fkc})
 
+        PALM_ID = 3
         self.ikH1.build_pvfkPinSetup(ikTarget=self.ikc)
         self.rigNode.setMsg({"space_arm": self.ikH1.pvChainJ[0]})
         self.rigNode.setMsg({"space_palm": self.ballRoll_loc})
-        self.rigNode.setMsg({"space_palmIK": self.joints_bf[3]})
+        self.rigNode.setMsg({"space_palmIK": self.joints_bf[PALM_ID]})
 
     def setup_anchor(self):
+        """Setup anchor module for the arm rig controls."""
+        WRIST_ID = -2
         self.setup_anchor_module(
             {
-                "anchorM1": self.joints_bf[-2],
+                "anchorM1": self.joints_bf[WRIST_ID],
                 "anchorF1": self.clavicle_fkc.offset,
             }
         )
 
     def post_setup(self):
+        """Post setup for the arm rig."""
         logging.info(self.rigID)
 
         self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_ratio(self.bindJnts, 2)
+        ARM_PROXY_RATIO = 2
+        self.add_proxy_ratio(self.bindJnts, ARM_PROXY_RATIO)
 
         ctlSet = []
         ctlSet.extend(self.fkCtl + self.ikCtl + [self.setting, self.pin_fkc])

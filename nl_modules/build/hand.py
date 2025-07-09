@@ -1,13 +1,15 @@
 import logging
-import maya.cmds as mc
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
-from nl_modules.utils import common, maths
+from nl_modules.utils import common
+from nl_modules.utils import maths
 
 
 class Hand(RigModule):
+    """Hand rig module class, inherits from RigModule."""
+
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
@@ -20,6 +22,7 @@ class Hand(RigModule):
         self.fgrRootCtlArr = None
 
     def genSk(self):
+        """Generate the skeleton for the hand rig."""
         HAND_SCALE = 0.4
         FINGER_SCALE = 3
 
@@ -44,11 +47,13 @@ class Hand(RigModule):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
+        """Build the controls for the hand rig module."""
         rID, rSz, xDr = self.getMyVar()
         self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="roll", up="x", scale=rSz)
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
 
     def build(self):
+        """Build the hand rig module."""
         self.build_module()
         self.build_ctl()
 
@@ -69,6 +74,7 @@ class Hand(RigModule):
         self.post_setup()
 
     def create_finger_ctl(self, fgrs):
+        """Create controls for a finger."""
         ctlList = []
         for fgr in fgrs[:-1]:
             ctl = CrvNode(
@@ -83,6 +89,7 @@ class Hand(RigModule):
         return ctlList
 
     def build_fk(self):
+        """Build FK controls for the hand rig module."""
         logging.info(self.rigID)
 
         self.finger_ctls = []
@@ -95,6 +102,7 @@ class Hand(RigModule):
             self.rootJ.a.s >> ctlList[0].offset.offset.a.s
 
     def build_ik(self):
+        """Build IK controls for the hand rig module."""
         rID, rSz, xDr = self.getMyVar()
 
         self.fgrRootCtlArr = []
@@ -232,6 +240,7 @@ class Hand(RigModule):
             common.sdk(drv, ofs, "sx", "rx", *cupList[i - 1][1])
 
     def build_fgr_logic(self):
+        """Build the finger logic for the hand rig module."""
         rID, rSz, xDr = self.getMyVar()
 
         if len(self.fingers) != 5:
@@ -267,6 +276,7 @@ class Hand(RigModule):
         # common.sdk(drv, ofs, "ty", "rx", -20, -180)
 
     def setup_space(self):
+        """Setup space switching for the hand rig controls."""
         self.rigNode.setMsg({"spaceHolder1": self.rootJ})
         self.rigNode.a.add("spaceName1", attrType="string", txt="palm")
 
@@ -274,6 +284,7 @@ class Hand(RigModule):
         self.rigNode.a.add("spaceName2", attrType="string", txt="palmIK")
 
     def setup_channel(self):
+        """Setup channels for the hand rig controls."""
         self.smart_ctl.a.showAttr(t=1, r=1, s=1)
         [c.a.showAttr(r=1) for c in self.fgrRootCtlArr]
         for fgrCtls in self.finger_ctls:
@@ -281,18 +292,21 @@ class Hand(RigModule):
                 c.a.showAttr(t=1, r=1)
 
     def setup_rotate_order(self):
+        """Setup rotate order for the hand rig controls."""
         self.smart_ctl.a.ro.set(3)
         for i in range(5):
             for j in [0, 1]:
                 self.finger_ctls[i][j].offset.a.rotateOrder.set(3)
 
     def setup_vis(self):
+        """Setup visibility controls for the hand rig."""
         showCtls = self.smart_ctl.a.add("showCtls", k=0, min=0, max=1, dv=1)
         for fgrCtls in self.finger_ctls:
             showCtls >> fgrCtls[0].a.v
         # mc.hide(self.allIkH, self.allIkJ)
 
     def post_setup(self):
+        """Post setup for the hand rig module."""
         logging.info(self.rigID)
 
         self.add_bind_jnt_set(self.bindJnts)

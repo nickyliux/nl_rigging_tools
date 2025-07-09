@@ -5,7 +5,7 @@ from nl_modules.nodel.grp_node import GrpNode
 
 
 class SrfNode(GrpNode):
-    """Surface Node class, inherits from GrpNode."""
+    """Surface node class"""
 
     def __init__(
         self,
@@ -17,7 +17,6 @@ class SrfNode(GrpNode):
         alignR=None,
         addOfs=0,
         p=None,
-        # For surface
         uSeg=1,
         vSeg=1,
         ax=(0, 0, 1),
@@ -75,6 +74,7 @@ class SrfNode(GrpNode):
         return mc.arclen(self.shape + ".u[0]")
 
     def weightTo(self, joints, chain=1, **kwargs):
+        """Weight surface to joints"""
         if self.exists():
             skin_clu = mc.skinCluster(self, joints, tsb=1, **kwargs)[0]
             #

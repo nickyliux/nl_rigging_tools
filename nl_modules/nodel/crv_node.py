@@ -37,9 +37,6 @@ class CrvNode(GrpNode):
         up="",
         top=0,
     ):
-        thisName = pf + node + sf
-        existing = DagNode(thisName).exists()
-
         GrpNode.__init__(
             self,
             node,
@@ -51,9 +48,7 @@ class CrvNode(GrpNode):
             addOfs=addOfs,
             p=p,
         )
-        #
-        #   add crv shape under group transform
-        #
+
         if not self.shape:
             if shape:
                 crvDictList = self.shape_getDictListFrLib(shape)
@@ -67,48 +62,51 @@ class CrvNode(GrpNode):
             self.color = color or self.get_side_color()
             self.dspType = dspType
 
-        if not existing:
-            if up == "x":
-                self.cv_rotate(0, 0, -90)
-            elif up == "z":
-                self.cv_rotate(90, 0, 0)
-            elif up == "-x":
-                self.cv_rotate(0, 0, -90)
-                self.cv_scale(-1, 1, 1)
-            elif up == "-z":
-                self.cv_rotate(90, 0, 0)
-                self.cv_scale(1, 1, -1)
-            elif up == "-y":
-                self.cv_scale(1, -1, 1)
+        thisName = pf + node + sf
+        if DagNode(thisName).exists():
+            return
 
-            if rotate:
-                self.cv_rotate(*rotate)
-            else:
-                vec = [rotateX, rotateY, rotateZ]
-                if any(vec):
-                    self.cv_rotate(*vec)
+        if up == "x":
+            self.cv_rotate(0, 0, -90)
+        elif up == "z":
+            self.cv_rotate(90, 0, 0)
+        elif up == "-x":
+            self.cv_rotate(0, 0, -90)
+            self.cv_scale(-1, 1, 1)
+        elif up == "-z":
+            self.cv_rotate(90, 0, 0)
+            self.cv_scale(1, 1, -1)
+        elif up == "-y":
+            self.cv_scale(1, -1, 1)
 
-            if scale:
-                if isinstance(scale, (tuple, list)):
-                    self.cv_scale(*scale)
-                elif isinstance(scale, (int, float)):
-                    self.cv_scale(scale)
-            else:
-                vec = [scaleX, scaleY, scaleZ]
-                if vec != [1, 1, 1]:
-                    self.cv_scale(*vec)
+        if rotate:
+            self.cv_rotate(*rotate)
+        else:
+            vec = [rotateX, rotateY, rotateZ]
+            if any(vec):
+                self.cv_rotate(*vec)
 
-            if move:
-                self.cv_move(*move)
-            else:
-                vec = [moveX, moveY, moveZ]
-                if any(vec):
-                    self.cv_move(*vec)
+        if scale:
+            if isinstance(scale, (tuple, list)):
+                self.cv_scale(*scale)
+            elif isinstance(scale, (int, float)):
+                self.cv_scale(scale)
+        else:
+            vec = [scaleX, scaleY, scaleZ]
+            if vec != [1, 1, 1]:
+                self.cv_scale(*vec)
 
-            if top:
-                for s in self.shapes:
-                    s.a["alwaysDrawOnTop"].set(1)
-            self.width = width
+        if move:
+            self.cv_move(*move)
+        else:
+            vec = [moveX, moveY, moveZ]
+            if any(vec):
+                self.cv_move(*vec)
+
+        if top:
+            for s in self.shapes:
+                s.a["alwaysDrawOnTop"].set(1)
+        self.width = width
 
     @property
     def length(self):

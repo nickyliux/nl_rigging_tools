@@ -4,11 +4,7 @@ from nl_modules.nodel.grp_node import GrpNode
 
 
 class LocNode(GrpNode):
-    """Loc Node Class
-    e.g.
-        n = LocNode('existing')
-        n = LocNode('new', size=5)
-    """
+    """Locator node class."""
 
     def __init__(
         self,
@@ -36,7 +32,6 @@ class LocNode(GrpNode):
             addOfs=addOfs,
             p=p,
         )
-        # Add locator shape under group transform
         if not self.shape:
             loc = DagNode(mc.spaceLocator()[0])
             mc.parent(loc.shape, self, r=1, s=1)
@@ -52,5 +47,5 @@ class LocNode(GrpNode):
             mc.hide(self)
 
     def localScale(self, val):
-        """Set locator local scale"""
+        """Set the local scale of the locator."""
         self.shape.a.localScale.set(val, val, val)

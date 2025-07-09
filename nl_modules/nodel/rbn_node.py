@@ -6,15 +6,14 @@ from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
-from nl_modules.utils import common, utils_node as ut
+from nl_modules.utils import common
+from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
-
-CBL = Color.BLUE
-CYL = Color.YELLOW
-COR = Color.ORANGE
 
 
 class RbnNode:
+    """Ribbon node class for creating a ribbon rig with joints, locators, and IK handles."""
+
     def __init__(
         self,
         tgt,
@@ -73,6 +72,7 @@ class RbnNode:
         self.build()
 
     def build(self):
+        """Build the ribbon rig."""
         self.build_grps(self.pf)
         self.build_surf(self.pf)
         self.build_locs(self.pf)
@@ -86,6 +86,7 @@ class RbnNode:
         self.tgtN.cstPar(self.ribbonG, keep=0)
 
     def build_grps(self, pf):
+        """Create the main groups for the ribbon rig."""
         self.ribbonG = GrpNode("ribbon", pf=pf, p=self.ribbonP)
         self.BSE_GRP = GrpNode("bse", pf=pf, p=self.ribbonG)
         self.JNT_GRP = GrpNode("jnt", pf=pf, p=self.ribbonG)
@@ -93,6 +94,8 @@ class RbnNode:
         self.AIM_GRP = GrpNode("aim", pf=pf, p=self.ribbonG)
 
     def build_surf(self, pf):
+        """Create the surface for the ribbon rig."""
+        logging.info(f"Building {self.pf} surface")
 
         xDr = self.xDir
         surf = SrfNode(
@@ -137,6 +140,9 @@ class RbnNode:
         self.rbJnt = rbJnt
 
     def build_locs(self, pf):
+        """Create locators for the start, middle, and end of the ribbon."""
+        logging.info(f"Building {self.pf} locators")
+
         offset = self.D / 4
         size = self.D / 15
         Dx = self.D * self.xDir
@@ -156,20 +162,10 @@ class RbnNode:
         self.mid_loc.a.tx.set(Dx / 2)
         self.mid_loc.addOffsetGrp(count=2)
 
-        # self.stt_loc.showLocalAxis(1)
-        # self.end_loc.showLocalAxis(1)
-        # self.mid_loc.showLocalAxis(1)
-
-        # rbJnt = self.rbJnt
-        # if self.seg == 5:
-        #     ofsList = [j.offset for j in rbJnt]
-        #     stt_loc.cstSca(ofsList[0])
-        #     mid_loc.cstSca(ofsList[2])
-        #     end_loc.cstSca(ofsList[4])
-        #     common.cstMulti(ofsList[0], ofsList[2], ofsList[1], cstType="sca")
-        #     common.cstMulti(ofsList[2], ofsList[4], ofsList[3], cstType="sca")
-
     def build_aim_chains(self, pf):
+        """Create aim chains for the start, middle, and end of the ribbon."""
+        logging.info(f"Building {self.pf} aim chains")
+
         g = self.AIM_GRP
 
         ofsX = self.D / 4 * self.xDir
@@ -182,7 +178,7 @@ class RbnNode:
             ofs=(ofsX, 0, 0),
             p=g,
             r=self.size * 2,
-            color=COR,
+            color=Color.ORANGE,
         )
         stt_sknJ = stt_aimJ_end.duplicate(n=pf + "stt_sknJ")
         stt_sknJ.alignTo(self.stt_loc)
@@ -194,7 +190,7 @@ class RbnNode:
             ofs=(-ofsX, 0, 0),
             p=g,
             r=self.size * 2,
-            color=COR,
+            color=Color.ORANGE,
         )
         end_sknJ = end_aimJ_end.duplicate(n=pf + "end_sknJ")
         end_sknJ.alignTo(self.end_loc)
@@ -206,7 +202,7 @@ class RbnNode:
             ofs=(ofsX2, 0, 0),
             p=g,
             r=self.size * 2,
-            color=COR,
+            color=Color.ORANGE,
         )
         mid_sknJ = mid_aimJ_end.duplicate(n=pf + "mid_sknJ")
         mid_sknJ.alignTo(self.mid_loc, p=self.mid_loc)
@@ -245,7 +241,7 @@ class RbnNode:
 
         for j in stt_sknJ, end_sknJ, mid_sknJ:
             j.setRadius(self.D / 5)
-            j.color = CBL
+            j.color = Color.BLUE
 
         stt_ikh = IkNode(
             "stt", pf=pf, sj=stt_aimJ, ee=stt_aimJ_end, solver=Solver.RP, quat=1, p=g
@@ -273,6 +269,8 @@ class RbnNode:
         self.end_sknJ = end_sknJ
 
     def build_twist_chains(self, pf):
+        """Create twist chains for the start and end of the ribbon."""
+        logging.info(f"Building {self.pf} twist chains")
 
         ofsX = self.D / 10 * self.xDir
         aimV = (self.xDir, 0, 0)
@@ -287,7 +285,7 @@ class RbnNode:
             ofs=(-ofsX, 0, 0),
             p=self.AIM_GRP,
             r=self.size / 2,
-            color=CYL,
+            color=Color.YELLOW,
         )
         stt_twistG = GrpNode("stt_twistG", pf=pf, align=stt_twistJ, p=stt_twistJ)
         stt_twistG.a.rx >> self.stt_sknJ.a.rx
@@ -307,7 +305,7 @@ class RbnNode:
             ofs=(ofsX, 0, 0),
             p=self.AIM_GRP,
             r=self.size / 2,
-            color=CYL,
+            color=Color.YELLOW,
         )
         end_twistG = GrpNode("end_twistG", pf=pf, align=end_twistJ, p=end_twistJ)
         end_twistG.a.rx >> self.end_sknJ.a.rx
@@ -349,9 +347,9 @@ class RbnNode:
         self.end_twistJ = end_twistJ
 
     def build_volume_setup(self):
-        """
-        Scale ribbon joints according to length of the surface
-        """
+        """Set up the volume control for the ribbon rig."""
+        logging.info(f"Building {self.pf} volume setup")
+
         arcLD = ut.arcLenDim_(self.surf)
         d = arcLD.a.arcLength
         D = d.get()
@@ -388,6 +386,7 @@ class RbnNode:
         self.d = d
 
     def setup_rotate_order(self):
+        """Set up the rotate order for the start, middle, and end joints."""
         for j in (self.stt_loc, self.end_loc, self.stt_twistJ, self.end_twistJ):
             j.a.rotateOrder.set(1)  # yzx
 
@@ -397,6 +396,7 @@ class RbnNode:
         pass
 
     def post_setup(self):
+        """Post setup for the ribbon rig."""
         self.setup_rotate_order()
         self.setup_vis()
 

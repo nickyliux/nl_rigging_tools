@@ -3,6 +3,7 @@ from nl_modules.build.rig_module import RigModule
 
 
 class Head(RigModule):
+    """Head rig module class, inherits from RigModule."""
 
     def __init__(self, rigNode):
         super().__init__(rigNode)
@@ -19,6 +20,7 @@ class Head(RigModule):
         self.fkCtl = None
 
     def genSk(self):
+        """Generate the skeleton for the head rig."""
         self.genSk_module()
 
         root_list = self.gen_sk_fr_names(["st", "ed"], scale=10)
@@ -32,6 +34,7 @@ class Head(RigModule):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build(self):
+        """Build the head rig module."""
 
         self.build_module()
         self.joints = self.rootJ.allChildrenJt2
@@ -43,6 +46,7 @@ class Head(RigModule):
         self.post_setup()
 
     def build_ctl(self):
+        """Build the controls for the head rig module."""
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
@@ -57,6 +61,7 @@ class Head(RigModule):
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
     def build_fk(self):
+        """Build the FK controls for the head rig module."""
         logging.info(self.rigID)
 
         self.fkCtl = [self.head_fkc, self.jaw_fkc]
@@ -83,10 +88,12 @@ class Head(RigModule):
         pass
 
     def setup_channel(self):
+        """Setup channels for the head rig controls."""
         self.head_fkc.a.showAttr(r=1, s=1)
         self.jaw_fkc.a.showAttr(t=1, r=1)
 
     def setup_space(self):
+        """Setup space switching for the head rig controls."""
         self.head_fkc.a.add("spaceType", dv=1, k=0, cb=0)
         self.rigNode.setMsg({"spaceHolder1": self.head_fkc})
         spaces = "neck, COG, master"
@@ -95,6 +102,7 @@ class Head(RigModule):
         self.rigNode.setMsg({"space_head": self.head_fkc})
 
     def post_setup(self):
+        """Post setup for the head rig module."""
         logging.info(self.rigID)
 
         self.bindJnts = [self.head, self.jaw, self.lf_eye, self.rt_eye]

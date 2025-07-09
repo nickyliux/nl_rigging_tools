@@ -14,12 +14,7 @@ from nl_modules.utils import utils_node as ut
 
 
 class LegBp(RigModule):
-    """Build leg component with given rigNode.
-    e.g.
-        n = Leg('lfArm0_RGN')  # n.__dict__
-        n.genSk()
-        n.build()
-    """
+    """Quadruped leg rig module class, inherits from RigModule."""
 
     def __init__(self, rigNode):
 
@@ -89,6 +84,7 @@ class LegBp(RigModule):
         self.scap_fkc = None
 
     def genSk(self):
+        """Generate the skeleton for the leg rig."""
         rID, rSz, xDr = self.getMyVar()
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["hip", "upr", "lwr", "palm", "ball", "tip"])
@@ -115,6 +111,7 @@ class LegBp(RigModule):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
+        """Build control nodes for the leg rig."""
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
@@ -138,14 +135,7 @@ class LegBp(RigModule):
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
     def build(self):
-        """Build rig for joints
-        hip 0
-            upr 1
-                lwr 2
-                    palm 3
-                        ball 4
-                            tip 5
-        """
+        """Build the leg rig module."""
 
         self.build_module()
         self.joints = self.rootJ.allChildrenJt2
@@ -214,6 +204,7 @@ class LegBp(RigModule):
         self.post_setup()
 
     def build_fk(self):
+        """Build the FK controls for the leg rig."""
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
@@ -229,6 +220,7 @@ class LegBp(RigModule):
         # self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
+        """Build the IK controls for the leg rig."""
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
@@ -328,6 +320,7 @@ class LegBp(RigModule):
         self.subCtl_setup(ballRollG, toeRollG, inRollG, outRollG, heelRollG)
 
     def blend_fk_ik(self):
+        """Blend FK and IK controls for the leg rig."""
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
@@ -376,6 +369,7 @@ class LegBp(RigModule):
         GrpNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
 
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
+        """Setup sub-controls for the leg rig."""
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
@@ -407,6 +401,7 @@ class LegBp(RigModule):
         -xDr * self.smart_ctl.a.rz >> self.smart_ctl.a["footBank"]
 
     def build_toes(self):
+        """Build the toe controls for the leg rig."""
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
@@ -441,6 +436,7 @@ class LegBp(RigModule):
         #     common.sdk2(splay, tgt, 5, -splayRange * (-1 + 2 / (toeCount - 1) * i))
 
     def build_twist_bones(self):
+        """Build twist bones for the leg rig."""
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
@@ -467,7 +463,8 @@ class LegBp(RigModule):
         self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
 
     def build_ribbon(self):
-        """
+        """Build the ribbon for the leg rig.
+
                     upr
         upr_bend     --
         mid_bend     lwr
@@ -495,19 +492,15 @@ class LegBp(RigModule):
             size=rSz,
             p=self.RIG_DATA,
         )
-        # --------------------------------
+
         # Upper Ribbon
-        # --------------------------------
         self.upr.cstPoi(self.ribbonUp.stt_loc)
         self.hip.cstOri(self.ribbonUp.stt_loc, mo=1)
-        # --------------------------------
-        # Lower Ribbon
-        # --------------------------------
-        self.palm.cstPar(self.ribbonLw.end_loc, mo=1)
-        # --------------------------------
-        # Ribbon Controls
-        # --------------------------------
 
+        # Lower Ribbon
+        self.palm.cstPar(self.ribbonLw.end_loc, mo=1)
+
+        # Ribbon Controls
         # Bend Ctl Setup
         upLoc = self.ribbonUp.mid_loc
         lwLoc = self.ribbonLw.mid_loc
@@ -548,6 +541,7 @@ class LegBp(RigModule):
         self.bindJnts.extend(self.ribbonUp.rbJnt + self.ribbonLw.rbJnt)
 
     def setup_vis(self):
+        """Setup visibility for the leg rig controls."""
         self.pvc.a["fkPin"] >> self.pin_fkc.a.v
         self.ctl_vis_toggle(
             self.setting.a["fkIkBlend"],
@@ -567,6 +561,7 @@ class LegBp(RigModule):
         mc.hide(self.joints_fk, self.joints_ik, self.joints_bf)
 
     def setup_channel(self):
+        """Setup channels for the leg rig controls."""
         self.setting.a.showAttr()
         self.pvc.a.showAttr(t=1, r=1)
         self.smart_ctl.a.showAttr(r=1)
@@ -581,6 +576,7 @@ class LegBp(RigModule):
             self.scap_fkc.a.showAttr(t=1, r=1)
 
     def setup_rotate_order(self):
+        """Setup rotate order for the leg rig controls."""
         for c in (
             self.fkCtl
             + self.ikCtl
@@ -596,6 +592,7 @@ class LegBp(RigModule):
         self.smart_ctl.a.ro.set(3)
 
     def setup_space(self):
+        """Setup space switching for the leg rig controls."""
         self.rigNode.setMsg({"spaceHolder1": self.ikc})
         spaces = "master, COG, lwrBody"
         self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
@@ -611,9 +608,11 @@ class LegBp(RigModule):
         self.rigNode.setMsg({"space_leg": self.ikH1.pvChainJ[0]})
 
     def setup_anchor(self):
+        """Setup anchor for the leg rig controls."""
         self.setup_anchor_module({"anchorF1": self.scapularG.offset})
 
     def post_setup(self):
+        """Post setup for the leg rig module."""
         logging.info(self.rigID)
 
         self.add_bind_jnt_set(self.bindJnts)

@@ -13,6 +13,8 @@ from nl_modules.utils import maths
 
 
 class SpineBp(RigModule):
+    """Spine rig module class, inherits from RigModule."""
+
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
@@ -39,6 +41,7 @@ class SpineBp(RigModule):
         self.rbSrf = None
 
     def genSk(self):
+        """Generate the skeleton for the spine rig."""
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
@@ -47,6 +50,7 @@ class SpineBp(RigModule):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
+        """Build control nodes for the spine rig."""
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
@@ -63,6 +67,7 @@ class SpineBp(RigModule):
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
     def build(self):
+        """Build the spine rig module."""
 
         self.build_module()
         self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
@@ -72,6 +77,7 @@ class SpineBp(RigModule):
         self.post_setup()
 
     def build_fk(self):
+        """Build the FK controls and joints for the spine rig."""
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
@@ -113,6 +119,7 @@ class SpineBp(RigModule):
         self.bindJnts = self.fkJnts
 
     def build_ik(self):
+        """Build the IK controls for the spine rig."""
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
@@ -178,8 +185,7 @@ class SpineBp(RigModule):
         self.ikCtls = [self.hip_ctl, self.mid_ctl, self.chest_ctl]
 
     def volume_setup(self):
-        """Scale ribbon joints according to length of the surface"""
-
+        """Setup volume squash/stretch for the spine rig."""
         scaleFix = self.masterC.a["globalScale"]
         arcLD = ut.arcLenDim_(self.rbSrf)
         d = arcLD.a.arcLengthInV
@@ -207,6 +213,7 @@ class SpineBp(RigModule):
             ratio >> self.rbJnts[i].a.sz
 
     def setup_vis(self):
+        """Setup visibility toggles for the spine rig controls."""
         self.ctl_vis_toggle(
             self.setting.a.add("fkCtls", min=0, max=1, dv=1, k=0),
             onList=self.fkCtls,
@@ -218,6 +225,7 @@ class SpineBp(RigModule):
         mc.hide(self.ctlJnts, self.fkJnts)
 
     def setup_channel(self):
+        """Setup channel attributes for the spine rig controls."""
         self.setting.a.showAttr()
         for ctl in [
             self.cog_ctl,
@@ -229,19 +237,23 @@ class SpineBp(RigModule):
             ctl.a.showAttr(t=1, r=1)
 
     def setup_rotate_order(self):
+        """Setup rotate order for the spine rig controls."""
         for ctl in self.fkCtls + self.ikCtls + [self.cog_ctl, self.cog_gmb]:
             ctl.a.ro.set(2)
 
     def setup_space(self):
+        """Setup space switching for the spine rig controls."""
         self.rigNode.setMsg({"space_COG": self.cog_ctl})
         self.rigNode.setMsg({"space_lwrBody": self.hip_ctl})
         self.rigNode.setMsg({"space_uprBody": self.chest_ctl})
 
     def setup_anchor(self):
+        """Setup anchor module for the spine rig controls."""
         anchorM2Tgt = self.rbJnts[-1] if self.rbnBones else self.chest_ctl
         self.setup_anchor_module({"anchorM1": self.hip_ctl, "anchorM2": anchorM2Tgt})
 
     def post_setup(self):
+        """Post setup for the spine rig."""
         logging.info(self.rigID)
 
         self.add_bind_jnt_set(self.bindJnts)

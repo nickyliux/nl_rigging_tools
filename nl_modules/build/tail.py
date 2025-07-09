@@ -11,6 +11,8 @@ from nl_modules.utils import common
 
 
 class Tail(RigModule):
+    """Tail rig module class, inherits from RigModule."""
+
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
@@ -38,6 +40,7 @@ class Tail(RigModule):
         self.bindJnts = []
 
     def genSk(self):
+        """Generate the skeleton for the tail rig."""
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
@@ -45,6 +48,7 @@ class Tail(RigModule):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
+        """Build control nodes for the tail rig."""
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
@@ -59,6 +63,7 @@ class Tail(RigModule):
         self.setting.a.add("localScale", min=0.01, dv=1)
 
     def build(self):
+        """Build the tail rig."""
         rID, rSz, xDr = self.getMyVar()
         self.build_module()
         self.rbSrf1 = SrfNode.buildRbSrf(
@@ -89,6 +94,7 @@ class Tail(RigModule):
         self.post_setup()
 
     def build_ik(self):
+        """Build the IK controls for the tail rig."""
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
@@ -125,6 +131,7 @@ class Tail(RigModule):
         self.ikCtl[0].cstPar(self.setting, mo=1)
 
     def build_fk(self):
+        """Build the FK controls for the tail rig."""
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
@@ -206,6 +213,7 @@ class Tail(RigModule):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def setup_vis(self):
+        """Setup visibility toggles for the tail rig controls."""
         self.ctl_vis_toggle(
             self.setting.a.add("IKCtl", k=0, attrType="bool", dv=1),
             onList=[self.ikCtl[0]],
@@ -221,15 +229,18 @@ class Tail(RigModule):
         mc.hide(self.ikJnt, self.fkJnt, self.ofsJnt, self.rbSrf1, self.rbSrf2)
 
     def setup_channel(self):
+        """Setup channel attributes for the tail rig controls."""
         for ctl in self.fkCtl + self.ikCtl:
             ctl.a.showAttr(t=1, r=1)
         self.setting.a.showAttr()
 
     def setup_rotate_order(self):
+        """Setup rotate order for the tail rig controls."""
         for ctl in self.fkCtl:
             ctl.a.ro.set(3)
 
     def post_setup(self):
+        """Post setup for the tail rig."""
         logging.info(self.rigID)
 
         self.add_bind_jnt_set(self.bindJnts)

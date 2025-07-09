@@ -2,7 +2,7 @@ from nl_modules.build.spine_bp import SpineBp
 
 
 class NeckBp(SpineBp):
-    """NeckBp class for building a neck rig with basic setup features."""
+    """Builds the neck rig based on the spine blueprint."""
 
     def __init__(self, rigNode):
         super().__init__(rigNode)
