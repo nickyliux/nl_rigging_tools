@@ -26,6 +26,7 @@ from nl_modules.utils import modeling
 from nl_modules.utils import build
 from nl_modules.utils import proxy
 from nl_modules.utils import control
+from nl_modules.utils import skin
 from nl_modules.utils.color import Color
 
 reload(reload_all)
@@ -179,7 +180,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         # Bind
         self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind)
-        self.connect(self.UI.delSkinForAllMeshes_BN, self.delSkinForAllMeshes)
+        self.connect(self.UI.delSkinForAllMeshes_BN, skin.delSkinForAllMeshes)
 
         # RigNode
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
@@ -272,46 +273,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 guide.loadGuide(names)
             self.rigNode_refresh()
             common.setViewport(fit=1)
-
-    # def loadTemplate_BN_dbClicked(self, item):
-    #     itemText = item.text()
-    #     self.load_preset(itemText)
-
-    # items = self.UI.preset_LW.selectedItems()
-    # if items:
-    #     itemText = items[0].text()
-    #     result = mc.confirmDialog(
-    #         t="Save Preset",
-    #         m=f'Overwrite "{itemText}" ?        ',
-    #         b=["Yes", "No"],
-    #         db="No",
-    #     )
-    #     if result == "Yes":
-    #         guide.savePreset(itemText)
-
-    # def template_new_BN_clicked(self):
-    #     result = mc.promptDialog(
-    #         t="New Preset", m="Enter name:", b=["OK", "Cancel"], db="OK"
-    #     )
-    #     if result == "OK":
-    #         newName = mc.promptDialog(q=1, t=1)
-    #         guide.savePreset(newName)
-    #         self.preset_refresh_BN_clicked()
-
-    # def template_del_BN_clicked(self):
-    #     items = self.UI.preset_LW.selectedItems()
-    #     if items:
-    #         itemText = items[0].text()
-    #         result = mc.confirmDialog(
-    #             t="Delete Preset ",
-    #             m=f'Delete "{itemText}" ?        ',
-    #             b=["Yes", "No"],
-    #             db="No",
-    #         )
-    #         if result == "Yes":
-    #             tgtFile = f"{PATH_PRESET}\\{itemText}.json"
-    #             file.deleteFile(tgtFile)
-    #             self.preset_refresh_BN_clicked()
 
     def getModelFile(self):
         """Open file dialog to select a model file."""
@@ -484,16 +445,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         common.setViewport()
         mc.select(cl=1)
 
-    def delSkinForAllMeshes(self):
-        """Delete all skinClusters for all meshes in the scene."""
-        from nl_modules.nodel.msh_node import MshNode
-
-        allMeshes = mc.ls(type="mesh") or []
-        count = 0
-        for msh in allMeshes:
-            count += MshNode(msh).delSkin()
-        logging.info(f"{count} skinClusters deleted.")
-
     def bindUsingProxy(self):
         """Bind all meshes in MODEL_GRP to proxy joints and rb joints."""
         pass
@@ -526,9 +477,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if not mc.objExists("bone_SHD"):
             if os.path.isfile(SHADER_FILE):
                 file.importFile(SHADER_FILE)
-
-    #     mc.displayRGBColor("lead", *color)
-    #     mc.displayRGBColor("referenceLayer", *color)
 
 
 global UI_win
@@ -589,3 +537,43 @@ for item in cmds.resourceManager(nf='*png'):
 #
 getenv "XBMLANGPATH" ;
 """
+
+# items = self.UI.preset_LW.selectedItems()
+# if items:
+#     itemText = items[0].text()
+#     result = mc.confirmDialog(
+#         t="Save Preset",
+#         m=f'Overwrite "{itemText}" ?        ',
+#         b=["Yes", "No"],
+#         db="No",
+#     )
+#     if result == "Yes":
+#         guide.savePreset(itemText)
+
+# def template_new_BN_clicked(self):
+#     result = mc.promptDialog(
+#         t="New Preset", m="Enter name:", b=["OK", "Cancel"], db="OK"
+#     )
+#     if result == "OK":
+#         newName = mc.promptDialog(q=1, t=1)
+#         guide.savePreset(newName)
+#         self.preset_refresh_BN_clicked()
+
+# def template_del_BN_clicked(self):
+#     items = self.UI.preset_LW.selectedItems()
+#     if items:
+#         itemText = items[0].text()
+#         result = mc.confirmDialog(
+#             t="Delete Preset ",
+#             m=f'Delete "{itemText}" ?        ',
+#             b=["Yes", "No"],
+#             db="No",
+#         )
+#         if result == "Yes":
+#             tgtFile = f"{PATH_PRESET}\\{itemText}.json"
+#             file.deleteFile(tgtFile)
+#             self.preset_refresh_BN_clicked()
+
+
+#     mc.displayRGBColor("lead", *color)
+#     mc.displayRGBColor("referenceLayer", *color)
