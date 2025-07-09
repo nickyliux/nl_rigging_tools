@@ -64,10 +64,14 @@ def assignShd(n, geo=None, color=(0, 0, 0), faceID=None):
         mc.sets(geo, forceElement=sg)
 
 
-def assignPresetShd(tgt):
+def assignPresetShd(tgts=None):
+    """Assign preset shader to target objects"""
     from nl_modules.nodel.base.dag_node import DagNode
 
-    for t in tgt or []:
+    if not tgts:
+        tgts = mc.ls(sl=1, tr=1)
+
+    for t in tgts:
         t = DagNode(t)
 
         color = DagNode.YELLOW
@@ -227,7 +231,7 @@ def nlRivet(
 
 
 def ribbonAttach_reset(tgt):
-    """Parent target to world, and delete parent if it is locator"""
+    """Reset ribbon attach target"""
     pa = tgt.parent
     if pa:
         tgt.parentToWorld()
@@ -236,7 +240,7 @@ def ribbonAttach_reset(tgt):
 
 
 def ribbonAttach(tgtList=None, geo=None, scaleAttr=None, p=None):
-    """Attach objects to geometry (nurbs / meshes)"""
+    """Attach target list to geo, using closestPointOnMesh or closestPointOnSurface"""
 
     if not isinstance(tgtList, list):
         raise TypeError("Input objects must be in list.")
@@ -340,13 +344,13 @@ def extractSk(tgtJList, sf="", p=None, color=None, r=1):
 
 
 def showAllRO():
-    """Set rotate order visible in channelBox for all"""
+    """Show all rotation order in the scene"""
     for o in mc.ls(tr=1):
         mc.setAttr(o + ".ro", cb=1)
 
 
 def shelfSep():
-    """Add separator to current shelf"""
+    """Add separator to shelf"""
     import maya.mel as mel
 
     mc.separator(
@@ -359,7 +363,7 @@ def shelfSep():
 
 
 def printIkStat():
-    """Print all IK types and info"""
+    """Print IK handle type and pole vector"""
     for ik in mc.ls(type="ikHandle"):
         nt = mc.ikHandle(ik, q=1, solver=1)
         pv = mc.getAttr(ik + ".poleVector")
@@ -367,7 +371,7 @@ def printIkStat():
 
 
 def addNonRollJ(tgtJ):
-    """Add non-roll joint"""
+    """Add non-roll joint to target joint, for roll control"""
     from nl_modules.utils.color import Color
     from nl_modules.nodel.ik_node import IkNode, Solver
     from nl_modules.nodel.loc_node import LocNode
@@ -506,6 +510,7 @@ def addTwistReader(target, pf="", p=None):
 
 
 def getMeshBelow(grp):
+    """Get all meshes below the group, return list of MshNode"""
     from nl_modules.nodel.msh_node import MshNode
 
     if not mc.objExists(grp):
@@ -523,6 +528,7 @@ def getMeshBelow(grp):
 
 
 def setViewport(jx=0, xray=0, wos=0, fit=0):
+    """Set viewport options"""
     mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
     # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
     for p in mc.getPanel(type="modelPanel"):
@@ -533,11 +539,12 @@ def setViewport(jx=0, xray=0, wos=0, fit=0):
 
 
 def getAllRigCtls():
+    """Get all rig controls in the scene"""
     return getRigCtls(mc.ls("*RGN", type="script"))
 
 
 def getRigCtls(rigNodes):
-
+    """Get all rig controls from rig nodes"""
     from nl_modules.nodel.base.dag_node import DagNode
 
     setList = []
@@ -554,8 +561,12 @@ def getRigCtls(rigNodes):
         return []
 
 
-def add_mirror_attr(tgts):
+def add_mirror_attr(tgts=None):
+    """Add mirror attribute to targets"""
     from nl_modules.nodel.base.dag_node import DagNode
+
+    if not tgts:
+        tgts = mc.ls(sl=1, tr=1)
 
     for t in tgts:
         t = DagNode(t)

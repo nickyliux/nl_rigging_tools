@@ -2320,7 +2320,7 @@
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>9999</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -2348,7 +2348,7 @@
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>9999</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -2429,7 +2429,7 @@
          <property name="maximumSize">
           <size>
            <width>999</width>
-           <height>9999</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -2465,7 +2465,7 @@
          <property name="maximumSize">
           <size>
            <width>999</width>
-           <height>9999</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -2526,7 +2526,7 @@
          <property name="maximumSize">
           <size>
            <width>99999</width>
-           <height>9999</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -2554,7 +2554,7 @@
          <property name="maximumSize">
           <size>
            <width>99999</width>
-           <height>9999</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -2582,7 +2582,7 @@
          <property name="maximumSize">
           <size>
            <width>99999</width>
-           <height>9999</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -2610,7 +2610,7 @@
          <property name="maximumSize">
           <size>
            <width>99999</width>
-           <height>9999</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -2653,7 +2653,7 @@
          <property name="maximumSize">
           <size>
            <width>999</width>
-           <height>9999</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -2689,7 +2689,7 @@
          <property name="maximumSize">
           <size>
            <width>9999</width>
-           <height>9999</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">

@@ -218,22 +218,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.misc_retopo150_BN, partial(modeling.retopo, faceNum=150))
         self.connect(self.UI.misc_retopo500_BN, partial(modeling.retopo, faceNum=500))
 
-        self.connect(self.UI.addMirrorAttr_BN, self.addMirrorAttr)
+        self.connect(self.UI.addMirrorAttr_BN, common.add_mirror_attr)
         self.connect(self.UI.misc_buildLineSel_BN, CrvNode.buildLineLinkedSel)
         self.connect(self.UI.misc_importEnvAndShd_BN, self.misc_importEnvAndShd)
-        self.connect(self.UI.assignPresetColor_BN, self.assignPresetColor)
+        self.connect(self.UI.assignPresetColor_BN, common.assignPresetShd)
 
-        self.rigNode_refresh_BN_clicked()
+        self.rigNode_refresh()
         self.crvShape_refresh()
         self.updateLoadWrapTargetMesh()
-
-    def addMirrorAttr(self):
-        """Add mirror attributes to selected objects."""
-        common.add_mirror_attr(mc.ls(sl=1, tr=1))
-
-    def assignPresetColor(self):
-        """Assign preset shader to selected objects."""
-        common.assignPresetShd(mc.ls(sl=1, tr=1))
 
     def updateLoadWrapTargetMesh(self):
         """Update the button text for loading wrap target mesh."""
@@ -278,7 +270,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                     if side_R:
                         names = [names[1]]
                 guide.loadGuide(names)
-            self.rigNode_refresh_BN_clicked()
+            self.rigNode_refresh()
             common.setViewport(fit=1)
 
     # def loadTemplate_BN_dbClicked(self, item):
@@ -342,7 +334,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             mc.select(textObj)
             mc.AttributeEditor()
 
-    def rigNode_refresh_BN_clicked(self):
+    def rigNode_refresh(self):
         """Refresh rigNode list"""
         rigNodes = mc.ls("*RGN", type="script")
         self.UI.rigNode_LW.clear()
