@@ -9,37 +9,14 @@
 ## Background
 Once in a while I used the Ziva muscle plugin intensively in a project. There was a challenging process of rigging the actual skeleton meshes. I feel that it would be a good opportunity to learn anatomy while building a helpful tool to rig any vertebral animal in the future.
 
-## Prerequisites
-
-- Maya 2023 +
-- Python 3.9 +
-
-## Quick Start
-
-1. Download and extract repository
-2. In Maya, drag and drop "install/dragAndDrop.py" onto viewport
-3. Run below in the script editor
-```python
-from nl_modules import nl_rigging_tools
-nl_rigging_tools.main()
-```
-
 ## Features
 
 - **Modular**: Supports characters with any number of parts.
 - **Data Reuse**: Save and restore templates, controls, and proxies.
-- **Auto Connect/Bind**: Parts and skeletal meshes are automatically connected and bound.
+- **Auto Connect/Bind**: Components and skeletal meshes are automatically connected and bound.
 - **Marking Menus**: Speed up rigging with custom marking menus.
 - **Concise, Python code** for easy extension.
 
-
-## Overview
-nlRT is designed with the key features below :
-- <b>Modular : </b>Support character of any number of parts.
-- <b>Data Reuse : </b> Templates, controls and proxies can be saved and retored.
-- <b>Auto Connect : </b> Parts are automatically connected  according to distance between anchors.
-- <b>Auto Bind : </b> Skeletal meshes are auto bound with ref or ribbon joints added.
-- <b>Concise code : </b> Thanks to , I use my own framework to make tools development more efficient.
 
 ## Framework Python Classes
 ```mermaid
@@ -81,13 +58,27 @@ classDiagram
     RigModule <|-- Tail
 ```
 
-
 ## Marking menus
 Two Marking menus are made to speed up rigging work.
 |Menu|Shortcut|Capture|
 |---|---|---|
 |Rig Building |Ctrl + MMB|![The Autorig](nl_modules/doc/marking_menu_autorig.png)|
 |Daily Rigging Operations|Ctrl + Alt + MMB| ![General Rigging](nl_modules/doc/marking_menu_rigging.png)|
+
+## Prerequisites
+
+- Maya 2023 +
+- Python 3.9 +
+
+## Quick Start
+
+1. Download and extract repository
+2. In Maya, drag and drop "install/dragAndDrop.py" onto viewport
+3. Run below in the script editor
+```python
+from nl_modules import nl_rigging_tools
+nl_rigging_tools.main()
+```
 
 ## FAQ
 
