@@ -5,7 +5,6 @@ from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode, Solver
-from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
 from nl_modules.utils import utils_node as ut
@@ -74,6 +73,7 @@ class LegQd(RigModule):
 
     def genSk(self):
         """Generate the skeleton for the quadruped leg rig."""
+
         rID, rSz, xDr = self.getMyVar()
         self.genSk_module()
         root_list = self.gen_sk_fr_names(
@@ -109,6 +109,7 @@ class LegQd(RigModule):
 
     def build_ctl(self):
         """Build control nodes for the quadruped leg rig."""
+
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
@@ -190,6 +191,7 @@ class LegQd(RigModule):
 
     def build_fk(self):
         """Build the FK controls and joints for the quadruped leg rig."""
+
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
@@ -207,6 +209,7 @@ class LegQd(RigModule):
 
     def build_ik(self):
         """Build the IK controls for the quadruped leg rig."""
+
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
@@ -295,6 +298,7 @@ class LegQd(RigModule):
 
     def blend_fk_ik(self):
         """Blend FK and IK controls for the quadruped leg rig."""
+
         logging.info(self.rigID)
 
         self.setting.snapTo(self.hip, p=self.CTL_DATA)
@@ -317,6 +321,7 @@ class LegQd(RigModule):
 
     def extra_roll_logic(self, ballRollG, extraRollG, grp):
         """Setup extra roll logic for the quadruped leg rig."""
+
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
@@ -358,6 +363,7 @@ class LegQd(RigModule):
 
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
         """Setup sub-controls for the quadruped leg rig."""
+
         rID, rSz, xDr = self.getMyVar()
 
         for g in [toeRollG, inRollG, outRollG, heelRollG]:
@@ -383,6 +389,7 @@ class LegQd(RigModule):
 
     def build_digits(self):
         """Build the digit controls for the quadruped leg rig."""
+
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
@@ -434,6 +441,7 @@ class LegQd(RigModule):
 
     def build_twist_bones(self):
         """Build twist bones for the quadruped leg rig."""
+
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
@@ -465,6 +473,7 @@ class LegQd(RigModule):
 
     def singleBallCtl_setup(self):
         """Make ball ctl the single ctl in both FK IK."""
+
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
@@ -579,6 +588,7 @@ class LegQd(RigModule):
 
     def setup_vis(self):
         """Setup visibility toggles for the quadruped leg rig controls."""
+
         self.ctl_vis_toggle(
             self.setting.a["fkIkBlend"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
@@ -594,6 +604,7 @@ class LegQd(RigModule):
 
     def setup_channel(self):
         """Setup channels for the quadruped leg rig controls."""
+
         self.setting.a.showAttr()
         self.pvc.a.showAttr(t=1)
         self.smart_ctl.a.showAttr(r=1)
@@ -616,20 +627,28 @@ class LegQd(RigModule):
 
     def setup_space(self):
         """Setup space switching for the quadruped leg rig controls."""
-        self.rigNode.setMsg({"spaceHolder1": self.ikc})
+
         self.rigNode.a.add("spaceName1", attrType="string", txt="master, COG")
-        self.rigNode.setMsg({"spaceHolder2": self.pvc})
         self.rigNode.a.add("spaceName2", attrType="string", txt="leg, master, COG")
-        self.rigNode.setMsg({"space_master": self.masterC})
-        self.rigNode.setMsg({"space_hip": self.hip_fkc})
-        self.rigNode.setMsg({"space_leg": self.ikH1.softJ[0]})
+
+        self.rigNode.setMsg(
+            {
+                "spaceHolder1": self.ikc,
+                "spaceHolder2": self.pvc,
+                "space_master": self.masterC,
+                "space_hip": self.hip_fkc,
+                "space_leg": self.ikH1.softJ[0],
+            }
+        )
 
     def setup_anchor(self):
         """Setup anchor points for the quadruped leg rig."""
+
         self.setup_anchor_module({"anchorF1": self.scapularG.offset})
 
     def post_setup(self):
         """Post setup for the quadruped leg rig module."""
+
         logging.info(self.rigID)
 
         self.add_bind_jnt_set(self.bindJnts)

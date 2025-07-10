@@ -1,6 +1,7 @@
 import logging
 import maya.cmds as mc
 from nl_modules.utils import common
+from nl_modules.utils import guide
 
 
 def mirrorCtlShape(ctl):

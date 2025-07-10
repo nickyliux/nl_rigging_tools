@@ -491,22 +491,31 @@ class ArmBp(RigModule):
 
     def setup_space(self):
         """Setup space switching for the arm rig controls."""
-        self.rigNode.setMsg({"spaceHolder1": self.ikc})
-        spaces = "master, COG, uprBody, lwrBody, head"
-        self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
 
-        self.rigNode.setMsg({"spaceHolder2": self.pvc})
-        spaces = "arm, master, clavicle, COG, uprBody, lwrBody"
-        self.rigNode.a.add("spaceName2", attrType="string", txt=spaces)
+        self.rigNode.a.add(
+            "spaceName1",
+            attrType="string",
+            txt="master, COG, uprBody, lwrBody, head",
+        )
+        self.rigNode.a.add(
+            "spaceName2",
+            attrType="string",
+            txt="arm, master, clavicle, COG, uprBody, lwrBody",
+        )
 
-        self.rigNode.setMsg({"space_master": self.masterC})
-        # self.rigNode.setMsg({"space_clavicle": self.clavicle_fkc})
+        self.ikH1.build_pvfkPinSetup(ikTarget=self.ikc)
 
         PALM_ID = 3
-        self.ikH1.build_pvfkPinSetup(ikTarget=self.ikc)
-        self.rigNode.setMsg({"space_arm": self.ikH1.pvChainJ[0]})
-        self.rigNode.setMsg({"space_palm": self.ballRoll_loc})
-        self.rigNode.setMsg({"space_palmIK": self.joints_bf[PALM_ID]})
+        self.rigNode.setMsg(
+            {
+                "spaceHolder1": self.ikc,
+                "spaceHolder2": self.pvc,
+                "space_master": self.masterC,
+                "space_arm": self.ikH1.pvChainJ[0],
+                "space_palm": self.ballRoll_loc,
+                "space_palmIK": self.joints_bf[PALM_ID],
+            }
+        )
 
     def setup_anchor(self):
         """Setup anchor module for the arm rig controls."""
@@ -525,6 +534,8 @@ class ArmBp(RigModule):
         self.add_bind_jnt_set(self.bindJnts)
         ARM_PROXY_RATIO = 2
         self.add_proxy_ratio(self.bindJnts, ARM_PROXY_RATIO)
+
+        common.add_mirror_attr([self.setting])
 
         ctlSet = []
         ctlSet.extend(self.fkCtl + self.ikCtl + [self.setting, self.pin_fkc])

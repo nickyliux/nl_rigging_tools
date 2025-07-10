@@ -3,10 +3,7 @@ import maya.cmds as mc
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
-from nl_modules.nodel.grp_node import GrpNode
-from nl_modules.nodel.ik_node import IkNode
 from nl_modules.nodel.jnt_node import JntNode
-from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils import maths
@@ -42,6 +39,7 @@ class SpineBp(RigModule):
 
     def genSk(self):
         """Generate the skeleton for the spine rig."""
+
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
@@ -78,8 +76,8 @@ class SpineBp(RigModule):
 
     def build_fk(self):
         """Build the FK controls and joints for the spine rig."""
-        logging.info(self.rigID)
 
+        logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
         self.fkJnts = JntNode.createJntFrCrv(
@@ -120,8 +118,8 @@ class SpineBp(RigModule):
 
     def build_ik(self):
         """Build the IK controls for the spine rig."""
-        logging.info(self.rigID)
 
+        logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
         mg = self.master_guide
@@ -186,6 +184,7 @@ class SpineBp(RigModule):
 
     def volume_setup(self):
         """Setup volume squash/stretch for the spine rig."""
+
         scaleFix = self.masterC.a["globalScale"]
         arcLD = ut.arcLenDim_(self.rbSrf)
         d = arcLD.a.arcLengthInV
@@ -214,6 +213,7 @@ class SpineBp(RigModule):
 
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""
+
         self.ctl_vis_toggle(
             self.setting.a.add("fkCtls", min=0, max=1, dv=1, k=0),
             onList=self.fkCtls,
@@ -226,6 +226,7 @@ class SpineBp(RigModule):
 
     def setup_channel(self):
         """Setup channel attributes for the spine rig controls."""
+
         self.setting.a.showAttr()
         for ctl in [
             self.cog_ctl,
@@ -238,24 +239,31 @@ class SpineBp(RigModule):
 
     def setup_rotate_order(self):
         """Setup rotate order for the spine rig controls."""
+
         for ctl in self.fkCtls + self.ikCtls + [self.cog_ctl, self.cog_gmb]:
             ctl.a.ro.set(2)
 
     def setup_space(self):
         """Setup space switching for the spine rig controls."""
-        self.rigNode.setMsg({"space_COG": self.cog_ctl})
-        self.rigNode.setMsg({"space_lwrBody": self.hip_ctl})
-        self.rigNode.setMsg({"space_uprBody": self.chest_ctl})
+
+        self.rigNode.setMsg(
+            {
+                "space_COG": self.cog_ctl,
+                "space_lwrBody": self.hip_ctl,
+                "space_uprBody": self.chest_ctl,
+            }
+        )
 
     def setup_anchor(self):
         """Setup anchor module for the spine rig controls."""
+
         anchorM2Tgt = self.rbJnts[-1] if self.rbnBones else self.chest_ctl
         self.setup_anchor_module({"anchorM1": self.hip_ctl, "anchorM2": anchorM2Tgt})
 
     def post_setup(self):
         """Post setup for the spine rig."""
-        logging.info(self.rigID)
 
+        logging.info(self.rigID)
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_ratio(self.bindJnts, 6)
 

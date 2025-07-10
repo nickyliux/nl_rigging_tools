@@ -1,11 +1,9 @@
 import logging
 import maya.cmds as mc
 from nl_modules.build.rig_module import RigModule
-from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
-from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common
 
@@ -27,6 +25,8 @@ class Tail(RigModule):
         self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
 
         self.setting = None
+        self.rbSrf1 = None
+        self.rbSrf2 = None
         self.fkCtl = []
         self.fkJnt = []
         self.ikCtl = []
@@ -34,13 +34,11 @@ class Tail(RigModule):
         self.ofsCtl = []
         self.ofsJnt = []
         self.rbJnt = []
-        self.rbSrf1 = None
-        self.rbSrf2 = None
-        self.REVERSE = 0
         self.bindJnts = []
 
     def genSk(self):
         """Generate the skeleton for the tail rig."""
+
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
@@ -49,6 +47,7 @@ class Tail(RigModule):
 
     def build_ctl(self):
         """Build control nodes for the tail rig."""
+
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
@@ -64,10 +63,26 @@ class Tail(RigModule):
 
     def build(self):
         """Build the tail rig."""
+
         rID, rSz, xDr = self.getMyVar()
         self.build_module()
-        self.rbSrf1 = SrfNode.buildRbSrf(
-            pf=rID,
+
+        # Create and register rbSrf
+        self.rbSrf1 = self.create_rbSrf()
+        self.rbSrf2 = self.create_rbSrf()
+        self.rigNode.setMsg({"rbSrf": self.rbSrf2})
+
+        self.build_ctl()
+        self.build_ik()
+        self.build_fk()
+        self.build_ribbon()
+        self.post_setup()
+
+    def create_rbSrf(self):
+        """Create the ribbon surface for the tail rig."""
+
+        return SrfNode.buildRbSrf(
+            pf=self.rigID,
             crv=self.LINE_GUIDE,
             normal=1,
             spans=self.fkBoneNum,
@@ -75,12 +90,10 @@ class Tail(RigModule):
             snap=self.RT_GUIDE,
         )
 
-        self.rbSrf2 = self.rbSrf1.duplicate()
-        self.rigNode.setMsg({"rbSrf": self.rbSrf2})
+    def build_ribbon(self):
+        """Create the ribbon for the tail rig."""
 
-        self.build_ctl()
-        self.build_ik()
-        self.build_fk()
+        logging.info(self.rigID)
         crvLenRatio, self.rbJnts = self.build_motionPath_ribbon(
             rbSrf=self.rbSrf2,
             jntNum=self.rbnJntNum,
@@ -89,14 +102,10 @@ class Tail(RigModule):
         )
         self.bindJnts = self.rbJnts
 
-        self.setting.a["localScale"] >> self.IK_GRP.a.s
-        self.setting.a["localScale"] >> self.FK_GRP.a.s
-        self.post_setup()
-
     def build_ik(self):
         """Build the IK controls for the tail rig."""
-        logging.info(self.rigID)
 
+        logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
         self.ikJnt = JntNode.createJntFrCrv(
             self.LINE_GUIDE,
@@ -132,8 +141,8 @@ class Tail(RigModule):
 
     def build_fk(self):
         """Build the FK controls for the tail rig."""
-        logging.info(self.rigID)
 
+        logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
         #
         #   build fkJ
@@ -214,6 +223,7 @@ class Tail(RigModule):
 
     def setup_vis(self):
         """Setup visibility toggles for the tail rig controls."""
+
         self.ctl_vis_toggle(
             self.setting.a.add("IKCtl", k=0, attrType="bool", dv=1),
             onList=[self.ikCtl[0]],
@@ -230,18 +240,24 @@ class Tail(RigModule):
 
     def setup_channel(self):
         """Setup channel attributes for the tail rig controls."""
+
         for ctl in self.fkCtl + self.ikCtl:
             ctl.a.showAttr(t=1, r=1)
         self.setting.a.showAttr()
 
     def setup_rotate_order(self):
         """Setup rotate order for the tail rig controls."""
+
         for ctl in self.fkCtl:
             ctl.a.ro.set(3)
 
     def post_setup(self):
         """Post setup for the tail rig."""
+
         logging.info(self.rigID)
+
+        self.setting.a["localScale"] >> self.IK_GRP.a.s
+        self.setting.a["localScale"] >> self.FK_GRP.a.s
 
         self.add_bind_jnt_set(self.bindJnts)
 
