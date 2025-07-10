@@ -22,7 +22,7 @@ from nl_modules.utils import common
 from nl_modules.utils import file
 from nl_modules.utils import guide
 from nl_modules.utils import log
-from nl_modules.utils import modeling
+from nl_modules.utils import model
 from nl_modules.utils import build
 from nl_modules.utils import proxy
 from nl_modules.utils import control
@@ -64,7 +64,7 @@ log.update_root_logger()
 
 MOD_DIR = os.path.dirname(nl_modules.__file__)
 
-MODEL_PATH = "D:/_PROJECT/GIT/nl_rigging_tools_examples"
+
 SHAPE_PATH = MOD_DIR + "/build/shapes"
 LIGHT_PATH = MOD_DIR + "/build/others"
 UI_PATH = MOD_DIR + "/nl_rigging_tools.ui"
@@ -124,12 +124,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def connect(self, btn, func, icon=None):
         """Connect a button to a function with an optional icon."""
+
         btn.clicked.connect(func)
         if icon:
             btn.setIcon(QIcon(icon))
 
     def connect_UI(self):
         """Connect UI buttons to their respective functions."""
+
         # Pick mask & click drag
         self.connect(self.UI.pickMaskCrv_BN, self.pickMaskCrv, ":pickCurveObj.png")
         self.connect(self.UI.pickMaskMsh_BN, self.pickMaskMsh, ":pickGeometryObj.png")
@@ -145,7 +147,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.guide_LW.itemDoubleClicked.connect(self.guide_load)
 
         # Model
-        self.connect(self.UI.loadModel_BN, self.importModel, ":openScript.png")
+        self.connect(self.UI.loadModel_BN, model.import_model, ":openScript.png")
 
         # Template
         self.connect(self.UI.loadTemplate_BN, guide.loadTemplate, ":openScript.png")
@@ -213,10 +215,10 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         )
         self.connect(self.UI.addBladeAttr_BN, self.addBladeAttr)
 
-        self.connect(self.UI.misc_retopo20_BN, partial(modeling.retopo, faceNum=20))
-        self.connect(self.UI.misc_retopo50_BN, partial(modeling.retopo, faceNum=50))
-        self.connect(self.UI.misc_retopo150_BN, partial(modeling.retopo, faceNum=150))
-        self.connect(self.UI.misc_retopo500_BN, partial(modeling.retopo, faceNum=500))
+        self.connect(self.UI.misc_retopo20_BN, partial(model.retopo, faceNum=20))
+        self.connect(self.UI.misc_retopo50_BN, partial(model.retopo, faceNum=50))
+        self.connect(self.UI.misc_retopo150_BN, partial(model.retopo, faceNum=150))
+        self.connect(self.UI.misc_retopo500_BN, partial(model.retopo, faceNum=500))
 
         self.connect(self.UI.addMirrorAttr_BN, common.add_mirror_attr)
         self.connect(self.UI.misc_buildLineSel_BN, CrvNode.buildLineLinkedSel)
@@ -229,6 +231,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def updateLoadWrapTargetMesh(self):
         """Update the button text for loading wrap target mesh."""
+
         targetWrapMesh = mc.optionVar(q="targetWrapMesh")
         if targetWrapMesh:
             tgt = DagNode(targetWrapMesh)
@@ -239,25 +242,30 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def clickDrag_CB_stateChanged(self, state):
         """Set the click drag preference based on the checkbox state."""
+
         mc.selectPref(clickDrag=state)
 
     def pickMaskCrv(self):
         """Set the object pick mask to curves."""
+
         mel.eval('setObjectPickMask "All" 0')
         mel.eval('setObjectPickMask "Curve" 1')
 
     def pickMaskMsh(self):
         """Set the object pick mask to geometry."""
+
         mel.eval('setObjectPickMask "All" 0')
         mel.eval('setObjectPickMask "Surface" 1')
 
     def pickMaskAll(self):
         """Set the object pick mask to all."""
+
         mel.eval('setObjectPickMask "All" 1')
 
     @Undo("guide_load")
     def guide_load(self, *args):
         """Load selected guide components."""
+
         items = self.UI.guide_LW.selectedItems()
         side_L = self.UI.component_left_RB.isChecked()
         side_R = self.UI.component_right_RB.isChecked()
@@ -267,28 +275,15 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 if len(names) == 2:
                     if side_L:
                         names = [names[0]]
-                    if side_R:
+                    elif side_R:
                         names = [names[1]]
                 guide.loadGuide(names)
             self.rigNode_refresh()
             common.setViewport(fit=1)
 
-    def getModelFile(self):
-        """Open file dialog to select a model file."""
-        tgtFile = mc.fileDialog2(
-            fileFilter="*.ma", dialogStyle=2, fileMode=1, dir=MODEL_PATH
-        )
-        return tgtFile[0] if tgtFile else None
-
-    def importModel(self):
-        """Import model file into the scene."""
-        tgtFile = self.getModelFile()
-        if tgtFile:
-            file.importFile(tgtFile)
-            common.setViewport(fit=1)
-
     def rigNode_LW_dblClicked(self, item):
         """Show attribute editor for rigNode"""
+
         itemSel = mc.ls(item.text())
         if itemSel:
             mc.select(itemSel)
@@ -296,17 +291,20 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def rigNode_refresh(self):
         """Refresh rigNode list"""
+
         rigNodes = build.getRigNodesAll()
         self.UI.rigNode_LW.clear()
         self.UI.rigNode_LW.addItems(rigNodes)
 
     def crvShape_LW_dblClicked(self, item):
         """Add curve object"""
+
         crv = CrvNode(item.text() + "#", shape=item.text())
         mc.select(crv)
 
     def crvShape_save(self):
         """Save selList shape to highlighted"""
+
         selList = mc.ls(sl=1, tr=1)
         if selList:
             tgt = CrvNode(selList[0])
@@ -337,6 +335,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                     self.crvShape_refresh()
 
     def crvShape_del(self):
+        """Delete selected curve shape file"""
+
         items = self.UI.crvShape_LW.selectedItems()
         if items:
             itemText = items[0].text()
@@ -358,6 +358,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     @Undo("crvShape_apply")
     def crvShape_apply(self):
         """Apply selected curve shape to selList"""
+
         selList = mc.ls(sl=1, tr=1)
         items = self.UI.crvShape_LW.selectedItems()
         if selList and items:
@@ -368,6 +369,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def crvShape_refresh(self):
         """Refresh curve shape list"""
+
         self.UI.crvShape_LW.clear()
         items = [
             f.split(".")[0]
@@ -378,27 +380,29 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def addJoint(self, rb=0):
         """Add reference joint or rb joint for selected mesh."""
+
         mc.select(hi=1)
-        selectedMesh = mc.ls(sl=1, type="mesh")
-        meshSel = []
-        [meshSel.append(DagNode(s).parent) for s in selectedMesh]
+        meshSel = [DagNode(m).parent for m in mc.ls(sl=1, type="mesh")]
 
         if meshSel:
             jnt_grp = GrpNode("jnt_grp")
-            for sN in meshSel:
+            for mesh in meshSel:
                 sf = "_rbJnt" if rb else "_refJnt"
                 color = Color.RED if rb else Color.WHITE
-                jnt = JntNode(sN + sf, color=color, p=jnt_grp)
-                jnt.a.t.set(*sN.o.bbCenter)
+                jnt = JntNode(mesh + sf, color=color, p=jnt_grp)
+                jnt.a.t.set(*mesh.o.bbCenter)
+
         mc.select(cl=1)
 
     def addBladeAttr(self):
         """Add attribute 'isBlade' to selected joints"""
-        for s in mc.ls(sl=1, tr=1) or []:
+
+        for s in mc.ls(sl=1, tr=1):
             DagNode(s).a.add("isBlade", lock=1, dv=1)
 
     def mirrorAllRefJnt(self):
         """Mirror all reference joints in the scene."""
+
         selectedJnt = mc.ls("lf_*_refJnt", type="joint")
         if selectedJnt:
             guide.mirrorGuideAttr(selectedJnt, wsMirror=1)
@@ -407,6 +411,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def bindRefJnts(self, meshes, searchSet=None, thld=5, uiPB=None):
         """Bind meshes to reference joints in a specified set."""
+
         from nl_modules.utils import skin
 
         if not DagNode(searchSet).exists():
@@ -425,6 +430,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     @Undo("boneAutoBind")
     def boneAutoBind(self):
         """Bind all meshes in MODEL_GRP to reference joints and rb joints."""
+
         meshSel = common.getMeshBelow(MODEL_GRP)
         #
         #   bind to closest refJnt in MODEL_GRP
@@ -446,10 +452,12 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def bindUsingProxy(self):
         """Bind all meshes in MODEL_GRP to proxy joints and rb joints."""
+
         pass
 
     def templateTarget(self):
         """Toggle template target mesh for wrap deformer."""
+
         targetWrapMesh = mc.optionVar(q="targetWrapMesh")
         tgt = DagNode(targetWrapMesh)
         if tgt.exists():
@@ -457,6 +465,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def loadWrapTargetMesh(self):
         """Load target mesh for wrap deformer."""
+
         selList = mc.ls(sl=1, tr=1)
         targetWrapMesh = mc.optionVar(q="targetWrapMesh")
         tgt = DagNode(targetWrapMesh)
@@ -470,6 +479,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def misc_importEnvAndShd(self):
         """Import lighting and shader files if not exists."""
+
         if not mc.objExists("env_grp"):
             if os.path.isfile(LIGHTING_FILE):
                 file.importFile(LIGHTING_FILE)
@@ -483,6 +493,7 @@ global UI_win
 
 def main():
     """Main function to initialize and show the rigging tools UI."""
+
     global UI_win
     try:
         UI_win.close()
@@ -499,12 +510,6 @@ if __name__ == "__main__":
 mc.evalDeferred("reloadMenus()")
 mc.scriptJob(permanent=1, runOnce=1, event=["SelectionChanged", "reloadMenusAutorig"])
 
-"""
-    import importlib
-    from nl_modules import nl_rigging_tools
-    importlib.reload(nl_rigging_tools)
-    nl_rigging_tools.main()
-"""
 """
     toeNum = DagNode('master_guide').a.toeNum
     cond = (toeNum <= 4)

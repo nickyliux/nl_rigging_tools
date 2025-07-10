@@ -5,7 +5,7 @@ import maya.mel as ml
 
 
 def onMayaDroppedPythonFile(*args):
-    """Drag icon to create shelf icon to open nl_rigging_tools"""
+    """This function is called when the script is dragged and dropped into Maya."""
 
     if sys.version_info.major < 3:
         raise ImportError("nl_rigging_tools does not support Python 2.")

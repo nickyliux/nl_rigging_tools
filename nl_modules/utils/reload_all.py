@@ -54,7 +54,7 @@ from nl_modules.utils import (
     guide,
     log,
     maths,
-    modeling,
+    model,
     open_maya_api,
     path,
     proxy,
@@ -73,7 +73,7 @@ reload(file)
 reload(guide)
 reload(log)
 reload(maths)
-reload(modeling)
+reload(model)
 reload(open_maya_api)
 reload(path)
 reload(proxy)
