@@ -17,7 +17,6 @@ Once in a while I used the Ziva muscle plugin intensively in a project. There wa
 - **Marking Menus**: Speed up rigging with custom marking menus.
 - **Concise Python code**: For easy extension.
 
-
 ## Framework Python Classes
 ```mermaid
 classDiagram
