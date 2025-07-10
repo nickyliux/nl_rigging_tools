@@ -408,7 +408,7 @@ class LegQd(RigModule):
                 )
                 ctlList.append(c)
 
-            self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, ori=1)
+            self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
             self.toesCtlsList.append(ctlList)
             self.toesCtlsList.append([ctl])
 

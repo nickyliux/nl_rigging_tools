@@ -1,43 +1,18 @@
-import logging
 import maya.cmds as mc
-
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.loc_node import LocNode
 
-# def applyOrder(name):
-#
-#     import re
-#     if re.match("^(\w+)_master_guide$", name):
-#         return "_" + name
-#     else:
-#         return name
-#
-# def mirXForm(grp, wsMirror=0):
-#
-#     if not grp.a.tx.isLock():
-#         grp.a.tx.set2(-1, mul=1)
-#     if not grp.a.ry.isLock():
-#         grp.a.ry.set2(-1, mul=1)
-#     if not grp.a.rz.isLock():
-#         grp.a.rz.set2(-1, mul=1)
-#
-#     if not wsMirror:
-#         if not grp.a.rx.isLock():
-#             grp.a.rx.set2(180,add=1)
-
 
 def switch_to_space_target(spaceName):
-    """switch space for all selList with attribute "space". World transform is unchanged
-    e.g.
-        switchToSpace("master")
-    """
+    """Switch space target for selected controls to the specified spaceName."""
+
     for ctl in mc.ls(sl=1):
         ctlN = DagNode(ctl)
 
         if ctlN.a.space.exists():
-            optionList = ctlN.a.space.query(le=1)[0].split(":")
+            optionList = ctlN.a.space.query(listEnum=1)[0].split(":")
             optionDict = {n: i for i, n in enumerate(optionList)}
             if spaceName in optionList:
                 # store xform before and re-apply after space switch
@@ -47,10 +22,8 @@ def switch_to_space_target(spaceName):
 
 
 def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
-    """Switch fk ik for input rigNode. World transform is unchanged
-    e.g.
-        switchToFkIk(attr=, toIKMode=1, rigNode=)
-    """
+    """Switch between FK and IK modes for a rig."""
+
     if rigNode and rigNode.a.nodeState.get() == 2:
 
         rigID = rigNode.a.rigID.get()
@@ -127,10 +100,8 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
 
 
 def switchToFkIk_calcPvcPos(pos1, pos2, pos3):
-    """return grp at pvc position by moving 3-cv curve mid cv along normal direction
-    e.g.
-        switchToFkIk_calcPvcPos(obj1.o.pos, obj2.o.pos, obj3.o.pos)
-    """
+    """Calculate the position for the PVC control given the three positions of the limb."""
+
     from nl_modules.utils import maths
 
     crv = CrvNode(mc.curve(p=[pos1, pos2, pos3], d=1, k=[0, 1, 2]))

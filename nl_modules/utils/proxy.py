@@ -8,11 +8,8 @@ from nl_modules.utils import common
 
 
 def nlShrinkWrap(target=None, meshes=None, keep=0, **kwargs):
-    """
-    Example
-        from nl_modules.utils import proxy
-        proxy.create_shrink_wrap('tgtMesh', ['obj1'])
-    """
+    """Create a shrinkWrap deformer on the given meshes, projecting them onto the target mesh."""
+
     settings = [
         ("projection", 4),
         #   0: To inner
@@ -65,6 +62,8 @@ def nlShrinkWrap(target=None, meshes=None, keep=0, **kwargs):
 
 
 def genProxy():
+    """Generate proxy meshes for all bind joints in the scene."""
+
     from nl_modules.nodel.grp_node import GrpNode
     from nl_modules.nodel.jnt_node import JntNode
 
@@ -73,7 +72,7 @@ def genProxy():
     bindSet = DagNode("bind_jnt_set")
 
     if not bindSet.exists():
-        raise ValueError("Set 'bind_jnt_set' NOT found.")
+        raise NameError("Set 'bind_jnt_set' NOT found.")
 
     bindJnts = mc.sets(bindSet, q=1)
     for j in bindJnts:
@@ -86,9 +85,8 @@ def genProxy():
 
 
 def saveProxy():
-    """
-    Save all the proxies, without connection or any unwanted
-    """
+    """Export all proxy meshes to a file."""
+
     mc.select("PRX")
     tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2)
     if tgtFile:
@@ -98,9 +96,8 @@ def saveProxy():
 
 
 def loadProxy():
-    """
-    Replace all proxy shapes by those found in file
-    """
+    """Load proxy meshes from a file and match them to existing bind joints."""
+
     tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, fileMode=1)
     if tgtFile:
         genProxy()
@@ -129,6 +126,8 @@ def loadProxy():
 
 
 def resetProxy():
+    """Reset proxy meshes by deleting existing ones and re-adding them to the joints."""
+
     for selList in mc.ls(sl=1, tr=1):
         if selList.endswith("_pxGeo"):
             jnt = JntNode(selList[:-6])
@@ -139,6 +138,8 @@ def resetProxy():
 
 
 def mirrorProxy():
+    """Mirror proxy meshes by duplicating and flipping them across the X-axis."""
+
     for p in mc.ls(sl=1):
         curr = MshNode(p)
         isLf = curr.name.startswith("lf")
@@ -165,6 +166,8 @@ def mirrorProxy():
 
 
 def wrapProxy():
+    """Wrap selected meshes to the target wrap mesh using a shrinkWrap deformer."""
+
     selList = mc.ls(sl=1, tr=1)
     if selList:
         targetWrapMesh = mc.optionVar(q="targetWrapMesh")
@@ -177,10 +180,8 @@ def wrapProxy():
 
 
 def combineProxy():
-    """
-    Create ptSet for combined proxy using closestPointOnMesh
-    Return combined mesh
-    """
+    """Combine all proxy meshes into a single mesh and create vertex sets for each original proxy mesh."""
+
     proxies = mc.ls("*_pxGeo")
     dup = mc.duplicate(proxies)
     combined = DagNode(mc.polyUnite(dup, n="combinedProxy#", ch=0)[0])
@@ -203,6 +204,8 @@ def combineProxy():
 
 
 def setProxyWeight(combined, proxies):
+    """Set skin weights for the combined proxy mesh based on the original proxy meshes."""
+
     import maya.mel as mel
 
     skinC = mel.eval("findRelatedSkinCluster " + combined)
@@ -219,6 +222,8 @@ def setProxyWeight(combined, proxies):
 
 
 def selAllProxyGrp():
+    """Select all proxy meshes under the 'PRX' group."""
+
     PRX = DagNode("PRX")
     if PRX.exists():
         allBelow = PRX.children
@@ -227,11 +232,15 @@ def selAllProxyGrp():
 
 
 def showHideProxy():
+    """Toggle visibility of the proxy meshes under the 'PRX' group."""
+
     m2 = DagNode("master2_ctl")
     if m2.exists():
         m2.a.proxyVis.set(1 - m2.a.proxyVis.get())
 
 
 def refProxy():
+    """Toggle the display type of all proxy meshes between normal and reference."""
+
     for s in mc.ls("*_pxGeo") or []:
         DagNode(s).dspType = abs(DagNode(s).dspType - 2)

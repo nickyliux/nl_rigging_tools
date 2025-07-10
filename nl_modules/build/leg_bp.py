@@ -406,7 +406,7 @@ class LegBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.toesCtlsList = []
-        scale = xDr * rSz / 5
+        scale = xDr * rSz / 4
 
         for toeJs in self.toesJntList:
             ikTgt = JntNode(toeJs[1])
@@ -416,13 +416,13 @@ class LegBp(RigModule):
             ctlList = []
             self.bindJnts.extend(toeJs[:-1])
             fkToeList = toeJs[2:-1]
-            for jnt in fkToeList:
-                c = CrvNode(
-                    jnt + "_ctl", shape="squR", align=jnt, up="x", scale=scale, top=1
-                )
-                ctlList.append(c)
 
-            self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, ori=1)
+            for jnt in fkToeList:
+                crvName = f"{jnt.name}_ctl_#"
+                crv = CrvNode(crvName, shape="squR", up="x", scale=scale, align=jnt)
+                ctlList.append(crv)
+
+            self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
             self.toesCtlsList.append(ctlList)
             self.toesCtlsList.append([ctl])
 

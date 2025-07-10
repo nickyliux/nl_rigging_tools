@@ -89,7 +89,7 @@ class RigModule(RigBase):
         return joints
 
     @staticmethod
-    def build_fk_with_ctl(jntList, ctlList=None, ori=0, count=1, p=None):
+    def build_fk_with_ctl(jntList, ctlList=None, oriOnly=0, count=1, p=None):
         """
         P
             c1 ofs  <- j1
@@ -108,7 +108,7 @@ class RigModule(RigBase):
         for jnt, ctl in zip(jntList, ctlList):
 
             ctl.alignTo(jnt)
-            if ori:
+            if oriOnly:
                 ctl.cstOri(jnt, mo=1)
             else:
                 ctl.cstPar(jnt, mo=1)
