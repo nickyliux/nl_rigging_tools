@@ -53,21 +53,92 @@ class IkNode(DagNode):
         vis=1,
         p=None,
     ):
+        # Validate and build the IK handle name
+        name = self._validate_and_build_name(node, pf, sf)
+        if name is None:
+            return
+        
+        # Validate joints exist
+        sj1, ee1 = self._validate_joints(sj, ee, jsf)
+        if sj1 is None or ee1 is None:
+            return
+        
+        # Initialize parent class
+        DagNode.__init__(self, name)
+        
+        # Assign instance attributes
+        self._assign_attributes(sj1, ee1, solver, ikc, pvc, setting, scaleFix, 
+                              scaleFix2, scaleFix3, pf, rSz, limbScale, RIG_DATA)
+        
+        # Create the IK handle and setup joints
+        self._create_ik_handle(name, quat, createCrv, inputCrv, numSpans, p)
+        
+        # Finalize setup
+        self._finalize_setup(vis)
+
+    def _validate_and_build_name(self, node, pf, sf):
+        """
+        Validate and build the IK handle name.
+        
+        Args:
+            node (str): Base node name
+            pf (str): Prefix
+            sf (str): Suffix
+            
+        Returns:
+            str: The constructed name, or None if validation fails
+        """
         if pf and pf[-1] != "_":
             pf += "_"
         name = pf + node + sf
 
         if mc.objExists(name):
             logging.warning("IK already exist.")
-            return
+            return None
+        
+        return name
+
+    def _validate_joints(self, sj, ee, jsf):
+        """
+        Validate that the start joint and end effector exist.
+        
+        Args:
+            sj (str): Start joint name
+            ee (str): End effector name
+            jsf (str): Joint suffix
+            
+        Returns:
+            tuple: (start_joint_name, end_effector_name) or (None, None) if validation fails
+        """
         sj1 = sj + jsf
         ee1 = ee + jsf
 
         if not mc.objExists(sj1) or not mc.objExists(ee1):
             logging.warning(f"Missing joint {sj1} & {ee1}. Can't create IK")
-            return
-        DagNode.__init__(self, name)
+            return None, None
+        
+        return sj1, ee1
 
+    def _assign_attributes(self, sj1, ee1, solver, ikc, pvc, setting, scaleFix, 
+                          scaleFix2, scaleFix3, pf, rSz, limbScale, RIG_DATA):
+        """
+        Assign instance attributes from the provided parameters.
+        
+        Args:
+            sj1 (str): Start joint name
+            ee1 (str): End effector name
+            solver (Solver): IK solver type
+            ikc: IK control object
+            pvc: Pole vector control object
+            setting: Setting control object
+            scaleFix: Scale fix value
+            scaleFix2: Second scale fix value
+            scaleFix3: Third scale fix value
+            pf (str): Prefix
+            rSz (float): Rig size
+            limbScale (bool): Local stretch flag
+            RIG_DATA: Rig data object
+        """
         self.sj = DagNode(sj1)
         self.ee = DagNode(ee1)
         self.solver = solver
@@ -81,6 +152,21 @@ class IkNode(DagNode):
         self.rSz = rSz
         self.softJ = None
         self.pvChainJ = None
+        self.localStretch = limbScale
+        self.RIG_DATA = RIG_DATA
+
+    def _create_ik_handle(self, name, quat, createCrv, inputCrv, numSpans, p):
+        """
+        Create the IK handle and setup related joints.
+        
+        Args:
+            name (str): IK handle name
+            quat (bool): Quaternion flag
+            createCrv (bool): Create curve flag
+            inputCrv: Input curve
+            numSpans (int): Number of spans
+            p: Parent object
+        """
         self.createIK(
             name,
             quat=quat,
@@ -91,10 +177,16 @@ class IkNode(DagNode):
         )
         ikJnt = mc.ikHandle(self.node, q=1, jl=1) + [self.ee]
         self.jnt = [DagNode(j) for j in ikJnt]
+
+    def _finalize_setup(self, vis):
+        """
+        Finalize the IK node setup with computed attributes and visibility.
+        
+        Args:
+            vis (int): Visibility flag (0 to hide, 1 to show)
+        """
         self.chainLen = self.calcChainLen()
-        self.localStretch = limbScale
         self.xDir = 1 if self.ee.a.tx.get() > 0 else -1
-        self.RIG_DATA = RIG_DATA
         if vis == 0:
             mc.hide(self)
         self
