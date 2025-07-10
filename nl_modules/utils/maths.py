@@ -1,10 +1,12 @@
-import maya.cmds as mc
 import math
-from nl_modules.nodel.base.dag_node import DagNode
+import maya.cmds as mc
 
 
 def getDistBetwObj(obj1, obj2):
     """Get distance between two objects"""
+
+    from nl_modules.nodel.base.dag_node import DagNode
+
     obj1 = DagNode(obj1)
     obj2 = DagNode(obj2)
 
@@ -30,4 +32,5 @@ def getDistBetwPt(pt1, pt2):
 
 def mul(*inVal):
     """Scalar multi of vector with last value"""
+
     return [n * inVal[-1] for n in inVal[:-1]]

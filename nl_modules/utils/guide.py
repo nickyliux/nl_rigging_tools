@@ -49,6 +49,7 @@ def loadGuide(names):
 
 def copyGuideSel(*arg):
     """Copy guide settings from 1st to 2nd selList"""
+
     from nl_modules.utils import build
 
     selList = mc.ls(sl=1)
@@ -75,6 +76,7 @@ def copyGuideSel(*arg):
 
 def mirrorGuideSelOrAll(*arg):
     """Mirror guides for selList / all *lf*_guide"""
+
     selList = mc.ls(sl=1, ap=1) or mc.ls("*lf*_guide", ap=1)
     if selList:
         mirrorGuideAttr(selList)
@@ -86,6 +88,7 @@ def getOppositeCtl(tgtN, pfL="lf", pfR="rt", strB4Pf=1):
         lf_leg0_ikc =>              rt_leg0_ikc
         head0_lf_eye, pfB4Pf=1 =>   head0_rt_eye
     """
+
     patternL = (
         re.compile(rf"^(\w*){pfL}(\w+)$") if strB4Pf else re.compile(rf"^{pfL}(\w+)$")
     )
@@ -115,6 +118,7 @@ def getOppositeCtl(tgtN, pfL="lf", pfR="rt", strB4Pf=1):
 
 def copyGuideAttr(A, B, wsMirror=0, mirror=0, skipMasterXf=0):
     """Copy/mirror transform & user defined attribute values"""
+
     A = DagNode(A) if isinstance(A, str) else A
     B = DagNode(B) if isinstance(B, str) else B
     if skipMasterXf and A.name.endswith("_master_guide"):
@@ -145,6 +149,7 @@ def copyGuideAttr(A, B, wsMirror=0, mirror=0, skipMasterXf=0):
 
 def mirrorGuideAttr(tgtList, wsMirror=0):
     """Mirror xform for tgtList objects"""
+
     for tgt in tgtList:
         tgt = DagNode(tgt)
         oppN = getOppositeCtl(tgt)
@@ -156,6 +161,7 @@ def mirrorGuideAttr(tgtList, wsMirror=0):
 
 def mirrorPose(*arg):
     """Mirror pose for selList ctl / all in set lf*_ctl_set"""
+
     selList = mc.ls(sl=1, ap=1)
     if not selList:
         if mc.ls(LF_CTL_SET, type="objectSet"):
@@ -166,6 +172,7 @@ def mirrorPose(*arg):
 
 def loadTemplate(removeUnused=1):
     """Load preset from json file"""
+
     from nl_modules.utils import build
 
     tgtFile = mc.fileDialog2(fileFilter="*.json", dialogStyle=2, fileMode=1)
@@ -216,6 +223,7 @@ def loadTemplate(removeUnused=1):
 
 def genAttrDict(obj):
     """Gen dict containing transform attr and user defined attr"""
+
     obj = DagNode(obj)
     attrDict = {
         "t": obj.a.t.get(),
@@ -260,6 +268,7 @@ def saveTemplate():
 
 def explore(*args):
     """Open the directory containing component files in the file explorer."""
+
     import subprocess
 
     path = os.path.realpath(COMPONENT_PATH)

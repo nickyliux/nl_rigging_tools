@@ -3,6 +3,7 @@ import maya.cmds as mc
 
 
 class Color(Enum):
+    """Color enum for Maya objects."""
 
     #   YELLOW    22
     #   D_YELLOW  25
@@ -46,6 +47,7 @@ class Color(Enum):
     @staticmethod
     def _getExpanded(objs):
         """get expanded shapes and nodes"""
+
         filtered = None
         if objs:
             objList = objs if isinstance(objs, list) else [objs]
@@ -59,22 +61,16 @@ class Color(Enum):
 
     @classmethod
     def getColor(cls, objs):
-        """get color of first expanded from the obj
-        e.g.
-            getColor('obj1')            # 22
-            getColor(['obj1', 'obj2'])  # 8
-        """
+        """get color of first expanded from the obj"""
+
         for node in cls._getExpanded(objs):
             if mc.getAttr(f"{node}.overrideEnabled"):
                 return mc.getAttr(f"{node}.overrideColor")
 
     @classmethod
     def setColor(cls, objs, val):
-        """set color for all shapes of obj
-        e.g.
-            setColor('obj1', 13)
-            setColor(['obj1', 'obj2'], Color.RED)
-        """
+        """set color of first expanded from the obj"""
+
         colorToSet = val or 0
         state = colorToSet != 0
 

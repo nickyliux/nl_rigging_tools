@@ -1,14 +1,10 @@
 import maya.cmds as mc
+from nl_modules.nodel.base.dep_node import DepNode
+from nl_modules.nodel.base.dag_node import DagNode
 
 
 def blendC_(attr1, attr2, w=0.5):
-    """Blend inputs with blendColors node
-    e.g.
-        blendC_(1, 5)       # (3,0,0)
-        blendC_(1, 5, w=0)  # (1,0,0)
-        blendC_(1, 5, w=1)  # (5,0,0)
-    """
-    from nl_modules.nodel.base.dep_node import DepNode
+    """Blend inputs with blendColors node"""
 
     n = DepNode("blC__#", "blendColors")
     attr1 >> n.a.color2
@@ -18,13 +14,7 @@ def blendC_(attr1, attr2, w=0.5):
 
 
 def blendN_(attr1, attr2, w=0.5):
-    """Blend inputs with animBlendNodeAdditiveRotation node
-    e.g.
-        blendN_(1, 5)       # (3,0,0)
-        blendN_(1, 5, w=0)  # (1,0,0)
-        blendN_(1, 5, w=1)  # (5,0,0)
-    """
-    from nl_modules.nodel.base.dep_node import DepNode
+    """Blend inputs with animBlendNodeAdditiveRotation node"""
 
     n = DepNode("blN__#", "animBlendNodeAdditiveRotation")
     attr1 >> n.a.inputB
@@ -35,13 +25,7 @@ def blendN_(attr1, attr2, w=0.5):
 
 
 def blend2_(attr1, attr2, w=0.5):
-    """Return blend attr of two input and weight
-    e.g.
-        blend2_(1, 5)       # 3
-        blend2_(1, 5, w=0)  # 1
-        blend2_(1, 5, w=1)  # 5
-    """
-    from nl_modules.nodel.base.dep_node import DepNode
+    """Blend inputs with blendTwoAttr node"""
 
     n = DepNode("bl2__#", "blendTwoAttr")
     attr1 >> n.a.input
@@ -51,28 +35,19 @@ def blend2_(attr1, attr2, w=0.5):
 
 
 def min_(attr1, attr2):
-    """Return min attr of the two inputs
-    e.g.
-        min(1,5)  # 1
-    """
+    """Return min attr of the two inputs"""
+
     return (attr1 < attr2).setCdn(ifTrue=attr1, ifFalse=attr2, n="min__#")
 
 
 def max_(attr1, attr2):
-    """Return max attr of the two inputs
-    e.g.
-        max(1,5)  # 5
-    """
+    """Return max attr of the two inputs"""
+
     return (attr1 > attr2).setCdn(ifTrue=attr1, ifFalse=attr2, n="max__#")
 
 
 def clp_(attr, min=0, max=0):
-    """Return clamp attr between min max
-    e.g.
-        clamp(3, 10, 20)  # 10
-        clamp(3, -10, 5)  # 3
-    """
-    from nl_modules.nodel.base.dep_node import DepNode
+    """Return clamp attr between min max"""
 
     n = DepNode("clp__#", "clamp")
     min >> n.a.minR
@@ -82,7 +57,7 @@ def clp_(attr, min=0, max=0):
 
 
 def remap_(attr, minIn, maxIn, minOut, maxOut):
-    from nl_modules.nodel.base.dep_node import DepNode
+    """Return remap attr between minIn maxIn to minOut maxOut"""
 
     n = DepNode("rmp__#", "remapValue")
     minIn >> n.a.inputMin
@@ -94,7 +69,7 @@ def remap_(attr, minIn, maxIn, minOut, maxOut):
 
 
 def setRange_(attr, minOld, maxOld, minNew, maxNew):
-    from nl_modules.nodel.base.dep_node import DepNode
+    """Return setRange attr between minOld maxOld to minNew maxNew"""
 
     n = DepNode("seR__#", "setRange")
     minOld >> n.a.oldMinX
@@ -106,13 +81,10 @@ def setRange_(attr, minOld, maxOld, minNew, maxNew):
 
 
 def distDim_(obj1, obj2):
-    """Return distance attr for two objects with distanceDimension
-    e.g.
-        d = distDim_(obj1, obj2)
-    """
+    """Return distanceDimension node between two objects"""
+
     from nl_modules.nodel.grp_node import GrpNode
     from nl_modules.nodel.loc_node import LocNode
-    from nl_modules.nodel.base.dag_node import DagNode
 
     grpN = GrpNode("distDim_grp#", p="distDim_GRP", pf=obj2.name)
     locA = LocNode("distLocA__#", p=grpN)
@@ -127,9 +99,8 @@ def distDim_(obj1, obj2):
 
 def arcLenDim_(srfOrCrv):
     """Return arcLengthDimension node for srf/crv"""
-    from nl_modules.nodel.base.dag_node import DagNode
+
     from nl_modules.nodel.srf_node import SrfNode
-    from nl_modules.nodel.crv_node import CrvNode
 
     arcLD = DagNode(srfOrCrv + "_arcLD__#", nodeType="arcLengthDimension")
     arcLD.parent | srfOrCrv
@@ -158,11 +129,7 @@ def motionPath_(
     upAxis=1,
     driven=None,
 ):
-    """Create motion path for curve
-    e.g.
-        motionPath_(crv1, driven=obj1)
-    """
-    from nl_modules.nodel.base.dep_node import DepNode
+    """Create motionPath node for curve with uValue and options"""
 
     n = DepNode("mpt__#", "motionPath")
     if crv:
@@ -189,20 +156,14 @@ def motionPath_(
 
 
 def nonlinear_(targets, nodeType="twist"):
-    """Create non-linear deformer for targets
-    e.g.
-        nonlinear_([obj1,obj2], nodeType='twist'  # [dfm_node, dfm_handle]
-    """
-    from nl_modules.nodel.base.dep_node import DepNode
-    from nl_modules.nodel.base.dag_node import DagNode
+    """Create twist nonlinear node for multiple targets"""
 
     dfm = mc.nonLinear(targets, n="dfm__#", type=nodeType)
     return [DepNode(dfm[0]), DagNode(dfm[1])]
 
 
 def choice_(attrTargets, selector):
-
-    from nl_modules.nodel.base.dep_node import DepNode
+    """Create choice node for multiple attributes and selector"""
 
     n = DepNode("cho__#", "choice")
     for t in attrTargets:
@@ -213,9 +174,7 @@ def choice_(attrTargets, selector):
 
 
 def follicle_(inSurf, u=0, v=0):
-    """Create follicle on surface and return follicle xform"""
-    from nl_modules.nodel.base.dep_node import DepNode
-    from nl_modules.nodel.base.dag_node import DagNode
+    """Create follicle node for input surface with u, v parameters"""
 
     n = DepNode(n="flc__#", nodeType="follicle")
     folXf = DagNode(mc.listRelatives(n.fullPath, path=1, p=1)[0])

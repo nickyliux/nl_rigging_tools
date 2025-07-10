@@ -1,7 +1,5 @@
 import maya.cmds as mc
 
-MODEL_PATH = "D:/_PROJECT/GIT/nl_rigging_tools_examples"
-
 
 def retopo(faceNum=200):
     """Apply retopo to selList objects"""
@@ -11,8 +9,10 @@ def retopo(faceNum=200):
         mc.polyRetopo(targetFaceCount=faceNum)
 
 
-def get_model_file(self):
+def get_model_file():
     """Open file dialog to select a model file."""
+
+    MODEL_PATH = "D:/_PROJECT/GIT/nl_rigging_tools_examples"
 
     tgtFile = mc.fileDialog2(
         fileFilter="*.ma", dialogStyle=2, fileMode=1, dir=MODEL_PATH
@@ -23,10 +23,10 @@ def get_model_file(self):
 def import_model(self):
     """Import model file into the scene."""
 
-    from nl_modules import file
-    from nl_modules import common
+    from nl_modules.utils import file
+    from nl_modules.utils import common
 
-    tgtFile = self.get_model_file()
+    tgtFile = get_model_file()
     if tgtFile:
         file.importFile(tgtFile)
         common.setViewport(fit=1)

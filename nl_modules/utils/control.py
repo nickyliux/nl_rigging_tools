@@ -5,7 +5,7 @@ from nl_modules.utils import common
 
 def mirrorCtlShape(ctl):
     """Mirror the control shape to its opposite counterpart."""
-    from nl_modules.utils import guide
+
     from nl_modules.nodel.grp_node import GrpNode
     from nl_modules.nodel.base.dag_node import DagNode
     import maya.cmds as mc
@@ -53,6 +53,7 @@ def mirrorCtlShape(ctl):
 
 def saveCtl():
     """Save control curves to a file."""
+
     allCtls = common.getRigCtlsAll()
     allCtls.extend(["master_ctl", "master1_ctl", "master2_ctl"])
     if allCtls:
@@ -70,6 +71,7 @@ def saveCtl():
 
 def loadCtl():
     """Load control curves from a file and replace existing controls."""
+
     from nl_modules.nodel.base.dag_node import DagNode
 
     tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, fileMode=1)
@@ -107,6 +109,7 @@ def loadCtl():
 
 def setOnTopSel():
     """Toggle the always draw on top state for selected shapes."""
+
     from nl_modules.nodel.base.dag_node import DagNode
 
     selList = mc.ls(sl=1, tr=1)
@@ -118,6 +121,7 @@ def setOnTopSel():
 
 def dropSel():
     """Drop the selected control curves."""
+
     from nl_modules.nodel.crv_node import CrvNode
 
     for selList in mc.ls(sl=1, tr=1):
@@ -126,6 +130,7 @@ def dropSel():
 
 def rotaCVForSel(*args):
     """Rotate the CVs of selected curves."""
+
     from nl_modules.nodel.base.dag_node import DagNode
     from nl_modules.nodel.crv_node import CrvNode
 
@@ -136,6 +141,7 @@ def rotaCVForSel(*args):
 
 def scaleCVForSel(value):
     """Scale the CVs of selected curves."""
+
     from nl_modules.nodel.base.dag_node import DagNode
     from nl_modules.nodel.crv_node import CrvNode
 

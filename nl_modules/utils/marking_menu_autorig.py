@@ -1,5 +1,4 @@
 import maya.cmds as mc
-import maya.mel as mel
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.utils import guide
 from nl_modules.utils import build

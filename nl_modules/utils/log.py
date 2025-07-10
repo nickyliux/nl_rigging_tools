@@ -1,9 +1,9 @@
-import inspect
 import logging
 
 
 def update_root_logger():
     """Updated root logger to print more info"""
+
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
     logger.handlers.clear()
@@ -45,6 +45,7 @@ def update_root_logger():
 
 
 def print_all(tgt):
+    """Print all attributes of a class or module in a structured way."""
 
     def print_it(items):
         if items:

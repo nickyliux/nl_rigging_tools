@@ -1,20 +1,15 @@
+import maya.cmds as mc
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.base.dep_node import DepNode
-import maya.cmds as mc
 
 
 def createPoseReader(targetJ: JntNode):
-    """
-    Args:
-        targetJ:
+    """Create a pose reader setup for the given target joint."""
 
-    Returns:
-
-    """
     childJ = targetJ.children
     parentJ = targetJ.parent
 

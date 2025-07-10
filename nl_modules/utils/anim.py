@@ -87,7 +87,6 @@ def switchToFkIk(attr=None, toIKMode=0, rigNode=None):
             if upr_fkc and lwr_fkc and palm_fkc and upr and lwr and ikc:
 
                 loc = LocNode("_#", align=ball_fkc)
-
                 upr_fkc.alignTo(upr)
                 lwr_fkc.alignTo(lwr)
                 if palm_bf.exists():

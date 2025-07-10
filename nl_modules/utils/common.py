@@ -18,6 +18,7 @@ CST_DICT = OrderedDict(
 
 def getUniqueCstDictNames():
     """Return unique constraint names from CST_DICT"""
+
     cstTypeList = [cst.__name__ for cst in CST_DICT.values()]
     return list(OrderedDict.fromkeys(cstTypeList))
 
@@ -58,6 +59,7 @@ def assignShd(n, geo=None, color=(0, 0, 0), faceID=None):
 
 def assignPresetShd(tgts=None):
     """Assign preset shader to target objects"""
+
     from nl_modules.nodel.base.dag_node import DagNode
 
     if not tgts:
@@ -86,6 +88,7 @@ def assignPresetShd(tgts=None):
 
 def addShader(n, shaderType="lambert", color=(1, 1, 1)):
     """Create shader and return shader, shading group"""
+
     from nl_modules.nodel.base.dep_node import DepNode
 
     sg = None
@@ -224,6 +227,7 @@ def nlRivet(
 
 def ribbonAttach_reset(tgt):
     """Reset ribbon attach target"""
+
     pa = tgt.parent
     if pa:
         tgt.parentToWorld()
@@ -337,12 +341,14 @@ def extractSk(tgtJList, sf="", p=None, color=None, r=1):
 
 def showAllRO():
     """Show all rotation order in the scene"""
+
     for o in mc.ls(tr=1):
         mc.setAttr(o + ".ro", cb=1)
 
 
 def shelfSep():
     """Add separator to shelf"""
+
     import maya.mel as mel
 
     mc.separator(
@@ -356,6 +362,7 @@ def shelfSep():
 
 def printIkStat():
     """Print IK handle type and pole vector"""
+
     for ik in mc.ls(type="ikHandle"):
         nt = mc.ikHandle(ik, q=1, solver=1)
         pv = mc.getAttr(ik + ".poleVector")
@@ -364,6 +371,7 @@ def printIkStat():
 
 def addNonRollJ(tgtJ):
     """Add non-roll joint to target joint, for roll control"""
+
     from nl_modules.utils.color import Color
     from nl_modules.nodel.ik_node import IkNode, Solver
     from nl_modules.nodel.loc_node import LocNode
@@ -389,6 +397,7 @@ def addNonRollJ(tgtJ):
 
 def addAnnotation(frObj=None, toObj=None, p=None):
     """Build connecting line with annotate"""
+
     from nl_modules.nodel.base.dag_node import DagNode
     from nl_modules.nodel.loc_node import LocNode
 
@@ -407,6 +416,7 @@ def addAnnotation(frObj=None, toObj=None, p=None):
 
 def addAnnotation2(frObj=None, toObj=None):
     """Build connecting line with annotationShape"""
+
     from nl_modules.nodel.base.dag_node import DagNode
 
     ann = DagNode("ann_#", nodeType="annotationShape")
@@ -420,6 +430,7 @@ def addAnnotation2(frObj=None, toObj=None):
 
 def showHiddenInRig():
     """Show strongly hidden nodes in character rigs"""
+
     for s in mc.ls(sl=1):
         mc.lockNode(s, lock=False)
         mc.setAttr(s + ".ihi", 1)
@@ -428,6 +439,7 @@ def showHiddenInRig():
 
 def addMovablePivot(tgt):
     """Add tgt a movable pivot object"""
+
     tgt.addOffsetGrp()
     ofs_below = tgt.addOffsetGrp(below=1)
     tgt.a.t * (-1, -1, -1) >> ofs_below.a.t
@@ -435,6 +447,7 @@ def addMovablePivot(tgt):
 
 def addVisOption(ctl, attrName):
     """Add vis attribute to ctl, return drivers [v0, v1]"""
+
     attrName = str(attrName)
     ctl.a.add(attrName, attrType="long", k=0, dv=2, min=0, max=2)
     v0 = (ctl.a[attrName] > 1).setCdn(ifTrue=1, ifFalse=0)
@@ -477,6 +490,7 @@ def sdk2(attr1, attr2, v1, v2, tangent=0):
 
 def addTwistReader(target, pf="", p=None):
     """Add twist reader"""
+
     from nl_modules.nodel.loc_node import LocNode
 
     if pf and pf[-1] != "_":
@@ -503,6 +517,7 @@ def addTwistReader(target, pf="", p=None):
 
 def getMeshBelow(grp):
     """Get all meshes below the group, return list of MshNode"""
+
     from nl_modules.nodel.msh_node import MshNode
 
     if not mc.objExists(grp):
@@ -521,6 +536,7 @@ def getMeshBelow(grp):
 
 def setViewport(jx=0, xray=0, wos=0, fit=0):
     """Set viewport options"""
+
     mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
     # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
     for p in mc.getPanel(type="modelPanel"):
@@ -532,11 +548,13 @@ def setViewport(jx=0, xray=0, wos=0, fit=0):
 
 def getRigCtlsAll():
     """Get all rig controls in the scene"""
+
     return getRigCtls(mc.ls("*RGN", type="script"))
 
 
 def getRigCtls(rigNodes):
     """Get all rig controls from rig nodes"""
+
     from nl_modules.nodel.base.dag_node import DagNode
 
     setList = []
@@ -555,6 +573,7 @@ def getRigCtls(rigNodes):
 
 def add_mirror_attr(tgts=None):
     """Add mirror attribute to targets"""
+
     from nl_modules.nodel.base.dag_node import DagNode
 
     if not tgts:

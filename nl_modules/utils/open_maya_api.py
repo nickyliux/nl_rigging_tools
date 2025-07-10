@@ -3,6 +3,7 @@ from maya import OpenMaya as om
 
 def toMObject(node):
     """get MObj"""
+
     if node:
         obj = om.MObject()
         sl = om.MSelectionList()
@@ -15,6 +16,7 @@ def toMObject(node):
 
 def toDpNode(node):
     """get MDependency node"""
+
     if node:
         obj = toMObject(node)
         return om.MFnDependencyNode(obj)
@@ -23,6 +25,7 @@ def toDpNode(node):
 
 def toMDagPath(node):
     """get MDag node"""
+
     if node:
         obj = toMObject(node)
         if obj.hasFn(om.MFn.kDagNode):
@@ -32,6 +35,7 @@ def toMDagPath(node):
 
 def getKnotsList(crvShape):
     """get knots from shape"""
+
     mObj = om.MObject()
     selList = om.MSelectionList()
     selList.add(crvShape)

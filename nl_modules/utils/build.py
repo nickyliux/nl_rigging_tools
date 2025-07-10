@@ -1,5 +1,4 @@
 import logging
-import os.path
 import maya.cmds as mc
 from nl_modules.utils import common
 from nl_modules.nodel.base.dag_node import DagNode
@@ -31,10 +30,10 @@ class Undo(ContextDecorator):
         self.name = name
 
     def __enter__(self):
-        mc.undoInfo(openChunk=True, infinity=True, chunkName=self.name)
+        mc.undoInfo(openChunk=1, infinity=1, chunkName=self.name)
 
     def __exit__(self, exc_type, exc_value, traceback):
-        mc.undoInfo(closeChunk=True)
+        mc.undoInfo(closeChunk=1)
 
 
 def getAnchors(rigNodes, startStr=""):
@@ -132,8 +131,6 @@ def postRig():
     RIG = DagNode("RIG")
     if RIG.exists():
         mc.hide(RIG)
-
-    print()
 
 
 def unbuildTgt(rigN):
@@ -266,8 +263,7 @@ def reset_all_pv_ctl():
     """Reset all poleVector ctl's attr to default"""
 
     logging.info("Reset all pv ctl's attr")
-
-    for rigNode in [DagNode(r) for r in mc.ls("*RGN", type="script")]:
+    for rigNode in getRigNodesAll():
 
         rID = rigNode.a.rigID.get()
         pvc = rigNode.a.pvc.inConnNode
@@ -278,12 +274,9 @@ def reset_all_pv_ctl():
 
 
 def update_space_switch():
-    """
-    Update space switch for all rigNodes
-    Collect spaceHolder* attr from all rigNodes, then update space switch for each ctl
-    """
-    logging.info("Update all space switches")
+    """Update space switch for all rigNodes"""
 
+    logging.info("Update all space switches")
     spaceData = collectSpaceData()
 
     for ctl, spaceList, rigNode in spaceData:
@@ -371,9 +364,9 @@ def collectSpaceObj(rigNode):
         }
     """
     spaceDict = {}
-    for r in mc.ls("*RGN", type="script"):
-        if r != rigNode:
-            spaceDict.update(getSpaceObj(DagNode(r)))
+    for node in getRigNodesAll():
+        if node != rigNode:
+            spaceDict.update(getSpaceObj(node))
     #
     #   get all driving rigNodes
     #
@@ -406,7 +399,7 @@ def collectSpaceData():
         }
     """
     ctlList = []
-    for node in [DagNode(r) for r in mc.ls("*RGN", type="script")]:
+    for node in getRigNodesAll():
         for udAttr in node.a.list(ud=1):
             if udAttr.name.startswith("spaceHolder"):
                 obj = udAttr.inConnNode

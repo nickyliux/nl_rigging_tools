@@ -3,6 +3,7 @@ def genReprStr(cls, name):
     e.g.
         "depNode('sphere_GEO')"
     """
+
     return f"{cls}('{objectName(name)}')"
 
 
@@ -11,6 +12,7 @@ def objectName(name):
     e.g.
         '|a|b|ns:c'  # 'ns:c'
     """
+
     if name:
         return name.split("|")[-1]
     return name
@@ -21,6 +23,7 @@ def nameSpace(name):
     e.g.
         '|a|b|ns:c'  # 'ns'
     """
+
     if name:
         if name.find(":") == -1:
             return None
@@ -33,6 +36,7 @@ def baseName(name):
     e.g.
         '|a|b|ns:c'  # 'c'
     """
+
     if name:
         return name.split("|")[-1].split(":")[-1]
     return name

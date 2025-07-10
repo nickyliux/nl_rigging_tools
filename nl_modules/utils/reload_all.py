@@ -1,11 +1,6 @@
 import logging
 from importlib import reload
 
-# for m in set(sys.modules.values()):
-#     if m.__name__.startswith('nl_modules'):
-#         reload(m)
-
-# ----------------------------------------------------
 from nl_modules.nodel import (
     crv_node,
     grp_node,
@@ -26,7 +21,6 @@ reload(msh_node)
 reload(rbn_node)
 reload(srf_node)
 
-# ----------------------------------------------------
 from nl_modules.nodel.base import (
     attribute,
     attribute_holder,
@@ -43,7 +37,6 @@ reload(dimension)
 reload(dep_node)
 reload(dag_node)
 
-# ----------------------------------------------------
 from nl_modules.utils import (
     anim,
     build,
@@ -82,7 +75,6 @@ reload(utils_node)
 reload(marking_menu_autorig)
 reload(marking_menu_rigging)
 
-# ----------------------------------------------------
 from nl_modules.tests import (
     test_attributes,
     test_color,
@@ -119,7 +111,6 @@ reload(test_open_maya_api)
 reload(test_path)
 reload(test_utils_node)
 
-# ----------------------------------------------------
 from nl_modules.build import (
     arm_bp,
     leg_bp,
