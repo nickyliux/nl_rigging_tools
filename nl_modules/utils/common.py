@@ -530,7 +530,7 @@ def setViewport(jx=0, xray=0, wos=0, fit=0):
     mc.refresh(f=1)
 
 
-def getAllRigCtls():
+def getRigCtlsAll():
     """Get all rig controls in the scene"""
     return getRigCtls(mc.ls("*RGN", type="script"))
 

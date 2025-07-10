@@ -194,7 +194,7 @@ def update_anchor_conn():
 
     logging.info("Update all anchor connections")
 
-    rigNodes = mc.ls("*RGN", type="script")
+    rigNodes = getRigNodesAll()
     if not rigNodes or len(rigNodes) < 2:
         return
 
@@ -256,7 +256,7 @@ def reset_all_ctl():
 
     logging.info("Reset all ctl's attr")
 
-    for ctl in common.getAllRigCtls():
+    for ctl in common.getRigCtlsAll():
         for attr in ctl.a.list(k=1, u=1, se=1, s=1):
             if attr.settable():
                 attr.reset()
@@ -433,10 +433,15 @@ def getRigNodesSelOrAll():
             if n:
                 rigNodes.append(n)
     else:
-        rigNodes = mc.ls("*RGN", type="script")
-        if rigNodes:
-            rigNodes = [DagNode(n) for n in rigNodes]
+        rigNodes = getRigNodesAll()
+
     return rigNodes
+
+
+def getRigNodesAll():
+    """Return all rigNodes in the scene"""
+
+    return [DagNode(r) for r in mc.ls("*RGN", type="script")]
 
 
 def getRigNode(obj):
@@ -465,7 +470,7 @@ def autoAttachJntToSurf():
     if not globalScale.exists():
         raise ValueError("globalScale attr NOT found")
 
-    for node in [DagNode(r) for r in mc.ls("*RGN", type="script")]:
+    for node in getRigNodesAll():
         if node.a.nodeState.get() == 2:
             #
             #   Process only if rbJntSet found

@@ -53,7 +53,7 @@ def mirrorCtlShape(ctl):
 
 def saveCtl():
     """Save control curves to a file."""
-    allCtls = common.getAllRigCtls()
+    allCtls = common.getRigCtlsAll()
     allCtls.extend(["master_ctl", "master1_ctl", "master2_ctl"])
     if allCtls:
         mc.select(allCtls)
@@ -87,7 +87,7 @@ def loadCtl():
         else:
             return
 
-        allTgts = common.getAllRigCtls()
+        allTgts = common.getRigCtlsAll()
         allTgts.extend(
             [DagNode("master2_ctl"), DagNode("master1_ctl"), DagNode("master_ctl")]
         )

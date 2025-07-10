@@ -2,7 +2,7 @@
 File: nl_rigging_tools.py
 Author: Nicky Liu
 Date: 2024-07-09
-Version: 0.1.0
+Version: 0.1.0a
 Contact: nickyliux@gmail.com / www.nickyliu.com
 Description: Main file to load Qt UI file and connected functions
 Dependency:
@@ -10,8 +10,8 @@ Dependency:
     nl_modules (internal)
 """
 
-import os
 import logging
+import os
 import maya.cmds as mc
 import maya.mel as mel
 from functools import partial
@@ -48,7 +48,6 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.msh_node import MshNode
 
 # Must keep for valid call eval(cls)
-
 from nl_modules.build.leg_bp import LegBp
 from nl_modules.build.hand import Hand
 from nl_modules.build.arm_bp import ArmBp
@@ -101,7 +100,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         logging.info("load " + UI_PATH)
         self.UI = QUiLoader().load(UI_PATH)
 
-        self.setWindowTitle("nlRT 0.1.0")
+        self.setWindowTitle("nlRT 0.1.0a")
         self.setCentralWidget(self.UI)
         self.setGeometry(0, 0, 233, 700)
         self.connect_UI()
@@ -290,14 +289,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def rigNode_LW_dblClicked(self, item):
         """Show attribute editor for rigNode"""
-        textObj = mc.ls(item.text())
-        if textObj:
-            mc.select(textObj)
+        itemSel = mc.ls(item.text())
+        if itemSel:
+            mc.select(itemSel)
             mc.AttributeEditor()
 
     def rigNode_refresh(self):
         """Refresh rigNode list"""
-        rigNodes = mc.ls("*RGN", type="script")
+        rigNodes = build.getRigNodesAll()
         self.UI.rigNode_LW.clear()
         self.UI.rigNode_LW.addItems(rigNodes)
 
