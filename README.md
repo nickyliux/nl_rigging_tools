@@ -17,44 +17,35 @@ Once in a while I used the Ziva muscle plugin intensively in a project. There wa
 - **Marking Menus**: Speed up rigging with custom marking menus.
 - **Concise Python code**: For easy extension.
 
-## Framework Python Classes
+## Framework Classes
 ```mermaid
-classDiagram
-    
-    DepNode <|-- DagNode
-    DagNode <|-- GrpNode
-    GrpNode <|-- CrvNode
-    GrpNode <|-- JntNode
-    GrpNode <|-- LocNode
-    GrpNode <|-- MshNode
-    GrpNode <|-- SrfNode
-    
-    DepNode *-- Dimension
-    AttributeHolder *-- Attribute
-    DepNode *-- AttributeHolder
-    Attribute *-- Condition
-    class AttributeHolder
-    class Attribute
-    class Condition
-    class Dimension
-    
+flowchart
+    DepNode --> DagNode
+    DepNode --> Condition
+    DagNode --> GrpNode
+    GrpNode --> CrvNode
+    GrpNode --> JntNode
+    GrpNode --> LocNode
+    GrpNode --> MshNode
+    GrpNode --> SrfNode
+
+    Dimension
+    AttributeHolder --> Attribute
 ```
 
-## Component Python Classes
+## Component Classes
 ```mermaid
-classDiagram
-    RigBase <|-- RigModule
-    class RibbonNode
-    class IkNode
-    RigModule <|-- Head
-    RigModule <|-- SpineBp
-    SpineBp <|-- NeckBp
-    RigModule <|-- ArmBp
-    RigModule <|-- LegBp
-    RigModule <|-- SpineQd
-    SpineQd <|-- NeckQd
-    RigModule <|-- LegQd
-    RigModule <|-- Tail
+flowchart
+    RigBase --> RigModule
+    RigModule --> Head
+    RigModule --> SpineBp
+    SpineBp --> NeckBp
+    RigModule --> ArmBp
+    RigModule --> LegBp
+    RigModule --> SpineQd
+    SpineQd --> NeckQd
+    RigModule --> LegQd
+    RigModule --> Tail
 ```
 
 ## Marking menus
