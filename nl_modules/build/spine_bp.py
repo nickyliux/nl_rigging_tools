@@ -58,10 +58,10 @@ class SpineBp(RigModule):
 
         ctl_defs = [
             ("setting", "cross", "z", rSz * 2, 1, 2),
-            ("cog_ctl", "cog2", None, rSz * 8, 0, -1),
-            ("chest_ctl", "circle", None, rSz * 7, 0, -1),
-            ("mid_ctl", "square", None, rSz * 7, 0, -1),
-            ("hip_ctl", "circle", None, rSz * 7, 0, -1),
+            ("cog_ctl", "cog2", None, rSz * 6, 0, -1),
+            ("chest_ctl", "circle", None, rSz * 5, 0, -1),
+            ("mid_ctl", "square", None, rSz * 5, 0, -1),
+            ("hip_ctl", "circle", None, rSz * 5, 0, -1),
         ]
 
         for name, shape, up, scale, top, w in ctl_defs:
@@ -103,9 +103,11 @@ class SpineBp(RigModule):
             c = CrvNode(
                 f"{i + 1}_fkc",
                 pf=rID,
-                shape="cubeR",
-                scale=maths.mul(10, 1, 10, rSz),
-                color=22,
+                shape="cubeL",
+                # scale=maths.mul(0.2, 1, 0.2, rSz),
+                # color=22,
+                scale=rSz,
+                top=1,
             )
             self.fkCtls.append(c)
         self.build_fk_with_ctl2(self.fkJnts[1:], self.fkCtls[1:], p=self.CTL_DATA)

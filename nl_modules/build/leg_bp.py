@@ -120,11 +120,11 @@ class LegBp(RigModule):
 
         ctl_defs = [
             ("setting", "cross", "z", scale, 1, 2),
-            ("hip_fkc", "cubeR", "x", scale, 1, -1),
-            ("upr_fkc", "cubeR", "x", scale, 1, -1),
-            ("lwr_fkc", "cubeR", "x", scale, 1, -1),
-            ("palm_fkc", "cubeR", "x", scale, 1, -1),
-            ("ball_fkc", "cubeR", "x", scale, 0, -1),
+            ("hip_fkc", "cubeL", "x", scale, 1, -1),
+            ("upr_fkc", "cubeL", "x", scale, 1, -1),
+            ("lwr_fkc", "cubeL", "x", scale, 1, -1),
+            ("palm_fkc", "cubeL", "x", scale, 1, -1),
+            ("ball_fkc", "cubeL", "x", scale, 0, -1),
             ("ikc", "foot", None, rSz * 2, 0, -1),
             ("pvc", "diamond", None, scale * 2, 0, -1),
             ("smart_ctl", "squR", None, scale / 2, 0, -1),

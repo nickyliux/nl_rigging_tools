@@ -447,7 +447,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         #   to surface with 'closest point on surface' node
         #
         build.autoAttachJntToSurf()
-        common.setViewport()
+        # common.setViewport()
         mc.select(cl=1)
 
     def bindUsingProxy(self):

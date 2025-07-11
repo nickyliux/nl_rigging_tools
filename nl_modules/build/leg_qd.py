@@ -401,7 +401,7 @@ class LegQd(RigModule):
 
         for toeJs in self.toesJntList:
             dupTgt = DagNode(toeJs[2])
-            scale = xDr * rSz / 8
+            scale = xDr * rSz / 5
             ctl, ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
             ikJ.a.r >> dupTgt.a.r
             ctlList = []
@@ -409,7 +409,7 @@ class LegQd(RigModule):
             fkToeList = toeJs[3:-1]
             for jnt in fkToeList:
                 c = CrvNode(
-                    jnt + "_ctl",
+                    jnt + "_ctl_#",
                     shape="squR",
                     up="x",
                     align=jnt,
@@ -474,7 +474,7 @@ class LegQd(RigModule):
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
 
-        self.removeInBindJnts([self.lwr, self.boneFix])
+        self.removeInBindJnts([self.boneFix])
         self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
 
     def singleBallCtl_setup(self):

@@ -30,6 +30,10 @@ class ArmBp(RigModule):
         ]:
             setattr(self, attr, self.get_guide_attr(attr))
 
+        self.FK_GRP = GrpNode("FK", pf=self.rigID, p=self.CTL_DATA)
+        self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA)
+        self.BF_GRP = GrpNode("BF", pf=self.rigID, p=self.CTL_DATA)
+
         self.setting = None
         self.joints = []
         self.joints_fk = []
@@ -106,7 +110,7 @@ class ArmBp(RigModule):
         self.blend_fk_ik()
         # self.build_autoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
 
-        self.bindJnts = [self.upr, self.lwr, self.clavicle]
+        self.bindJnts = [self.clavicle, self.upr, self.lwr]
 
         if self.rbnBones:
             self.build_ribbon()
@@ -123,6 +127,11 @@ class ArmBp(RigModule):
         """Build the FK controls and joints for the arm rig."""
 
         logging.info(self.rigID)
+        self.joints_fk = common.extractSk(
+            self.joints, "_fk", p=self.FK_GRP, r=self.rigSize
+        )
+        self.fkCtl = [self.clavicle_fkc, self.upr_fkc, self.lwr_fkc, self.palm_fkc]
+
         self.build_fk_with_ctl2(self.joints_fk, self.fkCtl, p=self.FK_GRP)
         self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
@@ -228,7 +237,7 @@ class ArmBp(RigModule):
         )
 
         self.setting.snapTo(self.upr, p=self.CTL_DATA)
-        self.upr.cstPar(self.setting, mo=1)
+        self.upr.cstPoi(self.setting, mo=1)
         # self.clavicle_fkc.offset.cstPar(self.setting, mo=1)
 
         self.setting.a.addSep()
@@ -367,12 +376,12 @@ class ArmBp(RigModule):
         self.removeInBindJnts([self.lwr])
         self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
 
-    def buildRbn(self, tgt, isLower=1):
+    def buildRbn(self, tgt, extra, isLower=1):
         """Build ribbon bones for the arm rig."""
 
         return RbnNode(
             tgt,
-            pf=self.rigID + "#",
+            pf=f"{self.rigID}_{extra}_",
             rbJNum=self.rbnJntNum,
             volMode=isLower,
             scaleFix=self.masterC.a["globalScale"],
@@ -392,8 +401,8 @@ class ArmBp(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        ribbonUp = self.buildRbn(self.upr, isLower=0)
-        ribbonLw = self.buildRbn(self.lwr, isLower=1)
+        ribbonUp = self.buildRbn(self.upr, "up", isLower=0)
+        ribbonLw = self.buildRbn(self.lwr, "lw", isLower=1)
 
         # Upper Ribbon
         self.upr.cstPoi(ribbonUp.stt_loc)
