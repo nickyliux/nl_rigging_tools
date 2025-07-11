@@ -601,7 +601,7 @@ class DagNode(DepNode):
 
     def getClosestInList(self, objList):
         """Return the closest object in list"""
-        minD = 1e10
+        minD = float("inf")
         closest = None
         for obj in objList:
             d = self.o.distanceTo(obj)
