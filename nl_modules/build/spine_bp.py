@@ -100,16 +100,9 @@ class SpineBp(RigModule):
 
         self.fkCtls = []
         for i, j in enumerate(self.fkJnts[:-1]):
-            c = CrvNode(
-                f"{i + 1}_fkc",
-                pf=rID,
-                shape="cubeL",
-                # scale=maths.mul(0.2, 1, 0.2, rSz),
-                # color=22,
-                scale=rSz,
-                top=1,
-            )
+            c = CrvNode(f"{i + 1}_fkc", pf=rID, shape="cubeL", scale=rSz, top=1)
             self.fkCtls.append(c)
+
         self.build_fk_with_ctl2(self.fkJnts[1:], self.fkCtls[1:], p=self.CTL_DATA)
         #
         #   modify hipCtl specific for hip rotation

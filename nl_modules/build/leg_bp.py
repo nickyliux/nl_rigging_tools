@@ -124,7 +124,7 @@ class LegBp(RigModule):
             ("upr_fkc", "cubeL", "x", scale, 1, -1),
             ("lwr_fkc", "cubeL", "x", scale, 1, -1),
             ("palm_fkc", "cubeL", "x", scale, 1, -1),
-            ("ball_fkc", "cubeL", "x", scale, 0, -1),
+            ("ball_fkc", "cubeL", "x", scale, 1, -1),
             ("ikc", "foot", None, rSz * 2, 0, -1),
             ("pvc", "diamond", None, scale * 2, 0, -1),
             ("smart_ctl", "squR", None, scale / 2, 0, -1),
@@ -313,7 +313,7 @@ class LegBp(RigModule):
         )
 
         self.setting.snapTo(self.hip, p=self.CTL_DATA)
-        self.hip.cstPar(self.setting, mo=1)
+        self.hip.cstPoi(self.setting, mo=1)
 
         self.setting.a.addSep()
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
@@ -400,11 +400,13 @@ class LegBp(RigModule):
             rootJ.a.segmentScaleCompensate.set(0)
 
         self.toesCtlsList = []
-        scale = xDr * rSz / 4
+        scale = xDr * rSz / 2
 
         for toeJs in self.toesJntList:
+
             ikTgt = JntNode(toeJs[1])
             ctl, ikJ, ikH = self.build_digit_ik(ikTgt, scale=scale, p=self.ball_fkc)
+
             self.toeIKHs.append(ikH)
             ikJ.a.r >> ikTgt.a.r
             ctlList = []
@@ -461,19 +463,6 @@ class LegBp(RigModule):
         self.removeInBindJnts([self.lwr, self.boneFix])
         self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
 
-    def buildRbn(self, tgt, isLower=1):
-        """Build a ribbon node for the leg rig."""
-
-        return RbnNode(
-            tgt,
-            pf=self.rigID + "#",
-            rbJNum=self.rbnJntNum,
-            volMode=isLower,
-            scaleFix=self.masterC.a["globalScale"],
-            size=self.rigSize,
-            p=self.RIG_DATA,
-        )
-
     def build_ribbon(self):
         """Build the ribbon for the leg rig.
 
@@ -486,15 +475,15 @@ class LegBp(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        ribbonUp = self.buildRbn(self.upr, isLower=0)
-        ribbonLw = self.buildRbn(self.lwr, isLower=1)
+        ribbonUp = self.build_rbn(self.upr, name="up", n=self.rbnJntNum, isLower=0)
+        ribbonLw = self.build_rbn(self.lwr, name="lw", n=self.rbnJntNum, isLower=1)
 
         # Upper Ribbon
         self.upr.cstPoi(ribbonUp.stt_loc)
         self.hip.cstOri(ribbonUp.stt_loc, mo=1)
 
         # Lower Ribbon
-        self.palm.cstPar(self.ribbonLw.end_loc, mo=1)
+        self.palm.cstPar(ribbonLw.end_loc, mo=1)
 
         # Ribbon Controls
         # Bend Ctl Setup
@@ -534,7 +523,7 @@ class LegBp(RigModule):
         volType >> ribbonUp.volType
         volType >> ribbonLw.volType
 
-        self.bindJnts.remove([self.upr, self.lwr])
+        self.removeInBindJnts([self.upr, self.lwr])
         self.bindJnts.extend(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def setup_vis(self):
@@ -612,12 +601,9 @@ class LegBp(RigModule):
 
         self.setup_anchor_module({"anchorF1": self.scapularG.offset})
 
-    def post_setup(self):
-        """Post setup for the leg rig module."""
+    def scale_setup(self):
+        """Setup scaling for the leg rig controls."""
 
-        logging.info(self.rigID)
-
-        # Scaling
         self.masterC.a.globalScale >> self.RIG_DATA.a.s
         self.masterC.a.globalScale >> self.SKL_DATA.a.s
 
@@ -628,23 +614,37 @@ class LegBp(RigModule):
         palmScale >> self.palm.a.s
         palmScale >> self.ikc.a.s
 
-        self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_ratio(self.bindJnts, 3)
+    def ctlSet_setup(self):
+        """Setup control sets for the leg rig module."""
 
-        common.add_mirror_attr([self.ikc, self.ikc_gimbal, self.smart_ctl])
-        ctlSet = []
-        ctlSet.extend(
+        ctlSet = (
             self.fkCtl
             + self.ikCtl
             + self.subCtls
             + [self.setting, self.smart_ctl, self.pin_fkc]
         )
+
         if self.rbnBones:
             ctlSet.extend(self.all_bend)
+
         if self.toeBones:
             [ctlSet.extend(s) for s in self.toesCtlsList]
 
         self.add_ctl_set(ctlSet)
+
+    def post_setup(self):
+        """Post setup for the leg rig module."""
+
+        logging.info(self.rigID)
+
+        common.add_mirror_attr([self.ikc, self.ikc_gimbal, self.smart_ctl])
+
+        self.scale_setup()
+        self.ctlSet_setup()
+
+        self.add_bind_jnt_set(self.bindJnts)
+        self.add_proxy_ratio(self.bindJnts, 2)
+
         self.setup_space()
         self.setup_anchor()
         self.setup_vis()

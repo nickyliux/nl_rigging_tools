@@ -1,3 +1,4 @@
+from platform import node
 import maya.cmds as mc
 
 from nl_modules.nodel.base.dag_node import DagNode
@@ -37,6 +38,10 @@ class CrvNode(GrpNode):
         up="",
         top=0,
     ):
+        # thisName = pf + node + sf
+        # if DagNode(thisName).exists():
+        #     return
+
         GrpNode.__init__(
             self,
             node,
@@ -61,10 +66,6 @@ class CrvNode(GrpNode):
 
             self.color = color or self.get_side_color()
             self.dspType = dspType
-
-        thisName = pf + node + sf
-        if DagNode(thisName).exists():
-            return
 
         if up == "x":
             self.cv_rotate(0, 0, -90)

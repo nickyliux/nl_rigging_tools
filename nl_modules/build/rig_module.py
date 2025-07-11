@@ -6,6 +6,7 @@ from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
+from nl_modules.nodel.rbn_node import RbnNode
 from nl_modules.utils import common
 from nl_modules.utils import utils_node as ut
 
@@ -577,15 +578,15 @@ class RigModule(RigBase):
 
         ctl = CrvNode(
             ikTgt + "_ikc",
-            shape="stickS",
+            shape="stickC",
             align=ikTgt,
             up="-z",
             scale=scale,
             addOfs=1,
             top=1,
-            width=2,
             p=p.offset,
         )
+
         ctl.addOffsetGrp()
         p.a.ry >> ctl.offset.a.ry
 
@@ -1021,3 +1022,16 @@ class RigModule(RigBase):
         for jnt in jntList:
             if jnt in self.bindJnts:
                 self.bindJnts.remove(jnt)
+
+    def build_rbn(self, tgt, name="", n=5, isLower=1):
+        """Build a ribbon node for the target with specified parameters."""
+
+        return RbnNode(
+            tgt,
+            pf=f"{self.rigID}_{name}_",
+            rbJNum=n,
+            volMode=isLower,
+            scaleFix=self.masterC.a["globalScale"],
+            size=self.rigSize,
+            p=self.RIG_DATA,
+        )

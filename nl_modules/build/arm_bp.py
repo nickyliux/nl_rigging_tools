@@ -83,9 +83,9 @@ class ArmBp(RigModule):
         ctl_defs = [
             ("setting", "cross", "z", scale, 1, 2),
             ("clavicle_fkc", "stickC", None, scale, 0, -1),
-            ("upr_fkc", "cubeR", "x", scale * 2, 0, -1),
-            ("lwr_fkc", "cubeR", "x", scale * 2, 0, -1),
-            ("palm_fkc", "cubeR", "x", scale * 2, 0, -1),
+            ("upr_fkc", "cubeL", "x", scale * 2, 0, -1),
+            ("lwr_fkc", "cubeL", "x", scale * 2, 0, -1),
+            ("palm_fkc", "cubeL", "x", scale * 2, 0, -1),
             ("ikc", "trapezoid", None, scale * 1.5, 0, -1),
             ("palm_ikc", "squR", "x", scale * 1.2, 0, -1),
             ("pvc", "diamond", None, scale, 0, -1),
@@ -376,19 +376,6 @@ class ArmBp(RigModule):
         self.removeInBindJnts([self.lwr])
         self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
 
-    def buildRbn(self, tgt, extra, isLower=1):
-        """Build ribbon bones for the arm rig."""
-
-        return RbnNode(
-            tgt,
-            pf=f"{self.rigID}_{extra}_",
-            rbJNum=self.rbnJntNum,
-            volMode=isLower,
-            scaleFix=self.masterC.a["globalScale"],
-            size=self.rigSize,
-            p=self.RIG_DATA,
-        )
-
     def build_ribbon(self):
         """Build ribbon bones for the arm rig.
 
@@ -401,8 +388,8 @@ class ArmBp(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        ribbonUp = self.buildRbn(self.upr, "up", isLower=0)
-        ribbonLw = self.buildRbn(self.lwr, "lw", isLower=1)
+        ribbonUp = self.build_rbn(self.upr, name="up", n=self.rbnJntNum, isLower=0)
+        ribbonLw = self.build_rbn(self.lwr, name="lw", n=self.rbnJntNum, isLower=1)
 
         # Upper Ribbon
         self.upr.cstPoi(ribbonUp.stt_loc)
