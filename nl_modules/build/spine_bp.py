@@ -15,13 +15,15 @@ class SpineBp(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
-        self.fkJntNum = self.get_guide_attr("fkJntNum")
-        self.rbnBones = self.get_guide_attr("rbnBones")
-        self.rbnJntNum = self.get_guide_attr("rbnJntNum")
+        for attr in [
+            "fkJntNum",
+            "rbnBones",
+            "rbnJntNum",
+        ]:
+            setattr(self, attr, self.get_guide_attr(attr))
 
-        rID, rSz, xDr = self.getMyVar()
-        self.LINE_GUIDE = DagNode(rID + "_line_guide")
-        self.MD_GUIDE = DagNode(rID + "_md_guide")
+        self.LINE_GUIDE = DagNode(self.rigID + "_line_guide")
+        self.MD_GUIDE = DagNode(self.rigID + "_md_guide")
 
         self.cog_ctl = None
         self.cog_gmb = None
@@ -49,6 +51,7 @@ class SpineBp(RigModule):
 
     def build_ctl(self):
         """Build control nodes for the spine rig."""
+
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()

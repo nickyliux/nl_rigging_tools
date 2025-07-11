@@ -19,7 +19,7 @@ class RbnNode:
         tgt,
         pf="",
         rbJNum=5,
-        volMode=None,
+        volMode=1,  # lower
         scaleFix=None,
         forSpine=0,
         size=1,
@@ -360,7 +360,7 @@ class RbnNode:
         scaleFix = self.ribbonG.a.sy
 
         volGraph1 = self.ribbonG.a.add("volGraph1", dv=0)
-        volValue = 0 if self.volMode == "upr" else 1
+        volValue = self.volMode
         mc.setKeyframe(volGraph1, t=0, v=volValue)
         mc.setKeyframe(volGraph1, t=self.rbJNum - 1, v=1 - volValue)
         mc.setAttr(volGraph1, l=1)

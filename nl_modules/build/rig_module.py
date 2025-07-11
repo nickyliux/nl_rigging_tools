@@ -13,11 +13,7 @@ BIND_JNT_SET = "bind_jnt_set"
 
 
 class RigModule(RigBase):
-    """Create rig module containing basic functions for given rigNode.
-    e.g.
-        n = RigModule('lfArm0_RGN')
-        n.__dict__
-    """
+    """Base class for rig modules, providing common functionality for rigging operations."""
 
     def __init__(self, rigNode):
 
@@ -48,12 +44,9 @@ class RigModule(RigBase):
             self.rootJ = rigNode.a.rootJ.inConnNode
 
     def gen_sk_fr_names(self, names, color=None, scale=1):
-        """
-        Given n in names, create joint if "pf_n_guide" is found
-        return the joint chain
-        """
-        rID, rSz, xDr = self.getMyVar()
+        """Generate skeleton and control names based on the provided names list."""
 
+        rID, rSz, xDr = self.getMyVar()
         if isinstance(names, str):
             names = [names]
 
@@ -250,7 +243,8 @@ class RigModule(RigBase):
 
     @staticmethod
     def isolate_align(tgt, spaces=None, attrName="isolate", dv=0, cstType="ori"):
-        """Add 'isolate' to tgt to allow separate cst"""
+        """Add isolate attr to tgt to allow separate cst for the neck"""
+
         allSpaces = []
         if len(spaces) == 2:
             for space in spaces:
@@ -269,7 +263,8 @@ class RigModule(RigBase):
 
     @classmethod
     def isolate_neck_to_spine(cls, neckCog, spineCtl, wSpaceObj):
-        """Add 'isolateT' & 'isolateR' to tgt to allow separate cst specially for the neck"""
+        """Isolate neck control to align with spine control and world space object."""
+
         cls.isolate_align(
             neckCog, spaces=[spineCtl, wSpaceObj], attrName="isolateR", cstType="ori"
         )
@@ -281,7 +276,8 @@ class RigModule(RigBase):
     def space_align(
         tgt, names=None, spaces=None, dv=0, cstType="par", w=None, **kwargs
     ):
-        """Add space attr to tgt, to switch between spaces"""
+        """Add space alignment to the target control with multiple spaces."""
+
         allSpacesGrp = []
         for space in spaces:
             spaceG = GrpNode(tgt + "_SPACE_#", align=tgt, p=space)
@@ -305,9 +301,13 @@ class RigModule(RigBase):
             common.cstMulti(*allSpacesGrp, tgt_ofs, cstType="poi", w=weight, **kwargs)
 
     def calc_rig_size(self, rootJ):
+        """Calculate the rig size based on the root joint's diagonal2 attribute."""
+
         return rootJ.o.diagonal2 / 100 or 1
 
     def add_minus_scale_grp(self, tgt):
+        """Add a minus scale group to the target control."""
+
         rID, rSz, xDr = self.getMyVar()
         if rID.startswith("rt_"):
             tgt.a.rx.set2(180, add=1)
@@ -317,12 +317,14 @@ class RigModule(RigBase):
             tgt.addOffsetGrp()
 
     def genSk_module(self):
+        """Generate the skeleton module for the rigNode."""
 
         self.rigNode.a.nodeState.set(1)
         if self.masterC2.a.sx.get() != 1:
             self.masterC2.freezeXf(t=0, r=0, s=1)
 
     def build_module(self):
+        """Build the rig module, setting up the rigNode and its connections."""
 
         self.rigNode.a.nodeState.set(2)
         self.rigSize = self.calc_rig_size(self.rootJ)
@@ -332,11 +334,14 @@ class RigModule(RigBase):
             self.xDir = 1 if children[0].a.tx.get() > 0 else -1
 
     def post_module(self):
+        """Post build function to finalize the module setup."""
 
         [mc.setAttr(obj + ".ro", cb=1) for obj in mc.ls(tr=1)]
         mc.hide(self.moduleG)
 
     def unbuild_module(self):
+        """Unbuild the rig module, cleaning up the rigNode and its connections."""
+
         rID, rSz, xDr = self.getMyVar()
 
         logging.info(rID)
@@ -392,6 +397,8 @@ class RigModule(RigBase):
             mc.hide(loc)
 
     def add_ctl_set(self, tgtList):
+        """Add control set for target controls"""
+
         rID, rSz, xDr = self.getMyVar()
         setName = rID + "_ctl_set"
         if DagNode(setName).exists():
@@ -423,6 +430,7 @@ class RigModule(RigBase):
         self, tgt, scale=1, inRange=500, maxOfs=500, ty=1, tz=1, settable=1
     ):
         """Add pivot offset to target ctl"""
+
         if settable:
             piv_ref = CrvNode(
                 tgt + "_pvt_ctl", shape="locator", align=tgt, scale=scale, p=tgt
@@ -456,6 +464,8 @@ class RigModule(RigBase):
                 pivotTy >> rmN.a.inputValue
 
     def boneFix_setup(self, tgt, tgtChild):
+        """Setup bone fix for the leg rig."""
+
         rID, rSz, xDr = self.getMyVar()
 
         upLoc = LocNode("lwrLimb_up", pf=rID, align=tgtChild, addOfs=1, p=tgt, size=rSz)
@@ -475,7 +485,11 @@ class RigModule(RigBase):
         self.boneFix = tgtDup
         self.boneFix_sdk(tgt, tgtDup)
 
+        self.removeInBindJnts([self.lwr])
+
     def boneFix_sdk(self, driver, driven):
+        """ "Setup SDK for bone fix to drive the leg joint."""
+
         rID, rSz, xDr = self.getMyVar()
         s = rSz * xDr
         common.sdk(driver, driven, "ry", "tz", 0, 0)
@@ -488,8 +502,9 @@ class RigModule(RigBase):
         common.sdk(driver, driven, "ry", "tx", -170, -3 * s)
 
     def patella_setup(self):
-        rID, rSz, xDr = self.getMyVar()
+        """Setup patella guide and joint for the leg rig."""
 
+        rID, rSz, xDr = self.getMyVar()
         patella_guide = DagNode(rID + "_patella_guide")
 
         def patella_sdk(driver, driven):
@@ -506,6 +521,8 @@ class RigModule(RigBase):
             return j
 
     def build_ctl_jnt(self, ctls, r=1, color=1):
+        """Create joint nodes for given controls."""
+
         result = []
         for ctl in ctls:
             jnt = JntNode(ctl, sf="_ctlJ", r=r, color=color, p=ctl)
@@ -515,12 +532,16 @@ class RigModule(RigBase):
         return result
 
     def hand_roll_logic(self, attrHolder, fkc, fkPin, locRoll):
+        """Hand roll logic for palm and finger controls."""
+
         palmRoll = attrHolder.a.add("palmRoll")
         palmRoll * -1 >> locRoll.a.rz
         fkc.a.add("palmRoll", proxy=palmRoll)
         fkPin.a.add("palmRoll", proxy=palmRoll)
 
     def hand_bank_logic(self, attrHolder, fkc, fkPin, locIn, locOut):
+        """Hand bank logic for palm and finger controls."""
+
         palmBank = attrHolder.a.add("palmBank")
         ut.min_(palmBank, 0) * -1 >> locIn.a.rx
         ut.max_(0, palmBank) * -1 >> locOut.a.rx
@@ -529,6 +550,8 @@ class RigModule(RigBase):
         fkPin.a.add("palmBank", proxy=palmBank)
 
     def foot_roll_logic(self, targetCtl, heelRollG, ballRollG, footRollG, toeRollG):
+        """Foot roll logic for heel, ball, and toe controls."""
+
         from nl_modules.utils import utils_node as ut
 
         footRoll = targetCtl.a.add("footRoll")
@@ -549,6 +572,7 @@ class RigModule(RigBase):
 
     def build_digit_ik(self, ikTgt, scale=1, p=None):
         """IK setup for single digit"""
+
         from nl_modules.nodel.ik_node import IkNode
 
         ctl = CrvNode(
@@ -585,6 +609,8 @@ class RigModule(RigBase):
         return ctl, j1, ikH
 
     def get_autoAim_preset(self):
+        """Get preset values for auto aim weights based on the master guide attributes."""
+
         upW_attr = self.master_guide.a.autoUpWeight
         fwW_attr = self.master_guide.a.autoFwWeight
         dnW_attr = self.master_guide.a.autoDnWeight
@@ -604,10 +630,8 @@ class RigModule(RigBase):
         return preset
 
     def build_autoAim(self, startJ, endJ, fkc=None, ikc=None, ikcGim=None):
-        """
-        Setup auto clavicle / hip using simple ik and orient cst
-        Limit on side is calculted with the uvPSD setup
-        """
+        """Build auto aim function for the given start and end joints."""
+
         from nl_modules.nodel.ik_node import IkNode, Solver
 
         rID, rSz, xDr = self.getMyVar()
@@ -674,6 +698,8 @@ class RigModule(RigBase):
         # self.joints_am[0].hide()
 
     def build_scapular(self, ikc=None, fkc=None, jnts=None, EXTRA=0, scapCtl=None):
+        """Build scapular joint and auto aim function"""
+
         from nl_modules.nodel.ik_node import IkNode, Solver
 
         rID, rSz, xDr = self.getMyVar()
@@ -877,6 +903,8 @@ class RigModule(RigBase):
             [~attr >> ctl.a.v for ctl in offList]
 
     def getMyVar(self):
+        """Get rig ID, size and x direction for the current rig instance."""
+
         return str(self.rigID), float(self.rigSize), int(self.xDir)
 
     # def genCrvLenRatio(self, rbSrf=None, scaleAttr=None):
@@ -952,25 +980,44 @@ class RigModule(RigBase):
                 color=4,
             )
             rbJnts.append(jnt)
-
-            # self.masterC.a.globalScale >> loc.a.s
             scaleAttr >> loc.a.s
 
         return crvLenRatio, rbJnts
 
     def add_proxy_ratio(self, tgtJnts, ratio):
+        """Add proxyRatio attribute to target joints"""
+
         for jnt in tgtJnts:
-            jnt.a.add("proxyRatio", k=0, dv=ratio)
+            tgt = DagNode(jnt)
+            if tgt.exists():
+                tgt.a.add("proxyRatio", k=0, dv=ratio)
 
     def add_proxy_div(self, tgtJnts, div=2):
+        """Add proxyDiv attribute to target joints"""
+
         for jnt in tgtJnts:
-            jnt.a.add("proxyDiv", k=0, dv=div)
+            tgt = DagNode(jnt)
+            if tgt.exists():
+                DagNode(jnt).a.add("proxyDiv", k=0, dv=div)
 
     def get_guide_attr(self, name):
+        """Get attribute from master guide"""
+
         return self.master_guide.a[name].get()
 
     def create_and_register_ctl(self, name, shape, up, scale, top, w, rID):
+        """Create a control node and register it in the rigNode"""
 
         ctl = CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, width=w, top=top)
         setattr(self, name, ctl)
         self.rigNode.setMsg({name: ctl})
+
+    def removeInBindJnts(self, jntList):
+        """Remove joints from bindJnts list"""
+
+        if not isinstance(jntList, (tuple, list)):
+            jntList = [jntList]
+
+        for jnt in jntList:
+            if jnt in self.bindJnts:
+                self.bindJnts.remove(jnt)

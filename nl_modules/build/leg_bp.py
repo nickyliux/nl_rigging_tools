@@ -23,19 +23,20 @@ class LegBp(RigModule):
 
         super().__init__(rigNode)
 
-        self.rbnBones = self.get_guide_attr("rbnBones")
-        self.rbnJntNum = self.get_guide_attr("rbnJntNum")
-        self.patellaBone = self.get_guide_attr("patellaBone")
-        self.toeBones = self.get_guide_attr("toeBones")
-        self.twistBones = self.get_guide_attr("twistBones")
-        self.kneeFix = self.get_guide_attr("kneeFix")
-        self.scapularExtra = self.get_guide_attr("scapularExtra")
+        for attr in [
+            "rbnBones",
+            "rbnJntNum",
+            "patellaBone",
+            "toeBones",
+            "twistBones",
+            "kneeFix",
+            "scapularExtra",
+        ]:
+            setattr(self, attr, self.get_guide_attr(attr))
 
-        rID, rSz, xDr = self.getMyVar()
-
-        self.FK_GRP = GrpNode("FK", pf=rID, p=self.CTL_DATA)
-        self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA)
-        self.BF_GRP = GrpNode("BF", pf=rID, p=self.CTL_DATA)
+        self.FK_GRP = GrpNode("FK", pf=self.rigID, p=self.CTL_DATA)
+        self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA)
+        self.BF_GRP = GrpNode("BF", pf=self.rigID, p=self.CTL_DATA)
 
         self.setting = None
         self.joints = []
@@ -86,7 +87,6 @@ class LegBp(RigModule):
     def genSk(self):
         """Generate the skeleton for the leg rig."""
 
-        rID, rSz, xDr = self.getMyVar()
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["hip", "upr", "lwr", "palm", "ball", "tip"])
 
@@ -104,7 +104,7 @@ class LegBp(RigModule):
             ]
             for names in TOE_NAMES:
                 fgr_jnts = self.gen_sk_fr_names(names, scale=2)
-                fgr_jnts[0].orientJnt(aim=(xDr, 0, 0), u=(0, 0, -xDr))
+                fgr_jnts[0].orientJnt(aim=(self.xDir, 0, 0), u=(0, 0, -self.xDir))
                 fgr_jnts[0] | self.toesRootJ
 
         self.rootJ = root_list[0]
@@ -150,8 +150,14 @@ class LegBp(RigModule):
         # self.build_autoAim(
         #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
         # )
-        if not self.scapularExtra:
-            self.bindJnts.append(self.hip)
+        self.bindJnts = [
+            self.hip,
+            self.upr,
+            self.lwr,
+            self.boneFix,
+            self.palm,
+            self.ball,
+        ]
 
         self.scapularG = self.build_scapular(
             ikc=self.ikc,
@@ -163,18 +169,11 @@ class LegBp(RigModule):
 
         if self.rbnBones:
             self.build_ribbon()
-        else:
-            self.bindJnts.append(self.upr)
-
-        if not self.rbnBones and not self.kneeFix and not self.twistBones:
-            self.bindJnts.append(self.lwr)
 
         if self.kneeFix:
             self.boneFix_setup(self.lwr, self.palm)
             if self.rbnBones:
                 self.boneFix.cstPoi(self.ribbonLw.stt_loc)
-            elif not self.twistBones:
-                self.bindJnts.append(self.boneFix)
 
         if self.patellaBone:
             self.patellaJ = self.patella_setup()
@@ -183,25 +182,7 @@ class LegBp(RigModule):
             self.build_twist_bones()
 
         if self.toeBones:
-            self.toesRootJ | self.palm
-            self.toesJntList = []
-            for rootJ in self.toesRootJ.childrenJt:
-                self.toesJntList.append([fgr for fgr in rootJ.allChildrenJt2])
-                rootJ.a.segmentScaleCompensate.set(0)
             self.build_toes()
-        else:
-            self.bindJnts.extend([self.palm, self.ball])
-
-        # Scaling
-        self.masterC.a.globalScale >> self.RIG_DATA.a.s
-        self.masterC.a.globalScale >> self.SKL_DATA.a.s
-
-        palmScale = self.setting.a.add("palmScale", min=0.01, dv=1)
-        self.ikc.a.add("palmScale", min=0.01, proxy=palmScale)
-        palmScale >> self.ball_fkc.offset.a.s
-        palmScale >> self.joints_bf[3].a.s
-        palmScale >> self.palm.a.s
-        palmScale >> self.ikc.a.s
 
         self.post_setup()
 
@@ -209,9 +190,9 @@ class LegBp(RigModule):
         """Build the FK controls for the leg rig."""
 
         logging.info(self.rigID)
-        rID, rSz, xDr = self.getMyVar()
-
-        self.joints_fk = common.extractSk(self.joints, "_fk", p=self.FK_GRP, r=rSz)
+        self.joints_fk = common.extractSk(
+            self.joints, "_fk", p=self.FK_GRP, r=self.rigSize
+        )
         self.fkCtl = [
             self.hip_fkc,
             self.upr_fkc,
@@ -327,9 +308,9 @@ class LegBp(RigModule):
         """Blend FK and IK controls for the leg rig."""
 
         logging.info(self.rigID)
-        rID, rSz, xDr = self.getMyVar()
-
-        self.joints_bf = common.extractSk(self.joints, "_bf", p=self.BF_GRP, r=rSz)
+        self.joints_bf = common.extractSk(
+            self.joints, "_bf", p=self.BF_GRP, r=self.rigSize
+        )
 
         self.setting.snapTo(self.hip, p=self.CTL_DATA)
         self.hip.cstPar(self.setting, mo=1)
@@ -412,6 +393,12 @@ class LegBp(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
+        self.toesRootJ | self.palm
+        self.toesJntList = []
+        for rootJ in self.toesRootJ.childrenJt:
+            self.toesJntList.append([fgr for fgr in rootJ.allChildrenJt2])
+            rootJ.a.segmentScaleCompensate.set(0)
+
         self.toesCtlsList = []
         scale = xDr * rSz / 4
 
@@ -432,6 +419,8 @@ class LegBp(RigModule):
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
             self.toesCtlsList.append(ctlList)
             self.toesCtlsList.append([ctl])
+
+        self.removeInBindJnts([self.palm, self.ball])
 
         # splay = self.ball_fkc.a.add("splay", min=-5, max=5)
         # toeCount = len(self.toesJntList)
@@ -468,7 +457,22 @@ class LegBp(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
+
+        self.removeInBindJnts([self.lwr, self.boneFix])
         self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
+
+    def buildRbn(self, tgt, isLower=1):
+        """Build a ribbon node for the leg rig."""
+
+        return RbnNode(
+            tgt,
+            pf=self.rigID + "#",
+            rbJNum=self.rbnJntNum,
+            volMode=isLower,
+            scaleFix=self.masterC.a["globalScale"],
+            size=self.rigSize,
+            p=self.RIG_DATA,
+        )
 
     def build_ribbon(self):
         """Build the ribbon for the leg rig.
@@ -482,36 +486,20 @@ class LegBp(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        self.ribbonUp = RbnNode(
-            self.upr,
-            pf=rID + "_up_",
-            rbJNum=self.rbnJntNum,
-            volMode="upr",
-            scaleFix=self.masterC.a["globalScale"],
-            size=rSz,
-            p=self.RIG_DATA,
-        )
-        self.ribbonLw = RbnNode(
-            self.lwr,
-            pf=rID + "_lw_",
-            rbJNum=self.rbnJntNum,
-            volMode="lwr",
-            scaleFix=self.masterC.a["globalScale"],
-            size=rSz,
-            p=self.RIG_DATA,
-        )
+        ribbonUp = self.buildRbn(self.upr, isLower=0)
+        ribbonLw = self.buildRbn(self.lwr, isLower=1)
 
         # Upper Ribbon
-        self.upr.cstPoi(self.ribbonUp.stt_loc)
-        self.hip.cstOri(self.ribbonUp.stt_loc, mo=1)
+        self.upr.cstPoi(ribbonUp.stt_loc)
+        self.hip.cstOri(ribbonUp.stt_loc, mo=1)
 
         # Lower Ribbon
         self.palm.cstPar(self.ribbonLw.end_loc, mo=1)
 
         # Ribbon Controls
         # Bend Ctl Setup
-        upLoc = self.ribbonUp.mid_loc
-        lwLoc = self.ribbonLw.mid_loc
+        upLoc = ribbonUp.mid_loc
+        lwLoc = ribbonLw.mid_loc
         grp = self.CTL_DATA
         upr_bend = CrvNode("upr_bend", pf=rID, align=upLoc, addOfs=1, p=grp)
         lwr_bend = CrvNode("lwr_bend", pf=rID, align=lwLoc, addOfs=1, p=grp)
@@ -528,8 +516,8 @@ class LegBp(RigModule):
         lwr_bend.cstParSca(lwLoc.children[0], mo=1)
 
         self.lwr.cstPar(mid_bend.offset, mo=1)
-        mid_bend.cstParSca(self.ribbonUp.end_loc, mo=1)
-        stt_ofs = self.ribbonLw.stt_loc.addOffsetGrp(count=2)
+        mid_bend.cstParSca(ribbonUp.end_loc, mo=1)
+        stt_ofs = ribbonLw.stt_loc.addOffsetGrp(count=2)
         mid_bend.cstParSca(stt_ofs[0], mo=1)
 
         if self.kneeFix:
@@ -537,16 +525,17 @@ class LegBp(RigModule):
 
         # add volType attr to setting
         autoVol = self.setting.a.add("autoVol")
-        autoVol >> self.ribbonUp.autoVol
-        autoVol >> self.ribbonLw.autoVol
+        autoVol >> ribbonUp.autoVol
+        autoVol >> ribbonLw.autoVol
 
         volType = self.setting.a.add(
             "volType", attrType="enum", enumName="whole:separate", k=0
         )
-        volType >> self.ribbonUp.volType
-        volType >> self.ribbonLw.volType
+        volType >> ribbonUp.volType
+        volType >> ribbonLw.volType
 
-        self.bindJnts.extend(self.ribbonUp.rbJnt + self.ribbonLw.rbJnt)
+        self.bindJnts.remove([self.upr, self.lwr])
+        self.bindJnts.extend(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def setup_vis(self):
         """Setup visibility for the leg rig controls."""
@@ -627,6 +616,17 @@ class LegBp(RigModule):
         """Post setup for the leg rig module."""
 
         logging.info(self.rigID)
+
+        # Scaling
+        self.masterC.a.globalScale >> self.RIG_DATA.a.s
+        self.masterC.a.globalScale >> self.SKL_DATA.a.s
+
+        palmScale = self.setting.a.add("palmScale", min=0.01, dv=1)
+        self.ikc.a.add("palmScale", min=0.01, proxy=palmScale)
+        palmScale >> self.ball_fkc.offset.a.s
+        palmScale >> self.joints_bf[3].a.s
+        palmScale >> self.palm.a.s
+        palmScale >> self.ikc.a.s
 
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_ratio(self.bindJnts, 3)

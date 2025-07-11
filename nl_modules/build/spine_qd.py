@@ -93,26 +93,36 @@ class SpineQd(RigModule):
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
         self.cog_ctl.cv_move(0, rSz * 50, 0)
 
-    def build(self):
-        """Build the spine rig."""
+    def create_rbSrf(self):
+        """Create the ribbon surface for the spine rig."""
 
-        rID, rSz, xDr = self.getMyVar()
-
-        self.build_module()
-
-        mc.delete(self.rootJ)
-        self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
-        self.rbSrf = SrfNode.buildRbSrf(
-            pf=rID,
+        return SrfNode.buildRbSrf(
+            pf=self.rigID,
             crv=self.LINE_GUIDE,
             spans=2,
             snap=self.RT_GUIDE,
             p=self.RIG_DATA,
         )
+
+    def build(self):
+        """Build the spine rig."""
+
+        self.build_module()
+
+        mc.delete(self.rootJ)
+        self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
+
+        # Create and register rbSrf
+        self.rbSrf = self.create_rbSrf()
         self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
         self.build_ctl()
         self.build_ik()
+        self.build_ribbon()
+        self.post_setup()
+
+    def build_ribbon(self):
+        """Create the ribbon for the spine rig."""
 
         self.rbSrf.weightTo(self.ikJnts, mi=1, chain=0)
 
@@ -124,18 +134,16 @@ class SpineQd(RigModule):
 
         self.build_twoJ_ik()
         self.build_volume(crvLenRatio)
+
         self.bindJnts.extend(self.rbJnts)
 
         self.setting.snapTo(self.rbJnts[0], p=self.IK_GRP)
         self.rbJnts[0].cstPar(self.setting, mo=1)
 
-        self.post_setup()
-
     def build_ik(self):
         """Build the IK controls for the spine rig."""
 
         logging.info(self.rigID)
-
         rID, rSz, xDr = self.getMyVar()
         #
         #   build 3 ik joints from crv
@@ -183,7 +191,6 @@ class SpineQd(RigModule):
         """Build a spine IK ribbon."""
 
         logging.info(self.rigID)
-
         rID, rSz, xDr = self.getMyVar()
         #
         #   create crv & joints on it
@@ -438,7 +445,6 @@ class SpineQd(RigModule):
         """Post setup for the spine rig."""
 
         logging.info(self.rigID)
-
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_ratio(self.bindJnts, 5)
 

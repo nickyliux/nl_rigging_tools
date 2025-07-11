@@ -52,7 +52,7 @@
      <x>0</x>
      <y>0</y>
      <width>230</width>
-     <height>691</height>
+     <height>575</height>
     </rect>
    </property>
    <property name="font">
@@ -1532,52 +1532,6 @@
       </property>
      </widget>
     </widget>
-    <widget class="QGroupBox" name="groupBox_12">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>540</y>
-       <width>221</width>
-       <height>131</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>RigNode</string>
-     </property>
-     <property name="flat">
-      <bool>true</bool>
-     </property>
-     <widget class="QListWidget" name="rigNode_LW">
-      <property name="geometry">
-       <rect>
-        <x>60</x>
-        <y>10</y>
-        <width>161</width>
-        <height>121</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Segoe UI</family>
-        <pointsize>8</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="selectionMode">
-       <enum>QAbstractItemView::SingleSelection</enum>
-      </property>
-      <property name="spacing">
-       <number>0</number>
-      </property>
-     </widget>
-    </widget>
     <widget class="QWidget" name="horizontalLayoutWidget_9">
      <property name="geometry">
       <rect>
@@ -1936,7 +1890,7 @@
        <x>0</x>
        <y>77</y>
        <width>221</width>
-       <height>578</height>
+       <height>473</height>
       </rect>
      </property>
      <property name="minimumSize">
@@ -2277,6 +2231,57 @@
      </layout>
     </widget>
    </widget>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>RigNode</string>
+    </attribute>
+    <widget class="QGroupBox" name="groupBox_12">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>10</y>
+       <width>221</width>
+       <height>261</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>RigNodes</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <widget class="QListWidget" name="rigNode_LW">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>20</y>
+        <width>221</width>
+        <height>241</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>8</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::SingleSelection</enum>
+      </property>
+      <property name="spacing">
+       <number>0</number>
+      </property>
+     </widget>
+    </widget>
+   </widget>
    <widget class="QWidget" name="tab_3">
     <attribute name="title">
      <string>Misc</string>
@@ -2285,13 +2290,13 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>120</y>
+       <y>140</y>
        <width>220</width>
        <height>81</height>
       </rect>
      </property>
      <property name="title">
-      <string>GUIDE TOOLS</string>
+      <string>Guide</string>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -2391,7 +2396,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>SKEL TOOLS</string>
+      <string>Preparation</string>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -2721,13 +2726,13 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>220</y>
+       <y>230</y>
        <width>221</width>
        <height>51</height>
       </rect>
      </property>
      <property name="title">
-      <string>COLOR</string>
+      <string>Color</string>
      </property>
      <property name="flat">
       <bool>true</bool>

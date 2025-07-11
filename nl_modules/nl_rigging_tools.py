@@ -102,7 +102,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         self.setWindowTitle("nlRT 0.1.0a")
         self.setCentralWidget(self.UI)
-        self.setGeometry(0, 0, 233, 700)
+        self.setGeometry(0, 0, 233, 580)
         self.connect_UI()
         # self.addMenuBar()
 
@@ -294,7 +294,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         rigNodes = build.getRigNodesAll()
         self.UI.rigNode_LW.clear()
-        self.UI.rigNode_LW.addItems(rigNodes)
+        self.UI.rigNode_LW.addItems([r.name for r in rigNodes])
 
     def crvShape_LW_dblClicked(self, item):
         """Add curve object"""

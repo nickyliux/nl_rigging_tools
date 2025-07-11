@@ -22,16 +22,13 @@ class ArmBp(RigModule):
 
         super().__init__(rigNode)
 
-        self.twistBones = self.get_guide_attr("twistBones")
-        self.rbnBones = self.get_guide_attr("rbnBones")
-        self.rbnJntNum = self.get_guide_attr("rbnJntNum")
-        self.scapularBone = self.get_guide_attr("scapularBone")
-
-        rID, rSz, xDr = self.getMyVar()
-
-        self.FK_GRP = GrpNode("FK", pf=rID, p=self.CTL_DATA)
-        self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA)
-        self.BF_GRP = GrpNode("BF", pf=rID, p=self.CTL_DATA)
+        for attr in [
+            "twistBones",
+            "rbnBones",
+            "rbnJntNum",
+            "scapularBone",
+        ]:
+            setattr(self, attr, self.get_guide_attr(attr))
 
         self.setting = None
         self.joints = []
@@ -65,6 +62,7 @@ class ArmBp(RigModule):
 
     def genSk(self):
         """Generate the skeleton for the arm rig."""
+
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["clavicle", "upr", "lwr", "palm", "ball"])
         self.rootJ = root_list[0]
@@ -73,8 +71,8 @@ class ArmBp(RigModule):
 
     def build_ctl(self):
         """Build control nodes for the arm rig."""
-        logging.info(self.rigID)
 
+        logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
 
@@ -108,41 +106,30 @@ class ArmBp(RigModule):
         self.blend_fk_ik()
         # self.build_autoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
 
-        self.bindJnts = []
+        self.bindJnts = [self.upr, self.lwr, self.clavicle]
+
         if self.rbnBones:
             self.build_ribbon()
-        else:
-            self.bindJnts.append(self.upr)
-
-        if not self.rbnBones and not self.twistBones:
-            self.bindJnts.append(self.lwr)
 
         if self.twistBones:
             self.build_twist_bones()
 
         if self.scapularBone:
             self.build_armScapular()
-        else:
-            self.bindJnts.append(self.clavicle)
 
-        self.masterC.a.globalScale >> self.SKL_DATA.a.scale
         self.post_setup()
 
     def build_fk(self):
         """Build the FK controls and joints for the arm rig."""
+
         logging.info(self.rigID)
-
-        rID, rSz, xDr = self.getMyVar()
-
-        self.joints_fk = common.extractSk(self.joints, "_fk", p=self.FK_GRP, r=rSz)
-        self.fkCtl = [self.clavicle_fkc, self.upr_fkc, self.lwr_fkc, self.palm_fkc]
         self.build_fk_with_ctl2(self.joints_fk, self.fkCtl, p=self.FK_GRP)
         self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
         """Build the IK controls for the arm rig."""
-        logging.info(self.rigID)
 
+        logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
         self.ikc.alignTo(self.palm)
@@ -223,8 +210,8 @@ class ArmBp(RigModule):
 
     def blend_fk_ik(self):
         """Blend FK and IK joints for the arm rig."""
-        rID, rSz, xDr = self.getMyVar()
 
+        rID, rSz, xDr = self.getMyVar()
         self.joints_bf = common.extractSk(self.joints, "_bf", p=self.BF_GRP, r=rSz)
 
         palmIn_guide = DagNode(rID + "_palmIn_guide")
@@ -240,8 +227,8 @@ class ArmBp(RigModule):
             "ballRoll", pf=rID, align=ball_guide, p=palmOut_loc, size=rSz
         )
 
-        self.setting.snapTo(self.clavicle, p=self.CTL_DATA)
-        self.clavicle.cstPar(self.setting, mo=1)
+        self.setting.snapTo(self.upr, p=self.CTL_DATA)
+        self.upr.cstPar(self.setting, mo=1)
         # self.clavicle_fkc.offset.cstPar(self.setting, mo=1)
 
         self.setting.a.addSep()
@@ -287,6 +274,7 @@ class ArmBp(RigModule):
 
     def build_armScapular(self):
         """Build the scapular setup for the arm rig."""
+
         rID, rSz, xDr = self.getMyVar()
         clavEnd_guide = DagNode(rID + "_clavEnd_guide")
         scapular_guide = DagNode(rID + "_scapular_guide")
@@ -321,6 +309,7 @@ class ArmBp(RigModule):
         self.clavBone | self.SKL_DATA
         self.clavicle.cstPoi(self.clavBone)
 
+        self.removeInBindJnts([self.clavicle])
         self.bindJnts.append(self.clavBone)
 
         # twoJ = JntNode.makeTwoJC2(
@@ -349,6 +338,7 @@ class ArmBp(RigModule):
 
     def build_twist_bones(self):
         """Build twist bones for the arm rig."""
+
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
@@ -373,39 +363,37 @@ class ArmBp(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
+
+        self.removeInBindJnts([self.lwr])
         self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
+
+    def buildRbn(self, tgt, isLower=1):
+        """Build ribbon bones for the arm rig."""
+
+        return RbnNode(
+            tgt,
+            pf=self.rigID + "#",
+            rbJNum=self.rbnJntNum,
+            volMode=isLower,
+            scaleFix=self.masterC.a["globalScale"],
+            size=self.rigSize,
+            p=self.RIG_DATA,
+        )
 
     def build_ribbon(self):
         """Build ribbon bones for the arm rig.
 
-                    upr
+                     upr
         upr_bend     --
         mid_bend     lwr
         lwr_bend     --
-                    foot
+                     foot
         """
         logging.info(self.rigID)
-
         rID, rSz, xDr = self.getMyVar()
 
-        ribbonUp = RbnNode(
-            self.upr,
-            pf=rID + "_up_",
-            rbJNum=self.rbnJntNum,
-            volMode="upr",
-            scaleFix=self.masterC.a["globalScale"],
-            size=rSz,
-            p=self.RIG_DATA,
-        )
-        ribbonLw = RbnNode(
-            self.lwr,
-            pf=rID + "_lw_",
-            rbJNum=self.rbnJntNum,
-            volMode="lwr",
-            scaleFix=self.masterC.a["globalScale"],
-            size=rSz,
-            p=self.RIG_DATA,
-        )
+        ribbonUp = self.buildRbn(self.upr, isLower=0)
+        ribbonLw = self.buildRbn(self.lwr, isLower=1)
 
         # Upper Ribbon
         self.upr.cstPoi(ribbonUp.stt_loc)
@@ -448,10 +436,12 @@ class ArmBp(RigModule):
         volType >> ribbonUp.volType
         volType >> ribbonLw.volType
 
+        self.removeInBindJnts([self.upr, self.lwr])
         self.bindJnts.extend(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
     def setup_vis(self):
         """Setup visibility toggles for the arm rig controls."""
+
         self.ctl_vis_toggle(
             self.setting.a["fkIkBlend"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
@@ -473,6 +463,7 @@ class ArmBp(RigModule):
 
     def setup_channel(self):
         """Setup channel attributes for the arm rig controls."""
+
         self.setting.a.showAttr()
         self.palm_ikc.a.showAttr(r=1)
 
@@ -483,8 +474,9 @@ class ArmBp(RigModule):
 
     def setup_rotate_order(self):
         """Setup rotate order for the arm rig controls."""
-        for c in [self.ikc, self.clavicle_fkc]:
-            c.a.ro.set(2)
+
+        for ctl in [self.ikc, self.clavicle_fkc]:
+            ctl.a.ro.set(2)
         self.lwr_fkc.a.ro.set(3)
         self.upr_fkc.a.ro.set(4)
         self.palm_fkc.a.ro.set(5)
@@ -519,7 +511,8 @@ class ArmBp(RigModule):
 
     def setup_anchor(self):
         """Setup anchor module for the arm rig controls."""
-        WRIST_ID = -2
+
+        WRIST_ID = 3
         self.setup_anchor_module(
             {
                 "anchorM1": self.joints_bf[WRIST_ID],
@@ -529,7 +522,9 @@ class ArmBp(RigModule):
 
     def post_setup(self):
         """Post setup for the arm rig."""
+
         logging.info(self.rigID)
+        self.masterC.a.globalScale >> self.SKL_DATA.a.scale
 
         self.add_bind_jnt_set(self.bindJnts)
         ARM_PROXY_RATIO = 2
