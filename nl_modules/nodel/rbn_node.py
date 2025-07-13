@@ -172,13 +172,7 @@ class RbnNode:
         ofsX2 = ofsX * 2
 
         stt_aimJ, stt_aimJ_end = JntNode.makeTwoJC(
-            "stt_aimJ",
-            pf=pf,
-            snap=self.stt_loc,
-            ofs=(ofsX, 0, 0),
-            p=g,
-            r=self.size * 2,
-            color=Color.ORANGE,
+            "stt_aimJ", pf=pf, snap=self.stt_loc, ofs=(ofsX, 0, 0), p=g, r=self.size * 2
         )
         stt_sknJ = stt_aimJ_end.duplicate(n=pf + "stt_sknJ")
         stt_sknJ.alignTo(self.stt_loc)
@@ -190,7 +184,6 @@ class RbnNode:
             ofs=(-ofsX, 0, 0),
             p=g,
             r=self.size * 2,
-            color=Color.ORANGE,
         )
         end_sknJ = end_aimJ_end.duplicate(n=pf + "end_sknJ")
         end_sknJ.alignTo(self.end_loc)
@@ -202,7 +195,6 @@ class RbnNode:
             ofs=(ofsX2, 0, 0),
             p=g,
             r=self.size * 2,
-            color=Color.ORANGE,
         )
         mid_sknJ = mid_aimJ_end.duplicate(n=pf + "mid_sknJ")
         mid_sknJ.alignTo(self.mid_loc, p=self.mid_loc)
@@ -285,7 +277,6 @@ class RbnNode:
             ofs=(-ofsX, 0, 0),
             p=self.AIM_GRP,
             r=self.size / 2,
-            color=Color.YELLOW,
         )
         stt_twistG = GrpNode("stt_twistG", pf=pf, align=stt_twistJ, p=stt_twistJ)
         stt_twistG.a.rx >> self.stt_sknJ.a.rx
@@ -305,7 +296,6 @@ class RbnNode:
             ofs=(ofsX, 0, 0),
             p=self.AIM_GRP,
             r=self.size / 2,
-            color=Color.YELLOW,
         )
         end_twistG = GrpNode("end_twistG", pf=pf, align=end_twistJ, p=end_twistJ)
         end_twistG.a.rx >> self.end_sknJ.a.rx

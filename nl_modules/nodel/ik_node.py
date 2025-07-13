@@ -312,7 +312,6 @@ class IkNode(DagNode):
             u=(0, self.xDir, 0),
             p=softParent,
             aimTgt=self.ee,
-            color=22,
         )
         ikH = IkNode(
             "soft",
@@ -347,7 +346,6 @@ class IkNode(DagNode):
             aim=(self.xDir, 0, 0),
             u=(0, self.xDir, 0),
             aimTgt=self.ee,
-            color=5,
         )
         pinIk = IkNode(
             "pvChain",

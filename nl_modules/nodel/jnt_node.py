@@ -1,5 +1,6 @@
 import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
+from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.utils.color import Color
 
@@ -23,8 +24,7 @@ class JntNode(GrpNode):
         reset=0,
     ):
         nodeExists = 0
-        name = pf + node + sf
-        if mc.objExists(name):
+        if DagNode(pf + node + sf).exists():
             nodeExists = 1
 
         GrpNode.__init__(
@@ -41,8 +41,6 @@ class JntNode(GrpNode):
             p=p,
         )
         if shape:
-            from nl_modules.nodel.crv_node import CrvNode
-
             CrvNode(self) << shape
 
         if not nodeExists:
@@ -52,8 +50,9 @@ class JntNode(GrpNode):
             self.resetOrient()
             self.resetXf()
 
-    def setRadius(self, v, rel=False):
+    def setRadius(self, v, rel=0):
         """Set the radius of the joint"""
+
         if rel:
             self.a.radius.set2(v, mul=1)
         else:
@@ -61,21 +60,24 @@ class JntNode(GrpNode):
 
     def orientJoint(self, ro="xyz"):
         """Orient joint to the current rotation order"""
+
         mc.joint(self.name, e=1, orientJoint=ro, zso=1)
 
     def resetOrient(self):
         """Reset joint orient"""
+
         self.a.jointOrient.reset()
 
     def resetXf(self):
         """Reset joint transform"""
+
         self.a.t.set(0, 0, 0)
         self.a.r.set(0, 0, 0)
         self.a.s.set(1, 1, 1)
 
     def orientJnt(self, aim=(1, 0, 0), u=(0, 1, 0), **kwargs):
         """Orient joint to aim direction"""
-        # tgtRoot = JntNode(tgtRoot)
+
         for jnt in self.allChildrenJt2:
             child = jnt.children
             if len(child) > 0:
@@ -87,16 +89,15 @@ class JntNode(GrpNode):
 
     def addProxyMesh(self, scale=1, scaler=None, aimDir=(1, 0, 0), skipEnd=0, p=None):
         """Add a proxy mesh for the joint."""
+
         from nl_modules.utils import common
 
-        pxName = self.name + "_pxGeo"
-        if mc.objExists(pxName):
+        name = self.name + "_pxGeo"
+        if DagNode(name).exists():
             return
 
-        proxyRatio = self.a.proxyRatio
-        proxyRatio = proxyRatio.get() if proxyRatio.exists() else 1
-        proxyDiv = self.a.proxyDiv
-        proxyDiv = proxyDiv.get() if proxyDiv.exists() else 2
+        proxyRatioValue = self.a["proxyRatio"].get() or 1
+        proxyDivValue = self.a["proxyDiv"].get() or 2
 
         child = self.childrenJt
         size = self.a.radius.get() * 5 * scale
@@ -104,18 +105,14 @@ class JntNode(GrpNode):
         if child or (not skipEnd):
 
             dist = self.o.distanceTo(child[0]) if child else size
-            # proxy = DagNode(
-            #     mc.polyCube(n=name, ax=aimDir, h=dist, w=size, d=size, cuv=4)[0]
-            # )
             proxy = DagNode(
                 mc.polyCylinder(
-                    n=pxName,
-                    r=size / 2 * proxyRatio,
+                    n=name,
+                    r=size / 2 * proxyRatioValue,
                     h=dist * 0.9,
                     ax=aimDir,
-                    subdivisionsAxis=8,
-                    # subdivisionsCaps=1,
-                    subdivisionsHeight=proxyDiv,
+                    subdivisionsAxis=8,  # subdivisionsCaps=1,
+                    subdivisionsHeight=proxyDivValue,
                     ch=0,
                 )[0]
             )
@@ -139,19 +136,18 @@ class JntNode(GrpNode):
             #   NOTE:  constraint must be after shader assignment,
             #   otherwise mc.sets(..) will show error
             #
-
             common.assignPresetShd([proxy])
-
             self.cstParSca(proxyOfs, mo=1)
             return proxy
 
     @staticmethod
     def makeTwoJC(
-        n, align=None, snap=None, align_end=None, pf="", ofs=None, r=1, color=4, p=None
+        n, align=None, snap=None, align_end=None, pf="", ofs=None, r=1, p=None
     ):
         """Make two-joint chain according to aligning objects"""
-        j0 = JntNode(n, pf=pf, r=r, color=color, p=p)
-        j1 = JntNode(n + "_end", pf=pf, r=r, color=color, p=j0)
+
+        j0 = JntNode(n, pf=pf, r=r, p=p)
+        j1 = JntNode(n + "_end", pf=pf, r=r, p=j0)
 
         if align:
             j0.alignTo(align)
@@ -174,13 +170,13 @@ class JntNode(GrpNode):
         u=(0, 1, 0),
         wu=(0, 1, 0),
         r=1,
-        color=4,
         p=None,
         aimTgt=None,
     ):
         """Make two-joint chain according to aligning objects"""
-        j0 = JntNode(n, pf=pf, r=r, color=color, p=p)
-        j1 = JntNode(n + "_end", pf=pf, r=r, color=color, p=j0)
+
+        j0 = JntNode(n, pf=pf, r=r, p=p)
+        j1 = JntNode(n + "_end", pf=pf, r=r, p=j0)
 
         if align:
             j0.alignTo(align)
@@ -188,8 +184,8 @@ class JntNode(GrpNode):
             j0.snapTo(snap)
         if align_end:
             j1.alignTo(align_end)
-        if aim:
-            j1.a.t.set(*aim)
+
+        j1.a.t.set(*aim)
 
         aimTgt.cstAim(j0, keep=0, aim=aim, u=u, wu=wu)
         aimTgt.cstPoi(j1, keep=0)
@@ -213,6 +209,7 @@ class JntNode(GrpNode):
         p=None,
     ):
         """Create a joint chain from a curve."""
+
         joints = []
         mc.select(cl=1)
         if pf and pf[-1] != "_":
@@ -223,7 +220,6 @@ class JntNode(GrpNode):
             loc = DagNode("_#", nodeType="transform")
             mp = DagNode("_#", nodeType="motionPath")
             DagNode(crv).shape.a.worldSpace >> mp.a.geometryPath
-            # mp.a.allCoordinates >> loc.a.t
             mp.a.fractionMode.set(1)
 
             poci = DagNode("poci_#", nodeType="pointOnCurveInfo")
@@ -253,14 +249,9 @@ class JntNode(GrpNode):
 
         for i in range(num - 1):
             if not rev:
-                # j1 > j2 > ... > jn
-                # joints[i + 1].cstAim(joints[i], aim=aimV, u=upV, wu=wuV, keep=0)
                 if chain:
                     joints[i + 1] | joints[i]
             else:
-                # j1 < j2 < ... < jn
-                # negAim = (-aimV[0], -aimV[1], -aimV[2])
-                # joints[i].cstAim(joints[i + 1], aim=negAim, u=upV, wu=wuV, keep=0)
                 if chain:
                     joints[i] | joints[i + 1]
 
@@ -286,16 +277,18 @@ class JntNode(GrpNode):
                 joints[0].resetOrient()
         else:
             if p:
-                [j | p for j in joints]
+                for j in joints:
+                    j | p
 
         return joints
 
     @staticmethod
     def buildJntLineSel():
         """Build a joint line from selected objects."""
+
         parentJ = None
         for s in mc.ls(sl=1):
-            j = JntNode(s + "_lineJnt", r=0, snap=s, p=parentJ, color=Color.BLUE)
+            j = JntNode(s + "_lineJnt", r=0, snap=s, p=parentJ)
             DagNode(s).cstPoi(j)
             parentJ = j
             j.a.showAttr()

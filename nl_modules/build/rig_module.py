@@ -717,7 +717,6 @@ class RigModule(RigBase):
             u=(0, xDr, 0),
             p=mainGrp.offset,
             r=rSz * 3,
-            color=6,
             aimTgt=ikc,
         )
         IkNode("autoAimJ", solver=Solver.RP, pf=rID, sj=j0, ee=j1, p=ikc, quat=1, vis=0)

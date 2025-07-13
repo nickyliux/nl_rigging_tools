@@ -135,16 +135,16 @@ class Attribute:
             obj1.a.tx.get()  # 5
             obj1.a.t.get()   # (3,4,5)
         """
-        if self.exists():
+        if not self.exists():
+            return None
+        else:
             result = mc.getAttr(self, **kwargs)
-            # default result of mc.getAttr('sphere.t') is like [(3,4,5)]
-            # so if the result is a list, return [0]
             if isinstance(result, list):
                 return result[0]
             else:
                 return result
-        else:
-            raise NameError(f'Attribute "{self.name}" NOT found')
+        # else:
+        #     raise NameError(f'Attribute "{self.name}" NOT found')
 
     def query(self, **kwargs):
         """Query attribute data
