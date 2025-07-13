@@ -58,7 +58,7 @@ class Spd3Leg(rig_module.RigModule):
 
     def build(self):
 
-        self.build_module()
+        self.build_pre_module()
 
         """Build basic groups and custom setup"""
 

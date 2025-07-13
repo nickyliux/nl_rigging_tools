@@ -15,28 +15,28 @@ class SpineBp(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
-        for attr in [
-            "fkJntNum",
-            "rbnBones",
-            "rbnJntNum",
-        ]:
+        for attr in ["fkJntNum", "rbnBones", "rbnJntNum"]:
             setattr(self, attr, self.get_guide_attr(attr))
 
         self.LINE_GUIDE = DagNode(self.rigID + "_line_guide")
         self.MD_GUIDE = DagNode(self.rigID + "_md_guide")
 
+        self.setting = None
+
         self.cog_ctl = None
-        self.cog_gmb = None
         self.hip_ctl = None
         self.mid_ctl = None
+        self.cog_gmb = None
         self.chest_ctl = None
-        self.ikCtls = None
-        self.fkCtls = None
-        self.setting = None
-        self.ctlJnts = None
+
+        self.ikCtls = []
+        self.fkCtls = []
+
+        self.ctlJnts = []
         self.bindJnts = []
         self.fkJnts = []
         self.rbJnts = []
+
         self.rbSrf = None
 
     def genSk(self):
@@ -70,12 +70,12 @@ class SpineBp(RigModule):
     def build(self):
         """Build the spine rig module."""
 
-        self.build_module()
+        self.build_pre_module()
         self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
         self.build_ctl()
         self.build_fk()
         self.build_ik()
-        self.post_setup()
+        self.build_post()
 
     def build_fk(self):
         """Build the FK controls and joints for the spine rig."""
@@ -258,7 +258,7 @@ class SpineBp(RigModule):
         anchorM2Tgt = self.rbJnts[-1] if self.rbnBones else self.chest_ctl
         self.setup_anchor_module({"anchorM1": self.hip_ctl, "anchorM2": anchorM2Tgt})
 
-    def post_setup(self):
+    def build_post(self):
         """Post setup for the spine rig."""
 
         logging.info(self.rigID)
@@ -273,4 +273,4 @@ class SpineBp(RigModule):
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()
-        self.post_module()
+        self.build_post_module()

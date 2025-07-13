@@ -6,18 +6,18 @@ class Head(RigModule):
     """Head rig module class, inherits from RigModule."""
 
     def __init__(self, rigNode):
+        """Initialize the Head rig module with the given rigNode."""
+
         super().__init__(rigNode)
 
+        self.jntNames = ["head", "jaw", "lf_eye", "rt_eye"]
+        for name in self.jntNames:
+            setattr(self, f"{name}", None)
+            setattr(self, f"{name}_fkc", None)
+
         self.joints = []
-        self.head = None
-        self.headEnd = None
-        self.jaw = None
-        self.jawEnd = None
-        self.lf_eye = None
-        self.rt_eye = None
-        self.head_fkc = None
-        self.jaw_fkc = None
-        self.fkCtl = None
+        self.fkCtl = []
+        self.rootJ = None
 
     def genSk(self):
         """Generate the skeleton for the head rig."""
@@ -36,14 +36,14 @@ class Head(RigModule):
     def build(self):
         """Build the head rig module."""
 
-        self.build_module()
+        self.build_pre_module()
         self.joints = self.rootJ.allChildrenJt2
         self.head, self.headEnd, self.jaw, self.jawEnd, self.lf_eye, self.rt_eye = (
             self.joints
         )
         self.build_ctl()
         self.build_fk()
-        self.post_setup()
+        self.build_post()
 
     def build_ctl(self):
         """Build the controls for the head rig module."""
@@ -73,10 +73,7 @@ class Head(RigModule):
         self.jaw_fkc.snapTo(self.jaw, p=self.head_fkc)
         self.jaw_fkc.addOffsetGrp()
         self.jaw_fkc.cstPar(self.jaw, mo=1)
-        self.jaw_fkc.cv_moveTo(self.jawEnd.o.pos)
-
-        # scalable
-        self.head_fkc.a.s * self.masterC.a.globalScale >> self.SKL_DATA.a.s
+        self.jaw_fkc.cv_moveTo(self.jaw.childrenJt[0].o.pos)
 
         # self.isolate_align(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC])
         # self.isolate_align(self.head_fkc, spaces=[self.head_fkc.parent, self.masterC])
@@ -103,18 +100,33 @@ class Head(RigModule):
 
         self.rigNode.setMsg({"space_head": self.head_fkc})
 
-    def post_setup(self):
-        """Post setup for the head rig module."""
+    def setup_scale(self):
+        """Setup scale for the head rig module."""
 
-        logging.info(self.rigID)
+        self.head_fkc.a.s * self.masterC.a["globalScale"] >> self.SKL_DATA.a.s
+
+    def setup_ctlSet(self):
+        """Setup control sets for the head rig module."""
+
+        self.add_ctl_set(self.fkCtl)
+
+    def setup_bindJnt(self):
+        """Setup bind joints for the head rig module."""
+
         self.bindJnts = [self.head, self.jaw, self.lf_eye, self.rt_eye]
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_div(self.bindJnts, 4)
 
-        self.add_ctl_set(self.fkCtl)
+    def build_post(self):
+        """Post setup for the head rig module."""
+
+        logging.info(self.rigID)
+        self.setup_scale()
+        self.setup_bindJnt()
+        self.setup_ctlSet()
         self.setup_space()
         self.setup_anchor_module({"anchorF1": self.head_fkc.offset})
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()
-        self.post_module()
+        self.build_post_module()

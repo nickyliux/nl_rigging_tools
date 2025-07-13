@@ -68,7 +68,7 @@
 #             root.a.segmentScaleCompensate.set(0)
 #
 #         self.build_fk()
-#         self.post_setup()
+#         self.build_post()
 #         self.post_module()
 #
 #     def build_fk(self):
@@ -104,7 +104,7 @@
 #         #
 #         # anchorF1.hide()
 #
-#     def post_setup(self):
+#     def build_post(self):
 #
 #         # Proxy Mesh
 #         for fgrs in self.fgrsArr:

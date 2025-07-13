@@ -46,7 +46,7 @@ class TailFk(RigModule):
         """
         rID, rSz, xDr = self.getMyVar()
 
-        self.build_module()
+        self.build_pre_module()
         self.rbSrf = SrfNode.buildRbSrf(
             pf=rID,
             crv=self.LINE_GUIDE,
@@ -74,7 +74,7 @@ class TailFk(RigModule):
             mc.delete(self.allClusters, self.rbSrf)
             self.bindJnts = self.fkJnt
 
-        self.post_setup()
+        self.build_post()
 
     def build_ctl(self):
         rID, rSz, xDr = self.getMyVar()
@@ -180,11 +180,11 @@ class TailFk(RigModule):
         for ctl in self.fkCtl:
             ctl.a.ro.set(3)
 
-    def post_setup(self):
+    def build_post(self):
         self.add_bind_jnt_set(self.bindJnts)
         self.add_ctl_set(self.fkCtl)
         self.setup_anchor_module({"anchorF1": self.fkCtl[0].offset})
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()
-        self.post_module()
+        self.build_post_module()

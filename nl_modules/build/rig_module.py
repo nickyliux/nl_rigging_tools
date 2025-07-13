@@ -309,8 +309,7 @@ class RigModule(RigBase):
     def add_minus_scale_grp(self, tgt):
         """Add a minus scale group to the target control."""
 
-        rID, rSz, xDr = self.getMyVar()
-        if rID.startswith("rt_"):
+        if self.rigID.startswith("rt_"):
             tgt.a.rx.set2(180, add=1)
             tgt.a.ry.set2(180, add=1)
             tgt.addOffsetGrp().a.sz.set(-1)
@@ -324,7 +323,7 @@ class RigModule(RigBase):
         if self.masterC2.a.sx.get() != 1:
             self.masterC2.freezeXf(t=0, r=0, s=1)
 
-    def build_module(self):
+    def build_pre_module(self):
         """Build the rig module, setting up the rigNode and its connections."""
 
         self.rigNode.a.nodeState.set(2)
@@ -334,18 +333,17 @@ class RigModule(RigBase):
         if children:
             self.xDir = 1 if children[0].a.tx.get() > 0 else -1
 
-    def post_module(self):
+    def build_post_module(self):
         """Post build function to finalize the module setup."""
 
+        # logging.info(self.rigID)
         [mc.setAttr(obj + ".ro", cb=1) for obj in mc.ls(tr=1)]
         mc.hide(self.moduleG)
 
-    def unbuild_module(self):
-        """Unbuild the rig module, cleaning up the rigNode and its connections."""
+    def unbuild_pre_module(self):
+        """Prepare for unbuilding the rig module, resetting the rigNode state."""
 
-        rID, rSz, xDr = self.getMyVar()
-
-        logging.info(rID)
+        logging.info(self.rigID)
         self.moduleG.show()
         self.CTL_DATA.delete()
         self.SKL_DATA.delete()
@@ -355,10 +353,10 @@ class RigModule(RigBase):
         if rootJ:
             rootJ.delete()
         for xf in self.DIM.children:
-            if xf.name.startswith(rID):
+            if xf.name.startswith(self.rigID):
                 xf.delete()
         for xf in self.masterC.children:
-            if xf.name.startswith(rID):
+            if xf.name.startswith(self.rigID):
                 xf.delete()
 
         for attr in ["anchorF1", "anchorM1", "anchorM2"]:
@@ -367,7 +365,7 @@ class RigModule(RigBase):
                 anchor.inConnNode.delete()
 
         self.rigNode.a.nodeState.set(0)
-        prx = mc.ls(rID + "_*_pxGeo*")
+        prx = mc.ls(self.rigID + "_*_pxGeo*")
         if prx:
             mc.delete(prx)
 
@@ -400,8 +398,7 @@ class RigModule(RigBase):
     def add_ctl_set(self, tgtList):
         """Add control set for target controls"""
 
-        rID, rSz, xDr = self.getMyVar()
-        setName = rID + "_ctl_set"
+        setName = self.rigID + "_ctl_set"
         if DagNode(setName).exists():
             mc.sets(tgtList, add=setName)
         else:
@@ -572,7 +569,7 @@ class RigModule(RigBase):
         (bank > 0).setCdn(ifTrue=bank, ifFalse=0) >> outRollG.a.rz
 
     def build_digit_ik(self, ikTgt, scale=1, p=None):
-        """IK setup for single digit"""
+        """Build an IK setup for a digit (e.g., finger or toe) with a control and joints."""
 
         from nl_modules.nodel.ik_node import IkNode
 
@@ -898,6 +895,8 @@ class RigModule(RigBase):
         return autoWeight
 
     def ctl_vis_toggle(self, attr, onList=None, offList=None):
+        """Toggle visibility of controls based on the given attribute."""
+
         if onList:
             [attr >> ctl.a.v for ctl in onList]
         if offList:
@@ -919,6 +918,8 @@ class RigModule(RigBase):
     def build_motionPath_ribbon(
         self, rbSrf=None, jntNum=5, scaleAttr=None, stretchyAttr=None
     ):
+        """Build a motion path ribbon on the given surface with specified joint number"""
+
         rID, rSz, xDr = self.getMyVar()
         #
         #   create crv on srf & calc crv len ratio

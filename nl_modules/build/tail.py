@@ -65,7 +65,7 @@ class Tail(RigModule):
         """Build the tail rig."""
 
         rID, rSz, xDr = self.getMyVar()
-        self.build_module()
+        self.build_pre_module()
 
         # Create and register rbSrf
         self.rbSrf1 = self.create_rbSrf()
@@ -76,7 +76,7 @@ class Tail(RigModule):
         self.build_ik()
         self.build_fk()
         self.build_ribbon()
-        self.post_setup()
+        self.build_post()
 
     def create_rbSrf(self):
         """Create the ribbon surface for the tail rig."""
@@ -251,7 +251,7 @@ class Tail(RigModule):
         for ctl in self.fkCtl:
             ctl.a.ro.set(3)
 
-    def post_setup(self):
+    def build_post(self):
         """Post setup for the tail rig."""
 
         logging.info(self.rigID)
@@ -266,4 +266,4 @@ class Tail(RigModule):
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()
-        self.post_module()
+        self.build_post_module()

@@ -35,21 +35,29 @@ class NeckQd(SpineQd):
         self.rigNode.setMsg({"space_neck": self.anchorToRbj})
         self.rigNode.setMsg({"space_neckBase": self.base_ctl})
 
-    def post_setup(self):
-        """Post setup for the neck rig."""
-        logging.info(self.rigID)
+    def setup_bindJnt(self):
+        """Setup bind joints for the spine rig."""
 
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_ratio(self.bindJnts, 2)
 
+    def setup_ctlSet(self):
+        """Setup control sets for the neck rig."""
+
         ctls = self.ikCtls + [self.cog_ctl, self.setting]
         # ctls.remove(self.base_ctl)
         # ctls.remove(self.tangent0_ctl)
-
         self.add_ctl_set(ctls)
+
+    def build_post(self):
+        """Post setup for the neck rig."""
+
+        logging.info(self.rigID)
+        self.setup_bindJnt()
+        self.setup_ctlSet()
         self.setup_space()
         self.setup_anchor()
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()
-        self.post_module()
+        self.build_post_module()

@@ -79,7 +79,7 @@ class RbnNode:
         self.build_aim_chains(self.pf)
         self.build_twist_chains(self.pf)
         self.build_volume_setup()
-        self.post_setup()
+        self.build_post()
 
         if self.scaleFix:
             self.scaleFix >> self.ribbonG.a.s
@@ -395,7 +395,7 @@ class RbnNode:
         # mc.hide(self.all_ikHs)
         pass
 
-    def post_setup(self):
+    def build_post(self):
         """Post setup for the ribbon rig."""
         self.setup_rotate_order()
         self.setup_vis()

@@ -96,7 +96,7 @@ class SpineQd(RigModule):
     def build(self):
         rID, rSz, xDr = self.getMyVar()
 
-        self.build_module()
+        self.build_pre_module()
         mc.delete(self.rootJ)
         self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
         self.rbSrf = SrfNode.buildRbSrf(
@@ -120,7 +120,7 @@ class SpineQd(RigModule):
         )
         self.bindJnts = self.rbJnts
         self.build_volume(crvLenRatio)
-        self.post_setup()
+        self.build_post()
 
     def build_ik(self):
         rID, rSz, xDr = self.getMyVar()
@@ -231,7 +231,7 @@ class SpineQd(RigModule):
             }
         )
 
-    def post_setup(self):
+    def build_post(self):
         if self.RBN_JNT_NUM > 1:
             self.add_bind_jnt_set(self.bindJnts)
         self.add_ctl_set(self.ikCtls)
@@ -239,4 +239,4 @@ class SpineQd(RigModule):
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()
-        self.post_module()
+        self.build_post_module()

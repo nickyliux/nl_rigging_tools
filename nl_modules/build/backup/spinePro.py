@@ -46,7 +46,7 @@ class SpinePro(rig_module.RigModule):
 
     def build(self):
 
-        self.build_module()
+        self.build_pre_module()
 
         s = self.rigSize
 
@@ -86,7 +86,7 @@ class SpinePro(rig_module.RigModule):
         self.build_fk()
         self.build_spine()
         self.build_ribbon()
-        self.post_setup()
+        self.build_post()
 
     def build_fk(self):
         logging.info(self.rigID)
@@ -199,7 +199,7 @@ class SpinePro(rig_module.RigModule):
         self.spine_RB = spine_RB
         self.add_bind_jnt_set(spine_RB.rbJnt)
 
-    def post_setup(self):
+    def build_post(self):
 
         # [c.a.lockHide(t=1, r=1, s=1) for c in (self.fkCtl + self.ikCtl)]
         # self.cog_ctl.a.lockHide(t=1, r=1, s=1)
@@ -215,7 +215,7 @@ class SpinePro(rig_module.RigModule):
 
         self.setup_anchor()
 
-        self.post_module()
+        self.build_post_module()
 
     def setup_anchor(self):
         s = self.rigSize

@@ -113,12 +113,12 @@ class SpineQd(RigModule):
         )
 
     def build(self):
-        self.build_module()
+        self.build_pre_module()
         self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
         self.build_ctl()
         self.build_fk()
         self.build_ik(sliding=0)
-        self.post_setup()
+        self.build_post()
 
     def build_fk(self):
         rID, rSz, xDr = self.getMyVar()
@@ -398,7 +398,7 @@ class SpineQd(RigModule):
             }
         )
 
-    def post_setup(self):
+    def build_post(self):
         if self.RBN_JNT_NUM > 1:
             self.add_bind_jnt_set(self.bindJnts)
         self.add_ctl_set(self.ctls)
@@ -406,4 +406,4 @@ class SpineQd(RigModule):
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()
-        self.post_module()
+        self.build_post_module()

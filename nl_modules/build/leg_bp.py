@@ -7,7 +7,6 @@ from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.rbn_node import RbnNode
 from nl_modules.utils.color import Color
 from nl_modules.utils import common
 from nl_modules.utils import utils_node as ut
@@ -34,43 +33,39 @@ class LegBp(RigModule):
         ]:
             setattr(self, attr, self.get_guide_attr(attr))
 
+        self.setting = None
+
         self.FK_GRP = GrpNode("FK", pf=self.rigID, p=self.CTL_DATA)
         self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA)
         self.BF_GRP = GrpNode("BF", pf=self.rigID, p=self.CTL_DATA)
 
-        self.setting = None
+        self.jntNames = ["hip", "upr", "lwr", "palm", "ball", "tip"]
+        for name in self.jntNames:
+            setattr(self, f"{name}", None)
+            setattr(self, f"{name}_fkc", None)
+
         self.joints = []
         self.joints_fk = []
         self.joints_ik = []
         self.joints_bf = []
+
         self.jointsFix = None
-        self.hip = None
-        self.upr = None
-        self.lwr = None
-        self.palm = None
-        self.ball = None
-        self.tip = None
-        self.hip_fkc = None
-        self.upr_fkc = None
-        self.lwr_fkc = None
-        self.palm_fkc = None
-        self.ball_fkc = None
         self.pvc = None
         self.ikc = None
         self.smart_ctl = None
         self.pin_fkc = None
-        self.ikCtl = None
-        self.fkCtl = None
+        self.ikCtl = []
+        self.fkCtl = []
         self.toe_wiggle_grp = None
         self.ikc_gimbal = None
         self.pvc_line = None
         self.pvRota_line = None
         self.all_ikHs = []
-        self.all_bend = None
+        self.all_bend = []
         self.ikCstG = None
         self.subCtls = []
-        self.toesJntList = None
-        self.toesCtlsList = None
+        self.toesJntList = []
+        self.toesCtlsList = []
         self.toesRootJ = (
             rigNode.a["toesRootJ"].inConnNode if rigNode.a["toesRootJ"].exists() else []
         )
@@ -88,7 +83,7 @@ class LegBp(RigModule):
         """Generate the skeleton for the leg rig."""
 
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(["hip", "upr", "lwr", "palm", "ball", "tip"])
+        root_list = self.gen_sk_fr_names(self.jntNames)
 
         if self.toeBones:
             self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
@@ -139,7 +134,7 @@ class LegBp(RigModule):
     def build(self):
         """Build the leg rig module."""
 
-        self.build_module()
+        self.build_pre_module()
         self.joints = self.rootJ.allChildrenJt2
         self.hip, self.upr, self.lwr, self.palm, self.ball, self.tip = self.joints
 
@@ -184,7 +179,7 @@ class LegBp(RigModule):
         if self.toeBones:
             self.build_toes()
 
-        self.post_setup()
+        self.build_post()
 
     def build_fk(self):
         """Build the FK controls for the leg rig."""
@@ -623,7 +618,6 @@ class LegBp(RigModule):
             + self.subCtls
             + [self.setting, self.smart_ctl, self.pin_fkc]
         )
-
         if self.rbnBones:
             ctlSet.extend(self.all_bend)
 
@@ -632,22 +626,24 @@ class LegBp(RigModule):
 
         self.add_ctl_set(ctlSet)
 
-    def post_setup(self):
-        """Post setup for the leg rig module."""
-
-        logging.info(self.rigID)
-
         common.add_mirror_attr([self.ikc, self.ikc_gimbal, self.smart_ctl])
 
-        self.scale_setup()
-        self.ctlSet_setup()
+    def setup_bindJnt(self):
+        """Setup bind joints for the leg rig module."""
 
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_ratio(self.bindJnts, 2)
 
+    def build_post(self):
+        """Post setup for the leg rig module."""
+
+        logging.info(self.rigID)
+        self.scale_setup()
+        self.ctlSet_setup()
+        self.setup_bindJnt()
         self.setup_space()
         self.setup_anchor()
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()
-        self.post_module()
+        self.build_post_module()

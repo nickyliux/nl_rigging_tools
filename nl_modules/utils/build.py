@@ -141,7 +141,7 @@ def unbuildTgt(rigN):
         if state == 2:
             rigClass = rigN.a.rigClass.get()
             rigObj = eval(rigClass)(rigN)
-            rigObj.unbuild_module()
+            rigObj.unbuild_pre_module()
 
 
 @Undo("unbuildSelOrAll")
@@ -170,7 +170,7 @@ def deleteTgt(rigNode):
         if state == 2:
             rigClass = rigNode.a.rigClass.get()
             rigObj = eval(rigClass)(rigNode)
-            rigObj.unbuild_module()
+            rigObj.unbuild_pre_module()
         obj = mc.ls(rigID + "_*")
         if obj:
             mc.delete(obj)

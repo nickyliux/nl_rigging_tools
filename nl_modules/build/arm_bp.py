@@ -7,7 +7,6 @@ from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.rbn_node import RbnNode
 from nl_modules.utils import common
 from nl_modules.utils import utils_node as ut
 
@@ -22,12 +21,7 @@ class ArmBp(RigModule):
 
         super().__init__(rigNode)
 
-        for attr in [
-            "twistBones",
-            "rbnBones",
-            "rbnJntNum",
-            "scapularBone",
-        ]:
+        for attr in ["twistBones", "rbnBones", "rbnJntNum", "scapularBone"]:
             setattr(self, attr, self.get_guide_attr(attr))
 
         self.FK_GRP = GrpNode("FK", pf=self.rigID, p=self.CTL_DATA)
@@ -35,32 +29,32 @@ class ArmBp(RigModule):
         self.BF_GRP = GrpNode("BF", pf=self.rigID, p=self.CTL_DATA)
 
         self.setting = None
+
+        self.jntNames = ["clavicle", "upr", "lwr", "palm", "ball"]
+        for name in self.jntNames:
+            setattr(self, f"{name}", None)
+            setattr(self, f"{name}_fkc", None)
+
         self.joints = []
         self.joints_fk = []
         self.joints_ik = []
         self.joints_bf = []
-        self.clavicle = None
-        self.clavBone = None
-        self.upr = None
-        self.lwr = None
-        self.palm = None
-        self.ball = None
-        self.clavicle_fkc = None
-        self.upr_fkc = None
-        self.lwr_fkc = None
-        self.palm_fkc = None
-        self.pvc = None
+
         self.ikc = None
-        self.palm_ikc = None
+        self.pvc = None
         self.pin_fkc = None
+        self.palm_ikc = None
         self.ballRoll_loc = None
-        self.ikCtl = None
-        self.fkCtl = None
+
+        self.ikCtl = []
+        self.fkCtl = []
+
+        self.all_ikHs = []
+        self.all_bend = []
+        self.clavBone = None
         self.toe_wiggle_grp = None
         self.pvc_line = None
         self.pvRota_line = None
-        self.all_ikHs = None
-        self.all_bend = None
         self.ikCstG = None
         self.ikH1 = None
 
@@ -68,7 +62,7 @@ class ArmBp(RigModule):
         """Generate the skeleton for the arm rig."""
 
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(["clavicle", "upr", "lwr", "palm", "ball"])
+        root_list = self.gen_sk_fr_names(self.jntNames)
         self.rootJ = root_list[0]
         self.rootJ | self.SKL_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
@@ -101,7 +95,7 @@ class ArmBp(RigModule):
     def build(self):
         """Build the arm rig module."""
 
-        self.build_module()
+        self.build_pre_module()
         self.joints = self.rootJ.allChildrenJt2
         self.clavicle, self.upr, self.lwr, self.palm, self.ball = self.joints
         self.build_ctl()
@@ -121,7 +115,7 @@ class ArmBp(RigModule):
         if self.scapularBone:
             self.build_armScapular()
 
-        self.post_setup()
+        self.build_post()
 
     def build_fk(self):
         """Build the FK controls and joints for the arm rig."""
@@ -516,28 +510,37 @@ class ArmBp(RigModule):
             }
         )
 
-    def post_setup(self):
-        """Post setup for the arm rig."""
+    def setup_scale(self):
+        """Setup scale for the arm rig module."""
 
-        logging.info(self.rigID)
         self.masterC.a.globalScale >> self.SKL_DATA.a.scale
 
+    def setup_bindJnt(self):
+        """Setup bind joints for the arm rig module."""
+
         self.add_bind_jnt_set(self.bindJnts)
-        ARM_PROXY_RATIO = 2
-        self.add_proxy_ratio(self.bindJnts, ARM_PROXY_RATIO)
+        self.add_proxy_ratio(self.bindJnts, 2)
+
+    def setup_ctlSet(self):
+        """Setup control sets for the arm rig module."""
+
+        ctlSet = self.fkCtl + self.ikCtl + [self.setting, self.pin_fkc]
+        if self.rbnBones:
+            ctlSet.extend(self.all_bend)
+        self.add_ctl_set(ctlSet)
 
         common.add_mirror_attr([self.setting])
 
-        ctlSet = []
-        ctlSet.extend(self.fkCtl + self.ikCtl + [self.setting, self.pin_fkc])
+    def build_post(self):
+        """Post setup for the arm rig."""
 
-        if self.rbnBones:
-            ctlSet.extend(self.all_bend)
-
-        self.add_ctl_set(ctlSet)
+        logging.info(self.rigID)
+        self.setup_scale()
+        self.setup_bindJnt()
+        self.setup_ctlSet()
         self.setup_space()
         self.setup_anchor()
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()
-        self.post_module()
+        self.build_post_module()

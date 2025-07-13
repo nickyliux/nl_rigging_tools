@@ -37,31 +37,25 @@ class LegQd(RigModule):
         self.joints_fk = []
         self.joints_ik = []
         self.jointsFix = None
-        self.hip = None
-        self.upr = None
-        self.lwr = None
-        self.palm = None
-        self.ball = None
-        self.tip = None
-        self.hip_fkc = None
-        self.upr_fkc = None
-        self.lwr_fkc = None
-        self.palm_fkc = None
-        self.digit_fkc = None
-        self.ball_fkc = None
-        self.pvc = None
+
+        self.jntNames = ["hip", "upr", "lwr", "palm", "digit", "ball", "tip"]
+        for name in self.jntNames:
+            setattr(self, f"{name}", None)
+            setattr(self, f"{name}_fkc", None)
+
         self.ikc = None
+        self.pvc = None
         self.smart_ctl = None
-        self.ikCtl = None
-        self.fkCtl = None
+        self.ikCtl = []
+        self.fkCtl = []
         self.palmScale = None
         self.toe_wiggle_grp = None
         self.ikc_gimbal = None
         self.pvc_line = None
         self.pvRota_line = None
         self.all_ikH = {}
-        self.all_bend = None
         self.ikCstG = None
+        self.all_bend = []
         self.subCtls = []
         self.toesJntList = None
         self.toesCtlsList = None
@@ -76,9 +70,7 @@ class LegQd(RigModule):
         """Generate the skeleton for the quadruped leg rig."""
 
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(
-            ["hip", "upr", "lwr", "palm", "digit", "ball", "tip"]
-        )
+        root_list = self.gen_sk_fr_names(self.jntNames)
 
         if self.toeBones:
             self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
@@ -137,7 +129,7 @@ class LegQd(RigModule):
     def build(self):
         """Build the quadruped leg rig module."""
 
-        self.build_module()
+        self.build_pre_module()
         self.joints = self.rootJ.allChildrenJt2
         self.hip, self.upr, self.lwr, self.palm, self.digit, self.ball, self.tip = (
             self.joints
@@ -179,7 +171,7 @@ class LegQd(RigModule):
         if self.toeBones:
             self.build_toes()
 
-        self.post_setup()
+        self.build_post()
 
     def build_toes(self):
         """Build the toe joints and controls for the quadruped leg rig."""
@@ -651,7 +643,7 @@ class LegQd(RigModule):
 
         self.setup_anchor_module({"anchorF1": self.scapularG.offset})
 
-    def post_setup(self):
+    def build_post(self):
         """Post setup for the quadruped leg rig module."""
 
         logging.info(self.rigID)
@@ -679,4 +671,4 @@ class LegQd(RigModule):
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()
-        self.post_module()
+        self.build_post_module()

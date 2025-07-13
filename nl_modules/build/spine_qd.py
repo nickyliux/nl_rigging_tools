@@ -19,32 +19,32 @@ class SpineQd(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
-        self.endCtl = self.get_guide_attr("endCtl")
+        self.end_ctl = self.get_guide_attr("endCtl")
         self.rbnJntNum = self.get_guide_attr("rbnJntNum")
 
-        rID, rSz, xDr = self.getMyVar()
+        self.LINE_GUIDE = CrvNode(self.rigID + "_line_guide")
+        self.TP_GUIDE = DagNode(self.rigID + "_tp_guide")
+        self.MD_GUIDE = DagNode(self.rigID + "_md_guide")
+        self.RT_GUIDE = DagNode(self.rigID + "_rt_guide")
+        self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA, snap=self.RT_GUIDE)
 
-        self.LINE_GUIDE = CrvNode(rID + "_line_guide")
-        self.TP_GUIDE = DagNode(rID + "_tp_guide")
-        self.MD_GUIDE = DagNode(rID + "_md_guide")
-        self.RT_GUIDE = DagNode(rID + "_rt_guide")
-        self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
-
-        guide = DagNode(rID + "_base_pivot_guide")
+        guide = DagNode(self.rigID + "_base_pivot_guide")
         self.BASE_PVT_GUIDE = guide if guide.exists() else None
 
-        guide = DagNode(rID + "_end_jnt_guide")
+        guide = DagNode(self.rigID + "_end_jnt_guide")
         self.END_JNT_GUIDE = guide if guide.exists() else None
 
         self.setting = None
+
         self.cog_ctl = None
         self.fore_ctl = None
         self.mid_ctl = None
         self.base_ctl = None
         self.tangent0_ctl = None
         self.tangent1_ctl = None
-        self.endCtl = None
+        self.end_ctl = None
         self.end_jnt = None
+
         self.fkCtls = []
         self.ikCtls = []
         self.fkJnts = []
@@ -52,10 +52,10 @@ class SpineQd(RigModule):
         self.rbJnts = []
         self.spIkJnts = []
         self.bindJnts = []
+        self.twoIkJnts = []
+
         self.rbSrf = None
         self.rbCrv = None
-        self.two_ikJnts = []
-        self.two_ikH = None
         self.anchorToRbj = None
 
     def genSk(self):
@@ -84,7 +84,7 @@ class SpineQd(RigModule):
             ("tangent0_ctl", "arrow", "z", rSz, 1, -1),
             ("tangent1_ctl", "arrow", "z", rSz, 1, -1),
         ]
-        if self.endCtl:
+        if self.end_ctl:
             ctl_defs.append(("end_ctl", "circle", "x", rSz * 2, 0, -1))
 
         for name, shape, up, scale, top, w in ctl_defs:
@@ -107,7 +107,7 @@ class SpineQd(RigModule):
     def build(self):
         """Build the spine rig."""
 
-        self.build_module()
+        self.build_pre_module()
 
         mc.delete(self.rootJ)
         self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
@@ -119,7 +119,7 @@ class SpineQd(RigModule):
         self.build_ctl()
         self.build_ik()
         self.build_ribbon()
-        self.post_setup()
+        self.build_post()
 
     def build_ribbon(self):
         """Create the ribbon for the spine rig."""
@@ -272,7 +272,7 @@ class SpineQd(RigModule):
         #
         #   setup end_ctl & end_jnt
         #
-        if self.endCtl:
+        if self.end_ctl:
             self.end_jnt = JntNode(
                 "end",
                 pf=rID,
@@ -281,10 +281,10 @@ class SpineQd(RigModule):
                 alignR=rbJnts[0],
                 p=self.IK_GRP,
             )
-            self.endCtl.alignTo(self.END_JNT_GUIDE, p=self.base_ctl, addOfs=1)
-            self.endCtl.cstPar(self.end_jnt, mo=1)
+            self.end_ctl.alignTo(self.END_JNT_GUIDE, p=self.base_ctl, addOfs=1)
+            self.end_ctl.cstPar(self.end_jnt, mo=1)
             self.bindJnts.append(self.end_jnt)
-            # self.isolate_align(self.endCtl, spaces=[self.endCtl.parent, self.masterC])
+            # self.isolate_align(self.end_ctl, spaces=[self.end_ctl.parent, self.masterC])
 
         ikH.hide()
         return crvLenRatio, spIkJnts, rbJnts
@@ -296,7 +296,7 @@ class SpineQd(RigModule):
         #
         #   build chain from crv
         #
-        self.two_ikJnts = JntNode.makeTwoJC(
+        self.twoIkJnts = JntNode.makeTwoJC(
             "two_ikj",
             pf=rID,
             align=self.RT_GUIDE,
@@ -304,11 +304,9 @@ class SpineQd(RigModule):
             r=rSz * 20,
             p=self.base_ctl,
         )
-        j0, j1 = self.two_ikJnts
+        j0, j1 = self.twoIkJnts
 
-        self.two_ikH = IkNode(
-            "two_ikj", pf=rID, sj=j0, ee=j1, vis=0, p=self.tangent1_ctl
-        )
+        IkNode("two_ikj", pf=rID, sj=j0, ee=j1, vis=0, p=self.tangent1_ctl)
         j1.cstPoi(self.ikJnts[2])
         #
         #   ctl two jnt's scale
@@ -389,7 +387,7 @@ class SpineQd(RigModule):
             self.ikJnts,
             self.fkJnts,
             self.spIkJnts,
-            self.two_ikJnts,
+            self.twoIkJnts,
             self.anchorToRbj,
             # self.rbSrf,
             # self.rbCrv,
@@ -399,8 +397,8 @@ class SpineQd(RigModule):
         """Setup rotate order for the spine rig controls."""
 
         [ctl.a.ro.set(3) for ctl in [self.fore_ctl, self.base_ctl, self.cog_ctl]]
-        if self.endCtl:
-            self.endCtl.a.ro.set(3)
+        if self.end_ctl:
+            self.end_ctl.a.ro.set(3)
 
     def setup_channel(self):
         """Setup channel attributes for the spine rig controls."""
@@ -412,8 +410,8 @@ class SpineQd(RigModule):
         self.tangent0_ctl.a.showAttr("sz", r=1)
         self.tangent1_ctl.a.showAttr("sz", r=1)
 
-        if self.endCtl:
-            self.endCtl.a.showAttr(r=1)
+        if self.end_ctl:
+            self.end_ctl.a.showAttr(r=1)
 
         self.fore_ctl.add_as_proxy_attr(self.setting)
 
@@ -421,7 +419,7 @@ class SpineQd(RigModule):
         """Setup anchor points for the spine rig controls."""
 
         self.setup_anchor_module(
-            {"anchorM1": self.end_jnt if self.endCtl else self.rbJnts[0]}
+            {"anchorM1": self.end_jnt if self.end_ctl else self.rbJnts[0]}
         )
         self.setup_anchor_module({"anchorM2": self.anchorToRbj})
 
@@ -441,21 +439,29 @@ class SpineQd(RigModule):
 
         return self.__class__.__name__ == "NeckQd"
 
-    def post_setup(self):
-        """Post setup for the spine rig."""
+    def setup_ctlSets(self):
+        """Setup control sets for the spine rig."""
+        ctls = self.ikCtls + [self.cog_ctl, self.setting]
+        if self.end_ctl:
+            ctls.append(self.end_ctl)
 
-        logging.info(self.rigID)
+        self.add_ctl_set(ctls)
+
+    def setup_bindJnt(self):
+        """Setup bind joints for the spine rig."""
+
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_ratio(self.bindJnts, 5)
 
-        ctls = self.ikCtls + [self.cog_ctl, self.setting]
-        if self.endCtl:
-            ctls.append(self.endCtl)
+    def build_post(self):
+        """Post setup for the spine rig."""
 
-        self.add_ctl_set(ctls)
+        logging.info(self.rigID)
+        self.setup_bindJnt()
+        self.setup_ctlSets()
         self.setup_space()
         self.setup_anchor()
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()
-        self.post_module()
+        self.build_post_module()

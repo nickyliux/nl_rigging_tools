@@ -40,7 +40,7 @@ class SpineQdCrv(rig_module.RigModule):
 
     def build(self):
 
-        self.build_module()
+        self.build_pre_module()
 
         s = self.rigSize
         Y = Color.YELLOW
@@ -71,7 +71,7 @@ class SpineQdCrv(rig_module.RigModule):
         self.ctls = [self.cog_ctl, self.st_ctl, self.md_ctl, self.ed_ctl]
 
         self.tigerSpine()
-        self.post_setup()
+        self.build_post()
 
     def build_ctl_jnt(
         self,
@@ -187,7 +187,7 @@ class SpineQdCrv(rig_module.RigModule):
         anchorM1.hide()
         anchorM2.hide()
 
-    def post_setup(self):
+    def build_post(self):
 
         # PROXY MESH
         for j in self.rootJ.allChildrenJt2:
@@ -206,4 +206,4 @@ class SpineQdCrv(rig_module.RigModule):
 
         self.setup_anchor()
 
-        self.post_module()
+        self.build_post_module()

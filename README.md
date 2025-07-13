@@ -1,3 +1,15 @@
+<style>
+table {
+    border-collapse: collapse;
+}
+table, th, td {
+   border: 1px solid black;
+}
+blockquote {
+    border-left: solid blue;
+	padding-left: 10px;
+}
+</style>
 
 # nl-rigging-tools ( nlRT )  ![nlRT logo](install/nl_rigging_tools.bmp)  
 
@@ -55,18 +67,7 @@ Two Marking menus are made to speed up rigging work.
 |Rig Building |Ctrl + MMB|![The Autorig](nl_modules/doc/marking_menu_autorig.png)|
 |Daily Rigging Operations|Ctrl + Alt + MMB| ![General Rigging](nl_modules/doc/marking_menu_rigging.png)|
 
-<style>
-table {
-    border-collapse: collapse;
-}
-table, th, td {
-   border: 1px solid black;
-}
-blockquote {
-    border-left: solid blue;
-	padding-left: 10px;
-}
-</style>
+
 
 ## Development Environment
 | Maya | Python | OS |
@@ -79,7 +80,7 @@ The tool might work in 2022, but it is not tested.
 1. Download and extract repository
 2. In Maya, go to the shelf you want to have the icon added
 3. Drag and drop "install/dragAndDrop.py" onto viewport
-4. Click the icon to show the UI
+4. Click the icon to show the tool
 
 
 ## Reference
@@ -87,6 +88,5 @@ The tool might work in 2022, but it is not tested.
 
 2. [Python for Maya : Beginner to Advanced Rigging Automation by Nick Hughes](https://www.udemy.com/course/python-for-maya-beginner-to-advanced-rigging-automation)
 
-## More Info
-
-Visit my blog: [www.nickyliu.com](http://www.nickyliu.com)
+##
+For more details, visit my blog [www.nickyliu.com](http://www.nickyliu.com)
