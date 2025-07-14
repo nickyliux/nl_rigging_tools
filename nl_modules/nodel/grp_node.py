@@ -34,7 +34,7 @@ class GrpNode(DagNode):
         name = pf + node + sf
 
         if name:
-            DagNode.__init__(self, name)
+            super().__init__(name)
             if not mc.objExists(name):
                 self.createNode(
                     name,
@@ -77,11 +77,13 @@ class GrpNode(DagNode):
 
     def cv_move(self, *args, **kwargs):
         """Move all cvs of the curve"""
+
         kwargs = kwargs or {"r": 1}
         mc.move(*args, self.cvs, **kwargs)
 
     def cv_moveTo(self, pos):
         """Move all cvs of the curve to the specified position"""
+
         if isinstance(pos, (tuple, list)):
             wsPos = self.o.pos
             vec = (pos[0] - wsPos[0], pos[1] - wsPos[1], pos[2] - wsPos[2])
@@ -89,10 +91,12 @@ class GrpNode(DagNode):
 
     def cv_drop(self):
         """Drop all cvs of the curve to the ground"""
+
         self.cv_move(0, -self.o.bb0[1], 0)
 
     def cv_rotate(self, *args, **kwargs):
         """Rotate all cvs of the curve"""
+
         kwargs = kwargs or {"r": 1}
         if len(args) == 1:
             mc.rotate(args[0], 0, 0, self.cvs, **kwargs)
@@ -101,6 +105,7 @@ class GrpNode(DagNode):
 
     def cv_scale(self, *args, atCVCetner=0, **kwargs):
         """Scale all cvs of the curve"""
+
         kwargs = kwargs or {"r": 1}
 
         if atCVCetner:
@@ -120,6 +125,7 @@ class GrpNode(DagNode):
 
     def add_gimbal(self, relScale=0.8, attrTgt=None, dv=0):
         """Add a gimbal control to the curve"""
+
         gmb_ctl = self.duplicate(n=self.node + "_gmb")
         gmb_ctl | self
         gmb_ctl.cv_scale(relScale, atCVCetner=1)
@@ -129,6 +135,7 @@ class GrpNode(DagNode):
 
     def shape_saveToLib(self, dictList, name):
         """Save the shape to a JSON file in the library"""
+
         f = f"{SHAPE_PATH}/{name}.json"
 
         file.saveJson(f, dictList, force=True)
@@ -136,11 +143,13 @@ class GrpNode(DagNode):
 
     def shape_getDictListFrLib(self, name):
         """Get the shape dictionary list from the library by name"""
+
         f = f"{SHAPE_PATH}/{name}.json"
         return file.loadJson(f)
 
     def shape_getDictListFrObj(self, crv):
         """Get the shape dictionary list from the curve object"""
+
         dictList = []
         shapes = mc.listRelatives(crv, s=1)
 
@@ -165,6 +174,7 @@ class GrpNode(DagNode):
 
     def shape_buildFrDictList(self, dictList, name, xf=None):
         """Build curves from a list of dictionaries and return a group node"""
+
         xf = xf or mc.createNode("transform", n=name)
 
         for i, crvShapeDict in enumerate(dictList):
@@ -199,7 +209,6 @@ class GrpNode(DagNode):
         e.g.
             CrvNode('a') >= CrvNode('b')    # copy to another
         """
-        # if isinstance(crv, GrpNode):
         self >> crv
         crv.uninstanceFromOthers()
 
@@ -218,8 +227,6 @@ class GrpNode(DagNode):
 
         elif typeName == "GrpNode":  # another curve
             crv.copyShapeAsInst([self])
-
-        # self.color = self.getSideColor()
 
     def __rshift__(self, crv):
         """Copy shape to preset/another
@@ -270,6 +277,7 @@ class GrpNode(DagNode):
 
     def uninstanceFromOthers(self):
         """Un-instance this shape from all other instances"""
+
         otherXf = self.uninstance_all()
         if otherXf:
             dup = self.duplicate()
@@ -277,6 +285,7 @@ class GrpNode(DagNode):
 
     def uninstance_all(self):
         """Un-instance all instances of this shape"""
+
         tgtShape = self.shape
         allXf = mc.listRelatives(tgtShape, ap=1)
         otherXf = []
@@ -297,11 +306,13 @@ class GrpNode(DagNode):
     @property
     def cvs(self):
         """Return all cvs of the curve"""
+
         return mc.ls(self + ".cv[*]", fl=1)
 
     @property
     def width(self):
         """Return the line width of the shape"""
+
         if self.shape:
             return self.shape.a.lineWidth
         else:
@@ -309,18 +320,21 @@ class GrpNode(DagNode):
 
     @width.setter
     def width(self, w):
-        """Set line width"""
+        """Set the line width of the shape"""
+
         if self.shape:
             self.shape.a.lineWidth.set(w)
 
     def show_local_axis(self, state):
         """Show or hide the local axis of the group node"""
+
         attr = self.a["displayLocalAxis"]
         if attr.exists():
             attr.set(state)
 
     def add_as_proxy_attr(self, src=None):
         """Add proxy attributes from source node"""
+
         if src and src.exists():
             attrs = src.a.list(ud=1, u=1)
             for attr in attrs:

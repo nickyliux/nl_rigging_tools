@@ -8,29 +8,34 @@ class MshNode(DagNode):
     """Mesh node class."""
 
     def __init__(self, node):
-        DagNode.__init__(self, node)
+        """Initialize the mesh node."""
 
+        super().__init__(node)
         if mc.nodeType(node) == "mesh":
             self.node = self.parent
 
     @property
     def verts(self):
         """Return the vertices of the mesh"""
+
         return mc.ls(self + ".vtx[*]", fl=1)
 
     @property
     def edges(self):
         """Return the edges of the mesh"""
+
         return mc.ls(self + ".e[*]", fl=1)
 
     @property
     def faces(self):
         """Return the faces of the mesh"""
+
         return mc.ls(self + ".f[*]", fl=1)
 
     @property
     def skinCluster(self):
         """Return the skinCluster connected to the mesh"""
+
         skinClu = mel.eval(f'findRelatedSkinCluster "{self}"')
         if skinClu == "":
             return None
@@ -38,33 +43,42 @@ class MshNode(DagNode):
 
     def delSkin(self):
         """Delete the skinCluster connected to the mesh"""
+
         sc = self.skinCluster
         if sc:
-            sc.delete()
-            return 1
+            try:
+                sc.delete()
+            except RuntimeError:
+                mc.warning(f"Failed to delete skinCluster: {sc}")
+                return 1
         return 0
 
     @property
     def joints(self):
         """Return the joints connected to the skinCluster of the mesh"""
+
         if self.skinCluster.exists():
             return [DagNode(i) for i in mc.skinCluster(self.skinCluster, q=1, inf=1)]
 
     def weightTo(self, joints, **kwargs):
         """Apply skin weights to the mesh"""
+
         if self.exists():
             mc.skinCluster(self, joints, **kwargs)
 
     def softWeightTo(self, joints, rui=0, mi=3, tsb=1, dr=2, **kwargs):
         """Apply soft skin weights to the mesh"""
+
         self.weightTo(joints, rui=rui, mi=mi, tsb=tsb, dr=dr, **kwargs)
 
     def hardWeightTo(self, joints):
         """Apply hard skin weights to the mesh"""
+
         self.weightTo(joints, rui=0, mi=1, tsb=1, dr=0.1)
 
     def copyWeightsTo(self, items):
         """Copy skin weights from this mesh to other meshes"""
+
         if self.skinCluster.exists():
             items = items if isinstance(items, (list, tuple)) else [items]
             for item in [MshNode(i) for i in items]:
@@ -82,10 +96,12 @@ class MshNode(DagNode):
 
     def copyWeightsFr(self, item):
         """Copy skin weights from another mesh to this mesh"""
+
         MshNode(item).copyWeightsTo(self)
 
     def deleteTweaks(self):
         """Delete all tweak nodes connected to the mesh"""
+
         if self.exists():
             tweaks = list(
                 set([i.name for i in self.history if mc.nodeType(i.name) == "tweak"])

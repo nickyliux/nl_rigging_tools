@@ -27,8 +27,7 @@ class JntNode(GrpNode):
         if DagNode(pf + node + sf).exists():
             nodeExists = 1
 
-        GrpNode.__init__(
-            self,
+        super().__init__(
             node,
             nodeType="joint",
             pf=pf,
@@ -89,56 +88,63 @@ class JntNode(GrpNode):
 
     def addProxyMesh(self, scale=1, scaler=None, aimDir=(1, 0, 0), skipEnd=0, p=None):
         """Add a proxy mesh for the joint."""
-
         from nl_modules.utils import common
 
-        name = self.name + "_pxGeo"
-        if DagNode(name).exists():
-            return
+        proxy_name = f"{self.name}_pxGeo"
+        if DagNode(proxy_name).exists():
+            return None
 
-        proxyRatioValue = self.a["proxyRatio"].get() or 1
-        proxyDivValue = self.a["proxyDiv"].get() or 2
+        # Get proxy attributes with fallback defaults
+        proxy_ratio = self.a["proxyRatio"].get() or 1
+        proxy_div = self.a["proxyDiv"].get() or 2
 
-        child = self.childrenJt
-        size = self.a.radius.get() * 5 * scale
+        children = self.childrenJt
+        base_radius = self.a.radius.get() * 5 * scale
 
-        if child or (not skipEnd):
+        # Only create proxy if joint has children or is not an end joint
+        if children or not skipEnd:
+            # Determine proxy height: distance to first child or default size
+            if children:
+                height = self.o.distanceTo(children[0])
+            else:
+                height = base_radius
 
-            dist = self.o.distanceTo(child[0]) if child else size
+            # Create the proxy mesh (polyCylinder)
             proxy = DagNode(
                 mc.polyCylinder(
-                    n=name,
-                    r=size / 2 * proxyRatioValue,
-                    h=dist * 0.9,
+                    n=proxy_name,
+                    r=base_radius / 2 * proxy_ratio,
+                    h=height * 0.9,
                     ax=aimDir,
-                    subdivisionsAxis=8,  # subdivisionsCaps=1,
-                    subdivisionsHeight=proxyDivValue,
+                    subdivisionsAxis=8,
+                    subdivisionsHeight=proxy_div,
                     ch=0,
                 )[0]
             )
             proxy.alignTo(self, p=p)
-            proxyOfs = proxy.addOffsetGrp()
+            proxy_offset = proxy.addOffsetGrp()
 
-            if scaler:
+            # Optionally connect scaler
+            if scaler is not None:
                 scaler >> proxy.a.s
 
-            if len(child) >= 1:
-                tgtChild = child[0]
-                common.cstMulti(self, tgtChild, proxyOfs, cstType="poi", delete=1)
-                tgtChild.cstAim(
-                    proxyOfs,
+            # If there is a child, set up constraints for orientation
+            if children:
+                tgt_child = children[0]
+                common.cstMulti(self, tgt_child, proxy_offset, cstType="poi", delete=1)
+                tgt_child.cstAim(
+                    proxy_offset,
                     aim=aimDir,
                     worldUpType="objectrotation",
                     worldUpObject=self,
                     keep=0,
                 )
-            #
-            #   NOTE:  constraint must be after shader assignment,
-            #   otherwise mc.sets(..) will show error
-            #
+
+            # Assign shader before constraints to avoid Maya errors
             common.assignPresetShd([proxy])
-            self.cstParSca(proxyOfs, mo=1)
+            self.cstParSca(proxy_offset, mo=1)
             return proxy
+        return None
 
     @staticmethod
     def makeTwoJC(

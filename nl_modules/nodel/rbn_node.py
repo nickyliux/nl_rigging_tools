@@ -19,7 +19,7 @@ class RbnNode:
         tgt,
         pf="",
         rbJNum=5,
-        volMode=1,  # lower
+        volMode=1,  # 1: lower, 0: upper
         scaleFix=None,
         forSpine=0,
         size=1,
@@ -36,6 +36,7 @@ class RbnNode:
         self.d = None
         self.ribbonP = p
         self.ribbonG = None
+
         self.BSE_GRP = None
         self.CTL_GRP = None
         self.JNT_GRP = None
@@ -59,7 +60,6 @@ class RbnNode:
         self.stt_twistJ = None
         self.end_twistJ = None
 
-        # self.volPower = None
         self.autoVol = 0
         self.volType = 0
         self.forSpine = forSpine
@@ -73,6 +73,7 @@ class RbnNode:
 
     def build(self):
         """Build the ribbon rig."""
+
         self.build_grps(self.pf)
         self.build_surf(self.pf)
         self.build_locs(self.pf)
@@ -87,6 +88,7 @@ class RbnNode:
 
     def build_grps(self, pf):
         """Create the main groups for the ribbon rig."""
+
         self.ribbonG = GrpNode("ribbon", pf=pf, p=self.ribbonP)
         self.BSE_GRP = GrpNode("bse", pf=pf, p=self.ribbonG)
         self.JNT_GRP = GrpNode("jnt", pf=pf, p=self.ribbonG)
@@ -95,6 +97,7 @@ class RbnNode:
 
     def build_surf(self, pf):
         """Create the surface for the ribbon rig."""
+
         logging.info(f"Building {self.pf} surface")
 
         xDr = self.xDir
@@ -141,6 +144,7 @@ class RbnNode:
 
     def build_locs(self, pf):
         """Create locators for the start, middle, and end of the ribbon."""
+
         logging.info(f"Building {self.pf} locators")
 
         offset = self.D / 4
@@ -164,6 +168,7 @@ class RbnNode:
 
     def build_aim_chains(self, pf):
         """Create aim chains for the start, middle, and end of the ribbon."""
+
         logging.info(f"Building {self.pf} aim chains")
 
         g = self.AIM_GRP
@@ -262,6 +267,7 @@ class RbnNode:
 
     def build_twist_chains(self, pf):
         """Create twist chains for the start and end of the ribbon."""
+
         logging.info(f"Building {self.pf} twist chains")
 
         ofsX = self.D / 10 * self.xDir
@@ -338,6 +344,7 @@ class RbnNode:
 
     def build_volume_setup(self):
         """Set up the volume control for the ribbon rig."""
+
         logging.info(f"Building {self.pf} volume setup")
 
         arcLD = ut.arcLenDim_(self.surf)
@@ -377,16 +384,20 @@ class RbnNode:
 
     def setup_rotate_order(self):
         """Set up the rotate order for the start, middle, and end joints."""
+
         for j in (self.stt_loc, self.end_loc, self.stt_twistJ, self.end_twistJ):
             j.a.rotateOrder.set(1)  # yzx
 
     def setup_vis(self):
+        """Set up visibility for the ribbon rig."""
+
         # mc.hide(self.BSE_GRP, self.AIM_GRP, self.CTL_GRP)
         # mc.hide(self.all_ikHs)
         pass
 
     def build_post(self):
         """Post setup for the ribbon rig."""
+
         self.setup_rotate_order()
         self.setup_vis()
 

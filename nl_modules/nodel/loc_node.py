@@ -21,8 +21,9 @@ class LocNode(GrpNode):
         matchOfs=None,
         vis=1,
     ):
-        GrpNode.__init__(
-            self,
+        """Initialize the locator node."""
+
+        super().__init__(
             node,
             pf=pf,
             sf=sf,
@@ -32,6 +33,8 @@ class LocNode(GrpNode):
             addOfs=addOfs,
             p=p,
         )
+
+        # Create the locator shape if it doesn't exist
         if not self.shape:
             loc = DagNode(mc.spaceLocator()[0])
             mc.parent(loc.shape, self, r=1, s=1)
@@ -41,11 +44,14 @@ class LocNode(GrpNode):
         self.color = color or 0
         self.localScale(size or 1)
 
-        if matchOfs:
+        if matchOfs is not None:
             mc.move(*matchOfs, self, objectSpace=1, r=1)
+
+        # Set visibility
         if not vis:
             mc.hide(self)
 
     def localScale(self, val):
         """Set the local scale of the locator."""
-        self.shape.a.localScale.set(val, val, val)
+
+        self.shape.a["localScale"].set(val, val, val)

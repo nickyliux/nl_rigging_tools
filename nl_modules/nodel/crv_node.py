@@ -1,6 +1,4 @@
-from platform import node
 import maya.cmds as mc
-
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.base.dep_node import DepNode
 from nl_modules.nodel.grp_node import GrpNode
@@ -38,12 +36,7 @@ class CrvNode(GrpNode):
         up="",
         top=0,
     ):
-        # thisName = pf + node + sf
-        # if DagNode(thisName).exists():
-        #     return
-
-        GrpNode.__init__(
-            self,
+        super().__init__(
             node,
             pf=pf,
             sf=sf,
@@ -58,11 +51,6 @@ class CrvNode(GrpNode):
             if shape:
                 crvDictList = self.shape_getDictListFrLib(shape)
                 self.shape_buildFrDictList(crvDictList, self.name, xf=self)
-            # else:
-            #     obj = DagNode(mc.circle(nr=(0, 1, 0), r=10, ch=0)[0])
-            #     parentedSh = mc.parent(obj.shape, self, r=1, s=1)[0]
-            #     mc.rename(parentedSh, self.name + "Shape#")
-            #     mc.delete(obj)
 
             self.color = color or self.get_side_color()
             self.dspType = dspType
@@ -112,6 +100,7 @@ class CrvNode(GrpNode):
     @property
     def length(self):
         """Return the length of the curve"""
+
         return mc.arclen(self)
 
     @staticmethod
@@ -168,6 +157,7 @@ class CrvNode(GrpNode):
         tgt1=None, tgt2=None, pf="", width=-1, inheritXf=0, dspType=0, p=None
     ):
         """Build a line between two target objects or positions."""
+
         tgt1 = DagNode(tgt1)
         tgt2 = DagNode(tgt2)
         line = CrvNode.buildLine(
@@ -195,6 +185,7 @@ class CrvNode(GrpNode):
     @staticmethod
     def buildLineLinkedSel():
         """Build linked lines from selected objects"""
+
         selList = mc.ls(sl=1, tr=1)
         for obj1, obj2 in zip(selList[:-1], selList[1:]):
             CrvNode.buildLineLinked(tgt1=obj1, tgt2=obj2)
@@ -202,6 +193,7 @@ class CrvNode(GrpNode):
 
     def weightTo(self, joints, weightDir=0, **kwargs):
         """Assign weights to the curve's CVs based on the provided joints."""
+
         if self.exists():
             skin_clu = mc.skinCluster(self, joints, **kwargs)[0]
 
@@ -250,6 +242,7 @@ class CrvNode(GrpNode):
         **kwargs,
     ):
         """Call the CrvNode to set its properties and return itself"""
+
         if name:
             if pf:
                 pf += "_"
@@ -282,11 +275,13 @@ class CrvNode(GrpNode):
 
     def reverse(self):
         """Reverse the curve direction"""
+
         mc.reverseCurve(self, ch=0, rpo=1)
         return self
 
     def rebuild(self, spans=3, deg=3):
         """Rebuild the curve with specified spans and degree"""
+
         mc.rebuildCurve(
             self,
             rpo=1,
@@ -302,6 +297,7 @@ class CrvNode(GrpNode):
 
     def lowerCubeFrontCV(self, up="z"):
         """Lower the front CVs of the cube"""
+
         ids = [1, 12, 15, 16]
         cvs = [self.shape + f".cv[{id}]" for id in ids]
         mc.move(0, -self.o.height / 3, 0, cvs, os=1, r=1)

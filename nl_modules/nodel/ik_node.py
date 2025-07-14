@@ -66,7 +66,8 @@ class IkNode(DagNode):
         if not mc.objExists(sj1) or not mc.objExists(ee1):
             logging.warning(f"Missing joint {sj1} & {ee1}. Can't create IK")
             return
-        DagNode.__init__(self, name)
+
+        super().__init__(name)
 
         self.sj = DagNode(sj1)
         self.ee = DagNode(ee1)
@@ -95,7 +96,7 @@ class IkNode(DagNode):
         self.localStretch = limbScale
         self.xDir = 1 if self.ee.a.tx.get() > 0 else -1
         self.RIG_DATA = RIG_DATA
-        if vis == 0:
+        if not vis:
             mc.hide(self)
         self
 
@@ -139,6 +140,7 @@ class IkNode(DagNode):
 
     def calcChainLen(self):
         """Calculate the length of the joint chain"""
+
         d = 0
         for i in range(1, len(self.jnt)):
             d += self.jnt[i].o.distanceTo(self.jnt[i - 1])
@@ -146,6 +148,7 @@ class IkNode(DagNode):
 
     def getCrv(self):
         """Get the curve associated with the IK handle"""
+
         if self.solver == Solver.SPLINE:
             crvSh = self.a.inCurve.inConnNode
             return CrvNode(crvSh.parent)
@@ -302,6 +305,7 @@ class IkNode(DagNode):
 
     def addSoft(self, d=None, ratio=None, softParent=None):
         """Add a soft IK setup to the IK handle."""
+
         from nl_modules.nodel.jnt_node import JntNode
 
         softJ = JntNode.makeTwoJC2(
@@ -335,6 +339,7 @@ class IkNode(DagNode):
 
     def build_pvfkPinSetup(self, ikTarget=None):
         """Build a pole vector FK pin setup for the IK handle."""
+
         from nl_modules.nodel.jnt_node import JntNode
 
         pvChainJ = JntNode.makeTwoJC2(

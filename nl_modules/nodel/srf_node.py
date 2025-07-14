@@ -2,6 +2,7 @@ import logging
 import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.utils.color import Color
 
 
 class SrfNode(GrpNode):
@@ -24,8 +25,7 @@ class SrfNode(GrpNode):
         lr=1,
         d=3,
     ):
-        GrpNode.__init__(
-            self,
+        super().__init__(
             node,
             pf=pf,
             sf=sf,
@@ -40,27 +40,29 @@ class SrfNode(GrpNode):
                 mc.nurbsPlane(ax=ax, w=size, lr=lr, d=d, v=vSeg, u=uSeg, ch=0)[0]
             )
             parentedSh = mc.parent(surfObj.shape, self, r=1, s=1)[0]
-            mc.rename(parentedSh, self.name + "Shape#")
+            mc.rename(parentedSh, f"{self.name}Shape#")
             mc.delete(surfObj)
             self.uSeg = uSeg
             self.vSeg = vSeg
             self.degU = d
 
         elif self.type == "nurbsSurface":
-            self.uSeg = self.shape.a.spansU.get()
-            self.vSeg = self.shape.a.spansV.get()
-            self.degU = self.shape.a.degreeU.get()
+            self.uSeg = self.shape.a["spansU"].get()
+            self.vSeg = self.shape.a["spansV"].get()
+            self.degU = self.shape.a["degreeU"].get()
         else:
             logging.info("Non nurbsSurface detected.")
 
     @property
     def cvs(self):
         """Return all CVs"""
+
         return mc.ls(self + ".cv[*]", fl=1)
 
     @property
     def patches(self):
         """Return all patches"""
+
         return mc.ls(self + ".sf[*][*]", fl=1)
 
     @property
@@ -71,10 +73,12 @@ class SrfNode(GrpNode):
     @property
     def lengthV(self):
         """Return length in V"""
+
         return mc.arclen(self.shape + ".u[0]")
 
     def weightTo(self, joints, chain=1, **kwargs):
         """Weight surface to joints"""
+
         if self.exists():
             skin_clu = mc.skinCluster(self, joints, tsb=1, **kwargs)[0]
             #
@@ -119,6 +123,7 @@ class SrfNode(GrpNode):
     @staticmethod
     def moveCloseToSurf(objList, surf=None):
         """Move objects close to surface"""
+
         if objList and surf:
             xf = DagNode("myXf#", nodeType="transform")
             cpos = DagNode("myCPOS#", nodeType="closestPointOnSurface")
@@ -136,6 +141,7 @@ class SrfNode(GrpNode):
     @staticmethod
     def buildRbSrf(pf="", crv=None, normal=0, snap=None, spans=3, p=None):
         """Build ribbon surface from curve"""
+
         from nl_modules.nodel.crv_node import CrvNode
 
         crvLen = CrvNode(crv).length
@@ -167,16 +173,15 @@ class SrfNode(GrpNode):
         rigData=None,
         normalize=1,
         sklData=None,
-        color=4,
+        color=Color.D_RED,
     ):
         """Build ribbon joints from surface"""
+
         from nl_modules.nodel.jnt_node import JntNode
         from nl_modules.utils import common
 
         if num > 1:
-            coord = []
-            for i in range(num):
-                coord.append((0.5, i / (num - 1)))
+            coord = [(0.5, i / (num - 1)) for i in range(num)]
 
             pin, pinXf = common.nlRivet(
                 geo=surf,
@@ -187,7 +192,7 @@ class SrfNode(GrpNode):
                 tangent=1,
             )
 
-            returnJnt = []
+            rbJnts = []
             for i, loc in enumerate(pinXf):
                 jnt = JntNode(
                     f"{i}_rbj",
@@ -198,6 +203,6 @@ class SrfNode(GrpNode):
                     p=sklData,
                 )
                 loc.cstPar(jnt)
-                returnJnt.append(jnt)
+                rbJnts.append(jnt)
 
-            return returnJnt
+            return rbJnts
