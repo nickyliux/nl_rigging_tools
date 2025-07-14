@@ -16,13 +16,12 @@ class LegBp(RigModule):
     """Quadruped leg rig module class, inherits from RigModule."""
 
     def __init__(self, rigNode):
-
-        if isinstance(rigNode, str):
-            rigNode = DagNode(rigNode)
-
+        # Accept DagNode or string for rigNode
+        rigNode = DagNode(rigNode) if isinstance(rigNode, str) else rigNode
         super().__init__(rigNode)
 
-        for attr in [
+        # Guide attributes
+        guide_attrs = [
             "rbnBones",
             "rbnJntNum",
             "patellaBone",
@@ -30,42 +29,48 @@ class LegBp(RigModule):
             "twistBones",
             "kneeFix",
             "scapularExtra",
-        ]:
+        ]
+        for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
 
         self.setting = None
 
+        # Groups
         self.FK_GRP = GrpNode("FK", pf=self.rigID, p=self.CTL_DATA)
         self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA)
         self.BF_GRP = GrpNode("BF", pf=self.rigID, p=self.CTL_DATA)
 
+        # Joint names and attributes
         self.jntNames = ["hip", "upr", "lwr", "palm", "ball", "tip"]
         for name in self.jntNames:
-            setattr(self, f"{name}", None)
+            setattr(self, name, None)
             setattr(self, f"{name}_fkc", None)
 
+        # Joint and control lists
         self.joints = []
         self.joints_fk = []
         self.joints_ik = []
         self.joints_bf = []
+        self.ikCtl = []
+        self.fkCtl = []
+        self.all_ikHs = []
+        self.all_bend = []
+        self.subCtls = []
+        self.toesJntList = []
+        self.toesCtlsList = []
+        self.toeIKHs = []
 
+        # IK/FK/Blend/Other attributes
         self.jointsFix = None
         self.pvc = None
         self.ikc = None
         self.smart_ctl = None
         self.pin_fkc = None
-        self.ikCtl = []
-        self.fkCtl = []
         self.toe_wiggle_grp = None
         self.ikc_gimbal = None
         self.pvc_line = None
         self.pvRota_line = None
-        self.all_ikHs = []
-        self.all_bend = []
         self.ikCstG = None
-        self.subCtls = []
-        self.toesJntList = []
-        self.toesCtlsList = []
         self.toesRootJ = (
             rigNode.a["toesRootJ"].inConnNode if rigNode.a["toesRootJ"].exists() else []
         )
@@ -75,7 +80,6 @@ class LegBp(RigModule):
         self.patellaJ = None
         self.ribbonUp = None
         self.ribbonLw = None
-        self.toeIKHs = []
         self.scapularG = None
         self.scap_fkc = None
 
@@ -596,7 +600,7 @@ class LegBp(RigModule):
 
         self.setup_anchor_module({"anchorF1": self.scapularG.offset})
 
-    def scale_setup(self):
+    def setup_scale(self):
         """Setup scaling for the leg rig controls."""
 
         self.masterC.a.globalScale >> self.RIG_DATA.a.s
@@ -609,7 +613,7 @@ class LegBp(RigModule):
         palmScale >> self.palm.a.s
         palmScale >> self.ikc.a.s
 
-    def ctlSet_setup(self):
+    def setup_ctlSet(self):
         """Setup control sets for the leg rig module."""
 
         ctlSet = (
@@ -638,8 +642,8 @@ class LegBp(RigModule):
         """Post setup for the leg rig module."""
 
         logging.info(self.rigID)
-        self.scale_setup()
-        self.ctlSet_setup()
+        self.setup_scale()
+        self.setup_ctlSet()
         self.setup_bindJnt()
         self.setup_space()
         self.setup_anchor()

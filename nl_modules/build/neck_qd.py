@@ -3,9 +3,13 @@ from nl_modules.build.spine_qd import SpineQd
 
 
 class NeckQd(SpineQd):
-    """NeckQd class for building a neck rig with quick setup features."""
+    """
+    NeckQd class for building a neck rig with quick setup features.
+    Inherits from SpineQd and customizes anchor, space, bind joint, and control set setup.
+    """
 
     def __init__(self, rigNode):
+        """Initialize the NeckQd rig module."""
         super().__init__(rigNode)
 
     def setup_anchor(self):
@@ -22,21 +26,22 @@ class NeckQd(SpineQd):
         """Setup the space switching for the neck rig."""
 
         self.fore_ctl.a.add("spaceType", dv=2, k=0, cb=0)
-        self.rigNode.setMsg({"spaceHolder1": self.fore_ctl})
-        spaces = "neckBase, COG, master"
-        self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
-
-        # self.cog_ctl.a.add("spaceType", dv=1, k=0, cb=0)
         self.base_ctl.a.add("spaceType", dv=1, k=0, cb=0)
-        self.rigNode.setMsg({"spaceHolder2": self.base_ctl})
-        spaces = "chest, COG, master"
-        self.rigNode.a.add("spaceName2", attrType="string", txt=spaces)
 
-        self.rigNode.setMsg({"space_neck": self.anchorToRbj})
-        self.rigNode.setMsg({"space_neckBase": self.base_ctl})
+        self.rigNode.a.add("spaceName1", attrType="string", txt="neckBase, COG, master")
+        self.rigNode.a.add("spaceName2", attrType="string", txt="chest, COG, master")
+
+        self.rigNode.setMsg(
+            {
+                "spaceHolder1": self.fore_ctl,
+                "spaceHolder2": self.base_ctl,
+                "space_neck": self.anchorToRbj,
+                "space_neckBase": self.base_ctl,
+            }
+        )
 
     def setup_bindJnt(self):
-        """Setup bind joints for the spine rig."""
+        """Setup bind joints for the neck rig."""
 
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_ratio(self.bindJnts, 2)
@@ -50,7 +55,7 @@ class NeckQd(SpineQd):
         self.add_ctl_set(ctls)
 
     def build_post(self):
-        """Post setup for the neck rig."""
+        """Post-setup for the neck rig."""
 
         logging.info(self.rigID)
         self.setup_bindJnt()

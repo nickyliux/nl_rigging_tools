@@ -10,11 +10,13 @@ class Head(RigModule):
 
         super().__init__(rigNode)
 
+        # Joint names and attributes
         self.jntNames = ["head", "jaw", "lf_eye", "rt_eye"]
         for name in self.jntNames:
-            setattr(self, f"{name}", None)
+            setattr(self, name, None)
             setattr(self, f"{name}_fkc", None)
 
+        # Main attributes
         self.joints = []
         self.fkCtl = []
         self.rootJ = None

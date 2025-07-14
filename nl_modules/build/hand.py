@@ -2,7 +2,6 @@ import logging
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
-from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.utils import common
 from nl_modules.utils import maths
 
@@ -15,13 +14,14 @@ class Hand(RigModule):
 
         super().__init__(rigNode)
 
+        # Finger and control lists
         self.finger_jnts = []
         self.finger_ctls = []
         self.fgrRoot_ctls = []
-
         self.allIkJ = []
         self.allIkH = []
 
+        # Main controls/groups
         self.smart_ctl = None
         self.hand_grp = None
 

@@ -15,42 +15,44 @@ class ArmBp(RigModule):
     """Arm rig module class, inherits from RigModule."""
 
     def __init__(self, rigNode):
-
-        if isinstance(rigNode, str):
-            rigNode = DagNode(rigNode)
-
+        # Accept DagNode or string for rigNode
+        rigNode = DagNode(rigNode) if isinstance(rigNode, str) else rigNode
         super().__init__(rigNode)
 
-        for attr in ["twistBones", "rbnBones", "rbnJntNum", "scapularBone"]:
+        # Guide attributes
+        guide_attrs = ["twistBones", "rbnBones", "rbnJntNum", "scapularBone"]
+        for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
 
+        # Groups
         self.FK_GRP = GrpNode("FK", pf=self.rigID, p=self.CTL_DATA)
         self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA)
         self.BF_GRP = GrpNode("BF", pf=self.rigID, p=self.CTL_DATA)
 
         self.setting = None
 
+        # Joint names and attributes
         self.jntNames = ["clavicle", "upr", "lwr", "palm", "ball"]
         for name in self.jntNames:
-            setattr(self, f"{name}", None)
+            setattr(self, name, None)
             setattr(self, f"{name}_fkc", None)
 
+        # Joint and control lists
         self.joints = []
         self.joints_fk = []
         self.joints_ik = []
         self.joints_bf = []
+        self.ikCtl = []
+        self.fkCtl = []
+        self.all_ikHs = []
+        self.all_bend = []
 
+        # IK/FK/Blend/Other attributes
         self.ikc = None
         self.pvc = None
         self.pin_fkc = None
         self.palm_ikc = None
         self.ballRoll_loc = None
-
-        self.ikCtl = []
-        self.fkCtl = []
-
-        self.all_ikHs = []
-        self.all_bend = []
         self.clavBone = None
         self.toe_wiggle_grp = None
         self.pvc_line = None

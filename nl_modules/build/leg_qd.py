@@ -14,57 +14,68 @@ class LegQd(RigModule):
     """Quadruped leg rig module class, inherits from RigModule."""
 
     def __init__(self, rigNode):
+        # Accept both DagNode and string for rigNode
         if isinstance(rigNode, str):
             rigNode = DagNode(rigNode)
 
         super().__init__(rigNode)
 
-        for attr in [
+        # Guide attributes
+        guide_attrs = [
             "patellaBone",
             "toeBones",
             "toeNum",
             "twistBones",
             "kneeFix",
             "scapularExtra",
-        ]:
+        ]
+        for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
 
+        # Group nodes
         self.FK_GRP = GrpNode("FK", pf=self.rigID, p=self.CTL_DATA)
         self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA)
 
+        # Main rig attributes
         self.setting = None
         self.joints = []
         self.joints_fk = []
         self.joints_ik = []
         self.jointsFix = None
 
+        # Joint names and related attributes
         self.jntNames = ["hip", "upr", "lwr", "palm", "digit", "ball", "tip"]
         for name in self.jntNames:
-            setattr(self, f"{name}", None)
+            setattr(self, name, None)
             setattr(self, f"{name}_fkc", None)
 
+        # Controls and groups
         self.ikc = None
         self.pvc = None
         self.smart_ctl = None
         self.ikCtl = []
         self.fkCtl = []
+        self.subCtls = []
         self.palmScale = None
         self.toe_wiggle_grp = None
         self.ikc_gimbal = None
         self.pvc_line = None
         self.pvRota_line = None
-        self.all_ikH = {}
         self.ikCstG = None
-        self.all_bend = []
-        self.subCtls = []
-        self.toesJntList = None
-        self.toesCtlsList = None
-        self.toesRootJ = rigNode.a.toesRootJ.inConnNode
-        self.ikH1 = None
         self.ballG_ikc = None
         self.extra_ikc = None
         self.scapularG = None
         self.quadScap_ikc = None
+        self.all_ikH = {}
+        self.all_bend = []
+
+        # Toes and digits
+        self.toesJntList = None
+        self.toesCtlsList = None
+        self.toesRootJ = rigNode.a.toesRootJ.inConnNode
+
+        # IK handles and helpers
+        self.ikH1 = None
 
     def genSk(self):
         """Generate the skeleton for the quadruped leg rig."""
@@ -643,17 +654,9 @@ class LegQd(RigModule):
 
         self.setup_anchor_module({"anchorF1": self.scapularG.offset})
 
-    def build_post(self):
-        """Post setup for the quadruped leg rig module."""
+    def setup_ctlSet(self):
+        """Setup control sets for the quadruped leg rig module."""
 
-        logging.info(self.rigID)
-
-        self.masterC.a.globalScale >> self.SKL_DATA.a.scale
-
-        self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_ratio(self.bindJnts, 2.5)
-
-        common.add_mirror_attr([self.ikc, self.ikc_gimbal, self.pvc, self.smart_ctl])
         ctlSet = (
             self.fkCtl
             + self.ikCtl
@@ -666,6 +669,25 @@ class LegQd(RigModule):
             [ctlSet.extend(s) for s in self.toesCtlsList or []]
         self.add_ctl_set(ctlSet)
 
+    def setup_bindJnt(self):
+        """Setup bind joints for the quadruped leg rig module."""
+
+        self.add_bind_jnt_set(self.bindJnts)
+        self.add_proxy_ratio(self.bindJnts, 2.5)
+
+    def setup_scale(self):
+        """Setup scale for the quadruped leg rig module."""
+
+        self.masterC.a.globalScale >> self.SKL_DATA.a.scale
+
+    def build_post(self):
+        """Post setup for the quadruped leg rig module."""
+
+        logging.info(self.rigID)
+        common.add_mirror_attr([self.ikc, self.ikc_gimbal, self.pvc, self.smart_ctl])
+        self.setup_scale()
+        self.setup_bindJnt()
+        self.setup_ctlSet()
         self.setup_space()
         self.setup_anchor()
         self.setup_vis()
