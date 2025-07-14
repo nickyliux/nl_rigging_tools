@@ -1,32 +1,27 @@
-"""
-File: nl_rigging_tools.py
-Author: Nicky Liu
-Date: 2024-07-09
-Version: 0.1.0a
-Contact: nickyliux@gmail.com / www.nickyliu.com
-Description: Main file to load Qt UI file and connected functions
-Dependency:
-    maya.cmds
-    nl_modules (internal)
-"""
-
+# --- Standard Library ---
 import logging
 import os
-import maya.cmds as mc
-import maya.mel as mel
 from functools import partial
 from importlib import reload
+
+# --- Maya ---
+import maya.cmds as mc
+import maya.mel as mel
+
+# --- Internal Modules ---
 import nl_modules
-from nl_modules.utils import reload_all
-from nl_modules.utils import common
-from nl_modules.utils import file
-from nl_modules.utils import guide
-from nl_modules.utils import log
-from nl_modules.utils import model
-from nl_modules.utils import build
-from nl_modules.utils import proxy
-from nl_modules.utils import control
-from nl_modules.utils import skin
+from nl_modules.utils import (
+    reload_all,
+    common,
+    file,
+    guide,
+    log,
+    model,
+    build,
+    proxy,
+    control,
+    skin,
+)
 from nl_modules.utils.color import Color
 
 reload(reload_all)
@@ -34,20 +29,18 @@ reload(reload_all)
 from PySide2 import QtWidgets
 from PySide2.QtGui import QIcon
 from PySide2.QtUiTools import QUiLoader
+from PySide2.QtWidgets import QMenuBar, QMenu, QAction
 
-from PySide2.QtWidgets import QMenuBar
-from PySide2.QtWidgets import QMenu
-from PySide2.QtWidgets import QAction
-
+# --- Maya UI ---
 from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
 
+# --- Node Classes ---
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
-from nl_modules.nodel.msh_node import MshNode
 
-# Must keep for valid call eval(cls)
+# --- Component Classes (for eval(cls)) ---
 from nl_modules.build.leg_bp import LegBp
 from nl_modules.build.hand import Hand
 from nl_modules.build.arm_bp import ArmBp
@@ -60,18 +53,17 @@ from nl_modules.build.spine_qd import SpineQd
 from nl_modules.build.tail_fk import TailFk
 from nl_modules.build.tail import Tail
 
+# --- Logging ---
+reload(reload_all)
 log.update_root_logger()
 
+# --- Paths ---
 MOD_DIR = os.path.dirname(nl_modules.__file__)
-
-
-SHAPE_PATH = MOD_DIR + "/build/shapes"
-LIGHT_PATH = MOD_DIR + "/build/others"
-UI_PATH = MOD_DIR + "/nl_rigging_tools.ui"
-
-LIGHTING_FILE = LIGHT_PATH + "/lighting3.ma"
-SHADER_FILE = LIGHT_PATH + "/bone_SHD.ma"
-
+SHAPE_PATH = os.path.join(MOD_DIR, "build", "shapes")
+LIGHT_PATH = os.path.join(MOD_DIR, "build", "others")
+UI_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.ui")
+LIGHTING_FILE = os.path.join(LIGHT_PATH, "lighting3.ma")
+SHADER_FILE = os.path.join(LIGHT_PATH, "bone_SHD.ma")
 BIND_JNT_SET = "bind_jnt_set"
 MODEL_GRP = "mdl_grp"
 
