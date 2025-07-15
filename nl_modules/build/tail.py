@@ -14,27 +14,31 @@ class Tail(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
+        # --- Guide attributes ---
         self.fkBoneNum = self.get_guide_attr("fkBoneNum")
-        self.rbnBones = self.get_guide_attr("rbnBones")
+        # self.rbnBones = self.get_guide_attr("rbnBones")
         self.rbnJntNum = self.get_guide_attr("rbnJntNum")
 
-        rID, rSz, xDr = self.getMyVar()
-        self.LINE_GUIDE = CrvNode(rID + "_line_guide")
-        self.RT_GUIDE = CrvNode(rID + "_rt_guide")
-        self.FK_GRP = GrpNode("FK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
-        self.IK_GRP = GrpNode("IK", pf=rID, p=self.CTL_DATA, snap=self.RT_GUIDE)
+        # --- Naming and group setup ---
+        self.LINE_GUIDE = CrvNode(f"{self.rigID}_line_guide")
+        self.RT_GUIDE = CrvNode(f"{self.rigID}_rt_guide")
+        self.FK_GRP = GrpNode("FK", pf=self.rigID, p=self.CTL_DATA, snap=self.RT_GUIDE)
+        self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA, snap=self.RT_GUIDE)
 
+        # --- Main rig attributes ---
         self.setting = None
         self.rbSrf1 = None
         self.rbSrf2 = None
-        self.fkCtl = []
-        self.fkJnt = []
-        self.ikCtl = []
-        self.ikJnt = []
-        self.ofsCtl = []
-        self.ofsJnt = []
-        self.rbJnt = []
-        self.bindJnts = []
+
+        # --- Control and joint lists ---
+        self.fkCtl = []  # FK controls
+        self.fkJnt = []  # FK joints
+        self.ikCtl = []  # IK controls
+        self.ikJnt = []  # IK joints
+        self.ofsCtl = []  # Offset controls
+        self.ofsJnt = []  # Offset joints
+        self.rbJnt = []  # Ribbon joints
+        self.bindJnts = []  # Bind joints
 
     def genSk(self):
         """Generate the skeleton for the tail rig."""
@@ -52,19 +56,18 @@ class Tail(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         ctl_defs = [
-            ("setting", "cross", "z", rSz, 1, 2),
+            ("setting", "bagua", "z", rSz * 2, 1, 2),
         ]
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        self.setting.cv_move(0, rSz * 50, 0)
+        # self.setting.cv_move(0, rSz * 50, 0)
         self.setting.a.add("stretchy", min=0, max=1)
         self.setting.a.add("localScale", min=0.01, dv=1)
 
     def build(self):
         """Build the tail rig."""
 
-        rID, rSz, xDr = self.getMyVar()
         self.build_pre_module()
 
         # Create and register rbSrf
@@ -107,6 +110,8 @@ class Tail(RigModule):
 
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
+
+        # --- Create IK joint chain from guide curve ---
         self.ikJnt = JntNode.createJntFrCrv(
             self.LINE_GUIDE,
             num=5,
@@ -117,9 +122,12 @@ class Tail(RigModule):
             wuV=(0, 1, 0),
             size=rSz,
         )
+
+        # --- Attach ribbon surface weights to IK joints ---
         SrfNode(self.rbSrf1).weightTo(self.ikJnt, mi=4, dr=6, chain=0)
 
-        for i in range(0, 5):
+        # --- Create and parent IK controls ---
+        for i in range(5):
             ctl = CrvNode(
                 f"{i}_ikc",
                 pf=rID,
@@ -133,9 +141,9 @@ class Tail(RigModule):
             self.ikCtl.append(ctl)
             if i > 0:
                 ctl.offset | self.ikCtl[0]
-
             self.rigNode.setMsg({f"ikc{i}": ctl})
 
+        # --- Snap setting control to first IK control and constrain ---
         self.setting.snapTo(self.ikCtl[0], p=self.FK_GRP)
         self.ikCtl[0].cstPar(self.setting, mo=1)
 
@@ -144,9 +152,8 @@ class Tail(RigModule):
 
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
-        #
-        #   build fkJ
-        #
+
+        # --- Build FK joint chain from guide curve ---
         self.fkJnt = JntNode.createJntFrCrv(
             self.LINE_GUIDE,
             num=self.fkBoneNum + 1,
@@ -157,26 +164,26 @@ class Tail(RigModule):
             size=rSz,
             p=self.FK_GRP,
         )
-        #
-        #   build pins for fkCtl
-        #
-        coord = []
-        for i in range(self.fkBoneNum + 1):
-            coord.append((0.5, i / self.fkBoneNum))
 
+        # --- Build pin constraints for FK controls ---
+        coord = [(0.5, i / self.fkBoneNum) for i in range(self.fkBoneNum + 1)]
         pin, pinXf = common.nlRivet(geo=self.rbSrf1, coordList=coord, p=self.RIG_DATA)
-        #
-        #   build fkCtls
-        #
+
+        # --- Create FK controls and register ---
         for i in range(self.fkBoneNum + 1):
             ctl = CrvNode(
-                f"{i}_fkc", pf=rID, shape="squR", up="z", scale=rSz, align=self.fkJnt[i]
+                f"{i}_fkc",
+                pf=rID,
+                shape="cubeL",
+                up="-z",
+                scale=rSz,
+                top=1,
+                align=self.fkJnt[i],
             )
             self.rigNode.setMsg({f"fkc{i}": ctl})
             self.fkCtl.append(ctl)
-        #
-        #   build group chain
-        #
+
+        # --- Build group chain and connect pins ---
         chainGrps = []
         lastGrp = self.FK_GRP
         for i in range(self.fkBoneNum + 1):
@@ -185,19 +192,15 @@ class Tail(RigModule):
             chainGrps.append(grp)
             lastGrp = grp
 
+        # --- Build FK with controls ---
         self.build_fk_with_ctl3(self.fkJnt, self.fkCtl, p=self.FK_GRP)
-        #
-        #   cnnnect chain grps to fkCtl offset
-        #
-        # for ctl in self.fkCtl:
-        #     ctl.addOffsetGrp()
 
+        # --- Connect chain groups to FK control offsets ---
         for i in range(self.fkBoneNum + 1):
             chainGrps[i].a.t >> self.fkCtl[i].offset.a.t
             chainGrps[i].a.r >> self.fkCtl[i].offset.a.r
-        #
-        #   build offset ctl layer
-        #
+
+        # --- Build offset control layer ---
         for i in range(self.fkBoneNum + 1):
             ctl = CrvNode(
                 f"{i}_ofs_ctl",
@@ -206,17 +209,16 @@ class Tail(RigModule):
                 scale=rSz / 2,
                 align=self.fkCtl[i],
                 p=self.fkCtl[i],
-                moveY=rSz * 25,
             )
+            # moveY=rSz * 25,
             jnt = JntNode(f"{i}_ofs_jnt", pf=rID, align=ctl, p=ctl)
-
             self.ofsCtl.append(ctl)
             self.ofsJnt.append(jnt)
 
+        # --- Attach ribbon surface weights to offset joints ---
         SrfNode(self.rbSrf2).weightTo(self.ofsJnt, chain=0, mi=2, dr=6)
-        # self.fkCtl[-1].a.add("stretchy", proxy=self.setting.a.stretchy)
-        # self.isolate_align(self.ikCtl[0], [self.ikCtl[0].offset, self.masterC])
 
+        # --- Cleanup and update root joint ---
         mc.delete(self.rootJ)
         self.rootJ = self.fkJnt[0]
         self.rigNode.setMsg({"rootJ": self.rootJ})
@@ -251,17 +253,29 @@ class Tail(RigModule):
         for ctl in self.fkCtl:
             ctl.a.ro.set(3)
 
-    def build_post(self):
-        """Post setup for the tail rig."""
-
-        logging.info(self.rigID)
+    def setup_scale(self):
+        """Setup scale attributes for the tail rig controls."""
 
         self.setting.a["localScale"] >> self.IK_GRP.a.s
         self.setting.a["localScale"] >> self.FK_GRP.a.s
 
-        self.add_bind_jnt_set(self.bindJnts)
+    def setup_ctlSet(self):
+        """Setup control sets for the tail rig controls."""
 
         self.add_ctl_set(self.ikCtl + self.fkCtl + self.ofsCtl + [self.setting])
+
+    def setup_bindJnt(self):
+        """Setup bind joints for the tail rig controls."""
+
+        self.add_bind_jnt_set(self.bindJnts)
+
+    def build_post(self):
+        """Post setup for the tail rig."""
+
+        logging.info(self.rigID)
+        self.setup_scale()
+        self.setup_bindJnt()
+        self.setup_ctlSet()
         self.setup_anchor_module({"anchorF1": self.ikCtl[0].offset.offset})
         self.setup_vis()
         self.setup_channel()
