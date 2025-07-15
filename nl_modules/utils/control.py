@@ -39,7 +39,7 @@ def mirrorCtlShape(ctl):
     myGrp = GrpNode("myG", align=mg, snap=dup)
     dup | myGrp
 
-    if dup.a.wsMirror.exists():
+    if dup.a["wsMirror"].exists():
         myGrp.a.sx.set(-1)
     else:
         myGrp.a.s.set(-1, -1, -1)

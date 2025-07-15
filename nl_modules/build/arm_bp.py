@@ -77,11 +77,11 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "cross", "z", scale, 1, 2),
-            ("clavicle_fkc", "stickC", None, scale, 0, -1),
-            ("upr_fkc", "cubeL", "x", scale * 2, 0, -1),
-            ("lwr_fkc", "cubeL", "x", scale * 2, 0, -1),
-            ("palm_fkc", "cubeL", "x", scale * 2, 0, -1),
+            ("setting", "diamond", None, scale * 2, 1, 2),
+            ("clavicle_fkc", "stickC", None, scale, 1, -1),
+            ("upr_fkc", "cubeL", "x", scale * 2, 1, -1),
+            ("lwr_fkc", "cubeL", "x", scale * 2, 1, -1),
+            ("palm_fkc", "cubeL", "x", scale * 2, 1, -1),
             ("ikc", "trapezoid", None, scale * 1.5, 0, -1),
             ("palm_ikc", "squR", "x", scale * 1.2, 0, -1),
             ("pvc", "diamond", None, scale, 0, -1),
@@ -110,6 +110,7 @@ class ArmBp(RigModule):
 
         if self.rbnBones:
             self.build_ribbon()
+            self.twistBones = 0
 
         if self.twistBones:
             self.build_twist_bones()
@@ -404,8 +405,7 @@ class ArmBp(RigModule):
 
         self.all_bend = [upr_bend, lwr_bend, mid_bend]
         for ctl in self.all_bend:
-            ctl(shape="squR", up="x", color=22, scale=rSz)
-            # ctl.a.rotateOrder.set(1)  # yzx
+            ctl(shape="ribbon", up="x", scale=rSz, color=0)
 
         # Setup constraints for bend controls
         upLoc.cstPar(upr_bend.offset, mo=1)
@@ -446,12 +446,14 @@ class ArmBp(RigModule):
         )
         if self.rbnBones:
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyCtl", attrType="bool", dv=0),
+                self.setting.a.add("bendyCtl", attrType="bool", dv=1),
                 onList=self.all_bend,
             )
 
         self.ikc.a.v >> self.palm_ikc.a.v
-        mc.hide(self.all_ikHs, self.joints_fk, self.joints_ik, self.joints_bf)
+        mc.hide(
+            self.all_ikHs, self.joints_fk, self.joints_ik, self.joints_bf, self.SKL_DATA
+        )
 
     def setup_channel(self):
         """Setup channel attributes for the arm rig controls."""
@@ -534,12 +536,12 @@ class ArmBp(RigModule):
             ctlSet.extend(self.all_bend)
         self.add_ctl_set(ctlSet)
 
-        common.add_mirror_attr([self.setting])
-
     def build_post(self):
         """Post setup for the arm rig."""
 
         logging.info(self.rigID)
+        common.add_mirror_attr([self.setting, self.pvc])
+
         self.setup_scale()
         self.setup_bindJnt()
         self.setup_ctlSet()

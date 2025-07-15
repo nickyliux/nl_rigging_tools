@@ -131,7 +131,7 @@ def copyGuideAttr(A, B, wsMirror=0, mirror=0, skipMasterXf=0):
         sx, sy, sz = A.a.s.get()
         if mirror:
             tx *= -1
-            if wsMirror or A.a.wsMirror.exists():
+            if wsMirror or A.a["wsMirror"].exists():
                 ry *= -1
                 rz *= -1
             else:

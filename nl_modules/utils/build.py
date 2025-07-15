@@ -1,7 +1,7 @@
 import logging
 import maya.cmds as mc
-from nl_modules.utils import common
 from nl_modules.nodel.base.dag_node import DagNode
+from nl_modules.utils import common, proxy
 
 #
 #   Require for eval(rigClass)
@@ -104,6 +104,7 @@ def buildSelOrAll(*arg):
             buildTgt(rigN)
         addProxyAttrsToMaster()
         postRig()
+        proxy.genProxy()
 
 
 def postRig():
@@ -134,7 +135,7 @@ def addProxyAttrsToMaster():
         proxyVis >> PRX.a.v
 
         OPTIONS = "Normal:Template:Reference"
-        proxyDsp = m2.a.add("proxyDsp", attrType="enum", k=0, en=OPTIONS)  # , dv=2)
+        proxyDsp = m2.a.add("proxyDsp", attrType="enum", k=0, en=OPTIONS, dv=2)
         proxyDsp >> PRX.a.overrideDisplayType
 
 
