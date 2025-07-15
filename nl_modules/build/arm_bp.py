@@ -9,6 +9,7 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
 from nl_modules.utils import utils_node as ut
+from nl_modules.utils.color import Color
 
 
 class ArmBp(RigModule):
@@ -124,8 +125,8 @@ class ArmBp(RigModule):
         """Build the FK controls and joints for the arm rig."""
 
         logging.info(self.rigID)
-        self.joints_fk = common.extractSk(
-            self.joints, "_fk", p=self.FK_GRP, r=self.rigSize
+        self.joints_fk = common.dupSk(
+            self.joints, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
         )
         self.fkCtl = [self.clavicle_fkc, self.upr_fkc, self.lwr_fkc, self.palm_fkc]
 
@@ -147,7 +148,9 @@ class ArmBp(RigModule):
         self.pvc.alignTo(pvc_guide)
 
         # Create IK joints
-        self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_GRP, r=rSz)
+        self.joints_ik = common.dupSk(
+            self.joints, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.RED
+        )
 
         # Create IK handle
         ikH1 = IkNode(
@@ -229,7 +232,9 @@ class ArmBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
         # Extract blend joints
-        self.joints_bf = common.extractSk(self.joints, "_bf", p=self.BF_GRP, r=rSz)
+        self.joints_bf = common.dupSk(
+            self.joints, "_bf", p=self.BF_GRP, r=rSz * 4, color=Color.D_YELLOW
+        )
 
         # Create palm and ball roll locators
         palmIn_guide = DagNode(f"{rID}_palmIn_guide")
@@ -261,8 +266,9 @@ class ArmBp(RigModule):
             bfj = self.joints_bf[i]
             jnt = self.joints[i]
             if i > 0:
-                ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> bfj.a.t
-                ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
+                common.cstMulti(fkj, ikj, bfj, w=fkIkBlend)
+                # ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> bfj.a.t
+                # ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
 
             if i == 0:
                 self.clavicle_fkc.cstPar(jnt, mo=1)
@@ -405,9 +411,8 @@ class ArmBp(RigModule):
 
         self.all_bend = [upr_bend, lwr_bend, mid_bend]
         for ctl in self.all_bend:
-            ctl(shape="ribbon", up="x", scale=rSz, color=0)
+            ctl(shape="ribbon", up="x", scale=rSz)
 
-        # Setup constraints for bend controls
         upLoc.cstPar(upr_bend.offset, mo=1)
         lwLoc.cstPar(lwr_bend.offset, mo=1)
         upr_bend.cstParSca(upLoc.children[0], mo=1)
@@ -432,14 +437,16 @@ class ArmBp(RigModule):
         self.removeInBindJnts([self.upr, self.lwr])
         self.bindJnts.extend(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
+        return [ribbonUp, ribbonLw]
+
     def setup_vis(self):
         """Setup visibility toggles for the arm rig controls."""
 
-        self.ctl_vis_toggle(
-            self.setting.a["fkIkBlend"],
-            onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
-            offList=self.fkCtl[1:],
-        )
+        # self.ctl_vis_toggle(
+        #     self.setting.a["fkIkBlend"],
+        #     onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
+        #     offList=self.fkCtl[1:],
+        # )
         self.ctl_vis_toggle(
             self.pvc.a["fkPin"],
             onList=[self.pin_fkc],
@@ -451,9 +458,10 @@ class ArmBp(RigModule):
             )
 
         self.ikc.a.v >> self.palm_ikc.a.v
-        mc.hide(
-            self.all_ikHs, self.joints_fk, self.joints_ik, self.joints_bf, self.SKL_DATA
-        )
+        # mc.hide(self.all_ikHs)
+        # mc.hide(
+        #      self.joints_fk, self.joints_ik, self.joints_bf, self.SKL_DATA
+        # )
 
     def setup_channel(self):
         """Setup channel attributes for the arm rig controls."""

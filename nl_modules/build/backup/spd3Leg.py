@@ -87,7 +87,7 @@ class Spd3Leg(rig_module.RigModule):
     def build_fk(self):
         logging.info(".")
 
-        self.joints_fk = common.extractSk(self.joints, "_fk", p=self.FK_SETUP)
+        self.joints_fk = common.dupSk(self.joints, "_fk", p=self.FK_SETUP)
 
         # for ctl, jnt in zip(self.fkCtl, self.joints_fk):
         #     ctl.alignTo(jnt)
@@ -106,7 +106,7 @@ class Spd3Leg(rig_module.RigModule):
         ikc = self.main_ikc
         pvc = self.main_pvc
 
-        self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_SETUP)
+        self.joints_ik = common.dupSk(self.joints, "_ik", p=self.IK_SETUP)
 
         ikH1 = IkNode(
             "1",

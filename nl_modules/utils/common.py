@@ -313,7 +313,7 @@ def makeChain(start, end, count=5):
         return chain
 
 
-def extractSk(jntList, sf="", p=None, color=None, r=1):
+def dupSk(jntList, sf="", p=None, color=None, r=1):
     """Extract joint chain with suffix
     e.g.
         fkJList = extractSk(jointList, sf='_fk)

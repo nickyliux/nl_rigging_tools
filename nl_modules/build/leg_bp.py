@@ -7,9 +7,9 @@ from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.utils.color import Color
 from nl_modules.utils import common
 from nl_modules.utils import utils_node as ut
+from nl_modules.utils.color import Color
 
 
 class LegBp(RigModule):
@@ -119,7 +119,7 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "cross", "z", scale, 1, 2),
+            ("setting", "diamond", None, scale * 2, 1, 2),
             ("hip_fkc", "cubeL", "x", scale, 1, -1),
             ("upr_fkc", "cubeL", "x", scale, 1, -1),
             ("lwr_fkc", "cubeL", "x", scale, 1, -1),
@@ -168,7 +168,8 @@ class LegBp(RigModule):
         )
 
         if self.rbnBones:
-            self.build_ribbon()
+            self.ribbonUp, self.ribbonLw = self.build_ribbon()
+            self.twistBones = 0
 
         if self.kneeFix:
             self.boneFix_setup(self.lwr, self.palm)
@@ -190,8 +191,8 @@ class LegBp(RigModule):
         """Build the FK controls for the leg rig."""
 
         logging.info(self.rigID)
-        self.joints_fk = common.extractSk(
-            self.joints, "_fk", p=self.FK_GRP, r=self.rigSize
+        self.joints_fk = common.dupSk(
+            self.joints, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
         )
         self.fkCtl = [
             self.hip_fkc,
@@ -218,7 +219,9 @@ class LegBp(RigModule):
 
         self.ikc.alignTo(mg)
         self.pvc.alignTo(pvc_guide)
-        self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_GRP, r=rSz)
+        self.joints_ik = common.dupSk(
+            self.joints, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.RED
+        )
 
         ikH1 = IkNode(
             "1",
@@ -308,8 +311,8 @@ class LegBp(RigModule):
         """Blend FK and IK controls for the leg rig."""
 
         logging.info(self.rigID)
-        self.joints_bf = common.extractSk(
-            self.joints, "_bf", p=self.BF_GRP, r=self.rigSize
+        self.joints_bf = common.dupSk(
+            self.joints, "_bf", p=self.BF_GRP, r=self.rigSize * 4, color=Color.D_YELLOW
         )
 
         self.setting.snapTo(self.hip, p=self.CTL_DATA)
@@ -324,11 +327,10 @@ class LegBp(RigModule):
             ikj = self.joints_ik[i]
             bfj = self.joints_bf[i]
             jnt = self.joints[i]
-            # common.cstMulti(fkj, ikj, bfj, w=fkIkBlend)
             if i > 0:
-                # ut.blendN_(fkj.a.tx, ikj.a.tx, w=fkIkBlend) >> bfj.a.tx
-                ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> bfj.a.t
-                ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
+                common.cstMulti(fkj, ikj, bfj, w=fkIkBlend)
+                # ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> bfj.a.t
+                # ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
 
             if i == 0:
                 self.hip_fkc.cstPar(jnt, mo=1)
@@ -496,8 +498,7 @@ class LegBp(RigModule):
 
         self.all_bend = [upr_bend, lwr_bend, mid_bend]
         for ctl in self.all_bend:
-            ctl(shape="squR", up="x", color=Color.D_YELLOW, scale=rSz)
-            # ctl.a.rotateOrder.set(1)  # yzx
+            ctl(shape="ribbon", up="x", scale=rSz)
 
         upLoc.cstPar(upr_bend.offset, mo=1)
         lwLoc.cstPar(lwr_bend.offset, mo=1)
@@ -512,7 +513,7 @@ class LegBp(RigModule):
         if self.kneeFix:
             self.boneFix_sdk(self.lwr, stt_ofs[1])
 
-        # add volType attr to setting
+        # Add volume attributes to setting
         autoVol = self.setting.a.add("autoVol")
         autoVol >> ribbonUp.autoVol
         autoVol >> ribbonLw.autoVol
@@ -523,8 +524,11 @@ class LegBp(RigModule):
         volType >> ribbonUp.volType
         volType >> ribbonLw.volType
 
+        # Update bind joints
         self.removeInBindJnts([self.upr, self.lwr])
         self.bindJnts.extend(ribbonUp.rbJnt + ribbonLw.rbJnt)
+
+        return [ribbonUp, ribbonLw]
 
     def setup_vis(self):
         """Setup visibility for the leg rig controls."""
@@ -545,7 +549,7 @@ class LegBp(RigModule):
                 onList=self.all_bend,
             )
         mc.hide(self.all_ikHs, self.toeIKHs)
-        mc.hide(self.joints_fk, self.joints_ik, self.joints_bf)
+        # mc.hide(self.joints_fk, self.joints_ik, self.joints_bf, self.SKL_DATA)
 
     def setup_channel(self):
         """Setup channels for the leg rig controls."""

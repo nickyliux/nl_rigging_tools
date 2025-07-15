@@ -202,9 +202,7 @@ class LegQd(RigModule):
         """Build the FK controls and joints for the quadruped leg rig."""
 
         logging.info(self.rigID)
-        self.joints_fk = common.extractSk(
-            self.joints, "_fk", p=self.FK_GRP, r=self.rigSize
-        )
+        self.joints_fk = common.dupSk(self.joints, "_fk", p=self.FK_GRP, r=self.rigSize)
         self.fkCtl = [
             self.hip_fkc,
             self.upr_fkc,
@@ -235,7 +233,7 @@ class LegQd(RigModule):
         self.pvc.alignTo(pvc_guide)
 
         # --- IK joint chain creation ---
-        self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_GRP, r=rSz)
+        self.joints_ik = common.dupSk(self.joints, "_ik", p=self.IK_GRP, r=rSz)
 
         # --- IK handle creation ---
         ikH1 = IkNode(

@@ -633,7 +633,7 @@ class RigModule(RigBase):
         #
         #   create aim chain
         #
-        self.joints_am = common.extractSk([startJ, endJ], "_am", p=fkc.offset)
+        self.joints_am = common.dupSk([startJ, endJ], "_am", p=fkc.offset)
         base_loc = LocNode("base_loc", pf=rID, align=startJ, p=fkc.offset, size=rSz)
         #
         #   setup IK

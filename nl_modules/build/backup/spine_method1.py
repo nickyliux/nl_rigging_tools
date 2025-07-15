@@ -136,7 +136,7 @@ class Spine(rig_module.RigModule):
         cog_ctl.snapTo(joints[0])
         joints[0] | cog_ctl | self.SPINE_SETUP
 
-        self.joints_as = common.extractSk(joints, "_as")
+        self.joints_as = common.dupSk(joints, "_as")
 
         self.ctlJnts = self.build_ctl_jnt(joints, NUM, p=cog_ctl)
         staJ, midJ, endJ = self.ctlJnts

@@ -99,7 +99,7 @@ def addAwesomeIK(
     from nl_modules.utils import utils_node as ut
     from nl_modules.utils import common
 
-    chain_as = common.extractSk(chain, "_as")
+    chain_as = common.dupSk(chain, "_as")
     NUM = len(chain)
 
     for i in range(NUM - 1):
