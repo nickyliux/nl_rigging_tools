@@ -55,8 +55,9 @@ class LegBp(RigModule):
         self.ikCtl = []
         self.fkCtl = []
         self.all_ikHs = []
-        self.all_bend = []
         self.subCtls = []
+
+        # Toes related attributes
         self.toesJntList = []
         self.toesCtlsList = []
         self.toeIKHs = []
@@ -119,7 +120,7 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "diamond", None, scale * 2, 1, 2),
+            ("setting", "bagua", "z", scale * 1.5, 1, 2),
             ("hip_fkc", "cubeL", "x", scale, 1, -1),
             ("upr_fkc", "cubeL", "x", scale, 1, -1),
             ("lwr_fkc", "cubeL", "x", scale, 1, -1),
@@ -168,7 +169,14 @@ class LegBp(RigModule):
         )
 
         if self.rbnBones:
-            self.ribbonUp, self.ribbonLw = self.build_ribbon()
+            self.ribbonUp, self.ribbonLw = self.build_bendy_ribbon(
+                self.rbnJntNum,
+                self.hip,
+                self.upr,
+                self.lwr,
+                self.palm,
+                kneeFix=self.kneeFix,
+            )
             self.twistBones = 0
 
         if self.kneeFix:
@@ -220,7 +228,7 @@ class LegBp(RigModule):
         self.ikc.alignTo(mg)
         self.pvc.alignTo(pvc_guide)
         self.joints_ik = common.dupSk(
-            self.joints, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.RED
+            self.joints, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.D_RED
         )
 
         ikH1 = IkNode(
@@ -464,71 +472,6 @@ class LegBp(RigModule):
 
         self.removeInBindJnts([self.lwr, self.boneFix])
         self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
-
-    def build_ribbon(self):
-        """Build the ribbon for the leg rig.
-
-                    upr
-        upr_bend     --
-        mid_bend     lwr
-        lwr_bend     --
-                    foot
-        """
-        logging.info(self.rigID)
-        rID, rSz, xDr = self.getMyVar()
-
-        ribbonUp = self.build_rbn(self.upr, name="up", n=self.rbnJntNum, isLower=0)
-        ribbonLw = self.build_rbn(self.lwr, name="lw", n=self.rbnJntNum, isLower=1)
-
-        # Upper Ribbon
-        self.upr.cstPoi(ribbonUp.stt_loc)
-        self.hip.cstOri(ribbonUp.stt_loc, mo=1)
-
-        # Lower Ribbon
-        self.palm.cstPar(ribbonLw.end_loc, mo=1)
-
-        # Ribbon Controls
-        # Bend Ctl Setup
-        upLoc = ribbonUp.mid_loc
-        lwLoc = ribbonLw.mid_loc
-        grp = self.CTL_DATA
-        upr_bend = CrvNode("upr_bend", pf=rID, align=upLoc, addOfs=1, p=grp)
-        lwr_bend = CrvNode("lwr_bend", pf=rID, align=lwLoc, addOfs=1, p=grp)
-        mid_bend = CrvNode("mid_bend", pf=rID, align=self.lwr, addOfs=1, p=grp)
-
-        self.all_bend = [upr_bend, lwr_bend, mid_bend]
-        for ctl in self.all_bend:
-            ctl(shape="ribbon", up="x", scale=rSz)
-
-        upLoc.cstPar(upr_bend.offset, mo=1)
-        lwLoc.cstPar(lwr_bend.offset, mo=1)
-        upr_bend.cstParSca(upLoc.children[0], mo=1)
-        lwr_bend.cstParSca(lwLoc.children[0], mo=1)
-
-        self.lwr.cstPar(mid_bend.offset, mo=1)
-        mid_bend.cstParSca(ribbonUp.end_loc, mo=1)
-        stt_ofs = ribbonLw.stt_loc.addOffsetGrp(count=2)
-        mid_bend.cstParSca(stt_ofs[0], mo=1)
-
-        if self.kneeFix:
-            self.boneFix_sdk(self.lwr, stt_ofs[1])
-
-        # Add volume attributes to setting
-        autoVol = self.setting.a.add("autoVol")
-        autoVol >> ribbonUp.autoVol
-        autoVol >> ribbonLw.autoVol
-
-        volType = self.setting.a.add(
-            "volType", attrType="enum", enumName="whole:separate", k=0
-        )
-        volType >> ribbonUp.volType
-        volType >> ribbonLw.volType
-
-        # Update bind joints
-        self.removeInBindJnts([self.upr, self.lwr])
-        self.bindJnts.extend(ribbonUp.rbJnt + ribbonLw.rbJnt)
-
-        return [ribbonUp, ribbonLw]
 
     def setup_vis(self):
         """Setup visibility for the leg rig controls."""

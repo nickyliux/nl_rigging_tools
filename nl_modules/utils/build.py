@@ -110,7 +110,6 @@ def buildSelOrAll(*arg):
 def postRig():
     """Post rigging operations"""
 
-    logging.info("Post rigging operations")
     reset_all_ctl()
     update_anchor_conn()
     update_space_switch()
@@ -254,7 +253,6 @@ def reset_all_ctl():
 
     logging.info("Reset all ctl's attr")
     for ctl in common.getRigCtlsAll():
-        # print(ctl.name)
         for attr in ctl.a.list(k=1, u=1, se=1, s=1):
             if attr.settable():
                 attr.reset()

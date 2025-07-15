@@ -40,6 +40,7 @@ class RigModule(RigBase):
         self.xDir = 1 if rID.startswith("lf") else -1
         self.boneFix = None
         self.bindJnts = []
+        self.all_bend = []
 
         if rigNode.a.rootJ.exists():
             self.rootJ = rigNode.a.rootJ.inConnNode
@@ -1032,3 +1033,63 @@ class RigModule(RigBase):
             size=self.rigSize,
             p=self.RIG_DATA,
         )
+
+    def build_bendy_ribbon(
+        self, rbnJntNum=5, root=None, upr=None, lwr=None, palm=None, kneeFix=0
+    ):
+        """Build a ribbon rig with upper and lower parts, and setup controls."""
+
+        logging.info(self.rigID)
+        rID, rSz, xDr = self.getMyVar()
+
+        ribbonUp = self.build_rbn(upr, name="up", n=rbnJntNum, isLower=0)
+        ribbonLw = self.build_rbn(lwr, name="lw", n=rbnJntNum, isLower=1)
+
+        # Upper Ribbon
+        upr.cstPoi(ribbonUp.stt_loc)
+        root.cstOri(ribbonUp.stt_loc, mo=1)
+
+        # Lower Ribbon
+        palm.cstPar(ribbonLw.end_loc, mo=1)
+
+        # Bend Ctl Setup
+        upLoc = ribbonUp.mid_loc
+        lwLoc = ribbonLw.mid_loc
+        grp = self.CTL_DATA
+        upr_bend = CrvNode("upr_bend", pf=rID, align=upLoc, addOfs=1, p=grp)
+        lwr_bend = CrvNode("lwr_bend", pf=rID, align=lwLoc, addOfs=1, p=grp)
+        mid_bend = CrvNode("mid_bend", pf=rID, align=lwr, addOfs=1, p=grp)
+
+        self.all_bend = [upr_bend, lwr_bend, mid_bend]
+        for ctl in self.all_bend:
+            ctl(shape="ribbon", up="x", scale=rSz)
+
+        upLoc.cstPar(upr_bend.offset, mo=1)
+        lwLoc.cstPar(lwr_bend.offset, mo=1)
+        upr_bend.cstParSca(upLoc.children[0], mo=1)
+        lwr_bend.cstParSca(lwLoc.children[0], mo=1)
+
+        lwr.cstPar(mid_bend.offset, mo=1)
+        mid_bend.cstParSca(ribbonUp.end_loc, mo=1)
+        stt_ofs = ribbonLw.stt_loc.addOffsetGrp(count=2)
+        mid_bend.cstParSca(stt_ofs[0], mo=1)
+
+        if kneeFix:
+            self.boneFix_sdk(lwr, stt_ofs[1])
+
+        # Add volume attributes to setting
+        autoVol = self.setting.a.add("autoVol")
+        autoVol >> ribbonUp.autoVol
+        autoVol >> ribbonLw.autoVol
+
+        volType = self.setting.a.add(
+            "volType", attrType="enum", enumName="whole:separate", k=0
+        )
+        volType >> ribbonUp.volType
+        volType >> ribbonLw.volType
+
+        # Update bind joints
+        self.removeInBindJnts([upr, lwr])
+        self.bindJnts.extend(ribbonUp.rbJnt + ribbonLw.rbJnt)
+
+        return [ribbonUp, ribbonLw]

@@ -46,7 +46,6 @@ class ArmBp(RigModule):
         self.ikCtl = []
         self.fkCtl = []
         self.all_ikHs = []
-        self.all_bend = []
 
         # IK/FK/Blend/Other attributes
         self.ikc = None
@@ -78,7 +77,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "diamond", None, scale * 2, 1, 2),
+            ("setting", "bagua", "z", scale * 2, 1, 2),
             ("clavicle_fkc", "stickC", None, scale, 1, -1),
             ("upr_fkc", "cubeL", "x", scale * 2, 1, -1),
             ("lwr_fkc", "cubeL", "x", scale * 2, 1, -1),
@@ -110,7 +109,14 @@ class ArmBp(RigModule):
         self.bindJnts = [self.clavicle, self.upr, self.lwr]
 
         if self.rbnBones:
-            self.build_ribbon()
+            self.build_bendy_ribbon(
+                self.rbnJntNum,
+                self.clavicle,
+                self.upr,
+                self.lwr,
+                self.palm,
+                kneeFix=0,
+            )
             self.twistBones = 0
 
         if self.twistBones:
@@ -149,7 +155,7 @@ class ArmBp(RigModule):
 
         # Create IK joints
         self.joints_ik = common.dupSk(
-            self.joints, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.RED
+            self.joints, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.D_RED
         )
 
         # Create IK handle
@@ -377,67 +383,6 @@ class ArmBp(RigModule):
         # Update bind joints
         self.removeInBindJnts([self.lwr])
         self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
-
-    def build_ribbon(self):
-        """Build ribbon bones for the arm rig.
-
-                     upr
-        upr_bend     --
-        mid_bend     lwr
-        lwr_bend     --
-                     foot
-        """
-        logging.info(self.rigID)
-        rID, rSz, xDr = self.getMyVar()
-
-        # Build upper and lower ribbon modules
-        ribbonUp = self.build_rbn(self.upr, name="up", n=self.rbnJntNum, isLower=0)
-        ribbonLw = self.build_rbn(self.lwr, name="lw", n=self.rbnJntNum, isLower=1)
-
-        # Constrain upper ribbon
-        self.upr.cstPoi(ribbonUp.stt_loc)
-        self.clavicle.cstOri(ribbonUp.stt_loc, mo=1)
-
-        # Constrain lower ribbon
-        self.palm.cstPar(ribbonLw.end_loc, mo=1)
-
-        # Create ribbon bend controls
-        upLoc = ribbonUp.mid_loc
-        lwLoc = ribbonLw.mid_loc
-        grp = self.CTL_DATA
-        upr_bend = CrvNode("upr_bend", pf=rID, align=upLoc, addOfs=1, p=grp)
-        lwr_bend = CrvNode("lwr_bend", pf=rID, align=lwLoc, addOfs=1, p=grp)
-        mid_bend = CrvNode("mid_bend", pf=rID, align=self.lwr, addOfs=1, p=grp)
-
-        self.all_bend = [upr_bend, lwr_bend, mid_bend]
-        for ctl in self.all_bend:
-            ctl(shape="ribbon", up="x", scale=rSz)
-
-        upLoc.cstPar(upr_bend.offset, mo=1)
-        lwLoc.cstPar(lwr_bend.offset, mo=1)
-        upr_bend.cstParSca(upLoc.children[0], mo=1)
-        lwr_bend.cstParSca(lwLoc.children[0], mo=1)
-
-        self.lwr.cstPar(mid_bend.offset, mo=1)
-        mid_bend.cstParSca(ribbonUp.end_loc, mo=1)
-        mid_bend.cstParSca(ribbonLw.stt_loc, mo=1)
-
-        # Add volume attributes to setting
-        autoVol = self.setting.a.add("autoVol")
-        autoVol >> ribbonUp.autoVol
-        autoVol >> ribbonLw.autoVol
-
-        volType = self.setting.a.add(
-            "volType", attrType="enum", enumName="whole:separate", k=0
-        )
-        volType >> ribbonUp.volType
-        volType >> ribbonLw.volType
-
-        # Update bind joints
-        self.removeInBindJnts([self.upr, self.lwr])
-        self.bindJnts.extend(ribbonUp.rbJnt + ribbonLw.rbJnt)
-
-        return [ribbonUp, ribbonLw]
 
     def setup_vis(self):
         """Setup visibility toggles for the arm rig controls."""
