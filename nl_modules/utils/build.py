@@ -102,17 +102,27 @@ def buildSelOrAll(*arg):
         preRig()
         for rigN in rigNodes:
             buildTgt(rigN)
+        addProxyAttrsToMaster()
         postRig()
 
 
 def postRig():
     """Post rigging operations"""
 
+    logging.info("Post rigging operations")
     reset_all_ctl()
     update_anchor_conn()
     update_space_switch()
     reset_all_pv_ctl()
     mc.select(cl=1)
+
+    RIG = DagNode("RIG")
+    if RIG.exists():
+        mc.hide(RIG)
+
+
+def addProxyAttrsToMaster():
+    """Add proxy attributes to master2_ctl"""
 
     m2 = DagNode("master2_ctl")
     PRX = DagNode("PRX")
@@ -120,17 +130,12 @@ def postRig():
     if m2.exists() and PRX.exists():
         PRX.a.overrideEnabled.set(1)
 
-        m2.a.add("proxyVis", k=0, attrType="bool", dv=1) >> PRX.a.v
-        (
-            m2.a.add(
-                "proxyDsp", attrType="enum", dv=2, k=0, en="Normal:Template:Reference"
-            )
-            >> PRX.a.overrideDisplayType
-        )
+        proxyVis = m2.a.add("proxyVis", k=0, attrType="bool", dv=1)
+        proxyVis >> PRX.a.v
 
-    RIG = DagNode("RIG")
-    if RIG.exists():
-        mc.hide(RIG)
+        OPTIONS = "Normal:Template:Reference"
+        proxyDsp = m2.a.add("proxyDsp", attrType="enum", k=0, en=OPTIONS)  # , dv=2)
+        proxyDsp >> PRX.a.overrideDisplayType
 
 
 def unbuildTgt(rigN):
@@ -144,7 +149,7 @@ def unbuildTgt(rigN):
             rigObj.unbuild_pre_module()
 
 
-@Undo("unbuildSelOrAll")
+@Undo("SelOrAll")
 def unbuildSelOrAll(*arg):
     """Unbuild rig for selected rigNodes or all if nothing selected"""
 
@@ -152,12 +157,7 @@ def unbuildSelOrAll(*arg):
     if rigNodes:
         for rigN in rigNodes:
             unbuildTgt(rigN)
-        reset_all_ctl()
-        update_anchor_conn()
-        update_space_switch()
-        reset_all_pv_ctl()
-        mc.select(cl=1)
-        print()
+        postRig()
 
 
 def deleteTgt(rigNode):
@@ -252,8 +252,8 @@ def reset_all_ctl():
     """Reset all ctl's attr to default"""
 
     logging.info("Reset all ctl's attr")
-
     for ctl in common.getRigCtlsAll():
+        # print(ctl.name)
         for attr in ctl.a.list(k=1, u=1, se=1, s=1):
             if attr.settable():
                 attr.reset()

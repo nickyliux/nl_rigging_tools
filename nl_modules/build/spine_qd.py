@@ -76,12 +76,12 @@ class SpineQd(RigModule):
         """Build control nodes for the spine rig."""
 
         logging.info(self.rigID)
-
         rID, rSz, xDr = self.getMyVar()
 
+        #   Define control shapes and attributes
         ctl_defs = [
             ("setting", "cross", "z", rSz * 2, 1, 2),
-            ("cog_ctl", "trapezoid", None, maths.mul(1, 2, 3, rSz), 0, -1),
+            ("cog_ctl", "trapezoid", None, maths.mul(1, 2, 3, rSz), 1, -1),
             ("base_ctl", "circle", "z", maths.mul(5, 5, 2, rSz), 0, -1),
             ("mid_ctl", "squR", "z", rSz * 4, 0, -1),
             ("fore_ctl", "circle", "z", rSz * 5, 0, -1),
@@ -95,7 +95,6 @@ class SpineQd(RigModule):
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
-        self.cog_ctl.cv_move(0, rSz * 50, 0)
 
     def create_rbSrf(self):
         """Create the ribbon surface for the spine rig."""
@@ -159,11 +158,11 @@ class SpineQd(RigModule):
 
         ikj2.a.r.set(0, 0, 0)
 
-        if self.is_neck():
-            self.cog_ctl.alignTo(self.RT_GUIDE, addOfs=1)
-        #     # self.cog_ctl(shape="cube", scale=rSz * 3)  # , rotateX=90)
-        else:
-            self.cog_ctl.snapTo(self.RT_GUIDE, addOfs=1)
+        # if self.is_neck():
+        #     self.cog_ctl.alignTo(self.RT_GUIDE, addOfs=1)
+        # else:
+        self.cog_ctl.snapTo(self.RT_GUIDE, addOfs=1)
+
         #
         #   parenting
         #
@@ -383,9 +382,9 @@ class SpineQd(RigModule):
         attr = self.fore_ctl.a.add("tangentCtl", attrType="bool", k=0)
         attr >> self.tangent1_ctl.a.v
 
-        if self.is_neck():
-            # mc.hide(self.base_ctl.shape, self.tangent0_ctl.shape)
-            mc.hide(self.cog_ctl.shape)
+        # if self.is_neck():
+        # mc.hide(self.base_ctl.shape, self.tangent0_ctl.shape)
+        # mc.hide(self.cog_ctl.shape)
 
         mc.hide(
             self.ikJnts,
@@ -393,6 +392,7 @@ class SpineQd(RigModule):
             self.spIkJnts,
             self.twoIkJnts,
             self.anchorToRbj,
+            self.SKL_DATA,
             # self.rbSrf,
             # self.rbCrv,
         )

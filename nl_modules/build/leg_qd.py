@@ -222,6 +222,7 @@ class LegQd(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
+        # --- Guide and alignment setup ---
         mg = self.master_guide
         pvc_guide = DagNode(rID + "_pvc_guide")
         inPos_guide = DagNode(rID + "_palm_inPos_guide")
@@ -229,9 +230,14 @@ class LegQd(RigModule):
         heelPos_guide = DagNode(rID + "_palm_heelPos_guide")
         toePos_guide = DagNode(rID + "_palm_toePos_guide")
 
+        # Align main IK and pole vector controls
         self.ikc.alignTo(mg)
         self.pvc.alignTo(pvc_guide)
+
+        # --- IK joint chain creation ---
         self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_GRP, r=rSz)
+
+        # --- IK handle creation ---
         ikH1 = IkNode(
             "1",
             pf=rID,
@@ -250,6 +256,7 @@ class LegQd(RigModule):
         ikH2 = IkNode("2", pf=rID, sj=self.digit, ee=self.ball, jsf="_ik")
         ikH3 = IkNode("3", pf=rID, sj=self.ball, ee=self.tip, jsf="_ik")
 
+        # --- Group and roll hierarchy setup ---
         self.ikCstG = GrpNode("ikCstG", pf=rID, snap=self.palm, alignR=mg)
         extraRollG = GrpNode("extraRollG", pf=rID, snap=self.digit, alignR=mg)
         ballRollG = GrpNode("ballRollG", pf=rID, snap=self.ball, alignR=mg)
@@ -261,6 +268,7 @@ class LegQd(RigModule):
         heelRollG = GrpNode("heelRollG", pf=rID, snap=heelPos_guide, alignR=mg)
         self.extra_ikc.alignTo(extraRollG)
 
+        # Flip groups if needed for orientation
         if xDr == 1:
             for g in (
                 self.ikCstG,
@@ -275,18 +283,22 @@ class LegQd(RigModule):
             ):
                 g.a.rx.set2(180, add=1)
 
+        # --- Parenting and roll chain ---
         (ikH1, ikHX) | extraRollG | ballRollG | inRollG
         (ikH2, ikH3) | toe_wiggle_grp | inRollG
         inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG
 
+        # --- IK control setup ---
         self.ikc.snapTo(self.digit)
         self.ikc.cv_drop()
         self.ikc_gimbal = CrvNode(self.ikc).add_gimbal()
         self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
 
+        # --- Foot roll and bank logic ---
         self.foot_roll_logic(self.smart_ctl, heelRollG, ballRollG, footRollG, toeRollG)
         self.foot_bank_logic(self.smart_ctl, inRollG, outRollG)
 
+        # --- Attribute and connection setup ---
         self.ikc.a.add("kneeTwist") * xDr >> ikH1.a.twist
         (self.ikc, self.pvc, self.ikCstG) | self.IK_GRP
         self.pvc_line = CrvNode.buildLineLinked(
@@ -295,11 +307,13 @@ class LegQd(RigModule):
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
 
+        # --- Stretchy IK and parenting ---
         ikH1.stretchyIk(soft=1)
         self.all_ikH = {"main": ikH1, "ball": ikH2, "toe": ikH3, "else": ikHX}
         self.toe_wiggle_grp = toe_wiggle_grp
         self.hip_fkc.cstPar(self.joints_ik[0], mo=1)
 
+        # --- Store controls and finalize ---
         self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal]
         self.ikH1 = ikH1
         self.subCtl_setup(ballRollG, toeRollG, inRollG, outRollG, heelRollG)
@@ -310,8 +324,8 @@ class LegQd(RigModule):
 
         logging.info(self.rigID)
 
-        self.setting.snapTo(self.hip, p=self.CTL_DATA)
-        self.hip.cstPar(self.setting, mo=1)
+        self.setting.snapTo(self.upr, p=self.CTL_DATA)
+        self.upr.cstPar(self.setting, mo=1)
 
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
         for i in range(len(self.joints) - 1):
