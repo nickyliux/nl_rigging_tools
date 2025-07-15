@@ -50,8 +50,6 @@
 #
 #     def build(self):
 #
-#         self.build_module()
-#
 #
 #         s = self.rigSize
 #

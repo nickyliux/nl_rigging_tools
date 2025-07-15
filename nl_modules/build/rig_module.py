@@ -335,7 +335,6 @@ class RigModule(RigBase):
     def build_post_module(self):
         """Post build function to finalize the module setup."""
 
-        # logging.info(self.rigID)
         [mc.setAttr(obj + ".ro", cb=1) for obj in mc.ls(tr=1)]
         mc.hide(self.moduleG)
 

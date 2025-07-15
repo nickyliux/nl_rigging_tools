@@ -137,13 +137,18 @@ class ArmBp(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
+        # Align IK controls to palm
         self.ikc.alignTo(self.palm)
         self.palm_ikc.alignTo(self.palm, p=self.IK_GRP)
 
-        pvc_guide = DagNode(rID + "_pvc_guide")
+        # Align PVC to guide
+        pvc_guide = DagNode(f"{rID}_pvc_guide")
         self.pvc.alignTo(pvc_guide)
 
+        # Create IK joints
         self.joints_ik = common.extractSk(self.joints, "_ik", p=self.IK_GRP, r=rSz)
+
+        # Create IK handle
         ikH1 = IkNode(
             "1",
             pf=rID,
@@ -159,15 +164,18 @@ class ArmBp(RigModule):
             scaleFix=self.masterC.a["globalScale"],
             RIG_DATA=self.RIG_DATA,
         )
+        self.ikH1 = ikH1
+
+        # IK constraint group
         self.ikCstG = GrpNode("ikCstG", pf=rID, align=self.palm)
         if xDr == 1:
-            for g in (self.ikCstG,):
-                g.a.rx.set2(180, add=1)
+            self.ikCstG.a.rx.set2(180, add=1)
         ikH1 | self.ikCstG
 
-        #   Constrain ikCstG supporting fk limb
-        #   self.ikc.cstParSca(self.ikCstG, mo=1)
+        # Constrain IK group to IK control
         self.ikc.cstSca(self.ikCstG, mo=1)
+
+        # Pin FK control
         fkPin = self.pvc.a.add("fkPin", min=0, max=1)
         self.pin_fkc = CrvNode(
             "pin_fkc",
@@ -183,6 +191,7 @@ class ArmBp(RigModule):
             self.ikc, self.pin_fkc, self.ikCstG, w=fkPin, cstType="par", mo=1
         )
 
+        # Parent controls and lines
         (self.ikc, self.pvc, self.ikCstG) | self.IK_GRP
         self.pvc_line = CrvNode.buildLineLinked(
             tgt1=self.joints_ik[2],
@@ -192,14 +201,15 @@ class ArmBp(RigModule):
             p=self.IK_GRP,
         )
 
+        # Add offset groups and stretchy IK
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
         ikH1.stretchyIk(soft=1)
         self.all_ikHs = [ikH1]
         self.clavicle_fkc.cstPar(self.joints_ik[0], mo=1)
 
+        # IK controls list
         self.ikCtl = [self.ikc, self.pvc, self.ikc, self.palm_ikc, self.pin_fkc]
-        self.ikH1 = ikH1
 
         # palm_ikc setup
         palm_ik = self.joints_ik[-2]
@@ -217,37 +227,39 @@ class ArmBp(RigModule):
         """Blend FK and IK joints for the arm rig."""
 
         rID, rSz, xDr = self.getMyVar()
+        # Extract blend joints
         self.joints_bf = common.extractSk(self.joints, "_bf", p=self.BF_GRP, r=rSz)
 
-        palmIn_guide = DagNode(rID + "_palmIn_guide")
+        # Create palm and ball roll locators
+        palmIn_guide = DagNode(f"{rID}_palmIn_guide")
         palmIn_loc = LocNode(
             "palmIn", pf=rID, align=palmIn_guide, p=self.joints_bf[-1], size=rSz
         )
-        palmOut_guide = DagNode(rID + "_palmOut_guide")
+        palmOut_guide = DagNode(f"{rID}_palmOut_guide")
         palmOut_loc = LocNode(
             "palmOut", pf=rID, align=palmOut_guide, p=palmIn_loc, size=rSz
         )
-        ball_guide = DagNode(rID + "_ball_guide")
+        ball_guide = DagNode(f"{rID}_ball_guide")
         self.ballRoll_loc = LocNode(
             "ballRoll", pf=rID, align=ball_guide, p=palmOut_loc, size=rSz
         )
 
+        # Snap setting to upper arm and constrain
         self.setting.snapTo(self.upr, p=self.CTL_DATA)
         self.upr.cstPoi(self.setting, mo=1)
-        # self.clavicle_fkc.offset.cstPar(self.setting, mo=1)
 
+        # Add blend attribute
         self.setting.a.addSep()
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
         total = len(self.joints) - 1
 
+        # Blend FK/IK to BF joints and drive output joints
         for i in range(total):
             fkj = self.joints_fk[i]
             ikj = self.joints_ik[i]
             bfj = self.joints_bf[i]
             jnt = self.joints[i]
-            # common.cstMulti(fkj, ikj, jnt, w=fkIkBlend)
             if i > 0:
-                # ut.blendN_(fkj.a.tx, ikj.a.tx, w=fkIkBlend) >> bfj.a.tx
                 ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> bfj.a.t
                 ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
 
@@ -261,9 +273,7 @@ class ArmBp(RigModule):
             else:
                 self.ballRoll_loc.cstPar(jnt, mo=1)
 
-        # self.clavicle_fkc.cstPar(self.joints_bf[0], mo=1)
-
-        # add roll & bank to palm_ikc
+        # Add roll & bank logic to palm IK control
         self.hand_roll_logic(
             self.palm_ikc, self.palm_fkc, self.pin_fkc, self.ballRoll_loc
         )
@@ -271,34 +281,40 @@ class ArmBp(RigModule):
             self.palm_ikc, self.palm_fkc, self.pin_fkc, palmIn_loc, palmOut_loc
         )
 
+        # Add blend attribute to all controls
         for ctl in self.fkCtl + self.ikCtl:
             ctl.a.addSep()
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
+        # Create matcher group for snapping
         GrpNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
 
     def build_armScapular(self):
         """Build the scapular setup for the arm rig."""
 
         rID, rSz, xDr = self.getMyVar()
-        clavEnd_guide = DagNode(rID + "_clavEnd_guide")
-        scapular_guide = DagNode(rID + "_scapular_guide")
+        # Guides for clavicle end and scapular
+        clavEnd_guide = DagNode(f"{rID}_clavEnd_guide")
+        scapular_guide = DagNode(f"{rID}_scapular_guide")
 
-        # scapular setup
+        # Create scapular joint and parent to clavicle
         scapularJ = JntNode(
             "scapularJ", pf=rID, align=scapular_guide, r=rSz * 10, color=4
         )
         scapularJ.freezeXf()
         scapularJ | self.clavicle
 
+        # Locator for aiming
         scapuLoc = LocNode(
             "scapuLoc", pf=rID, snap=clavEnd_guide, p=scapularJ, size=rSz * 10
         )
 
+        # Generate and aim clavicle joints
         clavJnts = self.gen_sk_fr_names(["clavicle", "upr"], scale=3)
         scapuLoc.cstAim(clavJnts[0], aim=(xDr, 0, 0), u=(0, xDr, 0), keep=0)
         clavJnts[0].freezeXf()
 
+        # IK handle for clavicle
         clav_ikh = IkNode(
             "clav",
             solver=Solver.RP,
@@ -310,6 +326,8 @@ class ArmBp(RigModule):
             p=self.RIG_DATA,
         )
         scapuLoc.cstPoi(clav_ikh)
+
+        # Set up bind joints and constraints
         self.clavBone = clavJnts[0]
         self.clavBone | self.SKL_DATA
         self.clavicle.cstPoi(self.clavBone)
@@ -317,41 +335,20 @@ class ArmBp(RigModule):
         self.removeInBindJnts([self.clavicle])
         self.bindJnts.append(self.clavBone)
 
-        # twoJ = JntNode.makeTwoJC2(
-        #     "clav",
-        #     pf=rID,
-        #     snap=self.clavicle,
-        #     aim=(xDr, 0, 0),
-        #     u=(0, xDr, 0),
-        #     p=self.clavicle,
-        #     r=rSz,
-        #     aimTgt=scapularLoc,
-        # )
-        # twoJ_ik = IkNode(
-        #     "ik",
-        #     sol=1,
-        #     pvc=scapularJnt,
-        #     pf=twoJ[0].name,
-        #     sj=twoJ[0],
-        #     ee=twoJ[1],
-        #     p=self.RIG_DATA,
-        #     vis=0,
-        # )
-        # scapularLoc.cstPoi(twoJ_ik)
-        # self.clavBone = twoJ[0]
-        # self.bindJnts.append(self.clavBone)
-
     def build_twist_bones(self):
         """Build twist bones for the arm rig."""
 
         logging.info(self.rigID)
-
         rID, rSz, xDr = self.getMyVar()
+
+        # Generate radius and ulna joint chains
         radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], color=4, scale=2)
         ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], color=4, scale=2)
 
+        # Parent twist chains to lower arm
         (radius_JC[0], ulna_JC[0]) | self.lwr
 
+        # Create locators for twist orientation
         radius_loc = LocNode(
             "radius_loc", pf=rID, align=radius_JC[1], p=self.palm, size=rSz
         )
@@ -359,6 +356,7 @@ class ArmBp(RigModule):
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
 
+        # Aim constraints for twist orientation
         uType = "objectrotation"
         aim = (xDr, 0, 0)
         z = (0, 0, 1)
@@ -369,6 +367,7 @@ class ArmBp(RigModule):
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
 
+        # Update bind joints
         self.removeInBindJnts([self.lwr])
         self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
 
@@ -384,18 +383,18 @@ class ArmBp(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
+        # Build upper and lower ribbon modules
         ribbonUp = self.build_rbn(self.upr, name="up", n=self.rbnJntNum, isLower=0)
         ribbonLw = self.build_rbn(self.lwr, name="lw", n=self.rbnJntNum, isLower=1)
 
-        # Upper Ribbon
+        # Constrain upper ribbon
         self.upr.cstPoi(ribbonUp.stt_loc)
         self.clavicle.cstOri(ribbonUp.stt_loc, mo=1)
 
-        # Lower Ribbon
+        # Constrain lower ribbon
         self.palm.cstPar(ribbonLw.end_loc, mo=1)
 
-        # Ribbon Controls
-        # Bend Ctl Setup
+        # Create ribbon bend controls
         upLoc = ribbonUp.mid_loc
         lwLoc = ribbonLw.mid_loc
         grp = self.CTL_DATA
@@ -408,6 +407,7 @@ class ArmBp(RigModule):
             ctl(shape="squR", up="x", color=22, scale=rSz)
             # ctl.a.rotateOrder.set(1)  # yzx
 
+        # Setup constraints for bend controls
         upLoc.cstPar(upr_bend.offset, mo=1)
         lwLoc.cstPar(lwr_bend.offset, mo=1)
         upr_bend.cstParSca(upLoc.children[0], mo=1)
@@ -417,7 +417,7 @@ class ArmBp(RigModule):
         mid_bend.cstParSca(ribbonUp.end_loc, mo=1)
         mid_bend.cstParSca(ribbonLw.stt_loc, mo=1)
 
-        # add volType attr to setting
+        # Add volume attributes to setting
         autoVol = self.setting.a.add("autoVol")
         autoVol >> ribbonUp.autoVol
         autoVol >> ribbonLw.autoVol
@@ -428,6 +428,7 @@ class ArmBp(RigModule):
         volType >> ribbonUp.volType
         volType >> ribbonLw.volType
 
+        # Update bind joints
         self.removeInBindJnts([self.upr, self.lwr])
         self.bindJnts.extend(ribbonUp.rbJnt + ribbonLw.rbJnt)
 
@@ -443,14 +444,13 @@ class ArmBp(RigModule):
             self.pvc.a["fkPin"],
             onList=[self.pin_fkc],
         )
-        self.ikc.a.v >> self.palm_ikc.a.v
-
         if self.rbnBones:
             self.ctl_vis_toggle(
-                # self.setting.a.add("bendyCtl", min=0, max=1, dv=1, k=0),
                 self.setting.a.add("bendyCtl", attrType="bool", dv=0),
                 onList=self.all_bend,
             )
+
+        self.ikc.a.v >> self.palm_ikc.a.v
         mc.hide(self.all_ikHs, self.joints_fk, self.joints_ik, self.joints_bf)
 
     def setup_channel(self):
@@ -476,6 +476,7 @@ class ArmBp(RigModule):
     def setup_space(self):
         """Setup space switching for the arm rig controls."""
 
+        # Add space names for UI or switching
         self.rigNode.a.add(
             "spaceName1",
             attrType="string",
@@ -487,8 +488,10 @@ class ArmBp(RigModule):
             txt="arm, master, clavicle, COG, uprBody, lwrBody",
         )
 
+        # Build pole vector and FK/IK pin setup
         self.ikH1.build_pvfkPinSetup(ikTarget=self.ikc)
 
+        # Set up space switching message connections
         PALM_ID = 3
         self.rigNode.setMsg(
             {
