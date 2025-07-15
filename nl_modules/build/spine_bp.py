@@ -6,37 +6,40 @@ from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import utils_node as ut
-from nl_modules.utils import maths
 
 
 class SpineBp(RigModule):
     """Spine rig module class, inherits from RigModule."""
 
     def __init__(self, rigNode):
+        """Initialize the SpineBp rig module."""
         super().__init__(rigNode)
 
-        for attr in ["fkJntNum", "rbnBones", "rbnJntNum"]:
+        # Guide attributes
+        for attr in ("fkJntNum", "rbnBones", "rbnJntNum"):
             setattr(self, attr, self.get_guide_attr(attr))
 
-        self.LINE_GUIDE = DagNode(self.rigID + "_line_guide")
-        self.MD_GUIDE = DagNode(self.rigID + "_md_guide")
+        # Guide nodes
+        self.LINE_GUIDE = DagNode(f"{self.rigID}_line_guide")
+        self.MD_GUIDE = DagNode(f"{self.rigID}_md_guide")
 
+        # Main settings and controls
         self.setting = None
-
         self.cog_ctl = None
         self.hip_ctl = None
         self.mid_ctl = None
         self.cog_gmb = None
         self.chest_ctl = None
 
+        # Control and joint lists
         self.ikCtls = []
         self.fkCtls = []
-
         self.ctlJnts = []
         self.bindJnts = []
         self.fkJnts = []
         self.rbJnts = []
 
+        # Ribbon surface
         self.rbSrf = None
 
     def genSk(self):

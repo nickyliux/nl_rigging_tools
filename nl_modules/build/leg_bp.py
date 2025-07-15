@@ -17,6 +17,7 @@ class LegBp(RigModule):
 
     def __init__(self, rigNode):
         # Accept DagNode or string for rigNode
+
         rigNode = DagNode(rigNode) if isinstance(rigNode, str) else rigNode
         super().__init__(rigNode)
 

@@ -17,25 +17,27 @@ class SpineQd(RigModule):
     """Spine rig module class, inherits from RigModule."""
 
     def __init__(self, rigNode):
+        """Initialize the SpineQd rig module."""
         super().__init__(rigNode)
 
+        # Guide attributes
         self.end_ctl = self.get_guide_attr("endCtl")
         self.rbnJntNum = self.get_guide_attr("rbnJntNum")
 
-        self.LINE_GUIDE = CrvNode(self.rigID + "_line_guide")
-        self.TP_GUIDE = DagNode(self.rigID + "_tp_guide")
-        self.MD_GUIDE = DagNode(self.rigID + "_md_guide")
-        self.RT_GUIDE = DagNode(self.rigID + "_rt_guide")
+        # Guide nodes
+        self.LINE_GUIDE = CrvNode(f"{self.rigID}_line_guide")
+        self.TP_GUIDE = DagNode(f"{self.rigID}_tp_guide")
+        self.MD_GUIDE = DagNode(f"{self.rigID}_md_guide")
+        self.RT_GUIDE = DagNode(f"{self.rigID}_rt_guide")
         self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA, snap=self.RT_GUIDE)
 
-        guide = DagNode(self.rigID + "_base_pivot_guide")
+        guide = DagNode(f"{self.rigID}_base_pivot_guide")
         self.BASE_PVT_GUIDE = guide if guide.exists() else None
-
-        guide = DagNode(self.rigID + "_end_jnt_guide")
+        guide = DagNode(f"{self.rigID}_end_jnt_guide")
         self.END_JNT_GUIDE = guide if guide.exists() else None
 
+        # Main settings and controls
         self.setting = None
-
         self.cog_ctl = None
         self.fore_ctl = None
         self.mid_ctl = None
@@ -45,6 +47,7 @@ class SpineQd(RigModule):
         self.end_ctl = None
         self.end_jnt = None
 
+        # Control and joint lists
         self.fkCtls = []
         self.ikCtls = []
         self.fkJnts = []
@@ -54,6 +57,7 @@ class SpineQd(RigModule):
         self.bindJnts = []
         self.twoIkJnts = []
 
+        # Ribbon and anchor
         self.rbSrf = None
         self.rbCrv = None
         self.anchorToRbj = None

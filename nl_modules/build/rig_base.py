@@ -14,8 +14,8 @@ class RigBase:
 
     def __init__(self, rigNode):
         if not mc.objExists("master_ctl"):
-            logging.warning("Missing master_ctl")
-            return
+            # logging.error("Missing master_ctl")
+            raise RuntimeError("Missing master_ctl !")
 
         self.masterC = CrvNode("master_ctl")
         self.masterC1 = self.masterC.offset
@@ -25,7 +25,7 @@ class RigBase:
             rigNode = DagNode(rigNode)
 
         self.rigNode = rigNode
-        self.rigID = rigNode.a.rigID.get()
+        self.rigID = rigNode.a["rigID"].get()
 
         self.CHR = GrpNode("CHR")
         self.RIG = GrpNode("RIG", p=self.CHR)

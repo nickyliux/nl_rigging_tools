@@ -54,10 +54,10 @@ def buildTgt(rigN):
     """Build target rigNode"""
 
     if rigN:
-        rigClass = rigN.a.rigClass.get()
+        rigClass = rigN.a["rigClass"].get()
         rigObj = eval(rigClass)(rigN)
         if rigObj:
-            state = rigN.a.nodeState.get()
+            state = rigN.a["nodeState"].get()
             if state == 0:
                 rigObj.genSk()
                 rigObj.build()

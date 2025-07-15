@@ -32,10 +32,12 @@ COMPONENT_DICT = {
 def loadGuide(names):
     """Load component(s) for names"""
 
+    from nl_modules.utils import build
+
     def genNextRigID(n):
         """Generate next rigID name for newly created component"""
         count = 0
-        for node in [DagNode(r) for r in mc.ls("*RGN", type="script")]:
+        for node in build.getRigNodesAll():
             if node.a.rigID.get().startswith(n):
                 count += 1
         return f"{n}{count}"
@@ -184,7 +186,7 @@ def loadTemplate(removeUnused=1):
     idDict = file.loadJson(tgtFile)
     if removeUnused:  # Remove unused components
         idInPreset = [k + "_RGN" for k in idDict.keys()]
-        for node in mc.ls("*RGN", type="script"):
+        for node in build.getRigNodesAll():
             if node not in idInPreset:
                 build.deleteTgt(node)
 
@@ -239,13 +241,16 @@ def genAttrDict(obj):
 def saveTemplate():
     """Save preset into json file"""
 
+    from nl_modules.utils import build
+
     idDict = {}
-    rigNodes = mc.ls("*RGN", type="script")
+    rigNodes = build.getRigNodesAll()
+
     if not rigNodes:
         mc.confirmDialog(t="Info", m="No rigNode found.       \nSave ignored.", b="OK")
         return
 
-    for node in [DagNode(r) for r in rigNodes]:
+    for node in rigNodes:
         rigID = node.a.rigID.get()
         objsToSave = [DagNode(o) for o in mc.ls(rigID + "_*_guide", tr=1)]
         objsToSave.append(node.a.moduleG.inConnNode)

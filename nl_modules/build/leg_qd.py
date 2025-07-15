@@ -15,6 +15,7 @@ class LegQd(RigModule):
 
     def __init__(self, rigNode):
         # Accept both DagNode and string for rigNode
+
         if isinstance(rigNode, str):
             rigNode = DagNode(rigNode)
 

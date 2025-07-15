@@ -10,6 +10,7 @@ class NeckQd(SpineQd):
 
     def __init__(self, rigNode):
         """Initialize the NeckQd rig module."""
+
         super().__init__(rigNode)
 
     def setup_anchor(self):

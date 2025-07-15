@@ -21,7 +21,8 @@ class DagNode(DepNode):
 
     def __init__(self, n, nodeType=None):
         self._dag = None
-        DepNode.__init__(self, n)
+        # DepNode.__init__(self, n)
+        super().__init__(n)
         if nodeType:
             self.create(nodeType)
 

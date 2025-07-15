@@ -47,13 +47,12 @@ class RigModule(RigBase):
     def gen_sk_fr_names(self, names, color=None, scale=1):
         """Generate skeleton and control names based on the provided names list."""
 
-        rID, rSz, xDr = self.getMyVar()
         if isinstance(names, str):
             names = [names]
 
         guideList = []
         for n in names:
-            guide_name = f"{rID}_{n}_guide"
+            guide_name = f"{self.rigID}_{n}_guide"
             if not mc.objExists(guide_name):
                 raise ValueError(f"missing object: {guide_name}")
             guideList.append(DagNode(guide_name))
@@ -64,7 +63,7 @@ class RigModule(RigBase):
         joints = []
         lastJ = None
         for name in guideDict:
-            n = f"{rID}_{name}"
+            n = f"{self.rigID}_{name}"
             if mc.objExists(n):
                 n += "#"
             jN = JntNode(n, align=guideDict[name], color=color)
@@ -620,8 +619,7 @@ class RigModule(RigBase):
         bkW = bkW_attr.get() if bkW_attr.exists() else 1
 
         preset = []
-        rID, rSz, xDr = self.getMyVar()
-        if rID.startswith("lfArmBp") or rID.startswith("rtArmBp"):
+        if self.rigID.startswith("lfArmBp") or self.rigID.startswith("rtArmBp"):
             preset = [upW, fwW, dnW, bkW]
         else:
             preset = [dnW, bkW, upW, fwW]

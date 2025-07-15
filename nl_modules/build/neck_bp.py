@@ -9,6 +9,7 @@ class NeckBp(SpineBp):
 
     def __init__(self, rigNode):
         """Initialize the NeckBp rig module."""
+
         super().__init__(rigNode)
 
     def setup_anchor(self):

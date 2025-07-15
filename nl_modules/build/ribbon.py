@@ -10,38 +10,36 @@ from nl_modules.utils import common
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
 
-# from nl_modules.nodel.ik_node import IkNode
-
 
 class Ribbon(RigModule):
-    def __init__(
-        self,
-        rigNode,
-    ):
+    def __init__(self, rigNode):
         """
-        CHR
-        |__RIG
-           |__SETUP
-              |__FK_SETUP
-              |__IK_SETUP
-        |__CTL
-        |__MODEL
-        |__SK
-
+        Initialize the Ribbon rig module.
+        Structure:
+            CHR
+            |__RIG
+               |__SETUP
+                  |__FK_SETUP
+                  |__IK_SETUP
+            |__CTL
+            |__MODEL
+            |__SK
         """
         super().__init__(rigNode)
 
+        # Joint references
         logging.info("load rigNode's connected into attr")
         self.startJ: JntNode = rigNode.a.upr.inConnNode
         self.midJ: JntNode = rigNode.a.lwr.inConnNode
         self.endJ: JntNode = rigNode.a.foot.inConnNode
 
-        rID, rSz, xDr = self.getMyVar()
-        self.RB_GRP = GrpNode("RB_GRP", pf=rID, p=self.RIG)
-        self.RB_DEFORM = GrpNode("RB_DEFORM", pf=rID, p=self.RB_GRP)
-        self.RB_SCALE = GrpNode("RB_SCALE", pf=rID, p=self.RB_GRP)
-        self.RB_JOINT = GrpNode("RB_JOINT", pf=rID, p=self.RB_GRP)
+        # Ribbon group nodes
+        self.RB_GRP = GrpNode("RB_GRP", pf=self.rigID, p=self.RIG)
+        self.RB_DEFORM = GrpNode("RB_DEFORM", pf=self.rigID, p=self.RB_GRP)
+        self.RB_SCALE = GrpNode("RB_SCALE", pf=self.rigID, p=self.RB_GRP)
+        self.RB_JOINT = GrpNode("RB_JOINT", pf=self.rigID, p=self.RB_GRP)
 
+        # Scale constraint
         self.masterC.cstSca(self.RB_SCALE)
 
     def build(self):
@@ -100,12 +98,14 @@ class Ribbon(RigModule):
         # self.deformTwist(rbJnts[half:], rbCtl3, start=rbRdr1, end=None)
 
     def buildSurf(self, startJ, endJ, segNum=5, p=None):
-        rID, rSz, xDr = self.getMyVar()
+        """Build a ribbon surface from two joints and a specified number of segments."""
 
         rbCrv = CrvNode.buildLine(
-            startJ, endJ, n="rbCrv_#", bezier=1, insertMid=1, pf=rID
+            startJ, endJ, n="rbCrv_#", bezier=1, insertMid=1, pf=self.rigID
         )
-        rbCrvLine = CrvNode.buildLine((0, 0, -2), (0, 0, 2), n="rbCrvWidth_#", pf=rID)
+        rbCrvLine = CrvNode.buildLine(
+            (0, 0, -2), (0, 0, 2), n="rbCrvWidth_#", pf=self.rigID
+        )
         startJ.cstPoi(rbCrvLine, keep=0)
         rbCrvLine | startJ
 
@@ -113,7 +113,7 @@ class Ribbon(RigModule):
             mc.extrude(
                 rbCrvLine,
                 rbCrv,
-                n=rID + "rbSurf_#",
+                n=f"{self.rigID}rbSurf_#",
                 ch=1,
                 rn=0,
                 po=0,
@@ -148,7 +148,7 @@ class Ribbon(RigModule):
             locN = LocNode(loc)
             locN.scaleLocal(3)
 
-            jnt = JntNode("rb_jnt_#", pf=rID, r=1, color=1, align=locN, p=locN)
+            jnt = JntNode("rb_jnt_#", pf=self.rigID, r=1, color=1, align=locN, p=locN)
             jnt.displayLocalAxis()
             jnt.addProxyMesh(p=self.PRX)
 
