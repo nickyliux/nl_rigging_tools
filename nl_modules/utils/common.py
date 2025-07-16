@@ -15,6 +15,21 @@ CST_DICT = OrderedDict(
     pvt=mc.poleVectorConstraint,
 )
 
+from contextlib import ContextDecorator
+
+
+class Undo(ContextDecorator):
+    """Context manager for undo chunk in Maya."""
+
+    def __init__(self, name=None):
+        self.name = name
+
+    def __enter__(self):
+        mc.undoInfo(openChunk=True, infinity=True, chunkName=self.name)
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        mc.undoInfo(closeChunk=True)
+
 
 def getUniqueCstDictNames():
     """Return unique constraint names from CST_DICT"""

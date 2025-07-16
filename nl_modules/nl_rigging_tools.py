@@ -68,22 +68,6 @@ BIND_JNT_SET = "bind_jnt_set"
 MODEL_GRP = "mdl_grp"
 
 
-from contextlib import ContextDecorator
-
-
-class Undo(ContextDecorator):
-    """Context manager for undo chunk in Maya."""
-
-    def __init__(self, name=None):
-        self.name = name
-
-    def __enter__(self):
-        mc.undoInfo(openChunk=True, infinity=True, chunkName=self.name)
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        mc.undoInfo(closeChunk=True)
-
-
 class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     """Main window for the rigging tools UI."""
 
@@ -254,7 +238,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         mel.eval('setObjectPickMask "All" 1')
 
-    @Undo("guide_load")
+    @common.Undo("guide_load")
     def guide_load(self, *args):
         """Load selected guide components."""
 
@@ -347,7 +331,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if selList:
             CrvNode(selList[0]).uninstanceFromOthers()
 
-    @Undo("crvShape_apply")
+    @common.Undo("crvShape_apply")
     def crvShape_apply(self):
         """Apply selected curve shape to selList"""
 
@@ -419,7 +403,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         skin.skinRefJnts(meshesNoScap, jntsNoScap, thld=thld, uiPB=uiPB)
         skin.skinRefJnts(meshesScap, jntsScap, thld=thld, uiPB=uiPB)
 
-    @Undo("boneAutoBind")
+    @common.Undo("boneAutoBind")
     def boneAutoBind(self):
         """Bind all meshes in MODEL_GRP to reference joints and rb joints."""
 
