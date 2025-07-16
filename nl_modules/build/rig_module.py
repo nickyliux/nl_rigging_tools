@@ -479,11 +479,11 @@ class RigModule(RigBase):
         tgtChild.cstAim(
             tgtDup, worldUpType="object", worldUpObject=upLoc, aim=(xDr, 0, 0)
         )
-        # mc.hide(upLoc)
+
         self.boneFix = tgtDup
         self.boneFix_sdk(tgt, tgtDup)
 
-        self.removeInBindJnts([self.lwr])
+        self.updateBindJntList(remove=[self.lwr], extend=[self.boneFix])
 
     def boneFix_sdk(self, driver, driven):
         """ "Setup SDK for bone fix to drive the leg joint."""
@@ -1006,15 +1006,15 @@ class RigModule(RigBase):
         setattr(self, name, ctl)
         self.rigNode.setMsg({name: ctl})
 
-    def removeInBindJnts(self, jntList):
+    def updateBindJntList(self, extend=None, remove=None):
         """Remove joints from bindJnts list"""
 
-        if not isinstance(jntList, (tuple, list)):
-            jntList = [jntList]
-
-        for jnt in jntList:
+        for jnt in remove or []:
             if jnt in self.bindJnts:
                 self.bindJnts.remove(jnt)
+        for jnt in extend or []:
+            if jnt not in self.bindJnts:
+                self.bindJnts.append(jnt)
 
     def build_rbn(self, tgt, name="", n=5, isLower=1):
         """Build a ribbon node for the target with specified parameters."""
@@ -1084,7 +1084,8 @@ class RigModule(RigBase):
         volType >> ribbonLw.volType
 
         # Update bind joints
-        self.removeInBindJnts([upr, lwr])
-        self.bindJnts.extend(ribbonUp.rbJnt + ribbonLw.rbJnt)
+        self.updateBindJntList(
+            remove=[upr, lwr], extend=ribbonUp.rbJnt + ribbonLw.rbJnt
+        )
 
         return [ribbonUp, ribbonLw]

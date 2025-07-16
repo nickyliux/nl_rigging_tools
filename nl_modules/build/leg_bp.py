@@ -374,7 +374,11 @@ class LegBp(RigModule):
         for g in [toeRollG, inRollG, outRollG, heelRollG]:
             ctl = g.addOffsetGrp(below=1)
             CrvNode(ctl)(
-                name=g.name + "_ctl", shape="diamond", scale=rSz / 4, color=1, width=2
+                name=g.name + "_ctl",
+                shape="diamond",
+                scale=rSz / 4,
+                color=Color.BLACK,
+                width=2,
             )
             self.subCtls.append(ctl)
 
@@ -437,7 +441,7 @@ class LegBp(RigModule):
             self.toesCtlsList.append([ctl])
 
         # --- Remove palm and ball from bind joints (handled by toes) ---
-        self.removeInBindJnts([self.palm, self.ball])
+        self.updateBindJntList(remove=[self.palm, self.ball])
 
         # --- (Optional) Splay logic for toes (commented out) ---
         # splay = self.ball_fkc.a.add("splay", min=-5, max=5)
@@ -475,8 +479,9 @@ class LegBp(RigModule):
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
 
-        self.removeInBindJnts([self.lwr, self.boneFix])
-        self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
+        self.updateBindJntList(
+            remove=[self.lwr, self.boneFix], extend=[radius_JC[0], ulna_JC[0]]
+        )
 
     def setup_vis(self):
         """Setup visibility for the leg rig controls."""

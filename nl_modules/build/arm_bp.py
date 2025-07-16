@@ -345,8 +345,7 @@ class ArmBp(RigModule):
         self.clavBone | self.SKL_DATA
         self.clavicle.cstPoi(self.clavBone)
 
-        self.removeInBindJnts([self.clavicle])
-        self.bindJnts.append(self.clavBone)
+        self.updateBindJntList(remove=[self.clavicle], extend=[self.clavBone])
 
     def build_twist_bones(self):
         """Build twist bones for the arm rig."""
@@ -381,8 +380,7 @@ class ArmBp(RigModule):
         )
 
         # Update bind joints
-        self.removeInBindJnts([self.lwr])
-        self.bindJnts.extend([radius_JC[0], ulna_JC[0]])
+        self.updateBindJntList(remove=[self.lwr], extend=[radius_JC[0], ulna_JC[0]])
 
     def setup_vis(self):
         """Setup visibility toggles for the arm rig controls."""
