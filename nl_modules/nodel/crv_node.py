@@ -232,6 +232,9 @@ class CrvNode(GrpNode):
         shape=None,
         up=None,
         rotate=None,
+        rotateX=0,
+        rotateY=0,
+        rotateZ=0,
         scale=1,
         color=0,
         addOfs=0,
@@ -253,8 +256,14 @@ class CrvNode(GrpNode):
             self.cv_rotate(0, 0, 90)
         elif up == "z":
             self.cv_rotate(90, 0, 0)
+        # if rotate:
+        #     self.cv_rotate(*rotate)
         if rotate:
             self.cv_rotate(*rotate)
+        else:
+            vec = [rotateX, rotateY, rotateZ]
+            if any(vec):
+                self.cv_rotate(*vec)
 
         if isinstance(scale, (tuple, list)):
             self.cv_scale(*scale)

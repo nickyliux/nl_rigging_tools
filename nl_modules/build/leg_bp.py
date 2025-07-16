@@ -78,7 +78,7 @@ class LegBp(RigModule):
         )
         self.ikH1 = None
         self.ikH_PV = None
-        self.ballG_ikc = None
+        self.ball_ikc = None
         self.patellaJ = None
         self.ribbonUp = None
         self.ribbonLw = None
@@ -121,21 +121,22 @@ class LegBp(RigModule):
 
         ctl_defs = [
             ("setting", "bagua", "z", scale, 1, -1),
-            ("hip_fkc", "cubeL", "x", scale, 1, -1),
-            ("upr_fkc", "cubeL", "x", scale, 1, -1),
-            ("lwr_fkc", "cubeL", "x", scale, 1, -1),
-            ("palm_fkc", "cubeL", "x", scale, 1, -1),
-            ("ball_fkc", "cubeL", "x", scale, 1, -1),
+            ("hip_fkc", "cubeR", "x", scale * 1.5, 1, -1),
+            ("upr_fkc", "cubeR", "x", scale * 1.5, 1, -1),
+            ("lwr_fkc", "cubeR", "x", scale * 1.5, 1, -1),
+            ("palm_fkc", "cubeR", "x", scale * 1.5, 1, -1),
+            ("ball_fkc", "cubeR", "x", scale * 1.5, 1, -1),
             ("ikc", "foot", None, rSz * 2, 0, -1),
             ("pvc", "diamond", None, scale * 2, 0, -1),
             ("smart_ctl", "squR", None, scale / 2, 0, -1),
         ]
-
         if self.scapularExtra:
-            ctl_defs.append(("scap_fkc", "arrow4", "x", scale, 0, -1))
+            ctl_defs.append(("scap_fkc", "arrow4", "x", scale, 1, -1))
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
+
+        # self.ikc.cv_scale(1, 0.2, 1)
 
     def build(self):
         """Build the leg rig module."""
@@ -377,16 +378,17 @@ class LegBp(RigModule):
             )
             self.subCtls.append(ctl)
 
-        self.ballG_ikc = ballRollG.addOffsetGrp(below=1)
-        CrvNode(self.ballG_ikc)(
-            name="ballG_ikc",
+        self.ball_ikc = ballRollG.addOffsetGrp(below=1)
+        CrvNode(self.ball_ikc)(
+            name="ball_ikc",
             pf=rID,
-            shape="rotator",
-            scale=-rSz * xDr / 3 * 2,
-            # rotateY=90,
+            shape="stickS",
+            scale=-rSz * xDr / 2,
+            rotateY=90,
             width=2,
         )
-        self.ikCtl.append(self.ballG_ikc)
+        self.rigNode.setMsg({"ball_ikc": self.ball_ikc})
+        self.ikCtl.append(self.ball_ikc)
 
         # Smart Ctl setup
         self.smart_ctl.snapAlignTo(toeRollG, self.master_guide)
@@ -480,11 +482,11 @@ class LegBp(RigModule):
         """Setup visibility for the leg rig controls."""
 
         self.pvc.a["fkPin"] >> self.pin_fkc.a.v
-        # self.ctl_vis_toggle(
-        #     self.setting.a["fkIkBlend"],
-        #     onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
-        #     offList=self.fkCtl[1:-1],
-        # )
+        self.ctl_vis_toggle(
+            self.setting.a["fkIkBlend"],
+            onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
+            offList=self.fkCtl[1:-1],
+        )
         self.ctl_vis_toggle(
             self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
             onList=self.subCtls,
@@ -503,7 +505,7 @@ class LegBp(RigModule):
         self.setting.a.showAttr()
         self.pvc.a.showAttr(t=1, r=1)
         self.smart_ctl.a.showAttr(r=1)
-        self.ballG_ikc.a.showAttr(r=1)
+        self.ball_ikc.a.showAttr(r=1)
 
         for ctl in self.fkCtl + self.subCtls + [self.ikc, self.pvc, self.pin_fkc]:
             ctl.a.showAttr(t=1, r=1)

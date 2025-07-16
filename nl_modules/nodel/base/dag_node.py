@@ -428,10 +428,10 @@ class DagNode(DepNode):
         else:
             return resultGrps
 
-    def alignTo(self, obj, ofs=None, ofsR=None, rotate=0, p=None, addOfs=0):
+    def alignTo(self, obj, ofs=None, ofsR=None, rotateOnly=0, p=None, addOfs=0):
         """Align to obj"""
         obj = DagNode(obj) if isinstance(obj, str) else obj
-        if rotate:
+        if rotateOnly:
             common.matchMove([self, obj], mode="r")
         else:
             common.matchMove([self, obj])

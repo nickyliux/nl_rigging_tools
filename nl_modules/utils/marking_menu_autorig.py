@@ -13,6 +13,8 @@ class MarkingMenuAutorig:
     """Marking menu for autorigging tools"""
 
     def __init__(self):
+        """Initialize the marking menu"""
+
         if mc.popupMenu(MENU_NAME, ex=1):
             mc.deleteUI(MENU_NAME)
         mc.popupMenu(
@@ -31,18 +33,21 @@ class MarkingMenuAutorig:
 
     def setupMenu(self, menu, parent):
         """Setup the marking menu with various options"""
+
         self.addBuildOptions(menu)
         self.addGuideOptions(menu)
-        self.addExtraOptions(menu)
         self.addSpaceIKFKOptions(menu)
+        self.addExtraOptions(menu)
 
     def addBuildOptions(self, menu):
         """Add build options to the marking menu"""
+
         mc.menuItem(p=menu, l="Build", rp="N", c=build.buildSelOrAll)
         mc.menuItem(p=menu, l="Unbuild", rp="NW", c=build.unbuildSelOrAll)
 
     def addGuideOptions(self, menu):
         """Add guide options to the marking menu"""
+
         mc.menuItem(p=menu, l="Mirror Guide", rp="NE", c=guide.mirrorGuideSelOrAll)
         mc.menuItem(p=menu, l="Delete Guide", rp="SE", c=build.deleteSelOrAll)
         mc.menuItem(p=menu, l="Copy Guide", rp="E", c=guide.copyGuideSel)
@@ -50,60 +55,58 @@ class MarkingMenuAutorig:
 
     def addExtraOptions(self, menu):
         """Add extra options to the marking menu"""
+
         mc.menuItem(p=menu, l="Mirror Pose", c=guide.mirrorPose)
         mc.menuItem(p=menu, l="Select Ctls", rp="SW", c=self.selectCtlSelOrAll)
         mc.menuItem(p=menu, l="Reload Menu", c=self.reload_marking_menu)
 
     def addSpaceIKFKOptions(self, menu):
         """Add space switch and IK/FK options to the marking menu"""
+
         selList = mc.ls(sl=1, tr=1)
-        if selList:
-            firstSelected = DagNode(selList[0])
-            nodes = firstSelected.a.message.outConnNode
-            if nodes:
-                rigNode = nodes[0]
-                if rigNode.exists():
-                    # -----------------------------
-                    # SPACE SWITCH
-                    # -----------------------------
-                    spaceAttr = firstSelected.a.space
-                    if spaceAttr.exists():
-                        mc.menuItem(p=menu, l="SPACES", en=0)
-                        mc.menuItem(p=menu, l="-" * 15, en=0)
-                        curr = spaceAttr.get()
-                        allSpaceAttr = spaceAttr.query(le=1)[0].split(":")
-                        for i, attr in enumerate(allSpaceAttr):
-                            if curr == i:
-                                attr += "   <"
-                            mc.menuItem(
-                                p=menu,
-                                l=attr,
-                                # data=i,
-                                c=partial(self.switch_to_space, attr),
-                            )
-                        mc.menuItem(p=menu, l="-" * 15, en=0)
-                    # -----------------------------
-                    # IK FK
-                    # -----------------------------
-                    fkIkAttr = firstSelected.a["fkIkBlend"]
-                    if fkIkAttr.exists():
-                        if fkIkAttr.get() > 0.5:
-                            mc.menuItem(
-                                p=menu,
-                                l="To FK Mode",
-                                rp="S",
-                                c=partial(self.switch_ik_fk, fkIkAttr, 0, rigNode),
-                            )
-                        else:
-                            mc.menuItem(
-                                p=menu,
-                                l="To IK Mode",
-                                rp="S",
-                                c=partial(self.switch_ik_fk, fkIkAttr, 1, rigNode),
-                            )
+        if not selList:
+            return
+
+        firstSelected = DagNode(selList[0])
+        nodes = firstSelected.a.message.outConnNode
+        if not nodes:
+            return
+
+        rigNode = nodes[0]
+        if not rigNode.exists():
+            return
+
+        # --- SPACE SWITCH ---
+        spaceAttr = firstSelected.a.space
+        if spaceAttr.exists():
+            mc.menuItem(p=menu, l="SPACES -----", en=0)
+            # mc.menuItem(p=menu, l="-" * 15, en=0)
+            curr = spaceAttr.get()
+            allSpaceAttr = spaceAttr.query(le=1)[0].split(":")
+            for i, attr in enumerate(allSpaceAttr):
+                label = f"{attr}   <" if curr == i else attr
+                mc.menuItem(
+                    p=menu,
+                    l=label,
+                    c=partial(self.switch_to_space, attr),
+                )
+            mc.menuItem(p=menu, l="-" * 15, en=0)
+
+        # --- IK/FK SWITCH ---
+        fkIkAttr = firstSelected.a["fkIkBlend"]
+        if fkIkAttr.exists():
+            mode = 0 if fkIkAttr.get() > 0.5 else 1
+            label = "To FK Mode" if mode == 0 else "To IK Mode"
+            mc.menuItem(
+                p=menu,
+                l=label,
+                rp="S",
+                c=partial(self.switch_ik_fk, fkIkAttr, mode, rigNode),
+            )
 
     def mirrorShapeSelOrAll(*args):
         """Mirror the shape of the selected control or all controls in LF_CTL_SET"""
+
         from nl_modules.utils import control
 
         selList = mc.ls(sl=1, tr=1)
@@ -116,6 +119,7 @@ class MarkingMenuAutorig:
 
     def selectCtlSelOrAll(self, *args):
         """Select all controls in the rig node or all controls in LF_CTL_SET"""
+
         rigNodes = []
         selList = mc.ls(sl=1, tr=1)
         if selList:
@@ -137,10 +141,12 @@ class MarkingMenuAutorig:
 
     def switch_to_space(self, *args):
         """Switch space for all selected controls to the specified space"""
+
         anim.switch_to_space_target(args[0])
 
     def switch_ik_fk(self, *args):
         """Switch FK/IK mode for the specified rig node"""
+
         anim.switch_ik_fk(attr=args[0], toIKMode=args[1], rigNode=args[2])
         self.reload_marking_menu()
 

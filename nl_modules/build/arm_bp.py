@@ -79,10 +79,10 @@ class ArmBp(RigModule):
         ctl_defs = [
             ("setting", "bagua", "z", scale, 1, -1),
             ("clavicle_fkc", "stickC", None, scale, 1, -1),
-            ("upr_fkc", "cubeL", "x", scale * 2, 1, -1),
-            ("lwr_fkc", "cubeL", "x", scale * 2, 1, -1),
-            ("palm_fkc", "cubeL", "x", scale * 2, 1, -1),
-            ("ikc", "trapezoid", None, scale * 1.5, 0, -1),
+            ("upr_fkc", "cubeR", "x", scale * 2, 1, -1),
+            ("lwr_fkc", "cubeR", "x", scale * 2, 1, -1),
+            ("palm_fkc", "cubeR", "x", scale * 2, 1, -1),
+            ("ikc", "cube", None, scale * 1.5, 0, -1),
             ("palm_ikc", "squR", "x", scale * 1.2, 0, -1),
             ("pvc", "diamond", None, scale, 0, -1),
         ]
@@ -226,7 +226,7 @@ class ArmBp(RigModule):
         palm_ikc_ofs = self.palm_ikc.addOffsetGrp()
         self.ikc.cstPoi(palm_ikc_ofs)
 
-        palmAlign = self.ikc.a.add("palmAlign", min=0, max=1)
+        palmAlign = self.ikc.a.add("palmAlign", min=0, max=1, dv=1)
         common.cstMulti(
             palm_ik.offset, self.ikc, palm_ikc_ofs, w=palmAlign, cstType="parR"
         )
@@ -387,18 +387,18 @@ class ArmBp(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the arm rig controls."""
 
-        # self.ctl_vis_toggle(
-        #     self.setting.a["fkIkBlend"],
-        #     onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
-        #     offList=self.fkCtl[1:],
-        # )
+        self.ctl_vis_toggle(
+            self.setting.a["fkIkBlend"],
+            onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
+            offList=self.fkCtl[1:],
+        )
         self.ctl_vis_toggle(
             self.pvc.a["fkPin"],
             onList=[self.pin_fkc],
         )
         if self.rbnBones:
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyCtl", attrType="bool", dv=1),
+                self.setting.a.add("bendyCtl", attrType="bool"),  # , dv=1),
                 onList=self.all_bend,
             )
 

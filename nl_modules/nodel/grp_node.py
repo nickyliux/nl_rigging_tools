@@ -65,7 +65,7 @@ class GrpNode(DagNode):
         if align:
             self.alignTo(align)
         if alignR:
-            self.alignTo(alignR, rotate=1)
+            self.alignTo(alignR, rotateOnly=1)
         if snap:
             self.snapTo(snap)
         if addOfs:
