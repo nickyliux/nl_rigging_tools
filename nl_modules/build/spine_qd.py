@@ -54,7 +54,6 @@ class SpineQd(RigModule):
         self.ikJnts = []
         self.rbJnts = []
         self.spIkJnts = []
-        self.bindJnts = []
         self.twoIkJnts = []
 
         # Ribbon and anchor
@@ -80,7 +79,7 @@ class SpineQd(RigModule):
 
         #   Define control shapes and attributes
         ctl_defs = [
-            ("setting", "cross", "z", rSz * 2, 1, 2),
+            ("setting", "bagua", "z", rSz * 2, 1, 2),
             ("cog_ctl", "trapezoid", None, maths.mul(1, 2, 3, rSz), 1, -1),
             ("base_ctl", "circle", "z", maths.mul(5, 5, 2, rSz), 0, -1),
             ("mid_ctl", "squR", "z", rSz * 4, 0, -1),
@@ -296,9 +295,8 @@ class SpineQd(RigModule):
         """Build a two-joint IK system for the spine rig."""
 
         rID, rSz, xDr = self.getMyVar()
-        #
-        #   build chain from crv
-        #
+
+        # --- Build two-joint chain from curve ---
         self.twoIkJnts = JntNode.makeTwoJC(
             "two_ikj",
             pf=rID,
@@ -309,50 +307,41 @@ class SpineQd(RigModule):
         )
         j0, j1 = self.twoIkJnts
 
+        # --- Create hidden IK handle and constrain end joint ---
         IkNode("two_ikj", pf=rID, sj=j0, ee=j1, vis=0, p=self.tangent1_ctl)
         j1.cstPoi(self.ikJnts[2])
-        #
-        #   ctl two jnt's scale
-        #
+
+        # --- Control two-joint scale with distance and clamp ---
         d = ut.distDim_(self.tangent0_ctl, self.tangent1_ctl)
-        crvLenRatio = (
-            d / d.get() / self.masterC.a.globalScale  # / self.setting.a.localScale
-        )
-        (
-            ut.clp_(
-                crvLenRatio,
-                min=self.setting.a.stretchMin,
-                max=self.setting.a.stretchMax,
-            )
-            >> j0.a.sz
-        )
-        #
-        #   contraint mid ik ctl
-        #
+        crvLenRatio = d / d.get() / self.masterC.a.globalScale
+        ut.clp_(
+            crvLenRatio,
+            min=self.setting.a.stretchMin,
+            max=self.setting.a.stretchMax,
+        ) >> j0.a.sz
+
+        # --- Constrain mid IK control rotation ---
         self.fore_ctl.a.r >> j1.a.r
-        #
-        #   use poi cst for Neck, parT cst for spine
-        #
+
+        # --- Use POI or parent constraint for mid control offset ---
         if self.is_neck():
             common.cstMulti(self.base_ctl, j1, self.mid_ctl.offset, cstType="poi", mo=1)
         else:
             loc0 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.base_ctl, vis=0)
             loc1 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=j1, vis=0)
             common.cstMulti(loc0, loc1, self.mid_ctl.offset, cstType="parT", mo=1)
-        #
-        #   make mid ctl aiming forward
-        #
+
+        # --- Make mid control aim forward ---
         j1.cstAim(
             self.mid_ctl.offset,
             aim=(0, 0, 1),
             worldUpType="objectrotation",
             worldUpObject=self.cog_ctl,
         )
-        #
-        #   mid ctl's rz dirven by average of the 2 ctls
-        #
+
+        # --- Drive mid control rz by average of fore and base controls ---
         self.mid_ctl.addOffsetGrp()
-        self.fore_ctl.a.rz @ self.base_ctl.a.rz >> self.mid_ctl.offset.a.rz
+        (self.fore_ctl.a.rz @ self.base_ctl.a.rz) >> self.mid_ctl.offset.a.rz
 
     def build_volume(self, crvLenRatio):
         """Build volume control for the spine rig."""
