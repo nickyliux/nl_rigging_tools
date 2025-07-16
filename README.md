@@ -1,3 +1,4 @@
+<!--
 <style>
 table {
     border-collapse: collapse;
@@ -10,6 +11,7 @@ blockquote {
 	padding-left: 10px;
 }
 </style>
+-->
 
 # nl-rigging-tools ( nlRT )  ![nlRT logo](install/nl_rigging_tools.bmp)  
 
