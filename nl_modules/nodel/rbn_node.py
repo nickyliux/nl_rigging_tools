@@ -82,8 +82,8 @@ class RbnNode:
         self.build_volume_setup()
         self.build_post()
 
-        if self.scaleFix:
-            self.scaleFix >> self.ribbonG.a.s
+        # if self.scaleFix:
+        #     self.scaleFix >> self.ribbonG.a.s
         self.tgtN.cstPar(self.ribbonG, keep=0)
 
     def build_grps(self, pf):

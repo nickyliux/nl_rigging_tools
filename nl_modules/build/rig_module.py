@@ -4,6 +4,7 @@ from nl_modules.build.rig_base import RigBase
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.rbn_node import RbnNode
@@ -570,11 +571,10 @@ class RigModule(RigBase):
     def build_digit_ik(self, ikTgt, scale=1, p=None):
         """Build an IK setup for a digit (e.g., finger or toe) with a control and joints."""
 
-        from nl_modules.nodel.ik_node import IkNode
-
+        # --- Create IK control for the digit ---
         ctl = CrvNode(
             ikTgt + "_ikc",
-            shape="stickC",
+            shape="stickS",
             align=ikTgt,
             up="-z",
             scale=scale,
@@ -582,10 +582,10 @@ class RigModule(RigBase):
             top=1,
             p=p.offset,
         )
-
         ctl.addOffsetGrp()
         p.a.ry >> ctl.offset.a.ry
 
+        # --- Duplicate joints for IK chain ---
         j1 = JntNode(ikTgt).duplicate(po=1)
         j1.rename(ikTgt + "_1_ikj")
 
@@ -593,7 +593,10 @@ class RigModule(RigBase):
         j2.rename(ikTgt + "_2_ikj")
         j2 | j1
 
+        # --- Constrain first joint to control ---
         j1.cstPoi(ctl.offset)
+
+        # --- Create IK handle for the digit ---
         ikH = IkNode(
             j1,
             sj=j1,
@@ -603,6 +606,7 @@ class RigModule(RigBase):
             vis=0,
             p=ctl,
         )
+
         return ctl, j1, ikH
 
     def get_autoAim_preset(self):
@@ -627,8 +631,6 @@ class RigModule(RigBase):
 
     def build_autoAim(self, startJ, endJ, fkc=None, ikc=None, ikcGim=None):
         """Build auto aim function for the given start and end joints."""
-
-        from nl_modules.nodel.ik_node import IkNode, Solver
 
         rID, rSz, xDr = self.getMyVar()
         #
@@ -694,19 +696,17 @@ class RigModule(RigBase):
         # self.joints_am[0].hide()
 
     def build_scapular(self, ikc=None, fkc=None, jnts=None, EXTRA=0, scapCtl=None):
-        """Build scapular joint and auto aim function"""
-
-        from nl_modules.nodel.ik_node import IkNode, Solver
+        """Build scapular joint and auto aim function."""
 
         rID, rSz, xDr = self.getMyVar()
         hipJ = jnts[0]
         uprJ = jnts[1]
 
+        # --- Main scapular group setup ---
         mainGrp = GrpNode("quadScap", pf=rID, align=hipJ, p=self.FK_GRP, addOfs=1)
         fkc.offset | mainGrp
-        #
-        #   add auto aim function
-        #
+
+        # --- Auto aim function setup ---
         j0, j1 = JntNode.makeTwoJC2(
             "autoAim",
             pf=rID,
@@ -723,9 +723,7 @@ class RigModule(RigBase):
         j0.hide()
 
         if EXTRA:
-            #
-            #   add leg lock function
-            #
+            # --- Leg lock function setup ---
             aim = (xDr, 0, 0)
             u = (0, xDr, 0)
             wu = (0, 0, xDr)
@@ -738,14 +736,11 @@ class RigModule(RigBase):
             ikc.a.add("legLockLen") * self.xDir >> fkc.offset.a.tx
             common.cstMulti(mainGrp.offset, j1, mainGrp, w=legLock, cstType="poi")
             j0.hide()
-            #
-            #   add extra scapular joint
-            #
-            # scap_fkc.snapAlignTo(uprJ, fkc, p=fkc)
+
+            # --- Extra scapular joint setup ---
             scapCtl.snapTo(uprJ, p=self.CTL_DATA)
             if xDr < 0:
                 scapCtl.a.rx.set(180)
-
             scapCtl.addOffsetGrp()
             j0, j1 = JntNode.makeTwoJC2(
                 "scapular",
@@ -760,8 +755,8 @@ class RigModule(RigBase):
             )
             scapCtl.cstOri(j0, mo=1)
             self.bindJnts.append(j0)
-            # j0.hide()
 
+            # --- Scapular helper setup (if guide exists) ---
             scapHelper = DagNode(rID + "_scapHelper_guide")
             if scapHelper.exists():
                 j0, j1 = JntNode.makeTwoJC(

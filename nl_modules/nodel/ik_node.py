@@ -53,22 +53,25 @@ class IkNode(DagNode):
         vis=1,
         p=None,
     ):
+        # --- Name and prefix setup ---
         if pf and pf[-1] != "_":
             pf += "_"
         name = pf + node + sf
 
+        # --- Existence and joint checks ---
         if mc.objExists(name):
             logging.warning("IK already exist.")
             return
         sj1 = sj + jsf
         ee1 = ee + jsf
-
         if not mc.objExists(sj1) or not mc.objExists(ee1):
             logging.warning(f"Missing joint {sj1} & {ee1}. Can't create IK")
             return
 
+        # --- Initialize base DagNode ---
         super().__init__(name)
 
+        # --- Store main attributes ---
         self.sj = DagNode(sj1)
         self.ee = DagNode(ee1)
         self.solver = solver
@@ -82,6 +85,9 @@ class IkNode(DagNode):
         self.rSz = rSz
         self.softJ = None
         self.pvChainJ = None
+        self.RIG_DATA = RIG_DATA
+
+        # --- Create IK handle and store joints ---
         self.createIK(
             name,
             quat=quat,
@@ -95,10 +101,10 @@ class IkNode(DagNode):
         self.chainLen = self.calcChainLen()
         self.localStretch = limbScale
         self.xDir = 1 if self.ee.a.tx.get() > 0 else -1
-        self.RIG_DATA = RIG_DATA
+
+        # --- Hide if not visible ---
         if not vis:
             mc.hide(self)
-        self
 
     def createIK(
         self, node, quat=False, createCrv=1, inputCrv=None, numSpans=3, p=None

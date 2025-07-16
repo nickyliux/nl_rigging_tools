@@ -386,7 +386,6 @@ class LegBp(RigModule):
             # rotateY=90,
             width=2,
         )
-        # shape="stickC",
         self.ikCtl.append(self.ballG_ikc)
 
         # Smart Ctl setup
@@ -403,41 +402,45 @@ class LegBp(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
+        # --- Parent toes root to palm ---
         self.toesRootJ | self.palm
+
+        # --- Gather all toe joint chains ---
         self.toesJntList = []
         for rootJ in self.toesRootJ.childrenJt:
             self.toesJntList.append([fgr for fgr in rootJ.allChildrenJt2])
             rootJ.a.segmentScaleCompensate.set(0)
 
+        # --- Build toe controls ---
         self.toesCtlsList = []
         scale = xDr * rSz / 2
 
         for toeJs in self.toesJntList:
-
+            # IK setup for toe
             ikTgt = JntNode(toeJs[1])
             ctl, ikJ, ikH = self.build_digit_ik(ikTgt, scale=scale, p=self.ball_fkc)
-
             self.toeIKHs.append(ikH)
             ikJ.a.r >> ikTgt.a.r
+
+            # FK setup for toe
             ctlList = []
             self.bindJnts.extend(toeJs[:-1])
             fkToeList = toeJs[2:-1]
-
             for jnt in fkToeList:
                 crvName = f"{jnt.name}_ctl_#"
                 crv = CrvNode(crvName, shape="squR", up="x", scale=scale, align=jnt)
                 ctlList.append(crv)
-
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
             self.toesCtlsList.append(ctlList)
             self.toesCtlsList.append([ctl])
 
+        # --- Remove palm and ball from bind joints (handled by toes) ---
         self.removeInBindJnts([self.palm, self.ball])
 
+        # --- (Optional) Splay logic for toes (commented out) ---
         # splay = self.ball_fkc.a.add("splay", min=-5, max=5)
         # toeCount = len(self.toesJntList)
         # splayRange = 45
-
         # for i in range(toeCount):
         #     tgt = toeLocList[i].a.rz
         #     common.sdk2(splay, tgt, -5, splayRange * (-1 + 2 / (toeCount - 1) * i))
@@ -556,10 +559,21 @@ class LegBp(RigModule):
 
         palmScale = self.setting.a.add("palmScale", min=0.01, dv=1)
         self.ikc.a.add("palmScale", min=0.01, proxy=palmScale)
+
         palmScale >> self.ball_fkc.offset.a.s
-        palmScale >> self.joints_bf[3].a.s
-        palmScale >> self.palm.a.s
         palmScale >> self.ikc.a.s
+
+        for jnt in [self.palm, self.joints_fk[3], self.joints_ik[3], self.joints_bf[3]]:
+            palmScale >> jnt.a.s
+
+        for jnt in [
+            self.palm,
+            self.joints[4],
+            self.joints_fk[4],
+            self.joints_ik[4],
+            self.joints_bf[4],
+        ]:
+            jnt.a["segmentScaleCompensate"].set(0)
 
     def setup_ctlSet(self):
         """Setup control sets for the leg rig module."""
