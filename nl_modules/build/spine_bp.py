@@ -60,7 +60,7 @@ class SpineBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         ctl_defs = [
-            ("setting", "bagua", "z", rSz * 3, 1, 2),
+            ("setting", "bagua", "z", rSz * 2, 1, -1),
             ("cog_ctl", "cog2", None, rSz * 6, 0, -1),
             ("chest_ctl", "circle", None, rSz * 5, 0, -1),
             ("mid_ctl", "square", None, rSz * 5, 0, -1),

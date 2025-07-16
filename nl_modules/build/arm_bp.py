@@ -77,7 +77,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "bagua", "z", scale * 2, 1, 2),
+            ("setting", "bagua", "z", scale, 1, -1),
             ("clavicle_fkc", "stickC", None, scale, 1, -1),
             ("upr_fkc", "cubeL", "x", scale * 2, 1, -1),
             ("lwr_fkc", "cubeL", "x", scale * 2, 1, -1),
@@ -355,8 +355,8 @@ class ArmBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         # Generate radius and ulna joint chains
-        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], color=4, scale=2)
-        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], color=4, scale=2)
+        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=2)
+        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=2)
 
         # Parent twist chains to lower arm
         (radius_JC[0], ulna_JC[0]) | self.lwr

@@ -64,9 +64,6 @@ def nlShrinkWrap(target=None, meshes=None, keep=0, **kwargs):
 def genProxy():
     """Generate proxy meshes for all bind joints in the scene."""
 
-    from nl_modules.nodel.grp_node import GrpNode
-    from nl_modules.nodel.jnt_node import JntNode
-
     MDL = GrpNode("MDL")
     PRX = GrpNode("PRX", p=MDL)
     bindSet = DagNode("bind_jnt_set")

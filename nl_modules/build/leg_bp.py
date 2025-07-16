@@ -120,7 +120,7 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "bagua", "z", scale * 1.5, 1, 2),
+            ("setting", "bagua", "z", scale, 1, -1),
             ("hip_fkc", "cubeL", "x", scale, 1, -1),
             ("upr_fkc", "cubeL", "x", scale, 1, -1),
             ("lwr_fkc", "cubeL", "x", scale, 1, -1),
@@ -449,8 +449,8 @@ class LegBp(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], color=4, scale=2)
-        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], color=4, scale=2)
+        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=2)
+        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=2)
 
         parent = self.boneFix if self.kneeFix else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent
@@ -477,11 +477,11 @@ class LegBp(RigModule):
         """Setup visibility for the leg rig controls."""
 
         self.pvc.a["fkPin"] >> self.pin_fkc.a.v
-        self.ctl_vis_toggle(
-            self.setting.a["fkIkBlend"],
-            onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
-            offList=self.fkCtl[1:-1],
-        )
+        # self.ctl_vis_toggle(
+        #     self.setting.a["fkIkBlend"],
+        #     onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
+        #     offList=self.fkCtl[1:-1],
+        # )
         self.ctl_vis_toggle(
             self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
             onList=self.subCtls,

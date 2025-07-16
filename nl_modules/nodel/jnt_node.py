@@ -101,7 +101,6 @@ class JntNode(GrpNode):
         children = self.childrenJt
         base_radius = self.a.radius.get() * 5 * scale
 
-        # Only create proxy if joint has children or is not an end joint
         if children or not skipEnd:
             # Determine proxy height: distance to first child or default size
             if children:
@@ -128,9 +127,9 @@ class JntNode(GrpNode):
             if scaler is not None:
                 scaler >> proxy.a.s
 
-            # If there is a child, set up constraints for orientation
             if children:
                 tgt_child = children[0]
+                # If there are children, set the proxy to aim at the first child
                 common.cstMulti(self, tgt_child, proxy_offset, cstType="poi", delete=1)
                 tgt_child.cstAim(
                     proxy_offset,
@@ -210,7 +209,7 @@ class JntNode(GrpNode):
         upV=(0, 1, 0),
         wuV=(0, 1, 0),
         size=1,
-        color=6,
+        color=Color.GREEN,
         addEndJ=0,
         p=None,
     ):

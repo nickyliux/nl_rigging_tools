@@ -580,7 +580,7 @@ def add_mirror_attr(tgts=None):
     for t in tgts:
         t = DagNode(t)
         if t.exists():
-            t.a.add("wsMirror", lock=1, cb=0)
+            t.a.add("wsMirror", lock=1, k=0, cb=0)
 
 
 # def calcBB(tgt):
