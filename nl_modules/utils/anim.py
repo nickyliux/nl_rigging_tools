@@ -97,41 +97,35 @@ def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
                 pvc.snapTo(pvc_pos_grp)
                 pvc_pos_grp.delete()
 
-            ball_loc = None
-            if ball_ikc and ball:
+            switch_ball_ctl = ball_ikc and ball
+
+            if switch_ball_ctl:
                 ball_ikc.a.r.set(0, 0, 0)
                 ball_loc = LocNode("temp_#", align=ball)
-
-            attr.set(1)
-
-            if ball_ikc and ball:
+                attr.set(1)
                 ball_fkc.alignTo(ball_loc, rotateOnly=1)
                 ball_loc.delete()
+            else:
+                attr.set(1)
 
-        else:
+        elif toIKMode == 0:
             # --- Switch to FK Mode: Snap FK controls to current limb ---
-            # allVar = [upr_fkc, lwr_fkc, palm_fkc, ball_fkc, upr, lwr, palm, ikc]
-            # for v in allVar:
-            #     print(f"{v=}")
-            # if all(allVar):
-
-            ball_loc = None
-            if ball_fkc and ball:
-                ball_loc = LocNode("temp_#", align=ball)
 
             upr_fkc.alignTo(upr)
             lwr_fkc.alignTo(lwr)
             if palm_bf.exists():
                 palm_fkc.alignTo(palm_bf)
 
-            attr.set(0)
+            switch_ball_ctl = ball_fkc and ball
 
-            if ball_fkc and ball:
+            if switch_ball_ctl:
+                ball_loc = LocNode("temp_#", align=ball)
+                attr.set(0)
                 ball_fkc.alignTo(ball_loc, rotateOnly=1)
                 ball_loc.delete()
+            else:
+                attr.set(0)
 
-    # Set the blend attribute and clear selection
-    # attr.set(toIKMode)
     mc.select(cl=1)
 
 
