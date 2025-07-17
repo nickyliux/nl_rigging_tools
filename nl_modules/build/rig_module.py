@@ -718,7 +718,7 @@ class RigModule(RigBase):
             aimTgt=ikc,
         )
         IkNode("autoAimJ", solver=Solver.RP, pf=rID, sj=j0, ee=j1, p=ikc, quat=1, vis=0)
-        autoAim = fkc.a.add("autoAim", min=0, max=1, dv=0.3)
+        autoAim = fkc.a.add("autoAim", min=0, max=1, dv=0)
         common.cstMulti(mainGrp.offset, j0, mainGrp, w=autoAim, cstType="parR", mo=1)
         j0.hide()
 
