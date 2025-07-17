@@ -565,7 +565,7 @@ class LegQd(RigModule):
             self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
             onList=self.subCtls,
         )
-        # [ikh.hide() for ikh in self.all_ikH.values()]
+        [ikh.hide() for ikh in self.all_ikH.values()]
         # mc.hide(self.joints_fk, self.joints_ik)
 
     def setup_channel(self):

@@ -119,6 +119,7 @@ class MarkingMenuRigging:
         mc.menuItem(p=menu, l="Select Constrainer", c=select_cst_objects)
         mc.menuItem(p=menu, l="Match All", c=match_all)
         mc.menuItem(p=menu, l="Match Pos", c=match_pos)
+        mc.menuItem(p=menu, l="Match Rot", c=match_rot)
         mc.menuItem(p=menu, l="Bind Skin", c=mc.SmoothBindSkin)
         mc.menuItem(p=menu, l="Bind Skin", c=mc.SmoothBindSkinOptions, ob=1)
         mc.menuItem(p=menu, l="Add Influence", c=addInf)
@@ -370,6 +371,15 @@ def match_pos(*args):
     selList = mc.ls(sl=1)
     if len(selList) > 1:
         mc.matchTransform(*selList, pos=1, rot=0, scl=0)
+        mc.select(selList[0])
+
+
+def match_rot(*args):
+    """Match the position of the first selected object to all others"""
+
+    selList = mc.ls(sl=1)
+    if len(selList) > 1:
+        mc.matchTransform(*selList, pos=0, rot=1, scl=0)
         mc.select(selList[0])
 
 

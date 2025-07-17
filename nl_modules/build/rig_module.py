@@ -629,7 +629,7 @@ class RigModule(RigBase):
             preset = [dnW, bkW, upW, fwW]
         return preset
 
-    def build_autoAim(self, startJ, endJ, fkc=None, ikc=None, ikcGim=None):
+    def build_nlAutoAim(self, startJ, endJ, fkc=None, ikc=None, ikcGim=None):
         """Build auto aim function for the given start and end joints."""
 
         rID, rSz, xDr = self.getMyVar()

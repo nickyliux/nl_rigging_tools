@@ -149,7 +149,7 @@ class LegBp(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        # self.build_autoAim(
+        # self.build_nlAutoAim(
         #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
         # )
         self.bindJnts = [

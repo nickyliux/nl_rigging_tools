@@ -83,13 +83,13 @@ def assignPresetShd(tgts=None):
     for t in tgts:
         t = DagNode(t)
 
-        color = DagNode.YELLOW
+        color = DagNode.COLOR_MID
         name = "yellow_shd"
         if t.name.startswith("lf"):
-            color = DagNode.BLUE
+            color = DagNode.COLOR_LEFT
             name = "blue_shd"
         elif t.name.startswith("rt"):
-            color = DagNode.RED
+            color = DagNode.COLOR_RIGHT
             name = "red_shd"
 
         if t.type == "mesh":
