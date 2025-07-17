@@ -15,6 +15,17 @@ CST_DICT = OrderedDict(
     pvt=mc.poleVectorConstraint,
 )
 
+
+class Vec(tuple):
+    """A simple vector class that extends tuple functionality"""
+
+    def __mul__(self, scalar):
+        return Vec(x * scalar for x in self)
+
+    def __rmul__(self, scalar):
+        return self.__mul__(scalar)
+
+
 from contextlib import ContextDecorator
 
 
@@ -77,26 +88,29 @@ def assignPresetShd(tgts=None):
 
     from nl_modules.nodel.base.dag_node import DagNode
 
+    tgts = tgts or mc.ls(sl=1, tr=1)
     if not tgts:
-        tgts = mc.ls(sl=1, tr=1)
+        return
 
-    for t in tgts:
-        t = DagNode(t)
-
+    for tgt_name in tgts:
+        tgt = DagNode(tgt_name)
+        name = "proxy_mid_shd"
         color = DagNode.COLOR_MID
-        name = "yellow_shd"
-        if t.name.startswith("lf"):
-            color = DagNode.COLOR_LEFT
-            name = "blue_shd"
-        elif t.name.startswith("rt"):
-            color = DagNode.COLOR_RIGHT
-            name = "red_shd"
 
-        if t.type == "mesh":
-            shd, sg = addShader(name, color=color)
-            mc.sets(t, forceElement=sg)
-        elif t.type == "nurbsCurve":
-            t.color = color
+        # Determine shader name and color based on target name
+        if tgt.name.startswith("lf"):
+            name = "proxy_lf_shd"
+            color = DagNode.COLOR_LEFT
+        elif tgt.name.startswith("rt"):
+            name = "proxy_rt_shd"
+            color = DagNode.COLOR_RIGHT
+
+        # Assign shader based on type
+        if tgt.type == "mesh":
+            shd, sg = addShader(name, color=Vec(color) * 0.8)
+            mc.sets(tgt, forceElement=sg)
+        elif tgt.type == "nurbsCurve":
+            tgt.color = color
 
     mc.select(cl=1)
 
