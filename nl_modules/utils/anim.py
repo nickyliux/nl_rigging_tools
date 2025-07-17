@@ -1,3 +1,4 @@
+import logging
 import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
@@ -46,6 +47,14 @@ def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
         ikc = rigNode.a.ikc.inConnNode
         pvc = rigNode.a.pvc.inConnNode
 
+        if not ikc:
+            logging.error("IK control not found. Cannot switch IK/FK.")
+            return
+
+        if not pvc:
+            logging.error("PVC control not found. Cannot switch IK/FK.")
+            return
+
         if toIKMode == 1:
             # --- Switch to IK Mode: Snap IK controls to current limb ---
             ikcMatcher = DagNode(ikc + "_matcher")
@@ -54,51 +63,50 @@ def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
 
             smartCtl = DagNode(rigID + "_smart_ctl")
 
-            if ikc and pvc:
-                # Get limb positions
-                pos1 = upr.o.pos
-                pos2 = lwr.o.pos
-                pos3 = palm.o.pos
+            # Get limb positions
+            pos1 = upr.o.pos
+            pos2 = lwr.o.pos
+            pos3 = palm.o.pos
 
-                # Reset autoAim if present
-                autoAimAttr = root_fkc.a["autoAim"]
-                if autoAimAttr.exists():
-                    loc = LocNode("_#", align=root_fkc)
-                    autoAimAttr.set(0)
-                    root_fkc.alignTo(loc)
-                    loc.delete()
+            # Reset autoAim if present
+            autoAimAttr = root_fkc.a["autoAim"]
+            if autoAimAttr.exists():
+                loc = LocNode("_#", align=root_fkc)
+                autoAimAttr.set(0)
+                root_fkc.alignTo(loc)
+                loc.delete()
 
-                # Reset smartCtl if present
-                if smartCtl.exists():
-                    smartCtl.resetXf()
+            # Reset smartCtl if present
+            if smartCtl.exists():
+                smartCtl.resetXf()
 
-                # Align IK control to matcher
-                ikc.alignTo(ikcMatcher)
+            # Align IK control to matcher
+            ikc.alignTo(ikcMatcher)
 
-                # Reset FK pin if present
-                fkPin = pvc.a["fkPin"]
-                if fkPin.exists():
-                    fkPin.set(0)
+            # Reset FK pin if present
+            fkPin = pvc.a["fkPin"]
+            if fkPin.exists():
+                fkPin.set(0)
 
-                # Align pole vector control
-                pvPin = pvc.a["pvPin"]
-                if pvPin.exists() and pvPin.get() > 0.5:
-                    pvc.alignTo(lwr)
-                else:
-                    pvc_pos_grp = switch_ik_fk_calcPvc(pos1, pos2, pos3)
-                    pvc.snapTo(pvc_pos_grp)
-                    pvc_pos_grp.delete()
+            # Align pole vector control
+            pvPin = pvc.a["pvPin"]
+            if pvPin.exists() and pvPin.get() > 0.5:
+                pvc.alignTo(lwr)
+            else:
+                pvc_pos_grp = switch_ik_fk_calcPvc(pos1, pos2, pos3)
+                pvc.snapTo(pvc_pos_grp)
+                pvc_pos_grp.delete()
 
-                ball_loc = None
-                if ball_ikc and ball:
-                    ball_ikc.a.r.set(0, 0, 0)
-                    ball_loc = LocNode("temp_#", align=ball)
+            ball_loc = None
+            if ball_ikc and ball:
+                ball_ikc.a.r.set(0, 0, 0)
+                ball_loc = LocNode("temp_#", align=ball)
 
-                attr.set(1)
+            attr.set(1)
 
-                if ball_ikc and ball:
-                    ball_fkc.alignTo(ball_loc, rotateOnly=1)
-                    ball_loc.delete()
+            if ball_ikc and ball:
+                ball_fkc.alignTo(ball_loc, rotateOnly=1)
+                ball_loc.delete()
 
         else:
             # --- Switch to FK Mode: Snap FK controls to current limb ---
