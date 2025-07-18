@@ -25,106 +25,104 @@ def switch_to_space_target(spaceName):
 def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
     """Switch between FK and IK modes for a rig."""
 
-    if rigNode and rigNode.a.nodeState.get() == 2:
-        # --- Gather rig nodes and controls ---
-        rigID = rigNode.a.rigID.get()
-        rootJ = rigNode.a.rootJ.inConnNode
-        upr = rootJ.children[0]
-        lwr = upr.children[0]
-        palm = lwr.children[0]
-        ball = palm.children[0]
-        palm_bf = DagNode(palm.name + "_bf")
+    if not (rigNode and rigNode.a.nodeState.get() == 2):
+        mc.select(cl=1)
+        return
 
-        root_fkc = (
-            rigNode.a["hip_fkc"].inConnNode or rigNode.a["clavicle_fkc"].inConnNode
-        )
+    # --- Gather rig nodes and controls ---
+    rigID = rigNode.a.rigID.get()
+    rootJ = rigNode.a.rootJ.inConnNode
+    upr = rootJ.children[0]
+    lwr = upr.children[0]
+    palm = lwr.children[0]
+    ball = palm.children[0]
+    palm_bf = DagNode(palm.name + "_bf")
 
-        upr_fkc = rigNode.a["upr_fkc"].inConnNode
-        lwr_fkc = rigNode.a["lwr_fkc"].inConnNode
-        palm_fkc = rigNode.a["palm_fkc"].inConnNode
-        ball_fkc = rigNode.a["ball_fkc"].inConnNode
-        ball_ikc = rigNode.a["ball_ikc"].inConnNode
-        ikc = rigNode.a.ikc.inConnNode
-        pvc = rigNode.a.pvc.inConnNode
+    root_fkc = rigNode.a["hip_fkc"].inConnNode or rigNode.a["clavicle_fkc"].inConnNode
+    upr_fkc = rigNode.a["upr_fkc"].inConnNode
+    lwr_fkc = rigNode.a["lwr_fkc"].inConnNode
+    palm_fkc = rigNode.a["palm_fkc"].inConnNode
+    ball_fkc = rigNode.a["ball_fkc"].inConnNode
+    ball_ikc = rigNode.a["ball_ikc"].inConnNode
+    ikc = rigNode.a.ikc.inConnNode
+    pvc = rigNode.a.pvc.inConnNode
 
-        if not ikc:
-            logging.error("IK control not found. Cannot switch IK/FK.")
-            return
+    if not ikc:
+        logging.error("IK control not found. Cannot switch IK/FK.")
+        mc.select(cl=1)
+        return
+    if not pvc:
+        logging.error("PVC control not found. Cannot switch IK/FK.")
+        mc.select(cl=1)
+        return
 
-        if not pvc:
-            logging.error("PVC control not found. Cannot switch IK/FK.")
-            return
+    def _switch_to_ik():
+        """Switch to IK Mode: Snap IK controls to current limb."""
+        ikcMatcher = DagNode(ikc + "_matcher")
+        if not ikcMatcher.exists():
+            raise ValueError(f"{ikc}_matcher NOT found")
 
-        if toIKMode == 1:
-            # --- Switch to IK Mode: Snap IK controls to current limb ---
-            ikcMatcher = DagNode(ikc + "_matcher")
-            if not ikcMatcher.exists():
-                raise ValueError(f"{ikc}_matcher NOT found")
+        smartCtl = DagNode(rigID + "_smart_ctl")
+        pos1, pos2, pos3 = upr.o.pos, lwr.o.pos, palm.o.pos
 
-            smartCtl = DagNode(rigID + "_smart_ctl")
+        # Reset autoAim if present
+        autoAimAttr = root_fkc.a["autoAim"]
+        if autoAimAttr.exists():
+            loc = LocNode("_#", align=root_fkc)
+            autoAimAttr.set(0)
+            root_fkc.alignTo(loc)
+            loc.delete()
 
-            # Get limb positions
-            pos1 = upr.o.pos
-            pos2 = lwr.o.pos
-            pos3 = palm.o.pos
+        # Reset smartCtl if present
+        if smartCtl.exists():
+            smartCtl.resetXf()
 
-            # Reset autoAim if present
-            autoAimAttr = root_fkc.a["autoAim"]
-            if autoAimAttr.exists():
-                loc = LocNode("_#", align=root_fkc)
-                autoAimAttr.set(0)
-                root_fkc.alignTo(loc)
-                loc.delete()
+        # Align IK control to matcher
+        ikc.alignTo(ikcMatcher)
 
-            # Reset smartCtl if present
-            if smartCtl.exists():
-                smartCtl.resetXf()
+        # Reset FK pin if present
+        fkPin = pvc.a["fkPin"]
+        if fkPin.exists():
+            fkPin.set(0)
 
-            # Align IK control to matcher
-            ikc.alignTo(ikcMatcher)
+        # Align pole vector control
+        pvPin = pvc.a["pvPin"]
+        if pvPin.exists() and pvPin.get() > 0.5:
+            pvc.alignTo(lwr)
+        else:
+            pvc_pos_grp = switch_ik_fk_calcPvc(pos1, pos2, pos3)
+            pvc.snapTo(pvc_pos_grp)
+            pvc_pos_grp.delete()
 
-            # Reset FK pin if present
-            fkPin = pvc.a["fkPin"]
-            if fkPin.exists():
-                fkPin.set(0)
+        switch_ball_ctl = ball_ikc and ball
+        if switch_ball_ctl:
+            ball_ikc.a.r.set(0, 0, 0)
+            ball_loc = LocNode("temp_#", align=ball)
+            attr.set(1)
+            ball_fkc.alignTo(ball_loc, rotateOnly=1)
+            ball_loc.delete()
+        else:
+            attr.set(1)
 
-            # Align pole vector control
-            pvPin = pvc.a["pvPin"]
-            if pvPin.exists() and pvPin.get() > 0.5:
-                pvc.alignTo(lwr)
-            else:
-                pvc_pos_grp = switch_ik_fk_calcPvc(pos1, pos2, pos3)
-                pvc.snapTo(pvc_pos_grp)
-                pvc_pos_grp.delete()
+    def _switch_to_fk():
+        """Switch to FK Mode: Snap FK controls to current limb."""
 
-            switch_ball_ctl = ball_ikc and ball
+        upr_fkc.alignTo(upr)
+        lwr_fkc.alignTo(lwr)
+        palm_fkc.alignTo(palm)
 
-            if switch_ball_ctl:
-                ball_ikc.a.r.set(0, 0, 0)
-                ball_loc = LocNode("temp_#", align=ball)
-                attr.set(1)
-                ball_fkc.alignTo(ball_loc, rotateOnly=1)
-                ball_loc.delete()
-            else:
-                attr.set(1)
+        if ball_fkc and ball:
+            ball_loc = LocNode("temp_#", align=ball)
+            attr.set(0)
+            ball_fkc.alignTo(ball_loc, rotateOnly=1)
+            ball_loc.delete()
+        else:
+            attr.set(0)
 
-        elif toIKMode == 0:
-            # --- Switch to FK Mode: Snap FK controls to current limb ---
-
-            upr_fkc.alignTo(upr)
-            lwr_fkc.alignTo(lwr)
-            if palm_bf.exists():
-                palm_fkc.alignTo(palm_bf)
-
-            switch_ball_ctl = ball_fkc and ball
-
-            if switch_ball_ctl:
-                ball_loc = LocNode("temp_#", align=ball)
-                attr.set(0)
-                ball_fkc.alignTo(ball_loc, rotateOnly=1)
-                ball_loc.delete()
-            else:
-                attr.set(0)
+    if toIKMode == 1:
+        _switch_to_ik()
+    else:
+        _switch_to_fk()
 
     mc.select(cl=1)
 
