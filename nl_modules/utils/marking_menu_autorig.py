@@ -80,7 +80,6 @@ class MarkingMenuAutorig:
         spaceAttr = firstSelected.a.space
         if spaceAttr.exists():
             mc.menuItem(p=menu, l="SPACES -----", en=0)
-            # mc.menuItem(p=menu, l="-" * 15, en=0)
             curr = spaceAttr.get()
             allSpaceAttr = spaceAttr.query(le=1)[0].split(":")
             for i, attr in enumerate(allSpaceAttr):
@@ -120,8 +119,10 @@ class MarkingMenuAutorig:
     def selectCtlSelOrAll(self, *args):
         """Select all controls in the rig node or all controls in LF_CTL_SET"""
 
-        rigNodes = []
+        from nl_modules.utils import common
+
         selList = mc.ls(sl=1, tr=1)
+        rigNodes = []
         if selList:
             firstSelected = DagNode(selList[0])
             nodes = firstSelected.a.message.outConnNode
@@ -131,9 +132,7 @@ class MarkingMenuAutorig:
                 if node.exists():
                     rigNodes = [node]
         else:
-            rigNodes = mc.ls("*RGN", type="script")
-
-        from nl_modules.utils import common
+            rigNodes = mc.ls("*RGN", type="script") or []
 
         setList = common.getRigCtls(rigNodes)
         if setList:
