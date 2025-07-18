@@ -6,7 +6,6 @@ from importlib import reload
 
 # --- Maya ---
 import maya.cmds as mc
-import maya.mel as mel
 
 # --- Internal Modules ---
 import nl_modules
@@ -80,23 +79,37 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.setCentralWidget(self.UI)
         self.setGeometry(0, 0, 233, 580)
         self.connect_UI()
-        # self.addMenuBar()
+        self.addMenuBar()
 
-    # def addMenuBar(self):
-    #     menuBar = QMenuBar(self)
+    def addMenuBar(self):
+        """Add a menu bar with an 'About' section."""
 
-    #     about_qm = QMenu("&More", self)
+        menuBar = QMenuBar(self)
+        more_QM = QMenu("&More", self)
 
-    #     self.newAction = QAction(self)
-    #     self.newAction.setText("&About")
-    #     about_qm.addAction(self.newAction)
-    #     about_qm.triggered.connect(self.about_action)
+        addIcon_QA = QAction(self)
+        addIcon_QA.setText("&Add Icon to Current Shelf")
+        addIcon_QA.triggered.connect(self.addIconToCurrShelf)
 
-    #     menuBar.addMenu(about_qm)
-    #     self.setMenuBar(menuBar)
+        clickDrag_QA = QAction(self)
+        clickDrag_QA.setText("&Toggle Click Drag")
+        clickDrag_QA.triggered.connect(self.toggleClickDrag)
 
-    # def about_action(self):
-    #     print("Developed by Nicky Liu")
+        more_QM.addAction(addIcon_QA)
+        more_QM.addAction(clickDrag_QA)
+
+        menuBar.addMenu(more_QM)
+        self.setMenuBar(menuBar)
+
+    def addIconToCurrShelf(self):
+        """Add the rigging tools icon to the current shelf."""
+
+        common.addIconToCurrShelf()
+
+    def toggleClickDrag(self):
+        """Toggle the click drag preference in Maya."""
+
+        mc.selectPref(clickDrag=not mc.selectPref(clickDrag=1, q=1))
 
     def connect(self, btn, func, icon=None):
         """Connect a button to a function with an optional icon."""
@@ -109,13 +122,13 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Connect UI buttons to their respective functions."""
 
         # Pick mask & click drag
-        self.connect(self.UI.pickMaskCrv_BN, self.pickMaskCrv, ":pickCurveObj.png")
-        self.connect(self.UI.pickMaskMsh_BN, self.pickMaskMsh, ":pickGeometryObj.png")
-        self.connect(self.UI.pickMaskAll_BN, self.pickMaskAll)
+        # self.connect(self.UI.pickMaskCrv_BN, self.pickMaskCrv, ":pickCurveObj.png")
+        # self.connect(self.UI.pickMaskMsh_BN, self.pickMaskMsh, ":pickGeometryObj.png")
+        # self.connect(self.UI.pickMaskAll_BN, self.pickMaskAll)
 
-        self.UI.clickDrag_CB.stateChanged.connect(self.clickDrag_CB_stateChanged)
-        if mc.selectPref(clickDrag=1, q=1):
-            self.UI.clickDrag_CB.setChecked(1)
+        # self.UI.clickDrag_CB.stateChanged.connect(self.clickDrag_CB_stateChanged)
+        # if mc.selectPref(clickDrag=1, q=1):
+        #     self.UI.clickDrag_CB.setChecked(1)
 
         # Guide
         self.connect(self.UI.guide_load_BN, self.guide_load, ":openScript.png")
@@ -216,27 +229,27 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             else:
                 self.UI.loadWrapTargetMesh_BN.setText("< None >")
 
-    def clickDrag_CB_stateChanged(self, state):
-        """Set the click drag preference based on the checkbox state."""
+    # def clickDrag_CB_stateChanged(self, state):
+    #     """Set the click drag preference based on the checkbox state."""
 
-        mc.selectPref(clickDrag=state)
+    #     mc.selectPref(clickDrag=state)
 
-    def pickMaskCrv(self):
-        """Set the object pick mask to curves."""
+    # def pickMaskCrv(self):
+    #     """Set the object pick mask to curves."""
 
-        mel.eval('setObjectPickMask "All" 0')
-        mel.eval('setObjectPickMask "Curve" 1')
+    #     mel.eval('setObjectPickMask "All" 0')
+    #     mel.eval('setObjectPickMask "Curve" 1')
 
-    def pickMaskMsh(self):
-        """Set the object pick mask to geometry."""
+    # def pickMaskMsh(self):
+    #     """Set the object pick mask to geometry."""
 
-        mel.eval('setObjectPickMask "All" 0')
-        mel.eval('setObjectPickMask "Surface" 1')
+    #     mel.eval('setObjectPickMask "All" 0')
+    #     mel.eval('setObjectPickMask "Surface" 1')
 
-    def pickMaskAll(self):
-        """Set the object pick mask to all."""
+    # def pickMaskAll(self):
+    #     """Set the object pick mask to all."""
 
-        mel.eval('setObjectPickMask "All" 1')
+    #     mel.eval('setObjectPickMask "All" 1')
 
     @common.Undo("guide_load")
     def guide_load(self, *args):
