@@ -10,7 +10,7 @@ from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common
 from nl_modules.utils import utils_node as ut
-from nl_modules.utils import maths
+from nl_modules.utils.common import Vec
 
 
 class SpineQd(RigModule):
@@ -80,8 +80,8 @@ class SpineQd(RigModule):
         #   Define control shapes and attributes
         ctl_defs = [
             ("setting", "bagua", "z", rSz * 2, 1, 2),
-            ("cog_ctl", "trapezoid", None, maths.mul(1, 2, 3, rSz), 1, -1),
-            ("base_ctl", "circle", "z", maths.mul(5, 5, 2, rSz), 0, -1),
+            ("cog_ctl", "trapezoid", None, Vec(1, 2, 3) * rSz, 1, -1),
+            ("base_ctl", "circle", "z", Vec(5, 5, 2) * rSz, 0, -1),
             ("mid_ctl", "squR", "z", rSz * 4, 0, -1),
             ("fore_ctl", "circle", "z", rSz * 5, 0, -1),
             ("tangent0_ctl", "arrow", "z", rSz, 1, -1),
@@ -314,11 +314,14 @@ class SpineQd(RigModule):
         # --- Control two-joint scale with distance and clamp ---
         d = ut.distDim_(self.tangent0_ctl, self.tangent1_ctl)
         crvLenRatio = d / d.get() / self.masterC.a.globalScale
-        ut.clp_(
-            crvLenRatio,
-            min=self.setting.a.stretchMin,
-            max=self.setting.a.stretchMax,
-        ) >> j0.a.sz
+        (
+            ut.clp_(
+                crvLenRatio,
+                min=self.setting.a.stretchMin,
+                max=self.setting.a.stretchMax,
+            )
+            >> j0.a.sz
+        )
 
         # --- Constrain mid IK control rotation ---
         self.fore_ctl.a.r >> j1.a.r

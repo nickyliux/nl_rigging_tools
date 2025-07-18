@@ -3,7 +3,6 @@ from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.utils import common
-from nl_modules.utils import maths
 
 
 class Hand(RigModule):
@@ -85,7 +84,7 @@ class Hand(RigModule):
                 f"{fgr.name}_ctl",
                 shape="squR",
                 up="x",
-                scale=maths.mul(1, 0.2, 1, self.rigSize / 2),
+                scale=self.rigSize / 2,
                 align=fgr,
                 width=2,
             )

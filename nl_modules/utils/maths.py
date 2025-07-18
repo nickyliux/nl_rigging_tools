@@ -30,7 +30,7 @@ def getDistBetwPt(pt1, pt2):
             return math.sqrt(xD * xD + yD * yD)
 
 
-def mul(*inVal):
-    """Scalar multi of vector with last value"""
+# def mul(*inVal):
+#     """Scalar multi of vector with last value"""
 
-    return [n * inVal[-1] for n in inVal[:-1]]
+#     return [n * inVal[-1] for n in inVal[:-1]]
