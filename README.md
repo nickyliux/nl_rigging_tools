@@ -21,7 +21,7 @@ blockquote {
 ![nlRT logo](ui_images/ui_main.png) 
 
 ## Background
-Once in a while I used the Ziva muscle plugin intensively in a project. There was a challenging process of rigging the actual skeleton meshes. I feel that it would be a good opportunity to learn anatomy while building a helpful tool to rig any vertebral animal in the future.
+While working on a project that required extensive use of the Ziva muscle plugin, I encountered challenges rigging the skeleton meshes. This experience inspired me to create a tool that not only automates the rigging process for any vertebrate animal, but also a chance to apply anatomy knowledge.
 
 ## Features
 
@@ -80,9 +80,8 @@ The tool might work in 2022, but it is not tested.
 ## Installation
 
 1. Download and extract repository
-2. In Maya, go to the shelf you want to have the icon added
-3. Drag and drop "install/dragAndDrop.py" onto viewport
-4. Click the icon to show the tool
+2. In Maya, click to the shelf you want to have the tool icon added
+3. Drag and drop the file "install/dragAndDrop.py" into the viewport
 
 
 ## Reference
