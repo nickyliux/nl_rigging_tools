@@ -23,125 +23,104 @@ def switch_to_space_target(spaceName):
 
 
 def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
-    """Switch between FK and IK modes for a rig."""
 
     if not (rigNode and rigNode.a.nodeState.get() == 2):
-        mc.select(cl=1)
         return
 
-    # --- Gather rig nodes and controls ---
     rigID = rigNode.a.rigID.get()
+    rigClass = rigNode.a.rigClass.get()
+
     rootJ = rigNode.a.rootJ.inConnNode
-    upr = rootJ.children[0]
-    lwr = upr.children[0]
-    palm = lwr.children[0]
-    ball = palm.children[0]
-    palm_bf = DagNode(palm.name + "_bf")
-
-    root_fkc = rigNode.a["hip_fkc"].inConnNode or rigNode.a["clavicle_fkc"].inConnNode
-    upr_fkc = rigNode.a["upr_fkc"].inConnNode
-    lwr_fkc = rigNode.a["lwr_fkc"].inConnNode
-    palm_fkc = rigNode.a["palm_fkc"].inConnNode
-    ball_fkc = rigNode.a["ball_fkc"].inConnNode
-    ball_ikc = rigNode.a["ball_ikc"].inConnNode
-    ikc = rigNode.a.ikc.inConnNode
-    pvc = rigNode.a.pvc.inConnNode
-
-    if not ikc:
-        logging.error("IK control not found. Cannot switch IK/FK.")
-        mc.select(cl=1)
-        return
-    if not pvc:
-        logging.error("PVC control not found. Cannot switch IK/FK.")
-        mc.select(cl=1)
+    if rootJ is None:
+        logging.warning(f"Root joint for {rigID} not found. Cannot switch IK/FK.")
         return
 
-    def _switch_to_ik():
-        """Switch to IK Mode: Snap IK controls to current limb."""
-        ikcMatcher = DagNode(ikc + "_matcher")
-        if not ikcMatcher.exists():
-            raise ValueError(f"{ikc}_matcher NOT found")
+    if rigClass == "LegBp":
+        # --- Gather leg joints and controls ---
+        jnts = rootJ.allChildrenJt2[:5]
 
-        smartCtl = DagNode(rigID + "_smart_ctl")
-        pos1, pos2, pos3 = upr.o.pos, lwr.o.pos, palm.o.pos
+        if not all(jnts):
+            logging.warning(f"Leg joints for {rigID} not found. Cannot switch IK/FK.")
+            return
 
-        # Reset autoAim if present
-        autoAimAttr = root_fkc.a["autoAim"]
-        if autoAimAttr.exists():
-            loc = LocNode("_#", align=root_fkc)
-            autoAimAttr.set(0)
-            root_fkc.alignTo(loc)
-            loc.delete()
+        fkCtls = [
+            rigNode.a["hip_fkc"].inConnNode,
+            rigNode.a["upr_fkc"].inConnNode,
+            rigNode.a["lwr_fkc"].inConnNode,
+            rigNode.a["palm_fkc"].inConnNode,
+            rigNode.a["ball_fkc"].inConnNode,
+        ]
+        if not all(fkCtls):
+            logging.warning(f"Not all FK ctls for {rigID} found. Cannot switch IK/FK.")
+            return
 
-        # Reset smartCtl if present
-        if smartCtl.exists():
+        ikc = rigNode.a.ikc.inConnNode
+        pvc = rigNode.a.pvc.inConnNode
+        ball_ikc = rigNode.a["ball_ikc"].inConnNode
+        ikcMatcher = DagNode(f"{ikc.name}_matcher")
+        smartCtl = DagNode(f"{rigID}_smart_ctl")
+
+        ikCtls = [ikc, pvc, ball_ikc, ikcMatcher, smartCtl]
+        if not all(ikCtls):
+            logging.warning(f"Not all IK ctls for {rigID} found. Cannot switch IK/FK.")
+            return
+
+        # Get ball jnt xform before switching
+        ball_mtx = jnts[-1].getMtx()
+
+        # Switch to FK mode
+        if toIKMode == 0:
+            for ctl, jnt in zip(fkCtls, jnts):
+                if ctl:
+                    ctl.alignTo(jnt)
+            attr.set(0)
+
+        # Switch to IK mode
+        else:
+            root_mtx = jnts[0].getMtx()
+            fkCtls[0].a["autoAim"].set(0)
+            fkCtls[0].setMtx(root_mtx)
+
             smartCtl.resetXf()
+            ball_ikc.resetXf()
+            ikc.alignTo(ikcMatcher)
 
-        # Align IK control to matcher
-        ikc.alignTo(ikcMatcher)
+            # Setup for pvc
+            pvc.a["fkPin"].set(0)
+            pvPin = pvc.a["pvPin"].get()
+            if pvPin and pvPin > 0.5:
+                pvc.alignTo(jnts[2])
+            else:
+                pvc_pos = calc_pvc_pos(jnts[1], jnts[2], jnts[3])
+                mc.xform(pvc, ws=1, t=pvc_pos)
 
-        # Reset FK pin if present
-        fkPin = pvc.a["fkPin"]
-        if fkPin.exists():
-            fkPin.set(0)
-
-        # Align pole vector control
-        pvPin = pvc.a["pvPin"]
-        if pvPin.exists() and pvPin.get() > 0.5:
-            pvc.alignTo(lwr)
-        else:
-            pvc_pos_grp = switch_ik_fk_calcPvc(pos1, pos2, pos3)
-            pvc.snapTo(pvc_pos_grp)
-            pvc_pos_grp.delete()
-
-        switch_ball_ctl = ball_ikc and ball
-        if switch_ball_ctl:
-            ball_ikc.a.r.set(0, 0, 0)
-            ball_loc = LocNode("temp_#", align=ball)
-            attr.set(1)
-            ball_fkc.alignTo(ball_loc, rotateOnly=1)
-            ball_loc.delete()
-        else:
             attr.set(1)
 
-    def _switch_to_fk():
-        """Switch to FK Mode: Snap FK controls to current limb."""
-
-        upr_fkc.alignTo(upr)
-        lwr_fkc.alignTo(lwr)
-        palm_fkc.alignTo(palm)
-
-        if ball_fkc and ball:
-            ball_loc = LocNode("temp_#", align=ball)
-            attr.set(0)
-            ball_fkc.alignTo(ball_loc, rotateOnly=1)
-            ball_loc.delete()
-        else:
-            attr.set(0)
-
-    if toIKMode == 1:
-        _switch_to_ik()
-    else:
-        _switch_to_fk()
-
-    mc.select(cl=1)
+        # Apply ball ctl after switching
+        fkCtls[-1].setMtx(ball_mtx)
 
 
-def switch_ik_fk_calcPvc(pos1, pos2, pos3):
-    """Calculate the position for the PVC control given the three positions of the limb."""
+def calc_pvc_pos(obj1, obj2, obj3):
+    """Calculate the position for the pole vector control based on three objects' positions."""
 
     from nl_modules.utils import maths
 
-    crv = CrvNode(mc.curve(p=[pos1, pos2, pos3], d=1, k=[0, 1, 2]))
-    d1 = maths.getDistBetwPt(pos1, pos2)
-    d2 = maths.getDistBetwPt(pos2, pos3)
+    p1 = DagNode(obj1).o.pos
+    p2 = DagNode(obj2).o.pos
+    p3 = DagNode(obj3).o.pos
+
+    three_pt_crv = CrvNode(mc.curve(p=[p1, p2, p3], d=1, k=[0, 1, 2]))
+    d1 = maths.getDistBetwPt(p1, p2)
+    d2 = maths.getDistBetwPt(p2, p3)
     distToMove = (d1 + d2) * 0.5
 
-    mid_cv = crv + ".cv[1]"
+    mid_cv = three_pt_crv + ".cv[1]"
     mc.moveVertexAlongDirection(mid_cv, n=distToMove)
 
-    pvc_pos_grp = GrpNode("grp#")
-    mc.xform(pvc_pos_grp, t=mc.xform(mid_cv, t=1, ws=1, q=1))
-    crv.delete()
+    # pvc_pos_grp = GrpNode("grp#")
+    # mc.xform(pvc_pos_grp, t=mc.xform(mid_cv, t=1, ws=1, q=1))
+    pos = mc.xform(mid_cv, t=1, ws=1, q=1)
+    three_pt_crv.delete()
 
-    return pvc_pos_grp
+    # return pvc_pos_grp
+    return pos

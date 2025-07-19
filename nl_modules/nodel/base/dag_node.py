@@ -495,15 +495,20 @@ class DagNode(DepNode):
         if ofs:
             mc.move(*ofs, self, objectSpace=1, r=1)
 
-    def freezeXf(self, t=True, r=True, s=True):
+    def freezeXf(self, t=1, r=1, s=1):
         """Freeze object transform"""
 
         mc.makeIdentity(self, t=t, r=r, s=s, a=1)
 
-    def resetXf(self, t=True, r=True, s=False):
+    def resetXf(self, t=1, r=1, s=1):
         """Reset object transform"""
-
-        mc.makeIdentity(self, t=t, r=r, s=s)
+        if t:
+            self.a.t.set(0, 0, 0)
+        if r:
+            self.a.r.set(0, 0, 0)
+        if s:
+            self.a.s.set(1, 1, 1)
+        # mc.makeIdentity(self, t=t, r=r, s=s)
 
     def duplicate(self, name=None, **kwargs):
         """Duplicate itself"""
@@ -671,3 +676,11 @@ class DagNode(DepNode):
         elif n.startswith("rt"):
             color = self.COLOR_RIGHT
         return color
+
+    def getMtx(self):
+        """Get matrix from the node"""
+        return mc.xform(self, q=1, m=1, ws=1)
+
+    def setMtx(self, mtx):
+        """Set matrix to the node"""
+        mc.xform(self, m=mtx, ws=1)

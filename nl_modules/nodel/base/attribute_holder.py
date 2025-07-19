@@ -76,7 +76,6 @@ class AttributeHolder:
 
         if k == 1:
             mc.setAttr(attrStr, k=1)
-            # NO NEED TO SET FOR CB AS k=1 => cb=1
         else:
             mc.setAttr(attrStr, cb=cb)
 
@@ -87,7 +86,6 @@ class AttributeHolder:
     def addSep(self, name="_" * 14):
         """Add string attribute as separator"""
 
-        # if self.node.a[name].exists():
         while self.node.a[name].exists():
             name += "_"
         self.add(name, lock=1, attrType="enum", k=1, en=" ")

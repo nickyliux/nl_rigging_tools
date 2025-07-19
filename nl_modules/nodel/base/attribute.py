@@ -93,8 +93,9 @@ class Attribute:
             obj1.a.tx.set(8)    # tx = 8
             obj1.a.t.set(1,2,3) # t = (1,2,3)
         """
-        # if self.get(se=1):
-        #     mc.setAttr(self, *args, **kwargs)
+        if not self.exists():
+            logging.warning(f"Attribute {self.name} does not exist on {self.node.name}")
+            return
 
         objType = self.node.type
         if (
@@ -118,6 +119,10 @@ class Attribute:
             obj1.a.t.set2(8, add=1)     # t *= 8
             obj1.a.t.set2(1,2,3, add=1) # t += (1,2,3)
         """
+        if not self.exists():
+            logging.warning(f"Attribute {self.name} does not exist on {self.node.name}")
+            return
+
         if self.get(se=1):
             attrs = self.atChildren if self.isParent() else [self]
             for attr in attrs:
@@ -143,8 +148,6 @@ class Attribute:
                 return result[0]
             else:
                 return result
-        # else:
-        #     raise NameError(f'Attribute "{self.name}" NOT found')
 
     def query(self, **kwargs):
         """Query attribute data

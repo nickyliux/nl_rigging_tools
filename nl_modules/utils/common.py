@@ -105,9 +105,10 @@ def assignPresetShd(tgts=None):
             name = "proxy_rt_shd"
             color = DagNode.COLOR_RIGHT
 
+        SHADER_DARKEN = 0.8
         # Assign shader based on type
         if tgt.type == "mesh":
-            shd, sg = addShader(name, color=Vec(color) * 0.8)
+            shd, sg = addShader(name, color=Vec(color) * SHADER_DARKEN)
             mc.sets(tgt, forceElement=sg)
         elif tgt.type == "nurbsCurve":
             tgt.color = color
@@ -609,7 +610,7 @@ def add_mirror_attr(tgts=None):
     for t in tgts:
         t = DagNode(t)
         if t.exists():
-            t.a.add("wsMirror", lock=1, k=0, cb=0)
+            t.a.add("wsMirror", lock=1, k=0, cb=0, dv=1)
 
 
 def addIconToCurrShelf():

@@ -10,7 +10,6 @@ from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common
 from nl_modules.utils import utils_node as ut
-from nl_modules.utils.common import Vec
 
 
 class SpineQd(RigModule):
@@ -80,8 +79,8 @@ class SpineQd(RigModule):
         #   Define control shapes and attributes
         ctl_defs = [
             ("setting", "bagua", "z", rSz * 2, 1, 2),
-            ("cog_ctl", "trapezoid", None, Vec(1, 2, 3) * rSz, 1, -1),
-            ("base_ctl", "circle", "z", Vec(5, 5, 2) * rSz, 0, -1),
+            ("cog_ctl", "trapezoid", None, rSz * 2, 1, -1),
+            ("base_ctl", "circle", "z", rSz * 2, 0, -1),
             ("mid_ctl", "squR", "z", rSz * 4, 0, -1),
             ("fore_ctl", "circle", "z", rSz * 5, 0, -1),
             ("tangent0_ctl", "arrow", "z", rSz, 1, -1),
