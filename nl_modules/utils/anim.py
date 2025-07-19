@@ -73,11 +73,12 @@ def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
     ikc = rigNode.a.ikc.inConnNode
     pvc = rigNode.a.pvc.inConnNode
     ball_ikc = rigNode.a["ball_ikc"].inConnNode
-    ikcMatcher = DagNode(f"{ikc.name}_matcher") if ikc else None
-    smartCtl = DagNode(f"{rigID}_smart_ctl")
+    ikc_matcher = DagNode(f"{ikc.name}_matcher") if ikc else None
+    smart_ctl = DagNode(f"{rigID}_smart_ctl")
     extra_ikc = DagNode(f"{rigID}_extra_ikc")
+    extra_matcher = DagNode(f"{extra_ikc.name}_matcher") if extra_ikc else None
 
-    ikCtls = [ikc, pvc, ball_ikc, ikcMatcher, smartCtl, extra_ikc]
+    ikCtls = [ikc, pvc, ball_ikc, ikc_matcher, smart_ctl, extra_ikc]
     if not all(ikCtls):
         logging.warning(f"Not all IK ctls for {rigID} found. Cannot switch IK/FK.")
         return
@@ -97,11 +98,13 @@ def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
         fkCtls[0].a["autoAim"].set(0)
         fkCtls[0].setMtx(root_mtx)
 
-        smartCtl.resetXf()
+        ikc.alignTo(ikc_matcher)
+        smart_ctl.resetXf()
         ball_ikc.resetXf()
-        extra_ikc.resetXf
-        if ikc and ikcMatcher:
-            ikc.alignTo(ikcMatcher)
+        extra_ikc.resetXf()
+        extra_ikc.a["palmAim"].set(0)
+        if extra_matcher:
+            extra_ikc.alignTo(extra_matcher)
 
         # Setup for pvc
         pvc.a["fkPin"].set(0)
@@ -116,6 +119,8 @@ def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
 
     # Apply ball ctl after switching
     fkCtls[-1].setMtx(ball_mtx)
+
+    logging.info(f"Switched {'to IK' if toIKMode else 'to FK'} mode for {rigID}.")
 
 
 def calc_pvc_pos(obj1, obj2, obj3):

@@ -344,7 +344,8 @@ class LegQd(RigModule):
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
         # --- Create matcher group for IK control alignment ---
-        GrpNode(self.ikc + "_matcher", align=self.ikc, p=self.digit_fkc)
+        GrpNode(f"{self.ikc.name}_matcher", align=self.ikc, p=self.digit_fkc)
+        GrpNode(f"{self.extra_ikc.name}_matcher", align=self.extra_ikc, p=self.palm_fkc)
 
     def extra_roll_logic(self, ballRollG, extraRollG, grp):
         """Setup extra roll logic for the quadruped leg rig."""
