@@ -707,11 +707,11 @@ class RigModule(RigBase):
         fkc.offset | mainGrp
 
         # --- Auto aim function setup ---
-        j0, j1 = JntNode.makeTwoJC2(
+        j0, j1 = JntNode.makeTwoJointChain(
             "autoAim",
             pf=rID,
             snap=hipJ,
-            aim=(xDr, 0, 0),
+            offset=(xDr, 0, 0),
             u=(0, xDr, 0),
             p=mainGrp.offset,
             rad=rSz * 3,
@@ -728,8 +728,15 @@ class RigModule(RigBase):
             u = (0, xDr, 0)
             wu = (0, 0, xDr)
 
-            j0, j1 = JntNode.makeTwoJC2(
-                "legLock", pf=rID, snap=ikc, aim=aim, u=u, p=ikc, rad=rSz, aimTgt=hipJ
+            j0, j1 = JntNode.makeTwoJointChain(
+                "legLock",
+                pf=rID,
+                snap=ikc,
+                offset=aim,
+                u=u,
+                p=ikc,
+                rad=rSz,
+                aimTgt=hipJ,
             )
             IkNode("legLock", pf=rID, sj=j0, ee=j1, quat=1, p=mainGrp.offset, vis=0)
             legLock = ikc.a.add("legLock", min=0, max=1)
@@ -742,11 +749,11 @@ class RigModule(RigBase):
             if xDr < 0:
                 scapCtl.a.rx.set(180)
             scapCtl.addOffsetGrp()
-            j0, j1 = JntNode.makeTwoJC2(
+            j0, j1 = JntNode.makeTwoJointChain(
                 "scapular",
                 pf=rID,
                 snap=uprJ,
-                aim=aim,
+                offset=aim,
                 u=u,
                 wu=wu,
                 p=uprJ,
@@ -759,7 +766,7 @@ class RigModule(RigBase):
             # --- Scapular helper setup (if guide exists) ---
             scapHelper = DagNode(rID + "_scapHelper_guide")
             if scapHelper.exists():
-                j0, j1 = JntNode.makeTwoJC(
+                j0, j1 = JntNode.makeTwoJointChain(
                     "scapHelper",
                     pf=rID,
                     align=scapHelper,

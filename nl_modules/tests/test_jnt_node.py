@@ -58,7 +58,7 @@ class Test_JntNode_Main(Test_JntNode_Base):
         self.assertEqual(px, None)
 
     def test_makeTwoJC(self):
-        newJ1, newJ2 = JntNode.makeTwoJC(
+        newJ1, newJ2 = JntNode.makeTwoJointChain(
             "new",
             align=self.j1,
             align_end=self.j2,
@@ -68,7 +68,7 @@ class Test_JntNode_Main(Test_JntNode_Base):
         self.assertEqual(newJ2.parent, newJ1)
 
     def test_makeTwoJC2(self):
-        newJ1, newJ2 = JntNode.makeTwoJC("new", snap=self.j1, offset=(2, 0, 0))
+        newJ1, newJ2 = JntNode.makeTwoJointChain("new", snap=self.j1, offset=(2, 0, 0))
         self.assertEqual(newJ2.a.t.get(), (2, 0, 0))
         self.assertEqual(newJ2.o.pos, (2, 0, 0))
 

@@ -146,17 +146,20 @@ class JntNode(GrpNode):
         return None
 
     @staticmethod
-    def makeTwoJC(
+    def makeTwoJointChain(
         n,
         align=None,
         snap=None,
         align_end=None,
         pf="",
-        offset=None,
         rad=1,
         p=None,
+        offset=None,
+        aimTgt=None,
+        u=(0, 1, 0),
+        wu=(0, 1, 0),
     ):
-        """Make two-joint chain according to aligning objects"""
+        """Create a two-joint chain with optional alignment and constraints."""
 
         j0 = JntNode(n, pf=pf, r=rad, p=p)
         j1 = JntNode(n + "_end", pf=pf, r=rad, p=j0)
@@ -169,39 +172,12 @@ class JntNode(GrpNode):
             j1.alignTo(align_end)
         if offset:
             j1.a.t.set(*offset)
-        return [j0, j1]
 
-    @staticmethod
-    def makeTwoJC2(
-        n,
-        align=None,
-        snap=None,
-        align_end=None,
-        pf="",
-        aim=(1, 0, 0),
-        u=(0, 1, 0),
-        wu=(0, 1, 0),
-        rad=1,
-        p=None,
-        aimTgt=None,
-    ):
-        """Make two-joint chain according to aligning objects"""
+        if aimTgt:
+            aimTgt.cstAim(j0, keep=0, aim=offset, u=u, wu=wu)
+            aimTgt.cstPoi(j1, keep=0)
+            j0.freezeXf()
 
-        j0 = JntNode(n, pf=pf, r=rad, p=p)
-        j1 = JntNode(n + "_end", pf=pf, r=rad, p=j0)
-
-        if align:
-            j0.alignTo(align)
-        if snap:
-            j0.snapTo(snap)
-        if align_end:
-            j1.alignTo(align_end)
-
-        j1.a.t.set(*aim)
-
-        aimTgt.cstAim(j0, keep=0, aim=aim, u=u, wu=wu)
-        aimTgt.cstPoi(j1, keep=0)
-        j0.freezeXf()
         return [j0, j1]
 
     @staticmethod

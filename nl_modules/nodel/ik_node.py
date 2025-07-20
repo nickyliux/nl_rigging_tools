@@ -314,11 +314,11 @@ class IkNode(DagNode):
 
         from nl_modules.nodel.jnt_node import JntNode
 
-        softJ = JntNode.makeTwoJC2(
+        softJ = JntNode.makeTwoJointChain(
             "softJ",
             pf=self.pf,
             snap=self.sj,
-            aim=(self.xDir, 0, 0),
+            offset=(self.xDir, 0, 0),
             u=(0, self.xDir, 0),
             p=softParent,
             aimTgt=self.ee,
@@ -348,13 +348,13 @@ class IkNode(DagNode):
 
         from nl_modules.nodel.jnt_node import JntNode
 
-        pvChainJ = JntNode.makeTwoJC2(
+        pvChainJ = JntNode.makeTwoJointChain(
             "pvChainJ",
             pf=self.pf,
             snap=self.sj,
             p=self.sj.parent,
             rad=self.rSz,
-            aim=(self.xDir, 0, 0),
+            offset=(self.xDir, 0, 0),
             u=(0, self.xDir, 0),
             aimTgt=self.ee,
         )

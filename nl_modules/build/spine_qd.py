@@ -296,7 +296,7 @@ class SpineQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         # --- Build two-joint chain from curve ---
-        self.twoIkJnts = JntNode.makeTwoJC(
+        self.twoIkJnts = JntNode.makeTwoJointChain(
             "two_ikj",
             pf=rID,
             align=self.RT_GUIDE,

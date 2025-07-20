@@ -176,7 +176,7 @@ class RbnNode:
         ofsX = self.D / 4 * self.xDir
         ofsX2 = ofsX * 2
 
-        stt_aimJ, stt_aimJ_end = JntNode.makeTwoJC(
+        stt_aimJ, stt_aimJ_end = JntNode.makeTwoJointChain(
             "stt_aimJ",
             pf=pf,
             snap=self.stt_loc,
@@ -187,7 +187,7 @@ class RbnNode:
         stt_sknJ = stt_aimJ_end.duplicate(n=pf + "stt_sknJ")
         stt_sknJ.alignTo(self.stt_loc)
 
-        end_aimJ, end_aimJ_end = JntNode.makeTwoJC(
+        end_aimJ, end_aimJ_end = JntNode.makeTwoJointChain(
             "end_aimJ",
             pf=pf,
             snap=self.end_loc,
@@ -198,7 +198,7 @@ class RbnNode:
         end_sknJ = end_aimJ_end.duplicate(n=pf + "end_sknJ")
         end_sknJ.alignTo(self.end_loc)
 
-        mid_aimJ, mid_aimJ_end = JntNode.makeTwoJC(
+        mid_aimJ, mid_aimJ_end = JntNode.makeTwoJointChain(
             "mid_aimJ",
             pf=pf,
             snap=self.stt_loc,
@@ -281,7 +281,7 @@ class RbnNode:
         upV = (0, 1, 0)
 
         # From
-        stt_twistJ, stt_twistJ_end = JntNode.makeTwoJC(
+        stt_twistJ, stt_twistJ_end = JntNode.makeTwoJointChain(
             "stt_twistJ",
             pf=pf,
             snap=self.stt_loc,
@@ -300,7 +300,7 @@ class RbnNode:
             u=upV,
         )
         # To
-        end_twistJ, end_twistJ_end = JntNode.makeTwoJC(
+        end_twistJ, end_twistJ_end = JntNode.makeTwoJointChain(
             "end_twistJ",
             pf=pf,
             snap=self.end_loc,
