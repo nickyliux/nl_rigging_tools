@@ -110,11 +110,11 @@ class ArmBp(RigModule):
 
         if self.rbnBones:
             self.build_bendy_ribbon(
-                self.rbnJntNum,
-                self.clavicle,
-                self.upr,
-                self.lwr,
-                self.palm,
+                rbJNum=self.rbnJntNum,
+                root=self.clavicle,
+                upr=self.upr,
+                lwr=self.lwr,
+                palm=self.palm,
                 kneeFix=0,
             )
             self.twistBones = 0

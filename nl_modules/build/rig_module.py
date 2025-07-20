@@ -714,7 +714,7 @@ class RigModule(RigBase):
             aim=(xDr, 0, 0),
             u=(0, xDr, 0),
             p=mainGrp.offset,
-            r=rSz * 3,
+            rad=rSz * 3,
             aimTgt=ikc,
         )
         IkNode("autoAimJ", solver=Solver.RP, pf=rID, sj=j0, ee=j1, p=ikc, quat=1, vis=0)
@@ -729,7 +729,7 @@ class RigModule(RigBase):
             wu = (0, 0, xDr)
 
             j0, j1 = JntNode.makeTwoJC2(
-                "legLock", pf=rID, snap=ikc, aim=aim, u=u, p=ikc, r=rSz, aimTgt=hipJ
+                "legLock", pf=rID, snap=ikc, aim=aim, u=u, p=ikc, rad=rSz, aimTgt=hipJ
             )
             IkNode("legLock", pf=rID, sj=j0, ee=j1, quat=1, p=mainGrp.offset, vis=0)
             legLock = ikc.a.add("legLock", min=0, max=1)
@@ -750,7 +750,7 @@ class RigModule(RigBase):
                 u=u,
                 wu=wu,
                 p=uprJ,
-                r=rSz,
+                rad=rSz,
                 aimTgt=hipJ,
             )
             scapCtl.cstOri(j0, mo=1)
@@ -764,7 +764,7 @@ class RigModule(RigBase):
                     pf=rID,
                     align=scapHelper,
                     align_end=uprJ,
-                    r=rSz,
+                    rad=rSz,
                     p=self.SKL_DATA,
                 )
                 IkNode("scapHelperJ", pf=rID, sj=j0, ee=j1, p=scapCtl)
@@ -1016,29 +1016,29 @@ class RigModule(RigBase):
             if jnt not in self.bindJnts:
                 self.bindJnts.append(jnt)
 
-    def build_rbn(self, tgt, name="", n=5, isLower=1):
+    def build_rbn(self, tgt, name="", rbJNum=5, volMode=1):
         """Build a ribbon node for the target with specified parameters."""
 
         return RbnNode(
             tgt,
             pf=f"{self.rigID}_{name}_",
-            rbJNum=n,
-            volMode=isLower,
+            rbJNum=rbJNum,
+            volMode=volMode,
             scaleFix=self.masterC.a["globalScale"],
             size=self.rigSize,
             p=self.RIG_DATA,
         )
 
     def build_bendy_ribbon(
-        self, rbnJntNum=5, root=None, upr=None, lwr=None, palm=None, kneeFix=0
+        self, rbJNum=5, root=None, upr=None, lwr=None, palm=None, kneeFix=0
     ):
         """Build a ribbon rig with upper and lower parts, and setup controls."""
 
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        ribbonUp = self.build_rbn(upr, name="up", n=rbnJntNum, isLower=0)
-        ribbonLw = self.build_rbn(lwr, name="lw", n=rbnJntNum, isLower=1)
+        ribbonUp = self.build_rbn(upr, name="up", rbJNum=rbJNum, volMode=0)
+        ribbonLw = self.build_rbn(lwr, name="lw", rbJNum=rbJNum, volMode=1)
 
         # Upper Ribbon
         upr.cstPoi(ribbonUp.stt_loc)

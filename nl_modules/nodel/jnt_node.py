@@ -147,12 +147,19 @@ class JntNode(GrpNode):
 
     @staticmethod
     def makeTwoJC(
-        n, align=None, snap=None, align_end=None, pf="", ofs=None, r=1, p=None
+        n,
+        align=None,
+        snap=None,
+        align_end=None,
+        pf="",
+        offset=None,
+        rad=1,
+        p=None,
     ):
         """Make two-joint chain according to aligning objects"""
 
-        j0 = JntNode(n, pf=pf, r=r, p=p)
-        j1 = JntNode(n + "_end", pf=pf, r=r, p=j0)
+        j0 = JntNode(n, pf=pf, r=rad, p=p)
+        j1 = JntNode(n + "_end", pf=pf, r=rad, p=j0)
 
         if align:
             j0.alignTo(align)
@@ -160,8 +167,8 @@ class JntNode(GrpNode):
             j0.snapTo(snap)
         if align_end:
             j1.alignTo(align_end)
-        if ofs:
-            j1.a.t.set(*ofs)
+        if offset:
+            j1.a.t.set(*offset)
         return [j0, j1]
 
     @staticmethod
@@ -174,14 +181,14 @@ class JntNode(GrpNode):
         aim=(1, 0, 0),
         u=(0, 1, 0),
         wu=(0, 1, 0),
-        r=1,
+        rad=1,
         p=None,
         aimTgt=None,
     ):
         """Make two-joint chain according to aligning objects"""
 
-        j0 = JntNode(n, pf=pf, r=r, p=p)
-        j1 = JntNode(n + "_end", pf=pf, r=r, p=j0)
+        j0 = JntNode(n, pf=pf, r=rad, p=p)
+        j1 = JntNode(n + "_end", pf=pf, r=rad, p=j0)
 
         if align:
             j0.alignTo(align)

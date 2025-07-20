@@ -301,7 +301,7 @@ class SpineQd(RigModule):
             pf=rID,
             align=self.RT_GUIDE,
             align_end=self.TP_GUIDE,
-            r=rSz * 20,
+            rad=rSz * 20,
             p=self.base_ctl,
         )
         j0, j1 = self.twoIkJnts

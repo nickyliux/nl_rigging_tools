@@ -25,16 +25,16 @@ class RbnNode:
         size=1,
         p=None,
     ):
-        self.tgtN = DagNode(tgt) if isinstance(tgt, str) else tgt
-        self.tgtChild = self.tgtN.children[0]
+        self.tgt = DagNode(tgt) if isinstance(tgt, str) else tgt
+        self.tgtChild = self.tgt.children[0]
         self.xDir = 1 if self.tgtChild.a.tx.get() > 0 else -1
-        self.D = self.tgtN.o.distanceTo(self.tgtChild)
+        self.D = self.tgt.o.distanceTo(self.tgtChild)
 
         if self.D == 0:
-            raise ValueError("Invalid distance.")
+            raise ValueError("Target and child must be at different positions.")
 
         self.d = None
-        self.ribbonP = p
+        self.ribbonParent = p
         self.ribbonG = None
 
         self.BSE_GRP = None
@@ -84,12 +84,12 @@ class RbnNode:
 
         # if self.scaleFix:
         #     self.scaleFix >> self.ribbonG.a.s
-        self.tgtN.cstPar(self.ribbonG, keep=0)
+        self.tgt.cstPar(self.ribbonG, keep=0)
 
     def build_grps(self, pf):
         """Create the main groups for the ribbon rig."""
 
-        self.ribbonG = GrpNode("ribbon", pf=pf, p=self.ribbonP)
+        self.ribbonG = GrpNode("ribbon", pf=pf, p=self.ribbonParent)
         self.BSE_GRP = GrpNode("bse", pf=pf, p=self.ribbonG)
         self.JNT_GRP = GrpNode("jnt", pf=pf, p=self.ribbonG)
         self.CTL_GRP = GrpNode("ctl", pf=pf, p=self.ribbonG)
@@ -177,7 +177,12 @@ class RbnNode:
         ofsX2 = ofsX * 2
 
         stt_aimJ, stt_aimJ_end = JntNode.makeTwoJC(
-            "stt_aimJ", pf=pf, snap=self.stt_loc, ofs=(ofsX, 0, 0), p=g, r=self.size * 2
+            "stt_aimJ",
+            pf=pf,
+            snap=self.stt_loc,
+            offset=(ofsX, 0, 0),
+            p=g,
+            rad=self.size * 2,
         )
         stt_sknJ = stt_aimJ_end.duplicate(n=pf + "stt_sknJ")
         stt_sknJ.alignTo(self.stt_loc)
@@ -186,9 +191,9 @@ class RbnNode:
             "end_aimJ",
             pf=pf,
             snap=self.end_loc,
-            ofs=(-ofsX, 0, 0),
+            offset=(-ofsX, 0, 0),
             p=g,
-            r=self.size * 2,
+            rad=self.size * 2,
         )
         end_sknJ = end_aimJ_end.duplicate(n=pf + "end_sknJ")
         end_sknJ.alignTo(self.end_loc)
@@ -197,9 +202,9 @@ class RbnNode:
             "mid_aimJ",
             pf=pf,
             snap=self.stt_loc,
-            ofs=(ofsX2, 0, 0),
+            offset=(ofsX2, 0, 0),
             p=g,
-            r=self.size * 2,
+            rad=self.size * 2,
         )
         mid_sknJ = mid_aimJ_end.duplicate(n=pf + "mid_sknJ")
         mid_sknJ.alignTo(self.mid_loc, p=self.mid_loc)
@@ -280,9 +285,9 @@ class RbnNode:
             "stt_twistJ",
             pf=pf,
             snap=self.stt_loc,
-            ofs=(-ofsX, 0, 0),
+            offset=(-ofsX, 0, 0),
             p=self.AIM_GRP,
-            r=self.size / 2,
+            rad=self.size / 2,
         )
         stt_twistG = GrpNode("stt_twistG", pf=pf, align=stt_twistJ, p=stt_twistJ)
         stt_twistG.a.rx >> self.stt_sknJ.a.rx
@@ -299,9 +304,9 @@ class RbnNode:
             "end_twistJ",
             pf=pf,
             snap=self.end_loc,
-            ofs=(ofsX, 0, 0),
+            offset=(ofsX, 0, 0),
             p=self.AIM_GRP,
-            r=self.size / 2,
+            rad=self.size / 2,
         )
         end_twistG = GrpNode("end_twistG", pf=pf, align=end_twistJ, p=end_twistJ)
         end_twistG.a.rx >> self.end_sknJ.a.rx

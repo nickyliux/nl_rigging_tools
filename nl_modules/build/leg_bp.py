@@ -171,11 +171,11 @@ class LegBp(RigModule):
 
         if self.rbnBones:
             self.ribbonUp, self.ribbonLw = self.build_bendy_ribbon(
-                self.rbnJntNum,
-                self.hip,
-                self.upr,
-                self.lwr,
-                self.palm,
+                rbJNum=self.rbnJntNum,
+                root=self.hip,
+                upr=self.upr,
+                lwr=self.lwr,
+                palm=self.palm,
                 kneeFix=self.kneeFix,
             )
             self.twistBones = 0

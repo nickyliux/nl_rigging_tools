@@ -79,6 +79,8 @@ class Head(RigModule):
         self.jaw_fkc.cstPar(self.jaw, mo=1)
         self.jaw_fkc.cv_moveTo(self.jaw.childrenJt[0].o.pos)
 
+        (self.lf_eye_fkc, self.rt_eye_fkc) | self.head_fkc
+
         self.lf_eye_fkc.alignTo(self.lf_eye)
         self.lf_eye_fkc.addOffsetGrp()
         self.lf_eye_fkc.cstPar(self.lf_eye, mo=1)

@@ -353,7 +353,7 @@ class IkNode(DagNode):
             pf=self.pf,
             snap=self.sj,
             p=self.sj.parent,
-            r=self.rSz,
+            rad=self.rSz,
             aim=(self.xDir, 0, 0),
             u=(0, self.xDir, 0),
             aimTgt=self.ee,
