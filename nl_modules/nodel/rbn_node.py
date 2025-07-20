@@ -7,6 +7,7 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common
+from nl_modules.utils.common import Vec
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
 
@@ -19,47 +20,48 @@ class RbnNode:
         tgt,
         pf="",
         rbJNum=5,
-        volMode=1,  # 1: lower, 0: upper
+        volMode=1,  # 0: upper, 1: lower
         scaleFix=None,
         forSpine=0,
         size=1,
         p=None,
     ):
+        # Initialize target and child
         self.tgt = DagNode(tgt) if isinstance(tgt, str) else tgt
-        self.tgtChild = self.tgt.children[0]
+        self.tgtChild = self.tgt.children[0] if self.tgt.children else None
+        if not self.tgtChild:
+            raise ValueError("Target must have at least one child.")
+
         self.xDir = 1 if self.tgtChild.a.tx.get() > 0 else -1
         self.D = self.tgt.o.distanceTo(self.tgtChild)
-
         if self.D == 0:
             raise ValueError("Target and child must be at different positions.")
 
+        # Core attributes
         self.d = None
         self.ribbonParent = p
-        self.ribbonG = None
-
+        self.RBN_GRP = None
         self.BSE_GRP = None
         self.CTL_GRP = None
         self.JNT_GRP = None
         self.AIM_GRP = None
-
         self.pf = pf
         self.rbJnt = []
         self.surf = None
 
+        # Locators and joints
         self.stt_loc = None
         self.mid_loc = None
         self.end_loc = None
-
         self.stt_loc_upVec = None
         self.end_loc_upVec = None
-
         self.stt_sknJ = None
         self.mid_sknJ = None
         self.end_sknJ = None
-
         self.stt_twistJ = None
         self.end_twistJ = None
 
+        # Volume and control attributes
         self.autoVol = 0
         self.volType = 0
         self.forSpine = forSpine
@@ -69,41 +71,37 @@ class RbnNode:
         self.all_ikHs = []
         self.size = size
 
+        # Build the ribbon rig
         self.build()
 
     def build(self):
         """Build the ribbon rig."""
-
-        self.build_grps(self.pf)
-        self.build_surf(self.pf)
-        self.build_locs(self.pf)
-        self.build_aim_chains(self.pf)
-        self.build_twist_chains(self.pf)
+        self.build_grps()
+        self.build_surf()
+        self.build_locs()
+        self.build_aim_chains()
+        self.build_twist_chains()
         self.build_volume_setup()
         self.build_post()
 
-        # if self.scaleFix:
-        #     self.scaleFix >> self.ribbonG.a.s
-        self.tgt.cstPar(self.ribbonG, keep=0)
+        self.tgt.cstPar(self.RBN_GRP, keep=0)
 
-    def build_grps(self, pf):
+    def build_grps(self):
         """Create the main groups for the ribbon rig."""
+        self.RBN_GRP = GrpNode("ribbon", pf=self.pf, p=self.ribbonParent)
+        self.BSE_GRP = GrpNode("bse", pf=self.pf, p=self.RBN_GRP)
+        self.JNT_GRP = GrpNode("jnt", pf=self.pf, p=self.RBN_GRP)
+        self.CTL_GRP = GrpNode("ctl", pf=self.pf, p=self.RBN_GRP)
+        self.AIM_GRP = GrpNode("aim", pf=self.pf, p=self.RBN_GRP)
 
-        self.ribbonG = GrpNode("ribbon", pf=pf, p=self.ribbonParent)
-        self.BSE_GRP = GrpNode("bse", pf=pf, p=self.ribbonG)
-        self.JNT_GRP = GrpNode("jnt", pf=pf, p=self.ribbonG)
-        self.CTL_GRP = GrpNode("ctl", pf=pf, p=self.ribbonG)
-        self.AIM_GRP = GrpNode("aim", pf=pf, p=self.ribbonG)
-
-    def build_surf(self, pf):
+    def build_surf(self):
         """Create the surface for the ribbon rig."""
-
         logging.info(f"Building {self.pf} surface")
 
         xDr = self.xDir
         surf = SrfNode(
             "rb_surf",
-            pf=pf,
+            pf=self.pf,
             uSeg=5,
             ax=(0, 1, 0),
             lr=0.2,
@@ -114,10 +112,10 @@ class RbnNode:
         surf.a.tx.set(self.D / 2 * xDr)
         surf.a.sx.set(xDr)
 
-        coord = []
-        for i in range(self.rbJNum):
-            coord.append(((2 * i + 1) / (2 * self.rbJNum), 0.5))
+        # Generate coordinates for rivets
+        coord = [((2 * i + 1) / (2 * self.rbJNum), 0.5) for i in range(self.rbJNum)]
 
+        # Create rivets and attach joints
         pin, pinXf = common.nlRivet(
             geo=surf,
             coordList=coord,
@@ -126,137 +124,109 @@ class RbnNode:
             p=self.BSE_GRP,
             size=self.size,
         )
+
         rbJnt = []
-        for i in range(self.rbJNum):
+        for i, pin_xf in enumerate(pinXf):
             jnt = JntNode(
                 f"rbj_{i}",
-                pf=pf,
+                pf=self.pf,
                 p=self.JNT_GRP,
                 r=self.size / self.rbJNum * 5,
                 addOfs=1,
             )
-            pinXf[i].cstPar(jnt.parent)
-            pinXf[i].a.inheritsTransform.set(0)
+            pin_xf.cstPar(jnt.parent)
+            pin_xf.a.inheritsTransform.set(0)
             rbJnt.append(jnt)
 
         self.surf = surf
         self.rbJnt = rbJnt
 
-    def build_locs(self, pf):
+    def build_locs(self):
         """Create locators for the start, middle, and end of the ribbon."""
-
         logging.info(f"Building {self.pf} locators")
 
-        offset = self.D / 4
-        size = self.D / 15
+        offset = self.D / 2
+        size = self.D / 5
         Dx = self.D * self.xDir
 
-        self.stt_loc = LocNode("stt_loc", pf=pf, p=self.CTL_GRP, size=size)
-        self.stt_loc_upVec = LocNode("stt_loc_upVec", pf=pf, p=self.stt_loc, size=size)
-        self.stt_loc.addOffsetGrp()
+        locNames = ["stt_loc", "end_loc", "mid_loc", "stt_loc_upVec", "end_loc_upVec"]
+        for name in locNames:
+            setattr(
+                self,
+                name,
+                LocNode(
+                    name, pf=self.pf, size=size, p=self.CTL_GRP, color=Color.YELLOW
+                ),
+            )
+
+        self.stt_loc_upVec | self.stt_loc
         self.stt_loc_upVec.a.ty.set(offset)
 
-        self.end_loc = LocNode("end_loc", pf=pf, p=self.CTL_GRP, size=size)
-        self.end_loc_upVec = LocNode("end_loc_upVec", pf=pf, p=self.end_loc, size=size)
+        self.end_loc_upVec | self.end_loc
         self.end_loc.a.tx.set(Dx)
-        self.end_loc.addOffsetGrp()
         self.end_loc_upVec.a.ty.set(offset)
 
-        self.mid_loc = LocNode("mid_loc", pf=pf, p=self.CTL_GRP, size=size)
         self.mid_loc.a.tx.set(Dx / 2)
         self.mid_loc.addOffsetGrp(count=2)
 
-    def build_aim_chains(self, pf):
-        """Create aim chains for the start, middle, and end of the ribbon."""
+    def createIK(self, name, sj, ee, grp):
+        """Create an aim IK handle for the ribbon rig."""
+        return IkNode(name, pf=self.pf, sj=sj, ee=ee, solver=Solver.RP, quat=1, p=grp)
 
+    def createAimJC(self, name, tgt, offsetX):
+        """Create a two-joint chain for aiming with an offset."""
+        offset = (offsetX, 0, 0)
+        return JntNode.makeTwoJointChain(
+            name, pf=self.pf, snap=tgt, offset=offset, rad=self.size, p=self.AIM_GRP
+        )
+
+    def build_aim_chains(self):
+        """Create aim chains for the start, middle, and end of the ribbon."""
         logging.info(f"Building {self.pf} aim chains")
 
-        g = self.AIM_GRP
+        ofsX = self.D * self.xDir / 4
 
-        ofsX = self.D / 4 * self.xDir
-        ofsX2 = ofsX * 2
+        # Start aim chain
+        stt_aimJ, stt_aimJ_end = self.createAimJC("stt_aimJ", self.stt_loc, ofsX)
+        self.stt_sknJ = stt_aimJ_end.duplicate(n=self.pf + "stt_sknJ")
+        self.stt_sknJ.alignTo(self.stt_loc)
 
-        stt_aimJ, stt_aimJ_end = JntNode.makeTwoJointChain(
-            "stt_aimJ",
-            pf=pf,
-            snap=self.stt_loc,
-            offset=(ofsX, 0, 0),
-            p=g,
-            rad=self.size * 2,
-        )
-        stt_sknJ = stt_aimJ_end.duplicate(n=pf + "stt_sknJ")
-        stt_sknJ.alignTo(self.stt_loc)
+        # End aim chain
+        end_aimJ, end_aimJ_end = self.createAimJC("end_aimJ", self.end_loc, -ofsX)
+        self.end_sknJ = end_aimJ_end.duplicate(n=self.pf + "end_sknJ")
+        self.end_sknJ.alignTo(self.end_loc)
 
-        end_aimJ, end_aimJ_end = JntNode.makeTwoJointChain(
-            "end_aimJ",
-            pf=pf,
-            snap=self.end_loc,
-            offset=(-ofsX, 0, 0),
-            p=g,
-            rad=self.size * 2,
-        )
-        end_sknJ = end_aimJ_end.duplicate(n=pf + "end_sknJ")
-        end_sknJ.alignTo(self.end_loc)
+        # Middle aim chain
+        mid_aimJ, mid_aimJ_end = self.createAimJC("mid_aimJ", self.stt_loc, ofsX * 2)
+        self.mid_sknJ = mid_aimJ_end.duplicate(n=self.pf + "mid_sknJ")
+        self.mid_sknJ.alignTo(self.mid_loc, p=self.mid_loc)
 
-        mid_aimJ, mid_aimJ_end = JntNode.makeTwoJointChain(
-            "mid_aimJ",
-            pf=pf,
-            snap=self.stt_loc,
-            offset=(ofsX2, 0, 0),
-            p=g,
-            rad=self.size * 2,
-        )
-        mid_sknJ = mid_aimJ_end.duplicate(n=pf + "mid_sknJ")
-        mid_sknJ.alignTo(self.mid_loc, p=self.mid_loc)
-
+        # Constraints
         self.stt_loc.cstPoi(stt_aimJ)
         self.stt_loc.cstPoi(mid_aimJ)
         self.end_loc.cstPoi(end_aimJ)
 
         mid_loc_ofs1 = self.mid_loc.offset.offset
-
         if not self.forSpine:
             common.cstMulti(self.stt_loc, self.end_loc, mid_loc_ofs1, cstType="poi")
             mid_aimJ.cstOri(mid_loc_ofs1)
 
-        self.surf.weightTo([stt_sknJ, mid_sknJ, end_sknJ], chain=0, mi=2, dr=2)
+        self.surf.weightTo(
+            [self.stt_sknJ, self.mid_sknJ, self.end_sknJ], chain=0, mi=2, dr=2
+        )
 
-        # clu = [
-        #     DagNode(mc.cluster(self.surf + ".cv[0:2][*]", n="clu_0")[1]),
-        #     DagNode(mc.cluster(self.surf + ".cv[3:4][*]", n="clu_2")[1]),
-        #     DagNode(mc.cluster(self.surf + ".cv[5:7][*]", n="clu_3")[1]),
-        # ]
-        # clu[0] | stt_sknJ
-        # clu[1] | mid_sknJ
-        # clu[2] | end_sknJ
-
-        # clu = [
-        #     DagNode(mc.cluster(self.surf + ".cv[0][*]", n="clu_0")[1]),
-        #     DagNode(mc.cluster(self.surf + ".cv[1][*]", n="clu_1")[1]),
-        #     DagNode(mc.cluster(self.surf + ".cv[2:3][*]", n="clu_2")[1]),
-        #     DagNode(mc.cluster(self.surf + ".cv[4][*]", n="clu_3")[1]),
-        #     DagNode(mc.cluster(self.surf + ".cv[5][*]", n="clu_4")[1]),
-        # ]
-        # clu[1] | clu[0] | stt_sknJ
-        # clu[2] | mid_sknJ
-        # clu[3] | clu[4] | end_sknJ
-
-        for j in stt_sknJ, end_sknJ, mid_sknJ:
+        for j in self.stt_sknJ, self.end_sknJ, self.mid_sknJ:
             j.setRadius(self.D / 5)
-            j.color = Color.BLUE
+            j.color = Color.D_YELLOW
 
-        stt_ikh = IkNode(
-            "stt", pf=pf, sj=stt_aimJ, ee=stt_aimJ_end, solver=Solver.RP, quat=1, p=g
-        )
-        mid_ikh = IkNode(
-            "mid", pf=pf, sj=mid_aimJ, ee=mid_aimJ_end, solver=Solver.RP, quat=1, p=g
-        )
-        end_ikh = IkNode(
-            "end", pf=pf, sj=end_aimJ, ee=end_aimJ_end, solver=Solver.RP, quat=1, p=g
-        )
+        # IK handles
+        stt_ikh = self.createIK("stt", stt_aimJ, stt_aimJ_end, self.AIM_GRP)
+        mid_ikh = self.createIK("mid", mid_aimJ, mid_aimJ_end, self.AIM_GRP)
+        end_ikh = self.createIK("end", end_aimJ, end_aimJ_end, self.AIM_GRP)
 
         self.all_ikHs.extend([stt_ikh, mid_ikh, end_ikh])
 
+        # Final constraints based on spine mode
         if self.forSpine:
             self.stt_loc.cstPar(stt_ikh, mo=1)
             self.end_loc.cstPoi(mid_ikh)
@@ -266,11 +236,7 @@ class RbnNode:
             self.end_loc.cstPoi(mid_ikh)
             self.mid_loc.cstPoi(end_ikh)
 
-        self.stt_sknJ = stt_sknJ
-        self.mid_sknJ = mid_sknJ
-        self.end_sknJ = end_sknJ
-
-    def build_twist_chains(self, pf):
+    def build_twist_chains(self):
         """Create twist chains for the start and end of the ribbon."""
 
         logging.info(f"Building {self.pf} twist chains")
@@ -281,15 +247,8 @@ class RbnNode:
         upV = (0, 1, 0)
 
         # From
-        stt_twistJ, stt_twistJ_end = JntNode.makeTwoJointChain(
-            "stt_twistJ",
-            pf=pf,
-            snap=self.stt_loc,
-            offset=(-ofsX, 0, 0),
-            p=self.AIM_GRP,
-            rad=self.size / 2,
-        )
-        stt_twistG = GrpNode("stt_twistG", pf=pf, align=stt_twistJ, p=stt_twistJ)
+        stt_twistJ, stt_twistJ_end = self.createAimJC("stt_twistJ", self.stt_loc, -ofsX)
+        stt_twistG = GrpNode("stt_twistG", pf=self.pf, align=stt_twistJ, p=stt_twistJ)
         stt_twistG.a.rx >> self.stt_sknJ.a.rx
 
         stt_twistJ_end.cstAim(
@@ -300,15 +259,8 @@ class RbnNode:
             u=upV,
         )
         # To
-        end_twistJ, end_twistJ_end = JntNode.makeTwoJointChain(
-            "end_twistJ",
-            pf=pf,
-            snap=self.end_loc,
-            offset=(ofsX, 0, 0),
-            p=self.AIM_GRP,
-            rad=self.size / 2,
-        )
-        end_twistG = GrpNode("end_twistG", pf=pf, align=end_twistJ, p=end_twistJ)
+        end_twistJ, end_twistJ_end = self.createAimJC("end_twistJ", self.end_loc, ofsX)
+        end_twistG = GrpNode("end_twistG", pf=self.pf, align=end_twistJ, p=end_twistJ)
         end_twistG.a.rx >> self.end_sknJ.a.rx
         end_twistJ_end.cstAim(
             end_twistG,
@@ -321,24 +273,9 @@ class RbnNode:
         self.end_loc.cstPoi(end_twistJ)
 
         # IK
-        stt_twist_ikh = IkNode(
-            "sttTw",
-            pf=pf,
-            sj=stt_twistJ,
-            ee=stt_twistJ_end,
-            solver=Solver.RP,
-            quat=1,
-            p=self.stt_loc,
-        )
-        end_twist_ikh = IkNode(
-            "endTw",
-            pf=pf,
-            sj=end_twistJ,
-            ee=end_twistJ_end,
-            solver=Solver.RP,
-            quat=1,
-            p=self.end_loc,
-        )
+        stt_twist_ikh = self.createIK("sttTw", stt_twistJ, stt_twistJ_end, self.stt_loc)
+        end_twist_ikh = self.createIK("endTw", end_twistJ, end_twistJ_end, self.end_loc)
+
         self.all_ikHs.extend([stt_twist_ikh, end_twist_ikh])
 
         c_loc_ofs2 = self.mid_loc.offset
@@ -355,19 +292,19 @@ class RbnNode:
         arcLD = ut.arcLenDim_(self.surf)
         d = arcLD.a.arcLength
         D = d.get()
-        self.autoVol = self.ribbonG.a.add("autoVol")
-        self.volType = self.ribbonG.a.add(
+        self.autoVol = self.RBN_GRP.a.add("autoVol")
+        self.volType = self.RBN_GRP.a.add(
             "volType", attrType="enum", enumName="whole:separate", k=0
         )
-        scaleFix = self.ribbonG.a.sy
+        scaleFix = self.RBN_GRP.a.sy
 
-        volGraph1 = self.ribbonG.a.add("volGraph1", dv=0)
+        volGraph1 = self.RBN_GRP.a.add("volGraph1", dv=0)
         volValue = self.volMode
         mc.setKeyframe(volGraph1, t=0, v=volValue)
         mc.setKeyframe(volGraph1, t=self.rbJNum - 1, v=1 - volValue)
         mc.setAttr(volGraph1, l=1)
 
-        volGraph2 = self.ribbonG.a.add("volGraph2", dv=0)
+        volGraph2 = self.RBN_GRP.a.add("volGraph2", dv=0)
         mc.setKeyframe(volGraph2, t=0, v=0)
         mc.setKeyframe(volGraph2, t=(self.rbJNum - 1) / 2, v=1)
         mc.setKeyframe(volGraph2, t=self.rbJNum - 1, v=0)
@@ -396,9 +333,8 @@ class RbnNode:
     def setup_vis(self):
         """Set up visibility for the ribbon rig."""
 
+        mc.hide(self.all_ikHs)
         # mc.hide(self.BSE_GRP, self.AIM_GRP, self.CTL_GRP)
-        # mc.hide(self.all_ikHs)
-        pass
 
     def build_post(self):
         """Post setup for the ribbon rig."""
