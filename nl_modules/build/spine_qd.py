@@ -80,7 +80,7 @@ class SpineQd(RigModule):
         ctl_defs = [
             ("setting", "bagua", "z", rSz * 2, 1, 2),
             ("cog_ctl", "trapezoid", None, rSz * 2, 1, -1),
-            ("base_ctl", "circle", "z", rSz * 2, 0, -1),
+            ("base_ctl", "circle", "z", rSz * 5, 0, -1),
             ("mid_ctl", "squR", "z", rSz * 4, 0, -1),
             ("fore_ctl", "circle", "z", rSz * 5, 0, -1),
             ("tangent0_ctl", "arrow", "z", rSz, 1, -1),
