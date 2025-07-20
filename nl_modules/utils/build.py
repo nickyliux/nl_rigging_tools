@@ -451,8 +451,19 @@ def getRigNode(obj):
         logging.info("Get rigNode for non-existing object.")
 
 
+# def getRigNodes(objList):
+#     rigNodes = []
+#     for obj in objList:
+#         n = getRigNode(obj)
+#         if n:
+#             rigNodes.append(n)
+#     return rigNodes
+
+
 def autoAttachJntToSurf():
     """Auto attach joints to surface for all ribbon rigNodes"""
+
+    from nl_modules.utils import common
 
     masterCtl = DagNode("master_ctl")
     if not masterCtl.exists():
@@ -463,58 +474,42 @@ def autoAttachJntToSurf():
         raise ValueError("globalScale attr NOT found")
 
     for node in getRigNodesAll():
-        if node.a.nodeState.get() == 2:
-            #
-            #   Process only if rbJntSet found
-            #
-            rbJntSetAttr = node.a["rbJntSet"]
-            if rbJntSetAttr.exists():
+        if node.a.nodeState.get() != 2:
+            continue
 
-                rbSrfAttr = node.a["rbSrf"]
-                if not rbSrfAttr.exists():
-                    raise ValueError(f"Attr rbSrf NOT found in {node}.")
-                #
-                #   check set rbJntSet
-                #
-                rbJntSetName = rbJntSetAttr.get()
-                rbJntSet = DagNode(rbJntSetName)
-                if not rbJntSet.exists():
-                    raise ValueError(f"Set {rbJntSetName} NOT found.")
+        rbJntSetAttr = node.a["rbJntSet"]
+        if not rbJntSetAttr.exists():
+            continue
 
-                rbJnts = mc.sets(rbJntSet, q=1)
-                if not rbJnts:
-                    raise ValueError(f"No joints found in Set {rbJntSet}.")
-                #
-                #   check surface rbSrf
-                #
-                rbSrf = rbSrfAttr.inConnNode
-                if not rbSrf:
-                    raise ValueError("Surface object NOT found.")
-                #
-                #   attach joints in set to srf
-                #
-                # if rbSrf and rbJnts:
-                from nl_modules.utils import common
+        rbSrfAttr = node.a["rbSrf"]
+        if not rbSrfAttr.exists():
+            logging.warning(f"Attr rbSrf NOT found in {node}.")
+            continue
 
-                common.ribbonAttach(
-                    geo=rbSrf,
-                    tgtList=rbJnts,
-                    scaleAttr=globalScale,
-                    p=DagNode("RIG"),
-                )
-                # else:
-                #     logging.info("Ignore invalid surf and joints")
+        rbJntSetName = rbJntSetAttr.get()
+        rbJntSet = DagNode(rbJntSetName)
+        if not rbJntSet.exists():
+            logging.warning(f"Set {rbJntSetName} NOT found.")
+            continue
 
-                logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")
+        rbJnts = mc.sets(rbJntSet, q=1)
+        if not rbJnts:
+            logging.warning(f"No joints found in Set {rbJntSet}.")
+            continue
 
+        rbSrf = rbSrfAttr.inConnNode
+        if not rbSrf:
+            logging.warning("Surface object NOT found.")
+            continue
 
-# def getRigNodes(objList):
-#     rigNodes = []
-#     for obj in objList:
-#         n = getRigNode(obj)
-#         if n:
-#             rigNodes.append(n)
-#     return rigNodes
+        # Attach joints in set to surface
+        common.ribbonAttach(
+            geo=rbSrf,
+            tgtList=rbJnts,
+            scaleAttr=globalScale,
+            p=DagNode("RIG"),
+        )
+        logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")
 
 
 # startTime = time.time()
