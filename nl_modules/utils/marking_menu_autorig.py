@@ -140,12 +140,10 @@ class MarkingMenuAutorig:
 
     def switch_to_space(self, *args):
         """Switch space for all selected controls to the specified space"""
-
         anim.switch_to_space_target(args[0])
 
     def switch_ik_fk(self, *args):
         """Switch FK/IK mode for the specified rig node"""
-
         anim.switch_ik_fk(attr=args[0], toIKMode=args[1], rigNode=args[2])
         self.reload_marking_menu()
 

@@ -40,26 +40,23 @@ class RbnNode:
         # Core attributes
         self.d = None
         self.ribbonParent = p
-        self.RBN_GRP = None
-        self.BSE_GRP = None
-        self.CTL_GRP = None
-        self.JNT_GRP = None
-        self.AIM_GRP = None
+
+        self.grpNames = ["RBN_GRP", "BSE_GRP", "CTL_GRP", "JNT_GRP", "AIM_GRP"]
+        for name in self.grpNames:
+            setattr(self, name, None)
+
         self.pf = pf
         self.rbJnt = []
-        self.surf = None
+        self.rbSrf = None
 
         # Locators and joints
-        self.stt_loc = None
-        self.mid_loc = None
-        self.end_loc = None
-        self.stt_loc_upVec = None
-        self.end_loc_upVec = None
-        self.stt_sknJ = None
-        self.mid_sknJ = None
-        self.end_sknJ = None
-        self.stt_twistJ = None
-        self.end_twistJ = None
+        self.locNames = ["stt_loc", "mid_loc", "end_loc", "sttUp_loc", "endUp_loc"]
+        for name in self.locNames:
+            setattr(self, name, None)
+
+        self.jntNames = ["stt_sknJ", "mid_sknJ", "end_sknJ", "stt_twistJ", "end_twistJ"]
+        for name in self.jntNames:
+            setattr(self, name, None)
 
         # Volume and control attributes
         self.autoVol = 0
@@ -68,8 +65,8 @@ class RbnNode:
         self.scaleFix = scaleFix
         self.volMode = volMode
         self.rbJNum = rbJNum
-        self.all_ikHs = []
         self.size = size
+        self.all_ikHs = []
 
         # Build the ribbon rig
         self.build()
@@ -99,7 +96,7 @@ class RbnNode:
         logging.info(f"Building {self.pf} surface")
 
         xDr = self.xDir
-        surf = SrfNode(
+        self.rbSrf = SrfNode(
             "rb_surf",
             pf=self.pf,
             uSeg=5,
@@ -108,16 +105,16 @@ class RbnNode:
             size=self.D,
             p=self.BSE_GRP,
         )
-        surf.a.inheritsTransform.set(0)
-        surf.a.tx.set(self.D / 2 * xDr)
-        surf.a.sx.set(xDr)
+        self.rbSrf.a.inheritsTransform.set(0)
+        self.rbSrf.a.tx.set(self.D / 2 * xDr)
+        self.rbSrf.a.sx.set(xDr)
 
         # Generate coordinates for rivets
         coord = [((2 * i + 1) / (2 * self.rbJNum), 0.5) for i in range(self.rbJNum)]
 
         # Create rivets and attach joints
         pin, pinXf = common.nlRivet(
-            geo=surf,
+            geo=self.rbSrf,
             coordList=coord,
             normal=1,
             tangent=0,
@@ -125,7 +122,6 @@ class RbnNode:
             size=self.size,
         )
 
-        rbJnt = []
         for i, pin_xf in enumerate(pinXf):
             jnt = JntNode(
                 f"rbj_{i}",
@@ -136,10 +132,7 @@ class RbnNode:
             )
             pin_xf.cstPar(jnt.parent)
             pin_xf.a.inheritsTransform.set(0)
-            rbJnt.append(jnt)
-
-        self.surf = surf
-        self.rbJnt = rbJnt
+            self.rbJnt.append(jnt)
 
     def build_locs(self):
         """Create locators for the start, middle, and end of the ribbon."""
@@ -149,8 +142,7 @@ class RbnNode:
         size = self.D / 5
         Dx = self.D * self.xDir
 
-        locNames = ["stt_loc", "end_loc", "mid_loc", "stt_loc_upVec", "end_loc_upVec"]
-        for name in locNames:
+        for name in self.locNames:
             setattr(
                 self,
                 name,
@@ -159,12 +151,12 @@ class RbnNode:
                 ),
             )
 
-        self.stt_loc_upVec | self.stt_loc
-        self.stt_loc_upVec.a.ty.set(offset)
+        self.sttUp_loc | self.stt_loc
+        self.sttUp_loc.a.ty.set(offset)
 
-        self.end_loc_upVec | self.end_loc
+        self.endUp_loc | self.end_loc
         self.end_loc.a.tx.set(Dx)
-        self.end_loc_upVec.a.ty.set(offset)
+        self.endUp_loc.a.ty.set(offset)
 
         self.mid_loc.a.tx.set(Dx / 2)
         self.mid_loc.addOffsetGrp(count=2)
@@ -211,11 +203,10 @@ class RbnNode:
             common.cstMulti(self.stt_loc, self.end_loc, mid_loc_ofs1, cstType="poi")
             mid_aimJ.cstOri(mid_loc_ofs1)
 
-        self.surf.weightTo(
-            [self.stt_sknJ, self.mid_sknJ, self.end_sknJ], chain=0, mi=2, dr=2
-        )
+        sknJnts = [self.stt_sknJ, self.mid_sknJ, self.end_sknJ]
+        self.rbSrf.weightTo(sknJnts, chain=0, mi=2, dr=2)
 
-        for j in self.stt_sknJ, self.end_sknJ, self.mid_sknJ:
+        for j in sknJnts:
             j.setRadius(self.D / 5)
             j.color = Color.D_YELLOW
 
@@ -250,14 +241,14 @@ class RbnNode:
         stt_twistJ, stt_twistJ_end = self.createAimJC("stt_twistJ", self.stt_loc, -ofsX)
         stt_twistG = GrpNode("stt_twistG", pf=self.pf, align=stt_twistJ, p=stt_twistJ)
         stt_twistG.a.rx >> self.stt_sknJ.a.rx
-
         stt_twistJ_end.cstAim(
             stt_twistG,
             worldUpType="object",
-            worldUpObject=self.stt_loc_upVec,
+            worldUpObject=self.sttUp_loc,
             aim=aimVN,
             u=upV,
         )
+        self.stt_loc.cstPoi(stt_twistJ)
         # To
         end_twistJ, end_twistJ_end = self.createAimJC("end_twistJ", self.end_loc, ofsX)
         end_twistG = GrpNode("end_twistG", pf=self.pf, align=end_twistJ, p=end_twistJ)
@@ -265,11 +256,10 @@ class RbnNode:
         end_twistJ_end.cstAim(
             end_twistG,
             worldUpType="object",
-            worldUpObject=self.end_loc_upVec,
+            worldUpObject=self.endUp_loc,
             aim=aimV,
             u=upV,
         )
-        self.stt_loc.cstPoi(stt_twistJ)
         self.end_loc.cstPoi(end_twistJ)
 
         # IK
@@ -289,7 +279,7 @@ class RbnNode:
 
         logging.info(f"Building {self.pf} volume setup")
 
-        arcLD = ut.arcLenDim_(self.surf)
+        arcLD = ut.arcLenDim_(self.rbSrf)
         d = arcLD.a.arcLength
         D = d.get()
         self.autoVol = self.RBN_GRP.a.add("autoVol")
