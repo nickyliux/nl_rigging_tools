@@ -1092,7 +1092,7 @@ class RigModule(RigBase):
 
         # Update bind joints
         self.updateBindJntList(
-            remove=[upr, lwr], extend=ribbonUp.rbJnt + ribbonLw.rbJnt
+            remove=[upr, lwr], extend=ribbonUp.rbJnts + ribbonLw.rbJnts
         )
 
         return [ribbonUp, ribbonLw]
