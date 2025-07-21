@@ -101,10 +101,12 @@ def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
         ikc.alignTo(ikc_matcher)
         smart_ctl.resetXf()
         ball_ikc.resetXf()
-        extra_ikc.resetXf()
-        extra_ikc.a["palmAim"].set(0)
-        if extra_matcher:
-            extra_ikc.alignTo(extra_matcher)
+
+        if extra_ikc.exists():
+            extra_ikc.resetXf()
+            extra_ikc.a["palmAim"].set(0)
+            if extra_matcher:
+                extra_ikc.alignTo(extra_matcher)
 
         # Setup for pvc
         pvc.a["fkPin"].set(0)
