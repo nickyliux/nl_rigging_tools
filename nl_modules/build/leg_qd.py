@@ -127,13 +127,13 @@ class LegQd(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "bagua", "z", scale * 2, 1, 2),
-            ("hip_fkc", "cubeL", "x", scale * 1.5, 1, -1),
-            ("upr_fkc", "cubeL", "x", scale * 1.5, 1, -1),
-            ("lwr_fkc", "cubeL", "x", scale * 1.5, 1, -1),
-            ("palm_fkc", "cubeL", "x", scale * 1.5, 1, -1),
-            ("digit_fkc", "cubeL", "x", scale * 1.5, 1, -1),
-            ("ball_fkc", "cubeL", "x", scale * 1.5, 1, -1),
+            ("setting", "bagua", "z", scale, 1, 2),
+            ("hip_fkc", "cubeR", "x", scale * 1.5, 1, -1),
+            ("upr_fkc", "cubeR", "x", scale * 1.5, 1, -1),
+            ("lwr_fkc", "cubeR", "x", scale * 1.5, 1, -1),
+            ("palm_fkc", "cubeR", "x", scale * 1.5, 1, -1),
+            ("digit_fkc", "cubeR", "x", scale * 1.5, 1, -1),
+            ("ball_fkc", "cubeR", "x", scale * 1.5, 1, -1),
             ("ikc", "foot", None, rSz * 2, 0, -1),
             ("extra_ikc", "rotator", None, -scale, 0, -1),
             ("pvc", "diamond", None, scale * 2, 0, -1),

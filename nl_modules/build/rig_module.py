@@ -918,7 +918,6 @@ class RigModule(RigBase):
         self, rbSrf=None, jntNum=5, scaleAttr=None, stretchyAttr=None
     ):
         """Build a motion path ribbon on the given surface with specified joint number"""
-
         rID, rSz, xDr = self.getMyVar()
         #
         #   create crv on srf & calc crv len ratio

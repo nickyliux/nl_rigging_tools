@@ -77,7 +77,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "bagua", "z", scale * 1.5, 1, 2),
+            ("setting", "bagua", "z", scale, 1, 2),
             ("clavicle_fkc", "stickC", None, scale, 1, -1),
             ("upr_fkc", "cubeR", "x", scale * 2, 1, -1),
             ("lwr_fkc", "cubeR", "x", scale * 2, 1, -1),
@@ -237,6 +237,11 @@ class ArmBp(RigModule):
         """Blend FK and IK joints for the arm rig."""
 
         rID, rSz, xDr = self.getMyVar()
+
+        # Snap setting to upper arm and constrain
+        self.setting.snapTo(self.clavicle, p=self.CTL_DATA)
+        self.clavicle.cstPoi(self.setting, mo=1)
+
         # Extract blend joints
         self.joints_bf = common.dupSk(
             self.joints, "_bf", p=self.BF_GRP, r=rSz * 4, color=Color.D_YELLOW
@@ -255,10 +260,6 @@ class ArmBp(RigModule):
         self.ballRoll_loc = LocNode(
             "ballRoll", pf=rID, align=ball_guide, p=palmOut_loc, size=rSz
         )
-
-        # Snap setting to upper arm and constrain
-        self.setting.snapTo(self.upr, p=self.CTL_DATA)
-        self.upr.cstPoi(self.setting, mo=1)
 
         # Add blend attribute
         self.setting.a.addSep()

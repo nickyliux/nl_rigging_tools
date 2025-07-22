@@ -39,23 +39,16 @@ class RbnNode:
 
         # Core attributes
         self.d = None
+        self.rbSrf = None
         self.ribbonParent = p
-
-        self.grpNames = ["RBN_GRP", "BSE_GRP", "CTL_GRP", "JNT_GRP", "AIM_GRP"]
-        for name in self.grpNames:
-            setattr(self, name, None)
-
         self.pf = pf
         self.rbJnts = []
-        self.rbSrf = None
 
-        # Locators and joints
+        self.grpNames = ["RBN_GRP", "BSE_GRP", "CTL_GRP", "JNT_GRP", "AIM_GRP"]
         self.locNames = ["stt_loc", "mid_loc", "end_loc", "sttUp_loc", "endUp_loc"]
-        for name in self.locNames:
-            setattr(self, name, None)
+        self.jntNames = ["stt_jnt", "mid_jnt", "end_jnt"]
 
-        self.jntNames = ["stt_jnt", "mid_jnt", "end_jnt", "stt_twistJ", "end_twistJ"]
-        for name in self.jntNames:
+        for name in self.grpNames + self.locNames + self.jntNames:
             setattr(self, name, None)
 
         # Volume and control attributes
@@ -205,7 +198,7 @@ class RbnNode:
         self.rbSrf.weightTo(sttMidEnd_jnts, chain=0, mi=2, dr=2)
 
         for j in sttMidEnd_jnts:
-            j.setRadius(self.size * 5)
+            j.setRadius(self.size * 3)
             j.color = Color.PINK
 
         if not self.forSpine:
@@ -231,6 +224,7 @@ class RbnNode:
             self.end_loc.cstPoi(mid_ikh)
             self.mid_loc.cstPoi(end_ikh)
 
+        # Drive the end_jnt by the mid_loc
         self.mid_loc.cstAim(
             self.end_jnt,
             aim=(-self.xDir, 0, 0),
@@ -239,57 +233,58 @@ class RbnNode:
             u=(0, 1, 0),
         )
 
+        # mid_loc's rx is controlled by the start and end joints
         ut.blend2_(self.stt_jnt.a.rx, self.end_jnt.a.rx) >> self.mid_loc.a.rx
 
-    def build_twist_chains(self):
-        """Create twist chains for the start and end of the ribbon."""
+    # def build_twist_chains(self):
+    #     """Create twist chains for the start and end of the ribbon."""
 
-        logging.info(self.pf)
+    #     logging.info(self.pf)
 
-        ofsX = self.D * self.xDir / 10
-        aimV = (self.xDir, 0, 0)
-        upV = (0, 1, 0)
+    #     ofsX = self.D * self.xDir / 10
+    #     aimV = (self.xDir, 0, 0)
+    #     upV = (0, 1, 0)
 
-        # From
-        stt_twistJ, stt_twistJ_end = self.build_aim_jc(
-            "stt_twistJ", self.stt_loc, -ofsX, color=Color.ORANGE
-        )
-        stt_twistG = GrpNode("stt_twistG", pf=self.pf, align=stt_twistJ, p=stt_twistJ)
-        stt_twistG.a.rx >> self.stt_jnt.a.rx
-        stt_twistJ_end.cstAim(
-            stt_twistG,
-            worldUpType="object",
-            worldUpObject=self.sttUp_loc,
-            aim=Vec(aimV) * -1,
-            u=upV,
-        )
-        self.stt_loc.cstPoi(stt_twistJ)
-        # To
-        end_twistJ, end_twistJ_end = self.build_aim_jc(
-            "end_twistJ", self.end_loc, ofsX, color=Color.ORANGE
-        )
-        end_twistG = GrpNode("end_twistG", pf=self.pf, align=end_twistJ, p=end_twistJ)
-        end_twistG.a.rx >> self.end_jnt.a.rx
-        end_twistJ_end.cstAim(
-            end_twistG,
-            worldUpType="object",
-            worldUpObject=self.endUp_loc,
-            aim=aimV,
-            u=upV,
-        )
-        self.end_loc.cstPoi(end_twistJ)
+    #     # From
+    #     stt_twistJ, stt_twistJ_end = self.build_aim_jc(
+    #         "stt_twistJ", self.stt_loc, -ofsX, color=Color.ORANGE
+    #     )
+    #     stt_twistG = GrpNode("stt_twistG", pf=self.pf, align=stt_twistJ, p=stt_twistJ)
+    #     stt_twistG.a.rx >> self.stt_jnt.a.rx
+    #     stt_twistJ_end.cstAim(
+    #         stt_twistG,
+    #         worldUpType="object",
+    #         worldUpObject=self.sttUp_loc,
+    #         aim=Vec(aimV) * -1,
+    #         u=upV,
+    #     )
+    #     self.stt_loc.cstPoi(stt_twistJ)
+    #     # To
+    #     end_twistJ, end_twistJ_end = self.build_aim_jc(
+    #         "end_twistJ", self.end_loc, ofsX, color=Color.ORANGE
+    #     )
+    #     end_twistG = GrpNode("end_twistG", pf=self.pf, align=end_twistJ, p=end_twistJ)
+    #     end_twistG.a.rx >> self.end_jnt.a.rx
+    #     end_twistJ_end.cstAim(
+    #         end_twistG,
+    #         worldUpType="object",
+    #         worldUpObject=self.endUp_loc,
+    #         aim=aimV,
+    #         u=upV,
+    #     )
+    #     self.end_loc.cstPoi(end_twistJ)
 
-        # IK
-        stt_twist_ikh = self.build_ik("sttTw", stt_twistJ, stt_twistJ_end, self.stt_loc)
-        end_twist_ikh = self.build_ik("endTw", end_twistJ, end_twistJ_end, self.end_loc)
+    #     # IK
+    #     stt_twist_ikh = self.build_ik("sttTw", stt_twistJ, stt_twistJ_end, self.stt_loc)
+    #     end_twist_ikh = self.build_ik("endTw", end_twistJ, end_twistJ_end, self.end_loc)
 
-        self.all_ikHs.extend([stt_twist_ikh, end_twist_ikh])
+    #     self.all_ikHs.extend([stt_twist_ikh, end_twist_ikh])
 
-        c_loc_ofs2 = self.mid_loc.offset
-        ut.blendC_(stt_twistG.a.r, end_twistG.a.r) >> c_loc_ofs2.a.r
+    #     c_loc_ofs2 = self.mid_loc.offset
+    #     ut.blendC_(stt_twistG.a.r, end_twistG.a.r) >> c_loc_ofs2.a.r
 
-        self.stt_twistJ = stt_twistJ
-        self.end_twistJ = end_twistJ
+    #     self.stt_twistJ = stt_twistJ
+    #     self.end_twistJ = end_twistJ
 
     def build_volume_setup(self):
         """Set up the volume control for the ribbon rig."""
@@ -333,7 +328,7 @@ class RbnNode:
 
     def setup_rotate_order(self):
         """Set up the rotate order for the start, middle, and end joints."""
-        for j in (self.stt_loc, self.end_loc):  # , self.stt_twistJ, self.end_twistJ):
+        for j in (self.stt_loc, self.end_loc):
             j.a.rotateOrder.set(1)  # yzx
 
     def setup_vis(self):

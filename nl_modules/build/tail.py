@@ -14,14 +14,16 @@ class Tail(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
 
-        # --- Guide attributes ---
-        self.fkBoneNum = self.get_guide_attr("fkBoneNum")
-        # self.rbnBones = self.get_guide_attr("rbnBones")
-        self.rbnJntNum = self.get_guide_attr("rbnJntNum")
+        # Guide attributes
+        guide_attrs = ["fkJntNum", "rbnJntNum"]
+        for attr in guide_attrs:
+            setattr(self, attr, self.get_guide_attr(attr))
 
         # --- Naming and group setup ---
         self.LINE_GUIDE = CrvNode(f"{self.rigID}_line_guide")
         self.RT_GUIDE = CrvNode(f"{self.rigID}_rt_guide")
+
+        # Group nodes
         self.FK_GRP = GrpNode("FK", pf=self.rigID, p=self.CTL_DATA, snap=self.RT_GUIDE)
         self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA, snap=self.RT_GUIDE)
 
@@ -55,9 +57,7 @@ class Tail(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        ctl_defs = [
-            ("setting", "bagua", "z", rSz * 2, 1, 2),
-        ]
+        ctl_defs = [("setting", "bagua", "z", rSz, 1, 2)]
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
@@ -88,14 +88,13 @@ class Tail(RigModule):
             pf=self.rigID,
             crv=self.LINE_GUIDE,
             normal=1,
-            spans=self.fkBoneNum,
+            spans=self.fkJntNum,
             p=self.RIG_DATA,
             snap=self.RT_GUIDE,
         )
 
     def build_ribbon(self):
         """Create the ribbon for the tail rig."""
-
         logging.info(self.rigID)
         crvLenRatio, self.rbJnts = self.build_motionPath_ribbon(
             rbSrf=self.rbSrf2,
@@ -107,20 +106,12 @@ class Tail(RigModule):
 
     def build_ik(self):
         """Build the IK controls for the tail rig."""
-
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
         # --- Create IK joint chain from guide curve ---
         self.ikJnt = JntNode.createJntFrCrv(
-            self.LINE_GUIDE,
-            num=5,
-            name="ikj",
-            pf=rID,
-            aimV=(0, 0, -1),
-            upV=(0, 1, 0),
-            wuV=(0, 1, 0),
-            size=rSz,
+            self.LINE_GUIDE, num=5, name="ikj", pf=rID, aimV=(0, 0, -1), size=rSz
         )
 
         # --- Attach ribbon surface weights to IK joints ---
@@ -149,32 +140,29 @@ class Tail(RigModule):
 
     def build_fk(self):
         """Build the FK controls for the tail rig."""
-
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
         # --- Build FK joint chain from guide curve ---
         self.fkJnt = JntNode.createJntFrCrv(
             self.LINE_GUIDE,
-            num=self.fkBoneNum + 1,
+            num=self.fkJntNum + 1,
             pf=rID,
             aimV=(0, 0, -1),
-            upV=(0, 1, 0),
-            wuV=(0, 1, 0),
             size=rSz,
             p=self.FK_GRP,
         )
 
         # --- Build pin constraints for FK controls ---
-        coord = [(0.5, i / self.fkBoneNum) for i in range(self.fkBoneNum + 1)]
+        coord = [(0.5, i / self.fkJntNum) for i in range(self.fkJntNum + 1)]
         pin, pinXf = common.nlRivet(geo=self.rbSrf1, coordList=coord, p=self.RIG_DATA)
 
         # --- Create FK controls and register ---
-        for i in range(self.fkBoneNum + 1):
+        for i in range(self.fkJntNum + 1):
             ctl = CrvNode(
                 f"{i}_fkc",
                 pf=rID,
-                shape="cubeL",
+                shape="cubeR",
                 up="-z",
                 scale=rSz,
                 top=1,
@@ -186,7 +174,7 @@ class Tail(RigModule):
         # --- Build group chain and connect pins ---
         chainGrps = []
         lastGrp = self.FK_GRP
-        for i in range(self.fkBoneNum + 1):
+        for i in range(self.fkJntNum + 1):
             grp = GrpNode(f"{i}_chainGrp", pf=rID, align=self.fkCtl[i], p=lastGrp)
             pinXf[i].cstPar(grp, mo=1)
             chainGrps.append(grp)
@@ -196,12 +184,12 @@ class Tail(RigModule):
         self.build_fk_with_ctl3(self.fkJnt, self.fkCtl, p=self.FK_GRP)
 
         # --- Connect chain groups to FK control offsets ---
-        for i in range(self.fkBoneNum + 1):
+        for i in range(self.fkJntNum + 1):
             chainGrps[i].a.t >> self.fkCtl[i].offset.a.t
             chainGrps[i].a.r >> self.fkCtl[i].offset.a.r
 
         # --- Build offset control layer ---
-        for i in range(self.fkBoneNum + 1):
+        for i in range(self.fkJntNum + 1):
             ctl = CrvNode(
                 f"{i}_ofs_ctl",
                 pf=rID,
@@ -227,11 +215,11 @@ class Tail(RigModule):
         """Setup visibility toggles for the tail rig controls."""
 
         self.ctl_vis_toggle(
-            self.setting.a.add("IKCtl", k=0, attrType="bool", dv=1),
+            self.setting.a.add("ikCtl", k=0, attrType="bool", dv=0),
             onList=[self.ikCtl[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("FKCtl", k=0, attrType="bool", dv=1),
+            self.setting.a.add("fkCtl", k=0, attrType="bool", dv=1),
             onList=[self.fkCtl[0]],
         )
         self.ctl_vis_toggle(

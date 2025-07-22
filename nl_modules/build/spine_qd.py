@@ -78,7 +78,7 @@ class SpineQd(RigModule):
 
         #   Define control shapes and attributes
         ctl_defs = [
-            ("setting", "bagua", "z", rSz * 2, 1, 2),
+            ("setting", "bagua", "z", rSz, 1, 2),
             ("cog_ctl", "trapezoid", None, rSz * 2, 1, -1),
             ("base_ctl", "circle", "z", rSz * 5, 0, -1),
             ("mid_ctl", "squR", "z", rSz * 4, 0, -1),
@@ -135,7 +135,6 @@ class SpineQd(RigModule):
 
         self.build_twoJ_ik()
         self.build_volume(crvLenRatio)
-
         self.bindJnts.extend(self.rbJnts)
 
         self.setting.snapTo(self.rbJnts[0], p=self.IK_GRP)
@@ -159,7 +158,7 @@ class SpineQd(RigModule):
         # if self.is_neck():
         #     self.cog_ctl.alignTo(self.RT_GUIDE, addOfs=1)
         # else:
-        self.cog_ctl.snapTo(self.RT_GUIDE, addOfs=1)
+        self.cog_ctl.snapTo(self.RT_GUIDE)
 
         #
         #   parenting
