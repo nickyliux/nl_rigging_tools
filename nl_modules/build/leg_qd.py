@@ -561,18 +561,17 @@ class LegQd(RigModule):
 
     def setup_vis(self):
         """Setup visibility toggles for the quadruped leg rig controls."""
-
-        # self.ctl_vis_toggle(
-        #     self.setting.a["fkIkBlend"],
-        #     onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
-        #     offList=self.fkCtl[1:-1],
-        # )
         self.ctl_vis_toggle(
-            self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
+            self.setting.a["fkIkBlend"],
+            onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
+            offList=self.fkCtl[1:-1],
+        )
+        self.ctl_vis_toggle(
+            self.ikc.a.add("extraCtlVis", dv=1, attrType="bool", k=0),
             onList=self.subCtls,
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJointsVis", dv=1, attrType="bool", k=0),
+            self.setting.a.add("setupJntVis", dv=1, attrType="bool", k=0),
             onList=self.joints_fk + self.joints_ik,
         )
         [ikh.hide() for ikh in self.all_ikH.values()]

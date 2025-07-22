@@ -484,24 +484,23 @@ class LegBp(RigModule):
 
     def setup_vis(self):
         """Setup visibility for the leg rig controls."""
-
         self.pvc.a["fkPin"] >> self.pin_fkc.a.v
-        # self.ctl_vis_toggle(
-        #     self.setting.a["fkIkBlend"],
-        #     onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
-        #     offList=self.fkCtl[1:-1],
-        # )
         self.ctl_vis_toggle(
-            self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
+            self.setting.a["fkIkBlend"],
+            onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
+            offList=self.fkCtl[1:-1],
+        )
+        self.ctl_vis_toggle(
+            self.ikc.a.add("extraCtlVis", dv=1, attrType="bool", k=0),
             onList=self.subCtls,
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJointsVis", attrType="bool", dv=0, k=0),
+            self.setting.a.add("setupJntVis", attrType="bool", dv=0, k=0),
             onList=self.joints_fk + self.joints_ik + self.joints_bf,
         )
         if self.rbnBones:
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyCtl", attrType="bool", dv=1),
+                self.setting.a.add("bendyCtlVis", attrType="bool", dv=1),
                 onList=self.all_bend,
             )
         mc.hide(self.all_ikHs, self.toeIKHs)

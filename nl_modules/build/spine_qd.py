@@ -367,31 +367,23 @@ class SpineQd(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""
 
-        attr = self.base_ctl.a.add("tangentCtl", attrType="bool", k=0)
+        attr = self.base_ctl.a.add("tangentCtlVis", attrType="bool", k=0)
         attr >> self.tangent0_ctl.a.v
-        attr = self.fore_ctl.a.add("tangentCtl", attrType="bool", k=0)
+        attr = self.fore_ctl.a.add("tangentCtlVis", attrType="bool", k=0)
         attr >> self.tangent1_ctl.a.v
 
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJointsVis", attrType="bool", dv=0, k=0),
+            self.setting.a.add("setupJntVis", attrType="bool", dv=0, k=0),
             onList=self.ikJnts
             + self.fkJnts
             + self.spIkJnts
             + self.twoIkJnts
-            + self.rbJnts,
+            + self.rbJnts
+            + [self.anchorToRbj],
         )
         # if self.is_neck():
         # mc.hide(self.base_ctl.shape, self.tangent0_ctl.shape)
         # mc.hide(self.cog_ctl.shape)
-
-        mc.hide(
-            self.ikJnts,
-            self.fkJnts,
-            self.spIkJnts,
-            self.twoIkJnts,
-            self.anchorToRbj,
-            self.SKL_DATA,
-        )
 
     def setup_rotate_order(self):
         """Setup rotate order for the spine rig controls."""

@@ -213,20 +213,23 @@ class Tail(RigModule):
 
     def setup_vis(self):
         """Setup visibility toggles for the tail rig controls."""
-
         self.ctl_vis_toggle(
-            self.setting.a.add("ikCtl", k=0, attrType="bool", dv=0),
+            self.setting.a.add("ikCtlVis", k=0, attrType="bool", dv=0),
             onList=[self.ikCtl[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("fkCtl", k=0, attrType="bool", dv=1),
+            self.setting.a.add("fkCtlVis", k=0, attrType="bool", dv=1),
             onList=[self.fkCtl[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("subIkCtl", k=0, attrType="bool", dv=0),
+            self.setting.a.add("subIkCtlVis", k=0, attrType="bool", dv=0),
             onList=self.ofsCtl,
         )
-        mc.hide(self.ikJnt, self.fkJnt, self.ofsJnt, self.rbSrf1, self.rbSrf2)
+        self.ctl_vis_toggle(
+            self.setting.a.add("setupJntsVis", attrType="bool", dv=0, k=0),
+            onList=self.fkJnt + self.ikJnt + self.ofsJnt,
+        )
+        mc.hide(self.rbSrf1, self.rbSrf2)
 
     def setup_channel(self):
         """Setup channel attributes for the tail rig controls."""

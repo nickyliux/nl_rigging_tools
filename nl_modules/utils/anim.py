@@ -60,25 +60,36 @@ def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
             "digit_fkc",
             "ball_fkc",
         ]
+    elif rigClass == "ArmBp":
+        jnts = rootJ.allChildrenJt2[:4]
+        fkCtlNames = [
+            "clavicle_fkc",
+            "upr_fkc",
+            "lwr_fkc",
+            "palm_fkc",
+        ]
 
     if not all(jnts):
         logging.warning(f"Leg joints for {rigID} not found. Cannot switch IK/FK.")
         return
 
+    # FK Ctls
     fkCtls = [rigNode.a[name].inConnNode for name in fkCtlNames]
     if not all(fkCtls):
         logging.warning(f"Not all FK ctls for {rigID} found. Cannot switch IK/FK.")
         return
 
+    # IK Ctls
     ikc = rigNode.a.ikc.inConnNode
     pvc = rigNode.a.pvc.inConnNode
-    ball_ikc = rigNode.a["ball_ikc"].inConnNode
     ikc_matcher = DagNode(f"{ikc.name}_matcher") if ikc else None
+
+    ball_ikc = DagNode(rigNode.a["ball_ikc"].inConnNode)
     smart_ctl = DagNode(f"{rigID}_smart_ctl")
     extra_ikc = DagNode(f"{rigID}_extra_ikc")
     extra_matcher = DagNode(f"{extra_ikc.name}_matcher") if extra_ikc else None
 
-    ikCtls = [ikc, pvc, ball_ikc, ikc_matcher, smart_ctl, extra_ikc]
+    ikCtls = [ikc, pvc, ikc_matcher]
     if not all(ikCtls):
         logging.warning(f"Not all IK ctls for {rigID} found. Cannot switch IK/FK.")
         return
@@ -97,15 +108,18 @@ def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
         root_mtx = jnts[0].getMtx()
         fkCtls[0].a["autoAim"].set(0)
         fkCtls[0].setMtx(root_mtx)
-
         ikc.alignTo(ikc_matcher)
-        smart_ctl.resetXf()
-        ball_ikc.resetXf()
+
+        if smart_ctl.exists():
+            smart_ctl.resetXf()
+
+        if ball_ikc.exists():
+            ball_ikc.resetXf()
 
         if extra_ikc.exists():
             extra_ikc.resetXf()
             extra_ikc.a["palmAim"].set(0)
-            if extra_matcher:
+            if extra_matcher.exists():
                 extra_ikc.alignTo(extra_matcher)
 
         # Setup for pvc
@@ -138,9 +152,10 @@ def calc_pvc_pos(obj1, obj2, obj3):
     three_pt_crv = mc.curve(p=[p1, p2, p3], d=1, k=[0, 1, 2])
 
     # Calculate distances and movement
+    PVC_OFFSET = 0.7
     d1 = maths.getDistBetwPt(p1, p2)
     d2 = maths.getDistBetwPt(p2, p3)
-    dist_to_move = (d1 + d2) * 0.5
+    dist_to_move = (d1 + d2) * PVC_OFFSET
 
     mid_cv = f"{three_pt_crv}.cv[1]"
     mc.moveVertexAlongDirection(mid_cv, n=dist_to_move)

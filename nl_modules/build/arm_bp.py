@@ -396,12 +396,12 @@ class ArmBp(RigModule):
             onList=[self.pin_fkc],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJointsVis", attrType="bool", dv=0, k=0),
+            self.setting.a.add("setupJntVis", attrType="bool", dv=0, k=0),
             onList=self.joints_fk + self.joints_ik + self.joints_bf,
         )
         if self.rbnBones:
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyCtl", attrType="bool", dv=1),
+                self.setting.a.add("bendyCtlVis", attrType="bool", dv=1),
                 onList=self.all_bend,
             )
 
