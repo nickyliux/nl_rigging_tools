@@ -77,7 +77,7 @@ class RbnNode:
         self.build_surf()
         self.build_locs()
         self.build_aim_chains()
-        self.build_twist_chains()
+        # self.build_twist_chains()
         self.build_volume_setup()
         self.build_post()
 
@@ -93,7 +93,7 @@ class RbnNode:
 
     def build_surf(self):
         """Create the surface for the ribbon rig."""
-        logging.info(f"Building {self.pf} surface")
+        logging.info(self.pf)
 
         xDr = self.xDir
         self.rbSrf = SrfNode(
@@ -136,7 +136,7 @@ class RbnNode:
 
     def build_locs(self):
         """Create locators for the start, middle, and end of the ribbon."""
-        logging.info(f"Building {self.pf} locators")
+        logging.info(self.pf)
 
         offset = self.D / 2
         size = self.D / 5
@@ -161,85 +161,98 @@ class RbnNode:
         self.mid_loc.a.tx.set(Dx / 2)
         self.mid_loc.addOffsetGrp(count=2)
 
-    def build_ik(self, name, sj, ee, grp):
+    def build_ik(self, name, sj, ee, p):
         """Create an aim IK handle for the ribbon rig."""
-        return IkNode(name, pf=self.pf, sj=sj, ee=ee, solver=Solver.RP, quat=1, p=grp)
+        return IkNode(name, pf=self.pf, sj=sj, ee=ee, solver=Solver.RP, quat=1, p=p)
 
-    def build_aim_jc(self, name, tgt, offsetX):
+    def build_aim_jc(self, name, tgt, offsetX, color=Color.L_BLUE):
         """Create a two-joint chain for aiming with an offset."""
         offset = (offsetX, 0, 0)
         return JntNode.makeTwoJointChain(
-            name, pf=self.pf, snap=tgt, offset=offset, rad=self.size / 2, p=self.AIM_GRP
+            name,
+            pf=self.pf,
+            snap=tgt,
+            offset=offset,
+            rad=self.size / 2,
+            p=self.AIM_GRP,
+            color=color,
         )
 
     def build_aim_chains(self):
         """Create aim chains for the start, middle, and end of the ribbon."""
-        logging.info(f"Building {self.pf} aim chains")
+        logging.info(self.pf)
 
         ofsX = self.D * self.xDir / 4
 
         # Start aim chain
         stt_aimJ, stt_aimJ_end = self.build_aim_jc("stt_aimJ", self.stt_loc, ofsX)
-        self.stt_jnt = stt_aimJ_end.duplicate(n=f"{self.pf}_stt_jnt")
-        self.stt_jnt.alignTo(self.stt_loc)
-
-        # End aim chain
         end_aimJ, end_aimJ_end = self.build_aim_jc("end_aimJ", self.end_loc, -ofsX)
-        self.end_jnt = end_aimJ_end.duplicate(n=f"{self.pf}_end_jnt")
-        self.end_jnt.alignTo(self.end_loc)
-
-        # Middle aim chain
         mid_aimJ, mid_aimJ_end = self.build_aim_jc("mid_aimJ", self.stt_loc, ofsX * 2)
-        self.mid_jnt = mid_aimJ_end.duplicate(n=f"{self.pf}_mid_jnt")
-        self.mid_jnt.alignTo(self.mid_loc, p=self.mid_loc)
 
-        # Constraints
+        # Set up locators for the aim chains
         self.stt_loc.cstPoi(stt_aimJ)
         self.stt_loc.cstPoi(mid_aimJ)
         self.end_loc.cstPoi(end_aimJ)
 
-        mid_loc_ofs1 = self.mid_loc.offset.offset
-        if not self.forSpine:
-            common.cstMulti(self.stt_loc, self.end_loc, mid_loc_ofs1, cstType="poi")
-            mid_aimJ.cstOri(mid_loc_ofs1)
+        self.stt_jnt = JntNode("stt_jnt", pf=self.pf, p=stt_aimJ, align=self.stt_loc)
+        self.end_jnt = JntNode("end_jnt", pf=self.pf, p=end_aimJ, align=self.end_loc)
+        self.mid_jnt = JntNode(
+            "mid_jnt", pf=self.pf, p=self.mid_loc, align=self.mid_loc
+        )
 
+        # Skin the joints to the surface
         sttMidEnd_jnts = [self.stt_jnt, self.mid_jnt, self.end_jnt]
         self.rbSrf.weightTo(sttMidEnd_jnts, chain=0, mi=2, dr=2)
 
         for j in sttMidEnd_jnts:
-            j.setRadius(self.size / 3)
+            j.setRadius(self.size * 5)
             j.color = Color.PINK
 
-        # IK handles
+        if not self.forSpine:
+            mid_loc_ofs2 = self.mid_loc.offset.offset
+            common.cstMulti(self.stt_loc, self.end_loc, mid_loc_ofs2, cstType="poi")
+            mid_aimJ.cstOri(mid_loc_ofs2)
+
+        # Create IK handles for the aim chains
         stt_ikh = self.build_ik("stt", stt_aimJ, stt_aimJ_end, self.AIM_GRP)
         mid_ikh = self.build_ik("mid", mid_aimJ, mid_aimJ_end, self.AIM_GRP)
         end_ikh = self.build_ik("end", end_aimJ, end_aimJ_end, self.AIM_GRP)
 
         self.all_ikHs.extend([stt_ikh, mid_ikh, end_ikh])
 
-        # Final constraints based on spine mode
         if self.forSpine:
+            # For spine, use parent constraints to maintain hierarchy
             self.stt_loc.cstPar(stt_ikh, mo=1)
             self.end_loc.cstPoi(mid_ikh)
             self.end_loc.cstPar(end_ikh, mo=1)
         else:
+            # For non-spine, use point constraints for aiming
             self.mid_loc.cstPoi(stt_ikh)
             self.end_loc.cstPoi(mid_ikh)
             self.mid_loc.cstPoi(end_ikh)
 
+        self.mid_loc.cstAim(
+            self.end_jnt,
+            aim=(-self.xDir, 0, 0),
+            worldUpType="object",
+            worldUpObject=self.endUp_loc,
+            u=(0, 1, 0),
+        )
+
+        ut.blend2_(self.stt_jnt.a.rx, self.end_jnt.a.rx) >> self.mid_loc.a.rx
+
     def build_twist_chains(self):
         """Create twist chains for the start and end of the ribbon."""
 
-        logging.info(f"Building {self.pf} twist chains")
+        logging.info(self.pf)
 
-        ofsX = self.D / 10 * self.xDir
+        ofsX = self.D * self.xDir / 10
         aimV = (self.xDir, 0, 0)
-        aimVN = (-self.xDir, 0, 0)
         upV = (0, 1, 0)
 
         # From
         stt_twistJ, stt_twistJ_end = self.build_aim_jc(
-            "stt_twistJ", self.stt_loc, -ofsX
+            "stt_twistJ", self.stt_loc, -ofsX, color=Color.ORANGE
         )
         stt_twistG = GrpNode("stt_twistG", pf=self.pf, align=stt_twistJ, p=stt_twistJ)
         stt_twistG.a.rx >> self.stt_jnt.a.rx
@@ -247,12 +260,14 @@ class RbnNode:
             stt_twistG,
             worldUpType="object",
             worldUpObject=self.sttUp_loc,
-            aim=aimVN,
+            aim=Vec(aimV) * -1,
             u=upV,
         )
         self.stt_loc.cstPoi(stt_twistJ)
         # To
-        end_twistJ, end_twistJ_end = self.build_aim_jc("end_twistJ", self.end_loc, ofsX)
+        end_twistJ, end_twistJ_end = self.build_aim_jc(
+            "end_twistJ", self.end_loc, ofsX, color=Color.ORANGE
+        )
         end_twistG = GrpNode("end_twistG", pf=self.pf, align=end_twistJ, p=end_twistJ)
         end_twistG.a.rx >> self.end_jnt.a.rx
         end_twistJ_end.cstAim(
@@ -278,11 +293,10 @@ class RbnNode:
 
     def build_volume_setup(self):
         """Set up the volume control for the ribbon rig."""
+        logging.info(self.pf)
 
-        logging.info(f"Building {self.pf} volume setup")
-
-        arcLD = ut.arcLenDim_(self.rbSrf)
-        d = arcLD.a.arcLength
+        arcLenDim = ut.arcLenDim_(self.rbSrf)
+        d = arcLenDim.a.arcLength
         D = d.get()
         self.autoVol = self.RBN_GRP.a.add("autoVol")
         self.volType = self.RBN_GRP.a.add(
@@ -298,19 +312,20 @@ class RbnNode:
 
         volGraph2 = self.RBN_GRP.a.add("volGraph2", dv=0)
         mc.setKeyframe(volGraph2, t=0, v=0)
-        mc.setKeyframe(volGraph2, t=(self.rbJNum - 1) / 2, v=1)
+        mid_t = (self.rbJNum - 1) / 2
+        mc.setKeyframe(volGraph2, t=mid_t, v=1)
         mc.setKeyframe(volGraph2, t=self.rbJNum - 1, v=0)
         mc.setAttr(volGraph2, l=1)
 
-        choiceN = ut.choice_([volGraph1, volGraph2], self.volType)
+        choice = ut.choice_([volGraph1, volGraph2], self.volType)
 
         for i in range(self.rbJNum):
 
-            fc = DagNode("fc__#", nodeType="frameCache")
-            choiceN >> fc.a.stream
-            fc.a.varyTime.set(i)
+            frameCache = DagNode("fc__#", nodeType="frameCache")
+            choice >> frameCache.a.stream
+            frameCache.a.varyTime.set(i)
 
-            ratio = (D / (d / scaleFix)) ** (fc.a.varying * self.autoVol)
+            ratio = (D / (d / scaleFix)) ** (frameCache.a.varying * self.autoVol)
             ratio >> self.rbJnts[i].a.sy
             ratio >> self.rbJnts[i].a.sz
 
@@ -318,19 +333,16 @@ class RbnNode:
 
     def setup_rotate_order(self):
         """Set up the rotate order for the start, middle, and end joints."""
-
-        for j in (self.stt_loc, self.end_loc, self.stt_twistJ, self.end_twistJ):
+        for j in (self.stt_loc, self.end_loc):  # , self.stt_twistJ, self.end_twistJ):
             j.a.rotateOrder.set(1)  # yzx
 
     def setup_vis(self):
         """Set up visibility for the ribbon rig."""
-
         mc.hide(self.all_ikHs)
         # mc.hide(self.SRF_GRP, self.AIM_GRP, self.LOC_GRP)
 
     def build_post(self):
         """Post setup for the ribbon rig."""
-
         self.setup_rotate_order()
         self.setup_vis()
 

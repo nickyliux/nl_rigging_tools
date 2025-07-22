@@ -545,7 +545,6 @@ def addTwistReader(target, pf="", p=None):
 
 def getMeshBelow(grp):
     """Get all meshes below the group, return list of MshNode"""
-
     from nl_modules.nodel.msh_node import MshNode
 
     if not mc.objExists(grp):
@@ -564,8 +563,7 @@ def getMeshBelow(grp):
 
 def setViewport(jx=0, xray=0, wos=0, fit=0):
     """Set viewport options"""
-
-    mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
+    # mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
     # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
     for p in mc.getPanel(type="modelPanel"):
         mc.modelEditor(p, e=1, jx=jx, xray=xray, wos=wos)
@@ -576,13 +574,11 @@ def setViewport(jx=0, xray=0, wos=0, fit=0):
 
 def getRigCtlsAll():
     """Get all rig controls in the scene"""
-
     return getRigCtls(mc.ls("*RGN", type="script"))
 
 
 def getRigCtls(rigNodes):
     """Get all rig controls from rig nodes"""
-
     from nl_modules.nodel.base.dag_node import DagNode
 
     setList = []

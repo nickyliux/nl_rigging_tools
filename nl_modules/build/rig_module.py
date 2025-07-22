@@ -1053,6 +1053,7 @@ class RigModule(RigBase):
 
         # Lower Ribbon
         palm.cstPar(ribbonLw.end_loc, mo=1)
+        lwr.cstOri(ribbonLw.stt_jnt, mo=1)
 
         # Bend Ctl Setup
         upLoc = ribbonUp.mid_loc
@@ -1067,9 +1068,14 @@ class RigModule(RigBase):
             ctl(shape="ribbon", up="x", scale=rSz)
 
         upLoc.cstPar(upr_bend.offset, mo=1)
+        if upLoc.children:
+            mid_jnt = upLoc.children[0]
+            upr_bend.cstParSca(mid_jnt, mo=1)
+
         lwLoc.cstPar(lwr_bend.offset, mo=1)
-        upr_bend.cstParSca(upLoc.children[0], mo=1)
-        lwr_bend.cstParSca(lwLoc.children[0], mo=1)
+        if lwLoc.children:
+            mid_jnt = lwLoc.children[0]
+            lwr_bend.cstParSca(mid_jnt, mo=1)
 
         lwr.cstPar(mid_bend.offset, mo=1)
         mid_bend.cstParSca(ribbonUp.end_loc, mo=1)

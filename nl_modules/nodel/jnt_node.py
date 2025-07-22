@@ -158,11 +158,12 @@ class JntNode(GrpNode):
         aimTgt=None,
         u=(0, 1, 0),
         wu=(0, 1, 0),
+        color=Color.L_BLUE,
     ):
         """Create a two-joint chain with optional alignment and constraints."""
 
-        j0 = JntNode(n, pf=pf, r=rad, p=p)
-        j1 = JntNode(n + "_end", pf=pf, r=rad, p=j0)
+        j0 = JntNode(n, pf=pf, r=rad, p=p, color=color)
+        j1 = JntNode(n + "_end", pf=pf, r=rad, p=j0, color=color)
 
         if align:
             j0.alignTo(align)
