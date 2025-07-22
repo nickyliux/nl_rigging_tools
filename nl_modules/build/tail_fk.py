@@ -104,8 +104,6 @@ class TailFk(RigModule):
             num=self.FK_BONE_NUM + 1,
             pf=rID,
             aimV=(0, 0, -1),
-            upV=(0, 1, 0),
-            wuV=(0, 1, 0),
             size=rSz * 2,
             color=6,
         )

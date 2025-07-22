@@ -9,6 +9,7 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
 from nl_modules.utils import utils_node as ut
+from nl_modules.utils.common import Vec
 from nl_modules.utils.color import Color
 
 
@@ -121,11 +122,11 @@ class LegBp(RigModule):
 
         ctl_defs = [
             ("setting", "bagua", "z", scale, 1, 2),
-            ("hip_fkc", "cubeR", "x", scale * 1.5, 1, -1),
-            ("upr_fkc", "cubeR", "x", scale * 1.5, 1, -1),
-            ("lwr_fkc", "cubeR", "x", scale * 1.5, 1, -1),
-            ("palm_fkc", "cubeR", "x", scale * 1.5, 1, -1),
-            ("ball_fkc", "cubeR", "x", scale * 1.5, 1, -1),
+            ("hip_fkc", "cubeR", "x", Vec((1, 2, 2)) * scale, 0, -1),
+            ("upr_fkc", "cubeR", "x", Vec((1, 2, 2)) * scale, 0, -1),
+            ("lwr_fkc", "cubeR", "x", Vec((1, 2, 2)) * scale, 0, -1),
+            ("palm_fkc", "cubeR", "x", Vec((1, 2, 2)) * scale, 0, -1),
+            ("ball_fkc", "cubeR", "x", Vec((1, 2, 2)) * scale, 0, -1),
             ("ikc", "foot", None, rSz * 2, 0, -1),
             ("pvc", "diamond", None, scale * 2, 0, -1),
             ("smart_ctl", "squR", None, scale / 2, 0, -1),
@@ -135,8 +136,6 @@ class LegBp(RigModule):
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
-
-        # self.ikc.cv_scale(1, 0.2, 1)
 
     def build(self):
         """Build the leg rig module."""

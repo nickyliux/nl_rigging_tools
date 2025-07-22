@@ -6,6 +6,7 @@ from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import utils_node as ut
+from nl_modules.utils.common import Vec
 
 
 class SpineBp(RigModule):
@@ -91,10 +92,7 @@ class SpineBp(RigModule):
             num=self.fkJntNum,
             pf=rID,
             aimV=(0, 1, 0),
-            upV=(1, 0, 0),
-            wuV=(1, 0, 0),
             size=rSz * 2,
-            color=6,
             p=self.SKL_DATA,
         )
         mc.delete(self.rootJ)
@@ -103,7 +101,9 @@ class SpineBp(RigModule):
 
         self.fkCtls = []
         for i, j in enumerate(self.fkJnts[:-1]):
-            c = CrvNode(f"{i + 1}_fkc", pf=rID, shape="cubeL", scale=rSz, top=1)
+            c = CrvNode(
+                f"{i + 1}_fkc", pf=rID, shape="cubeR", scale=Vec((5, 1, 5)) * rSz, top=1
+            )
             self.fkCtls.append(c)
 
         self.build_fk_with_ctl2(self.fkJnts[1:], self.fkCtls[1:], p=self.CTL_DATA)

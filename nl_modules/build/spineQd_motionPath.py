@@ -128,15 +128,7 @@ class SpineQd(RigModule):
         #   build chain from crv
         #
         self.ikJnts = JntNode.createJntFrCrv(
-            self.LINE_GUIDE,
-            num=5,
-            name="ikj",
-            pf=rID,
-            aimV=(0, 0, -1),
-            upV=(0, 1, 0),
-            wuV=(0, 1, 0),
-            size=rSz * 4,
-            color=6,
+            self.LINE_GUIDE, num=5, name="ikj", pf=rID, aimV=(0, 0, -1), size=rSz * 4
         )
         #
         #   position cog & setting
