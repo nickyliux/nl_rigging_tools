@@ -571,8 +571,11 @@ class LegQd(RigModule):
             self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
             onList=self.subCtls,
         )
+        self.ctl_vis_toggle(
+            self.setting.a.add("setupJointsVis", dv=1, attrType="bool", k=0),
+            onList=self.joints_fk + self.joints_ik,
+        )
         [ikh.hide() for ikh in self.all_ikH.values()]
-        # mc.hide(self.joints_fk, self.joints_ik)
 
     def setup_channel(self):
         """Setup channels for the quadruped leg rig controls."""

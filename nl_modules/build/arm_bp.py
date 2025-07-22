@@ -395,6 +395,10 @@ class ArmBp(RigModule):
             self.pvc.a["fkPin"],
             onList=[self.pin_fkc],
         )
+        self.ctl_vis_toggle(
+            self.setting.a.add("setupJointsVis", attrType="bool", dv=0, k=0),
+            onList=self.joints_fk + self.joints_ik + self.joints_bf,
+        )
         if self.rbnBones:
             self.ctl_vis_toggle(
                 self.setting.a.add("bendyCtl", attrType="bool", dv=1),
@@ -402,7 +406,7 @@ class ArmBp(RigModule):
             )
 
         self.ikc.a.v >> self.palm_ikc.a.v
-        # mc.hide(self.all_ikHs)
+        mc.hide(self.all_ikHs)
         # mc.hide(
         #      self.joints_fk, self.joints_ik, self.joints_bf, self.SKL_DATA
         # )

@@ -223,7 +223,11 @@ class SpineBp(RigModule):
             self.setting.a.add("ikCtls", min=0, max=1, dv=1, k=0),
             onList=self.ikCtls,
         )
-        mc.hide(self.ctlJnts, self.fkJnts, self.SKL_DATA)
+        self.ctl_vis_toggle(
+            self.setting.a.add("setupJntsVis", attrType="bool", dv=0, k=0),
+            onList=self.ctlJnts + self.fkJnts + self.rbJnts,
+        )
+        # mc.hide(self.ctlJnts, self.fkJnts, self.SKL_DATA)
 
     def setup_channel(self):
         """Setup channel attributes for the spine rig controls."""

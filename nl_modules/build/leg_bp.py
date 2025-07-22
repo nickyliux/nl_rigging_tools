@@ -495,13 +495,16 @@ class LegBp(RigModule):
             self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
             onList=self.subCtls,
         )
+        self.ctl_vis_toggle(
+            self.setting.a.add("setupJointsVis", attrType="bool", dv=0, k=0),
+            onList=self.joints_fk + self.joints_ik + self.joints_bf,
+        )
         if self.rbnBones:
             self.ctl_vis_toggle(
                 self.setting.a.add("bendyCtl", attrType="bool", dv=1),
                 onList=self.all_bend,
             )
         mc.hide(self.all_ikHs, self.toeIKHs)
-        # mc.hide(self.joints_fk, self.joints_ik, self.joints_bf, self.SKL_DATA)
 
     def setup_channel(self):
         """Setup channels for the leg rig controls."""

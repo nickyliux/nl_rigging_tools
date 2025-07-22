@@ -78,7 +78,7 @@ class SpineQd(RigModule):
 
         #   Define control shapes and attributes
         ctl_defs = [
-            ("setting", "bagua", "z", rSz, 1, 2),
+            ("setting", "bagua", "z", rSz * 2, 1, 2),
             ("cog_ctl", "trapezoid", None, rSz * 2, 1, -1),
             ("base_ctl", "circle", "z", rSz * 5, 0, -1),
             ("mid_ctl", "squR", "z", rSz * 4, 0, -1),
@@ -372,6 +372,14 @@ class SpineQd(RigModule):
         attr = self.fore_ctl.a.add("tangentCtl", attrType="bool", k=0)
         attr >> self.tangent1_ctl.a.v
 
+        self.ctl_vis_toggle(
+            self.setting.a.add("setupJointsVis", attrType="bool", dv=0, k=0),
+            onList=self.ikJnts
+            + self.fkJnts
+            + self.spIkJnts
+            + self.twoIkJnts
+            + self.rbJnts,
+        )
         # if self.is_neck():
         # mc.hide(self.base_ctl.shape, self.tangent0_ctl.shape)
         # mc.hide(self.cog_ctl.shape)
@@ -383,8 +391,6 @@ class SpineQd(RigModule):
             self.twoIkJnts,
             self.anchorToRbj,
             self.SKL_DATA,
-            # self.rbSrf,
-            # self.rbCrv,
         )
 
     def setup_rotate_order(self):
