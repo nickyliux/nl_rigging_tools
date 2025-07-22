@@ -86,9 +86,9 @@
      <widget class="QWidget" name="verticalLayoutWidget_3">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>187</x>
         <y>20</y>
-        <width>41</width>
+        <width>31</width>
         <height>53</height>
        </rect>
       </property>
@@ -179,7 +179,7 @@
      <widget class="QPushButton" name="guide_load_BN">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>190</x>
         <y>80</y>
         <width>22</width>
         <height>22</height>
@@ -222,7 +222,7 @@
      <widget class="QPushButton" name="guide_explore_BN">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>190</x>
         <y>110</y>
         <width>22</width>
         <height>22</height>
@@ -261,7 +261,7 @@
        <rect>
         <x>60</x>
         <y>14</y>
-        <width>163</width>
+        <width>120</width>
         <height>221</height>
        </rect>
       </property>
@@ -309,7 +309,7 @@
       </property>
       <item>
        <property name="text">
-        <string>Biped ----------------------------</string>
+        <string>Biped -----------------</string>
        </property>
        <property name="flags">
         <set>ItemIsDragEnabled|ItemIsUserCheckable</set>
@@ -337,7 +337,7 @@
       </item>
       <item>
        <property name="text">
-        <string>Quadruped ---------------------</string>
+        <string>Quadruped ----------</string>
        </property>
        <property name="flags">
         <set>ItemIsDragEnabled|ItemIsUserCheckable</set>
@@ -360,7 +360,7 @@
       </item>
       <item>
        <property name="text">
-        <string>Common ------------------------</string>
+        <string>Common -------------</string>
        </property>
        <property name="flags">
         <set>ItemIsDragEnabled|ItemIsUserCheckable</set>
