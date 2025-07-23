@@ -17,7 +17,6 @@ class LegQd(RigModule):
 
     def __init__(self, rigNode):
         """Initialize the quadruped leg rig module."""
-
         if isinstance(rigNode, str):
             rigNode = DagNode(rigNode)
 
@@ -82,7 +81,6 @@ class LegQd(RigModule):
 
     def genSk(self):
         """Generate the skeleton for the quadruped leg rig."""
-
         # --- Generate main skeleton module and root joints ---
         self.genSk_module()
         root_list = self.gen_sk_fr_names(self.jntNames)
@@ -106,12 +104,13 @@ class LegQd(RigModule):
                 2: ALL_TOE_NAMES[2:4],
                 3: ALL_TOE_NAMES[2:5],
                 4: ALL_TOE_NAMES[1:5],
+                5: ALL_TOE_NAMES,
             }
             TOE_NAMES = TOE_DICT.get(self.toeNum, [])
 
             # Generate and orient each toe chain, parent to toesRootJ
             for names in TOE_NAMES:
-                fgr_jnts = self.gen_sk_fr_names(names, scale=1.2)
+                fgr_jnts = self.gen_sk_fr_names(names)
                 fgr_jnts[0].orientJnt(aim=(self.xDir, 0, 0), u=(0, 0, -self.xDir))
                 fgr_jnts[0] | self.toesRootJ
 
@@ -122,7 +121,6 @@ class LegQd(RigModule):
 
     def build_ctl(self):
         """Build control nodes for the quadruped leg rig."""
-
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
@@ -136,9 +134,9 @@ class LegQd(RigModule):
             ("digit_fkc", "cubeR", "x", Vec((0.5, 2, 2)) * scale, 0, -1),
             ("ball_fkc", "cubeR", "x", Vec((0.5, 2, 2)) * scale, 0, -1),
             ("ikc", "foot", None, rSz * 2, 0, -1),
-            ("extra_ikc", "rotator", None, -scale, 0, -1),
+            ("extra_ikc", "rotator2", None, -scale, 1, -1),
             ("pvc", "diamond", None, scale * 2, 0, -1),
-            ("smart_ctl", "squR", None, scale / 3, 0, -1),
+            ("smart_ctl", "squR", None, scale / 3, 0, 2),
         ]
 
         if self.scapularExtra:
@@ -149,7 +147,6 @@ class LegQd(RigModule):
 
     def build(self):
         """Build the quadruped leg rig module."""
-
         self.build_pre_module()
         self.joints = self.rootJ.allChildrenJt2
         self.hip, self.upr, self.lwr, self.palm, self.digit, self.ball, self.tip = (
@@ -188,7 +185,6 @@ class LegQd(RigModule):
 
     def build_toes(self):
         """Build the toe joints and controls for the quadruped leg rig."""
-
         self.toesJntList = []
         self.toesRootJ | self.palm
 
@@ -197,11 +193,10 @@ class LegQd(RigModule):
             rJ.a.segmentScaleCompensate.set(0)
 
         self.build_digits()
-        self.updateBindJntList(remove=[self.digit, self.ball])
+        self.updateBindJntList(remove=[self.tip, self.digit, self.ball, self.palm])
 
     def build_fk(self):
         """Build the FK controls and joints for the quadruped leg rig."""
-
         logging.info(self.rigID)
         self.joints_fk = common.dupSk(
             self.joints, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
@@ -219,7 +214,6 @@ class LegQd(RigModule):
 
     def build_ik(self):
         """Build the IK controls for the quadruped leg rig."""
-
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
@@ -324,7 +318,6 @@ class LegQd(RigModule):
 
     def blend_fk_ik(self):
         """Blend FK and IK controls for the quadruped leg rig."""
-
         logging.info(self.rigID)
 
         # --- Snap setting control to upper joint and constrain ---
@@ -350,7 +343,6 @@ class LegQd(RigModule):
 
     def extra_roll_logic(self, ballRollG, extraRollG, grp):
         """Setup extra roll logic for the quadruped leg rig."""
-
         logging.info(self.rigID)
 
         # --- Setup aim group and locator ---
@@ -397,7 +389,6 @@ class LegQd(RigModule):
 
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
         """Setup sub-controls for the quadruped leg rig."""
-
         rID, rSz, xDr = self.getMyVar()
 
         # --- Create and register sub-controls for roll groups ---
@@ -430,7 +421,6 @@ class LegQd(RigModule):
 
     def build_digits(self):
         """Build the digit controls for the quadruped leg rig."""
-
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
         self.toesCtlsList = []
@@ -484,7 +474,6 @@ class LegQd(RigModule):
 
     def build_twist_bones(self):
         """Build twist bones for the quadruped leg rig."""
-
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
@@ -520,7 +509,6 @@ class LegQd(RigModule):
 
     def singleBallCtl_setup(self):
         """Make ball ctl the single ctl in both FK and IK modes."""
-
         logging.info(self.rigID)
 
         # --- Prepare blend attribute and offsets ---
@@ -578,7 +566,6 @@ class LegQd(RigModule):
 
     def setup_channel(self):
         """Setup channels for the quadruped leg rig controls."""
-
         self.setting.a.showAttr()
         self.pvc.a.showAttr(t=1)
         self.smart_ctl.a.showAttr(r=1)
@@ -595,14 +582,12 @@ class LegQd(RigModule):
 
     def setup_rotate_order(self):
         """Setup rotate order for the quadruped leg rig controls."""
-
         for c in self.fkCtl + self.ikCtl + [self.lwr]:
             c.a.ro.set(2)
         self.smart_ctl.a.ro.set(3)
 
     def setup_space(self):
         """Setup space switching for the quadruped leg rig controls."""
-
         self.rigNode.a.add("spaceName1", attrType="string", txt="master, COG")
         self.rigNode.a.add("spaceName2", attrType="string", txt="leg, master, COG")
 
@@ -618,12 +603,10 @@ class LegQd(RigModule):
 
     def setup_anchor(self):
         """Setup anchor points for the quadruped leg rig."""
-
         self.setup_anchor_module({"anchorF1": self.scapularG.offset})
 
     def setup_ctlSet(self):
         """Setup control sets for the quadruped leg rig module."""
-
         ctlSet = (
             self.fkCtl
             + self.ikCtl
@@ -638,18 +621,15 @@ class LegQd(RigModule):
 
     def setup_bindJnt(self):
         """Setup bind joints for the quadruped leg rig module."""
-
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_ratio(self.bindJnts, 2.5)
 
     def setup_scale(self):
         """Setup scale for the quadruped leg rig module."""
-
         self.masterC.a.globalScale >> self.SKL_DATA.a.scale
 
     def build_post(self):
         """Post setup for the quadruped leg rig module."""
-
         logging.info(self.rigID)
         common.add_mirror_attr([self.ikc, self.ikc_gimbal, self.pvc, self.smart_ctl])
         self.setup_scale()

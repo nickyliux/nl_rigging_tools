@@ -562,35 +562,36 @@ class RigModule(RigBase):
             scale=scale,
             addOfs=1,
             top=1,
-            p=p.offset,
+            # p=p.offset,
+            p=p,
         )
         ctl.addOffsetGrp()
-        p.a.ry >> ctl.offset.a.ry
+        # p.a.ry >> ctl.offset.a.ry
 
         # --- Duplicate joints for IK chain ---
-        j1 = JntNode(ikTgt).duplicate(po=1)
-        j1.rename(ikTgt + "_1_ikj")
-
-        j2 = JntNode(ikTgt.allChildrenJt[-1]).duplicate(po=1)
-        j2.rename(ikTgt + "_2_ikj")
-        j2 | j1
-        j1.setRadius(2, rel=1)
+        ik_jnt1 = JntNode(ikTgt).duplicate(po=1)
+        ik_jnt2 = JntNode(ikTgt.allChildrenJt[-1]).duplicate(po=1)
+        ik_jnt1.rename(ikTgt + "_1_ikj")
+        ik_jnt2.rename(ikTgt + "_2_ikj")
+        ik_jnt2 | ik_jnt1
+        ik_jnt1.setRadius(2, rel=1)
+        ik_jnt2.setRadius(2, rel=1)
 
         # --- Constrain first joint to control ---
-        j1.cstPoi(ctl.offset)
+        ik_jnt1.cstPoi(ctl.offset)
 
         # --- Create IK handle for the digit ---
         ikH = IkNode(
-            j1,
-            sj=j1,
-            ee=j2,
+            ik_jnt1,
+            sj=ik_jnt1,
+            ee=ik_jnt2,
             scaleFix=self.masterC.a["globalScale"],
             RIG_DATA=self.RIG_DATA,
             vis=0,
             p=ctl,
         )
 
-        return ctl, j1, ikH
+        return ctl, ik_jnt1, ikH
 
     def get_autoAim_preset(self):
         """Get preset values for auto aim weights based on the master guide attributes."""

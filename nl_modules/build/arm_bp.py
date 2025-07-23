@@ -222,7 +222,7 @@ class ArmBp(RigModule):
         self.ikCtl = [self.ikc, self.pvc, self.ikc, self.palm_ikc, self.pin_fkc]
 
         # palm_ikc setup
-        palm_ik = self.joints_ik[-2]
+        palm_ik = self.joints_ik[3]
         palm_ikc_ofs = self.palm_ikc.addOffsetGrp()
         self.ikc.cstPoi(palm_ikc_ofs)
 
@@ -238,31 +238,31 @@ class ArmBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
 
-        # Snap setting to upper arm and constrain
         self.setting.snapTo(self.clavicle, p=self.CTL_DATA)
         self.clavicle.cstPoi(self.setting, mo=1)
 
         # Extract blend joints
         self.joints_bf = common.dupSk(
-            self.joints, "_bf", p=self.BF_GRP, r=rSz * 4, color=Color.D_YELLOW
+            self.joints, "_bf", p=self.BF_GRP, r=rSz * 4, color=Color.SKY
         )
 
-        # Create palm and ball roll locators
         palmIn_guide = DagNode(f"{rID}_palmIn_guide")
         palmOut_guide = DagNode(f"{rID}_palmOut_guide")
         ball_guide = DagNode(f"{rID}_ball_guide")
 
-        palmIn_loc = LocNode("palmIn", pf=rID, align=palmIn_guide, size=rSz)
-        palmOut_loc = LocNode("palmOut", pf=rID, align=palmOut_guide, size=rSz)
+        self.palmIn_loc = LocNode("palmIn", pf=rID, align=palmIn_guide, size=rSz)
+        self.palmOut_loc = LocNode("palmOut", pf=rID, align=palmOut_guide, size=rSz)
         self.ballRoll_loc = LocNode("ballRoll", pf=rID, align=ball_guide, size=rSz)
 
-        self.ballRoll_loc | palmOut_loc | palmIn_loc | self.joints_bf[-1]
+        self.ballRoll_loc | self.palmOut_loc | self.palmIn_loc | self.joints_bf[-1]
 
-        self.hand_roll_logic(
-            self.palm_ikc, self.palm_fkc, self.pin_fkc, self.ballRoll_loc
-        )
-        self.hand_bank_logic(
-            self.palm_ikc, self.palm_fkc, self.pin_fkc, palmIn_loc, palmOut_loc
+        self.palm_rolling(
+            self.palm_ikc,
+            self.palm_fkc,
+            self.pin_fkc,
+            self.ballRoll_loc,
+            self.palmIn_loc,
+            self.palmOut_loc,
         )
 
         # Add blend attribute
@@ -346,7 +346,6 @@ class ArmBp(RigModule):
 
     def build_twist_bones(self):
         """Build twist bones for the arm rig."""
-
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
@@ -379,25 +378,22 @@ class ArmBp(RigModule):
         # Update bind joints
         self.updateBindJntList(remove=[self.lwr], extend=[radius_JC[0], ulna_JC[0]])
 
-    def hand_roll_logic(self, attrHolder, fkc, fkPin, locRoll):
-        """Hand roll logic for palm and finger controls."""
-        palmRoll = attrHolder.a.add("palmRoll")
+    def palm_rolling(self, tgt, fkc, fkPin, locRoll, locIn, locOut):
+        """Setup palm rolling for the arm rig controls."""
+
+        palmRoll = tgt.a.add("palmRoll")
         palmRoll * -1 >> locRoll.a.rz
         fkc.a.add("palmRoll", proxy=palmRoll)
         fkPin.a.add("palmRoll", proxy=palmRoll)
 
-    def hand_bank_logic(self, attrHolder, fkc, fkPin, locIn, locOut):
-        """Hand bank logic for palm and finger controls."""
-        palmBank = attrHolder.a.add("palmBank")
+        palmBank = tgt.a.add("palmBank")
         ut.min_(palmBank, 0) * -1 >> locIn.a.rx
         ut.max_(0, palmBank) * -1 >> locOut.a.rx
-
         fkc.a.add("palmBank", proxy=palmBank)
         fkPin.a.add("palmBank", proxy=palmBank)
 
     def setup_vis(self):
         """Setup visibility toggles for the arm rig controls."""
-
         self.ctl_vis_toggle(
             self.setting.a["fkIkBlend"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
@@ -419,13 +415,9 @@ class ArmBp(RigModule):
 
         self.ikc.a.v >> self.palm_ikc.a.v
         mc.hide(self.all_ikHs)
-        # mc.hide(
-        #      self.joints_fk, self.joints_ik, self.joints_bf, self.SKL_DATA
-        # )
 
     def setup_channel(self):
         """Setup channel attributes for the arm rig controls."""
-
         self.setting.a.showAttr()
         self.palm_ikc.a.showAttr(r=1)
 
@@ -476,7 +468,6 @@ class ArmBp(RigModule):
 
     def setup_anchor(self):
         """Setup anchor module for the arm rig controls."""
-
         WRIST_ID = 3
         self.setup_anchor_module(
             {
@@ -487,18 +478,15 @@ class ArmBp(RigModule):
 
     def setup_scale(self):
         """Setup scale for the arm rig module."""
-
         self.masterC.a.globalScale >> self.SKL_DATA.a.scale
 
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
-
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_ratio(self.bindJnts, 2)
 
     def setup_ctlSet(self):
         """Setup control sets for the arm rig module."""
-
         ctlSet = self.fkCtl + self.ikCtl + [self.setting, self.pin_fkc]
         if self.rbnBones:
             ctlSet.extend(self.all_bend)
@@ -506,9 +494,8 @@ class ArmBp(RigModule):
 
     def build_post(self):
         """Post setup for the arm rig."""
-
         logging.info(self.rigID)
-        common.add_mirror_attr([self.setting, self.pvc])
+        common.add_mirror_attr([self.pvc])
 
         self.setup_scale()
         self.setup_bindJnt()
