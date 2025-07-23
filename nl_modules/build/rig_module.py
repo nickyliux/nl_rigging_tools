@@ -529,24 +529,6 @@ class RigModule(RigBase):
             result.append(jnt)
         return result
 
-    def hand_roll_logic(self, attrHolder, fkc, fkPin, locRoll):
-        """Hand roll logic for palm and finger controls."""
-
-        palmRoll = attrHolder.a.add("palmRoll")
-        palmRoll * -1 >> locRoll.a.rz
-        fkc.a.add("palmRoll", proxy=palmRoll)
-        fkPin.a.add("palmRoll", proxy=palmRoll)
-
-    def hand_bank_logic(self, attrHolder, fkc, fkPin, locIn, locOut):
-        """Hand bank logic for palm and finger controls."""
-
-        palmBank = attrHolder.a.add("palmBank")
-        ut.min_(palmBank, 0) * -1 >> locIn.a.rx
-        ut.max_(0, palmBank) * -1 >> locOut.a.rx
-
-        fkc.a.add("palmBank", proxy=palmBank)
-        fkPin.a.add("palmBank", proxy=palmBank)
-
     def foot_roll_logic(self, targetCtl, heelRollG, ballRollG, footRollG, toeRollG):
         """Foot roll logic for heel, ball, and toe controls."""
 

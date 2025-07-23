@@ -249,16 +249,20 @@ class ArmBp(RigModule):
 
         # Create palm and ball roll locators
         palmIn_guide = DagNode(f"{rID}_palmIn_guide")
-        palmIn_loc = LocNode(
-            "palmIn", pf=rID, align=palmIn_guide, p=self.joints_bf[-1], size=rSz
-        )
         palmOut_guide = DagNode(f"{rID}_palmOut_guide")
-        palmOut_loc = LocNode(
-            "palmOut", pf=rID, align=palmOut_guide, p=palmIn_loc, size=rSz
-        )
         ball_guide = DagNode(f"{rID}_ball_guide")
-        self.ballRoll_loc = LocNode(
-            "ballRoll", pf=rID, align=ball_guide, p=palmOut_loc, size=rSz
+
+        palmIn_loc = LocNode("palmIn", pf=rID, align=palmIn_guide, size=rSz)
+        palmOut_loc = LocNode("palmOut", pf=rID, align=palmOut_guide, size=rSz)
+        self.ballRoll_loc = LocNode("ballRoll", pf=rID, align=ball_guide, size=rSz)
+
+        self.ballRoll_loc | palmOut_loc | palmIn_loc | self.joints_bf[-1]
+
+        self.hand_roll_logic(
+            self.palm_ikc, self.palm_fkc, self.pin_fkc, self.ballRoll_loc
+        )
+        self.hand_bank_logic(
+            self.palm_ikc, self.palm_fkc, self.pin_fkc, palmIn_loc, palmOut_loc
         )
 
         # Add blend attribute
@@ -286,14 +290,6 @@ class ArmBp(RigModule):
                 bfj.a.r >> jnt.a.r
             else:
                 self.ballRoll_loc.cstPar(jnt, mo=1)
-
-        # Add roll & bank logic to palm IK control
-        self.hand_roll_logic(
-            self.palm_ikc, self.palm_fkc, self.pin_fkc, self.ballRoll_loc
-        )
-        self.hand_bank_logic(
-            self.palm_ikc, self.palm_fkc, self.pin_fkc, palmIn_loc, palmOut_loc
-        )
 
         # Add blend attribute to all controls
         for ctl in self.fkCtl + self.ikCtl:
@@ -382,6 +378,22 @@ class ArmBp(RigModule):
 
         # Update bind joints
         self.updateBindJntList(remove=[self.lwr], extend=[radius_JC[0], ulna_JC[0]])
+
+    def hand_roll_logic(self, attrHolder, fkc, fkPin, locRoll):
+        """Hand roll logic for palm and finger controls."""
+        palmRoll = attrHolder.a.add("palmRoll")
+        palmRoll * -1 >> locRoll.a.rz
+        fkc.a.add("palmRoll", proxy=palmRoll)
+        fkPin.a.add("palmRoll", proxy=palmRoll)
+
+    def hand_bank_logic(self, attrHolder, fkc, fkPin, locIn, locOut):
+        """Hand bank logic for palm and finger controls."""
+        palmBank = attrHolder.a.add("palmBank")
+        ut.min_(palmBank, 0) * -1 >> locIn.a.rx
+        ut.max_(0, palmBank) * -1 >> locOut.a.rx
+
+        fkc.a.add("palmBank", proxy=palmBank)
+        fkPin.a.add("palmBank", proxy=palmBank)
 
     def setup_vis(self):
         """Setup visibility toggles for the arm rig controls."""
