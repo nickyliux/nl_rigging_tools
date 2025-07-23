@@ -56,7 +56,7 @@ class Hand(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "bagua", "x", scale * 2, 1, 2),
+            ("setting", "bagua", "x", scale * 4, 1, 2),
             ("smart_ctl", "roll", "x", scale, 1, 2),
         ]
         for name, shape, up, scale, top, w in ctl_defs:
@@ -269,12 +269,12 @@ class Hand(RigModule):
         self.hand_grp.cstPar(scaleGrp, mo=1)
         self.rootJ.a.s >> scaleGrp.a.s
 
-        self.setup_fist_sdk()
-        self.setup_fistPalm_sdk()
-        self.setup_flap_sdk()
-        self.setup_spread_sdk()
-        self.setup_updn_sdk()
-        self.setup_cup_sdk()
+        # self.setup_fist_sdk()
+        # self.setup_fistPalm_sdk()
+        # self.setup_flap_sdk()
+        # self.setup_spread_sdk()
+        # self.setup_updn_sdk()
+        # self.setup_cup_sdk()
 
         self.smart_ctl.a.add("palmScale", min=0, dv=1) >> self.rootJ.a.scale
         #
@@ -322,7 +322,7 @@ class Hand(RigModule):
             showCtls >> fgrCtls[0].a.v
 
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJntVis", attrType="bool", dv=0, k=0),
+            self.setting.a.add("setupJntVis", attrType="bool", dv=1, k=0),
             onList=self.joints_ik,
         )
         mc.hide(self.all_ikHs)

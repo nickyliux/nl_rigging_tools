@@ -105,7 +105,7 @@ class LegBp(RigModule):
                 ["toe04_1", "toe04_2", "toe04_3", "toe04_4", "toe04_5"],
             ]
             for names in TOE_NAMES:
-                fgr_jnts = self.gen_sk_fr_names(names, scale=2)
+                fgr_jnts = self.gen_sk_fr_names(names)
                 fgr_jnts[0].orientJnt(aim=(self.xDir, 0, 0), u=(0, 0, -self.xDir))
                 fgr_jnts[0] | self.toesRootJ
 
@@ -129,7 +129,7 @@ class LegBp(RigModule):
             ("ball_fkc", "cubeR", "x", Vec((1, 2, 2)) * scale, 0, -1),
             ("ikc", "foot", None, rSz * 2, 0, -1),
             ("pvc", "diamond", None, scale * 2, 0, -1),
-            ("smart_ctl", "squR", None, scale / 2, 0, -1),
+            ("smart_ctl", "squR", None, scale / 3, 0, 2),
         ]
         if self.scapularExtra:
             ctl_defs.append(("scap_fkc", "arrow4", "x", scale, 1, -1))
@@ -418,12 +418,12 @@ class LegBp(RigModule):
 
         # --- Build toe controls ---
         self.toesCtlsList = []
-        scale = xDr * rSz / 2
+        scale = xDr * rSz
 
         for toeJs in self.toesJntList:
             # IK setup for toe
             ikTgt = JntNode(toeJs[1])
-            ctl, ikJ, ikH = self.build_digit_ik(ikTgt, scale=scale, p=self.ball_fkc)
+            ctl, ikJ, ikH = self.build_digit_ik(ikTgt, scale=scale / 4, p=self.ball_fkc)
             self.toeIKHs.append(ikH)
             ikJ.a.r >> ikTgt.a.r
 
@@ -433,8 +433,10 @@ class LegBp(RigModule):
             fkToeList = toeJs[2:-1]
             for jnt in fkToeList:
                 crvName = f"{jnt.name}_ctl_#"
-                crv = CrvNode(crvName, shape="squR", up="x", scale=scale, align=jnt)
+                crv = CrvNode(crvName, up="x", scale=scale / 6, align=jnt)
+
                 ctlList.append(crv)
+
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
             self.toesCtlsList.append(ctlList)
             self.toesCtlsList.append([ctl])

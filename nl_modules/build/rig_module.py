@@ -574,6 +574,7 @@ class RigModule(RigBase):
         j2 = JntNode(ikTgt.allChildrenJt[-1]).duplicate(po=1)
         j2.rename(ikTgt + "_2_ikj")
         j2 | j1
+        j1.setRadius(2, rel=1)
 
         # --- Constrain first joint to control ---
         j1.cstPoi(ctl.offset)
