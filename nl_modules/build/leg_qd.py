@@ -124,15 +124,16 @@ class LegQd(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
+        scale_fk = Vec((0.5, 1.5, 1.5)) * scale
 
         ctl_defs = [
             ("setting", "bagua", "z", scale, 1, 2),
-            ("hip_fkc", "cubeR", "x", Vec((0.5, 2, 2)) * scale, 0, -1),
-            ("upr_fkc", "cubeR", "x", Vec((0.5, 2, 2)) * scale, 0, -1),
-            ("lwr_fkc", "cubeR", "x", Vec((0.5, 2, 2)) * scale, 0, -1),
-            ("palm_fkc", "cubeR", "x", Vec((0.5, 2, 2)) * scale, 0, -1),
-            ("digit_fkc", "cubeR", "x", Vec((0.5, 2, 2)) * scale, 0, -1),
-            ("ball_fkc", "cubeR", "x", Vec((0.5, 2, 2)) * scale, 0, -1),
+            ("hip_fkc", "cubeR", "x", scale_fk, 0, -1),
+            ("upr_fkc", "cubeR", "x", scale_fk, 0, -1),
+            ("lwr_fkc", "cubeR", "x", scale_fk, 0, -1),
+            ("palm_fkc", "cubeR", "x", scale_fk, 0, -1),
+            ("digit_fkc", "cubeR", "x", scale_fk, 0, -1),
+            ("ball_fkc", "cubeR", "x", scale_fk, 0, -1),
             ("ikc", "foot", None, rSz * 2, 0, -1),
             ("extra_ikc", "rotator2", None, -scale, 1, -1),
             ("pvc", "diamond", None, scale * 2, 0, -1),
@@ -292,8 +293,9 @@ class LegQd(RigModule):
         self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
 
         # --- Foot roll and bank logic ---
-        self.foot_roll_logic(self.smart_ctl, heelRollG, ballRollG, footRollG, toeRollG)
-        self.foot_bank_logic(self.smart_ctl, inRollG, outRollG)
+        self.foot_rolling(
+            self.smart_ctl, heelRollG, ballRollG, footRollG, toeRollG, inRollG, outRollG
+        )
 
         # --- Attribute and connection setup ---
         self.ikc.a.add("kneeTwist") * xDr >> ikH1.a.twist
@@ -311,7 +313,7 @@ class LegQd(RigModule):
         self.hip_fkc.cstPar(self.joints_ik[0], mo=1)
 
         # --- Store controls and finalize ---
-        self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal]
+        self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal, self.extra_ikc]
         self.ikH1 = ikH1
         self.subCtl_setup(ballRollG, toeRollG, inRollG, outRollG, heelRollG)
         self.extra_roll_logic(ballRollG, extraRollG, self.IK_GRP)
@@ -559,7 +561,7 @@ class LegQd(RigModule):
             onList=self.subCtls,
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJntVis", dv=1, attrType="bool", k=0),
+            self.setting.a.add("setupJntVis", dv=0, attrType="bool", k=0),
             onList=self.joints_fk + self.joints_ik,
         )
         [ikh.hide() for ikh in self.all_ikH.values()]

@@ -529,7 +529,9 @@ class RigModule(RigBase):
             result.append(jnt)
         return result
 
-    def foot_roll_logic(self, targetCtl, heelRollG, ballRollG, footRollG, toeRollG):
+    def foot_rolling(
+        self, targetCtl, heelRollG, ballRollG, footRollG, toeRollG, inRollG, outRollG
+    ):
         """Foot roll logic for heel, ball, and toe controls."""
 
         from nl_modules.utils import utils_node as ut
@@ -545,53 +547,42 @@ class RigModule(RigBase):
         # self.ikc.a.add("toeTwist") >> toeRollG.a.ry
         # self.ikc.a.add("toeRoll") >> toeRollG.a.rx
 
-    def foot_bank_logic(self, targetCtl, inRollG, outRollG):
         bank = targetCtl.a.add("footBank")
         (bank < 0).setCdn(ifTrue=bank, ifFalse=0) >> inRollG.a.rz
         (bank > 0).setCdn(ifTrue=bank, ifFalse=0) >> outRollG.a.rz
+
+    def build_digit_ik_chain(self, tgt):
+        """Build an IK chain for a digit (e.g., finger or toe) with two joints."""
+        tgt = JntNode(tgt)
+        j1 = tgt.duplicate(po=1, name=f"{tgt.name}_1_ikj")
+        j2 = tgt.allChildrenJt[-1].duplicate(po=1, name=f"{tgt.name}_2_ikj")
+
+        JntNode(j1).setRadius(2, rel=1)
+        JntNode(j2).setRadius(2, rel=1)
+        j2 | j1
+        return j1, j2
 
     def build_digit_ik(self, ikTgt, scale=1, p=None):
         """Build an IK setup for a digit (e.g., finger or toe) with a control and joints."""
 
         # --- Create IK control for the digit ---
+        n = f"{ikTgt}_ikc"
         ctl = CrvNode(
-            ikTgt + "_ikc",
-            shape="stickS",
-            align=ikTgt,
-            up="-z",
-            scale=scale,
-            addOfs=1,
-            top=1,
-            # p=p.offset,
-            p=p,
+            n, shape="stickS", align=ikTgt, up="-z", scale=scale, addOfs=1, p=p
         )
         ctl.addOffsetGrp()
-        # p.a.ry >> ctl.offset.a.ry
 
         # --- Duplicate joints for IK chain ---
-        ik_jnt1 = JntNode(ikTgt).duplicate(po=1)
-        ik_jnt2 = JntNode(ikTgt.allChildrenJt[-1]).duplicate(po=1)
-        ik_jnt1.rename(ikTgt + "_1_ikj")
-        ik_jnt2.rename(ikTgt + "_2_ikj")
-        ik_jnt2 | ik_jnt1
-        ik_jnt1.setRadius(2, rel=1)
-        ik_jnt2.setRadius(2, rel=1)
-
-        # --- Constrain first joint to control ---
-        ik_jnt1.cstPoi(ctl.offset)
+        ikJ, ikJ_end = self.build_digit_ik_chain(ikTgt)
+        ikJ.cstPoi(ctl.offset)
 
         # --- Create IK handle for the digit ---
+        scale = self.masterC.a["globalScale"]
         ikH = IkNode(
-            ik_jnt1,
-            sj=ik_jnt1,
-            ee=ik_jnt2,
-            scaleFix=self.masterC.a["globalScale"],
-            RIG_DATA=self.RIG_DATA,
-            vis=0,
-            p=ctl,
+            ikJ, sj=ikJ, ee=ikJ_end, scaleFix=scale, RIG_DATA=self.RIG_DATA, p=ctl
         )
 
-        return ctl, ik_jnt1, ikH
+        return ctl, ikJ, ikH
 
     def get_autoAim_preset(self):
         """Get preset values for auto aim weights based on the master guide attributes."""

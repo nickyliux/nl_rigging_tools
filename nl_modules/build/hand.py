@@ -260,11 +260,10 @@ class Hand(RigModule):
 
         # smart_ctl, with group scaling with rootJ
         scaleGrp = GrpNode("smartScale", pf=rID, align=self.rootJ, p=self.CTL_DATA)
-        offset = (rSz * xDr * 110, 0, 0)
-        self.smart_ctl.alignTo(self.rootJ, ofs=offset, p=scaleGrp)
+        offsetX = rSz * xDr * 110
+        self.smart_ctl.alignTo(self.rootJ, ofs=(offsetX, 0, 0), p=scaleGrp)
         self.smart_ctl.addOffsetGrp()
 
-        # self.rootJ.cstPar(scaleGrp, mo=1)
         self.hand_grp.cstPar(scaleGrp, mo=1)
         self.rootJ.a.s >> scaleGrp.a.s
 
@@ -316,12 +315,12 @@ class Hand(RigModule):
 
     def setup_vis(self):
         """Setup visibility controls for the hand rig."""
-        showCtls = self.setting.a.add("ctlVis", attrType="bool", dv=1, k=0)
+        showCtls = self.setting.a.add("fkCtlVis", attrType="bool", dv=1, k=0)
         for ctls in self.fgr_ctls:
             showCtls >> ctls[0].a.v
 
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJntVis", attrType="bool", dv=1, k=0),
+            self.setting.a.add("setupJntVis", attrType="bool", dv=0, k=0),
             onList=self.ik_jnts,
         )
         mc.hide(self.all_ikHs)

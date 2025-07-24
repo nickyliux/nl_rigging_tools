@@ -122,11 +122,11 @@ class LegBp(RigModule):
 
         ctl_defs = [
             ("setting", "bagua", "z", scale, 1, 2),
-            ("hip_fkc", "cubeR", "x", Vec((1, 2, 2)) * scale, 0, -1),
-            ("upr_fkc", "cubeR", "x", Vec((1, 2, 2)) * scale, 0, -1),
-            ("lwr_fkc", "cubeR", "x", Vec((1, 2, 2)) * scale, 0, -1),
-            ("palm_fkc", "cubeR", "x", Vec((1, 2, 2)) * scale, 0, -1),
-            ("ball_fkc", "cubeR", "x", Vec((1, 2, 2)) * scale, 0, -1),
+            ("hip_fkc", "cubeR", "x", Vec((1, 1.5, 1.5)) * scale, 0, -1),
+            ("upr_fkc", "cubeR", "x", Vec((1, 1.5, 1.5)) * scale, 0, -1),
+            ("lwr_fkc", "cubeR", "x", Vec((1, 1.5, 1.5)) * scale, 0, -1),
+            ("palm_fkc", "cubeR", "x", Vec((1, 1.5, 1.5)) * scale, 0, -1),
+            ("ball_fkc", "cubeR", "x", Vec((1, 1.5, 1.5)) * scale, 0, -1),
             ("ikc", "foot", None, rSz * 2, 0, -1),
             ("pvc", "diamond", None, scale * 2, 0, -1),
             ("smart_ctl", "squR", None, scale / 3, 0, 2),
@@ -294,8 +294,9 @@ class LegBp(RigModule):
             self.ikc_gimbal, self.pin_fkc, self.ikCstG, w=fkPin, cstType="par", mo=1
         )
 
-        self.foot_roll_logic(self.smart_ctl, heelRollG, ballRollG, footRollG, toeRollG)
-        self.foot_bank_logic(self.smart_ctl, inRollG, outRollG)
+        self.foot_rolling(
+            self.smart_ctl, heelRollG, ballRollG, footRollG, toeRollG, inRollG, outRollG
+        )
 
         self.ikc.a.add("kneeTwist") * xDr >> ikH1.a.twist
         (self.ikc, self.pvc, self.ikCstG) | self.IK_GRP
