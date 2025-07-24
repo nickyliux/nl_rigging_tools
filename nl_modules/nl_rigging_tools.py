@@ -79,13 +79,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.setCentralWidget(self.UI)
         self.setGeometry(0, 0, 233, 580)
         self.connect_UI()
-        self.addMenuBar()
+        # self.addMenuBar()
 
     def addMenuBar(self):
         """Add a menu bar with an 'About' section."""
 
         menuBar = QMenuBar(self)
         more_QM = QMenu("&More", self)
+        # about_QM = QMenu("&About", self)
 
         addIcon_QA = QAction(self)
         addIcon_QA.setText("&Add Icon to Current Shelf")
@@ -99,6 +100,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         more_QM.addAction(clickDrag_QA)
 
         menuBar.addMenu(more_QM)
+        # menuBar.addMenu(about_QM)
         self.setMenuBar(menuBar)
 
     def addIconToCurrShelf(self):
