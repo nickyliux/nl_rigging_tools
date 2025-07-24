@@ -554,11 +554,12 @@ class RigModule(RigBase):
     def build_digit_ik_chain(self, tgt):
         """Build an IK chain for a digit (e.g., finger or toe) with two joints."""
         tgt = JntNode(tgt)
-        j1 = tgt.duplicate(po=1, name=f"{tgt.name}_1_ikj")
-        j2 = tgt.allChildrenJt[-1].duplicate(po=1, name=f"{tgt.name}_2_ikj")
+        name = f"{tgt.name}_ikj_#"
 
-        JntNode(j1).setRadius(2, rel=1)
-        JntNode(j2).setRadius(2, rel=1)
+        j1 = JntNode(tgt.duplicate(po=1, name=name))
+        j2 = JntNode(tgt.allChildrenJt[-1].duplicate(po=1, name=name))
+        j1.setRadius(2, rel=1)
+        j2.setRadius(2, rel=1)
         j2 | j1
         return j1, j2
 
@@ -566,7 +567,7 @@ class RigModule(RigBase):
         """Build an IK setup for a digit (e.g., finger or toe) with a control and joints."""
 
         # --- Create IK control for the digit ---
-        n = f"{ikTgt}_ikc"
+        n = f"{ikTgt.name}_ikc"
         ctl = CrvNode(
             n, shape="stickS", align=ikTgt, up="-z", scale=scale, addOfs=1, p=p
         )

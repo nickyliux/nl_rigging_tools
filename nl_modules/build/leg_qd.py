@@ -351,7 +351,7 @@ class LegQd(RigModule):
         aimGrp = extraRollG.addOffsetGrp(below=1, relink=0)
         aimGrp | extraRollG.offset
         uprIkJ = self.joints_ik[1]
-        aimG_loc = LocNode(f"{aimGrp}_loc", align=uprIkJ, p=grp)
+        aimG_loc = LocNode(f"{aimGrp.name}_loc", align=uprIkJ, p=grp)
         self.ikc.cstPoi(aimG_loc, mo=1)
 
         # --- Add palm aim attributes ---
@@ -440,7 +440,7 @@ class LegQd(RigModule):
             ctlList = []
             for jnt in fkToeList:
                 c = CrvNode(
-                    f"{jnt}_ctl_#",
+                    f"{jnt.name}_ctl_#",
                     shape="squR",
                     up="x",
                     align=jnt,

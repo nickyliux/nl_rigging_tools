@@ -117,7 +117,6 @@ class Hand(RigModule):
         rID, rSz, xDr = self.getMyVar()
         self.ik_ctls = []
         self.hand_grp = GrpNode(rID + "_grp", align=self.rootJ, p=self.CTL_DATA)
-
         for fgrs, ctls in zip(self.fgr_jnts, self.fgr_ctls):
             scale = xDr * rSz / 2
             ctl, ikJ, ikH = self.build_digit_ik(fgrs[1], scale=scale, p=self.hand_grp)
