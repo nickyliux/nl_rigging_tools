@@ -50,9 +50,9 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>20</y>
+     <y>0</y>
      <width>230</width>
-     <height>551</height>
+     <height>571</height>
     </rect>
    </property>
    <property name="font">
@@ -3173,10 +3173,10 @@
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>-1</y>
-     <width>230</width>
-     <height>22</height>
+     <x>280</x>
+     <y>370</y>
+     <width>121</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="baseSize">
@@ -3187,7 +3187,7 @@
    </property>
    <property name="font">
     <font>
-     <family>NSimSun</family>
+     <family>Malgun Gothic</family>
      <pointsize>8</pointsize>
      <weight>50</weight>
      <italic>false</italic>
