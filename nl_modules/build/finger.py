@@ -37,7 +37,7 @@ class Finger(RigModule):
     def genSk(self):
         """Generate the skeleton for the finger rig."""
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(self.jntNames)
+        root_list = self.gen_sk_fr_names(self.jntNames, scale=3)
         for j in root_list:
             JntNode(j).a["preferredAngleZ"].set(-10)
 
@@ -55,7 +55,7 @@ class Finger(RigModule):
         self.build_ctl()
         self.build_fk()
         self.build_ik()
-
+        self.blend_fk_ik()
         self.build_post()
 
     def build_ctl(self):
@@ -71,8 +71,7 @@ class Finger(RigModule):
             ("fgr02_fkc", "squR", "x", scale, 1, -1),
             ("fgr03_fkc", "squR", "x", scale, 1, -1),
             ("fgr04_fkc", "squR", "x", scale, 1, -1),
-            ("ikc", "cube", None, scale, 0, -1),
-            ("tip_rota", "squR", "x", scale * 2, 0, -1),
+            ("ikc", "cube", None, scale, 1, 2),
             ("extra_rota", "rotator2", None, scale, 0, -1),
             ("pvc", "diamond", None, scale, 0, -1),
         ]
@@ -80,7 +79,7 @@ class Finger(RigModule):
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        self.ikc.cv_move(rSz * 30, 0, 0)
+        # self.ikc.cv_move(rSz * 30, 0, 0)
 
     def build_fk(self):
         """
@@ -108,22 +107,25 @@ class Finger(RigModule):
 
         #   ikc_zro
         #   |_ikc
-        #   |   |_tip_rota zro              <<-  par cst by one of the 3-joint chain
-        #   |       |_tip_rota
+        #   |   |__tipRota_grp_zro          <<-  par cst by one of the 3-joint chain
+        #   |       |_tipRota_grp
         #   |           |_extra_rota zro
         #   |               |_extra_rota    ->>  ori cst the end segment of finger
 
         self.ikc.alignTo(self.fgr04)
-        self.tip_rota.alignTo(self.fgr04, p=self.ikc)
-        self.extra_rota.alignTo(self.fgr03, p=self.tip_rota)
+        self.tipRota_grp = GrpNode("tipRota_grp", pf=rID, align=self.fgr04, p=self.ikc)
+        self.extra_rota.alignTo(self.fgr03, p=self.tipRota_grp)
 
         self.ikc.addOffsetGrp()
-        self.tip_rota.addOffsetGrp()
+        self.tipRota_grp.addOffsetGrp()
         self.extra_rota.addOffsetGrp()
+        self.ikc.a.add("rotaUpDn") >> self.tipRota_grp.a.rz
+        self.ikc.a.add("rotaSide") >> self.tipRota_grp.a.ry
+        self.ikc.a.add("rotaRoll") >> self.tipRota_grp.a.rx
+        self.ikc.a.add("extraCtlVis", attrType="bool", dv=0, k=0) >> self.extra_rota.a.v
 
         self.pvc.alignTo(self.master_guide)
-
-        self.joints_ikA[-2].cstPar(self.tip_rota.offset, mo=1)
+        self.joints_ikA[-2].cstPar(self.tipRota_grp.offset, mo=1)
         self.extra_rota.cstOri(self.joints_ikB[-2], mo=1)
 
         # Create IK handle
@@ -144,7 +146,7 @@ class Finger(RigModule):
             p=self.ikc,
         )
 
-        ikH_B1 = IkNode(
+        ikH_B = IkNode(
             "2",
             pf=rID,
             rSz=rSz,
@@ -160,8 +162,21 @@ class Finger(RigModule):
             p=self.extra_rota,
         )
 
-        self.bindJnts = [JntNode(j) for j in self.joints_ikB]
-        self.ikCtl = [self.ikc, self.tip_rota, self.extra_rota, self.pvc]
+        self.bindJnts = [JntNode(j) for j in self.joints]
+        self.ikCtl = [self.ikc, self.extra_rota, self.pvc]
+        self.all_ikHs = [ikH_A, ikH_B]
+
+    def blend_fk_ik(self):
+        """Blend FK and IK joints for the arm rig."""
+
+        rID, rSz, xDr = self.getMyVar()
+
+        fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
+        for i in range(len(self.joints) - 1):
+            fkJ = self.joints_fk[i]
+            ikJ = self.joints_ikA[i]
+            jnt = self.joints[i]
+            common.cstMulti(fkJ, ikJ, jnt, w=fkIkBlend)
 
     def setup_ctlSet(self):
         """Setup control sets for the finger rig."""
@@ -176,6 +191,12 @@ class Finger(RigModule):
         """Setup visibility for the finger rig module."""
         mc.hide(self.all_ikHs)
 
+        self.ctl_vis_toggle(
+            self.setting.a["fkIkBlend"],
+            onList=self.ikCtl,
+            offList=self.fkCtl,
+        )
+
     def setup_channel(self):
         """Setup channels for the finger rig module."""
         self.setting.a.showAttr()
@@ -183,7 +204,7 @@ class Finger(RigModule):
         for ctl in [self.ikc, self.pvc]:
             ctl.a.showAttr(t=1, r=0)
 
-        for ctl in self.fkCtl + [self.extra_rota, self.tip_rota]:
+        for ctl in self.fkCtl + [self.extra_rota]:
             ctl.a.showAttr(t=1, r=1)
 
     def setup_bindJnt(self):
