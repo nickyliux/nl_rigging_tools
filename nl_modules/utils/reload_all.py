@@ -127,6 +127,7 @@ from nl_modules.build import (
     ribbon,
     head,
     hand,
+    finger,
 )
 
 reload(rig_base)
@@ -144,6 +145,7 @@ reload(neck_qd)
 reload(spine_qd)
 reload(tail_fk)
 reload(tail)
+reload(finger)
 
 if __name__ == "__main__":
     logging.info("reload modules")

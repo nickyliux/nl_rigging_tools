@@ -328,6 +328,9 @@ class RigModule(RigBase):
         """Build the rig module, setting up the rigNode and its connections."""
 
         self.rigNode.a.nodeState.set(2)
+        if not self.rootJ:
+            raise ValueError("rootJ not set for the component")
+
         self.rigSize = self.calc_rig_size(self.rootJ)
 
         children = self.rootJ.childrenJt

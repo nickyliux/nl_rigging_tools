@@ -17,6 +17,7 @@ from nl_modules.build.neck_qd import NeckQd
 from nl_modules.build.spine_qd import SpineQd
 from nl_modules.build.tail_fk import TailFk
 from nl_modules.build.tail import Tail
+from nl_modules.build.finger import Finger
 
 from nl_modules.build.rig_module import RigModule
 from contextlib import ContextDecorator

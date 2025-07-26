@@ -381,6 +381,11 @@
         <string>tail</string>
        </property>
       </item>
+      <item>
+       <property name="text">
+        <string>finger</string>
+       </property>
+      </item>
      </widget>
     </widget>
     <widget class="QGroupBox" name="groupBox_3">

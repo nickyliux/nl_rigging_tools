@@ -26,6 +26,7 @@ COMPONENT_DICT = {
     "tail fk": ["tailFk"],
     "tail": ["tail"],
     "wing": [""],
+    "finger": ["finger"],
 }
 
 
