@@ -1,5 +1,5 @@
 import logging
-import maya.cmds as cmds
+import maya.cmds as mc
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.jnt_node import JntNode
@@ -26,6 +26,14 @@ class Finger(RigModule):
         # Joint names and attributes
         self.jntNames = ["fgr01", "fgr02", "fgr03", "fgr04"]
 
+        self.joints = []
+        self.joints_fk = []
+        self.joints_ikA = []
+        self.joints_ikB = []
+        self.ikCtl = []
+        self.fkCtl = []
+        self.all_ikHs = []
+
     def genSk(self):
         """Generate the skeleton for the finger rig."""
         self.genSk_module()
@@ -47,6 +55,7 @@ class Finger(RigModule):
         self.build_ctl()
         self.build_fk()
         self.build_ik()
+
         self.build_post()
 
     def build_ctl(self):
@@ -58,11 +67,11 @@ class Finger(RigModule):
 
         ctl_defs = [
             ("setting", "bagua", "z", scale, 1, 2),
-            ("fgr01_fkc", "circle", "x", scale, 1, -1),
-            ("fgr02_fkc", "circle", "x", scale, 1, -1),
-            ("fgr03_fkc", "circle", "x", scale, 1, -1),
-            ("fgr04_fkc", "circle", "x", scale, 1, -1),
-            ("ikc", "cube", None, scale * 2, 0, -1),
+            ("fgr01_fkc", "squR", "x", scale, 1, -1),
+            ("fgr02_fkc", "squR", "x", scale, 1, -1),
+            ("fgr03_fkc", "squR", "x", scale, 1, -1),
+            ("fgr04_fkc", "squR", "x", scale, 1, -1),
+            ("ikc", "cube", None, scale, 0, -1),
             ("tip_rota", "squR", "x", scale * 2, 0, -1),
             ("extra_rota", "rotator2", None, scale, 0, -1),
             ("pvc", "diamond", None, scale, 0, -1),
@@ -70,6 +79,8 @@ class Finger(RigModule):
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
+
+        self.ikc.cv_move(rSz * 30, 0, 0)
 
     def build_fk(self):
         """
@@ -84,7 +95,6 @@ class Finger(RigModule):
 
     def build_ik(self):
         """Build the IK controls for the arm rig."""
-
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
@@ -150,16 +160,47 @@ class Finger(RigModule):
             p=self.extra_rota,
         )
 
+        self.bindJnts = [JntNode(j) for j in self.joints_ikB]
+        self.ikCtl = [self.ikc, self.tip_rota, self.extra_rota, self.pvc]
+
+    def setup_ctlSet(self):
+        """Setup control sets for the finger rig."""
+        ctlSet = self.fkCtl + self.ikCtl
+        self.add_ctl_set(ctlSet)
+
+    def setup_scale(self):
+        """Setup scale for the arm rig module."""
+        self.masterC.a.globalScale >> self.SKL_DATA.a.scale
+
+    def setup_vis(self):
+        """Setup visibility for the finger rig module."""
+        mc.hide(self.all_ikHs)
+
+    def setup_channel(self):
+        """Setup channels for the finger rig module."""
+        self.setting.a.showAttr()
+
+        for ctl in [self.ikc, self.pvc]:
+            ctl.a.showAttr(t=1, r=0)
+
+        for ctl in self.fkCtl + [self.extra_rota, self.tip_rota]:
+            ctl.a.showAttr(t=1, r=1)
+
+    def setup_bindJnt(self):
+        """Setup bind joints for the arm rig module."""
+        self.add_bind_jnt_set(self.bindJnts)
+        # self.add_proxy_ratio(self.bindJnts, 2)
+
     def build_post(self):
         """Post setup for the leg rig module."""
 
         logging.info(self.rigID)
-        # self.setup_scale()
-        # self.setup_ctlSet()
-        # self.setup_bindJnt()
+        self.setup_scale()
+        self.setup_ctlSet()
+        self.setup_bindJnt()
         # self.setup_space()
         # self.setup_anchor()
-        # self.setup_vis()
-        # self.setup_channel()
+        self.setup_vis()
+        self.setup_channel()
         # self.setup_rotate_order()
-        # self.build_post_module()
+        self.build_post_module()
