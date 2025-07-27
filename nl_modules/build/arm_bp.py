@@ -129,8 +129,8 @@ class ArmBp(RigModule):
 
     def build_fk(self):
         """Build the FK controls and joints for the arm rig."""
-
         logging.info(self.rigID)
+
         self.joints_fk = common.dupSk(
             self.joints, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
         )
@@ -235,6 +235,7 @@ class ArmBp(RigModule):
 
     def blend_fk_ik(self):
         """Blend FK and IK joints for the arm rig."""
+        logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
 

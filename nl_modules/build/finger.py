@@ -66,7 +66,7 @@ class Finger(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "bagua", "z", scale, 1, 2),
+            ("setting", "bagua", "z", scale * 2, 1, 2),
             ("fgr01_fkc", "squR", "x", scale, 1, -1),
             ("fgr02_fkc", "squR", "x", scale, 1, -1),
             ("fgr03_fkc", "squR", "x", scale, 1, -1),
@@ -82,9 +82,7 @@ class Finger(RigModule):
         # self.ikc.cv_move(rSz * 30, 0, 0)
 
     def build_fk(self):
-        """
-        Build the FK rig for the finger.
-        """
+        """Build the FK controls for the arm rig."""
         logging.info(self.rigID)
         self.joints_fk = common.dupSk(
             self.joints, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
@@ -112,11 +110,15 @@ class Finger(RigModule):
         #   |           |_extra_rota zro
         #   |               |_extra_rota    ->>  ori cst the end segment of finger
 
-        self.ikc.alignTo(self.fgr04)
+        self.ikc.snapTo(self.fgr04)
+        self.pvc.alignTo(self.fgr01)
+
         self.tipRota_grp = GrpNode("tipRota_grp", pf=rID, align=self.fgr04, p=self.ikc)
         self.extra_rota.alignTo(self.fgr03, p=self.tipRota_grp)
 
+        (self.setting, self.ikc, self.pvc) | self.CTL_DATA
         self.ikc.addOffsetGrp()
+        self.pvc.addOffsetGrp()
         self.tipRota_grp.addOffsetGrp()
         self.extra_rota.addOffsetGrp()
         self.ikc.a.add("rotaUpDn") >> self.tipRota_grp.a.rz
@@ -124,7 +126,6 @@ class Finger(RigModule):
         self.ikc.a.add("rotaRoll") >> self.tipRota_grp.a.rx
         self.ikc.a.add("extraCtlVis", attrType="bool", dv=0, k=0) >> self.extra_rota.a.v
 
-        self.pvc.alignTo(self.master_guide)
         self.joints_ikA[-2].cstPar(self.tipRota_grp.offset, mo=1)
         self.extra_rota.cstOri(self.joints_ikB[-2], mo=1)
 
@@ -168,15 +169,21 @@ class Finger(RigModule):
 
     def blend_fk_ik(self):
         """Blend FK and IK joints for the arm rig."""
+        logging.info(self.rigID)
 
-        rID, rSz, xDr = self.getMyVar()
+        self.rootJ.cstPar(self.setting)
 
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
         for i in range(len(self.joints) - 1):
             fkJ = self.joints_fk[i]
-            ikJ = self.joints_ikA[i]
+            ikJ = self.joints_ikB[i]
             jnt = self.joints[i]
             common.cstMulti(fkJ, ikJ, jnt, w=fkIkBlend)
+
+        # Add blend attribute to all controls
+        for ctl in self.fkCtl + self.ikCtl:
+            ctl.a.addSep()
+            ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
     def setup_ctlSet(self):
         """Setup control sets for the finger rig."""
@@ -197,6 +204,11 @@ class Finger(RigModule):
             offList=self.fkCtl,
         )
 
+        setupJntVis = self.setting.a.add("setupJntVis", attrType="bool", dv=0, k=0)
+        setupJntVis >> self.joints_ikA[0].a.v
+        setupJntVis >> self.joints_ikB[0].a.v
+        setupJntVis >> self.joints_fk[0].a.v
+
     def setup_channel(self):
         """Setup channels for the finger rig module."""
         self.setting.a.showAttr()
@@ -214,8 +226,9 @@ class Finger(RigModule):
 
     def build_post(self):
         """Post setup for the leg rig module."""
-
         logging.info(self.rigID)
+
+        common.add_mirror_attr([self.ikc])
         self.setup_scale()
         self.setup_ctlSet()
         self.setup_bindJnt()
