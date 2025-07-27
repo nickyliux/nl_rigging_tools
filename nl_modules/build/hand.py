@@ -48,6 +48,7 @@ class Hand(RigModule):
 
         self.rootJ = root_list[0]
         self.rootJ | self.SKL_DATA
+        self.rootGrp = self.rootJ.addOffsetGrp()
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
@@ -56,7 +57,7 @@ class Hand(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "bagua", "x", scale * 4, 1, 2),
+            ("setting", "bagua", "z", scale * 4, 1, 2),
             ("smart_ctl", "roll", "x", scale, 1, 2),
         ]
         for name, shape, up, scale, top, w in ctl_defs:
@@ -124,9 +125,6 @@ class Hand(RigModule):
             self.ik_jnts.append(ikJ)
             self.all_ikHs.append(ikH)
             ikJ.cstOri(ctls[1].parent.parent, mo=1)
-
-        # scalable
-        self.rootJ.cstSca(self.RIG_DATA)
 
     def setup_fist_sdk(self):
         """Setup SDK for fist pose on fingers."""
@@ -339,18 +337,21 @@ class Hand(RigModule):
         for root in self.rootJ.childrenJt:
             root.a.segmentScaleCompensate.set(0)
         self.masterC.a.globalScale >> self.SKL_DATA.a.scale
+        self.rootJ.cstSca(self.RIG_DATA)
 
     def build_post(self):
         """Post setup for the hand rig module."""
         logging.info(self.rigID)
-        self.setting | self.CTL_DATA
-        self.rootJ.cstPar(self.setting)
+
+        self.setting.snapTo(self.rootJ, p=self.CTL_DATA)
+        self.rootJ.cstPar(self.setting, mo=1)
 
         self.setup_scale()
         self.setup_bindJnt()
         self.setup_ctlSet()
         self.setup_space()
         # self.setup_anchor_module({"anchorF1": self.rootJ})
+        self.setup_anchor_module({"anchorF1": self.rootGrp})
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()

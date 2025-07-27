@@ -108,11 +108,12 @@ def postRig():
     update_anchor_conn()
     update_space_switch()
     reset_all_pv_ctl()
-    mc.select(cl=1)
 
     RIG = DagNode("RIG")
     if RIG.exists():
         mc.hide(RIG)
+
+    mc.select(cl=1)
 
 
 def addProxyAttrsToMaster():
@@ -261,13 +262,12 @@ def reset_all_pv_ctl():
 def update_space_switch():
     """Update space switch for all rigNodes"""
     logging.info("Update All Space Switches")
+
     spaceData = collectSpaceData()
 
     for ctl, spaceList, rigNode in spaceData:
         if ctl.a.space.exists():
-            #
-            #   delete space and related groups
-            #
+            # delete space and related groups
             ctl.a.space.delete()
             cstNode = ctl.parent.getCstNodes(cstType="parentConstraint")
             if cstNode:

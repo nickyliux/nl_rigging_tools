@@ -120,7 +120,7 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "bagua", "z", scale, 1, 2),
+            ("setting", "bagua", "z", scale / 2, 1, 2),
             ("hip_fkc", "cubeR", "x", Vec((1, 1.5, 1.5)) * scale, 0, -1),
             ("upr_fkc", "cubeR", "x", Vec((1, 1.5, 1.5)) * scale, 0, -1),
             ("lwr_fkc", "cubeR", "x", Vec((1, 1.5, 1.5)) * scale, 0, -1),
@@ -501,7 +501,7 @@ class LegBp(RigModule):
         )
         if self.rbnBones:
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyCtlVis", attrType="bool", dv=1),
+                self.setting.a.add("bendyCtlVis", attrType="bool", dv=0, k=0),
                 onList=self.all_bend,
             )
         mc.hide(self.all_ikHs, self.toeIKHs)

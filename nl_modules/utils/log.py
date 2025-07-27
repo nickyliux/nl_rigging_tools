@@ -8,9 +8,12 @@ def update_root_logger():
     logger.setLevel(logging.DEBUG)
     logger.handlers.clear()
 
+    # logging.addLevelName(logging.INFO, "info")
+    # logging.addLevelName(logging.WARNING, "warn")
+
     stream_hdl = logging.StreamHandler()
     formatter = logging.Formatter(
-        "%(levelname)-7s %(filename)-20s %(funcName)-20s | %(message)s"
+        "[%(levelname).1s] %(filename)-18s %(funcName)-20s : %(message)s"
     )
     stream_hdl.setFormatter(formatter)
     logger.addHandler(stream_hdl)
