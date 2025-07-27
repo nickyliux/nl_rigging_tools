@@ -1,5 +1,6 @@
 import logging
 import maya.cmds as mc
+import maya.mel as mel
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
@@ -68,7 +69,6 @@ def genProxy():
     bindSet = DagNode("bind_jnt_set")
 
     if not bindSet.exists():
-        # raise NameError("Set 'bind_jnt_set' NOT found.")
         logging.warning("Set 'bind_jnt_set' NOT found.")
         return
 
@@ -198,7 +198,6 @@ def combineProxy():
 
 def setProxyWeight(combined, proxies):
     """Set skin weights for the combined proxy mesh based on the original proxy meshes."""
-    import maya.mel as mel
 
     skinC = mel.eval("findRelatedSkinCluster " + combined)
     bindJnts = mc.skinCluster(skinC, q=1, inf=1)

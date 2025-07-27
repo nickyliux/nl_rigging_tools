@@ -88,7 +88,6 @@ class LegBp(RigModule):
 
     def genSk(self):
         """Generate the skeleton for the leg rig."""
-
         self.genSk_module()
         root_list = self.gen_sk_fr_names(self.jntNames)
 
@@ -115,8 +114,8 @@ class LegBp(RigModule):
 
     def build_ctl(self):
         """Build control nodes for the leg rig."""
-
         logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
 
@@ -139,7 +138,6 @@ class LegBp(RigModule):
 
     def build(self):
         """Build the leg rig module."""
-
         self.build_pre_module()
         self.joints = self.rootJ.allChildrenJt2
         self.hip, self.upr, self.lwr, self.palm, self.ball, self.tip = self.joints
@@ -197,8 +195,8 @@ class LegBp(RigModule):
 
     def build_fk(self):
         """Build the FK controls for the leg rig."""
-
         logging.info(self.rigID)
+
         self.joints_fk = common.dupSk(
             self.joints, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
         )
@@ -214,8 +212,8 @@ class LegBp(RigModule):
 
     def build_ik(self):
         """Build the IK controls for the leg rig."""
-
         logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
 
         mg = self.master_guide
@@ -318,8 +316,8 @@ class LegBp(RigModule):
 
     def blend_fk_ik(self):
         """Blend FK and IK controls for the leg rig."""
-
         logging.info(self.rigID)
+
         self.joints_bf = common.dupSk(
             self.joints, "_bf", p=self.BF_GRP, r=self.rigSize * 4, color=Color.D_YELLOW
         )
@@ -367,8 +365,8 @@ class LegBp(RigModule):
 
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
         """Setup sub-controls for the leg rig."""
-
         logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
 
         for g in [toeRollG, inRollG, outRollG, heelRollG]:
@@ -404,8 +402,8 @@ class LegBp(RigModule):
 
     def build_toes(self):
         """Build the toe controls for the leg rig."""
-
         logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
 
         # --- Parent toes root to palm ---
@@ -456,8 +454,8 @@ class LegBp(RigModule):
 
     def build_twist_bones(self):
         """Build twist bones for the leg rig."""
-
         logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
 
         radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=2)
@@ -510,7 +508,6 @@ class LegBp(RigModule):
 
     def setup_channel(self):
         """Setup channels for the leg rig controls."""
-
         self.setting.a.showAttr()
         self.pvc.a.showAttr(t=1, r=1)
         self.smart_ctl.a.showAttr(r=1)
@@ -542,7 +539,6 @@ class LegBp(RigModule):
 
     def setup_space(self):
         """Setup space switching for the leg rig controls."""
-
         self.rigNode.a.add("spaceName1", attrType="string", txt="master, COG, lwrBody")
         self.rigNode.a.add("spaceName2", attrType="string", txt="leg, master, hip, COG")
 
@@ -559,12 +555,10 @@ class LegBp(RigModule):
 
     def setup_anchor(self):
         """Setup anchor for the leg rig controls."""
-
         self.setup_anchor_module({"anchorF1": self.scapularG.offset})
 
     def setup_scale(self):
         """Setup scaling for the leg rig controls."""
-
         self.masterC.a.globalScale >> self.RIG_DATA.a.s
         self.masterC.a.globalScale >> self.SKL_DATA.a.s
 
@@ -588,7 +582,6 @@ class LegBp(RigModule):
 
     def setup_ctlSet(self):
         """Setup control sets for the leg rig module."""
-
         ctlSet = (
             self.fkCtl
             + self.ikCtl
@@ -614,14 +607,13 @@ class LegBp(RigModule):
 
     def setup_bindJnt(self):
         """Setup bind joints for the leg rig module."""
-
         self.add_bind_jnt_set(self.bindJnts)
         self.add_proxy_ratio(self.bindJnts, 2)
 
     def build_post(self):
         """Post setup for the leg rig module."""
-
         logging.info(self.rigID)
+
         self.setup_scale()
         self.setup_ctlSet()
         self.setup_bindJnt()
