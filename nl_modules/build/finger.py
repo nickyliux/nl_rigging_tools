@@ -112,7 +112,6 @@ class Finger(RigModule):
 
         self.ikc.snapTo(self.fgr04)
         self.pvc.alignTo(self.fgr01)
-
         self.tipRota_grp = GrpNode("tipRota_grp", pf=rID, align=self.fgr04, p=self.ikc)
         self.extra_rota.alignTo(self.fgr03, p=self.tipRota_grp)
 
@@ -130,42 +129,31 @@ class Finger(RigModule):
         self.extra_rota.cstOri(self.joints_ikB[-2], mo=1)
 
         # Create IK handle
-        ikH_A = IkNode(
-            "1",
-            pf=rID,
-            rSz=rSz,
-            sj=self.fgr01,
-            ee=self.fgr04,
-            jsf="_ikA",
-            solver=Solver.RP,
-            ikc=self.ikc,
-            pvc=self.pvc,
-            setting=self.setting,
-            limbScale=1,
-            scaleFix=self.masterC.a["globalScale"],
-            RIG_DATA=self.RIG_DATA,
-            p=self.ikc,
+        ikH_A = self.create_ik(
+            "A", sj=self.fgr01, ee=self.fgr04, jsf="_ikA", p=self.ikc
+        )
+        ikH_B = self.create_ik(
+            "B", sj=self.fgr01, ee=self.fgr03, jsf="_ikB", p=self.extra_rota
         )
 
-        ikH_B = IkNode(
-            "2",
-            pf=rID,
-            rSz=rSz,
-            sj=self.fgr01,
-            ee=self.fgr03,
-            jsf="_ikB",
-            solver=Solver.RP,
-            pvc=self.pvc,
-            setting=self.setting,
-            limbScale=1,
-            scaleFix=self.masterC.a["globalScale"],
-            RIG_DATA=self.RIG_DATA,
-            p=self.extra_rota,
-        )
-
-        self.bindJnts = [JntNode(j) for j in self.joints]
         self.ikCtl = [self.ikc, self.extra_rota, self.pvc]
         self.all_ikHs = [ikH_A, ikH_B]
+
+    def create_ik(self, name, sj, ee, jsf, p):
+        return IkNode(
+            name,
+            pf=self.rigID,
+            rSz=self.rigSize,
+            sj=sj,
+            ee=ee,
+            jsf=jsf,
+            solver=Solver.RP,
+            pvc=self.pvc,
+            setting=self.setting,
+            scaleFix=self.masterC.a["globalScale"],
+            RIG_DATA=self.RIG_DATA,
+            p=p,
+        )
 
     def blend_fk_ik(self):
         """Blend FK and IK joints for the arm rig."""
@@ -221,7 +209,7 @@ class Finger(RigModule):
 
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
-        self.add_bind_jnt_set(self.bindJnts)
+        self.add_bind_jnt_set(self.joints)
         # self.add_proxy_ratio(self.bindJnts, 2)
 
     def build_post(self):

@@ -44,7 +44,7 @@ class IkNode(DagNode):
         createCrv=1,
         inputCrv=None,
         numSpans=3,
-        limbScale=False,
+        localScale=0,
         scaleFix=None,
         scaleFix2=None,
         scaleFix3=None,
@@ -84,7 +84,7 @@ class IkNode(DagNode):
         self.pf = pf
         self.rSz = rSz
         self.softJ = None
-        self.pvChainJ = None
+        self.pvJnt = None
         self.RIG_DATA = RIG_DATA
 
         # --- Create IK handle and store joints ---
@@ -99,7 +99,7 @@ class IkNode(DagNode):
         ikJnt = mc.ikHandle(self.node, q=1, jl=1) + [self.ee]
         self.jnt = [DagNode(j) for j in ikJnt]
         self.chainLen = self.calcChainLen()
-        self.localStretch = limbScale
+        self.localScale = localScale
         self.xDir = 1 if self.ee.a.tx.get() > 0 else -1
 
         # --- Hide if not visible ---
@@ -253,7 +253,7 @@ class IkNode(DagNode):
 
         for i in range(1, len(self.jnt)):
             Di.append(self.jnt[i - 1].o.distanceTo(self.jnt[i]))
-            if self.localStretch:
+            if self.localScale:
                 self.ikc.a.add("limbScale" + str(i), dv=1)
 
         dist_loc = LocNode("dist_loc#", pf=self.pf, snap=self.node)
@@ -287,7 +287,7 @@ class IkNode(DagNode):
             ]
             for i in range(1, len(self.jnt)):
                 result = ut.blend2_(ratio * Di[i - 1], di[i - 1], w=kp) * self.xDir
-                if self.localStretch:
+                if self.localScale:
                     result *= self.ikc.a[f"limbScale{i}"]
                 result >> self.jnt[i].a.tx
         else:
@@ -297,7 +297,7 @@ class IkNode(DagNode):
 
             for i in range(1, len(self.jnt)):
                 result = ratio * Di[i - 1] * self.xDir
-                if self.localStretch:
+                if self.localScale:
                     result *= self.ikc.a[f"limbScale{i}"]
                 result >> self.jnt[i].a.tx
 
@@ -320,8 +320,8 @@ class IkNode(DagNode):
             snap=self.sj,
             offset=(self.xDir, 0, 0),
             u=(0, self.xDir, 0),
-            p=softParent,
             aimTgt=self.ee,
+            p=softParent,
         )
         ikH = IkNode(
             "soft",
@@ -348,27 +348,27 @@ class IkNode(DagNode):
 
         from nl_modules.nodel.jnt_node import JntNode
 
-        pvChainJ = JntNode.makeTwoJointChain(
-            "pvChainJ",
+        pvJnt = JntNode.makeTwoJointChain(
+            "pvJnt",
             pf=self.pf,
             snap=self.sj,
-            p=self.sj.parent,
-            rad=self.rSz,
             offset=(self.xDir, 0, 0),
             u=(0, self.xDir, 0),
             aimTgt=self.ee,
+            rad=self.rSz,
+            p=self.sj.parent,
         )
         pinIk = IkNode(
-            "pvChain",
-            pf=pvChainJ[0].name,
-            sj=pvChainJ[0],
-            ee=pvChainJ[1],
+            "pvJnt",
+            pf=pvJnt[0].name,
+            sj=pvJnt[0],
+            ee=pvJnt[1],
             p=self.RIG_DATA,
             quat=1,
             vis=0,
         )
         ikTarget.cstPoi(pinIk)
-        self.pvChainJ = pvChainJ
+        self.pvJnt = pvJnt
 
     def spline_twist_setup(self, *driver, upAxis="y", twistAxis="x"):
         """Setup twist for spline IK using worldUpMatrix and worldUpVector attributes."""

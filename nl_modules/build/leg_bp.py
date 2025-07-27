@@ -128,7 +128,7 @@ class LegBp(RigModule):
             ("ball_fkc", "cubeR", "x", Vec((1, 1.5, 1.5)) * scale, 0, -1),
             ("ikc", "foot", None, rSz * 2, 0, -1),
             ("pvc", "diamond", None, scale * 2, 0, -1),
-            ("smart_ctl", "squR", None, scale / 3, 0, 2),
+            ("smart_ctl", "squR", None, scale / 2, 0, 2),
         ]
         if self.scapularExtra:
             ctl_defs.append(("scap_fkc", "arrow4", "x", scale, 1, -1))
@@ -239,7 +239,7 @@ class LegBp(RigModule):
             ikc=self.ikc,
             pvc=self.pvc,
             setting=self.setting,
-            limbScale=1,
+            localScale=1,
             scaleFix=self.masterC.a["globalScale"],
             scaleFix2=self.CTL_DATA.a.sy,
             RIG_DATA=self.RIG_DATA,
@@ -549,7 +549,7 @@ class LegBp(RigModule):
                 "spaceHolder1": self.ikc,
                 "spaceHolder2": self.pvc,
                 "space_master": self.masterC,
-                "space_leg": self.ikH1.pvChainJ[0],
+                "space_leg": self.ikH1.pvJnt[0],
             }
         )
 

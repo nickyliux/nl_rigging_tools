@@ -246,7 +246,7 @@ class LegQd(RigModule):
             ikc=self.ikc,
             pvc=self.pvc,
             setting=self.setting,
-            limbScale=1,
+            localScale=1,
             scaleFix=self.masterC.a["globalScale"],
             RIG_DATA=self.RIG_DATA,
         )

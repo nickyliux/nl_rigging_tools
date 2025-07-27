@@ -170,7 +170,7 @@ class ArmBp(RigModule):
             ikc=self.ikc,
             pvc=self.pvc,
             setting=self.setting,
-            limbScale=1,
+            localScale=1,
             scaleFix=self.masterC.a["globalScale"],
             RIG_DATA=self.RIG_DATA,
         )
@@ -461,7 +461,7 @@ class ArmBp(RigModule):
                 "spaceHolder1": self.ikc,
                 "spaceHolder2": self.pvc,
                 "space_master": self.masterC,
-                "space_arm": self.ikH1.pvChainJ[0],
+                "space_arm": self.ikH1.pvJnt[0],
                 "space_palm": self.ballRoll_loc,
                 "space_palmIK": self.joints_bf[PALM_ID],
             }
