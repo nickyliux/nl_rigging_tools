@@ -57,7 +57,7 @@ def buildTgt(rigN):
         if rigObj:
             state = rigN.a["nodeState"].get()
             if state == 0:
-                rigObj.genSk()
+                rigObj.gen_sk()
                 rigObj.build()
             elif state == 1:
                 rigObj.build()
@@ -208,16 +208,17 @@ def update_anchor_conn():
                 else:
                     logging.warning("Ignore connecting anchors from the same rigNode.")
 
-    # ---------------------------------------------------------------
-    #
-    #  Create isolate neck to spine setup for standard quadruped
-    #
-    # ---------------------------------------------------------------
-    # neckCog = DagNode("neckQd0_cog_ctl")
-    # spineCtl = DagNode("spineQd0_tp_ctl")
-    # wSpaceObj = DagNode("master_ctl")
-    # if all([neckCog.exists(), spineCtl.exists(), wSpaceObj.exists()]):
-    #     RigModule.isolate_neck_to_spine(neckCog, spineCtl, wSpaceObj)
+
+# ---------------------------------------------------------------
+#
+#  Create isolate neck to spine setup for standard quadruped
+#
+# ---------------------------------------------------------------
+# neckCog = DagNode("neckQd0_cog_ctl")
+# spineCtl = DagNode("spineQd0_tp_ctl")
+# wSpaceObj = DagNode("master_ctl")
+# if all([neckCog.exists(), spineCtl.exists(), wSpaceObj.exists()]):
+#     RigModule.isolate_neck_to_spine(neckCog, spineCtl, wSpaceObj)
 
 
 # "{ string $selection[]=`ls -sl`;string $attr, $udAttr[];float $dfv[];for ($c in $selection) {\

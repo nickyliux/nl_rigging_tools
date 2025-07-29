@@ -42,13 +42,13 @@ class RbnNode:
         self.rbSrf = None
         self.ribbonParent = p
         self.pf = pf
-        self.rbJnts = []
+        self.jnts_rb = []
 
         self.grpNames = ["RBN_GRP", "BSE_GRP", "CTL_GRP", "JNT_GRP", "AIM_GRP"]
         self.locNames = ["stt_loc", "mid_loc", "end_loc", "sttUp_loc", "endUp_loc"]
-        self.jntNames = ["stt_jnt", "mid_jnt", "end_jnt"]
+        self.jnt_names = ["stt_jnt", "mid_jnt", "end_jnt"]
 
-        for name in self.grpNames + self.locNames + self.jntNames:
+        for name in self.grpNames + self.locNames + self.jnt_names:
             setattr(self, name, None)
 
         # Volume and control attributes
@@ -59,7 +59,7 @@ class RbnNode:
         self.volMode = volMode
         self.rbJNum = rbJNum
         self.size = size
-        self.all_ikHs = []
+        self.ikhs = []
 
         # Build the ribbon rig
         self.build()
@@ -125,7 +125,7 @@ class RbnNode:
             )
             pin_xf.cstPar(jnt.parent)
             pin_xf.a.inheritsTransform.set(0)
-            self.rbJnts.append(jnt)
+            self.jnts_rb.append(jnt)
 
     def build_locs(self):
         """Create locators for the start, middle, and end of the ribbon."""
@@ -211,7 +211,7 @@ class RbnNode:
         mid_ikh = self.build_ik("mid", mid_aimJ, mid_aimJ_end, self.AIM_GRP)
         end_ikh = self.build_ik("end", end_aimJ, end_aimJ_end, self.AIM_GRP)
 
-        self.all_ikHs.extend([stt_ikh, mid_ikh, end_ikh])
+        self.ikhs.extend([stt_ikh, mid_ikh, end_ikh])
 
         if self.forSpine:
             # For spine, use parent constraints to maintain hierarchy
@@ -278,7 +278,7 @@ class RbnNode:
     #     stt_twist_ikh = self.build_ik("sttTw", stt_twistJ, stt_twistJ_end, self.stt_loc)
     #     end_twist_ikh = self.build_ik("endTw", end_twistJ, end_twistJ_end, self.end_loc)
 
-    #     self.all_ikHs.extend([stt_twist_ikh, end_twist_ikh])
+    #     self.ikhs.extend([stt_twist_ikh, end_twist_ikh])
 
     #     c_loc_ofs2 = self.mid_loc.offset
     #     ut.blendC_(stt_twistG.a.r, end_twistG.a.r) >> c_loc_ofs2.a.r
@@ -321,8 +321,8 @@ class RbnNode:
             frameCache.a.varyTime.set(i)
 
             ratio = (D / (d / scaleFix)) ** (frameCache.a.varying * self.autoVol)
-            ratio >> self.rbJnts[i].a.sy
-            ratio >> self.rbJnts[i].a.sz
+            ratio >> self.jnts_rb[i].a.sy
+            ratio >> self.jnts_rb[i].a.sz
 
         self.d = d
 
@@ -333,7 +333,7 @@ class RbnNode:
 
     def setup_vis(self):
         """Set up visibility for the ribbon rig."""
-        mc.hide(self.all_ikHs)
+        mc.hide(self.ikhs)
         # mc.hide(self.SRF_GRP, self.AIM_GRP, self.LOC_GRP)
 
     def build_post(self):

@@ -14,7 +14,7 @@ class RigBase:
 
     def __init__(self, rigNode):
         if not mc.objExists("master_ctl"):
-            # logging.error("Missing master_ctl")
+            logging.error("Missing master_ctl")
             raise RuntimeError("Missing master_ctl !")
 
         self.masterC = CrvNode("master_ctl")

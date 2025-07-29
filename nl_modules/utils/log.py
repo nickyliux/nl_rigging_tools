@@ -4,19 +4,27 @@ import logging
 def update_root_logger():
     """Updated root logger to print more info"""
 
+    # logging.basicConfig(
+    #     level=TRACE,
+    #     stream=sys.stdout,
+    #     format="%(levelname)s:%(name)s:%(funcName)s:%(message)s",
+    # )
+    # format="%(levelname)s:%(name)s:%(message)s",
+
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
     logger.handlers.clear()
 
-    # logging.addLevelName(logging.INFO, "info")
-    # logging.addLevelName(logging.WARNING, "warn")
-
     stream_hdl = logging.StreamHandler()
     formatter = logging.Formatter(
-        "[%(levelname).1s] %(filename)-18s %(funcName)-20s : %(message)s"
+        "[%(levelname).1s] %(filename)-20s %(funcName)-20s %(message)s"
     )
+    # %(asctime)s "%Y-%m-%d %H:%M:%S",
     stream_hdl.setFormatter(formatter)
     logger.addHandler(stream_hdl)
+
+    print(f"{'LVL':5s} {'FILE':20s} {'METHOD':20s} MESSAGE")
+    print(f"{'---':5s} {'----':20s} {'------':20s} -------")
 
 
 # def print_methods(className):

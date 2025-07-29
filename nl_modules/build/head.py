@@ -7,23 +7,21 @@ class Head(RigModule):
 
     def __init__(self, rigNode):
         """Initialize the Head rig module with the given rigNode."""
-
         super().__init__(rigNode)
 
         # Joint names and attributes
-        self.jntNames = ["head", "jaw", "lf_eye", "rt_eye"]
-        for name in self.jntNames:
+        self.jnt_names = ["head", "jaw", "lf_eye", "rt_eye"]
+        for name in self.jnt_names:
             setattr(self, name, None)
             setattr(self, f"{name}_fkc", None)
 
         # Main attributes
-        self.joints = []
-        self.fkCtl = []
+        self.jnts = []
+        self.ctls_fk = []
         self.rootJ = None
 
-    def genSk(self):
+    def gen_sk(self):
         """Generate the skeleton for the head rig."""
-
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["st", "ed"], scale=10)
         jaw_list = self.gen_sk_fr_names(["jaw", "jawEnd"], scale=4)
@@ -37,11 +35,10 @@ class Head(RigModule):
 
     def build(self):
         """Build the head rig module."""
-
         self.build_pre_module()
-        self.joints = self.rootJ.allChildrenJt2
+        self.jnts = self.rootJ.allChildrenJt2
         self.head, self.headEnd, self.jaw, self.jawEnd, self.lf_eye, self.rt_eye = (
-            self.joints
+            self.jnts
         )
         self.build_ctl()
         self.build_fk()
@@ -49,8 +46,8 @@ class Head(RigModule):
 
     def build_ctl(self):
         """Build the controls for the head rig module."""
-
         logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
             ("head_fkc", "squR", None, rSz * 2, 0, -1),
@@ -64,10 +61,10 @@ class Head(RigModule):
 
     def build_fk(self):
         """Build the FK controls for the head rig module."""
-
         logging.info(self.rigID)
-        self.fkCtl = [self.head_fkc, self.jaw_fkc, self.lf_eye_fkc, self.rt_eye_fkc]
-        for ctl in self.fkCtl:
+
+        self.ctls_fk = [self.head_fkc, self.jaw_fkc, self.lf_eye_fkc, self.rt_eye_fkc]
+        for ctl in self.ctls_fk:
             ctl | self.CTL_DATA
 
         self.head_fkc.alignTo(self.head)
@@ -89,7 +86,7 @@ class Head(RigModule):
         self.rt_eye_fkc.addOffsetGrp()
         self.rt_eye_fkc.cstPar(self.rt_eye, mo=1)
 
-        # self.isolate_align(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC])
+        # self.isolate_align(self.ctls_fk[0], [self.ctls_fk[0].parent, self.masterC])
         # self.isolate_align(self.head_fkc, spaces=[self.head_fkc.parent, self.masterC])
 
     def setup_vis(self):
@@ -100,13 +97,11 @@ class Head(RigModule):
 
     def setup_channel(self):
         """Setup channels for the head rig controls."""
-
         self.head_fkc.a.showAttr(r=1, s=1)
         self.jaw_fkc.a.showAttr(t=1, r=1)
 
     def setup_space(self):
         """Setup space switching for the head rig controls."""
-
         self.head_fkc.a.add("spaceType", dv=1, k=0, cb=0)
         self.rigNode.setMsg({"spaceHolder1": self.head_fkc})
         spaces = "neck, COG, master"
@@ -116,25 +111,22 @@ class Head(RigModule):
 
     def setup_scale(self):
         """Setup scale for the head rig module."""
-
         self.head_fkc.a.s * self.masterC.a["globalScale"] >> self.SKL_DATA.a.s
 
     def setup_ctlSet(self):
         """Setup control sets for the head rig module."""
-
-        self.add_ctl_set(self.fkCtl)
+        self.add_ctl_set(self.ctls_fk)
 
     def setup_bindJnt(self):
         """Setup bind joints for the head rig module."""
-
-        self.bindJnts = [self.head, self.jaw, self.lf_eye, self.rt_eye]
-        self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_div(self.bindJnts, 4)
+        self.jnts_bind = [self.head, self.jaw, self.lf_eye, self.rt_eye]
+        self.add_bind_jnt_set(self.jnts_bind)
+        self.add_proxy_div(self.jnts_bind, 4)
 
     def build_post(self):
         """Post setup for the head rig module."""
-
         logging.info(self.rigID)
+
         self.setup_scale()
         self.setup_bindJnt()
         self.setup_ctlSet()

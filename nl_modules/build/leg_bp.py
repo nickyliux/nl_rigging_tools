@@ -43,20 +43,20 @@ class LegBp(RigModule):
         self.BF_GRP = GrpNode("BF", pf=self.rigID, p=self.CTL_DATA)
 
         # Joint names and attributes
-        self.jntNames = ["hip", "upr", "lwr", "palm", "ball", "tip"]
-        for name in self.jntNames:
+        self.jnt_names = ["hip", "upr", "lwr", "palm", "ball", "tip"]
+        for name in self.jnt_names:
             setattr(self, name, None)
             setattr(self, f"{name}_fkc", None)
 
         # Joint and control lists
-        self.joints = []
-        self.joints_fk = []
-        self.joints_ik = []
-        self.joints_bf = []
-        self.ikCtl = []
-        self.fkCtl = []
-        self.all_ikHs = []
-        self.subCtls = []
+        self.jnts = []
+        self.jnts_fk = []
+        self.jnts_ik = []
+        self.jnts_bf = []
+        self.ctls_ik = []
+        self.ctls_fk = []
+        self.ctls_sub = []
+        self.ikhs = []
 
         # Toes related attributes
         self.toesJntList = []
@@ -64,7 +64,7 @@ class LegBp(RigModule):
         self.toeIKHs = []
 
         # IK/FK/Blend/Other attributes
-        self.jointsFix = None
+        self.jntsFix = None
         self.pvc = None
         self.ikc = None
         self.smart_ctl = None
@@ -81,15 +81,15 @@ class LegBp(RigModule):
         self.ikH_PV = None
         self.ball_ikc = None
         self.patellaJ = None
-        self.ribbonUp = None
-        self.ribbonLw = None
+        self.ribbon_up = None
+        self.ribbon_lw = None
         self.scapularG = None
         self.scap_fkc = None
 
-    def genSk(self):
+    def gen_sk(self):
         """Generate the skeleton for the leg rig."""
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(self.jntNames)
+        root_list = self.gen_sk_fr_names(self.jnt_names)
 
         if self.toeBones:
             self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
@@ -139,8 +139,8 @@ class LegBp(RigModule):
     def build(self):
         """Build the leg rig module."""
         self.build_pre_module()
-        self.joints = self.rootJ.allChildrenJt2
-        self.hip, self.upr, self.lwr, self.palm, self.ball, self.tip = self.joints
+        self.jnts = self.rootJ.allChildrenJt2
+        self.hip, self.upr, self.lwr, self.palm, self.ball, self.tip = self.jnts
 
         self.build_ctl()
         self.build_fk()
@@ -149,7 +149,7 @@ class LegBp(RigModule):
         # self.build_nlAutoAim(
         #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
         # )
-        self.bindJnts = [
+        self.jnts_bind = [
             self.hip,
             self.upr,
             self.lwr,
@@ -160,14 +160,14 @@ class LegBp(RigModule):
 
         self.scapularG = self.build_scapular(
             ikc=self.ikc,
-            fkc=self.fkCtl[0],
-            jnts=self.joints,
+            fkc=self.ctls_fk[0],
+            jnts=self.jnts,
             EXTRA=self.scapularExtra,
             scapCtl=self.scap_fkc,
         )
 
         if self.rbnBones:
-            self.ribbonUp, self.ribbonLw = self.build_bendy_ribbon(
+            self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(
                 rbJNum=self.rbnJntNum,
                 root=self.hip,
                 upr=self.upr,
@@ -180,7 +180,7 @@ class LegBp(RigModule):
         if self.kneeFix:
             self.boneFix_setup(self.lwr, self.palm)
             if self.rbnBones:
-                self.boneFix.cstPoi(self.ribbonLw.stt_loc)
+                self.boneFix.cstPoi(self.ribbon_lw.stt_loc)
 
         if self.patellaBone:
             self.patellaJ = self.patella_setup()
@@ -197,17 +197,17 @@ class LegBp(RigModule):
         """Build the FK controls for the leg rig."""
         logging.info(self.rigID)
 
-        self.joints_fk = common.dupSk(
-            self.joints, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
+        self.jnts_fk = common.dupSk(
+            self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
         )
-        self.fkCtl = [
+        self.ctls_fk = [
             self.hip_fkc,
             self.upr_fkc,
             self.lwr_fkc,
             self.palm_fkc,
             self.ball_fkc,
         ]
-        self.build_fk_with_ctl2(self.joints_fk[:-1], self.fkCtl[:-1], p=self.FK_GRP)
+        self.build_fk_with_ctl2(self.jnts_fk[:-1], self.ctls_fk[:-1], p=self.FK_GRP)
         # self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
@@ -225,8 +225,8 @@ class LegBp(RigModule):
 
         self.ikc.alignTo(mg)
         self.pvc.alignTo(pvc_guide)
-        self.joints_ik = common.dupSk(
-            self.joints, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.D_RED
+        self.jnts_ik = common.dupSk(
+            self.jnts, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.D_RED
         )
 
         ikH1 = IkNode(
@@ -299,16 +299,16 @@ class LegBp(RigModule):
         self.ikc.a.add("kneeTwist") * xDr >> ikH1.a.twist
         (self.ikc, self.pvc, self.ikCstG) | self.IK_GRP
         self.pvc_line = CrvNode.buildLineLinked(
-            tgt1=self.joints_ik[2], tgt2=self.pvc, pf=rID, dspType=2, p=self.IK_GRP
+            tgt1=self.jnts_ik[2], tgt2=self.pvc, pf=rID, dspType=2, p=self.IK_GRP
         )
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
 
         ikH1.stretchyIk(soft=1)
-        self.hip_fkc.cstPar(self.joints_ik[0], mo=1)
+        self.hip_fkc.cstPar(self.jnts_ik[0], mo=1)
 
-        self.all_ikHs = [ikH1, ikH2, ikH3]
-        self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal]
+        self.ikhs = [ikH1, ikH2, ikH3]
+        self.ctls_ik = [self.ikc, self.pvc, self.ikc_gimbal]
         self.ikH1 = ikH1
         self.toe_wiggle_grp = toe_wiggle_grp
 
@@ -318,8 +318,8 @@ class LegBp(RigModule):
         """Blend FK and IK controls for the leg rig."""
         logging.info(self.rigID)
 
-        self.joints_bf = common.dupSk(
-            self.joints, "_bf", p=self.BF_GRP, r=self.rigSize * 4, color=Color.D_YELLOW
+        self.jnts_bf = common.dupSk(
+            self.jnts, "_bf", p=self.BF_GRP, r=self.rigSize * 4, color=Color.D_YELLOW
         )
 
         self.setting.snapTo(self.hip, p=self.CTL_DATA)
@@ -327,13 +327,13 @@ class LegBp(RigModule):
 
         self.setting.a.addSep()
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
-        total = len(self.joints) - 1
+        total = len(self.jnts) - 1
 
         for i in range(total):
-            fkj = self.joints_fk[i]
-            ikj = self.joints_ik[i]
-            bfj = self.joints_bf[i]
-            jnt = self.joints[i]
+            fkj = self.jnts_fk[i]
+            ikj = self.jnts_ik[i]
+            bfj = self.jnts_bf[i]
+            jnt = self.jnts[i]
             if i > 0:
                 common.cstMulti(fkj, ikj, bfj, w=fkIkBlend)
                 # ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> bfj.a.t
@@ -354,10 +354,10 @@ class LegBp(RigModule):
                 bfj.cstPar(ofg, mo=1)
                 self.ball_fkc.cstPar(jnt)
 
-        # self.hip_fkc.cstPar(self.joints_bf[0], mo=1)
+        # self.hip_fkc.cstPar(self.jnts_bf[0], mo=1)
 
         # Useful for fk ik switch popUp menu
-        for ctl in self.fkCtl + self.ikCtl + [self.smart_ctl]:
+        for ctl in self.ctls_fk + self.ctls_ik + [self.smart_ctl]:
             ctl.a.addSep()
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
@@ -378,7 +378,7 @@ class LegBp(RigModule):
                 color=Color.BLACK,
                 width=2,
             )
-            self.subCtls.append(ctl)
+            self.ctls_sub.append(ctl)
 
         self.ball_ikc = ballRollG.addOffsetGrp(below=1)
         CrvNode(self.ball_ikc)(
@@ -390,7 +390,7 @@ class LegBp(RigModule):
             width=2,
         )
         self.rigNode.setMsg({"ball_ikc": self.ball_ikc})
-        self.ikCtl.append(self.ball_ikc)
+        self.ctls_ik.append(self.ball_ikc)
 
         # Smart Ctl setup
         self.smart_ctl.snapAlignTo(toeRollG, self.master_guide)
@@ -428,7 +428,7 @@ class LegBp(RigModule):
 
             # FK setup for toe
             ctlList = []
-            self.bindJnts.extend(toeJs[:-1])
+            self.jnts_bind.extend(toeJs[:-1])
             fkToeList = toeJs[2:-1]
             for jnt in fkToeList:
                 crvName = f"{jnt.name}_ctl_#"
@@ -489,22 +489,22 @@ class LegBp(RigModule):
         self.ctl_vis_toggle(
             self.setting.a["fkIkBlend"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
-            offList=self.fkCtl[1:-1],
+            offList=self.ctls_fk[1:-1],
         )
         self.ctl_vis_toggle(
             self.ikc.a.add("extraCtlVis", dv=1, attrType="bool", k=0),
-            onList=self.subCtls,
+            onList=self.ctls_sub,
         )
         self.ctl_vis_toggle(
             self.setting.a.add("setupJntVis", attrType="bool", dv=0, k=0),
-            onList=self.joints_fk + self.joints_ik + self.joints_bf,
+            onList=self.jnts_fk + self.jnts_ik + self.jnts_bf,
         )
         if self.rbnBones:
             self.ctl_vis_toggle(
                 self.setting.a.add("bendyCtlVis", attrType="bool", dv=0, k=0),
                 onList=self.all_bend,
             )
-        mc.hide(self.all_ikHs, self.toeIKHs)
+        mc.hide(self.ikhs, self.toeIKHs)
 
     def setup_channel(self):
         """Setup channels for the leg rig controls."""
@@ -513,7 +513,7 @@ class LegBp(RigModule):
         self.smart_ctl.a.showAttr(r=1)
         self.ball_ikc.a.showAttr(r=1)
 
-        for ctl in self.fkCtl + self.subCtls + [self.ikc, self.pvc, self.pin_fkc]:
+        for ctl in self.ctls_fk + self.ctls_sub + [self.ikc, self.pvc, self.pin_fkc]:
             ctl.a.showAttr(t=1, r=1)
         for ctl in self.all_bend or []:
             ctl.a.showAttr(t=1, r=1, s=1)
@@ -524,13 +524,13 @@ class LegBp(RigModule):
     def setup_rotate_order(self):
         """Setup rotate order for the leg rig controls."""
         for c in (
-            self.fkCtl
-            + self.ikCtl
+            self.ctls_fk
+            + self.ctls_ik
             + [
                 self.lwr,
-                self.joints_bf[2],
-                self.joints_fk[2],
-                self.joints_ik[2],
+                self.jnts_bf[2],
+                self.jnts_fk[2],
+                self.jnts_ik[2],
                 self.pin_fkc,
             ]
         ):
@@ -562,30 +562,30 @@ class LegBp(RigModule):
         self.masterC.a.globalScale >> self.RIG_DATA.a.s
         self.masterC.a.globalScale >> self.SKL_DATA.a.s
 
-        palmScale = self.setting.a.add("palmScale", min=0.01, dv=1)
-        self.ikc.a.add("palmScale", min=0.01, proxy=palmScale)
+        palm_scale = self.setting.a.add("palmScale", min=0.01, dv=1)
+        self.ikc.a.add("palmScale", min=0.01, proxy=palm_scale)
 
-        palmScale >> self.ball_fkc.offset.a.s
-        palmScale >> self.ikc.a.s
+        palm_scale >> self.ball_fkc.offset.a.s
+        palm_scale >> self.ikc.a.s
 
-        for jnt in [self.palm, self.joints_fk[3], self.joints_ik[3], self.joints_bf[3]]:
-            palmScale >> jnt.a.s
+        for jnt in [self.palm, self.jnts_fk[3], self.jnts_ik[3], self.jnts_bf[3]]:
+            palm_scale >> jnt.a.s
 
         for jnt in [
             self.palm,
-            self.joints[4],
-            self.joints_fk[4],
-            self.joints_ik[4],
-            self.joints_bf[4],
+            self.jnts[4],
+            self.jnts_fk[4],
+            self.jnts_ik[4],
+            self.jnts_bf[4],
         ]:
             jnt.a["segmentScaleCompensate"].set(0)
 
     def setup_ctlSet(self):
         """Setup control sets for the leg rig module."""
         ctlSet = (
-            self.fkCtl
-            + self.ikCtl
-            + self.subCtls
+            self.ctls_fk
+            + self.ctls_ik
+            + self.ctls_sub
             + [self.setting, self.smart_ctl, self.pin_fkc]
         )
         if self.rbnBones:
@@ -607,8 +607,8 @@ class LegBp(RigModule):
 
     def setup_bindJnt(self):
         """Setup bind joints for the leg rig module."""
-        self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_ratio(self.bindJnts, 2)
+        self.add_bind_jnt_set(self.jnts_bind)
+        self.add_proxy_ratio(self.jnts_bind, 2)
 
     def build_post(self):
         """Post setup for the leg rig module."""

@@ -23,15 +23,15 @@ class TailFk(RigModule):
         self.RT_GUIDE = CrvNode(rID + "_rt_guide")
 
         self.setting = None
-        self.fkCtl = []
+        self.ctls_fk = []
         self.fkJnt = []
         self.rbJnt = []
-        self.bindJnts = []
+        self.jnts_bind = []
         self.rbSrf = None
         self.allClusters = []
         self.REVERSE = 0
 
-    def genSk(self):
+    def gen_sk(self):
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
@@ -69,10 +69,10 @@ class TailFk(RigModule):
                 rigData=self.RIG_DATA,
                 sklData=self.SKL_DATA,
             )
-            self.bindJnts = self.rbJnt
+            self.jnts_bind = self.rbJnt
         else:
             mc.delete(self.allClusters, self.rbSrf)
-            self.bindJnts = self.fkJnt
+            self.jnts_bind = self.fkJnt
 
         self.build_post()
 
@@ -131,13 +131,13 @@ class TailFk(RigModule):
             ctl.cstPar(clu, mo=1)
 
             self.rigNode.setMsg({f"fkc{i}": ctl})
-            self.fkCtl.append(ctl)
+            self.ctls_fk.append(ctl)
             self.allClusters.append(clu)
 
-        self.build_fk_with_ctl3(self.fkJnt, self.fkCtl, p=self.CTL_DATA)
+        self.build_fk_with_ctl3(self.fkJnt, self.ctls_fk, p=self.CTL_DATA)
 
         # ADD FOLLOW ALIGN ON 1 ST FK CTL
-        self.isolate_align(self.fkCtl[0], [self.fkCtl[0].parent, self.masterC])
+        self.isolate_align(self.ctls_fk[0], [self.ctls_fk[0].parent, self.masterC])
 
         mc.delete(self.rootJ)
         self.rootJ = self.fkJnt[0]
@@ -151,37 +151,37 @@ class TailFk(RigModule):
         [x | cluGrp2 for x in self.allClusters]
 
         # scalable
-        self.fkCtl[0].a.s >> self.SKL_DATA.a.s
-        self.fkCtl[0].a.s >> cluGrp2.a.s
+        self.ctls_fk[0].a.s >> self.SKL_DATA.a.s
+        self.ctls_fk[0].a.s >> cluGrp2.a.s
 
-        self.setting.snapTo(self.fkCtl[0])
+        self.setting.snapTo(self.ctls_fk[0])
         self.setting.addOffsetGrp(snapIt=1)
         self.setting.a.t.set(0, rSz * 50, 0)
-        self.fkCtl[0].cstPar(self.setting.offset, mo=1)
+        self.ctls_fk[0].cstPar(self.setting.offset, mo=1)
 
-        self.setting.a.add("tailScale", min=0.01, dv=1) >> self.fkCtl[0].a.s
+        self.setting.a.add("tailScale", min=0.01, dv=1) >> self.ctls_fk[0].a.s
 
     def setup_vis(self):
         self.ctl_vis_toggle(
             self.setting.a.add("fkCtl", k=0, min=0, max=1, dv=1),
-            onList=[self.fkCtl[0]],
+            onList=[self.ctls_fk[0]],
         )
         if self.RBN_BONES:
             mc.hide(self.allClusters)
 
     def setup_channel(self):
-        for ctl in self.fkCtl:
+        for ctl in self.ctls_fk:
             ctl.a.showAttr(t=1, r=1)
         self.setting.a.showAttr()
 
     def setup_rotate_order(self):
-        for ctl in self.fkCtl:
+        for ctl in self.ctls_fk:
             ctl.a.ro.set(3)
 
     def build_post(self):
-        self.add_bind_jnt_set(self.bindJnts)
-        self.add_ctl_set(self.fkCtl)
-        self.setup_anchor_module({"anchorF1": self.fkCtl[0].offset})
+        self.add_bind_jnt_set(self.jnts_bind)
+        self.add_ctl_set(self.ctls_fk)
+        self.setup_anchor_module({"anchorF1": self.ctls_fk[0].offset})
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()

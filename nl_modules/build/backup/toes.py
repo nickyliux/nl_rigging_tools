@@ -22,7 +22,7 @@
 #
 #
 #
-#     def genSk(self):
+#     def gen_sk(self):
 #         s = self.rigSize
 #         root = self.gen_sk_fr_names(["root"], pf=self.rigID)[0]
 #         root | self.SKL
@@ -127,7 +127,7 @@
 #         # [~fkIk >> c.a.v for c in (self.hand_fkc, self.lwr_fkc, self.upr_fkc)]
 #         #
 #         # # Lock Hide Attr
-#         # [c.a.lockHide(t=1, r=1) for c in self.fkCtl]
+#         # [c.a.lockHide(t=1, r=1) for c in self.ctls_fk]
 #         # [c.a.lockHide(t=1, s=1) for c in self.all_bend]
 #         #
 #         # self.ikc.a.lockHide(t=1, r=1)
@@ -137,7 +137,7 @@
 #         # self.lwr_fkc.a.rx.lockHide()
 #         #
 #         # # Hide Obj
-#         # mc.hide(self.all_iks, self.joints_fk, self.joints_ik, self.moduleG)
+#         # mc.hide(self.all_iks, self.jnts_fk, self.jnts_ik, self.moduleG)
 #
 #
 #         self.addBindJSet(self.rootJ.allChildrenJt2)

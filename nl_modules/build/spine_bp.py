@@ -33,17 +33,17 @@ class SpineBp(RigModule):
         self.chest_ctl = None
 
         # Control and joint lists
-        self.ikCtls = []
-        self.fkCtls = []
-        self.ctlJnts = []
-        self.bindJnts = []
-        self.fkJnts = []
-        self.rbJnts = []
+        self.ctls_ik = []
+        self.ctls_fk = []
+        self.jnts_ctl = []
+        self.jnts_bind = []
+        self.jnts_fk = []
+        self.jnts_rb = []
 
         # Ribbon surface
         self.rbSrf = None
 
-    def genSk(self):
+    def gen_sk(self):
         """Generate the skeleton for the spine rig."""
 
         self.genSk_module()
@@ -87,7 +87,7 @@ class SpineBp(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        self.fkJnts = JntNode.createJntFrCrv(
+        self.jnts_fk = JntNode.createJntFrCrv(
             self.LINE_GUIDE,
             num=self.fkJntNum,
             pf=rID,
@@ -96,26 +96,26 @@ class SpineBp(RigModule):
             p=self.SKL_DATA,
         )
         mc.delete(self.rootJ)
-        self.rootJ = self.fkJnts[0]
+        self.rootJ = self.jnts_fk[0]
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
-        self.fkCtls = []
-        for i, j in enumerate(self.fkJnts[:-1]):
+        self.ctls_fk = []
+        for i, j in enumerate(self.jnts_fk[:-1]):
             c = CrvNode(
                 f"{i + 1}_fkc", pf=rID, shape="cubeR", scale=Vec((5, 1, 5)) * rSz, top=1
             )
-            self.fkCtls.append(c)
+            self.ctls_fk.append(c)
 
-        self.build_fk_with_ctl2(self.fkJnts[1:], self.fkCtls[1:], p=self.CTL_DATA)
+        self.build_fk_with_ctl2(self.jnts_fk[1:], self.ctls_fk[1:], p=self.CTL_DATA)
         #
         #   modify hipCtl specific for hip rotation
         #
-        hipCtl = self.fkCtls[0]
+        hipCtl = self.ctls_fk[0]
         hipCtl(p=self.CTL_DATA, addOfs=1, color=20)
-        hipCtl.offset.snapAlignTo(self.fkJnts[1], self.fkJnts[0])
+        hipCtl.offset.snapAlignTo(self.jnts_fk[1], self.jnts_fk[0])
         hipCtl.cv_move(0, rSz * -20, 0)
-        hipCtl.cstPar(self.fkJnts[0], mo=1)
-        self.bindJnts = self.fkJnts
+        hipCtl.cstPar(self.jnts_fk[0], mo=1)
+        self.jnts_bind = self.jnts_fk
 
     def build_ik(self):
         """Build the IK controls for the spine rig."""
@@ -124,9 +124,9 @@ class SpineBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         mg = self.master_guide
-        self.hip_ctl.snapAlignTo(self.fkJnts[0], mg)
+        self.hip_ctl.snapAlignTo(self.jnts_fk[0], mg)
         self.mid_ctl.snapAlignTo(self.MD_GUIDE, mg)
-        self.chest_ctl.snapAlignTo(self.fkJnts[-1], mg)
+        self.chest_ctl.snapAlignTo(self.jnts_fk[-1], mg)
         self.cog_ctl.snapAlignTo(self.hip_ctl, mg)
 
         self.setting.alignTo(self.cog_ctl, p=self.CTL_DATA)
@@ -134,21 +134,21 @@ class SpineBp(RigModule):
 
         self.cog_gmb = CrvNode(self.cog_ctl).add_gimbal()
         self.cog_ctl | self.CTL_DATA
-        self.cog_gmb.cstPar(self.fkCtls[0].offset, mo=1)
-        self.cog_gmb.cstPar(self.fkCtls[1].offset, mo=1)
+        self.cog_gmb.cstPar(self.ctls_fk[0].offset, mo=1)
+        self.cog_gmb.cstPar(self.ctls_fk[1].offset, mo=1)
 
-        self.hip_ctl | self.fkCtls[0]
-        self.chest_ctl | self.fkCtls[-1]
-        self.mid_ctl | self.fkCtls[len(self.fkCtls) // 2]
+        self.hip_ctl | self.ctls_fk[0]
+        self.chest_ctl | self.ctls_fk[-1]
+        self.mid_ctl | self.ctls_fk[len(self.ctls_fk) // 2]
         self.hip_ctl.addOffsetGrp()
         self.mid_ctl.addOffsetGrp(count=2)
         self.chest_ctl.addOffsetGrp()
         self.cog_ctl.addOffsetGrp()
         self.hip_ctl.a.ry @ self.chest_ctl.a.ry >> self.mid_ctl.offset.a.ry
 
-        self.chest_ctl.cstOri(self.fkJnts[-1], mo=1)
-        self.cog_gmb.cstSca(self.fkJnts[0])
-        self.fkJnts[0].childrenJt[0].a.segmentScaleCompensate.set(0)
+        self.chest_ctl.cstOri(self.jnts_fk[-1], mo=1)
+        self.cog_gmb.cstSca(self.jnts_fk[0])
+        self.jnts_fk[0].childrenJt[0].a.segmentScaleCompensate.set(0)
 
         if self.rbnBones:
             self.rbSrf = SrfNode.buildRbSrf(
@@ -161,11 +161,11 @@ class SpineBp(RigModule):
             )
             self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
-            self.ctlJnts = self.build_ctl_jnt(
+            self.jnts_ctl = self.build_ctl_jnt(
                 [self.hip_ctl, self.mid_ctl, self.chest_ctl], r=rSz * 10
             )
-            self.rbSrf.weightTo(self.ctlJnts, chain=0, mi=2, dr=6)
-            self.rbJnts = SrfNode.buildRbJnt(
+            self.rbSrf.weightTo(self.jnts_ctl, chain=0, mi=2, dr=6)
+            self.jnts_rb = SrfNode.buildRbJnt(
                 self.rbnJntNum,
                 pf=rID,
                 size=rSz,
@@ -175,13 +175,13 @@ class SpineBp(RigModule):
             )
             self.volume_setup()
 
-            self.bindJnts = self.rbJnts
+            self.jnts_bind = self.jnts_rb
 
-        for ctl in self.fkCtls:
+        for ctl in self.ctls_fk:
             self.cog_ctl.a.s >> ctl.offset.a.s
 
         self.masterC.a.globalScale >> self.SKL_DATA.a.s
-        self.ikCtls = [self.hip_ctl, self.mid_ctl, self.chest_ctl]
+        self.ctls_ik = [self.hip_ctl, self.mid_ctl, self.chest_ctl]
 
     def volume_setup(self):
         """Setup volume squash/stretch for the spine rig."""
@@ -209,22 +209,22 @@ class SpineBp(RigModule):
             fc.a.varyTime.set(i)
 
             ratio = (scaleFix * D / d) ** (fc.a.varying * volume)
-            ratio >> self.rbJnts[i].a.sy
-            ratio >> self.rbJnts[i].a.sz
+            ratio >> self.jnts_rb[i].a.sy
+            ratio >> self.jnts_rb[i].a.sz
 
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""
         self.ctl_vis_toggle(
             self.setting.a.add("fkCtlVis", min=0, max=1, dv=1, k=0),
-            onList=self.fkCtls,
+            onList=self.ctls_fk,
         )
         self.ctl_vis_toggle(
             self.setting.a.add("ikCtlsVis", min=0, max=1, dv=1, k=0),
-            onList=self.ikCtls,
+            onList=self.ctls_ik,
         )
         self.ctl_vis_toggle(
             self.setting.a.add("setupJntsVis", attrType="bool", dv=0, k=0),
-            onList=self.ctlJnts + self.fkJnts + self.rbJnts,
+            onList=self.jnts_ctl + self.jnts_fk + self.jnts_rb,
         )
 
     def setup_channel(self):
@@ -237,13 +237,13 @@ class SpineBp(RigModule):
             self.hip_ctl,
             self.mid_ctl,
             self.chest_ctl,
-        ] + self.fkCtls:
+        ] + self.ctls_fk:
             ctl.a.showAttr(t=1, r=1)
 
     def setup_rotate_order(self):
         """Setup rotate order for the spine rig controls."""
 
-        for ctl in self.fkCtls + self.ikCtls + [self.cog_ctl, self.cog_gmb]:
+        for ctl in self.ctls_fk + self.ctls_ik + [self.cog_ctl, self.cog_gmb]:
             ctl.a.ro.set(2)
 
     def setup_space(self):
@@ -260,18 +260,18 @@ class SpineBp(RigModule):
     def setup_anchor(self):
         """Setup anchor module for the spine rig controls."""
 
-        anchorM2Tgt = self.rbJnts[-1] if self.rbnBones else self.chest_ctl
+        anchorM2Tgt = self.jnts_rb[-1] if self.rbnBones else self.chest_ctl
         self.setup_anchor_module({"anchorM1": self.hip_ctl, "anchorM2": anchorM2Tgt})
 
     def build_post(self):
         """Post setup for the spine rig."""
 
         logging.info(self.rigID)
-        self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_ratio(self.bindJnts, 6)
+        self.add_bind_jnt_set(self.jnts_bind)
+        self.add_proxy_ratio(self.jnts_bind, 6)
 
         self.add_ctl_set(
-            self.fkCtls + self.ikCtls + [self.setting, self.cog_ctl, self.cog_gmb]
+            self.ctls_fk + self.ctls_ik + [self.setting, self.cog_ctl, self.cog_gmb]
         )
         self.setup_space()
         self.setup_anchor()

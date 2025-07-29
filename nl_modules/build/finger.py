@@ -24,20 +24,20 @@ class Finger(RigModule):
         self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA)
 
         # Joint names and attributes
-        self.jntNames = ["fgr01", "fgr02", "fgr03", "fgr04"]
+        self.jnt_names = ["fgr01", "fgr02", "fgr03", "fgr04"]
 
-        self.joints = []
-        self.joints_fk = []
-        self.joints_ikA = []
-        self.joints_ikB = []
-        self.ikCtl = []
-        self.fkCtl = []
-        self.all_ikHs = []
+        self.jnts = []
+        self.jnts_fk = []
+        self.jnts_ikA = []
+        self.jnts_ikB = []
+        self.ctls_ik = []
+        self.ctls_fk = []
+        self.ikhs = []
 
-    def genSk(self):
+    def gen_sk(self):
         """Generate the skeleton for the finger rig."""
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(self.jntNames, scale=3)
+        root_list = self.gen_sk_fr_names(self.jnt_names, scale=3)
         for j in root_list:
             JntNode(j).a["preferredAngleZ"].set(-10)
 
@@ -50,8 +50,8 @@ class Finger(RigModule):
         Build the finger rig module.
         """
         self.build_pre_module()
-        self.joints = self.rootJ.allChildrenJt2
-        self.fgr01, self.fgr02, self.fgr03, self.fgr04 = self.joints
+        self.jnts = self.rootJ.allChildrenJt2
+        self.fgr01, self.fgr02, self.fgr03, self.fgr04 = self.jnts
         self.build_ctl()
         self.build_fk()
         self.build_ik()
@@ -84,11 +84,11 @@ class Finger(RigModule):
     def build_fk(self):
         """Build the FK controls for the arm rig."""
         logging.info(self.rigID)
-        self.joints_fk = common.dupSk(
-            self.joints, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
+        self.jnts_fk = common.dupSk(
+            self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
         )
-        self.fkCtl = [self.fgr01_fkc, self.fgr02_fkc, self.fgr03_fkc, self.fgr04_fkc]
-        self.build_fk_with_ctl2(self.joints_fk, self.fkCtl, p=self.FK_GRP)
+        self.ctls_fk = [self.fgr01_fkc, self.fgr02_fkc, self.fgr03_fkc, self.fgr04_fkc]
+        self.build_fk_with_ctl2(self.jnts_fk, self.ctls_fk, p=self.FK_GRP)
 
     def build_ik(self):
         """Build the IK controls for the arm rig."""
@@ -96,11 +96,11 @@ class Finger(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         # Create IK joints
-        self.joints_ikA = common.dupSk(
-            self.joints, "_ikA", p=self.IK_GRP, r=rSz * 3, color=Color.D_RED
+        self.jnts_ikA = common.dupSk(
+            self.jnts, "_ikA", p=self.IK_GRP, r=rSz * 3, color=Color.D_RED
         )
-        self.joints_ikB = common.dupSk(
-            self.joints, "_ikB", p=self.IK_GRP, r=rSz * 4, color=Color.PINK
+        self.jnts_ikB = common.dupSk(
+            self.jnts, "_ikB", p=self.IK_GRP, r=rSz * 4, color=Color.PINK
         )
 
         #   ikc_zro
@@ -125,8 +125,8 @@ class Finger(RigModule):
         self.ikc.a.add("rotaRoll") >> self.tipRota_grp.a.rx
         self.ikc.a.add("extraCtlVis", attrType="bool", dv=0, k=0) >> self.extra_rota.a.v
 
-        self.joints_ikA[-2].cstPar(self.tipRota_grp.offset, mo=1)
-        self.extra_rota.cstOri(self.joints_ikB[-2], mo=1)
+        self.jnts_ikA[-2].cstPar(self.tipRota_grp.offset, mo=1)
+        self.extra_rota.cstOri(self.jnts_ikB[-2], mo=1)
 
         # Create IK handle
         ikH_A = self.create_ik(
@@ -136,8 +136,8 @@ class Finger(RigModule):
             "B", sj=self.fgr01, ee=self.fgr03, jsf="_ikB", p=self.extra_rota
         )
 
-        self.ikCtl = [self.ikc, self.extra_rota, self.pvc]
-        self.all_ikHs = [ikH_A, ikH_B]
+        self.ctls_ik = [self.ikc, self.extra_rota, self.pvc]
+        self.ikhs = [ikH_A, ikH_B]
 
     def create_ik(self, name, sj, ee, jsf, p):
         return IkNode(
@@ -162,20 +162,20 @@ class Finger(RigModule):
         self.rootJ.cstPar(self.setting)
 
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
-        for i in range(len(self.joints) - 1):
-            fkJ = self.joints_fk[i]
-            ikJ = self.joints_ikB[i]
-            jnt = self.joints[i]
+        for i in range(len(self.jnts) - 1):
+            fkJ = self.jnts_fk[i]
+            ikJ = self.jnts_ikB[i]
+            jnt = self.jnts[i]
             common.cstMulti(fkJ, ikJ, jnt, w=fkIkBlend)
 
         # Add blend attribute to all controls
-        for ctl in self.fkCtl + self.ikCtl:
+        for ctl in self.ctls_fk + self.ctls_ik:
             ctl.a.addSep()
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
     def setup_ctlSet(self):
         """Setup control sets for the finger rig."""
-        ctlSet = self.fkCtl + self.ikCtl
+        ctlSet = self.ctls_fk + self.ctls_ik
         self.add_ctl_set(ctlSet)
 
     def setup_scale(self):
@@ -184,18 +184,18 @@ class Finger(RigModule):
 
     def setup_vis(self):
         """Setup visibility for the finger rig module."""
-        mc.hide(self.all_ikHs)
+        mc.hide(self.ikhs)
 
         self.ctl_vis_toggle(
             self.setting.a["fkIkBlend"],
-            onList=self.ikCtl,
-            offList=self.fkCtl,
+            onList=self.ctls_ik,
+            offList=self.ctls_fk,
         )
 
         setupJntVis = self.setting.a.add("setupJntVis", attrType="bool", dv=0, k=0)
-        setupJntVis >> self.joints_ikA[0].a.v
-        setupJntVis >> self.joints_ikB[0].a.v
-        setupJntVis >> self.joints_fk[0].a.v
+        setupJntVis >> self.jnts_ikA[0].a.v
+        setupJntVis >> self.jnts_ikB[0].a.v
+        setupJntVis >> self.jnts_fk[0].a.v
 
     def setup_channel(self):
         """Setup channels for the finger rig module."""
@@ -204,13 +204,13 @@ class Finger(RigModule):
         for ctl in [self.ikc, self.pvc]:
             ctl.a.showAttr(t=1, r=0)
 
-        for ctl in self.fkCtl + [self.extra_rota]:
+        for ctl in self.ctls_fk + [self.extra_rota]:
             ctl.a.showAttr(t=1, r=1)
 
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
-        self.add_bind_jnt_set(self.joints)
-        # self.add_proxy_ratio(self.bindJnts, 2)
+        self.add_bind_jnt_set(self.jnts)
+        # self.add_proxy_ratio(self.jnts_bind, 2)
 
     def build_post(self):
         """Post setup for the leg rig module."""

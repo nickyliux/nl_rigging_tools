@@ -38,11 +38,11 @@ class SpineQd(RigModule):
         self.setting = None
         self.ctls = []
 
-        self.bindJnts = []
+        self.jnts_bind = []
         self.fkJnt = []
         self.fkJ_A = []
         self.fkJ_B = []
-        self.ctlJnts = []
+        self.jnts_ctl = []
         self.rbSrf = None
         self.crv = None
         self.crvRev = None
@@ -52,7 +52,7 @@ class SpineQd(RigModule):
         self.endFix_base = None
         self.endFix_chest = None
 
-    def genSk(self):
+    def gen_sk(self):
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
@@ -229,7 +229,7 @@ class SpineQd(RigModule):
         chest_gimbal = self.chest_ctl.add_gimbal()
         base_gimbal = self.base_ctl.add_gimbal()
 
-        self.ctlJnts = self.build_ctl_jnt(
+        self.jnts_ctl = self.build_ctl_jnt(
             [base_gimbal, self.mid_ctl, chest_gimbal],
             r=rSz * 12,
         )
@@ -239,7 +239,7 @@ class SpineQd(RigModule):
         self.fkJnt[-1].a.r.disconnect()
         self.chest_ctl.cstOri(self.fkJnt[-1], mo=1)
 
-        self.rbCrv.weightTo(self.ctlJnts, weightDir=1)
+        self.rbCrv.weightTo(self.jnts_ctl, weightDir=1)
         self.rbCrv.a.inheritsTransform.set(0)
 
         #
@@ -249,7 +249,7 @@ class SpineQd(RigModule):
         self.base_ctl.addOffsetGrp(below=1)
 
         if sliding:
-            self.rbCrvR.weightTo(self.ctlJnts, weightDir=-1)
+            self.rbCrvR.weightTo(self.jnts_ctl, weightDir=-1)
             self.rbCrvR.a.inheritsTransform.set(0)
 
             ikH_A.spline_twist_setup(self.base_ctl, self.chest_ctl, twistAxis="+z")
@@ -290,7 +290,7 @@ class SpineQd(RigModule):
             jnt=self.fkJnt[-1], srf=self.rbSrf, p=self.RIG_DATA, ctl=self.chest2_ctl
         )
 
-        self.bindJnts = SrfNode.buildRbJnt(
+        self.jnts_bind = SrfNode.buildRbJnt(
             self.RBN_JNT_NUM,
             pf=rID,
             size=rSz,
@@ -306,10 +306,10 @@ class SpineQd(RigModule):
         base_gimbal.cstPar(self.base2_ctl.addOffsetGrp())
         chest_gimbal.cstPar(self.chest2_ctl.addOffsetGrp())
 
-        self.base2_ctl.a.r >> self.ctlJnts[0].a.r
-        self.chest2_ctl.a.r >> self.ctlJnts[2].a.r
-        self.base2_ctl.a.add("tangentScale", min=0, dv=1) >> self.ctlJnts[0].a.s
-        self.chest2_ctl.a.add("tangentScale", min=0, dv=1) >> self.ctlJnts[2].a.s
+        self.base2_ctl.a.r >> self.jnts_ctl[0].a.r
+        self.chest2_ctl.a.r >> self.jnts_ctl[2].a.r
+        self.base2_ctl.a.add("tangentScale", min=0, dv=1) >> self.jnts_ctl[0].a.s
+        self.chest2_ctl.a.add("tangentScale", min=0, dv=1) >> self.jnts_ctl[2].a.s
 
         for ctl in [self.base_ctl, self.mid_ctl, self.chest_ctl]:
             ctl.a.addSep()
@@ -375,8 +375,8 @@ class SpineQd(RigModule):
             fc.a.varyTime.set(i)
 
             ratio = (D / (d / scaleFix)) ** (fc.a.varying * autoVol)
-            ratio >> self.bindJnts[i].a.sx
-            ratio >> self.bindJnts[i].a.sy
+            ratio >> self.jnts_bind[i].a.sx
+            ratio >> self.jnts_bind[i].a.sy
 
     def setup_vis(self):
         pass
@@ -400,7 +400,7 @@ class SpineQd(RigModule):
 
     def build_post(self):
         if self.RBN_JNT_NUM > 1:
-            self.add_bind_jnt_set(self.bindJnts)
+            self.add_bind_jnt_set(self.jnts_bind)
         self.add_ctl_set(self.ctls)
         self.setup_anchor()
         self.setup_vis()

@@ -88,10 +88,10 @@ class Ribbon(RigModule):
         rbRdr1 = self.addTwistReader(self.midJ, axis, idx=1, p=self.RB_GRP)
         # rbRdr = [rbRdr0, rbRdr1]
 
-        # logging.info("add ribbon joints -----------------------------------")
+        logging.info("add ribbon joints -----------------------------------")
         # rbJnts = self.addRibbonJnt(rbCrv, axis, seg=6, upObj=[self.startJ, self.midJ])
 
-        # logging.info("add twist and squash -----------------------------------")
+        logging.info("add twist and squash -----------------------------------")
         # half = int(len(rbJnts) / 2)
         #
         # self.deformTwist(rbJnts[:half], rbCtl1, start=rbRdr0, end=self.startJ)

@@ -33,16 +33,15 @@ class Tail(RigModule):
         self.rbSrf2 = None
 
         # --- Control and joint lists ---
-        self.fkCtl = []  # FK controls
-        self.fkJnt = []  # FK joints
-        self.ikCtl = []  # IK controls
-        self.ikJnt = []  # IK joints
-        self.ofsCtl = []  # Offset controls
-        self.ofsJnt = []  # Offset joints
-        self.rbJnt = []  # Ribbon joints
-        self.bindJnts = []  # Bind joints
+        self.ctls_fk = []  # FK controls
+        self.jnts_fk = []  # FK joints
+        self.ctls_ik = []  # IK controls
+        self.jnts_ik = []  # IK joints
+        self.ctls_ofs = []  # Offset controls
+        self.jnts_ofs = []  # Offset joints
+        self.jnts_bind = []  # Bind joints
 
-    def genSk(self):
+    def gen_sk(self):
         """Generate the skeleton for the tail rig."""
 
         self.genSk_module()
@@ -96,13 +95,13 @@ class Tail(RigModule):
     def build_ribbon(self):
         """Create the ribbon for the tail rig."""
         logging.info(self.rigID)
-        crvLenRatio, self.rbJnts = self.build_motionPath_ribbon(
+        crvLenRatio, self.jnts_rb = self.build_motionPath_ribbon(
             rbSrf=self.rbSrf2,
             jntNum=self.rbnJntNum,
             scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
         )
-        self.bindJnts = self.rbJnts
+        self.jnts_bind = self.jnts_rb
 
     def build_ik(self):
         """Build the IK controls for the tail rig."""
@@ -110,12 +109,12 @@ class Tail(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         # --- Create IK joint chain from guide curve ---
-        self.ikJnt = JntNode.createJntFrCrv(
+        self.jnts_ik = JntNode.createJntFrCrv(
             self.LINE_GUIDE, num=5, name="ikj", pf=rID, aimV=(0, 0, -1), size=rSz
         )
 
         # --- Attach ribbon surface weights to IK joints ---
-        SrfNode(self.rbSrf1).weightTo(self.ikJnt, mi=4, dr=6, chain=0)
+        SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6, chain=0)
 
         # --- Create and parent IK controls ---
         for i in range(5):
@@ -124,19 +123,19 @@ class Tail(RigModule):
                 pf=rID,
                 shape="sphere",
                 scale=rSz * 3,
-                align=self.ikJnt[i],
+                align=self.jnts_ik[i],
                 addOfs=1,
                 p=self.IK_GRP,
             )
-            self.ikJnt[i] | ctl
-            self.ikCtl.append(ctl)
+            self.jnts_ik[i] | ctl
+            self.ctls_ik.append(ctl)
             if i > 0:
-                ctl.offset | self.ikCtl[0]
+                ctl.offset | self.ctls_ik[0]
             self.rigNode.setMsg({f"ikc{i}": ctl})
 
         # --- Snap setting control to first IK control and constrain ---
-        self.setting.snapTo(self.ikCtl[0], p=self.FK_GRP)
-        self.ikCtl[0].cstPar(self.setting, mo=1)
+        self.setting.snapTo(self.ctls_ik[0], p=self.FK_GRP)
+        self.ctls_ik[0].cstPar(self.setting, mo=1)
 
     def build_fk(self):
         """Build the FK controls for the tail rig."""
@@ -144,7 +143,7 @@ class Tail(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         # --- Build FK joint chain from guide curve ---
-        self.fkJnt = JntNode.createJntFrCrv(
+        self.jnts_fk = JntNode.createJntFrCrv(
             self.LINE_GUIDE,
             num=self.fkJntNum + 1,
             pf=rID,
@@ -166,27 +165,27 @@ class Tail(RigModule):
                 up="-z",
                 scale=rSz,
                 top=1,
-                align=self.fkJnt[i],
+                align=self.jnts_fk[i],
             )
             self.rigNode.setMsg({f"fkc{i}": ctl})
-            self.fkCtl.append(ctl)
+            self.ctls_fk.append(ctl)
 
         # --- Build group chain and connect pins ---
         chainGrps = []
         lastGrp = self.FK_GRP
         for i in range(self.fkJntNum + 1):
-            grp = GrpNode(f"{i}_chainGrp", pf=rID, align=self.fkCtl[i], p=lastGrp)
+            grp = GrpNode(f"{i}_chainGrp", pf=rID, align=self.ctls_fk[i], p=lastGrp)
             pinXf[i].cstPar(grp, mo=1)
             chainGrps.append(grp)
             lastGrp = grp
 
         # --- Build FK with controls ---
-        self.build_fk_with_ctl3(self.fkJnt, self.fkCtl, p=self.FK_GRP)
+        self.build_fk_with_ctl3(self.jnts_fk, self.ctls_fk, p=self.FK_GRP)
 
         # --- Connect chain groups to FK control offsets ---
         for i in range(self.fkJntNum + 1):
-            chainGrps[i].a.t >> self.fkCtl[i].offset.a.t
-            chainGrps[i].a.r >> self.fkCtl[i].offset.a.r
+            chainGrps[i].a.t >> self.ctls_fk[i].offset.a.t
+            chainGrps[i].a.r >> self.ctls_fk[i].offset.a.r
 
         # --- Build offset control layer ---
         for i in range(self.fkJntNum + 1):
@@ -195,53 +194,53 @@ class Tail(RigModule):
                 pf=rID,
                 shape="sphere2",
                 scale=rSz / 2,
-                align=self.fkCtl[i],
-                p=self.fkCtl[i],
+                align=self.ctls_fk[i],
+                p=self.ctls_fk[i],
             )
             # moveY=rSz * 25,
             jnt = JntNode(f"{i}_ofs_jnt", pf=rID, align=ctl, p=ctl)
-            self.ofsCtl.append(ctl)
-            self.ofsJnt.append(jnt)
+            self.ctls_ofs.append(ctl)
+            self.jnts_ofs.append(jnt)
 
         # --- Attach ribbon surface weights to offset joints ---
-        SrfNode(self.rbSrf2).weightTo(self.ofsJnt, chain=0, mi=2, dr=6)
+        SrfNode(self.rbSrf2).weightTo(self.jnts_ofs, chain=0, mi=2, dr=6)
 
         # --- Cleanup and update root joint ---
         mc.delete(self.rootJ)
-        self.rootJ = self.fkJnt[0]
+        self.rootJ = self.jnts_fk[0]
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def setup_vis(self):
         """Setup visibility toggles for the tail rig controls."""
         self.ctl_vis_toggle(
             self.setting.a.add("ikCtlVis", k=0, attrType="bool", dv=0),
-            onList=[self.ikCtl[0]],
+            onList=[self.ctls_ik[0]],
         )
         self.ctl_vis_toggle(
             self.setting.a.add("fkCtlVis", k=0, attrType="bool", dv=1),
-            onList=[self.fkCtl[0]],
+            onList=[self.ctls_fk[0]],
         )
         self.ctl_vis_toggle(
             self.setting.a.add("subIkCtlVis", k=0, attrType="bool", dv=0),
-            onList=self.ofsCtl,
+            onList=self.ctls_ofs,
         )
         self.ctl_vis_toggle(
             self.setting.a.add("setupJntsVis", attrType="bool", dv=0, k=0),
-            onList=self.fkJnt + self.ikJnt + self.ofsJnt,
+            onList=self.jnts_fk + self.jnts_ik + self.jnts_ofs,
         )
         mc.hide(self.rbSrf1, self.rbSrf2)
 
     def setup_channel(self):
         """Setup channel attributes for the tail rig controls."""
 
-        for ctl in self.fkCtl + self.ikCtl:
+        for ctl in self.ctls_fk + self.ctls_ik:
             ctl.a.showAttr(t=1, r=1)
         self.setting.a.showAttr()
 
     def setup_rotate_order(self):
         """Setup rotate order for the tail rig controls."""
 
-        for ctl in self.fkCtl:
+        for ctl in self.ctls_fk:
             ctl.a.ro.set(3)
 
     def setup_scale(self):
@@ -253,12 +252,12 @@ class Tail(RigModule):
     def setup_ctlSet(self):
         """Setup control sets for the tail rig controls."""
 
-        self.add_ctl_set(self.ikCtl + self.fkCtl + self.ofsCtl + [self.setting])
+        self.add_ctl_set(self.ctls_ik + self.ctls_fk + self.ctls_ofs + [self.setting])
 
     def setup_bindJnt(self):
         """Setup bind joints for the tail rig controls."""
 
-        self.add_bind_jnt_set(self.bindJnts)
+        self.add_bind_jnt_set(self.jnts_bind)
 
     def build_post(self):
         """Post setup for the tail rig."""
@@ -267,7 +266,7 @@ class Tail(RigModule):
         self.setup_scale()
         self.setup_bindJnt()
         self.setup_ctlSet()
-        self.setup_anchor_module({"anchorF1": self.ikCtl[0].offset.offset})
+        self.setup_anchor_module({"anchorF1": self.ctls_ik[0].offset.offset})
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()

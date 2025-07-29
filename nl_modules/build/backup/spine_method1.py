@@ -41,18 +41,18 @@ class Spine(rig_module.RigModule):
         self.mid_fkc = rigNode.a.mid_fkc.inConnNode
         self.end_fkc = rigNode.a.end_fkc.inConnNode
 
-        self.fkCtl = [self.sta_fkc, self.mid_fkc, self.end_fkc]
+        self.ctls_fk = [self.sta_fkc, self.mid_fkc, self.end_fkc]
 
         self.sta_ikc = rigNode.a.sta_ikc.inConnNode
         self.mid_ikc = rigNode.a.mid_ikc.inConnNode
         self.end_ikc = rigNode.a.end_ikc.inConnNode
-        self.ikCtl = [self.sta_ikc, self.mid_ikc, self.end_ikc]
+        self.ctls_ik = [self.sta_ikc, self.mid_ikc, self.end_ikc]
 
         self.anchor1 = rigNode.a.anchor1.inConnNode
         self.anchor2 = rigNode.a.anchor2.inConnNode
 
-        self.joints_as = []
-        self.ctlJnts = None
+        self.jnts_as = []
+        self.jnts_ctl = None
         self.setting = rigNode.a.setting.inConnNode
 
     def build(self):
@@ -61,7 +61,9 @@ class Spine(rig_module.RigModule):
 
         joints = [self.rootJ] + self.rootJ.allChildren
 
-        self.awesomeSpine(joints, self.cog_ctl, self.ikCtl, self.fkCtl, self.setting)
+        self.awesomeSpine(
+            joints, self.cog_ctl, self.ctls_ik, self.ctls_fk, self.setting
+        )
         self.postSetup()
 
     def volumeSetup(self, joints, ratio):
@@ -136,14 +138,14 @@ class Spine(rig_module.RigModule):
         cog_ctl.snapTo(joints[0])
         joints[0] | cog_ctl | self.SPINE_SETUP
 
-        self.joints_as = common.dupSk(joints, "_as")
+        self.jnts_as = common.dupSk(joints, "_as")
 
-        self.ctlJnts = self.build_ctl_jnt(joints, NUM, p=cog_ctl)
-        staJ, midJ, endJ = self.ctlJnts
+        self.jnts_ctl = self.build_ctl_jnt(joints, NUM, p=cog_ctl)
+        staJ, midJ, endJ = self.jnts_ctl
 
         sta_ikc, mid_ikc, end_ikc = ikCtl
         sta_fkc, mid_fkc, end_fkc = fkCtl
-        [x.a.ro.set(1) for x in (self.ctlJnts + ikCtl + fkCtl)]
+        [x.a.ro.set(1) for x in (self.jnts_ctl + ikCtl + fkCtl)]
 
         sta_ikc.snapTo(staJ)
         mid_ikc.snapTo(midJ)
@@ -175,9 +177,9 @@ class Spine(rig_module.RigModule):
                 scaleFix=self.masterC.parent.parent,
             )
             ofs = ikH1.addOffsetGrp()
-            ofs | self.joints_as[i + 1]
+            ofs | self.jnts_as[i + 1]
 
-            self.joints_as[i + 1].a.tx >> joints[i + 1].a.tx
+            self.jnts_as[i + 1].a.tx >> joints[i + 1].a.tx
 
             common.blendNAR_(staJ.a.ry, endJ.a.ry, w=i / (NUM - 1)) >> ofs.a.rx
 
@@ -185,8 +187,8 @@ class Spine(rig_module.RigModule):
         spIkH = IkNode(
             "as",
             pf=rigID,
-            sj=self.joints_as[0],
-            ee=self.joints_as[-1],
+            sj=self.jnts_as[0],
+            ee=self.jnts_as[-1],
             solver=Solver.SPLINE,
             setting=setting,
             scaleFix=self.masterC.parent.parent,
@@ -200,7 +202,7 @@ class Spine(rig_module.RigModule):
         spIkH.spline_twist_setup(twist_loc)
 
         # spCrv.weightTo(ctlJnts, mi=3, dr=5, bindMethod=0)
-        self.clusterSetup(spCrv, self.ikCtl)
+        self.clusterSetup(spCrv, self.ctls_ik)
         self.volumeSetup(joints, ratio)
 
         for jnt in joints:
@@ -236,11 +238,11 @@ class Spine(rig_module.RigModule):
         self.anchor2.snapTo(self.end_ikc)
         self.end_ikc.cstPar(self.anchor2)
 
-        # [x.a.lockHide(t=1, r=1) for x in ([self.cog_ctl] + self.ikCtl + self.fkCtl)]
-        # self.ikCtl[1].a.lockHide(t=1)
+        # [x.a.lockHide(t=1, r=1) for x in ([self.cog_ctl] + self.ctls_ik + self.ctls_fk)]
+        # self.ctls_ik[1].a.lockHide(t=1)
         # self.setting.a.lockHide()
 
-        self.joints_as[0].hide()
-        [j.hide() for j in self.ctlJnts]
+        self.jnts_as[0].hide()
+        [j.hide() for j in self.jnts_ctl]
 
         mc.delete(self.moduleG)

@@ -32,15 +32,15 @@ class SpineQd(RigModule):
         self.cog_ctl = None
         self.chest_ctl = None
         self.base_ctl = None
-        self.fkCtls = []
-        self.ikCtls = []
-        self.fkJnts = []
+        self.ctls_fk = []
+        self.ctls_ik = []
+        self.jnts_fk = []
         self.ikJnts = []
-        self.rbJnts = []
-        self.bindJnts = []
+        self.jnts_rb = []
+        self.jnts_bind = []
         self.rbSrf = None
 
-    def genSk(self):
+    def gen_sk(self):
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
@@ -112,13 +112,13 @@ class SpineQd(RigModule):
         self.build_ik()
         self.rbSrf.weightTo(self.ikJnts, mi=4, dr=6, chain=0)
 
-        crvLenRatio, self.rbJnts = self.build_motionPath_ribbon(
+        crvLenRatio, self.jnts_rb = self.build_motionPath_ribbon(
             rbSrf=self.rbSrf,
             jntNum=self.RBN_JNT_NUM,
             scaleAttr=self.setting.a.spineScale * self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
         )
-        self.bindJnts = self.rbJnts
+        self.jnts_bind = self.jnts_rb
         self.build_volume(crvLenRatio)
         self.build_post()
 
@@ -153,20 +153,20 @@ class SpineQd(RigModule):
             )
             ctl.cv_rotate(0, 90, 0)
             ctl.a.add("stretchy", min=0, max=1, proxy=self.setting.a.stretchy)
-            self.ikCtls.append(ctl)
+            self.ctls_ik.append(ctl)
 
-        self.base_ctl.alignTo(self.ikCtls[0], p=self.ikCtls[0])
-        self.chest_ctl.alignTo(self.ikCtls[2], p=self.ikCtls[2])
+        self.base_ctl.alignTo(self.ctls_ik[0], p=self.ctls_ik[0])
+        self.chest_ctl.alignTo(self.ctls_ik[2], p=self.ctls_ik[2])
 
         (self.ikJnts[1], self.ikJnts[0]) | self.base_ctl
-        self.ikJnts[2] | self.ikCtls[1]
+        self.ikJnts[2] | self.ctls_ik[1]
         (self.ikJnts[3], self.ikJnts[4]) | self.chest_ctl
         #
         #   parenting for spine
         #
-        loc0 = LocNode("loc#", pf=rID, align=self.ikCtls[1], p=self.ikCtls[0], vis=0)
-        loc1 = LocNode("loc#", pf=rID, align=self.ikCtls[1], p=self.ikCtls[2], vis=0)
-        common.cstMulti(loc0, loc1, self.ikCtls[1].offset, cstType="par")
+        loc0 = LocNode("loc#", pf=rID, align=self.ctls_ik[1], p=self.ctls_ik[0], vis=0)
+        loc1 = LocNode("loc#", pf=rID, align=self.ctls_ik[1], p=self.ctls_ik[2], vis=0)
+        common.cstMulti(loc0, loc1, self.ctls_ik[1].offset, cstType="par")
         #
         #   set tanget joint's distance depending on total length
         #
@@ -178,8 +178,8 @@ class SpineQd(RigModule):
         )
         self.ikJnts[1].a.tz * -1 >> self.ikJnts[3].a.tz
 
-        self.add_movable_pivot(self.ikCtls[2], snap=self.MD_GUIDE)
-        self.add_movable_pivot(self.ikCtls[0], snap=self.PVT_GUIDE)
+        self.add_movable_pivot(self.ctls_ik[2], snap=self.MD_GUIDE)
+        self.add_movable_pivot(self.ctls_ik[0], snap=self.PVT_GUIDE)
 
     def build_volume(self, crvLenRatio):
         #
@@ -200,17 +200,17 @@ class SpineQd(RigModule):
             volGraph >> fc.a.stream
             fc.a.varyTime.set(i)
             ratio = (1 / crvLenRatio) ** (fc.a.varying * autoVol)
-            ratio >> self.rbJnts[i].a.sy
-            ratio >> self.rbJnts[i].a.sz
+            ratio >> self.jnts_rb[i].a.sy
+            ratio >> self.jnts_rb[i].a.sz
 
     def setup_vis(self):
         pass
 
     def setup_rotate_order(self):
-        [c.a.ro.set(2) for c in self.ikCtls]
+        [c.a.ro.set(2) for c in self.ctls_ik]
 
     def setup_channel(self):
-        [ctl.a.showAttr(t=1, r=1) for ctl in self.ikCtls]
+        [ctl.a.showAttr(t=1, r=1) for ctl in self.ctls_ik]
         self.setting.a.showAttr()
         self.chest_ctl.a.showAttr("sz", t=1, r=1)
         self.base_ctl.a.showAttr("sz", t=1, r=1)
@@ -218,15 +218,15 @@ class SpineQd(RigModule):
     def setup_anchor(self):
         self.setup_anchor_module(
             {
-                "anchorM1": self.rbJnts[0],
-                "anchorM2": self.rbJnts[-1],
+                "anchorM1": self.jnts_rb[0],
+                "anchorM2": self.jnts_rb[-1],
             }
         )
 
     def build_post(self):
         if self.RBN_JNT_NUM > 1:
-            self.add_bind_jnt_set(self.bindJnts)
-        self.add_ctl_set(self.ikCtls)
+            self.add_bind_jnt_set(self.jnts_bind)
+        self.add_ctl_set(self.ctls_ik)
         self.setup_anchor()
         self.setup_vis()
         self.setup_channel()

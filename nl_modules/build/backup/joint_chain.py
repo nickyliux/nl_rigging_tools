@@ -22,7 +22,7 @@
 #         self.prefix = prefix
 #         self.part = part
 #         self.suffix = suffix
-#         self.joints = joints
+#         self.jnts = joints
 #
 #     @classmethod
 #     def fromCurve(
@@ -117,10 +117,10 @@
 #     @property
 #     def chainLength(self):
 #         """Return total length of all joints"""
-#         if self.joints:
+#         if self.jnts:
 #             l = 0
-#             for i in range(len(self.joints) - 1):
-#                 l += self.joints[i].o.distanceTo(self.joints[i + 1])
+#             for i in range(len(self.jnts) - 1):
+#                 l += self.jnts[i].o.distanceTo(self.jnts[i + 1])
 #             return l
 #         return 0
 #

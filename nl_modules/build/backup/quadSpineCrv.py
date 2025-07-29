@@ -29,9 +29,9 @@ class SpineQdCrv(rig_module.RigModule):
         self.ed_ctl = None
         self.ctls = None
 
-        self.joints = []
+        self.jnts = []
 
-    def genSk(self):
+    def gen_sk(self):
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["st", "md", "ed"])
 
@@ -107,20 +107,20 @@ class SpineQdCrv(rig_module.RigModule):
             return
 
         # BUILD JOINT CHAIN
-        self.joints = JntNode.createJntFrCrv(
+        self.jnts = JntNode.createJntFrCrv(
             crv, num=self.mg_jntNum, pf=self.rigID, p=self.SKL_DATA
         )
 
         mc.delete(self.rootJ)
-        self.rootJ = self.joints[0]
+        self.rootJ = self.jnts[0]
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
         # BUILD SPLINE IK
         spIkH = IkNode(
             "sp",
             pf=self.rigID,
-            sj=self.joints[0],
-            ee=self.joints[-1],
+            sj=self.jnts[0],
+            ee=self.jnts[-1],
             solver=Solver.SPLINE,
             numSpans=4,
             setting=self.setting,
@@ -136,10 +136,10 @@ class SpineQdCrv(rig_module.RigModule):
         ed_ctl = self.ed_ctl
         cog_ctl = self.cog_ctl
 
-        st_ctl.snapTo(self.joints[0])
-        md_ctl.snapTo(self.joints[int(len(self.joints) / 2)])
+        st_ctl.snapTo(self.jnts[0])
+        md_ctl.snapTo(self.jnts[int(len(self.jnts) / 2)])
         cog_ctl.snapTo(md_ctl)
-        ed_ctl.snapTo(self.joints[-1])
+        ed_ctl.snapTo(self.jnts[-1])
         self.setting.snapTo(md_ctl, ofs=(0, self.rigSize * 8, 0))
 
         (self.setting, st_ctl, md_ctl, ed_ctl) | cog_ctl | self.CTL_DATA
@@ -167,10 +167,10 @@ class SpineQdCrv(rig_module.RigModule):
         st_ctl.a.rz @ ed_ctl.a.rz >> mid_ofs.a.rz
 
         # END CST
-        self.ed_ctl.cstOri(self.joints[-1], mo=1)
+        self.ed_ctl.cstOri(self.jnts[-1], mo=1)
 
-        self.cog_ctl.cstSca(self.joints[0])
-        self.joints[0].childrenJt[0].a.segmentScaleCompensate.set(0)
+        self.cog_ctl.cstSca(self.jnts[0])
+        self.jnts[0].childrenJt[0].a.segmentScaleCompensate.set(0)
 
         spIkH.stretchySp()
         spIkH.hide()
@@ -201,7 +201,7 @@ class SpineQdCrv(rig_module.RigModule):
         [c.a.ro.set(2) for c in self.ctls]
 
         # SET
-        self.add_bind_jnt_set(self.joints)
+        self.add_bind_jnt_set(self.jnts)
         self.add_ctl_set(self.ctls + [self.setting])
 
         self.setup_anchor()

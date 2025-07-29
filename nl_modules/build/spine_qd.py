@@ -47,11 +47,11 @@ class SpineQd(RigModule):
         self.end_jnt = None
 
         # Control and joint lists
-        self.fkCtls = []
-        self.ikCtls = []
-        self.fkJnts = []
+        self.ctls_fk = []
+        self.ctls_ik = []
+        self.jnts_fk = []
         self.ikJnts = []
-        self.rbJnts = []
+        self.jnts_rb = []
         self.spIkJnts = []
         self.twoIkJnts = []
 
@@ -60,7 +60,7 @@ class SpineQd(RigModule):
         self.rbCrv = None
         self.anchorToRbj = None
 
-    def genSk(self):
+    def gen_sk(self):
         """Generate the skeleton for the spine rig."""
 
         self.genSk_module()
@@ -127,7 +127,7 @@ class SpineQd(RigModule):
 
         self.rbSrf.weightTo(self.ikJnts, mi=1, chain=0)
 
-        crvLenRatio, self.spIkJnts, self.rbJnts = self.build_spik_ribbon(
+        crvLenRatio, self.spIkJnts, self.jnts_rb = self.build_spik_ribbon(
             rbSrf=self.rbSrf,
             jntNum=self.rbnJntNum,
             setting=self.setting,
@@ -135,10 +135,10 @@ class SpineQd(RigModule):
 
         self.build_twoJ_ik()
         self.build_volume(crvLenRatio)
-        self.bindJnts.extend(self.rbJnts)
+        self.jnts_bind.extend(self.jnts_rb)
 
-        self.setting.snapTo(self.rbJnts[0], p=self.IK_GRP)
-        self.rbJnts[0].cstPar(self.setting, mo=1)
+        self.setting.snapTo(self.jnts_rb[0], p=self.IK_GRP)
+        self.jnts_rb[0].cstPar(self.setting, mo=1)
 
     def build_ik(self):
         """Build the IK controls for the spine rig."""
@@ -174,14 +174,14 @@ class SpineQd(RigModule):
         ikj2 | self.tangent1_ctl | self.fore_ctl | self.cog_ctl
         self.cog_ctl | self.IK_GRP
 
-        self.ikCtls = [
+        self.ctls_ik = [
             self.base_ctl,
             self.mid_ctl,
             self.fore_ctl,
             self.tangent0_ctl,
             self.tangent1_ctl,
         ]
-        [ctl.addOffsetGrp() for ctl in self.ikCtls]
+        [ctl.addOffsetGrp() for ctl in self.ctls_ik]
         self.mid_ctl.addOffsetGrp()
 
         # self.add_movable_pivot(self.fore_ctl, snap=self.MD_GUIDE)
@@ -283,7 +283,7 @@ class SpineQd(RigModule):
             )
             self.end_ctl.alignTo(self.END_JNT_GUIDE, p=self.base_ctl, addOfs=1)
             self.end_ctl.cstPar(self.end_jnt, mo=1)
-            self.bindJnts.append(self.end_jnt)
+            self.jnts_bind.append(self.end_jnt)
             # self.isolate_align(self.end_ctl, spaces=[self.end_ctl.parent, self.masterC])
 
         ikH.hide()
@@ -361,8 +361,8 @@ class SpineQd(RigModule):
             volumeGraph >> fc.a.stream
             fc.a.varyTime.set(i)
             ratio = (1 / crvLenRatio) ** (fc.a.varying * volumeScale)
-            ratio >> self.rbJnts[i].a.sy
-            ratio >> self.rbJnts[i].a.sz
+            ratio >> self.jnts_rb[i].a.sy
+            ratio >> self.jnts_rb[i].a.sz
 
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""
@@ -375,10 +375,10 @@ class SpineQd(RigModule):
         self.ctl_vis_toggle(
             self.setting.a.add("setupJntVis", attrType="bool", dv=0, k=0),
             onList=self.ikJnts
-            + self.fkJnts
+            + self.jnts_fk
             + self.spIkJnts
             + self.twoIkJnts
-            + self.rbJnts
+            + self.jnts_rb
             + [self.anchorToRbj],
         )
         # if self.is_neck():
@@ -395,7 +395,7 @@ class SpineQd(RigModule):
     def setup_channel(self):
         """Setup channel attributes for the spine rig controls."""
 
-        [ctl.a.showAttr(t=1, r=1) for ctl in self.ikCtls]
+        [ctl.a.showAttr(t=1, r=1) for ctl in self.ctls_ik]
 
         self.setting.a.showAttr()
         self.cog_ctl.a.showAttr(t=not self.is_neck(), r=1)
@@ -411,7 +411,7 @@ class SpineQd(RigModule):
         """Setup anchor points for the spine rig controls."""
 
         self.setup_anchor_module(
-            {"anchorM1": self.end_jnt if self.end_ctl else self.rbJnts[0]}
+            {"anchorM1": self.end_jnt if self.end_ctl else self.jnts_rb[0]}
         )
         self.setup_anchor_module({"anchorM2": self.anchorToRbj})
 
@@ -433,7 +433,7 @@ class SpineQd(RigModule):
 
     def setup_ctlSets(self):
         """Setup control sets for the spine rig."""
-        ctls = self.ikCtls + [self.cog_ctl, self.setting]
+        ctls = self.ctls_ik + [self.cog_ctl, self.setting]
         if self.end_ctl:
             ctls.append(self.end_ctl)
 
@@ -442,8 +442,8 @@ class SpineQd(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the spine rig."""
 
-        self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_ratio(self.bindJnts, 5)
+        self.add_bind_jnt_set(self.jnts_bind)
+        self.add_proxy_ratio(self.jnts_bind, 5)
 
     def build_post(self):
         """Post setup for the spine rig."""

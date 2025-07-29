@@ -34,10 +34,10 @@ class SpinePro(rig_module.RigModule):
         self.up_ikc = None
 
         self.fkJnt = None
-        self.ikCtl = None
-        self.fkCtl = None
+        self.ctls_ik = None
+        self.ctls_fk = None
 
-    def genSk(self):
+    def gen_sk(self):
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["st", "ed"])
 
@@ -77,7 +77,7 @@ class SpinePro(rig_module.RigModule):
         self.lw_ikc.cv_scale(1.2, 0.3, 1)
         self.lw_ikc.a.message >> self.rigNode.a.lw_ikc
 
-        self.ikCtl = [
+        self.ctls_ik = [
             self.lw_ikc,
             self.md_ikc,
             self.up_ikc,
@@ -109,21 +109,21 @@ class SpinePro(rig_module.RigModule):
         for j in self.fkJnt[1:]:
             j.a.ty.set(D / (self.FK_JNT_NUM - 1))
 
-        self.fkCtl = []
+        self.ctls_fk = []
         for j in self.fkJnt[:-1]:
             c = CrvNode(
                 "fkc_#",
                 pf=self.rigID,
                 scale=s * 4,
             )
-            self.fkCtl.append(c)
+            self.ctls_fk.append(c)
 
-        self.build_fk_with_ctl2(self.fkJnt[1:], self.fkCtl[1:], p=self.CTL_DATA)
+        self.build_fk_with_ctl2(self.fkJnt[1:], self.ctls_fk[1:], p=self.CTL_DATA)
 
-        self.fkCtl[0].color = Color.RED
-        self.fkCtl[0].snapAlignTo(self.fkJnt[1], self.fkJnt[0])
-        self.fkCtl[0].addOffsetGrp()
-        self.fkCtl[0].cv_move(0, s * -3, 0)
+        self.ctls_fk[0].color = Color.RED
+        self.ctls_fk[0].snapAlignTo(self.fkJnt[1], self.fkJnt[0])
+        self.ctls_fk[0].addOffsetGrp()
+        self.ctls_fk[0].cv_move(0, s * -3, 0)
 
         self.rootJ.delete()
         self.rootJ = self.fkJnt[0]
@@ -142,8 +142,8 @@ class SpinePro(rig_module.RigModule):
         self.setting.alignTo(self.cog_ctl, ofs=(0, 0, -s * 10))
 
         (
-            self.fkCtl[0].offset,
-            self.fkCtl[1].offset,
+            self.ctls_fk[0].offset,
+            self.ctls_fk[1].offset,
             self.setting,
         ) | self.cog_ctl | self.CTL_DATA
 
@@ -151,9 +151,9 @@ class SpinePro(rig_module.RigModule):
 
         self.cog_gmb = CrvNode(self.cog_ctl).add_gimbal()
 
-        self.lw_ikc | self.fkCtl[0]
-        self.up_ikc | self.fkCtl[-1]
-        self.md_ikc | self.fkCtl[len(self.fkCtl) // 2]
+        self.lw_ikc | self.ctls_fk[0]
+        self.up_ikc | self.ctls_fk[-1]
+        self.md_ikc | self.ctls_fk[len(self.ctls_fk) // 2]
 
         self.lw_ikc.addOffsetGrp()
         self.md_ikc.addOffsetGrp(count=2)
@@ -191,7 +191,7 @@ class SpinePro(rig_module.RigModule):
 
         self.up_ikc.cstParSca(up_loc, mo=1)
         self.lw_ikc.cstParSca(lw_loc, mo=1)
-        # self.fkCtl[len(self.fkCtl) // 2].cstPar(self.md_ikc.addOffsetGrp(), mo=1)
+        # self.ctls_fk[len(self.ctls_fk) // 2].cstPar(self.md_ikc.addOffsetGrp(), mo=1)
 
         self.md_ikc.cstParSca(spine_RB.mid_sknJ, mo=1)
         self.setting.a.add("keepVol", min=0, max=2, dv=1, k=0) >> spine_RB.volPower
@@ -201,16 +201,16 @@ class SpinePro(rig_module.RigModule):
 
     def build_post(self):
 
-        # [c.a.lockHide(t=1, r=1, s=1) for c in (self.fkCtl + self.ikCtl)]
+        # [c.a.lockHide(t=1, r=1, s=1) for c in (self.ctls_fk + self.ctls_ik)]
         # self.cog_ctl.a.lockHide(t=1, r=1, s=1)
         # self.pelvis_fkc.a.lockHide(t=1, r=1, s=1)
         # self.setting.a.lockHide()
 
-        for c in self.fkCtl + self.ikCtl + [self.cog_ctl, self.cog_gmb]:
+        for c in self.ctls_fk + self.ctls_ik + [self.cog_ctl, self.cog_gmb]:
             c.a.ro.set(3)
 
         self.add_ctl_set(
-            self.fkCtl + self.ikCtl + [self.setting, self.cog_ctl, self.cog_gmb]
+            self.ctls_fk + self.ctls_ik + [self.setting, self.cog_ctl, self.cog_gmb]
         )
 
         self.setup_anchor()

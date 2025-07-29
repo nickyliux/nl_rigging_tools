@@ -39,7 +39,7 @@ class Spd3Leg(rig_module.RigModule):
         self.leg_02_fkc = rigNode.a.leg_02_fkc.inConnNode
         self.leg_03_fkc = rigNode.a.leg_03_fkc.inConnNode
         self.leg_04_fkc = rigNode.a.leg_04_fkc.inConnNode
-        self.fkCtl = [
+        self.ctls_fk = [
             self.leg_01_fkc,
             self.leg_02_fkc,
             self.leg_03_fkc,
@@ -49,9 +49,9 @@ class Spd3Leg(rig_module.RigModule):
         self.main_ikc = rigNode.a.foot_ikc.inConnNode
         self.main_pvc = rigNode.a.knee_pvc.inConnNode
 
-        self.joints = [self.leg_01, self.leg_02, self.leg_03, self.leg_04, self.leg_05]
-        self.joints_fk = []
-        self.joints_ik = []
+        self.jnts = [self.leg_01, self.leg_02, self.leg_03, self.leg_04, self.leg_05]
+        self.jnts_fk = []
+        self.jnts_ik = []
 
         self.anchor = rigNode.a.anchor.inConnNode
         self.setting = rigNode.a.setting.inConnNode
@@ -81,17 +81,17 @@ class Spd3Leg(rig_module.RigModule):
     #
     #     fkIk = self.setting.a.fkIk
     #     self.cstMultiPar(
-    #         self.joints_ik[-2], self.foot, self.ball_fkc.parent, w=fkIk, mo=1
+    #         self.jnts_ik[-2], self.foot, self.ball_fkc.parent, w=fkIk, mo=1
     #     )
 
     def build_fk(self):
         logging.info(".")
 
-        self.joints_fk = common.dupSk(self.joints, "_fk", p=self.FK_SETUP)
+        self.jnts_fk = common.dupSk(self.jnts, "_fk", p=self.FK_SETUP)
 
-        # for ctl, jnt in zip(self.fkCtl, self.joints_fk):
+        # for ctl, jnt in zip(self.ctls_fk, self.jnts_fk):
         #     ctl.alignTo(jnt)
-        self.build_fk_with_ctl(self.joints_fk, self.fkCtl, p=self.FK_SETUP)
+        self.build_fk_with_ctl(self.jnts_fk, self.ctls_fk, p=self.FK_SETUP)
 
         self.anchor.cstPar(self.leg_01_fkc.offset, mo=1)
         self.masterC.cstSca(self.FK_SETUP)
@@ -106,7 +106,7 @@ class Spd3Leg(rig_module.RigModule):
         ikc = self.main_ikc
         pvc = self.main_pvc
 
-        self.joints_ik = common.dupSk(self.joints, "_ik", p=self.IK_SETUP)
+        self.jnts_ik = common.dupSk(self.jnts, "_ik", p=self.IK_SETUP)
 
         ikH1 = IkNode(
             "1",
@@ -137,7 +137,7 @@ class Spd3Leg(rig_module.RigModule):
         self.isolate_align(ikc, spaces, 0, cstType="par")
         self.isolate_align(pvc, spaces, 0, cstType="par")
 
-        self.leg_01_fkc.cstPar(self.joints_ik[0], mo=1)
+        self.leg_01_fkc.cstPar(self.jnts_ik[0], mo=1)
 
     def blend_fk_ik(self):
         logging.info(".")
@@ -149,9 +149,9 @@ class Spd3Leg(rig_module.RigModule):
         self.main_ikc.cstPar(self.setting.parent, mo=1)
 
         for i in range(0, 4):
-            fkJ = self.joints_fk[i]
-            ikJ = self.joints_ik[i]
-            jnt = self.joints[i]
+            fkJ = self.jnts_fk[i]
+            ikJ = self.jnts_ik[i]
+            jnt = self.jnts[i]
 
             # ut.blendC_(fkj.a.r, ikj.a.r, w=weight) >> jnt.a.r
             # if i == 0:
@@ -164,17 +164,17 @@ class Spd3Leg(rig_module.RigModule):
     def postSetup(self):
         logging.info(".")
 
-        for jnt in self.joints:
+        for jnt in self.jnts:
             jnt.addProxyMesh(p=self.PRX)
 
         # self.main_ikc.a.lockHide(t=1, r=1, s=1, v=0)
         # self.main_pvc.a.lockHide(t=1)
         # self.setting.a.lockHide()
-        # for ctl in self.fkCtl:
+        # for ctl in self.ctls_fk:
         #     ctl.a.lockHide(t=1, r=1)
 
-        self.joints_fk[0].hide()
-        self.joints_ik[0].hide()
+        self.jnts_fk[0].hide()
+        self.jnts_ik[0].hide()
 
 
 if __name__ == "__main__":

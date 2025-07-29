@@ -33,19 +33,19 @@ class ArmBp(RigModule):
         self.setting = None
 
         # Joint names and attributes
-        self.jntNames = ["clavicle", "upr", "lwr", "palm", "ball"]
-        for name in self.jntNames:
+        self.jnt_names = ["clavicle", "upr", "lwr", "palm", "ball"]
+        for name in self.jnt_names:
             setattr(self, name, None)
             setattr(self, f"{name}_fkc", None)
 
         # Joint and control lists
-        self.joints = []
-        self.joints_fk = []
-        self.joints_ik = []
-        self.joints_bf = []
-        self.ikCtl = []
-        self.fkCtl = []
-        self.all_ikHs = []
+        self.jnts = []
+        self.jnts_fk = []
+        self.jnts_ik = []
+        self.jnts_bf = []
+        self.ctls_ik = []
+        self.ctls_fk = []
+        self.ikhs = []
 
         # IK/FK/Blend/Other attributes
         self.ikc = None
@@ -60,18 +60,16 @@ class ArmBp(RigModule):
         self.ikCstG = None
         self.ikH1 = None
 
-    def genSk(self):
+    def gen_sk(self):
         """Generate the skeleton for the arm rig."""
-
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(self.jntNames)
+        root_list = self.gen_sk_fr_names(self.jnt_names)
         self.rootJ = root_list[0]
         self.rootJ | self.SKL_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
         """Build control nodes for the arm rig."""
-
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
@@ -96,17 +94,16 @@ class ArmBp(RigModule):
 
     def build(self):
         """Build the arm rig module."""
-
         self.build_pre_module()
-        self.joints = self.rootJ.allChildrenJt2
-        self.clavicle, self.upr, self.lwr, self.palm, self.ball = self.joints
+        self.jnts = self.rootJ.allChildrenJt2
+        self.clavicle, self.upr, self.lwr, self.palm, self.ball = self.jnts
         self.build_ctl()
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
         # self.build_nlAutoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
 
-        self.bindJnts = [self.clavicle, self.upr, self.lwr]
+        self.jnts_bind = [self.clavicle, self.upr, self.lwr]
 
         if self.rbnBones:
             self.build_bendy_ribbon(
@@ -131,18 +128,18 @@ class ArmBp(RigModule):
         """Build the FK controls and joints for the arm rig."""
         logging.info(self.rigID)
 
-        self.joints_fk = common.dupSk(
-            self.joints, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
+        self.jnts_fk = common.dupSk(
+            self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
         )
-        self.fkCtl = [self.clavicle_fkc, self.upr_fkc, self.lwr_fkc, self.palm_fkc]
+        self.ctls_fk = [self.clavicle_fkc, self.upr_fkc, self.lwr_fkc, self.palm_fkc]
 
-        self.build_fk_with_ctl2(self.joints_fk, self.fkCtl, p=self.FK_GRP)
+        self.build_fk_with_ctl2(self.jnts_fk, self.ctls_fk, p=self.FK_GRP)
         self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
         """Build the IK controls for the arm rig."""
-
         logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
 
         # Align IK controls to palm
@@ -154,8 +151,8 @@ class ArmBp(RigModule):
         self.pvc.alignTo(pvc_guide)
 
         # Create IK joints
-        self.joints_ik = common.dupSk(
-            self.joints, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.D_RED
+        self.jnts_ik = common.dupSk(
+            self.jnts, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.D_RED
         )
 
         # Create IK handle
@@ -204,7 +201,7 @@ class ArmBp(RigModule):
         # Parent controls and lines
         (self.ikc, self.pvc, self.ikCstG) | self.IK_GRP
         self.pvc_line = CrvNode.buildLineLinked(
-            tgt1=self.joints_ik[2],
+            tgt1=self.jnts_ik[2],
             tgt2=self.pvc,
             pf=rID,
             dspType=2,
@@ -215,14 +212,14 @@ class ArmBp(RigModule):
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
         ikH1.stretchyIk(soft=1)
-        self.all_ikHs = [ikH1]
-        self.clavicle_fkc.cstPar(self.joints_ik[0], mo=1)
+        self.ikhs = [ikH1]
+        self.clavicle_fkc.cstPar(self.jnts_ik[0], mo=1)
 
         # IK controls list
-        self.ikCtl = [self.ikc, self.pvc, self.ikc, self.palm_ikc, self.pin_fkc]
+        self.ctls_ik = [self.ikc, self.pvc, self.ikc, self.palm_ikc, self.pin_fkc]
 
         # palm_ikc setup
-        palm_ik = self.joints_ik[3]
+        palm_ik = self.jnts_ik[3]
         palm_ikc_ofs = self.palm_ikc.addOffsetGrp()
         self.ikc.cstPoi(palm_ikc_ofs)
 
@@ -243,8 +240,8 @@ class ArmBp(RigModule):
         self.clavicle.cstPoi(self.setting, mo=1)
 
         # Extract blend joints
-        self.joints_bf = common.dupSk(
-            self.joints, "_bf", p=self.BF_GRP, r=rSz * 4, color=Color.SKY
+        self.jnts_bf = common.dupSk(
+            self.jnts, "_bf", p=self.BF_GRP, r=rSz * 4, color=Color.SKY
         )
 
         palmIn_guide = DagNode(f"{rID}_palmIn_guide")
@@ -255,7 +252,7 @@ class ArmBp(RigModule):
         self.palmOut_loc = LocNode("palmOut", pf=rID, align=palmOut_guide, size=rSz)
         self.ballRoll_loc = LocNode("ballRoll", pf=rID, align=ball_guide, size=rSz)
 
-        self.ballRoll_loc | self.palmOut_loc | self.palmIn_loc | self.joints_bf[-1]
+        self.ballRoll_loc | self.palmOut_loc | self.palmIn_loc | self.jnts_bf[-1]
 
         self.palm_rolling(
             self.palm_ikc,
@@ -269,14 +266,14 @@ class ArmBp(RigModule):
         # Add blend attribute
         self.setting.a.addSep()
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
-        total = len(self.joints) - 1
+        total = len(self.jnts) - 1
 
         # Blend FK/IK to BF joints and drive output joints
         for i in range(total):
-            fkj = self.joints_fk[i]
-            ikj = self.joints_ik[i]
-            bfj = self.joints_bf[i]
-            jnt = self.joints[i]
+            fkj = self.jnts_fk[i]
+            ikj = self.jnts_ik[i]
+            bfj = self.jnts_bf[i]
+            jnt = self.jnts[i]
             if i > 0:
                 common.cstMulti(fkj, ikj, bfj, w=fkIkBlend)
                 # ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> bfj.a.t
@@ -293,7 +290,7 @@ class ArmBp(RigModule):
                 self.ballRoll_loc.cstPar(jnt, mo=1)
 
         # Add blend attribute to all controls
-        for ctl in self.fkCtl + self.ikCtl:
+        for ctl in self.ctls_fk + self.ctls_ik:
             ctl.a.addSep()
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
@@ -302,8 +299,8 @@ class ArmBp(RigModule):
 
     def build_armScapular(self):
         """Build the scapular setup for the arm rig."""
-
         rID, rSz, xDr = self.getMyVar()
+
         # Guides for clavicle end and scapular
         clavEnd_guide = DagNode(f"{rID}_clavEnd_guide")
         scapular_guide = DagNode(f"{rID}_scapular_guide")
@@ -348,6 +345,7 @@ class ArmBp(RigModule):
     def build_twist_bones(self):
         """Build twist bones for the arm rig."""
         logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
 
         # Generate radius and ulna joint chains
@@ -381,7 +379,6 @@ class ArmBp(RigModule):
 
     def palm_rolling(self, tgt, fkc, fkPin, locRoll, locIn, locOut):
         """Setup palm rolling for the arm rig controls."""
-
         palmRoll = tgt.a.add("palmRoll")
         palmRoll * -1 >> locRoll.a.rz
         fkc.a.add("palmRoll", proxy=palmRoll)
@@ -398,7 +395,7 @@ class ArmBp(RigModule):
         self.ctl_vis_toggle(
             self.setting.a["fkIkBlend"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
-            offList=self.fkCtl[1:],
+            offList=self.ctls_fk[1:],
         )
         self.ctl_vis_toggle(
             self.pvc.a["fkPin"],
@@ -406,7 +403,7 @@ class ArmBp(RigModule):
         )
         self.ctl_vis_toggle(
             self.setting.a.add("setupJntVis", attrType="bool", dv=0, k=0),
-            onList=self.joints_fk + self.joints_ik + self.joints_bf,
+            onList=self.jnts_fk + self.jnts_ik + self.jnts_bf,
         )
         if self.rbnBones:
             self.ctl_vis_toggle(
@@ -415,21 +412,20 @@ class ArmBp(RigModule):
             )
 
         self.ikc.a.v >> self.palm_ikc.a.v
-        mc.hide(self.all_ikHs)
+        mc.hide(self.ikhs)
 
     def setup_channel(self):
         """Setup channel attributes for the arm rig controls."""
         self.setting.a.showAttr()
         self.palm_ikc.a.showAttr(r=1)
 
-        for ctl in self.fkCtl + [self.ikc, self.pvc]:
+        for ctl in self.ctls_fk + [self.ikc, self.pvc]:
             ctl.a.showAttr(t=1, r=1)
         for ctl in self.all_bend or []:
             ctl.a.showAttr(t=1, r=1, s=1)
 
     def setup_rotate_order(self):
         """Setup rotate order for the arm rig controls."""
-
         for ctl in [self.ikc, self.clavicle_fkc]:
             ctl.a.ro.set(2)
         self.lwr_fkc.a.ro.set(3)
@@ -438,7 +434,6 @@ class ArmBp(RigModule):
 
     def setup_space(self):
         """Setup space switching for the arm rig controls."""
-
         # Add space names for UI or switching
         self.rigNode.a.add(
             "spaceName1",
@@ -463,7 +458,7 @@ class ArmBp(RigModule):
                 "space_master": self.masterC,
                 "space_arm": self.ikH1.pvJnt[0],
                 "space_palm": self.ballRoll_loc,
-                "space_palmIK": self.joints_bf[PALM_ID],
+                "space_palmIK": self.jnts_bf[PALM_ID],
             }
         )
 
@@ -472,7 +467,7 @@ class ArmBp(RigModule):
         WRIST_ID = 3
         self.setup_anchor_module(
             {
-                "anchorM1": self.joints_bf[WRIST_ID],
+                "anchorM1": self.jnts_bf[WRIST_ID],
                 "anchorF1": self.clavicle_fkc.offset,
             }
         )
@@ -483,12 +478,12 @@ class ArmBp(RigModule):
 
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
-        self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_ratio(self.bindJnts, 2)
+        self.add_bind_jnt_set(self.jnts_bind)
+        self.add_proxy_ratio(self.jnts_bind, 2)
 
     def setup_ctlSet(self):
         """Setup control sets for the arm rig module."""
-        ctlSet = self.fkCtl + self.ikCtl + [self.setting, self.pin_fkc]
+        ctlSet = self.ctls_fk + self.ctls_ik + [self.setting, self.pin_fkc]
         if self.rbnBones:
             ctlSet.extend(self.all_bend)
         self.add_ctl_set(ctlSet)
@@ -496,6 +491,7 @@ class ArmBp(RigModule):
     def build_post(self):
         """Post setup for the arm rig."""
         logging.info(self.rigID)
+
         common.add_mirror_attr([self.pvc])
 
         self.setup_scale()

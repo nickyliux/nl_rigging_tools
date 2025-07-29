@@ -40,14 +40,14 @@ class LegQd(RigModule):
 
         # Main rig attributes
         self.setting = None
-        self.joints = []
-        self.joints_fk = []
-        self.joints_ik = []
-        self.jointsFix = None
+        self.jnts = []
+        self.jnts_fk = []
+        self.jnts_ik = []
+        self.jntsFix = None
 
         # Joint names and related attributes
-        self.jntNames = ["hip", "upr", "lwr", "palm", "digit", "ball", "tip"]
-        for name in self.jntNames:
+        self.jnt_names = ["hip", "upr", "lwr", "palm", "digit", "ball", "tip"]
+        for name in self.jnt_names:
             setattr(self, name, None)
             setattr(self, f"{name}_fkc", None)
 
@@ -55,10 +55,9 @@ class LegQd(RigModule):
         self.ikc = None
         self.pvc = None
         self.smart_ctl = None
-        self.ikCtl = []
-        self.fkCtl = []
-        self.subCtls = []
-        self.palmScale = None
+        self.ctls_ik = []
+        self.ctls_fk = []
+        self.ctls_sub = []
         self.toe_wiggle_grp = None
         self.ikc_gimbal = None
         self.pvc_line = None
@@ -79,11 +78,11 @@ class LegQd(RigModule):
         # IK handles and helpers
         self.ikH1 = None
 
-    def genSk(self):
+    def gen_sk(self):
         """Generate the skeleton for the quadruped leg rig."""
         # --- Generate main skeleton module and root joints ---
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(self.jntNames)
+        root_list = self.gen_sk_fr_names(self.jnt_names)
 
         # --- Toes setup (if enabled) ---
         if self.toeBones:
@@ -149,21 +148,21 @@ class LegQd(RigModule):
     def build(self):
         """Build the quadruped leg rig module."""
         self.build_pre_module()
-        self.joints = self.rootJ.allChildrenJt2
+        self.jnts = self.rootJ.allChildrenJt2
         self.hip, self.upr, self.lwr, self.palm, self.digit, self.ball, self.tip = (
-            self.joints
+            self.jnts
         )
         self.build_ctl()
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
 
-        self.bindJnts = self.joints + [self.boneFix]
+        self.jnts_bind = self.jnts + [self.boneFix]
 
         self.scapularG = self.build_scapular(
             ikc=self.ikc,
-            fkc=self.fkCtl[0],
-            jnts=self.joints,
+            fkc=self.ctls_fk[0],
+            jnts=self.jnts,
             EXTRA=self.scapularExtra,
             scapCtl=self.quadScap_ikc,
         )
@@ -199,10 +198,10 @@ class LegQd(RigModule):
     def build_fk(self):
         """Build the FK controls and joints for the quadruped leg rig."""
         logging.info(self.rigID)
-        self.joints_fk = common.dupSk(
-            self.joints, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
+        self.jnts_fk = common.dupSk(
+            self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
         )
-        self.fkCtl = [
+        self.ctls_fk = [
             self.hip_fkc,
             self.upr_fkc,
             self.lwr_fkc,
@@ -210,7 +209,7 @@ class LegQd(RigModule):
             self.digit_fkc,
             self.ball_fkc,
         ]
-        self.build_fk_with_ctl2(self.joints_fk, self.fkCtl, p=self.FK_GRP)
+        self.build_fk_with_ctl2(self.jnts_fk, self.ctls_fk, p=self.FK_GRP)
         # self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
@@ -231,8 +230,8 @@ class LegQd(RigModule):
         self.pvc.alignTo(pvc_guide)
 
         # --- IK joint chain creation ---
-        self.joints_ik = common.dupSk(
-            self.joints, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.D_RED
+        self.jnts_ik = common.dupSk(
+            self.jnts, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.D_RED
         )
 
         # --- IK handle creation ---
@@ -301,7 +300,7 @@ class LegQd(RigModule):
         self.ikc.a.add("kneeTwist") * xDr >> ikH1.a.twist
         (self.ikc, self.pvc, self.ikCstG) | self.IK_GRP
         self.pvc_line = CrvNode.buildLineLinked(
-            tgt1=self.joints_ik[2], tgt2=self.pvc, pf=rID, dspType=2, p=self.IK_GRP
+            tgt1=self.jnts_ik[2], tgt2=self.pvc, pf=rID, dspType=2, p=self.IK_GRP
         )
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
@@ -310,10 +309,10 @@ class LegQd(RigModule):
         ikH1.stretchyIk(soft=1)
         self.all_ikH = {"main": ikH1, "ball": ikH2, "toe": ikH3, "else": ikHX}
         self.toe_wiggle_grp = toe_wiggle_grp
-        self.hip_fkc.cstPar(self.joints_ik[0], mo=1)
+        self.hip_fkc.cstPar(self.jnts_ik[0], mo=1)
 
         # --- Store controls and finalize ---
-        self.ikCtl = [self.ikc, self.pvc, self.ikc_gimbal, self.extra_ikc]
+        self.ctls_ik = [self.ikc, self.pvc, self.ikc_gimbal, self.extra_ikc]
         self.ikH1 = ikH1
         self.subCtl_setup(ballRollG, toeRollG, inRollG, outRollG, heelRollG)
         self.extra_roll_logic(ballRollG, extraRollG, self.IK_GRP)
@@ -328,14 +327,14 @@ class LegQd(RigModule):
 
         # --- Add blend attribute and set up blending constraints ---
         fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
-        for i in range(len(self.joints) - 1):
-            fkJ = self.joints_fk[i]
-            ikJ = self.joints_ik[i]
-            jnt = self.joints[i]
+        for i in range(len(self.jnts) - 1):
+            fkJ = self.jnts_fk[i]
+            ikJ = self.jnts_ik[i]
+            jnt = self.jnts[i]
             common.cstMulti(fkJ, ikJ, jnt, w=fkIkBlend)
 
         # --- Add proxy attribute for easy FK/IK switch on controls ---
-        for ctl in self.fkCtl + self.ikCtl + [self.smart_ctl]:
+        for ctl in self.ctls_fk + self.ctls_ik + [self.smart_ctl]:
             ctl.a.addSep()
             ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
 
@@ -350,7 +349,7 @@ class LegQd(RigModule):
         # --- Setup aim group and locator ---
         aimGrp = extraRollG.addOffsetGrp(below=1, relink=0)
         aimGrp | extraRollG.offset
-        uprIkJ = self.joints_ik[1]
+        uprIkJ = self.jnts_ik[1]
         aimG_loc = LocNode(f"{aimGrp.name}_loc", align=uprIkJ, p=grp)
         self.ikc.cstPoi(aimG_loc, mo=1)
 
@@ -376,7 +375,7 @@ class LegQd(RigModule):
         # --- Offset and roll logic ---
         ofs = extraRollG.addOffsetGrp()
         ofs | aimGrp
-        d = ut.distDim_(self.ikc, self.joints_ik[1])
+        d = ut.distDim_(self.ikc, self.jnts_ik[1])
         D = d.get()
         d /= self.masterC.a["globalScale"]
         ((d - D) * palmAimRatio * palmAim) >> extraRollG.a.rx
@@ -398,7 +397,7 @@ class LegQd(RigModule):
         for g in roll_groups:
             ctl = g.addOffsetGrp(below=1)
             CrvNode(ctl)(name=f"{g.name}_ctl", shape="diamond", scale=rSz / 4)
-            self.subCtls.append(ctl)
+            self.ctls_sub.append(ctl)
 
         # --- Ball group IK control ---
         self.ball_ikc = ballRollG.addOffsetGrp(below=1)
@@ -411,7 +410,7 @@ class LegQd(RigModule):
             rotateY=90,
         )
         self.rigNode.setMsg({"ball_ikc": self.ball_ikc})
-        self.ikCtl.append(self.ball_ikc)
+        self.ctls_ik.append(self.ball_ikc)
 
         # --- Smart control setup ---
         self.smart_ctl.snapAlignTo(toeRollG, self.master_guide)
@@ -433,7 +432,7 @@ class LegQd(RigModule):
             scale = xDr * rSz / 5
             ctl, ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
             ikJ.a.r >> dupTgt.a.r
-            self.bindJnts.extend(toeJs[:-1])
+            self.jnts_bind.extend(toeJs[:-1])
 
             # Build FK controls for toe joints (excluding first 3 and last)
             fkToeList = toeJs[3:-1]
@@ -520,7 +519,7 @@ class LegQd(RigModule):
 
         # --- Parent toe IK handle to ball control ---
         self.all_ikH["toe"] | self.ball_fkc
-        ball_fkj = self.joints_fk[5]
+        ball_fkj = self.jnts_fk[5]
 
         # --- Space align ball control between FK and IK ---
         self.space_align(
@@ -554,15 +553,15 @@ class LegQd(RigModule):
         self.ctl_vis_toggle(
             self.setting.a["fkIkBlend"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
-            offList=self.fkCtl[1:-1],
+            offList=self.ctls_fk[1:-1],
         )
         self.ctl_vis_toggle(
             self.ikc.a.add("extraCtlVis", dv=1, attrType="bool", k=0),
-            onList=self.subCtls,
+            onList=self.ctls_sub,
         )
         self.ctl_vis_toggle(
             self.setting.a.add("setupJntVis", dv=0, attrType="bool", k=0),
-            onList=self.joints_fk + self.joints_ik,
+            onList=self.jnts_fk + self.jnts_ik,
         )
         [ikh.hide() for ikh in self.all_ikH.values()]
 
@@ -573,7 +572,7 @@ class LegQd(RigModule):
         self.smart_ctl.a.showAttr(r=1)
         self.extra_ikc.a.showAttr(t=1, r=1)
 
-        for ctl in self.fkCtl + self.subCtls + [self.ikc, self.pvc]:
+        for ctl in self.ctls_fk + self.ctls_sub + [self.ikc, self.pvc]:
             ctl.a.showAttr(t=1, r=1)
         self.ball_ikc.a.showAttr(r=1)
         for ctl in self.all_bend or []:
@@ -584,7 +583,7 @@ class LegQd(RigModule):
 
     def setup_rotate_order(self):
         """Setup rotate order for the quadruped leg rig controls."""
-        for c in self.fkCtl + self.ikCtl + [self.lwr]:
+        for c in self.ctls_fk + self.ctls_ik + [self.lwr]:
             c.a.ro.set(2)
         self.smart_ctl.a.ro.set(3)
 
@@ -610,9 +609,9 @@ class LegQd(RigModule):
     def setup_ctlSet(self):
         """Setup control sets for the quadruped leg rig module."""
         ctlSet = (
-            self.fkCtl
-            + self.ikCtl
-            + self.subCtls
+            self.ctls_fk
+            + self.ctls_ik
+            + self.ctls_sub
             + [self.smart_ctl, self.setting, self.extra_ikc]
         )
         # if self.RBN_BONES:
@@ -623,8 +622,8 @@ class LegQd(RigModule):
 
     def setup_bindJnt(self):
         """Setup bind joints for the quadruped leg rig module."""
-        self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_ratio(self.bindJnts, 2.5)
+        self.add_bind_jnt_set(self.jnts_bind)
+        self.add_proxy_ratio(self.jnts_bind, 2.5)
 
     def setup_scale(self):
         """Setup scale for the quadruped leg rig module."""

@@ -44,13 +44,13 @@ class NeckQd(SpineQd):
     def setup_bindJnt(self):
         """Setup bind joints for the neck rig."""
 
-        self.add_bind_jnt_set(self.bindJnts)
-        self.add_proxy_ratio(self.bindJnts, 2)
+        self.add_bind_jnt_set(self.jnts_bind)
+        self.add_proxy_ratio(self.jnts_bind, 2)
 
     def setup_ctlSet(self):
         """Setup control sets for the neck rig."""
 
-        ctls = self.ikCtls + [self.cog_ctl, self.setting]
+        ctls = self.ctls_ik + [self.cog_ctl, self.setting]
         # ctls.remove(self.base_ctl)
         # ctls.remove(self.tangent0_ctl)
         self.add_ctl_set(ctls)
