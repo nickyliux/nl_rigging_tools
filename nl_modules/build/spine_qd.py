@@ -92,6 +92,7 @@ class SpineQd(RigModule):
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
+        self.cog_ctl.cv_move(0, rSz * 50, 0)
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
 
     def create_rbSrf(self):
