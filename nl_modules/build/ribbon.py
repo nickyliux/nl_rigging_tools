@@ -371,7 +371,6 @@ class Ribbon(RigModule):
             aimTarget.cstAim(grp, keep=0)
             cluster | grp
 
-            ctl.a.addSep()
             ctl.a.add("tangentOn", min=0, max=1)  # , dv=1)
             ctl.a.tangentOn >> grp.a.sx
 

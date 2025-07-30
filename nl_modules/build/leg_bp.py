@@ -118,14 +118,15 @@ class LegBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
+        scale_fk = scale * 4
 
         ctl_defs = [
             ("setting", "bagua", "z", scale / 2, 1, 2),
-            ("hip_fkc", "cubeR", "x", Vec((1, 1.5, 1.5)) * scale, 0, -1),
-            ("upr_fkc", "cubeR", "x", Vec((1, 1.5, 1.5)) * scale, 0, -1),
-            ("lwr_fkc", "cubeR", "x", Vec((1, 1.5, 1.5)) * scale, 0, -1),
-            ("palm_fkc", "cubeR", "x", Vec((1, 1.5, 1.5)) * scale, 0, -1),
-            ("ball_fkc", "cubeR", "x", Vec((1, 1.5, 1.5)) * scale, 0, -1),
+            ("hip_fkc", "sphere2", "x", scale_fk, 0, -1),
+            ("upr_fkc", "sphere2", "x", scale_fk, 0, -1),
+            ("lwr_fkc", "sphere2", "x", scale_fk, 0, -1),
+            ("palm_fkc", "sphere2", "x", scale_fk, 0, -1),
+            ("ball_fkc", "sphere2", "x", scale_fk, 0, -1),
             ("ikc", "foot", None, rSz * 2, 0, -1),
             ("pvc", "diamond", None, scale * 2, 0, -1),
             ("smart_ctl", "squR", None, scale / 2, 0, 2),
@@ -326,7 +327,7 @@ class LegBp(RigModule):
         self.hip.cstPoi(self.setting, mo=1)
 
         self.setting.a.addSep()
-        fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
+        fkToIk = self.setting.a.add("fkToIk", min=0, max=1, dv=1)
         total = len(self.jnts) - 1
 
         for i in range(total):
@@ -335,9 +336,9 @@ class LegBp(RigModule):
             bfj = self.jnts_bf[i]
             jnt = self.jnts[i]
             if i > 0:
-                common.cstMulti(fkj, ikj, bfj, w=fkIkBlend)
-                # ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> bfj.a.t
-                # ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
+                common.cstMulti(fkj, ikj, bfj, w=fkToIk)
+                # ut.blendN_(fkj.a.t, ikj.a.t, w=fkToIk) >> bfj.a.t
+                # ut.blendN_(fkj.a.r, ikj.a.r, w=fkToIk) >> bfj.a.r
 
             if i == 0:
                 self.hip_fkc.cstPar(jnt, mo=1)
@@ -358,8 +359,8 @@ class LegBp(RigModule):
 
         # Useful for fk ik switch popUp menu
         for ctl in self.ctls_fk + self.ctls_ik + [self.smart_ctl]:
-            ctl.a.addSep()
-            ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
+
+            ctl.a.add("fkToIk", proxy=fkToIk, k=0)
 
         GrpNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
 
@@ -487,16 +488,16 @@ class LegBp(RigModule):
         """Setup visibility for the leg rig controls."""
         self.pvc.a["fkPin"] >> self.pin_fkc.a.v
         self.ctl_vis_toggle(
-            self.setting.a["fkIkBlend"],
+            self.setting.a["fkToIk"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             offList=self.ctls_fk[1:-1],
         )
         self.ctl_vis_toggle(
-            self.ikc.a.add("extraCtlVis", dv=1, attrType="bool", k=0),
+            self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
             onList=self.ctls_sub,
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJntVis", attrType="bool", dv=0, k=0),
+            self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0),
             onList=self.jnts_fk + self.jnts_ik + self.jnts_bf,
         )
         if self.rbnBones:
@@ -562,14 +563,14 @@ class LegBp(RigModule):
         self.masterC.a.globalScale >> self.RIG_DATA.a.s
         self.masterC.a.globalScale >> self.SKL_DATA.a.s
 
-        palm_scale = self.setting.a.add("palmScale", min=0.01, dv=1)
-        self.ikc.a.add("palmScale", min=0.01, proxy=palm_scale)
+        foot_scale = self.setting.a.add("footScale", min=0.01, dv=1)
+        self.ikc.a.add("footScale", min=0.01, proxy=foot_scale)
 
-        palm_scale >> self.ball_fkc.offset.a.s
-        palm_scale >> self.ikc.a.s
+        foot_scale >> self.ball_fkc.offset.a.s
+        foot_scale >> self.ikc.a.s
 
         for jnt in [self.palm, self.jnts_fk[3], self.jnts_ik[3], self.jnts_bf[3]]:
-            palm_scale >> jnt.a.s
+            foot_scale >> jnt.a.s
 
         for jnt in [
             self.palm,

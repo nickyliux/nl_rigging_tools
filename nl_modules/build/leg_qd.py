@@ -123,20 +123,20 @@ class LegQd(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
-        scale_fk = Vec((0.5, 1.5, 1.5)) * scale
+        scale_fk = scale * 4
 
         ctl_defs = [
             ("setting", "bagua", "z", scale, 1, 2),
-            ("hip_fkc", "cubeR", "x", scale_fk, 0, -1),
-            ("upr_fkc", "cubeR", "x", scale_fk, 0, -1),
-            ("lwr_fkc", "cubeR", "x", scale_fk, 0, -1),
-            ("palm_fkc", "cubeR", "x", scale_fk, 0, -1),
-            ("digit_fkc", "cubeR", "x", scale_fk, 0, -1),
-            ("ball_fkc", "cubeR", "x", scale_fk, 0, -1),
+            ("hip_fkc", "sphere2", "x", scale_fk, 0, -1),
+            ("upr_fkc", "sphere2", "x", scale_fk, 0, -1),
+            ("lwr_fkc", "sphere2", "x", scale_fk, 0, -1),
+            ("palm_fkc", "sphere2", "x", scale_fk, 0, -1),
+            ("digit_fkc", "sphere2", "x", scale_fk, 0, -1),
+            ("ball_fkc", "sphere2", "x", scale_fk, 0, -1),
             ("ikc", "foot", None, rSz * 2, 0, -1),
             ("extra_ikc", "rotator2", None, -scale, 1, -1),
             ("pvc", "diamond", None, scale * 2, 0, -1),
-            ("smart_ctl", "squR", None, scale / 3, 0, 2),
+            ("smart_ctl", "squR", None, scale / 2, 0, 2),
         ]
 
         if self.scapularExtra:
@@ -144,6 +144,9 @@ class LegQd(RigModule):
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
+
+        if self.scapularExtra:
+            self.quadScap_ikc.cv_move(scale * 10, 0, 0)
 
     def build(self):
         """Build the quadruped leg rig module."""
@@ -157,7 +160,7 @@ class LegQd(RigModule):
         self.build_ik()
         self.blend_fk_ik()
 
-        self.jnts_bind = self.jnts + [self.boneFix]
+        self.jnts_bind = self.jnts[:-1] + [self.boneFix]
 
         self.scapularG = self.build_scapular(
             ikc=self.ikc,
@@ -326,17 +329,17 @@ class LegQd(RigModule):
         self.hip.cstPar(self.setting, mo=1)
 
         # --- Add blend attribute and set up blending constraints ---
-        fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
+        fkToIk = self.setting.a.add("fkToIk", min=0, max=1, dv=1)
         for i in range(len(self.jnts) - 1):
             fkJ = self.jnts_fk[i]
             ikJ = self.jnts_ik[i]
             jnt = self.jnts[i]
-            common.cstMulti(fkJ, ikJ, jnt, w=fkIkBlend)
+            common.cstMulti(fkJ, ikJ, jnt, w=fkToIk)
 
         # --- Add proxy attribute for easy FK/IK switch on controls ---
         for ctl in self.ctls_fk + self.ctls_ik + [self.smart_ctl]:
-            ctl.a.addSep()
-            ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
+
+            ctl.a.add("fkToIk", proxy=fkToIk, k=0)
 
         # --- Create matcher group for IK control alignment ---
         GrpNode(f"{self.ikc.name}_matcher", align=self.ikc, p=self.digit_fkc)
@@ -513,7 +516,7 @@ class LegQd(RigModule):
         logging.info(self.rigID)
 
         # --- Prepare blend attribute and offsets ---
-        fkIkBlend = self.setting.a["fkIkBlend"]
+        fkToIk = self.setting.a["fkToIk"]
         ball_fkc_ofs = self.ball_fkc.offset
         ball_fkc_ofs.removeCstNodes()
 
@@ -525,7 +528,7 @@ class LegQd(RigModule):
         self.space_align(
             self.ball_fkc,
             spaces=[ball_fkj.offset, self.toe_wiggle_grp],
-            w=fkIkBlend,
+            w=fkToIk,
             cstType="par",
         )
 
@@ -543,7 +546,7 @@ class LegQd(RigModule):
         self.space_align(
             ball_fkj,
             spaces=[self.ball_fkc, ball_fkj.offset],
-            w=fkIkBlend,
+            w=fkToIk,
             cstType="ori",
             mo=1,
         )
@@ -551,16 +554,16 @@ class LegQd(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the quadruped leg rig controls."""
         self.ctl_vis_toggle(
-            self.setting.a["fkIkBlend"],
+            self.setting.a["fkToIk"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             offList=self.ctls_fk[1:-1],
         )
         self.ctl_vis_toggle(
-            self.ikc.a.add("extraCtlVis", dv=1, attrType="bool", k=0),
+            self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
             onList=self.ctls_sub,
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJntVis", dv=0, attrType="bool", k=0),
+            self.setting.a.add("setupJnts", dv=0, attrType="bool", k=0),
             onList=self.jnts_fk + self.jnts_ik,
         )
         [ikh.hide() for ikh in self.all_ikH.values()]
@@ -568,12 +571,11 @@ class LegQd(RigModule):
     def setup_channel(self):
         """Setup channels for the quadruped leg rig controls."""
         self.setting.a.showAttr()
-        self.pvc.a.showAttr(t=1)
         self.smart_ctl.a.showAttr(r=1)
-        self.extra_ikc.a.showAttr(t=1, r=1)
 
-        for ctl in self.ctls_fk + self.ctls_sub + [self.ikc, self.pvc]:
+        for ctl in self.ctls_fk + self.ctls_sub + self.ctls_ik:
             ctl.a.showAttr(t=1, r=1)
+
         self.ball_ikc.a.showAttr(r=1)
         for ctl in self.all_bend or []:
             ctl.a.showAttr(t=1, r=1, s=1)

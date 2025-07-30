@@ -14,7 +14,7 @@
 #         pv_guide=None,
 #         offset_pv=0,
 #         slide_pv=0,
-#         stretchy=None,
+#         stretch=None,
 #     ):
 #         self.guide_list = guide_list
 #

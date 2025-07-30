@@ -60,8 +60,7 @@ class Tail(RigModule):
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        # self.setting.cv_move(0, rSz * 50, 0)
-        self.setting.a.add("stretchy", min=0, max=1)
+        self.setting.a.add("stretch", min=0, max=1)
         self.setting.a.add("localScale", min=0.01, dv=1)
 
     def build(self):
@@ -99,7 +98,7 @@ class Tail(RigModule):
             rbSrf=self.rbSrf2,
             jntNum=self.rbnJntNum,
             scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,
-            stretchyAttr=self.setting.a.stretchy,
+            stretchyAttr=self.setting.a.stretch,
         )
         self.jnts_bind = self.jnts_rb
 
@@ -121,8 +120,8 @@ class Tail(RigModule):
             ctl = CrvNode(
                 f"{i}_ikc",
                 pf=rID,
-                shape="sphere",
-                scale=rSz * 3,
+                shape="cube",
+                scale=rSz,
                 align=self.jnts_ik[i],
                 addOfs=1,
                 p=self.IK_GRP,
@@ -158,14 +157,9 @@ class Tail(RigModule):
 
         # --- Create FK controls and register ---
         for i in range(self.fkJntNum + 1):
+            tgt = self.jnts_fk[i]
             ctl = CrvNode(
-                f"{i}_fkc",
-                pf=rID,
-                shape="cubeR",
-                up="-z",
-                scale=rSz,
-                top=1,
-                align=self.jnts_fk[i],
+                f"{i}_fkc", pf=rID, shape="sphere2", up="-z", scale=rSz * 2, align=tgt
             )
             self.rigNode.setMsg({f"fkc{i}": ctl})
             self.ctls_fk.append(ctl)
@@ -213,19 +207,19 @@ class Tail(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the tail rig controls."""
         self.ctl_vis_toggle(
-            self.setting.a.add("ikCtlVis", k=0, attrType="bool", dv=0),
+            self.setting.a.add("ikCtls", k=0, attrType="bool", dv=0),
             onList=[self.ctls_ik[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("fkCtlVis", k=0, attrType="bool", dv=1),
+            self.setting.a.add("fkCtls", k=0, attrType="bool", dv=1),
             onList=[self.ctls_fk[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("subIkCtlVis", k=0, attrType="bool", dv=0),
+            self.setting.a.add("subIkCtls", k=0, attrType="bool", dv=0),
             onList=self.ctls_ofs,
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJntsVis", attrType="bool", dv=0, k=0),
+            self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0),
             onList=self.jnts_fk + self.jnts_ik + self.jnts_ofs,
         )
         mc.hide(self.rbSrf1, self.rbSrf2)

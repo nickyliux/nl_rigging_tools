@@ -63,7 +63,7 @@ class SpineQd(RigModule):
         spineScale = self.setting.a.add("spineScale", min=0.01, dv=1)
         spineScale >> self.IK_GRP.a.s
 
-        self.setting.a.add("stretchy", min=0, max=1)
+        self.setting.a.add("stretch", min=0, max=1)
 
         self.cog_ctl = CrvNode(
             "cog_ctl",
@@ -116,7 +116,7 @@ class SpineQd(RigModule):
             rbSrf=self.rbSrf,
             jntNum=self.RBN_JNT_NUM,
             scaleAttr=self.setting.a.spineScale * self.masterC.a.globalScale,
-            stretchyAttr=self.setting.a.stretchy,
+            stretchyAttr=self.setting.a.stretch,
         )
         self.jnts_bind = self.jnts_rb
         self.build_volume(crvLenRatio)
@@ -152,7 +152,7 @@ class SpineQd(RigModule):
                 width=2,
             )
             ctl.cv_rotate(0, 90, 0)
-            ctl.a.add("stretchy", min=0, max=1, proxy=self.setting.a.stretchy)
+            ctl.a.add("stretch", min=0, max=1, proxy=self.setting.a.stretch)
             self.ctls_ik.append(ctl)
 
         self.base_ctl.alignTo(self.ctls_ik[0], p=self.ctls_ik[0])

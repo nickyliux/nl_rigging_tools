@@ -105,27 +105,26 @@ class Finger(RigModule):
 
         #   ikc_zro
         #   |_ikc
-        #   |   |__tipRota_grp_zro          <<-  par cst by one of the 3-joint chain
-        #   |       |_tipRota_grp
+        #   |   |__tipRot_grp_zro          <<-  par cst by one of the 3-joint chain
+        #   |       |_tipRot_grp
         #   |           |_extra_rota zro
         #   |               |_extra_rota    ->>  ori cst the end segment of finger
 
         self.ikc.snapTo(self.fgr04)
         self.pvc.alignTo(self.fgr01)
-        self.tipRota_grp = GrpNode("tipRota_grp", pf=rID, align=self.fgr04, p=self.ikc)
-        self.extra_rota.alignTo(self.fgr03, p=self.tipRota_grp)
+        self.tipRot_grp = GrpNode("tipRot_grp", pf=rID, align=self.fgr04, p=self.ikc)
+        self.extra_rota.alignTo(self.fgr03, p=self.tipRot_grp)
 
         (self.setting, self.ikc, self.pvc) | self.CTL_DATA
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
-        self.tipRota_grp.addOffsetGrp()
+        self.tipRot_grp.addOffsetGrp()
         self.extra_rota.addOffsetGrp()
-        self.ikc.a.add("rotaUpDn") >> self.tipRota_grp.a.rz
-        self.ikc.a.add("rotaSide") >> self.tipRota_grp.a.ry
-        self.ikc.a.add("rotaRoll") >> self.tipRota_grp.a.rx
-        self.ikc.a.add("extraCtlVis", attrType="bool", dv=0, k=0) >> self.extra_rota.a.v
+        self.ikc.a.add("pitch") >> self.tipRot_grp.a.rz
+        self.ikc.a.add("yaw") >> self.tipRot_grp.a.ry
+        self.ikc.a.add("roll") >> self.tipRot_grp.a.rx
 
-        self.jnts_ikA[-2].cstPar(self.tipRota_grp.offset, mo=1)
+        self.jnts_ikA[-2].cstPar(self.tipRot_grp.offset, mo=1)
         self.extra_rota.cstOri(self.jnts_ikB[-2], mo=1)
 
         # Create IK handle
@@ -161,17 +160,17 @@ class Finger(RigModule):
 
         self.rootJ.cstPar(self.setting)
 
-        fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
+        fkToIk = self.setting.a.add("fkToIk", min=0, max=1, dv=1)
         for i in range(len(self.jnts) - 1):
             fkJ = self.jnts_fk[i]
             ikJ = self.jnts_ikB[i]
             jnt = self.jnts[i]
-            common.cstMulti(fkJ, ikJ, jnt, w=fkIkBlend)
+            common.cstMulti(fkJ, ikJ, jnt, w=fkToIk)
 
         # Add blend attribute to all controls
         for ctl in self.ctls_fk + self.ctls_ik:
-            ctl.a.addSep()
-            ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
+
+            ctl.a.add("fkToIk", proxy=fkToIk, k=0)
 
     def setup_ctlSet(self):
         """Setup control sets for the finger rig."""
@@ -187,15 +186,15 @@ class Finger(RigModule):
         mc.hide(self.ikhs)
 
         self.ctl_vis_toggle(
-            self.setting.a["fkIkBlend"],
+            self.setting.a["fkToIk"],
             onList=self.ctls_ik,
             offList=self.ctls_fk,
         )
 
-        setupJntVis = self.setting.a.add("setupJntVis", attrType="bool", dv=0, k=0)
-        setupJntVis >> self.jnts_ikA[0].a.v
-        setupJntVis >> self.jnts_ikB[0].a.v
-        setupJntVis >> self.jnts_fk[0].a.v
+        setupJnts = self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0)
+        setupJnts >> self.jnts_ikA[0].a.v
+        setupJnts >> self.jnts_ikB[0].a.v
+        setupJnts >> self.jnts_fk[0].a.v
 
     def setup_channel(self):
         """Setup channels for the finger rig module."""

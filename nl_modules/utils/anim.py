@@ -124,8 +124,8 @@ def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
 
         # Setup for pvc
         pvc.a["fkPin"].set(0)
-        pvPin = pvc.a["pvPin"].get()
-        if pvPin and pvPin > 0.5:
+        pvLock = pvc.a["pvLock"].get()
+        if pvLock and pvLock > 0.5:
             pvc.alignTo(jnts[2])
         else:
             pvc_pos = calc_pvc_pos(jnts[1], jnts[2], jnts[3])

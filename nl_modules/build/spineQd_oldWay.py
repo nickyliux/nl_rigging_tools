@@ -312,8 +312,8 @@ class SpineQd(RigModule):
         self.chest2_ctl.a.add("tangentScale", min=0, dv=1) >> self.jnts_ctl[2].a.s
 
         for ctl in [self.base_ctl, self.mid_ctl, self.chest_ctl]:
-            ctl.a.addSep()
-            ctl.a.add("stretchy", proxy=self.setting.a.stretchy)
+
+            ctl.a.add("stretch", proxy=self.setting.a.stretch)
             ctl.a.add("stretchMin", proxy=self.setting.a.stretchMin, k=0)
             ctl.a.add("stretchMax", proxy=self.setting.a.stretchMax, k=0)
 

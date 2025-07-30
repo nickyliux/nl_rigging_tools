@@ -92,7 +92,7 @@ class MarkingMenuAutorig:
             mc.menuItem(p=menu, l="-" * 15, en=0)
 
         # --- IK/FK SWITCH ---
-        fkIkAttr = firstSelected.a["fkIkBlend"]
+        fkIkAttr = firstSelected.a["fkToIk"]
         if fkIkAttr.exists():
             mode = 0 if fkIkAttr.get() > 0.5 else 1
             label = "To FK Mode" if mode == 0 else "To IK Mode"

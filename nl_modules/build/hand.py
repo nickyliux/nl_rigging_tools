@@ -90,7 +90,7 @@ class Hand(RigModule):
         for fgr in fgrs[:-1]:
             ctl = CrvNode(
                 f"{fgr.name}_ctl",
-                shape="cubeR",
+                shape="sphere2",
                 up="x",
                 scale=scale,
                 align=fgr,
@@ -271,7 +271,7 @@ class Hand(RigModule):
         # self.setup_updn_sdk()
         # self.setup_cup_sdk()
 
-        self.smart_ctl.a.add("palmScale", min=0, dv=1) >> self.rootJ.a.scale
+        self.smart_ctl.a.add("handScale", min=0, dv=1) >> self.rootJ.a.scale
         #
         #   thumb
         #
@@ -317,7 +317,7 @@ class Hand(RigModule):
             showCtls >> ctls[0].a.v
 
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJntVis", attrType="bool", dv=0, k=0),
+            self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0),
             onList=self.jnts_ik,
         )
         mc.hide(self.ikhs)

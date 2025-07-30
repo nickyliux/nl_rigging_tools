@@ -76,10 +76,10 @@ class ArmBp(RigModule):
 
         ctl_defs = [
             ("setting", "bagua", "z", scale / 2, 1, 2),
-            ("clavicle_fkc", "stickC", None, scale, 1, -1),
-            ("upr_fkc", "cubeR", "x", scale * 2, 1, -1),
-            ("lwr_fkc", "cubeR", "x", scale * 2, 1, -1),
-            ("palm_fkc", "cubeR", "x", scale * 2, 1, -1),
+            ("clavicle_fkc", "stickC", None, scale, 0, -1),
+            ("upr_fkc", "sphere2", "x", scale * 4, 0, -1),
+            ("lwr_fkc", "sphere2", "x", scale * 4, 0, -1),
+            ("palm_fkc", "sphere2", "x", scale * 4, 0, -1),
             ("ikc", "cube", None, scale * 1.5, 0, -1),
             ("palm_ikc", "squR", "x", scale * 1.2, 0, -1),
             ("pvc", "diamond", None, scale, 0, -1),
@@ -208,7 +208,7 @@ class ArmBp(RigModule):
             p=self.IK_GRP,
         )
 
-        # Add offset groups and stretchy IK
+        # Add offset groups and stretch IK
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
         ikH1.stretchyIk(soft=1)
@@ -223,9 +223,9 @@ class ArmBp(RigModule):
         palm_ikc_ofs = self.palm_ikc.addOffsetGrp()
         self.ikc.cstPoi(palm_ikc_ofs)
 
-        palmAlign = self.ikc.a.add("palmAlign", min=0, max=1, dv=1)
+        localRot = self.ikc.a.add("localRot", min=0, max=1, dv=0)
         common.cstMulti(
-            palm_ik.offset, self.ikc, palm_ikc_ofs, w=palmAlign, cstType="parR"
+            self.ikc, palm_ik.offset, palm_ikc_ofs, w=localRot, cstType="parR"
         )
 
         common.cstMulti(self.palm_ikc, self.pin_fkc, palm_ik, w=fkPin, cstType="ori")
@@ -265,7 +265,7 @@ class ArmBp(RigModule):
 
         # Add blend attribute
         self.setting.a.addSep()
-        fkIkBlend = self.setting.a.add("fkIkBlend", min=0, max=1, dv=1)
+        fkToIk = self.setting.a.add("fkToIk", min=0, max=1, dv=1)
         total = len(self.jnts) - 1
 
         # Blend FK/IK to BF joints and drive output joints
@@ -275,9 +275,9 @@ class ArmBp(RigModule):
             bfj = self.jnts_bf[i]
             jnt = self.jnts[i]
             if i > 0:
-                common.cstMulti(fkj, ikj, bfj, w=fkIkBlend)
-                # ut.blendN_(fkj.a.t, ikj.a.t, w=fkIkBlend) >> bfj.a.t
-                # ut.blendN_(fkj.a.r, ikj.a.r, w=fkIkBlend) >> bfj.a.r
+                common.cstMulti(fkj, ikj, bfj, w=fkToIk)
+                # ut.blendN_(fkj.a.t, ikj.a.t, w=fkToIk) >> bfj.a.t
+                # ut.blendN_(fkj.a.r, ikj.a.r, w=fkToIk) >> bfj.a.r
 
             if i == 0:
                 self.clavicle_fkc.cstPar(jnt, mo=1)
@@ -291,8 +291,8 @@ class ArmBp(RigModule):
 
         # Add blend attribute to all controls
         for ctl in self.ctls_fk + self.ctls_ik:
-            ctl.a.addSep()
-            ctl.a.add("fkIkBlend", proxy=fkIkBlend, k=0)
+
+            ctl.a.add("fkToIk", proxy=fkToIk, k=0)
 
         # Create matcher group for snapping
         GrpNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
@@ -393,7 +393,7 @@ class ArmBp(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the arm rig controls."""
         self.ctl_vis_toggle(
-            self.setting.a["fkIkBlend"],
+            self.setting.a["fkToIk"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             offList=self.ctls_fk[1:],
         )
@@ -402,7 +402,7 @@ class ArmBp(RigModule):
             onList=[self.pin_fkc],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJntVis", attrType="bool", dv=0, k=0),
+            self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0),
             onList=self.jnts_fk + self.jnts_ik + self.jnts_bf,
         )
         if self.rbnBones:

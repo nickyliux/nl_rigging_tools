@@ -83,8 +83,8 @@ class SpineQd(RigModule):
             ("base_ctl", "circle", "z", rSz * 5, 0, -1),
             ("mid_ctl", "squR", "z", rSz * 4, 0, -1),
             ("fore_ctl", "circle", "z", rSz * 5, 0, -1),
-            ("tangent0_ctl", "arrow", "z", rSz, 1, -1),
-            ("tangent1_ctl", "arrow", "z", rSz, 1, -1),
+            ("tangent0_ctl", "arrow", None, rSz * 2, 1, -1),
+            ("tangent1_ctl", "arrow", None, rSz * 2, 1, -1),
         ]
         if self.end_ctl:
             ctl_defs.append(("end_ctl", "circle", "x", rSz * 2, 0, -1))
@@ -93,7 +93,7 @@ class SpineQd(RigModule):
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         self.cog_ctl.cv_move(0, rSz * 50, 0)
-        self.setting.a.add("stretchy", min=0, max=1, dv=1)
+        self.setting.a.add("stretch", min=0, max=1, dv=1)
 
     def create_rbSrf(self):
         """Create the ribbon surface for the spine rig."""
@@ -201,9 +201,7 @@ class SpineQd(RigModule):
         spIkJnts = JntNode.createJntFrCrv(
             rbCrv, pf=rID, name="spikj", num=jntNum, size=rSz, p=self.RIG_DATA
         )
-        #
-        #   stretchy spline ik
-        #
+
         globalScale = self.masterC.a.globalScale
         ikH = IkNode(
             "sp",
@@ -221,7 +219,7 @@ class SpineQd(RigModule):
             p=self.RIG_DATA,
         )
         ikH.stretchySp(axis="tz", axisDir=1)
-        self.setting.a.stretchy.lock = 1
+        self.setting.a["stretch"].lock = 1
         #
         #   create ribbon jnts on top of spline ik joints
         #
@@ -368,13 +366,13 @@ class SpineQd(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""
 
-        attr = self.base_ctl.a.add("tangentCtlVis", attrType="bool", k=0)
+        attr = self.base_ctl.a.add("tangentCtl", attrType="bool", k=0)
         attr >> self.tangent0_ctl.a.v
-        attr = self.fore_ctl.a.add("tangentCtlVis", attrType="bool", k=0)
+        attr = self.fore_ctl.a.add("tangentCtl", attrType="bool", k=0)
         attr >> self.tangent1_ctl.a.v
 
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJntVis", attrType="bool", dv=0, k=0),
+            self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0),
             onList=self.ikJnts
             + self.jnts_fk
             + self.spIkJnts

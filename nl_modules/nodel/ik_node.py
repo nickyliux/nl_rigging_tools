@@ -163,7 +163,7 @@ class IkNode(DagNode):
     def stretchySpSS(
         cls, ikH=None, ctl=None, axis="tx", axisDir=1, minDv=0.9, maxDv=1.1
     ):
-        """Add stretchy logic to translate channel of ikHandle with spline solver."""
+        """Add stretch logic to translate channel of ikHandle with spline solver."""
 
         if ikH is None or ctl is None:
             logging.info("Require ikH and ctl input")
@@ -171,11 +171,11 @@ class IkNode(DagNode):
         ikH = DagNode(ikH)
         ctl = DagNode(ctl)
         if ikH.type != "ikHandle":
-            logging.info("No stretchy for non ikhandle")
+            logging.info("No stretch for non ikhandle")
             return
         solver = mc.ikHandle(ikH, q=1, sol=1)
         if solver != "ikSplineSolver":
-            logging.info("No stretchy for non ikSplineSolver")
+            logging.info("No stretch for non ikSplineSolver")
             return
         # ----------------------------------------
         jl = mc.ikHandle(ikH, q=1, jl=1)
@@ -188,7 +188,7 @@ class IkNode(DagNode):
         D = mc.arclen(crv)
         crvInfo = DepNode(mc.arclen(crv, ch=1))
         d = crvInfo.a.arcLength
-        ks = ctl.a.add("stretchy", min=0, max=1, dv=1)
+        ks = ctl.a.add("stretch", min=0, max=1, dv=1)
         ksMin = ctl.a.add("stretchMin", k=0, min=0, max=1, dv=minDv)
         ksMax = ctl.a.add("stretchMax", k=0, min=0, dv=maxDv)
         ratio = (d / D - 1) * ks + 1
@@ -199,7 +199,7 @@ class IkNode(DagNode):
             result * axisDir >> jl[i].a[axis]
 
     def stretchySp(self, on=0, axis="tx", axisDir=1, minDv=0.9, maxDv=1.1):
-        """Add stretchy logic to translate channel of ikHandle with spline solver."""
+        """Add stretch logic to translate channel of ikHandle with spline solver."""
 
         if self.solver != Solver.SPLINE:
             raise ValueError("Incorrect solver.")
@@ -215,7 +215,7 @@ class IkNode(DagNode):
         if self.scaleFix2:
             d /= self.scaleFix2
 
-        ks = self.setting.a.add("stretchy", min=0, max=1, dv=1)
+        ks = self.setting.a.add("stretch", min=0, max=1, dv=1)
         ksMin = self.setting.a.add("stretchMin", k=1, min=0, max=1, dv=minDv)
         ksMax = self.setting.a.add("stretchMax", k=1, min=0, dv=maxDv)
         ratio = (d / D - 1) * ks + 1
@@ -235,7 +235,7 @@ class IkNode(DagNode):
 
         return ratio
 
-    def stretchyIk(self, pvPin=1, soft=0):
+    def stretchyIk(self, pvLock=1, soft=0):
         """
                    J0
             d0 /   |   > Di[0]
@@ -248,13 +248,13 @@ class IkNode(DagNode):
 
         D = self.chainLen
         Di = []  # The length of each bone
-        ks = self.ikc.a.add("stretchy", min=0, max=1, dv=0)
-        kq = self.ikc.a.add("squashy", min=0, max=1, dv=0)
+        ks = self.ikc.a.add("stretch", min=0, max=1, dv=0)
+        kq = self.ikc.a.add("squash", min=0, max=1, dv=0)
 
         for i in range(1, len(self.jnt)):
             Di.append(self.jnt[i - 1].o.distanceTo(self.jnt[i]))
             if self.localScale:
-                self.ikc.a.add("limbScale" + str(i), dv=1)
+                self.ikc.a.add("length" + str(i), dv=1)
 
         dist_loc = LocNode("dist_loc#", pf=self.pf, snap=self.node)
         if self.parent:
@@ -266,7 +266,7 @@ class IkNode(DagNode):
         if self.scaleFix2:
             d /= self.scaleFix2
 
-        if pvPin:
+        if pvLock:
             if not self.pvc:
                 raise ValueError("pvc undefined.")
             if not self.setting:
@@ -274,7 +274,7 @@ class IkNode(DagNode):
             if len(self.jnt) != 3:
                 raise ValueError("pin is for 3-pt joint chain")
 
-            kp = self.pvc.a.add("pvPin", min=0, max=1)
+            kp = self.pvc.a.add("pvLock", min=0, max=1)
             div = d / D
             stretchyOutput = ut.blendN_(1, ut.max_(div, 1), w=ut.max_(ks, kp))
             squashyOutput = ut.blendN_(1, ut.min_(div, 1), w=kq)
@@ -288,7 +288,7 @@ class IkNode(DagNode):
             for i in range(1, len(self.jnt)):
                 result = ut.blend2_(ratio * Di[i - 1], di[i - 1], w=kp) * self.xDir
                 if self.localScale:
-                    result *= self.ikc.a[f"limbScale{i}"]
+                    result *= self.ikc.a[f"length{i}"]
                 result >> self.jnt[i].a.tx
         else:
             # Without Pv pinning
@@ -298,7 +298,7 @@ class IkNode(DagNode):
             for i in range(1, len(self.jnt)):
                 result = ratio * Di[i - 1] * self.xDir
                 if self.localScale:
-                    result *= self.ikc.a[f"limbScale{i}"]
+                    result *= self.ikc.a[f"length{i}"]
                 result >> self.jnt[i].a.tx
 
         if soft:
