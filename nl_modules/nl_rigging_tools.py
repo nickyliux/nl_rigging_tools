@@ -1,13 +1,8 @@
-# --- Standard Library ---
 import logging
 import os
 from functools import partial
 from importlib import reload
-
-# --- Maya ---
 import maya.cmds as mc
-
-# --- Internal Modules ---
 import nl_modules
 from nl_modules.utils import (
     reload_all,

@@ -82,7 +82,7 @@ class ArmBp(RigModule):
             ("palm_fkc", "sphere2", "x", scale * 4, 0, -1),
             ("ikc", "cube", None, scale * 1.5, 0, -1),
             ("palm_ikc", "squR", "x", scale * 1.2, 0, -1),
-            ("pvc", "diamond", None, scale, 0, -1),
+            ("pvc", "diamond", None, scale * 2, 0, -1),
         ]
 
         for name, shape, up, scale, top, w in ctl_defs:
@@ -90,7 +90,7 @@ class ArmBp(RigModule):
 
         self.clavicle_fkc.cv_rotate(0, 0, -45)
         self.ikc.cv_rotate(0, 90, 0)
-        self.palm_ikc.cv_move(scale * 7, 0, 0)
+        self.palm_ikc.cv_move(scale * 5, 0, 0)
 
     def build(self):
         """Build the arm rig module."""

@@ -57,13 +57,12 @@ class Hand(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "bagua", "z", scale * 4, 1, 2),
+            ("setting", "bagua", "z", scale * 2, 1, 2),
             ("smart_ctl", "roll", "x", scale, 1, 2),
         ]
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        # self.smart_ctl = CrvNode("smart_ctl", pf=rID, shape="roll", up="x", scale=rSz)
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
 
     def build(self):
@@ -89,12 +88,7 @@ class Hand(RigModule):
         ctlList = []
         for fgr in fgrs[:-1]:
             ctl = CrvNode(
-                f"{fgr.name}_ctl",
-                shape="sphere2",
-                up="x",
-                scale=scale,
-                align=fgr,
-                width=2,
+                f"{fgr.name}_ctl", shape="sphere2", up="x", scale=scale * 3, align=fgr
             )
             ctlList.append(ctl)
         return ctlList
@@ -257,7 +251,7 @@ class Hand(RigModule):
 
         # smart_ctl, with group scaling with rootJ
         scaleGrp = GrpNode("smartScale", pf=rID, align=self.rootJ, p=self.CTL_DATA)
-        offsetX = rSz * xDr * 110
+        offsetX = rSz * xDr * 100
         self.smart_ctl.alignTo(self.rootJ, ofs=(offsetX, 0, 0), p=scaleGrp)
         self.smart_ctl.addOffsetGrp()
 
@@ -312,7 +306,7 @@ class Hand(RigModule):
 
     def setup_vis(self):
         """Setup visibility controls for the hand rig."""
-        showCtls = self.setting.a.add("fkCtlVis", attrType="bool", dv=1, k=0)
+        showCtls = self.setting.a.add("fkCtls", attrType="bool", dv=1, k=0)
         for ctls in self.ctls_fgr:
             showCtls >> ctls[0].a.v
 
