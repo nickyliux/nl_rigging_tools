@@ -122,14 +122,14 @@ class LegBp(RigModule):
 
         ctl_defs = [
             ("setting", "bagua", None, scale, 1, 2),
-            ("hip_fkc", "sphere2", "x", scale_fk, 0, -1),
-            ("upr_fkc", "sphere2", "x", scale_fk, 0, -1),
-            ("lwr_fkc", "sphere2", "x", scale_fk, 0, -1),
-            ("palm_fkc", "sphere2", "x", scale_fk, 0, -1),
-            ("ball_fkc", "sphere2", "x", scale_fk, 0, -1),
-            ("ikc", "foot", None, rSz * 2, 0, -1),
-            ("pvc", "diamond", None, scale * 2, 0, -1),
-            ("smart_ctl", "squR", None, scale / 2, 0, 2),
+            ("hip_fkc", "sphere", "x", scale_fk, 0, -1),
+            ("upr_fkc", "sphere", "x", scale_fk, 0, -1),
+            ("lwr_fkc", "sphere", "x", scale_fk, 0, -1),
+            ("palm_fkc", "sphere", "x", scale_fk, 0, -1),
+            ("ball_fkc", "sphere", "x", scale_fk, 0, -1),
+            ("ikc", "foot", None, rSz, 0, -1),
+            ("pvc", "pvc", None, rSz, 0, -1),
+            ("smart_ctl", "squareR", None, scale / 2, 0, 2),
         ]
         if self.scapularExtra:
             ctl_defs.append(("scap_fkc", "arrow4", "x", scale, 1, -1))
@@ -282,7 +282,7 @@ class LegBp(RigModule):
         fkPin = self.pvc.a.add("fkPin", min=0, max=1)
         self.pin_fkc = CrvNode(
             rID + "_pin_fkc",
-            shape="squR",
+            shape="squareR",
             up="x",
             scale=rSz,
             align=self.palm,
@@ -373,9 +373,7 @@ class LegBp(RigModule):
 
         for g in [toeRollG, inRollG, outRollG, heelRollG]:
             ctl = g.addOffsetGrp(below=1)
-            CrvNode(ctl)(
-                name=g.name + "_ctl", shape="diamond", scale=scale / 4, width=2
-            )
+            CrvNode(ctl)(name=g.name + "_ctl", shape="pvc", scale=scale / 4, width=2)
             self.ctls_sub.append(ctl)
 
         self.ball_ikc = ballRollG.addOffsetGrp(below=1)

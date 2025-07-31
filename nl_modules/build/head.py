@@ -50,7 +50,7 @@ class Head(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
-            ("head_fkc", "squR", None, rSz * 2, 0, -1),
+            ("head_fkc", "squareR", None, rSz * 2, 0, -1),
             ("jaw_fkc", "circle", None, rSz, 0, -1),
             ("lf_eye_fkc", "circle", "x", rSz, 0, -1),
             ("rt_eye_fkc", "circle", "x", rSz, 0, -1),

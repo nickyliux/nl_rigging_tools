@@ -80,7 +80,7 @@ class SpineQd(RigModule):
             ("setting", "bagua", "z", rSz * 2, 1, 2),
             ("cog_ctl", "trapezoid", None, rSz, 1, -1),
             ("base_ctl", "circle", "z", rSz * 5, 0, -1),
-            ("mid_ctl", "squR", "z", rSz * 4, 0, -1),
+            ("mid_ctl", "squareR", "z", rSz * 4, 0, -1),
             ("fore_ctl", "circle", "z", rSz * 5, 0, -1),
             ("tangent0_ctl", "arrow", None, rSz * 2, 1, -1),
             ("tangent1_ctl", "arrow", None, rSz * 2, 1, -1),
@@ -91,8 +91,8 @@ class SpineQd(RigModule):
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        self.cog_ctl.cv_move(0, rSz * 50, 0)
-        self.cog_ctl.cv_scale(1, 2, 2)
+        self.cog_ctl.cv_move(0, rSz * 30, rSz * 30)
+        self.cog_ctl.cv_scale(1, 1.5, 2)
         self.setting.a.add("stretch", min=0, max=1, dv=1)
 
     def create_rbSrf(self):

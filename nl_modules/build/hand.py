@@ -88,7 +88,7 @@ class Hand(RigModule):
         ctlList = []
         for fgr in fgrs[:-1]:
             ctl = CrvNode(
-                f"{fgr.name}_ctl", shape="sphere2", up="x", scale=scale * 3, align=fgr
+                f"{fgr.name}_ctl", shape="sphere", up="x", scale=scale * 3, align=fgr
             )
             ctlList.append(ctl)
         return ctlList

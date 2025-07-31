@@ -64,13 +64,13 @@ class Finger(RigModule):
 
         ctl_defs = [
             ("setting", "bagua", "z", scale * 2, 1, 2),
-            ("fgr01_fkc", "squR", "x", scale, 1, -1),
-            ("fgr02_fkc", "squR", "x", scale, 1, -1),
-            ("fgr03_fkc", "squR", "x", scale, 1, -1),
-            ("fgr04_fkc", "squR", "x", scale, 1, -1),
+            ("fgr01_fkc", "squareR", "x", scale, 1, -1),
+            ("fgr02_fkc", "squareR", "x", scale, 1, -1),
+            ("fgr03_fkc", "squareR", "x", scale, 1, -1),
+            ("fgr04_fkc", "squareR", "x", scale, 1, -1),
             ("ikc", "cube", None, scale, 1, 2),
             ("extra_rota", "rotator2", None, scale, 0, -1),
-            ("pvc", "diamond", None, scale, 0, -1),
+            ("pvc", "pvc", None, scale, 0, -1),
         ]
 
         for name, shape, up, scale, top, w in ctl_defs:

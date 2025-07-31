@@ -67,7 +67,7 @@ class NeckPro(rig_module.RigModule):
         self.up_ikc.a.message >> self.rigNode.a.up_ikc
 
         self.md_ikc = CrvNode(
-            "md_ikc", pf=self.rigID, shape="squR", scale=s * 4, color=DY
+            "md_ikc", pf=self.rigID, shape="squareR", scale=s * 4, color=DY
         )
         self.md_ikc.a.message >> self.rigNode.a.md_ikc
 

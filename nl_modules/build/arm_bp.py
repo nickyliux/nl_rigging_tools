@@ -77,12 +77,12 @@ class ArmBp(RigModule):
         ctl_defs = [
             ("setting", "bagua", "x", scale, 1, 2),
             ("clavicle_fkc", "stickC", None, scale, 0, -1),
-            ("upr_fkc", "sphere2", "x", scale * 4, 0, -1),
-            ("lwr_fkc", "sphere2", "x", scale * 4, 0, -1),
-            ("palm_fkc", "sphere2", "x", scale * 4, 0, -1),
+            ("upr_fkc", "sphere", "x", scale * 4, 0, -1),
+            ("lwr_fkc", "sphere", "x", scale * 4, 0, -1),
+            ("palm_fkc", "sphere", "x", scale * 4, 0, -1),
             ("ikc", "cube", None, scale * 1.5, 0, -1),
-            ("palm_ikc", "squR", "x", scale * 1.2, 0, -1),
-            ("pvc", "diamond", None, scale * 2, 0, -1),
+            ("palm_ikc", "squareR", "x", scale * 1.2, 0, -1),
+            ("pvc", "pvc", None, scale * 2, 0, -1),
         ]
 
         for name, shape, up, scale, top, w in ctl_defs:
@@ -187,7 +187,7 @@ class ArmBp(RigModule):
         self.pin_fkc = CrvNode(
             "pin_fkc",
             pf=rID,
-            shape="squR",
+            shape="squareR",
             up="x",
             scale=rSz,
             align=self.palm,

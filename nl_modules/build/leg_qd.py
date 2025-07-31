@@ -126,21 +126,21 @@ class LegQd(RigModule):
         scale_fk = scale * 4
 
         ctl_defs = [
-            ("setting", "bagua", "z", scale, 1, 2),
-            ("hip_fkc", "sphere2", "x", scale_fk, 0, -1),
-            ("upr_fkc", "sphere2", "x", scale_fk, 0, -1),
-            ("lwr_fkc", "sphere2", "x", scale_fk, 0, -1),
-            ("palm_fkc", "sphere2", "x", scale_fk, 0, -1),
-            ("digit_fkc", "sphere2", "x", scale_fk, 0, -1),
-            ("ball_fkc", "sphere2", "x", scale_fk, 0, -1),
-            ("ikc", "foot", None, rSz * 2, 0, -1),
+            ("setting", "bagua", None, scale, 1, 2),
+            ("hip_fkc", "sphere", "x", scale_fk, 0, -1),
+            ("upr_fkc", "sphere", "x", scale_fk, 0, -1),
+            ("lwr_fkc", "sphere", "x", scale_fk, 0, -1),
+            ("palm_fkc", "sphere", "x", scale_fk, 0, -1),
+            ("digit_fkc", "sphere", "x", scale_fk, 0, -1),
+            ("ball_fkc", "sphere", "x", scale_fk, 0, -1),
+            ("ikc", "foot", None, rSz, 0, -1),
             ("extra_ikc", "rotator2", None, -scale, 1, -1),
-            ("pvc", "diamond", None, scale * 2, 0, -1),
-            ("smart_ctl", "squR", None, scale / 2, 0, 2),
+            ("pvc", "pvc", None, rSz, 0, -1),
+            ("smart_ctl", "squareR", None, scale / 2, 0, 2),
         ]
 
         if self.scapularExtra:
-            ctl_defs.append(("quadScap_ikc", "arrow4", "x", scale, 0, -1))
+            ctl_defs.append(("quadScap_ikc", "arrow4", "x", scale, 0, 2))
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
@@ -399,7 +399,7 @@ class LegQd(RigModule):
         roll_groups = [toeRollG, inRollG, outRollG, heelRollG]
         for g in roll_groups:
             ctl = g.addOffsetGrp(below=1)
-            CrvNode(ctl)(name=f"{g.name}_ctl", shape="diamond", scale=rSz / 4)
+            CrvNode(ctl)(name=f"{g.name}_ctl", shape="diamond3", scale=rSz / 4)
             self.ctls_sub.append(ctl)
 
         # --- Ball group IK control ---
@@ -443,7 +443,7 @@ class LegQd(RigModule):
             for jnt in fkToeList:
                 c = CrvNode(
                     f"{jnt.name}_ctl_#",
-                    shape="squR",
+                    shape="squareR",
                     up="x",
                     align=jnt,
                     scale=scale,

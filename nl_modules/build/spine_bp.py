@@ -102,7 +102,7 @@ class SpineBp(RigModule):
 
         self.ctls_fk = []
         for i, j in enumerate(self.jnts_fk[:-1]):
-            c = CrvNode(f"{i + 1}_fkc", pf=rID, shape="squR", scale=rSz * 5, top=1)
+            c = CrvNode(f"{i + 1}_fkc", pf=rID, shape="squareR", scale=rSz * 5, top=1)
             self.ctls_fk.append(c)
 
         self.build_fk_with_ctl2(self.jnts_fk[1:], self.ctls_fk[1:], p=self.CTL_DATA)
