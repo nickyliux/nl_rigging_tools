@@ -63,7 +63,12 @@ class Color(Enum):
         """get color of first expanded from the obj"""
         for node in cls._getExpanded(objs):
             if mc.getAttr(f"{node}.overrideEnabled"):
-                return mc.getAttr(f"{node}.overrideColor")
+                if mc.getAttr(f"{node}.overrideRGBColors"):
+                    col = mc.getAttr(f"{node}.overrideColorRGB")
+                    return col[0]
+                else:
+                    col = mc.getAttr(f"{node}.overrideColor")
+                    return col
 
     @classmethod
     def setColor(cls, objs, val):
@@ -84,6 +89,7 @@ class Color(Enum):
                 if mc.objExists(f"{node}.overrideEnabled"):
                     mc.setAttr(f"{node}.overrideEnabled", state)
                     if mc.objExists(f"{node}.overrideColor"):
+                        mc.setAttr(f"{node}.overrideRGBColors", 0)
                         mc.setAttr(f"{node}.overrideColor", colorToSet)
 
         elif isinstance(val, (list, tuple)):

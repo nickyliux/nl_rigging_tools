@@ -81,8 +81,8 @@ class ArmBp(RigModule):
             ("lwr_fkc", "sphere", "x", scale * 4, 0, -1),
             ("palm_fkc", "sphere", "x", scale * 4, 0, -1),
             ("ikc", "cube", None, scale * 1.5, 0, -1),
+            ("pvc", "pvc", None, rSz * 2, 0, -1),
             ("palm_ikc", "squareR", "x", scale * 1.2, 0, -1),
-            ("pvc", "pvc", None, scale * 2, 0, -1),
         ]
 
         for name, shape, up, scale, top, w in ctl_defs:

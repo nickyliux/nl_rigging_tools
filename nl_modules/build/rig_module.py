@@ -471,6 +471,7 @@ class RigModule(RigBase):
 
         self.boneFix = tgtDup
         self.boneFix_sdk(tgt, tgtDup)
+        upLoc.hide()
 
         self.updateBindJntList(remove=[self.lwr], extend=[self.boneFix])
 
