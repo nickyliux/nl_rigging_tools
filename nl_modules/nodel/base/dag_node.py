@@ -19,6 +19,7 @@ class DagNode(DepNode):
     COLOR_RIGHT = (0.710, 0.300, 0.300)
 
     def __init__(self, n, nodeType=None):
+        """Initialize DagNode with node name and type."""
         self._dag = None
 
         super().__init__(n)
@@ -35,7 +36,6 @@ class DagNode(DepNode):
     @node.setter
     def node(self, n):
         """Assign node from API and return state"""
-
         self._dag = None
         if DepNode.node.fset(self, n):
             self._dag = open_maya_api.toMDagPath(self.node)
@@ -45,7 +45,6 @@ class DagNode(DepNode):
     @property
     def path(self):
         """Get path from API"""
-
         if self._dag:
             return self._dag.partialPathName()
 
@@ -54,7 +53,6 @@ class DagNode(DepNode):
     @property
     def fullPath(self):
         """Get fullPath from API"""
-
         if self._dag:
             return self._dag.fullPathName()
 
@@ -63,7 +61,6 @@ class DagNode(DepNode):
     @property
     def shape(self):
         """Return first shape"""
-
         shapes = self.shapes
         if len(shapes):
             return shapes[0]
@@ -71,18 +68,15 @@ class DagNode(DepNode):
     @property
     def shapes(self):
         """Return all shapes"""
-
         return [DagNode(s) for s in mc.listRelatives(self, s=1, f=1, ni=1) or []]
 
     @property
     def shapesAll(self):
         """Return all shapes, including intermediate"""
-
         return [DagNode(s) for s in mc.listRelatives(self, s=1, f=1, ni=0) or []]
 
     def deleteItmShapes(self):
         """Delete related intermediate shapes"""
-
         allShapes = [s for s in mc.listRelatives(self, s=1, f=1, ni=0) or []]
         allIntShapes = [s for s in allShapes if s not in self.shapes]
         if allIntShapes:
@@ -132,7 +126,6 @@ class DagNode(DepNode):
 
     def cstBase(self, tgt, cstType="poi", keep=True, **kwargs):
         """Create and return constraint based on cstType"""
-
         if isinstance(tgt, (tuple, list)):
             raise TypeError(f"Invalid input: {tgt}")
         if not mc.objExists(tgt):
@@ -157,7 +150,6 @@ class DagNode(DepNode):
 
     def cstPvt(self, ikH, **kwargs):
         """PoleVector constraint tgt"""
-
         if isinstance(ikH, str):
             ikH = DagNode(ikH)
         n = mc.poleVectorConstraint(self, ikH, **kwargs, n=ikH.name + "_pvCst#")[0]
@@ -166,7 +158,6 @@ class DagNode(DepNode):
 
     def removeCstNodes(self, driven=1):
         """Remove all constraints"""
-
         cstList = self.getCstNodes(driven=driven)
         if cstList:
             mc.delete(cstList)
@@ -203,7 +194,6 @@ class DagNode(DepNode):
 
     def getCstObjects(self, cstType=None):
         """Return constraint objects"""
-
         result = []
         cstNodes = self.getCstNodes(cstType=cstType, driven=1)
         if cstNodes:
@@ -262,55 +252,46 @@ class DagNode(DepNode):
     @property
     def children(self):
         """Return children"""
-
         return self.getChildren()
 
     @property
     def children2(self):
         """Return children including itself"""
-
         return self.getChildren(incl=1)
 
     @property
     def childrenJt(self):
         """Return children joints"""
-
         return self.getChildren(nt="joint")
 
     @property
     def childrenJt2(self):
         """Return children joints including itself"""
-
         return self.getChildren(nt="joint", incl=1)
 
     @property
     def allChildren(self):
         """Return all descendants, excluding shapes"""
-
         return self.getChildren(ad=1)
 
     @property
     def allChildren2(self):
         """Return all descendants including itself"""
-
         return self.getChildren(ad=1, incl=1)
 
     @property
     def allChildrenJt(self):
         """Return all joint descendants"""
-
         return self.getChildren(nt="joint", ad=1)
 
     @property
     def allChildrenJt2(self):
         """Return all joint descendants including itself"""
-
         return self.getChildren(nt="joint", ad=1, incl=1)
 
     @property
     def parent(self):
         """Return parent"""
-
         parent = mc.listRelatives(self, p=1, f=1)
         if parent:
             return DagNode(parent[0])
@@ -318,7 +299,6 @@ class DagNode(DepNode):
     @property
     def offset(self):
         """Return parent"""
-
         return self.parent
 
     def parentTo(self, target, reset=0, ofs=None):
@@ -336,14 +316,12 @@ class DagNode(DepNode):
 
     def parentToWorld(self):
         """Parent itself to world"""
-
         if self.parent:
             mc.parent(self, w=1)
 
     @property
     def allParents(self):
         """Return all parents"""
-
         parents = []
         parent = self.parent
         while parent:
@@ -381,13 +359,11 @@ class DagNode(DepNode):
     @property
     def order(self):
         """Return order among children (0-indexed)"""
-
         return self.parent.children.index(self)
 
     @order.setter
     def order(self, index):
         """Set order among children (0-indexed)"""
-
         mc.reorder(self.name, r=index)
 
     def zeroize(self, below=False, relink=True, alignParent=False, snapIt=False):
@@ -431,7 +407,6 @@ class DagNode(DepNode):
 
     def addOffsetGrp(self, count=1, below=0, relink=1, alignParent=0, snapIt=0):
         """Add offset group"""
-
         resultGrps = []
         i = 0
         target = self
@@ -450,7 +425,6 @@ class DagNode(DepNode):
 
     def alignTo(self, obj, ofs=None, ofsR=None, rotateOnly=0, p=None, addOfs=0):
         """Align to obj"""
-
         obj = DagNode(obj) if isinstance(obj, str) else obj
         if rotateOnly:
             common.matchMove([self, obj], mode="r")
@@ -467,7 +441,6 @@ class DagNode(DepNode):
 
     def snapTo(self, obj, ofs=None, p=None, addOfs=0):
         """Snap to obj"""
-
         obj = DagNode(obj) if isinstance(obj, str) else obj
         common.matchMove([self, obj], mode="t")
         if p:
@@ -479,13 +452,11 @@ class DagNode(DepNode):
 
     def alignHere(self, objs):
         """Align objects to itself"""
-
         objsList = objs if type(objs) == "list" else [objs]
         common.matchMove([DagNode(obj) for obj in objsList] + [self])
 
     def snapAlignTo(self, obj1, obj2, ofs=None, p=None):
         """Snap to obj1, align to obj2"""
-
         obj1 = DagNode(obj1) if isinstance(obj1, str) else obj1
         obj2 = DagNode(obj2) if isinstance(obj2, str) else obj2
         common.matchMove([self, obj2], mode="r")
@@ -497,7 +468,6 @@ class DagNode(DepNode):
 
     def freezeXf(self, t=1, r=1, s=1):
         """Freeze object transform"""
-
         mc.makeIdentity(self, t=t, r=r, s=s, a=1)
 
     def resetXf(self, t=1, r=1, s=1):
@@ -512,7 +482,6 @@ class DagNode(DepNode):
 
     def duplicate(self, name=None, **kwargs):
         """Duplicate itself"""
-
         from nl_modules.nodel.base.dag_node import DagNode
         from nl_modules.nodel.jnt_node import JntNode
         from nl_modules.nodel.grp_node import GrpNode
@@ -535,7 +504,6 @@ class DagNode(DepNode):
 
     def displayLocalAxis(self, state=True):
         """Show/hide display local axis"""
-
         self.a.displayLocalAxis.set(state)
 
     def lockHideAttr(self, attrsList, lock=True):
@@ -565,13 +533,11 @@ class DagNode(DepNode):
 
     def show(self):
         """Show itself"""
-
         if self.exists():
             mc.showHidden(self)
 
     def hide(self):
         """Hide itself"""
-
         if self.exists():
             mc.hide(self)
 
@@ -584,7 +550,6 @@ class DagNode(DepNode):
     @color.setter
     def color(self, v):
         """Set color"""
-
         Color.setColor(self, v)
 
     @property
@@ -597,7 +562,6 @@ class DagNode(DepNode):
     @dspType.setter
     def dspType(self, state):
         """Set display type of shape or itself"""
-
         tgt = self.shape or self
         tgt.a.overrideEnabled.set(1)
         tgt.a.overrideDisplayType.set(state)
@@ -605,14 +569,12 @@ class DagNode(DepNode):
     @property
     def history(self):
         """Return history"""
-
         if self.exists():
             return [DagNode(obj) for obj in mc.listHistory(self)]
         return []
 
     def deleteHistory(self):
         """Delete history"""
-
         if self.exists():
             mc.delete(self, ch=1)
 
@@ -656,11 +618,11 @@ class DagNode(DepNode):
     @property
     def type(self):
         """Return type of shape or itself"""
-
         if self.exists():
             return mc.nodeType(self.shape or self)
 
     def scale(self, *args, **kwargs):
+        """Scale the node"""
         if len(args) == 1:
             mc.scale(args[0], args[0], args[0], self, **kwargs)
         else:
@@ -668,7 +630,6 @@ class DagNode(DepNode):
 
     def get_side_color(self):
         """Return color depending on side"""
-
         color = self.COLOR_MID
         n = str(self.node)
         if n.startswith("lf"):

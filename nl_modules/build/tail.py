@@ -6,12 +6,14 @@ from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common
+from nl_modules.utils.color import Color
 
 
 class Tail(RigModule):
     """Tail rig module class, inherits from RigModule."""
 
     def __init__(self, rigNode):
+        """Initialize the Tail rig module with the given rigNode."""
         super().__init__(rigNode)
 
         # Guide attributes
@@ -43,7 +45,6 @@ class Tail(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the tail rig."""
-
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
@@ -52,8 +53,8 @@ class Tail(RigModule):
 
     def build_ctl(self):
         """Build control nodes for the tail rig."""
-
         logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
 
         ctl_defs = [("setting", "bagua", "z", rSz, 1, 2)]
@@ -65,7 +66,6 @@ class Tail(RigModule):
 
     def build(self):
         """Build the tail rig."""
-
         self.build_pre_module()
 
         # Create and register rbSrf
@@ -81,7 +81,6 @@ class Tail(RigModule):
 
     def create_rbSrf(self):
         """Create the ribbon surface for the tail rig."""
-
         return SrfNode.buildRbSrf(
             pf=self.rigID,
             crv=self.LINE_GUIDE,
@@ -94,6 +93,7 @@ class Tail(RigModule):
     def build_ribbon(self):
         """Create the ribbon for the tail rig."""
         logging.info(self.rigID)
+
         crvLenRatio, self.jnts_rb = self.build_motionPath_ribbon(
             rbSrf=self.rbSrf2,
             jntNum=self.rbnJntNum,
@@ -105,6 +105,7 @@ class Tail(RigModule):
     def build_ik(self):
         """Build the IK controls for the tail rig."""
         logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
 
         # --- Create IK joint chain from guide curve ---
@@ -139,8 +140,8 @@ class Tail(RigModule):
     def build_fk(self):
         """Build the FK controls for the tail rig."""
         logging.info(self.rigID)
-        rID, rSz, xDr = self.getMyVar()
 
+        rID, rSz, xDr = self.getMyVar()
         # --- Build FK joint chain from guide curve ---
         self.jnts_fk = JntNode.createJntFrCrv(
             self.LINE_GUIDE,
@@ -186,12 +187,13 @@ class Tail(RigModule):
             ctl = CrvNode(
                 f"{i}_ofs_ctl",
                 pf=rID,
-                shape="sphere2",
-                scale=rSz / 2,
+                shape="cube",
+                scale=rSz / 3,
                 align=self.ctls_fk[i],
                 p=self.ctls_fk[i],
+                color=Color.PINK,
             )
-            # moveY=rSz * 25,
+            ctl.cv_move(0, rSz * 20, 0)
             jnt = JntNode(f"{i}_ofs_jnt", pf=rID, align=ctl, p=ctl)
             self.ctls_ofs.append(ctl)
             self.jnts_ofs.append(jnt)
@@ -226,40 +228,39 @@ class Tail(RigModule):
 
     def setup_channel(self):
         """Setup channel attributes for the tail rig controls."""
-
-        for ctl in self.ctls_fk + self.ctls_ik:
+        for ctl in self.ctls_fk + self.ctls_ik + self.ctls_ofs:
             ctl.a.showAttr(t=1, r=1)
         self.setting.a.showAttr()
 
     def setup_rotate_order(self):
         """Setup rotate order for the tail rig controls."""
-
         for ctl in self.ctls_fk:
             ctl.a.ro.set(3)
 
     def setup_scale(self):
         """Setup scale attributes for the tail rig controls."""
-
         self.setting.a["localScale"] >> self.IK_GRP.a.s
         self.setting.a["localScale"] >> self.FK_GRP.a.s
 
     def setup_ctlSet(self):
         """Setup control sets for the tail rig controls."""
-
         self.add_ctl_set(self.ctls_ik + self.ctls_fk + self.ctls_ofs + [self.setting])
 
     def setup_bindJnt(self):
         """Setup bind joints for the tail rig controls."""
-
         self.add_bind_jnt_set(self.jnts_bind)
+
+    def setup_space(self):
+        pass
 
     def build_post(self):
         """Post setup for the tail rig."""
-
         logging.info(self.rigID)
+
         self.setup_scale()
         self.setup_bindJnt()
         self.setup_ctlSet()
+        self.setup_space()
         self.setup_anchor_module({"anchorF1": self.ctls_ik[0].offset.offset})
         self.setup_vis()
         self.setup_channel()

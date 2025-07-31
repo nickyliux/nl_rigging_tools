@@ -75,7 +75,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "bagua", "z", scale / 2, 1, 2),
+            ("setting", "bagua", "x", scale, 1, 2),
             ("clavicle_fkc", "stickC", None, scale, 0, -1),
             ("upr_fkc", "sphere2", "x", scale * 4, 0, -1),
             ("lwr_fkc", "sphere2", "x", scale * 4, 0, -1),
@@ -407,7 +407,7 @@ class ArmBp(RigModule):
         )
         if self.rbnBones:
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyCtlVis", attrType="bool", dv=0, k=0),
+                self.setting.a.add("bendyCtls", attrType="bool", dv=0, k=0),
                 onList=self.all_bend,
             )
 

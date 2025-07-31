@@ -14,8 +14,7 @@ class Finger(RigModule):
     """Finger rig module for creating and managing finger rigs in a character rig."""
 
     def __init__(self, rigNode):
-        # Initialize the Finger rig module with a rig node.
-
+        """Initialize the Finger rig module."""
         rigNode = DagNode(rigNode) if isinstance(rigNode, str) else rigNode
         super().__init__(rigNode)
 
@@ -46,9 +45,7 @@ class Finger(RigModule):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build(self):
-        """
-        Build the finger rig module.
-        """
+        """Build the finger rig module."""
         self.build_pre_module()
         self.jnts = self.rootJ.allChildrenJt2
         self.fgr01, self.fgr02, self.fgr03, self.fgr04 = self.jnts
@@ -60,8 +57,8 @@ class Finger(RigModule):
 
     def build_ctl(self):
         """Build control nodes for the arm rig."""
-
         logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
 
@@ -84,6 +81,7 @@ class Finger(RigModule):
     def build_fk(self):
         """Build the FK controls for the arm rig."""
         logging.info(self.rigID)
+
         self.jnts_fk = common.dupSk(
             self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
         )
@@ -93,6 +91,7 @@ class Finger(RigModule):
     def build_ik(self):
         """Build the IK controls for the arm rig."""
         logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
 
         # Create IK joints
@@ -139,6 +138,7 @@ class Finger(RigModule):
         self.ikhs = [ikH_A, ikH_B]
 
     def create_ik(self, name, sj, ee, jsf, p):
+        """Create an IK handle for the finger rig."""
         return IkNode(
             name,
             pf=self.rigID,

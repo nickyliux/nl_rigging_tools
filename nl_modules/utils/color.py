@@ -47,7 +47,6 @@ class Color(Enum):
     @staticmethod
     def _getExpanded(objs):
         """get expanded shapes and nodes"""
-
         filtered = None
         if objs:
             objList = objs if isinstance(objs, list) else [objs]
@@ -62,7 +61,6 @@ class Color(Enum):
     @classmethod
     def getColor(cls, objs):
         """get color of first expanded from the obj"""
-
         for node in cls._getExpanded(objs):
             if mc.getAttr(f"{node}.overrideEnabled"):
                 return mc.getAttr(f"{node}.overrideColor")
@@ -70,7 +68,6 @@ class Color(Enum):
     @classmethod
     def setColor(cls, objs, val):
         """set color of first expanded from the obj"""
-
         colorToSet = val or 0
         state = colorToSet != 0
 

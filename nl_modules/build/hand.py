@@ -57,7 +57,7 @@ class Hand(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "bagua", "z", scale * 2, 1, 2),
+            ("setting", "bagua", "x", scale * 2, 1, 2),
             ("smart_ctl", "roll", "x", scale, 1, 2),
         ]
         for name, shape, up, scale, top, w in ctl_defs:
@@ -96,6 +96,7 @@ class Hand(RigModule):
     def build_fk(self):
         """Build FK controls for the hand rig module."""
         logging.info(self.rigID)
+
         for fgrs in self.jnts_fgr:
 
             ctlList = self.create_finger_ctl(fgrs)
@@ -109,6 +110,7 @@ class Hand(RigModule):
     def build_ik(self):
         """Build IK controls for the hand rig module."""
         logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
         self.ctls_ik = []
         self.hand_grp = GrpNode(rID + "_grp", align=self.rootJ, p=self.CTL_DATA)
@@ -243,8 +245,8 @@ class Hand(RigModule):
     def build_fgrs(self):
         """Build the finger logic for the hand rig module."""
         logging.info(self.rigID)
-        rID, rSz, xDr = self.getMyVar()
 
+        rID, rSz, xDr = self.getMyVar()
         if len(self.jnts_fgr) != 5:
             logging.info("Smart setup for 5-fgr only")
             return
@@ -292,10 +294,12 @@ class Hand(RigModule):
         """Setup channels for the hand rig controls."""
         self.setting.a.showAttr()
         self.smart_ctl.a.showAttr(t=1, r=1, s=1)
-        [c.a.showAttr(r=1) for c in self.ctls_ik]
+
+        for ctl in self.ctls_ik:
+            ctl.a.showAttr(r=1)
         for ctls in self.ctls_fgr:
-            for c in ctls:
-                c.a.showAttr(t=1, r=1)
+            for ctl in ctls:
+                ctl.a.showAttr(t=1, r=1)
 
     def setup_rotate_order(self):
         """Setup rotate order for the hand rig controls."""

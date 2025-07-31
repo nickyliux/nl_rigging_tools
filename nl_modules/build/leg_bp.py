@@ -121,7 +121,7 @@ class LegBp(RigModule):
         scale_fk = scale * 4
 
         ctl_defs = [
-            ("setting", "bagua", "z", scale / 2, 1, 2),
+            ("setting", "bagua", None, scale, 1, 2),
             ("hip_fkc", "sphere2", "x", scale_fk, 0, -1),
             ("upr_fkc", "sphere2", "x", scale_fk, 0, -1),
             ("lwr_fkc", "sphere2", "x", scale_fk, 0, -1),
@@ -369,15 +369,12 @@ class LegBp(RigModule):
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
+        scale = rSz * xDr
 
         for g in [toeRollG, inRollG, outRollG, heelRollG]:
             ctl = g.addOffsetGrp(below=1)
             CrvNode(ctl)(
-                name=g.name + "_ctl",
-                shape="diamond",
-                scale=rSz / 4,
-                color=Color.BLACK,
-                width=2,
+                name=g.name + "_ctl", shape="diamond", scale=scale / 4, width=2
             )
             self.ctls_sub.append(ctl)
 
@@ -385,8 +382,8 @@ class LegBp(RigModule):
         CrvNode(self.ball_ikc)(
             name="ball_ikc",
             pf=rID,
-            shape="stickS",
-            scale=-rSz * xDr / 2,
+            shape="rotator2",
+            scale=-scale / 2,
             rotateY=90,
             width=2,
         )
@@ -492,17 +489,17 @@ class LegBp(RigModule):
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             offList=self.ctls_fk[1:-1],
         )
-        self.ctl_vis_toggle(
-            self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
-            onList=self.ctls_sub,
-        )
+        # self.ctl_vis_toggle(
+        #     self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
+        #     onList=self.ctls_sub,
+        # )
         self.ctl_vis_toggle(
             self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0),
             onList=self.jnts_fk + self.jnts_ik + self.jnts_bf,
         )
         if self.rbnBones:
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyCtlVis", attrType="bool", dv=0, k=0),
+                self.setting.a.add("bendyCtls", attrType="bool", dv=0, k=0),
                 onList=self.all_bend,
             )
         mc.hide(self.ikhs, self.toeIKHs)

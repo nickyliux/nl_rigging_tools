@@ -10,6 +10,7 @@ from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common
 from nl_modules.utils import utils_node as ut
+from nl_modules.utils.common import Vec
 
 
 class SpineQd(RigModule):
@@ -62,7 +63,6 @@ class SpineQd(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the spine rig."""
-
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
@@ -72,14 +72,13 @@ class SpineQd(RigModule):
 
     def build_ctl(self):
         """Build control nodes for the spine rig."""
-
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
         #   Define control shapes and attributes
         ctl_defs = [
             ("setting", "bagua", "z", rSz * 2, 1, 2),
-            ("cog_ctl", "trapezoid", None, rSz * 2, 1, -1),
+            ("cog_ctl", "trapezoid", None, rSz, 1, -1),
             ("base_ctl", "circle", "z", rSz * 5, 0, -1),
             ("mid_ctl", "squR", "z", rSz * 4, 0, -1),
             ("fore_ctl", "circle", "z", rSz * 5, 0, -1),
@@ -93,11 +92,11 @@ class SpineQd(RigModule):
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         self.cog_ctl.cv_move(0, rSz * 50, 0)
+        self.cog_ctl.cv_scale(1, 2, 2)
         self.setting.a.add("stretch", min=0, max=1, dv=1)
 
     def create_rbSrf(self):
         """Create the ribbon surface for the spine rig."""
-
         return SrfNode.buildRbSrf(
             pf=self.rigID,
             crv=self.LINE_GUIDE,
@@ -108,7 +107,6 @@ class SpineQd(RigModule):
 
     def build(self):
         """Build the spine rig."""
-
         self.build_pre_module()
 
         mc.delete(self.rootJ)
@@ -125,7 +123,6 @@ class SpineQd(RigModule):
 
     def build_ribbon(self):
         """Create the ribbon for the spine rig."""
-
         self.rbSrf.weightTo(self.ikJnts, mi=1, chain=0)
 
         crvLenRatio, self.spIkJnts, self.jnts_rb = self.build_spik_ribbon(
@@ -143,8 +140,8 @@ class SpineQd(RigModule):
 
     def build_ik(self):
         """Build the IK controls for the spine rig."""
-
         logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
         #
         #   build 3 ik joints from crv
@@ -190,8 +187,8 @@ class SpineQd(RigModule):
 
     def build_spik_ribbon(self, rbSrf=None, jntNum=5, setting=None, scaleAttr=None):
         """Build a spine IK ribbon."""
-
         logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
         #
         #   create crv & joints on it
@@ -290,7 +287,6 @@ class SpineQd(RigModule):
 
     def build_twoJ_ik(self):
         """Build a two-joint IK system for the spine rig."""
-
         rID, rSz, xDr = self.getMyVar()
 
         # --- Build two-joint chain from curve ---
@@ -345,7 +341,6 @@ class SpineQd(RigModule):
 
     def build_volume(self, crvLenRatio):
         """Build volume control for the spine rig."""
-
         # add volume graph keys
         volumeScale = self.setting.a.add("volumeScale", dv=1)
         volumeGraph = self.setting.a.add("volumeGraph", dv=0)
@@ -365,7 +360,6 @@ class SpineQd(RigModule):
 
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""
-
         attr = self.base_ctl.a.add("tangentCtl", attrType="bool", k=0)
         attr >> self.tangent0_ctl.a.v
         attr = self.fore_ctl.a.add("tangentCtl", attrType="bool", k=0)
@@ -386,14 +380,12 @@ class SpineQd(RigModule):
 
     def setup_rotate_order(self):
         """Setup rotate order for the spine rig controls."""
-
         [ctl.a.ro.set(3) for ctl in [self.fore_ctl, self.base_ctl, self.cog_ctl]]
         if self.end_ctl:
             self.end_ctl.a.ro.set(3)
 
     def setup_channel(self):
         """Setup channel attributes for the spine rig controls."""
-
         [ctl.a.showAttr(t=1, r=1) for ctl in self.ctls_ik]
 
         self.setting.a.showAttr()
@@ -408,7 +400,6 @@ class SpineQd(RigModule):
 
     def setup_anchor(self):
         """Setup anchor points for the spine rig controls."""
-
         self.setup_anchor_module(
             {"anchorM1": self.end_jnt if self.end_ctl else self.jnts_rb[0]}
         )
@@ -416,7 +407,6 @@ class SpineQd(RigModule):
 
     def setup_space(self):
         """Setup space switching for the spine rig controls."""
-
         self.rigNode.setMsg(
             {
                 "space_master": self.masterC,
@@ -427,7 +417,6 @@ class SpineQd(RigModule):
 
     def is_neck(self):
         """Check if the rig is a neck rig."""
-
         return self.__class__.__name__ == "NeckQd"
 
     def setup_ctlSets(self):
@@ -440,14 +429,13 @@ class SpineQd(RigModule):
 
     def setup_bindJnt(self):
         """Setup bind joints for the spine rig."""
-
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_proxy_ratio(self.jnts_bind, 5)
 
     def build_post(self):
         """Post setup for the spine rig."""
-
         logging.info(self.rigID)
+
         self.setup_bindJnt()
         self.setup_ctlSets()
         self.setup_space()

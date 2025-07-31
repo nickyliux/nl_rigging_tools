@@ -103,11 +103,14 @@ class Head(RigModule):
     def setup_space(self):
         """Setup space switching for the head rig controls."""
         self.head_fkc.a.add("spaceType", dv=1, k=0, cb=0)
-        self.rigNode.setMsg({"spaceHolder1": self.head_fkc})
-        spaces = "neck, COG, master"
-        self.rigNode.a.add("spaceName1", attrType="string", txt=spaces)
+        self.rigNode.a.add("spaceName1", attrType="string", txt="neck, COG, master")
 
-        self.rigNode.setMsg({"space_head": self.head_fkc})
+        self.rigNode.setMsg(
+            {
+                "spaceHolder1": self.head_fkc,
+                "space_head": self.head_fkc,
+            }
+        )
 
     def setup_scale(self):
         """Setup scale for the head rig module."""
