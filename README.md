@@ -87,7 +87,9 @@ The tool might work in 2022, but it is not tested.
 ## Reference
 1. [BoneClones](https://boneclones.com/category/all-zoology-skeletons/fields-of-study)
 
-2. [Python for Maya : Beginner to Advanced Rigging Automation by Nick Hughes](https://www.udemy.com/course/python-for-maya-beginner-to-advanced-rigging-automation)
+2. [ivlpaleontology](https://sketchfab.com/ivlpaleontology)
+
+3. [Python for Maya : Beginner to Advanced Rigging Automation by Nick Hughes](https://www.udemy.com/course/python-for-maya-beginner-to-advanced-rigging-automation)
 
 ##
 For more details, visit my blog [www.nickyliu.com](http://www.nickyliu.com)
