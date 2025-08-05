@@ -1,0 +1,41 @@
+$freq = tail_CON.freq; 
+$delay = tail_CON.frameDelay;
+$fps = tail_CON.fps;
+
+$xAmp = tail_CON.xAmplitude;
+$yAmp = tail_CON.yAmplitude;
+$zAmp = tail_CON.zAmplitude;
+$xN = tail_CON.xNoise;
+$yN = tail_CON.yNoise;
+$zN = tail_CON.zNoise;
+$xOfs = tail_CON.xOffset;
+$yOfs = tail_CON.yOffset;
+$zOfs = tail_CON.zOffset;
+
+proc float calc(int $i, float $localOffset) {
+    return ($freq * (time * $fps - tail_CON.globalOffset) - $i * $delay - $localOffset)  / $fps;
+}
+
+T_Noise1.translateX = ( sind(360 * calc(1, $xOfs)) + ( noise (calc(1, $xOfs)) *$xN)) * $xAmp ;
+T_Noise2.translateX = ( sind(360 * calc(2, $xOfs)) + ( noise (calc(2, $xOfs)) *$xN)) * $xAmp ;
+T_Noise3.translateX = ( sind(360 * calc(3, $xOfs)) + ( noise (calc(3, $xOfs)) *$xN)) * $xAmp ;
+T_Noise4.translateX = ( sind(360 * calc(4, $xOfs)) + ( noise (calc(4, $xOfs)) *$xN)) * $xAmp ;
+T_Noise5.translateX = ( sind(360 * calc(5, $xOfs)) + ( noise (calc(5, $xOfs)) *$xN)) * $xAmp ;
+T_Noise6.translateX = ( sind(360 * calc(6, $xOfs)) + ( noise (calc(6, $xOfs)) *$xN)) * $xAmp ;
+T_Noise7.translateX = ( sind(360 * calc(7, $xOfs)) + ( noise (calc(7, $xOfs)) *$xN)) * $xAmp ;
+
+T_Noise1.translateY = ( sind(360 * calc(1, $yOfs)) + ( noise (calc(1, $yOfs)) *$yN)) * $yAmp ;
+T_Noise2.translateY = ( sind(360 * calc(2, $yOfs)) + ( noise (calc(2, $yOfs)) *$yN)) * $yAmp ;
+T_Noise3.translateY = ( sind(360 * calc(3, $yOfs)) + ( noise (calc(3, $yOfs)) *$yN)) * $yAmp ;
+T_Noise4.translateY = ( sind(360 * calc(4, $yOfs)) + ( noise (calc(4, $yOfs)) *$yN)) * $yAmp ;
+T_Noise5.translateY = ( sind(360 * calc(5, $yOfs)) + ( noise (calc(5, $yOfs)) *$yN)) * $yAmp ;
+T_Noise6.translateY = ( sind(360 * calc(6, $yOfs)) + ( noise (calc(6, $yOfs)) *$yN)) * $yAmp ;
+T_Noise7.translateY = ( sind(360 * calc(7, $yOfs)) + ( noise (calc(7, $yOfs)) *$yN)) * $yAmp ;
+
+T_Noise1.translateZ = ( sind(360 * calc(1, $zOfs)) + ( noise (calc(1, $zOfs)) *$yN)) * $zAmp ;
+T_Noise2.translateZ = ( sind(360 * calc(2, $zOfs)) + ( noise (calc(2, $zOfs)) *$zN)) * $zAmp ;
+T_Noise3.translateZ = ( sind(360 * calc(3, $zOfs)) + ( noise (calc(3, $zOfs)) *$zN)) * $zAmp ;
+T_Noise4.translateZ = ( sind(360 * calc(4, $zOfs)) + ( noise (calc(4, $zOfs)) *$zN)) * $zAmp ;
+T_Noise5.translateZ = ( sind(360 * calc(5, $zOfs)) + ( noise (calc(5, $zOfs)) *$zN)) * $zAmp ;
+T_Noise6.translateZ = ( sind(360 * calc(6, $zOfs)) + ( noise (calc(6, $zOfs)) *$zN)) * $zAmp ;
+T_Noise7.translateZ = ( sind(360 * calc(7, $zOfs)) + ( noise (calc(7, $zOfs)) *$zN)) * $zAmp ;
