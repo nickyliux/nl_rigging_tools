@@ -1,11 +1,13 @@
 import logging
 import maya.cmds as mc
 from nl_modules.build.rig_module import RigModule
+from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common
+from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
 
 
@@ -77,6 +79,7 @@ class Tail(RigModule):
         self.build_ik()
         self.build_fk()
         self.build_ribbon()
+        self.build_sine()
         self.build_post()
 
     def create_rbSrf(self):
@@ -101,6 +104,49 @@ class Tail(RigModule):
             stretchyAttr=self.setting.a.stretch,
         )
         self.jnts_bind = self.jnts_rb
+
+    def build_sine(self):
+        """Build the sine wave motion for the tail rig."""
+        frame = DagNode("time1").a.outTime
+
+        # self.setting.a.addSep()
+        fps = self.setting.a.add("fps", dv=24, k=0)
+        freq = self.setting.a.add("freq", dv=0.5)
+        softness = self.setting.a.add("softness", dv=5)
+        # Amplitude
+        xA = self.setting.a.add("xAmplitude", dv=0)
+        yA = self.setting.a.add("yAmplitude", dv=5)
+        zA = self.setting.a.add("zAmplitude", dv=0)
+        # Offsets
+        globalOffset = self.setting.a.add("globalOffset", dv=0)
+        xOffset = self.setting.a.add("xOffset", dv=0)
+        yOffset = self.setting.a.add("yOffset", dv=0)
+        zOffset = self.setting.a.add("zOffset", dv=0)
+        # Noise
+        shake = self.setting.a.add("noiseShake", min=0.01, dv=1)
+        xN = self.setting.a.add("xNoise", dv=0)
+        yN = self.setting.a.add("yNoise", dv=0)
+        zN = self.setting.a.add("zNoise", dv=0)
+        # tgts = [
+        #     "tail0_1_ofs_jnt",
+        #     "tail0_2_ofs_jnt",
+        #     "tail0_3_ofs_jnt",
+        #     "tail0_4_ofs_jnt",
+        #     "tail0_5_ofs_jnt",
+        # ]
+
+        for i, tgt in enumerate(self.jnts_ofs[1:]):
+
+            tgt = DagNode(tgt)
+            time = freq * (frame - globalOffset - (i + 1) * softness)
+
+            xTime = (time - xOffset) / fps
+            yTime = (time - yOffset) / fps
+            zTime = (time - zOffset) / fps
+
+            xA * ut.sin_(360 * xTime) + xN * ut.noise_(xTime, shake) >> tgt.a.tx
+            yA * ut.sin_(360 * yTime) + yN * ut.noise_(yTime, shake) >> tgt.a.ty
+            zA * ut.sin_(360 * zTime) + zN * ut.noise_(zTime, shake) >> tgt.a.tz
 
     def build_ik(self):
         """Build the IK controls for the tail rig."""
