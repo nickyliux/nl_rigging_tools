@@ -181,12 +181,13 @@ def sin_(input):
     return n.a.outputQuatX
 
 
-def noise_(input, shake):
+def noise_(input, shake=None):
     """Create noise node for input with specified noise type"""
     n = DepNode("noise__#", "noise")
     input >> n.a.time
-    shake >> n.a.frequencyRatio
+    if shake:
+        shake >> n.a.frequencyRatio
     n.a.noiseType.set(4)
     n.a.alphaOffset.set(-0.5)
 
-    return 3 * n.a.outAlpha
+    return 2 * n.a.outAlpha  # output range: [-1, 1]
