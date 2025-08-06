@@ -487,8 +487,12 @@ def auto_attach_jnt_to_surf():
         logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")
 
 
-def add_noise_logic(ctl, targets, rot=0):
-    """Build the sine wave motion for the tail rig."""
+def add_noise_logic(ctl=None, targets=None, rot=0):
+    """Build the sine wave motion for the tail rig.
+    Example use:
+        from nl_modules.utils import build
+        build.add_noise_logic('nurbsCircle1', ['locator1'])
+    """
     ctl = DagNode(ctl)
     if not ctl.exists():
         raise ValueError(f"Control {ctl} does not exist.")
@@ -536,6 +540,39 @@ def add_noise_logic(ctl, targets, rot=0):
             valX * reduced >> tgt.a.rx
             valY * reduced >> tgt.a.ry
             valZ * reduced >> tgt.a.rz
+
+
+#
+# EXPRESSION
+#
+# $fps = tail_CON.fps;
+# $freq = tail_CON.freq;
+# $delay = tail_CON.delay;
+# $xAmp = tail_CON.xAmplitude;
+# $yAmp = tail_CON.yAmplitude;
+# $zAmp = tail_CON.zAmplitude;
+# $xOfs = tail_CON.xOffset;
+# $yOfs = tail_CON.yOffset;
+# $zOfs = tail_CON.zOffset;
+# $xN = tail_CON.xNoise;
+# $yN = tail_CON.yNoise;
+# $zN = tail_CON.zNoise;
+
+# proc float calc(int $i, float $localOffset) {
+#     return ($freq * (time * $fps) - $i * $delay - $localOffset) / $fps;
+# }
+
+# tgt1.tx = $xAmp * sind(360 * calc(1, $xOfs)) + $xN * noise (calc(1, $xOfs));
+# tgt2.tx = $xAmp * sind(360 * calc(2, $xOfs)) + $xN * noise (calc(2, $xOfs));
+# tgt3.tx = $xAmp * sind(360 * calc(3, $xOfs)) + $xN * noise (calc(3, $xOfs));
+
+# tgt1.ty = $yAmp * sind(360 * calc(1, $yOfs)) + $yN * noise (calc(1, $yOfs));
+# tgt2.ty = $yAmp * sind(360 * calc(2, $yOfs)) + $yN * noise (calc(2, $yOfs));
+# tgt3.ty = $yAmp * sind(360 * calc(3, $yOfs)) + $yN * noise (calc(3, $yOfs));
+
+# tgt1.tz = $zAmp * sind(360 * calc(1, $zOfs)) + $zN * noise (calc(1, $zOfs));
+# tgt2.tz = $zAmp * sind(360 * calc(2, $zOfs)) + $zN * noise (calc(2, $zOfs));
+# tgt3.tz = $zAmp * sind(360 * calc(3, $zOfs)) + $zN * noise (calc(3, $zOfs));
 
 
 # startTime = time.time()
