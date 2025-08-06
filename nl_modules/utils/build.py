@@ -2,7 +2,9 @@ import logging
 import maya.cmds as mc
 
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.utils import common, proxy
+from nl_modules.utils import common
+from nl_modules.utils import proxy
+from nl_modules.utils import utils_node as ut
 
 # Import rig components, required for evalation
 from nl_modules.build.head import Head
@@ -487,8 +489,6 @@ def auto_attach_jnt_to_surf():
 
 def add_noise_logic(ctl, targets):
     """Build the sine wave motion for the tail rig."""
-    from nl_modules.utils import utils_node as ut
-
     frame = DagNode("time1").a.outTime
 
     # Control attributes for sine wave motion
