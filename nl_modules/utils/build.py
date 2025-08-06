@@ -92,7 +92,7 @@ def preRig():
 @Undo("buildSelOrAll")
 def buildSelOrAll(*arg):
     """Build rig for selected rigNodes or all if nothing selected"""
-    rigNodes = getRigNodesSelOrAll()
+    rigNodes = getRigNodes_selOrAll()
     if rigNodes:
         preRig()
         for rigN in rigNodes:
@@ -145,7 +145,7 @@ def unbuildTgt(rigN):
 @Undo("SelOrAll")
 def unbuildSelOrAll(*arg):
     """Unbuild rig for selected rigNodes or all if nothing selected"""
-    rigNodes = getRigNodesSelOrAll()
+    rigNodes = getRigNodes_selOrAll()
     if rigNodes:
         for rigN in rigNodes:
             unbuildTgt(rigN)
@@ -170,7 +170,7 @@ def deleteTgt(rigNode):
 
 def deleteSelOrAll(*arg):
     """Delete rigNodes for selected objects or all if nothing selected"""
-    rigNodes = getRigNodesSelOrAll()
+    rigNodes = getRigNodes_selOrAll()
     if rigNodes:
         for rigN in rigNodes:
             deleteTgt(rigN)
@@ -180,7 +180,7 @@ def update_anchor_conn():
     """Update anchor connections for all rigNodes"""
     logging.info("Update All Anchor Connections")
 
-    rigNodes = getRigNodesAll()
+    rigNodes = getRigNodes_all()
     if not rigNodes or len(rigNodes) < 2:
         return
 
@@ -250,7 +250,7 @@ def reset_all_ctl():
 def reset_all_pv_ctl():
     """Reset all poleVector ctl's attr to default"""
     logging.info("Reset All pvc's Attr")
-    for rigNode in getRigNodesAll():
+    for rigNode in getRigNodes_all():
 
         rID = rigNode.a.rigID.get()
         pvc = rigNode.a.pvc.inConnNode
@@ -264,7 +264,7 @@ def update_space_switch():
     """Update space switch for all rigNodes"""
     logging.info("Update All Space Switches")
 
-    spaceData = collectSpaceData()
+    spaceData = collect_space_data()
 
     for ctl, spaceList, rigNode in spaceData:
         if ctl.a.space.exists():
@@ -284,7 +284,7 @@ def update_space_switch():
         #       'master': master_ctl,
         #       'arm': lf_arm_ikc
         #
-        spaceDict = collectSpaceObj(rigNode)
+        spaceDict = collect_space_obj(rigNode)
         #
         #   filter non-existing item
         #       'master': master_ctl,
@@ -310,7 +310,7 @@ def update_space_switch():
             )
 
 
-def getSpaceObj(rigNode):
+def get_space_obj(rigNode):
     """Return space:obj dict for rigNode
     e.g.
         rigNode.space_arm -> lfArm0_softJ
@@ -334,7 +334,7 @@ def getSpaceObj(rigNode):
     return spaceDict
 
 
-def collectSpaceObj(rigNode):
+def collect_space_obj(rigNode):
     """
     Return space:obj dict for all rigNodes.
 
@@ -349,9 +349,9 @@ def collectSpaceObj(rigNode):
         }
     """
     spaceDict = {}
-    for node in getRigNodesAll():
+    for node in getRigNodes_all():
         if node != rigNode:
-            spaceDict.update(getSpaceObj(node))
+            spaceDict.update(get_space_obj(node))
     #
     #   get all driving rigNodes
     #
@@ -360,16 +360,16 @@ def collectSpaceObj(rigNode):
         drivingAnchors = femaleAnchors[0].getCstObjects(cstType="parentConstraint")
         if drivingAnchors:
             drivingRN = getRigNode(drivingAnchors[0])
-            spaceDict.update(getSpaceObj(drivingRN))
+            spaceDict.update(get_space_obj(drivingRN))
     #
     #   as lf & rt arm ctl can have the same 'arm' space
     #   so its rigNode will be updated last
     #
-    spaceDict.update(getSpaceObj(rigNode))
+    spaceDict.update(get_space_obj(rigNode))
     return spaceDict
 
 
-def collectSpaceData():
+def collect_space_data():
     """Return [ctl, objects, rigNode] from "spaceHolder*" attr from all rigNodes.
     e.g.
         spaceHolder1 -> lfArm0_ikc
@@ -384,7 +384,7 @@ def collectSpaceData():
         }
     """
     ctlList = []
-    for node in getRigNodesAll():
+    for node in getRigNodes_all():
         for udAttr in node.a.list(ud=1):
             if udAttr.name.startswith("spaceHolder"):
                 obj = udAttr.inConnNode
@@ -400,7 +400,7 @@ def collectSpaceData():
     return ctlList
 
 
-def getRigNodesSelOrAll():
+def getRigNodes_selOrAll():
     """Return rigNodes from selected objects or all rigNodes if nothing selected"""
     rigNodes = []
     selList = mc.ls(sl=1)
@@ -410,12 +410,12 @@ def getRigNodesSelOrAll():
             if n:
                 rigNodes.append(n)
     else:
-        rigNodes = getRigNodesAll()
+        rigNodes = getRigNodes_all()
 
     return rigNodes
 
 
-def getRigNodesAll():
+def getRigNodes_all():
     """Return all rigNodes in the scene"""
     return [DagNode(r) for r in mc.ls("*RGN", type="script")]
 
@@ -434,7 +434,7 @@ def getRigNode(obj):
         logging.info("Get rigNode for non-existing object.")
 
 
-def autoAttachJntToSurf():
+def auto_attach_jnt_to_surf():
     """Auto attach joints to surface for all ribbon rigNodes"""
     from nl_modules.utils import common
 
@@ -446,7 +446,7 @@ def autoAttachJntToSurf():
     if not globalScale.exists():
         raise ValueError("globalScale attr NOT found")
 
-    for node in getRigNodesAll():
+    for node in getRigNodes_all():
         if node.a.nodeState.get() != 2:
             continue
 
@@ -483,6 +483,41 @@ def autoAttachJntToSurf():
             p=DagNode("RIG"),
         )
         logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")
+
+
+def add_noise_logic(ctl, targets):
+    """Build the sine wave motion for the tail rig."""
+    from nl_modules.utils import utils_node as ut
+
+    frame = DagNode("time1").a.outTime
+
+    # Control attributes for sine wave motion
+    fps = ctl.a.add("fps", dv=24, k=0)
+    freq = ctl.a.add("freq", dv=0.5)
+    delay = ctl.a.add("delay", dv=3)
+    xA = ctl.a.add("xAmplitude", dv=0)
+    yA = ctl.a.add("yAmplitude", dv=5)
+    zA = ctl.a.add("zAmplitude", dv=0)
+    xOffset = ctl.a.add("xOffset", dv=0)
+    yOffset = ctl.a.add("yOffset", dv=0)
+    zOffset = ctl.a.add("zOffset", dv=0)
+    noiseShake = ctl.a.add("noiseShake", min=0.01, dv=1)
+    xN = ctl.a.add("xNoise", dv=0)
+    yN = ctl.a.add("yNoise", dv=0)
+    zN = ctl.a.add("zNoise", dv=0)
+
+    for i, tgt in enumerate(targets):
+
+        frame_calc = freq * frame - (i + 1) * delay
+
+        xTime = (frame_calc - xOffset) / fps
+        yTime = (frame_calc - yOffset) / fps
+        zTime = (frame_calc - zOffset) / fps
+
+        tgt = DagNode(tgt)
+        xA * ut.sin_(360 * xTime) + xN * ut.noise_(xTime, noiseShake) >> tgt.a.tx
+        yA * ut.sin_(360 * yTime) + yN * ut.noise_(yTime, noiseShake) >> tgt.a.ty
+        zA * ut.sin_(360 * zTime) + zN * ut.noise_(zTime, noiseShake) >> tgt.a.tz
 
 
 # startTime = time.time()

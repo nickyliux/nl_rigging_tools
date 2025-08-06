@@ -252,7 +252,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def rigNode_refresh(self):
         """Refresh rigNode list"""
-        rigNodes = build.getRigNodesAll()
+        rigNodes = build.getRigNodes_all()
         self.UI.rigNode_LW.clear()
         self.UI.rigNode_LW.addItems([r.name for r in rigNodes])
 
@@ -398,7 +398,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         #   search the attr rbSrf & rbJSet for each rigNode and attach joints
         #   to surface with 'closest point on surface' node
         #
-        build.autoAttachJntToSurf()
+        build.auto_attach_jnt_to_surf()
         # common.setViewport()
         mc.select(cl=1)
 

@@ -38,7 +38,7 @@ def loadGuide(names):
     def genNextRigID(n):
         """Generate next rigID name for newly created component"""
         count = 0
-        for node in build.getRigNodesAll():
+        for node in build.getRigNodes_all():
             if node.a.rigID.get().startswith(n):
                 count += 1
         return f"{n}{count}"
@@ -187,7 +187,7 @@ def loadTemplate(removeUnused=1):
     idDict = file.loadJson(tgtFile)
     if removeUnused:  # Remove unused components
         idInPreset = [k + "_RGN" for k in idDict.keys()]
-        for node in build.getRigNodesAll():
+        for node in build.getRigNodes_all():
             if node not in idInPreset:
                 build.deleteTgt(node)
 
@@ -245,7 +245,7 @@ def saveTemplate():
     from nl_modules.utils import build
 
     idDict = {}
-    rigNodes = build.getRigNodesAll()
+    rigNodes = build.getRigNodes_all()
 
     if not rigNodes:
         mc.confirmDialog(t="Info", m="No rigNode found.       \nSave ignored.", b="OK")
