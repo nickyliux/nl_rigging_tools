@@ -164,7 +164,7 @@ class Tail(RigModule):
         for i in range(self.fkJntNum + 1):
             tgt = self.jnts_fk[i]
             ctl = CrvNode(
-                f"{i}_fkc", pf=rID, shape="sphere", up="-z", scale=rSz * 2, align=tgt
+                f"{i}_fkc", pf=rID, shape="circle", up="z", scale=rSz, align=tgt
             )
             self.rigNode.setMsg({f"fkc{i}": ctl})
             self.ctls_fk.append(ctl)
@@ -197,7 +197,7 @@ class Tail(RigModule):
                 p=self.ctls_fk[i],
                 color=Color.PINK,
             )
-            ctl.cv_move(0, rSz * 20, 0)
+            # ctl.cv_move(0, rSz * 20, 0)
             jnt = JntNode(f"{i}_ofs_jnt", pf=rID, align=ctl, p=ctl)
             self.ctls_ofs.append(ctl)
             self.jnts_ofs.append(jnt)

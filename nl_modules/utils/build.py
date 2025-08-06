@@ -487,14 +487,21 @@ def auto_attach_jnt_to_surf():
         logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")
 
 
-def add_noise_logic(ctl, targets):
+def add_noise_logic(ctl, targets, rot=0):
     """Build the sine wave motion for the tail rig."""
-    frame = DagNode("time1").a.outTime
+    ctl = DagNode(ctl)
+    if not ctl.exists():
+        raise ValueError(f"Control {ctl} does not exist.")
+    if not isinstance(targets, list):
+        raise ValueError(f"Targets must be a list.")
 
+    frame = DagNode("time1").a.outTime
     # Control attributes for sine wave motion
     fps = ctl.a.add("fps", dv=24, k=0)
-    freq = ctl.a.add("freq", dv=0.5)
+    freq = ctl.a.add("freq", dv=1)
     delay = ctl.a.add("delay", dv=3)
+    falloff = ctl.a.add("falloff", dv=0, min=0, max=1)
+
     xA = ctl.a.add("xAmplitude", dv=0)
     yA = ctl.a.add("yAmplitude", dv=5)
     zA = ctl.a.add("zAmplitude", dv=0)
@@ -506,18 +513,29 @@ def add_noise_logic(ctl, targets):
     yN = ctl.a.add("yNoise", dv=0)
     zN = ctl.a.add("zNoise", dv=0)
 
+    total = len(targets)
     for i, tgt in enumerate(targets):
 
-        frame_calc = freq * frame - (i + 1) * delay
+        frame_delayed = freq * frame - i * delay
 
-        xTime = (frame_calc - xOffset) / fps
-        yTime = (frame_calc - yOffset) / fps
-        zTime = (frame_calc - zOffset) / fps
+        xTime = (frame_delayed - xOffset) / fps
+        yTime = (frame_delayed - yOffset) / fps
+        zTime = (frame_delayed - zOffset) / fps
 
         tgt = DagNode(tgt)
-        xA * ut.sin_(360 * xTime) + xN * ut.noise_(xTime, noiseShake) >> tgt.a.tx
-        yA * ut.sin_(360 * yTime) + yN * ut.noise_(yTime, noiseShake) >> tgt.a.ty
-        zA * ut.sin_(360 * zTime) + zN * ut.noise_(zTime, noiseShake) >> tgt.a.tz
+        valX = xA * ut.sin_(360 * xTime) + xN * ut.noise_(xTime, noiseShake)
+        valY = yA * ut.sin_(360 * yTime) + yN * ut.noise_(yTime, noiseShake)
+        valZ = zA * ut.sin_(360 * zTime) + zN * ut.noise_(zTime, noiseShake)
+
+        reduced = ut.blend2_(1, (i / total), w=falloff)
+        if rot == 0:
+            valX * reduced >> tgt.a.tx
+            valY * reduced >> tgt.a.ty
+            valZ * reduced >> tgt.a.tz
+        else:
+            valX * reduced >> tgt.a.rx
+            valY * reduced >> tgt.a.ry
+            valZ * reduced >> tgt.a.rz
 
 
 # startTime = time.time()
