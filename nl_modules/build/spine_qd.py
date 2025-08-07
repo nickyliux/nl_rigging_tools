@@ -10,6 +10,7 @@ from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common
 from nl_modules.utils import utils_node as ut
+from nl_modules.utils.color import Color
 from nl_modules.utils.common import Vec
 
 
@@ -188,11 +189,8 @@ class SpineQd(RigModule):
     def build_spik_ribbon(self, rbSrf=None, jntNum=5, setting=None, scaleAttr=None):
         """Build a spine IK ribbon."""
         logging.info(self.rigID)
-
         rID, rSz, xDr = self.getMyVar()
-        #
-        #   create crv & joints on it
-        #
+
         rbCrv = CrvNode(mc.duplicateCurve(rbSrf + ".u[0.5]", rn=0, local=0)[0])
         rbCrv | self.RIG_DATA
         spIkJnts = JntNode.createJntFrCrv(
@@ -210,16 +208,13 @@ class SpineQd(RigModule):
             inputCrv=rbCrv,
             setting=setting,
             scaleFix=globalScale,
-            # scaleFix2=self.setting.a.localScale,
             scaleFix2=None,
             scaleFix3=self.masterC2.a.sy,
             p=self.RIG_DATA,
         )
         ikH.stretchySp(axis="tz", axisDir=1)
         self.setting.a["stretch"].lock = 1
-        #
-        #   create ribbon jnts on top of spline ik joints
-        #
+
         crvInfo = DagNode("crvInfo#", nodeType="curveInfo")
         rbCrv.shape.a.worldSpace >> crvInfo.a.inputCurve
 
@@ -231,7 +226,7 @@ class SpineQd(RigModule):
             cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
             dcpm = DagNode("dcpm_#", nodeType="decomposeMatrix")
             posi = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
-            loc = LocNode(f"{i}_loc", pf=rID, p=locGrp)
+            grp = GrpNode(f"{i}_rbj_grp", pf=rID, p=locGrp)
 
             spIkJnts[i].a.worldMatrix >> dcpm.a.inputMatrix
             dcpm.a.outputTranslate >> cpos.a.inPosition
@@ -249,17 +244,19 @@ class SpineQd(RigModule):
             mc.connectAttr(f"{posi}.tangentV", f"{aimCst}.target[0].targetTranslate")
             posi.a.turnOnPercentage.set(1)
             posi.a.tangentU >> aimCst.a.worldUpVector
-            posi.a.position >> loc.a.translate
+            posi.a.position >> grp.a.translate
 
-            aimCst.a.constraintRotateX >> loc.a.rx
-            aimCst.a.constraintRotateY >> loc.a.ry
-            aimCst.a.constraintRotateZ >> loc.a.rz
+            aimCst.a.constraintRotateX >> grp.a.rx
+            aimCst.a.constraintRotateY >> grp.a.ry
+            aimCst.a.constraintRotateZ >> grp.a.rz
 
             rad = rSz / jntNum * 12
-            jnt = JntNode(f"{i}_rbj", pf=rID, align=loc, r=rad, p=loc, reset=1)
+            jnt = JntNode(
+                f"{i}_rbj", pf=rID, align=grp, r=rad, p=grp, reset=1, color=Color.RED
+            )
             rbJnts.append(jnt)
 
-            self.masterC.a.globalScale >> loc.a.s
+            self.masterC.a.globalScale >> grp.a.s
 
         self.anchorToRbj = LocNode(
             "anchorToRbj", pf=rID, snap=rbJnts[-1], p=self.fore_ctl
@@ -295,7 +292,7 @@ class SpineQd(RigModule):
             pf=rID,
             align=self.RT_GUIDE,
             align_end=self.TP_GUIDE,
-            rad=rSz * 20,
+            rad=rSz * 10,
             p=self.base_ctl,
         )
         j0, j1 = self.twoIkJnts
