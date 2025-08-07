@@ -22,8 +22,9 @@ class SpineQd(RigModule):
         super().__init__(rigNode)
 
         # Guide attributes
-        self.end_ctl = self.get_guide_attr("endCtl")
-        self.rbnJntNum = self.get_guide_attr("rbnJntNum")
+        guide_attrs = ["endCtl", "rbnJntNum"]
+        for attr in guide_attrs:
+            setattr(self, attr, self.get_guide_attr(attr))
 
         # Guide nodes
         self.LINE_GUIDE = CrvNode(f"{self.rigID}_line_guide")
@@ -52,14 +53,13 @@ class SpineQd(RigModule):
         self.ctls_fk = []
         self.ctls_ik = []
         self.jnts_fk = []
-        self.ikJnts = []
+        self.jnts_ik = []
         self.jnts_rb = []
-        self.spIkJnts = []
-        self.twoIkJnts = []
+        self.jnts_spIk = []
+        self.jnts_twoIk = []
 
         # Ribbon and anchor
         self.rbSrf = None
-        self.rbCrv = None
         self.anchorToRbj = None
 
     def gen_sk(self):
@@ -80,14 +80,14 @@ class SpineQd(RigModule):
         ctl_defs = [
             ("setting", "bagua", "z", rSz * 2, 1, 2),
             ("cog_ctl", "trapezoid", None, rSz, 1, -1),
-            ("base_ctl", "circle", "z", rSz * 5, 0, -1),
-            ("mid_ctl", "squareR", "z", rSz * 4, 0, -1),
-            ("fore_ctl", "circle", "z", rSz * 5, 0, -1),
+            ("base_ctl", "circle", "z", rSz * 5, 0, 2),
+            ("mid_ctl", "squareR", "z", rSz * 4, 0, 2),
+            ("fore_ctl", "circle", "z", rSz * 5, 0, 2),
             ("tangent0_ctl", "arrow", None, rSz * 2, 1, -1),
             ("tangent1_ctl", "arrow", None, rSz * 2, 1, -1),
         ]
-        if self.end_ctl:
-            ctl_defs.append(("end_ctl", "circle", "x", rSz * 2, 0, -1))
+        if self.endCtl:
+            ctl_defs.append(("end_ctl", "rotator", None, rSz * 2, 0, -1))
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
@@ -124,9 +124,9 @@ class SpineQd(RigModule):
 
     def build_ribbon(self):
         """Create the ribbon for the spine rig."""
-        self.rbSrf.weightTo(self.ikJnts, mi=1, chain=0)
+        self.rbSrf.weightTo(self.jnts_ik, mi=1, chain=0)
 
-        crvLenRatio, self.spIkJnts, self.jnts_rb = self.build_spik_ribbon(
+        crvLenRatio, self.jnts_spIk, self.jnts_rb = self.build_spik_ribbon(
             rbSrf=self.rbSrf,
             jntNum=self.rbnJntNum,
             setting=self.setting,
@@ -147,10 +147,10 @@ class SpineQd(RigModule):
         #
         #   build 3 ik joints from crv
         #
-        self.ikJnts = JntNode.createJntFrCrv(
+        self.jnts_ik = JntNode.createJntFrCrv(
             self.LINE_GUIDE, num=3, name="ikj", pf=rID, size=rSz, chain=0
         )
-        ikj0, ikj1, ikj2 = self.ikJnts
+        ikj0, ikj1, ikj2 = self.jnts_ik
 
         ikj2.a.r.set(0, 0, 0)
 
@@ -191,103 +191,101 @@ class SpineQd(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        rbCrv = CrvNode(mc.duplicateCurve(rbSrf + ".u[0.5]", rn=0, local=0)[0])
-        rbCrv | self.RIG_DATA
-        spIkJnts = JntNode.createJntFrCrv(
-            rbCrv, pf=rID, name="spikj", num=jntNum, size=rSz, p=self.RIG_DATA
+        # --- Create ribbon curve and joints ---
+        crv = CrvNode(mc.duplicateCurve(f"{rbSrf}.u[0.5]", rn=0, local=0)[0])
+        crv | self.RIG_DATA
+        jntFrCrv = JntNode.createJntFrCrv(
+            crv, pf=rID, name="spikj", num=jntNum, size=rSz, p=self.RIG_DATA
         )
 
-        globalScale = self.masterC.a.globalScale
-        ikH = IkNode(
+        global_scale = self.masterC.a.globalScale
+        ik_handle = IkNode(
             "sp",
             pf=rID,
-            sj=spIkJnts[0],
-            ee=spIkJnts[-1],
+            sj=jntFrCrv[0],
+            ee=jntFrCrv[-1],
             solver=Solver.SPLINE,
             createCrv=0,
-            inputCrv=rbCrv,
+            inputCrv=crv,
             setting=setting,
-            scaleFix=globalScale,
+            scaleFix=global_scale,
             scaleFix2=None,
             scaleFix3=self.masterC2.a.sy,
             p=self.RIG_DATA,
         )
-        ikH.stretchySp(axis="tz", axisDir=1)
+        ik_handle.stretchySp(axis="tz", axisDir=1)
         self.setting.a["stretch"].lock = 1
 
-        crvInfo = DagNode("crvInfo#", nodeType="curveInfo")
-        rbCrv.shape.a.worldSpace >> crvInfo.a.inputCurve
+        # --- Calculate curve length ratio ---
+        crv_info = DagNode("crvInfo#", nodeType="curveInfo")
+        crv.shape.a.worldSpace >> crv_info.a.inputCurve
+        crv_len_ratio = crv_info.a.arcLength / global_scale / scaleAttr / crv.length
 
-        crvLenRatio = crvInfo.a.arcLength / globalScale / scaleAttr / rbCrv.length
-        locGrp = GrpNode("loc_grp", pf=rID, p=self.SKL_DATA)
-        rbJnts = []
+        # --- Create joint groups and constraints ---
+        loc_grp = GrpNode("loc_grp", pf=rID, p=self.SKL_DATA)
+        rb_jnts = []
         for i in range(jntNum):
-
-            cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
+            # Decompose matrix and get position on surface
             dcpm = DagNode("dcpm_#", nodeType="decomposeMatrix")
+            cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
             posi = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
-            grp = GrpNode(f"{i}_rbj_grp", pf=rID, p=locGrp)
+            grp = GrpNode(f"{i}_rbj_grp", pf=rID, p=loc_grp)
 
-            spIkJnts[i].a.worldMatrix >> dcpm.a.inputMatrix
+            jntFrCrv[i].a.worldMatrix >> dcpm.a.inputMatrix
             dcpm.a.outputTranslate >> cpos.a.inPosition
-
             rbSrf.shape.a.worldSpace >> cpos.a.inputSurface
             cpos.a.parameterU >> posi.a.parameterU
             cpos.a.parameterV >> posi.a.parameterV
 
-            aimCst = DagNode("aimCst_#", nodeType="aimConstraint")
-            # aimCst.a.aimVector.set(0, 0, 1)
-            # aimCst.a.upVector.set(-1, 0, 0)
-            aimCst | self.RIG_DATA
-
+            # Aim constraint for orientation
+            aim_cst = DagNode("aimCst_#", nodeType="aimConstraint")
+            aim_cst | self.RIG_DATA
             rbSrf.shape.a.worldSpace >> posi.a.inputSurface
-            mc.connectAttr(f"{posi}.tangentV", f"{aimCst}.target[0].targetTranslate")
+            mc.connectAttr(f"{posi}.tangentV", f"{aim_cst}.target[0].targetTranslate")
             posi.a.turnOnPercentage.set(1)
-            posi.a.tangentU >> aimCst.a.worldUpVector
+            posi.a.tangentU >> aim_cst.a.worldUpVector
             posi.a.position >> grp.a.translate
 
-            aimCst.a.constraintRotateX >> grp.a.rx
-            aimCst.a.constraintRotateY >> grp.a.ry
-            aimCst.a.constraintRotateZ >> grp.a.rz
+            aim_cst.a.constraintRotateX >> grp.a.rx
+            aim_cst.a.constraintRotateY >> grp.a.ry
+            aim_cst.a.constraintRotateZ >> grp.a.rz
 
-            rad = rSz / jntNum * 12
+            # Create joint at group
+            rad = rSz / jntNum * 15
             jnt = JntNode(
                 f"{i}_rbj", pf=rID, align=grp, r=rad, p=grp, reset=1, color=Color.RED
             )
-            rbJnts.append(jnt)
-
+            rb_jnts.append(jnt)
             self.masterC.a.globalScale >> grp.a.s
 
+        # --- Anchor and end joint setup ---
         self.anchorToRbj = LocNode(
-            "anchorToRbj", pf=rID, snap=rbJnts[-1], p=self.fore_ctl
+            "anchorToRbj", pf=rID, snap=rb_jnts[-1], p=self.fore_ctl
         )
-        rbJnts[-1].cstPoi(self.anchorToRbj)
-        #
-        #   setup end_ctl & end_jnt
-        #
-        if self.end_ctl:
+        rb_jnts[-1].cstPoi(self.anchorToRbj)
+
+        if self.endCtl:
             self.end_jnt = JntNode(
                 "end",
                 pf=rID,
                 r=rSz * 1.5,
                 snap=self.END_JNT_GUIDE,
-                alignR=rbJnts[0],
+                alignR=rb_jnts[0],
                 p=self.IK_GRP,
             )
             self.end_ctl.alignTo(self.END_JNT_GUIDE, p=self.base_ctl, addOfs=1)
             self.end_ctl.cstPar(self.end_jnt, mo=1)
             self.jnts_bind.append(self.end_jnt)
-            # self.isolate_align(self.end_ctl, spaces=[self.end_ctl.parent, self.masterC])
 
-        ikH.hide()
-        return crvLenRatio, spIkJnts, rbJnts
+        ik_handle.hide()
+        return crv_len_ratio, jntFrCrv, rb_jnts
 
     def build_twoJ_ik(self):
         """Build a two-joint IK system for the spine rig."""
         rID, rSz, xDr = self.getMyVar()
 
         # --- Build two-joint chain from curve ---
-        self.twoIkJnts = JntNode.makeTwoJointChain(
+        self.jnts_twoIk = JntNode.makeTwoJointChain(
             "two_ikj",
             pf=rID,
             align=self.RT_GUIDE,
@@ -295,11 +293,11 @@ class SpineQd(RigModule):
             rad=rSz * 10,
             p=self.base_ctl,
         )
-        j0, j1 = self.twoIkJnts
+        j0, j1 = self.jnts_twoIk
 
         # --- Create hidden IK handle and constrain end joint ---
         IkNode("two_ikj", pf=rID, sj=j0, ee=j1, vis=0, p=self.tangent1_ctl)
-        j1.cstPoi(self.ikJnts[2])
+        j1.cstPoi(self.jnts_ik[2])
 
         # --- Control two-joint scale with distance and clamp ---
         d = ut.distDim_(self.tangent0_ctl, self.tangent1_ctl)
@@ -364,10 +362,10 @@ class SpineQd(RigModule):
 
         self.ctl_vis_toggle(
             self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0),
-            onList=self.ikJnts
+            onList=self.jnts_ik
             + self.jnts_fk
-            + self.spIkJnts
-            + self.twoIkJnts
+            + self.jnts_spIk
+            + self.jnts_twoIk
             + self.jnts_rb
             + [self.anchorToRbj],
         )
@@ -378,7 +376,7 @@ class SpineQd(RigModule):
     def setup_rotate_order(self):
         """Setup rotate order for the spine rig controls."""
         [ctl.a.ro.set(3) for ctl in [self.fore_ctl, self.base_ctl, self.cog_ctl]]
-        if self.end_ctl:
+        if self.endCtl:
             self.end_ctl.a.ro.set(3)
 
     def setup_channel(self):
@@ -390,7 +388,7 @@ class SpineQd(RigModule):
         self.tangent0_ctl.a.showAttr("sz", r=1)
         self.tangent1_ctl.a.showAttr("sz", r=1)
 
-        if self.end_ctl:
+        if self.endCtl:
             self.end_ctl.a.showAttr(r=1)
 
         self.fore_ctl.add_as_proxy_attr(self.setting)
@@ -398,7 +396,7 @@ class SpineQd(RigModule):
     def setup_anchor(self):
         """Setup anchor points for the spine rig controls."""
         self.setup_anchor_module(
-            {"anchorM1": self.end_jnt if self.end_ctl else self.jnts_rb[0]}
+            {"anchorM1": self.end_jnt if self.endCtl else self.jnts_rb[0]}
         )
         self.setup_anchor_module({"anchorM2": self.anchorToRbj})
 
@@ -419,7 +417,7 @@ class SpineQd(RigModule):
     def setup_ctlSets(self):
         """Setup control sets for the spine rig."""
         ctls = self.ctls_ik + [self.cog_ctl, self.setting]
-        if self.end_ctl:
+        if self.endCtl:
             ctls.append(self.end_ctl)
 
         self.add_ctl_set(ctls)

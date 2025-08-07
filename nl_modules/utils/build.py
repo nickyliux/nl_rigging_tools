@@ -120,18 +120,18 @@ def postRig():
 
 def addProxyAttrsToMaster():
     """Add proxy attributes to master2_ctl"""
-    m2 = DagNode("master2_ctl")
-    PRX = DagNode("PRX")
+    ctl = DagNode("master2_ctl")
+    prx = DagNode("prx")
 
-    if m2.exists() and PRX.exists():
-        PRX.a.overrideEnabled.set(1)
+    if ctl.exists() and prx.exists():
+        prx.a.overrideEnabled.set(1)
 
-        proxyVis = m2.a.add("proxyVis", k=0, attrType="bool", dv=1)
-        proxyVis >> PRX.a.v
+        proxy = ctl.a.add("proxy", k=0, attrType="bool", dv=1)
+        proxy >> prx.a.v
 
         OPTIONS = "Normal:Template:Reference"
-        proxyDsp = m2.a.add("proxyDsp", attrType="enum", k=0, en=OPTIONS, dv=2)
-        proxyDsp >> PRX.a.overrideDisplayType
+        proxyDsp = ctl.a.add("proxyDsp", attrType="enum", k=0, en=OPTIONS, dv=2)
+        proxyDsp >> prx.a.overrideDisplayType
 
 
 def unbuildTgt(rigN):

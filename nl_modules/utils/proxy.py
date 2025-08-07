@@ -225,7 +225,7 @@ def showHideProxy():
     """Toggle visibility of the proxy meshes under the 'PRX' group."""
     m2 = DagNode("master2_ctl")
     if m2.exists():
-        m2.a.proxyVis.set(1 - m2.a.proxyVis.get())
+        m2.a.proxy.set(1 - m2.a.proxy.get())
 
 
 def refProxy():
