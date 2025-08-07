@@ -67,7 +67,7 @@ def skinRbJnts(tgts, uiPB=None):
     if uiPB:
         uiPB.setValue(0)
 
-    logging.info(f"{weighted} weighted. {ignored} ignored. {notFound} not found.")
+    logging.info(f"{weighted} weighted. {ignored} ignored. {notFound} NOT found.")
 
 
 def delSkinForAllMeshes():

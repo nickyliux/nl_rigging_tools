@@ -35,7 +35,7 @@ def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
 
     rootJ = rigNode.a.rootJ.inConnNode
     if rootJ is None:
-        logging.warning(f"Root joint for {rigID} not found. Cannot switch IK/FK.")
+        logging.warning(f"Root joint for {rigID} NOT found. Cannot switch IK/FK.")
         return
 
     jnts = []
@@ -70,7 +70,7 @@ def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
         ]
 
     if not all(jnts):
-        logging.warning(f"Leg joints for {rigID} not found. Cannot switch IK/FK.")
+        logging.warning(f"Leg joints for {rigID} NOT found. Cannot switch IK/FK.")
         return
 
     # FK Ctls

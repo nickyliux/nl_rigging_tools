@@ -85,6 +85,10 @@ def genProxy():
 
 def saveProxy():
     """Export all proxy meshes to a file."""
+    if not mc.ls("PRX"):
+        mc.confirmDialog(t="Info", m="PRX group NOT found.     ", b="OK")
+        return
+
     mc.select("PRX")
     tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2)
     if tgtFile:
@@ -95,7 +99,10 @@ def saveProxy():
 
 def loadProxy():
     """Load proxy meshes from a file and match them to existing bind joints."""
-    tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, fileMode=1)
+    charPath = mc.optionVar(q="charPath")
+    tgtFile = mc.fileDialog2(
+        fileFilter="*_prx*", dialogStyle=2, fileMode=1, dir=charPath
+    )
     if tgtFile:
         genProxy()
         imported = mc.file(tgtFile, i=1, ns="prx", returnNewNodes=1)

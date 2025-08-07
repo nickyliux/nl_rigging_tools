@@ -56,10 +56,15 @@ def saveCtl():
     """Save control curves to a file."""
 
     allCtls = common.getRigCtlsAll()
+    if len(allCtls) == 0:
+        mc.confirmDialog(t="Info", m="Control curves NOT found.     ", b="OK")
+        return
+
     allCtls.extend(["master_ctl", "master1_ctl", "master2_ctl"])
     if allCtls:
         mc.select(allCtls)
-        tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2)
+        charPath = mc.optionVar(q="charPath")
+        tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, dir=charPath)
         if tgtFile:
             try:
                 mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
@@ -75,7 +80,7 @@ def loadCtl():
 
     from nl_modules.nodel.base.dag_node import DagNode
 
-    tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, fileMode=1)
+    tgtFile = mc.fileDialog2(fileFilter="*_ctl*", dialogStyle=2, fileMode=1)
     if tgtFile:
         imported = None
         try:

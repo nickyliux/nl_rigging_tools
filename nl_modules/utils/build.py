@@ -78,7 +78,7 @@ def loadBase():
         raise ValueError(f"Error loading {base_file}: {e}")
 
     if not mc.objExists("master_ctl"):
-        raise ValueError("master_ctl not found.")
+        raise ValueError("master_ctl NOT found.")
 
 
 def preRig():

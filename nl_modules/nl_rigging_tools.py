@@ -46,6 +46,7 @@ LIGHTING_FILE = os.path.join(LIGHT_PATH, "lighting3.ma")
 SHADER_FILE = os.path.join(LIGHT_PATH, "bone_SHD.ma")
 BIND_JNT_SET = "bind_jnt_set"
 MODEL_GRP = "mdl_grp"
+BIND_REF_GRP = "jnt_grp"
 
 
 class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
@@ -114,6 +115,10 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.guide_explore_BN, guide.explore, ":searchEngine.png")
         self.UI.guide_LW.itemDoubleClicked.connect(self.guide_load)
 
+        # Char Path
+        self.connect(self.UI.charPath_BN, self.set_char_path, ":openScript.png")
+        self.connect(self.UI.char_explore_BN, self.explore_char, ":searchEngine.png")
+
         # Model
         self.connect(self.UI.loadModel_BN, model.import_model, ":openScript.png")
 
@@ -128,8 +133,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         )
 
         # Control
-        self.connect(self.UI.saveCtl_BN, control.saveCtl, ":fileSave.png")
         self.connect(self.UI.loadCtl_BN, control.loadCtl, ":openScript.png")
+        self.connect(self.UI.saveCtl_BN, control.saveCtl, ":fileSave.png")
 
         # Proxy
         self.connect(self.UI.loadProxy_BN, proxy.loadProxy, ":openScript.png")
@@ -196,6 +201,17 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.rigNode_refresh()
         self.crvShape_refresh()
         self.updateLoadWrapTargetMesh()
+        self.updateCharPath()
+
+    def updateCharPath(self):
+        """Update the character path in the UI if it exists."""
+        # Set character path if exists
+        charPath = mc.optionVar(q="charPath")
+        if charPath:
+            if os.path.isdir(charPath):
+                self.UI.charPath_LE.setText(charPath)
+            else:
+                mc.optionVar(sv=("charPath", ""))
 
     def updateLoadWrapTargetMesh(self):
         """Update the button text for loading wrap target mesh."""
@@ -383,10 +399,16 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     @common.Undo("boneAutoBind")
     def boneAutoBind(self):
         """Bind all meshes in MODEL_GRP to reference joints and rb joints."""
+        if not mc.objExists(MODEL_GRP):
+            mc.confirmDialog(t="Info", m=f"{MODEL_GRP} NOT found.    ", b="OK")
+            return
+        if not mc.objExists(BIND_REF_GRP):
+            mc.confirmDialog(t="Info", m=f"{BIND_REF_GRP} NOT found.    ", b="OK")
+            return
+
         meshSel = common.getMeshBelow(MODEL_GRP)
         #
-        #   bind to closest refJnt in MODEL_GRP
-        #   bind to _rbnJnt For each in MODEL GRP
+        #   bind to closest refJnt in MODEL_GRP, and _rbnJnt For each in MODEL GRP
         #
         self.bindRefJnts(
             meshSel, searchSet=BIND_JNT_SET, thld=15, uiPB=self.UI.progress_PB
@@ -399,7 +421,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         #   to surface with 'closest point on surface' node
         #
         build.auto_attach_jnt_to_surf()
-        # common.setViewport()
         mc.select(cl=1)
 
     def bindUsingProxy(self):
@@ -434,6 +455,34 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if not mc.objExists("bone_SHD"):
             if os.path.isfile(SHADER_FILE):
                 file.importFile(SHADER_FILE)
+
+    def set_char_path(self):
+        CHAR_PATH = "D:/_PROJECT/GIT/nl_rigging_tools_examples"
+        charPaths = mc.fileDialog2(
+            dialogStyle=2,
+            fileMode=3,
+            dir=CHAR_PATH,
+            cap="Select Character Path",
+            okc="Select",
+        )
+        if charPaths:
+            charPath = charPaths[0]
+            mc.optionVar(sv=("charPath", charPath))
+            self.UI.charPath_LE.setText(charPath)
+
+    def explore_char(self):
+        """Open the character path in the file explorer."""
+        import subprocess
+
+        charPath = mc.optionVar(q="charPath")
+        if not charPath:
+            mc.confirmDialog(t="Info", m="Character path not set.     ", b="OK")
+            return
+        path = os.path.realpath(charPath)
+        if not os.path.isdir(path):
+            mc.confirmDialog(t="Info", m=f"Character path NOT found.     ", b="OK")
+            return
+        subprocess.Popen(f'explorer "{path}"')
 
 
 global UI_win
