@@ -58,22 +58,16 @@ class SpineBp(RigModule):
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
-
         ctl_defs = [
             ("setting", "bagua", "z", rSz * 2, 1, 2),
             ("cog_ctl", "cog2", None, rSz * 6, 0, -1),
-            ("chest_ctl", "circle", None, rSz * 5, 0, -1),
-            ("mid_ctl", "square", None, rSz * 5, 0, -1),
-            ("hip_ctl", "circle", None, rSz * 5, 0, -1),
+            ("chest_ctl", "circle", None, rSz * 5, 0, 2),
+            ("mid_ctl", "square", None, rSz * 5, 0, 2),
+            ("hip_ctl", "circle", None, rSz * 5, 0, 2),
         ]
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
-
-        IK_COLOR = Color.D_YELLOW
-        self.chest_ctl.color = IK_COLOR
-        self.mid_ctl.color = IK_COLOR
-        self.hip_ctl.color = IK_COLOR
 
     def build(self):
         """Build the spine rig module."""
@@ -103,8 +97,11 @@ class SpineBp(RigModule):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
         self.ctls_fk = []
+        DY = Color.D_YELLOW
         for i, j in enumerate(self.jnts_fk[:-1]):
-            c = CrvNode(f"{i + 1}_fkc", pf=rID, shape="squareR", scale=rSz * 5, top=1)
+            c = CrvNode(
+                f"{i + 1}_fkc", pf=rID, shape="squareR", scale=rSz * 5, top=1, color=DY
+            )
             self.ctls_fk.append(c)
 
         self.build_fk_with_ctl2(self.jnts_fk[1:], self.ctls_fk[1:], p=self.CTL_DATA)
@@ -112,7 +109,7 @@ class SpineBp(RigModule):
         #   modify hipCtl specific for hip rotation
         #
         hipCtl = self.ctls_fk[0]
-        hipCtl(p=self.CTL_DATA, addOfs=1, color=20)
+        hipCtl(p=self.CTL_DATA, addOfs=1, color=Color.L_BLUE, width=2)
         hipCtl.offset.snapAlignTo(self.jnts_fk[1], self.jnts_fk[0])
         hipCtl.cv_move(0, rSz * -20, 0)
         hipCtl.cstPar(self.jnts_fk[0], mo=1)
@@ -169,7 +166,7 @@ class SpineBp(RigModule):
             self.jnts_rb = SrfNode.buildRbJnt(
                 self.rbnJntNum,
                 pf=rID,
-                size=rSz,
+                size=rSz * 2,
                 surf=self.rbSrf,
                 rigData=self.RIG_DATA,
                 sklData=self.SKL_DATA,
@@ -214,16 +211,16 @@ class SpineBp(RigModule):
 
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""
+        # self.ctl_vis_toggle(
+        #     self.setting.a.add("fkCtls", attrType="bool", dv=1, k=0),
+        #     onList=self.ctls_fk,
+        # )
         self.ctl_vis_toggle(
-            self.setting.a.add("fkCtls", min=0, max=1, dv=1, k=0),
-            onList=self.ctls_fk,
-        )
-        self.ctl_vis_toggle(
-            self.setting.a.add("ikCtls", min=0, max=1, dv=1, k=0),
+            self.setting.a.add("ikCtls", attrType="bool", dv=1, k=0),
             onList=self.ctls_ik,
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0),
+            self.setting.a.add("setupJnts", attrType="bool", dv=1, k=0),
             onList=self.jnts_ctl + self.jnts_fk + self.jnts_rb,
         )
 
@@ -259,16 +256,27 @@ class SpineBp(RigModule):
         anchorM2Tgt = self.jnts_rb[-1] if self.rbnBones else self.chest_ctl
         self.setup_anchor_module({"anchorM1": self.hip_ctl, "anchorM2": anchorM2Tgt})
 
+    def setup_bindJnt(self):
+        """Setup bind joints for the spine rig."""
+        self.add_bind_jnt_set(self.jnts_bind)
+        self.add_proxy_ratio(self.jnts_bind, self.rigSize * 10)
+
+    def setup_ctlSet(self):
+        """Setup control sets for the spine rig."""
+        self.add_ctl_set(
+            self.ctls_fk + self.ctls_ik + [self.setting, self.cog_ctl, self.cog_gmb]
+        )
+
+    def setup_scale(self):
+        pass
+
     def build_post(self):
         """Post setup for the spine rig."""
         logging.info(self.rigID)
 
-        self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxy_ratio(self.jnts_bind, 6)
-
-        self.add_ctl_set(
-            self.ctls_fk + self.ctls_ik + [self.setting, self.cog_ctl, self.cog_gmb]
-        )
+        self.setup_scale()
+        self.setup_bindJnt()
+        self.setup_ctlSet()
         self.setup_space()
         self.setup_anchor()
         self.setup_vis()

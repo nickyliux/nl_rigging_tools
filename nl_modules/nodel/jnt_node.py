@@ -193,7 +193,7 @@ class JntNode(GrpNode):
         upV=(0, 1, 0),
         wuV=(0, 1, 0),
         size=1,
-        color=Color.GREEN,
+        color=Color.BLUE,
         addEndJ=0,
         p=None,
     ):

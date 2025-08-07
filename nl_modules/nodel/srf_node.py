@@ -173,7 +173,7 @@ class SrfNode(GrpNode):
         rigData=None,
         normalize=1,
         sklData=None,
-        color=Color.D_RED,
+        color=Color.RED,
     ):
         """Build ribbon joints from surface"""
 

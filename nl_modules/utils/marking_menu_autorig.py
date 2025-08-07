@@ -56,8 +56,8 @@ class MarkingMenuAutorig:
     def addExtraOptions(self, menu):
         """Add extra options to the marking menu"""
 
-        mc.menuItem(p=menu, l="Mirror Pose", c=guide.mirrorPose)
-        mc.menuItem(p=menu, l="Select Ctls", rp="SW", c=self.selectCtlSelOrAll)
+        mc.menuItem(p=menu, l="Mirror Pose", rp="SW", c=guide.mirrorPose)
+        mc.menuItem(p=menu, l="Select Ctls", c=self.selectCtlSelOrAll)
         mc.menuItem(p=menu, l="Reload Menu", c=self.reload_marking_menu)
 
     def addSpaceIKFKOptions(self, menu):

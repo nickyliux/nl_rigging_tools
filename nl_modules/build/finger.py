@@ -69,7 +69,7 @@ class Finger(RigModule):
             ("fgr03_fkc", "squareR", "x", scale, 1, -1),
             ("fgr04_fkc", "squareR", "x", scale, 1, -1),
             ("ikc", "cube", None, scale, 1, 2),
-            ("extra_rota", "rotator2", None, scale, 0, -1),
+            ("extra_rota", "rotator", None, scale, 0, -1),
             ("pvc", "pvc", None, scale, 0, -1),
         ]
 

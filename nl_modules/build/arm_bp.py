@@ -75,14 +75,14 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "bagua", "x", scale, 1, 2),
+            ("setting", "bagua", "z", scale * 2, 1, 2),
             ("clavicle_fkc", "stickC", None, scale, 0, -1),
             ("upr_fkc", "sphere", "x", scale * 4, 0, -1),
             ("lwr_fkc", "sphere", "x", scale * 4, 0, -1),
             ("palm_fkc", "sphere", "x", scale * 4, 0, -1),
             ("ikc", "cube", None, scale * 1.5, 0, -1),
-            ("pvc", "pvc", None, rSz * 2, 0, -1),
-            ("palm_ikc", "squareR", "x", scale * 1.2, 0, -1),
+            ("pvc", "diamond3", None, rSz * 2, 0, -1),
+            ("palm_ikc", "squareR", "x", scale * 1.2, 0, 2),
         ]
 
         for name, shape, up, scale, top, w in ctl_defs:
@@ -90,6 +90,7 @@ class ArmBp(RigModule):
 
         self.clavicle_fkc.cv_rotate(0, 0, -45)
         self.ikc.cv_rotate(0, 90, 0)
+        self.pvc.cv_rotate(-90, 0, 0)
         self.palm_ikc.cv_move(scale * 5, 0, 0)
 
     def build(self):

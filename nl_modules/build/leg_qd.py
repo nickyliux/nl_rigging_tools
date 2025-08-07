@@ -134,7 +134,7 @@ class LegQd(RigModule):
             ("digit_fkc", "sphere", "x", scale_fk, 0, -1),
             ("ball_fkc", "sphere", "x", scale_fk, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
-            ("extra_ikc", "rotator2", None, -scale, 1, -1),
+            ("extra_ikc", "rotator", None, -scale, 1, -1),
             ("pvc", "pvc", None, rSz, 0, -1),
             ("smart_ctl", "squareR", None, scale / 2, 0, 2),
         ]

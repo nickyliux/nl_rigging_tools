@@ -115,20 +115,19 @@ class LegBp(RigModule):
     def build_ctl(self):
         """Build control nodes for the leg rig."""
         logging.info(self.rigID)
-
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
         scale_fk = scale * 4
 
         ctl_defs = [
-            ("setting", "bagua", None, scale, 1, 2),
+            ("setting", "bagua", "z", scale, 1, 2),
             ("hip_fkc", "sphere", "x", scale_fk, 0, -1),
             ("upr_fkc", "sphere", "x", scale_fk, 0, -1),
             ("lwr_fkc", "sphere", "x", scale_fk, 0, -1),
             ("palm_fkc", "sphere", "x", scale_fk, 0, -1),
             ("ball_fkc", "sphere", "x", scale_fk, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
-            ("pvc", "pvc", None, rSz, 0, -1),
+            ("pvc", "diamond3", None, rSz * 2, 0, -1),
             ("smart_ctl", "squareR", None, scale / 2, 0, 2),
         ]
         if self.scapularExtra:
@@ -136,6 +135,8 @@ class LegBp(RigModule):
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
+
+        self.pvc.cv_rotate(90, 0, 0)
 
     def build(self):
         """Build the leg rig module."""
@@ -214,7 +215,6 @@ class LegBp(RigModule):
     def build_ik(self):
         """Build the IK controls for the leg rig."""
         logging.info(self.rigID)
-
         rID, rSz, xDr = self.getMyVar()
 
         mg = self.master_guide
@@ -367,20 +367,23 @@ class LegBp(RigModule):
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
         """Setup sub-controls for the leg rig."""
         logging.info(self.rigID)
-
         rID, rSz, xDr = self.getMyVar()
         scale = rSz * xDr
 
+        # Sub-controls for IK
         for g in [toeRollG, inRollG, outRollG, heelRollG]:
             ctl = g.addOffsetGrp(below=1)
-            CrvNode(ctl)(name=g.name + "_ctl", shape="pvc", scale=scale / 4, width=2)
+            CrvNode(ctl)(
+                name=g.name + "_ctl", shape="diamond3", scale=scale / 3, width=2
+            )
             self.ctls_sub.append(ctl)
 
+        # Ball IK control
         self.ball_ikc = ballRollG.addOffsetGrp(below=1)
         CrvNode(self.ball_ikc)(
             name="ball_ikc",
             pf=rID,
-            shape="rotator2",
+            shape="rotator",
             scale=-scale / 2,
             rotateY=90,
             width=2,
@@ -399,7 +402,6 @@ class LegBp(RigModule):
     def build_toes(self):
         """Build the toe controls for the leg rig."""
         logging.info(self.rigID)
-
         rID, rSz, xDr = self.getMyVar()
 
         # --- Parent toes root to palm ---
@@ -451,7 +453,6 @@ class LegBp(RigModule):
     def build_twist_bones(self):
         """Build twist bones for the leg rig."""
         logging.info(self.rigID)
-
         rID, rSz, xDr = self.getMyVar()
 
         radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=2)
@@ -509,7 +510,8 @@ class LegBp(RigModule):
         self.smart_ctl.a.showAttr(r=1)
         self.ball_ikc.a.showAttr(r=1)
 
-        for ctl in self.ctls_fk + self.ctls_sub + [self.ikc, self.pvc, self.pin_fkc]:
+        for ctl in self.ctls_fk + self.ctls_sub + self.ctls_ik:
+            # [self.ikc, self.pvc, self.pin_fkc]:
             ctl.a.showAttr(t=1, r=1)
         for ctl in self.all_bend or []:
             ctl.a.showAttr(t=1, r=1, s=1)
@@ -560,6 +562,7 @@ class LegBp(RigModule):
 
         foot_scale = self.setting.a.add("footScale", min=0.01, dv=1)
         self.ikc.a.add("footScale", min=0.01, proxy=foot_scale)
+        self.ball_fkc.a.add("footScale", min=0.01, proxy=foot_scale)
 
         foot_scale >> self.ball_fkc.offset.a.s
         foot_scale >> self.ikc.a.s
