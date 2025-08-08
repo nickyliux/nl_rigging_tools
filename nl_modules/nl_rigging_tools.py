@@ -99,6 +99,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if icon:
             btn.setIcon(QIcon(icon))
 
+    def buildAll(self):
+        build.buildSelOrAll()
+        self.rigNod_erefresh()
+
+    def unbuildAll(self):
+        build.unbuildSelOrAll()
+        self.rigNode_refresh()
+
     def connect_UI(self):
         """Connect UI buttons to their respective functions."""
         # Pick mask & click drag
@@ -127,10 +135,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.saveTemplate_BN, guide.saveTemplate, ":fileSave.png")
 
         # Build
-        self.connect(self.UI.component_buildAll_BN, build.buildSelOrAll, ":play_S.png")
-        self.connect(
-            self.UI.component_unbuildAll_BN, build.unbuildSelOrAll, ":smallTrash.png"
-        )
+        self.connect(self.UI.buildAll_BN, self.buildAll, ":play_S.png")
+        self.connect(self.UI.unbuildAll_BN, self.unbuildAll, ":smallTrash.png")
 
         # Control
         self.connect(self.UI.loadCtl_BN, control.loadCtl, ":openScript.png")
@@ -158,6 +164,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         # RigNode
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
+        self.UI.rigNode_refresh_BN.clicked.connect(self.rigNode_refresh)
 
         # Ctl
         self.UI.crvShape_LW.itemDoubleClicked.connect(self.crvShape_LW_dblClicked)
@@ -267,7 +274,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             mc.AttributeEditor()
 
     def rigNode_refresh(self):
-        """Refresh rigNode list"""
+        """Refresh UI rigNode list"""
         rigNodes = build.getRigNodes_all()
         self.UI.rigNode_LW.clear()
         self.UI.rigNode_LW.addItems([r.name for r in rigNodes])

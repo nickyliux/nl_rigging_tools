@@ -80,9 +80,9 @@ class SpineQd(RigModule):
         ctl_defs = [
             ("setting", "bagua", "z", rSz * 2, 1, 2),
             ("cog_ctl", "trapezoid", None, rSz, 1, -1),
-            ("base_ctl", "circle", "z", rSz * 5, 0, 2),
-            ("mid_ctl", "squareR", "z", rSz * 4, 0, 2),
-            ("fore_ctl", "circle", "z", rSz * 5, 0, 2),
+            ("base_ctl", "circle", "z", rSz * 5, 0, -1),
+            ("mid_ctl", "squareR", "z", rSz * 4, 0, -1),
+            ("fore_ctl", "circle", "z", rSz * 5, 0, -1),
             ("tangent0_ctl", "arrow", None, rSz * 2, 1, -1),
             ("tangent1_ctl", "arrow", None, rSz * 2, 1, -1),
         ]
@@ -407,6 +407,7 @@ class SpineQd(RigModule):
                 "space_master": self.masterC,
                 "space_COG": self.cog_ctl,
                 "space_chest": self.fore_ctl,
+                "space_bodyBase": self.base_ctl,
             }
         )
 

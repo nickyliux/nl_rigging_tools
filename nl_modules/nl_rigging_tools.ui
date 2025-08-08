@@ -451,7 +451,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Load proxy file</string>
+          <string>Load model file</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -538,7 +538,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Load template</string>
+          <string>Load template from file</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -574,7 +574,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Save template</string>
+          <string>Save template to file</string>
          </property>
          <property name="text">
           <string/>
@@ -635,7 +635,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QPushButton" name="component_buildAll_BN">
+        <widget class="QPushButton" name="buildAll_BN">
          <property name="minimumSize">
           <size>
            <width>22</width>
@@ -675,7 +675,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="component_unbuildAll_BN">
+        <widget class="QPushButton" name="unbuildAll_BN">
          <property name="minimumSize">
           <size>
            <width>22</width>
@@ -1547,7 +1547,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Char Path</string>
+      <string>Char Dir</string>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -1600,7 +1600,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Load proxy file</string>
+          <string>Set character directory</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1634,7 +1634,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Explore guide files</string>
+          <string>Explore character directory</string>
          </property>
          <property name="text">
           <string/>
@@ -1648,6 +1648,9 @@
            <width>100</width>
            <height>0</height>
           </size>
+         </property>
+         <property name="toolTip">
+          <string>Character Directory</string>
          </property>
          <property name="text">
           <string>nil</string>
@@ -1685,7 +1688,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>4</y>
+       <y>10</y>
        <width>221</width>
        <height>24</height>
       </rect>
@@ -1813,9 +1816,9 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>60</y>
+       <y>63</y>
        <width>221</width>
-       <height>448</height>
+       <height>461</height>
       </rect>
      </property>
      <property name="minimumSize">
@@ -1843,7 +1846,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>30</y>
+       <y>35</y>
        <width>221</width>
        <height>24</height>
       </rect>
@@ -2159,7 +2162,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>510</y>
+       <y>532</y>
        <width>221</width>
        <height>18</height>
       </rect>
@@ -2220,7 +2223,7 @@
         <x>0</x>
         <y>20</y>
         <width>221</width>
-        <height>501</height>
+        <height>495</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -2244,6 +2247,45 @@
        <number>0</number>
       </property>
      </widget>
+    </widget>
+    <widget class="QPushButton" name="rigNode_refresh_BN">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>532</y>
+       <width>221</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>18</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>9</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="text">
+      <string>Refresh</string>
+     </property>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_3">

@@ -134,7 +134,7 @@ class LegQd(RigModule):
             ("digit_fkc", "sphere", "x", scale_fk, 0, -1),
             ("ball_fkc", "sphere", "x", scale_fk, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
-            ("extra_ikc", "rotator", None, -scale, 1, -1),
+            ("extra_ikc", "rotator", None, -scale, 0, -1),
             ("pvc", "pvc", None, rSz, 0, -1),
             ("smart_ctl", "squareR", None, scale / 2, 0, 2),
         ]
@@ -591,7 +591,7 @@ class LegQd(RigModule):
 
     def setup_space(self):
         """Setup space switching for the quadruped leg rig controls."""
-        self.rigNode.a.add("spaceName1", attrType="string", txt="master, COG")
+        self.rigNode.a.add("spaceName1", attrType="string", txt="master, bodyBase, COG")
         self.rigNode.a.add("spaceName2", attrType="string", txt="leg, master, COG")
 
         self.rigNode.setMsg(
