@@ -495,7 +495,7 @@ def add_noise_logic(ctl=None, targets=None, rot=0):
     """
     ctl = DagNode(ctl)
     if not ctl.exists():
-        raise ValueError(f"Control {ctl} does not exist.")
+        raise ValueError(f"Control NOT found.")
     if not isinstance(targets, list):
         raise ValueError(f"Targets must be a list.")
 
@@ -503,7 +503,7 @@ def add_noise_logic(ctl=None, targets=None, rot=0):
     # Control attributes for sine wave motion
     fps = ctl.a.add("fps", dv=24, k=0)
     freq = ctl.a.add("freq", dv=1)
-    delay = ctl.a.add("delay", dv=3)
+    drag = ctl.a.add("drag", dv=3)
     falloff = ctl.a.add("falloff", dv=0, min=0, max=1)
 
     xA = ctl.a.add("xAmplitude", dv=0)
@@ -520,7 +520,7 @@ def add_noise_logic(ctl=None, targets=None, rot=0):
     total = len(targets)
     for i, tgt in enumerate(targets):
 
-        frame_delayed = freq * frame - i * delay
+        frame_delayed = freq * frame - i * drag
 
         xTime = (frame_delayed - xOffset) / fps
         yTime = (frame_delayed - yOffset) / fps
@@ -531,15 +531,15 @@ def add_noise_logic(ctl=None, targets=None, rot=0):
         valY = yA * ut.sin_(360 * yTime) + yN * ut.noise_(yTime, noiseShake)
         valZ = zA * ut.sin_(360 * zTime) + zN * ut.noise_(zTime, noiseShake)
 
-        reduced = ut.blend2_(1, (i / total), w=falloff)
+        blend = ut.blend2_(1, (i / total), w=falloff)
         if rot == 0:
-            valX * reduced >> tgt.a.tx
-            valY * reduced >> tgt.a.ty
-            valZ * reduced >> tgt.a.tz
+            valX * blend >> tgt.a.tx
+            valY * blend >> tgt.a.ty
+            valZ * blend >> tgt.a.tz
         else:
-            valX * reduced >> tgt.a.rx
-            valY * reduced >> tgt.a.ry
-            valZ * reduced >> tgt.a.rz
+            valX * blend >> tgt.a.rx
+            valY * blend >> tgt.a.ry
+            valZ * blend >> tgt.a.rz
 
 
 #
