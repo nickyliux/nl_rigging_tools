@@ -121,7 +121,7 @@ def postRig():
 def addProxyAttrsToMaster():
     """Add proxy attributes to master2_ctl"""
     ctl = DagNode("master2_ctl")
-    prx = DagNode("prx")
+    prx = DagNode("PRX")
 
     if ctl.exists() and prx.exists():
         prx.a.overrideEnabled.set(1)

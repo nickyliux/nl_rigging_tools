@@ -66,13 +66,14 @@ def genProxy():
     """Generate proxy meshes for all bind joints in the scene."""
     MDL = GrpNode("MDL")
     PRX = GrpNode("PRX", p=MDL)
-    bindSet = DagNode("bind_jnt_set")
-
-    if not bindSet.exists():
-        logging.warning("Set 'bind_jnt_set' NOT found.")
-        return
+    BIND_JNT_SET = "bind_jnt_set"
+    bindSet = DagNode(BIND_JNT_SET)
 
     bindJnts = mc.sets(bindSet, q=1)
+    if bindJnts == None:
+        logging.warning(f"Joints NOT found in set '{BIND_JNT_SET}'.")
+        return
+
     for j in bindJnts:
         grpName = str(j).split("_")[0]
         PRX_GRP = GrpNode(grpName + "_PRX", p=PRX)

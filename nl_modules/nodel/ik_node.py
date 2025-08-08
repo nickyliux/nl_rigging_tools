@@ -188,10 +188,11 @@ class IkNode(DagNode):
         D = mc.arclen(crv)
         crvInfo = DepNode(mc.arclen(crv, ch=1))
         d = crvInfo.a.arcLength
-        ks = ctl.a.add("stretch", min=0, max=1, dv=1)
-        ksMin = ctl.a.add("stretchMin", k=0, min=0, max=1, dv=minDv)
-        ksMax = ctl.a.add("stretchMax", k=0, min=0, dv=maxDv)
-        ratio = (d / D - 1) * ks + 1
+        ks = ctl.a.add("stretchy", min=0, max=1, dv=1)
+        ksMin = ctl.a.add("squash", k=0, min=0, max=1, dv=minDv)
+        ksMax = ctl.a.add("stretch", k=0, min=1, dv=maxDv)
+        ratio = d / D - 1 * ks + 1
+        ratio = d / D  # - 1 * ks + 1
 
         for i in range(1, len(jl)):
             Di = jl[i - 1].o.distanceTo(jl[i])
@@ -215,10 +216,10 @@ class IkNode(DagNode):
         if self.scaleFix2:
             d /= self.scaleFix2
 
-        ks = self.setting.a.add("stretch", min=0, max=1, dv=1)
-        ksMin = self.setting.a.add("stretchMin", k=1, min=0, max=1, dv=minDv)
-        ksMax = self.setting.a.add("stretchMax", k=1, min=0, dv=maxDv)
-        ratio = (d / D - 1) * ks + 1
+        # ks = self.setting.a.add("stretchy", min=0, max=1, dv=1)
+        ksMin = self.setting.a.add("squash", k=1, min=0, max=1, dv=minDv)
+        ksMax = self.setting.a.add("stretch", k=1, min=1, dv=maxDv)
+        ratio = d / D  # - 1 * ks + 1
 
         for i in range(1, len(self.jnt)):
             Di = self.jnt[i - 1].o.distanceTo(self.jnt[i])
@@ -248,8 +249,8 @@ class IkNode(DagNode):
 
         D = self.chainLen
         Di = []  # The length of each bone
-        ks = self.ikc.a.add("stretch", min=0, max=1, dv=0)
         kq = self.ikc.a.add("squash", min=0, max=1, dv=0)
+        ks = self.ikc.a.add("stretch", min=1, dv=0)
 
         for i in range(1, len(self.jnt)):
             Di.append(self.jnt[i - 1].o.distanceTo(self.jnt[i]))

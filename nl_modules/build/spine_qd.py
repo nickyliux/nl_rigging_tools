@@ -78,13 +78,13 @@ class SpineQd(RigModule):
 
         #   Define control shapes and attributes
         ctl_defs = [
-            ("setting", "bagua", "z", rSz * 2, 1, 2),
-            ("cog_ctl", "trapezoid", None, rSz, 1, -1),
+            ("setting", "bagua", "z", rSz * 3, 1, 2),
+            ("cog_ctl", "trapezoid", None, rSz * 2, 0, -1),
             ("base_ctl", "circle", "z", rSz * 5, 0, -1),
             ("mid_ctl", "squareR", "z", rSz * 4, 0, -1),
             ("fore_ctl", "circle", "z", rSz * 5, 0, -1),
-            ("tangent0_ctl", "arrow", None, rSz * 2, 1, -1),
-            ("tangent1_ctl", "arrow", None, rSz * 2, 1, -1),
+            ("tangent0_ctl", "stick2", None, rSz, 1, -1),
+            ("tangent1_ctl", "stick2", None, rSz, 1, -1),
         ]
         if self.endCtl:
             ctl_defs.append(("end_ctl", "rotator", None, rSz * 2, 0, -1))
@@ -94,7 +94,6 @@ class SpineQd(RigModule):
 
         self.cog_ctl.cv_move(0, rSz * 30, rSz * 30)
         self.cog_ctl.cv_scale(1, 1.5, 2)
-        self.setting.a.add("stretch", min=0, max=1, dv=1)
 
     def create_rbSrf(self):
         """Create the ribbon surface for the spine rig."""
@@ -138,6 +137,9 @@ class SpineQd(RigModule):
 
         self.setting.snapTo(self.jnts_rb[0], p=self.IK_GRP)
         self.jnts_rb[0].cstPar(self.setting, mo=1)
+
+        self.fore_ctl.add_attr_as_proxy(self.setting)
+        self.base_ctl.add_attr_as_proxy(self.setting)
 
     def build_ik(self):
         """Build the IK controls for the spine rig."""
@@ -214,7 +216,6 @@ class SpineQd(RigModule):
             p=self.RIG_DATA,
         )
         ik_handle.stretchySp(axis="tz", axisDir=1)
-        self.setting.a["stretch"].lock = 1
 
         # --- Calculate curve length ratio ---
         crv_info = DagNode("crvInfo#", nodeType="curveInfo")
@@ -305,8 +306,8 @@ class SpineQd(RigModule):
         (
             ut.clp_(
                 crvLenRatio,
-                min=self.setting.a.stretchMin,
-                max=self.setting.a.stretchMax,
+                min=self.setting.a.squash,
+                max=self.setting.a.stretch,
             )
             >> j0.a.sz
         )
@@ -337,19 +338,19 @@ class SpineQd(RigModule):
     def build_volume(self, crvLenRatio):
         """Build volume control for the spine rig."""
         # add volume graph keys
-        volumeScale = self.setting.a.add("volumeScale", dv=1)
-        volumeGraph = self.setting.a.add("volumeGraph", dv=0)
-        mc.setKeyframe(volumeGraph, t=0, v=0)
-        mc.setKeyframe(volumeGraph, t=(self.rbnJntNum - 1) / 2, v=1)
-        mc.setKeyframe(volumeGraph, t=self.rbnJntNum - 1, v=0)
-        volumeGraph.lock = 1
+        volScale = self.setting.a.add("volScale", dv=1)
+        volGraph = self.setting.a.add("volGraph", dv=0)
+        mc.setKeyframe(volGraph, t=0, v=0)
+        mc.setKeyframe(volGraph, t=(self.rbnJntNum - 1) / 2, v=1)
+        mc.setKeyframe(volGraph, t=self.rbnJntNum - 1, v=0)
+        volGraph.lock = 1
 
         # set rbj scale acc to surf length
         for i in range(self.rbnJntNum):
             fc = DagNode("fc__#", nodeType="frameCache")
-            volumeGraph >> fc.a.stream
+            volGraph >> fc.a.stream
             fc.a.varyTime.set(i)
-            ratio = (1 / crvLenRatio) ** (fc.a.varying * volumeScale)
+            ratio = (1 / crvLenRatio) ** (fc.a.varying * volScale)
             ratio >> self.jnts_rb[i].a.sy
             ratio >> self.jnts_rb[i].a.sz
 
@@ -369,6 +370,7 @@ class SpineQd(RigModule):
             + self.jnts_rb
             + [self.anchorToRbj],
         )
+
         # if self.is_neck():
         # mc.hide(self.base_ctl.shape, self.tangent0_ctl.shape)
         # mc.hide(self.cog_ctl.shape)
@@ -391,14 +393,14 @@ class SpineQd(RigModule):
         if self.endCtl:
             self.end_ctl.a.showAttr(r=1)
 
-        self.fore_ctl.add_as_proxy_attr(self.setting)
-
     def setup_anchor(self):
         """Setup anchor points for the spine rig controls."""
-        self.setup_anchor_module(
-            {"anchorM1": self.end_jnt if self.endCtl else self.jnts_rb[0]}
-        )
-        self.setup_anchor_module({"anchorM2": self.anchorToRbj})
+        if self.jnts_rb:
+            anchor = self.end_jnt if self.endCtl else self.jnts_rb[0]
+            self.setup_anchor_module({"anchorM1": anchor})
+
+        if self.anchorToRbj:
+            self.setup_anchor_module({"anchorM2": self.anchorToRbj})
 
     def setup_space(self):
         """Setup space switching for the spine rig controls."""

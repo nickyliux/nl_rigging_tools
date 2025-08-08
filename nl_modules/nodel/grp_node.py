@@ -319,7 +319,7 @@ class GrpNode(DagNode):
         if attr.exists():
             attr.set(state)
 
-    def add_as_proxy_attr(self, src=None):
+    def add_attr_as_proxy(self, src=None):
         """Add proxy attributes from source node"""
         if src and src.exists():
             attrs = src.a.list(ud=1, u=1)

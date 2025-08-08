@@ -126,7 +126,7 @@ class LegQd(RigModule):
         scale_fk = scale * 4
 
         ctl_defs = [
-            ("setting", "bagua", None, scale, 1, 2),
+            ("setting", "bagua", "z", scale, 1, 2),
             ("hip_fkc", "sphere", "x", scale_fk, 0, -1),
             ("upr_fkc", "sphere", "x", scale_fk, 0, -1),
             ("lwr_fkc", "sphere", "x", scale_fk, 0, -1),

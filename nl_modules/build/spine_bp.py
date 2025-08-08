@@ -259,7 +259,7 @@ class SpineBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the spine rig."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxy_ratio(self.jnts_bind, self.rigSize * 10)
+        self.add_proxy_ratio(self.jnts_bind, self.rigSize * 7)
 
     def setup_ctlSet(self):
         """Setup control sets for the spine rig."""
