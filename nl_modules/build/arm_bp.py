@@ -209,9 +209,10 @@ class ArmBp(RigModule):
             p=self.IK_GRP,
         )
 
-        # Add offset groups and stretch IK
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
+        self.pvc_line.addOffsetGrp()
+
         ikH1.stretchyIk(soft=1)
         self.ikhs = [ikH1]
         self.clavicle_fkc.cstPar(self.jnts_ik[0], mo=1)
@@ -401,6 +402,10 @@ class ArmBp(RigModule):
         self.ctl_vis_toggle(
             self.pvc.a["fkPin"],
             onList=[self.pin_fkc],
+        )
+        self.ctl_vis_toggle(
+            self.ikc.a.add("pvc", attrType="bool", dv=1, k=0),
+            onList=[self.pvc.offset, self.pvc_line.offset],
         )
         self.ctl_vis_toggle(
             self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0),

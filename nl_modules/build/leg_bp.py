@@ -131,7 +131,7 @@ class LegBp(RigModule):
             ("smart_ctl", "squareR", None, scale / 2, 0, 2),
         ]
         if self.scapularExtra:
-            ctl_defs.append(("scap_fkc", "arrow4", "x", scale, 1, -1))
+            ctl_defs.append(("scap_fkc", "arrow4", "x", scale, 0, 2))
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
@@ -304,6 +304,7 @@ class LegBp(RigModule):
         )
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
+        self.pvc_line.addOffsetGrp()
 
         ikH1.stretchyIk(soft=1)
         self.hip_fkc.cstPar(self.jnts_ik[0], mo=1)
@@ -495,6 +496,10 @@ class LegBp(RigModule):
         self.ctl_vis_toggle(
             self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0),
             onList=self.jnts_fk + self.jnts_ik + self.jnts_bf,
+        )
+        self.ctl_vis_toggle(
+            self.ikc.a.add("pvc", attrType="bool", dv=1, k=0),
+            onList=[self.pvc.offset, self.pvc_line.offset],
         )
         if self.rbnBones:
             self.ctl_vis_toggle(
