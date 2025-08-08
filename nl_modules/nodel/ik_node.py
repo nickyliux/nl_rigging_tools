@@ -218,7 +218,7 @@ class IkNode(DagNode):
 
         # ks = self.setting.a.add("stretchy", min=0, max=1, dv=1)
         ksMin = self.setting.a.add("squash", k=1, min=0, max=1, dv=minDv)
-        ksMax = self.setting.a.add("stretch", k=1, min=1, dv=maxDv)
+        ksMax = self.setting.a.add("stretch", k=1, min=0, dv=maxDv)
         ratio = d / D  # - 1 * ks + 1
 
         for i in range(1, len(self.jnt)):
@@ -250,7 +250,7 @@ class IkNode(DagNode):
         D = self.chainLen
         Di = []  # The length of each bone
         kq = self.ikc.a.add("squash", min=0, max=1, dv=0)
-        ks = self.ikc.a.add("stretch", min=1, dv=0)
+        ks = self.ikc.a.add("stretch", min=0, max=1, dv=0)
 
         for i in range(1, len(self.jnt)):
             Di.append(self.jnt[i - 1].o.distanceTo(self.jnt[i]))

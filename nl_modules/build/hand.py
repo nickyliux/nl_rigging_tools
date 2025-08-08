@@ -57,7 +57,7 @@ class Hand(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "bagua", "x", scale * 2, 1, 2),
+            ("setting", "bagua", "z", scale * 3, 1, 2),
             ("smart_ctl", "roll", "x", scale, 1, 2),
         ]
         for name, shape, up, scale, top, w in ctl_defs:
