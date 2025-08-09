@@ -1,5 +1,8 @@
+import os
+import sys
 import logging
 import maya.cmds as mc
+from maya import mel
 from collections import OrderedDict
 
 CST_DICT = OrderedDict(
@@ -44,14 +47,12 @@ class Undo(ContextDecorator):
 
 def getUniqueCstDictNames():
     """Return unique constraint names from CST_DICT"""
-
     cstTypeList = [cst.__name__ for cst in CST_DICT.values()]
     return list(OrderedDict.fromkeys(cstTypeList))
 
 
 def matchMove(targetList, mode=None):
     """MatchMove all to the last one, default is t=1, r=1, s=0"""
-
     if not isinstance(targetList, (list, tuple)):
         raise ValueError("matchMove input MUST be a list")
     elif len(targetList) < 2:
@@ -74,7 +75,6 @@ def matchMove(targetList, mode=None):
 
 def assignShd(n, geo=None, color=(0, 0, 0), faceID=None):
     """Assign shader to entire or faceID"""
-
     shd, sg = addShader(n, color=color)
     if faceID:
         for fID in faceID:
@@ -85,7 +85,6 @@ def assignShd(n, geo=None, color=(0, 0, 0), faceID=None):
 
 def assignPresetShd(tgts=None):
     """Assign preset shader to target objects"""
-
     from nl_modules.nodel.base.dag_node import DagNode
 
     tgts = tgts or mc.ls(sl=1, tr=1)
@@ -118,7 +117,6 @@ def assignPresetShd(tgts=None):
 
 def addShader(n, shaderType="lambert", color=(1, 1, 1)):
     """Create shader and return shader, shading group"""
-
     from nl_modules.nodel.base.dep_node import DepNode
 
     sg = None
@@ -141,7 +139,6 @@ def addShader(n, shaderType="lambert", color=(1, 1, 1)):
 
 def cstMulti(*args, cstType="par", delete=False, w=None, **kwargs):
     """Constrain last one to multiple objects
-
     cstType:
         poi, ori, sca, par, parT, parR, aim, geo, mnl, pvt
     e.g.
@@ -257,7 +254,6 @@ def nlRivet(
 
 def ribbonAttach_reset(tgt):
     """Reset ribbon attach target"""
-
     pa = tgt.parent
     if pa:
         tgt.parentToWorld()
@@ -267,7 +263,6 @@ def ribbonAttach_reset(tgt):
 
 def ribbonAttach(tgtList=None, geo=None, scaleAttr=None, p=None):
     """Attach target list to geo, using closestPointOnMesh or closestPointOnSurface"""
-
     if not isinstance(tgtList, list):
         raise TypeError("Input objects must be in list.")
     if not mc.objExists(geo):
@@ -369,14 +364,12 @@ def dupSk(jntList, sf="", p=None, color=None, r=1):
 
 def showAllRO():
     """Show all rotation order in the scene"""
-
     for o in mc.ls(tr=1):
         mc.setAttr(o + ".ro", cb=1)
 
 
 def shelfSep():
     """Add separator to shelf"""
-
     import maya.mel as mel
 
     mc.separator(
@@ -390,7 +383,6 @@ def shelfSep():
 
 def printIkStat():
     """Print IK handle type and pole vector"""
-
     for ik in mc.ls(type="ikHandle"):
         nt = mc.ikHandle(ik, q=1, solver=1)
         pv = mc.getAttr(ik + ".poleVector")
@@ -399,7 +391,6 @@ def printIkStat():
 
 def addNonRollJ(tgtJ):
     """Add non-roll joint to target joint, for roll control"""
-
     from nl_modules.utils.color import Color
     from nl_modules.nodel.ik_node import IkNode, Solver
     from nl_modules.nodel.loc_node import LocNode
@@ -425,7 +416,6 @@ def addNonRollJ(tgtJ):
 
 def addAnnotation(frObj=None, toObj=None, p=None):
     """Build connecting line with annotate"""
-
     from nl_modules.nodel.base.dag_node import DagNode
     from nl_modules.nodel.loc_node import LocNode
 
@@ -444,7 +434,6 @@ def addAnnotation(frObj=None, toObj=None, p=None):
 
 def addAnnotation2(frObj=None, toObj=None):
     """Build connecting line with annotationShape"""
-
     from nl_modules.nodel.base.dag_node import DagNode
 
     ann = DagNode("ann_#", nodeType="annotationShape")
@@ -458,7 +447,6 @@ def addAnnotation2(frObj=None, toObj=None):
 
 def showHiddenInRig():
     """Show strongly hidden nodes in character rigs"""
-
     for s in mc.ls(sl=1):
         mc.lockNode(s, lock=False)
         mc.setAttr(s + ".ihi", 1)
@@ -467,7 +455,6 @@ def showHiddenInRig():
 
 def addMovablePivot(tgt):
     """Add tgt a movable pivot object"""
-
     tgt.addOffsetGrp()
     ofs_below = tgt.addOffsetGrp(below=1)
     tgt.a.t * (-1, -1, -1) >> ofs_below.a.t
@@ -475,7 +462,6 @@ def addMovablePivot(tgt):
 
 def addVisOption(ctl, attrName):
     """Add vis attribute to ctl, return drivers [v0, v1]"""
-
     attrName = str(attrName)
     ctl.a.add(attrName, attrType="long", k=0, dv=2, min=0, max=2)
     v0 = (ctl.a[attrName] > 1).setCdn(ifTrue=1, ifFalse=0)
@@ -483,13 +469,13 @@ def addVisOption(ctl, attrName):
     return [v0, v1]
 
 
-def sdk(dvr, dvn, attr1, attr2, v1, v2, tangent=0, infinity=0):
+def sdk(dvr, dvn, attr1, attr2, v1, v2, tangent=0, inf=0):
     """Create set driven key, using object, attr
     e.g.
         sdk2(obj1, obj2, 'ty', 'ty', 0, 0)
         sdk2(obj1, obj2, 'ty', 'ty', 1, 2)
     """
-    opt = ["linear", "auto", "stepnext", "spline"]
+    opt = ["clamped", "auto", "stepnext", "spline"]  # 'linear'
     mc.setDrivenKeyframe(
         f"{dvn}.{attr2}",
         cd=f"{dvr}.{attr1}",
@@ -498,7 +484,7 @@ def sdk(dvr, dvn, attr1, attr2, v1, v2, tangent=0, infinity=0):
         itt=opt[tangent],
         ott=opt[tangent],
     )
-    if infinity:
+    if inf:
         mc.setInfinity(dvn, pri="linear", poi="linear", attribute=attr2)
 
 
@@ -518,7 +504,6 @@ def sdk2(attr1, attr2, v1, v2, tangent=0):
 
 def addTwistReader(target, pf="", p=None):
     """Add twist reader"""
-
     from nl_modules.nodel.loc_node import LocNode
 
     if pf and pf[-1] != "_":
@@ -597,7 +582,6 @@ def getRigCtls(rigNodes):
 
 def add_mirror_attr(tgts=None):
     """Add mirror attribute to targets"""
-
     from nl_modules.nodel.base.dag_node import DagNode
 
     if not tgts:
@@ -611,11 +595,6 @@ def add_mirror_attr(tgts=None):
 
 def addIconToCurrShelf():
     """Add icon to current shelf"""
-
-    import os
-    import sys
-    from maya import mel
-
     if sys.version_info.major < 3:
         raise ImportError("nl_rigging_tools does not support Python 2.")
 
