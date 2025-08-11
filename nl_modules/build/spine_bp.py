@@ -100,7 +100,7 @@ class SpineBp(RigModule):
         DY = Color.D_YELLOW
         for i, j in enumerate(self.jnts_fk[:-1]):
             c = CrvNode(
-                f"{i + 1}_fkc", pf=rID, shape="squareR", scale=rSz * 5, top=1, color=DY
+                f"{i + 1}_fkc", pf=rID, shape="squareR", scale=rSz * 5, color=DY
             )
             self.ctls_fk.append(c)
 

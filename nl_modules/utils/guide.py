@@ -173,7 +173,7 @@ def loadTemplate(removeUnused=1):
     charPath = mc.optionVar(q="charPath")
 
     tgtFile = mc.fileDialog2(
-        fileFilter="*.json", dialogStyle=2, fileMode=1, dir=charPath
+        fileFilter="*tpl*.json", dialogStyle=2, fileMode=1, dir=charPath
     )
     if tgtFile is None:
         return
@@ -256,7 +256,10 @@ def saveTemplate():
 
         idDict[rigID] = guideDict
 
-    tgtFile = mc.fileDialog2(fileFilter="*.json", dialogStyle=2, fileMode=0)
+    charPath = mc.optionVar(q="charPath")
+    tgtFile = mc.fileDialog2(
+        fileFilter="*.json", dialogStyle=2, fileMode=0, dir=charPath
+    )
     if tgtFile is None:
         return
     else:

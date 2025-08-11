@@ -69,9 +69,13 @@ def genProxy():
     BIND_JNT_SET = "bind_jnt_set"
     bindSet = DagNode(BIND_JNT_SET)
 
-    bindJnts = mc.sets(bindSet, q=1)
-    if bindJnts == None:
-        logging.warning(f"Joints NOT found in set '{BIND_JNT_SET}'.")
+    if bindSet.exists():
+        bindJnts = mc.sets(bindSet, q=1)
+        if bindJnts == None:
+            logging.warning(f"Joints NOT found in set '{BIND_JNT_SET}'.")
+            return
+    else:
+        logging.warning(f"Set '{BIND_JNT_SET}' not found.")
         return
 
     for j in bindJnts:
