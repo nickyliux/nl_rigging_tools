@@ -127,15 +127,16 @@ class Hand(RigModule):
         """Setup SDK for finger base controls."""
         drv = self.smart_ctl
         dataList1 = [(-90, -90), (0, 0), (90, 90)]
-        for i in range(1, 5):
-            for j in range(1, 4):
-                ofs = self.ctls_fgr[i][j].offset
-                for k in range(3):
-                    common.sdk(drv, ofs, "ry", "ry", *dataList1[k], inf=1)
+        dataList2 = [(-90, -10), (0, 0), (90, 10)]
 
-            # ofs = self.ctls_fgr[i][1].offset
-            # for k in range(3):
-            #     common.sdk(drv, ofs, "tx", "ry", *dataList2[k], inf=1)
+        for ctls in self.ctls_fgr:
+            for ctl in ctls[1:]:
+                for k in range(3):
+                    common.sdk(drv, ctl.offset, "ry", "ry", *dataList1[k], inf=1)
+
+        ofs = self.ctls_fgr[0][0].offset
+        for k in range(3):
+            common.sdk(drv, ofs, "ry", "ry", *dataList2[k], inf=1)
 
     def setup_flap_sdk(self):
         """Setup SDK for finger flap controls."""
@@ -215,24 +216,35 @@ class Hand(RigModule):
         drv = self.smart_ctl
         for i in range(4):
             dataList_rz = [
-                [(0, -10), (1, 0), (2, 30)],
+                [(0, -6), (1, 0), (2, 30)],
                 [(0, -3), (1, 0), (2, 10)],
                 [(0, 3), (1, 0), (2, -10)],
-                [(0, 10), (1, 0), (2, -30)],
+                [(0, 6), (1, 0), (2, -30)],
             ]
             ofs = self.ctls_fgr[i + 1][1].offset
             for k in range(3):
                 common.sdk(drv, ofs, "sy", "rz", *dataList_rz[i][k], inf=1)
 
             dataList_rz2 = [
-                [(0, -1), (1, 0), (2, 6)],
+                [(0, -1), (1, 0), (2, 5)],
                 [(0, -0.3), (1, 0), (2, 2)],
                 [(0, 0.3), (1, 0), (2, -2)],
-                [(0, 1), (1, 0), (2, -6)],
+                [(0, 1), (1, 0), (2, -5)],
             ]
             ofs = self.ctls_fgr[i + 1][0].offset
             for k in range(3):
                 common.sdk(drv, ofs, "sy", "rz", *dataList_rz2[i][k], inf=1)
+
+            # Thumb
+            dataList_rz3 = [
+                [(0, -50), (1, 0), (2, 20)],
+            ]
+            ofs = self.ctls_fgr[0][0].offset
+            for k in range(3):
+                common.sdk(drv, ofs, "sy", "rz", *dataList_rz3[0][k], inf=1)
+            ofs = self.ctls_fgr[0][1].offset
+            for k in range(3):
+                common.sdk(drv, ofs, "sy", "rz", *dataList_rz3[0][k], inf=1)
 
     def setup_updn_sdk(self):
         """Setup SDK for up/down pose on fingers."""
