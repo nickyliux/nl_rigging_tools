@@ -2,15 +2,13 @@ import logging
 import maya.cmds as mc
 from nl_modules.utils import common
 from nl_modules.utils import guide
+from nl_modules.nodel.base.dag_node import DagNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.grp_node import GrpNode
 
 
 def mirrorCtlShape(ctl):
     """Mirror the control shape to its opposite counterpart."""
-
-    from nl_modules.nodel.grp_node import GrpNode
-    from nl_modules.nodel.base.dag_node import DagNode
-    import maya.cmds as mc
-
     ctl = DagNode(ctl)
     if not ctl.shape:
         logging.info(f"Missing shape in {ctl}")
@@ -54,7 +52,6 @@ def mirrorCtlShape(ctl):
 
 def saveCtl():
     """Save control curves to a file."""
-
     allCtls = common.getRigCtlsAll()
     if len(allCtls) == 0:
         mc.confirmDialog(t="Info", m="Control curves NOT found.     ", b="OK")
@@ -77,9 +74,6 @@ def saveCtl():
 
 def loadCtl():
     """Load control curves from a file and replace existing controls."""
-
-    from nl_modules.nodel.base.dag_node import DagNode
-
     tgtFile = mc.fileDialog2(fileFilter="*_ctl*", dialogStyle=2, fileMode=1)
     if tgtFile:
         imported = None
@@ -113,33 +107,23 @@ def loadCtl():
                 mc.select(cl=1)
 
 
-def setOnTopSel():
+def setOnTopSel(*args):
     """Toggle the always draw on top state for selected shapes."""
-
-    from nl_modules.nodel.base.dag_node import DagNode
-
     selList = mc.ls(sl=1, tr=1)
     if selList:
-        state = DagNode(selList[0]).shape.a.alwaysDrawOnTop.get()
+        # state = DagNode(selList[0]).shape.a.alwaysDrawOnTop.get()
         for s in selList:
-            DagNode(s).shape.a.alwaysDrawOnTop.set(1 - state)
+            DagNode(s).shape.a.alwaysDrawOnTop.set(args[0])
 
 
 def dropSel():
     """Drop the selected control curves."""
-
-    from nl_modules.nodel.crv_node import CrvNode
-
     for selList in mc.ls(sl=1, tr=1):
         CrvNode(selList).cv_drop()
 
 
 def rotaCVForSel(*args):
     """Rotate the CVs of selected curves."""
-
-    from nl_modules.nodel.base.dag_node import DagNode
-    from nl_modules.nodel.crv_node import CrvNode
-
     for selList in [DagNode(selList) for selList in mc.ls(sl=1, tr=1)]:
         if selList.type == "nurbsCurve":
             CrvNode(selList).cv_rotate(*args)
@@ -147,10 +131,6 @@ def rotaCVForSel(*args):
 
 def scaleCVForSel(value):
     """Scale the CVs of selected curves."""
-
-    from nl_modules.nodel.base.dag_node import DagNode
-    from nl_modules.nodel.crv_node import CrvNode
-
     for selList in [DagNode(selList) for selList in mc.ls(sl=1, tr=1)]:
         if selList.type == "nurbsCurve":
             CrvNode(selList).cv_scale(value)  # , atCVCetner=1)
