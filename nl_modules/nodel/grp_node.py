@@ -259,11 +259,17 @@ class GrpNode(DagNode):
                     if target not in allTargets:
                         allTargets.append(target)
 
+            for t in self.shapes:
+                t.rename(target + "Shape#")
+
             for target in allTargets:
                 [shape.delete() for shape in target.shapes]
-                mc.parent(self.shapes, target, r=1, s=1)
-                for t in target.shapes:
-                    t.rename(target + "Shape#")
+                mc.parent(self.shapes, target, r=1, s=1, add=1)
+                # temp = self.duplicate()
+                # for t in self.shapes:
+                #     t.rename(target + "Shape#")
+                # mc.parent(temp.shapes, target, r=1, s=1)
+                # temp.delete()
 
             if not keepSrc:
                 self.delete()
