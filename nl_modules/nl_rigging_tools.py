@@ -183,6 +183,9 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.onTop_BN, partial(control.setOnTopSel, 1))
         self.connect(self.UI.onTopOff_BN, partial(control.setOnTopSel, 0))
         self.connect(self.UI.drop_BN, control.dropSel)
+        self.connect(self.UI.dsp_normal_BN, partial(control.dspTypeSel, 0))
+        self.connect(self.UI.dsp_template_BN, partial(control.dspTypeSel, 1))
+        self.connect(self.UI.dsp_reference_BN, partial(control.dspTypeSel, 2))
 
         # Prepare
         self.connect(

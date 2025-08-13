@@ -127,31 +127,31 @@ class Hand(RigModule):
         """Setup SDK for finger base controls."""
         drv = self.smart_ctl
         dataList1 = [(-90, -90), (0, 0), (90, 90)]
-        dataList2 = [(-90, -10), (0, 0), (90, 10)]
+        dataList2 = [(-90, -80), (0, 0), (90, 80)]
 
-        for ctls in self.ctls_fgr:
-            for ctl in ctls[1:]:
+        for i in range(1, 5):
+            for ctl in self.ctls_fgr[i][1:]:
                 for k in range(3):
                     common.sdk(drv, ctl.offset, "ry", "ry", *dataList1[k], inf=1)
 
-        ofs = self.ctls_fgr[0][0].offset
-        for k in range(3):
-            common.sdk(drv, ofs, "ry", "ry", *dataList2[k], inf=1)
+        for ctl in self.ctls_fgr[0][1:]:
+            for k in range(3):
+                common.sdk(drv, ctl.offset, "ry", "ry", *dataList2[k], inf=1)
 
     def setup_flap_sdk(self):
         """Setup SDK for finger flap controls."""
         drv = self.smart_ctl
         dataList_ry = [
-            [(90, -50), (-90, 50)],
-            [(90, -30), (-90, 30)],
-            [(90, 20), (-90, -20)],
-            [(90, 90), (-90, -90)],
+            [(90, -50), (0, 0), (-90, 50)],
+            [(90, -30), (0, 0), (-90, 30)],
+            [(90, 20), (0, 0), (-90, -20)],
+            [(90, 90), (0, 0), (-90, -90)],
         ]
         dataList_rx = [
-            [(90, -15), (-90, 15)],
-            [(90, -5), (-90, 5)],
-            [(90, 10), (-90, -10)],
-            [(90, 40), (-90, -40)],
+            [(90, -15), (0, 0), (-90, 15)],
+            [(90, -5), (0, 0), (-90, 5)],
+            [(90, 10), (0, 0), (-90, -10)],
+            [(90, 40), (0, 0), (-90, -40)],
         ]
         # dataList_rz = [
         #     [(90, -5), (-90, 5)],
@@ -161,7 +161,7 @@ class Hand(RigModule):
         # ]
         for i in range(1, 5):
             ofs = self.ctls_fgr[i][1].offset
-            for k in range(2):
+            for k in range(3):
                 common.sdk(drv, ofs, "rx", "ry", *dataList_ry[i - 1][k], inf=1)
                 common.sdk(drv, ofs, "rx", "rx", *dataList_rx[i - 1][k], inf=1)
                 # common.sdk(drv, ofs, "rx", "rz", *dataList_rz[i - 1][k], inf=1)

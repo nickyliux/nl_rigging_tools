@@ -116,6 +116,12 @@ def setOnTopSel(*args):
             DagNode(s).shape.a.alwaysDrawOnTop.set(args[0])
 
 
+def dspTypeSel(*args):
+    for sel in mc.ls(sl=1):
+        obj = DagNode(sel)
+        obj.dspType = args[0]
+
+
 def dropSel():
     """Drop the selected control curves."""
     for selList in mc.ls(sl=1, tr=1):

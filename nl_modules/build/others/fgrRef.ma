@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: fgrRef.ma
-//Last modified: Wed, Aug 13, 2025 12:56:39 PM
+//Last modified: Wed, Aug 13, 2025 09:29:33 PM
 //Codeset: 1252
 requires maya "2023";
 requires "stereoCamera" "10.0";
@@ -10,11 +10,11 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26100)";
-fileInfo "UUID" "413FDD0E-4BEE-0BCB-E85F-319F303BDCF7";
-createNode transform -n "fgrRef_1";
-	rename -uid "F549C62A-4429-13EF-0F60-52B53538A8FC";
-createNode mesh -n "fgrRef_Shape1" -p "fgrRef_1";
-	rename -uid "B952C70D-4646-C385-A53A-2C87C16F20FF";
+fileInfo "UUID" "E3FEC9C4-4781-C96A-0722-DBA241B73EA4";
+createNode transform -n "fgrRef";
+	rename -uid "4491D985-4769-1BEA-CAE3-569E90E73531";
+createNode mesh -n "fgrRefShape" -p "fgrRef";
+	rename -uid "081565DA-4664-3776-BABF-DABCE6A0B132";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
 	setAttr ".vir" yes;
@@ -122,5 +122,5 @@ select -ne :defaultColorMgtGlobals;
 select -ne :hardwareRenderGlobals;
 	setAttr ".ctrs" 256;
 	setAttr ".btrs" 512;
-connectAttr "fgrRef_Shape1.iog" ":initialShadingGroup.dsm" -na;
+connectAttr "fgrRefShape.iog" ":initialShadingGroup.dsm" -na;
 // End of fgrRef.ma
