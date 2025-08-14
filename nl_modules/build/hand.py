@@ -190,23 +190,23 @@ class Hand(RigModule):
         #         common.sdk(drv, ofs, "rz", "ry", *dataList_ry[i - 2][k], inf=1)
         #         common.sdk(drv, ofs, "rz", "rx", *dataList_rx[i - 2][k], inf=1)
         dataList_ry = [
-            [(1, 0), (0.5, -4)],
-            [(1, 0), (0.5, -10)],
-            [(1, 0), (0.5, -30)],
+            [(1.5, 4), (1, 0), (0.5, -4)],
+            [(1.5, 10), (1, 0), (0.5, -10)],
+            [(1.5, 30), (1, 0), (0.5, -30)],
         ]
         dataList_rx = [
-            [(1, 0), (0.5, -4)],
-            [(1, 0), (0.5, -10)],
-            [(1, 0), (0.5, -30)],
+            [(1.5, 4), (1, 0), (0.5, -4)],
+            [(1.5, 10), (1, 0), (0.5, -10)],
+            [(1.5, 30), (1, 0), (0.5, -30)],
         ]
         dataList_rz = [
-            [(1, 0), (0.5, 4)],
-            [(1, 0), (0.5, 10)],
-            [(1, 0), (0.5, 15)],
+            [(1.5, 4), (1, 0), (0.5, 4)],
+            [(1.5, 10), (1, 0), (0.5, 10)],
+            [(1.5, 15), (1, 0), (0.5, 15)],
         ]
         for i in range(2, 5):
             ofs = self.ctls_fgr[i][0].offset
-            for k in range(2):
+            for k in range(3):
                 common.sdk(drv, ofs, "sz", "rz", *dataList_rz[i - 2][k])  # , inf=1)
                 common.sdk(drv, ofs, "sz", "ry", *dataList_ry[i - 2][k])  # , inf=1)
                 common.sdk(drv, ofs, "sz", "rx", *dataList_rx[i - 2][k])  # , inf=1)
@@ -236,15 +236,15 @@ class Hand(RigModule):
                 common.sdk(drv, ofs, "sy", "rz", *dataList_rz2[i][k], inf=1)
 
             # Thumb
-            dataList_rz3 = [
-                [(0, -50), (1, 0), (2, 20)],
-            ]
-            ofs = self.ctls_fgr[0][0].offset
-            for k in range(3):
-                common.sdk(drv, ofs, "sy", "rz", *dataList_rz3[0][k], inf=1)
-            ofs = self.ctls_fgr[0][1].offset
-            for k in range(3):
-                common.sdk(drv, ofs, "sy", "rz", *dataList_rz3[0][k], inf=1)
+            # dataList_rz3 = [
+            #     [(0, -50), (1, 0), (2, 20)],
+            # ]
+            # ofs = self.ctls_fgr[0][0].offset
+            # for k in range(3):
+            #     common.sdk(drv, ofs, "sy", "rz", *dataList_rz3[0][k], inf=1)
+            # ofs = self.ctls_fgr[0][1].offset
+            # for k in range(3):
+            #     common.sdk(drv, ofs, "sy", "rz", *dataList_rz3[0][k], inf=1)
 
     def setup_updn_sdk(self):
         """Setup SDK for up/down pose on fingers."""
@@ -303,23 +303,19 @@ class Hand(RigModule):
         # Add handScale attribute and connect to rootJ scale
         self.smart_ctl.a.add("handScale", min=0, dv=1) >> self.rootJ.a.scale
 
-        # Uncomment below to enable pose SDK setups
         self.setup_close_sdk()
         self.setup_flap_sdk()
-        self.setup_flap_meta_sdk()
+        # self.setup_flap_meta_sdk()
         self.setup_spread_sdk()
-        # self.setup_cup_sdk()
         self.setup_updn_sdk()
+        # self.setup_cup_sdk()
 
-        #
-        #   thumb
-        #
-        # ofs = self.ctls_fgr[0][0].offset
-
-        # common.sdk(drv, ofs, "tx", "rz", 20, -90)
-        # common.sdk(drv, ofs, "tx", "rz", -20, 90)
-        # common.sdk(drv, ofs, "ty", "rx", 20, 180)
-        # common.sdk(drv, ofs, "ty", "rx", -20, -180)
+        # Set pre and post infinity
+        animCrvNodes = self.smart_ctl.a.r.outConnNode
+        if animCrvNodes:
+            mc.select(animCrvNodes)
+            mc.selectKey()
+            mc.setInfinity(pri="linear", poi="linear")
 
     def setup_space(self):
         """Setup space switching for the hand rig controls."""

@@ -475,8 +475,8 @@ def sdk(dvr, dvn, attr1, attr2, v1, v2, tangent=0, inf=0):
         sdk2(obj1, obj2, 'ty', 'ty', 0, 0)
         sdk2(obj1, obj2, 'ty', 'ty', 1, 2)
     """
-    # opt = ["clamped", "auto", "stepnext", "spline"]  # 'linear'
-    opt = ["linear", "auto", "stepnext", "spline"]  # 'clampled'
+    opt = ["clamped", "auto", "stepnext", "spline"]  # 'linear'
+    # opt = ["linear", "auto", "stepnext", "spline"]  # 'clampled'
     mc.setDrivenKeyframe(
         f"{dvn}.{attr2}",
         cd=f"{dvr}.{attr1}",
@@ -485,8 +485,8 @@ def sdk(dvr, dvn, attr1, attr2, v1, v2, tangent=0, inf=0):
         itt=opt[tangent],
         ott=opt[tangent],
     )
-    if inf:
-        mc.setInfinity(dvn, pri="linear", poi="linear", attribute=attr2)
+    # if inf:
+    #     mc.setInfinity(dvn, pri="linear", poi="linear", attribute=attr2)
 
 
 def sdk2(attr1, attr2, v1, v2, tangent=0):

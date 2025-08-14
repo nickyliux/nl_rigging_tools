@@ -2,6 +2,7 @@ import logging
 import maya.cmds as mc
 
 from nl_modules.nodel.base.dag_node import DagNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.utils import common
 from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
@@ -540,6 +541,42 @@ def add_noise_logic(ctl=None, targets=None, rot=0):
             valX * blend >> tgt.a.rx
             valY * blend >> tgt.a.ry
             valZ * blend >> tgt.a.rz
+
+
+def attachFgrRefSel(targets, xDir=1):
+    """
+    Attach the FGR reference object to specified targets.
+    """
+    # targets = mc.ls(sl=1)
+    # select fgr01_0_guide, fgr01_1_guide, ..., fgr01_n_guide,
+
+    fgrRefSrc = DagNode("fgrRef")
+    grp = GrpNode("fgrRef_grp")
+
+    if not fgrRefSrc.exists():
+        raise NameError('Missing object "fgrRef"')
+
+    if len(targets) < 2:
+        raise NameError("At least 2 objects selected")
+
+    for i, tgt in enumerate(targets[:-1]):
+
+        fgrRef = DagNode(mc.instance(fgrRefSrc)[0])
+        fgrRef.dspType = 2
+        fgrRef | grp
+
+        tgtPos = DagNode(tgt)
+        tgtAim = DagNode(targets[i + 1])
+
+        tgtPos.cstPoi(fgrRef)
+        tgtAim.cstAim(
+            fgrRef,
+            aimVector=(xDir, 0, 0),
+            worldUpType="objectrotation",
+            worldUpObject=tgtPos,
+            # upVector=(0, 1, 0),
+            # worldUpVector=(0, 0, 1),
+        )
 
 
 #
