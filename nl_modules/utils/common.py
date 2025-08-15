@@ -5,6 +5,8 @@ import maya.cmds as mc
 from maya import mel
 from collections import OrderedDict
 
+from nl_modules.nodel.base.dag_node import DagNode
+
 CST_DICT = OrderedDict(
     poi=mc.pointConstraint,
     ori=mc.orientConstraint,
@@ -529,21 +531,49 @@ def addTwistReader(target, pf="", p=None):
     return reader_loc
 
 
-def getMeshBelow(grp):
-    """Get all meshes below the group, return list of MshNode"""
+# def getMeshBelow(tgt):
+#     """Get all meshes below the group, return list of MshNode"""
+#     from nl_modules.nodel.msh_node import MshNode
+
+#     if not mc.objExists(tgt):
+#         logging.warning(f"Model set {tgt} NOT found.")
+#         return []
+
+#     mc.select(tgt, hi=1)
+#     meshes = mc.ls(sl=1, et="mesh") or []
+#     mc.select(cl=1)
+
+#     if meshes:
+#         return [MshNode(mesh) for mesh in meshes]
+#     return []
+
+
+def getTypeBelow(tgt, tgtType="mesh"):
+    """Get all objects of a specific type below the target"""
+    from nl_modules.nodel.crv_node import CrvNode
+    from nl_modules.nodel.grp_node import GrpNode
+    from nl_modules.nodel.jnt_node import JntNode
+    from nl_modules.nodel.loc_node import LocNode
     from nl_modules.nodel.msh_node import MshNode
+    from nl_modules.nodel.srf_node import SrfNode
 
-    if not mc.objExists(grp):
-        logging.warning(f"Model set {grp} NOT found.")
-        return []
-
-    mc.select(grp, hi=1)
-    meshes = mc.ls(sl=1, et="mesh") or []
+    mc.select(tgt, hi=1)
+    nodes = mc.ls(sl=1, tr=1)
     mc.select(cl=1)
 
-    if meshes:
-        return [MshNode(mesh) for mesh in meshes]
-
+    if nodes:
+        if tgtType == "joint":
+            return [JntNode(n) for n in nodes if DagNode(n).type == tgtType]
+        elif tgtType == "locator":
+            return [LocNode(n) for n in nodes if DagNode(n).type == tgtType]
+        elif tgtType == "mesh":
+            return [MshNode(n) for n in nodes if DagNode(n).type == tgtType]
+        elif tgtType == "nurbsCurve":
+            return [CrvNode(n) for n in nodes if DagNode(n).type == tgtType]
+        elif tgtType == "nurbsSurface":
+            return [SrfNode(n) for n in nodes if DagNode(n).type == tgtType]
+        elif tgtType == "group":
+            return [GrpNode(n) for n in nodes if DagNode(n).type == "transform"]
     return []
 
 

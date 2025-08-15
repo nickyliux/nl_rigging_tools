@@ -2,7 +2,9 @@ import logging
 import maya.cmds as mc
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
 
 
@@ -42,7 +44,8 @@ class Hand(RigModule):
         fgr_roots = []
         for fgr_names in ALL_FGR_NAMES:
             jnts = self.gen_sk_fr_names(fgr_names, scale=FINGER_SCALE)
-            jnts[0].freezeXf()
+            # jnts[0].freezeXf()
+            jnts[0].reOrient(upRef=jnts[1], xDir=self.xDir)
             jnts[0] | root_list[0]
             fgr_roots.append(jnts[0])
 
@@ -69,7 +72,6 @@ class Hand(RigModule):
     def build(self):
         """Build the hand rig module."""
         self.build_pre_module()
-        self.build_ctl()
 
         self.jnts_bind = [self.rootJ]
         for root in self.rootJ.childrenJt:
@@ -77,6 +79,7 @@ class Hand(RigModule):
             self.jnts_fgr.append(digit_jnts)
             self.jnts_bind.extend(digit_jnts[:-1])
 
+        self.build_ctl()
         self.build_fk()
         self.build_ik()
         self.build_fgrs()

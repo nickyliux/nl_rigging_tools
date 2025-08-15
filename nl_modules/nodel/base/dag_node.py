@@ -502,11 +502,13 @@ class DagNode(DepNode):
         else:
             logging.info("Unknown object type to duplicate !")
 
-    def displayLocalAxis(self, state=True):
+    def set_LRA(self, state=1):
         """Show/hide display local axis"""
-        self.a.displayLocalAxis.set(state)
+        attr = self.a.displayLocalAxis
+        if attr.exists():
+            attr.set(state)
 
-    def lockHideAttr(self, attrsList, lock=True):
+    def lockHideAttr(self, attrsList, lock=1):
         """Lock and hide attribute
         e.g.
             obj1.lockHideAttr(['tx','rx'])

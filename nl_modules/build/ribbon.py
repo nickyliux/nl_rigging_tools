@@ -149,7 +149,7 @@ class Ribbon(RigModule):
             locN.scaleLocal(3)
 
             jnt = JntNode("rb_jnt_#", pf=self.rigID, r=1, color=1, align=locN, p=locN)
-            jnt.displayLocalAxis()
+            jnt.set_LRA()
             jnt.addProxyMesh(p=self.PRX)
 
         if p:

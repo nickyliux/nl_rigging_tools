@@ -183,9 +183,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.onTop_BN, partial(control.setOnTopSel, 1))
         self.connect(self.UI.onTopOff_BN, partial(control.setOnTopSel, 0))
         self.connect(self.UI.drop_BN, control.dropSel)
-        self.connect(self.UI.dsp_normal_BN, partial(control.dspTypeSel, 0))
-        self.connect(self.UI.dsp_template_BN, partial(control.dspTypeSel, 1))
-        self.connect(self.UI.dsp_reference_BN, partial(control.dspTypeSel, 2))
 
         # Prepare
         self.connect(
@@ -199,20 +196,42 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         )
         self.connect(self.UI.addBladeAttr_BN, self.addBladeAttr)
 
+        # Retopo
         self.connect(self.UI.misc_retopo20_BN, partial(model.retopo, faceNum=20))
         self.connect(self.UI.misc_retopo50_BN, partial(model.retopo, faceNum=50))
         self.connect(self.UI.misc_retopo150_BN, partial(model.retopo, faceNum=150))
         self.connect(self.UI.misc_retopo500_BN, partial(model.retopo, faceNum=500))
 
+        # Guide Tool
         self.connect(self.UI.addMirrorAttr_BN, common.add_mirror_attr)
         self.connect(self.UI.misc_buildLineSel_BN, CrvNode.buildLineLinkedSel)
         self.connect(self.UI.misc_importEnvAndShd_BN, self.misc_importEnvAndShd)
+
+        # Joint Orientation
+        self.connect(self.UI.createRefUpLoc_BN, JntNode.createRefUpLoc)
+        self.connect(self.UI.reOrient_BN, JntNode.reOrientSel)
+
+        # Coloring
         self.connect(self.UI.assignPresetColor_BN, common.assignPresetShd)
+
+        # Misc
+        self.connect(self.UI.dsp_normal_BN, partial(control.dspTypeSel, 0))
+        self.connect(self.UI.dsp_template_BN, partial(control.dspTypeSel, 1))
+        self.connect(self.UI.dsp_reference_BN, partial(control.dspTypeSel, 2))
+        self.connect(self.UI.selectTypeBelow_BN, self.getTypeBelowSel)
 
         self.rigNode_refresh()
         self.crvShape_refresh()
         self.updateLoadWrapTargetMesh()
         self.updateCharPath()
+
+    def getTypeBelowSel(self):
+        typeBelow = self.UI.typeBelow_CB.currentText()
+        sel = mc.ls(sl=1, tr=1)
+        if sel:
+            result = common.getTypeBelow(sel, tgtType=typeBelow)
+            if result:
+                mc.select(result)
 
     def updateCharPath(self):
         """Update the character path in the UI if it exists."""
@@ -417,7 +436,8 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             mc.confirmDialog(t="Info", m=f"{BIND_REF_GRP} NOT found.    ", b="OK")
             return
 
-        meshSel = common.getMeshBelow(MODEL_GRP)
+        # meshSel = common.getMeshBelow(MODEL_GRP)
+        meshSel = common.getTypeBelow(MODEL_GRP)
         #
         #   bind to closest refJnt in MODEL_GRP, and _rbnJnt For each in MODEL GRP
         #

@@ -62,7 +62,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="main_TB">
     <attribute name="title">
@@ -2205,7 +2205,7 @@
          <string notr="true"/>
         </property>
         <property name="text">
-         <string>&lt; S</string>
+         <string>&lt; Size</string>
         </property>
        </widget>
       </item>
@@ -2254,133 +2254,7 @@
          <string notr="true"/>
         </property>
         <property name="text">
-         <string>S &gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="dsp_normal_BN">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>10</width>
-          <height>18</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>999</width>
-          <height>18</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Segoe UI</family>
-          <pointsize>8</pointsize>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>Set display type to normal</string>
-        </property>
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
-        <property name="text">
-         <string>Nml</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="dsp_template_BN">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>10</width>
-          <height>18</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>999</width>
-          <height>18</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Segoe UI</family>
-          <pointsize>8</pointsize>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>Set display type to template</string>
-        </property>
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
-        <property name="text">
-         <string>Tpl</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="dsp_reference_BN">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>10</width>
-          <height>18</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>999</width>
-          <height>18</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Segoe UI</family>
-          <pointsize>8</pointsize>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>Set display type to reference</string>
-        </property>
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
-        <property name="text">
-         <string>Ref</string>
+         <string>Size &gt;</string>
         </property>
        </widget>
       </item>
@@ -2485,13 +2359,16 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>140</y>
+       <y>150</y>
        <width>220</width>
        <height>81</height>
       </rect>
      </property>
      <property name="title">
-      <string>Guide</string>
+      <string>Guide Tools</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -2585,13 +2462,16 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>10</y>
+       <y>20</y>
        <width>221</width>
        <height>111</height>
       </rect>
      </property>
      <property name="title">
-      <string>Preparation</string>
+      <string>Ribbon / Ref Jnts for Model</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -2921,13 +2801,16 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>230</y>
+       <y>320</y>
        <width>221</width>
-       <height>51</height>
+       <height>61</height>
       </rect>
      </property>
      <property name="title">
-      <string>Color</string>
+      <string>Coloring</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -2938,12 +2821,363 @@
         <x>0</x>
         <y>20</y>
         <width>221</width>
-        <height>20</height>
+        <height>38</height>
        </rect>
       </property>
-      <property name="text">
-       <string>Assign Preset to Sel</string>
+      <property name="toolTip">
+       <string>Assign color to selected</string>
       </property>
+      <property name="text">
+       <string>Assign lf / mid / rt
+Preset Color</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_13">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>250</y>
+       <width>221</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Joint Orientation</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="horizontalLayoutWidget_5">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>20</y>
+        <width>221</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="createRefUpLoc_BN">
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Create Reference Up Loc for selected</string>
+         </property>
+         <property name="text">
+          <string>Create Ref Up Loc</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="reOrient_BN">
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Re-orient all joints below selected</string>
+         </property>
+         <property name="text">
+          <string>Re-Orient</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_14">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>400</y>
+       <width>221</width>
+       <height>91</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Misc</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="horizontalLayoutWidget_6">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>50</y>
+        <width>221</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Obj Type</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="typeBelow_CB">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <item>
+          <property name="text">
+           <string>joint</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>locator</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>mesh</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>nurbsCurve</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>nurbsSurface</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>group</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="selectTypeBelow_BN">
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Select &quot;Type&quot; objects below selected</string>
+         </property>
+         <property name="text">
+          <string>Sel Below</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget_7">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>20</y>
+        <width>221</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Dsp Type</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="dsp_normal_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>999</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Set display type to normal</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Nml</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="dsp_template_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>999</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Set display type to template</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Tpl</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="dsp_reference_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>999</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Set display type to reference</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Ref</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
    </widget>

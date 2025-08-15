@@ -1,8 +1,12 @@
 import maya.cmds as mc
+import logging
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils.color import Color
+
+REF_UP_LOC = "ref_up_loc"
 
 
 class JntNode(GrpNode):
@@ -281,4 +285,63 @@ class JntNode(GrpNode):
             DagNode(s).cstPoi(j)
             parentJ = j
             j.a.showAttr()
+        mc.select(cl=1)
+
+    @staticmethod
+    def createRefUpLoc():
+        """Create reference up locators for selected joints."""
+        sel = mc.ls(sl=1, type="joint")
+        if not sel:
+            logging.warning("No joints selected.")
+            return
+        loc = LocNode(REF_UP_LOC, align=sel[0], size=5)
+        loc.set_LRA()
+
+    @staticmethod
+    def reOrientSel():
+        """Reorient selected joints."""
+        sel = mc.ls(sl=1, type="joint")
+        if not sel:
+            logging.warning("No joints selected.")
+            return
+
+        JntNode(sel[0]).reOrient()
+
+    def reOrient(self, upRef=None, xDir=1):
+        """Orient joints below this node"""
+        all_jnts = self.allChildrenJt2
+
+        if not all_jnts or len(all_jnts) < 2:
+            logging.warning("Not enough joints found below to orient.")
+            return
+
+        upLoc = None
+        if DagNode(upRef).exists():
+            upLoc = LocNode("upLoc_#", align=upRef)
+        else:
+            upLoc = DagNode(REF_UP_LOC)
+            if not upLoc.exists():
+                upLoc = LocNode("upLoc_#", align=self)
+
+        aimLoc = LocNode("aimLoc_#")
+
+        for jnt in all_jnts:
+            child_jnts = jnt.childrenJt
+            if child_jnts and len(child_jnts) == 1:
+                tgt = child_jnts[0]
+                tgt.parentToWorld()
+                aimLoc.snapTo(tgt)
+                aimLoc.cstAim(
+                    jnt,
+                    aim=(xDir, 0, 0),
+                    worldUpType="objectrotation",
+                    worldUpObject=upLoc,
+                    keep=0,
+                )
+                jnt.freezeXf()
+                tgt | jnt
+            else:
+                JntNode(jnt).resetOrient()
+
+        mc.delete(upLoc, aimLoc)
         mc.select(cl=1)

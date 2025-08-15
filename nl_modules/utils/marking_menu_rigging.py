@@ -32,7 +32,6 @@ class MarkingMenuRigging:
 
     def setupMenu(self, menu, parent):
         """Setup the marking menu"""
-
         create_MI = mc.menuItem(p=menu, l="Create", rp="SW", subMenu=1)
         mc.menuItem(p=create_MI, l="Cube", c="mc.polyCube()")
         mc.menuItem(p=create_MI, l="Sphere", c="mc.polySphere()")
@@ -133,31 +132,26 @@ class MarkingMenuRigging:
 
 def addInf(*args):
     """Add influence to the skin cluster of the selected mesh"""
-
     mel.eval('skinClusterInfluence 1 " -dr 4 -lw true -wt 0"')
 
 
 def addInfOpt(*args):
     """Open the Add Influence Options dialog"""
-
     mel.eval("AddInfluenceOptions")
 
 
 def jointDisplay(*args):
     """Set the joint display scale"""
-
     mc.jointDisplayScale(args[0])
 
 
 def showHidden(*args):
     """Show all hidden objects in the scene"""
-
     mc.showHidden(all=1)
 
 
 def use_last_crv_shapes(*args):
     """Copy the shape of the last selected curve to all previous selected curves"""
-
     selList = mc.ls(sl=1, tr=1)
     if len(selList) > 1:
         from nl_modules.nodel.crv_node import CrvNode
@@ -167,7 +161,6 @@ def use_last_crv_shapes(*args):
 
 def add_last_crv_shapes(*args):
     """Add the last selected curve shape to the first selected object"""
-
     selList = mc.ls(sl=1, tr=1)
     if len(selList) == 2:
         last = DagNode(selList[-1])
@@ -177,7 +170,6 @@ def add_last_crv_shapes(*args):
 
 def select_cst_objects(*args):
     """Select the constraining objects of the first selected object"""
-
     selList = mc.ls(sl=1, tr=1)
     if selList:
         cstObj = DagNode(selList[0]).getCstObjects()
@@ -187,21 +179,18 @@ def select_cst_objects(*args):
 
 def add_ofs(*args):
     """Add offset group to selected objects"""
-
     for s in mc.ls(sl=1):
         mc.select(DagNode(s).addOffsetGrp())
 
 
 def add_ofs_below(*args):
     """Add offset group below the selected object"""
-
     for s in mc.ls(sl=1):
         mc.select(DagNode(s).addOffsetGrp(below=1))
 
 
 def add_IK(*args):
     """Add IK handle to selected joints"""
-
     selectedJnt = mc.ls(sl=1, type="joint")
     if len(selectedJnt) == 2:
         solver_name = args[0].value
@@ -215,13 +204,11 @@ def add_IK(*args):
 
 def makeJointChain10_mm(*args):
     """Create a joint chain of 10 joints with a distance of 5 units between them"""
-
     mc.select(make_joint_chain(10)[0])
 
 
 def makeJointChainGold_mm(*args):
     """Create a joint chain of 5 joints with a golden ratio distance between them"""
-
     jc = make_joint_chain(5)
     GR = 0.618034
     for i in range(1, len(jc)):
@@ -231,12 +218,10 @@ def makeJointChainGold_mm(*args):
 
 def make_joint_chain(size):
     """Create a joint chain with the specified number of joints"""
-
     mc.select(cl=1)
     jnt = []
     for i in range(size):
         jnt.append(mc.joint())
-        mc.setAttr(".displayLocalAxis", 1)
         if i > 0:
             mc.setAttr(".tx", 5)
     return jnt
@@ -244,7 +229,6 @@ def make_joint_chain(size):
 
 def display_CV(*args):
     """Display or hide CVs of selected curves"""
-
     state = args[0]
     for selList in mc.ls(sl=1):
         shapes = DagNode(selList).shapes
@@ -256,7 +240,6 @@ def display_CV(*args):
 
 def display_LRA(*args):
     """Display or hide the local rotation axis of selected objects"""
-
     state = args[0]
     hi = args[1]
     selList = mc.ls(sl=1)
@@ -268,26 +251,20 @@ def display_LRA(*args):
         selList = mc.ls(tr=1)
 
     for sel in selList:
-        attr = DagNode(sel).a["displayLocalAxis"]
-        if attr.exists():
-            attr.set(state)
+        DagNode(sel).set_LRA(state=state)
 
 
 def joint_LRA(*args):
     """Set the local rotation axis display for joints"""
-
     state = args[0]
     selList = mc.ls(sl=1, type="joint") or mc.ls(type="joint")
 
     for sel in selList:
-        attr = DagNode(sel).a["displayLocalAxis"]
-        if attr.exists():
-            attr.set(state)
+        DagNode(sel).set_LRA(state=state)
 
 
 def connect_mm(attr="t"):
     """Connect the specified attribute from the first selected object to the second"""
-
     selList = mc.ls(sl=1)
     if len(selList) == 2:
         mc.connectAttr(f"{selList[0]}.{attr}", f"{selList[1]}.{attr}", f=1)
@@ -295,19 +272,16 @@ def connect_mm(attr="t"):
 
 def connect_channel(*args):
     """Connect the specified channel from the first selected object to the second"""
-
     connect_mm(args[0])
 
 
 def frz_xform_mm(*args):
     """Freeze transformations of the selected objects"""
-
     mc.makeIdentity(a=1)
 
 
 def frz_xform(*args):
     """Freeze transformations of the selected objects for the specified attribute"""
-
     if args[0] == "t":
         mc.makeIdentity(a=1, t=1)
     elif args[0] == "r":
@@ -318,13 +292,11 @@ def frz_xform(*args):
 
 def lockAttr(*args):
     """Lock or unlock the specified attribute for the selected objects"""
-
     [DagNode(s).lockHideAttrXf(chn=args[0], lock=args[1]) for s in mc.ls(sl=1)]
 
 
 def cst(*args):
     """Create a constraint of the specified type on the selected objects"""
-
     from nl_modules.utils import common
 
     selList = mc.ls(sl=1)
@@ -343,14 +315,12 @@ def cst(*args):
 
 def del_cst_mm(*args):
     """Delete all constraints from the selected objects"""
-
     for selList in mc.ls(sl=1):
         DagNode(selList).removeCstNodes()
 
 
 def sel_cst_driver(*args):
     """Select the driver or constrained objects of the first selected object"""
-
     selList = mc.ls(sl=1)
     if selList:
         mc.select(DagNode(selList[0]).getCstObjects())
@@ -358,7 +328,6 @@ def sel_cst_driver(*args):
 
 def match_all(*args):
     """Match the transformation of the first selected object to all others"""
-
     selList = mc.ls(sl=1)
     if len(selList) > 1:
         mc.matchTransform(*selList)
@@ -367,7 +336,6 @@ def match_all(*args):
 
 def match_pos(*args):
     """Match the position of the first selected object to all others"""
-
     selList = mc.ls(sl=1)
     if len(selList) > 1:
         mc.matchTransform(*selList, pos=1, rot=0, scl=0)
@@ -376,7 +344,6 @@ def match_pos(*args):
 
 def match_rot(*args):
     """Match the position of the first selected object to all others"""
-
     selList = mc.ls(sl=1)
     if len(selList) > 1:
         mc.matchTransform(*selList, pos=0, rot=1, scl=0)
@@ -385,14 +352,12 @@ def match_rot(*args):
 
 def get_nodeType_below(nType):
     """Get the first object of the specified type below the current selection"""
-
     mc.select(hi=1)
     return mc.ls(sl=1, type=nType)
 
 
 def reload_marking_menu(*args):
     """Reload the marking menu module"""
-
     mc.evalDeferred(
         """
 import nl_modules.utils.marking_menu_rigging as mm

@@ -543,39 +543,64 @@ def add_noise_logic(ctl=None, targets=None, rot=0):
             valZ * blend >> tgt.a.rz
 
 
-def attachFgrRefSel(targets, xDir=1):
+def attachFgrRef(targets, xDir=1):
     """
-    Attach the FGR reference object to specified targets.
-    """
-    # targets = mc.ls(sl=1)
-    # select fgr01_0_guide, fgr01_1_guide, ..., fgr01_n_guide,
+    # run below to add cross mesh for entire hand
 
+    from nl_modules.utils import build
+    for i in range(5):
+        build.attachFgrRef(mc.ls('fgr0' + str(i) + '_?_guide'), xDir=1)
+    """
+    """Attach finger references to the specified targets."""
     fgrRefSrc = DagNode("fgrRef")
     grp = GrpNode("fgrRef_grp")
 
     if not fgrRefSrc.exists():
         raise NameError('Missing object "fgrRef"')
+    if not isinstance(targets, list) or len(targets) < 2:
+        raise NameError("At least 2 objects must be provided in a list")
 
-    if len(targets) < 2:
-        raise NameError("At least 2 objects selected")
-
-    for i, tgt in enumerate(targets[:-1]):
-
+    for tgt, tgtAim in zip(targets[:-1], targets[1:]):
+        # Create a new instance of the finger reference
         fgrRef = DagNode(mc.instance(fgrRefSrc)[0])
         fgrRef.dspType = 2
         fgrRef | grp
 
         tgtPos = DagNode(tgt)
-        tgtAim = DagNode(targets[i + 1])
-
         tgtPos.cstPoi(fgrRef)
-        tgtAim.cstAim(
+
+        DagNode(tgtAim).cstAim(
             fgrRef,
             aimVector=(xDir, 0, 0),
             worldUpType="objectrotation",
             worldUpObject=tgtPos,
-            # upVector=(0, 1, 0),
-            # worldUpVector=(0, 0, 1),
+        )
+
+
+def quickSnapMidFgr(pf=""):
+    """
+    from nl_modules.utils import build
+    build.quickSnapMidFgr('lfHand0')
+    build.quickSnapMidFgr('rtHand0')
+    """
+    """Quick snap the mid finger guides."""
+    guides_01 = mc.ls(pf + "_fgr01_?_guide")
+    guides_02 = mc.ls(pf + "_fgr02_?_guide")
+    guides_03 = mc.ls(pf + "_fgr03_?_guide")
+    guides_04 = mc.ls(pf + "_fgr04_?_guide")
+
+    common.cstMulti(
+        guides_01[1], guides_04[1], guides_02[1], cstType="ori", w=2 / 3, delete=1
+    )
+    common.cstMulti(
+        guides_01[1], guides_04[1], guides_03[1], cstType="ori", w=1 / 3, delete=1
+    )
+    for i, g in enumerate(guides_01):
+        common.cstMulti(
+            guides_01[i], guides_04[i], guides_02[i], cstType="poi", w=2 / 3, delete=1
+        )
+        common.cstMulti(
+            guides_01[i], guides_04[i], guides_03[i], cstType="poi", w=1 / 3, delete=1
         )
 
 
@@ -619,5 +644,7 @@ def attachFgrRefSel(targets, xDir=1):
 # def disconnectAnchors():
 #     """Disconnect all Female anchors"""
 #     femaleAnchors = getRigNodeLinked("anchorF")
+#     for fAnchor in femaleAnchors:
+#         fAnchor.removeCstNodes()
 #     for fAnchor in femaleAnchors:
 #         fAnchor.removeCstNodes()

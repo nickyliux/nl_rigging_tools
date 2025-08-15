@@ -314,12 +314,6 @@ class GrpNode(DagNode):
         if self.shape:
             self.shape.a.lineWidth.set(w)
 
-    def show_local_axis(self, state):
-        """Show or hide the local axis of the group node"""
-        attr = self.a["displayLocalAxis"]
-        if attr.exists():
-            attr.set(state)
-
     def add_attr_as_proxy(self, src=None):
         """Add proxy attributes from source node"""
         if src and src.exists():
