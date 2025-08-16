@@ -93,8 +93,8 @@ class ArmBp(RigModule):
         self.pvc.cv_rotate(-90, 0, 0)
         self.palm_ikc.cv_move(scale * 5, 0, 0)
 
-        self.setting.cv_move(scale * 20, 0, 0)
-        self.setting.color = Color.WHITE
+        self.setting.cv_move(0, 0, scale * -20)
+        # self.setting.color = Color.WHITE
 
     def build(self):
         """Build the arm rig module."""
@@ -241,8 +241,8 @@ class ArmBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting.snapTo(self.clavicle, p=self.CTL_DATA)
-        self.clavicle.cstPar(self.setting, mo=1)
+        self.setting.alignTo(self.palm, p=self.CTL_DATA)
+        self.palm.cstPar(self.setting, mo=1)
 
         # Extract blend joints
         self.jnts_bf = common.dupSk(

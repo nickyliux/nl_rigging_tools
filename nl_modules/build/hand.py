@@ -61,17 +61,17 @@ class Hand(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "sphere", "z", scale * 2, 1, 1),
+            ("setting", "sphere", "z", scale, 1, 1),
             ("palm_ctl", "rotator", None, scale * -1, 0, 2),
-            ("smart_ctl", "roll", "x", scale, 1, 2),
+            ("smart_ctl", "roll", "x", scale, 0, -1),
         ]
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
         self.smart_ctl.cv_scale(1, 2, 1)
-        self.setting.cv_move(0, 0, rSz * -40)
-        self.setting.color = Color.WHITE
+        # self.setting.cv_move(0, 0, rSz * -40)
+        # self.setting.color = Color.WHITE
 
     def build(self):
         """Build the hand rig module."""
@@ -226,13 +226,17 @@ class Hand(RigModule):
         fkc_ofs3 = self.ctls_fgr[3][0].offset.addOffsetGrp()
         fkc_ofs4 = self.ctls_fgr[4][0].offset.addOffsetGrp()
 
+        # Align palm_ctl to fkc_ofs3
         self.palm_ctl.alignTo(fkc_ofs3, p=self.CTL_DATA)
         self.palm_ctl.addOffsetGrp()
+        self.rootJ.cstPar(self.palm_ctl.offset, mo=1)
 
+        # Connect palm_ctl rotation to meta carpal
         self.palm_ctl.a.r * (0.2, 0.2, 0.2) >> fkc_ofs2.a.r
         self.palm_ctl.a.r * (0.5, 0.5, 0.5) >> fkc_ofs3.a.r
         self.palm_ctl.a.r >> fkc_ofs4.a.r
 
+        # Connect palm_ctl rotation to ik ctls
         self.palm_ctl.a.r * (0.2, 0.2, 0.2) >> self.ctls_ik[2].offset.a.r
         self.palm_ctl.a.r * (0.5, 0.5, 0.5) >> self.ctls_ik[3].offset.a.r
         self.palm_ctl.a.r >> self.ctls_ik[4].offset.a.r
@@ -343,8 +347,7 @@ class Hand(RigModule):
         """Post setup for the hand rig module."""
         logging.info(self.rigID)
 
-        self.setting.snapTo(self.rootJ, p=self.CTL_DATA)
-        self.rootJ.cstPar(self.setting, mo=1)
+        self.setting.alignTo(self.smart_ctl, p=self.smart_ctl)
 
         self.setup_scale()
         self.setup_bindJnt()

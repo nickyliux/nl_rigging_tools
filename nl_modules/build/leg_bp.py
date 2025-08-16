@@ -138,7 +138,7 @@ class LegBp(RigModule):
 
         self.pvc.cv_rotate(90, 0, 0)
         self.setting.cv_move(scale * 40, 0, 0)
-        self.setting.color = Color.WHITE
+        # self.setting.color = Color.WHITE
 
     def build(self):
         """Build the leg rig module."""
