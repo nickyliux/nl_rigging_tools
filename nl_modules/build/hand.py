@@ -1,11 +1,12 @@
 import logging
 import maya.cmds as mc
 from nl_modules.build.rig_module import RigModule
+from nl_modules.nodel.base.dep_node import DepNode
 from nl_modules.nodel.crv_node import CrvNode
-from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
+from nl_modules.utils.color import Color
 
 
 class Hand(RigModule):
@@ -45,7 +46,7 @@ class Hand(RigModule):
         for fgr_names in ALL_FGR_NAMES:
             jnts = self.gen_sk_fr_names(fgr_names, scale=FINGER_SCALE)
             # jnts[0].freezeXf()
-            jnts[0].reOrient(upRef=jnts[1], xDir=self.xDir)
+            jnts[1].reOrient(upRef=jnts[1], xDir=self.xDir)
             jnts[0] | root_list[0]
             fgr_roots.append(jnts[0])
 
@@ -60,7 +61,8 @@ class Hand(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "bagua", "z", scale * 3, 1, 2),
+            ("setting", "sphere", "z", scale * 2, 1, 1),
+            ("palm_ctl", "rotator", None, scale * -1, 0, 2),
             ("smart_ctl", "roll", "x", scale, 1, 2),
         ]
         for name, shape, up, scale, top, w in ctl_defs:
@@ -68,6 +70,8 @@ class Hand(RigModule):
 
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
         self.smart_ctl.cv_scale(1, 2, 1)
+        self.setting.cv_move(0, 0, rSz * -40)
+        self.setting.color = Color.WHITE
 
     def build(self):
         """Build the hand rig module."""
@@ -169,51 +173,6 @@ class Hand(RigModule):
                 common.sdk(drv, ofs, "rx", "rx", *dataList_rx[i - 1][k], inf=1)
                 # common.sdk(drv, ofs, "rx", "rz", *dataList_rz[i - 1][k], inf=1)
 
-    def setup_flap_meta_sdk(self):
-        drv = self.smart_ctl
-        # dataList_ry = [
-        #     [(-90, 4), (90, -4)],
-        #     [(-90, 10), (90, -10)],
-        #     [(-90, 30), (90, -30)],
-        # ]
-        # dataList_rx = [
-        #     [(-90, 4), (90, -4)],
-        #     [(-90, 10), (90, -10)],
-        #     [(-90, 30), (90, -30)],
-        # ]
-        # dataList_rz = [
-        #     [(-90, -4), (90, 4)],
-        #     [(-90, -10), (90, 10)],
-        #     [(-90, -15), (90, 15)],
-        # ]
-        # for i in range(2, 5):
-        #     ofs = self.ctls_fgr[i][0].offset
-        #     for k in range(2):
-        #         common.sdk(drv, ofs, "rz", "rz", *dataList_rz[i - 2][k], inf=1)
-        #         common.sdk(drv, ofs, "rz", "ry", *dataList_ry[i - 2][k], inf=1)
-        #         common.sdk(drv, ofs, "rz", "rx", *dataList_rx[i - 2][k], inf=1)
-        dataList_ry = [
-            [(1.5, 4), (1, 0), (0.5, -4)],
-            [(1.5, 10), (1, 0), (0.5, -10)],
-            [(1.5, 30), (1, 0), (0.5, -30)],
-        ]
-        dataList_rx = [
-            [(1.5, 4), (1, 0), (0.5, -4)],
-            [(1.5, 10), (1, 0), (0.5, -10)],
-            [(1.5, 30), (1, 0), (0.5, -30)],
-        ]
-        dataList_rz = [
-            [(1.5, 4), (1, 0), (0.5, 4)],
-            [(1.5, 10), (1, 0), (0.5, 10)],
-            [(1.5, 15), (1, 0), (0.5, 15)],
-        ]
-        for i in range(2, 5):
-            ofs = self.ctls_fgr[i][0].offset
-            for k in range(3):
-                common.sdk(drv, ofs, "sz", "rz", *dataList_rz[i - 2][k])  # , inf=1)
-                common.sdk(drv, ofs, "sz", "ry", *dataList_ry[i - 2][k])  # , inf=1)
-                common.sdk(drv, ofs, "sz", "rx", *dataList_rx[i - 2][k])  # , inf=1)
-
     def setup_spread_sdk(self):
         """Setup SDK for spread pose on fingers."""
         drv = self.smart_ctl
@@ -260,30 +219,23 @@ class Hand(RigModule):
             common.sdk(drv, ofs, "ty", "rz", 10, 90 * xDr, inf=1)
             common.sdk(drv, ofs, "ty", "rz", -10, -90 * xDr, inf=1)
 
-    def setup_cup_sdk(self):
-        """Setup SDK for cup pose on fingers."""
-        drv = self.smart_ctl
+    def setup_metacarpal(self):
+        """Setup metacarpal controls for the hand rig."""
 
-        for i in range(1, 5):
-            cupList = [
-                [(0, 0), (1, 0), (2, -5)],
-                [(0, 0), (1, 0), (2, -15)],
-                [(0, 0), (1, 0), (2, -50)],
-                [(0, 0), (1, 0), (2, -90)],
-            ]
-            ofs = self.ctls_fgr[i][1].offset
-            for k in range(3):
-                common.sdk(drv, ofs, "sz", "rx", *cupList[i - 1][k], inf=1)
+        fkc_ofs2 = self.ctls_fgr[2][0].offset.addOffsetGrp()
+        fkc_ofs3 = self.ctls_fgr[3][0].offset.addOffsetGrp()
+        fkc_ofs4 = self.ctls_fgr[4][0].offset.addOffsetGrp()
 
-            # cupList = [
-            #     [(1, 0), (2, -10)],
-            #     [(1, 0), (2, -3)],
-            #     [(1, 0), (2, 3)],
-            #     [(1, 0), (2, 10)],
-            # ]
-            # ofs = self.ctls_fgr[i][0].offset
-            # for k in range(2):
-            #   common.sdk(drv, ofs, "sz", "rx", *cupList[i - 1][k], inf=1)
+        self.palm_ctl.alignTo(fkc_ofs3, p=self.CTL_DATA)
+        self.palm_ctl.addOffsetGrp()
+
+        self.palm_ctl.a.r * (0.2, 0.2, 0.2) >> fkc_ofs2.a.r
+        self.palm_ctl.a.r * (0.5, 0.5, 0.5) >> fkc_ofs3.a.r
+        self.palm_ctl.a.r >> fkc_ofs4.a.r
+
+        self.palm_ctl.a.r * (0.2, 0.2, 0.2) >> self.ctls_ik[2].offset.a.r
+        self.palm_ctl.a.r * (0.5, 0.5, 0.5) >> self.ctls_ik[3].offset.a.r
+        self.palm_ctl.a.r >> self.ctls_ik[4].offset.a.r
 
     def build_fgrs(self):
         """Build the finger logic for the hand rig module."""
@@ -310,10 +262,10 @@ class Hand(RigModule):
         self.setup_flap_sdk()
         self.setup_spread_sdk()
         self.setup_updn_sdk()
+        self.set_pre_post_infinity()
+
         self.setup_metacarpal()
         # self.setup_flap_meta_sdk()
-        # self.setup_cup_sdk()
-        self.set_pre_post_infinity()
 
     def set_pre_post_infinity(self):
         """Set pre and post infinity for the hand rig controls."""
@@ -322,9 +274,6 @@ class Hand(RigModule):
             mc.select(animCrvNodes)
             mc.selectKey()
             mc.setInfinity(pri="linear", poi="linear")
-
-    def setup_metacarpal(self):
-        pass
 
     def setup_space(self):
         """Setup space switching for the hand rig controls."""
@@ -343,7 +292,7 @@ class Hand(RigModule):
         self.setting.a.showAttr()
         self.smart_ctl.a.showAttr(t=1, r=1, s=1)
 
-        for ctl in self.ctls_ik:
+        for ctl in self.ctls_ik + [self.palm_ctl]:
             ctl.a.showAttr(r=1)
         for ctls in self.ctls_fgr:
             for ctl in ctls:

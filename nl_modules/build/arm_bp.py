@@ -75,7 +75,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "bagua", "z", scale, 1, 2),
+            ("setting", "sphere", "z", scale, 1, 1),
             ("clavicle_fkc", "stickC", None, scale, 0, -1),
             ("upr_fkc", "sphere", "x", scale * 4, 0, -1),
             ("lwr_fkc", "sphere", "x", scale * 4, 0, -1),
@@ -92,6 +92,9 @@ class ArmBp(RigModule):
         self.ikc.cv_rotate(0, 90, 0)
         self.pvc.cv_rotate(-90, 0, 0)
         self.palm_ikc.cv_move(scale * 5, 0, 0)
+
+        self.setting.cv_move(scale * 20, 0, 0)
+        self.setting.color = Color.WHITE
 
     def build(self):
         """Build the arm rig module."""
@@ -239,7 +242,7 @@ class ArmBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.setting.snapTo(self.clavicle, p=self.CTL_DATA)
-        self.clavicle.cstPoi(self.setting, mo=1)
+        self.clavicle.cstPar(self.setting, mo=1)
 
         # Extract blend joints
         self.jnts_bf = common.dupSk(

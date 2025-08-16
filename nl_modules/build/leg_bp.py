@@ -120,7 +120,7 @@ class LegBp(RigModule):
         scale_fk = scale * 4
 
         ctl_defs = [
-            ("setting", "bagua", "z", scale, 1, 2),
+            ("setting", "sphere", "z", scale, 1, 1),
             ("hip_fkc", "sphere", "x", scale_fk, 0, -1),
             ("upr_fkc", "sphere", "x", scale_fk, 0, -1),
             ("lwr_fkc", "sphere", "x", scale_fk, 0, -1),
@@ -137,6 +137,8 @@ class LegBp(RigModule):
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         self.pvc.cv_rotate(90, 0, 0)
+        self.setting.cv_move(scale * 40, 0, 0)
+        self.setting.color = Color.WHITE
 
     def build(self):
         """Build the leg rig module."""
@@ -324,8 +326,8 @@ class LegBp(RigModule):
             self.jnts, "_bf", p=self.BF_GRP, r=self.rigSize * 4, color=Color.D_YELLOW
         )
 
-        self.setting.snapTo(self.hip, p=self.CTL_DATA)
-        self.hip.cstPoi(self.setting, mo=1)
+        self.setting.snapTo(self.palm, p=self.CTL_DATA)
+        self.palm.cstPar(self.setting, mo=1)
 
         self.setting.a.addSep()
         fkToIk = self.setting.a.add("fkToIk", min=0, max=1, dv=1)
