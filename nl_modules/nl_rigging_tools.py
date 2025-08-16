@@ -226,12 +226,14 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.updateCharPath()
 
     def getTypeBelowSel(self):
-        typeBelow = self.UI.typeBelow_CB.currentText()
-        sel = mc.ls(sl=1, tr=1)
-        if sel:
-            result = common.getTypeBelow(sel, tgtType=typeBelow)
-            if result:
-                mc.select(result)
+        """Select objects of a specific type below the selected objects."""
+        typeBelow = self.UI.typeBelow_LW.selectedItems()
+        if typeBelow:
+            sel = mc.ls(sl=1, tr=1)
+            if sel:
+                result = common.getTypeBelow(sel, tgtType=typeBelow[0].text())
+                if result:
+                    mc.select(result)
 
     def updateCharPath(self):
         """Update the character path in the UI if it exists."""
@@ -436,7 +438,6 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             mc.confirmDialog(t="Info", m=f"{BIND_REF_GRP} NOT found.    ", b="OK")
             return
 
-        # meshSel = common.getMeshBelow(MODEL_GRP)
         meshSel = common.getTypeBelow(MODEL_GRP)
         #
         #   bind to closest refJnt in MODEL_GRP, and _rbnJnt For each in MODEL GRP

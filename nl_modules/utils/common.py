@@ -5,7 +5,6 @@ import maya.cmds as mc
 from maya import mel
 from collections import OrderedDict
 
-from nl_modules.nodel.base.dag_node import DagNode
 
 CST_DICT = OrderedDict(
     poi=mc.pointConstraint,
@@ -531,25 +530,9 @@ def addTwistReader(target, pf="", p=None):
     return reader_loc
 
 
-# def getMeshBelow(tgt):
-#     """Get all meshes below the group, return list of MshNode"""
-#     from nl_modules.nodel.msh_node import MshNode
-
-#     if not mc.objExists(tgt):
-#         logging.warning(f"Model set {tgt} NOT found.")
-#         return []
-
-#     mc.select(tgt, hi=1)
-#     meshes = mc.ls(sl=1, et="mesh") or []
-#     mc.select(cl=1)
-
-#     if meshes:
-#         return [MshNode(mesh) for mesh in meshes]
-#     return []
-
-
 def getTypeBelow(tgt, tgtType="mesh"):
     """Get all objects of a specific type below the target"""
+    from nl_modules.nodel.base.dag_node import DagNode
     from nl_modules.nodel.crv_node import CrvNode
     from nl_modules.nodel.grp_node import GrpNode
     from nl_modules.nodel.jnt_node import JntNode
@@ -560,21 +543,24 @@ def getTypeBelow(tgt, tgtType="mesh"):
     mc.select(tgt, hi=1)
     nodes = mc.ls(sl=1, tr=1)
     mc.select(cl=1)
+    if not nodes:
+        return []
 
-    if nodes:
-        if tgtType == "joint":
-            return [JntNode(n) for n in nodes if DagNode(n).type == tgtType]
-        elif tgtType == "locator":
-            return [LocNode(n) for n in nodes if DagNode(n).type == tgtType]
-        elif tgtType == "mesh":
-            return [MshNode(n) for n in nodes if DagNode(n).type == tgtType]
-        elif tgtType == "nurbsCurve":
-            return [CrvNode(n) for n in nodes if DagNode(n).type == tgtType]
-        elif tgtType == "nurbsSurface":
-            return [SrfNode(n) for n in nodes if DagNode(n).type == tgtType]
-        elif tgtType == "group":
-            return [GrpNode(n) for n in nodes if DagNode(n).type == "transform"]
-    return []
+    class_map = {
+        "joint": ("joint", "JntNode"),
+        "locator": ("locator", "LocNode"),
+        "mesh": ("mesh", "MshNode"),
+        "nurbsCurve": ("nurbsCurve", "CrvNode"),
+        "nurbsSurface": ("nurbsSurface", "SrfNode"),
+        "group": ("transform", "GrpNode"),
+    }
+    returnNodes = []
+
+    for n in nodes:
+        if DagNode(n).type == class_map[tgtType][0]:
+            node_class = eval(class_map[tgtType][1])
+            returnNodes.append(node_class(n))
+    return returnNodes
 
 
 def setViewport(jx=0, xray=0, wos=0, fit=0):

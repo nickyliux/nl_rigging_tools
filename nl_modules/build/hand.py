@@ -92,7 +92,7 @@ class Hand(RigModule):
         ctlList = []
         for fgr in fgrs[:-1]:
             ctl = CrvNode(
-                f"{fgr.name}_ctl", shape="circleZ", up="x", scale=scale / 2, align=fgr
+                f"{fgr.name}_ctl", shape="circleZ", up="x", scale=scale / 1.5, align=fgr
             )
             ctlList.append(ctl)
         return ctlList
@@ -308,17 +308,23 @@ class Hand(RigModule):
 
         self.setup_close_sdk()
         self.setup_flap_sdk()
-        # self.setup_flap_meta_sdk()
         self.setup_spread_sdk()
         self.setup_updn_sdk()
+        self.setup_metacarpal()
+        # self.setup_flap_meta_sdk()
         # self.setup_cup_sdk()
+        self.set_pre_post_infinity()
 
-        # Set pre and post infinity
+    def set_pre_post_infinity(self):
+        """Set pre and post infinity for the hand rig controls."""
         animCrvNodes = self.smart_ctl.a.r.outConnNode
         if animCrvNodes:
             mc.select(animCrvNodes)
             mc.selectKey()
             mc.setInfinity(pri="linear", poi="linear")
+
+    def setup_metacarpal(self):
+        pass
 
     def setup_space(self):
         """Setup space switching for the hand rig controls."""

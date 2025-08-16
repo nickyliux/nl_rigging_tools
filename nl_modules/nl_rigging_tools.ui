@@ -10,7 +10,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>444</width>
+    <width>446</width>
     <height>917</height>
    </rect>
   </property>
@@ -2929,7 +2929,7 @@ Preset Color</string>
        <x>0</x>
        <y>400</y>
        <width>221</width>
-       <height>91</height>
+       <height>181</height>
       </rect>
      </property>
      <property name="title">
@@ -2947,7 +2947,7 @@ Preset Color</string>
         <x>0</x>
         <y>50</y>
         <width>221</width>
-        <height>25</height>
+        <height>92</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -2955,23 +2955,41 @@ Preset Color</string>
         <number>5</number>
        </property>
        <item>
-        <widget class="QLabel" name="label_5">
-         <property name="text">
-          <string>Obj Type</string>
+        <widget class="QListWidget" name="typeBelow_LW">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
          </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="typeBelow_CB">
          <property name="maximumSize">
           <size>
-           <width>16777215</width>
+           <width>100</width>
            <height>16777215</height>
           </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="spacing">
+          <number>0</number>
          </property>
          <item>
           <property name="text">
            <string>joint</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>group</string>
           </property>
          </item>
          <item>
@@ -2994,11 +3012,6 @@ Preset Color</string>
            <string>nurbsSurface</string>
           </property>
          </item>
-         <item>
-          <property name="text">
-           <string>group</string>
-          </property>
-         </item>
         </widget>
        </item>
        <item>
@@ -3006,26 +3019,43 @@ Preset Color</string>
          <property name="minimumSize">
           <size>
            <width>10</width>
-           <height>0</height>
+           <height>90</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>18</height>
+           <height>16777215</height>
           </size>
          </property>
          <property name="font">
           <font>
            <family>Segoe UI</family>
            <pointsize>8</pointsize>
+           <underline>false</underline>
+           <kerning>true</kerning>
           </font>
          </property>
          <property name="toolTip">
           <string>Select &quot;Type&quot; objects below selected</string>
          </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
          <property name="text">
-          <string>Sel Below</string>
+          <string>Get nodes
+of the 
+-- TYPE --
+below selected</string>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
