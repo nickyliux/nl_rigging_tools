@@ -58,7 +58,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         logging.info("load " + UI_PATH)
         self.UI = QUiLoader().load(UI_PATH)
 
-        self.setWindowTitle("nlRT 0.1.0a")
+        self.setWindowTitle("nlRT 0.1.0")
         self.setCentralWidget(self.UI)
         self.setGeometry(0, 0, 233, 580)
         self.connect_UI()
