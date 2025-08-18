@@ -1,3 +1,4 @@
+import logging
 import maya.cmds as mc
 import maya.mel as mel
 from nl_modules.nodel.base.dag_node import DagNode
@@ -125,8 +126,9 @@ class MarkingMenuRigging:
         mc.menuItem(p=menu, l="Add Influence", c=addInf)
         mc.menuItem(p=menu, l="Add Influence", c=addInfOpt, ob=1)
         mc.menuItem(p=menu, l="Detach Skin", c=mc.DetachSkin)
-        mc.menuItem(p=menu, l="Use Last Shape", c=use_last_crv_shapes)
-        mc.menuItem(p=menu, l="Add Last Shape", c=add_last_crv_shapes)
+        mc.menuItem(p=menu, l="Use Last's Shapes", c=use_last_crv_shapes)
+        mc.menuItem(p=menu, l="Add Last's Shapes", c=add_last_crv_shapes)
+        mc.menuItem(p=menu, l="Break Instance", c=crvShape_breakInst)
         mc.menuItem(p=menu, l="--------------------", en=0)
         mc.menuItem(p=menu, l="Reload Menu", c=reload_marking_menu)
 
@@ -159,12 +161,24 @@ def use_last_crv_shapes(*args):
 
 
 def add_last_crv_shapes(*args):
-    """Add the last selected curve shape to the first selected object"""
+    """Add the shape of the last selected curve to all previous selected curves"""
     selList = mc.ls(sl=1, tr=1)
-    if len(selList) == 2:
-        last = DagNode(selList[-1])
-        mc.parent(last.shape, selList[0], s=1, r=1)
-        mc.delete(last)
+    if len(selList) <= 1:
+        logging.warning("Not enough curves selected.")
+        return
+
+    last = DagNode(selList[-1])
+    for sel in selList[:-1]:
+        mc.parent(last.shapes, sel, s=1, r=1, add=1)
+    last.delete()
+
+
+def crvShape_breakInst(*args):
+    """Remove selected curve shape from all instances"""
+    selList = mc.ls(sl=1, tr=1)
+    if selList:
+        CrvNode(selList[0]).break_instance()
+        mc.select(selList[0])
 
 
 def select_cst_objects(*args):

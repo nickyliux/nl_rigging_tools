@@ -62,7 +62,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="main_TB">
     <attribute name="title">
@@ -2067,7 +2067,7 @@
       </item>
      </layout>
     </widget>
-    <widget class="QPushButton" name="crvShape_removeFrInst_BN">
+    <widget class="QPushButton" name="crvShape_breakInst_BN">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -2103,7 +2103,7 @@
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>Break Instances</string>
+      <string>Break Instance Selected</string>
      </property>
     </widget>
     <widget class="QWidget" name="horizontalLayoutWidget_11">

@@ -195,7 +195,7 @@ class GrpNode(DagNode):
     #        CrvNode('a') <= CrvNode('b')    # from another curve
     #     """
     #     self << crv
-    #     self.uninstanceFromOthers()
+    #     self.break_instance()
 
     # def __ge__(self, crv):
     #     """Copy shape to another
@@ -203,30 +203,26 @@ class GrpNode(DagNode):
     #         CrvNode('a') >= CrvNode('b')    # copy to another
     #     """
     #     self >> crv
-    #     crv.uninstanceFromOthers()
+    #     crv.break_instance()
 
     def __lshift__(self, crv):
         """Instance shape from preset/another
         e.g.
-           CrvNode('a') << 'circle'          # from preset
-           CrvNode('a') << CrvNode('b')    # from another curve
+           CrvNode('a') << 'circle'        # load from preset
+           CrvNode('a') << CrvNode('b')    # load from another curve
         """
-        typeName = type(crv).__name__
-
-        if typeName == "str":
+        if isinstance(crv, str):
             crvDictList = self.shape_getDictListFrLib(crv)
             crvObj = self.shape_buildFrDictList(crvDictList, crv)
             crvObj.copy_shape_as_inst([self], keepSrc=0)
-
-        elif typeName == "GrpNode":
-            # crv.copyShapeAsInst([self])
+        else:
             crv.copy_shape_as_inst([self])
 
     def __rshift__(self, crv):
         """Copy shape to preset/another
         e.g.
-            CrvNode('a') >> 'circle'          # save to preset
-            CrvNode('a') >> CrvNode('b')    # copy to another
+            CrvNode('a') >> 'circle'        # save to preset
+            CrvNode('a') >> CrvNode('b')    # copy to another curve
         """
         if isinstance(crv, str):
             crvDictList = self.shape_getDictListFrObj(self)
@@ -268,7 +264,7 @@ class GrpNode(DagNode):
         if not keepSrc:
             self.delete()
 
-    def uninstanceFromOthers(self):
+    def break_instance(self):
         """Un-instance this shape from all other instances"""
         otherXf = self.uninstance_all()
 

@@ -168,7 +168,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         # Ctl
         self.UI.crvShape_LW.itemDoubleClicked.connect(self.crvShape_LW_dblClicked)
-        self.connect(self.UI.crvShape_removeFrInst_BN, self.crvShape_removeFrInst)
+        self.connect(self.UI.crvShape_breakInst_BN, self.crvShape_breakInst)
 
         self.connect(self.UI.crvShape_new_BN, self.crvShape_new, ":fileNew.png")
         self.connect(self.UI.crvShape_apply_BN, self.crvShape_apply, ":openScript.png")
@@ -356,11 +356,12 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 file.deleteFile(f"{SHAPE_PATH}\\{itemText}.json")
                 self.crvShape_refresh()
 
-    def crvShape_removeFrInst(self):
+    def crvShape_breakInst(self):
         """Remove selected curve shape from all instances"""
         selList = mc.ls(sl=1, tr=1)
         if selList:
-            CrvNode(selList[0]).uninstanceFromOthers()
+            CrvNode(selList[0]).break_instance()
+            mc.select(selList[0])
 
     @common.Undo("crvShape_apply")
     def crvShape_apply(self):
