@@ -78,6 +78,7 @@ def copyGuideSel(*arg):
 def mirrorGuideSelOrAll(*arg):
     """Mirror guides for selList / all *lf*_guide"""
     selList = mc.ls(sl=1, ap=1) or mc.ls("*lf*_guide", ap=1)
+    selList = list(set(selList))
     if selList:
         mirrorGuideAttr(selList)
 
@@ -159,6 +160,8 @@ def mirrorGuideAttr(tgtList, wsMirror=0):
 def mirrorPose(*arg):
     """Mirror pose for selList ctl / all in set lf*_ctl_set"""
     selList = mc.ls(sl=1, ap=1)
+    selList = list(set(selList))
+
     if not selList:
         if mc.ls(LF_CTL_SET, type="objectSet"):
             selList = mc.sets(LF_CTL_SET, q=1)

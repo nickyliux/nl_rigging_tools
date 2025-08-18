@@ -101,7 +101,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def buildAll(self):
         build.buildSelOrAll()
-        self.rigNod_erefresh()
+        self.rigNode_refresh()
 
     def unbuildAll(self):
         build.unbuildSelOrAll()

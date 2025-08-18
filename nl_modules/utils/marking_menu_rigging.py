@@ -1,6 +1,7 @@
 import maya.cmds as mc
 import maya.mel as mel
 from nl_modules.nodel.base.dag_node import DagNode
+from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.ik_node import Solver
 from functools import partial
 
@@ -154,8 +155,6 @@ def use_last_crv_shapes(*args):
     """Copy the shape of the last selected curve to all previous selected curves"""
     selList = mc.ls(sl=1, tr=1)
     if len(selList) > 1:
-        from nl_modules.nodel.crv_node import CrvNode
-
         CrvNode(selList[-1]).copy_shape_as_inst(selList[:-1])
 
 

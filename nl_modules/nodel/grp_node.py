@@ -188,22 +188,22 @@ class GrpNode(DagNode):
         mc.select(cl=1)
         return GrpNode(xf)
 
-    def __le__(self, crv):
-        """Copy shape from preset/another
-        e.g.
-           CrvNode('a') <= 'circle'          # from preset
-           CrvNode('a') <= CrvNode('b')    # from another curve
-        """
-        self << crv
-        self.uninstanceFromOthers()
+    # def __le__(self, crv):
+    #     """Copy shape from preset/another
+    #     e.g.
+    #        CrvNode('a') <= 'circle'          # from preset
+    #        CrvNode('a') <= CrvNode('b')    # from another curve
+    #     """
+    #     self << crv
+    #     self.uninstanceFromOthers()
 
-    def __ge__(self, crv):
-        """Copy shape to another
-        e.g.
-            CrvNode('a') >= CrvNode('b')    # copy to another
-        """
-        self >> crv
-        crv.uninstanceFromOthers()
+    # def __ge__(self, crv):
+    #     """Copy shape to another
+    #     e.g.
+    #         CrvNode('a') >= CrvNode('b')    # copy to another
+    #     """
+    #     self >> crv
+    #     crv.uninstanceFromOthers()
 
     def __lshift__(self, crv):
         """Instance shape from preset/another
@@ -213,13 +213,14 @@ class GrpNode(DagNode):
         """
         typeName = type(crv).__name__
 
-        if typeName == "str":  # preset name
+        if typeName == "str":
             crvDictList = self.shape_getDictListFrLib(crv)
             crvObj = self.shape_buildFrDictList(crvDictList, crv)
             crvObj.copy_shape_as_inst([self], keepSrc=0)
 
-        elif typeName == "GrpNode":  # another curve
-            crv.copyShapeAsInst([self])
+        elif typeName == "GrpNode":
+            # crv.copyShapeAsInst([self])
+            crv.copy_shape_as_inst([self])
 
     def __rshift__(self, crv):
         """Copy shape to preset/another
@@ -234,66 +235,74 @@ class GrpNode(DagNode):
             self.copy_shape_as_inst([crv])
 
     def copy_shape_as_inst(self, targets, keepSrc=1):
-        """Copy shapes to all as instance
-        e.g.
-            crv.copyShapeAsInst(['a', 'b'])
-        """
-        if isinstance(targets, list):
-            allTargets = []
-            self.color = DagNode(targets[0]).color
-            for target in targets:
-                target = DagNode(target)
-                shapes = target.shapes
-                if shapes:
-                    allXf = mc.listRelatives(shapes[0], ap=1)
-                    #
-                    #   If the shape is instance, collect all transforms
-                    #
-                    if len(allXf) > 1:
-                        allXf = [DagNode(xf) for xf in allXf]
-                        [allTargets.append(xf) for xf in allXf if xf not in allTargets]
-                    else:
-                        if target not in allTargets:
-                            allTargets.append(target)
+        """Copy shapes to all as instance"""
+        if not isinstance(targets, list):
+            logging.error("Targets must be a list of node names")
+            return
+
+        tgtXforms = []
+        self.color = DagNode(targets[0]).color
+
+        for tgt in targets:
+            tgt = DagNode(tgt)
+            tgtShapes = tgt.shapes
+
+            if tgtShapes:
+                allXf = mc.listRelatives(tgtShapes, ap=1)
+                allXf = [DagNode(x) for x in list(set(allXf))]
+
+                if len(allXf) > 1:
+                    [tgtXforms.append(xf) for xf in allXf if xf not in tgtXforms]
                 else:
-                    if target not in allTargets:
-                        allTargets.append(target)
+                    if tgt not in tgtXforms:
+                        tgtXforms.append(tgt)
+            else:
+                if tgt not in tgtXforms:
+                    tgtXforms.append(tgt)
 
-            for t in self.shapes:
-                t.rename(target + "Shape#")
+        # Remove each shapes and add self's
+        for xform in tgtXforms:
+            [sh.delete() for sh in xform.shapes]
+            mc.parent(self.shapes, xform, r=1, s=1, add=1)
 
-            for target in allTargets:
-                [shape.delete() for shape in target.shapes]
-                mc.parent(self.shapes, target, r=1, s=1, add=1)
-
-            if not keepSrc:
-                self.delete()
+        if not keepSrc:
+            self.delete()
 
     def uninstanceFromOthers(self):
         """Un-instance this shape from all other instances"""
         otherXf = self.uninstance_all()
+
         if otherXf:
-            dup = self.duplicate()
-            dup.copyShapeAsInst(otherXf, keepSrc=0)
+            dup = self.duplicate(rc=1)
+            dup.copy_shape_as_inst(otherXf, keepSrc=0)
 
     def uninstance_all(self):
         """Un-instance all instances of this shape"""
-        tgtShape = self.shape
-        allXf = mc.listRelatives(tgtShape, ap=1)
+        selfShapes = self.shapes
+        selfDup = self.duplicate(rc=1)
+
+        # Transforms of all instanced shapes
+        allXf = mc.listRelatives(selfShapes, ap=1)
+        allXf = [DagNode(x) for x in list(set(allXf))]
+
+        # Delete shapes (no matter instanced or not)
+        mc.delete(selfShapes)
+
+        if len(allXf) < 2:
+            return []
+
         otherXf = []
-        if len(allXf) > 1:
-            shapeSrc = self.duplicate()
-            tgtShape.delete()
-            for xf in allXf:
-                dup = shapeSrc.duplicate()
-                xf = DagNode(xf)
-                mc.parent(dup.shape, xf, s=1, r=1)
-                xf.shape.rename(xf + "Shape")
-                dup.delete()
-                if self != xf:
-                    otherXf.append(xf)
-            shapeSrc.delete()
-            return otherXf
+        for xf in allXf:
+            dup = selfDup.duplicate(rc=1)
+            # xf = DagNode(xf)
+            mc.parent(dup.shapes, xf, s=1, r=1)
+            [sh.rename(xf + "Shape") for sh in xf.shapes]
+            dup.delete()
+            if self != xf:
+                otherXf.append(xf)
+
+        mc.delete(selfDup)
+        return otherXf
 
     @property
     def cvs(self):

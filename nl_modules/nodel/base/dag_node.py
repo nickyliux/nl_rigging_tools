@@ -68,12 +68,16 @@ class DagNode(DepNode):
     @property
     def shapes(self):
         """Return all shapes"""
-        return [DagNode(s) for s in mc.listRelatives(self, s=1, f=1, ni=1) or []]
+        if self.exists():
+            return [DagNode(s) for s in mc.listRelatives(self, s=1, f=1, ni=1) or []]
+        raise ValueError("No shapes for NONE object!")
 
     @property
     def shapesAll(self):
         """Return all shapes, including intermediate"""
-        return [DagNode(s) for s in mc.listRelatives(self, s=1, f=1, ni=0) or []]
+        if self.exists():
+            return [DagNode(s) for s in mc.listRelatives(self, s=1, f=1, ni=0) or []]
+        raise ValueError("No shapes for NONE object!")
 
     def deleteItmShapes(self):
         """Delete related intermediate shapes"""
