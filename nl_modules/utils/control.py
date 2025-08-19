@@ -3,7 +3,6 @@ import maya.cmds as mc
 from nl_modules.utils import common
 from nl_modules.utils import guide
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 
 
@@ -125,18 +124,18 @@ def dspTypeSel(*args):
 def dropSel():
     """Drop the selected control curves."""
     for selList in mc.ls(sl=1, tr=1):
-        CrvNode(selList).cv_drop()
+        GrpNode(selList).cv_drop()
 
 
 def rotaCVForSel(*args):
     """Rotate the CVs of selected curves."""
     for selList in [DagNode(selList) for selList in mc.ls(sl=1, tr=1)]:
         if selList.type == "nurbsCurve":
-            CrvNode(selList).cv_rotate(*args)
+            GrpNode(selList).cv_rotate(*args)
 
 
 def scaleCVForSel(value):
     """Scale the CVs of selected curves."""
     for selList in [DagNode(selList) for selList in mc.ls(sl=1, tr=1)]:
         if selList.type == "nurbsCurve":
-            CrvNode(selList).cv_scale(value)  # , atCVCetner=1)
+            GrpNode(selList).cv_scale(value)  # , atCVCetner=1)

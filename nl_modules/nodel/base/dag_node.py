@@ -231,7 +231,7 @@ class DagNode(DepNode):
                 result.extend(child._getDescendants())
         return result
 
-    def getChildren(self, nt="all", ad=0, incl=0):
+    def getChildren(self, nt="all", ad=0, incl=0, noShape=1):
         """Return children objects
         options
             nt:    nodeType
@@ -249,7 +249,10 @@ class DagNode(DepNode):
             result.insert(0, self)
 
         if nt == "all":
-            return result
+            if noShape:
+                return [n for n in result if mc.nodeType(n) in ["transform", "joint"]]
+            else:
+                return result
         else:
             return [n for n in result if (n.shape or n).type == nt]
 

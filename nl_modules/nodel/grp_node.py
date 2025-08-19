@@ -265,40 +265,37 @@ class GrpNode(DagNode):
             self.delete()
 
     def break_instance(self):
-        """Un-instance this shape from all other instances"""
-        otherXf = self.uninstance_all()
-
-        if otherXf:
-            dup = self.duplicate(rc=1)
-            dup.copy_shape_as_inst(otherXf, keepSrc=0)
-
-    def uninstance_all(self):
         """Un-instance all instances of this shape"""
-        selfShapes = self.shapes
-        selfDup = self.duplicate(rc=1)
+        logging.info(f"Break all instances")
 
-        # Transforms of all instanced shapes
+        selfShapes = self.shapes
+
+        if selfShapes is None:
+            logging.warning(f"No shapes found for {self}")
+            return []
+
+        # Get all xform of instances
         allXf = mc.listRelatives(selfShapes, ap=1)
         allXf = [DagNode(x) for x in list(set(allXf))]
 
-        # Delete shapes (no matter instanced or not)
-        mc.delete(selfShapes)
-
         if len(allXf) < 2:
+            logging.warning(f"No instance found for {self}")
             return []
 
-        otherXf = []
+        # Create a non-instanced source of shape
+        tmpGrp = GrpNode("grp_#")
+        mc.parent(selfShapes, tmpGrp, s=1, r=1, add=1)
+        tmpDup = tmpGrp.duplicate(rc=1)
+        mc.delete(tmpGrp, selfShapes)
+
+        # Add duplicated shapes to all instance transform
         for xf in allXf:
-            dup = selfDup.duplicate(rc=1)
-            # xf = DagNode(xf)
+            dup = tmpDup.duplicate(rc=1)
             mc.parent(dup.shapes, xf, s=1, r=1)
             [sh.rename(xf + "Shape") for sh in xf.shapes]
-            dup.delete()
-            if self != xf:
-                otherXf.append(xf)
+            mc.delete(dup)
 
-        mc.delete(selfDup)
-        return otherXf
+        tmpDup.delete()
 
     @property
     def cvs(self):
