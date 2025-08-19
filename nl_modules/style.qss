@@ -3,6 +3,8 @@ QGroupBox {
     border: 2px solid #222;
     border-radius: 6px;
 }
-QGroupBox::title {
-    # padding: 0 2px;
+# QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top center;
+    padding: 3px 8000px 3px 8000px;
 }
