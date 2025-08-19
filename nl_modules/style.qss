@@ -1,0 +1,8 @@
+QGroupBox {
+    background-color: #333;
+    border: 2px solid #222;
+    border-radius: 6px;
+}
+QGroupBox::title {
+    # padding: 0 2px;
+}

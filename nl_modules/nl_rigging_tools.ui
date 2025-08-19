@@ -51,8 +51,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>230</width>
-     <height>581</height>
+     <width>241</width>
+     <height>601</height>
     </rect>
    </property>
    <property name="font">
@@ -73,7 +73,7 @@
       <rect>
        <x>0</x>
        <y>10</y>
-       <width>221</width>
+       <width>225</width>
        <height>241</height>
       </rect>
      </property>
@@ -393,7 +393,7 @@
       <rect>
        <x>0</x>
        <y>280</y>
-       <width>221</width>
+       <width>225</width>
        <height>31</height>
       </rect>
      </property>
@@ -482,7 +482,7 @@
       <rect>
        <x>0</x>
        <y>310</y>
-       <width>221</width>
+       <width>225</width>
        <height>31</height>
       </rect>
      </property>
@@ -602,7 +602,7 @@
       <rect>
        <x>0</x>
        <y>340</y>
-       <width>221</width>
+       <width>225</width>
        <height>31</height>
       </rect>
      </property>
@@ -735,7 +735,7 @@
       <rect>
        <x>0</x>
        <y>370</y>
-       <width>221</width>
+       <width>225</width>
        <height>31</height>
       </rect>
      </property>
@@ -860,7 +860,7 @@
       <rect>
        <x>0</x>
        <y>400</y>
-       <width>221</width>
+       <width>225</width>
        <height>111</height>
       </rect>
      </property>
@@ -1384,8 +1384,8 @@
       <rect>
        <x>0</x>
        <y>510</y>
-       <width>221</width>
-       <height>41</height>
+       <width>225</width>
+       <height>61</height>
       </rect>
      </property>
      <property name="title">
@@ -1506,7 +1506,7 @@
       <property name="geometry">
        <rect>
         <x>60</x>
-        <y>33</y>
+        <y>32</y>
         <width>164</width>
         <height>8</height>
        </rect>
@@ -1542,7 +1542,7 @@
       <rect>
        <x>0</x>
        <y>250</y>
-       <width>221</width>
+       <width>225</width>
        <height>31</height>
       </rect>
      </property>
@@ -2270,12 +2270,15 @@
       <rect>
        <x>0</x>
        <y>10</y>
-       <width>221</width>
-       <height>521</height>
+       <width>225</width>
+       <height>561</height>
       </rect>
      </property>
      <property name="title">
       <string>RigNodes</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -2286,7 +2289,7 @@
         <x>0</x>
         <y>20</y>
         <width>221</width>
-        <height>495</height>
+        <height>511</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -2310,45 +2313,45 @@
        <number>0</number>
       </property>
      </widget>
-    </widget>
-    <widget class="QPushButton" name="rigNode_refresh_BN">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>532</y>
-       <width>221</width>
-       <height>18</height>
-      </rect>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>18</height>
-      </size>
-     </property>
-     <property name="font">
-      <font>
-       <family>Segoe UI</family>
-       <pointsize>9</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::LeftToRight</enum>
-     </property>
-     <property name="text">
-      <string>Refresh</string>
-     </property>
+     <widget class="QPushButton" name="rigNode_refresh_BN">
+      <property name="geometry">
+       <rect>
+        <x>2</x>
+        <y>537</y>
+        <width>220</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>18</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>9</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="text">
+       <string>Refresh</string>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_3">
@@ -2359,8 +2362,8 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>140</y>
-       <width>220</width>
+       <y>126</y>
+       <width>225</width>
        <height>81</height>
       </rect>
      </property>
@@ -2373,88 +2376,51 @@
      <property name="flat">
       <bool>true</bool>
      </property>
-     <widget class="QWidget" name="horizontalLayoutWidget">
+     <widget class="QPushButton" name="misc_buildLineSel_BN">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>2</x>
         <y>20</y>
-        <width>221</width>
-        <height>25</height>
+        <width>220</width>
+        <height>18</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <property name="spacing">
-        <number>5</number>
-       </property>
-       <item>
-        <widget class="QPushButton" name="misc_buildLineSel_BN">
-         <property name="minimumSize">
-          <size>
-           <width>10</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Selected objects and create lines between</string>
-         </property>
-         <property name="text">
-          <string>Build Line</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="misc_importEnvAndShd_BN">
-         <property name="minimumSize">
-          <size>
-           <width>10</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Import Env scene for better viewport quality</string>
-         </property>
-         <property name="text">
-          <string>Load Env</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>Selected objects and create lines between</string>
+      </property>
+      <property name="text">
+       <string>Build Line for Sel</string>
+      </property>
      </widget>
      <widget class="QPushButton" name="addMirrorAttr_BN">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>50</y>
-        <width>221</width>
-        <height>20</height>
+        <x>2</x>
+        <y>40</y>
+        <width>220</width>
+        <height>18</height>
        </rect>
       </property>
       <property name="text">
-       <string>Add Mirror Attr</string>
+       <string>Add Hidden Attr for World Space Mirror</string>
       </property>
      </widget>
     </widget>
@@ -2462,10 +2428,13 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>20</y>
-       <width>221</width>
+       <y>10</y>
+       <width>225</width>
        <height>101</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
      </property>
      <property name="title">
       <string>Model Preparation</string>
@@ -2760,8 +2729,8 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>290</y>
-       <width>221</width>
+       <y>286</y>
+       <width>225</width>
        <height>61</height>
       </rect>
      </property>
@@ -2777,7 +2746,7 @@
      <widget class="QPushButton" name="assignPresetColor_BN">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>2</x>
         <y>20</y>
         <width>221</width>
         <height>36</height>
@@ -2796,8 +2765,8 @@ Preset Color</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>230</y>
-       <width>221</width>
+       <y>220</y>
+       <width>225</width>
        <height>51</height>
       </rect>
      </property>
@@ -2813,7 +2782,7 @@ Preset Color</string>
      <widget class="QWidget" name="horizontalLayoutWidget_5">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>1</x>
         <y>20</y>
         <width>221</width>
         <height>25</height>
@@ -2887,8 +2856,8 @@ Preset Color</string>
       <rect>
        <x>0</x>
        <y>360</y>
-       <width>221</width>
-       <height>181</height>
+       <width>225</width>
+       <height>211</height>
       </rect>
      </property>
      <property name="title">
@@ -2900,10 +2869,13 @@ Preset Color</string>
      <property name="flat">
       <bool>true</bool>
      </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
      <widget class="QWidget" name="horizontalLayoutWidget_6">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>1</x>
         <y>50</y>
         <width>221</width>
         <height>92</height>
@@ -3023,7 +2995,7 @@ below selected</string>
      <widget class="QWidget" name="horizontalLayoutWidget_7">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>1</x>
         <y>20</y>
         <width>221</width>
         <height>25</height>
@@ -3078,7 +3050,7 @@ below selected</string>
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Nml</string>
+          <string>NML</string>
          </property>
         </widget>
        </item>
@@ -3120,7 +3092,7 @@ below selected</string>
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Tpl</string>
+          <string>TPL</string>
          </property>
         </widget>
        </item>
@@ -3162,7 +3134,7 @@ below selected</string>
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Ref</string>
+          <string>REF</string>
          </property>
         </widget>
        </item>
@@ -3171,7 +3143,7 @@ below selected</string>
      <widget class="QWidget" name="horizontalLayoutWidget_3">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>1</x>
         <y>147</y>
         <width>221</width>
         <height>25</height>
@@ -3304,6 +3276,40 @@ below selected</string>
         </widget>
        </item>
       </layout>
+     </widget>
+     <widget class="QPushButton" name="misc_importEnvAndShd_BN">
+      <property name="geometry">
+       <rect>
+        <x>1</x>
+        <y>180</y>
+        <width>107</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>10</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>18</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>Import Env scene for better viewport quality</string>
+      </property>
+      <property name="text">
+       <string>Load Env</string>
+      </property>
      </widget>
     </widget>
    </widget>

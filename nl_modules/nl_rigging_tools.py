@@ -42,6 +42,7 @@ MOD_DIR = os.path.dirname(nl_modules.__file__)
 SHAPE_PATH = os.path.join(MOD_DIR, "build", "shapes")
 LIGHT_PATH = os.path.join(MOD_DIR, "build", "others")
 UI_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.ui")
+STYLE_PATH = os.path.join(MOD_DIR, "style.qss")
 LIGHTING_FILE = os.path.join(LIGHT_PATH, "lighting3.ma")
 SHADER_FILE = os.path.join(LIGHT_PATH, "bone_SHD.ma")
 BIND_JNT_SET = "bind_jnt_set"
@@ -60,7 +61,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         self.setWindowTitle("nlRT 0.1.0")
         self.setCentralWidget(self.UI)
-        self.setGeometry(0, 0, 233, 580)
+        self.setGeometry(0, 0, 230, 600)
         self.connect_UI()
         # self.addMenuBar()
 
@@ -528,9 +529,12 @@ def main():
         UI_win.close()
     except:
         pass
-
     UI_win = MainWindow()
+
     UI_win.show(dockable=1)
+    with open(STYLE_PATH, "r") as f:
+        style = f.read()
+        UI_win.setStyleSheet(style)
 
 
 if __name__ == "__main__":
