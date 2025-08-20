@@ -78,8 +78,8 @@ class SpineQd(RigModule):
 
         #   Define control shapes and attributes
         ctl_defs = [
-            ("setting", "bagua", "z", rSz * 3, 1, 2),
-            ("cog_ctl", "trapezoid", None, rSz * 2, 0, -1),
+            ("setting", "sphere", "z", rSz * 2, 1, 2),
+            ("cog_ctl", "trapezoid", None, rSz, 0, -1),
             ("base_ctl", "circle", "z", rSz * 5, 0, -1),
             ("mid_ctl", "squareR", "z", rSz * 4, 0, -1),
             ("fore_ctl", "circle", "z", rSz * 5, 0, -1),
@@ -94,6 +94,7 @@ class SpineQd(RigModule):
 
         self.cog_ctl.cv_move(0, rSz * 30, rSz * 30)
         self.cog_ctl.cv_scale(1, 1.5, 2)
+        self.setting.cv_move(0, rSz * 30, 0)
 
     def create_rbSrf(self):
         """Create the ribbon surface for the spine rig."""

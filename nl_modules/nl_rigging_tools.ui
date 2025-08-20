@@ -10,7 +10,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>447</width>
+    <width>449</width>
     <height>917</height>
    </rect>
   </property>
@@ -1506,7 +1506,7 @@
       <property name="geometry">
        <rect>
         <x>60</x>
-        <y>32</y>
+        <y>40</y>
         <width>164</width>
         <height>8</height>
        </rect>
@@ -1705,7 +1705,7 @@
      <widget class="QWidget" name="horizontalLayoutWidget_10">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>2</x>
         <y>14</y>
         <width>221</width>
         <height>24</height>
@@ -1930,7 +1930,7 @@
      <widget class="QWidget" name="horizontalLayoutWidget_11">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>2</x>
         <y>40</y>
         <width>221</width>
         <height>24</height>
@@ -2084,7 +2084,7 @@
      <widget class="QPushButton" name="crvShape_breakInst_BN">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>2</x>
         <y>67</y>
         <width>221</width>
         <height>18</height>
@@ -2142,7 +2142,7 @@
      <widget class="QWidget" name="horizontalLayoutWidget_2">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>2</x>
         <y>20</y>
         <width>221</width>
         <height>24</height>
@@ -2402,7 +2402,7 @@
        <x>0</x>
        <y>126</y>
        <width>225</width>
-       <height>81</height>
+       <height>71</height>
       </rect>
      </property>
      <property name="title">
@@ -2684,7 +2684,7 @@
        </font>
       </property>
       <property name="text">
-       <string>1</string>
+       <string>1.</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -2708,7 +2708,7 @@
        </font>
       </property>
       <property name="text">
-       <string>2</string>
+       <string>2.</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -2718,7 +2718,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>80</y>
+        <y>79</y>
         <width>201</width>
         <height>20</height>
        </rect>
@@ -2742,7 +2742,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>80</y>
+        <y>79</y>
         <width>15</width>
         <height>20</height>
        </rect>
@@ -2756,7 +2756,7 @@
        </font>
       </property>
       <property name="text">
-       <string>3</string>
+       <string>3.</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -2767,7 +2767,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>286</y>
+       <y>280</y>
        <width>225</width>
        <height>61</height>
       </rect>
@@ -2794,7 +2794,7 @@
        <string>Assign color to selected</string>
       </property>
       <property name="text">
-       <string>Assign left / mid / right
+       <string>Assign Left / Mid / Right
 Preset Color</string>
       </property>
      </widget>
@@ -2803,7 +2803,7 @@ Preset Color</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>220</y>
+       <y>214</y>
        <width>225</width>
        <height>51</height>
       </rect>
@@ -3045,8 +3045,14 @@ below selected</string>
        </property>
        <item>
         <widget class="QLabel" name="label_3">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
-          <string>Dsp Type</string>
+          <string>Object Display Type</string>
          </property>
         </widget>
        </item>
@@ -3077,18 +3083,18 @@ below selected</string>
           <font>
            <family>Segoe UI</family>
            <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
+           <weight>75</weight>
+           <bold>true</bold>
           </font>
          </property>
          <property name="toolTip">
-          <string>Set display type to normal</string>
+          <string>Normal</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>NML</string>
+          <string>N</string>
          </property>
         </widget>
        </item>
@@ -3119,18 +3125,18 @@ below selected</string>
           <font>
            <family>Segoe UI</family>
            <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
+           <weight>75</weight>
+           <bold>true</bold>
           </font>
          </property>
          <property name="toolTip">
-          <string>Set display type to template</string>
+          <string>Template</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>TPL</string>
+          <string>T</string>
          </property>
         </widget>
        </item>
@@ -3161,18 +3167,18 @@ below selected</string>
           <font>
            <family>Segoe UI</family>
            <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
+           <weight>75</weight>
+           <bold>true</bold>
           </font>
          </property>
          <property name="toolTip">
-          <string>Set display type to reference</string>
+          <string>Reference</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>REF</string>
+          <string>R</string>
          </property>
         </widget>
        </item>
@@ -3318,7 +3324,7 @@ below selected</string>
      <widget class="QPushButton" name="misc_importEnvAndShd_BN">
       <property name="geometry">
        <rect>
-        <x>1</x>
+        <x>60</x>
         <y>180</y>
         <width>107</width>
         <height>18</height>

@@ -126,13 +126,13 @@ class LegQd(RigModule):
         scale_fk = scale * 4
 
         ctl_defs = [
-            ("setting", "bagua", "z", scale, 1, 2),
+            ("setting", "sphere", "z", scale, 1, 2),
             ("hip_fkc", "sphere", "x", scale_fk, 0, -1),
             ("upr_fkc", "sphere", "x", scale_fk, 0, -1),
             ("lwr_fkc", "sphere", "x", scale_fk, 0, -1),
             ("palm_fkc", "sphere", "x", scale_fk, 0, -1),
             ("digit_fkc", "sphere", "x", scale_fk, 0, -1),
-            ("ball_fkc", "sphere", "x", scale_fk, 0, -1),
+            ("ball_fkc", "circle", "x", scale / 2, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
             ("extra_ikc", "rotator", None, -scale, 0, -1),
             ("pvc", "pvc", None, rSz, 0, -1),
@@ -147,6 +147,8 @@ class LegQd(RigModule):
 
         if self.scapularExtra:
             self.quadScap_ikc.cv_move(scale * 10, 0, 0)
+
+        self.setting.cv_move(scale * 20, 0, 0)
 
     def build(self):
         """Build the quadruped leg rig module."""
@@ -325,8 +327,8 @@ class LegQd(RigModule):
         logging.info(self.rigID)
 
         # --- Snap setting control to upper joint and constrain ---
-        self.setting.snapTo(self.hip, p=self.CTL_DATA)
-        self.hip.cstPar(self.setting, mo=1)
+        self.setting.snapTo(self.digit, p=self.CTL_DATA)
+        self.digit.cstPar(self.setting, mo=1)
 
         # --- Add blend attribute and set up blending constraints ---
         fkToIk = self.setting.a.add("fkToIk", min=0, max=1, dv=1)
@@ -357,7 +359,7 @@ class LegQd(RigModule):
         self.ikc.cstPoi(aimG_loc, mo=1)
 
         # --- Add palm aim attributes ---
-        palmAim = self.extra_ikc.a.add("palmAim", min=0, max=1, dv=1)
+        palmAim = self.extra_ikc.a.add("palmAim", min=0, max=1)  # , dv=1)
         palmAimRatio = self.extra_ikc.a.add(
             "palmAimRatio", min=-2, max=2, dv=-0.5 if "Arm" in self.rigID else 0.5
         )

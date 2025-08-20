@@ -545,13 +545,13 @@ def add_noise_logic(ctl=None, targets=None, rot=0):
 
 def attachFgrRef(targets, xDir=1):
     """
+    Attach finger references to the specified targets.
     # run below to add cross mesh for entire hand
 
     from nl_modules.utils import build
     for i in range(5):
         build.attachFgrRef(mc.ls('fgr0' + str(i) + '_?_guide'), xDir=1)
     """
-    """Attach finger references to the specified targets."""
     fgrRefSrc = DagNode("fgrRef")
     grp = GrpNode("fgrRef_grp")
 
