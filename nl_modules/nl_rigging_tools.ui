@@ -1690,11 +1690,11 @@
        <x>0</x>
        <y>10</y>
        <width>225</width>
-       <height>91</height>
+       <height>101</height>
       </rect>
      </property>
      <property name="title">
-      <string>Edit</string>
+      <string>Edit Shape</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1757,7 +1757,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>RX</string>
+          <string>r x</string>
          </property>
         </widget>
        </item>
@@ -1797,7 +1797,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>RY</string>
+          <string>r y</string>
          </property>
         </widget>
        </item>
@@ -1837,7 +1837,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>RZ</string>
+          <string>r z</string>
          </property>
         </widget>
        </item>
@@ -1984,7 +1984,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Drop</string>
+          <string>Drop Floor</string>
          </property>
         </widget>
        </item>
@@ -2026,7 +2026,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>&lt; Size</string>
+          <string>&lt;&lt; Size</string>
          </property>
         </widget>
        </item>
@@ -2075,7 +2075,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Size &gt;</string>
+          <string>Size &gt;&gt;</string>
          </property>
         </widget>
        </item>
@@ -2125,13 +2125,13 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>110</y>
+       <y>120</y>
        <width>225</width>
-       <height>461</height>
+       <height>451</height>
       </rect>
      </property>
      <property name="title">
-      <string>Preset</string>
+      <string>Presets</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -2273,7 +2273,7 @@
         <x>0</x>
         <y>50</y>
         <width>221</width>
-        <height>408</height>
+        <height>396</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -2355,7 +2355,7 @@
       <property name="geometry">
        <rect>
         <x>2</x>
-        <y>537</y>
+        <y>535</y>
         <width>220</width>
         <height>18</height>
        </rect>
@@ -2619,7 +2619,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>50</y>
+        <y>47</y>
         <width>201</width>
         <height>25</height>
        </rect>
@@ -2694,7 +2694,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>50</y>
+        <y>47</y>
         <width>15</width>
         <height>20</height>
        </rect>
@@ -2718,7 +2718,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>79</y>
+        <y>73</y>
         <width>201</width>
         <height>20</height>
        </rect>
@@ -2742,7 +2742,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>79</y>
+        <y>73</y>
         <width>15</width>
         <height>20</height>
        </rect>
@@ -2767,13 +2767,13 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>280</y>
+       <y>290</y>
        <width>225</width>
-       <height>61</height>
+       <height>51</height>
       </rect>
      </property>
      <property name="title">
-      <string>Coloring</string>
+      <string>Color</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -2787,15 +2787,14 @@
         <x>2</x>
         <y>20</y>
         <width>221</width>
-        <height>36</height>
+        <height>21</height>
        </rect>
       </property>
       <property name="toolTip">
        <string>Assign color to selected</string>
       </property>
       <property name="text">
-       <string>Assign Left / Mid / Right
-Preset Color</string>
+       <string>Assign Left / Mid / Right Preset Color</string>
       </property>
      </widget>
     </widget>

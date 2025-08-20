@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: rtLegQd.ma
-//Last modified: Wed, Aug 20, 2025 04:37:36 PM
+//Last modified: Wed, Aug 20, 2025 07:30:31 PM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,7 +12,7 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26100)";
-fileInfo "UUID" "7901BFE0-40E9-9358-8B3D-BBB4F780B277";
+fileInfo "UUID" "F1F4A010-4334-ECE1-A8B1-3BB254C792C4";
 createNode transform -n "module_grp";
 	rename -uid "3F6958F6-4253-676A-51E6-CA9FE9573FBE";
 	addAttr -ci true -sn "mirrorCode" -ln "mirrorCode" -dt "string";
@@ -941,8 +941,8 @@ createNode transform -n "toe02_5_guide_ofs" -p "toe02_4_guide";
 createNode transform -n "toe02_5_guide" -p "toe02_5_guide_ofs";
 	rename -uid "6A902F4F-4B58-F837-F9C9-988005CF7EC3";
 	setAttr ".s" -type "double3" 0.99999999999999989 0.99999999999999978 1.0000000000000007 ;
-createNode nurbsCurve -n "toe01_1_guideShape" -p "toe02_5_guide";
-	rename -uid "6BF3D90C-4AE2-011B-6B1C-4095A3E6B302";
+createNode nurbsCurve -n "toe02_1_guideShape" -p "toe02_5_guide";
+	rename -uid "E2E7F724-42EB-2FC9-0B47-C9B3D031B80C";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
 	setAttr ".ovc" 20;
@@ -1031,72 +1031,6 @@ createNode pointConstraint -n "toe02_1_guide_ofs_pointConstraint1" -p "toe02_1_g
 	setAttr ".rst" -type "double3" 0 -10.999999999999998 4.3999999999999986 ;
 	setAttr -k on ".w0";
 	setAttr -k on ".w1";
-createNode nurbsCurve -n "toe02_2_guideShape" -p "toe02_2_guide";
-	rename -uid "68F025D0-487E-19F4-621B-10886723D42F";
-	setAttr -k off ".v";
-	setAttr ".ove" yes;
-	setAttr ".ovc" 20;
-	setAttr ".ls" 3;
-	setAttr ".cc" -type "nurbsCurve" 
-		1 52 0 no 3
-		53 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
-		 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52
-		53
-		0.19900999800989999 -2.4651903288156619e-32 0
-		0.18477586481890798 0.076536665901299997 0
-		0.14142133191911999 0.14142133191911999 0
-		0.076536665901299997 0.18477586481890798 0
-		0 0.19900533134328 0
-		-0.076536665901299997 0.18477586481890798 0
-		-0.14142133191911999 0.14142133191911999 0
-		-0.18477586481890798 0.076536665901299997 0
-		-0.19900999800989999 -9.4289465723772009e-09 0
-		-0.18477586481890798 -0.076536665901299997 0
-		-0.14142133191911999 -0.14142133191911999 0
-		-0.076536665901299997 -0.18477586481890798 0
-		7.9472799205272014e-09 -0.19900533134328 -0.0013531999864680002
-		0.076536665901299997 -0.18477586481890798 0
-		0.14142133191911999 -0.14142133191911999 0
-		0.18477586481890798 -0.076536665901299997 0
-		0.19900999800989999 -2.4651903288156619e-32 0
-		0.18386119816138802 0.00051786132815472008 -0.076156132571772006
-		0.14072133192612002 0.00095689065709776006 -0.14071826525948403
-		0.076157865905087996 0.0012502399874976002 -0.18385719816142801
-		7.9472799205272014e-09 0.0013532533198008 -0.19900559800994402
-		-0.076157865905087996 0.0012502399874976002 -0.18385719816142801
-		-0.14072133192612002 0.00095689065709776006 -0.14071826525948403
-		-0.18386119816138802 0.00051786132815472008 -0.076156132571772006
-		-0.19900999800989999 -9.4289465723772009e-09 0
-		-0.18386119816138802 -0.00051787999482119998 0.076155865905108006
-		-0.14072133192612002 -0.00095690932376423996 0.14071813192615198
-		-0.076157865905087996 -0.0012502586541640803 0.18385693149476401
-		7.9472799205272014e-09 -0.0013532666531340003 0.19900533134328
-		0.076157865905087996 -0.0012502586541640803 0.18385693149476401
-		0.14072133192612002 -0.00095690932376423996 0.14071813192615198
-		0.18386119816138802 -0.00051787999482119998 0.076155865905108006
-		0.19900999800989999 -2.4651903288156619e-32 0
-		0.18386119816138802 0.00051786132815472008 -0.076156132571772006
-		0.14072133192612002 0.00095689065709776006 -0.14071826525948403
-		0.076157865905087996 0.0012502399874976002 -0.18385719816142801
-		7.9472799205272014e-09 0.0013532533198008 -0.19900559800994402
-		7.9472799205272014e-09 0.077406265892604006 -0.18333919816660799
-		7.9472799205272014e-09 0.14167493191658401 -0.13976133193572002
-		7.9472799205272014e-09 0.18437479815625202 -0.074905865917607992
-		0 0.19900533134328 0
-		7.9472799205272014e-09 0.183339064833276 0.077406265892604006
-		7.9472799205272014e-09 0.13976119860238798 0.14167479858325202
-		7.9472799205272014e-09 0.074905865917607992 0.18437479815625202
-		7.9472799205272014e-09 -0.0013532666531340003 0.19900533134328
-		7.9472799205272014e-09 -0.077406265892604006 0.18333893149994401
-		7.9472799205272014e-09 -0.14167493191658401 0.13976106526905602
-		7.9472799205272014e-09 -0.18437479815625202 0.074905599250943991
-		7.9472799205272014e-09 -0.19900533134328 -0.0013531999864680002
-		7.9472799205272014e-09 -0.183339064833276 -0.077406532559268007
-		7.9472799205272014e-09 -0.13976119860238798 -0.14167506524991599
-		7.9472799205272014e-09 -0.074905865917607992 -0.18437506482291602
-		7.9472799205272014e-09 0.0013532533198008 -0.19900559800994402
-		;
-	setAttr ".adot" yes;
 createNode parentConstraint -n "toe02_2_guide_ofs_parentConstraint1" -p "toe02_2_guide_ofs";
 	rename -uid "393213AB-4F32-A194-C068-FC983FBE482D";
 	addAttr -dcb 0 -ci true -k true -sn "w0" -ln "toe04_2_guideW0" -dv 1 -min 0 -at "double";
@@ -1164,72 +1098,6 @@ createNode pointConstraint -n "toe01_1_guide_ofs_pointConstraint1" -p "toe01_1_g
 	setAttr ".rst" -type "double3" -2 -10.999999999999998 4.3999999999999986 ;
 	setAttr -k on ".w0";
 	setAttr -k on ".w1" 3;
-createNode nurbsCurve -n "toe01_2_guideShape" -p "toe01_2_guide";
-	rename -uid "F7E17435-43F6-1A33-E09D-7F8AC968A473";
-	setAttr -k off ".v";
-	setAttr ".ove" yes;
-	setAttr ".ovc" 20;
-	setAttr ".ls" 3;
-	setAttr ".cc" -type "nurbsCurve" 
-		1 52 0 no 3
-		53 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
-		 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52
-		53
-		0.19900999800989999 -2.4651903288156619e-32 0
-		0.18477586481890798 0.076536665901299997 0
-		0.14142133191911999 0.14142133191911999 0
-		0.076536665901299997 0.18477586481890798 0
-		0 0.19900533134328 0
-		-0.076536665901299997 0.18477586481890798 0
-		-0.14142133191911999 0.14142133191911999 0
-		-0.18477586481890798 0.076536665901299997 0
-		-0.19900999800989999 -9.4289465723772009e-09 0
-		-0.18477586481890798 -0.076536665901299997 0
-		-0.14142133191911999 -0.14142133191911999 0
-		-0.076536665901299997 -0.18477586481890798 0
-		7.9472799205272014e-09 -0.19900533134328 -0.0013531999864680002
-		0.076536665901299997 -0.18477586481890798 0
-		0.14142133191911999 -0.14142133191911999 0
-		0.18477586481890798 -0.076536665901299997 0
-		0.19900999800989999 -2.4651903288156619e-32 0
-		0.18386119816138802 0.00051786132815472008 -0.076156132571772006
-		0.14072133192612002 0.00095689065709776006 -0.14071826525948403
-		0.076157865905087996 0.0012502399874976002 -0.18385719816142801
-		7.9472799205272014e-09 0.0013532533198008 -0.19900559800994402
-		-0.076157865905087996 0.0012502399874976002 -0.18385719816142801
-		-0.14072133192612002 0.00095689065709776006 -0.14071826525948403
-		-0.18386119816138802 0.00051786132815472008 -0.076156132571772006
-		-0.19900999800989999 -9.4289465723772009e-09 0
-		-0.18386119816138802 -0.00051787999482119998 0.076155865905108006
-		-0.14072133192612002 -0.00095690932376423996 0.14071813192615198
-		-0.076157865905087996 -0.0012502586541640803 0.18385693149476401
-		7.9472799205272014e-09 -0.0013532666531340003 0.19900533134328
-		0.076157865905087996 -0.0012502586541640803 0.18385693149476401
-		0.14072133192612002 -0.00095690932376423996 0.14071813192615198
-		0.18386119816138802 -0.00051787999482119998 0.076155865905108006
-		0.19900999800989999 -2.4651903288156619e-32 0
-		0.18386119816138802 0.00051786132815472008 -0.076156132571772006
-		0.14072133192612002 0.00095689065709776006 -0.14071826525948403
-		0.076157865905087996 0.0012502399874976002 -0.18385719816142801
-		7.9472799205272014e-09 0.0013532533198008 -0.19900559800994402
-		7.9472799205272014e-09 0.077406265892604006 -0.18333919816660799
-		7.9472799205272014e-09 0.14167493191658401 -0.13976133193572002
-		7.9472799205272014e-09 0.18437479815625202 -0.074905865917607992
-		0 0.19900533134328 0
-		7.9472799205272014e-09 0.183339064833276 0.077406265892604006
-		7.9472799205272014e-09 0.13976119860238798 0.14167479858325202
-		7.9472799205272014e-09 0.074905865917607992 0.18437479815625202
-		7.9472799205272014e-09 -0.0013532666531340003 0.19900533134328
-		7.9472799205272014e-09 -0.077406265892604006 0.18333893149994401
-		7.9472799205272014e-09 -0.14167493191658401 0.13976106526905602
-		7.9472799205272014e-09 -0.18437479815625202 0.074905599250943991
-		7.9472799205272014e-09 -0.19900533134328 -0.0013531999864680002
-		7.9472799205272014e-09 -0.183339064833276 -0.077406532559268007
-		7.9472799205272014e-09 -0.13976119860238798 -0.14167506524991599
-		7.9472799205272014e-09 -0.074905865917607992 -0.18437506482291602
-		7.9472799205272014e-09 0.0013532533198008 -0.19900559800994402
-		;
-	setAttr ".adot" yes;
 createNode parentConstraint -n "toe01_2_guide_ofs_parentConstraint1" -p "toe01_2_guide_ofs";
 	rename -uid "672CA385-4144-DB7B-F5A8-738F98F7EF22";
 	addAttr -dcb 0 -ci true -k true -sn "w0" -ln "toe04_2_guideW0" -dv 1 -min 0 -at "double";
@@ -1272,6 +1140,72 @@ createNode transform -n "toe00_1_guide_ofs" -p "toe00_2_guide";
 	setAttr ".t" -type "double3" 0 -10.999999999999998 4.3999999999999986 ;
 createNode transform -n "toe00_1_guide" -p "toe00_1_guide_ofs";
 	rename -uid "41B3B581-4AE8-FCCB-E9C3-B59FCFEB63A4";
+createNode nurbsCurve -n "toe00_1_guideShape" -p "toe00_1_guide";
+	rename -uid "E8477B09-4DC5-00BD-8246-C2AD000F68C8";
+	setAttr -k off ".v";
+	setAttr ".ove" yes;
+	setAttr ".ovc" 13;
+	setAttr ".ls" 3;
+	setAttr ".cc" -type "nurbsCurve" 
+		1 52 0 no 3
+		53 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
+		 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52
+		53
+		0.35379555201759993 -4.3825605845611765e-32 0
+		0.32849042634472525 0.13606518382453331 0
+		0.25141570118954659 0.25141570118954659 0
+		0.13606518382453331 0.32849042634472525 0
+		0 0.35378725572138664 0
+		-0.13606518382453331 0.32849042634472525 0
+		-0.25141570118954659 0.25141570118954659 0
+		-0.32849042634472525 0.13606518382453331 0
+		-0.35379555201759993 -1.6762571684226132e-08 0
+		-0.32849042634472525 -0.13606518382453331 0
+		-0.25141570118954659 -0.25141570118954659 0
+		-0.13606518382453331 -0.32849042634472525 0
+		1.4128497636492801e-08 -0.35378725572138664 -0.0024056888648319999
+		0.13606518382453331 -0.32849042634472525 0
+		0.25141570118954659 -0.25141570118954659 0
+		0.32849042634472525 -0.13606518382453331 0
+		0.35379555201759993 -4.3825605845611765e-32 0
+		0.32686435228691202 0.00092064236116394668 -0.13538868012759467
+		0.2501712567575467 0.0017011389459515732 -0.25016580490574936
+		0.13539176160904531 0.0022226488666624001 -0.326857241175872
+		1.4128497636492801e-08 0.0024057836796458664 -0.35378772979545597
+		-0.13539176160904531 0.0022226488666624001 -0.326857241175872
+		-0.2501712567575467 0.0017011389459515732 -0.25016580490574936
+		-0.32686435228691202 0.00092064236116394668 -0.13538868012759467
+		-0.35379555201759993 -1.6762571684226132e-08 0
+		-0.32686435228691202 -0.00092067554634879989 0.13538820605352533
+		-0.2501712567575467 -0.0017011721311364265 0.25016556786871458
+		-0.13539176160904531 -0.0022226820518472536 0.32685676710180267
+		1.4128497636492801e-08 -0.0024058073833493334 0.35378725572138664
+		0.13539176160904531 -0.0022226820518472536 0.32685676710180267
+		0.2501712567575467 -0.0017011721311364265 0.25016556786871458
+		0.32686435228691202 -0.00092067554634879989 0.13538820605352533
+		0.35379555201759993 -4.3825605845611765e-32 0
+		0.32686435228691202 0.00092064236116394668 -0.13538868012759467
+		0.2501712567575467 0.0017011389459515732 -0.25016580490574936
+		0.13539176160904531 0.0022226488666624001 -0.326857241175872
+		1.4128497636492801e-08 0.0024057836796458664 -0.35378772979545597
+		1.4128497636492801e-08 0.13761113936462932 -0.32593635229619194
+		1.4128497636492801e-08 0.25186654562948263 -0.24846459010794666
+		1.4128497636492801e-08 0.32777741894444801 -0.13316598385352529
+		0 0.35378725572138664 0
+		1.4128497636492801e-08 0.32593611525915733 0.13761113936462932
+		1.4128497636492801e-08 0.24846435307091191 0.25186630859244802
+		1.4128497636492801e-08 0.13316598385352529 0.32777741894444801
+		1.4128497636492801e-08 -0.0024058073833493334 0.35378725572138664
+		1.4128497636492801e-08 -0.13761113936462932 0.32593587822212267
+		1.4128497636492801e-08 -0.25186654562948263 0.24846411603387733
+		1.4128497636492801e-08 -0.32777741894444801 0.13316550977945596
+		1.4128497636492801e-08 -0.35378725572138664 -0.0024056888648319999
+		1.4128497636492801e-08 -0.32593611525915733 -0.13761161343869865
+		1.4128497636492801e-08 -0.24846435307091191 -0.2518667826665173
+		1.4128497636492801e-08 -0.13316598385352529 -0.32777789301851734
+		1.4128497636492801e-08 0.0024057836796458664 -0.35378772979545597
+		;
+	setAttr ".adot" yes;
 createNode nurbsCurve -n "toe00_2_guideShape" -p "toe00_2_guide";
 	rename -uid "8153BF91-4D2F-C2D0-A616-DDAA0E7EDE77";
 	setAttr -k off ".v";
@@ -1386,72 +1320,6 @@ createNode pointConstraint -n "toe03_1_guide_ofs_pointConstraint1" -p "toe03_1_g
 	setAttr ".rst" -type "double3" 2 -10.999999999999998 4.3999999999999986 ;
 	setAttr -k on ".w0" 3;
 	setAttr -k on ".w1";
-createNode nurbsCurve -n "toe03_2_guideShape" -p "toe03_2_guide";
-	rename -uid "F30284D3-4BCE-3257-6DF5-138008251D8E";
-	setAttr -k off ".v";
-	setAttr ".ove" yes;
-	setAttr ".ovc" 20;
-	setAttr ".ls" 3;
-	setAttr ".cc" -type "nurbsCurve" 
-		1 52 0 no 3
-		53 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
-		 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52
-		53
-		0.19900999800989999 -2.4651903288156619e-32 0
-		0.18477586481890798 0.076536665901299997 0
-		0.14142133191911999 0.14142133191911999 0
-		0.076536665901299997 0.18477586481890798 0
-		0 0.19900533134328 0
-		-0.076536665901299997 0.18477586481890798 0
-		-0.14142133191911999 0.14142133191911999 0
-		-0.18477586481890798 0.076536665901299997 0
-		-0.19900999800989999 -9.4289465723772009e-09 0
-		-0.18477586481890798 -0.076536665901299997 0
-		-0.14142133191911999 -0.14142133191911999 0
-		-0.076536665901299997 -0.18477586481890798 0
-		7.9472799205272014e-09 -0.19900533134328 -0.0013531999864680002
-		0.076536665901299997 -0.18477586481890798 0
-		0.14142133191911999 -0.14142133191911999 0
-		0.18477586481890798 -0.076536665901299997 0
-		0.19900999800989999 -2.4651903288156619e-32 0
-		0.18386119816138802 0.00051786132815472008 -0.076156132571772006
-		0.14072133192612002 0.00095689065709776006 -0.14071826525948403
-		0.076157865905087996 0.0012502399874976002 -0.18385719816142801
-		7.9472799205272014e-09 0.0013532533198008 -0.19900559800994402
-		-0.076157865905087996 0.0012502399874976002 -0.18385719816142801
-		-0.14072133192612002 0.00095689065709776006 -0.14071826525948403
-		-0.18386119816138802 0.00051786132815472008 -0.076156132571772006
-		-0.19900999800989999 -9.4289465723772009e-09 0
-		-0.18386119816138802 -0.00051787999482119998 0.076155865905108006
-		-0.14072133192612002 -0.00095690932376423996 0.14071813192615198
-		-0.076157865905087996 -0.0012502586541640803 0.18385693149476401
-		7.9472799205272014e-09 -0.0013532666531340003 0.19900533134328
-		0.076157865905087996 -0.0012502586541640803 0.18385693149476401
-		0.14072133192612002 -0.00095690932376423996 0.14071813192615198
-		0.18386119816138802 -0.00051787999482119998 0.076155865905108006
-		0.19900999800989999 -2.4651903288156619e-32 0
-		0.18386119816138802 0.00051786132815472008 -0.076156132571772006
-		0.14072133192612002 0.00095689065709776006 -0.14071826525948403
-		0.076157865905087996 0.0012502399874976002 -0.18385719816142801
-		7.9472799205272014e-09 0.0013532533198008 -0.19900559800994402
-		7.9472799205272014e-09 0.077406265892604006 -0.18333919816660799
-		7.9472799205272014e-09 0.14167493191658401 -0.13976133193572002
-		7.9472799205272014e-09 0.18437479815625202 -0.074905865917607992
-		0 0.19900533134328 0
-		7.9472799205272014e-09 0.183339064833276 0.077406265892604006
-		7.9472799205272014e-09 0.13976119860238798 0.14167479858325202
-		7.9472799205272014e-09 0.074905865917607992 0.18437479815625202
-		7.9472799205272014e-09 -0.0013532666531340003 0.19900533134328
-		7.9472799205272014e-09 -0.077406265892604006 0.18333893149994401
-		7.9472799205272014e-09 -0.14167493191658401 0.13976106526905602
-		7.9472799205272014e-09 -0.18437479815625202 0.074905599250943991
-		7.9472799205272014e-09 -0.19900533134328 -0.0013531999864680002
-		7.9472799205272014e-09 -0.183339064833276 -0.077406532559268007
-		7.9472799205272014e-09 -0.13976119860238798 -0.14167506524991599
-		7.9472799205272014e-09 -0.074905865917607992 -0.18437506482291602
-		7.9472799205272014e-09 0.0013532533198008 -0.19900559800994402
-		;
-	setAttr ".adot" yes;
 createNode parentConstraint -n "toe03_2_guide_ofs_parentConstraint1" -p "toe03_2_guide_ofs";
 	rename -uid "2AA137BB-4B9D-21A6-0F56-8B8AF3745DDB";
 	addAttr -dcb 0 -ci true -k true -sn "w0" -ln "toe04_2_guideW0" -dv 1 -min 0 -at "double";
@@ -1501,6 +1369,72 @@ createNode transform -n "toe04_1_guide_ofs" -p "toe04_2_guide";
 	setAttr ".t" -type "double3" 0 -10.999999999999998 4.3999999999999986 ;
 createNode transform -n "toe04_1_guide" -p "toe04_1_guide_ofs";
 	rename -uid "CFA1EC55-4E1A-103F-97C4-DF8320B64E6F";
+createNode nurbsCurve -n "toe04_1_guideShape" -p "toe04_1_guide";
+	rename -uid "19AC264D-4AC0-AAA0-0C78-20B98F50BF3D";
+	setAttr -k off ".v";
+	setAttr ".ove" yes;
+	setAttr ".ovc" 13;
+	setAttr ".ls" 3;
+	setAttr ".cc" -type "nurbsCurve" 
+		1 52 0 no 3
+		53 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
+		 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52
+		53
+		0.35379555201759993 -4.3825605845611765e-32 0
+		0.32849042634472525 0.13606518382453331 0
+		0.25141570118954659 0.25141570118954659 0
+		0.13606518382453331 0.32849042634472525 0
+		0 0.35378725572138664 0
+		-0.13606518382453331 0.32849042634472525 0
+		-0.25141570118954659 0.25141570118954659 0
+		-0.32849042634472525 0.13606518382453331 0
+		-0.35379555201759993 -1.6762571684226132e-08 0
+		-0.32849042634472525 -0.13606518382453331 0
+		-0.25141570118954659 -0.25141570118954659 0
+		-0.13606518382453331 -0.32849042634472525 0
+		1.4128497636492801e-08 -0.35378725572138664 -0.0024056888648319999
+		0.13606518382453331 -0.32849042634472525 0
+		0.25141570118954659 -0.25141570118954659 0
+		0.32849042634472525 -0.13606518382453331 0
+		0.35379555201759993 -4.3825605845611765e-32 0
+		0.32686435228691202 0.00092064236116394668 -0.13538868012759467
+		0.2501712567575467 0.0017011389459515732 -0.25016580490574936
+		0.13539176160904531 0.0022226488666624001 -0.326857241175872
+		1.4128497636492801e-08 0.0024057836796458664 -0.35378772979545597
+		-0.13539176160904531 0.0022226488666624001 -0.326857241175872
+		-0.2501712567575467 0.0017011389459515732 -0.25016580490574936
+		-0.32686435228691202 0.00092064236116394668 -0.13538868012759467
+		-0.35379555201759993 -1.6762571684226132e-08 0
+		-0.32686435228691202 -0.00092067554634879989 0.13538820605352533
+		-0.2501712567575467 -0.0017011721311364265 0.25016556786871458
+		-0.13539176160904531 -0.0022226820518472536 0.32685676710180267
+		1.4128497636492801e-08 -0.0024058073833493334 0.35378725572138664
+		0.13539176160904531 -0.0022226820518472536 0.32685676710180267
+		0.2501712567575467 -0.0017011721311364265 0.25016556786871458
+		0.32686435228691202 -0.00092067554634879989 0.13538820605352533
+		0.35379555201759993 -4.3825605845611765e-32 0
+		0.32686435228691202 0.00092064236116394668 -0.13538868012759467
+		0.2501712567575467 0.0017011389459515732 -0.25016580490574936
+		0.13539176160904531 0.0022226488666624001 -0.326857241175872
+		1.4128497636492801e-08 0.0024057836796458664 -0.35378772979545597
+		1.4128497636492801e-08 0.13761113936462932 -0.32593635229619194
+		1.4128497636492801e-08 0.25186654562948263 -0.24846459010794666
+		1.4128497636492801e-08 0.32777741894444801 -0.13316598385352529
+		0 0.35378725572138664 0
+		1.4128497636492801e-08 0.32593611525915733 0.13761113936462932
+		1.4128497636492801e-08 0.24846435307091191 0.25186630859244802
+		1.4128497636492801e-08 0.13316598385352529 0.32777741894444801
+		1.4128497636492801e-08 -0.0024058073833493334 0.35378725572138664
+		1.4128497636492801e-08 -0.13761113936462932 0.32593587822212267
+		1.4128497636492801e-08 -0.25186654562948263 0.24846411603387733
+		1.4128497636492801e-08 -0.32777741894444801 0.13316550977945596
+		1.4128497636492801e-08 -0.35378725572138664 -0.0024056888648319999
+		1.4128497636492801e-08 -0.32593611525915733 -0.13761161343869865
+		1.4128497636492801e-08 -0.24846435307091191 -0.2518667826665173
+		1.4128497636492801e-08 -0.13316598385352529 -0.32777789301851734
+		1.4128497636492801e-08 0.0024057836796458664 -0.35378772979545597
+		;
+	setAttr ".adot" yes;
 createNode nurbsCurve -n "toe04_2_guideShape" -p "toe04_2_guide";
 	rename -uid "A0623900-4543-2593-BD92-06B21BA8A49B";
 	setAttr -k off ".v";
@@ -3401,14 +3335,14 @@ createNode aimConstraint -n "fgrRef19_aimCst" -p "fgrRef19";
 createNode transform -s -n "persp";
 	rename -uid "2CFF45DD-487A-9CD1-767B-A089B899D93C";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 20.242462589812625 30.317200849394712 -12.194013900827084 ;
-	setAttr ".r" -type "double3" -26.738352728960376 41.000000000060368 0 ;
+	setAttr ".t" -type "double3" 16.73608772087497 31.30572913036341 -11.932132176169766 ;
+	setAttr ".r" -type "double3" -27.938352728961117 41.400000000060501 -2.1200558225552991e-15 ;
 	setAttr -cb on ".ro";
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "82C3F9B2-4980-6719-29B8-159665D78FA8";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999993;
-	setAttr ".coi" 50.062653361075562;
+	setAttr ".coi" 52.290837625040268;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -3466,12 +3400,6 @@ createNode camera -s -n "sideShape" -p "side";
 	setAttr ".tp" -type "double3" -15.000000000000007 2.7295373222628871 7.3977498776093498 ;
 	setAttr ".hc" -type "string" "viewSet -s %camera";
 	setAttr ".o" yes;
-createNode transform -n "nurbsCircle1";
-	rename -uid "0B8E3299-4C67-541A-68CD-738974371504";
-createNode nurbsCurve -n "nurbsCircleShape1" -p "nurbsCircle1";
-	rename -uid "A392263A-4013-5C30-4708-C98F30B2B312";
-	setAttr -k off ".v";
-	setAttr ".tw" yes;
 parent -s -nc -r -add "|module_grp|master_guide|hip_guide_ofs|hip_guide|hip_guideShape" "pvc_guide" ;
 parent -s -nc -r -add "|module_grp|master_guide|hip_guide_ofs|hip_guide|hip_guideShape" "upr_guide" ;
 parent -s -nc -r -add "|module_grp|master_guide|hip_guide_ofs|hip_guide|hip_guideShape" "lwr_guide" ;
@@ -3485,24 +3413,25 @@ parent -s -nc -r -add "|module_grp|master_guide|lwr_guide_ofs|lwr_guide|radius_g
 parent -s -nc -r -add "|module_grp|master_guide|palm_inPos_ofs|palm_inPos_guide|palm_toePos_guideShape" "palm_toePos_guide" ;
 parent -s -nc -r -add "|module_grp|master_guide|palm_inPos_ofs|palm_inPos_guide|palm_toePos_guideShape" "palm_heelPos_guide" ;
 parent -s -nc -r -add "|module_grp|master_guide|palm_inPos_ofs|palm_inPos_guide|palm_toePos_guideShape" "palm_outPos_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe01_1_guideShape" "toe01_1_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe01_1_guideShape" "toe01_3_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe01_1_guideShape" "toe02_3_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe01_1_guideShape" "toe00_3_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe01_1_guideShape" "toe03_5_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe01_1_guideShape" "toe04_3_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe01_1_guideShape" "toe02_4_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe01_1_guideShape" "toe04_4_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe01_1_guideShape" "toe01_5_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe01_1_guideShape" "toe03_4_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe01_1_guideShape" "toe04_5_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe01_1_guideShape" "toe03_3_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe01_1_guideShape" "toe00_4_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe01_1_guideShape" "toe01_4_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe01_1_guideShape" "toe03_1_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe01_1_guideShape" "toe04_1_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe01_1_guideShape" "toe02_1_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe01_1_guideShape" "toe00_1_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe02_1_guideShape" "toe02_1_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe02_1_guideShape" "toe00_4_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe02_1_guideShape" "toe03_3_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe02_1_guideShape" "toe01_5_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe02_1_guideShape" "toe01_4_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe02_1_guideShape" "toe04_4_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe02_1_guideShape" "toe01_3_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe02_1_guideShape" "toe02_4_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe02_1_guideShape" "toe04_3_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe02_1_guideShape" "toe02_3_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe02_1_guideShape" "toe03_4_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe02_1_guideShape" "toe00_3_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe02_1_guideShape" "toe04_5_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe02_1_guideShape" "toe03_5_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe02_1_guideShape" "toe03_2_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe02_1_guideShape" "toe01_2_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe02_1_guideShape" "toe02_2_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe02_1_guideShape" "toe03_1_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe02_1_guideShape" "toe01_1_guide" ;
 parent -s -nc -r -add "|module_grp|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef2" ;
 parent -s -nc -r -add "|module_grp|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef3" ;
 parent -s -nc -r -add "|module_grp|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef4" ;
@@ -3522,22 +3451,22 @@ parent -s -nc -r -add "|module_grp|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef
 parent -s -nc -r -add "|module_grp|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef18" ;
 parent -s -nc -r -add "|module_grp|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef19" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "3E37F54D-4768-BECF-02C9-7EAE5C1DA5C8";
+	rename -uid "C321A622-4769-0A95-BE7A-92B398D5859C";
 	setAttr -s 3 ".lnk";
 	setAttr -s 3 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "5D287F91-4CDA-47E5-58B6-28A2D5A7CD16";
+	rename -uid "06A7FB91-4600-A36B-69F1-0AAEBAB9D9B7";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "864B2020-4320-6880-E7CC-99B52502A4A7";
+	rename -uid "3985BA10-47FC-C393-6A2B-798973A4E855";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "41A3D4D7-4E3D-EDF9-6050-BFBCE07A4B91";
+	rename -uid "603F4887-4452-F5CD-B686-93BBA52EAF4E";
 	setAttr ".cdl" 1;
 	setAttr -s 2 ".dli[1]"  1;
 createNode displayLayer -n "defaultLayer";
 	rename -uid "BC19330E-4E8B-4910-BB8A-238FB66CBBA1";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "D2304E90-49AA-F86F-50F5-9ABE25BCC342";
+	rename -uid "1DCA38BF-40D3-2A9C-DEC8-46B76EA34F9A";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "47ABDCF5-4400-C307-437A-E4AF35DAB19B";
 	setAttr ".g" yes;
@@ -3787,10 +3716,6 @@ createNode decomposeMatrix -n "DCM_61";
 	rename -uid "4A759FE8-49E9-B60F-9E21-67A85D9EF549";
 createNode ik2Bsolver -s -n "ik2Bsolver";
 	rename -uid "C55138B4-4F9F-1E57-B1F5-A897F4482410";
-createNode makeNurbCircle -n "makeNurbCircle1";
-	rename -uid "55B2B56E-406D-67AB-6737-D195AC219411";
-	setAttr ".nr" -type "double3" 0 1 0 ;
-	setAttr ".tol" 1.07639e-05;
 createNode lambert -n "lambert2";
 	rename -uid "923A631A-472B-C234-B2A8-F8B1531C5E10";
 	setAttr ".c" -type "float3" 1 0 0 ;
@@ -5076,7 +5001,6 @@ connectAttr "toe04_5_guide.rpt" "fgrRef19_aimCst.tg[0].trt";
 connectAttr "toe04_5_guide.pm" "fgrRef19_aimCst.tg[0].tpm";
 connectAttr "fgrRef19_aimCst.w0" "fgrRef19_aimCst.tg[0].tw";
 connectAttr "toe04_4_guide.wm" "fgrRef19_aimCst.wum";
-connectAttr "makeNurbCircle1.oc" "nurbsCircleShape1.cr";
 relationship "link" ":lightLinker1" ":initialShadingGroup.message" ":defaultLightSet.message";
 relationship "link" ":lightLinker1" ":initialParticleSE.message" ":defaultLightSet.message";
 relationship "link" ":lightLinker1" "lambert2SG.message" ":defaultLightSet.message";
@@ -5171,8 +5095,6 @@ connectAttr "lambert2.msg" "materialInfo1.m";
 connectAttr "le_cdn_3.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[0].dn";
 connectAttr "master_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[1].dn";
 connectAttr "toe01_1_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[2].dn";
-connectAttr "|module_grp|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toe_main_2_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe01_1_guideShape.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[3].dn"
-		;
 connectAttr "null2.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[4].dn";
 connectAttr "lambert2SG.pa" ":renderPartition.st" -na;
 connectAttr "lambert2.msg" ":defaultShaderList1.s" -na;
