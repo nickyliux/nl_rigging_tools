@@ -38,13 +38,14 @@ class Tail(RigModule):
         self.rbSrf2 = None
 
         # --- Control and joint lists ---
-        self.ctls_fk = []  # FK controls
-        self.jnts_fk = []  # FK joints
-        self.ctls_ik = []  # IK controls
-        self.jnts_ik = []  # IK joints
-        self.ctls_ofs = []  # Offset controls
-        self.jnts_ofs = []  # Offset joints
-        self.jnts_bind = []  # Bind joints
+        self.ctls_fk = []
+        self.ctls_ik = []
+        self.ctls_ofs = []
+
+        self.jnts_fk = []
+        self.jnts_ik = []
+        self.jnts_ofs = []
+        self.jnts_bind = []
 
     def gen_sk(self):
         """Generate the skeleton for the tail rig."""
@@ -60,7 +61,7 @@ class Tail(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
 
-        ctl_defs = [("setting", "bagua", "z", rSz, 1, 2)]
+        ctl_defs = [("setting", "setting", "z", rSz, 1, 2)]
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
@@ -138,7 +139,7 @@ class Tail(RigModule):
             self.rigNode.setMsg({f"ikc{i}": ctl})
 
         # --- Snap setting control to first IK control and constrain ---
-        self.setting.snapTo(self.ctls_ik[0], p=self.FK_GRP)
+        self.setting.snapTo(self.ctls_ik[0], p=self.FK_GRP, ofs=(0, rSz * 20, 0))
         self.ctls_ik[0].cstPar(self.setting, mo=1)
 
     def build_fk(self):

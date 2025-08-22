@@ -107,7 +107,6 @@ class LegQd(RigModule):
             }
             TOE_NAMES = TOE_DICT.get(self.toeNum, [])
 
-            # Generate and orient each toe chain, parent to toesRootJ
             for names in TOE_NAMES:
                 fgr_jnts = self.gen_sk_fr_names(names)
                 fgr_jnts[0].reOrient(

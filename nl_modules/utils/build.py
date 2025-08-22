@@ -507,9 +507,9 @@ def add_noise_logic(ctl=None, targets=None, rot=0):
     drag = ctl.a.add("drag", dv=3)
     falloff = ctl.a.add("falloff", dv=0.8, min=0, max=1)
 
-    xA = ctl.a.add("xAmplitude", dv=0)
-    yA = ctl.a.add("yAmplitude", dv=10)
-    zA = ctl.a.add("zAmplitude", dv=0)
+    xA = ctl.a.add("xAmplitude")
+    yA = ctl.a.add("yAmplitude")
+    zA = ctl.a.add("zAmplitude")
     xOffset = ctl.a.add("xOffset", dv=0)
     yOffset = ctl.a.add("yOffset", dv=0)
     zOffset = ctl.a.add("zOffset", dv=0)

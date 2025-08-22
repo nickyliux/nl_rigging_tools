@@ -290,7 +290,7 @@ class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                         names = [names[1]]
                 guide.loadGuide(names)
             self.rigNode_refresh()
-            # common.setViewport(fit=1)
+            common.setViewport(fit=1)
 
     def rigNode_LW_dblClicked(self, item):
         """Show attribute editor for rigNode"""

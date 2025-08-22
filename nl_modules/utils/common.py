@@ -568,7 +568,17 @@ def setViewport(jx=0, xray=0, wos=0, fit=0):
     # mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
     # mc.setAttr('hardwareRenderingGlobals.multiSampleEnable', 1)
     for p in mc.getPanel(type="modelPanel"):
-        mc.modelEditor(p, e=1, jx=jx, xray=xray, wos=wos)
+        # mc.modelEditor(p, e=1, jx=jx, xray=xray, wos=wos)
+        v = mc.modelEditor(p, q=1, jx=1)
+        if v == 0 and jx == 1:
+            mc.modelEditor(p, e=1, jx=1)
+        v = mc.modelEditor(p, q=1, xray=1)
+        if v == 0 and xray == 1:
+            mc.modelEditor(p, e=1, xray=1)
+        v = mc.modelEditor(p, q=1, wos=1)
+        if v == 0 and wos == 1:
+            mc.modelEditor(p, e=1, wos=1)
+
     if fit:
         mc.viewFit(all=1)
     mc.refresh(f=1)

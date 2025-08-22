@@ -105,7 +105,11 @@ class LegBp(RigModule):
             ]
             for names in TOE_NAMES:
                 fgr_jnts = self.gen_sk_fr_names(names)
-                fgr_jnts[0].orientJnt(aim=(self.xDir, 0, 0), u=(0, 0, -self.xDir))
+                fgr_jnts[0].reOrient(
+                    upRef=fgr_jnts[1],
+                    xDir=self.xDir,
+                    up=(0, 0, -1),
+                )
                 fgr_jnts[0] | self.toesRootJ
 
         self.rootJ = root_list[0]
@@ -128,7 +132,7 @@ class LegBp(RigModule):
             ("ball_fkc", "sphere", "x", scale_fk, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
             ("pvc", "diamond3", None, rSz * 2, 0, -1),
-            ("smart_ctl", "squareR", None, scale / 2, 0, 2),
+            ("smart_ctl", "squareR", None, scale / 3, 0, 2),
         ]
         if self.scapularExtra:
             ctl_defs.append(("scap_fkc", "arrow4", "x", scale, 0, 2))
