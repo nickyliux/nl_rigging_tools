@@ -278,8 +278,7 @@ class CrvNode(GrpNode):
         if top:
             for s in self.shapes:
                 s.a["alwaysDrawOnTop"].set(1)
-        if width > 0:
-            self.width = width
+        self.width = width
         return self
 
     def reverse(self):

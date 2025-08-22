@@ -110,7 +110,11 @@ class LegQd(RigModule):
             # Generate and orient each toe chain, parent to toesRootJ
             for names in TOE_NAMES:
                 fgr_jnts = self.gen_sk_fr_names(names)
-                fgr_jnts[0].orientJnt(aim=(self.xDir, 0, 0), u=(0, 0, -self.xDir))
+                fgr_jnts[0].reOrient(
+                    upRef=fgr_jnts[1],
+                    xDir=self.xDir,
+                    up=(0, 0, -1),
+                )
                 fgr_jnts[0] | self.toesRootJ
 
         # --- Finalize root joint setup ---
@@ -126,7 +130,7 @@ class LegQd(RigModule):
         scale_fk = scale * 4
 
         ctl_defs = [
-            ("setting", "sphere", "z", scale, 1, 2),
+            ("setting", "setting", "z", scale, 1, 2),
             ("hip_fkc", "sphere", "x", scale_fk, 0, -1),
             ("upr_fkc", "sphere", "x", scale_fk, 0, -1),
             ("lwr_fkc", "sphere", "x", scale_fk, 0, -1),
@@ -136,7 +140,7 @@ class LegQd(RigModule):
             ("ikc", "foot", None, rSz, 0, -1),
             ("extra_ikc", "rotator", None, -scale, 0, -1),
             ("pvc", "pvc", None, rSz, 0, -1),
-            ("smart_ctl", "squareR", None, scale / 2, 0, 2),
+            ("smart_ctl", "squareR", None, scale / 3, 0, 2),
         ]
 
         if self.scapularExtra:
@@ -147,8 +151,6 @@ class LegQd(RigModule):
 
         if self.scapularExtra:
             self.quadScap_ikc.cv_move(scale * 10, 0, 0)
-
-        self.setting.cv_move(scale * 20, 0, 0)
 
     def build(self):
         """Build the quadruped leg rig module."""
@@ -325,10 +327,11 @@ class LegQd(RigModule):
     def blend_fk_ik(self):
         """Blend FK and IK controls for the quadruped leg rig."""
         logging.info(self.rigID)
+        rID, rSz, xDr = self.getMyVar()
 
         # --- Snap setting control to upper joint and constrain ---
-        self.setting.snapTo(self.digit, p=self.CTL_DATA)
-        self.digit.cstPar(self.setting, mo=1)
+        self.setting.snapTo(self.palm, p=self.CTL_DATA, ofs=(xDr * rSz * 12, 0, 0))
+        self.palm.cstPar(self.setting, mo=1)
 
         # --- Add blend attribute and set up blending constraints ---
         fkToIk = self.setting.a.add("fkToIk", min=0, max=1, dv=1)
@@ -413,6 +416,7 @@ class LegQd(RigModule):
             scale=-rSz * xDr / 3,
             color=Color.BLACK,
             rotateY=90,
+            width=2,
         )
         self.rigNode.setMsg({"ball_ikc": self.ball_ikc})
         self.ctls_ik.append(self.ball_ikc)

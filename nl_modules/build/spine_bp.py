@@ -59,7 +59,7 @@ class SpineBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
-            ("setting", "sphere", "z", rSz * 2, 1, 1),
+            ("setting", "setting", "z", rSz * 2, 1, 2),
             ("cog_ctl", "cog2", None, rSz * 6, 0, 2),
             ("chest_ctl", "circle", None, rSz * 5, 0, -1),
             ("mid_ctl", "square", None, rSz * 5, 0, -1),
@@ -68,9 +68,6 @@ class SpineBp(RigModule):
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
-
-        self.setting.cv_move(0, 0, self.rigSize * -35)
-        # self.setting.color = Color.WHITE
 
     def build(self):
         """Build the spine rig module."""
@@ -134,7 +131,7 @@ class SpineBp(RigModule):
         self.chest_ctl.snapAlignTo(self.jnts_fk[-1], mg)
         self.cog_ctl.snapAlignTo(self.hip_ctl, mg)
 
-        self.setting.alignTo(self.cog_ctl, p=self.CTL_DATA)
+        self.setting.snapTo(self.cog_ctl, p=self.CTL_DATA, ofs=(0, 0, rSz * -35))
         self.cog_ctl.cstPar(self.setting, mo=1)
 
         self.cog_gmb = CrvNode(self.cog_ctl).add_gimbal()

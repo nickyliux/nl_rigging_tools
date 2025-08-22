@@ -45,7 +45,6 @@ class Hand(RigModule):
         fgr_roots = []
         for fgr_names in ALL_FGR_NAMES:
             jnts = self.gen_sk_fr_names(fgr_names, scale=FINGER_SCALE)
-            # jnts[0].freezeXf()
             jnts[1].reOrient(upRef=jnts[1], xDir=self.xDir)
             jnts[0] | root_list[0]
             fgr_roots.append(jnts[0])
@@ -61,7 +60,7 @@ class Hand(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "sphere", "z", scale, 1, 1),
+            ("setting", "setting", None, scale, 1, 2),
             ("palm_ctl", "rotator", None, scale * -1, 0, 2),
             ("smart_ctl", "roll", "x", scale, 0, -1),
         ]
@@ -70,8 +69,6 @@ class Hand(RigModule):
 
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
         self.smart_ctl.cv_scale(1, 2, 1)
-        # self.setting.cv_move(0, 0, rSz * -40)
-        # self.setting.color = Color.WHITE
 
     def build(self):
         """Build the hand rig module."""
@@ -348,7 +345,6 @@ class Hand(RigModule):
         logging.info(self.rigID)
 
         self.setting.alignTo(self.smart_ctl, p=self.smart_ctl)
-
         self.setup_scale()
         self.setup_bindJnt()
         self.setup_ctlSet()

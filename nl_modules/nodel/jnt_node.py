@@ -307,7 +307,7 @@ class JntNode(GrpNode):
 
         JntNode(sel[0]).reOrient()
 
-    def reOrient(self, upRef=None, xDir=1):
+    def reOrient(self, upRef=None, xDir=1, up=(0, 1, 0)):
         """Orient joints below this node"""
         all_jnts = self.allChildrenJt2
 
@@ -336,6 +336,7 @@ class JntNode(GrpNode):
                     aim=(xDir, 0, 0),
                     worldUpType="objectrotation",
                     worldUpObject=upLoc,
+                    upVector=up,
                     keep=0,
                 )
                 jnt.freezeXf()

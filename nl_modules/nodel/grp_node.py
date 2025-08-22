@@ -313,8 +313,9 @@ class GrpNode(DagNode):
     @width.setter
     def width(self, w):
         """Set the line width of the shape"""
-        if self.shape:
-            self.shape.a.lineWidth.set(w)
+        if self.shapes:
+            for s in self.shapes:
+                s.a.lineWidth.set(w)
 
     def add_attr_as_proxy(self, src=None):
         """Add proxy attributes from source node"""
