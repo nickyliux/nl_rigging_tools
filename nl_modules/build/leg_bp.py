@@ -121,18 +121,17 @@ class LegBp(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
-        scale_fk = scale * 4
 
         ctl_defs = [
             ("setting", "setting", "z", scale, 1, 2),
-            ("hip_fkc", "sphere", "x", scale_fk, 0, -1),
-            ("upr_fkc", "sphere", "x", scale_fk, 0, -1),
-            ("lwr_fkc", "sphere", "x", scale_fk, 0, -1),
-            ("palm_fkc", "sphere", "x", scale_fk, 0, -1),
-            ("ball_fkc", "sphere", "x", scale_fk, 0, -1),
+            ("hip_fkc", "circle", "x", scale, 0, -1),
+            ("upr_fkc", "circle", "x", scale, 0, -1),
+            ("lwr_fkc", "circle", "x", scale, 0, -1),
+            ("palm_fkc", "circle", "x", scale, 0, -1),
+            ("ball_fkc", "circle", "x", scale, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
-            ("pvc", "diamond3", None, rSz * 2, 0, -1),
-            ("smart_ctl", "squareR", None, scale / 3, 0, 2),
+            ("pvc", "pvc", None, rSz, 0, -1),
+            ("smart_ctl", "squareR", None, scale / 2, 0, 2),
         ]
         if self.scapularExtra:
             ctl_defs.append(("scap_fkc", "arrow4", "x", scale, 0, 2))
@@ -140,7 +139,7 @@ class LegBp(RigModule):
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        self.pvc.cv_rotate(90, 0, 0)
+        # self.pvc.cv_rotate(90, 0, 0)
 
     def build(self):
         """Build the leg rig module."""

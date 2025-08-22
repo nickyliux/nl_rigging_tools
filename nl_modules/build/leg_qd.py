@@ -126,15 +126,15 @@ class LegQd(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
-        scale_fk = scale * 4
+        # scale_fk = scale * 4
 
         ctl_defs = [
             ("setting", "setting", "z", scale, 1, 2),
-            ("hip_fkc", "sphere", "x", scale_fk, 0, -1),
-            ("upr_fkc", "sphere", "x", scale_fk, 0, -1),
-            ("lwr_fkc", "sphere", "x", scale_fk, 0, -1),
-            ("palm_fkc", "sphere", "x", scale_fk, 0, -1),
-            ("digit_fkc", "sphere", "x", scale_fk, 0, -1),
+            ("hip_fkc", "circle", "x", scale, 0, -1),
+            ("upr_fkc", "circle", "x", scale, 0, -1),
+            ("lwr_fkc", "circle", "x", scale, 0, -1),
+            ("palm_fkc", "circle", "x", scale, 0, -1),
+            ("digit_fkc", "circle", "x", scale, 0, -1),
             ("ball_fkc", "circle", "x", scale / 2, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
             ("extra_ikc", "rotator", None, -scale, 0, -1),
