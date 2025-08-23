@@ -1,4 +1,5 @@
 import logging
+from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.build.spine_qd import SpineQd
 
 
@@ -45,7 +46,10 @@ class NeckQd(SpineQd):
         """Setup bind joints for the neck rig."""
 
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxy_ratio(self.jnts_bind, 2)
+        self.add_proxy_radiusScale(self.jnts_bind, 3)
+        self.add_proxy_height(
+            self.jnts_bind, CrvNode(self.LINE_GUIDE).length / self.rbnJntNum
+        )
 
     def setup_ctlSet(self):
         """Setup control sets for the neck rig."""

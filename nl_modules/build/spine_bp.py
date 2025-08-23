@@ -131,7 +131,7 @@ class SpineBp(RigModule):
         self.chest_ctl.snapAlignTo(self.jnts_fk[-1], self.master_guide)
         self.cog_ctl.snapAlignTo(self.hip_ctl, self.master_guide)
 
-        self.setting.snapTo(self.cog_ctl, p=self.CTL_DATA, ofs=(0, 0, rSz * -50))
+        self.setting.snapTo(self.cog_ctl, p=self.CTL_DATA, ofs=(0, 0, rSz * -80))
         self.cog_ctl.cstPar(self.setting, mo=1)
 
         self.cog_gmb = CrvNode(self.cog_ctl).add_gimbal()
@@ -166,7 +166,11 @@ class SpineBp(RigModule):
             self.jnts_ctl = self.build_ctl_jnt(
                 [self.hip_ctl, self.mid_ctl, self.chest_ctl], r=rSz * 10
             )
+
             self.rbSrf.weightTo(self.jnts_ctl, chain=0, mi=2, dr=6)
+            self.hip_ctl.a.add("tangent", min=0, dv=1) >> self.jnts_ctl[0].a.sy
+            self.chest_ctl.a.add("tangent", min=0, dv=1) >> self.jnts_ctl[2].a.sy
+
             # self.jnts_rb = SrfNode.buildRbJnt(
             #     self.rbnJntNum,
             #     pf=rID,
@@ -200,9 +204,9 @@ class SpineBp(RigModule):
         d = arcLD.a.arcLengthInV
         D = d.get()
 
-        volume = self.setting.a.add("volume", min=0, dv=1)
-        self.chest_ctl.a.add("volume", proxy=volume)
-        self.hip_ctl.a.add("volume", proxy=volume)
+        volumePreserve = self.setting.a.add("volumePreserve", min=0, dv=1)
+        self.chest_ctl.a.add("volumePreserve", proxy=volumePreserve)
+        self.hip_ctl.a.add("volumePreserve", proxy=volumePreserve)
 
         # keys for volume squash
         volGraph = self.setting.a.add("volGraph", dv=0)
@@ -217,7 +221,7 @@ class SpineBp(RigModule):
             volGraph >> fc.a.stream
             fc.a.varyTime.set(i)
 
-            ratio = (scaleFix * D / d) ** (fc.a.varying * volume)
+            ratio = (scaleFix * D / d) ** (fc.a.varying * volumePreserve)
             ratio >> self.jnts_rb[i].a.sy
             ratio >> self.jnts_rb[i].a.sz
 
@@ -271,7 +275,10 @@ class SpineBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the spine rig."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxy_ratio(self.jnts_bind, 4)
+        self.add_proxy_radiusScale(self.jnts_bind, 4)
+        self.add_proxy_height(
+            self.jnts_bind, CrvNode(self.LINE_GUIDE).length / self.rbnJntNum
+        )
 
     def setup_ctlSet(self):
         """Setup control sets for the spine rig."""

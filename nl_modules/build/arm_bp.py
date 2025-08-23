@@ -81,7 +81,7 @@ class ArmBp(RigModule):
             ("lwr_fkc", "circle", "x", scale, 0, -1),
             ("palm_fkc", "circle", "x", scale, 0, -1),
             ("ikc", "cube", None, scale * 1.5, 0, -1),
-            ("pvc", "diamond3", None, rSz * 2, 0, -1),
+            ("pvc", "pvc", None, rSz, 0, -1),
             ("palm_ikc", "squareR", "x", scale * 1.2, 0, 2),
         ]
 
@@ -237,7 +237,7 @@ class ArmBp(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting.alignTo(self.palm, p=self.CTL_DATA, ofs=(0, 0, xDr * rSz * -30))
+        self.setting.alignTo(self.palm, p=self.CTL_DATA, ofs=(0, 0, xDr * rSz * -20))
         self.palm.cstPar(self.setting, mo=1)
 
         # Extract blend joints
@@ -484,7 +484,8 @@ class ArmBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxy_ratio(self.jnts_bind, 2)
+        self.add_proxy_radiusScale(self.jnts_bind, 2)
+        self.add_proxy_height(self.jnts_bind, 20 * self.rigSize / self.rbnJntNum)
 
     def setup_ctlSet(self):
         """Setup control sets for the arm rig module."""

@@ -80,21 +80,25 @@ class SpineQd(RigModule):
         ctl_defs = [
             ("setting", "setting", "z", rSz * 2, 1, 2),
             ("cog_ctl", "trapezoid", None, rSz, 0, -1),
-            ("base_ctl", "circle", "z", rSz * 5, 0, -1),
-            ("mid_ctl", "squareR", "z", rSz * 4, 0, -1),
-            ("fore_ctl", "circle", "z", rSz * 5, 0, -1),
+            ("fore_ctl", "qd_chest", None, rSz, 0, -1),
+            ("mid_ctl", "squareR", "z", rSz * 3, 0, -1),
+            ("base_ctl", "qd_chest", None, rSz, 0, -1),
             ("tangent0_ctl", "stick2", None, rSz, 1, -1),
             ("tangent1_ctl", "stick2", None, rSz, 1, -1),
         ]
         if self.endCtl:
-            ctl_defs.append(("end_ctl", "rotator", None, rSz * 2, 0, -1))
+            ctl_defs.append(("end_ctl", "rotator", None, rSz * 1.5, 0, -1))
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        self.cog_ctl.cv_move(0, rSz * 30, rSz * 30)
+        self.cog_ctl.cv_move(0, rSz * 30, rSz * 20)
         self.cog_ctl.cv_scale(1, 1.5, 2)
-        self.setting.cv_move(0, rSz * 30, 0)
+        self.setting.cv_move(0, rSz * 50, 0)
+        self.base_ctl.cv_rotate(0, 180, 0)
+
+        if self.end_ctl:
+            self.end_ctl.cv_rotate(0, 90, 0)
 
     def create_rbSrf(self):
         """Create the ribbon surface for the spine rig."""
@@ -429,7 +433,10 @@ class SpineQd(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the spine rig."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxy_ratio(self.jnts_bind, 5)
+        self.add_proxy_radiusScale(self.jnts_bind, 4)
+        self.add_proxy_height(
+            self.jnts_bind, CrvNode(self.LINE_GUIDE).length / self.rbnJntNum
+        )
 
     def build_post(self):
         """Post setup for the spine rig."""

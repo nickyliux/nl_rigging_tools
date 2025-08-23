@@ -45,24 +45,24 @@ class SrfNode(GrpNode):
             self.uSeg = uSeg
             self.vSeg = vSeg
             self.degU = d
+            self.degV = d
 
         elif self.type == "nurbsSurface":
             self.uSeg = self.shape.a["spansU"].get()
             self.vSeg = self.shape.a["spansV"].get()
             self.degU = self.shape.a["degreeU"].get()
+            self.degV = self.shape.a["degreeV"].get()
         else:
             logging.info("Non nurbsSurface detected.")
 
     @property
     def cvs(self):
         """Return all CVs"""
-
         return mc.ls(self + ".cv[*]", fl=1)
 
     @property
     def patches(self):
         """Return all patches"""
-
         return mc.ls(self + ".sf[*][*]", fl=1)
 
     @property
@@ -73,26 +73,25 @@ class SrfNode(GrpNode):
     @property
     def lengthV(self):
         """Return length in V"""
-
         return mc.arclen(self.shape + ".u[0]")
 
     def weightTo(self, joints, chain=1, **kwargs):
         """Weight surface to joints"""
-
         if self.exists():
-            skin_clu = mc.skinCluster(self, joints, tsb=1, **kwargs)[0]
-            #
-            #   For each joint set cv weight
-            #
-            if chain:
-                spansUV = self.a.spansUV.get()[1]
-                degUV = self.a.degreeUV.get()[1]
-                cv = f"{self.shape}.cv[*][{spansUV + degUV - 1}]"
-                mc.skinPercent(skin_clu, cv, transformValue=[(joints[-1], 1)])
+            skinClu = mc.skinCluster(self, joints, tsb=1, **kwargs)[0]
 
+            spanV = self.a.spansUV.get()[1]
+            degV = self.a.degreeUV.get()[1]
+            last = spanV + degV - 1
+            cv = f"{self.shape}.cv[*][{last}]"
+
+            # bind last cv to last joint
+            mc.skinPercent(skinClu, cv, transformValue=[(joints[-1], 1)])
+
+            if chain:
                 for i in range(len(joints)):
                     mc.skinPercent(
-                        skin_clu,
+                        skinClu,
                         f"{self.shape}.cv[*][{i+1}]",
                         transformValue=[(joints[i], 1)],
                     )
@@ -111,7 +110,7 @@ class SrfNode(GrpNode):
             #         ]
             #         for i, w in enumerate(wList):
             #             mc.skinPercent(
-            #                 skin_clu,
+            #                 skinClu,
             #                 f"{self.shape}.cv[{i}][*]",
             #                 transformValue=[
             #                     (joints[0], w[0]),
@@ -123,7 +122,6 @@ class SrfNode(GrpNode):
     @staticmethod
     def moveCloseToSurf(objList, surf=None):
         """Move objects close to surface"""
-
         if objList and surf:
             xf = DagNode("myXf#", nodeType="transform")
             cpos = DagNode("myCPOS#", nodeType="closestPointOnSurface")
@@ -141,7 +139,6 @@ class SrfNode(GrpNode):
     @staticmethod
     def buildRbSrf(pf="", crv=None, normal=0, snap=None, spans=3, p=None):
         """Build ribbon surface from curve"""
-
         from nl_modules.nodel.crv_node import CrvNode
 
         crvLen = CrvNode(crv).length

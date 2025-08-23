@@ -682,7 +682,9 @@ class RigModule(RigBase):
         common.cstMulti(mainGrp.offset, j0, mainGrp, w=autoAim, cstType="parR", mo=1)
         j0.hide()
 
-        if EXTRA:
+        if not EXTRA:
+            self.jnts_bind.append(self.jnts[0])
+        else:
             # --- Leg lock function setup ---
             aim = (xDr, 0, 0)
             u = (0, xDr, 0)
@@ -946,12 +948,12 @@ class RigModule(RigBase):
 
         return crv_len_ratio, rb_jnts
 
-    def add_proxy_ratio(self, tgtJnts, ratio):
-        """Add proxyRatio attribute to target joints"""
+    def add_proxy_radiusScale(self, tgtJnts, v):
+        """Add proxyRadiusScale attribute to target joints"""
         for jnt in tgtJnts:
             tgt = DagNode(jnt)
             if tgt.exists():
-                tgt.a.add("proxyRatio", k=0, dv=ratio)
+                tgt.a.add("proxyRadiusScale", k=0, dv=v)
 
     def add_proxy_div(self, tgtJnts, div=2):
         """Add proxyDiv attribute to target joints"""
@@ -959,6 +961,13 @@ class RigModule(RigBase):
             tgt = DagNode(jnt)
             if tgt.exists():
                 DagNode(jnt).a.add("proxyDiv", k=0, dv=div)
+
+    def add_proxy_height(self, tgtJnts, v):
+        """Add proxyDiv attribute to target joints"""
+        for jnt in tgtJnts:
+            tgt = DagNode(jnt)
+            if tgt.exists():
+                DagNode(jnt).a.add("proxyHeight", k=0, dv=v)
 
     def get_guide_attr(self, name):
         """Get attribute from master guide"""

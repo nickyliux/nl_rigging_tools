@@ -53,6 +53,7 @@ class LegBp(RigModule):
         self.jnts_fk = []
         self.jnts_ik = []
         self.jnts_bf = []
+
         self.ctls_ik = []
         self.ctls_fk = []
         self.ctls_sub = []
@@ -616,7 +617,8 @@ class LegBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxy_ratio(self.jnts_bind, 2)
+        self.add_proxy_radiusScale(self.jnts_bind, 2)
+        self.add_proxy_height(self.jnts_bind, 20 * self.rigSize / self.rbnJntNum)
 
     def build_post(self):
         """Post setup for the leg rig module."""

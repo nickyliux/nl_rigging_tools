@@ -126,7 +126,6 @@ class LegQd(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
-        # scale_fk = scale * 4
 
         ctl_defs = [
             ("setting", "setting", "z", scale, 1, 2),
@@ -163,7 +162,7 @@ class LegQd(RigModule):
         self.build_ik()
         self.blend_fk_ik()
 
-        self.jnts_bind = self.jnts[:-1] + [self.boneFix]
+        self.jnts_bind = self.jnts[1:-1] + [self.boneFix]
 
         self.scapularG = self.build_scapular(
             ikc=self.ikc,
@@ -630,7 +629,7 @@ class LegQd(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the quadruped leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxy_ratio(self.jnts_bind, 2.5)
+        self.add_proxy_radiusScale(self.jnts_bind, 2.5)
 
     def setup_scale(self):
         """Setup scale for the quadruped leg rig module."""

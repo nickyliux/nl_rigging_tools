@@ -120,7 +120,7 @@ class RbnNode:
                 f"rbj_{i}",
                 pf=self.pf,
                 p=self.RBJ_GRP,
-                r=self.size / self.rbJNum * 5,
+                r=self.size,  # / self.rbJNum * 5,
                 addOfs=1,
             )
             pin_xf.cstPar(jnt.parent)

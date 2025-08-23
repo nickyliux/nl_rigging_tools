@@ -65,7 +65,7 @@ class Tail(RigModule):
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        self.setting.a.add("stretch", min=0, max=1)
+        self.setting.a.add("stretchy", min=0, max=1)
         self.setting.a.add("localScale", min=0.01, dv=1)
 
     def build(self):
@@ -103,19 +103,18 @@ class Tail(RigModule):
             rbSrf=self.rbSrf2,
             jntNum=self.rbnJntNum,
             scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,
-            stretchyAttr=self.setting.a.stretch,
+            stretchyAttr=self.setting.a.stretchy,
         )
         self.jnts_bind = self.jnts_rb
 
     def build_ik(self):
         """Build the IK controls for the tail rig."""
         logging.info(self.rigID)
-
         rID, rSz, xDr = self.getMyVar()
 
         # --- Create IK joint chain from guide curve ---
         self.jnts_ik = JntNode.createJntFrCrv(
-            self.LINE_GUIDE, num=5, name="ikj", pf=rID, aimV=(0, 0, -1), size=rSz
+            self.LINE_GUIDE, num=5, name="ikj", pf=rID, aimV=(0, 0, -1), size=rSz * 2
         )
 
         # --- Attach ribbon surface weights to IK joints ---
@@ -214,7 +213,7 @@ class Tail(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the tail rig controls."""
         self.ctl_vis_toggle(
-            self.setting.a.add("ikCtls", k=0, attrType="bool", dv=0),
+            self.setting.a.add("ikCtls", k=0, attrType="bool", dv=1),
             onList=[self.ctls_ik[0]],
         )
         self.ctl_vis_toggle(
@@ -222,11 +221,11 @@ class Tail(RigModule):
             onList=[self.ctls_fk[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("subIkCtls", k=0, attrType="bool", dv=0),
+            self.setting.a.add("subIkCtls", k=0, attrType="bool", dv=1),
             onList=self.ctls_ofs,
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0),
+            self.setting.a.add("setupJnts", attrType="bool", k=0, dv=0),
             onList=self.jnts_fk + self.jnts_ik + self.jnts_ofs,
         )
         mc.hide(self.rbSrf1, self.rbSrf2)
@@ -254,6 +253,9 @@ class Tail(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the tail rig controls."""
         self.add_bind_jnt_set(self.jnts_bind)
+        self.add_proxy_height(
+            self.jnts_bind, CrvNode(self.LINE_GUIDE).length / self.rbnJntNum
+        )
 
     def setup_space(self):
         pass

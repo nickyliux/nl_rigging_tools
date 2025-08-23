@@ -90,7 +90,7 @@ class JntNode(GrpNode):
             else:
                 JntNode(jnt).resetOrient()
 
-    def addProxyMesh(self, scale=1, scaler=None, aimDir=(1, 0, 0), skipEnd=0, p=None):
+    def addProxyMesh(self, scale=5, scaler=None, aimDir=(1, 0, 0), skipEnd=0, p=None):
         """Add a proxy mesh for the joint."""
         from nl_modules.utils import common
 
@@ -98,26 +98,27 @@ class JntNode(GrpNode):
         if DagNode(proxy_name).exists():
             return None
 
-        # Get proxy attributes with fallback defaults
-        proxy_ratio = self.a["proxyRatio"].get() or 1
-        proxy_div = self.a["proxyDiv"].get() or 2
-
         children = self.childrenJt
-        base_radius = self.a.radius.get() * 5 * scale
+        base_radius = self.a.radius.get() * scale
+
+        # Get proxy attributes with fallback defaults
+        proxy_ratio = self.a["proxyRadiusScale"].get() or 1
+        proxy_div = self.a["proxyDiv"].get() or 2
+        proxy_height = self.a["proxyHeight"].get() or base_radius
 
         if children or not skipEnd:
             # Determine proxy height: distance to first child or default size
             if children:
                 height = self.o.distanceTo(children[0])
             else:
-                height = base_radius
+                height = proxy_height  # base_radius
 
             # Create the proxy mesh (polyCylinder)
             proxy = DagNode(
                 mc.polyCylinder(
                     n=proxy_name,
                     r=base_radius / 2 * proxy_ratio,
-                    h=height * 0.9,
+                    h=height * 0.8,
                     ax=aimDir,
                     subdivisionsAxis=8,
                     subdivisionsHeight=proxy_div,
