@@ -63,7 +63,7 @@ class SpineBp(RigModule):
             ("cog_ctl", "cog2", None, rSz * 6, 0, 2),
             ("chest_ctl", "chest", None, rSz * 4, 0, 2),
             ("mid_ctl", "cube", None, rSz, 0, -1),
-            ("hip_ctl", "chest", None, rSz * 4, 0, 2),
+            ("hip_ctl", "hip", None, rSz * 4, 0, 2),
         ]
 
         for name, shape, up, scale, top, w in ctl_defs:

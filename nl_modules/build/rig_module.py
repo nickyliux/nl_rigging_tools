@@ -331,7 +331,13 @@ class RigModule(RigBase):
 
     def build_post_module(self):
         """Post build function to finalize the module setup."""
-        [mc.setAttr(obj + ".ro", cb=1) for obj in mc.ls(tr=1)]
+        # Show rotate order attribute in channelBox
+        for node in mc.ls(tr=1):
+            node = DagNode(node)
+            if node.type == "nurbsCurve" or node.type == "joint":
+                mc.setAttr(node + ".ro", cb=1)
+
+        # Hide module grp
         mc.hide(self.moduleG)
 
     def unbuild_pre_module(self):
