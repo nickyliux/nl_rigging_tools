@@ -4,7 +4,9 @@ from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.jnt_node import JntNode
+from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
+from nl_modules.utils import common
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.common import Vec
 from nl_modules.utils.color import Color
@@ -62,14 +64,14 @@ class SpineBp(RigModule):
             ("setting", "setting", "z", rSz * 3, 1, 2),
             ("cog_ctl", "cog2", None, rSz * 6, 0, 2),
             ("chest_ctl", "chest", None, rSz * 4, 0, 2),
-            ("mid_ctl", "cube", None, rSz, 0, -1),
+            ("mid_ctl", "cube", None, rSz, 1, -1),
             ("hip_ctl", "hip", None, rSz * 4, 0, 2),
         ]
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        self.mid_ctl.cv_move(0, 0, rSz * -40)
+        # self.mid_ctl.cv_move(0, 0, rSz * -40)
 
     def build(self):
         """Build the spine rig module."""
@@ -83,7 +85,6 @@ class SpineBp(RigModule):
     def build_fk(self):
         """Build the FK controls and joints for the spine rig."""
         logging.info(self.rigID)
-
         rID, rSz, xDr = self.getMyVar()
 
         self.jnts_fk = JntNode.createJntFrCrv(
@@ -131,9 +132,6 @@ class SpineBp(RigModule):
         self.chest_ctl.snapAlignTo(self.jnts_fk[-1], self.master_guide)
         self.cog_ctl.snapAlignTo(self.hip_ctl, self.master_guide)
 
-        self.setting.snapTo(self.cog_ctl, p=self.CTL_DATA, ofs=(0, 0, rSz * -80))
-        self.cog_ctl.cstPar(self.setting, mo=1)
-
         self.cog_gmb = CrvNode(self.cog_ctl).add_gimbal()
         self.cog_ctl | self.CTL_DATA
         self.cog_gmb.cstPar(self.ctls_fk[0].offset, mo=1)
@@ -141,7 +139,9 @@ class SpineBp(RigModule):
 
         self.hip_ctl | self.ctls_fk[0]
         self.chest_ctl | self.ctls_fk[-1]
-        self.mid_ctl | self.ctls_fk[len(self.ctls_fk) // 2]
+
+        mid_parent = self.ctls_fk[len(self.ctls_fk) // 2]
+        self.mid_ctl | mid_parent
         self.hip_ctl.addOffsetGrp()
         self.mid_ctl.addOffsetGrp(count=2)
         self.chest_ctl.addOffsetGrp()
@@ -152,50 +152,70 @@ class SpineBp(RigModule):
         self.cog_gmb.cstSca(self.jnts_fk[0])
         self.jnts_fk[0].childrenJt[0].a.segmentScaleCompensate.set(0)
 
+        self.add_mid_ctl_follow(mid_parent)
+
         if self.rbnBones:
-            self.rbSrf = SrfNode.buildRbSrf(
-                pf=rID,
-                crv=self.LINE_GUIDE,
-                normal=1,
-                snap=self.rootJ,
-                spans=self.fkJntNum - 1,
-                p=self.RIG_DATA,
-            )
-            self.rigNode.setMsg({"rbSrf": self.rbSrf})
+            self.build_ribbon()
 
-            self.jnts_ctl = self.build_ctl_jnt(
-                [self.hip_ctl, self.mid_ctl, self.chest_ctl], r=rSz * 10
-            )
+        self.setting.snapTo(self.cog_ctl, p=self.CTL_DATA, ofs=(0, 0, rSz * -80))
+        self.cog_ctl.cstPar(self.setting, mo=1)
 
-            self.rbSrf.weightTo(self.jnts_ctl, chain=0, mi=2, dr=6)
-            self.hip_ctl.a.add("tangent", min=0, dv=1) >> self.jnts_ctl[0].a.sy
-            self.chest_ctl.a.add("tangent", min=0, dv=1) >> self.jnts_ctl[2].a.sy
-
-            # self.jnts_rb = SrfNode.buildRbJnt(
-            #     self.rbnJntNum,
-            #     pf=rID,
-            #     size=rSz * 2,
-            #     surf=self.rbSrf,
-            #     rigData=self.RIG_DATA,
-            #     sklData=self.SKL_DATA,
-            # )
-            self.setting.a.add("stretchy", min=0, max=1, dv=1)
-            crvLenRatio, self.jnts_rb = self.build_motionPath_ribbon(
-                rbSrf=self.rbSrf,
-                jntNum=self.rbnJntNum,
-                scaleAttr=self.masterC.a.globalScale,
-                stretchyAttr=self.setting.a.stretchy,
-                # stretchyAttr=1,
-            )
-            self.volume_setup()
-
-            self.jnts_bind = self.jnts_rb
-
-        for ctl in self.ctls_fk:
-            self.cog_ctl.a.s >> ctl.offset.a.s
-
-        self.masterC.a.globalScale >> self.SKL_DATA.a.s
         self.ctls_ik = [self.hip_ctl, self.mid_ctl, self.chest_ctl]
+
+    def add_mid_ctl_follow(self, mid_parent):
+        """Add follow setup for mid control"""
+        mid_loc = LocNode("mid_loc", p=mid_parent, pf=self.rigID, vis=0)
+
+        common.cstMulti(self.chest_ctl, self.hip_ctl, mid_loc, cstType="poi")
+        self.chest_ctl.cstAim(
+            mid_loc,
+            worldUpObject=self.chest_ctl,
+            worldUpType="objectrotation",
+            aim=(0, 1, 0),
+            u=(1, 0, 0),
+            wu=(1, 0, 0),
+        )
+
+        RigModule.isolate_align(
+            self.mid_ctl,
+            spaces=[self.mid_ctl.offset.offset, mid_loc],
+            cstType="par",
+            attrName="alignSpine",
+            dv=1,
+        )
+
+    def build_ribbon(self):
+        """Build the ribbon for the spine rig."""
+        rID, rSz, xDr = self.getMyVar()
+
+        self.rbSrf = SrfNode.buildRbSrf(
+            pf=rID,
+            crv=self.LINE_GUIDE,
+            normal=1,
+            snap=self.rootJ,
+            spans=self.fkJntNum - 1,
+            p=self.RIG_DATA,
+        )
+        self.rigNode.setMsg({"rbSrf": self.rbSrf})
+
+        self.jnts_ctl = self.build_ctl_jnt(
+            [self.hip_ctl, self.mid_ctl, self.chest_ctl], r=rSz * 10
+        )
+
+        self.rbSrf.weightTo(self.jnts_ctl, chain=0, mi=2, dr=6)
+        self.hip_ctl.a.add("tangent", min=0, dv=1) >> self.jnts_ctl[0].a.sy
+        self.chest_ctl.a.add("tangent", min=0, dv=1) >> self.jnts_ctl[2].a.sy
+
+        self.setting.a.add("stretchy", min=0, max=1, dv=1)
+        crvLenRatio, self.jnts_rb = self.build_motionPath_ribbon(
+            rbSrf=self.rbSrf,
+            jntNum=self.rbnJntNum,
+            scaleAttr=self.masterC.a.globalScale,
+            stretchyAttr=self.setting.a.stretchy,
+        )
+        self.jnts_bind = self.jnts_rb
+
+        self.volume_setup()
 
     def volume_setup(self):
         """Setup volume squash/stretch for the spine rig."""
@@ -287,7 +307,10 @@ class SpineBp(RigModule):
         )
 
     def setup_scale(self):
-        pass
+        """Setup scale attributes for the spine rig."""
+        self.masterC.a.globalScale >> self.SKL_DATA.a.s
+        for ctl in self.ctls_fk:
+            self.cog_ctl.a.s >> ctl.offset.a.s
 
     def build_post(self):
         """Post setup for the spine rig."""
