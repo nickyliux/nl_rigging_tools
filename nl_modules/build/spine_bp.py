@@ -64,7 +64,7 @@ class SpineBp(RigModule):
             ("setting", "setting", "z", rSz * 3, 1, 2),
             ("cog_ctl", "cog2", None, rSz * 6, 0, 2),
             ("chest_ctl", "chest", None, rSz * 4, 0, 2),
-            ("mid_ctl", "cube", None, rSz, 1, -1),
+            ("mid_ctl", "cube", None, rSz * 2, 1, -1),
             ("hip_ctl", "hip", None, rSz * 4, 0, 2),
         ]
 
@@ -180,8 +180,7 @@ class SpineBp(RigModule):
             self.mid_ctl,
             spaces=[self.mid_ctl.offset.offset, mid_loc],
             cstType="par",
-            attrName="alignSpine",
-            dv=1,
+            attrName="alignIK",
         )
 
     def build_ribbon(self):

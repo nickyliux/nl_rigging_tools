@@ -237,7 +237,7 @@ class ArmBp(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting.alignTo(self.palm, p=self.CTL_DATA, ofs=(0, 0, xDr * rSz * -20))
+        self.setting.alignTo(self.palm, p=self.CTL_DATA, ofs=(0, xDr * rSz * 12, 0))
         self.palm.cstPar(self.setting, mo=1)
 
         # Extract blend joints

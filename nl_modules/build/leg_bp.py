@@ -132,7 +132,7 @@ class LegBp(RigModule):
             ("ball_fkc", "circle", "x", scale, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
             ("pvc", "pvc", None, rSz, 0, -1),
-            ("smart_ctl", "squareR", None, scale / 2, 0, 2),
+            ("smart_ctl", "roll", None, scale / 2, 1, -1),
         ]
         if self.scapularExtra:
             ctl_defs.append(("scap_fkc", "arrow4", "x", scale, 0, 2))
@@ -141,6 +141,7 @@ class LegBp(RigModule):
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         # self.pvc.cv_rotate(90, 0, 0)
+        self.smart_ctl.cv_scale(2, 1, 1)
 
     def build(self):
         """Build the leg rig module."""
