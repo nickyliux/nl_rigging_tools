@@ -997,26 +997,29 @@ class RigModule(RigBase):
 
     def build_roller(self, targets, up="y"):
         """Build roller joints for the specified targets."""
+        rID, rSz, xDr = self.getMyVar()
+
         wu = u = (0, 1, 0)
+        aim = (xDr * -1, 0, 0)
+        wut = "objectrotation"
+        r = rSz * 4
+
         for tgt in targets:
-            rollerJ = JntNode(
-                tgt + "_roller",
-                pf=self.rigID,
-                align=tgt,
-                r=self.rigSize * 4,
-                color=Color.D_YELLOW,
-                p=tgt,
-            )
+            # Create roller joint
+            rollerJ = JntNode(tgt + "_roller", pf=rID, align=tgt, r=r, p=tgt)
             rollerJ.resetOrient()
-            if tgt.parent:
-                tgt.parent.cstAim(
-                    rollerJ,
-                    aim=(self.xDir * -1, 0, 0),
-                    worldUpType="objectrotation",
-                    worldUpObject=tgt,
-                    u=u,
-                    wu=wu,
+            rollerJ.resetXf()
+            tgt_p = tgt.parent
+            if tgt_p and tgt_p.type == "joint":
+                tgt_p.cstAim(
+                    rollerJ, aim=aim, worldUpType=wut, worldUpObject=tgt, u=u, wu=wu
                 )
+                # Create twist joint
+                twistJ = JntNode(tgt + "_twist", pf=rID, align=tgt_p, r=r, p=tgt_p)
+                twistJ.resetOrient()
+                twistJ.resetXf()
+                tgt.a.tx / 2 >> twistJ.a.tx
+                tgt.a.rx / 2 >> twistJ.a.rx
 
     def build_rbn(self, tgt, name="", rbJNum=5, volMode=1):
         """Build a ribbon node for the target with specified parameters."""
