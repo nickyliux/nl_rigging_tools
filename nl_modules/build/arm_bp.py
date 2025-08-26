@@ -99,6 +99,8 @@ class ArmBp(RigModule):
         self.jnts = self.rootJ.allChildrenJt2
         self.clavicle, self.upr, self.lwr, self.palm, self.ball = self.jnts
         self.build_ctl()
+        if not self.rbnBones:
+            self.build_roller([self.lwr, self.palm])
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()

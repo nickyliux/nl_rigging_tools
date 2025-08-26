@@ -10,6 +10,7 @@ from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.rbn_node import RbnNode
 from nl_modules.utils import common
 from nl_modules.utils import utils_node as ut
+from nl_modules.utils.color import Color
 
 BIND_JNT_SET = "bind_jnt_set"
 
@@ -993,6 +994,29 @@ class RigModule(RigBase):
         for jnt in extend or []:
             if jnt not in self.jnts_bind:
                 self.jnts_bind.append(jnt)
+
+    def build_roller(self, targets, up="y"):
+        """Build roller joints for the specified targets."""
+        wu = u = (0, 1, 0)
+        for tgt in targets:
+            rollerJ = JntNode(
+                tgt + "_roller",
+                pf=self.rigID,
+                align=tgt,
+                r=self.rigSize * 4,
+                color=Color.D_YELLOW,
+                p=tgt,
+            )
+            rollerJ.resetOrient()
+            if tgt.parent:
+                tgt.parent.cstAim(
+                    rollerJ,
+                    aim=(self.xDir * -1, 0, 0),
+                    worldUpType="objectrotation",
+                    worldUpObject=tgt,
+                    u=u,
+                    wu=wu,
+                )
 
     def build_rbn(self, tgt, name="", rbJNum=5, volMode=1):
         """Build a ribbon node for the target with specified parameters."""
