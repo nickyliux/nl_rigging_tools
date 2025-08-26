@@ -333,7 +333,10 @@ class Hand(RigModule):
 
     def setup_scale(self):
         """Setup scaling for the hand rig module."""
-        self.smart_ctl.a.add("handScale", min=0, dv=1) >> self.rootJ.a.scale
+        handScale = self.smart_ctl.a.add("handScale", min=0, dv=1)
+        handScale >> self.rootJ.a.scale
+        handScale >> self.palm_ctl.offset.a.scale
+
         for root in self.rootJ.childrenJt:
             root.a.segmentScaleCompensate.set(0)
 

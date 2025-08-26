@@ -21,7 +21,7 @@ class ArmBp(RigModule):
         super().__init__(rigNode)
 
         # Guide attributes
-        guide_attrs = ["twistBones", "rbnBones", "rbnJntNum", "scapularBone"]
+        guide_attrs = ["dualBones", "rbnBones", "rbnJntNum", "scapularBone"]
         for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
 
@@ -115,10 +115,10 @@ class ArmBp(RigModule):
                 palm=self.palm,
                 kneeFix=0,
             )
-            self.twistBones = 0
+            self.dualBones = 0
 
-        if self.twistBones:
-            self.build_twist_bones()
+        if self.dualBones:
+            self.build_dual_bones()
 
         if self.scapularBone:
             self.build_armScapular()
@@ -343,8 +343,8 @@ class ArmBp(RigModule):
 
         self.updateBindJntList(remove=[self.clavicle], extend=[self.clavBone])
 
-    def build_twist_bones(self):
-        """Build twist bones for the arm rig."""
+    def build_dual_bones(self):
+        """Build dual bones for the lower arm."""
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
@@ -353,10 +353,10 @@ class ArmBp(RigModule):
         radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=2)
         ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=2)
 
-        # Parent twist chains to lower arm
+        # Parent dual chains to lower arm
         (radius_JC[0], ulna_JC[0]) | self.lwr
 
-        # Create locators for twist orientation
+        # Create locators for dual  orientation
         radius_loc = LocNode(
             "radius_loc", pf=rID, align=radius_JC[1], p=self.palm, size=rSz
         )
@@ -364,7 +364,7 @@ class ArmBp(RigModule):
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
 
-        # Aim constraints for twist orientation
+        # Aim constraints for dual  orientation
         uType = "objectrotation"
         aim = (xDr, 0, 0)
         z = (0, 0, 1)

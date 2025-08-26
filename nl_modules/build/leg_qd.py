@@ -27,7 +27,7 @@ class LegQd(RigModule):
             "patellaBone",
             "toeBones",
             "toeNum",
-            "twistBones",
+            "dualBones",
             "kneeFix",
             "scapularExtra",
         ]
@@ -138,7 +138,7 @@ class LegQd(RigModule):
             ("ikc", "foot", None, rSz, 0, -1),
             ("extra_ikc", "rotator", None, -scale, 0, -1),
             ("pvc", "pvc", None, rSz, 0, -1),
-            ("smart_ctl", "squareR", None, scale / 3, 0, 2),
+            ("smart_ctl", "roll", None, scale / 3, 0, -1),
         ]
 
         if self.scapularExtra:
@@ -149,6 +149,8 @@ class LegQd(RigModule):
 
         if self.scapularExtra:
             self.quadScap_ikc.cv_move(scale * 10, 0, 0)
+
+        self.smart_ctl.cv_scale(2, 1, 1)
 
     def build(self):
         """Build the quadruped leg rig module."""
@@ -180,8 +182,8 @@ class LegQd(RigModule):
         if self.patellaBone:
             self.patella_setup()
 
-        if self.twistBones:
-            self.build_twist_bones()
+        if self.dualBones:
+            self.build_dual_bones()
 
         if self.toeBones:
             self.build_toes()
@@ -480,20 +482,20 @@ class LegQd(RigModule):
         #     common.sdk2(splay, tgt, -5, splayRange * (-1 + 2 / (toeCount - 1) * i))
         #     common.sdk2(splay, tgt, 5, -splayRange * (-1 + 2 / (toeCount - 1) * i))
 
-    def build_twist_bones(self):
-        """Build twist bones for the quadruped leg rig."""
+    def build_dual_bones(self):
+        """Build dual bones for the lower leg."""
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        # --- Generate twist joint chains ---
+        # --- Generate dual joint chains ---
         radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=2)
         ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=2)
 
-        # --- Parent twist chains to appropriate joint ---
+        # --- Parent dual chains to appropriate joint ---
         parent = self.boneFix if self.kneeFix else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent
 
-        # --- Create and align locators for twist chains ---
+        # --- Create and align locators for dual chains ---
         radius_loc = LocNode(
             "radius_loc", pf=rID, align=radius_JC[1], p=self.palm, size=rSz
         )
@@ -501,7 +503,7 @@ class LegQd(RigModule):
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
 
-        # --- Setup aim constraints for twist locators ---
+        # --- Setup aim constraints for dual locators ---
         uType = "objectrotation"
         aim = (xDr, 0, 0)
         z = (0, 0, 1)

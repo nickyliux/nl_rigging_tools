@@ -28,7 +28,7 @@ class LegBp(RigModule):
             "rbnJntNum",
             "patellaBone",
             "toeBones",
-            "twistBones",
+            "dualBones",
             "kneeFix",
             "scapularExtra",
         ]
@@ -132,7 +132,7 @@ class LegBp(RigModule):
             ("ball_fkc", "circle", "x", scale, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
             ("pvc", "pvc", None, rSz, 0, -1),
-            ("smart_ctl", "roll", None, scale / 2, 1, -1),
+            ("smart_ctl", "roll", None, scale / 3, 1, -1),
         ]
         if self.scapularExtra:
             ctl_defs.append(("scap_fkc", "arrow4", "x", scale, 0, 2))
@@ -182,7 +182,7 @@ class LegBp(RigModule):
                 palm=self.palm,
                 kneeFix=self.kneeFix,
             )
-            self.twistBones = 0
+            self.dualBones = 0
 
         if self.kneeFix:
             self.boneFix_setup(self.lwr, self.palm)
@@ -192,8 +192,8 @@ class LegBp(RigModule):
         if self.patellaBone:
             self.patellaJ = self.patella_setup()
 
-        if self.twistBones:
-            self.build_twist_bones()
+        if self.dualBones:
+            self.build_dual_bones()
 
         if self.toeBones:
             self.build_toes()
@@ -457,8 +457,8 @@ class LegBp(RigModule):
         #     common.sdk2(splay, tgt, -5, splayRange * (-1 + 2 / (toeCount - 1) * i))
         #     common.sdk2(splay, tgt, 5, -splayRange * (-1 + 2 / (toeCount - 1) * i))
 
-    def build_twist_bones(self):
-        """Build twist bones for the leg rig."""
+    def build_dual_bones(self):
+        """Build dual bones for the lower leg."""
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
