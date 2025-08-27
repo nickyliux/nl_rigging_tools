@@ -26,6 +26,7 @@ class JntNode(GrpNode):
         color=0,
         r=None,
         reset=0,
+        ro=0,
     ):
         nodeExists = 0
         if DagNode(pf + node + sf).exists():
@@ -52,6 +53,8 @@ class JntNode(GrpNode):
         if reset:
             self.resetOrient()
             self.resetXf()
+        if ro:
+            self.a.ro.set(ro)
 
     def setRadius(self, v, rel=0):
         """Set the radius of the joint"""

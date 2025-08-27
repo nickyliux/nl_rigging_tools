@@ -96,17 +96,21 @@ class ArmBp(RigModule):
     def build(self):
         """Build the arm rig module."""
         self.build_pre_module()
+
         self.jnts = self.rootJ.allChildrenJt2
         self.clavicle, self.upr, self.lwr, self.palm, self.ball = self.jnts
         self.build_ctl()
+        self.build_extra([self.lwr, self.palm])
+
+        # self.jnts_bind = [self.clavicle]
+
         if not self.rbnBones:
-            self.build_roller([self.lwr, self.palm])
+            self.build_roller_jnts([self.upr, self.lwr], num=2)
+
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
         # self.build_nlAutoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
-
-        self.jnts_bind = [self.clavicle, self.upr, self.lwr]
 
         if self.rbnBones:
             self.build_bendy_ribbon(
@@ -487,7 +491,10 @@ class ArmBp(RigModule):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_proxy_radiusScale(self.jnts_bind, 2)
-        self.add_proxy_height(self.jnts_bind, 20 * self.rigSize / self.rbnJntNum)
+        if self.rbnBones:
+            self.add_proxy_height(self.jnts_bind, 20 * self.rigSize / self.rbnJntNum)
+        else:
+            self.add_proxy_height(self.jnts_bind, 20 * self.rigSize / 2)
 
     def setup_ctlSet(self):
         """Setup control sets for the arm rig module."""

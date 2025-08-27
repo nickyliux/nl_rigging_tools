@@ -158,8 +158,8 @@ class LegBp(RigModule):
         # )
         self.jnts_bind = [
             self.hip,
-            self.upr,
-            self.lwr,
+            # self.upr,
+            # self.lwr,
             self.boneFix,
             self.palm,
             self.ball,
@@ -173,7 +173,13 @@ class LegBp(RigModule):
             scapCtl=self.scap_fkc,
         )
 
-        if self.rbnBones:
+        self.build_extra([self.lwr, self.palm])
+        if not self.rbnBones:
+            self.build_roller_jnts(
+                [self.upr, self.lwr],
+                num=2,
+            )
+        else:
             self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(
                 rbJNum=self.rbnJntNum,
                 root=self.hip,
@@ -619,7 +625,10 @@ class LegBp(RigModule):
         """Setup bind joints for the leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_proxy_radiusScale(self.jnts_bind, 2)
-        self.add_proxy_height(self.jnts_bind, 20 * self.rigSize / self.rbnJntNum)
+        if self.rbnBones:
+            self.add_proxy_height(self.jnts_bind, 20 * self.rigSize / self.rbnJntNum)
+        else:
+            self.add_proxy_height(self.jnts_bind, 20 * self.rigSize / 2)
 
     def build_post(self):
         """Post setup for the leg rig module."""

@@ -92,6 +92,8 @@ def assignPresetShd(tgts=None):
     if not tgts:
         return
 
+    DARKENING = 0.8
+
     for tgt_name in tgts:
         tgt = DagNode(tgt_name)
         name = "proxy_mid_shd"
@@ -105,10 +107,9 @@ def assignPresetShd(tgts=None):
             name = "proxy_rt_shd"
             color = DagNode.COLOR_RIGHT
 
-        SHADER_DARKEN = 0.8
         # Assign shader based on type
         if tgt.type == "mesh":
-            shd, sg = addShader(name, color=Vec(color) * SHADER_DARKEN)
+            shd, sg = addShader(name, color=Vec(color) * DARKENING)
             mc.sets(tgt, forceElement=sg)
         elif tgt.type == "nurbsCurve":
             tgt.color = color
@@ -116,24 +117,24 @@ def assignPresetShd(tgts=None):
     mc.select(cl=1)
 
 
-def addShader(n, shaderType="lambert", color=(1, 1, 1)):
+def addShader(name, shaderType="lambert", color=(1, 1, 1)):
     """Create shader and return shader, shading group"""
     from nl_modules.nodel.base.dep_node import DepNode
 
     sg = None
-    shd = DepNode(n)
+    shd = DepNode(name)
 
     if shd.exists():
         nodes = shd.a.outColor.outConnNode
         if nodes:
             sg = nodes[0]
     else:
-        shd = DepNode(mc.shadingNode(shaderType, name=n, asShader=1))
+        shd = DepNode(mc.shadingNode(shaderType, name=name, asShader=1))
         shd.a.color.set(*color)
-        # shd.a.transparency.set(0.5, 0.5, 0.5)
-        # shd.a.ambientColor.set(0.1, 0.1, 0.1)
         shd.a.diffuse.set(0.6)
-        sg = DepNode(mc.sets(name=f"{n}SG", empty=1, renderable=1, noSurfaceShader=1))
+        sg = DepNode(
+            mc.sets(name=f"{name}SG", empty=1, renderable=1, noSurfaceShader=1)
+        )
         mc.connectAttr(f"{shd}.outColor", f"{sg}.surfaceShader")
     return shd, sg
 

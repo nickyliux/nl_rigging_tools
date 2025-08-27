@@ -995,10 +995,9 @@ class RigModule(RigBase):
             if jnt not in self.jnts_bind:
                 self.jnts_bind.append(jnt)
 
-    def build_roller(self, targets, up="y"):
+    def build_extra(self, targets, up="y"):
         """Build roller joints for the specified targets."""
         rID, rSz, xDr = self.getMyVar()
-
         wu = u = (0, 1, 0)
         aim = (xDr * -1, 0, 0)
         wut = "objectrotation"
@@ -1006,20 +1005,62 @@ class RigModule(RigBase):
 
         for tgt in targets:
             # Create roller joint
-            rollerJ = JntNode(tgt + "_roller", pf=rID, align=tgt, r=r, p=tgt)
-            rollerJ.resetOrient()
-            rollerJ.resetXf()
+            ro = tgt.a.rotateOrder.get()
+            extraJ = JntNode(tgt + "_extra", pf=rID, align=tgt, r=r, p=tgt, ro=ro)
+            extraJ.resetOrient()
+            extraJ.resetXf()
             tgt_p = tgt.parent
             if tgt_p and tgt_p.type == "joint":
                 tgt_p.cstAim(
-                    rollerJ, aim=aim, worldUpType=wut, worldUpObject=tgt, u=u, wu=wu
+                    extraJ, aim=aim, worldUpType=wut, worldUpObject=tgt, u=u, wu=wu
                 )
-                # Create twist joint
-                twistJ = JntNode(tgt + "_twist", pf=rID, align=tgt_p, r=r, p=tgt_p)
-                twistJ.resetOrient()
-                twistJ.resetXf()
-                tgt.a.tx / 2 >> twistJ.a.tx
-                tgt.a.rx / 2 >> twistJ.a.rx
+
+    def build_roller_jnts(self, targets, num=2):
+        """
+        Roller joints are created using ik with zero poleVector.
+        A locator under it is orientConstrained to return the roll value
+        """
+        rID, rSz, xDr = self.getMyVar()
+
+        tgt_p = targets[0].parent
+        if tgt_p and tgt_p.type == "joint":
+
+            # Create roll ik joints and IK
+            self.jnts_ro = common.dupSk(targets, "_ro", r=0, color=Color.YELLOW)
+            roll_ikH = IkNode(
+                "roll",
+                pf=rID,
+                rSz=rSz,
+                sj=targets[0],
+                ee=targets[1],
+                jsf="_ro",
+                solver=Solver.RP,
+                quat=1,
+                localScale=1,
+                p=self.RIG_DATA,
+                # RIG_DATA=self.RIG_DATA,
+            )
+            targets[1].cstPoi(roll_ikH)
+
+            # Create roll locator
+            roll_loc = LocNode(
+                "roll_loc", pf=rID, align=self.jnts_ro[0], p=self.jnts_ro[0]
+            )
+            targets[0].cstOri(roll_loc)
+
+            # Create roller joints
+            for i in range(num):
+                rollerJ = targets[0].duplicate(
+                    name=f"{targets[0].name}_roller_{i}", po=1
+                )
+                rollerJ | self.jnts_ro[0]
+                rollerJ.a.radius.set(rSz * 2)
+                ratio = i / num
+                common.cstMulti(
+                    targets[0], targets[1], rollerJ, cstType="poi", w=1 - ratio
+                )
+                roll_loc.a.rx * ratio >> rollerJ.a.rx
+                self.jnts_bind.append(rollerJ)
 
     def build_rbn(self, tgt, name="", rbJNum=5, volMode=1):
         """Build a ribbon node for the target with specified parameters."""
