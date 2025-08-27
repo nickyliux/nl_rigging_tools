@@ -105,7 +105,7 @@ class ArmBp(RigModule):
         # self.jnts_bind = [self.clavicle]
 
         if not self.rbnBones:
-            self.build_roller_jnts([self.upr, self.lwr], num=2)
+            self.build_uprRollJ([self.upr, self.lwr], num=2)
 
         self.build_fk()
         self.build_ik()
@@ -490,7 +490,7 @@ class ArmBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxy_radiusScale(self.jnts_bind, 2)
+        # self.add_proxy_radiusScale(self.jnts_bind, 2)
         if self.rbnBones:
             self.add_proxy_height(self.jnts_bind, 20 * self.rigSize / self.rbnJntNum)
         else:

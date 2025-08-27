@@ -50,18 +50,18 @@ MODEL_GRP = "mdl_grp"
 BIND_REF_GRP = "jnt_grp"
 
 
-class MainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
+class MyWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     """Main window for the rigging tools UI."""
 
     def __init__(self, parent=None):
         """Initialize the main window and load the UI."""
-        super(MainWindow, self).__init__(parent)
+        super(MyWindow, self).__init__(parent)
         logging.info("load " + UI_PATH)
         self.UI = QUiLoader().load(UI_PATH)
 
         self.setWindowTitle("nlRT 0.1.0")
         self.setCentralWidget(self.UI)
-        self.setGeometry(0, 0, 230, 600)
+        self.setGeometry(110, 270, 230, 590)
         self.connect_UI()
         # self.addMenuBar()
 
@@ -529,9 +529,9 @@ def main():
         UI_win.close()
     except:
         pass
-    UI_win = MainWindow()
+    UI_win = MyWindow()
+    UI_win.show()
 
-    UI_win.show(dockable=1)
     with open(STYLE_PATH, "r") as f:
         style = f.read()
         UI_win.setStyleSheet(style)

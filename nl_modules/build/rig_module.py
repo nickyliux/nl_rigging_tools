@@ -1015,10 +1015,10 @@ class RigModule(RigBase):
                     extraJ, aim=aim, worldUpType=wut, worldUpObject=tgt, u=u, wu=wu
                 )
 
-    def build_roller_jnts(self, targets, num=2):
+    def build_uprRollJ(self, targets, num=2):
         """
-        Roller joints are created using ik with zero poleVector.
-        A locator under it is orientConstrained to return the roll value
+        Roll joints are created using ik with zero poleVector.
+        A locator under it is orientConstrained to return the delta roll value
         """
         rID, rSz, xDr = self.getMyVar()
 
@@ -1050,17 +1050,15 @@ class RigModule(RigBase):
 
             # Create roller joints
             for i in range(num):
-                rollerJ = targets[0].duplicate(
-                    name=f"{targets[0].name}_roller_{i}", po=1
-                )
-                rollerJ | self.jnts_ro[0]
-                rollerJ.a.radius.set(rSz * 2)
+                rollJ = targets[0].duplicate(name=f"{targets[0].name}_roll_{i}", po=1)
+                rollJ | self.jnts_ro[0]
+                rollJ.a.radius.set(rSz * 2)
                 ratio = i / num
                 common.cstMulti(
-                    targets[0], targets[1], rollerJ, cstType="poi", w=1 - ratio
+                    targets[0], targets[1], rollJ, cstType="poi", w=1 - ratio
                 )
-                roll_loc.a.rx * ratio >> rollerJ.a.rx
-                self.jnts_bind.append(rollerJ)
+                roll_loc.a.rx * ratio >> rollJ.a.rx
+                self.jnts_bind.append(rollJ)
 
     def build_rbn(self, tgt, name="", rbJNum=5, volMode=1):
         """Build a ribbon node for the target with specified parameters."""
@@ -1070,7 +1068,7 @@ class RigModule(RigBase):
             rbJNum=rbJNum,
             volMode=volMode,
             scaleFix=self.masterC.a["globalScale"],
-            size=self.rigSize,
+            size=self.rigSize * 2,
             p=self.RIG_DATA,
         )
 
