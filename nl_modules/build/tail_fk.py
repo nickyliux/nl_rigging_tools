@@ -50,7 +50,7 @@ class TailFk(RigModule):
         self.rbSrf = SrfNode.buildRbSrf(
             pf=rID,
             crv=self.LINE_GUIDE,
-            normal=1,
+            normal=-1,
             spans=self.FK_BONE_NUM,
             p=self.RIG_DATA,
             snap=self.RT_GUIDE,

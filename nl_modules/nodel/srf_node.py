@@ -137,14 +137,16 @@ class SrfNode(GrpNode):
             xf.delete()
 
     @staticmethod
-    def buildRbSrf(pf="", crv=None, normal=0, snap=None, spans=3, p=None):
+    def buildRbSrf(pf="", crv=None, normal=1, snap=None, spans=3, p=None, alongZ=1):
         """Build ribbon surface from curve"""
         from nl_modules.nodel.crv_node import CrvNode
 
         crvLen = CrvNode(crv).length
-        sign = 1 if normal else -1
-        p1 = (crvLen * 0.1 * -sign, 0, 0)
-        p2 = (crvLen * 0.1 * sign, 0, 0)
+        halfWidth = crvLen * 0.1 * normal
+
+        p1 = (halfWidth, 0, 0) if alongZ else (0, 0, halfWidth)
+        p2 = (-halfWidth, 0, 0) if alongZ else (0, 0, -halfWidth)
+
         sweepLine = CrvNode.buildLine(p1, p2, pf=pf, snap=snap)
         pathLine = CrvNode(
             mc.rebuildCurve(crv, rpo=0, rt=0, end=1, kr=0, kcp=0, kep=1, kt=0, s=spans)[

@@ -61,7 +61,7 @@ class Tail(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
 
-        ctl_defs = [("setting", "setting", "z", rSz, 1, 2)]
+        ctl_defs = [("setting", "setting", "z", rSz * 2, 1, 2)]
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
@@ -89,7 +89,7 @@ class Tail(RigModule):
         return SrfNode.buildRbSrf(
             pf=self.rigID,
             crv=self.LINE_GUIDE,
-            normal=1,
+            normal=-1,
             spans=self.fkJntNum,
             p=self.RIG_DATA,
             snap=self.RT_GUIDE,

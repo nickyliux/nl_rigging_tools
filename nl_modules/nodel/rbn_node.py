@@ -1,19 +1,26 @@
 import logging
 import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
+from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common
-from nl_modules.utils.common import Vec
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
+from nl_modules.utils.common import Vec
 
 
 class RbnNode:
-    """Ribbon node class for creating a ribbon rig with joints, locators, and IK handles."""
+    """Ribbon node class for creating a ribbon rig with joints, locators, and IK handles.
+
+    from nl_modules.nodel.rbn_node import RbnNode
+    RbnNode(
+        'joint2', pf='temp', rbJNum=5, volMode=0, scaleFix=None, size=1
+    )
+    """
 
     def __init__(
         self,
@@ -87,30 +94,24 @@ class RbnNode:
     def build_surf(self):
         """Create the surface for the ribbon rig."""
         logging.info(self.pf)
-
         xDr = self.xDir
-        self.rbSrf = SrfNode(
-            "rbSrf",
-            pf=self.pf,
-            uSeg=5,
-            ax=(0, 1, 0),
-            lr=0.2,
-            size=self.D,
-            p=self.SRF_GRP,
+
+        crvLine = CrvNode.buildLine((0, 0, 0), (xDr * self.D, 0, 0), pf=self.pf)
+        self.rbSrf = SrfNode.buildRbSrf(
+            pf=self.pf, crv=crvLine, normal=-1, spans=5, p=self.SRF_GRP, alongZ=0
         )
         self.rbSrf.a.inheritsTransform.set(0)
-        self.rbSrf.a.tx.set(self.D / 2 * xDr)
-        self.rbSrf.a.sx.set(xDr)
+        crvLine.delete()
 
         # Generate coordinates for rivets
-        coord = [((2 * i + 1) / (2 * self.rbJNum), 0.5) for i in range(self.rbJNum)]
+        coord = [(0.5, (2 * i + 1) / (2 * self.rbJNum)) for i in range(self.rbJNum)]
 
         # Create rivets and attach joints
         pin, pinXf = common.nlRivet(
             geo=self.rbSrf,
             coordList=coord,
             normal=1,
-            tangent=0,
+            tangent=2 if xDr == 1 else 5,
             p=self.SRF_GRP,
             size=self.size,
         )
@@ -291,7 +292,8 @@ class RbnNode:
         logging.info(self.pf)
 
         arcLenDim = ut.arcLenDim_(self.rbSrf)
-        d = arcLenDim.a.arcLength
+        # d = arcLenDim.a.arcLength
+        d = arcLenDim.a.arcLengthInV
         D = d.get()
         self.autoVol = self.RBN_GRP.a.add("autoVol")
         self.volType = self.RBN_GRP.a.add(

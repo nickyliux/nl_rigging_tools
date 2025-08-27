@@ -71,7 +71,7 @@ class SpineBp(RigModule):
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        # self.mid_ctl.cv_move(0, 0, rSz * -40)
+        self.mid_ctl.cv_scale(1, 0.5, 1)
 
     def build(self):
         """Build the spine rig module."""
@@ -190,7 +190,7 @@ class SpineBp(RigModule):
         self.rbSrf = SrfNode.buildRbSrf(
             pf=rID,
             crv=self.LINE_GUIDE,
-            normal=1,
+            normal=-1,
             snap=self.rootJ,
             spans=self.fkJntNum - 1,
             p=self.RIG_DATA,
