@@ -64,6 +64,8 @@ class ArmBp(RigModule):
         """Generate the skeleton for the arm rig."""
         self.genSk_module()
         root_list = self.gen_sk_fr_names(self.jnt_names)
+        for jnt in root_list:
+            DagNode(jnt).a.ro.set(5)
         self.rootJ = root_list[0]
         self.rootJ | self.SKL_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
@@ -100,19 +102,17 @@ class ArmBp(RigModule):
         self.jnts = self.rootJ.allChildrenJt2
         self.clavicle, self.upr, self.lwr, self.palm, self.ball = self.jnts
         self.build_ctl()
-        self.build_extra([self.lwr, self.palm])
-
-        # self.jnts_bind = [self.clavicle]
-
-        if not self.rbnBones:
-            self.build_uprRollJ([self.upr, self.lwr], num=2)
-
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
         # self.build_nlAutoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
+        # self.jnts_bind = [self.clavicle]
 
-        if self.rbnBones:
+        self.build_extra([self.lwr, self.palm])
+        if not self.rbnBones:
+            self.build_uprRollJ(self.upr, self.lwr, num=2)
+            self.build_lwrRollJ(self.palm, self.ball, num=2)
+        else:
             self.build_bendy_ribbon(
                 rbJNum=self.rbnJntNum,
                 root=self.clavicle,
@@ -437,11 +437,14 @@ class ArmBp(RigModule):
 
     def setup_rotate_order(self):
         """Setup rotate order for the arm rig controls."""
-        for ctl in [self.ikc, self.clavicle_fkc]:
-            ctl.a.ro.set(2)
-        self.lwr_fkc.a.ro.set(3)
-        self.upr_fkc.a.ro.set(4)
-        self.palm_fkc.a.ro.set(5)
+        # for ctl in [self.ikc, self.clavicle_fkc]:
+        #     ctl.a.ro.set(2)
+        # self.lwr_fkc.a.ro.set(3)
+        # self.upr_fkc.a.ro.set(4)
+        # self.palm_fkc.a.ro.set(5)
+
+        for ctl in self.ctls_fk + self.ctls_ik:
+            ctl.a.ro.set(5)
 
     def setup_space(self):
         """Setup space switching for the arm rig controls."""

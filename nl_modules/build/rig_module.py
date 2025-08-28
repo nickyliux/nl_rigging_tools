@@ -998,15 +998,19 @@ class RigModule(RigBase):
     def build_extra(self, targets, up="y"):
         """Build roller joints for the specified targets."""
         rID, rSz, xDr = self.getMyVar()
+
         wu = u = (0, 1, 0)
         aim = (xDr * -1, 0, 0)
         wut = "objectrotation"
         r = rSz * 4
+        CB = Color.BLACK
 
         for tgt in targets:
             # Create roller joint
             ro = tgt.a.rotateOrder.get()
-            extraJ = JntNode(tgt + "_extra", pf=rID, align=tgt, r=r, p=tgt, ro=ro)
+            extraJ = JntNode(
+                tgt + "_extra", pf=rID, align=tgt, r=r, p=tgt, ro=ro, color=CB
+            )
             extraJ.resetOrient()
             extraJ.resetXf()
             tgt_p = tgt.parent
@@ -1015,50 +1019,72 @@ class RigModule(RigBase):
                     extraJ, aim=aim, worldUpType=wut, worldUpObject=tgt, u=u, wu=wu
                 )
 
-    def build_uprRollJ(self, targets, num=2):
-        """
-        Roll joints are created using ik with zero poleVector.
-        A locator under it is orientConstrained to return the delta roll value
-        """
+    def build_rollChain(self, jnt0, jnt1, num=2, suffix="_ro"):
+        """Build a roll chain between two joints. Add locator for delta roll"""
         rID, rSz, xDr = self.getMyVar()
+        tgt_p = jnt0.parent
+        if not tgt_p or tgt_p.type != "joint":
+            raise ValueError(f"No target parent or it is not a joint")
 
-        tgt_p = targets[0].parent
-        if tgt_p and tgt_p.type == "joint":
+        # Create roll ik joints, and IK
+        self.jnts_ro = common.dupSk([jnt0, jnt1], suffix, r=rSz * 2, color=Color.RED)
 
-            # Create roll ik joints and IK
-            self.jnts_ro = common.dupSk(targets, "_ro", r=0, color=Color.YELLOW)
-            roll_ikH = IkNode(
-                "roll",
-                pf=rID,
-                rSz=rSz,
-                sj=targets[0],
-                ee=targets[1],
-                jsf="_ro",
-                solver=Solver.RP,
-                quat=1,
-                localScale=1,
-                p=self.RIG_DATA,
-                # RIG_DATA=self.RIG_DATA,
-            )
-            targets[1].cstPoi(roll_ikH)
+        roll_ikH = IkNode(
+            f"roll{suffix}",
+            pf=rID,
+            rSz=rSz,
+            sj=jnt0,
+            ee=jnt1,
+            jsf=suffix,
+            solver=Solver.RP,
+            quat=1,
+            p=jnt1,
+        )
 
-            # Create roll locator
-            roll_loc = LocNode(
-                "roll_loc", pf=rID, align=self.jnts_ro[0], p=self.jnts_ro[0]
-            )
-            targets[0].cstOri(roll_loc)
+        # Create roll locator
+        roll_loc = LocNode(
+            f"loc{suffix}",
+            pf=rID,
+            size=rSz * 10,
+            align=self.jnts_ro[0],
+            p=self.jnts_ro[0],
+            color=Color.RED,
+        )
+        jnt0.cstOri(roll_loc)
 
-            # Create roller joints
-            for i in range(num):
-                rollJ = targets[0].duplicate(name=f"{targets[0].name}_roll_{i}", po=1)
-                rollJ | self.jnts_ro[0]
-                rollJ.a.radius.set(rSz * 2)
-                ratio = i / num
-                common.cstMulti(
-                    targets[0], targets[1], rollJ, cstType="poi", w=1 - ratio
-                )
-                roll_loc.a.rx * ratio >> rollJ.a.rx
-                self.jnts_bind.append(rollJ)
+        return roll_loc, self.jnts_ro[0], tgt_p
+
+    def build_uprRollJ(self, jnt0, jnt1, num=2, suffix="_ro1"):
+        """Build upper roller joints between two joints."""
+        roll_loc, roll_jnt0, tgt_p = self.build_rollChain(
+            jnt0, jnt1, num, suffix=suffix
+        )
+        # Create roller joints, parented to roll_jnt0
+        for i in range(num):
+            j = jnt0.duplicate(po=1, p=roll_jnt0)
+            j.rename(f"{jnt0.name}{suffix}_{i}")
+            j.a.radius.set(self.rigSize * 2)
+
+            ratio = i / num
+            common.cstMulti(jnt0, jnt1, j, cstType="poi", w=1 - ratio)
+            roll_loc.a.rx * ratio >> j.a.rx
+            self.jnts_bind.append(j)
+
+    def build_lwrRollJ(self, jnt0, jnt1, num=2, suffix="_ro2"):
+        """Build lower roller joints between two joints."""
+        roll_loc, roll_jnt0, tgt_p = self.build_rollChain(
+            jnt0, jnt1, num, suffix=suffix
+        )
+        # Create roller joints, parented to jnt0's parent
+        for i in range(num):
+            j = jnt0.duplicate(po=1)
+            j.rename(f"{jnt0.name}{suffix}_{i}")
+            j.a.radius.set(self.rigSize * 2)
+
+            ratio = i / num
+            common.cstMulti(jnt0, tgt_p, j, cstType="poi", w=1 - ratio)
+            roll_loc.a.rx * (1 - ratio) >> j.a.rx
+            self.jnts_bind.append(j)
 
     def build_rbn(self, tgt, name="", rbJNum=5, volMode=1):
         """Build a ribbon node for the target with specified parameters."""

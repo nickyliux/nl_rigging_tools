@@ -93,6 +93,11 @@ def assignPresetShd(tgts=None):
         return
 
     DARKENING = 0.8
+    faceDict = {
+        18: [0, 1, 4, 5, 8, 9, 12, 13],
+        26: [0, 1, 4, 5, 8, 9, 12, 13, 16, 17, 20, 21],
+        34: [0, 1, 4, 5, 8, 9, 12, 13, 16, 17, 20, 21, 24, 25, 28, 29],
+    }
 
     for tgt_name in tgts:
         tgt = DagNode(tgt_name)
@@ -110,7 +115,10 @@ def assignPresetShd(tgts=None):
         # Assign shader based on type
         if tgt.type == "mesh":
             shd, sg = addShader(name, color=Vec(color) * DARKENING)
-            mc.sets(tgt, forceElement=sg)
+            # mc.sets(tgt, forceElement=sg)
+            faceNum = mc.polyEvaluate(tgt, f=1)
+            for fID in faceDict[faceNum]:
+                mc.sets(f"{tgt}.f[{fID}]", forceElement=sg)
         elif tgt.type == "nurbsCurve":
             tgt.color = color
 

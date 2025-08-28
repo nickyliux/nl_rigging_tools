@@ -175,10 +175,8 @@ class LegBp(RigModule):
 
         self.build_extra([self.lwr, self.palm])
         if not self.rbnBones:
-            self.build_uprRollJ(
-                [self.upr, self.lwr],
-                num=2,
-            )
+            self.build_uprRollJ(self.upr, self.lwr, num=2)
+            self.build_lwrRollJ(self.palm, self.ball, num=2)
         else:
             self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(
                 rbJNum=self.rbnJntNum,
