@@ -21,7 +21,13 @@ class ArmBp(RigModule):
         super().__init__(rigNode)
 
         # Guide attributes
-        guide_attrs = ["dualBones", "rbnBones", "rbnJntNum", "scapularBone"]
+        guide_attrs = [
+            "dualBones",
+            "rbnBones",
+            "rollJntNum",
+            "rbnJntNum",
+            "scapularBone",
+        ]
         for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
 
@@ -64,8 +70,11 @@ class ArmBp(RigModule):
         """Generate the skeleton for the arm rig."""
         self.genSk_module()
         root_list = self.gen_sk_fr_names(self.jnt_names)
+
         for jnt in root_list:
             DagNode(jnt).a.ro.set(5)
+        DagNode(root_list[0]).a.ro.set(2)
+
         self.rootJ = root_list[0]
         self.rootJ | self.SKL_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
@@ -107,11 +116,11 @@ class ArmBp(RigModule):
         self.blend_fk_ik()
         # self.build_nlAutoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
         # self.jnts_bind = [self.clavicle]
-
         self.build_extra([self.lwr, self.palm])
+
         if not self.rbnBones:
-            self.build_uprRollJ(self.upr, self.lwr, num=2)
-            self.build_lwrRollJ(self.palm, self.ball, num=2)
+            self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
+            self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
         else:
             self.build_bendy_ribbon(
                 rbJNum=self.rbnJntNum,
@@ -243,8 +252,10 @@ class ArmBp(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        self.setting.alignTo(self.palm, p=self.CTL_DATA, ofs=(0, xDr * rSz * 12, 0))
-        self.palm.cstPar(self.setting, mo=1)
+        self.setting.alignTo(
+            self.clavicle, p=self.CTL_DATA, ofs=(xDr * rSz * 15, 0, xDr * rSz * -15)
+        )
+        self.clavicle.cstPar(self.setting, mo=1)
 
         # Extract blend joints
         self.jnts_bf = common.dupSk(
@@ -445,6 +456,7 @@ class ArmBp(RigModule):
 
         for ctl in self.ctls_fk + self.ctls_ik:
             ctl.a.ro.set(5)
+        self.ctls_fk[0].a.ro.set(2)
 
     def setup_space(self):
         """Setup space switching for the arm rig controls."""

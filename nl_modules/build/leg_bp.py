@@ -25,6 +25,7 @@ class LegBp(RigModule):
         # Guide attributes
         guide_attrs = [
             "rbnBones",
+            "rollJntNum",
             "rbnJntNum",
             "patellaBone",
             "toeBones",
@@ -175,8 +176,8 @@ class LegBp(RigModule):
 
         self.build_extra([self.lwr, self.palm])
         if not self.rbnBones:
-            self.build_uprRollJ(self.upr, self.lwr, num=2)
-            self.build_lwrRollJ(self.palm, self.ball, num=2)
+            self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
+            self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
         else:
             self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(
                 rbJNum=self.rbnJntNum,
@@ -334,8 +335,8 @@ class LegBp(RigModule):
             self.jnts, "_bf", p=self.BF_GRP, r=self.rigSize * 4, color=Color.D_YELLOW
         )
 
-        self.setting.snapTo(self.palm, p=self.CTL_DATA, ofs=(xDr * rSz * 15, 0, 0))
-        self.palm.cstPar(self.setting, mo=1)
+        self.setting.snapTo(self.hip, p=self.CTL_DATA, ofs=(xDr * rSz * 25, 0, 0))
+        self.hip.cstPar(self.setting, mo=1)
 
         self.setting.a.addSep()
         fkToIk = self.setting.a.add("fkToIk", min=0, max=1, dv=1)

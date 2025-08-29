@@ -203,6 +203,7 @@ class SpineBp(RigModule):
 
         self.rbSrf.weightTo(self.jnts_ctl, chain=0, mi=2, dr=6)
         self.hip_ctl.a.add("tangent", min=0, dv=1) >> self.jnts_ctl[0].a.sy
+        self.mid_ctl.a.add("tangent", min=0, dv=1) >> self.jnts_ctl[1].a.sy
         self.chest_ctl.a.add("tangent", min=0, dv=1) >> self.jnts_ctl[2].a.sy
 
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
