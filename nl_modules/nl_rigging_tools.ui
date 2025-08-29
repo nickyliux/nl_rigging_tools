@@ -3046,7 +3046,7 @@ below selected</string>
         <widget class="QLabel" name="label_3">
          <property name="minimumSize">
           <size>
-           <width>150</width>
+           <width>50</width>
            <height>0</height>
           </size>
          </property>
@@ -3068,7 +3068,7 @@ below selected</string>
          </property>
          <property name="minimumSize">
           <size>
-           <width>10</width>
+           <width>20</width>
            <height>18</height>
           </size>
          </property>
@@ -3082,8 +3082,8 @@ below selected</string>
           <font>
            <family>Segoe UI</family>
            <pointsize>8</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
+           <weight>50</weight>
+           <bold>false</bold>
           </font>
          </property>
          <property name="toolTip">
@@ -3093,7 +3093,7 @@ below selected</string>
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>N</string>
+          <string>Nml</string>
          </property>
         </widget>
        </item>
@@ -3110,7 +3110,7 @@ below selected</string>
          </property>
          <property name="minimumSize">
           <size>
-           <width>10</width>
+           <width>20</width>
            <height>18</height>
           </size>
          </property>
@@ -3124,8 +3124,8 @@ below selected</string>
           <font>
            <family>Segoe UI</family>
            <pointsize>8</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
+           <weight>50</weight>
+           <bold>false</bold>
           </font>
          </property>
          <property name="toolTip">
@@ -3135,7 +3135,7 @@ below selected</string>
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>T</string>
+          <string>Tpl</string>
          </property>
         </widget>
        </item>
@@ -3152,7 +3152,7 @@ below selected</string>
          </property>
          <property name="minimumSize">
           <size>
-           <width>10</width>
+           <width>20</width>
            <height>18</height>
           </size>
          </property>
@@ -3166,8 +3166,8 @@ below selected</string>
           <font>
            <family>Segoe UI</family>
            <pointsize>8</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
+           <weight>50</weight>
+           <bold>false</bold>
           </font>
          </property>
          <property name="toolTip">
@@ -3177,7 +3177,7 @@ below selected</string>
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>R</string>
+          <string>Ref</string>
          </property>
         </widget>
        </item>

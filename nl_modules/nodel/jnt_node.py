@@ -112,16 +112,16 @@ class JntNode(GrpNode):
         if children or not skipEnd:
             # Determine proxy height: distance to first child or default size
             if children:
-                height = self.o.distanceTo(children[0])
+                height = self.o.distanceTo(children[0]) * 0.5
             else:
-                height = proxy_height  # base_radius
+                height = proxy_height
 
             # Create the proxy mesh (polyCylinder)
             proxy = DagNode(
                 mc.polyCylinder(
                     n=proxy_name,
                     r=base_radius / 2 * proxy_ratio,
-                    h=height * 0.8,
+                    h=height,
                     ax=aimDir,
                     subdivisionsAxis=8,
                     subdivisionsHeight=proxy_div,

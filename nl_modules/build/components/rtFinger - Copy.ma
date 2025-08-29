@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
-//Name: lfFinger.ma
-//Last modified: Fri, Aug 29, 2025 04:44:16 PM
+//Name: rtFinger.ma
+//Last modified: Fri, Aug 29, 2025 12:22:50 PM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,18 +12,18 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26100)";
-fileInfo "UUID" "B1A12C20-4240-B3D2-91C9-5DAB8F2F68E2";
+fileInfo "UUID" "7D67EF0B-4901-EA85-BA6B-8E8D2E45A2D3";
 createNode transform -s -n "persp";
 	rename -uid "83BBC351-4169-8A57-6147-3688C3C5E65F";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 63.029964823190561 43.787166895505642 51.831189485024375 ;
-	setAttr ".r" -type "double3" -30.938352729842521 38.600000000001749 -2.034850521330379e-15 ;
+	setAttr ".t" -type "double3" 20.438272046983204 14.696733593662675 34.549971089465046 ;
+	setAttr ".r" -type "double3" -21.938352729830257 38.59999999999976 -2.0348505213303218e-15 ;
 	setAttr -cb on ".ro";
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "E4BD1A20-4E99-1123-5E44-089307917010";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999993;
-	setAttr ".coi" 90.830560158041067;
+	setAttr ".coi" 45.084974236218137;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -83,13 +83,10 @@ createNode camera -s -n "sideShape" -p "side";
 	setAttr ".o" yes;
 createNode transform -n "module_grp";
 	rename -uid "BBA29320-4AB7-0A24-468F-F1A8C499ED48";
-	setAttr ".r" -type "double3" 90 0 0 ;
+	setAttr ".r" -type "double3" -90 0 0 ;
 	setAttr -cb on ".ro";
 createNode transform -n "master_guide" -p "module_grp";
 	rename -uid "177DBE6B-4E8E-B711-3C19-589C4E949A6A";
-	addAttr -ci true -sn "segNum" -ln "segNum" -dv 1 -min 1 -max 4 -at "long";
-	setAttr ".t" -type "double3" 10 0 0 ;
-	setAttr -k on ".segNum" 4;
 createNode transform -n "fgr01_guide_ofs" -p "master_guide";
 	rename -uid "F0DCF307-4AFE-F9B7-4833-678378A04ECB";
 createNode transform -n "fgr01_guide" -p "fgr01_guide_ofs";
@@ -160,94 +157,55 @@ createNode nurbsCurve -n "fgr03_guideShape" -p "fgr01_guide";
 		2.5145690373543098e-08 0.0042817780821822176 -0.62966614995333858
 		;
 	setAttr ".adot" yes;
+createNode joint -n "joint1" -p "fgr01_guide";
+	rename -uid "4177C342-4B5E-E7D2-0F81-C6973FDCA09D";
+	addAttr -ci true -sn "liw" -ln "lockInfluenceWeights" -min 0 -max 1 -at "bool";
+	setAttr ".v" no;
+	setAttr ".mnrl" -type "double3" -360 -360 -360 ;
+	setAttr ".mxrl" -type "double3" 360 360 360 ;
+	setAttr ".bps" -type "matrix" 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1;
+	setAttr ".radi" 10;
 createNode transform -n "fgr02_guide_ofs" -p "fgr01_guide";
 	rename -uid "DC2A7D33-4C13-4876-743E-4998B6CFFF5B";
-	setAttr ".t" -type "double3" 10 0 0 ;
+	setAttr ".t" -type "double3" -10 0 0 ;
 createNode transform -n "fgr02_guide" -p "fgr02_guide_ofs";
 	rename -uid "67D57CBD-4024-CF3C-78B0-FFBE25AF9BD1";
+createNode joint -n "joint2" -p "fgr02_guide";
+	rename -uid "75A8CECE-497F-F0F9-425A-9FB99EFE8803";
+	addAttr -ci true -sn "liw" -ln "lockInfluenceWeights" -min 0 -max 1 -at "bool";
+	setAttr ".v" no;
+	setAttr ".mnrl" -type "double3" -360 -360 -360 ;
+	setAttr ".mxrl" -type "double3" 360 360 360 ;
+	setAttr ".bps" -type "matrix" 1 0 0 0 0 1 0 0 0 0 1 0 2.7268917917981639e-14 0 -50 1;
+	setAttr ".radi" 10;
 createNode transform -n "fgr03_guide_ofs" -p "fgr02_guide";
 	rename -uid "4D3032FB-4663-78DC-57D6-38B48E6FDD7F";
-	setAttr ".t" -type "double3" 10 0 0 ;
+	setAttr ".t" -type "double3" -10 0 0 ;
 createNode transform -n "fgr03_guide" -p "fgr03_guide_ofs";
 	rename -uid "9889D14F-4DAD-1350-7B36-DE95035FF2E9";
+createNode joint -n "joint3" -p "fgr03_guide";
+	rename -uid "E6E6975B-4AEC-A1C0-6C8C-26970AF99887";
+	addAttr -ci true -sn "liw" -ln "lockInfluenceWeights" -min 0 -max 1 -at "bool";
+	setAttr ".v" no;
+	setAttr ".mnrl" -type "double3" -360 -360 -360 ;
+	setAttr ".mxrl" -type "double3" 360 360 360 ;
+	setAttr ".bps" -type "matrix" 1 0 0 0 0 1 0 0 0 0 1 0 5.4537835835963278e-14 0 -100 1;
+	setAttr ".radi" 10;
 createNode transform -n "fgr04_guide_ofs" -p "fgr03_guide";
 	rename -uid "F330BE4B-4FE8-0F4F-0B90-AA8A84776809";
-	setAttr ".t" -type "double3" 10 0 0 ;
+	setAttr ".t" -type "double3" -10 0 0 ;
 createNode transform -n "fgr04_guide" -p "fgr04_guide_ofs";
 	rename -uid "DD9EE4A5-4B21-7FBB-0CBC-45B2401E5605";
+createNode joint -n "joint4" -p "fgr04_guide";
+	rename -uid "A8525945-45AC-BD14-25E6-2BAA3E46C42A";
+	addAttr -ci true -sn "liw" -ln "lockInfluenceWeights" -min 0 -max 1 -at "bool";
+	setAttr ".v" no;
+	setAttr ".mnrl" -type "double3" -360 -360 -360 ;
+	setAttr ".mxrl" -type "double3" 360 360 360 ;
+	setAttr ".bps" -type "matrix" 1 0 0 0 0 1 0 0 0 0 1 0 5.4537835835963278e-14 0 -100 1;
+	setAttr ".radi" 10;
 createNode nurbsCurve -n "fgr04_guideShape" -p "fgr04_guide";
 	rename -uid "2CF203EB-47DD-F02B-715A-5E87AD8E1A48";
-	setAttr -k off ".v";
-	setAttr ".ove" yes;
-	setAttr ".ovc" 22;
-	setAttr ".ls" 3;
-	setAttr ".cc" -type "nurbsCurve" 
-		1 52 0 no 3
-		53 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
-		 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52
-		53
-		0.62968007182819907 0 0
-		0.584642384778576 0.242166794453332 0
-		0.4474659330253406 0.4474659330253406 0
-		0.242166794453332 0.584642384778576 0
-		0 0.62966530620334682 0
-		-0.242166794453332 0.584642384778576 0
-		-0.4474659330253406 0.4474659330253406 0
-		-0.584642384778576 0.242166794453332 0
-		-0.62968007182819907 -2.9833776264162235e-08 0
-		-0.584642384778576 -0.242166794453332 0
-		-0.4474659330253406 -0.4474659330253406 0
-		-0.242166794453332 -0.584642384778576 0
-		2.5145690373543098e-08 -0.62966530620334682 -0.0042816093321839076
-		0.242166794453332 -0.584642384778576 0
-		0.4474659330253406 -0.4474659330253406 0
-		0.584642384778576 -0.242166794453332 0
-		0.62968007182819907 0 0
-		0.58174832230751661 0.0016385456086145441 -0.24096276321537236
-		0.44525108929748913 0.0030276618447233816 -0.44524138617258613
-		0.24096824759031749 0.0039558374604416252 -0.58173566605764337
-		2.5145690373543098e-08 0.0042817780821822176 -0.62966614995333858
-		-0.24096824759031749 0.0039558374604416252 -0.58173566605764337
-		-0.44525108929748913 0.0030276618447233816 -0.44524138617258613
-		-0.58174832230751661 0.0016385456086145441 -0.24096276321537236
-		-0.62968007182819907 -2.9833776264162235e-08 0
-		-0.58174832230751661 -0.0016386046711139531 0.24096191946538081
-		-0.44525108929748913 -0.0030277209072227911 0.4452409642975903
-		-0.24096824759031749 -0.0039558965229410355 0.58173482230765172
-		2.5145690373543098e-08 -0.0042818202696817981 0.62966530620334682
-		0.24096824759031749 -0.0039558965229410355 0.58173482230765172
-		0.44525108929748913 -0.0030277209072227911 0.4452409642975903
-		0.58174832230751661 -0.0016386046711139531 0.24096191946538081
-		0.62968007182819907 0 0
-		0.58174832230751661 0.0016385456086145441 -0.24096276321537236
-		0.44525108929748913 0.0030276618447233816 -0.44524138617258613
-		0.24096824759031749 0.0039558374604416252 -0.58173566605764337
-		2.5145690373543098e-08 0.0042817780821822176 -0.62966614995333858
-		2.5145690373543098e-08 0.24491826317581739 -0.58009668169903306
-		2.5145690373543098e-08 0.44826833926731652 -0.44221358932786409
-		2.5145690373543098e-08 0.5833733847912661 -0.23700684137993155
-		0 0.62966530620334682 0
-		2.5145690373543098e-08 0.58009625982403745 0.24491826317581739
-		2.5145690373543098e-08 0.44221316745286815 0.44826791739232091
-		2.5145690373543098e-08 0.23700684137993155 0.5833733847912661
-		2.5145690373543098e-08 -0.0042818202696817981 0.62966530620334682
-		2.5145690373543098e-08 -0.24491826317581739 0.58009583794904152
-		2.5145690373543098e-08 -0.44826833926731652 0.44221274557787255
-		2.5145690373543098e-08 -0.5833733847912661 0.23700599762993999
-		2.5145690373543098e-08 -0.62966530620334682 -0.0042816093321839076
-		2.5145690373543098e-08 -0.58009625982403745 -0.24491910692580887
-		2.5145690373543098e-08 -0.44221316745286815 -0.4482687611423124
-		2.5145690373543098e-08 -0.23700684137993155 -0.58337422854125776
-		2.5145690373543098e-08 0.0042817780821822176 -0.62966614995333858
-		;
-	setAttr ".adot" yes;
-createNode transform -n "fgr04_guide_ofs1" -p "fgr04_guide";
-	rename -uid "50034F87-4717-704F-D47D-26BE70DEEF61";
-	setAttr ".t" -type "double3" 10 0 0 ;
-createNode transform -n "fgr05_guide" -p "fgr04_guide_ofs1";
-	rename -uid "3E530B2C-4529-BE7E-40E9-BD9004B8C504";
-createNode nurbsCurve -n "fgr05_guideShape" -p "fgr05_guide";
-	rename -uid "437378D7-4572-2A11-6B2A-6993812A9BE8";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
 	setAttr ".ovc" 22;
@@ -335,7 +293,6 @@ createNode nurbsCurve -n "master_guideShape1" -p "master_guide";
 		-1.6902631913778761e-16 3.2240604020035703e-16 -5.2652902114279545
 		-1.1951965646133091e-16 -5.8231194303070524 -5.8231194303070559
 		;
-	setAttr ".adot" yes;
 createNode transform -n "line_grp" -p "module_grp";
 	rename -uid "120FBCEA-4270-A02D-E56D-EBB8AA8433C3";
 	setAttr ".ove" yes;
@@ -362,8 +319,8 @@ createNode nurbsCurve -n "curveShape1" -p "line_1";
 		1 1 0 no 3
 		2 0 1
 		2
-		10 0 0
-		20 0 0
+		0 0 0
+		-10 0 0
 		;
 createNode transform -n "line_2" -p "line_grp";
 	rename -uid "41657661-440B-D387-BB53-BBA42ED75042";
@@ -387,8 +344,8 @@ createNode nurbsCurve -n "curveShape2" -p "line_2";
 		1 1 0 no 3
 		2 0 1
 		2
-		20 0 0
-		30 0 0
+		-10 0 0
+		-20 0 0
 		;
 createNode transform -n "line_3" -p "line_grp";
 	rename -uid "238728F6-4D12-FAA0-73D4-3E9FCD3AC98D";
@@ -412,51 +369,26 @@ createNode nurbsCurve -n "curveShape3" -p "line_3";
 		1 1 0 no 3
 		2 0 1
 		2
-		30 0 0
-		40 0 0
-		;
-createNode transform -n "line_4" -p "line_grp";
-	rename -uid "424CAEBA-455E-8B7B-4439-C0892EF7DC54";
-	setAttr -l on ".tx";
-	setAttr -l on ".ty";
-	setAttr -l on ".tz";
-	setAttr -l on ".rx";
-	setAttr -l on ".ry";
-	setAttr -l on ".rz";
-	setAttr -l on ".sx";
-	setAttr -l on ".sy";
-	setAttr -l on ".sz";
-	setAttr ".it" no;
-createNode nurbsCurve -n "curveShape4" -p "line_4";
-	rename -uid "4D9B945C-4463-D9F6-9563-8BA28D29F6AB";
-	setAttr -k off ".v";
-	setAttr ".ove" yes;
-	setAttr ".ovc" 17;
-	setAttr -s 2 ".cp";
-	setAttr ".cc" -type "nurbsCurve" 
-		1 1 0 no 3
-		2 0 1
-		2
-		40 0 0
-		50 0 0
+		-20 0 0
+		-30 0 0
 		;
 parent -s -nc -r -add "|module_grp|master_guide|fgr01_guide_ofs|fgr01_guide|fgr03_guideShape" "fgr02_guide" ;
 parent -s -nc -r -add "|module_grp|master_guide|fgr01_guide_ofs|fgr01_guide|fgr03_guideShape" "fgr03_guide" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "4A91E905-4599-2B40-63C0-85AC4D7BD754";
+	rename -uid "7E2646E1-4B9F-8EF2-0456-5CBDA17F02FC";
 	setAttr -s 2 ".lnk";
 	setAttr -s 2 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "9FE6DAE7-4F36-AE9C-8056-DDB27B0C9A39";
+	rename -uid "FEBCAF69-4256-B4F3-2B9F-C38D276710E8";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "50BCC5DA-411B-7887-3444-AE930A47497C";
+	rename -uid "BEC28BBE-47FC-CAD6-420F-8C9DD9A4727D";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "82966A4D-49D4-A721-3519-9D8426857CA6";
+	rename -uid "DEB4F3E4-485B-8A3D-FD58-43B15CD36870";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "EDE7F8A1-4185-37A4-5FA7-49A7396409D6";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "52AF1117-482E-954D-F5F3-6EA12444B05C";
+	rename -uid "3A77BF28-448E-3D61-BC26-33BE4F94F819";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "D70BF562-46C4-2F8D-ABFE-179003332609";
 	setAttr ".g" yes;
@@ -531,6 +463,44 @@ createNode nodeGraphEditorInfo -n "hyperShadePrimaryNodeEditorSavedTabsInfo";
 	setAttr ".tgi[0].tn" -type "string" "Untitled_1";
 	setAttr ".tgi[0].vl" -type "double2" 53891.070888120565 -23286.310035392416 ;
 	setAttr ".tgi[0].vh" -type "double2" 103033.9291294062 22999.405284888227 ;
+createNode dagPose -n "bindPose2";
+	rename -uid "284C4C38-4888-857B-608F-41891DE222A8";
+	setAttr -s 11 ".wm";
+	setAttr ".wm[0]" -type "matrix" 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1;
+	setAttr ".wm[1]" -type "matrix" 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1;
+	setAttr ".wm[2]" -type "matrix" 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1;
+	setAttr ".wm[3]" -type "matrix" 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1;
+	setAttr ".wm[5]" -type "matrix" 1 0 0 0 0 1 0 0 0 0 1 0 2.7268917917981639e-14 0 -50 1;
+	setAttr ".wm[6]" -type "matrix" 1 0 0 0 0 1 0 0 0 0 1 0 2.7268917917981639e-14 0 -50 1;
+	setAttr ".wm[8]" -type "matrix" 1 0 0 0 0 1 0 0 0 0 1 0 5.4537835835963278e-14 0 -100 1;
+	setAttr ".wm[9]" -type "matrix" 1 0 0 0 0 1 0 0 0 0 1 0 5.4537835835963278e-14 0 -100 1;
+	setAttr -s 11 ".xm";
+	setAttr ".xm[0]" -type "matrix" "xform" 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+		 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 1 1 1 yes;
+	setAttr ".xm[1]" -type "matrix" "xform" 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+		 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 1 1 1 yes;
+	setAttr ".xm[2]" -type "matrix" "xform" 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+		 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 1 1 1 yes;
+	setAttr ".xm[3]" -type "matrix" "xform" 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+		 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 1 1 1 yes;
+	setAttr ".xm[4]" -type "matrix" "xform" 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+		 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 1 1 1 yes;
+	setAttr ".xm[5]" -type "matrix" "xform" 1 1 1 0 0 0 0 2.7268917917981639e-14
+		 0 -50 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 1 1 1 yes;
+	setAttr ".xm[6]" -type "matrix" "xform" 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+		 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 1 1 1 yes;
+	setAttr ".xm[7]" -type "matrix" "xform" 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+		 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 1 1 1 yes;
+	setAttr ".xm[8]" -type "matrix" "xform" 1 1 1 0 0 0 0 5.4537835835963278e-14
+		 0 -100 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 1 1 1 yes;
+	setAttr ".xm[9]" -type "matrix" "xform" 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+		 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 1 1 1 yes;
+	setAttr ".xm[10]" -type "matrix" "xform" 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+		 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 1 1 1 yes;
+	setAttr -s 11 ".m";
+	setAttr -s 11 ".p";
+	setAttr -s 11 ".g[0:10]" yes yes yes yes no yes yes no yes yes no;
+	setAttr ".bp" yes;
 createNode nodeGraphEditorInfo -n "MayaNodeEditorSavedTabsInfo";
 	rename -uid "9AD26F4C-427A-5872-B679-ADA5796C2D26";
 	setAttr ".tgi[0].tn" -type "string" "Untitled_1";
@@ -560,38 +530,6 @@ createNode decomposeMatrix -n "DCM_3";
 	rename -uid "C729A5F8-4EBD-1123-45AC-598A9740A487";
 createNode decomposeMatrix -n "DCM_4";
 	rename -uid "84E5390F-4C95-5436-6EBA-709F089E3B45";
-createNode decomposeMatrix -n "DCM_5";
-	rename -uid "F4D72E9D-45F7-5C43-0A3C-F795B8DC90C0";
-createNode animCurveUU -n "fgr03_guide_visibility";
-	rename -uid "6B7FD198-4B1A-25B7-BB69-2F9B7484A009";
-	setAttr ".tan" 18;
-	setAttr ".wgt" no;
-	setAttr -s 4 ".ktv[0:3]"  1 0 2 1 3 1 4 1;
-createNode animCurveUU -n "fgr04_guide_visibility";
-	rename -uid "8BBF90E6-4843-4323-0422-2DB3A9166489";
-	setAttr ".tan" 18;
-	setAttr ".wgt" no;
-	setAttr -s 4 ".ktv[0:3]"  1 0 2 0 3 1 4 1;
-createNode animCurveUU -n "fgr05_guide_visibility";
-	rename -uid "07396F92-46A1-C795-1B84-7DADBFBDA3CF";
-	setAttr ".tan" 18;
-	setAttr ".wgt" no;
-	setAttr -s 4 ".ktv[0:3]"  1 0 2 0 3 0 4 1;
-createNode animCurveUU -n "line_2_visibility";
-	rename -uid "48049FE3-47A5-EDBF-6FF5-9F97A913610A";
-	setAttr ".tan" 18;
-	setAttr ".wgt" no;
-	setAttr -s 4 ".ktv[0:3]"  1 0 2 1 3 1 5 1;
-createNode animCurveUU -n "line_3_visibility";
-	rename -uid "485C8EBC-4565-2B5E-40BF-B29D71165E0C";
-	setAttr ".tan" 18;
-	setAttr ".wgt" no;
-	setAttr -s 4 ".ktv[0:3]"  1 0 2 0 3 1 5 1;
-createNode animCurveUU -n "line_4_visibility";
-	rename -uid "B49F7DE8-4D7C-491B-1F91-E79E94D2DA22";
-	setAttr ".tan" 18;
-	setAttr ".wgt" no;
-	setAttr -s 4 ".ktv[0:3]"  1 0 2 0 3 0 5 1;
 select -ne :time1;
 	setAttr -av -k on ".cch";
 	setAttr -av -k on ".fzn";
@@ -918,20 +856,12 @@ select -ne :hardwareRenderGlobals;
 	setAttr -av -k on ".bswa";
 	setAttr -av -k on ".shml";
 	setAttr -av -k on ".hwel";
-connectAttr "fgr03_guide_visibility.o" "fgr03_guide.v";
-connectAttr "fgr04_guide_visibility.o" "fgr04_guide.v";
-connectAttr "fgr05_guide_visibility.o" "fgr05_guide.v";
 connectAttr "DCM_1.ot" "curveShape1.cp[0]";
 connectAttr "DCM_2.ot" "curveShape1.cp[1]";
-connectAttr "line_2_visibility.o" "line_2.v";
 connectAttr "DCM_2.ot" "curveShape2.cp[0]";
 connectAttr "DCM_3.ot" "curveShape2.cp[1]";
-connectAttr "line_3_visibility.o" "line_3.v";
 connectAttr "DCM_3.ot" "curveShape3.cp[0]";
 connectAttr "DCM_4.ot" "curveShape3.cp[1]";
-connectAttr "line_4_visibility.o" "line_4.v";
-connectAttr "DCM_4.ot" "curveShape4.cp[0]";
-connectAttr "DCM_5.ot" "curveShape4.cp[1]";
 relationship "link" ":lightLinker1" ":initialShadingGroup.message" ":defaultLightSet.message";
 relationship "link" ":lightLinker1" ":initialParticleSE.message" ":defaultLightSet.message";
 relationship "shadowLink" ":lightLinker1" ":initialShadingGroup.message" ":defaultLightSet.message";
@@ -940,6 +870,31 @@ connectAttr "layerManager.dli[0]" "defaultLayer.id";
 connectAttr "renderLayerManager.rlmi[0]" "defaultRenderLayer.rlid";
 connectAttr "module_grp.msg" "RGN.moduleG";
 connectAttr "master_guide.msg" "RGN.master_guide";
+connectAttr "module_grp.msg" "bindPose2.m[0]";
+connectAttr "master_guide.msg" "bindPose2.m[1]";
+connectAttr "fgr01_guide_ofs.msg" "bindPose2.m[2]";
+connectAttr "fgr01_guide.msg" "bindPose2.m[3]";
+connectAttr "joint1.msg" "bindPose2.m[4]";
+connectAttr "fgr02_guide_ofs.msg" "bindPose2.m[5]";
+connectAttr "fgr02_guide.msg" "bindPose2.m[6]";
+connectAttr "joint2.msg" "bindPose2.m[7]";
+connectAttr "fgr03_guide_ofs.msg" "bindPose2.m[8]";
+connectAttr "fgr03_guide.msg" "bindPose2.m[9]";
+connectAttr "joint3.msg" "bindPose2.m[10]";
+connectAttr "bindPose2.w" "bindPose2.p[0]";
+connectAttr "bindPose2.m[0]" "bindPose2.p[1]";
+connectAttr "bindPose2.m[1]" "bindPose2.p[2]";
+connectAttr "bindPose2.m[2]" "bindPose2.p[3]";
+connectAttr "bindPose2.m[3]" "bindPose2.p[4]";
+connectAttr "bindPose2.m[1]" "bindPose2.p[5]";
+connectAttr "bindPose2.m[5]" "bindPose2.p[6]";
+connectAttr "bindPose2.m[6]" "bindPose2.p[7]";
+connectAttr "bindPose2.m[1]" "bindPose2.p[8]";
+connectAttr "bindPose2.m[8]" "bindPose2.p[9]";
+connectAttr "bindPose2.m[9]" "bindPose2.p[10]";
+connectAttr "joint1.bps" "bindPose2.wm[4]";
+connectAttr "joint2.bps" "bindPose2.wm[7]";
+connectAttr "joint3.bps" "bindPose2.wm[10]";
 connectAttr "fgr02_guide_ofs.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[1].dn";
 connectAttr "fgr01_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[2].dn";
 connectAttr "fgr03_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[3].dn";
@@ -947,12 +902,5 @@ connectAttr "fgr01_guide.wm" "DCM_1.imat";
 connectAttr "fgr02_guide.wm" "DCM_2.imat";
 connectAttr "fgr03_guide.wm" "DCM_3.imat";
 connectAttr "fgr04_guide.wm" "DCM_4.imat";
-connectAttr "fgr05_guide.wm" "DCM_5.imat";
-connectAttr "master_guide.segNum" "fgr03_guide_visibility.i";
-connectAttr "master_guide.segNum" "fgr04_guide_visibility.i";
-connectAttr "master_guide.segNum" "fgr05_guide_visibility.i";
-connectAttr "master_guide.segNum" "line_2_visibility.i";
-connectAttr "master_guide.segNum" "line_3_visibility.i";
-connectAttr "master_guide.segNum" "line_4_visibility.i";
 connectAttr "defaultRenderLayer.msg" ":defaultRenderingList1.r" -na;
-// End of lfFinger.ma
+// End of rtFinger.ma

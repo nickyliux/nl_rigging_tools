@@ -411,6 +411,8 @@ class RigModule(RigBase):
         else:
             mc.sets(tgtList, n=BIND_JNT_SET)
 
+        self.jnts_bind.extend(tgtList)
+
     def add_movable_pivot(self, tgt, snap=None, hide=1):
         """Add movable pivot ctl under tgt"""
         pvt_ctl = LocNode(tgt + "_pvt", align=tgt, p=tgt)
@@ -967,14 +969,14 @@ class RigModule(RigBase):
         for jnt in tgtJnts:
             tgt = DagNode(jnt)
             if tgt.exists():
-                DagNode(jnt).a.add("proxyDiv", k=0, dv=div)
+                tgt.a.add("proxyDiv", k=0, dv=div)
 
     def add_proxy_height(self, tgtJnts, v):
         """Add proxyDiv attribute to target joints"""
         for jnt in tgtJnts:
             tgt = DagNode(jnt)
             if tgt.exists():
-                DagNode(jnt).a.add("proxyHeight", k=0, dv=v)
+                tgt.a.add("proxyHeight", k=0, dv=v)
 
     def get_guide_attr(self, name):
         """Get attribute from master guide"""

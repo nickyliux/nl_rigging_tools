@@ -68,6 +68,9 @@ def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
             "lwr_fkc",
             "palm_fkc",
         ]
+    elif rigClass == "Finger":
+        jnts = rootJ.allChildrenJt2
+        fkCtlNames = ["fgr01_fkc", "fgr02_fkc", "fgr03_fkc", "fgr04_fkc"]
 
     if not all(jnts):
         logging.warning(f"Leg joints for {rigID} NOT found. Cannot switch IK/FK.")
@@ -106,9 +109,15 @@ def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
     else:
         # Switch to IK mode
         root_mtx = jnts[0].getMtx()
-        fkCtls[0].a["autoAim"].set(0)
+
+        autoAim = fkCtls[0].a["autoAim"]
+        if autoAim.exists():
+            autoAim.set(0)
+
         fkCtls[0].setMtx(root_mtx)
-        ikc.alignTo(ikc_matcher)
+
+        if ikc_matcher.exists():
+            ikc.alignTo(ikc_matcher)
 
         if smart_ctl.exists():
             smart_ctl.resetXf()
