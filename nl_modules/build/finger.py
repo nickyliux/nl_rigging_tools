@@ -78,9 +78,9 @@ class Finger(RigModule):
             ("setting", "setting", "z", scale * 2, 1, 2),
             ("fgr01_fkc", "squareR", "x", scale, 1, -1),
             ("fgr02_fkc", "squareR", "x", scale, 1, -1),
-            ("ikc", "cube", None, scale, 1, 2),
-            ("extra_rota", "rotator", None, scale, 0, -1),
-            ("pvc", "pvc", "z", -scale, 0, -1),
+            # ("ikc", "cube", None, scale, 1, 2),
+            # ("extra_rota", "rotator", None, scale, 0, -1),
+            # ("pvc", "pvc", "z", -scale, 0, -1),
         ]
         if self.segNum >= 2:
             ctl_defs.append(("fgr03_fkc", "squareR", "x", scale, 1, -1))
@@ -213,6 +213,13 @@ class Finger(RigModule):
         """Setup scale for the arm rig module."""
         self.masterC.a.globalScale >> self.SKL_DATA.a.scale
 
+    def setup_anchor(self):
+        self.setup_anchor_module(
+            {
+                "anchorF1": self.ctls_fk[0].offset,
+            }
+        )
+
     def setup_vis(self):
         """Setup visibility for the finger rig module."""
         mc.hide(self.ikhs)
@@ -222,10 +229,11 @@ class Finger(RigModule):
         #     onList=self.ctls_ik,
         #     offList=self.ctls_fk,
         # )
-        self.ctl_vis_toggle(
-            self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0),
-            onList=self.jnts_fk,
-        )
+        # self.ctl_vis_toggle(
+        #     self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0),
+        #     onList=self.jnts_fk,
+        # )
+        mc.hide(self.jnts_fk)
 
         # setupJnts = self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0)
         # setupJnts >> self.jnts_ikA[0].a.v
@@ -236,10 +244,10 @@ class Finger(RigModule):
         """Setup channels for the finger rig module."""
         self.setting.a.showAttr()
 
-        for ctl in [self.ikc, self.pvc]:
-            ctl.a.showAttr(t=1, r=0)
+        # for ctl in [self.ikc, self.pvc]:
+        #     ctl.a.showAttr(t=1, r=0)
 
-        for ctl in self.ctls_fk + [self.extra_rota]:
+        for ctl in self.ctls_fk:  # + [self.extra_rota]:
             ctl.a.showAttr(t=1, r=1)
 
     def setup_bindJnt(self):
@@ -252,12 +260,12 @@ class Finger(RigModule):
         """Post setup for the leg rig module."""
         logging.info(self.rigID)
 
-        common.add_mirror_attr([self.ikc])
+        # common.add_mirror_attr([self.ikc])
         self.setup_scale()
         self.setup_ctlSet()
         self.setup_bindJnt()
         # self.setup_space()
-        # self.setup_anchor()
+        self.setup_anchor()
         self.setup_vis()
         self.setup_channel()
         # self.setup_rotate_order()

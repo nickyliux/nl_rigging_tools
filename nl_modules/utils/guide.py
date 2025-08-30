@@ -5,7 +5,7 @@ import maya.cmds as mc
 import nl_modules
 from nl_modules.build.tpl_loader import TplLoader
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.utils import common, file
+from nl_modules.utils import build, common, file
 
 MOD_DIR = os.path.dirname(nl_modules.__file__)
 COMPONENT_PATH = MOD_DIR + "/build/components"
@@ -30,9 +30,8 @@ COMPONENT_DICT = {
 }
 
 
-def loadGuide(names):
+def loadGuide(name):
     """Load component(s) for names"""
-    from nl_modules.utils import build
 
     def genNextRigID(n):
         """Generate next rigID name for newly created component"""
@@ -42,18 +41,18 @@ def loadGuide(names):
                 count += 1
         return f"{n}{count}"
 
-    for name in names:
-        nextRigID = genNextRigID(name)
-        TplLoader(name + ".ma", nextRigID).load_base_tpl()
+    # if not isinstance(names, list):
+    #     raise TypeError("names should be a list of string")
 
-    mc.select(cl=1)
+    # for name in names:
+    nextRigID = genNextRigID(name)
+    TplLoader(name + ".ma", nextRigID).load_base_tpl()
+    return DagNode(nextRigID + "_master_guide")
 
 
-def copyGuideSel(*arg):
-    """Copy guide settings from 1st to 2nd selList"""
-    from nl_modules.utils import build
-
-    selList = mc.ls(sl=1)
+def xferGuideSel(*arg, skipMasterXf=1):
+    """Transfer guide settings from 1st to 2nd selected"""
+    selList = mc.ls(sl=1, tr=1)
     if len(selList) == 2:
         rigNode1 = build.getRigNode(selList[0])
         rigNode2 = build.getRigNode(selList[1])
@@ -68,16 +67,37 @@ def copyGuideSel(*arg):
                 guideList1 = mc.ls(rigID1 + "_*_guide")
                 guideList2 = mc.ls(rigID2 + "_*_guide")
                 for g1, g2 in zip(guideList1, guideList2):
-                    copyGuideAttr(g1, g2, skipMasterXf=1)
+                    copyGuideAttr(g1, g2, skipMasterXf=skipMasterXf)
             else:
                 logging.info("Ignore copy for different rig classes")
         else:
             logging.info("Can not find rigNodes to copy")
 
 
+def duplicateGuideSel(*arg):
+    """Duplicate selected guide controls"""
+    selList = mc.ls(sl=1, tr=1)
+    allTgtMG = []
+    for sel in selList:
+        rigNode = build.getRigNode(sel)
+        if rigNode:
+            # Duplicate guide
+            rigID = rigNode.a.rigID.get()
+            src_mg = DagNode(rigID + "_master_guide")
+            tgt_mg = loadGuide(removeEndDigits(rigID))
+            allTgtMG.append(tgt_mg)
+
+            # Copy xform & attributes
+            mc.select(src_mg, tgt_mg)
+            xferGuideSel(skipMasterXf=0)
+
+    mc.select(allTgtMG)
+    mc.setToolTo("moveSuperContext")
+
+
 def mirrorGuideSelOrAll(*arg):
     """Mirror guides for selList / all *lf*_guide"""
-    selList = mc.ls(sl=1, ap=1) or mc.ls("*lf*_guide", ap=1)
+    selList = mc.ls(sl=1, tr=1) or mc.ls("*lf*_guide", tr=1)
     selList = list(set(selList))
     if selList:
         mirrorGuideAttr(selList)
@@ -159,7 +179,7 @@ def mirrorGuideAttr(tgtList, wsMirror=0):
 
 def mirrorPose(*arg):
     """Mirror pose for selList ctl / all in set lf*_ctl_set"""
-    selList = mc.ls(sl=1, ap=1)
+    selList = mc.ls(sl=1, tr=1)
     selList = list(set(selList))
 
     if not selList:
@@ -169,10 +189,19 @@ def mirrorPose(*arg):
         mirrorGuideAttr(selList)
 
 
+def removeEndDigits(name):
+    """Remove trailing digits from a name"""
+    # e.g. lfLeg0 => 'lfLeg'
+    pattern = re.compile(rf"^([a-zA-Z_]+)")
+    result = re.match(pattern, str(name))
+    if result:
+        return result.group(1)
+    else:
+        raise ValueError("Invalid input name")
+
+
 def loadTemplate(removeUnused=1):
     """Load preset from json file"""
-    from nl_modules.utils import build
-
     charPath = mc.optionVar(q="charPath")
 
     tgtFile = mc.fileDialog2(
@@ -183,25 +212,24 @@ def loadTemplate(removeUnused=1):
     else:
         tgtFile = tgtFile[0]
 
-    idDict = file.loadJson(tgtFile)
+    rigID_dict = file.loadJson(tgtFile)
     if removeUnused:  # Remove unused components
-        idInPreset = [k + "_RGN" for k in idDict.keys()]
+        idInPreset = [k + "_RGN" for k in rigID_dict.keys()]
         for node in build.getRigNodes_all():
             if node not in idInPreset:
                 build.deleteTgt(node)
 
-    pattern = re.compile(rf"^([a-zA-Z_]+)")  # letter without digi
-
-    for rigID in idDict:
-        mg = DagNode(rigID + "_master_guide")
+    allTgtMG = []
+    for rID in rigID_dict:
+        mg = DagNode(rID + "_master_guide")
         if mg.exists():
-            logging.info(f"master_guide for {rigID} already exists!")
+            logging.info(f"master_guide for {rID} already exists!")
         else:
-            fName = re.match(pattern, str(rigID))  # e.g. lfLeg0 => 'lfLeg'
-            loadGuide([fName.group(1)])
+            tgt_mg = loadGuide(removeEndDigits(rID))
+            allTgtMG.append(tgt_mg)
             mc.refresh(cv=1)
 
-        for guideN, attrs in idDict[rigID].items():  # Load settings from preset
+        for guideN, attrs in rigID_dict[rID].items():  # Load settings from preset
             guideN = DagNode(guideN)
             if guideN.exists():
                 for attr in attrs:
@@ -221,6 +249,7 @@ def loadTemplate(removeUnused=1):
                                 elif isinstance(v, list):
                                     guideN.a[attr].set(*v)
     # common.setViewport(fit=1)
+    mc.select(allTgtMG)
 
 
 def genAttrDict(obj):
@@ -239,8 +268,6 @@ def genAttrDict(obj):
 
 def saveTemplate():
     """Save preset into json file"""
-    from nl_modules.utils import build
-
     idDict = {}
     rigNodes = build.getRigNodes_all()
 

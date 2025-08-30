@@ -125,7 +125,7 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "setting", "z", scale, 1, 2),
+            ("setting", "setting", "z", scale * 2, 1, 2),
             ("hip_fkc", "circle", "x", scale, 0, -1),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
@@ -623,11 +623,12 @@ class LegBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        # self.add_proxy_radiusScale(self.jnts_bind, 2)
+        self.add_proxy_radiusScale(self.jnts_bind, 2)
+
+        h = self.rigSize * 10
         if self.rbnBones:
-            self.add_proxy_height(self.jnts_bind, 20 * self.rigSize / self.rbnJntNum)
-        else:
-            self.add_proxy_height(self.jnts_bind, 20 * self.rigSize / 2)
+            h /= self.rbnJntNum * 0.5
+        self.add_proxy_height(self.jnts_bind, h)
 
     def build_post(self):
         """Post setup for the leg rig module."""

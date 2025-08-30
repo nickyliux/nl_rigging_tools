@@ -1029,7 +1029,7 @@ class RigModule(RigBase):
             raise ValueError(f"No target parent or it is not a joint")
 
         # Create roll ik joints, and IK
-        self.jnts_ro = common.dupSk([jnt0, jnt1], suffix, r=rSz * 2, color=Color.RED)
+        self.jnts_ro = common.dupSk([jnt0, jnt1], suffix, r=0, color=Color.RED)
 
         roll_ikH = IkNode(
             f"roll{suffix}",
@@ -1072,6 +1072,8 @@ class RigModule(RigBase):
             roll_loc.a.rx * ratio >> j.a.rx
             self.jnts_bind.append(j)
 
+        mc.hide(roll_loc, roll_jnt0)
+
     def build_lwrRollJ(self, jnt0, jnt1, num=2, suffix="_ro2"):
         """Build lower roller joints between two joints."""
         roll_loc, roll_jnt0, tgt_p = self.build_rollChain(
@@ -1087,6 +1089,8 @@ class RigModule(RigBase):
             common.cstMulti(jnt0, tgt_p, j, cstType="poi", w=1 - ratio)
             roll_loc.a.rx * (1 - ratio) >> j.a.rx
             self.jnts_bind.append(j)
+
+        mc.hide(roll_loc, roll_jnt0)
 
     def build_rbn(self, tgt, name="", rbJNum=5, volMode=1):
         """Build a ribbon node for the target with specified parameters."""

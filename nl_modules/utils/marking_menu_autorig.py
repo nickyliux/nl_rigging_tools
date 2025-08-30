@@ -14,7 +14,6 @@ class MarkingMenuAutorig:
 
     def __init__(self):
         """Initialize the marking menu"""
-
         if mc.popupMenu(MENU_NAME, ex=1):
             mc.deleteUI(MENU_NAME)
         mc.popupMenu(
@@ -33,7 +32,6 @@ class MarkingMenuAutorig:
 
     def setupMenu(self, menu, parent):
         """Setup the marking menu with various options"""
-
         self.addBuildOptions(menu)
         self.addGuideOptions(menu)
         self.addSpaceIKFKOptions(menu)
@@ -41,28 +39,25 @@ class MarkingMenuAutorig:
 
     def addBuildOptions(self, menu):
         """Add build options to the marking menu"""
-
         mc.menuItem(p=menu, l="Build", rp="N", c=build.buildSelOrAll)
         mc.menuItem(p=menu, l="Unbuild", rp="NW", c=build.unbuildSelOrAll)
 
     def addGuideOptions(self, menu):
         """Add guide options to the marking menu"""
-
-        mc.menuItem(p=menu, l="Mirror Guide", rp="NE", c=guide.mirrorGuideSelOrAll)
-        mc.menuItem(p=menu, l="Delete Guide", rp="SE", c=build.deleteSelOrAll)
-        mc.menuItem(p=menu, l="Copy Guide", rp="E", c=guide.copyGuideSel)
-        mc.menuItem(p=menu, l="Mirror Shape", rp="W", c=self.mirrorShapeSelOrAll)
+        mc.menuItem(p=menu, l="Duplicate Guide", rp="NE", c=guide.duplicateGuideSel)
+        mc.menuItem(p=menu, l="Mirror Guide", rp="SE", c=guide.mirrorGuideSelOrAll)
+        mc.menuItem(p=menu, l="Delete Guide", rp="W", c=build.deleteSelOrAll)
+        mc.menuItem(p=menu, l="Transfer Guide", rp="E", c=guide.xferGuideSel)
 
     def addExtraOptions(self, menu):
         """Add extra options to the marking menu"""
-
         mc.menuItem(p=menu, l="Mirror Pose", rp="SW", c=guide.mirrorPose)
         mc.menuItem(p=menu, l="Select Ctls", c=self.selectCtlSelOrAll)
+        mc.menuItem(p=menu, l="Mirror Shape", c=self.mirrorShapeSelOrAll)
         mc.menuItem(p=menu, l="Reload Menu", c=self.reload_marking_menu)
 
     def addSpaceIKFKOptions(self, menu):
         """Add space switch and IK/FK options to the marking menu"""
-
         selList = mc.ls(sl=1, tr=1)
         if not selList:
             return
@@ -105,7 +100,6 @@ class MarkingMenuAutorig:
 
     def mirrorShapeSelOrAll(*args):
         """Mirror the shape of the selected control or all controls in LF_CTL_SET"""
-
         from nl_modules.utils import control
 
         selList = mc.ls(sl=1, tr=1)
@@ -118,7 +112,6 @@ class MarkingMenuAutorig:
 
     def selectCtlSelOrAll(self, *args):
         """Select all controls in the rig node or all controls in LF_CTL_SET"""
-
         from nl_modules.utils import common
 
         selList = mc.ls(sl=1, tr=1)
@@ -149,7 +142,6 @@ class MarkingMenuAutorig:
 
     def reload_marking_menu(*args):
         """Reload the marking menu to reflect any changes made"""
-
         mc.evalDeferred(
             """
 from importlib import reload

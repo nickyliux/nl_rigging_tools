@@ -112,7 +112,7 @@ class JntNode(GrpNode):
         if children or not skipEnd:
             # Determine proxy height: distance to first child or default size
             if children:
-                height = self.o.distanceTo(children[0]) * 0.5
+                height = self.o.distanceTo(children[0]) * 0.7
             else:
                 height = proxy_height
 

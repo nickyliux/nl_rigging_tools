@@ -61,7 +61,7 @@ class MyWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         self.setWindowTitle("nlRT 0.1.0")
         self.setCentralWidget(self.UI)
-        self.setGeometry(110, 270, 230, 590)
+        self.setGeometry(300, 300, 200, 590)
         self.connect_UI()
         # self.addMenuBar()
 
@@ -277,20 +277,34 @@ class MyWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     @common.Undo("guide_load")
     def guide_load(self, *args):
         """Load selected guide components."""
+
         items = self.UI.guide_LW.selectedItems()
         side_L = self.UI.component_left_RB.isChecked()
         side_R = self.UI.component_right_RB.isChecked()
+
+        allTgtMG = []
         if items:
             for item in items:
                 names = guide.COMPONENT_DICT[item.text()]
-                if len(names) == 2:
-                    if side_L:
-                        names = [names[0]]
-                    elif side_R:
-                        names = [names[1]]
-                guide.loadGuide(names)
+
+                guideToLoad = []
+                if len(names) == 1:
+                    guideToLoad.append(names[0])
+                else:
+                    if not side_L:
+                        guideToLoad.append(names[1])
+                    if not side_R:
+                        guideToLoad.append(names[0])
+
+                for n in guideToLoad:
+                    mg = guide.loadGuide(n)
+                    allTgtMG.append(mg)
+                # guide.loadGuide(names)
+
             self.rigNode_refresh()
             common.setViewport(fit=1)
+            mc.select(allTgtMG)
+            mc.setToolTo("moveSuperContext")
 
     def rigNode_LW_dblClicked(self, item):
         """Show attribute editor for rigNode"""
