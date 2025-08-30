@@ -116,7 +116,7 @@ class SpineBp(RigModule):
         #   modify hipCtl specific for hip rotation
         #
         hipCtl = self.ctls_fk[0]
-        hipCtl(p=self.CTL_DATA, addOfs=1, color=Color.BLACK, width=2)
+        hipCtl(p=self.CTL_DATA, addOfs=1, color=Color.BLUE, width=2)
         hipCtl.offset.snapAlignTo(self.jnts_fk[1], self.jnts_fk[0])
         hipCtl.cv_move(0, rSz * -20, 0)
         hipCtl.cstPar(self.jnts_fk[0], mo=1)

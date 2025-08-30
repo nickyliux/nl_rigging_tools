@@ -15,7 +15,7 @@ class NeckBp(SpineBp):
     def setup_anchor(self):
         """Setup the anchor controls for the neck rig."""
 
-        anchorM1Tgt = self.jnts_bind[-1] if self.rbnBones else self.tp_ctl
+        anchorM1Tgt = self.jnts_bind[-1] if self.rbnBones else self.chest_ctl
         self.setup_anchor_module(
             {
                 "anchorF1": self.cog_ctl,

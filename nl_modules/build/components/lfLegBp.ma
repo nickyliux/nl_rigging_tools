@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: lfLegBp.ma
-//Last modified: Fri, Aug 29, 2025 09:13:45 AM
+//Last modified: Sun, Aug 31, 2025 12:20:26 AM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,7 +12,7 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26100)";
-fileInfo "UUID" "6295CD76-443E-B87B-E802-2FB4D5DE80E0";
+fileInfo "UUID" "30DE093E-4EAE-F4D8-A5E3-72A620E077FE";
 createNode transform -n "module_grp";
 	rename -uid "3F6958F6-4253-676A-51E6-CA9FE9573FBE";
 	addAttr -ci true -sn "mirrorCode" -ln "mirrorCode" -dt "string";
@@ -37,13 +37,13 @@ createNode transform -n "master_guide" -p "module_grp";
 	setAttr -l on -k on ".______________";
 	setAttr -l on ".wsMirror";
 	setAttr -cb on ".rbnBones";
+	setAttr -cb on ".rollJntNum";
 	setAttr -cb on ".rbnJntNum" 3;
 	setAttr -cb on ".patellaBone";
 	setAttr -cb on ".toeBones";
 	setAttr -cb on ".dualBones";
 	setAttr -cb on ".kneeFix";
 	setAttr -cb on ".scapularExtra";
-	setAttr -cb on ".rollJntNum";
 createNode transform -n "hip_guide_ofs" -p "master_guide";
 	rename -uid "1B251669-4809-99CF-2AA5-B291D2C0C8FF";
 	setAttr ".t" -type "double3" 0 108 6.9363883474575228e-18 ;
@@ -762,6 +762,7 @@ createNode pointConstraint -n "pv_loc_ofs_pointConstraint1" -p "pv_loc_ofs";
 	setAttr -k on ".w1";
 createNode transform -n "pv_loc_ofs1" -p "pv_loc_ofs";
 	rename -uid "7BBB0D6B-4133-F8D8-7563-83B0F9640D22";
+	setAttr ".t" -type "double3" -1.7763568394002505e-15 -7.1054273576010019e-15 -5 ;
 	setAttr ".r" -type "double3" 0 -90 0 ;
 createNode transform -n "pv_loc" -p "pv_loc_ofs1";
 	rename -uid "F8A93BBD-4B6E-CC7B-681C-51AB49E04C59";
@@ -1721,7 +1722,7 @@ createNode nurbsCurve -n "line_06Shape" -p "line_06";
 		2 0 1
 		2
 		15 49.800000000000004 0.099999999999999117
-		14.999999999999984 49.800000000000011 70
+		14.999999999999982 49.800000000000004 65
 		;
 	setAttr ".adot" yes;
 createNode transform -n "line_grp2" -p "module_grp";
@@ -3220,8 +3221,8 @@ createNode scaleConstraint -n "null5_scaleConstraint1" -p "null5";
 createNode transform -s -n "persp";
 	rename -uid "2CFF45DD-487A-9CD1-767B-A089B899D93C";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 108.66183868365057 74.020738450055589 96.012075870269584 ;
-	setAttr ".r" -type "double3" -10.5383527329672 412.19999999935561 0 ;
+	setAttr ".t" -type "double3" 100.74692538676493 71.048941295020541 137.64989276002322 ;
+	setAttr ".r" -type "double3" -6.938352732967509 407.39999999935225 5.873592105278072e-16 ;
 	setAttr -cb on ".ro";
 	setAttr ".rp" -type "double3" 9.0523144535836764e-12 -9.5923269327613525e-13 -1.4551915228366852e-11 ;
 	setAttr ".rpt" -type "double3" -9.0526132061662243e-12 -3.9591234438924834e-12 -1.892917819089332e-12 ;
@@ -3229,7 +3230,7 @@ createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "82C3F9B2-4980-6719-29B8-159665D78FA8";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999979;
-	setAttr ".coi" 152.94302579917576;
+	setAttr ".coi" 168.92323038362645;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -3340,20 +3341,20 @@ parent -s -nc -r -add "|module_grp|fgrRef_grp|null1|fgrRef16|fgrRefShape" "fgrRe
 parent -s -nc -r -add "|module_grp|fgrRef_grp|null1|fgrRef16|fgrRefShape" "fgrRef18" ;
 parent -s -nc -r -add "|module_grp|fgrRef_grp|null1|fgrRef16|fgrRefShape" "fgrRef19" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "646A0026-4684-EE33-54A7-679A78451BEE";
+	rename -uid "8B1B324C-47B8-071A-2221-E8A2DC076EDB";
 	setAttr -s 3 ".lnk";
 	setAttr -s 3 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "ADC19FFD-4107-4BB8-8E9F-C5A7B3C60C57";
+	rename -uid "B2A7BEEB-40DD-65E1-5DDC-309B93CB27B9";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "96BE516F-4D2E-9AE1-345E-DABEFDD5B35C";
+	rename -uid "73C21ECE-45EF-ACB6-1295-0A812C40AD69";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "DA23CF4D-4634-EEA4-694D-069246E43792";
+	rename -uid "40FD82E3-4B5D-60CC-502D-619F7D52C5D3";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "BC19330E-4E8B-4910-BB8A-238FB66CBBA1";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "9AB5A57F-4B25-9B04-20C1-1CA897D90666";
+	rename -uid "DE3CD1EF-4D39-EE67-46A1-F08FCEC5100C";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "47ABDCF5-4400-C307-437A-E4AF35DAB19B";
 	setAttr ".g" yes;
