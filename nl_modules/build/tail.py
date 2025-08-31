@@ -225,7 +225,7 @@ class Tail(RigModule):
             onList=self.ctls_ofs,
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJnts", attrType="bool", k=0, dv=0),
+            self.setting.a.add("debugVis", attrType="bool", k=0, dv=0),
             onList=self.jnts_fk + self.jnts_ik + self.jnts_ofs,
         )
         mc.hide(self.rbSrf1, self.rbSrf2)

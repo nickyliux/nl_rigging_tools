@@ -1029,7 +1029,12 @@ class RigModule(RigBase):
             raise ValueError(f"No target parent or it is not a joint")
 
         # Create roll ik joints, and IK
-        self.jnts_ro = common.dupSk([jnt0, jnt1], suffix, r=0, color=Color.RED)
+        self.jnts_ro = common.dupSk(
+            [jnt0, jnt1], suffix, r=self.rigSize / 2, color=Color.RED
+        )
+        # Allow only TX to have value. Important for case like the foot
+        self.jnts_ro[1].a.ty.set(0)
+        self.jnts_ro[1].a.tz.set(0)
 
         roll_ikH = IkNode(
             f"roll{suffix}",
@@ -1041,6 +1046,7 @@ class RigModule(RigBase):
             solver=Solver.RP,
             quat=1,
             p=jnt1,
+            vis=0,
         )
 
         # Create roll locator
@@ -1057,7 +1063,9 @@ class RigModule(RigBase):
         return roll_loc, self.jnts_ro[0], tgt_p
 
     def build_uprRollJ(self, jnt0, jnt1, num=2, suffix="_ro1"):
-        """Build upper roller joints between two joints."""
+        """Build upper roller joints.
+        They are added between jnt0 and jnt1.
+        """
         roll_loc, roll_jnt0, tgt_p = self.build_rollChain(
             jnt0, jnt1, num, suffix=suffix
         )
@@ -1072,10 +1080,12 @@ class RigModule(RigBase):
             roll_loc.a.rx * ratio >> j.a.rx
             self.jnts_bind.append(j)
 
-        mc.hide(roll_loc, roll_jnt0)
+        return roll_jnt0
 
     def build_lwrRollJ(self, jnt0, jnt1, num=2, suffix="_ro2"):
-        """Build lower roller joints between two joints."""
+        """Build lower roller joints.
+        They are added between jnt0's parent and jnt0.
+        """
         roll_loc, roll_jnt0, tgt_p = self.build_rollChain(
             jnt0, jnt1, num, suffix=suffix
         )
@@ -1090,7 +1100,7 @@ class RigModule(RigBase):
             roll_loc.a.rx * (1 - ratio) >> j.a.rx
             self.jnts_bind.append(j)
 
-        mc.hide(roll_loc, roll_jnt0)
+        return roll_jnt0
 
     def build_rbn(self, tgt, name="", rbJNum=5, volMode=1):
         """Build a ribbon node for the target with specified parameters."""

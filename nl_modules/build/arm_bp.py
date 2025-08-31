@@ -22,8 +22,8 @@ class ArmBp(RigModule):
 
         # Guide attributes
         guide_attrs = [
+            "ribbon",
             "dualBones",
-            "rbnBones",
             "rollJntNum",
             "rbnJntNum",
             "scapularBone",
@@ -49,6 +49,7 @@ class ArmBp(RigModule):
         self.jnts_fk = []
         self.jnts_ik = []
         self.jnts_bf = []
+        self.jnts_ro = []
         self.ctls_ik = []
         self.ctls_fk = []
         self.ikhs = []
@@ -118,9 +119,10 @@ class ArmBp(RigModule):
         # self.jnts_bind = [self.clavicle]
         self.build_extra([self.lwr, self.palm])
 
-        if not self.rbnBones:
-            self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
-            self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
+        if not self.ribbon:
+            jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
+            jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
+            self.jnts_ro = [jnt_ro1, jnt_ro2]
         else:
             self.build_bendy_ribbon(
                 rbJNum=self.rbnJntNum,
@@ -251,10 +253,12 @@ class ArmBp(RigModule):
         """Blend FK and IK joints for the arm rig."""
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
+        scale = xDr * rSz
 
         self.setting.alignTo(
-            self.clavicle, p=self.CTL_DATA, ofs=(xDr * rSz * 15, 0, xDr * rSz * -15)
+            self.clavicle, p=self.CTL_DATA, ofs=(scale * 40, scale * 10, 0)
         )
+        # scale * -20)
         self.clavicle.cstPar(self.setting, mo=1)
 
         # Extract blend joints
@@ -424,10 +428,10 @@ class ArmBp(RigModule):
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0),
-            onList=self.jnts_fk + self.jnts_ik + self.jnts_bf,
+            self.setting.a.add("debugVis", attrType="bool", dv=0, k=0),
+            onList=self.jnts_fk + self.jnts_ik + self.jnts_bf + self.jnts_ro,
         )
-        if self.rbnBones:
+        if self.ribbon:
             self.ctl_vis_toggle(
                 self.setting.a.add("bendyCtls", attrType="bool", dv=0, k=0),
                 onList=self.all_bend,
@@ -508,14 +512,14 @@ class ArmBp(RigModule):
         self.add_proxy_radiusScale(self.jnts_bind, 2)
 
         h = self.rigSize * 10
-        if self.rbnBones:
+        if self.ribbon:
             h /= self.rbnJntNum * 0.5
         self.add_proxy_height(self.jnts_bind, h)
 
     def setup_ctlSet(self):
         """Setup control sets for the arm rig module."""
         ctlSet = self.ctls_fk + self.ctls_ik + [self.setting, self.pin_fkc]
-        if self.rbnBones:
+        if self.ribbon:
             ctlSet.extend(self.all_bend)
         self.add_ctl_set(ctlSet)
 

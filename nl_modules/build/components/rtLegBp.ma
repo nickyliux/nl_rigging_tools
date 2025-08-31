@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: rtLegBp.ma
-//Last modified: Sun, Aug 31, 2025 12:20:55 AM
+//Last modified: Sun, Aug 31, 2025 06:22:04 PM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,7 +12,7 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26100)";
-fileInfo "UUID" "024D9103-4A8C-6EE1-6128-80ABE08A997F";
+fileInfo "UUID" "FF186305-489B-8EFC-1F4B-2EAA0BC4D741";
 createNode transform -n "module_grp";
 	rename -uid "3F6958F6-4253-676A-51E6-CA9FE9573FBE";
 	addAttr -ci true -sn "mirrorCode" -ln "mirrorCode" -dt "string";
@@ -23,7 +23,7 @@ createNode transform -n "master_guide" -p "module_grp";
 	addAttr -ci true -sn "______________" -ln "______________" -min 0 -max 0 -en " " 
 		-at "enum";
 	addAttr -ci true -sn "wsMirror" -ln "wsMirror" -at "float";
-	addAttr -ci true -sn "rbnBones" -ln "rbnBones" -min 0 -max 1 -at "bool";
+	addAttr -ci true -sn "ribbon" -ln "ribbon" -min 0 -max 1 -at "bool";
 	addAttr -ci true -sn "rollJntNum" -ln "rollJntNum" -dv 2 -min 2 -at "long";
 	addAttr -ci true -sn "rbnJntNum" -ln "rbnJntNum" -dv 5 -min 3 -at "long";
 	addAttr -ci true -sn "patellaBone" -ln "patellaBone" -min 0 -max 1 -at "bool";
@@ -36,7 +36,7 @@ createNode transform -n "master_guide" -p "module_grp";
 	setAttr -cb on ".ro";
 	setAttr -l on -k on ".______________";
 	setAttr -l on ".wsMirror";
-	setAttr -cb on ".rbnBones";
+	setAttr -cb on ".ribbon";
 	setAttr -cb on ".rollJntNum";
 	setAttr -cb on ".rbnJntNum" 3;
 	setAttr -cb on ".patellaBone";
@@ -3164,14 +3164,14 @@ createNode scaleConstraint -n "null5_scaleConstraint1" -p "null5";
 createNode transform -s -n "persp";
 	rename -uid "2CFF45DD-487A-9CD1-767B-A089B899D93C";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 105.79983954595276 73.637062374284667 140.52093136280018 ;
-	setAttr ".r" -type "double3" -6.9383527290163114 57.400000000026495 1.4758385058988031e-15 ;
+	setAttr ".t" -type "double3" 108.787122589136 64.919527630396388 114.92986602985482 ;
+	setAttr ".r" -type "double3" -5.1383527290162965 55.800000000026493 0 ;
 	setAttr -cb on ".ro";
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "82C3F9B2-4980-6719-29B8-159665D78FA8";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999993;
-	setAttr ".coi" 203.27590824027178;
+	setAttr ".coi" 191.03418839840833;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -3280,20 +3280,20 @@ parent -s -nc -r -add "|module_grp|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef
 parent -s -nc -r -add "|module_grp|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef18" ;
 parent -s -nc -r -add "|module_grp|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef19" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "B8A1C560-49EC-7815-2B4D-D9AD828BB1CD";
+	rename -uid "ED6E5544-4A48-FC49-F205-12BC5C9451B9";
 	setAttr -s 3 ".lnk";
 	setAttr -s 3 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "9ADADC47-4558-DB04-2F02-558EBEAC29A7";
+	rename -uid "9642EF2A-4CD6-C567-1FE5-9486C348D618";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "978A1F5D-4F8D-F566-FBFD-E7B98700C389";
+	rename -uid "936E156E-494A-BAA0-97EA-E8B08A6013A5";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "14214062-468A-B1CA-F3DC-91A10A382EF3";
+	rename -uid "22DC2734-4F05-E17B-1AD6-378370672514";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "BC19330E-4E8B-4910-BB8A-238FB66CBBA1";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "EBC7D27B-457A-1272-B8FB-8F8542112380";
+	rename -uid "78B331A1-471E-B81E-673E-2C82FCDF856A";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "47ABDCF5-4400-C307-437A-E4AF35DAB19B";
 	setAttr ".g" yes;
@@ -4119,9 +4119,9 @@ connectAttr "tip_guide.rpt" "ball_guide_ofs_pointConstraint1.tg[1].trt";
 connectAttr "tip_guide.pm" "ball_guide_ofs_pointConstraint1.tg[1].tpm";
 connectAttr "ball_guide_ofs_pointConstraint1.w1" "ball_guide_ofs_pointConstraint1.tg[1].tw"
 		;
+connectAttr "pv_loc_ofs_pointConstraint1.ctz" "pv_loc_ofs.tz";
 connectAttr "pv_loc_ofs_pointConstraint1.ctx" "pv_loc_ofs.tx";
 connectAttr "pv_loc_ofs_pointConstraint1.cty" "pv_loc_ofs.ty";
-connectAttr "pv_loc_ofs_pointConstraint1.ctz" "pv_loc_ofs.tz";
 connectAttr "pv_loc_ofs.pim" "pv_loc_ofs_pointConstraint1.cpim";
 connectAttr "pv_loc_ofs.rp" "pv_loc_ofs_pointConstraint1.crp";
 connectAttr "pv_loc_ofs.rpt" "pv_loc_ofs_pointConstraint1.crt";
@@ -4954,7 +4954,7 @@ connectAttr "toe04_4_guide.wm" "DCM_32.imat";
 connectAttr "toe04_3_guide.wm" "DCM_33.imat";
 connectAttr "toe04_2_guide.wm" "DCM_34.imat";
 connectAttr "toe04_1_guide.wm" "DCM_35.imat";
-connectAttr "master_guide.rbnBones" "condition1.ft";
+connectAttr "master_guide.ribbon" "condition1.ft";
 connectAttr "condition1.ocr" "multDoubleLinear1.i1";
 connectAttr "master_guide.dualBones" "multDoubleLinear1.i2";
 connectAttr "lambert2.oc" "lambert2SG.ss";

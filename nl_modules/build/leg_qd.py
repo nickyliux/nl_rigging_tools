@@ -569,7 +569,7 @@ class LegQd(RigModule):
             onList=self.ctls_sub,
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJnts", dv=0, attrType="bool", k=0),
+            self.setting.a.add("debugVis", dv=0, attrType="bool", k=0),
             onList=self.jnts_fk + self.jnts_ik,
         )
         [ikh.hide() for ikh in self.all_ikH.values()]

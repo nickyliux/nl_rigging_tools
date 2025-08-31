@@ -75,7 +75,7 @@ class Finger(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "setting", "z", scale * 2, 1, 2),
+            ("setting", "setting", "x", scale * 2, 1, 2),
             ("fgr01_fkc", "squareR", "x", scale, 1, -1),
             ("fgr02_fkc", "squareR", "x", scale, 1, -1),
             # ("ikc", "cube", None, scale, 1, 2),
@@ -92,8 +92,9 @@ class Finger(RigModule):
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        self.setting.alignTo(self.rootJ, ofs=(0, 0, xDr * rSz * -20), p=self.CTL_DATA)
+        self.setting.alignTo(self.rootJ, p=self.CTL_DATA)
         self.rootJ.cstPar(self.setting, mo=1)
+        # ofs=(0, 0, xDr * rSz * -20),
 
     def build_fk(self):
         """Build the FK controls for the arm rig."""
@@ -230,15 +231,15 @@ class Finger(RigModule):
         #     offList=self.ctls_fk,
         # )
         # self.ctl_vis_toggle(
-        #     self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0),
+        #     self.setting.a.add("debugVis", attrType="bool", dv=0, k=0),
         #     onList=self.jnts_fk,
         # )
         mc.hide(self.jnts_fk)
 
-        # setupJnts = self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0)
-        # setupJnts >> self.jnts_ikA[0].a.v
-        # setupJnts >> self.jnts_ikB[0].a.v
-        # setupJnts >> self.jnts_fk[0].a.v
+        # debugVis = self.setting.a.add("debugVis", attrType="bool", dv=0, k=0)
+        # debugVis >> self.jnts_ikA[0].a.v
+        # debugVis >> self.jnts_ikB[0].a.v
+        # debugVis >> self.jnts_fk[0].a.v
 
     def setup_channel(self):
         """Setup channels for the finger rig module."""

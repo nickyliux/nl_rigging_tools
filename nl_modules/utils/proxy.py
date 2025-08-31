@@ -147,21 +147,21 @@ def resetProxy():
 
 def mirrorProxy():
     """Mirror proxy meshes by duplicating and flipping them across the X-axis."""
-    for p in mc.ls(sl=1):
-        curr = MshNode(p)
-        isLf = curr.name.startswith("lf")
-        isRt = curr.name.startswith("rt")
+    processedList = []
+    targets = [DagNode(x) for x in mc.ls(sl=1, tr=1) if DagNode(x).type == "mesh"]
+    for tgt in targets:
+        isLf = tgt.name.startswith("lf")
+        isRt = tgt.name.startswith("rt")
         if isLf or isRt:
             oppPf = "rt" if isLf else "lf"
-            oppName = oppPf + DagNode(p).name[2:]
+            oppName = oppPf + tgt.name[2:]
             opp = DagNode(oppName)
-            if opp.exists():
+            if opp.exists() and opp not in processedList:
                 oppParent = opp.parent
-                #
-                #   delete opposite and create mirrored
-                #
+
+                # Delete opposite and create mirrored
                 opp.delete()
-                dup = curr.duplicate()
+                dup = tgt.duplicate()
                 dup.rename(oppName)
                 g = GrpNode("temp#")
                 dup.parentTo(g)
@@ -169,6 +169,9 @@ def mirrorProxy():
                 dup | oppParent
                 g.delete()
                 common.assignPresetShd([dup])
+
+                # Add to process list
+                processedList.append(opp)
     mc.select(cl=1)
 
 
@@ -224,13 +227,24 @@ def setProxyWeight(combined, proxies):
     # mc.skinPercent(proxyJ, tv=1, skinC, ptSet)
 
 
-def selAllProxyGrp():
+# def selAllProxyGrp():
+#     """Select all groups under the 'PRX' group."""
+#     PRX = DagNode("PRX")
+#     if PRX.exists():
+#         allBelow = PRX.children
+#         if allBelow:
+#             mc.select(allBelow)
+
+
+def selAllProxyMesh():
     """Select all proxy meshes under the 'PRX' group."""
     PRX = DagNode("PRX")
     if PRX.exists():
         allBelow = PRX.children
         if allBelow:
-            mc.select(allBelow)
+            result = common.getTypeBelow(allBelow, tgtType="mesh")
+            if result:
+                mc.select(result)
 
 
 def showHideProxy():

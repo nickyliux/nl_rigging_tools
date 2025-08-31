@@ -61,7 +61,7 @@ class MyWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         self.setWindowTitle("nlRT 0.1.0")
         self.setCentralWidget(self.UI)
-        self.setGeometry(300, 300, 200, 590)
+        self.setGeometry(200, 300, 200, 590)
         self.connect_UI()
         # self.addMenuBar()
 
@@ -147,7 +147,7 @@ class MyWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.loadProxy_BN, proxy.loadProxy, ":openScript.png")
         self.connect(self.UI.saveProxy_BN, proxy.saveProxy, ":fileSave.png")
         self.connect(self.UI.genProxy_BN, proxy.genProxy, ":play_S.png")
-        self.connect(self.UI.selAllProxyGrp_BN, proxy.selAllProxyGrp, ":aselect.png")
+        self.connect(self.UI.selAllProxyGrp_BN, proxy.selAllProxyMesh, ":aselect.png")
         self.connect(self.UI.showHideProxy_BN, proxy.showHideProxy, ":visible.png")
         self.connect(self.UI.refProxy_BN, proxy.refProxy, ":templated.png")
         self.connect(self.UI.wrapProxy_BN, proxy.wrapProxy, ":shrinkwrap.png")

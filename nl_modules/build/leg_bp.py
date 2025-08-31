@@ -24,7 +24,7 @@ class LegBp(RigModule):
 
         # Guide attributes
         guide_attrs = [
-            "rbnBones",
+            "ribbon",
             "rollJntNum",
             "rbnJntNum",
             "patellaBone",
@@ -54,6 +54,7 @@ class LegBp(RigModule):
         self.jnts_fk = []
         self.jnts_ik = []
         self.jnts_bf = []
+        self.jnts_ro = []
 
         self.ctls_ik = []
         self.ctls_fk = []
@@ -92,6 +93,9 @@ class LegBp(RigModule):
         """Generate the skeleton for the leg rig."""
         self.genSk_module()
         root_list = self.gen_sk_fr_names(self.jnt_names)
+
+        for jnt in root_list:
+            DagNode(jnt).a.ro.set(5)
 
         if self.toeBones:
             self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
@@ -175,9 +179,10 @@ class LegBp(RigModule):
         )
 
         self.build_extra([self.lwr, self.palm])
-        if not self.rbnBones:
-            self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
-            self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
+        if not self.ribbon:
+            jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
+            jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
+            self.jnts_ro = [jnt_ro1, jnt_ro2]
         else:
             self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(
                 rbJNum=self.rbnJntNum,
@@ -191,7 +196,7 @@ class LegBp(RigModule):
 
         if self.kneeFix:
             self.boneFix_setup(self.lwr, self.palm)
-            if self.rbnBones:
+            if self.ribbon:
                 self.boneFix.cstPoi(self.ribbon_lw.stt_loc)
 
         if self.patellaBone:
@@ -505,16 +510,16 @@ class LegBp(RigModule):
         #     onList=self.ctls_sub,
         # )
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0),
-            onList=self.jnts_fk + self.jnts_ik + self.jnts_bf,
+            self.setting.a.add("debugVis", attrType="bool", k=0, dv=1),
+            onList=self.jnts_fk + self.jnts_ik + self.jnts_bf + self.jnts_ro,
         )
         self.ctl_vis_toggle(
             self.ikc.a.add("pvc", attrType="bool", dv=1, k=0),
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
-        if self.rbnBones:
+        if self.ribbon:
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyCtls", attrType="bool", dv=0, k=0),
+                self.setting.a.add("bendyCtls", attrType="bool", k=0, dv=1),
                 onList=self.all_bend,
             )
         mc.hide(self.ikhs, self.toeIKHs)
@@ -537,19 +542,21 @@ class LegBp(RigModule):
 
     def setup_rotate_order(self):
         """Setup rotate order for the leg rig controls."""
-        for c in (
-            self.ctls_fk
-            + self.ctls_ik
-            + [
-                self.lwr,
-                self.jnts_bf[2],
-                self.jnts_fk[2],
-                self.jnts_ik[2],
-                self.pin_fkc,
-            ]
-        ):
-            c.a.ro.set(2)
-        self.smart_ctl.a.ro.set(3)
+        # for c in (
+        #     self.ctls_fk
+        #     + self.ctls_ik
+        #     + [
+        #         self.lwr,
+        #         self.jnts_bf[2],
+        #         self.jnts_fk[2],
+        #         self.jnts_ik[2],
+        #         self.pin_fkc,
+        #     ]
+        # ):
+        #     c.a.ro.set(2)
+        # self.smart_ctl.a.ro.set(3)
+        for ctl in self.ctls_fk + self.ctls_ik + self.ctls_sub + [self.smart_ctl]:
+            ctl.a.ro.set(5)
 
     def setup_space(self):
         """Setup space switching for the leg rig controls."""
@@ -603,7 +610,7 @@ class LegBp(RigModule):
             + self.ctls_sub
             + [self.setting, self.smart_ctl, self.pin_fkc]
         )
-        if self.rbnBones:
+        if self.ribbon:
             ctlSet.extend(self.all_bend)
 
         if self.toeBones:
@@ -626,7 +633,7 @@ class LegBp(RigModule):
         self.add_proxy_radiusScale(self.jnts_bind, 2)
 
         h = self.rigSize * 10
-        if self.rbnBones:
+        if self.ribbon:
             h /= self.rbnJntNum * 0.5
         self.add_proxy_height(self.jnts_bind, h)
 

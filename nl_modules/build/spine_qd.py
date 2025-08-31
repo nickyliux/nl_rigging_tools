@@ -367,7 +367,7 @@ class SpineQd(RigModule):
         attr >> self.tangent1_ctl.a.v
 
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJnts", attrType="bool", dv=0, k=0),
+            self.setting.a.add("debugVis", attrType="bool", dv=0, k=0),
             onList=self.jnts_ik
             + self.jnts_fk
             + self.jnts_spIk
