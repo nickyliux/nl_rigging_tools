@@ -955,6 +955,8 @@ class RigModule(RigBase):
             rb_jnts.append(jnt)
             scaleAttr >> loc.a.s
 
+            loc.shape.hide()
+
         return crv_len_ratio, rb_jnts
 
     def add_proxy_radiusScale(self, tgtJnts, v):
@@ -1011,7 +1013,7 @@ class RigModule(RigBase):
             # Create roller joint
             ro = tgt.a.rotateOrder.get()
             extraJ = JntNode(
-                tgt + "_extra", pf=rID, align=tgt, r=r, p=tgt, ro=ro, color=CB
+                "jntExtra_#", pf=rID, align=tgt, r=r, p=tgt, ro=ro, color=CB
             )
             extraJ.resetOrient()
             extraJ.resetXf()
@@ -1062,7 +1064,7 @@ class RigModule(RigBase):
 
         return roll_loc, self.jnts_ro[0], tgt_p
 
-    def build_uprRollJ(self, jnt0, jnt1, num=2, suffix="_ro1"):
+    def build_uprRollJ(self, jnt0, jnt1, num=2, suffix="_roll1"):
         """Build upper roller joints.
         They are added between jnt0 and jnt1.
         """
@@ -1082,7 +1084,7 @@ class RigModule(RigBase):
 
         return roll_jnt0
 
-    def build_lwrRollJ(self, jnt0, jnt1, num=2, suffix="_ro2"):
+    def build_lwrRollJ(self, jnt0, jnt1, num=2, suffix="_roll2"):
         """Build lower roller joints.
         They are added between jnt0's parent and jnt0.
         """
