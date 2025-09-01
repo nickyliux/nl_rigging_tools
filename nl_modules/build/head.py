@@ -97,7 +97,7 @@ class Head(RigModule):
 
     def setup_channel(self):
         """Setup channels for the head rig controls."""
-        self.head_fkc.a.showAttr(r=1, s=1)
+        self.head_fkc.a.showAttr(t=1, r=1, s=1)
         self.jaw_fkc.a.showAttr(t=1, r=1)
 
     def setup_space(self):

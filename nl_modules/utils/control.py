@@ -6,6 +6,33 @@ from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
 
 
+def reset_all_ctl():
+    """Reset all ctl's attr to default"""
+    logging.info("Reset All Ctl's Attr")
+    for ctl in common.getRigCtlsAll():
+        for attr in ctl.a.list(k=1, u=1, se=1, s=1):
+            if attr.settable():
+                attr.reset()
+
+
+# def getRigNodes_all():
+#     """Return all rigNodes in the scene"""
+#     return [DagNode(r) for r in mc.ls("*RGN", type="script")]
+
+
+# def reset_all_pv_ctl():
+#     """Reset all poleVector ctl's attr to default"""
+#     logging.info("Reset All pvc's Attr")
+#     for rigNode in getRigNodes_all():
+
+#         rID = rigNode.a.rigID.get()
+#         pvc = rigNode.a.pvc.inConnNode
+#         guide = DagNode(rID + "_pvc_guide")
+
+#         if pvc and guide and pvc.exists() and guide.exists():
+#             pvc.snapTo(guide)
+
+
 def mirrorCtlShape(ctl):
     """Mirror the control shape to its opposite counterpart."""
     ctl = DagNode(ctl)

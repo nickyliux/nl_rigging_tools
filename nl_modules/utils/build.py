@@ -72,10 +72,9 @@ def preRig():
     """Prepare for rigging"""
     if not mc.objExists("master_ctl"):
         loadBase()
-    m = DagNode("master_ctl")
-    m1 = m.offset
-    for ctl in [m, m1]:
-        ctl.a.showAttr(t=1, r=1)
+    ctl = DagNode("master_ctl")
+    ctl.a.showAttr(t=1, r=1)
+    ctl.offset.a.showAttr(t=1, r=1)
 
 
 @common.Undo("buildSelOrAll")
@@ -93,15 +92,16 @@ def buildSelOrAll(*arg):
 
 def postRig():
     """Post rigging operations"""
-    reset_all_ctl()
+    from nl_modules.utils import control
+
+    control.reset_all_ctl()
     update_anchor_conn()
     update_space_switch()
-    reset_all_pv_ctl()
+    # control.reset_all_pv_ctl()
 
     RIG = DagNode("RIG")
     if RIG.exists():
         mc.hide(RIG)
-
     mc.select(cl=1)
 
 
@@ -228,28 +228,6 @@ def update_anchor_conn():
 # 		if (`getAttr -se ($c + \".sy\")`) catch(`setAttr ($c + \".sy\") 1`);\
 # 		if (`getAttr -se ($c + \".sz\")`) catch(`setAttr ($c + \".sz\") 1`);}\
 # 		}\
-
-
-def reset_all_ctl():
-    """Reset all ctl's attr to default"""
-    logging.info("Reset All Ctl's Attr")
-    for ctl in common.getRigCtlsAll():
-        for attr in ctl.a.list(k=1, u=1, se=1, s=1):
-            if attr.settable():
-                attr.reset()
-
-
-def reset_all_pv_ctl():
-    """Reset all poleVector ctl's attr to default"""
-    logging.info("Reset All pvc's Attr")
-    for rigNode in getRigNodes_all():
-
-        rID = rigNode.a.rigID.get()
-        pvc = rigNode.a.pvc.inConnNode
-        guide = DagNode(rID + "_pvc_guide")
-
-        if pvc and guide and pvc.exists() and guide.exists():
-            pvc.snapTo(guide)
 
 
 def update_space_switch():

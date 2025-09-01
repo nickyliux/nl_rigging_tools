@@ -134,7 +134,9 @@ class SpineBp(RigModule):
         self.cog_ctl.addOffsetGrp()
 
         self.cog_gmb.cstPar(self.ctls_fk[0].offset, mo=1)
-        self.cog_gmb.cstPar(self.ctls_fk[1].offset, mo=1)
+        if self.ribbon and not self.is_neck():
+            self.cog_gmb.cstPar(self.ctls_fk[1].offset, mo=1)
+
         self.cog_gmb.cstSca(self.jnts_fk[0])
         self.jnts_fk[0].childrenJt[0].a.segmentScaleCompensate.set(0)
 
@@ -271,6 +273,8 @@ class SpineBp(RigModule):
             self.setting.a.add("debugVis", attrType="bool", dv=0, k=0),
             onList=self.jnts_ctl + self.jnts_fk,  # + self.jnts_rb,
         )
+        if self.is_neck():
+            mc.hide(self.cog_ctl)
 
     def setup_channel(self):
         """Setup channel attributes for the spine rig controls."""
@@ -326,9 +330,11 @@ class SpineBp(RigModule):
 
     def setup_ctlSet(self):
         """Setup control sets for the spine rig."""
-        ctls = self.ctls_fk + [self.setting, self.cog_ctl, self.cog_gmb]
+        ctls = self.ctls_fk + [self.setting]
         if self.ribbon:
             ctls += self.ctls_ik
+        if not self.is_neck():
+            ctls += [self.cog_ctl, self.cog_gmb]
         self.add_ctl_set(ctls)
 
     def setup_scale(self):

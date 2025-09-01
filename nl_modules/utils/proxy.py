@@ -104,6 +104,8 @@ def saveProxy():
 
 def loadProxy():
     """Load proxy meshes from a file and match them to existing bind joints."""
+    from nl_modules.utils import control
+
     charPath = mc.optionVar(q="charPath")
     tgtFile = mc.fileDialog2(
         fileFilter="*_prx*", dialogStyle=2, fileMode=1, dir=charPath
@@ -119,11 +121,11 @@ def loadProxy():
             return
 
         allTgts = mc.ls("*_pxGeo")
+        control.reset_all_ctl()
         for tgt in allTgts:
             tgt = DagNode(tgt)
             imported = DagNode(ns + ":" + tgt)
             if imported.exists():
-                # print(imported)
                 common.matchMove([tgt, imported], mode="a")
                 mc.blendShape(imported, tgt, w=(0, 1), topologyCheck=0)
                 tgt.deleteHistory()

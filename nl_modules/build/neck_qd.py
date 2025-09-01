@@ -19,7 +19,7 @@ class NeckQd(SpineQd):
 
         self.setup_anchor_module(
             {
-                "anchorF1": self.cog_ctl,
+                "anchorF1": self.cog_ctl.offset,
                 "anchorM1": self.anchorToRbj,
             }
         )
@@ -46,7 +46,7 @@ class NeckQd(SpineQd):
         """Setup bind joints for the neck rig."""
 
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxy_radiusScale(self.jnts_bind, 3)
+        self.add_proxy_radiusScale(self.jnts_bind, 2)
         self.add_proxy_height(
             self.jnts_bind, CrvNode(self.LINE_GUIDE).length / self.rbnJntNum
         )
@@ -54,9 +54,7 @@ class NeckQd(SpineQd):
     def setup_ctlSet(self):
         """Setup control sets for the neck rig."""
 
-        ctls = self.ctls_ik + [self.cog_ctl, self.setting]
-        # ctls.remove(self.base_ctl)
-        # ctls.remove(self.tangent0_ctl)
+        ctls = self.ctls_ik + [self.setting]  # self.cog_ctl,
         self.add_ctl_set(ctls)
 
     def build_post(self):
