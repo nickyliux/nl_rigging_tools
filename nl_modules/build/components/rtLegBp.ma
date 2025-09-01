@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: rtLegBp.ma
-//Last modified: Sun, Aug 31, 2025 06:22:04 PM
+//Last modified: Mon, Sep 01, 2025 07:59:31 AM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,7 +12,7 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26100)";
-fileInfo "UUID" "FF186305-489B-8EFC-1F4B-2EAA0BC4D741";
+fileInfo "UUID" "E331086E-4D94-F1FB-E636-98B79FFBB82A";
 createNode transform -n "module_grp";
 	rename -uid "3F6958F6-4253-676A-51E6-CA9FE9573FBE";
 	addAttr -ci true -sn "mirrorCode" -ln "mirrorCode" -dt "string";
@@ -840,6 +840,7 @@ createNode nurbsCurve -n "foot_guideShape1" -p "master_guide";
 		-8.1660387114908776e-15 8.0595107077863571e-16 -14.606018972262886
 		-11.267736762031188 8.2535382583711157e-16 -13.810722497101398
 		;
+	setAttr ".adot" yes;
 createNode transform -n "toe_guide_grp" -p "master_guide";
 	rename -uid "E669C658-4F4A-B12C-D97E-1DA743412B3C";
 	setAttr ".r" -type "double3" 180 0 0 ;
@@ -3164,8 +3165,8 @@ createNode scaleConstraint -n "null5_scaleConstraint1" -p "null5";
 createNode transform -s -n "persp";
 	rename -uid "2CFF45DD-487A-9CD1-767B-A089B899D93C";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 108.787122589136 64.919527630396388 114.92986602985482 ;
-	setAttr ".r" -type "double3" -5.1383527290162965 55.800000000026493 0 ;
+	setAttr ".t" -type "double3" 50.407752106730669 117.32284131367352 155.84827262460482 ;
+	setAttr ".r" -type "double3" -21.338352729016329 33.800000000026543 -1.9137269101081866e-15 ;
 	setAttr -cb on ".ro";
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "82C3F9B2-4980-6719-29B8-159665D78FA8";
@@ -3280,20 +3281,20 @@ parent -s -nc -r -add "|module_grp|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef
 parent -s -nc -r -add "|module_grp|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef18" ;
 parent -s -nc -r -add "|module_grp|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef19" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "ED6E5544-4A48-FC49-F205-12BC5C9451B9";
+	rename -uid "0945042F-45D8-B575-214A-8E90B80B613D";
 	setAttr -s 3 ".lnk";
 	setAttr -s 3 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "9642EF2A-4CD6-C567-1FE5-9486C348D618";
+	rename -uid "CA1A5E4A-4433-2194-F59D-F5A5B5E31EF6";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "936E156E-494A-BAA0-97EA-E8B08A6013A5";
+	rename -uid "09F128FF-46E2-9B9E-00AA-5CA835F4E1FB";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "22DC2734-4F05-E17B-1AD6-378370672514";
+	rename -uid "AD791425-4E38-EB94-BB37-FABD96C4EC88";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "BC19330E-4E8B-4910-BB8A-238FB66CBBA1";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "78B331A1-471E-B81E-673E-2C82FCDF856A";
+	rename -uid "906DD90B-4A51-B889-26DA-D98CECE91E65";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "47ABDCF5-4400-C307-437A-E4AF35DAB19B";
 	setAttr ".g" yes;

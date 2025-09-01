@@ -129,7 +129,7 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "setting", "z", scale * 2, 1, 2),
+            ("setting", "setting", "z", scale, 1, 2),
             ("hip_fkc", "circle", "x", scale, 0, -1),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
@@ -510,7 +510,7 @@ class LegBp(RigModule):
         #     onList=self.ctls_sub,
         # )
         self.ctl_vis_toggle(
-            self.setting.a.add("debugVis", attrType="bool", k=0, dv=1),
+            self.setting.a.add("debugVis", attrType="bool", k=0, dv=0),
             onList=self.jnts_fk + self.jnts_ik + self.jnts_bf + self.jnts_ro,
         )
         self.ctl_vis_toggle(

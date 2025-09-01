@@ -87,7 +87,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "setting", "z", scale * 2, 1, 2),
+            ("setting", "setting", "z", scale, 1, 2),
             ("clavicle_fkc", "stickC", None, scale, 0, 2),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
@@ -256,7 +256,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         self.setting.alignTo(
-            self.clavicle, p=self.CTL_DATA, ofs=(scale * 40, scale * 10, 0)
+            self.clavicle, p=self.CTL_DATA, ofs=(scale * 30, scale * 10, 0)
         )
         # scale * -20)
         self.clavicle.cstPar(self.setting, mo=1)

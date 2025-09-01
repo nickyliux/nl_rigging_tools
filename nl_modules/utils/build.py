@@ -23,20 +23,6 @@ from nl_modules.build.tail import Tail
 from nl_modules.build.finger import Finger
 
 from nl_modules.build.rig_module import RigModule
-from contextlib import ContextDecorator
-
-
-class Undo(ContextDecorator):
-    """Context manager for undo chunk in Maya"""
-
-    def __init__(self, name=None):
-        self.name = name
-
-    def __enter__(self):
-        mc.undoInfo(openChunk=1, infinity=1, chunkName=self.name)
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        mc.undoInfo(closeChunk=1)
 
 
 def getAnchors(rigNodes, startStr=""):
@@ -92,7 +78,7 @@ def preRig():
         ctl.a.showAttr(t=1, r=1)
 
 
-@Undo("buildSelOrAll")
+@common.Undo("buildSelOrAll")
 def buildSelOrAll(*arg):
     """Build rig for selected rigNodes or all if nothing selected"""
     rigNodes = getRigNodes_selOrAll()
@@ -145,7 +131,7 @@ def unbuildTgt(rigN):
             rigObj.unbuild_pre_module()
 
 
-@Undo("SelOrAll")
+@common.Undo("unbuildSelOrAll")
 def unbuildSelOrAll(*arg):
     """Unbuild rig for selected rigNodes or all if nothing selected"""
     rigNodes = getRigNodes_selOrAll()
@@ -171,6 +157,7 @@ def deleteTgt(rigNode):
             rigNode.delete()
 
 
+@common.Undo("deleteSelOrAll")
 def deleteSelOrAll(*arg):
     """Delete rigNodes for selected objects or all if nothing selected"""
     rigNodes = getRigNodes_selOrAll()
@@ -181,7 +168,7 @@ def deleteSelOrAll(*arg):
 
 def update_anchor_conn():
     """Update anchor connections for all rigNodes"""
-    logging.info("Update All Anchor Connections")
+    # logging.info("Update All Anchor Connections")
 
     rigNodes = getRigNodes_all()
     if not rigNodes or len(rigNodes) < 2:
@@ -189,6 +176,7 @@ def update_anchor_conn():
 
     maleAnchors = getAnchors(rigNodes, startStr="anchorM")
     femaleAnchors = getAnchors(rigNodes, startStr="anchorF")
+
     [fAnchor.removeCstNodes() for fAnchor in femaleAnchors]
 
     if femaleAnchors and maleAnchors:
@@ -208,6 +196,7 @@ def update_anchor_conn():
             if F_rigNode and M_rigNode:
                 if F_rigNode != M_rigNode:
                     closestMaleAnchor.cstPar(fAnchor, mo=1)
+                    logging.info(f"{fAnchor.name} -> {closestMaleAnchor.name}")
                 else:
                     logging.warning("Ignore connecting anchors from the same rigNode.")
 

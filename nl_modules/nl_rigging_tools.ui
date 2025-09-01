@@ -1204,7 +1204,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Mirror selected proxy, left to right</string>
+          <string>Mirror selected proxy</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1490,7 +1490,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Delete all skincluster nodes for all meshes</string>
+          <string>Delete all skinclusters for all meshes</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1506,7 +1506,7 @@
       <property name="geometry">
        <rect>
         <x>60</x>
-        <y>40</y>
+        <y>32</y>
         <width>164</width>
         <height>8</height>
        </rect>
@@ -1650,7 +1650,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Character Directory</string>
+          <string>Character directory</string>
          </property>
          <property name="text">
           <string>nil</string>

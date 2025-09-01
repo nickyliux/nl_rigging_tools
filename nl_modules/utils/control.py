@@ -106,6 +106,7 @@ def loadCtl():
                 mc.select(cl=1)
 
 
+@common.Undo("setOnTopSel")
 def setOnTopSel(*args):
     """Toggle the always draw on top state for selected shapes."""
     selList = mc.ls(sl=1, tr=1)
@@ -115,18 +116,21 @@ def setOnTopSel(*args):
             DagNode(s).shape.a.alwaysDrawOnTop.set(args[0])
 
 
+@common.Undo("dspTypeSel")
 def dspTypeSel(*args):
     for sel in mc.ls(sl=1):
         obj = DagNode(sel)
         obj.dspType = args[0]
 
 
+@common.Undo("dropSel")
 def dropSel():
     """Drop the selected control curves."""
     for selList in mc.ls(sl=1, tr=1):
         GrpNode(selList).cv_drop()
 
 
+@common.Undo("rotaCVForSel")
 def rotaCVForSel(*args):
     """Rotate the CVs of selected curves."""
     for selList in [DagNode(selList) for selList in mc.ls(sl=1, tr=1)]:
@@ -134,6 +138,7 @@ def rotaCVForSel(*args):
             GrpNode(selList).cv_rotate(*args)
 
 
+@common.Undo("scaleCVForSel")
 def scaleCVForSel(value):
     """Scale the CVs of selected curves."""
     for selList in [DagNode(selList) for selList in mc.ls(sl=1, tr=1)]:

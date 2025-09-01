@@ -20,7 +20,7 @@ class NeckBp(SpineBp):
         #         "anchorM1": anchorM1Tgt,
         #     }
         # )
-        m1 = self.jnts_bind[-1] if self.ribbon else self.ctls_fk[0]
+        m1 = self.jnts_bind[-1] if self.ribbon else self.ctls_fk[-1]
         self.setup_anchor_module({"anchorM1": m1, "anchorF1": self.cog_ctl})
 
     def setup_space(self):

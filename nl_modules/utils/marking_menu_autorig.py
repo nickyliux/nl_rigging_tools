@@ -48,10 +48,10 @@ class MarkingMenuAutorig:
         mc.menuItem(p=menu, l="Mirror Guide", rp="SE", c=guide.mirrorGuideSelOrAll)
         mc.menuItem(p=menu, l="Delete Guide", rp="W", c=build.deleteSelOrAll)
         mc.menuItem(p=menu, l="Transfer Guide", rp="E", c=guide.xferGuideSel)
+        mc.menuItem(p=menu, l="Mirror Pose", rp="SW", c=guide.mirrorPose)
 
     def addExtraOptions(self, menu):
         """Add extra options to the marking menu"""
-        mc.menuItem(p=menu, l="Mirror Pose", rp="SW", c=guide.mirrorPose)
         mc.menuItem(p=menu, l="Select Ctls", c=self.selectCtlSelOrAll)
         mc.menuItem(p=menu, l="Mirror Shape", c=self.mirrorShapeSelOrAll)
         mc.menuItem(p=menu, l="Reload Menu", c=self.reload_marking_menu)

@@ -62,7 +62,7 @@ class SpineBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
             ("setting", "setting", "z", rSz * 3, 1, 2),
-            ("cog_ctl", "cog2", None, rSz * 6, 0, 2),
+            ("cog_ctl", "cog2", None, rSz * 7, 0, 2),
         ]
         if self.ribbon:
             ctl_defs += [
@@ -142,11 +142,11 @@ class SpineBp(RigModule):
 
     def reverse_fk_hip(self):
         """modify first fkc specific for hip rotation."""
-        hip_fkc = self.ctls_fk[0]
-        hip_fkc(p=self.CTL_DATA, addOfs=1, color=Color.BLUE, width=2)
-        hip_fkc.offset.snapAlignTo(self.jnts_fk[1], self.jnts_fk[0])
-        hip_fkc.cv_move(0, self.rigSize * -20, 0)
-        hip_fkc.cstPar(self.jnts_fk[0], mo=1)
+        ctl = self.ctls_fk[0]
+        ctl(p=self.CTL_DATA, addOfs=1, color=Color.BLUE, width=2)
+        ctl.offset.snapAlignTo(self.jnts_fk[1], self.jnts_fk[0])
+        ctl.cv_move(0, self.rigSize * -20, 0)
+        ctl.cstPar(self.jnts_fk[0], mo=1)
 
     def build_ik(self):
         """Build the IK controls for the spine rig."""
