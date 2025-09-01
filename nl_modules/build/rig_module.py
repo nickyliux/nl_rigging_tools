@@ -1100,7 +1100,8 @@ class RigModule(RigBase):
             ratio = i / num
             common.cstMulti(jnt0, tgt_p, j, cstType="poi", w=1 - ratio)
             roll_loc.a.rx * (1 - ratio) >> j.a.rx
-            self.jnts_bind.append(j)
+            if i > 0:
+                self.jnts_bind.append(j)
 
         return roll_jnt0
 
