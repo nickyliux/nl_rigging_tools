@@ -136,6 +136,7 @@ def loadProxy():
                 rootGrp.delete()
 
 
+@common.Undo("resetProxy")
 def resetProxy():
     """Reset proxy meshes by deleting existing ones and re-adding them to the joints."""
     for selList in mc.ls(sl=1, tr=1):
@@ -147,6 +148,7 @@ def resetProxy():
     mc.select(cl=1)
 
 
+@common.Undo("mirrorProxy")
 def mirrorProxy():
     """Mirror proxy meshes by duplicating and flipping them across the X-axis."""
     processedList = []
@@ -177,6 +179,7 @@ def mirrorProxy():
     mc.select(cl=1)
 
 
+@common.Undo("wrapProxy")
 def wrapProxy():
     """Wrap selected meshes to the target wrap mesh using a shrinkWrap deformer."""
     selList = mc.ls(sl=1, tr=1)

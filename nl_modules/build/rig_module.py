@@ -1065,9 +1065,7 @@ class RigModule(RigBase):
         return roll_loc, self.jnts_ro[0], tgt_p
 
     def build_uprRollJ(self, jnt0, jnt1, num=2, suffix="_roll1"):
-        """Build upper roller joints.
-        They are added between jnt0 and jnt1.
-        """
+        """Build upper roller joints. They are added between jnt0 and jnt1."""
         roll_loc, roll_jnt0, tgt_p = self.build_rollChain(
             jnt0, jnt1, num, suffix=suffix
         )
@@ -1085,9 +1083,7 @@ class RigModule(RigBase):
         return roll_jnt0
 
     def build_lwrRollJ(self, jnt0, jnt1, num=2, suffix="_roll2"):
-        """Build lower roller joints.
-        They are added between jnt0's parent and jnt0.
-        """
+        """Build lower roller joints. They are added between jnt0's parent and jnt0."""
         roll_loc, roll_jnt0, tgt_p = self.build_rollChain(
             jnt0, jnt1, num, suffix=suffix
         )

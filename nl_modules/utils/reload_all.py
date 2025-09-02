@@ -113,6 +113,7 @@ reload(test_utils_node)
 
 from nl_modules.build import (
     arm_bp,
+    finger_fk,
     leg_bp,
     leg_qd,
     neck_bp,
@@ -127,7 +128,7 @@ from nl_modules.build import (
     ribbon,
     head,
     hand,
-    finger,
+    simple_fk,
 )
 
 reload(rig_base)
@@ -145,7 +146,7 @@ reload(neck_qd)
 reload(spine_qd)
 reload(tail_fk)
 reload(tail)
-reload(finger)
+reload(finger_fk)
 
 if __name__ == "__main__":
     logging.info("reload modules")

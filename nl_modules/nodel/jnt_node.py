@@ -128,6 +128,7 @@ class JntNode(GrpNode):
                     ch=0,
                 )[0]
             )
+            mc.polySoftEdge(angle=0, ch=0)
             proxy.alignTo(self, p=p)
             proxy_offset = proxy.addOffsetGrp()
 

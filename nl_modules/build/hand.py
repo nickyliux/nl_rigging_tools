@@ -74,7 +74,6 @@ class Hand(RigModule):
         """Build the hand rig module."""
         self.build_pre_module()
 
-        self.jnts_bind = [self.rootJ]
         for root in self.rootJ.childrenJt:
             digit_jnts = [jnt for jnt in root.allChildrenJt2]
             self.jnts_fgr.append(digit_jnts)

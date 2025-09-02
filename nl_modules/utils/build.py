@@ -20,7 +20,8 @@ from nl_modules.build.neck_qd import NeckQd
 from nl_modules.build.spine_qd import SpineQd
 from nl_modules.build.tail_fk import TailFk
 from nl_modules.build.tail import Tail
-from nl_modules.build.finger import Finger
+from nl_modules.build.finger_fk import FingerFk
+from nl_modules.build.simple_fk import SimpleFk
 
 from nl_modules.build.rig_module import RigModule
 
@@ -117,7 +118,7 @@ def addProxyAttrsToMaster():
         proxy >> prx.a.v
 
         OPTIONS = "Normal:Template:Reference"
-        proxyDsp = ctl.a.add("proxyDsp", attrType="enum", k=0, en=OPTIONS, dv=2)
+        proxyDsp = ctl.a.add("proxyDsp", attrType="enum", k=0, en=OPTIONS, dv=0)
         proxyDsp >> prx.a.overrideDisplayType
 
 

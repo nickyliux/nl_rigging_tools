@@ -49,7 +49,7 @@ class ArmBp(RigModule):
         self.jnts_fk = []
         self.jnts_ik = []
         self.jnts_bf = []
-        self.jnts_ro = []
+        self.jnts_roll = []
         self.ctls_ik = []
         self.ctls_fk = []
         self.ikhs = []
@@ -116,13 +116,13 @@ class ArmBp(RigModule):
         self.build_ik()
         self.blend_fk_ik()
         # self.build_nlAutoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
-        # self.jnts_bind = [self.clavicle]
+        self.jnts_bind = [self.clavicle, self.palm]
         self.build_extra([self.lwr, self.palm])
 
         if not self.ribbon:
             jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
             jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
-            self.jnts_ro = [jnt_ro1, jnt_ro2]
+            self.jnts_roll = [jnt_ro1, jnt_ro2]
         else:
             self.build_bendy_ribbon(
                 rbJNum=self.rbnJntNum,
@@ -429,7 +429,7 @@ class ArmBp(RigModule):
         )
         self.ctl_vis_toggle(
             self.setting.a.add("debugVis", attrType="bool", dv=0, k=0),
-            onList=self.jnts_fk + self.jnts_ik + self.jnts_bf + self.jnts_ro,
+            onList=self.jnts_fk + self.jnts_ik + self.jnts_bf + self.jnts_roll,
         )
         if self.ribbon:
             self.ctl_vis_toggle(
