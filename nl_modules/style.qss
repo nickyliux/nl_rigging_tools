@@ -4,13 +4,13 @@ QGroupBox {
     border-radius: 6px;
     opacity: 50;
 }
-# QGroupBox::title {
+QGroupBox::title {
     subcontrol-origin: margin;
-    padding: 1px;
+    subcontrol-position: top center;
+    padding: 2px 8000px 2px 8000px;
+    background-color: #000;
+    border: 2px solid #37c;
 }
 
-# background-color: #59f;
-# border: 1px solid #f95;
-# subcontrol-position: top center;
-# border: 2px solid #222;
-# padding: 3px 8000px 3px 8000px;
+# border: 1px solid #f95;  
+# padding: 1px;

@@ -561,7 +561,9 @@ class LegBp(RigModule):
     def setup_space(self):
         """Setup space switching for the leg rig controls."""
         self.rigNode.a.add("spaceName1", attrType="string", txt="master, COG, lwrBody")
-        self.rigNode.a.add("spaceName2", attrType="string", txt="leg, master, hip, COG")
+        self.rigNode.a.add(
+            "spaceName2", attrType="string", txt="leg, foot, master, hip, COG"
+        )
 
         self.ikH1.build_pvfkPinSetup(ikTarget=self.ikc_gimbal)
 
@@ -571,6 +573,7 @@ class LegBp(RigModule):
                 "spaceHolder2": self.pvc,
                 "space_master": self.masterC,
                 "space_leg": self.ikH1.pvJnt[0],
+                "space_foot": self.ikc,
             }
         )
 
