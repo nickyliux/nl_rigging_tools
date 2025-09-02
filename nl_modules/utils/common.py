@@ -557,10 +557,10 @@ def getTypeBelow(tgt, tgtType="mesh"):
 
     class_map = {
         "joint": ("joint", "JntNode"),
-        "locator": ("locator", "LocNode"),
+        "loc": ("locator", "LocNode"),
         "mesh": ("mesh", "MshNode"),
-        "nurbsCurve": ("nurbsCurve", "CrvNode"),
-        "nurbsSurface": ("nurbsSurface", "SrfNode"),
+        "curve": ("nurbsCurve", "CrvNode"),
+        "surface": ("nurbsSurface", "SrfNode"),
         "group": ("transform", "GrpNode"),
     }
     returnNodes = []
