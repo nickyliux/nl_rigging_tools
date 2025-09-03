@@ -167,6 +167,7 @@ class MyWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
         self.UI.rigNode_refresh_BN.clicked.connect(self.rigNode_refresh)
         self.UI.rigNode_selectAll_BN.clicked.connect(self.rigNode_selectAll)
+        self.UI.rigNode_autoLink_BN.clicked.connect(self.rigNode_autoLink)
 
         # Ctl
         self.UI.crvShape_LW.itemDoubleClicked.connect(self.crvShape_LW_dblClicked)
@@ -325,6 +326,10 @@ class MyWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         rigNodes = build.getRigNodes_all()
         if rigNodes:
             mc.select(rigNodes)
+
+    def rigNode_autoLink(self):
+        """Automatically connect rig nodes"""
+        build.update_anchor_conn(conn=1)
 
     def crvShape_LW_dblClicked(self, item):
         """Add curve object"""

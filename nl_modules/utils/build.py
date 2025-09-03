@@ -167,10 +167,8 @@ def deleteSelOrAll(*arg):
             deleteTgt(rigN)
 
 
-def update_anchor_conn():
+def update_anchor_conn(conn=0):
     """Update anchor connections for all rigNodes"""
-    # logging.info("Update All Anchor Connections")
-
     rigNodes = getRigNodes_all()
     if not rigNodes or len(rigNodes) < 2:
         return
@@ -196,8 +194,15 @@ def update_anchor_conn():
 
             if F_rigNode and M_rigNode:
                 if F_rigNode != M_rigNode:
-                    closestMaleAnchor.cstPar(fAnchor, mo=1)
-                    logging.info(f"{fAnchor.name} -> {closestMaleAnchor.name}")
+                    if conn:
+                        # Connect female anchor to male rigNode
+                        F_rigNode.a.add("parentRigNode", attrType="message")
+                        F_rigNode.a.parentRigNode >> M_rigNode.a.message
+                        logging.info(f"{F_rigNode.name} -> {M_rigNode.name}")
+                    else:
+                        # Constrain female anchor to male anchor
+                        closestMaleAnchor.cstPar(fAnchor, mo=1)
+                        logging.info(f"{fAnchor.name} -> {closestMaleAnchor.name}")
                 else:
                     logging.warning("Ignore connecting anchors from the same rigNode.")
 
