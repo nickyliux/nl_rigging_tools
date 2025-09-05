@@ -50,12 +50,12 @@ MODEL_GRP = "mdl_grp"
 BIND_REF_GRP = "jnt_grp"
 
 
-class MyWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
+class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     """Main window for the rigging tools UI."""
 
     def __init__(self, parent=None):
         """Initialize the main window and load the UI."""
-        super(MyWindow, self).__init__(parent)
+        super(MyToolWin, self).__init__(parent)
         logging.info("load " + UI_PATH)
         self.UI = QUiLoader().load(UI_PATH)
 
@@ -545,22 +545,22 @@ class MyWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         subprocess.Popen(f'explorer "{path}"')
 
 
-global UI_win
+global nlRT_win
 
 
 def main():
     """Main function to initialize and show the rigging tools UI."""
-    global UI_win
+    global nlRT_win
     try:
-        UI_win.close()
+        nlRT_win.close()
     except:
         pass
-    UI_win = MyWindow()
-    UI_win.show()
+    nlRT_win = MyToolWin()
+    nlRT_win.show()
 
     with open(STYLE_PATH, "r") as f:
         style = f.read()
-        UI_win.setStyleSheet(style)
+        nlRT_win.setStyleSheet(style)
 
 
 if __name__ == "__main__":
