@@ -1,4 +1,5 @@
 import logging
+import re
 import maya.cmds as mc
 
 from nl_modules.nodel.base.dag_node import DagNode
@@ -167,15 +168,15 @@ def deleteSelOrAll(*arg):
             deleteTgt(rigN)
 
 
-def update_anchor_conn(conn=0):
+def update_anchor_conn():
     """Update anchor connections for all rigNodes"""
     rigNodes = getRigNodes_all()
     if not rigNodes or len(rigNodes) < 2:
+        logging.warning("No anchor connection made for no or single rigNode found.")
         return
 
     maleAnchors = getAnchors(rigNodes, startStr="anchorM")
     femaleAnchors = getAnchors(rigNodes, startStr="anchorF")
-
     [fAnchor.removeCstNodes() for fAnchor in femaleAnchors]
 
     if femaleAnchors and maleAnchors:
@@ -193,18 +194,12 @@ def update_anchor_conn(conn=0):
             F_rigNode = getRigNode(fAnchor)
 
             if F_rigNode and M_rigNode:
-                if F_rigNode != M_rigNode:
-                    if conn:
-                        # Connect female anchor to male rigNode
-                        F_rigNode.a.add("parentRigNode", attrType="message")
-                        F_rigNode.a.parentRigNode >> M_rigNode.a.message
-                        logging.info(f"{F_rigNode.name} -> {M_rigNode.name}")
-                    else:
-                        # Constrain female anchor to male anchor
-                        closestMaleAnchor.cstPar(fAnchor, mo=1)
-                        logging.info(f"{fAnchor.name} -> {closestMaleAnchor.name}")
-                else:
+                if F_rigNode == M_rigNode:
                     logging.warning("Ignore connecting anchors from the same rigNode.")
+                else:
+                    # Constrain female anchor to male anchor
+                    closestMaleAnchor.cstPar(fAnchor, mo=1)
+                    logging.info(f"{fAnchor.name} -> {closestMaleAnchor.name}")
 
 
 # ---------------------------------------------------------------

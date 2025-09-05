@@ -134,7 +134,12 @@ class Head(RigModule):
         self.setup_bindJnt()
         self.setup_ctlSet()
         self.setup_space()
-        self.setup_anchor_module({"anchorF1": self.head_fkc.offset})
+        self.setup_anchor_module(
+            {
+                "anchorF1": self.head_fkc.offset,
+                "anchorM1": self.headEnd,
+            }
+        )
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()

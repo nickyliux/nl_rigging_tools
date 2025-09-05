@@ -1802,9 +1802,9 @@
       <property name="geometry">
        <rect>
         <x>2</x>
-        <y>69</y>
+        <y>53</y>
         <width>218</width>
-        <height>855</height>
+        <height>871</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -1910,60 +1910,6 @@
          </property>
          <property name="text">
           <string>Select All</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget_31">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>44</y>
-        <width>221</width>
-        <height>25</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_22">
-       <property name="spacing">
-        <number>6</number>
-       </property>
-       <property name="leftMargin">
-        <number>6</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QPushButton" name="rigNode_autoLink_BN">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>9</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="text">
-          <string>Auto Link</string>
          </property>
         </widget>
        </item>
