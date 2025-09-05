@@ -217,7 +217,7 @@ class FingerFk(RigModule):
     def setup_anchor(self):
         self.setup_anchor_module(
             {
-                "anchorF1": self.ctls_fk[0].offset,
+                "anchorS1": self.ctls_fk[0].offset,
             }
         )
 

@@ -90,17 +90,17 @@
 #     def setup_anchor(self):
 #
 #         s = self.rigSize
-#         # anchorF1 = LocNode("anchorF1", pf=self.rigID, size=s, color=Color.PINK)
-#         # anchorF1.a.message >> self.rigNode.a.anchorF1
+#         # anchorS1 = LocNode("anchorS1", pf=self.rigID, size=s, color=Color.PINK)
+#         # anchorS1.a.message >> self.rigNode.a.anchorS1
 #         #
-#         # # anchorF1
-#         # anchorF1.snapTo(self.rootJ, p=self.masterC)
-#         # anchorF1.cstParSca(self.rootJ, mo=1)
-#         # anchorF1.cstParSca(self.smart_ctl.offset, mo=1)
+#         # # anchorS1
+#         # anchorS1.snapTo(self.rootJ, p=self.masterC)
+#         # anchorS1.cstParSca(self.rootJ, mo=1)
+#         # anchorS1.cstParSca(self.smart_ctl.offset, mo=1)
 #         # for c in self.ctlsArr:
-#         #     anchorF1.cstParSca(c[0].offset.offset, mo=1)
+#         #     anchorS1.cstParSca(c[0].offset.offset, mo=1)
 #         #
-#         # anchorF1.hide()
+#         # anchorS1.hide()
 #
 #     def build_post(self):
 #

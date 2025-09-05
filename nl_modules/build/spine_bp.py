@@ -316,9 +316,9 @@ class SpineBp(RigModule):
 
     def setup_anchor(self):
         """Setup anchor module for the spine rig controls."""
-        m1 = self.hip_ikc if self.ribbon else self.ctls_fk[0]
-        m2 = self.jnts_rb[-1] if self.ribbon else self.ctls_fk[-1]
-        self.setup_anchor_module({"anchorM1": m1, "anchorM2": m2})
+        anchor1 = self.hip_ikc if self.ribbon else self.ctls_fk[0]
+        anchor2 = self.jnts_rb[-1] if self.ribbon else self.ctls_fk[-1]
+        self.setup_anchor_module({"anchorP1": anchor1, "anchorP2": anchor2})
 
     def setup_bindJnt(self):
         """Setup bind joints for the spine rig."""

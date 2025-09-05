@@ -136,8 +136,8 @@ class Head(RigModule):
         self.setup_space()
         self.setup_anchor_module(
             {
-                "anchorF1": self.head_fkc.offset,
-                "anchorM1": self.headEnd,
+                "anchorS1": self.head_fkc.offset,
+                "anchorP1": self.headEnd,
             }
         )
         self.setup_vis()

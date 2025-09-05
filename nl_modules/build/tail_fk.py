@@ -181,7 +181,7 @@ class TailFk(RigModule):
     def build_post(self):
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_ctl_set(self.ctls_fk)
-        self.setup_anchor_module({"anchorF1": self.ctls_fk[0].offset})
+        self.setup_anchor_module({"anchorS1": self.ctls_fk[0].offset})
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()

@@ -360,7 +360,7 @@ class RigModule(RigBase):
             if xf.name.startswith(self.rigID):
                 xf.delete()
 
-        for attr in ["anchorF1", "anchorM1", "anchorM2"]:
+        for attr in ["anchorS1", "anchorP1", "anchorP2"]:
             anchor = self.rigNode.a[attr]
             if anchor.exists() and anchor.inConnNode:
                 anchor.inConnNode.delete()
@@ -372,14 +372,14 @@ class RigModule(RigBase):
 
     def setup_anchor_module(self, anchorDict=None):
         """
-        F is female, for driven plugs. e.g. hand has 1 F anchor
-        M is male, for driver plugs. e.g spine has 2 M anchors
+        S is socket, for driven plugs. e.g. hand has 1 S-anchor
+        P is plug, for driver plugs. e.g spine has 2 P-anchors
         e.g.
-        { 'anchorM1': loc1, 'anchorM2': loc2, }
+        { 'anchorP1': loc1, 'anchorP2': loc2, }
         or
-        { 'anchorM1': loc1, 'anchorF1': loc2, }
+        { 'anchorP1': loc1, 'anchorS1': loc2, }
         or
-        { 'anchorF1': loc1, }
+        { 'anchorS1': loc1, }
         """
         rID, rSz, xDr = self.getMyVar()
 
@@ -387,14 +387,14 @@ class RigModule(RigBase):
             loc = LocNode(name, pf=rID, size=rSz * 15, p=self.masterC)
             self.rigNode.setMsg({name: loc})
 
-            if name.startswith("anchorM"):  # male color
+            if name.startswith("anchorP"):  # plug color
                 loc.color = 18
                 tgt.cstPar(loc)
-            elif name.startswith("anchorF"):  # female color
+            elif name.startswith("anchorS"):  # socket color
                 loc.color = 13
                 loc.alignTo(tgt)
                 loc.cstPar(tgt, mo=1)
-            mc.hide(loc)
+            # mc.hide(loc)
 
     def add_ctl_set(self, tgtList):
         """Add control set for target controls"""

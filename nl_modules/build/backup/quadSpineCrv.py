@@ -178,14 +178,14 @@ class SpineQdCrv(rig_module.RigModule):
     def setup_anchor(self):
         s = self.rigSize
         B = Color.L_BLUE
-        anchorM1 = LocNode(self.rigID + "_anchorM1", size=s, color=B, p=self.masterC)
-        anchorM1.a.message >> self.rigNode.a.anchorM1
-        anchorM2 = LocNode(self.rigID + "_anchorM2", size=s, color=B, p=self.masterC)
-        anchorM2.a.message >> self.rigNode.a.anchorM2
-        self.st_ctl.cstPar(anchorM1)
-        self.rootJ.allChildrenJt[-1].cstPar(anchorM2)
-        anchorM1.hide()
-        anchorM2.hide()
+        anchorP1 = LocNode(self.rigID + "_anchorP1", size=s, color=B, p=self.masterC)
+        anchorP1.a.message >> self.rigNode.a.anchorP1
+        anchorP2 = LocNode(self.rigID + "_anchorP2", size=s, color=B, p=self.masterC)
+        anchorP2.a.message >> self.rigNode.a.anchorP2
+        self.st_ctl.cstPar(anchorP1)
+        self.rootJ.allChildrenJt[-1].cstPar(anchorP2)
+        anchorP1.hide()
+        anchorP2.hide()
 
     def build_post(self):
 

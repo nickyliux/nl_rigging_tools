@@ -208,15 +208,15 @@ class NeckPro(rig_module.RigModule):
         s = self.rigSize
         B = Color.L_BLUE
         P = Color.PINK
-        anchorF1 = LocNode(self.rigID + "_anchorF1", size=s, color=P, p=self.masterC)
-        anchorF1.a.message >> self.rigNode.a.anchorF1
-        anchorM1 = LocNode(self.rigID + "_anchorM1", size=s, color=B, p=self.masterC)
-        anchorM1.a.message >> self.rigNode.a.anchorM1
-        anchorF1.alignTo(self.rootJ)
-        anchorF1.cstPar(self.cog_ctl.offset, mo=1)
+        anchorS1 = LocNode(self.rigID + "_anchorS1", size=s, color=P, p=self.masterC)
+        anchorS1.a.message >> self.rigNode.a.anchorS1
+        anchorP1 = LocNode(self.rigID + "_anchorP1", size=s, color=B, p=self.masterC)
+        anchorP1.a.message >> self.rigNode.a.anchorP1
+        anchorS1.alignTo(self.rootJ)
+        anchorS1.cstPar(self.cog_ctl.offset, mo=1)
         # if self.BIND_JNT_NUM > 1:
-        #     self.bindJ[-1].cstPar(anchorM1)
+        #     self.bindJ[-1].cstPar(anchorP1)
         # else:
-        self.up_ikc.cstPar(anchorM1)
-        anchorF1.hide()
-        anchorM1.hide()
+        self.up_ikc.cstPar(anchorP1)
+        anchorS1.hide()
+        anchorP1.hide()

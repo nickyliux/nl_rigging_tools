@@ -218,8 +218,8 @@ class SpineQd(RigModule):
     def setup_anchor(self):
         self.setup_anchor_module(
             {
-                "anchorM1": self.jnts_rb[0],
-                "anchorM2": self.jnts_rb[-1],
+                "anchorP1": self.jnts_rb[0],
+                "anchorP2": self.jnts_rb[-1],
             }
         )
 

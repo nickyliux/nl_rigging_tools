@@ -612,7 +612,7 @@ class LegQd(RigModule):
 
     def setup_anchor(self):
         """Setup anchor points for the quadruped leg rig."""
-        self.setup_anchor_module({"anchorF1": self.scapularG.offset})
+        self.setup_anchor_module({"anchorS1": self.scapularG.offset})
 
     def setup_ctlSet(self):
         """Setup control sets for the quadruped leg rig module."""

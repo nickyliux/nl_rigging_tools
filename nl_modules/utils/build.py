@@ -175,31 +175,31 @@ def update_anchor_conn():
         logging.warning("No anchor connection made for no or single rigNode found.")
         return
 
-    maleAnchors = getAnchors(rigNodes, startStr="anchorM")
-    femaleAnchors = getAnchors(rigNodes, startStr="anchorF")
-    [fAnchor.removeCstNodes() for fAnchor in femaleAnchors]
+    plugAnchors = getAnchors(rigNodes, startStr="anchorP")
+    socketAnchors = getAnchors(rigNodes, startStr="anchorS")
+    [sAnchors.removeCstNodes() for sAnchors in socketAnchors]
 
-    if femaleAnchors and maleAnchors:
-        for fAnchor in femaleAnchors:
+    if socketAnchors and plugAnchors:
+        for sAnchors in socketAnchors:
             #
-            #   Find the closest male anchor for each female to constrain
+            #   Find the closest plug anchor for each socket to constrain
             #   Ignore those from the same rigNode
             #
             distList = []
-            [distList.append(fAnchor.o.distanceTo(m)) for m in maleAnchors]
+            [distList.append(sAnchors.o.distanceTo(m)) for m in plugAnchors]
             tgtID = distList.index(min(distList))
-            closestMaleAnchor = maleAnchors[tgtID]
+            closestPlugAnchor = plugAnchors[tgtID]
 
-            M_rigNode = getRigNode(closestMaleAnchor)
-            F_rigNode = getRigNode(fAnchor)
+            P_rigNode = getRigNode(closestPlugAnchor)
+            S_rigNode = getRigNode(sAnchors)
 
-            if F_rigNode and M_rigNode:
-                if F_rigNode == M_rigNode:
+            if S_rigNode and P_rigNode:
+                if S_rigNode == P_rigNode:
                     logging.warning("Ignore connecting anchors from the same rigNode.")
                 else:
-                    # Constrain female anchor to male anchor
-                    closestMaleAnchor.cstPar(fAnchor, mo=1)
-                    logging.info(f"{fAnchor.name} -> {closestMaleAnchor.name}")
+                    # Constrain socket anchor to plug anchor
+                    closestPlugAnchor.cstPar(sAnchors, mo=1)
+                    logging.info(f"{closestPlugAnchor.name} -> {sAnchors.name}")
 
 
 # ---------------------------------------------------------------
@@ -326,9 +326,9 @@ def collect_space_obj(rigNode):
     #
     #   get all driving rigNodes
     #
-    femaleAnchors = getAnchors([rigNode], startStr="anchorF")
-    if femaleAnchors:
-        drivingAnchors = femaleAnchors[0].getCstObjects(cstType="parentConstraint")
+    socketAnchors = getAnchors([rigNode], startStr="anchorS")
+    if socketAnchors:
+        drivingAnchors = socketAnchors[0].getCstObjects(cstType="parentConstraint")
         if drivingAnchors:
             drivingRN = getRigNode(drivingAnchors[0])
             spaceDict.update(get_space_obj(drivingRN))
@@ -610,9 +610,9 @@ def quickSnapMidFgr(pf=""):
 # print(f"--------- Build Time: {endTime - startTime:.2}s")
 
 # def disconnectAnchors():
-#     """Disconnect all Female anchors"""
-#     femaleAnchors = getRigNodeLinked("anchorF")
-#     for fAnchor in femaleAnchors:
-#         fAnchor.removeCstNodes()
-#     for fAnchor in femaleAnchors:
-#         fAnchor.removeCstNodes()
+#     """Disconnect all socket anchors"""
+#     socketAnchors = getRigNodeLinked("anchorS")
+#     for sAnchors in socketAnchors:
+#         sAnchors.removeCstNodes()
+#     for sAnchors in socketAnchors:
+#         sAnchors.removeCstNodes()

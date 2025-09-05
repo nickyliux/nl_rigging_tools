@@ -497,8 +497,8 @@ class ArmBp(RigModule):
         WRIST_ID = 3
         self.setup_anchor_module(
             {
-                "anchorM1": self.jnts_bf[WRIST_ID],
-                "anchorF1": self.clavicle_fkc.offset,
+                "anchorP1": self.jnts_bf[WRIST_ID],
+                "anchorS1": self.clavicle_fkc.offset,
             }
         )
 

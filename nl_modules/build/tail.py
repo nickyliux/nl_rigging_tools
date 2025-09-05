@@ -268,7 +268,7 @@ class Tail(RigModule):
         self.setup_bindJnt()
         self.setup_ctlSet()
         self.setup_space()
-        self.setup_anchor_module({"anchorF1": self.ctls_ik[0].offset.offset})
+        self.setup_anchor_module({"anchorS1": self.ctls_ik[0].offset.offset})
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()

@@ -579,7 +579,7 @@ class LegBp(RigModule):
 
     def setup_anchor(self):
         """Setup anchor for the leg rig controls."""
-        self.setup_anchor_module({"anchorF1": self.scapularG.offset})
+        self.setup_anchor_module({"anchorS1": self.scapularG.offset})
 
     def setup_scale(self):
         """Setup scaling for the leg rig controls."""

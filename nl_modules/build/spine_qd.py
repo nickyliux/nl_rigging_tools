@@ -402,10 +402,10 @@ class SpineQd(RigModule):
         """Setup anchor points for the spine rig controls."""
         if self.jnts_rb:
             anchor = self.end_jnt if self.endCtl else self.jnts_rb[0]
-            self.setup_anchor_module({"anchorM1": anchor})
+            self.setup_anchor_module({"anchorP1": anchor})
 
         if self.anchorToRbj:
-            self.setup_anchor_module({"anchorM2": self.anchorToRbj})
+            self.setup_anchor_module({"anchorP2": self.anchorToRbj})
 
     def setup_space(self):
         """Setup space switching for the spine rig controls."""

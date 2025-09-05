@@ -17,8 +17,8 @@ class NeckQd(SpineQd):
         """Setup the anchor controls for the neck rig."""
         self.setup_anchor_module(
             {
-                "anchorF1": self.cog_ctl.offset,
-                "anchorM1": self.anchorToRbj,
+                "anchorS1": self.cog_ctl.offset,
+                "anchorP1": self.anchorToRbj,
             }
         )
 
