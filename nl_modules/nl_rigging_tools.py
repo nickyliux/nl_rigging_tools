@@ -61,7 +61,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         self.setWindowTitle("nlRT 0.1.0")
         self.setCentralWidget(self.UI)
-        self.setGeometry(0, 31, 200, 1000)
+        self.setGeometry(0, 31, 200, 1020)
         self.connect_UI()
         # self.addMenuBar()
 

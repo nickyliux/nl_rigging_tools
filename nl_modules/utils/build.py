@@ -195,21 +195,22 @@ def update_anchor_conn():
             if not currAnchor or not currAnchor.exists():
                 continue
 
-            parentNameMatch = rN.a.parentNameMatch.get()
-            parentRigNodes = getRigNodes_all(match=parentNameMatch + "*")
+            master_guide = rN.a.master_guide.inConnNode
+            parentNameMatch = master_guide.a.parentNameMatch.get()
+            parentRigNodes = getRigNodes_all(match=parentNameMatch)
 
-            # parent name match not found
+            # Skip if no rigNode matching parentNameMatch
             if len(parentRigNodes) == 0:
                 continue
 
             distList = []
             for m in plugAnchors:
-                dist = (
-                    currAnchor.o.distanceTo(m)
-                    if re.match(parentNameMatch, m.name)
-                    else 1e9
-                )
-                distList.append(dist)
+                # dist = (
+                #     currAnchor.o.distanceTo(m)
+                #     if re.match(parentNameMatch, m.name)
+                #     else 1e9
+                # )
+                distList.append(currAnchor.o.distanceTo(m))
 
             # Find the closest plug anchor
             tgtID = distList.index(min(distList))
@@ -410,7 +411,7 @@ def getRigNodes_selOrAll():
 
 def getRigNodes_all(match="*"):
     """Return all rigNodes in the scene"""
-    return [DagNode(r) for r in mc.ls(match + "_RGN", type="script")]
+    return [DagNode(r) for r in mc.ls(match + "RGN", type="script")]
 
 
 def getRigNode(obj):

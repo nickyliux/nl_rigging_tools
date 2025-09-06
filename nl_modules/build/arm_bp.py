@@ -117,6 +117,7 @@ class ArmBp(RigModule):
         self.blend_fk_ik()
         # self.build_nlAutoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
         self.jnts_bind = [self.clavicle, self.palm]
+
         self.build_extra([self.lwr, self.palm])
 
         if not self.ribbon:
