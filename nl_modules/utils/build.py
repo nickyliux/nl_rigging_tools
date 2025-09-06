@@ -176,30 +176,52 @@ def update_anchor_conn():
         return
 
     plugAnchors = getAnchors(rigNodes, startStr="anchorP")
+    if plugAnchors is None:
+        logging.warning("No plug anchors found.")
+        return
+
     socketAnchors = getAnchors(rigNodes, startStr="anchorS")
-    [sAnchors.removeCstNodes() for sAnchors in socketAnchors]
+    if socketAnchors is None:
+        logging.warning("No socket anchors found.")
+        return
+
+    [anchor.removeCstNodes() for anchor in socketAnchors]
 
     if socketAnchors and plugAnchors:
-        for sAnchors in socketAnchors:
-            #
-            #   Find the closest plug anchor for each socket to constrain
-            #   Ignore those from the same rigNode
-            #
+        # Iterate through each rigNode to find and connect the closest plug anchor
+        for rN in rigNodes:
+
+            currAnchor = rN.a.anchorS1.inConnNode
+            if not currAnchor or not currAnchor.exists():
+                continue
+
+            parentNameMatch = rN.a.parentNameMatch.get()
+            parentRigNodes = getRigNodes_all(match=parentNameMatch + "*")
+
+            # parent name match not found
+            if len(parentRigNodes) == 0:
+                continue
+
             distList = []
-            [distList.append(sAnchors.o.distanceTo(m)) for m in plugAnchors]
+            for m in plugAnchors:
+                dist = (
+                    currAnchor.o.distanceTo(m)
+                    if re.match(parentNameMatch, m.name)
+                    else 1e9
+                )
+                distList.append(dist)
+
+            # Find the closest plug anchor
             tgtID = distList.index(min(distList))
             closestPlugAnchor = plugAnchors[tgtID]
+            closestRigNode = getRigNode(closestPlugAnchor)
 
-            P_rigNode = getRigNode(closestPlugAnchor)
-            S_rigNode = getRigNode(sAnchors)
-
-            if S_rigNode and P_rigNode:
-                if S_rigNode == P_rigNode:
-                    logging.warning("Ignore connecting anchors from the same rigNode.")
-                else:
-                    # Constrain socket anchor to plug anchor
-                    closestPlugAnchor.cstPar(sAnchors, mo=1)
-                    logging.info(f"{closestPlugAnchor.name} -> {sAnchors.name}")
+            # Ignore those from the same rigNode
+            if rN == closestRigNode:
+                logging.warning("Ignore connecting anchors from the same rigNode.")
+            else:
+                logging.info(f"{closestPlugAnchor.name} -> {currAnchor.name}")
+                closestPlugAnchor.cstPar(currAnchor, mo=1)
 
 
 # ---------------------------------------------------------------
@@ -386,9 +408,9 @@ def getRigNodes_selOrAll():
     return rigNodes
 
 
-def getRigNodes_all():
+def getRigNodes_all(match="*"):
     """Return all rigNodes in the scene"""
-    return [DagNode(r) for r in mc.ls("*RGN", type="script")]
+    return [DagNode(r) for r in mc.ls(match + "_RGN", type="script")]
 
 
 def getRigNode(obj):
