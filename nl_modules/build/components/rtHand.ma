@@ -25,7 +25,7 @@ createNode transform -n "master_guide" -p "module_grp";
 	rename -uid "50807175-43FF-E7F4-58C3-EABB95B14D6E";
 	addAttr -ci true -sn "parentNameMatch" -ln "parentNameMatch" -dt "string";
 	setAttr ".t" -type "double3" -69 -145 -1.2565537329160082e-29 ;
-	setAttr -k on ".parentNameMatch" -type "string" "*";
+	setAttr -k on ".parentNameMatch" -type "string" "arm*";
 createNode joint -n "handJ_guide" -p "master_guide";
 	rename -uid "31F9BCEB-4ACA-41EF-1510-D9ACACD78C3B";
 	setAttr ".ove" yes;

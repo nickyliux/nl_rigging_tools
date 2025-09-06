@@ -175,54 +175,45 @@ def update_anchor_conn():
         logging.warning("No anchor connection made for no or single rigNode found.")
         return
 
-    plugAnchors = getAnchors(rigNodes, startStr="anchorP")
-    if plugAnchors is None:
-        logging.warning("No plug anchors found.")
-        return
-
     socketAnchors = getAnchors(rigNodes, startStr="anchorS")
-    if socketAnchors is None:
+    if socketAnchors:
+        [anchor.removeCstNodes() for anchor in socketAnchors]
+    else:
         logging.warning("No socket anchors found.")
         return
 
-    [anchor.removeCstNodes() for anchor in socketAnchors]
+    # Iterate through each rigNode to find and connect the closest plug anchor
+    for node in rigNodes:
 
-    if socketAnchors and plugAnchors:
-        # Iterate through each rigNode to find and connect the closest plug anchor
-        for rN in rigNodes:
+        socket = node.a.anchorS1.inConnNode
+        if not socket or not socket.exists():
+            continue
 
-            currAnchor = rN.a.anchorS1.inConnNode
-            if not currAnchor or not currAnchor.exists():
-                continue
+        master_guide = node.a.master_guide.inConnNode
+        if not master_guide or not master_guide.exists():
+            continue
 
-            master_guide = rN.a.master_guide.inConnNode
-            parentNameMatch = master_guide.a.parentNameMatch.get()
-            parentRigNodes = getRigNodes_all(match=parentNameMatch)
+        parentNameMatch = master_guide.a.parentNameMatch.get()
+        parentRigNodes = getRigNodes_all(match=parentNameMatch)
 
-            # Skip if no rigNode matching parentNameMatch
-            if len(parentRigNodes) == 0:
-                continue
+        if node in parentRigNodes:  # Remove self if in parent list
+            parentRigNodes.remove(node)
 
-            distList = []
-            for m in plugAnchors:
-                # dist = (
-                #     currAnchor.o.distanceTo(m)
-                #     if re.match(parentNameMatch, m.name)
-                #     else 1e9
-                # )
-                distList.append(currAnchor.o.distanceTo(m))
+        if len(parentRigNodes) == 0:  # No parent rigNode found
+            continue
 
-            # Find the closest plug anchor
-            tgtID = distList.index(min(distList))
-            closestPlugAnchor = plugAnchors[tgtID]
-            closestRigNode = getRigNode(closestPlugAnchor)
+        plugAnchors = getAnchors(parentRigNodes, startStr="anchorP")
+        if not plugAnchors or len(plugAnchors) == 0:
+            continue
 
-            # Ignore those from the same rigNode
-            if rN == closestRigNode:
-                logging.warning("Ignore connecting anchors from the same rigNode.")
-            else:
-                logging.info(f"{closestPlugAnchor.name} -> {currAnchor.name}")
-                closestPlugAnchor.cstPar(currAnchor, mo=1)
+        dist_dict = {}
+        for anchorP in plugAnchors:
+            dist_dict[anchorP] = socket.o.distanceTo(anchorP)
+
+        closestPlugAnchor = min(dist_dict, key=dist_dict.get)
+
+        logging.info(f"{closestPlugAnchor.name} -> {socket.name}")
+        closestPlugAnchor.cstPar(socket, mo=1)
 
 
 # ---------------------------------------------------------------

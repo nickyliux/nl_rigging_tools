@@ -96,7 +96,7 @@ createNode transform -n "master_guide" -p "module_grp";
 	setAttr -l on -k on ".__________";
 	setAttr -cb on ".fkJntNum" 5;
 	setAttr -cb on ".rbnJntNum" 10;
-	setAttr -k on ".parentNameMatch" -type "string" "*";
+	setAttr -k on ".parentNameMatch" -type "string" "spine*";
 createNode transform -n "rt_guide_ofs" -p "master_guide";
 	rename -uid "F0DCF307-4AFE-F9B7-4833-678378A04ECB";
 createNode transform -n "rt_guide" -p "rt_guide_ofs";

@@ -85,7 +85,7 @@ createNode transform -n "master_guide" -p "module_grp";
 	addAttr -ci true -sn "parentNameMatch" -ln "parentNameMatch" -dt "string";
 	setAttr ".t" -type "double3" 0 165 0 ;
 	setAttr -cb on ".ro";
-	setAttr -k on ".parentNameMatch" -type "string" "*";
+	setAttr -k on ".parentNameMatch" -type "string" "neck*";
 createNode transform -n "st_guide_ofs" -p "master_guide";
 	rename -uid "F97757FA-47AD-F6C2-68A4-FC917C8DC754";
 createNode transform -n "st_guide" -p "st_guide_ofs";

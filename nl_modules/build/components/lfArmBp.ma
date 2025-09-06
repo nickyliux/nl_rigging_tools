@@ -37,7 +37,7 @@ createNode transform -n "master_guide" -p "module_grp";
 	setAttr -cb on ".rollJntNum";
 	setAttr -cb on ".dualBones";
 	setAttr -cb on ".scapularBone";
-	setAttr -k on ".parentNameMatch" -type "string" "*";
+	setAttr -k on ".parentNameMatch" -type "string" "spine*";
 createNode transform -n "clavicle_guide_ofs" -p "master_guide";
 	rename -uid "0CE9E75F-4875-A16B-190C-3A8F77759082";
 	setAttr ".t" -type "double3" -13 0 0 ;
