@@ -31,6 +31,11 @@ class FingerFk(RigModule):
         self.jnt_names = ["fgr01", "fgr02", "fgr03", "fgr04", "fgr05"]
         self.jnt_names = self.jnt_names[: (self.segNum + 1)]
 
+        self.fgr01_fkc = None
+        self.fgr02_fkc = None
+        self.fgr03_fkc = None
+        self.fgr04_fkc = None
+
         self.jnts = []
         self.jnts_fk = []
         self.jnts_ikA = []
@@ -76,25 +81,23 @@ class FingerFk(RigModule):
 
         ctl_defs = [
             ("setting", "setting", "x", scale, 1, 2),
-            ("fgr01_fkc", "squareR", "x", scale, 1, 2),
-            ("fgr02_fkc", "squareR", "x", scale, 0, 2),
+            ("fgr01_fkc", "line", "x", scale * 2, 1, 2),
             # ("ikc", "cube", None, scale, 1, 2),
             # ("extra_rota", "rotator", None, scale, 0, -1),
             # ("pvc", "pvc", "z", -scale, 0, -1),
         ]
         if self.segNum >= 2:
-            ctl_defs.append(("fgr03_fkc", "squareR", "x", scale, 0, 2))
+            ctl_defs.append(("fgr02_fkc", "line", "x", scale * 2, 1, 2))
         if self.segNum >= 3:
-            ctl_defs.append(("fgr04_fkc", "squareR", "x", scale, 0, 2))
+            ctl_defs.append(("fgr03_fkc", "line", "x", scale * 2, 1, 2))
         if self.segNum >= 4:
-            ctl_defs.append(("fgr05_fkc", "squareR", "x", scale, 0, 2))
+            ctl_defs.append(("fgr04_fkc", "line", "x", scale * 2, 1, 2))
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         self.setting.alignTo(self.rootJ, p=self.CTL_DATA)
         self.rootJ.cstPar(self.setting, mo=1)
-        # ofs=(0, 0, xDr * rSz * -20),
 
     def build_fk(self):
         """Build the FK controls for the arm rig."""
@@ -103,18 +106,10 @@ class FingerFk(RigModule):
         self.jnts_fk = common.dupSk(
             self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
         )
-        self.ctls_fk = [
-            self.fgr01_fkc,
-            self.fgr02_fkc,
-        ]
-        if self.segNum >= 2:
-            self.ctls_fk.append(self.fgr03_fkc)
-        if self.segNum >= 3:
-            self.ctls_fk.append(self.fgr04_fkc)
-        if self.segNum >= 4:
-            self.ctls_fk.append(self.fgr05_fkc)
 
-        self.ctls_fk = self.ctls_fk[: (self.segNum + 1)]
+        self.ctls_fk = [self.fgr01_fkc, self.fgr02_fkc, self.fgr03_fkc, self.fgr04_fkc]
+        self.ctls_fk = self.ctls_fk[: self.segNum]
+
         self.build_fk_with_ctl2(self.jnts_fk, self.ctls_fk, p=self.FK_GRP)
 
     def build_ik(self):
@@ -236,24 +231,15 @@ class FingerFk(RigModule):
         # )
         mc.hide(self.jnts_fk)
 
-        # debugVis = self.setting.a.add("debugVis", attrType="bool", dv=0, k=0)
-        # debugVis >> self.jnts_ikA[0].a.v
-        # debugVis >> self.jnts_ikB[0].a.v
-        # debugVis >> self.jnts_fk[0].a.v
-
     def setup_channel(self):
         """Setup channels for the finger rig module."""
         self.setting.a.showAttr()
-
-        # for ctl in [self.ikc, self.pvc]:
-        #     ctl.a.showAttr(t=1, r=0)
-
-        for ctl in self.ctls_fk:  # + [self.extra_rota]:
+        for ctl in self.ctls_fk:
             ctl.a.showAttr(t=1, r=1)
 
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
-        self.add_bind_jnt_set(self.jnts)
+        self.add_bind_jnt_set(self.jnts[:-1])
         # self.add_proxy_ratio(self.jnts_bind, 2)
         self.add_proxy_height(self.jnts_bind, self.rigSize * 5)
 

@@ -89,15 +89,27 @@
      <widget class="QWidget" name="verticalLayoutWidget_3">
       <property name="geometry">
        <rect>
-        <x>180</x>
-        <y>30</y>
-        <width>37</width>
-        <height>53</height>
+        <x>170</x>
+        <y>25</y>
+        <width>47</width>
+        <height>63</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <property name="spacing">
         <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>6</number>
+       </property>
+       <property name="rightMargin">
+        <number>6</number>
+       </property>
+       <property name="bottomMargin">
+        <number>6</number>
        </property>
        <item>
         <widget class="QRadioButton" name="component_both_RB">
@@ -182,16 +194,16 @@
      <widget class="QPushButton" name="guide_load_BN">
       <property name="geometry">
        <rect>
-        <x>190</x>
+        <x>170</x>
         <y>100</y>
-        <width>22</width>
-        <height>22</height>
+        <width>44</width>
+        <height>44</height>
        </rect>
       </property>
       <property name="minimumSize">
        <size>
-        <width>22</width>
-        <height>22</height>
+        <width>44</width>
+        <height>44</height>
        </size>
       </property>
       <property name="maximumSize">
@@ -225,15 +237,15 @@
      <widget class="QPushButton" name="guide_explore_BN">
       <property name="geometry">
        <rect>
-        <x>190</x>
-        <y>240</y>
-        <width>22</width>
+        <x>170</x>
+        <y>150</y>
+        <width>44</width>
         <height>22</height>
        </rect>
       </property>
       <property name="minimumSize">
        <size>
-        <width>22</width>
+        <width>44</width>
         <height>22</height>
        </size>
       </property>
@@ -264,7 +276,7 @@
        <rect>
         <x>6</x>
         <y>24</y>
-        <width>141</width>
+        <width>151</width>
         <height>241</height>
        </rect>
       </property>
@@ -1576,28 +1588,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="charPath_LE">
-         <property name="minimumSize">
-          <size>
-           <width>160</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Character directory</string>
-         </property>
-         <property name="text">
-          <string>nil</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="char_explore_BN">
          <property name="minimumSize">
           <size>
@@ -1625,6 +1615,28 @@
          </property>
          <property name="text">
           <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="charPath_LE">
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Character directory</string>
+         </property>
+         <property name="text">
+          <string>nil</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
