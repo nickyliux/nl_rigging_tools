@@ -81,17 +81,17 @@ class FingerFk(RigModule):
 
         ctl_defs = [
             ("setting", "setting", "x", scale, 1, 2),
-            ("fgr01_fkc", "line", "x", scale * 2, 1, 2),
+            ("fgr01_fkc", "line", "x", scale * 2, 1, 4),
             # ("ikc", "cube", None, scale, 1, 2),
             # ("extra_rota", "rotator", None, scale, 0, -1),
             # ("pvc", "pvc", "z", -scale, 0, -1),
         ]
         if self.segNum >= 2:
-            ctl_defs.append(("fgr02_fkc", "line", "x", scale * 2, 1, 2))
+            ctl_defs.append(("fgr02_fkc", "stickS", None, -scale, 1, 2))
         if self.segNum >= 3:
-            ctl_defs.append(("fgr03_fkc", "line", "x", scale * 2, 1, 2))
+            ctl_defs.append(("fgr03_fkc", "line", "x", scale * 2, 1, 4))
         if self.segNum >= 4:
-            ctl_defs.append(("fgr04_fkc", "line", "x", scale * 2, 1, 2))
+            ctl_defs.append(("fgr04_fkc", "line", "x", scale * 2, 1, 4))
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
@@ -110,7 +110,7 @@ class FingerFk(RigModule):
         self.ctls_fk = [self.fgr01_fkc, self.fgr02_fkc, self.fgr03_fkc, self.fgr04_fkc]
         self.ctls_fk = self.ctls_fk[: self.segNum]
 
-        self.build_fk_with_ctl2(self.jnts_fk, self.ctls_fk, p=self.FK_GRP)
+        self.build_fk_with_ctl3(self.jnts_fk, self.ctls_fk, p=self.FK_GRP)
 
     def build_ik(self):
         """Build the IK controls for the arm rig."""

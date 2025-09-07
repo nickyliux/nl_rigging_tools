@@ -241,6 +241,14 @@ class Tail(RigModule):
         for ctl in self.ctls_fk:
             ctl.a.ro.set(3)
 
+    def setup_anchor(self):
+        """Setup anchor module for the arm rig controls."""
+        self.setup_anchor_module(
+            {
+                "anchorS1": self.ctls_ik[0].offset.offset,
+            }
+        )
+
     def setup_scale(self):
         """Setup scale attributes for the tail rig controls."""
         self.setting.a["localScale"] >> self.IK_GRP.a.s
@@ -268,7 +276,7 @@ class Tail(RigModule):
         self.setup_bindJnt()
         self.setup_ctlSet()
         self.setup_space()
-        self.setup_anchor_module({"anchorS1": self.ctls_ik[0].offset.offset})
+        self.setup_anchor()
         self.setup_vis()
         self.setup_channel()
         self.setup_rotate_order()

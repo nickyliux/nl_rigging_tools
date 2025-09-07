@@ -31,6 +31,11 @@ class SimpleFk(RigModule):
         self.jnt_names = ["simple01", "simple02", "simple03", "simple04", "simple05"]
         self.jnt_names = self.jnt_names[: (self.segNum + 1)]
 
+        self.simple01_fkc = None
+        self.simple02_fkc = None
+        self.simple03_fkc = None
+        self.simple04_fkc = None
+
         self.jnts = []
         self.jnts_fk = []
         self.jnts_ikA = []
@@ -75,15 +80,14 @@ class SimpleFk(RigModule):
 
         ctl_defs = [
             ("setting", "setting", "x", scale, 1, 2),
-            ("simple01_fkc", "sphereL", "x", scale * 2, 1, 3),
-            ("simple02_fkc", "sphereL", "x", scale * 2, 1, 3),
+            ("simple01_fkc", "sphereL", "x", scale * 2, 1, 4),
         ]
         if self.segNum >= 2:
-            ctl_defs.append(("simple03_fkc", "sphereL", "x", scale * 2, 1, 3))
+            ctl_defs.append(("simple02_fkc", "stickS", None, -scale, 1, 4))
         if self.segNum >= 3:
-            ctl_defs.append(("simple04_fkc", "sphereL", "x", scale * 2, 1, 3))
+            ctl_defs.append(("simple03_fkc", "sphereL", "x", scale * 2, 1, 4))
         if self.segNum >= 4:
-            ctl_defs.append(("simple05_fkc", "sphereL", "x", scale * 2, 1, 3))
+            ctl_defs.append(("simple04_fkc", "sphereL", "x", scale * 2, 1, 4))
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
@@ -101,15 +105,11 @@ class SimpleFk(RigModule):
         self.ctls_fk = [
             self.simple01_fkc,
             self.simple02_fkc,
+            self.simple03_fkc,
+            self.simple04_fkc,
         ]
-        if self.segNum >= 2:
-            self.ctls_fk.append(self.simple03_fkc)
-        if self.segNum >= 3:
-            self.ctls_fk.append(self.simple04_fkc)
-        if self.segNum >= 4:
-            self.ctls_fk.append(self.simple05_fkc)
+        self.ctls_fk = self.ctls_fk[: self.segNum]
 
-        self.ctls_fk = self.ctls_fk[: (self.segNum + 1)]
         self.build_fk_with_ctl2(self.jnts_fk, self.ctls_fk, p=self.FK_GRP)
 
     def blend_fk_ik(self):
@@ -150,7 +150,7 @@ class SimpleFk(RigModule):
 
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
-        self.add_bind_jnt_set(self.jnts)
+        self.add_bind_jnt_set(self.jnts[:-1])
         self.add_proxy_height(self.jnts_bind, self.rigSize * 5)
 
     def build_post(self):
