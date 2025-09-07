@@ -312,6 +312,11 @@
       </property>
       <item>
        <property name="text">
+        <string>head</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
         <string>Biped -----------------</string>
        </property>
        <property name="flags">
@@ -331,6 +336,16 @@
       <item>
        <property name="text">
         <string>bp arm</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>hand</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>finger fk</string>
        </property>
       </item>
       <item>
@@ -363,7 +378,7 @@
       </item>
       <item>
        <property name="text">
-        <string>Common -------------</string>
+        <string>Others -------------</string>
        </property>
        <property name="flags">
         <set>ItemIsDragEnabled|ItemIsUserCheckable</set>
@@ -371,22 +386,7 @@
       </item>
       <item>
        <property name="text">
-        <string>head</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>hand</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
         <string>tail</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>finger fk</string>
        </property>
       </item>
       <item>
@@ -1519,7 +1519,7 @@
        <rect>
         <x>0</x>
         <y>20</y>
-        <width>221</width>
+        <width>229</width>
         <height>26</height>
        </rect>
       </property>
@@ -1576,6 +1576,28 @@
         </widget>
        </item>
        <item>
+        <widget class="QLineEdit" name="charPath_LE">
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Character directory</string>
+         </property>
+         <property name="text">
+          <string>nil</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="char_explore_BN">
          <property name="minimumSize">
           <size>
@@ -1603,28 +1625,6 @@
          </property>
          <property name="text">
           <string/>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="charPath_LE">
-         <property name="minimumSize">
-          <size>
-           <width>140</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Character directory</string>
-         </property>
-         <property name="text">
-          <string>nil</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
          </property>
         </widget>
        </item>

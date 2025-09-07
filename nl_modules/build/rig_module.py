@@ -394,7 +394,7 @@ class RigModule(RigBase):
                 loc.color = 13
                 loc.alignTo(tgt)
                 loc.cstPar(tgt, mo=1)
-            # mc.hide(loc)
+            mc.hide(loc)
 
     def add_ctl_set(self, tgtList):
         """Add control set for target controls"""
