@@ -107,8 +107,8 @@ class MarkingMenuAutorig:
             if mc.ls(LF_CTL_SET):
                 selList = mc.sets(LF_CTL_SET, q=1)
         if selList:
-            for selList in selList:
-                control.mirrorCtlShape(selList)
+            for sel in selList:
+                control.mirrorCtlShape(sel)
 
     def selectCtlSelOrAll(self, *args):
         """Select all controls in the rig node or all controls in LF_CTL_SET"""

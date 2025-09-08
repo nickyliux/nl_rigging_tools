@@ -121,7 +121,7 @@ def getOppositeCtl(tgtN, pfL="lf", pfR="rt", strB4Pf=1):
             else f"{pfR}{matchL.group(1)}"
         )
         opp = DagNode(oppName)
-        if opp.exists() and opp.a.mirrorable.get():
+        if opp.exists():
             return opp
     else:
         patternR = (
@@ -137,7 +137,7 @@ def getOppositeCtl(tgtN, pfL="lf", pfR="rt", strB4Pf=1):
                 else f"{pfL}{matchR.group(1)}"
             )
             opp = DagNode(oppName)
-            if opp.exists() and opp.a.mirrorable.get():
+            if opp.exists():
                 return opp
 
 
@@ -175,9 +175,9 @@ def mirrorGuide(tgtList, wsMirror=0):
     """Mirror xform for tgtList objects"""
     for tgt in tgtList:
         tgt = DagNode(tgt)
-        oppN = getOppositeCtl(tgt)
-        if oppN:
-            copyGuideAttr(tgt, oppN, wsMirror=wsMirror, mirror=1)
+        opp = getOppositeCtl(tgt)
+        if opp and opp.a.mirrorable.get():
+            copyGuideAttr(tgt, opp, wsMirror=wsMirror, mirror=1)
         else:
             logging.warning(f"opposite not found for {tgt.name}")
 
