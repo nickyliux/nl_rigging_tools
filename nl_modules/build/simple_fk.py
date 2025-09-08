@@ -83,7 +83,7 @@ class SimpleFk(RigModule):
             ("simple01_fkc", "sphereL", "x", scale * 2, 1, 4),
         ]
         if self.segNum >= 2:
-            ctl_defs.append(("simple02_fkc", "stickS", None, -scale, 1, 4))
+            ctl_defs.append(("simple02_fkc", "stickS", None, -scale, 1, 2))
         if self.segNum >= 3:
             ctl_defs.append(("simple03_fkc", "sphereL", "x", scale * 2, 1, 4))
         if self.segNum >= 4:
