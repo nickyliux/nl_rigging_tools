@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: rtFingerFk.ma
-//Last modified: Mon, Sep 08, 2025 03:14:48 PM
+//Last modified: Mon, Sep 08, 2025 03:39:27 PM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,12 +12,12 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26100)";
-fileInfo "UUID" "7DD5BF1B-49A8-760D-2B2C-E4AB721FF264";
+fileInfo "UUID" "D528EEC1-4E91-1648-F562-F2836927CA1A";
 createNode transform -s -n "persp";
 	rename -uid "83BBC351-4169-8A57-6147-3688C3C5E65F";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" -134.63417004685624 70.830094374210717 141.30799451996612 ;
-	setAttr ".r" -type "double3" -20.73835272979111 -42.599999999993173 -2.1604179238830594e-15 ;
+	setAttr ".t" -type "double3" 78.596151359123027 85.268914067563486 135.16206548352176 ;
+	setAttr ".r" -type "double3" -24.938352729791195 43.400000000006884 2.1887321486265588e-15 ;
 	setAttr -cb on ".ro";
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "E4BD1A20-4E99-1123-5E44-089307917010";
@@ -88,9 +88,11 @@ createNode transform -n "master_guide" -p "module_grp";
 	rename -uid "177DBE6B-4E8E-B711-3C19-589C4E949A6A";
 	addAttr -ci true -sn "segNum" -ln "segNum" -dv 1 -min 1 -max 4 -at "long";
 	addAttr -ci true -sn "parentNameMatch" -ln "parentNameMatch" -dt "string";
+	addAttr -ci true -sn "mirrorable" -ln "mirrorable" -min 0 -max 1 -at "bool";
 	setAttr ".t" -type "double3" -50 0 0 ;
 	setAttr -k on ".segNum" 4;
 	setAttr -k on ".parentNameMatch" -type "string" "*";
+	setAttr -cb on ".mirrorable" yes;
 createNode transform -n "fgr01_guide_ofs" -p "master_guide";
 	rename -uid "F0DCF307-4AFE-F9B7-4833-678378A04ECB";
 createNode transform -n "fgr01_guide" -p "fgr01_guide_ofs";
@@ -568,20 +570,20 @@ parent -s -nc -r -add "|module_grp|fgrRef_grp|fgrRef1|fgrRefShape" "fgrRef2" ;
 parent -s -nc -r -add "|module_grp|fgrRef_grp|fgrRef1|fgrRefShape" "fgrRef3" ;
 parent -s -nc -r -add "|module_grp|fgrRef_grp|fgrRef1|fgrRefShape" "fgrRef4" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "3688EB72-46F4-81AA-5ED9-BBB7498245F8";
+	rename -uid "5BED736E-48DE-A465-3EFC-489CABFB0BFE";
 	setAttr -s 3 ".lnk";
 	setAttr -s 3 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "686455C8-4185-E74A-B55D-4A8E97910BCE";
+	rename -uid "F2D80B2D-4B4A-51BA-3E3C-87838742EE51";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "2A350A5D-49D2-90DC-B376-D2A067585B33";
+	rename -uid "52563FE4-425B-3321-26C7-979691629CE2";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "2C2145EA-4AF3-85D7-497B-64AF7C45966D";
+	rename -uid "0F701EE9-439F-4A62-4D16-11A2DC003062";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "EDE7F8A1-4185-37A4-5FA7-49A7396409D6";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "26EA6AD8-4EA6-54E8-B103-21BD9FDF3186";
+	rename -uid "247BA1C4-4BF2-7458-F3A4-6D9CC24CDAF5";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "D70BF562-46C4-2F8D-ABFE-179003332609";
 	setAttr ".g" yes;

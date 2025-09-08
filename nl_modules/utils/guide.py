@@ -101,7 +101,7 @@ def mirrorGuideSelOrAll(*arg):
     selList = mc.ls(sl=1, tr=1) or mc.ls("*lf*_guide", tr=1)
     selList = list(set(selList))
     if selList:
-        mirrorGuideAttr(selList)
+        mirrorGuide(selList)
 
 
 def getOppositeCtl(tgtN, pfL="lf", pfR="rt", strB4Pf=1):
@@ -113,28 +113,32 @@ def getOppositeCtl(tgtN, pfL="lf", pfR="rt", strB4Pf=1):
     patternL = (
         re.compile(rf"^(\w*){pfL}(\w+)$") if strB4Pf else re.compile(rf"^{pfL}(\w+)$")
     )
-    patternR = (
-        re.compile(rf"^(\w*){pfR}(\w+)$") if strB4Pf else re.compile(rf"^{pfR}(\w+)$")
-    )
     matchL = re.match(patternL, tgtN.name)
-    matchR = re.match(patternR, tgtN.name)
-
     if matchL:
         oppName = (
             f"{matchL.group(1)}{pfR}{matchL.group(2)}"
             if strB4Pf
             else f"{pfR}{matchL.group(1)}"
         )
-        if mc.objExists(oppName):
-            return DagNode(oppName)
-    elif matchR:
-        oppName = (
-            f"{matchR.group(1)}{pfL}{matchR.group(2)}"
+        opp = DagNode(oppName)
+        if opp.exists() and opp.a.mirrorable.get():
+            return opp
+    else:
+        patternR = (
+            re.compile(rf"^(\w*){pfR}(\w+)$")
             if strB4Pf
-            else f"{pfL}{matchR.group(1)}"
+            else re.compile(rf"^{pfR}(\w+)$")
         )
-        if mc.objExists(oppName):
-            return DagNode(oppName)
+        matchR = re.match(patternR, tgtN.name)
+        if matchR:
+            oppName = (
+                f"{matchR.group(1)}{pfL}{matchR.group(2)}"
+                if strB4Pf
+                else f"{pfL}{matchR.group(1)}"
+            )
+            opp = DagNode(oppName)
+            if opp.exists() and opp.a.mirrorable.get():
+                return opp
 
 
 def copyGuideAttr(A, B, wsMirror=0, mirror=0, skipMasterXf=0):
@@ -167,7 +171,7 @@ def copyGuideAttr(A, B, wsMirror=0, mirror=0, skipMasterXf=0):
             print(e)
 
 
-def mirrorGuideAttr(tgtList, wsMirror=0):
+def mirrorGuide(tgtList, wsMirror=0):
     """Mirror xform for tgtList objects"""
     for tgt in tgtList:
         tgt = DagNode(tgt)
@@ -187,7 +191,7 @@ def mirrorPose(*arg):
         if mc.ls(LF_CTL_SET, type="objectSet"):
             selList = mc.sets(LF_CTL_SET, q=1)
     if selList:
-        mirrorGuideAttr(selList)
+        mirrorGuide(selList)
 
 
 def removeEndDigits(name):

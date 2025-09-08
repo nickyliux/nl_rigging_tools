@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: lfSimpleFk.ma
-//Last modified: Mon, Sep 08, 2025 03:16:25 PM
+//Last modified: Mon, Sep 08, 2025 03:37:25 PM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,11 +12,11 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26100)";
-fileInfo "UUID" "02ED0D34-4CC7-06BC-2107-E5ACB14F77C9";
+fileInfo "UUID" "B392B5C0-48CF-EBD0-375D-B082893F7F45";
 createNode transform -s -n "persp";
 	rename -uid "83BBC351-4169-8A57-6147-3688C3C5E65F";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 92.73225185963237 48.132225285848257 93.846243673841059 ;
+	setAttr ".t" -type "double3" 94.792789328299392 48.132225285848257 92.403439805516669 ;
 	setAttr ".r" -type "double3" -21.938352729828221 35.000000000003602 0 ;
 	setAttr -cb on ".ro";
 createNode camera -s -n "perspShape" -p "persp";
@@ -89,9 +89,11 @@ createNode transform -n "master_guide" -p "module_grp";
 	rename -uid "177DBE6B-4E8E-B711-3C19-589C4E949A6A";
 	addAttr -ci true -sn "segNum" -ln "segNum" -dv 1 -min 1 -max 4 -at "long";
 	addAttr -ci true -sn "parentNameMatch" -ln "parentNameMatch" -dt "string";
+	addAttr -ci true -sn "mirrorable" -ln "mirrorable" -min 0 -max 1 -at "bool";
 	setAttr ".t" -type "double3" 50 0 0 ;
 	setAttr -k on ".segNum";
 	setAttr -k on ".parentNameMatch" -type "string" "*";
+	setAttr -cb on ".mirrorable" yes;
 createNode transform -n "simple01_guide_ofs" -p "master_guide";
 	rename -uid "F0DCF307-4AFE-F9B7-4833-678378A04ECB";
 createNode transform -n "simple01_guide" -p "simple01_guide_ofs";
@@ -319,20 +321,20 @@ parent -s -nc -r -add "|module_grp|master_guide|simple01_guide_ofs|simple01_guid
 parent -s -nc -r -add "|module_grp|master_guide|simple01_guide_ofs|simple01_guide|simple02_guide_ofs|simple02_guide|simple03_guide_ofs|simple03_guide|simple04_guide_ofs|simple04_guide|simple04_guide_ofs1|simple05_guide|simple05_guideShape" "simple03_guide" ;
 parent -s -nc -r -add "|module_grp|master_guide|simple01_guide_ofs|simple01_guide|simple02_guide_ofs|simple02_guide|simple03_guide_ofs|simple03_guide|simple04_guide_ofs|simple04_guide|simple04_guide_ofs1|simple05_guide|simple05_guideShape" "simple04_guide" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "1328978A-472C-6D3E-23F4-3E874A3EBDDF";
+	rename -uid "7D2671C5-49CD-B54E-9E8C-6293F2CDBF0E";
 	setAttr -s 3 ".lnk";
 	setAttr -s 3 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "01819A68-47F0-34AB-F33F-939846E2A730";
+	rename -uid "9967239A-4A92-77F9-1EE5-23A49C58C9AF";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "67CDC058-4522-B155-AF0E-15A37AAED92E";
+	rename -uid "401D8232-4F7F-D5D7-ADD1-D5B8210CF002";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "58E17F97-4D92-EFFB-C289-A5861DFBC56A";
+	rename -uid "8776E498-4E33-1E36-F58B-7483CAA15951";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "EDE7F8A1-4185-37A4-5FA7-49A7396409D6";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "C753BDB1-4413-67F1-BE90-03B13B786D7F";
+	rename -uid "B41AB9A2-463A-01AA-5929-92AD4B709BC6";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "D70BF562-46C4-2F8D-ABFE-179003332609";
 	setAttr ".g" yes;
