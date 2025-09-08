@@ -11,7 +11,7 @@
     <x>0</x>
     <y>0</y>
     <width>420</width>
-    <height>988</height>
+    <height>991</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -62,7 +62,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="main_TB">
     <attribute name="title">
@@ -74,7 +74,7 @@
        <x>0</x>
        <y>10</y>
        <width>225</width>
-       <height>271</height>
+       <height>261</height>
       </rect>
      </property>
      <property name="title">
@@ -277,7 +277,7 @@
         <x>6</x>
         <y>24</y>
         <width>151</width>
-        <height>241</height>
+        <height>231</height>
        </rect>
       </property>
       <property name="font">
@@ -412,7 +412,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>340</y>
+       <y>330</y>
        <width>111</width>
        <height>51</height>
       </rect>
@@ -506,9 +506,9 @@
     <widget class="QGroupBox" name="groupBox_5">
      <property name="geometry">
       <rect>
-       <x>110</x>
-       <y>340</y>
-       <width>111</width>
+       <x>120</x>
+       <y>330</y>
+       <width>101</width>
        <height>51</height>
       </rect>
      </property>
@@ -633,7 +633,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>390</y>
+       <y>380</y>
        <width>111</width>
        <height>51</height>
       </rect>
@@ -772,7 +772,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>440</y>
+       <y>430</y>
        <width>225</width>
        <height>141</height>
       </rect>
@@ -1336,7 +1336,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>580</y>
+       <y>570</y>
        <width>225</width>
        <height>61</height>
       </rect>
@@ -1455,7 +1455,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>X Skin</string>
+          <string>Delete all Skin</string>
          </property>
         </widget>
        </item>
@@ -1512,7 +1512,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>290</y>
+       <y>280</y>
        <width>225</width>
        <height>51</height>
       </rect>
@@ -1659,9 +1659,9 @@
     <widget class="QGroupBox" name="groupBox_7">
      <property name="geometry">
       <rect>
-       <x>110</x>
-       <y>390</y>
-       <width>111</width>
+       <x>120</x>
+       <y>380</y>
+       <width>101</width>
        <height>51</height>
       </rect>
      </property>
@@ -1791,9 +1791,9 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>650</y>
+       <y>630</y>
        <width>225</width>
-       <height>301</height>
+       <height>321</height>
       </rect>
      </property>
      <property name="title">
@@ -1898,7 +1898,7 @@
         <x>3</x>
         <y>50</y>
         <width>218</width>
-        <height>251</height>
+        <height>265</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -2585,7 +2585,7 @@
        <x>0</x>
        <y>120</y>
        <width>225</width>
-       <height>91</height>
+       <height>71</height>
       </rect>
      </property>
      <property name="title">
@@ -2603,7 +2603,7 @@
         <x>0</x>
         <y>20</y>
         <width>221</width>
-        <height>31</height>
+        <height>39</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_20">
@@ -2614,7 +2614,7 @@
         <number>6</number>
        </property>
        <property name="topMargin">
-        <number>2</number>
+        <number>4</number>
        </property>
        <item>
         <widget class="QPushButton" name="misc_buildLineSel_BN">
@@ -2640,35 +2640,16 @@
           <string>Selected objects and create lines between</string>
          </property>
          <property name="text">
-          <string>Build Line for Sel</string>
+          <string>Build Line
+for Sel</string>
          </property>
         </widget>
        </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget_30">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>50</y>
-        <width>221</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_21">
-       <property name="spacing">
-        <number>5</number>
-       </property>
-       <property name="leftMargin">
-        <number>6</number>
-       </property>
-       <property name="topMargin">
-        <number>2</number>
-       </property>
        <item>
         <widget class="QPushButton" name="addMirrorAttr_BN">
          <property name="text">
-          <string>Add Hidden Attr for WS Mirror</string>
+          <string>Add Hidden Attr
+ for WS Mirror</string>
          </property>
         </widget>
        </item>
@@ -2923,7 +2904,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>290</y>
+       <y>270</y>
        <width>225</width>
        <height>61</height>
       </rect>
@@ -2973,7 +2954,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>220</y>
+       <y>200</y>
        <width>225</width>
        <height>61</height>
       </rect>
@@ -3066,7 +3047,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>360</y>
+       <y>340</y>
        <width>225</width>
        <height>241</height>
       </rect>
@@ -3194,8 +3175,7 @@
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>Select nodes of the
-TYPE
+          <string>Select nodes of TYPE
 below selected</string>
          </property>
          <property name="checkable">
@@ -3520,7 +3500,7 @@ below selected</string>
      <widget class="QPushButton" name="misc_importEnvAndShd_BN">
       <property name="geometry">
        <rect>
-        <x>150</x>
+        <x>80</x>
         <y>116</y>
         <width>71</width>
         <height>23</height>
@@ -3556,7 +3536,7 @@ below selected</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>620</y>
+       <y>600</y>
        <width>225</width>
        <height>61</height>
       </rect>

@@ -81,7 +81,7 @@ class Tail(RigModule):
         self.build_ik()
         self.build_fk()
         self.build_ribbon()
-        build.add_noise_logic(ctl=self.setting, targets=self.jnts_ofs[1:])
+        # build.add_noise_logic(ctl=self.setting, targets=self.jnts_ofs[1:])
         self.build_post()
 
     def create_rbSrf(self):

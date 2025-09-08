@@ -257,6 +257,7 @@ def loadTemplate(removeUnused=1):
                                 elif isinstance(v, list):
                                     guideN.a[attr].set(*v)
     common.setViewport(fit=1)
+
     mc.select(allTgtMG)
 
 

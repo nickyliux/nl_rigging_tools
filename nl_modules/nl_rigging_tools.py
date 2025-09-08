@@ -108,6 +108,10 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         build.unbuildSelOrAll()
         self.rigNode_refresh()
 
+    def loadTpl(self):
+        guide.loadTemplate()
+        self.rigNode_refresh()
+
     def connect_UI(self):
         """Connect UI buttons to their respective functions."""
         # Pick mask & click drag
@@ -132,7 +136,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.loadModel_BN, model.import_model, ":openScript.png")
 
         # Template
-        self.connect(self.UI.loadTemplate_BN, guide.loadTemplate, ":openScript.png")
+        self.connect(self.UI.loadTemplate_BN, self.loadTpl, ":openScript.png")
         self.connect(self.UI.saveTemplate_BN, guide.saveTemplate, ":fileSave.png")
 
         # Build
