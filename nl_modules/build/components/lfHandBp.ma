@@ -161756,7 +161756,7 @@ createNode script -n "RGN";
 	addAttr -s false -ci true -sn "moduleG" -ln "moduleG" -at "message";
 	addAttr -s false -ci true -sn "master_guide" -ln "master_guide" -at "message";
 	setAttr ".rigID" -type "string" "";
-	setAttr ".rigClass" -type "string" "Hand";
+	setAttr ".rigClass" -type "string" "HandBp";
 createNode nodeGraphEditorInfo -n "lf_leg_guide_hyperShadePrimaryNodeEditorSavedTabsInfo";
 	rename -uid "4374FF9F-49A9-BC14-D246-B2A95A6F6230";
 	setAttr ".def" no;

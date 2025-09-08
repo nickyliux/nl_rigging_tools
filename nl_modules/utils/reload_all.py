@@ -114,6 +114,7 @@ reload(test_utils_node)
 from nl_modules.build import (
     arm_bp,
     finger_fk,
+    hand_bp,
     leg_bp,
     leg_qd,
     neck_bp,
@@ -127,7 +128,6 @@ from nl_modules.build import (
     tpl_loader,
     ribbon,
     head,
-    hand,
     simple_fk,
 )
 
@@ -139,7 +139,7 @@ reload(head)
 reload(neck_bp)
 reload(spine_bp)
 reload(arm_bp)
-reload(hand)
+reload(hand_bp)
 reload(simple_fk)
 reload(leg_bp)
 reload(leg_qd)

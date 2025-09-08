@@ -14,15 +14,15 @@ LF_CTL_SET = "lf*_ctl_set"
 COMPONENT_DICT = {
     "head": ["head"],
     "limb": ["lfLimb"],
-    "bp neck": ["neckBp"],
-    "bp spine": ["spineBp"],
-    "bp arm": ["lfArmBp", "rtArmBp"],
-    "bp leg": ["lfLegBp", "rtLegBp"],
-    "hand": ["lfHand", "rtHand"],
-    "qd neck": ["neckQd"],
-    "qd spine": ["spineQd"],
-    "qd arm": ["lfArmQd", "rtArmQd"],
-    "qd leg": ["lfLegQd", "rtLegQd"],
+    "neck / bp": ["neckBp"],
+    "spine / bp": ["spineBp"],
+    "arm / bp": ["lfArmBp", "rtArmBp"],
+    "leg / bp": ["lfLegBp", "rtLegBp"],
+    "hand / bp": ["lfHandBp", "rtHandBp"],
+    "neck / qd": ["neckQd"],
+    "spine / qd": ["spineQd"],
+    "arm / qd": ["lfArmQd", "rtArmQd"],
+    "leg / qd": ["lfLegQd", "rtLegQd"],
     "tail fk": ["tailFk"],
     "tail": ["tail"],
     "wing": [""],
@@ -176,8 +176,11 @@ def mirrorGuide(tgtList, wsMirror=0):
     for tgt in tgtList:
         tgt = DagNode(tgt)
         opp = getOppositeCtl(tgt)
-        if opp and opp.a.mirrorable.get():
-            copyGuideAttr(tgt, opp, wsMirror=wsMirror, mirror=1)
+        if opp:
+            rigNode = build.getRigNode(opp)
+            mg = rigNode.a.master_guide.inConnNode if rigNode else None
+            if mg and mg.a.mirrorable.get():
+                copyGuideAttr(tgt, opp, wsMirror=wsMirror, mirror=1)
         else:
             logging.warning(f"opposite not found for {tgt.name}")
 

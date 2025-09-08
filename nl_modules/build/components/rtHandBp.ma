@@ -2613,7 +2613,7 @@ createNode script -n "RGN";
 	addAttr -s false -ci true -sn "moduleG" -ln "moduleG" -at "message";
 	addAttr -s false -ci true -sn "master_guide" -ln "master_guide" -at "message";
 	setAttr ".rigID" -type "string" "";
-	setAttr ".rigClass" -type "string" "Hand";
+	setAttr ".rigClass" -type "string" "HandBp";
 createNode controller -n "ball_FKC_tag";
 	rename -uid "C7E58993-42FA-9E82-8195-779C843E714A";
 createNode controller -n "foot_FKC_tag";

@@ -9,7 +9,7 @@ from nl_modules.utils import common
 from nl_modules.utils.color import Color
 
 
-class Hand(RigModule):
+class HandBp(RigModule):
     """Hand rig module class, inherits from RigModule."""
 
     def __init__(self, rigNode):
