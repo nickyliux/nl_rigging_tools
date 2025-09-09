@@ -47,7 +47,8 @@ class SimpleFk(RigModule):
     def gen_sk(self):
         """Generate the skeleton for the finger rig."""
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(self.jnt_names, scale=3)
+        root_list = self.gen_sk_fr_names(self.jnt_names, scale=1)
+
         for j in root_list:
             JntNode(j).a["preferredAngleZ"].set(-10)
 
@@ -151,7 +152,7 @@ class SimpleFk(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts[:-1])
-        self.add_proxy_radiusScale(self.jnts_bind, 2)
+        # self.add_proxy_radiusScale(self.jnts_bind, 2)
         self.add_proxy_height(self.jnts_bind, self.rigSize * 5)
 
     def build_post(self):

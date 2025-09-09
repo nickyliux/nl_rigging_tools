@@ -194,16 +194,16 @@
      <widget class="QPushButton" name="guide_load_BN">
       <property name="geometry">
        <rect>
-        <x>170</x>
+        <x>180</x>
         <y>100</y>
-        <width>44</width>
-        <height>44</height>
+        <width>22</width>
+        <height>22</height>
        </rect>
       </property>
       <property name="minimumSize">
        <size>
-        <width>44</width>
-        <height>44</height>
+        <width>22</width>
+        <height>22</height>
        </size>
       </property>
       <property name="maximumSize">
@@ -237,15 +237,15 @@
      <widget class="QPushButton" name="guide_explore_BN">
       <property name="geometry">
        <rect>
-        <x>170</x>
-        <y>150</y>
-        <width>44</width>
+        <x>180</x>
+        <y>230</y>
+        <width>22</width>
         <height>22</height>
        </rect>
       </property>
       <property name="minimumSize">
        <size>
-        <width>44</width>
+        <width>22</width>
         <height>22</height>
        </size>
       </property>
@@ -413,7 +413,7 @@
       <rect>
        <x>0</x>
        <y>330</y>
-       <width>111</width>
+       <width>107</width>
        <height>51</height>
       </rect>
      </property>
@@ -506,9 +506,9 @@
     <widget class="QGroupBox" name="groupBox_5">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>115</x>
        <y>330</y>
-       <width>101</width>
+       <width>107</width>
        <height>51</height>
       </rect>
      </property>
@@ -634,7 +634,7 @@
       <rect>
        <x>0</x>
        <y>380</y>
-       <width>111</width>
+       <width>107</width>
        <height>51</height>
       </rect>
      </property>
@@ -1659,9 +1659,9 @@
     <widget class="QGroupBox" name="groupBox_7">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>115</x>
        <y>380</y>
-       <width>101</width>
+       <width>107</width>
        <height>51</height>
       </rect>
      </property>

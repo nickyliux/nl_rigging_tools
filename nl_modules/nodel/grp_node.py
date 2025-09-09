@@ -237,13 +237,19 @@ class GrpNode(DagNode):
             return
 
         tgtXforms = []
-        self.color = DagNode(targets[0]).color
+        first = DagNode(targets[0])
+        self.color = first.color
 
         for tgt in targets:
             tgt = DagNode(tgt)
             tgtShapes = tgt.shapes
 
             if tgtShapes:
+                # Keep the line width of targets
+                lineWidth = tgtShapes[0].a.lineWidth.get()
+                for sh in self.shapes:
+                    sh.a.lineWidth.set(lineWidth)
+
                 allXf = mc.listRelatives(tgtShapes, ap=1)
                 allXf = [DagNode(x) for x in list(set(allXf))]
 

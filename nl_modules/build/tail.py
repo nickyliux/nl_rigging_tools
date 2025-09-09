@@ -116,17 +116,14 @@ class Tail(RigModule):
         self.jnts_ik = JntNode.createJntFrCrv(
             self.LINE_GUIDE, num=5, name="ikj", pf=rID, aimV=(0, 0, -1), size=rSz * 2
         )
-
         # --- Attach ribbon surface weights to IK joints ---
-        SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6, chain=0)
-
         # --- Create and parent IK controls ---
         for i in range(5):
             ctl = CrvNode(
                 f"{i}_ikc",
                 pf=rID,
                 shape="cube",
-                scale=rSz,
+                scale=rSz * 2,
                 align=self.jnts_ik[i],
                 addOfs=1,
                 p=self.IK_GRP,
@@ -136,6 +133,9 @@ class Tail(RigModule):
             if i > 0:
                 ctl.offset | self.ctls_ik[0]
             self.rigNode.setMsg({f"ikc{i}": ctl})
+
+        SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6, chain=0)
+        # SrfNode(self.rbSrf1).weightTo(self.jnts_ik, chain=0)
 
         # --- Snap setting control to first IK control and constrain ---
         self.setting.snapTo(self.ctls_ik[0], p=self.FK_GRP, ofs=(0, rSz * 20, 0))
@@ -191,11 +191,12 @@ class Tail(RigModule):
             ctl = CrvNode(
                 f"{i}_ofs_ctl",
                 pf=rID,
-                shape="cube",
-                scale=rSz / 3,
+                shape="diamond3",
+                scale=rSz,
                 align=self.ctls_fk[i],
                 p=self.ctls_fk[i],
-                color=Color.PINK,
+                color=Color.L_BLUE,
+                top=1,
             )
             # ctl.cv_move(0, rSz * 20, 0)
             jnt = JntNode(f"{i}_ofs_jnt", pf=rID, align=ctl, p=ctl)
@@ -236,6 +237,9 @@ class Tail(RigModule):
             ctl.a.showAttr(t=1, r=1)
         self.setting.a.showAttr()
 
+        self.ctls_fk[-1].a.add("stretchy", proxy=self.setting.a.stretchy)
+        self.ctls_ik[-1].a.add("stretchy", proxy=self.setting.a.stretchy)
+
     def setup_rotate_order(self):
         """Setup rotate order for the tail rig controls."""
         for ctl in self.ctls_fk:
@@ -262,7 +266,7 @@ class Tail(RigModule):
         """Setup bind joints for the tail rig controls."""
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_proxy_height(
-            self.jnts_bind, CrvNode(self.LINE_GUIDE).length / self.rbnJntNum
+            self.jnts_bind, CrvNode(self.LINE_GUIDE).length / (self.rbnJntNum * 1.5)
         )
 
     def setup_space(self):

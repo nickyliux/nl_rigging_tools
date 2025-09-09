@@ -307,9 +307,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 # guide.loadGuide(names)
 
             self.rigNode_refresh()
-            common.setViewport(fit=1)
             mc.select(allTgtMG)
             mc.setToolTo("moveSuperContext")
+            common.setViewport(fit=1)
 
     def rigNode_LW_dblClicked(self, item):
         """Show attribute editor for rigNode"""

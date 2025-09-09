@@ -110,7 +110,7 @@ class LegBp(RigModule):
                 ["toe04_1", "toe04_2", "toe04_3", "toe04_4", "toe04_5"],
             ]
             for names in TOE_NAMES:
-                fgr_jnts = self.gen_sk_fr_names(names)
+                fgr_jnts = self.gen_sk_fr_names(names, scale=0.2)
                 fgr_jnts[0].reOrient(
                     upRef=fgr_jnts[1],
                     xDir=self.xDir,
@@ -134,19 +134,21 @@ class LegBp(RigModule):
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
             ("palm_fkc", "circle", "x", scale, 0, -1),
-            ("ball_fkc", "circle", "x", scale, 0, -1),
+            ("ball_fkc", "circle", "x", scale / 2, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
             ("pvc", "pvc", None, rSz, 0, -1),
             ("smart_ctl", "roll", None, scale / 3, 1, -1),
         ]
         if self.scapularExtra:
-            ctl_defs.append(("scap_fkc", "arrow4", "x", scale, 0, 2))
+            ctl_defs.append(("scap_fkc", "shoulder", None, scale, 0, -1))
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        # self.pvc.cv_rotate(90, 0, 0)
         self.smart_ctl.cv_scale(2, 1, 1)
+
+        if self.scapularExtra:
+            self.scap_fkc.cv_move(scale * 20, 0, 0)
 
     def build(self):
         """Build the leg rig module."""
@@ -638,6 +640,7 @@ class LegBp(RigModule):
         h = self.rigSize * 10
         if self.ribbon:
             h /= self.rbnJntNum * 0.5
+
         self.add_proxy_height(self.jnts_bind, h)
 
     def build_post(self):

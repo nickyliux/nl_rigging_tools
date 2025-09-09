@@ -117,7 +117,6 @@ class ArmBp(RigModule):
         self.blend_fk_ik()
         # self.build_nlAutoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
         self.jnts_bind = [self.clavicle, self.palm]
-
         self.build_extra([self.lwr, self.palm])
 
         if not self.ribbon:
@@ -341,10 +340,9 @@ class ArmBp(RigModule):
         )
 
         # Generate and aim clavicle joints
-        clavJnts = self.gen_sk_fr_names(["clavicle", "upr"], scale=3)
+        clavJnts = self.gen_sk_fr_names(["clavicle", "upr"], scale=0.5)
         scapuLoc.cstAim(clavJnts[0], aim=(xDr, 0, 0), u=(0, xDr, 0), keep=0)
         clavJnts[0].freezeXf()
-
         # IK handle for clavicle
         clav_ikh = IkNode(
             "clav",
@@ -510,11 +508,14 @@ class ArmBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxy_radiusScale(self.jnts_bind, 2)
+        self.add_proxy_radiusScale(self.jnts_bind, 1.5)
 
         h = self.rigSize * 10
         if self.ribbon:
             h /= self.rbnJntNum * 0.5
+
+        print(h)
+
         self.add_proxy_height(self.jnts_bind, h)
 
     def setup_ctlSet(self):

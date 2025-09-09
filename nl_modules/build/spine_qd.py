@@ -83,8 +83,8 @@ class SpineQd(RigModule):
             ("fore_ctl", "chest_qd", None, rSz * 4, 0, -1),
             ("mid_ctl", "squareR", "z", rSz * 4, 0, -1),
             ("base_ctl", "hip_qd", None, rSz * 4, 0, -1),
-            ("tangent0_ctl", "T", "z", rSz * 2, 1, -1),
-            ("tangent1_ctl", "T", "z", rSz * 2, 1, -1),
+            ("tangent0_ctl", "T", "z", rSz * 4, 1, -1),
+            ("tangent1_ctl", "T", "z", rSz * 4, 1, -1),
         ]
         if self.endCtl:
             ctl_defs.append(("end_ctl", "rotator", None, rSz * 1.5, 0, -1))
@@ -92,7 +92,7 @@ class SpineQd(RigModule):
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        self.cog_ctl.cv_move(0, rSz * 30, rSz * 10)
+        self.cog_ctl.cv_move(0, rSz * 40, rSz * 10)
         self.cog_ctl.cv_scale(1, 1.5, 2)
         self.setting.cv_move(0, rSz * 40, 0)
         # self.base_ctl.cv_rotate(0, 180, 0)
@@ -343,7 +343,7 @@ class SpineQd(RigModule):
     def build_volume(self, crvLenRatio):
         """Build volume control for the spine rig."""
         # add volume graph keys
-        volScale = self.setting.a.add("volScale", dv=1)
+        volConservation = self.setting.a.add("volConservation", dv=1, min=0)
         volGraph = self.setting.a.add("volGraph", dv=0)
         mc.setKeyframe(volGraph, t=0, v=0)
         mc.setKeyframe(volGraph, t=(self.rbnJntNum - 1) / 2, v=1)
@@ -355,7 +355,7 @@ class SpineQd(RigModule):
             fc = DagNode("fc__#", nodeType="frameCache")
             volGraph >> fc.a.stream
             fc.a.varyTime.set(i)
-            ratio = (1 / crvLenRatio) ** (fc.a.varying * volScale)
+            ratio = (1 / crvLenRatio) ** (fc.a.varying * volConservation)
             ratio >> self.jnts_rb[i].a.sy
             ratio >> self.jnts_rb[i].a.sz
 
@@ -435,7 +435,7 @@ class SpineQd(RigModule):
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_proxy_radiusScale(self.jnts_bind, 4)
         self.add_proxy_height(
-            self.jnts_bind, CrvNode(self.LINE_GUIDE).length / self.rbnJntNum
+            self.jnts_bind, CrvNode(self.LINE_GUIDE).length / (self.rbnJntNum * 1.5)
         )
 
     def build_post(self):

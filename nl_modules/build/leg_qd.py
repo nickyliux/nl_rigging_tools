@@ -108,7 +108,7 @@ class LegQd(RigModule):
             TOE_NAMES = TOE_DICT.get(self.toeNum, [])
 
             for names in TOE_NAMES:
-                fgr_jnts = self.gen_sk_fr_names(names)
+                fgr_jnts = self.gen_sk_fr_names(names, scale=0.2)
                 fgr_jnts[0].reOrient(
                     upRef=fgr_jnts[1],
                     xDir=self.xDir,
@@ -142,13 +142,13 @@ class LegQd(RigModule):
         ]
 
         if self.scapularExtra:
-            ctl_defs.append(("quadScap_ikc", "arrow4", "x", scale, 0, 2))
+            ctl_defs.append(("quadScap_ikc", "shoulder", None, scale, 0, -1))
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         if self.scapularExtra:
-            self.quadScap_ikc.cv_move(scale * 10, 0, 0)
+            self.quadScap_ikc.cv_move(scale * 20, 0, 0)
 
         self.smart_ctl.cv_scale(2, 1, 1)
 
@@ -330,8 +330,8 @@ class LegQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         # --- Snap setting control to upper joint and constrain ---
-        self.setting.snapTo(self.palm, p=self.CTL_DATA, ofs=(xDr * rSz * 12, 0, 0))
-        self.palm.cstPar(self.setting, mo=1)
+        self.setting.snapTo(self.hip, p=self.CTL_DATA, ofs=(xDr * rSz * 15, 0, 0))
+        self.hip.cstPar(self.setting, mo=1)
 
         # --- Add blend attribute and set up blending constraints ---
         fkToIk = self.setting.a.add("fkToIk", min=0, max=1, dv=1)

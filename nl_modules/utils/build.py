@@ -87,7 +87,7 @@ def buildSelOrAll(*arg):
         preRig()
         for rigN in rigNodes:
             buildTgt(rigN)
-        addProxyAttrsToMaster()
+        masterAddProxyAttrs()
         postRig()
         proxy.genProxy()
 
@@ -101,13 +101,14 @@ def postRig():
     update_space_switch()
     # control.reset_all_pv_ctl()
 
-    RIG = DagNode("RIG")
-    if RIG.exists():
-        mc.hide(RIG)
+    # RIG = DagNode("RIG")
+    # if RIG.exists():
+    #     mc.hide(RIG)
     mc.select(cl=1)
+    common.setViewport(wos=1)
 
 
-def addProxyAttrsToMaster():
+def masterAddProxyAttrs():
     """Add proxy attributes to master2_ctl"""
     ctl = DagNode("master2_ctl")
     prx = DagNode("PRX")
@@ -118,7 +119,7 @@ def addProxyAttrsToMaster():
         proxy = ctl.a.add("proxy", k=0, attrType="bool", dv=1)
         proxy >> prx.a.v
 
-        OPTIONS = "Normal:Template:Reference"
+        OPTIONS = "Nml:Tpl:Ref"
         proxyDsp = ctl.a.add("proxyDsp", attrType="enum", k=0, en=OPTIONS, dv=2)
         proxyDsp >> prx.a.overrideDisplayType
 
@@ -396,8 +397,8 @@ def getRigNode(obj):
             for n in nodes:
                 if n.type == "script":
                     return n
-        else:
-            logging.info(f"No connected rigNode found for {obj}")
+        # else:
+        #     logging.info(f"No connected rigNode found for {obj}")
     else:
         logging.info("Get rigNode for non-existing object.")
 

@@ -76,7 +76,6 @@ class RigModule(RigBase):
             lastJ = jN
             joints.append(jN)
 
-        self.rigSize = self.calc_rig_size(joints[0])
         for j in joints:
             j.a.radius.set(self.rigSize * scale)
 
@@ -325,6 +324,7 @@ class RigModule(RigBase):
             raise ValueError("rootJ not set for the component")
 
         self.rigSize = self.calc_rig_size(self.rootJ)
+        logging.info(f"{self.rigID} {self.rigSize=}")
 
         children = self.rootJ.childrenJt
         if children:
@@ -683,7 +683,7 @@ class RigModule(RigBase):
             offset=(xDr, 0, 0),
             u=(0, xDr, 0),
             p=mainGrp.offset,
-            rad=rSz * 3,
+            rad=rSz * 2,
             aimTgt=ikc,
         )
         IkNode("autoAimJ", solver=Solver.RP, pf=rID, sj=j0, ee=j1, p=ikc, quat=1, vis=0)
@@ -1073,7 +1073,7 @@ class RigModule(RigBase):
         for i in range(num):
             j = jnt0.duplicate(po=1, p=roll_jnt0)
             j.rename(f"{jnt0.name}{suffix}_{i}")
-            j.a.radius.set(self.rigSize * 2)
+            j.a.radius.set(self.rigSize)
 
             ratio = i / num
             common.cstMulti(jnt0, jnt1, j, cstType="poi", w=1 - ratio)
@@ -1091,7 +1091,7 @@ class RigModule(RigBase):
         for i in range(num):
             j = jnt0.duplicate(po=1)
             j.rename(f"{jnt0.name}{suffix}_{i}")
-            j.a.radius.set(self.rigSize * 2)
+            j.a.radius.set(self.rigSize)
 
             ratio = i / num
             common.cstMulti(jnt0, tgt_p, j, cstType="poi", w=1 - ratio)

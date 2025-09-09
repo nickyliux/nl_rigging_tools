@@ -325,7 +325,7 @@ class SpineBp(RigModule):
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_proxy_radiusScale(self.jnts_bind, 4)
         self.add_proxy_height(
-            self.jnts_bind, CrvNode(self.LINE_GUIDE).length / self.rbnJntNum
+            self.jnts_bind, CrvNode(self.LINE_GUIDE).length / (self.rbnJntNum * 1.5)
         )
 
     def setup_ctlSet(self):

@@ -49,8 +49,8 @@ class MarkingMenuRigging:
         mc.menuItem(p=display_MI, l="LRA", c=partial(display_LRA, 1, 0))
         mc.menuItem(p=display_MI, l="LRA Off", c=partial(display_LRA, 0, 0), ob=1)
         mc.menuItem(p=display_MI, l="LRA -hi", c=partial(display_LRA, 1, 1))
-        mc.menuItem(p=display_MI, l="Curve CV", c=partial(display_CV, 1))
-        mc.menuItem(p=display_MI, l="Curve CV Off", c=partial(display_CV, 0), ob=1)
+        mc.menuItem(p=display_MI, l="Nurbs CV", c=partial(display_CV, 1))
+        mc.menuItem(p=display_MI, l="Nurbs CV Off", c=partial(display_CV, 0), ob=1)
         mc.menuItem(p=display_MI, l="Joint Size => 1", c=partial(jointDisplay, 1))
         mc.menuItem(p=display_MI, l="Joint Size => 0.1", c=partial(jointDisplay, 0.1))
 

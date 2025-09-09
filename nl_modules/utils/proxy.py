@@ -84,7 +84,7 @@ def genProxy():
         JntNode(j).addProxyMesh(p=PRX_GRP)
 
     mc.select(cl=1)
-    common.setViewport(jx=1, wos=1)
+    common.setViewport()  # jx=1, wos=1)
     logging.info("Gen Proxy Mesh OK")
 
 
