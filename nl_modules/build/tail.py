@@ -122,8 +122,9 @@ class Tail(RigModule):
             ctl = CrvNode(
                 f"{i}_ikc",
                 pf=rID,
-                shape="cube",
-                scale=rSz * 3,
+                shape="square",
+                up="z",
+                scale=rSz * 2,
                 align=self.jnts_ik[i],
                 addOfs=1,
                 p=self.IK_GRP,

@@ -312,6 +312,13 @@ class JntNode(GrpNode):
 
         JntNode(sel[0]).reOrient()
 
+    def setDrawStyle(self, style=2):
+        """Set the draw style of the joint."""
+        if style not in [0, 1, 2, 3]:
+            logging.warning("Invalid style. Use 0, 1, 2, or 3.")
+            return
+        self.a.drawStyle.set(style)
+
     def reOrient(self, upRef=None, xDir=1, up=(0, 1, 0)):
         """Orient joints below this node"""
         all_jnts = self.allChildrenJt2

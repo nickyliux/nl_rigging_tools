@@ -180,11 +180,13 @@ class LegBp(RigModule):
             scapCtl=self.scap_fkc,
         )
 
-        self.build_extra([self.lwr, self.palm])
+        self.build_specialAim([self.lwr, self.palm])
         if not self.ribbon:
             jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
             jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
             self.jnts_ro = [jnt_ro1, jnt_ro2]
+            jnt_ro1.setDrawStyle(2)
+            jnt_ro2.setDrawStyle(2)
         else:
             self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(
                 rbJNum=self.rbnJntNum,
@@ -511,10 +513,11 @@ class LegBp(RigModule):
         #     self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
         #     onList=self.ctls_sub,
         # )
-        self.ctl_vis_toggle(
-            self.setting.a.add("debugVis", attrType="bool", k=0, dv=0),
-            onList=self.jnts_fk + self.jnts_ik + self.jnts_bf + self.jnts_ro,
-        )
+        # self.ctl_vis_toggle(
+        #     self.setting.a.add("debugVis", attrType="bool", k=0, dv=0),
+        #     onList=self.jnts_fk + self.jnts_ik + self.jnts_bf # + self.jnts_ro,
+        # )
+        mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_bf)  # + self.jnts_ro)
         self.ctl_vis_toggle(
             self.ikc.a.add("pvc", attrType="bool", dv=1, k=0),
             onList=[self.pvc.offset, self.pvc_line.offset],

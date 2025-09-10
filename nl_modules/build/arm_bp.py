@@ -117,12 +117,14 @@ class ArmBp(RigModule):
         self.blend_fk_ik()
         # self.build_nlAutoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
         self.jnts_bind = [self.clavicle, self.palm]
-        self.build_extra([self.lwr, self.palm])
+        self.build_specialAim([self.lwr, self.palm])
 
         if not self.ribbon:
             jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
             jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
             self.jnts_roll = [jnt_ro1, jnt_ro2]
+            jnt_ro1.setDrawStyle(2)
+            jnt_ro2.setDrawStyle(2)
         else:
             self.build_bendy_ribbon(
                 rbJNum=self.rbnJntNum,
@@ -426,10 +428,11 @@ class ArmBp(RigModule):
             self.ikc.a.add("pvc", attrType="bool", dv=1, k=0),
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
-        self.ctl_vis_toggle(
-            self.setting.a.add("debugVis", attrType="bool", dv=0, k=0),
-            onList=self.jnts_fk + self.jnts_ik + self.jnts_bf + self.jnts_roll,
-        )
+        # self.ctl_vis_toggle(
+        #     self.setting.a.add("debugVis", attrType="bool", dv=0, k=0),
+        #     onList=self.jnts_fk + self.jnts_ik + self.jnts_bf
+        # )
+        mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_bf)  # + self.jnts_roll,
         if self.ribbon:
             self.ctl_vis_toggle(
                 self.setting.a.add("bendyCtls", attrType="bool", dv=0, k=0),
@@ -513,8 +516,6 @@ class ArmBp(RigModule):
         h = self.rigSize * 10
         if self.ribbon:
             h /= self.rbnJntNum * 0.5
-
-        print(h)
 
         self.add_proxy_height(self.jnts_bind, h)
 

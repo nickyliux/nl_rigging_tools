@@ -324,7 +324,6 @@ class RigModule(RigBase):
             raise ValueError("rootJ not set for the component")
 
         self.rigSize = self.calc_rig_size(self.rootJ)
-        logging.info(f"{self.rigID} {self.rigSize=}")
 
         children = self.rootJ.childrenJt
         if children:
@@ -998,7 +997,7 @@ class RigModule(RigBase):
             if jnt not in self.jnts_bind:
                 self.jnts_bind.append(jnt)
 
-    def build_extra(self, targets, up="y"):
+    def build_specialAim(self, targets, up="y"):
         """Build roller joints for the specified targets."""
         rID, rSz, xDr = self.getMyVar()
 
@@ -1006,14 +1005,12 @@ class RigModule(RigBase):
         aim = (xDr * -1, 0, 0)
         wut = "objectrotation"
         r = rSz * 4
-        CB = Color.BLACK
+        CB = Color.VD_GREEN
 
         for tgt in targets:
             # Create roller joint
             ro = tgt.a.rotateOrder.get()
-            extraJ = JntNode(
-                "jntExtra_#", pf=rID, align=tgt, r=r, p=tgt, ro=ro, color=CB
-            )
+            extraJ = JntNode(tgt + "_special", align=tgt, r=r, p=tgt, ro=ro, color=CB)
             extraJ.resetOrient()
             extraJ.resetXf()
             tgt_p = tgt.parent
@@ -1030,9 +1027,7 @@ class RigModule(RigBase):
             raise ValueError(f"No target parent or it is not a joint")
 
         # Create roll ik joints, and IK
-        self.jnts_ro = common.dupSk(
-            [jnt0, jnt1], suffix, r=self.rigSize / 2, color=Color.RED
-        )
+        self.jnts_ro = common.dupSk([jnt0, jnt1], suffix, r=rSz)
         # Allow only TX to have value. Important for case like the foot
         self.jnts_ro[1].a.ty.set(0)
         self.jnts_ro[1].a.tz.set(0)
@@ -1071,6 +1066,7 @@ class RigModule(RigBase):
         # Create roller joints, parented to roll_jnt0
         for i in range(num):
             j = jnt0.duplicate(po=1, p=roll_jnt0)
+            j.color = Color.YELLOW
             j.rename(f"{jnt0.name}{suffix}_{i}")
             j.a.radius.set(self.rigSize)
 
@@ -1079,7 +1075,8 @@ class RigModule(RigBase):
             roll_loc.a.rx * ratio >> j.a.rx
             self.jnts_bind.append(j)
 
-        return roll_jnt0
+        mc.hide(roll_loc)
+        return JntNode(roll_jnt0)
 
     def build_lwrRollJ(self, jnt0, jnt1, num=2, suffix="_roll2"):
         """Build lower roller joints. They are added between jnt0's parent and jnt0."""
@@ -1089,6 +1086,7 @@ class RigModule(RigBase):
         # Create roller joints, parented to jnt0's parent
         for i in range(num):
             j = jnt0.duplicate(po=1)
+            j.color = Color.YELLOW
             j.rename(f"{jnt0.name}{suffix}_{i}")
             j.a.radius.set(self.rigSize)
 
@@ -1098,7 +1096,8 @@ class RigModule(RigBase):
             if i > 0:
                 self.jnts_bind.append(j)
 
-        return roll_jnt0
+        mc.hide(roll_loc)
+        return JntNode(roll_jnt0)
 
     def build_rbn(self, tgt, name="", rbJNum=5, volMode=1):
         """Build a ribbon node for the target with specified parameters."""
