@@ -123,11 +123,12 @@ class Tail(RigModule):
                 f"{i}_ikc",
                 pf=rID,
                 shape="cube",
-                scale=rSz * 2,
+                scale=rSz * 3,
                 align=self.jnts_ik[i],
                 addOfs=1,
                 p=self.IK_GRP,
             )
+            ctl.cv_scale(1, 1, 0.5)
             self.jnts_ik[i] | ctl
             self.ctls_ik.append(ctl)
             if i > 0:

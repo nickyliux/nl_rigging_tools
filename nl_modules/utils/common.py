@@ -238,15 +238,14 @@ def nlRivet(
 
     for i, coord in enumerate(coordList):
         loc = LocNode(f"rivetLoc_{i}_#", size=size, color=13)
-        scaleAttr >> loc.a.scaleX
-        scaleAttr >> loc.a.scaleY
-        scaleAttr >> loc.a.scaleZ
+        scaleAttr >> loc.a.s
         uvPinN.a.outputMatrix >> loc.a.offsetParentMatrix
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateU", coord[0])
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateV", coord[1])
         pinLocs.append(loc)
         if p:
             loc | p
+        loc.hide()
     #
     #   no aim needed for rivet
     #

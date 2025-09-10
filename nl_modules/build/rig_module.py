@@ -501,7 +501,6 @@ class RigModule(RigBase):
     def patella_setup(self):
         """Setup patella guide and joint for the leg rig."""
         rID, rSz, xDr = self.getMyVar()
-
         patella_guide = DagNode(rID + "_patella_guide")
 
         def patella_sdk(driver, driven):
@@ -511,7 +510,7 @@ class RigModule(RigBase):
             common.sdk(driver, driven, "ry", "ry", -180, -90)
 
         if patella_guide.exists():
-            j = JntNode("patella", pf=rID, align=patella_guide, r=rSz, p=self.upr)
+            j = JntNode("patella", pf=rID, align=patella_guide, r=rSz / 2, p=self.upr)
             j.freezeXf()
             self.jnts_bind.append(j)
             patella_sdk(self.lwr, j)
