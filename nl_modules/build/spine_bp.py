@@ -61,7 +61,7 @@ class SpineBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
-            ("setting", "setting", "z", rSz * 3, 1, 2),
+            ("setting", "setting", "z", rSz * 4, 1, 2),
             ("cog_ctl", "cog", None, rSz * 7, 0, 2),
         ]
         if self.ribbon:
@@ -87,7 +87,7 @@ class SpineBp(RigModule):
             self.build_ik()
 
         self.setting.snapTo(
-            self.cog_ctl, p=self.CTL_DATA, ofs=(0, 0, self.rigSize * -80)
+            self.cog_ctl, p=self.CTL_DATA, ofs=(0, 0, self.rigSize * -90)
         )
         self.cog_ctl.cstPar(self.setting, mo=1)
 
@@ -237,9 +237,9 @@ class SpineBp(RigModule):
         d = arcLD.a.arcLengthInV
         D = d.get()
 
-        volScale = self.setting.a.add("volScale", min=0, dv=1)
-        self.chest_ikc.a.add("volScale", proxy=volScale)
-        self.hip_ikc.a.add("volScale", proxy=volScale)
+        volConservation = self.setting.a.add("volConservation", min=0, dv=1)
+        self.chest_ikc.a.add("volConservation", proxy=volConservation)
+        self.hip_ikc.a.add("volConservation", proxy=volConservation)
 
         # keys for volume squash
         volGraph = self.setting.a.add("volGraph", dv=0)
@@ -254,7 +254,7 @@ class SpineBp(RigModule):
             volGraph >> fc.a.stream
             fc.a.varyTime.set(i)
 
-            ratio = (scaleFix * D / d) ** (fc.a.varying * volScale)
+            ratio = (scaleFix * D / d) ** (fc.a.varying * volConservation)
             ratio >> self.jnts_rb[i].a.sy
             ratio >> self.jnts_rb[i].a.sz
 
@@ -273,6 +273,7 @@ class SpineBp(RigModule):
             self.setting.a.add("debugVis", attrType="bool", dv=0, k=0),
             onList=self.jnts_ctl + self.jnts_fk,  # + self.jnts_rb,
         )
+        mc.hide(self.rbSrf)
         if self.is_neck():
             mc.hide(self.cog_ctl)
 

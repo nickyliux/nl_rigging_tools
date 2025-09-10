@@ -78,13 +78,13 @@ class SpineQd(RigModule):
 
         #   Define control shapes and attributes
         ctl_defs = [
-            ("setting", "setting", "z", rSz * 2, 1, 2),
+            ("setting", "setting", "z", rSz * 3, 1, 2),
             ("cog_ctl", "trapezoid", None, rSz, 0, -1),
             ("fore_ctl", "chest_qd", None, rSz * 4, 0, -1),
             ("mid_ctl", "squareR", "z", rSz * 4, 0, -1),
             ("base_ctl", "hip_qd", None, rSz * 4, 0, -1),
-            ("tangent0_ctl", "T", "z", rSz * 4, 1, -1),
-            ("tangent1_ctl", "T", "z", rSz * 4, 1, -1),
+            ("tangent0_ctl", "diamond3", None, rSz * 4, 1, -1),
+            ("tangent1_ctl", "diamond3", None, rSz * 4, 1, -1),
         ]
         if self.endCtl:
             ctl_defs.append(("end_ctl", "rotator", None, rSz * 1.5, 0, -1))
@@ -372,9 +372,10 @@ class SpineQd(RigModule):
             + self.jnts_fk
             + self.jnts_spIk
             + self.jnts_twoIk
-            + self.jnts_rb
             + [self.anchorToRbj],
         )
+        # + self.jnts_rb
+        mc.hide(self.rbSrf)
 
         if self.is_neck():
             self.cog_ctl.shape.hide()
