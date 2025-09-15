@@ -130,7 +130,7 @@ class Test_common_Main(Test_common_Base):
 
     def test_show_RO(self):
         self.assertFalse(self.obj1.a.ro.get(cb=1))
-        common.showAllRO()
+        common.showAllRO(1)
         self.assertTrue(self.obj1.a.ro.get(cb=1))
 
 

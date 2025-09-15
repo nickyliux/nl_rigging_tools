@@ -371,10 +371,10 @@ def dupSk(jntList, sf="", p=None, color=None, r=1):
     return newJList
 
 
-def showAllRO():
+def showAllRO(state):
     """Show all rotation order in the scene"""
     for o in mc.ls(tr=1):
-        mc.setAttr(o + ".ro", cb=1)
+        mc.setAttr(o + ".ro", cb=state)
 
 
 def shelfSep():
