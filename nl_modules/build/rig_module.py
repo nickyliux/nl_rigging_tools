@@ -481,7 +481,8 @@ class RigModule(RigBase):
         self.boneFix_sdk(tgt, tgtDup)
         upLoc.hide()
 
-        self.updateBindJntList(remove=[self.lwr], extend=[self.boneFix])
+        # self.updateBindJntList(remove=[self.lwr], extend=[self.boneFix])
+        self.jnts_bind += [self.boneFix]
 
     def boneFix_sdk(self, driver, driven):
         """ "Setup SDK for bone fix to drive the leg joint."""
@@ -1107,7 +1108,7 @@ class RigModule(RigBase):
             rbJNum=rbJNum,
             volMode=volMode,
             scaleFix=self.masterC.a["globalScale"],
-            size=self.rigSize * 2,
+            size=self.rigSize,
             p=self.RIG_DATA,
         )
 
@@ -1172,8 +1173,9 @@ class RigModule(RigBase):
         volType >> ribbonLw.volType
 
         # Update bind joints
-        self.updateBindJntList(
-            remove=[upr, lwr], extend=ribbonUp.jnts_rb + ribbonLw.jnts_rb
-        )
+        # self.updateBindJntList(
+        #    remove=[upr, lwr], extend=ribbonUp.jnts_rb + ribbonLw.jnts_rb
+        # )
+        self.jnts_bind += ribbonUp.jnts_rb + ribbonLw.jnts_rb
 
         return [ribbonUp, ribbonLw]

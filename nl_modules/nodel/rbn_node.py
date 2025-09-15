@@ -122,6 +122,7 @@ class RbnNode:
                 pf=self.pf,
                 p=self.RBJ_GRP,
                 r=self.size,  # / self.rbJNum * 5,
+                color=Color.YELLOW,
                 addOfs=1,
             )
             pin_xf.cstPar(jnt.parent)
@@ -336,7 +337,7 @@ class RbnNode:
     def setup_vis(self):
         """Set up visibility for the ribbon rig."""
         mc.hide(self.ikhs)
-        # mc.hide(self.SRF_GRP, self.AIM_GRP, self.LOC_GRP)
+        mc.hide(self.SRF_GRP, self.AIM_GRP, self.LOC_GRP)
 
     def build_post(self):
         """Post setup for the ribbon rig."""

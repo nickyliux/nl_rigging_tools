@@ -11,6 +11,15 @@ from nl_modules.utils import common
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
 
+from enum import Enum
+
+
+class LimbType(Enum):
+    BASIC = 0
+    BASIC_ROLL = 1
+    RIBBON = 2
+    SKEL = 3
+
 
 class ArmBp(RigModule):
     """Arm rig module class, inherits from RigModule."""
@@ -21,6 +30,7 @@ class ArmBp(RigModule):
 
         # Guide attributes
         guide_attrs = [
+            "limbType",
             "ribbon",
             "dualBones",
             "rollJntNum",
@@ -61,6 +71,7 @@ class ArmBp(RigModule):
         self.ballRoll_loc = None
         self.clavBone = None
         self.toe_wiggle_grp = None
+        self.ikc_gimbal = None
         self.pvc_line = None
         self.pvRota_line = None
         self.ikCstG = None
@@ -115,16 +126,20 @@ class ArmBp(RigModule):
         self.build_ik()
         self.blend_fk_ik()
         # self.build_nlAutoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
-        self.jnts_bind = [self.clavicle, self.palm]
-        self.build_specialAim([self.lwr, self.palm])
+        self.jnts_bind = [self.palm]  # [self.clavicle, self.palm]
 
-        if not self.ribbon:
+        if self.limbType == LimbType.BASIC.value:
+            self.jnts_bind += [self.upr, self.lwr]
+
+        if self.limbType == LimbType.BASIC_ROLL.value:
+            self.build_specialAim([self.lwr, self.palm])
             jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
             jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
             self.jnts_roll = [jnt_ro1, jnt_ro2]
             jnt_ro1.setDrawStyle(2)
             jnt_ro2.setDrawStyle(2)
-        else:
+
+        elif self.limbType == LimbType.RIBBON.value:
             self.build_bendy_ribbon(
                 rbJNum=self.rbnJntNum,
                 root=self.clavicle,
@@ -133,13 +148,14 @@ class ArmBp(RigModule):
                 palm=self.palm,
                 kneeFix=0,
             )
-            self.dualBones = 0
-
-        if self.dualBones:
+        elif self.limbType == LimbType.SKEL.value:
+            self.jnts_bind += [self.upr]
             self.build_dual_bones()
 
         if self.scapularBone:
             self.build_armScapular()
+        else:
+            self.jnts_bind += [self.clavicle]
 
         self.build_post()
 
@@ -362,7 +378,8 @@ class ArmBp(RigModule):
         self.clavBone | self.SKL_DATA
         self.clavicle.cstPoi(self.clavBone)
 
-        self.updateBindJntList(remove=[self.clavicle], extend=[self.clavBone])
+        # self.updateBindJntList(remove=[self.clavicle], extend=[self.clavBone])
+        self.jnts_bind += [self.clavBone]
 
     def build_dual_bones(self):
         """Build dual bones for the lower arm."""
@@ -371,8 +388,8 @@ class ArmBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         # Generate radius and ulna joint chains
-        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=2)
-        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=2)
+        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"])
+        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"])
 
         # Parent dual chains to lower arm
         (radius_JC[0], ulna_JC[0]) | self.lwr
@@ -397,7 +414,8 @@ class ArmBp(RigModule):
         )
 
         # Update bind joints
-        self.updateBindJntList(remove=[self.lwr], extend=[radius_JC[0], ulna_JC[0]])
+        # self.updateBindJntList(remove=[self.lwr], extend=[radius_JC[0], ulna_JC[0]])
+        self.jnts_bind += [radius_JC[0], ulna_JC[0]]
 
     def palm_rolling(self, tgt, fkc, fkPin, locRoll, locIn, locOut):
         """Setup palm rolling for the arm rig controls."""
@@ -432,11 +450,12 @@ class ArmBp(RigModule):
         #     onList=self.jnts_fk + self.jnts_ik + self.jnts_bf
         # )
         mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_bf)  # + self.jnts_roll,
-        if self.ribbon:
-            self.ctl_vis_toggle(
-                self.setting.a.add("bendyCtls", attrType="bool", dv=0, k=0),
-                onList=self.all_bend,
-            )
+
+        # if self.limbType == 2:
+        #     self.ctl_vis_toggle(
+        #         self.setting.a.add("bendyCtls", attrType="bool", dv=0, k=0),
+        #         onList=self.all_bend,
+        #     )
 
         self.ikc.a.v >> self.palm_ikc.a.v
         mc.hide(self.ikhs)
@@ -512,16 +531,18 @@ class ArmBp(RigModule):
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_proxy_radiusScale(self.jnts_bind, 1.5)
 
-        h = self.rigSize * 10
-        if self.ribbon:
-            h /= self.rbnJntNum * 0.5
+        # h = self.rigSize * 10
+        # if LimbType.BASIC_ROLL.value == 2:
+        #     h /= self.rollJntNum * 0.5
+        # elif LimbType.RIBBON.value == 2:
+        #     h /= self.rbnJntNum * 0.5
 
-        self.add_proxy_height(self.jnts_bind, h)
+        # self.add_proxy_height(self.jnts_bind, h)
 
     def setup_ctlSet(self):
         """Setup control sets for the arm rig module."""
         ctlSet = self.ctls_fk + self.ctls_ik + [self.setting, self.pin_fkc]
-        if self.ribbon:
+        if self.limbType == LimbType.RIBBON.value:
             ctlSet.extend(self.all_bend)
         self.add_ctl_set(ctlSet)
 
