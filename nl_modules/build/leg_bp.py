@@ -12,6 +12,15 @@ from nl_modules.utils import utils_node as ut
 from nl_modules.utils.common import Vec
 from nl_modules.utils.color import Color
 
+from enum import Enum
+
+
+class LimbType(Enum):
+    BASIC = 0
+    BASIC_ROLL = 1
+    RIBBON = 2
+    SKEL = 3
+
 
 class LegBp(RigModule):
     """Quadruped leg rig module class, inherits from RigModule."""
@@ -24,12 +33,11 @@ class LegBp(RigModule):
 
         # Guide attributes
         guide_attrs = [
-            "ribbon",
+            "limbType",
             "rollJntNum",
             "rbnJntNum",
             "patellaBone",
             "toeBones",
-            "dualBones",
             "kneeFix",
             "scapularExtra",
         ]
@@ -163,14 +171,14 @@ class LegBp(RigModule):
         # self.build_nlAutoAim(
         #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
         # )
-        self.jnts_bind = [
-            self.hip,
-            # self.upr,
-            # self.lwr,
-            self.boneFix,
-            self.palm,
-            self.ball,
-        ]
+        self.jnts_bind = []  # self.palm, self.ball]
+        #     self.hip,
+        #     # self.upr,
+        #     # self.lwr,
+        #     self.boneFix,
+        #     self.palm,
+        #     self.ball,
+        # ]
 
         self.scapularG = self.build_scapular(
             ikc=self.ikc,
@@ -180,14 +188,21 @@ class LegBp(RigModule):
             scapCtl=self.scap_fkc,
         )
 
-        self.build_specialAim([self.lwr, self.palm])
-        if not self.ribbon:
+        if self.limbType == LimbType.BASIC.value:
+            self.jnts_bind += [self.upr, self.lwr, self.palm, self.ball]
+
+        elif self.limbType == LimbType.BASIC_ROLL.value:
+            self.jnts_bind += [self.lwr, self.palm, self.ball]
+
+            self.build_specialAim([self.lwr, self.palm])
+
             jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
             jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
             self.jnts_ro = [jnt_ro1, jnt_ro2]
             jnt_ro1.setDrawStyle(2)
             jnt_ro2.setDrawStyle(2)
-        else:
+
+        elif self.limbType == LimbType.RIBBON.value:
             self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(
                 rbJNum=self.rbnJntNum,
                 root=self.hip,
@@ -196,18 +211,17 @@ class LegBp(RigModule):
                 palm=self.palm,
                 kneeFix=self.kneeFix,
             )
-            self.dualBones = 0
+        elif self.limbType == LimbType.SKEL.value:
+            self.build_dual_bones()
+            self.jnts_bind += [self.upr]
 
         if self.kneeFix:
             self.boneFix_setup(self.lwr, self.palm)
-            if self.ribbon:
+            if self.limbType == LimbType.RIBBON.value:
                 self.boneFix.cstPoi(self.ribbon_lw.stt_loc)
 
         if self.patellaBone:
             self.patellaJ = self.patella_setup()
-
-        if self.dualBones:
-            self.build_dual_bones()
 
         if self.toeBones:
             self.build_toes()
@@ -460,7 +474,7 @@ class LegBp(RigModule):
             self.toesCtlsList.append([ctl])
 
         # --- Remove palm and ball from bind joints (handled by toes) ---
-        self.updateBindJntList(remove=[self.palm, self.ball])
+        # self.updateBindJntList(remove=[self.palm, self.ball])
 
         # --- (Optional) Splay logic for toes (commented out) ---
         # splay = self.ball_fkc.a.add("splay", min=-5, max=5)
@@ -476,8 +490,8 @@ class LegBp(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=2)
-        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=2)
+        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"])
+        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"])
 
         parent = self.boneFix if self.kneeFix else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent
@@ -496,10 +510,10 @@ class LegBp(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-
-        self.updateBindJntList(
-            remove=[self.lwr, self.boneFix], extend=[radius_JC[0], ulna_JC[0]]
-        )
+        # self.updateBindJntList(
+        #     remove=[self.lwr, self.boneFix], extend=[radius_JC[0], ulna_JC[0]]
+        # )
+        self.jnts_bind += [radius_JC[0], ulna_JC[0]]
 
     def setup_vis(self):
         """Setup visibility for the leg rig controls."""
@@ -522,11 +536,11 @@ class LegBp(RigModule):
             self.ikc.a.add("pvc", attrType="bool", dv=1, k=0),
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
-        if self.ribbon:
-            self.ctl_vis_toggle(
-                self.setting.a.add("bendyCtls", attrType="bool", k=0, dv=1),
-                onList=self.all_bend,
-            )
+        # if self.ribbon:
+        #     self.ctl_vis_toggle(
+        #         self.setting.a.add("bendyCtls", attrType="bool", k=0, dv=1),
+        #         onList=self.all_bend,
+        #     )
         mc.hide(self.ikhs, self.toeIKHs)
 
     def setup_channel(self):
@@ -618,7 +632,7 @@ class LegBp(RigModule):
             + self.ctls_sub
             + [self.setting, self.smart_ctl, self.pin_fkc]
         )
-        if self.ribbon:
+        if self.limbType == LimbType.RIBBON.value:
             ctlSet.extend(self.all_bend)
 
         if self.toeBones:
@@ -640,11 +654,11 @@ class LegBp(RigModule):
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_proxy_radiusScale(self.jnts_bind, 2)
 
-        h = self.rigSize * 10
-        if self.ribbon:
-            h /= self.rbnJntNum * 0.5
+        # h = self.rigSize * 10
+        # if self.ribbon:
+        #     h /= self.rbnJntNum * 0.5
 
-        self.add_proxy_height(self.jnts_bind, h)
+        # self.add_proxy_height(self.jnts_bind, h)
 
     def build_post(self):
         """Post setup for the leg rig module."""

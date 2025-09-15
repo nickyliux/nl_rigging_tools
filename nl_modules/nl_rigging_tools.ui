@@ -774,7 +774,7 @@
        <x>0</x>
        <y>430</y>
        <width>225</width>
-       <height>141</height>
+       <height>121</height>
       </rect>
      </property>
      <property name="title">
@@ -920,43 +920,6 @@
         </widget>
        </item>
        <item>
-        <spacer name="horizontalSpacer_13">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget_14">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>50</y>
-        <width>269</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="proxy_LO_2">
-       <property name="spacing">
-        <number>6</number>
-       </property>
-       <property name="leftMargin">
-        <number>6</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item>
         <widget class="QPushButton" name="selAllProxyGrp_BN">
          <property name="enabled">
           <bool>true</bool>
@@ -1029,114 +992,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="refProxy_BN">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>22</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>22</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Template proxy</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="resetProxy_BN">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>22</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>22</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Reset selected proxy</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="mirrorProxy_BN">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>22</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>22</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Mirror selected proxy</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="wrapProxy_BN">
          <property name="enabled">
           <bool>true</bool>
@@ -1173,7 +1028,7 @@
         </widget>
        </item>
        <item>
-        <spacer name="horizontalSpacer_14">
+        <spacer name="horizontalSpacer_13">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -1191,7 +1046,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>110</y>
+        <y>78</y>
         <width>221</width>
         <height>25</height>
        </rect>
@@ -1245,7 +1100,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>80</y>
+        <y>50</y>
         <width>221</width>
         <height>25</height>
        </rect>
@@ -1336,9 +1191,9 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>570</y>
+       <y>550</y>
        <width>225</width>
-       <height>61</height>
+       <height>81</height>
       </rect>
      </property>
      <property name="title">

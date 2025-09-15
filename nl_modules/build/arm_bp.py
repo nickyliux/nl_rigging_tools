@@ -31,8 +31,6 @@ class ArmBp(RigModule):
         # Guide attributes
         guide_attrs = [
             "limbType",
-            "ribbon",
-            "dualBones",
             "rollJntNum",
             "rbnJntNum",
             "scapularBone",
@@ -131,8 +129,9 @@ class ArmBp(RigModule):
         if self.limbType == LimbType.BASIC.value:
             self.jnts_bind += [self.upr, self.lwr]
 
-        if self.limbType == LimbType.BASIC_ROLL.value:
+        elif self.limbType == LimbType.BASIC_ROLL.value:
             self.build_specialAim([self.lwr, self.palm])
+
             jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
             jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
             self.jnts_roll = [jnt_ro1, jnt_ro2]
@@ -208,6 +207,8 @@ class ArmBp(RigModule):
         )
         self.ikH1 = ikH1
 
+        self.ikc_gimbal = CrvNode(self.ikc).add_gimbal()
+
         # IK constraint group
         self.ikCstG = GrpNode("ikCstG", pf=rID, align=self.palm)
         if xDr == 1:
@@ -215,7 +216,7 @@ class ArmBp(RigModule):
         ikH1 | self.ikCstG
 
         # Constrain IK group to IK control
-        self.ikc.cstSca(self.ikCstG, mo=1)
+        self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
 
         # Pin FK control
         fkPin = self.pvc.a.add("fkPin", min=0, max=1)
@@ -230,7 +231,7 @@ class ArmBp(RigModule):
             addOfs=1,
         )
         common.cstMulti(
-            self.ikc, self.pin_fkc, self.ikCstG, w=fkPin, cstType="par", mo=1
+            self.ikc_gimbal, self.pin_fkc, self.ikCstG, w=fkPin, cstType="par", mo=1
         )
 
         # Parent controls and lines
@@ -252,16 +253,23 @@ class ArmBp(RigModule):
         self.clavicle_fkc.cstPar(self.jnts_ik[0], mo=1)
 
         # IK controls list
-        self.ctls_ik = [self.ikc, self.pvc, self.ikc, self.palm_ikc, self.pin_fkc]
+        self.ctls_ik = [
+            self.ikc,
+            self.pvc,
+            self.ikc,
+            self.ikc_gimbal,
+            self.palm_ikc,
+            self.pin_fkc,
+        ]
 
         # palm_ikc setup
         palm_ik = self.jnts_ik[3]
         palm_ikc_ofs = self.palm_ikc.addOffsetGrp()
-        self.ikc.cstPoi(palm_ikc_ofs)
+        self.ikc_gimbal.cstPoi(palm_ikc_ofs)
 
         localRot = self.ikc.a.add("localRot", min=0, max=1, dv=0)
         common.cstMulti(
-            self.ikc, palm_ik.offset, palm_ikc_ofs, w=localRot, cstType="parR"
+            self.ikc_gimbal, palm_ik.offset, palm_ikc_ofs, w=localRot, cstType="parR"
         )
 
         common.cstMulti(self.palm_ikc, self.pin_fkc, palm_ik, w=fkPin, cstType="ori")

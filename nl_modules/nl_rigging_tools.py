@@ -153,12 +153,12 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.genProxy_BN, proxy.genProxy, ":play_S.png")
         self.connect(self.UI.selAllProxyGrp_BN, proxy.selAllProxyMesh, ":aselect.png")
         self.connect(self.UI.showHideProxy_BN, proxy.showHideProxy, ":visible.png")
-        self.connect(self.UI.refProxy_BN, proxy.refProxy, ":templated.png")
+        # self.connect(self.UI.refProxy_BN, proxy.refProxy, ":templated.png")
         self.connect(self.UI.wrapProxy_BN, proxy.wrapProxy, ":shrinkwrap.png")
-        self.connect(self.UI.resetProxy_BN, proxy.resetProxy, ":refresh.png")
-        self.connect(
-            self.UI.mirrorProxy_BN, proxy.mirrorProxy, ":polyMirrorGeometry.png"
-        )
+        # self.connect(self.UI.resetProxy_BN, proxy.resetProxy, ":refresh.png")
+        # self.connect(
+        #     self.UI.mirrorProxy_BN, proxy.mirrorProxy, ":polyMirrorGeometry.png"
+        # )
         self.connect(self.UI.templateTarget_BN, self.templateTarget, ":templated.png")
         self.connect(self.UI.loadWrapTargetMesh_BN, self.loadWrapTargetMesh)
         self.connect(self.UI.bindUsingProxy_BN, self.bindUsingProxy)

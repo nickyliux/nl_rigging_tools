@@ -2,6 +2,7 @@ import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.utils import guide
 from nl_modules.utils import build
+from nl_modules.utils import proxy
 from nl_modules.utils import anim
 from functools import partial
 
@@ -53,7 +54,10 @@ class MarkingMenuAutorig:
     def addExtraOptions(self, menu):
         """Add extra options to the marking menu"""
         mc.menuItem(p=menu, l="Select Ctls", c=self.selectCtlSelOrAll)
+        mc.menuItem(p=menu, l="Proxy Reset", c=proxy.resetProxy)
+        mc.menuItem(p=menu, l="Proxy Mirror", c=proxy.mirrorProxy)
         mc.menuItem(p=menu, l="Delete Guide", c=build.deleteSelOrAll)
+        mc.menuItem(p=menu, l="-" * 15, en=0)
         mc.menuItem(p=menu, l="Reload Menu", c=self.reload_marking_menu)
 
     def addSpaceIKFKOptions(self, menu):

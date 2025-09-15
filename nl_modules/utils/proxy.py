@@ -138,7 +138,7 @@ def loadProxy():
 
 
 @common.Undo("resetProxy")
-def resetProxy():
+def resetProxy(*args):
     """Reset proxy meshes by deleting existing ones and re-adding them to the joints."""
     for selList in mc.ls(sl=1, tr=1):
         if selList.endswith("_pxGeo"):
@@ -150,7 +150,7 @@ def resetProxy():
 
 
 @common.Undo("mirrorProxy")
-def mirrorProxy():
+def mirrorProxy(*args):
     """Mirror proxy meshes by duplicating and flipping them across the X-axis."""
     processedList = []
     targets = [DagNode(x) for x in mc.ls(sl=1, tr=1) if DagNode(x).type == "mesh"]
@@ -260,7 +260,7 @@ def showHideProxy():
         m2.a.proxy.set(1 - m2.a.proxy.get())
 
 
-def refProxy():
-    """Toggle the display type of all proxy meshes between normal and reference."""
-    for s in mc.ls("*_pxGeo") or []:
-        DagNode(s).dspType = abs(DagNode(s).dspType - 2)
+# def refProxy():
+#     """Toggle the display type of all proxy meshes between normal and reference."""
+#     for s in mc.ls("*_pxGeo") or []:
+#         DagNode(s).dspType = abs(DagNode(s).dspType - 2)
