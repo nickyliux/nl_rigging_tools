@@ -20,7 +20,7 @@ class HandBp(RigModule):
         self.jnts_fgr = []
         self.jnts_ik = []
         self.ctls_fgr = []
-        self.ctls_ik = []
+        # self.ctls_ik = []
         self.ikhs = []
 
         # Main controls/groups
@@ -30,7 +30,7 @@ class HandBp(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the hand rig."""
-        HAND_SCALE = 0.5
+        HAND_SCALE = 0.4
 
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["handJ"], scale=HAND_SCALE)
@@ -59,15 +59,15 @@ class HandBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "setting", None, scale * 2, 1, 2),
+            ("setting", "setting", None, scale, 1, 2),
             ("palm_ctl", "rotator", "z", scale * -1.5, 0, 2),
-            ("smart_ctl", "roll", "x", scale * 2, 0, -1),
+            ("smart_ctl", "cube", None, scale, 0, -1),
         ]
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
-        self.smart_ctl.cv_scale(1, 2, 1)
+        self.smart_ctl.cv_scale(1, 3, 1)
         self.palm_ctl.color = Color.D_YELLOW
 
     def build(self):
@@ -117,7 +117,7 @@ class HandBp(RigModule):
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
-        self.ctls_ik = []
+        # self.ctls_ik = []
         self.hand_grp = GrpNode(rID + "_grp", align=self.rootJ, p=self.CTL_DATA)
         for fgrs, ctls in zip(self.jnts_fgr, self.ctls_fgr):
             scale = xDr * rSz / 2
@@ -261,7 +261,7 @@ class HandBp(RigModule):
 
         # smart_ctl, with group scaling with rootJ
         scaleGrp = GrpNode("smartScale", pf=rID, align=self.rootJ, p=self.CTL_DATA)
-        offsetX = rSz * xDr * 60
+        offsetX = rSz * xDr * 50
         self.smart_ctl.alignTo(self.rootJ, ofs=(0, 0, -offsetX), p=scaleGrp)
         self.smart_ctl.addOffsetGrp()
 
@@ -304,9 +304,10 @@ class HandBp(RigModule):
         """Setup channels for the hand rig controls."""
         self.setting.a.showAttr()
         self.smart_ctl.a.showAttr(t=1, r=1, s=1)
+        self.palm_ctl.a.showAttr(r=1)
 
-        for ctl in self.ctls_ik + [self.palm_ctl]:
-            ctl.a.showAttr(r=1)
+        # for ctl in self.ctls_ik + [self.palm_ctl]:
+        #     ctl.a.showAttr(r=1)
         for ctls in self.ctls_fgr:
             for ctl in ctls:
                 ctl.a.showAttr(t=1, r=1)
@@ -335,7 +336,7 @@ class HandBp(RigModule):
 
     def setup_ctlSet(self):
         """Setup control sets for the hand rig module."""
-        ctlSet = [self.smart_ctl] + self.ctls_ik
+        ctlSet = [self.smart_ctl, self.palm_ctl]  # + self.ctls_ik
         [ctlSet.extend(x) for x in self.ctls_fgr]
         self.add_ctl_set(ctlSet)
 

@@ -217,7 +217,7 @@ def update_anchor_conn():
 
         closestPlugAnchor = min(dist_dict, key=dist_dict.get)
 
-        logging.info(f"{closestPlugAnchor.name} -> {socket.name}")
+        logging.info(f"{socket.name} >> {closestPlugAnchor.name}")
         closestPlugAnchor.cstPar(socket, mo=1)
 
 

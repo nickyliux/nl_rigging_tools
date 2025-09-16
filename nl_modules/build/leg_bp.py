@@ -154,7 +154,8 @@ class LegBp(RigModule):
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         # self.smart_ctl.cv_scale(2, 1, 1)
-        self.smart_ctl.cv_scale(0.2, 0.2, 1)
+        self.smart_ctl.cv_scale(1.4, 0.2, 0.2)
+        self.smart_ctl.cv_move(0, 0, -10 * rSz)
 
         if self.scapularExtra:
             self.scap_fkc.cv_move(scale * 20, 0, 0)

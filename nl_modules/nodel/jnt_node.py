@@ -137,16 +137,18 @@ class JntNode(GrpNode):
                 scaler >> proxy.a.s
 
             if children:
-                tgt_child = children[0]
                 # If there are children, set the proxy to aim at the first child
-                common.cstMulti(self, tgt_child, proxy_offset, cstType="poi", delete=1)
-                tgt_child.cstAim(
-                    proxy_offset,
-                    aim=aimDir,
-                    worldUpType="objectrotation",
-                    worldUpObject=self,
-                    keep=0,
-                )
+                # common.cstMulti(self, tgt_child, proxy_offset, cstType="poi", delete=1)
+                common.cstMulti(self, *children, proxy_offset, cstType="poi", delete=1)
+                if len(children) == 1:
+                    tgt_child = children[0]
+                    tgt_child.cstAim(
+                        proxy_offset,
+                        aim=aimDir,
+                        worldUpType="objectrotation",
+                        worldUpObject=self,
+                        keep=0,
+                    )
 
             # Assign shader before constraints to avoid Maya errors
             common.assignPresetShd([proxy])
