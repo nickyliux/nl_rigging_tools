@@ -188,11 +188,18 @@ class LegBp(RigModule):
             scapCtl=self.scap_fkc,
         )
 
+        if self.kneeFix:
+            self.boneFix_setup(self.lwr, self.palm)
+
         if self.limbType == LimbType.BASIC.value:
-            self.jnts_bind += [self.upr, self.lwr, self.palm, self.ball]
+            self.jnts_bind += [self.upr]
+            if self.kneeFix:
+                self.jnts_bind += [self.boneFix]
+            else:
+                self.jnts_bind += [self.lwr]
 
         elif self.limbType == LimbType.BASIC_ROLL.value:
-            self.jnts_bind += [self.lwr, self.palm, self.ball]
+            self.jnts_bind += [self.lwr]
 
             self.build_specialAim([self.lwr, self.palm])
 
@@ -211,20 +218,21 @@ class LegBp(RigModule):
                 palm=self.palm,
                 kneeFix=self.kneeFix,
             )
+            if self.kneeFix:
+                self.boneFix.cstPoi(self.ribbon_lw.stt_loc)
+
         elif self.limbType == LimbType.SKEL.value:
             self.build_dual_bones()
             self.jnts_bind += [self.upr]
-
-        if self.kneeFix:
-            self.boneFix_setup(self.lwr, self.palm)
-            if self.limbType == LimbType.RIBBON.value:
-                self.boneFix.cstPoi(self.ribbon_lw.stt_loc)
 
         if self.patellaBone:
             self.patellaJ = self.patella_setup()
 
         if self.toeBones:
             self.build_toes()
+            self.jnts_bind += [self.palm]
+        else:
+            self.jnts_bind += [self.palm, self.ball]
 
         self.build_post()
 
@@ -490,8 +498,8 @@ class LegBp(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"])
-        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"])
+        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.5)
+        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=0.5)
 
         parent = self.boneFix if self.kneeFix else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent

@@ -135,8 +135,8 @@ class ArmBp(RigModule):
             jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
             jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
             self.jnts_roll = [jnt_ro1, jnt_ro2]
-            jnt_ro1.setDrawStyle(2)
-            jnt_ro2.setDrawStyle(2)
+            # jnt_ro1.setDrawStyle(2)
+            # jnt_ro2.setDrawStyle(2)
 
         elif self.limbType == LimbType.RIBBON.value:
             self.build_bendy_ribbon(

@@ -482,7 +482,7 @@ class RigModule(RigBase):
         upLoc.hide()
 
         # self.updateBindJntList(remove=[self.lwr], extend=[self.boneFix])
-        self.jnts_bind += [self.boneFix]
+        # self.jnts_bind += [self.boneFix]
 
     def boneFix_sdk(self, driver, driven):
         """ "Setup SDK for bone fix to drive the leg joint."""
@@ -1042,7 +1042,7 @@ class RigModule(RigBase):
             jsf=suffix,
             solver=Solver.RP,
             quat=1,
-            p=jnt1,
+            p=jnt0,
             vis=0,
         )
 
@@ -1057,13 +1057,11 @@ class RigModule(RigBase):
         )
         jnt0.cstOri(roll_loc)
 
-        return roll_loc, self.jnts_ro[0], tgt_p
+        return roll_loc, self.jnts_ro[0]
 
     def build_uprRollJ(self, jnt0, jnt1, num=2, suffix="_roll1"):
         """Build upper roller joints. They are added between jnt0 and jnt1."""
-        roll_loc, roll_jnt0, tgt_p = self.build_rollChain(
-            jnt0, jnt1, num, suffix=suffix
-        )
+        roll_loc, roll_jnt0 = self.build_rollChain(jnt0, jnt1, num, suffix=suffix)
         # Create roller joints, parented to roll_jnt0
         for i in range(num):
             j = jnt0.duplicate(po=1, p=roll_jnt0)
@@ -1081,10 +1079,8 @@ class RigModule(RigBase):
 
     def build_lwrRollJ(self, jnt0, jnt1, num=2, suffix="_roll2"):
         """Build lower roller joints. They are added between jnt0's parent and jnt0."""
-        roll_loc, roll_jnt0, tgt_p = self.build_rollChain(
-            jnt0, jnt1, num, suffix=suffix
-        )
-        # Create roller joints, parented to jnt0's parent
+        roll_loc, roll_jnt0 = self.build_rollChain(jnt0, jnt1, num, suffix=suffix)
+        # Create roller joints, parented to roll_jnt0's parent
         for i in range(num):
             j = jnt0.duplicate(po=1)
             j.color = Color.YELLOW
@@ -1092,7 +1088,7 @@ class RigModule(RigBase):
             j.a.radius.set(self.rigSize)
 
             ratio = i / num
-            common.cstMulti(jnt0, tgt_p, j, cstType="poi", w=1 - ratio)
+            common.cstMulti(jnt0, jnt0.parent, j, cstType="poi", w=1 - ratio)
             roll_loc.a.rx * (1 - ratio) >> j.a.rx
             if i > 0:
                 self.jnts_bind.append(j)

@@ -24,7 +24,7 @@ createNode transform -n "master_guide" -p "master_guide_ofs";
 	rename -uid "50807175-43FF-E7F4-58C3-EABB95B14D6E";
 	addAttr -ci true -sn "______________" -ln "______________" -min 0 -max 0 -en " " 
 		-at "enum";
-	addAttr -ci true -sn "limbType" -ln "limbType" -min 0 -max 3 -en "basic:basic_roll:ribbon:skel" 
+	addAttr -ci true -sn "limbType" -ln "limbType" -min 0 -max 3 -en "basic:basic_roll:ribbon:skeleton" 
 		-at "enum";
 	addAttr -ci true -sn "rbnJntNum" -ln "rbnJntNum" -dv 5 -min 3 -at "long";
 	addAttr -ci true -sn "rollJntNum" -ln "rollJntNum" -dv 2 -min 2 -at "long";
