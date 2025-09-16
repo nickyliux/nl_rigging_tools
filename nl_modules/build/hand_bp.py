@@ -59,20 +59,22 @@ class HandBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "setting", None, scale, 1, 2),
-            ("palm_ctl", "rotator", None, scale * -1, 0, 2),
-            ("smart_ctl", "roll", "x", scale, 0, -1),
+            ("setting", "setting", None, scale * 2, 1, 2),
+            ("palm_ctl", "rotator", "z", scale * -1.5, 0, 2),
+            ("smart_ctl", "roll", "x", scale * 2, 0, -1),
         ]
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
         self.smart_ctl.cv_scale(1, 2, 1)
+        self.palm_ctl.color = Color.D_YELLOW
 
     def build(self):
         """Build the hand rig module."""
         self.build_pre_module()
 
+        self.jnts_bind = [self.rootJ]
         for root in self.rootJ.childrenJt:
             digit_jnts = [jnt for jnt in root.allChildrenJt2]
             self.jnts_fgr.append(digit_jnts)
@@ -91,7 +93,7 @@ class HandBp(RigModule):
         ctlList = []
         for fgr in fgrs[:-1]:
             ctl = CrvNode(
-                f"{fgr.name}_ctl", shape="circleZ", up="x", scale=scale / 1.5, align=fgr
+                f"{fgr.name}_ctl", shape="stickC", up="z", scale=scale / -2, align=fgr
             )
             ctlList.append(ctl)
         return ctlList
@@ -119,11 +121,14 @@ class HandBp(RigModule):
         self.hand_grp = GrpNode(rID + "_grp", align=self.rootJ, p=self.CTL_DATA)
         for fgrs, ctls in zip(self.jnts_fgr, self.ctls_fgr):
             scale = xDr * rSz / 2
-            ctl, ikJ, ikH = self.build_digit_ik(fgrs[1], scale=scale, p=self.hand_grp)
-            self.ctls_ik.append(ctl)
+            # ctl,
+            ikJ, ikH = self.build_digit_ik(fgrs[1], scale=scale, p=self.hand_grp)
+            # self.ctls_ik.append(ctl)
             self.jnts_ik.append(ikJ)
             self.ikhs.append(ikH)
-            ikJ.cstOri(ctls[1].parent.parent, mo=1)
+            # ikJ.cstOri(ctls[1].parent.parent, mo=1)
+            ikJ.a.r >> ctls[1].parent.parent.a.r
+            # ikJ.cstOri(ctls[1].parent.parent, mo=1)
 
     def setup_close_sdk(self):
         """Setup SDK for finger base controls."""
@@ -232,9 +237,18 @@ class HandBp(RigModule):
         self.palm_ctl.a.r >> fkc_ofs4.a.r
 
         # Connect palm_ctl rotation to ik ctls
-        self.palm_ctl.a.r * (0.2, 0.2, 0.2) >> self.ctls_ik[2].offset.a.r
-        self.palm_ctl.a.r * (0.5, 0.5, 0.5) >> self.ctls_ik[3].offset.a.r
-        self.palm_ctl.a.r >> self.ctls_ik[4].offset.a.r
+        # self.palm_ctl.a.r * (0.2, 0.2, 0.2) >> self.ctls_ik[2].offset.a.r
+        # self.palm_ctl.a.r * (0.5, 0.5, 0.5) >> self.ctls_ik[3].offset.a.r
+        # self.palm_ctl.a.r >> self.ctls_ik[4].offset.a.r
+
+        # TEST
+        fkc_ofs2 = self.ctls_fgr[2][1].offset.addOffsetGrp()
+        fkc_ofs3 = self.ctls_fgr[3][1].offset.addOffsetGrp()
+        fkc_ofs4 = self.ctls_fgr[4][1].offset.addOffsetGrp()
+
+        self.palm_ctl.a.r * (0.4, 0.4, 0.4) >> fkc_ofs2.a.r
+        self.palm_ctl.a.r >> fkc_ofs3.a.r
+        self.palm_ctl.a.r * (2, 2, 2) >> fkc_ofs4.a.r
 
     def build_fgrs(self):
         """Build the finger logic for the hand rig module."""
@@ -247,8 +261,8 @@ class HandBp(RigModule):
 
         # smart_ctl, with group scaling with rootJ
         scaleGrp = GrpNode("smartScale", pf=rID, align=self.rootJ, p=self.CTL_DATA)
-        offsetX = rSz * xDr * 100
-        self.smart_ctl.alignTo(self.rootJ, ofs=(offsetX, 0, 0), p=scaleGrp)
+        offsetX = rSz * xDr * 60
+        self.smart_ctl.alignTo(self.rootJ, ofs=(0, 0, -offsetX), p=scaleGrp)
         self.smart_ctl.addOffsetGrp()
 
         self.hand_grp.cstPar(scaleGrp, mo=1)
@@ -313,11 +327,11 @@ class HandBp(RigModule):
         for ctls in self.ctls_fgr:
             showCtls >> ctls[0].a.v
 
-        self.ctl_vis_toggle(
-            self.setting.a.add("debugVis", attrType="bool", dv=0, k=0),
-            onList=self.jnts_ik,
-        )
-        mc.hide(self.ikhs)
+        # self.ctl_vis_toggle(
+        #     self.setting.a.add("debugVis", attrType="bool", dv=0, k=0),
+        #     onList=self.jnts_ik,
+        # )
+        mc.hide(self.ikhs, self.jnts_ik)
 
     def setup_ctlSet(self):
         """Setup control sets for the hand rig module."""

@@ -102,7 +102,7 @@ class ArmBp(RigModule):
             ("palm_fkc", "circle", "x", scale, 0, -1),
             ("ikc", "cube", None, scale * 1.5, 0, -1),
             ("pvc", "pvc", None, rSz, 0, -1),
-            ("palm_ikc", "squareR", "x", scale * 1.2, 0, 2),
+            ("palm_ikc", "squareR", "x", scale, 0, 2),
         ]
 
         for name, shape, up, scale, top, w in ctl_defs:
@@ -111,7 +111,7 @@ class ArmBp(RigModule):
         self.clavicle_fkc.cv_rotate(0, 0, -45)
         self.ikc.cv_rotate(0, 90, 0)
         self.pvc.cv_rotate(-90, 0, 0)
-        self.palm_ikc.cv_move(scale * 5, 0, 0)
+        # self.palm_ikc.cv_move(scale * 5, 0, 0)
 
     def build(self):
         """Build the arm rig module."""
@@ -124,12 +124,15 @@ class ArmBp(RigModule):
         self.build_ik()
         self.blend_fk_ik()
         # self.build_nlAutoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
-        self.jnts_bind = [self.palm]  # [self.clavicle, self.palm]
+        # self.jnts_bind = [self.palm]  # [self.clavicle, self.palm]
+        self.jnts_bind = []
 
         if self.limbType == LimbType.BASIC.value:
             self.jnts_bind += [self.upr, self.lwr]
 
         elif self.limbType == LimbType.BASIC_ROLL.value:
+
+            self.jnts_bind += [self.lwr]
             self.build_specialAim([self.lwr, self.palm])
 
             jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)

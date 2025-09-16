@@ -145,7 +145,7 @@ class LegBp(RigModule):
             ("ball_fkc", "circle", "x", scale / 2, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
             ("pvc", "pvc", None, rSz, 0, -1),
-            ("smart_ctl", "roll", None, scale / 3, 1, -1),
+            ("smart_ctl", "cube", None, scale, 0, -1),
         ]
         if self.scapularExtra:
             ctl_defs.append(("scap_fkc", "shoulder", None, scale, 0, -1))
@@ -153,7 +153,8 @@ class LegBp(RigModule):
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        self.smart_ctl.cv_scale(2, 1, 1)
+        # self.smart_ctl.cv_scale(2, 1, 1)
+        self.smart_ctl.cv_scale(0.2, 0.2, 1)
 
         if self.scapularExtra:
             self.scap_fkc.cv_move(scale * 20, 0, 0)
@@ -435,9 +436,11 @@ class LegBp(RigModule):
         self.ctls_ik.append(self.ball_ikc)
 
         # Smart Ctl setup
-        self.smart_ctl.snapAlignTo(toeRollG, self.master_guide)
         self.smart_ctl | self.ikc_gimbal
         self.smart_ctl.addOffsetGrp()
+        self.smart_ctl.snapAlignTo(self.palm, self.master_guide)
+        self.palm.cstPoi(self.smart_ctl)
+
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry
         -xDr * self.smart_ctl.a.rz >> self.smart_ctl.a["footBank"]
@@ -463,23 +466,25 @@ class LegBp(RigModule):
         for toeJs in self.toesJntList:
             # IK setup for toe
             ikTgt = JntNode(toeJs[1])
-            ctl, ikJ, ikH = self.build_digit_ik(ikTgt, scale=scale / 4, p=self.ball_fkc)
+            # ctl,
+            ikJ, ikH = self.build_digit_ik(ikTgt, scale=scale / 4, p=self.ball_fkc)
             self.toeIKHs.append(ikH)
-            ikJ.a.r >> ikTgt.a.r
+            # ikJ.a.r >> ikTgt.a.r
 
             # FK setup for toe
             ctlList = []
             self.jnts_bind.extend(toeJs[:-1])
-            fkToeList = toeJs[2:-1]
+            fkToeList = toeJs[1:-1]
             for jnt in fkToeList:
                 crvName = f"{jnt.name}_ctl_#"
                 crv = CrvNode(crvName, up="x", scale=scale / 6, align=jnt)
-
                 ctlList.append(crv)
 
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
             self.toesCtlsList.append(ctlList)
-            self.toesCtlsList.append([ctl])
+            # self.toesCtlsList.append([ctl])
+
+            ikJ.a.r >> ctlList[0].addOffsetGrp().a.r
 
         # --- Remove palm and ball from bind joints (handled by toes) ---
         # self.updateBindJntList(remove=[self.palm, self.ball])

@@ -562,23 +562,30 @@ class RigModule(RigBase):
     def build_digit_ik(self, ikTgt, scale=1, p=None):
         """Build an IK setup for a digit (e.g., finger or toe) with a control and joints."""
         # --- Create IK control for the digit ---
-        n = f"{ikTgt.name}_ikc"
-        ctl = CrvNode(
-            n, shape="stickS", align=ikTgt, up="-z", scale=scale, addOfs=1, p=p
-        )
-        ctl.addOffsetGrp()
+        # n = f"{ikTgt.name}_ikc"
+        # ctl = CrvNode(
+        #     n, shape="stickS", align=ikTgt, up="-z", scale=scale, addOfs=1, p=p
+        # )
+        # ctl.addOffsetGrp()
 
         # --- Duplicate joints for IK chain ---
         ikJ, ikJ_end = self.build_digit_ik_chain(ikTgt)
-        ikJ.cstPoi(ctl.offset)
+        # ikJ.cstPoi(ctl.offset)
 
         # --- Create IK handle for the digit ---
         scale = self.masterC.a["globalScale"]
         ikH = IkNode(
-            ikJ, sj=ikJ, ee=ikJ_end, scaleFix=scale, RIG_DATA=self.RIG_DATA, p=ctl
+            # ikJ, sj=ikJ, ee=ikJ_end, scaleFix=scale, RIG_DATA=self.RIG_DATA, p=ctl
+            ikJ,
+            sj=ikJ,
+            ee=ikJ_end,
+            scaleFix=scale,
+            RIG_DATA=self.RIG_DATA,
+            p=p,
         )
 
-        return ctl, ikJ, ikH
+        # return ctl, ikJ, ikH
+        return ikJ, ikH
 
     def get_autoAim_preset(self):
         """Get preset values for auto aim weights based on the master guide attributes."""

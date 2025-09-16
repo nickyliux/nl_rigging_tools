@@ -197,6 +197,10 @@ def update_anchor_conn():
         parentNameMatch = master_guide.a.parentNameMatch.get()
         parentRigNodes = getRigNodes_all(match=parentNameMatch)
 
+        if not parentRigNodes:
+            logging.warning(f"No parent rigNode found for {node.name}.")
+            continue
+
         if node in parentRigNodes:  # Remove self if in parent list
             parentRigNodes.remove(node)
 

@@ -25,7 +25,7 @@ createNode transform -n "master_guide" -p "module_grp";
 	addAttr -ci true -sn "parentNameMatch" -ln "parentNameMatch" -dt "string";
 	addAttr -ci true -sn "mirrorable" -ln "mirrorable" -min 0 -max 1 -at "bool";
 	setAttr ".t" -type "double3" -69 -145 -1.2565537329160082e-29 ;
-	setAttr -k on ".parentNameMatch" -type "string" "arm*";
+	setAttr -k on ".parentNameMatch" -type "string" "*Arm*";
 	setAttr -cb on ".mirrorable" yes;
 createNode joint -n "handJ_guide" -p "master_guide";
 	rename -uid "31F9BCEB-4ACA-41EF-1510-D9ACACD78C3B";
