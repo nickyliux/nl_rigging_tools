@@ -154,8 +154,8 @@ class LegBp(RigModule):
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         # self.smart_ctl.cv_scale(2, 1, 1)
-        self.smart_ctl.cv_scale(1.4, 0.2, 0.2)
-        self.smart_ctl.cv_move(0, 0, -10 * rSz)
+        self.smart_ctl.cv_scale(1.5, 0.3, 0.3)
+        # self.smart_ctl.cv_move(0, 0, -10 * rSz)
 
         if self.scapularExtra:
             self.scap_fkc.cv_move(scale * 20, 0, 0)
@@ -173,7 +173,7 @@ class LegBp(RigModule):
         # self.build_nlAutoAim(
         #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
         # )
-        self.jnts_bind = []  # self.palm, self.ball]
+        self.jnts_bind = [self.palm]  # self.palm, self.ball]
         #     self.hip,
         #     # self.upr,
         #     # self.lwr,

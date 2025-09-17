@@ -81,14 +81,14 @@ class SimpleFk(RigModule):
 
         ctl_defs = [
             ("setting", "setting", "x", scale, 1, 2),
-            ("simple01_fkc", "sphereL", "x", scale * 2, 1, 4),
+            ("simple01_fkc", "stickC", None, scale, 1, -1),
         ]
         if self.segNum >= 2:
-            ctl_defs.append(("simple02_fkc", "stickS", None, -scale, 1, 2))
+            ctl_defs.append(("simple02_fkc", "stickS", None, scale, 1, 4))
         if self.segNum >= 3:
-            ctl_defs.append(("simple03_fkc", "sphereL", "x", scale * 2, 1, 4))
+            ctl_defs.append(("simple03_fkc", "stickC", None, scale, 1, -1))
         if self.segNum >= 4:
-            ctl_defs.append(("simple04_fkc", "sphereL", "x", scale * 2, 1, 4))
+            ctl_defs.append(("simple04_fkc", "stickC", None, scale, 1, -1))
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)

@@ -62,7 +62,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="main_TB">
     <attribute name="title">
@@ -1859,7 +1859,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>r x</string>
+          <string>RX</string>
          </property>
         </widget>
        </item>
@@ -1899,7 +1899,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>r y</string>
+          <string>RY</string>
          </property>
         </widget>
        </item>
@@ -1939,49 +1939,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>r z</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="shapeScaleDn_BN">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>5</width>
-           <height>5</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>999</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Scale 3 / 4</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>size -</string>
+          <string>RZ</string>
          </property>
         </widget>
        </item>
@@ -2030,7 +1988,49 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>size +</string>
+          <string>UP</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="shapeScaleDn_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>5</width>
+           <height>5</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>999</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Scale 3 / 4</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>DN</string>
          </property>
         </widget>
        </item>
@@ -2096,7 +2096,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Drop Floor</string>
+          <string>Drop</string>
          </property>
         </widget>
        </item>
@@ -2138,7 +2138,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>On Top</string>
+          <string>Top</string>
          </property>
         </widget>
        </item>
@@ -2219,7 +2219,7 @@
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>9999</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">

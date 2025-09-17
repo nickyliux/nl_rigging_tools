@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: rtSimpleFk.ma
-//Last modified: Mon, Sep 08, 2025 03:37:47 PM
+//Last modified: Wed, Sep 17, 2025 04:29:47 PM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,22 +12,22 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26100)";
-fileInfo "UUID" "36F4ACFC-4D68-7213-A2CF-3F8395F32E8A";
+fileInfo "UUID" "8E8DD4AB-42B2-EA84-19E1-DE9E38DD9F40";
 createNode transform -s -n "persp";
 	rename -uid "83BBC351-4169-8A57-6147-3688C3C5E65F";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 46.955451989248466 51.27056723329278 72.062317319448638 ;
-	setAttr ".r" -type "double3" -26.738352729794865 39.000000000007113 0 ;
+	setAttr ".t" -type "double3" -21.095705338149102 11.773759472032879 28.149570369216004 ;
+	setAttr ".r" -type "double3" -15.938352729795051 57.000000000007248 1.4599369843993932e-15 ;
 	setAttr -cb on ".ro";
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "E4BD1A20-4E99-1123-5E44-089307917010";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999993;
-	setAttr ".coi" 119.96543578477498;
+	setAttr ".coi" 41.9611076658624;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
-	setAttr ".tp" -type "double3" -50 -2.2204460492503131e-15 0 ;
+	setAttr ".tp" -type "double3" -50 0 -4.218749958817547e-07 ;
 	setAttr ".hc" -type "string" "viewSet -p %camera";
 createNode transform -s -n "top";
 	rename -uid "B021713E-478C-4217-ADD4-C5A536DC9A78";
@@ -118,10 +118,10 @@ createNode transform -n "simple05_guide_ofs" -p "simple04_guide";
 createNode transform -n "simple05_guide" -p "simple05_guide_ofs";
 	rename -uid "EAFB759D-4344-66B8-F569-96B926AEEB71";
 createNode nurbsCurve -n "simple05_guideShape" -p "simple05_guide";
-	rename -uid "AF9FB9E6-4F90-6F91-DC50-78A2DB7FAF53";
+	rename -uid "2E19DAEA-48F8-0B31-F57C-E5B269455366";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
-	setAttr ".ovc" 22;
+	setAttr ".ovc" 20;
 	setAttr ".ls" 3;
 	setAttr ".cc" -type "nurbsCurve" 
 		1 52 0 no 3
@@ -183,28 +183,291 @@ createNode nurbsCurve -n "simple05_guideShape" -p "simple05_guide";
 		1.4144450835117992e-08 0.0024085001712274975 -0.35418720934875292
 		;
 	setAttr ".adot" yes;
+createNode nurbsCurve -n "simple04_guideShape" -p "simple04_guide";
+	rename -uid "CDE4CDCD-43E0-DD9C-108D-DBBA524E0060";
+	setAttr -k off ".v";
+	setAttr ".ove" yes;
+	setAttr ".ovc" 20;
+	setAttr ".ls" 3;
+	setAttr ".cc" -type "nurbsCurve" 
+		1 52 0 no 3
+		53 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
+		 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52
+		53
+		0.35419504040336203 0 0
+		0.32886134143794898 0.13621882187999926 0
+		0.25169958732675413 0.25169958732675413 0
+		0.13621882187999926 0.32886134143794898 0
+		0 0.35418673473938256 0
+		-0.13621882187999926 0.32886134143794898 0
+		-0.25169958732675413 0.25169958732675413 0
+		-0.32886134143794898 0.13621882187999926 0
+		-0.35419504040336203 -1.6781499148591258e-08 0
+		-0.32886134143794898 -0.13621882187999926 0
+		-0.25169958732675413 -0.25169958732675413 0
+		-0.13621882187999926 -0.32886134143794898 0
+		1.4144450835117992e-08 -0.35418673473938256 -0.0024084052493534482
+		0.13621882187999926 -0.32886134143794898 0
+		0.25169958732675413 -0.25169958732675413 0
+		0.32886134143794898 -0.13621882187999926 0
+		0.35419504040336203 0 0
+		0.32723343129797811 0.00092168190484568095 -0.13554155430864695
+		0.25045373772983759 0.0017030597876569018 -0.25044827972207973
+		0.13554463926955357 0.0022251585714984142 -0.32722631215742437
+		1.4144450835117992e-08 0.0024085001712274975 -0.35418720934875292
+		-0.13554463926955357 0.0022251585714984142 -0.32722631215742437
+		-0.25045373772983759 0.0017030597876569018 -0.25044827972207973
+		-0.32723343129797811 0.00092168190484568095 -0.13554155430864695
+		-0.35419504040336203 -1.6781499148591258e-08 0
+		-0.32723343129797811 -0.00092171512750159872 0.1355410796992767
+		-0.25045373772983759 -0.0017030930103128198 0.25044804241739455
+		-0.13554463926955357 -0.0022251917941543326 0.32722583754805412
+		1.4144450835117992e-08 -0.0024085239016960113 0.35418673473938256
+		0.13554463926955357 -0.0022251917941543326 0.32722583754805412
+		0.25045373772983759 -0.0017030930103128198 0.25044804241739455
+		0.32723343129797811 -0.00092171512750159872 0.1355410796992767
+		0.35419504040336203 0 0
+		0.32723343129797811 0.00092168190484568095 -0.13554155430864695
+		0.25045373772983759 0.0017030597876569018 -0.25044827972207973
+		0.13554463926955357 0.0022251585714984142 -0.32722631215742437
+		1.4144450835117992e-08 0.0024085001712274975 -0.35418720934875292
+		1.4144450835117992e-08 0.1377665230363973 -0.32630438345570612
+		1.4144450835117992e-08 0.25215094083786554 -0.24874514399692355
+		1.4144450835117992e-08 0.32814752894508714 -0.13331634827621147
+		0 0.35418673473938256 0
+		1.4144450835117992e-08 0.32630414615102105 0.1377665230363973
+		1.4144450835117992e-08 0.24874490669223831 0.25215070353318048
+		1.4144450835117992e-08 0.13331634827621147 0.32814752894508714
+		1.4144450835117992e-08 -0.0024085239016960113 0.35418673473938256
+		1.4144450835117992e-08 -0.1377665230363973 0.32630390884633587
+		1.4144450835117992e-08 -0.25215094083786554 0.2487446693875533
+		1.4144450835117992e-08 -0.32814752894508714 0.13331587366684122
+		1.4144450835117992e-08 -0.35418673473938256 -0.0024084052493534482
+		1.4144450835117992e-08 -0.32630414615102105 -0.1377669976457675
+		1.4144450835117992e-08 -0.24874490669223831 -0.25215117814255072
+		1.4144450835117992e-08 -0.13331634827621147 -0.3281480035544575
+		1.4144450835117992e-08 0.0024085001712274975 -0.35418720934875292
+		;
+	setAttr ".adot" yes;
+createNode nurbsCurve -n "simple03_guideShape" -p "simple03_guide";
+	rename -uid "021C139D-47D7-E663-CA12-2085F50857B6";
+	setAttr -k off ".v";
+	setAttr ".ove" yes;
+	setAttr ".ovc" 20;
+	setAttr ".ls" 3;
+	setAttr ".cc" -type "nurbsCurve" 
+		1 52 0 no 3
+		53 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
+		 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52
+		53
+		0.35419504040336203 0 0
+		0.32886134143794898 0.13621882187999926 0
+		0.25169958732675413 0.25169958732675413 0
+		0.13621882187999926 0.32886134143794898 0
+		0 0.35418673473938256 0
+		-0.13621882187999926 0.32886134143794898 0
+		-0.25169958732675413 0.25169958732675413 0
+		-0.32886134143794898 0.13621882187999926 0
+		-0.35419504040336203 -1.6781499148591258e-08 0
+		-0.32886134143794898 -0.13621882187999926 0
+		-0.25169958732675413 -0.25169958732675413 0
+		-0.13621882187999926 -0.32886134143794898 0
+		1.4144450835117992e-08 -0.35418673473938256 -0.0024084052493534482
+		0.13621882187999926 -0.32886134143794898 0
+		0.25169958732675413 -0.25169958732675413 0
+		0.32886134143794898 -0.13621882187999926 0
+		0.35419504040336203 0 0
+		0.32723343129797811 0.00092168190484568095 -0.13554155430864695
+		0.25045373772983759 0.0017030597876569018 -0.25044827972207973
+		0.13554463926955357 0.0022251585714984142 -0.32722631215742437
+		1.4144450835117992e-08 0.0024085001712274975 -0.35418720934875292
+		-0.13554463926955357 0.0022251585714984142 -0.32722631215742437
+		-0.25045373772983759 0.0017030597876569018 -0.25044827972207973
+		-0.32723343129797811 0.00092168190484568095 -0.13554155430864695
+		-0.35419504040336203 -1.6781499148591258e-08 0
+		-0.32723343129797811 -0.00092171512750159872 0.1355410796992767
+		-0.25045373772983759 -0.0017030930103128198 0.25044804241739455
+		-0.13554463926955357 -0.0022251917941543326 0.32722583754805412
+		1.4144450835117992e-08 -0.0024085239016960113 0.35418673473938256
+		0.13554463926955357 -0.0022251917941543326 0.32722583754805412
+		0.25045373772983759 -0.0017030930103128198 0.25044804241739455
+		0.32723343129797811 -0.00092171512750159872 0.1355410796992767
+		0.35419504040336203 0 0
+		0.32723343129797811 0.00092168190484568095 -0.13554155430864695
+		0.25045373772983759 0.0017030597876569018 -0.25044827972207973
+		0.13554463926955357 0.0022251585714984142 -0.32722631215742437
+		1.4144450835117992e-08 0.0024085001712274975 -0.35418720934875292
+		1.4144450835117992e-08 0.1377665230363973 -0.32630438345570612
+		1.4144450835117992e-08 0.25215094083786554 -0.24874514399692355
+		1.4144450835117992e-08 0.32814752894508714 -0.13331634827621147
+		0 0.35418673473938256 0
+		1.4144450835117992e-08 0.32630414615102105 0.1377665230363973
+		1.4144450835117992e-08 0.24874490669223831 0.25215070353318048
+		1.4144450835117992e-08 0.13331634827621147 0.32814752894508714
+		1.4144450835117992e-08 -0.0024085239016960113 0.35418673473938256
+		1.4144450835117992e-08 -0.1377665230363973 0.32630390884633587
+		1.4144450835117992e-08 -0.25215094083786554 0.2487446693875533
+		1.4144450835117992e-08 -0.32814752894508714 0.13331587366684122
+		1.4144450835117992e-08 -0.35418673473938256 -0.0024084052493534482
+		1.4144450835117992e-08 -0.32630414615102105 -0.1377669976457675
+		1.4144450835117992e-08 -0.24874490669223831 -0.25215117814255072
+		1.4144450835117992e-08 -0.13331634827621147 -0.3281480035544575
+		1.4144450835117992e-08 0.0024085001712274975 -0.35418720934875292
+		;
+	setAttr ".adot" yes;
+createNode nurbsCurve -n "simple02_guideShape" -p "simple02_guide";
+	rename -uid "2CBC5796-45F2-A04B-5020-3192A50840BE";
+	setAttr -k off ".v";
+	setAttr ".ove" yes;
+	setAttr ".ovc" 20;
+	setAttr ".ls" 3;
+	setAttr ".cc" -type "nurbsCurve" 
+		1 52 0 no 3
+		53 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
+		 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52
+		53
+		0.35419504040336203 0 0
+		0.32886134143794898 0.13621882187999926 0
+		0.25169958732675413 0.25169958732675413 0
+		0.13621882187999926 0.32886134143794898 0
+		0 0.35418673473938256 0
+		-0.13621882187999926 0.32886134143794898 0
+		-0.25169958732675413 0.25169958732675413 0
+		-0.32886134143794898 0.13621882187999926 0
+		-0.35419504040336203 -1.6781499148591258e-08 0
+		-0.32886134143794898 -0.13621882187999926 0
+		-0.25169958732675413 -0.25169958732675413 0
+		-0.13621882187999926 -0.32886134143794898 0
+		1.4144450835117992e-08 -0.35418673473938256 -0.0024084052493534482
+		0.13621882187999926 -0.32886134143794898 0
+		0.25169958732675413 -0.25169958732675413 0
+		0.32886134143794898 -0.13621882187999926 0
+		0.35419504040336203 0 0
+		0.32723343129797811 0.00092168190484568095 -0.13554155430864695
+		0.25045373772983759 0.0017030597876569018 -0.25044827972207973
+		0.13554463926955357 0.0022251585714984142 -0.32722631215742437
+		1.4144450835117992e-08 0.0024085001712274975 -0.35418720934875292
+		-0.13554463926955357 0.0022251585714984142 -0.32722631215742437
+		-0.25045373772983759 0.0017030597876569018 -0.25044827972207973
+		-0.32723343129797811 0.00092168190484568095 -0.13554155430864695
+		-0.35419504040336203 -1.6781499148591258e-08 0
+		-0.32723343129797811 -0.00092171512750159872 0.1355410796992767
+		-0.25045373772983759 -0.0017030930103128198 0.25044804241739455
+		-0.13554463926955357 -0.0022251917941543326 0.32722583754805412
+		1.4144450835117992e-08 -0.0024085239016960113 0.35418673473938256
+		0.13554463926955357 -0.0022251917941543326 0.32722583754805412
+		0.25045373772983759 -0.0017030930103128198 0.25044804241739455
+		0.32723343129797811 -0.00092171512750159872 0.1355410796992767
+		0.35419504040336203 0 0
+		0.32723343129797811 0.00092168190484568095 -0.13554155430864695
+		0.25045373772983759 0.0017030597876569018 -0.25044827972207973
+		0.13554463926955357 0.0022251585714984142 -0.32722631215742437
+		1.4144450835117992e-08 0.0024085001712274975 -0.35418720934875292
+		1.4144450835117992e-08 0.1377665230363973 -0.32630438345570612
+		1.4144450835117992e-08 0.25215094083786554 -0.24874514399692355
+		1.4144450835117992e-08 0.32814752894508714 -0.13331634827621147
+		0 0.35418673473938256 0
+		1.4144450835117992e-08 0.32630414615102105 0.1377665230363973
+		1.4144450835117992e-08 0.24874490669223831 0.25215070353318048
+		1.4144450835117992e-08 0.13331634827621147 0.32814752894508714
+		1.4144450835117992e-08 -0.0024085239016960113 0.35418673473938256
+		1.4144450835117992e-08 -0.1377665230363973 0.32630390884633587
+		1.4144450835117992e-08 -0.25215094083786554 0.2487446693875533
+		1.4144450835117992e-08 -0.32814752894508714 0.13331587366684122
+		1.4144450835117992e-08 -0.35418673473938256 -0.0024084052493534482
+		1.4144450835117992e-08 -0.32630414615102105 -0.1377669976457675
+		1.4144450835117992e-08 -0.24874490669223831 -0.25215117814255072
+		1.4144450835117992e-08 -0.13331634827621147 -0.3281480035544575
+		1.4144450835117992e-08 0.0024085001712274975 -0.35418720934875292
+		;
+	setAttr ".adot" yes;
+createNode nurbsCurve -n "simple01_guideShape" -p "simple01_guide";
+	rename -uid "6B647934-466C-7800-5747-94AC856BFBB2";
+	setAttr -k off ".v";
+	setAttr ".ove" yes;
+	setAttr ".ovc" 22;
+	setAttr ".ls" 3;
+	setAttr ".cc" -type "nurbsCurve" 
+		1 52 0 no 3
+		53 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
+		 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52
+		53
+		0.35419504040336203 0 0
+		0.32886134143794898 0.13621882187999926 0
+		0.25169958732675413 0.25169958732675413 0
+		0.13621882187999926 0.32886134143794898 0
+		0 0.3541867347393825 0
+		-0.13621882187999926 0.32886134143794898 0
+		-0.25169958732675413 0.25169958732675413 0
+		-0.32886134143794898 0.13621882187999926 0
+		-0.35419504040336203 -1.6781499148591254e-08 0
+		-0.32886134143794898 -0.13621882187999926 0
+		-0.25169958732675413 -0.25169958732675413 0
+		-0.13621882187999926 -0.32886134143794898 0
+		1.414445083511799e-08 -0.3541867347393825 -0.0024084052493534482
+		0.13621882187999926 -0.32886134143794898 0
+		0.25169958732675413 -0.25169958732675413 0
+		0.32886134143794898 -0.13621882187999926 0
+		0.35419504040336203 0 0
+		0.32723343129797811 0.00092168190484568074 -0.13554155430864695
+		0.25045373772983759 0.0017030597876569018 -0.25044827972207973
+		0.13554463926955357 0.0022251585714984138 -0.32722631215742431
+		1.414445083511799e-08 0.0024085001712274975 -0.35418720934875292
+		-0.13554463926955357 0.0022251585714984138 -0.32722631215742431
+		-0.25045373772983759 0.0017030597876569018 -0.25044827972207973
+		-0.32723343129797811 0.00092168190484568074 -0.13554155430864695
+		-0.35419504040336203 -1.6781499148591254e-08 0
+		-0.32723343129797811 -0.00092171512750159872 0.1355410796992767
+		-0.25045373772983759 -0.0017030930103128193 0.25044804241739455
+		-0.13554463926955357 -0.0022251917941543326 0.32722583754805412
+		1.414445083511799e-08 -0.0024085239016960113 0.3541867347393825
+		0.13554463926955357 -0.0022251917941543326 0.32722583754805412
+		0.25045373772983759 -0.0017030930103128193 0.25044804241739455
+		0.32723343129797811 -0.00092171512750159872 0.1355410796992767
+		0.35419504040336203 0 0
+		0.32723343129797811 0.00092168190484568074 -0.13554155430864695
+		0.25045373772983759 0.0017030597876569018 -0.25044827972207973
+		0.13554463926955357 0.0022251585714984138 -0.32722631215742431
+		1.414445083511799e-08 0.0024085001712274975 -0.35418720934875292
+		1.414445083511799e-08 0.1377665230363973 -0.32630438345570612
+		1.414445083511799e-08 0.25215094083786549 -0.24874514399692352
+		1.414445083511799e-08 0.32814752894508714 -0.13331634827621147
+		0 0.3541867347393825 0
+		1.414445083511799e-08 0.32630414615102099 0.1377665230363973
+		1.414445083511799e-08 0.24874490669223828 0.25215070353318048
+		1.414445083511799e-08 0.13331634827621147 0.32814752894508714
+		1.414445083511799e-08 -0.0024085239016960113 0.3541867347393825
+		1.414445083511799e-08 -0.1377665230363973 0.32630390884633587
+		1.414445083511799e-08 -0.25215094083786549 0.2487446693875533
+		1.414445083511799e-08 -0.32814752894508714 0.13331587366684122
+		1.414445083511799e-08 -0.3541867347393825 -0.0024084052493534482
+		1.414445083511799e-08 -0.32630414615102099 -0.1377669976457675
+		1.414445083511799e-08 -0.24874490669223828 -0.25215117814255072
+		1.414445083511799e-08 -0.13331634827621147 -0.3281480035544575
+		1.414445083511799e-08 0.0024085001712274975 -0.35418720934875292
+		;
+	setAttr ".adot" yes;
 createNode nurbsCurve -n "master_guideShape1" -p "master_guide";
 	rename -uid "FB2BA1F0-4BE4-EAB4-879E-26AC7E4A7D5D";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
-	setAttr ".ovrgbf" yes;
-	setAttr ".ovc" 1;
+	setAttr ".ovc" 25;
 	setAttr ".ls" 2;
 	setAttr ".cc" -type "nurbsCurve" 
 		3 8 2 no 3
 		13 -2 -1 0 1 2 3 4 5 6 7 8 9 10
 		11
-		-1.1951965646133099e-16 5.8231194303070524 -5.8231194303070604
-		-1.6902631913778761e-16 3.2240604020035703e-16 -5.2652902114279545
-		-1.1951965646133091e-16 -5.8231194303070524 -5.8231194303070559
-		6.8985157699450679e-32 -5.2652902114279705 -2.044497909740548e-15
-		1.1951965646133099e-16 -5.8231194303070524 5.8231194303070524
-		1.6902631913778776e-16 -5.2742772157560341e-16 5.2652902114279598
-		1.1951965646133091e-16 5.8231194303070524 5.8231194303070559
-		1.0079757139273961e-31 5.2652902114279705 -1.0535185683243364e-15
-		-1.1951965646133099e-16 5.8231194303070524 -5.8231194303070604
-		-1.6902631913778761e-16 3.2240604020035703e-16 -5.2652902114279545
-		-1.1951965646133091e-16 -5.8231194303070524 -5.8231194303070559
+		-1.1951965646133099e-16 5.8231194303070524 -2.9115597151535302
+		-1.6902631913778761e-16 3.2240604020035703e-16 -2.6326451057139773
+		-1.1951965646133091e-16 -5.8231194303070524 -2.911559715153528
+		6.8985157699450679e-32 -5.2652902114279705 -1.022248954870274e-15
+		1.1951965646133099e-16 -5.8231194303070524 2.9115597151535262
+		1.6902631913778776e-16 -5.2742772157560341e-16 2.6326451057139799
+		1.1951965646133091e-16 5.8231194303070524 2.911559715153528
+		1.0079757139273961e-31 5.2652902114279705 -5.2675928416216822e-16
+		-1.1951965646133099e-16 5.8231194303070524 -2.9115597151535302
+		-1.6902631913778761e-16 3.2240604020035703e-16 -2.6326451057139773
+		-1.1951965646133091e-16 -5.8231194303070524 -2.911559715153528
 		;
 	setAttr ".adot" yes;
 createNode transform -n "line_grp" -p "module_grp";
@@ -315,25 +578,21 @@ createNode nurbsCurve -n "curveShape4" -p "line_4";
 		-90 0 0
 		;
 	setAttr ".adot" yes;
-parent -s -nc -r -add "|module_grp|master_guide|simple01_guide_ofs|simple01_guide|simple02_guide_ofs|simple02_guide|simple03_guide_ofs|simple03_guide|simple04_guide_ofs|simple04_guide|simple05_guide_ofs|simple05_guide|simple05_guideShape" "simple01_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|simple01_guide_ofs|simple01_guide|simple02_guide_ofs|simple02_guide|simple03_guide_ofs|simple03_guide|simple04_guide_ofs|simple04_guide|simple05_guide_ofs|simple05_guide|simple05_guideShape" "simple02_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|simple01_guide_ofs|simple01_guide|simple02_guide_ofs|simple02_guide|simple03_guide_ofs|simple03_guide|simple04_guide_ofs|simple04_guide|simple05_guide_ofs|simple05_guide|simple05_guideShape" "simple03_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|simple01_guide_ofs|simple01_guide|simple02_guide_ofs|simple02_guide|simple03_guide_ofs|simple03_guide|simple04_guide_ofs|simple04_guide|simple05_guide_ofs|simple05_guide|simple05_guideShape" "simple04_guide" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "C1B01AEB-4C31-5A46-8BEC-759997862B45";
+	rename -uid "73B7B994-4C9F-D4A1-F981-DAB630B44461";
 	setAttr -s 3 ".lnk";
 	setAttr -s 3 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "A2177615-478D-197A-9DE7-D5AC20B7CB4C";
+	rename -uid "D15DF1AB-4D9F-22FD-E31C-9AA5F051FEB4";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "799867E7-40CF-BDDC-49E8-F6AEF68847DD";
+	rename -uid "8AB74D16-47F1-24D4-3181-2FB9C1DF6FB2";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "107ACC54-427C-C4D7-78EF-6AAE3C41DAEA";
+	rename -uid "217903C3-48DC-BCB9-1429-3B9049FF5012";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "EDE7F8A1-4185-37A4-5FA7-49A7396409D6";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "F5A912FA-4915-0723-BF3F-058F9D1DE461";
+	rename -uid "C746C0C0-4C2F-110E-1D06-59B07CB17470";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "D70BF562-46C4-2F8D-ABFE-179003332609";
 	setAttr ".g" yes;
@@ -354,7 +613,7 @@ createNode script -n "uiConfigurationScriptNode";
 		+ "            -sceneRenderFilter 0\n            -activeShadingGraph \"ballora_animatronic_shadow_rig:rsMaterial1SG,ballora_animatronic_shadow_rig:MAT_ballora,ballora_animatronic_shadow_rig:MAT_ballora\" \n            -activeCustomGeometry \"meshShaderball\" \n            -activeCustomLighSet \"defaultAreaLightSet\" \n            $editorName;\n        modelEditor -e -viewSelected 0 $editorName;\n        modelEditor -e \n            -pluginObjects \"gpuCacheDisplayFilter\" 1 \n            $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextPanel \"modelPanel\" (localizedPanelLabel(\"ModelPanel\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\tmodelPanel -edit -l (localizedPanelLabel(\"ModelPanel\")) -mbv $menusOkayInPanels  $panelName;\n\t\t$editorName = $panelName;\n        modelEditor -e \n            -docTag \"RADRENDER\" \n            -editorChanged \"updateModelPanelBar\" \n            -camera \"|persp\" \n            -useInteractiveMode 0\n            -displayLights \"default\" \n"
 		+ "            -displayAppearance \"smoothShaded\" \n            -activeOnly 0\n            -ignorePanZoom 0\n            -wireframeOnShaded 0\n            -headsUpDisplay 1\n            -holdOuts 1\n            -selectionHiliteDisplay 1\n            -useDefaultMaterial 0\n            -bufferMode \"double\" \n            -twoSidedLighting 1\n            -backfaceCulling 0\n            -xray 0\n            -jointXray 1\n            -activeComponentsXray 0\n            -displayTextures 1\n            -smoothWireframe 0\n            -lineWidth 1\n            -textureAnisotropic 0\n            -textureHilight 1\n            -textureSampling 2\n            -textureDisplay \"modulate\" \n            -textureMaxSize 32768\n            -fogging 0\n            -fogSource \"fragment\" \n            -fogMode \"linear\" \n            -fogStart 0\n            -fogEnd 100\n            -fogDensity 0.1\n            -fogColor 0.5 0.5 0.5 1 \n            -depthOfFieldPreview 1\n            -maxConstantTransparency 1\n            -rendererName \"vp2Renderer\" \n            -objectFilterShowInHUD 1\n"
 		+ "            -isFiltered 0\n            -colorResolution 256 256 \n            -bumpResolution 512 512 \n            -textureCompression 0\n            -transparencyAlgorithm \"frontAndBackCull\" \n            -transpInShadows 0\n            -cullingOverride \"none\" \n            -lowQualityLighting 0\n            -maximumNumHardwareLights 0\n            -occlusionCulling 0\n            -shadingModel 0\n            -useBaseRenderer 0\n            -useReducedRenderer 0\n            -smallObjectCulling 0\n            -smallObjectThreshold -1 \n            -interactiveDisableShadows 0\n            -interactiveBackFaceCull 0\n            -sortTransparent 1\n            -controllers 1\n            -nurbsCurves 1\n            -nurbsSurfaces 1\n            -polymeshes 1\n            -subdivSurfaces 1\n            -planes 1\n            -lights 1\n            -cameras 1\n            -controlVertices 1\n            -hulls 1\n            -grid 1\n            -imagePlane 1\n            -joints 1\n            -ikHandles 1\n            -deformers 1\n            -dynamics 1\n"
-		+ "            -particleInstancers 1\n            -fluids 1\n            -hairSystems 1\n            -follicles 1\n            -nCloths 1\n            -nParticles 1\n            -nRigids 1\n            -dynamicConstraints 1\n            -locators 1\n            -manipulators 1\n            -pluginShapes 1\n            -dimensions 1\n            -handles 1\n            -pivots 1\n            -textures 1\n            -strokes 1\n            -motionTrails 1\n            -clipGhosts 1\n            -bluePencil 1\n            -greasePencils 0\n            -shadows 0\n            -captureSequenceNumber -1\n            -width 1031\n            -height 410\n            -sceneRenderFilter 0\n            -activeShadingGraph \"ballora_animatronic_shadow_rig:rsMaterial1SG,ballora_animatronic_shadow_rig:MAT_ballora,ballora_animatronic_shadow_rig:MAT_ballora\" \n            -activeCustomGeometry \"meshShaderball\" \n            -activeCustomLighSet \"defaultAreaLightSet\" \n            $editorName;\n        modelEditor -e -viewSelected 0 $editorName;\n        modelEditor -e \n"
+		+ "            -particleInstancers 1\n            -fluids 1\n            -hairSystems 1\n            -follicles 1\n            -nCloths 1\n            -nParticles 1\n            -nRigids 1\n            -dynamicConstraints 1\n            -locators 1\n            -manipulators 1\n            -pluginShapes 1\n            -dimensions 1\n            -handles 1\n            -pivots 1\n            -textures 1\n            -strokes 1\n            -motionTrails 1\n            -clipGhosts 1\n            -bluePencil 1\n            -greasePencils 0\n            -shadows 0\n            -captureSequenceNumber -1\n            -width 943\n            -height 675\n            -sceneRenderFilter 0\n            -activeShadingGraph \"ballora_animatronic_shadow_rig:rsMaterial1SG,ballora_animatronic_shadow_rig:MAT_ballora,ballora_animatronic_shadow_rig:MAT_ballora\" \n            -activeCustomGeometry \"meshShaderball\" \n            -activeCustomLighSet \"defaultAreaLightSet\" \n            $editorName;\n        modelEditor -e -viewSelected 0 $editorName;\n        modelEditor -e \n"
 		+ "            -pluginObjects \"gpuCacheDisplayFilter\" 1 \n            $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextPanel \"outlinerPanel\" (localizedPanelLabel(\"\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\toutlinerPanel -edit -l (localizedPanelLabel(\"\")) -mbv $menusOkayInPanels  $panelName;\n\t\t$editorName = $panelName;\n        outlinerEditor -e \n            -docTag \"isolOutln_fromSeln\" \n            -showShapes 0\n            -showAssignedMaterials 0\n            -showTimeEditor 1\n            -showReferenceNodes 0\n            -showReferenceMembers 0\n            -showAttributes 0\n            -showConnected 0\n            -showAnimCurvesOnly 0\n            -showMuteInfo 0\n            -organizeByLayer 1\n            -organizeByClip 1\n            -showAnimLayerWeight 1\n            -autoExpandLayers 1\n            -autoExpand 1\n            -showDagOnly 1\n            -showAssets 1\n            -showContainedOnly 1\n            -showPublishedAsConnected 0\n"
 		+ "            -showParentContainers 0\n            -showContainerContents 1\n            -ignoreDagHierarchy 0\n            -expandConnections 0\n            -showUpstreamCurves 1\n            -showUnitlessCurves 1\n            -showCompounds 1\n            -showLeafs 1\n            -showNumericAttrsOnly 0\n            -highlightActive 1\n            -autoSelectNewObjects 1\n            -doNotSelectNewObjects 0\n            -dropIsParent 1\n            -transmitFilters 0\n            -setFilter \"defaultSetFilter\" \n            -showSetMembers 1\n            -allowMultiSelection 1\n            -alwaysToggleSelect 0\n            -directSelect 0\n            -isSet 0\n            -isSetMember 0\n            -showUfeItems 1\n            -displayMode \"DAG\" \n            -expandObjects 0\n            -setsIgnoreFilters 1\n            -containersIgnoreFilters 0\n            -editAttrName 0\n            -showAttrValues 0\n            -highlightSecondary 0\n            -showUVAttrsOnly 0\n            -showTextureNodesOnly 0\n            -attrAlphaOrder \"default\" \n"
 		+ "            -animLayerFilterOptions \"allAffecting\" \n            -sortOrder \"none\" \n            -longNames 0\n            -niceNames 1\n            -selectCommand \"print(\\\"\\\")\" \n            -showNamespace 1\n            -showPinIcons 0\n            -mapMotionTrails 0\n            -ignoreHiddenAttribute 0\n            -ignoreOutlinerColor 0\n            -renderFilterVisible 0\n            -renderFilterIndex 0\n            -selectionOrder \"chronological\" \n            -expandAttribute 0\n            $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextPanel \"outlinerPanel\" (localizedPanelLabel(\"Outliner\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\toutlinerPanel -edit -l (localizedPanelLabel(\"Outliner\")) -mbv $menusOkayInPanels  $panelName;\n\t\t$editorName = $panelName;\n        outlinerEditor -e \n            -docTag \"isolOutln_fromSeln\" \n            -showShapes 0\n            -showAssignedMaterials 0\n            -showTimeEditor 1\n"
@@ -383,12 +642,12 @@ createNode script -n "uiConfigurationScriptNode";
 		+ "                -sceneRenderFilter 0\n                -displayMode \"centerEye\" \n                -viewColor 0 0 0 1 \n                -useCustomBackground 1\n                $editorName;\n            stereoCameraView -e -viewSelected 0 $editorName;\n            stereoCameraView -e \n                -pluginObjects \"gpuCacheDisplayFilter\" 1 \n                $editorName; };\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextPanel \"modelPanel\" (localizedPanelLabel(\"Persp View\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\tmodelPanel -edit -l (localizedPanelLabel(\"Persp View\")) -mbv $menusOkayInPanels  $panelName;\n\t\t$editorName = $panelName;\n        modelEditor -e \n            -docTag \"RADRENDER\" \n            -editorChanged \"updateModelPanelBar\" \n            -camera \"|persp\" \n            -useInteractiveMode 0\n            -displayLights \"default\" \n            -displayAppearance \"smoothShaded\" \n            -activeOnly 0\n            -ignorePanZoom 0\n"
 		+ "            -wireframeOnShaded 1\n            -headsUpDisplay 1\n            -holdOuts 1\n            -selectionHiliteDisplay 1\n            -useDefaultMaterial 0\n            -bufferMode \"double\" \n            -twoSidedLighting 0\n            -backfaceCulling 0\n            -xray 0\n            -jointXray 1\n            -activeComponentsXray 0\n            -displayTextures 1\n            -smoothWireframe 0\n            -lineWidth 1\n            -textureAnisotropic 0\n            -textureHilight 1\n            -textureSampling 2\n            -textureDisplay \"modulate\" \n            -textureMaxSize 32768\n            -fogging 0\n            -fogSource \"fragment\" \n            -fogMode \"linear\" \n            -fogStart 0\n            -fogEnd 100\n            -fogDensity 0.1\n            -fogColor 0.5 0.5 0.5 1 \n            -depthOfFieldPreview 1\n            -maxConstantTransparency 1\n            -rendererName \"vp2Renderer\" \n            -objectFilterShowInHUD 1\n            -isFiltered 0\n            -colorResolution 256 256 \n            -bumpResolution 512 512 \n"
 		+ "            -textureCompression 0\n            -transparencyAlgorithm \"frontAndBackCull\" \n            -transpInShadows 0\n            -cullingOverride \"none\" \n            -lowQualityLighting 0\n            -maximumNumHardwareLights 1\n            -occlusionCulling 0\n            -shadingModel 0\n            -useBaseRenderer 0\n            -useReducedRenderer 0\n            -smallObjectCulling 0\n            -smallObjectThreshold -1 \n            -interactiveDisableShadows 0\n            -interactiveBackFaceCull 0\n            -sortTransparent 1\n            -controllers 1\n            -nurbsCurves 1\n            -nurbsSurfaces 1\n            -polymeshes 1\n            -subdivSurfaces 1\n            -planes 1\n            -lights 1\n            -cameras 1\n            -controlVertices 1\n            -hulls 1\n            -grid 1\n            -imagePlane 1\n            -joints 1\n            -ikHandles 1\n            -deformers 1\n            -dynamics 1\n            -particleInstancers 1\n            -fluids 1\n            -hairSystems 1\n            -follicles 1\n"
-		+ "            -nCloths 1\n            -nParticles 1\n            -nRigids 1\n            -dynamicConstraints 1\n            -locators 1\n            -manipulators 1\n            -pluginShapes 1\n            -dimensions 1\n            -handles 1\n            -pivots 1\n            -textures 1\n            -strokes 1\n            -motionTrails 1\n            -clipGhosts 1\n            -bluePencil 1\n            -greasePencils 0\n            -shadows 0\n            -captureSequenceNumber -1\n            -width 1031\n            -height 410\n            -sceneRenderFilter 0\n            -activeShadingGraph \"ballora_animatronic_shadow_rig:rsMaterial1SG,ballora_animatronic_shadow_rig:MAT_ballora,ballora_animatronic_shadow_rig:MAT_ballora\" \n            -activeCustomGeometry \"meshShaderball\" \n            -activeCustomLighSet \"defaultAreaLightSet\" \n            $editorName;\n        modelEditor -e -viewSelected 0 $editorName;\n        modelEditor -e \n            -pluginObjects \"gpuCacheDisplayFilter\" 1 \n            $editorName;\n\t\tif (!$useSceneConfig) {\n"
+		+ "            -nCloths 1\n            -nParticles 1\n            -nRigids 1\n            -dynamicConstraints 1\n            -locators 1\n            -manipulators 1\n            -pluginShapes 1\n            -dimensions 1\n            -handles 1\n            -pivots 1\n            -textures 1\n            -strokes 1\n            -motionTrails 1\n            -clipGhosts 1\n            -bluePencil 1\n            -greasePencils 0\n            -shadows 0\n            -captureSequenceNumber -1\n            -width 943\n            -height 675\n            -sceneRenderFilter 0\n            -activeShadingGraph \"ballora_animatronic_shadow_rig:rsMaterial1SG,ballora_animatronic_shadow_rig:MAT_ballora,ballora_animatronic_shadow_rig:MAT_ballora\" \n            -activeCustomGeometry \"meshShaderball\" \n            -activeCustomLighSet \"defaultAreaLightSet\" \n            $editorName;\n        modelEditor -e -viewSelected 0 $editorName;\n        modelEditor -e \n            -pluginObjects \"gpuCacheDisplayFilter\" 1 \n            $editorName;\n\t\tif (!$useSceneConfig) {\n"
 		+ "\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextPanel \"outlinerPanel\" (localizedPanelLabel(\"ToggledOutliner\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\toutlinerPanel -edit -l (localizedPanelLabel(\"ToggledOutliner\")) -mbv $menusOkayInPanels  $panelName;\n\t\t$editorName = $panelName;\n        outlinerEditor -e \n            -docTag \"isolOutln_fromSeln\" \n            -showShapes 0\n            -showAssignedMaterials 0\n            -showTimeEditor 1\n            -showReferenceNodes 1\n            -showReferenceMembers 1\n            -showAttributes 0\n            -showConnected 0\n            -showAnimCurvesOnly 0\n            -showMuteInfo 0\n            -organizeByLayer 1\n            -organizeByClip 1\n            -showAnimLayerWeight 1\n            -autoExpandLayers 1\n            -autoExpand 0\n            -showDagOnly 1\n            -showAssets 1\n            -showContainedOnly 1\n            -showPublishedAsConnected 0\n            -showParentContainers 0\n            -showContainerContents 1\n"
 		+ "            -ignoreDagHierarchy 0\n            -expandConnections 0\n            -showUpstreamCurves 1\n            -showUnitlessCurves 1\n            -showCompounds 1\n            -showLeafs 1\n            -showNumericAttrsOnly 0\n            -highlightActive 1\n            -autoSelectNewObjects 0\n            -doNotSelectNewObjects 0\n            -dropIsParent 1\n            -transmitFilters 0\n            -setFilter \"defaultSetFilter\" \n            -showSetMembers 1\n            -allowMultiSelection 1\n            -alwaysToggleSelect 0\n            -directSelect 0\n            -isSet 0\n            -isSetMember 0\n            -showUfeItems 1\n            -displayMode \"DAG\" \n            -expandObjects 0\n            -setsIgnoreFilters 1\n            -containersIgnoreFilters 0\n            -editAttrName 0\n            -showAttrValues 0\n            -highlightSecondary 0\n            -showUVAttrsOnly 0\n            -showTextureNodesOnly 0\n            -attrAlphaOrder \"default\" \n            -animLayerFilterOptions \"allAffecting\" \n            -sortOrder \"none\" \n"
 		+ "            -longNames 0\n            -niceNames 1\n            -selectCommand \"{}\" \n            -showNamespace 1\n            -showPinIcons 0\n            -mapMotionTrails 0\n            -ignoreHiddenAttribute 0\n            -ignoreOutlinerColor 0\n            -renderFilterVisible 0\n            -renderFilterIndex 0\n            -selectionOrder \"chronological\" \n            -expandAttribute 0\n            $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\tif ($useSceneConfig) {\n        string $configName = `getPanel -cwl (localizedPanelLabel(\"Current Layout\"))`;\n        if (\"\" != $configName) {\n\t\t\tpanelConfiguration -edit -label (localizedPanelLabel(\"Current Layout\")) \n\t\t\t\t-userCreated false\n\t\t\t\t-defaultImage \"vacantCell.xP:/\"\n\t\t\t\t-image \"\"\n\t\t\t\t-sc false\n\t\t\t\t-configString \"global string $gMainPane; paneLayout -e -cn \\\"single\\\" -ps 1 100 100 $gMainPane;\"\n\t\t\t\t-removeAllPanels\n\t\t\t\t-ap true\n\t\t\t\t\t(localizedPanelLabel(\"Persp View\")) \n\t\t\t\t\t\"modelPanel\"\n"
-		+ "\t\t\t\t\t\"$panelName = `modelPanel -unParent -l (localizedPanelLabel(\\\"Persp View\\\")) -mbv $menusOkayInPanels `;\\n$editorName = $panelName;\\nmodelEditor -e \\n    -docTag \\\"RADRENDER\\\" \\n    -editorChanged \\\"updateModelPanelBar\\\" \\n    -cam `findStartUpCamera persp` \\n    -useInteractiveMode 0\\n    -displayLights \\\"default\\\" \\n    -displayAppearance \\\"smoothShaded\\\" \\n    -activeOnly 0\\n    -ignorePanZoom 0\\n    -wireframeOnShaded 1\\n    -headsUpDisplay 1\\n    -holdOuts 1\\n    -selectionHiliteDisplay 1\\n    -useDefaultMaterial 0\\n    -bufferMode \\\"double\\\" \\n    -twoSidedLighting 0\\n    -backfaceCulling 0\\n    -xray 0\\n    -jointXray 1\\n    -activeComponentsXray 0\\n    -displayTextures 1\\n    -smoothWireframe 0\\n    -lineWidth 1\\n    -textureAnisotropic 0\\n    -textureHilight 1\\n    -textureSampling 2\\n    -textureDisplay \\\"modulate\\\" \\n    -textureMaxSize 32768\\n    -fogging 0\\n    -fogSource \\\"fragment\\\" \\n    -fogMode \\\"linear\\\" \\n    -fogStart 0\\n    -fogEnd 100\\n    -fogDensity 0.1\\n    -fogColor 0.5 0.5 0.5 1 \\n    -depthOfFieldPreview 1\\n    -maxConstantTransparency 1\\n    -rendererName \\\"vp2Renderer\\\" \\n    -objectFilterShowInHUD 1\\n    -isFiltered 0\\n    -colorResolution 256 256 \\n    -bumpResolution 512 512 \\n    -textureCompression 0\\n    -transparencyAlgorithm \\\"frontAndBackCull\\\" \\n    -transpInShadows 0\\n    -cullingOverride \\\"none\\\" \\n    -lowQualityLighting 0\\n    -maximumNumHardwareLights 1\\n    -occlusionCulling 0\\n    -shadingModel 0\\n    -useBaseRenderer 0\\n    -useReducedRenderer 0\\n    -smallObjectCulling 0\\n    -smallObjectThreshold -1 \\n    -interactiveDisableShadows 0\\n    -interactiveBackFaceCull 0\\n    -sortTransparent 1\\n    -controllers 1\\n    -nurbsCurves 1\\n    -nurbsSurfaces 1\\n    -polymeshes 1\\n    -subdivSurfaces 1\\n    -planes 1\\n    -lights 1\\n    -cameras 1\\n    -controlVertices 1\\n    -hulls 1\\n    -grid 1\\n    -imagePlane 1\\n    -joints 1\\n    -ikHandles 1\\n    -deformers 1\\n    -dynamics 1\\n    -particleInstancers 1\\n    -fluids 1\\n    -hairSystems 1\\n    -follicles 1\\n    -nCloths 1\\n    -nParticles 1\\n    -nRigids 1\\n    -dynamicConstraints 1\\n    -locators 1\\n    -manipulators 1\\n    -pluginShapes 1\\n    -dimensions 1\\n    -handles 1\\n    -pivots 1\\n    -textures 1\\n    -strokes 1\\n    -motionTrails 1\\n    -clipGhosts 1\\n    -bluePencil 1\\n    -greasePencils 0\\n    -shadows 0\\n    -captureSequenceNumber -1\\n    -width 1031\\n    -height 410\\n    -sceneRenderFilter 0\\n    -activeShadingGraph \\\"ballora_animatronic_shadow_rig:rsMaterial1SG,ballora_animatronic_shadow_rig:MAT_ballora,ballora_animatronic_shadow_rig:MAT_ballora\\\" \\n    -activeCustomGeometry \\\"meshShaderball\\\" \\n    -activeCustomLighSet \\\"defaultAreaLightSet\\\" \\n    $editorName;\\nmodelEditor -e -viewSelected 0 $editorName;\\nmodelEditor -e \\n    -pluginObjects \\\"gpuCacheDisplayFilter\\\" 1 \\n    $editorName\"\n"
-		+ "\t\t\t\t\t\"modelPanel -edit -l (localizedPanelLabel(\\\"Persp View\\\")) -mbv $menusOkayInPanels  $panelName;\\n$editorName = $panelName;\\nmodelEditor -e \\n    -docTag \\\"RADRENDER\\\" \\n    -editorChanged \\\"updateModelPanelBar\\\" \\n    -cam `findStartUpCamera persp` \\n    -useInteractiveMode 0\\n    -displayLights \\\"default\\\" \\n    -displayAppearance \\\"smoothShaded\\\" \\n    -activeOnly 0\\n    -ignorePanZoom 0\\n    -wireframeOnShaded 1\\n    -headsUpDisplay 1\\n    -holdOuts 1\\n    -selectionHiliteDisplay 1\\n    -useDefaultMaterial 0\\n    -bufferMode \\\"double\\\" \\n    -twoSidedLighting 0\\n    -backfaceCulling 0\\n    -xray 0\\n    -jointXray 1\\n    -activeComponentsXray 0\\n    -displayTextures 1\\n    -smoothWireframe 0\\n    -lineWidth 1\\n    -textureAnisotropic 0\\n    -textureHilight 1\\n    -textureSampling 2\\n    -textureDisplay \\\"modulate\\\" \\n    -textureMaxSize 32768\\n    -fogging 0\\n    -fogSource \\\"fragment\\\" \\n    -fogMode \\\"linear\\\" \\n    -fogStart 0\\n    -fogEnd 100\\n    -fogDensity 0.1\\n    -fogColor 0.5 0.5 0.5 1 \\n    -depthOfFieldPreview 1\\n    -maxConstantTransparency 1\\n    -rendererName \\\"vp2Renderer\\\" \\n    -objectFilterShowInHUD 1\\n    -isFiltered 0\\n    -colorResolution 256 256 \\n    -bumpResolution 512 512 \\n    -textureCompression 0\\n    -transparencyAlgorithm \\\"frontAndBackCull\\\" \\n    -transpInShadows 0\\n    -cullingOverride \\\"none\\\" \\n    -lowQualityLighting 0\\n    -maximumNumHardwareLights 1\\n    -occlusionCulling 0\\n    -shadingModel 0\\n    -useBaseRenderer 0\\n    -useReducedRenderer 0\\n    -smallObjectCulling 0\\n    -smallObjectThreshold -1 \\n    -interactiveDisableShadows 0\\n    -interactiveBackFaceCull 0\\n    -sortTransparent 1\\n    -controllers 1\\n    -nurbsCurves 1\\n    -nurbsSurfaces 1\\n    -polymeshes 1\\n    -subdivSurfaces 1\\n    -planes 1\\n    -lights 1\\n    -cameras 1\\n    -controlVertices 1\\n    -hulls 1\\n    -grid 1\\n    -imagePlane 1\\n    -joints 1\\n    -ikHandles 1\\n    -deformers 1\\n    -dynamics 1\\n    -particleInstancers 1\\n    -fluids 1\\n    -hairSystems 1\\n    -follicles 1\\n    -nCloths 1\\n    -nParticles 1\\n    -nRigids 1\\n    -dynamicConstraints 1\\n    -locators 1\\n    -manipulators 1\\n    -pluginShapes 1\\n    -dimensions 1\\n    -handles 1\\n    -pivots 1\\n    -textures 1\\n    -strokes 1\\n    -motionTrails 1\\n    -clipGhosts 1\\n    -bluePencil 1\\n    -greasePencils 0\\n    -shadows 0\\n    -captureSequenceNumber -1\\n    -width 1031\\n    -height 410\\n    -sceneRenderFilter 0\\n    -activeShadingGraph \\\"ballora_animatronic_shadow_rig:rsMaterial1SG,ballora_animatronic_shadow_rig:MAT_ballora,ballora_animatronic_shadow_rig:MAT_ballora\\\" \\n    -activeCustomGeometry \\\"meshShaderball\\\" \\n    -activeCustomLighSet \\\"defaultAreaLightSet\\\" \\n    $editorName;\\nmodelEditor -e -viewSelected 0 $editorName;\\nmodelEditor -e \\n    -pluginObjects \\\"gpuCacheDisplayFilter\\\" 1 \\n    $editorName\"\n"
+		+ "\t\t\t\t\t\"$panelName = `modelPanel -unParent -l (localizedPanelLabel(\\\"Persp View\\\")) -mbv $menusOkayInPanels `;\\n$editorName = $panelName;\\nmodelEditor -e \\n    -docTag \\\"RADRENDER\\\" \\n    -editorChanged \\\"updateModelPanelBar\\\" \\n    -cam `findStartUpCamera persp` \\n    -useInteractiveMode 0\\n    -displayLights \\\"default\\\" \\n    -displayAppearance \\\"smoothShaded\\\" \\n    -activeOnly 0\\n    -ignorePanZoom 0\\n    -wireframeOnShaded 1\\n    -headsUpDisplay 1\\n    -holdOuts 1\\n    -selectionHiliteDisplay 1\\n    -useDefaultMaterial 0\\n    -bufferMode \\\"double\\\" \\n    -twoSidedLighting 0\\n    -backfaceCulling 0\\n    -xray 0\\n    -jointXray 1\\n    -activeComponentsXray 0\\n    -displayTextures 1\\n    -smoothWireframe 0\\n    -lineWidth 1\\n    -textureAnisotropic 0\\n    -textureHilight 1\\n    -textureSampling 2\\n    -textureDisplay \\\"modulate\\\" \\n    -textureMaxSize 32768\\n    -fogging 0\\n    -fogSource \\\"fragment\\\" \\n    -fogMode \\\"linear\\\" \\n    -fogStart 0\\n    -fogEnd 100\\n    -fogDensity 0.1\\n    -fogColor 0.5 0.5 0.5 1 \\n    -depthOfFieldPreview 1\\n    -maxConstantTransparency 1\\n    -rendererName \\\"vp2Renderer\\\" \\n    -objectFilterShowInHUD 1\\n    -isFiltered 0\\n    -colorResolution 256 256 \\n    -bumpResolution 512 512 \\n    -textureCompression 0\\n    -transparencyAlgorithm \\\"frontAndBackCull\\\" \\n    -transpInShadows 0\\n    -cullingOverride \\\"none\\\" \\n    -lowQualityLighting 0\\n    -maximumNumHardwareLights 1\\n    -occlusionCulling 0\\n    -shadingModel 0\\n    -useBaseRenderer 0\\n    -useReducedRenderer 0\\n    -smallObjectCulling 0\\n    -smallObjectThreshold -1 \\n    -interactiveDisableShadows 0\\n    -interactiveBackFaceCull 0\\n    -sortTransparent 1\\n    -controllers 1\\n    -nurbsCurves 1\\n    -nurbsSurfaces 1\\n    -polymeshes 1\\n    -subdivSurfaces 1\\n    -planes 1\\n    -lights 1\\n    -cameras 1\\n    -controlVertices 1\\n    -hulls 1\\n    -grid 1\\n    -imagePlane 1\\n    -joints 1\\n    -ikHandles 1\\n    -deformers 1\\n    -dynamics 1\\n    -particleInstancers 1\\n    -fluids 1\\n    -hairSystems 1\\n    -follicles 1\\n    -nCloths 1\\n    -nParticles 1\\n    -nRigids 1\\n    -dynamicConstraints 1\\n    -locators 1\\n    -manipulators 1\\n    -pluginShapes 1\\n    -dimensions 1\\n    -handles 1\\n    -pivots 1\\n    -textures 1\\n    -strokes 1\\n    -motionTrails 1\\n    -clipGhosts 1\\n    -bluePencil 1\\n    -greasePencils 0\\n    -shadows 0\\n    -captureSequenceNumber -1\\n    -width 943\\n    -height 675\\n    -sceneRenderFilter 0\\n    -activeShadingGraph \\\"ballora_animatronic_shadow_rig:rsMaterial1SG,ballora_animatronic_shadow_rig:MAT_ballora,ballora_animatronic_shadow_rig:MAT_ballora\\\" \\n    -activeCustomGeometry \\\"meshShaderball\\\" \\n    -activeCustomLighSet \\\"defaultAreaLightSet\\\" \\n    $editorName;\\nmodelEditor -e -viewSelected 0 $editorName;\\nmodelEditor -e \\n    -pluginObjects \\\"gpuCacheDisplayFilter\\\" 1 \\n    $editorName\"\n"
+		+ "\t\t\t\t\t\"modelPanel -edit -l (localizedPanelLabel(\\\"Persp View\\\")) -mbv $menusOkayInPanels  $panelName;\\n$editorName = $panelName;\\nmodelEditor -e \\n    -docTag \\\"RADRENDER\\\" \\n    -editorChanged \\\"updateModelPanelBar\\\" \\n    -cam `findStartUpCamera persp` \\n    -useInteractiveMode 0\\n    -displayLights \\\"default\\\" \\n    -displayAppearance \\\"smoothShaded\\\" \\n    -activeOnly 0\\n    -ignorePanZoom 0\\n    -wireframeOnShaded 1\\n    -headsUpDisplay 1\\n    -holdOuts 1\\n    -selectionHiliteDisplay 1\\n    -useDefaultMaterial 0\\n    -bufferMode \\\"double\\\" \\n    -twoSidedLighting 0\\n    -backfaceCulling 0\\n    -xray 0\\n    -jointXray 1\\n    -activeComponentsXray 0\\n    -displayTextures 1\\n    -smoothWireframe 0\\n    -lineWidth 1\\n    -textureAnisotropic 0\\n    -textureHilight 1\\n    -textureSampling 2\\n    -textureDisplay \\\"modulate\\\" \\n    -textureMaxSize 32768\\n    -fogging 0\\n    -fogSource \\\"fragment\\\" \\n    -fogMode \\\"linear\\\" \\n    -fogStart 0\\n    -fogEnd 100\\n    -fogDensity 0.1\\n    -fogColor 0.5 0.5 0.5 1 \\n    -depthOfFieldPreview 1\\n    -maxConstantTransparency 1\\n    -rendererName \\\"vp2Renderer\\\" \\n    -objectFilterShowInHUD 1\\n    -isFiltered 0\\n    -colorResolution 256 256 \\n    -bumpResolution 512 512 \\n    -textureCompression 0\\n    -transparencyAlgorithm \\\"frontAndBackCull\\\" \\n    -transpInShadows 0\\n    -cullingOverride \\\"none\\\" \\n    -lowQualityLighting 0\\n    -maximumNumHardwareLights 1\\n    -occlusionCulling 0\\n    -shadingModel 0\\n    -useBaseRenderer 0\\n    -useReducedRenderer 0\\n    -smallObjectCulling 0\\n    -smallObjectThreshold -1 \\n    -interactiveDisableShadows 0\\n    -interactiveBackFaceCull 0\\n    -sortTransparent 1\\n    -controllers 1\\n    -nurbsCurves 1\\n    -nurbsSurfaces 1\\n    -polymeshes 1\\n    -subdivSurfaces 1\\n    -planes 1\\n    -lights 1\\n    -cameras 1\\n    -controlVertices 1\\n    -hulls 1\\n    -grid 1\\n    -imagePlane 1\\n    -joints 1\\n    -ikHandles 1\\n    -deformers 1\\n    -dynamics 1\\n    -particleInstancers 1\\n    -fluids 1\\n    -hairSystems 1\\n    -follicles 1\\n    -nCloths 1\\n    -nParticles 1\\n    -nRigids 1\\n    -dynamicConstraints 1\\n    -locators 1\\n    -manipulators 1\\n    -pluginShapes 1\\n    -dimensions 1\\n    -handles 1\\n    -pivots 1\\n    -textures 1\\n    -strokes 1\\n    -motionTrails 1\\n    -clipGhosts 1\\n    -bluePencil 1\\n    -greasePencils 0\\n    -shadows 0\\n    -captureSequenceNumber -1\\n    -width 943\\n    -height 675\\n    -sceneRenderFilter 0\\n    -activeShadingGraph \\\"ballora_animatronic_shadow_rig:rsMaterial1SG,ballora_animatronic_shadow_rig:MAT_ballora,ballora_animatronic_shadow_rig:MAT_ballora\\\" \\n    -activeCustomGeometry \\\"meshShaderball\\\" \\n    -activeCustomLighSet \\\"defaultAreaLightSet\\\" \\n    $editorName;\\nmodelEditor -e -viewSelected 0 $editorName;\\nmodelEditor -e \\n    -pluginObjects \\\"gpuCacheDisplayFilter\\\" 1 \\n    $editorName\"\n"
 		+ "\t\t\t\t$configName;\n\n            setNamedPanelLayout (localizedPanelLabel(\"Current Layout\"));\n        }\n\n        panelHistory -e -clear mainPanelHistory;\n        sceneUIReplacement -clear;\n\t}\n\n\ngrid -spacing 5 -size 12 -divisions 5 -displayAxes yes -displayGridLines yes -displayDivisionLines yes -displayPerspectiveLabels no -displayOrthographicLabels no -displayAxesBold yes -perspectiveLabelPosition axis -orthographicLabelPosition edge;\nviewManip -drawCompass 0 -compassAngle 0 -frontParameters \"1 0.000000 0.000000 -1.000000 -0.000016 1.000000 0.000000\" -homeParameters \"\" -selectionLockParameters \"\";\n}\n");
 	setAttr ".st" 3;
 createNode script -n "sceneConfigurationScriptNode";
