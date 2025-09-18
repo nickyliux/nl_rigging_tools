@@ -12,6 +12,16 @@ from nl_modules.utils.common import Vec
 from nl_modules.utils.color import Color
 
 
+from enum import Enum
+
+
+class LimbType(Enum):
+    BASIC = 0
+    # BASIC_ROLL = 1
+    # RIBBON = 2
+    SKEL = 1
+
+
 class LegQd(RigModule):
     """Quadruped leg rig module class, inherits from RigModule."""
 
@@ -24,10 +34,10 @@ class LegQd(RigModule):
 
         # Guide attributes
         guide_attrs = [
+            "limbType",
             "patellaBone",
             "toeBones",
             "toeNum",
-            "dualBones",
             "kneeFix",
             "scapularExtra",
         ]
@@ -164,7 +174,8 @@ class LegQd(RigModule):
         self.build_ik()
         self.blend_fk_ik()
 
-        self.jnts_bind = self.jnts[1:-1] + [self.boneFix]
+        # self.jnts_bind = self.jnts[1:-1] + [self.boneFix]
+        self.jnts_bind = [self.upr]
 
         self.scapularG = self.build_scapular(
             ikc=self.ikc,
@@ -182,11 +193,15 @@ class LegQd(RigModule):
         if self.patellaBone:
             self.patella_setup()
 
-        if self.dualBones:
+        if self.limbType == LimbType.SKEL.value:
             self.build_dual_bones()
+        else:
+            self.jnts_bind += [self.lwr]
 
         if self.toeBones:
             self.build_toes()
+        else:
+            self.jnts_bind += [self.palm, self.digit, self.ball]
 
         self.build_post()
 
@@ -200,7 +215,7 @@ class LegQd(RigModule):
             rJ.a.segmentScaleCompensate.set(0)
 
         self.build_digits()
-        self.updateBindJntList(remove=[self.tip, self.digit, self.ball, self.palm])
+        # self.updateBindJntList(remove=[self.tip, self.digit, self.ball, self.palm])
 
     def build_fk(self):
         """Build the FK controls and joints for the quadruped leg rig."""
@@ -439,7 +454,8 @@ class LegQd(RigModule):
         for toeJs in self.toesJntList:
             dupTgt = DagNode(toeJs[2])
             scale = xDr * rSz / 5
-            ctl, ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
+            # ctl,
+            ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
             ikJ.a.r >> dupTgt.a.r
             self.jnts_bind.extend(toeJs[:-1])
 
@@ -459,7 +475,7 @@ class LegQd(RigModule):
                 ctlList.append(c)
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
             self.toesCtlsList.append(ctlList)
-            self.toesCtlsList.append([ctl])
+            # self.toesCtlsList.append([ctl])
 
         # --- Add hidden IK handles for toe segments ---
         for toeJs in self.toesJntList:
@@ -488,8 +504,8 @@ class LegQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         # --- Generate dual joint chains ---
-        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=2)
-        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=2)
+        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.7)
+        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=0.7)
 
         # --- Parent dual chains to appropriate joint ---
         parent = self.boneFix if self.kneeFix else self.lwr
@@ -515,7 +531,8 @@ class LegQd(RigModule):
         )
 
         # --- Update bind joints ---
-        self.updateBindJntList(remove=[self.boneFix], extend=[radius_JC[0], ulna_JC[0]])
+        # self.updateBindJntList(remove=[self.boneFix], extend=[radius_JC[0], ulna_JC[0]])
+        self.jnts_bind += [radius_JC[0], ulna_JC[0]]
 
     def singleBallCtl_setup(self):
         """Make ball ctl the single ctl in both FK and IK modes."""
@@ -631,7 +648,7 @@ class LegQd(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the quadruped leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxy_radiusScale(self.jnts_bind, 2.5)
+        self.add_proxy_radiusScale(self.jnts_bind, 2)
 
     def setup_scale(self):
         """Setup scale for the quadruped leg rig module."""

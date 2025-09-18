@@ -61,14 +61,15 @@ class HandBp(RigModule):
         ctl_defs = [
             ("setting", "setting", None, scale, 1, 2),
             ("palm_ctl", "rotator", "z", scale * -1.5, 0, 2),
-            ("smart_ctl", "cube", None, scale, 0, -1),
+            ("smart_ctl", "cube", None, scale, 0, 2),
         ]
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
-        self.smart_ctl.cv_scale(1, 3, 1)
+        self.smart_ctl.cv_scale(0.7, 3, 0.7)
         self.palm_ctl.color = Color.D_YELLOW
+        self.smart_ctl.color = Color.D_YELLOW
 
     def build(self):
         """Build the hand rig module."""
@@ -93,7 +94,7 @@ class HandBp(RigModule):
         ctlList = []
         for fgr in fgrs[:-1]:
             ctl = CrvNode(
-                f"{fgr.name}_ctl", shape="stickC", up="z", scale=scale / -2, align=fgr
+                f"{fgr.name}_ctl", shape="squareR", up="x", scale=scale / -2, align=fgr
             )
             ctlList.append(ctl)
         return ctlList

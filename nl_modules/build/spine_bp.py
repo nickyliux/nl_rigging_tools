@@ -99,7 +99,7 @@ class SpineBp(RigModule):
             self.build_ik()
 
         self.setting.snapTo(
-            self.cog_ctl, p=self.CTL_DATA, ofs=(0, 0, self.rigSize * -90)
+            self.cog_ctl, p=self.CTL_DATA  # , ofs=(0, 0, self.rigSize * -90)
         )
         self.cog_ctl.cstPar(self.setting, mo=1)
 
@@ -129,7 +129,6 @@ class SpineBp(RigModule):
                 pf=rID,
                 shape="squareR",
                 scale=rSz * 5,
-                # width=2,
                 color=Color.D_YELLOW,
             )
             self.ctls_fk.append(c)
@@ -146,7 +145,7 @@ class SpineBp(RigModule):
         self.cog_ctl.addOffsetGrp()
 
         self.cog_gmb.cstPar(self.ctls_fk[0].offset, mo=1)
-        if self.spineType == SpineType.RIBBON.value and not self.is_neck():
+        if not self.is_neck():
             self.cog_gmb.cstPar(self.ctls_fk[1].offset, mo=1)
 
         self.cog_gmb.cstSca(self.jnts_fk[0])
