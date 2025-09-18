@@ -143,7 +143,8 @@ class LegBp(RigModule):
             ("lwr_fkc", "circle", "x", scale, 0, -1),
             ("palm_fkc", "circle", "x", scale, 0, -1),
             ("ball_fkc", "circle", "x", scale / 2, 0, -1),
-            ("ikc", "foot", None, rSz, 0, -1),
+            # ("ikc", "foot", None, rSz, 0, -1),
+            ("ikc", "cube", None, rSz, 0, -1),
             ("pvc", "pvc", None, rSz, 0, -1),
             ("smart_ctl", "cube", None, scale / 4, 0, -1),
         ]
@@ -157,6 +158,8 @@ class LegBp(RigModule):
         # self.smart_ctl.cv_scale(1.5, 0.3, 0.3)
         self.smart_ctl.cv_move(15 * scale, 0, 0)
         self.smart_ctl.color = Color.D_YELLOW
+        self.ikc.cv_move(0, 0, rSz * 2)
+        self.ikc.cv_scale(1.5, 1.5, 4)
 
         if self.scapularExtra:
             self.scap_fkc.cv_move(scale * 20, 0, 0)

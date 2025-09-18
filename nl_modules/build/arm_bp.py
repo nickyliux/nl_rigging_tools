@@ -95,7 +95,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "X", "z", scale, 1, 2),
+            ("setting", "X", "z", scale * 2, 1, 2),
             ("clavicle_fkc", "stickC", None, scale, 0, 2),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
@@ -538,7 +538,7 @@ class ArmBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxy_radiusScale(self.jnts_bind, 1.5)
+        self.add_proxy_radiusScale(self.jnts_bind, 2)
 
         # h = self.rigSize * 10
         # if LimbType.BASIC_ROLL.value == 2:

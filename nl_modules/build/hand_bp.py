@@ -60,7 +60,7 @@ class HandBp(RigModule):
 
         ctl_defs = [
             ("setting", "X", None, scale, 1, 2),
-            ("palm_ctl", "rotator", "z", scale * -1.5, 0, 2),
+            ("palm_ctl", "rotator", None, -scale, 0, -1),
             ("smart_ctl", "cube", None, scale, 0, 2),
         ]
         for name, shape, up, sca, top, w in ctl_defs:
@@ -228,9 +228,11 @@ class HandBp(RigModule):
         fkc_ofs4 = self.ctls_fgr[4][0].offset.addOffsetGrp()
 
         # Align palm_ctl to fkc_ofs3
-        self.palm_ctl.alignTo(fkc_ofs3, p=self.CTL_DATA)
+        # self.palm_ctl.alignTo(fkc_ofs3, p=self.CTL_DATA)
+        self.palm_ctl.alignTo(self.smart_ctl, p=self.CTL_DATA)
         self.palm_ctl.addOffsetGrp()
-        self.rootJ.cstPar(self.palm_ctl.offset, mo=1)
+        # self.rootJ.cstPar(self.palm_ctl.offset, mo=1)
+        self.smart_ctl.cstPar(self.palm_ctl.offset, mo=1)
 
         # Connect palm_ctl rotation to meta carpal
         self.palm_ctl.a.r * (0.2, 0.2, 0.2) >> fkc_ofs2.a.r
@@ -262,8 +264,8 @@ class HandBp(RigModule):
 
         # smart_ctl, with group scaling with rootJ
         scaleGrp = GrpNode("smartScale", pf=rID, align=self.rootJ, p=self.CTL_DATA)
-        offsetX = rSz * xDr * 50
-        self.smart_ctl.alignTo(self.rootJ, ofs=(0, 0, -offsetX), p=scaleGrp)
+        offsetX = rSz * xDr * 100
+        self.smart_ctl.alignTo(self.rootJ, ofs=(offsetX, 0, 0), p=scaleGrp)
         self.smart_ctl.addOffsetGrp()
 
         self.hand_grp.cstPar(scaleGrp, mo=1)
