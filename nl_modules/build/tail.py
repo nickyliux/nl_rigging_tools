@@ -61,9 +61,9 @@ class Tail(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
 
-        ctl_defs = [("setting", "setting", "z", rSz * 2, 1, 2)]
-        for name, shape, up, scale, top, w in ctl_defs:
-            self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
+        ctl_defs = [("setting", "X", "z", rSz * 2, 1, 2)]
+        for name, shape, up, sca, top, w in ctl_defs:
+            self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
         self.setting.a.add("stretchy", min=0, max=1)
         self.setting.a.add("localScale", min=0.01, dv=1)
@@ -166,7 +166,7 @@ class Tail(RigModule):
         for i in range(self.fkJntNum + 1):
             tgt = self.jnts_fk[i]
             ctl = CrvNode(
-                f"{i}_fkc", pf=rID, shape="circle", up="z", scale=rSz, align=tgt
+                f"{i}_fkc", pf=rID, shape="circle", up="z", scale=rSz * 0.8, align=tgt
             )
             self.rigNode.setMsg({f"fkc{i}": ctl})
             self.ctls_fk.append(ctl)

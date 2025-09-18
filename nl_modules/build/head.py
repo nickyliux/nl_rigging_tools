@@ -56,8 +56,8 @@ class Head(RigModule):
             ("rt_eye_fkc", "circle", "x", rSz, 0, -1),
         ]
 
-        for name, shape, up, scale, top, w in ctl_defs:
-            self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
+        for name, shape, up, sca, top, w in ctl_defs:
+            self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
     def build_fk(self):
         """Build the FK controls for the head rig module."""

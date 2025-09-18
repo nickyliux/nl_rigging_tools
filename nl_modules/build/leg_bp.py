@@ -118,7 +118,7 @@ class LegBp(RigModule):
                 ["toe04_1", "toe04_2", "toe04_3", "toe04_4", "toe04_5"],
             ]
             for names in TOE_NAMES:
-                fgr_jnts = self.gen_sk_fr_names(names, scale=0.2)
+                fgr_jnts = self.gen_sk_fr_names(names, scale=0.15)
                 fgr_jnts[0].reOrient(
                     upRef=fgr_jnts[1],
                     xDir=self.xDir,
@@ -137,7 +137,7 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "setting", "z", scale, 1, 2),
+            ("setting", "X", "z", scale, 1, 2),
             ("hip_fkc", "circle", "x", scale, 0, -1),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
@@ -145,17 +145,18 @@ class LegBp(RigModule):
             ("ball_fkc", "circle", "x", scale / 2, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
             ("pvc", "pvc", None, rSz, 0, -1),
-            ("smart_ctl", "cube", None, scale, 0, -1),
+            ("smart_ctl", "cube", None, scale / 4, 0, -1),
         ]
         if self.scapularExtra:
             ctl_defs.append(("scap_fkc", "shoulder", None, scale, 0, -1))
 
-        for name, shape, up, scale, top, w in ctl_defs:
-            self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
+        for name, shape, up, sca, top, w in ctl_defs:
+            self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
         # self.smart_ctl.cv_scale(2, 1, 1)
-        self.smart_ctl.cv_scale(1.5, 0.3, 0.3)
-        # self.smart_ctl.cv_move(0, 0, -10 * rSz)
+        # self.smart_ctl.cv_scale(1.5, 0.3, 0.3)
+        self.smart_ctl.cv_move(15 * scale, 0, 0)
+        self.smart_ctl.color = Color.D_YELLOW
 
         if self.scapularExtra:
             self.scap_fkc.cv_move(scale * 20, 0, 0)
@@ -202,14 +203,11 @@ class LegBp(RigModule):
 
         elif self.limbType == LimbType.BASIC_ROLL.value:
             self.jnts_bind += [self.lwr]
-
             self.build_specialAim([self.lwr, self.palm])
 
             jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
             jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
             self.jnts_ro = [jnt_ro1, jnt_ro2]
-            jnt_ro1.setDrawStyle(2)
-            jnt_ro2.setDrawStyle(2)
 
         elif self.limbType == LimbType.RIBBON.value:
             self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(
@@ -365,10 +363,10 @@ class LegBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.jnts_bf = common.dupSk(
-            self.jnts, "_bf", p=self.BF_GRP, r=self.rigSize * 4, color=Color.D_YELLOW
+            self.jnts, "_bf", p=self.BF_GRP, r=rSz * 4, color=Color.D_YELLOW
         )
 
-        self.setting.snapTo(self.hip, p=self.CTL_DATA, ofs=(xDr * rSz * 25, 0, 0))
+        self.setting.snapTo(self.hip, p=self.CTL_DATA, ofs=(xDr * rSz * 15, 0, 0))
         self.hip.cstPar(self.setting, mo=1)
 
         self.setting.a.addSep()
@@ -478,7 +476,9 @@ class LegBp(RigModule):
             fkToeList = toeJs[1:-1]
             for jnt in fkToeList:
                 crvName = f"{jnt.name}_ctl_#"
-                crv = CrvNode(crvName, up="x", scale=scale / 6, align=jnt)
+                crv = CrvNode(
+                    crvName, shape="stickC", up="z", scale=-scale / 10, align=jnt
+                )
                 ctlList.append(crv)
 
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
@@ -545,7 +545,7 @@ class LegBp(RigModule):
         #     self.setting.a.add("debugVis", attrType="bool", k=0, dv=0),
         #     onList=self.jnts_fk + self.jnts_ik + self.jnts_bf # + self.jnts_ro,
         # )
-        mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_bf)  # + self.jnts_ro)
+        mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_bf)
         self.ctl_vis_toggle(
             self.ikc.a.add("pvc", attrType="bool", dv=1, k=0),
             onList=[self.pvc.offset, self.pvc_line.offset],

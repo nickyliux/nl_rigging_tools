@@ -95,7 +95,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "setting", "z", scale, 1, 2),
+            ("setting", "X", "z", scale, 1, 2),
             ("clavicle_fkc", "stickC", None, scale, 0, 2),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
@@ -125,7 +125,7 @@ class ArmBp(RigModule):
         self.blend_fk_ik()
         # self.build_nlAutoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
         # self.jnts_bind = [self.palm]  # [self.clavicle, self.palm]
-        self.jnts_bind = []
+        self.jnts_bind = [self.palm]
 
         if self.limbType == LimbType.BASIC.value:
             self.jnts_bind += [self.upr, self.lwr]
@@ -138,8 +138,6 @@ class ArmBp(RigModule):
             jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
             jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
             self.jnts_roll = [jnt_ro1, jnt_ro2]
-            # jnt_ro1.setDrawStyle(2)
-            # jnt_ro2.setDrawStyle(2)
 
         elif self.limbType == LimbType.RIBBON.value:
             self.build_bendy_ribbon(

@@ -80,7 +80,7 @@ class SimpleFk(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "setting", "x", scale, 1, 2),
+            ("setting", "X", "x", scale, 1, 2),
             ("simple01_fkc", "stickC", None, scale, 1, -1),
         ]
         if self.segNum >= 2:
@@ -90,8 +90,8 @@ class SimpleFk(RigModule):
         if self.segNum >= 4:
             ctl_defs.append(("simple04_fkc", "stickC", None, scale, 1, -1))
 
-        for name, shape, up, scale, top, w in ctl_defs:
-            self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
+        for name, shape, up, sca, top, w in ctl_defs:
+            self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
         self.setting.alignTo(self.rootJ, p=self.CTL_DATA)
         self.rootJ.cstPar(self.setting, mo=1)

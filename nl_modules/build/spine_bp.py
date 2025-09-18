@@ -72,7 +72,7 @@ class SpineBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
-            ("setting", "setting", "z", rSz * 4, 1, 2),
+            ("setting", "X", "z", rSz * 3, 1, 2),
             ("cog_ctl", "cog", None, rSz * 7, 0, 2),
         ]
         if self.spineType == SpineType.RIBBON.value:
@@ -82,8 +82,8 @@ class SpineBp(RigModule):
                 ("hip_ikc", "hip", None, rSz * 4, 0, 2),
             ]
 
-        for name, shape, up, scale, top, w in ctl_defs:
-            self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
+        for name, shape, up, sca, top, w in ctl_defs:
+            self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
         if self.spineType == SpineType.RIBBON.value:
             self.mid_ikc.cv_scale(1, 0.5, 1)

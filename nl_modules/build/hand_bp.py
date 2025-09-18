@@ -59,12 +59,12 @@ class HandBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "setting", None, scale, 1, 2),
+            ("setting", "X", None, scale, 1, 2),
             ("palm_ctl", "rotator", "z", scale * -1.5, 0, 2),
             ("smart_ctl", "cube", None, scale, 0, 2),
         ]
-        for name, shape, up, scale, top, w in ctl_defs:
-            self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
+        for name, shape, up, sca, top, w in ctl_defs:
+            self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
         self.smart_ctl.cv_scale(0.7, 3, 0.7)

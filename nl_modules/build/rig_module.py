@@ -1082,7 +1082,8 @@ class RigModule(RigBase):
             self.jnts_bind.append(j)
 
         mc.hide(roll_loc)
-        return JntNode(roll_jnt0)
+        JntNode(roll_jnt0).setDrawStyle(2)
+        return roll_jnt0
 
     def build_lwrRollJ(self, jnt0, jnt1, num=2, suffix="_roll2"):
         """Build lower roller joints. They are added between jnt0's parent and jnt0."""
@@ -1101,7 +1102,8 @@ class RigModule(RigBase):
                 self.jnts_bind.append(j)
 
         mc.hide(roll_loc)
-        return JntNode(roll_jnt0)
+        JntNode(roll_jnt0).setDrawStyle(2)
+        return roll_jnt0
 
     def build_rbn(self, tgt, name="", rbJNum=5, volMode=1):
         """Build a ribbon node for the target with specified parameters."""

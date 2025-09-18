@@ -138,7 +138,7 @@ class LegQd(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "setting", "z", scale, 1, 2),
+            ("setting", "X", "z", scale, 1, 2),
             ("hip_fkc", "circle", "x", scale, 0, -1),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
@@ -148,19 +148,23 @@ class LegQd(RigModule):
             ("ikc", "foot", None, rSz, 0, -1),
             ("extra_ikc", "rotator", None, -scale, 0, -1),
             ("pvc", "pvc", None, rSz, 0, -1),
-            ("smart_ctl", "roll", None, scale / 3, 0, -1),
+            ("smart_ctl", "cube", None, scale / 3, 0, -1),
         ]
 
         if self.scapularExtra:
             ctl_defs.append(("quadScap_ikc", "shoulder", None, scale, 0, -1))
 
-        for name, shape, up, scale, top, w in ctl_defs:
-            self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
+        for name, shape, up, sca, top, w in ctl_defs:
+            self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
+        print(scale)
         if self.scapularExtra:
             self.quadScap_ikc.cv_move(scale * 20, 0, 0)
 
-        self.smart_ctl.cv_scale(2, 1, 1)
+        # self.smart_ctl.cv_scale(2, 0.2, 0.2)
+        # self.smart_ctl.cv_move(0, rSz * 6, rSz * 12)
+        self.smart_ctl.cv_move(scale * 10, 0, 0)
+        self.smart_ctl.color = Color.D_YELLOW
 
     def build(self):
         """Build the quadruped leg rig module."""
@@ -429,15 +433,16 @@ class LegQd(RigModule):
             pf=rID,
             shape="stickS",
             scale=-rSz * xDr / 3,
-            color=Color.BLACK,
-            rotateY=90,
             width=2,
         )
+        CrvNode(self.ball_ikc).cv_rotate(0, 90, 0)
         self.rigNode.setMsg({"ball_ikc": self.ball_ikc})
         self.ctls_ik.append(self.ball_ikc)
 
         # --- Smart control setup ---
-        self.smart_ctl.snapAlignTo(toeRollG, self.master_guide)
+        # self.smart_ctl.snapAlignTo(toeRollG, self.master_guide)
+        self.smart_ctl.snapAlignTo(self.ikc, self.master_guide)
+        self.digit.cstPoi(self.smart_ctl)
         self.smart_ctl | self.ikc_gimbal
         self.smart_ctl.addOffsetGrp()
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
@@ -453,8 +458,8 @@ class LegQd(RigModule):
         # --- Build digit IK and FK controls for each toe chain ---
         for toeJs in self.toesJntList:
             dupTgt = DagNode(toeJs[2])
-            scale = xDr * rSz / 5
-            # ctl,
+            scale = xDr * rSz / 8
+
             ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
             ikJ.a.r >> dupTgt.a.r
             self.jnts_bind.extend(toeJs[:-1])
@@ -465,17 +470,17 @@ class LegQd(RigModule):
             for jnt in fkToeList:
                 c = CrvNode(
                     f"{jnt.name}_ctl_#",
-                    shape="squareR",
-                    up="x",
+                    shape="stickC",
+                    up="z",
                     align=jnt,
-                    scale=scale,
+                    scale=-scale,
                     top=1,
                     width=2,
                 )
                 ctlList.append(c)
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
             self.toesCtlsList.append(ctlList)
-            # self.toesCtlsList.append([ctl])
+            # mc.hide(ikH, ikJ)
 
         # --- Add hidden IK handles for toe segments ---
         for toeJs in self.toesJntList:
@@ -585,10 +590,11 @@ class LegQd(RigModule):
             self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
             onList=self.ctls_sub,
         )
-        self.ctl_vis_toggle(
-            self.setting.a.add("debugVis", dv=0, attrType="bool", k=0),
-            onList=self.jnts_fk + self.jnts_ik,
-        )
+        # self.ctl_vis_toggle(
+        #     self.setting.a.add("debugVis", dv=0, attrType="bool", k=0),
+        #     onList=self.jnts_fk + self.jnts_ik,
+        # )
+        mc.hide(self.jnts_ik, self.jnts_fk)
         [ikh.hide() for ikh in self.all_ikH.values()]
 
     def setup_channel(self):

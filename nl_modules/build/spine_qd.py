@@ -78,13 +78,13 @@ class SpineQd(RigModule):
 
         #   Define control shapes and attributes
         ctl_defs = [
-            ("setting", "setting", "z", rSz * 3, 1, 2),
+            ("setting", "X", "z", rSz * 3, 1, 2),
             ("cog_ctl", "trapezoid", None, rSz, 0, -1),
             ("fore_ctl", "chest_qd", None, rSz * 4, 0, -1),
             ("mid_ctl", "squareR", "z", rSz * 4, 0, -1),
             ("base_ctl", "hip_qd", None, rSz * 4, 0, -1),
-            ("tangent0_ctl", "diamond3", None, rSz * 4, 1, -1),
-            ("tangent1_ctl", "diamond3", None, rSz * 4, 1, -1),
+            ("tangent0_ctl", "stick2", None, rSz, 1, -1),
+            ("tangent1_ctl", "stick2", None, rSz, 1, -1),
         ]
         if self.endCtl:
             ctl_defs.append(("end_ctl", "rotator", None, rSz * 1.5, 0, -1))
@@ -94,7 +94,7 @@ class SpineQd(RigModule):
 
         self.cog_ctl.cv_move(0, rSz * 40, rSz * 10)
         self.cog_ctl.cv_scale(1, 1.5, 2)
-        self.setting.cv_move(0, rSz * 40, 0)
+        # self.setting.cv_move(0, rSz * 40, 0)
         # self.base_ctl.cv_rotate(0, 180, 0)
 
         if self.end_ctl:
