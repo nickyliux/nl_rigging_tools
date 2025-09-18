@@ -175,7 +175,7 @@ class LegQd(RigModule):
         self.blend_fk_ik()
 
         # self.jnts_bind = self.jnts[1:-1] + [self.boneFix]
-        self.jnts_bind = [self.upr]
+        self.jnts_bind = [self.upr, self.palm]
 
         self.scapularG = self.build_scapular(
             ikc=self.ikc,
@@ -201,7 +201,7 @@ class LegQd(RigModule):
         if self.toeBones:
             self.build_toes()
         else:
-            self.jnts_bind += [self.palm, self.digit, self.ball]
+            self.jnts_bind += [self.digit, self.ball]
 
         self.build_post()
 
