@@ -184,11 +184,16 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.shapeRotaX_BN, partial(control.rotaCVForSel, 90, 0, 0))
         self.connect(self.UI.shapeRotaY_BN, partial(control.rotaCVForSel, 0, 90, 0))
         self.connect(self.UI.shapeRotaZ_BN, partial(control.rotaCVForSel, 0, 0, 90))
-        self.connect(self.UI.shapeScaleUp_BN, partial(control.scaleCVForSel, 4 / 3))
         self.connect(self.UI.shapeScaleDn_BN, partial(control.scaleCVForSel, 3 / 4))
+        self.connect(self.UI.shapeScaleUp_BN, partial(control.scaleCVForSel, 4 / 3))
         self.connect(self.UI.onTop_BN, partial(control.setOnTopSel, 1))
         self.connect(self.UI.onTopOff_BN, partial(control.setOnTopSel, 0))
         self.connect(self.UI.drop_BN, control.dropSel)
+        self.connect(
+            self.UI.lineWidthDefault_BN, partial(control.setLineWidthForSel, -1)
+        )
+        self.connect(self.UI.lineWidth2_BN, partial(control.setLineWidthForSel, 2))
+        self.connect(self.UI.lineWidth3_BN, partial(control.setLineWidthForSel, 3))
 
         # Prepare
         self.connect(

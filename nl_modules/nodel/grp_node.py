@@ -98,6 +98,9 @@ class GrpNode(DagNode):
         else:
             mc.rotate(*args, self.cvs, **kwargs)
 
+    def setLineWidth(self, *args, **kwargs):
+        self.width = args[0]
+
     def cv_scale(self, *args, atCVCetner=0, **kwargs):
         """Scale all cvs of the curve"""
         kwargs = kwargs or {"r": 1}

@@ -44,7 +44,7 @@ class HandBp(RigModule):
         fgr_roots = []
         for fgr_names in ALL_FGR_NAMES:
             jnts = self.gen_sk_fr_names(fgr_names, scale=HAND_SCALE)
-            jnts[1].reOrient(upRef=jnts[1], xDir=self.xDir)
+            jnts[0].reOrient(upRef=jnts[1], xDir=self.xDir)
             jnts[0] | root_list[0]
             fgr_roots.append(jnts[0])
 
@@ -61,7 +61,7 @@ class HandBp(RigModule):
         ctl_defs = [
             ("setting", "X", None, scale, 1, 2),
             ("palm_ctl", "rotator", None, -scale, 0, -1),
-            ("smart_ctl", "cube", None, scale, 0, 2),
+            ("smart_ctl", "cube", None, scale, 0, -1),
         ]
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
@@ -228,11 +228,11 @@ class HandBp(RigModule):
         fkc_ofs4 = self.ctls_fgr[4][0].offset.addOffsetGrp()
 
         # Align palm_ctl to fkc_ofs3
-        # self.palm_ctl.alignTo(fkc_ofs3, p=self.CTL_DATA)
-        self.palm_ctl.alignTo(self.smart_ctl, p=self.CTL_DATA)
+        self.palm_ctl.alignTo(fkc_ofs3, p=self.CTL_DATA)
+        # self.palm_ctl.alignTo(self.smart_ctl, p=self.CTL_DATA)
         self.palm_ctl.addOffsetGrp()
-        # self.rootJ.cstPar(self.palm_ctl.offset, mo=1)
-        self.smart_ctl.cstPar(self.palm_ctl.offset, mo=1)
+        self.rootJ.cstPar(self.palm_ctl.offset, mo=1)
+        # self.smart_ctl.cstPar(self.palm_ctl.offset, mo=1)
 
         # Connect palm_ctl rotation to meta carpal
         self.palm_ctl.a.r * (0.2, 0.2, 0.2) >> fkc_ofs2.a.r
@@ -245,13 +245,13 @@ class HandBp(RigModule):
         # self.palm_ctl.a.r >> self.ctls_ik[4].offset.a.r
 
         # TEST
-        fkc_ofs2 = self.ctls_fgr[2][1].offset.addOffsetGrp()
-        fkc_ofs3 = self.ctls_fgr[3][1].offset.addOffsetGrp()
-        fkc_ofs4 = self.ctls_fgr[4][1].offset.addOffsetGrp()
+        # fkc_ofs2 = self.ctls_fgr[2][1].offset.addOffsetGrp()
+        # fkc_ofs3 = self.ctls_fgr[3][1].offset.addOffsetGrp()
+        # fkc_ofs4 = self.ctls_fgr[4][1].offset.addOffsetGrp()
 
-        self.palm_ctl.a.r * (0.4, 0.4, 0.4) >> fkc_ofs2.a.r
-        self.palm_ctl.a.r >> fkc_ofs3.a.r
-        self.palm_ctl.a.r * (2, 2, 2) >> fkc_ofs4.a.r
+        # self.palm_ctl.a.r * (0.2, 0.2, 0.2) >> fkc_ofs2.a.r
+        # self.palm_ctl.a.r >> fkc_ofs3.a.r
+        # self.palm_ctl.a.r * (1, 1, 1) >> fkc_ofs4.a.r
 
     def build_fgrs(self):
         """Build the finger logic for the hand rig module."""

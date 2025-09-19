@@ -95,7 +95,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "X", "z", scale * 2, 1, 2),
+            ("setting", "X", "z", scale, 1, 2),
             ("clavicle_fkc", "stickC", None, scale, 0, 2),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
@@ -460,11 +460,11 @@ class ArmBp(RigModule):
         # )
         mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_bf)  # + self.jnts_roll,
 
-        # if self.limbType == 2:
-        #     self.ctl_vis_toggle(
-        #         self.setting.a.add("bendyCtls", attrType="bool", dv=0, k=0),
-        #         onList=self.all_bend,
-        #     )
+        if self.limbType == LimbType.RIBBON.value:
+            self.ctl_vis_toggle(
+                self.setting.a.add("bendyCtls", attrType="bool", dv=0, k=0),
+                onList=self.all_bend,
+            )
 
         self.ikc.a.v >> self.palm_ikc.a.v
         mc.hide(self.ikhs)

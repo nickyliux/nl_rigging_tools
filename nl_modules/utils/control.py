@@ -171,3 +171,12 @@ def scaleCVForSel(value):
     for selList in [DagNode(selList) for selList in mc.ls(sl=1, tr=1)]:
         if selList.type == "nurbsCurve":
             GrpNode(selList).cv_scale(value)  # , atCVCetner=1)
+
+
+@common.Undo("updateLineWidthForSel")
+def setLineWidthForSel(value):
+    """Update the line width of selected curves."""
+    for sel in [DagNode(selList) for selList in mc.ls(sl=1, tr=1)]:
+        if sel.type == "nurbsCurve":
+            # GrpNode(sel).setLineWidth(value)  # , atCVCetner=1)
+            GrpNode(sel).width = value
