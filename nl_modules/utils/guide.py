@@ -105,9 +105,10 @@ def mirrorGuideSelOrAll(*arg):
 
 
 def getMasterGuide(tgtN):
-    master_guide_name = tgtN.name.split("_")[0] + "_master_guide"
-    if mc.objExists(master_guide_name):
-        return DagNode(master_guide_name)
+    if tgtN:
+        master_guide_name = DagNode(tgtN).name.split("_")[0] + "_master_guide"
+        if mc.objExists(master_guide_name):
+            return DagNode(master_guide_name)
 
 
 def getOppositeCtl(tgtN, pfL="lf", pfR="rt", strB4Pf=1):
@@ -172,15 +173,12 @@ def copyGuideAttr(A, B, wsMirror=0, mirror=0, skipMasterXf=0):
     udAttrs = A.a.list(ud=1, u=1) or []
     for ud in udAttrs:
         try:
-            # B.a[ud.name].set(ud.get())
-            B_attr = B.a[ud.name]
             val = ud.get()
-            print(val)
 
             if isinstance(val, str):
-                B_attr.set(val, type="string")
+                B.a[ud.name].set(val, type="string")
             else:
-                B_attr.set(val)
+                B.a[ud.name].set(val)
         except Exception as e:
             print(e)
 

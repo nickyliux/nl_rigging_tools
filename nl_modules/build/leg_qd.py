@@ -157,7 +157,6 @@ class LegQd(RigModule):
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
-        print(scale)
         if self.scapularExtra:
             self.quadScap_ikc.cv_move(scale * 20, 0, 0)
 
