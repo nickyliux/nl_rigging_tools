@@ -11,7 +11,7 @@
     <x>0</x>
     <y>0</y>
     <width>420</width>
-    <height>991</height>
+    <height>993</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -52,7 +52,7 @@
      <x>0</x>
      <y>2</y>
      <width>231</width>
-     <height>981</height>
+     <height>991</height>
     </rect>
    </property>
    <property name="font">
@@ -1648,7 +1648,7 @@
        <x>0</x>
        <y>630</y>
        <width>225</width>
-       <height>321</height>
+       <height>331</height>
       </rect>
      </property>
      <property name="title">
@@ -1753,7 +1753,7 @@
         <x>3</x>
         <y>50</y>
         <width>218</width>
-        <height>265</height>
+        <height>281</height>
        </rect>
       </property>
       <property name="minimumSize">

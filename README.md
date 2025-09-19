@@ -18,7 +18,9 @@ blockquote {
 ![License](https://img.shields.io/badge/license-GPLv3-red.svg?style=plastic)
 [![Blog](https://img.shields.io/badge/blog-nickyliu.com-blue)](http://www.nickyliu.com)
 
-![nlRT logo](ui_images/ui_main.png) 
+![nlRT Main](ui_images/nlRT_UI_Main.png) 
+![nlRT Control](ui_images/nlRT_UI_Control.png) 
+![nlRT More](ui_images/nlRT_UI_More.png) 
 
 ## Background
 While working on a project that required extensive use of the Ziva muscle plugin, I encountered challenges rigging the skeleton meshes. This experience inspired me to create a tool that not only automates the rigging process for any vertebrate animal, but also a chance to apply anatomy knowledge.
