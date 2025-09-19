@@ -124,7 +124,7 @@ class Head(RigModule):
         """Setup bind joints for the head rig module."""
         self.jnts_bind = [self.head, self.jaw, self.lf_eye, self.rt_eye]
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxy_div(self.jnts_bind, 3)
+        self.add_proxyDiv(self.jnts_bind, 3)
 
     def build_post(self):
         """Post setup for the head rig module."""

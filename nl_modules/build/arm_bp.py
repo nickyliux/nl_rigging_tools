@@ -538,7 +538,8 @@ class ArmBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxy_radiusScale(self.jnts_bind, 2)
+        self.add_proxyRadiusScale(self.jnts_bind, 2)
+        self.palm.a.proxyRadiusScale.set(1)
 
         # h = self.rigSize * 10
         # if LimbType.BASIC_ROLL.value == 2:

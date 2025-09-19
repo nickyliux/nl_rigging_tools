@@ -72,7 +72,7 @@ class SpineBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
-            ("setting", "X", "z", rSz * 3, 1, 2),
+            ("setting", "X", "z", rSz * 2, 1, 2),
             ("cog_ctl", "cog", None, rSz * 7, 0, 2),
         ]
         if self.spineType == SpineType.RIBBON.value:
@@ -338,8 +338,8 @@ class SpineBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the spine rig."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxy_radiusScale(self.jnts_bind, 4)
-        self.add_proxy_height(
+        self.add_proxyRadiusScale(self.jnts_bind, 4)
+        self.add_proxyHeight(
             self.jnts_bind, CrvNode(self.LINE_GUIDE).length / (self.rbnJntNum * 1.5)
         )
 

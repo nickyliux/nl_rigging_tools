@@ -669,7 +669,7 @@ class LegBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxy_radiusScale(self.jnts_bind, 2)
+        self.add_proxyRadiusScale(self.jnts_bind, 2)
 
         # h = self.rigSize * 10
         # if self.ribbon:

@@ -267,7 +267,7 @@ class Tail(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the tail rig controls."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxy_height(
+        self.add_proxyHeight(
             self.jnts_bind, CrvNode(self.LINE_GUIDE).length / (self.rbnJntNum * 1.5)
         )
 

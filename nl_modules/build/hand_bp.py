@@ -21,7 +21,7 @@ class HandBp(RigModule):
         self.jnts_ik = []
         self.ctls_fgr = []
         # self.ctls_ik = []
-        self.ikhs = []
+        self.ikHs_fgr = []
 
         # Main controls/groups
         self.setting = None
@@ -59,8 +59,9 @@ class HandBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "X", None, scale, 1, 2),
+            ("setting", "X", None, scale * 2, 1, 2),
             ("palm_ctl", "rotator", None, -scale, 0, -1),
+            ("thumb_ctl", "rotator", "z", -scale, 0, -1),
             ("smart_ctl", "cube", None, scale, 0, -1),
         ]
         for name, shape, up, sca, top, w in ctl_defs:
@@ -68,7 +69,8 @@ class HandBp(RigModule):
 
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
         self.smart_ctl.cv_scale(0.7, 3, 0.7)
-        self.palm_ctl.color = Color.D_YELLOW
+        self.palm_ctl.color = Color.YELLOW
+        self.thumb_ctl.color = Color.YELLOW
         self.smart_ctl.color = Color.D_YELLOW
 
     def build(self):
@@ -94,8 +96,9 @@ class HandBp(RigModule):
         ctlList = []
         for fgr in fgrs[:-1]:
             ctl = CrvNode(
-                f"{fgr.name}_ctl", shape="squareR", up="x", scale=scale / -2, align=fgr
+                f"{fgr.name}_ctl", shape="squareR", up="x", scale=scale, align=fgr
             )
+            ctl.cv_scale(1, 0.2, 1)
             ctlList.append(ctl)
         return ctlList
 
@@ -126,7 +129,7 @@ class HandBp(RigModule):
             ikJ, ikH = self.build_digit_ik(fgrs[1], scale=scale, p=self.hand_grp)
             # self.ctls_ik.append(ctl)
             self.jnts_ik.append(ikJ)
-            self.ikhs.append(ikH)
+            self.ikHs_fgr.append(ikH)
             # ikJ.cstOri(ctls[1].parent.parent, mo=1)
             ikJ.a.r >> ctls[1].parent.parent.a.r
             # ikJ.cstOri(ctls[1].parent.parent, mo=1)
@@ -220,38 +223,52 @@ class HandBp(RigModule):
             common.sdk(drv, ofs, "ty", "rz", 10, 90 * xDr, inf=1)
             common.sdk(drv, ofs, "ty", "rz", -10, -90 * xDr, inf=1)
 
-    def setup_metacarpal(self):
+    def setup_thumbCtl(self):
+        rID, rSz, xDr = self.getMyVar()
+        fkc_ofs0 = self.ctls_fgr[0][0].offset.addOffsetGrp()
+
+        self.thumb_ctl.alignTo(fkc_ofs0, p=self.CTL_DATA)
+        self.thumb_ctl.addOffsetGrp()
+        self.rootJ.cstPar(self.thumb_ctl.offset, mo=1)
+
+        grp0 = GrpNode("ikZro#", pf=rID, align=self.ctls_fgr[0][0], p=self.hand_grp)
+        grp0.addOffsetGrp()
+        self.ikHs_fgr[0] | grp0
+        self.thumb_ctl.a.r >> grp0.a.r
+        self.thumb_ctl.a.r >> fkc_ofs0.a.r
+
+    def setup_palmCtl(self):
         """Setup metacarpal controls for the hand rig."""
+        rID, rSz, xDr = self.getMyVar()
 
         fkc_ofs2 = self.ctls_fgr[2][0].offset.addOffsetGrp()
         fkc_ofs3 = self.ctls_fgr[3][0].offset.addOffsetGrp()
         fkc_ofs4 = self.ctls_fgr[4][0].offset.addOffsetGrp()
 
-        # Align palm_ctl to fkc_ofs3
         self.palm_ctl.alignTo(fkc_ofs3, p=self.CTL_DATA)
-        # self.palm_ctl.alignTo(self.smart_ctl, p=self.CTL_DATA)
         self.palm_ctl.addOffsetGrp()
         self.rootJ.cstPar(self.palm_ctl.offset, mo=1)
-        # self.smart_ctl.cstPar(self.palm_ctl.offset, mo=1)
 
-        # Connect palm_ctl rotation to meta carpal
-        self.palm_ctl.a.r * (0.2, 0.2, 0.2) >> fkc_ofs2.a.r
-        self.palm_ctl.a.r * (0.5, 0.5, 0.5) >> fkc_ofs3.a.r
-        self.palm_ctl.a.r >> fkc_ofs4.a.r
+        product2 = self.palm_ctl.a.r * (0.2, 0.2, 0.2)
+        product3 = self.palm_ctl.a.r * (0.5, 0.5, 0.5)
+        product4 = self.palm_ctl.a.r
 
-        # Connect palm_ctl rotation to ik ctls
-        # self.palm_ctl.a.r * (0.2, 0.2, 0.2) >> self.ctls_ik[2].offset.a.r
-        # self.palm_ctl.a.r * (0.5, 0.5, 0.5) >> self.ctls_ik[3].offset.a.r
-        # self.palm_ctl.a.r >> self.ctls_ik[4].offset.a.r
+        product2 >> fkc_ofs2.a.r
+        product3 >> fkc_ofs3.a.r
+        product4 >> fkc_ofs4.a.r
 
-        # TEST
-        # fkc_ofs2 = self.ctls_fgr[2][1].offset.addOffsetGrp()
-        # fkc_ofs3 = self.ctls_fgr[3][1].offset.addOffsetGrp()
-        # fkc_ofs4 = self.ctls_fgr[4][1].offset.addOffsetGrp()
+        # Add zro group for fgr ikH
+        grp2 = GrpNode("ikZro#", pf=rID, align=self.ctls_fgr[2][0], p=self.hand_grp)
+        grp3 = GrpNode("ikZro#", pf=rID, align=self.ctls_fgr[3][0], p=self.hand_grp)
+        grp4 = GrpNode("ikZro#", pf=rID, align=self.ctls_fgr[4][0], p=self.hand_grp)
 
-        # self.palm_ctl.a.r * (0.2, 0.2, 0.2) >> fkc_ofs2.a.r
-        # self.palm_ctl.a.r >> fkc_ofs3.a.r
-        # self.palm_ctl.a.r * (1, 1, 1) >> fkc_ofs4.a.r
+        self.ikHs_fgr[2] | grp2
+        self.ikHs_fgr[3] | grp3
+        self.ikHs_fgr[4] | grp4
+
+        product2 >> grp2.a.r
+        product3 >> grp3.a.r
+        product4 >> grp4.a.r
 
     def build_fgrs(self):
         """Build the finger logic for the hand rig module."""
@@ -280,7 +297,8 @@ class HandBp(RigModule):
         self.setup_updn_sdk()
         self.set_pre_post_infinity()
 
-        self.setup_metacarpal()
+        self.setup_palmCtl()
+        self.setup_thumbCtl()
         # self.setup_flap_meta_sdk()
 
     def set_pre_post_infinity(self):
@@ -327,19 +345,15 @@ class HandBp(RigModule):
 
     def setup_vis(self):
         """Setup visibility controls for the hand rig."""
-        showCtls = self.setting.a.add("fkCtls", attrType="bool", dv=1, k=0)
+        showCtls = self.setting.a.add("fkCtls", attrType="bool", dv=0, k=0)
         for ctls in self.ctls_fgr:
             showCtls >> ctls[0].a.v
 
-        # self.ctl_vis_toggle(
-        #     self.setting.a.add("debugVis", attrType="bool", dv=0, k=0),
-        #     onList=self.jnts_ik,
-        # )
-        mc.hide(self.ikhs, self.jnts_ik)
+        mc.hide(self.ikHs_fgr, self.jnts_ik)
 
     def setup_ctlSet(self):
         """Setup control sets for the hand rig module."""
-        ctlSet = [self.smart_ctl, self.palm_ctl]  # + self.ctls_ik
+        ctlSet = [self.smart_ctl, self.palm_ctl, self.thumb_ctl]
         [ctlSet.extend(x) for x in self.ctls_fgr]
         self.add_ctl_set(ctlSet)
 
@@ -363,7 +377,9 @@ class HandBp(RigModule):
         """Post setup for the hand rig module."""
         logging.info(self.rigID)
 
-        self.setting.alignTo(self.smart_ctl, p=self.smart_ctl)
+        self.setting.alignTo(self.rootJ, p=self.CTL_DATA)
+        self.rootJ.cstPar(self.setting, mo=1)
+
         self.setup_scale()
         self.setup_bindJnt()
         self.setup_ctlSet()

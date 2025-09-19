@@ -434,8 +434,8 @@ class SpineQd(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the spine rig."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxy_radiusScale(self.jnts_bind, 4)
-        self.add_proxy_height(
+        self.add_proxyRadiusScale(self.jnts_bind, 4)
+        self.add_proxyHeight(
             self.jnts_bind, CrvNode(self.LINE_GUIDE).length / (self.rbnJntNum * 1.5)
         )
 

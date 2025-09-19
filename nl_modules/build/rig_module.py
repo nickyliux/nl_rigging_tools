@@ -965,21 +965,21 @@ class RigModule(RigBase):
 
         return crv_len_ratio, rb_jnts
 
-    def add_proxy_radiusScale(self, tgtJnts, v):
+    def add_proxyRadiusScale(self, tgtJnts, v):
         """Add proxyRadiusScale attribute to target joints"""
         for jnt in tgtJnts:
             tgt = DagNode(jnt)
             if tgt.exists():
                 tgt.a.add("proxyRadiusScale", k=0, dv=v)
 
-    def add_proxy_div(self, tgtJnts, div=2):
+    def add_proxyDiv(self, tgtJnts, div=2):
         """Add proxyDiv attribute to target joints"""
         for jnt in tgtJnts:
             tgt = DagNode(jnt)
             if tgt.exists():
                 tgt.a.add("proxyDiv", k=0, dv=div)
 
-    def add_proxy_height(self, tgtJnts, v):
+    def add_proxyHeight(self, tgtJnts, v):
         """Add proxyDiv attribute to target joints"""
         for jnt in tgtJnts:
             tgt = DagNode(jnt)
