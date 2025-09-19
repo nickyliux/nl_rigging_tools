@@ -121,18 +121,17 @@ class HandBp(RigModule):
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
-        # self.ctls_ik = []
         self.hand_grp = GrpNode(rID + "_grp", align=self.rootJ, p=self.CTL_DATA)
         for fgrs, ctls in zip(self.jnts_fgr, self.ctls_fgr):
+
             scale = xDr * rSz / 2
-            # ctl,
             ikJ, ikH = self.build_digit_ik(fgrs[1], scale=scale, p=self.hand_grp)
-            # self.ctls_ik.append(ctl)
             self.jnts_ik.append(ikJ)
             self.ikHs_fgr.append(ikH)
-            # ikJ.cstOri(ctls[1].parent.parent, mo=1)
-            ikJ.a.r >> ctls[1].parent.parent.a.r
-            # ikJ.cstOri(ctls[1].parent.parent, mo=1)
+
+            tgtGrp = ctls[1].parent.parent
+            tgtGrp.addOffsetGrp()
+            ikJ.a.r >> tgtGrp.a.r
 
     def setup_close_sdk(self):
         """Setup SDK for finger base controls."""
@@ -266,6 +265,10 @@ class HandBp(RigModule):
         self.ikHs_fgr[3] | grp3
         self.ikHs_fgr[4] | grp4
 
+        grp2.addOffsetGrp()
+        grp3.addOffsetGrp()
+        grp4.addOffsetGrp()
+
         product2 >> grp2.a.r
         product3 >> grp3.a.r
         product4 >> grp4.a.r
@@ -290,7 +293,6 @@ class HandBp(RigModule):
 
         # Add handScale attribute and connect to rootJ scale
         self.smart_ctl.a.add("handScale", min=0, dv=1) >> self.rootJ.a.scale
-
         self.setup_close_sdk()
         self.setup_flap_sdk()
         self.setup_spread_sdk()
