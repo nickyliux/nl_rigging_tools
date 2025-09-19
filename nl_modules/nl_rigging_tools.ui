@@ -2478,7 +2478,7 @@
        <x>0</x>
        <y>160</y>
        <width>225</width>
-       <height>791</height>
+       <height>801</height>
       </rect>
      </property>
      <property name="title">
@@ -2627,7 +2627,7 @@
         <x>0</x>
         <y>49</y>
         <width>221</width>
-        <height>731</height>
+        <height>751</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -2652,11 +2652,6 @@
       </property>
      </widget>
     </widget>
-   </widget>
-   <widget class="QWidget" name="weight_TB">
-    <attribute name="title">
-     <string>Weight</string>
-    </attribute>
    </widget>
    <widget class="QWidget" name="more_TB">
     <attribute name="title">
