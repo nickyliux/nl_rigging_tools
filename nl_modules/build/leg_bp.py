@@ -143,7 +143,6 @@ class LegBp(RigModule):
             ("lwr_fkc", "circle", "x", scale, 0, -1),
             ("palm_fkc", "circle", "x", scale, 0, -1),
             ("ball_fkc", "circle", "x", scale / 2, 0, -1),
-            # ("ikc", "foot", None, rSz, 0, -1),
             ("ikc", "cube", None, rSz, 0, -1),
             ("pvc", "pvc", None, rSz, 0, -1),
             ("smart_ctl", "cube", None, scale / 4, 0, -1),
@@ -154,8 +153,6 @@ class LegBp(RigModule):
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
-        # self.smart_ctl.cv_scale(2, 1, 1)
-        # self.smart_ctl.cv_scale(1.5, 0.3, 0.3)
         self.smart_ctl.cv_move(15 * scale, 0, 0)
         self.smart_ctl.color = Color.D_YELLOW
         self.ikc.cv_move(0, 0, rSz * 2)
@@ -177,14 +174,7 @@ class LegBp(RigModule):
         # self.build_nlAutoAim(
         #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
         # )
-        self.jnts_bind = [self.palm]  # self.palm, self.ball]
-        #     self.hip,
-        #     # self.upr,
-        #     # self.lwr,
-        #     self.boneFix,
-        #     self.palm,
-        #     self.ball,
-        # ]
+        self.jnts_bind = [self.palm]
 
         self.scapularG = self.build_scapular(
             ikc=self.ikc,
@@ -400,8 +390,6 @@ class LegBp(RigModule):
                 ofg = self.ball_fkc.addOffsetGrp()
                 bfj.cstPar(ofg, mo=1)
                 self.ball_fkc.cstPar(jnt)
-
-        # self.hip_fkc.cstPar(self.jnts_bf[0], mo=1)
 
         # Useful for fk ik switch popUp menu
         for ctl in self.ctls_fk + self.ctls_ik + [self.smart_ctl]:

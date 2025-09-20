@@ -124,7 +124,6 @@ class ArmBp(RigModule):
         self.build_ik()
         self.blend_fk_ik()
         # self.build_nlAutoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
-        # self.jnts_bind = [self.palm]  # [self.clavicle, self.palm]
         self.jnts_bind = [self.palm]
 
         if self.limbType == LimbType.BASIC.value:
@@ -284,7 +283,6 @@ class ArmBp(RigModule):
         self.setting.alignTo(
             self.clavicle, p=self.CTL_DATA, ofs=(scale * 30, scale * 10, 0)
         )
-        # scale * -20)
         self.clavicle.cstPar(self.setting, mo=1)
 
         # Extract blend joints
@@ -454,11 +452,7 @@ class ArmBp(RigModule):
             self.ikc.a.add("pvc", attrType="bool", dv=1, k=0),
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
-        # self.ctl_vis_toggle(
-        #     self.setting.a.add("debugVis", attrType="bool", dv=0, k=0),
-        #     onList=self.jnts_fk + self.jnts_ik + self.jnts_bf
-        # )
-        mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_bf)  # + self.jnts_roll,
+        mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_bf)
 
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
