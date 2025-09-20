@@ -260,6 +260,30 @@ def showHideProxy():
         m2.a.proxy.set(1 - m2.a.proxy.get())
 
 
+def add_radiusScale_attr(tgtJnts, v):
+    """Add proxyRadiusScale attribute to target joints"""
+    for jnt in tgtJnts:
+        tgt = DagNode(jnt)
+        if tgt.exists():
+            tgt.a.add("proxyRadiusScale", k=0, dv=v)
+
+
+def add_proxyDiv_attr(tgtJnts, div=2):
+    """Add proxyDiv attribute to target joints"""
+    for jnt in tgtJnts:
+        tgt = DagNode(jnt)
+        if tgt.exists():
+            tgt.a.add("proxyDiv", k=0, dv=div)
+
+
+def add_height_attr(tgtJnts, v):
+    """Add proxyHeight attribute to target joints"""
+    for jnt in tgtJnts:
+        tgt = DagNode(jnt)
+        if tgt.exists():
+            tgt.a.add("proxyHeight", k=0, dv=v)
+
+
 # def refProxy():
 #     """Toggle the display type of all proxy meshes between normal and reference."""
 #     for s in mc.ls("*_pxGeo") or []:

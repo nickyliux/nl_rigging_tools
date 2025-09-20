@@ -965,27 +965,6 @@ class RigModule(RigBase):
 
         return crv_len_ratio, rb_jnts
 
-    def add_proxyRadiusScale(self, tgtJnts, v):
-        """Add proxyRadiusScale attribute to target joints"""
-        for jnt in tgtJnts:
-            tgt = DagNode(jnt)
-            if tgt.exists():
-                tgt.a.add("proxyRadiusScale", k=0, dv=v)
-
-    def add_proxyDiv(self, tgtJnts, div=2):
-        """Add proxyDiv attribute to target joints"""
-        for jnt in tgtJnts:
-            tgt = DagNode(jnt)
-            if tgt.exists():
-                tgt.a.add("proxyDiv", k=0, dv=div)
-
-    def add_proxyHeight(self, tgtJnts, v):
-        """Add proxyDiv attribute to target joints"""
-        for jnt in tgtJnts:
-            tgt = DagNode(jnt)
-            if tgt.exists():
-                tgt.a.add("proxyHeight", k=0, dv=v)
-
     def get_guide_attr(self, name):
         """Get attribute from master guide"""
         return self.master_guide.a[name].get()
@@ -1113,7 +1092,6 @@ class RigModule(RigBase):
             rbJNum=rbJNum,
             volMode=volMode,
             scaleFix=self.masterC.a["globalScale"],
-            size=self.rigSize,
             p=self.RIG_DATA,
         )
 

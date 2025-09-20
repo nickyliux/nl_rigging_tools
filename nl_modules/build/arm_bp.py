@@ -8,6 +8,7 @@ from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
+from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
 
@@ -532,16 +533,8 @@ class ArmBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxyRadiusScale(self.jnts_bind, 1.5)
+        proxy.add_radiusScale_attr(self.jnts_bind, 2)
         self.palm.a.proxyRadiusScale.set(0.8)
-
-        # h = self.rigSize * 10
-        # if LimbType.BASIC_ROLL.value == 2:
-        #     h /= self.rollJntNum * 0.5
-        # elif LimbType.RIBBON.value == 2:
-        #     h /= self.rbnJntNum * 0.5
-
-        # self.add_proxy_height(self.jnts_bind, h)
 
     def setup_ctlSet(self):
         """Setup control sets for the arm rig module."""

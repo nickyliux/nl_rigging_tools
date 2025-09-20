@@ -1,4 +1,5 @@
 import logging
+from nl_modules.utils import proxy
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.build.spine_qd import SpineQd
 
@@ -42,8 +43,8 @@ class NeckQd(SpineQd):
     def setup_bindJnt(self):
         """Setup bind joints for the neck rig."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxyRadiusScale(self.jnts_bind, 2)
-        self.add_proxyHeight(
+        proxy.add_radiusScale_attr(self.jnts_bind, 2)
+        proxy.add_height_attr(
             self.jnts_bind, CrvNode(self.LINE_GUIDE).length / (self.rbnJntNum * 1.5)
         )
 

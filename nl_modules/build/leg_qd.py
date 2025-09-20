@@ -7,6 +7,7 @@ from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
+from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.common import Vec
 from nl_modules.utils.color import Color
@@ -653,7 +654,7 @@ class LegQd(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the quadruped leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxyRadiusScale(self.jnts_bind, 2)
+        proxy.add_radiusScale_attr(self.jnts_bind, 2)
 
     def setup_scale(self):
         """Setup scale for the quadruped leg rig module."""

@@ -8,6 +8,7 @@ from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
+from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.common import Vec
 from nl_modules.utils.color import Color
@@ -657,13 +658,7 @@ class LegBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_proxyRadiusScale(self.jnts_bind, 2)
-
-        # h = self.rigSize * 10
-        # if self.ribbon:
-        #     h /= self.rbnJntNum * 0.5
-
-        # self.add_proxy_height(self.jnts_bind, h)
+        proxy.add_radiusScale_attr(self.jnts_bind, 2)
 
     def build_post(self):
         """Post setup for the leg rig module."""

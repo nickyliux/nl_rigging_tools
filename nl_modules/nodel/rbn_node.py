@@ -8,6 +8,7 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common
+from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
 from nl_modules.utils.common import Vec
@@ -30,7 +31,6 @@ class RbnNode:
         volMode=1,  # 0: upper, 1: lower
         scaleFix=None,
         forSpine=0,
-        size=1,
         p=None,
     ):
         # Initialize target and child
@@ -65,7 +65,7 @@ class RbnNode:
         self.scaleFix = scaleFix
         self.volMode = volMode
         self.rbJNum = rbJNum
-        self.size = size
+        self.size = self.tgt.o.distanceTo(self.tgtChild) / 100
         self.ikhs = []
 
         # Build the ribbon rig
@@ -121,10 +121,12 @@ class RbnNode:
                 f"rbj_{i}",
                 pf=self.pf,
                 p=self.RBJ_GRP,
-                r=self.size,  # / self.rbJNum * 5,
+                r=self.size * 3,
                 color=Color.YELLOW,
                 addOfs=1,
             )
+            proxy.add_height_attr([jnt], self.size / self.rbJNum * 50)
+
             pin_xf.cstPar(jnt.parent)
             pin_xf.a.inheritsTransform.set(0)
             self.jnts_rb.append(jnt)
