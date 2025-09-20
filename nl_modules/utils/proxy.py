@@ -181,7 +181,7 @@ def mirrorProxy(*args):
 
 
 @common.Undo("wrapProxy")
-def wrapProxy():
+def wrapProxy(*args):
     """Wrap selected meshes to the target wrap mesh using a shrinkWrap deformer."""
     selList = mc.ls(sl=1, tr=1)
     if selList:

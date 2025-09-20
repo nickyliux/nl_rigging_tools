@@ -77,9 +77,9 @@ class SpineBp(RigModule):
         ]
         if self.spineType == SpineType.RIBBON.value:
             ctl_defs += [
-                ("chest_ikc", "chest", None, rSz * 4, 0, 2),
+                ("chest_ikc", "chest", None, rSz * 5, 0, 2),
                 ("mid_ikc", "cube", None, rSz * 2, 1, -1),
-                ("hip_ikc", "hip", None, rSz * 4, 0, 2),
+                ("hip_ikc", "hip", None, rSz * 5, 0, 2),
             ]
 
         for name, shape, up, sca, top, w in ctl_defs:

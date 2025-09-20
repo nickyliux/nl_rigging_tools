@@ -59,9 +59,9 @@ class HandBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "X", None, scale * 2, 1, 2),
-            ("palm_ctl", "rotator", None, -scale, 0, -1),
-            ("thumb_ctl", "rotator", "z", -scale, 0, -1),
+            ("setting", "X", None, scale, 1, 2),
+            ("palm_ctl", "rotator", None, -scale / 2, 0, -1),
+            ("thumb_ctl", "rotator", "z", -scale / 2, 0, -1),
             ("smart_ctl", "cube", None, scale, 0, -1),
         ]
         for name, shape, up, sca, top, w in ctl_defs:
@@ -77,7 +77,6 @@ class HandBp(RigModule):
         """Build the hand rig module."""
         self.build_pre_module()
 
-        # self.jnts_bind = [self.rootJ]
         for root in self.rootJ.childrenJt:
             digit_jnts = [jnt for jnt in root.allChildrenJt2]
             self.jnts_fgr.append(digit_jnts)
@@ -136,17 +135,35 @@ class HandBp(RigModule):
     def setup_close_sdk(self):
         """Setup SDK for finger base controls."""
         drv = self.smart_ctl
-        dataList1 = [(-90, -90), (0, 0), (90, 90)]
-        dataList2 = [(-90, -80), (0, 0), (90, 80)]
+        dataList00 = [(-90, -30), (0, 0), (90, 40)]  # for thumb 1st
+        dataList01 = [(-90, -75), (0, 0), (90, 60)]  # for 1st
+
+        dataList1 = [(-90, -90), (0, 0), (90, 60)]  # for 1st
+        dataList2 = [(-90, -100), (0, 0), (90, 55)]  # for 2nd
+        dataList3 = [(-90, -70), (-45, -25), (0, 0), (90, 35)]  # for 3rd
 
         for i in range(1, 5):
-            for ctl in self.ctls_fgr[i][1:]:
-                for k in range(3):
-                    common.sdk(drv, ctl.offset, "ry", "ry", *dataList1[k], inf=1)
-
-        for ctl in self.ctls_fgr[0][1:]:
             for k in range(3):
-                common.sdk(drv, ctl.offset, "ry", "ry", *dataList2[k], inf=1)
+                common.sdk(
+                    drv, self.ctls_fgr[i][1].offset, "ry", "ry", *dataList1[k], inf=1
+                )
+            for k in range(3):
+                common.sdk(
+                    drv, self.ctls_fgr[i][2].offset, "ry", "ry", *dataList2[k], inf=1
+                )
+            for k in range(4):
+                common.sdk(
+                    drv, self.ctls_fgr[i][3].offset, "ry", "ry", *dataList3[k], inf=1
+                )
+        i = 0
+        for k in range(3):
+            common.sdk(
+                drv, self.ctls_fgr[i][1].offset, "ry", "ry", *dataList00[k], inf=1
+            )
+        for k in range(3):
+            common.sdk(
+                drv, self.ctls_fgr[i][2].offset, "ry", "ry", *dataList01[k], inf=1
+            )
 
     def setup_flap_sdk(self):
         """Setup SDK for finger flap controls."""
@@ -163,18 +180,11 @@ class HandBp(RigModule):
             [(90, 10), (0, 0), (-90, -10)],
             [(90, 40), (0, 0), (-90, -40)],
         ]
-        # dataList_rz = [
-        #     [(90, -5), (-90, 5)],
-        #     [(90, -10), (-90, 10)],
-        #     [(90, -20), (-90, 20)],
-        #     [(90, -40), (-90, 40)],
-        # ]
         for i in range(1, 5):
             ofs = self.ctls_fgr[i][1].offset
             for k in range(3):
                 common.sdk(drv, ofs, "rx", "ry", *dataList_ry[i - 1][k], inf=1)
                 common.sdk(drv, ofs, "rx", "rx", *dataList_rx[i - 1][k], inf=1)
-                # common.sdk(drv, ofs, "rx", "rz", *dataList_rz[i - 1][k], inf=1)
 
     def setup_spread_sdk(self):
         """Setup SDK for spread pose on fingers."""
@@ -200,17 +210,6 @@ class HandBp(RigModule):
             for k in range(3):
                 common.sdk(drv, ofs, "sy", "rz", *dataList_rz2[i][k], inf=1)
 
-            # Thumb
-            # dataList_rz3 = [
-            #     [(0, -50), (1, 0), (2, 20)],
-            # ]
-            # ofs = self.ctls_fgr[0][0].offset
-            # for k in range(3):
-            #     common.sdk(drv, ofs, "sy", "rz", *dataList_rz3[0][k], inf=1)
-            # ofs = self.ctls_fgr[0][1].offset
-            # for k in range(3):
-            #     common.sdk(drv, ofs, "sy", "rz", *dataList_rz3[0][k], inf=1)
-
     def setup_updn_sdk(self):
         """Setup SDK for up/down pose on fingers."""
         drv = self.smart_ctl
@@ -221,6 +220,14 @@ class HandBp(RigModule):
             common.sdk(drv, ofs, "tz", "ry", -10, 90 * xDr, inf=1)
             common.sdk(drv, ofs, "ty", "rz", 10, 90 * xDr, inf=1)
             common.sdk(drv, ofs, "ty", "rz", -10, -90 * xDr, inf=1)
+
+    def set_pre_post_infinity(self):
+        """Set pre and post infinity for the hand rig controls."""
+        animCrvNodes = self.smart_ctl.a.r.outConnNode
+        if animCrvNodes:
+            mc.select(animCrvNodes)
+            mc.selectKey()
+            mc.setInfinity(pri="linear", poi="linear")
 
     def setup_thumbCtl(self):
         rID, rSz, xDr = self.getMyVar()
@@ -257,9 +264,9 @@ class HandBp(RigModule):
         product4 >> fkc_ofs4.a.r
 
         # Add zro group for fgr ikH
-        grp2 = GrpNode("ikZro#", pf=rID, align=self.ctls_fgr[2][0], p=self.hand_grp)
-        grp3 = GrpNode("ikZro#", pf=rID, align=self.ctls_fgr[3][0], p=self.hand_grp)
-        grp4 = GrpNode("ikZro#", pf=rID, align=self.ctls_fgr[4][0], p=self.hand_grp)
+        grp2 = GrpNode("ikZro#", pf=rID, align=fkc_ofs2, p=self.hand_grp)
+        grp3 = GrpNode("ikZro#", pf=rID, align=fkc_ofs3, p=self.hand_grp)
+        grp4 = GrpNode("ikZro#", pf=rID, align=fkc_ofs4, p=self.hand_grp)
 
         self.ikHs_fgr[2] | grp2
         self.ikHs_fgr[3] | grp3
@@ -298,24 +305,13 @@ class HandBp(RigModule):
         self.setup_spread_sdk()
         self.setup_updn_sdk()
         self.set_pre_post_infinity()
-
         self.setup_palmCtl()
         self.setup_thumbCtl()
-        # self.setup_flap_meta_sdk()
-
-    def set_pre_post_infinity(self):
-        """Set pre and post infinity for the hand rig controls."""
-        animCrvNodes = self.smart_ctl.a.r.outConnNode
-        if animCrvNodes:
-            mc.select(animCrvNodes)
-            mc.selectKey()
-            mc.setInfinity(pri="linear", poi="linear")
 
     def setup_space(self):
         """Setup space switching for the hand rig controls."""
         self.rigNode.a.add("spaceName1", attrType="string", txt="palm")
         self.rigNode.a.add("spaceName2", attrType="string", txt="palmIK")
-
         self.rigNode.setMsg(
             {
                 "spaceHolder1": self.rootJ,
@@ -329,8 +325,6 @@ class HandBp(RigModule):
         self.smart_ctl.a.showAttr(t=1, r=1, s=1)
         self.palm_ctl.a.showAttr(r=1)
 
-        # for ctl in self.ctls_ik + [self.palm_ctl]:
-        #     ctl.a.showAttr(r=1)
         for ctls in self.ctls_fgr:
             for ctl in ctls:
                 ctl.a.showAttr(t=1, r=1)
@@ -347,16 +341,19 @@ class HandBp(RigModule):
 
     def setup_vis(self):
         """Setup visibility controls for the hand rig."""
-        showCtls = self.setting.a.add("fkCtls", attrType="bool", dv=0, k=0)
+        showCtls = self.smart_ctl.a.add("fkCtls", attrType="bool", dv=1, k=0)
         for ctls in self.ctls_fgr:
             showCtls >> ctls[0].a.v
+        for ctls in self.ctls_fgr:
+            # mc.hide(ctls[0].a.shapes)
+            ctls[0].shape.hide()
 
         mc.hide(self.ikHs_fgr, self.jnts_ik)
 
     def setup_ctlSet(self):
         """Setup control sets for the hand rig module."""
         ctlSet = [self.smart_ctl, self.palm_ctl, self.thumb_ctl]
-        [ctlSet.extend(x) for x in self.ctls_fgr]
+        [ctlSet.extend(x[1:]) for x in self.ctls_fgr]
         self.add_ctl_set(ctlSet)
 
     def setup_bindJnt(self):
@@ -379,14 +376,13 @@ class HandBp(RigModule):
         """Post setup for the hand rig module."""
         logging.info(self.rigID)
 
-        self.setting.alignTo(self.rootJ, p=self.CTL_DATA)
-        self.rootJ.cstPar(self.setting, mo=1)
+        self.setting.alignTo(self.smart_ctl, p=self.smart_ctl)  # p=self.CTL_DATA)
+        # self.rootJ.cstPar(self.setting, mo=1)
 
         self.setup_scale()
         self.setup_bindJnt()
         self.setup_ctlSet()
         self.setup_space()
-        # self.setup_anchor_module({"anchorS1": self.rootJ})
         self.setup_anchor_module({"anchorS1": self.rootGrp})
         self.setup_vis()
         self.setup_channel()
