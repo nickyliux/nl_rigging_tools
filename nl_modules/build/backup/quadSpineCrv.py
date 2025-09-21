@@ -191,7 +191,7 @@ class SpineQdCrv(rig_module.RigModule):
 
         # PROXY MESH
         for j in self.rootJ.allChildrenJt2:
-            JntNode(j).addProxyMesh(skipEnd=1, p=self.PRX)
+            JntNode(j).genProxyMesh(skipEnd=1, p=self.PRX)
 
         # [x.a.lockHide(t=1, r=1) for x in [self.cog_ctl, self.st_ctl, self.ed_ctl]]
         # self.md_ctl.a.lockHide(t=1)

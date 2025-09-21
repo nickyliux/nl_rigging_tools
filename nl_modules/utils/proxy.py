@@ -81,7 +81,7 @@ def genProxy():
     for j in bindJnts:
         grpName = str(j).split("_")[0]
         PRX_GRP = GrpNode(grpName + "_PRX", p=PRX)
-        JntNode(j).addProxyMesh(p=PRX_GRP)
+        JntNode(j).genProxyMesh(p=PRX_GRP)
 
     mc.select(cl=1)
     common.setViewport()  # jx=1, wos=1)
@@ -145,7 +145,7 @@ def resetProxy(*args):
             jnt = JntNode(selList[:-6])
             if jnt.exists():
                 mc.delete(selList)
-                jnt.addProxyMesh(p="PRX")
+                jnt.genProxyMesh(p="PRX")
     mc.select(cl=1)
 
 

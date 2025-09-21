@@ -150,7 +150,7 @@ class Ribbon(RigModule):
 
             jnt = JntNode("rb_jnt_#", pf=self.rigID, r=1, color=1, align=locN, p=locN)
             jnt.set_LRA()
-            jnt.addProxyMesh(p=self.PRX)
+            jnt.genProxyMesh(p=self.PRX)
 
         if p:
             rbSurf | p

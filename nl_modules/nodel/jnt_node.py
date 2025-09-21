@@ -93,7 +93,7 @@ class JntNode(GrpNode):
             else:
                 JntNode(jnt).resetOrient()
 
-    def addProxyMesh(self, scale=5, scaler=None, aimDir=(1, 0, 0), skipEnd=0, p=None):
+    def genProxyMesh(self, scale=5, scaler=None, aimDir=(1, 0, 0), skipEnd=0, p=None):
         """Add a proxy mesh for the joint."""
         from nl_modules.utils import common
 

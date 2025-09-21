@@ -9,6 +9,7 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.rbn_node import RbnNode
 from nl_modules.utils import common
+from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
 
@@ -1042,7 +1043,6 @@ class RigModule(RigBase):
             color=Color.RED,
         )
         jnt0.cstOri(roll_loc)
-
         return roll_loc, self.jnts_ro[0]
 
     def build_uprRollJ(self, jnt0, jnt1, num=2, suffix="_roll1"):
@@ -1054,6 +1054,7 @@ class RigModule(RigBase):
             j.color = Color.YELLOW
             j.rename(f"{jnt0.name}{suffix}_{i}")
             j.a.radius.set(self.rigSize)
+            proxy.add_height_attr([j], self.rigSize / num * 20)
 
             ratio = i / num
             common.cstMulti(jnt0, jnt1, j, cstType="poi", w=1 - ratio)
@@ -1073,6 +1074,7 @@ class RigModule(RigBase):
             j.color = Color.YELLOW
             j.rename(f"{jnt0.name}{suffix}_{i}")
             j.a.radius.set(self.rigSize)
+            proxy.add_height_attr([j], self.rigSize / num * 20)
 
             ratio = i / num
             common.cstMulti(jnt0, jnt0.parent, j, cstType="poi", w=1 - ratio)

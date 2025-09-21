@@ -67,7 +67,7 @@ def addAwesomeSpine(targetJ, scaleGrp=None, reader=None, ctlParent=None, grp=Non
     #     reader.a.rx >> ikCtl[2].a.rx
 
     for j in chain:
-        JntNode(j).addProxyMesh()
+        JntNode(j).genProxyMesh()
 
 
 def clusterSetup(crv, ikCtl):

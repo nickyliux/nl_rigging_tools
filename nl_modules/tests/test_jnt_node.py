@@ -49,12 +49,12 @@ class Test_JntNode_Main(Test_JntNode_Base):
         self.assertEqual(self.j1.a.jointOrientZ.get(), 0)
 
     def test_addProxyMesh(self):
-        px = self.j1.addProxyMesh()
+        px = self.j1.genProxyMesh()
         self.assertEqual(px.type, "mesh")
         self.assertEqual(px.a.t.get(), (5.0, 5.0, 0))
 
     def test_addProxyMesh2(self):
-        px = self.j2.addProxyMesh(skipEnd=1)
+        px = self.j2.genProxyMesh(skipEnd=1)
         self.assertEqual(px, None)
 
     def test_makeTwoJC(self):

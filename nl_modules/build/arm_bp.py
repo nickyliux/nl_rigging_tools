@@ -131,7 +131,6 @@ class ArmBp(RigModule):
             self.jnts_bind += [self.upr, self.lwr]
 
         elif self.limbType == LimbType.BASIC_ROLL.value:
-
             self.jnts_bind += [self.lwr]
             self.build_specialAim([self.lwr, self.palm])
 
