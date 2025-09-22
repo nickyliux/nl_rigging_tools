@@ -957,12 +957,13 @@ class RigModule(RigBase):
             aim_cst.a.constraintRotateZ >> loc.a.rz
 
             # Create joint at locator
-            # f"{i}_rbj", pf=rID, align=loc, r=rSz / jntNum * 12, p=loc, reset=1
             jnt = JntNode(f"{i}_rbj", pf=rID, align=loc, r=rSz * 2, p=loc, reset=1)
             rb_jnts.append(jnt)
             scaleAttr >> loc.a.s
 
             loc.shape.hide()
+
+        proxy.add_height_attr(rb_jnts, rSz / jntNum * 80)
 
         return crv_len_ratio, rb_jnts
 

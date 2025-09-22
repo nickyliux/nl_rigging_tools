@@ -188,6 +188,9 @@ class LegBp(RigModule):
         if self.kneeFix:
             self.boneFix_setup(self.lwr, self.palm)
 
+        # ---------------------------------------------------------------
+        #   Setup base on LimbType
+        # ---------------------------------------------------------------
         if self.limbType == LimbType.BASIC.value:
             self.jnts_bind += [self.upr]
             if self.kneeFix:
@@ -196,7 +199,10 @@ class LegBp(RigModule):
                 self.jnts_bind += [self.lwr]
 
         elif self.limbType == LimbType.BASIC_ROLL.value:
+
             self.jnts_bind += [self.lwr]
+            proxy.add_height_attr([self.lwr], self.rigSize * 10)
+
             self.build_specialAim([self.lwr, self.palm])
 
             jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)

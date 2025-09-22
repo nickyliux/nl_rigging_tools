@@ -127,11 +127,15 @@ class ArmBp(RigModule):
         # self.build_nlAutoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
         self.jnts_bind = [self.palm]
 
+        # ---------------------------------------------------------------
+        #   Setup base on LimbType
+        # ---------------------------------------------------------------
         if self.limbType == LimbType.BASIC.value:
             self.jnts_bind += [self.upr, self.lwr]
 
         elif self.limbType == LimbType.BASIC_ROLL.value:
             self.jnts_bind += [self.lwr]
+            proxy.add_height_attr([self.lwr], self.rigSize * 10)
             self.build_specialAim([self.lwr, self.palm])
 
             jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
@@ -364,7 +368,7 @@ class ArmBp(RigModule):
         )
 
         # Generate and aim clavicle joints
-        clavJnts = self.gen_sk_fr_names(["clavicle", "upr"], scale=0.5)
+        clavJnts = self.gen_sk_fr_names(["clavicle", "upr"], scale=0.3)
         scapuLoc.cstAim(clavJnts[0], aim=(xDr, 0, 0), u=(0, xDr, 0), keep=0)
         clavJnts[0].freezeXf()
         # IK handle for clavicle
@@ -395,8 +399,8 @@ class ArmBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         # Generate radius and ulna joint chains
-        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"])
-        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"])
+        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.5)
+        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=0.5)
 
         # Parent dual chains to lower arm
         (radius_JC[0], ulna_JC[0]) | self.lwr
@@ -533,7 +537,7 @@ class ArmBp(RigModule):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
         # proxy.add_radiusScale_attr(self.jnts_bind, 2)
-        self.palm.a.proxyRadiusScale.set(0.8)
+        # self.palm.a.proxyRadiusScale.set(0.5)
 
     def setup_ctlSet(self):
         """Setup control sets for the arm rig module."""

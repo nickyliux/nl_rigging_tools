@@ -113,33 +113,45 @@ class JntNode(GrpNode):
 
         children = self.childrenJt
         base_radius = self.a.radius.get() * scale
-        radius_scale = self.a["proxyRadiusScale"].get() or 1
-        div = self.a["proxyDiv"].get() or 2
-        height = self.a["proxyHeight"].get() or base_radius
+        proxy_radius_scale = self.a["proxyRadiusScale"].get() or 1
+        proxy_div = self.a["proxyDiv"].get() or 2
+        proxy_height = self.a["proxyHeight"].get()
 
-        if children or not skipEnd:
+        height = base_radius
+        if proxy_height is None:
             if children:
                 height = self.o.distanceTo(children[0]) * 0.7
+        else:
+            height = proxy_height
+
+        if not skipEnd:
 
             proxy = self.buildCylinder(
-                proxy_name, base_radius * radius_scale, height, aimDir, div, p
+                proxy_name,
+                base_radius * proxy_radius_scale,
+                height,
+                aimDir,
+                proxy_div,
+                p,
             )
             proxy_offset = proxy.addOffsetGrp()
 
             if scaler is not None:
                 scaler >> proxy.a.s
 
-            if children:
+            if proxy_height is None and children:
                 common.cstMulti(self, *children, proxy_offset, cstType="poi", delete=1)
-                if len(children) == 1:
-                    tgt_child = children[0]
-                    tgt_child.cstAim(
-                        proxy_offset,
-                        aim=aimDir,
-                        worldUpType="objectrotation",
-                        worldUpObject=self,
-                        keep=0,
-                    )
+                print(self)
+
+            if children and len(children) == 1:
+                tgt_child = children[0]
+                tgt_child.cstAim(
+                    proxy_offset,
+                    aim=aimDir,
+                    worldUpType="objectrotation",
+                    worldUpObject=self,
+                    keep=0,
+                )
 
             # Assign shader before constraints to avoid Maya errors
             common.assignPresetShd([proxy])
