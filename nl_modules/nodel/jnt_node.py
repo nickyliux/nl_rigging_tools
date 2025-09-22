@@ -93,6 +93,16 @@ class JntNode(GrpNode):
             else:
                 JntNode(jnt).resetOrient()
 
+    def buildCylinder(self, n, r, h, ax, div, p):
+        proxy = DagNode(
+            mc.polyCylinder(
+                n=n, r=r, h=h, ax=ax, subdivisionsAxis=8, subdivisionsHeight=div, ch=0
+            )[0]
+        )
+        mc.polySoftEdge(angle=0, ch=0)
+        proxy.alignTo(self, p=p)
+        return proxy
+
     def genProxyMesh(self, scale=5, scaler=None, aimDir=(1, 0, 0), skipEnd=0, p=None):
         """Add a proxy mesh for the joint."""
         from nl_modules.utils import common
@@ -103,42 +113,23 @@ class JntNode(GrpNode):
 
         children = self.childrenJt
         base_radius = self.a.radius.get() * scale
-
-        # Get proxy attributes with fallback defaults
-        proxy_ratio = self.a["proxyRadiusScale"].get() or 1
-        proxy_div = self.a["proxyDiv"].get() or 2
-        proxy_height = self.a["proxyHeight"].get() or base_radius
+        radius_scale = self.a["proxyRadiusScale"].get() or 1
+        div = self.a["proxyDiv"].get() or 2
+        height = self.a["proxyHeight"].get() or base_radius
 
         if children or not skipEnd:
-            # Determine proxy height: distance to first child or default size
             if children:
                 height = self.o.distanceTo(children[0]) * 0.7
-            else:
-                height = proxy_height
 
-            # Create the proxy mesh (polyCylinder)
-            proxy = DagNode(
-                mc.polyCylinder(
-                    n=proxy_name,
-                    r=base_radius / 2 * proxy_ratio,
-                    h=height,
-                    ax=aimDir,
-                    subdivisionsAxis=8,
-                    subdivisionsHeight=proxy_div,
-                    ch=0,
-                )[0]
+            proxy = self.buildCylinder(
+                proxy_name, base_radius * radius_scale, height, aimDir, div, p
             )
-            mc.polySoftEdge(angle=0, ch=0)
-            proxy.alignTo(self, p=p)
             proxy_offset = proxy.addOffsetGrp()
 
-            # Optionally connect scaler
             if scaler is not None:
                 scaler >> proxy.a.s
 
             if children:
-                # If there are children, set the proxy to aim at the first child
-                # common.cstMulti(self, tgt_child, proxy_offset, cstType="poi", delete=1)
                 common.cstMulti(self, *children, proxy_offset, cstType="poi", delete=1)
                 if len(children) == 1:
                     tgt_child = children[0]

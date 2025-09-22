@@ -658,7 +658,7 @@ class LegBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        proxy.add_radiusScale_attr(self.jnts_bind, 2)
+        # proxy.add_radiusScale_attr(self.jnts_bind, 2)
 
     def build_post(self):
         """Post setup for the leg rig module."""
