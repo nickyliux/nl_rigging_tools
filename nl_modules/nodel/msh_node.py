@@ -85,7 +85,7 @@ class MshNode(DagNode):
                 if item.skinCluster:
                     item.skinCluster.delete()
 
-                item.hardWeightTo(self.jnts)
+                item.hardWeightTo(self.joints)
                 mc.copySkinWeights(
                     ss=self.skinCluster.name,
                     ds=item.skinCluster.name,

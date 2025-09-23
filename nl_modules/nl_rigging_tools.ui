@@ -1090,7 +1090,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Bind with Proxy</string>
+          <string>Bind To Selected Proxies</string>
          </property>
         </widget>
        </item>

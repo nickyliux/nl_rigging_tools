@@ -194,47 +194,85 @@ def wrapProxy(*args):
         nlShrinkWrap(tgt, selList)
 
 
-def combineProxy():
-    """Combine all proxy meshes into a single mesh and create vertex sets for each original proxy mesh."""
-    proxies = mc.ls("*_pxGeo", sl=1)
-    if not proxies:
-        logging.warning("No proxy meshes selected.")
-        return
-
+def build_combined_mesh(proxies):
+    """Combine multiple proxy meshes into a single mesh."""
     dup = mc.duplicate(proxies)
-    combined = DagNode(mc.polyUnite(dup, n="combinedProxy#", ch=0)[0])
+    combinedMesh = DagNode(mc.polyUnite(dup, n="combinedProxy#", ch=0)[0])
+    return combinedMesh
 
+
+def build_sets_for_binding(combinedMesh, proxies):
+    """Create vertex sets on the combinedMesh corresponding to each original proxy mesh."""
+    # Build sets for binding
     cpom = DagNode("cpom", nodeType="closestPointOnMesh")
-    combined.shape.a.outMesh >> cpom.a.inMesh
+    combinedMesh.shape.a.outMesh >> cpom.a.inMesh
 
-    ptSet = []
     for p in proxies:
+        ptSet = []
         count = mc.polyEvaluate(p, v=1)
         for i in range(count):
             xf = mc.xform(f"{p}.vtx[{i}]", q=1, ws=1, t=1)
             cpom.a.inPosition.set(*xf)
             id = cpom.a.closestVertexIndex.get()
-            ptSet.append(f"{p}.vtx[{id}]")
+            ptSet.append(f"{combinedMesh}.vtx[{id}]")
+            # ptSet.append(f"{p}.vtx[{id}]")
         mc.sets(ptSet, name=p + "_PS")
 
     cpom.delete()
-    return combined
 
 
-def setProxyWeight(combined, proxies):
-    """Set skin weights for the combined proxy mesh based on the original proxy meshes."""
+def bind_using_proxy():
+    """Combine all proxy meshes into a single one and create vertex sets for each original proxy mesh."""
 
-    skinC = mel.eval("findRelatedSkinCluster " + combined)
+    targetWrapMesh = mc.optionVar(q="targetWrapMesh")
+    tgtMesh = DagNode(targetWrapMesh)
+    if not tgtMesh.exists():
+        logging.warning(f"Missing target wrap mesh")
+        return
+
+    skinC = mel.eval("findRelatedSkinCluster " + tgtMesh)
+    if skinC:
+        logging.warning(f"Target wrap mesh is already skinned.")
+        return
+
+    proxies = mc.ls("*_pxGeo", sl=1)
+    if not proxies:
+        logging.warning("No proxy meshes selected.")
+        return
+    else:
+        proxies = [DagNode(p) for p in proxies if DagNode(p).type == "mesh"]
+
+    combinedMesh = build_combined_mesh(proxies)
+    build_sets_for_binding(combinedMesh, proxies)
+    bind_combined(combinedMesh, tgtMesh, proxies)
+    set_combined_weight(combinedMesh, proxies)
+
+    print(combinedMesh, tgtMesh)
+    MshNode(combinedMesh).copyWeightsTo(tgtMesh)
+
+
+def bind_combined(combinedMesh, tgtMesh, proxies):
+    """Bind the combinedMesh proxy mesh to the corresponding joints."""
+    bindJnts = []
+    for p in proxies:
+        j = DagNode(p.name.replace("_pxGeo", ""))
+        if j.exists() and j.type == "joint":
+            bindJnts.append(j)
+
+    if bindJnts:
+        mc.skinCluster(bindJnts, combinedMesh, mi=4, nw=1, dr=4, tsb=1)[0]
+
+
+def set_combined_weight(combinedMesh, proxies):
+    """Set skin weights for the combinedMesh proxy mesh based on the original proxy meshes."""
+
+    skinC = mel.eval("findRelatedSkinCluster " + combinedMesh)
     bindJnts = mc.skinCluster(skinC, q=1, inf=1)
 
-    for p in proxies:
-        ptSet = DagNode(p + "_PS")
+    for j in bindJnts:
+        ptSet = DagNode(j + "_pxGeo_PS")
         if ptSet.exists():
-            proxyJ = DagNode(mc.substitute("_pxGeo", p, ""))
-            if proxyJ.exists() and proxyJ.type == "joint":
-                pass
-
-    # mc.skinPercent(proxyJ, tv=1, skinC, ptSet)
+            mc.skinPercent(skinC, ptSet, tv=[(j, 1)])
 
 
 # def selAllProxyGrp():

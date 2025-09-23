@@ -161,7 +161,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # )
         self.connect(self.UI.templateTarget_BN, self.templateTarget, ":templated.png")
         self.connect(self.UI.loadWrapTargetMesh_BN, self.loadWrapTargetMesh)
-        self.connect(self.UI.bindUsingProxy_BN, self.bindUsingProxy)
+        self.connect(self.UI.bindUsingProxy_BN, proxy.bind_using_proxy)
 
         # Bind
         self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind)
@@ -486,10 +486,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         #
         build.auto_attach_jnt_to_surf()
         mc.select(cl=1)
-
-    def bindUsingProxy(self):
-        """Bind all meshes in MODEL_GRP to proxy joints and rb joints."""
-        pass
 
     def templateTarget(self):
         """Toggle template target mesh for wrap deformer."""
