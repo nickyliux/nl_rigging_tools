@@ -141,7 +141,6 @@ class JntNode(GrpNode):
 
             if proxy_height is None and children:
                 common.cstMulti(self, *children, proxy_offset, cstType="poi", delete=1)
-                print(self)
 
             if children and len(children) == 1:
                 tgt_child = children[0]

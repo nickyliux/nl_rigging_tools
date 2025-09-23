@@ -30,7 +30,7 @@ class HandBp(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the hand rig."""
-        HAND_SCALE = 0.4
+        HAND_SCALE = 0.2
 
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["handJ"], scale=HAND_SCALE)

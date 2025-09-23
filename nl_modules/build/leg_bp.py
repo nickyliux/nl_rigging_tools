@@ -502,8 +502,8 @@ class LegBp(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.5)
-        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=0.5)
+        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.6)
+        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=0.6)
 
         parent = self.boneFix if self.kneeFix else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent
@@ -665,6 +665,8 @@ class LegBp(RigModule):
         """Setup bind joints for the leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
         # proxy.add_radiusScale_attr(self.jnts_bind, 2)
+        # proxy.add_radiusScale_attr([self.palm], 0.8)
+        proxy.add_height_attr([self.palm], self.rigSize * 6)
 
     def build_post(self):
         """Post setup for the leg rig module."""

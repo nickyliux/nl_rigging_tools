@@ -368,7 +368,7 @@ class ArmBp(RigModule):
         )
 
         # Generate and aim clavicle joints
-        clavJnts = self.gen_sk_fr_names(["clavicle", "upr"], scale=0.3)
+        clavJnts = self.gen_sk_fr_names(["clavicle", "upr"], scale=0.5)
         scapuLoc.cstAim(clavJnts[0], aim=(xDr, 0, 0), u=(0, xDr, 0), keep=0)
         clavJnts[0].freezeXf()
         # IK handle for clavicle
@@ -399,8 +399,8 @@ class ArmBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         # Generate radius and ulna joint chains
-        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.5)
-        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=0.5)
+        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.6)
+        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=0.6)
 
         # Parent dual chains to lower arm
         (radius_JC[0], ulna_JC[0]) | self.lwr
@@ -537,6 +537,7 @@ class ArmBp(RigModule):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
         # proxy.add_radiusScale_attr(self.jnts_bind, 2)
+        proxy.add_radiusScale_attr([self.palm], 0.5)
         # self.palm.a.proxyRadiusScale.set(0.5)
 
     def setup_ctlSet(self):
