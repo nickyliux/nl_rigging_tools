@@ -196,7 +196,11 @@ def wrapProxy(*args):
 
 def combineProxy():
     """Combine all proxy meshes into a single mesh and create vertex sets for each original proxy mesh."""
-    proxies = mc.ls("*_pxGeo")
+    proxies = mc.ls("*_pxGeo", sl=1)
+    if not proxies:
+        logging.warning("No proxy meshes selected.")
+        return
+
     dup = mc.duplicate(proxies)
     combined = DagNode(mc.polyUnite(dup, n="combinedProxy#", ch=0)[0])
 

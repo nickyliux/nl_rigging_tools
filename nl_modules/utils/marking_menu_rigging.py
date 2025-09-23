@@ -45,7 +45,7 @@ class MarkingMenuRigging:
 
         display_MI = mc.menuItem(p=menu, l="Display", rp="W", subMenu=1)
         mc.menuItem(p=display_MI, l="Show All", c=showHidden)
-        mc.menuItem(p=display_MI, l="--------------------", en=0)
+        mc.menuItem(p=display_MI, l="-" * 20, en=0)
         mc.menuItem(p=display_MI, l="LRA", c=partial(display_LRA, 1, 0))
         mc.menuItem(p=display_MI, l="LRA Off", c=partial(display_LRA, 0, 0), ob=1)
         mc.menuItem(p=display_MI, l="LRA -hi", c=partial(display_LRA, 1, 1))
@@ -64,9 +64,11 @@ class MarkingMenuRigging:
         mc.menuItem(p=offset_MI, l="Add Offset ( below )", c=add_ofs_below)
 
         channel_MI = mc.menuItem(p=menu, l="Channel", rp="E", subMenu=1)
-        mc.menuItem(p=channel_MI, l="LockH All", c=partial(lockAttr, "all", 1))
-        mc.menuItem(p=channel_MI, l="LockH Off", c=partial(lockAttr, "all", 0), ob=1)
-        mc.menuItem(p=channel_MI, l="--------------------", en=0)
+        mc.menuItem(p=channel_MI, l="Lock Hide All", c=partial(lockAttr, "all", 1))
+        mc.menuItem(
+            p=channel_MI, l="Lock Hide Off", c=partial(lockAttr, "all", 0), ob=1
+        )
+        mc.menuItem(p=channel_MI, l="-" * 20, en=0)
         mc.menuItem(p=channel_MI, l="Lock hide  T", c=partial(lockAttr, "t", 1))
         mc.menuItem(p=channel_MI, l="T off", c=partial(lockAttr, "t", 0), ob=1)
         mc.menuItem(p=channel_MI, l="Lock hide  R", c=partial(lockAttr, "r", 1))
@@ -77,9 +79,6 @@ class MarkingMenuRigging:
         mc.menuItem(p=channel_MI, l="V off", c=partial(lockAttr, "v", 0), ob=1)
 
         cst_MI = mc.menuItem(p=menu, l="Constraint", rp="NE", subMenu=1)
-        mc.menuItem(p=cst_MI, l="Select Drivers", c=partial(sel_cst_driver, 1))
-        mc.menuItem(p=cst_MI, l="Select Constrained", c=partial(sel_cst_driver, 0))
-        mc.menuItem(p=cst_MI, l="--------------------", en=0)
         mc.menuItem(p=cst_MI, l="Point", c=partial(cst, "poi", 0))
         mc.menuItem(p=cst_MI, l="Point mo", c=partial(cst, "poi", 1), ob=1)
         mc.menuItem(p=cst_MI, l="Orient", c=partial(cst, "ori", 0))
@@ -96,7 +95,8 @@ class MarkingMenuRigging:
         mc.menuItem(p=cst_MI, l="Aim  mo", c=partial(cst, "aim", 1), ob=1)
         mc.menuItem(p=cst_MI, l="PoleVector", c=partial(cst, "pvt", 0))
         mc.menuItem(p=cst_MI, l="Geo", c=partial(cst, "geo", 0))
-        mc.menuItem(p=cst_MI, l="--------------------", en=0)
+        mc.menuItem(p=cst_MI, l="-" * 20, en=0)
+
         mc.menuItem(p=cst_MI, l="Delete All", c=del_cst_mm)
 
         joint_MI = mc.menuItem(p=menu, l="Joint / IK", rp="SE", subMenu=1)
@@ -105,7 +105,7 @@ class MarkingMenuRigging:
         mc.menuItem(p=joint_MI, l="Spline IK", c=partial(add_IK, Solver.SPLINE))
         mc.menuItem(p=joint_MI, l="Spring IK", c=partial(add_IK, Solver.SPRING))
         mc.menuItem(p=joint_MI, l="2B IK", c=partial(add_IK, Solver.TWO_BONE))
-        mc.menuItem(p=joint_MI, l="----------", en=0)
+        mc.menuItem(p=joint_MI, l="-" * 20, en=0)
         mc.menuItem(p=joint_MI, l="LRA", c=partial(joint_LRA, 1))
         mc.menuItem(p=joint_MI, l="Hide LRA", c=partial(joint_LRA, 0), ob=1)
         mc.menuItem(p=joint_MI, l="Create Chain x 10 ", c=makeJointChain10_mm)
@@ -117,21 +117,21 @@ class MarkingMenuRigging:
         mc.menuItem(p=freeze_MI, l="R", c=partial(frz_xform, "r"))
         mc.menuItem(p=freeze_MI, l="S", c=partial(frz_xform, "s"))
 
-        mc.menuItem(p=menu, l="Match Pos Rot Sca", c=match_all)
+        mc.menuItem(p=menu, l="Match All", c=match_all)
         mc.menuItem(p=menu, l="Match Pos", c=match_pos)
         mc.menuItem(p=menu, l="Match Rot", c=match_rot)
-        mc.menuItem(p=menu, l="--------------------", en=0)
-        mc.menuItem(p=menu, l="Select Constrainer", c=select_cst_objects)
+        mc.menuItem(p=menu, l="-" * 20, en=0)
+        mc.menuItem(p=menu, l="Select Constrainer", c=select_contrainers)
         mc.menuItem(p=menu, l="Bind Skin", c=mc.SmoothBindSkin)
         mc.menuItem(p=menu, l="Bind Skin", c=mc.SmoothBindSkinOptions, ob=1)
         mc.menuItem(p=menu, l="Add Influence", c=addInf)
         mc.menuItem(p=menu, l="Add Influence", c=addInfOpt, ob=1)
         mc.menuItem(p=menu, l="Detach Skin", c=mc.DetachSkin)
-        mc.menuItem(p=menu, l="--------------------", en=0)
+        mc.menuItem(p=menu, l="-" * 20, en=0)
         mc.menuItem(p=menu, l="Use Last's Shapes", c=use_last_crv_shapes)
         mc.menuItem(p=menu, l="Add Last's Shapes", c=add_last_crv_shapes)
         mc.menuItem(p=menu, l="Break Instance", c=crvShape_breakInst)
-        mc.menuItem(p=menu, l="--------------------", en=0)
+        mc.menuItem(p=menu, l="-" * 20, en=0)
         mc.menuItem(p=menu, l="Reload Menu", c=reload_marking_menu)
 
 
@@ -183,7 +183,7 @@ def crvShape_breakInst(*args):
         mc.select(selList[0])
 
 
-def select_cst_objects(*args):
+def select_contrainers(*args):
     """Select the constraining objects of the first selected object"""
     selList = mc.ls(sl=1, tr=1)
     if selList:
@@ -332,13 +332,6 @@ def del_cst_mm(*args):
     """Delete all constraints from the selected objects"""
     for selList in mc.ls(sl=1):
         DagNode(selList).removeCstNodes()
-
-
-def sel_cst_driver(*args):
-    """Select the driver or constrained objects of the first selected object"""
-    selList = mc.ls(sl=1)
-    if selList:
-        mc.select(DagNode(selList[0]).getCstObjects())
 
 
 def match_all(*args):
