@@ -920,7 +920,7 @@ class RigModule(RigBase):
         for i in range(jntNum):
             # Motion path node
             mp_node = DagNode("mp_#", nodeType="motionPath")
-            mp_node.a.fm.set(1)
+            mp_node.a.fractionMode.set(1)
             (i * step) / ratio_out >> mp_node.a.uValue
 
             # Surface position nodes

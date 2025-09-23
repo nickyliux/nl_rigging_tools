@@ -74,7 +74,7 @@ class RbnNode:
     def build(self):
         """Build the ribbon rig."""
         self.build_grps()
-        self.build_surf()
+        self.build_surf_with_rivet()
         self.build_locs()
         self.build_aim_chains()
         # self.build_twist_chains()
@@ -91,7 +91,7 @@ class RbnNode:
         self.RBJ_GRP = GrpNode("rbj_grp", pf=self.pf, p=self.RBN_GRP)
         self.AIM_GRP = GrpNode("aim_grp", pf=self.pf, p=self.RBN_GRP)
 
-    def build_surf(self):
+    def build_surf_with_rivet(self):
         """Create the surface for the ribbon rig."""
         logging.info(self.pf)
         xDr = self.xDir
