@@ -181,7 +181,7 @@ class SpinePro(rig_module.RigModule):
             rbJNum=self.BIND_JNT_NUM,
             forSpine=1,
             scaleFix=self.masterC.a["globalScale"],
-            p=self.RIG_DATA,
+            RIG_DATA=self.RIG_DATA,
         )
 
         mc.delete(dummyG1)

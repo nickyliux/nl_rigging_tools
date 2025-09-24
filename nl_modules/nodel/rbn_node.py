@@ -8,7 +8,7 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common
-from nl_modules.utils import proxy
+
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
 from nl_modules.utils.common import Vec
@@ -31,7 +31,7 @@ class RbnNode:
         volMode=1,  # 0: upper, 1: lower
         scaleFix=None,
         forSpine=0,
-        p=None,
+        RIG_DATA=None,
     ):
         # Initialize target and child
         self.tgt = DagNode(tgt) if isinstance(tgt, str) else tgt
@@ -47,7 +47,7 @@ class RbnNode:
         # Core attributes
         self.d = None
         self.rbSrf = None
-        self.ribbonParent = p
+        self.RIG_DATA = RIG_DATA
         self.pf = pf
         self.jnts_rb = []
 
@@ -80,12 +80,11 @@ class RbnNode:
         # self.build_twist_chains()
         self.build_volume_setup()
         self.build_post()
-
         self.tgt.cstPar(self.RBN_GRP, keep=0)
 
     def build_grps(self):
         """Create the main groups for the ribbon rig."""
-        self.RBN_GRP = GrpNode("rbn_grp", pf=self.pf, p=self.ribbonParent)
+        self.RBN_GRP = GrpNode("rbn_grp", pf=self.pf, p=self.RIG_DATA)
         self.SRF_GRP = GrpNode("srf_grp", pf=self.pf, p=self.RBN_GRP)
         self.LOC_GRP = GrpNode("loc_grp", pf=self.pf, p=self.RBN_GRP)
         self.RBJ_GRP = GrpNode("rbj_grp", pf=self.pf, p=self.RBN_GRP)
@@ -97,39 +96,59 @@ class RbnNode:
         xDr = self.xDir
 
         crvLine = CrvNode.buildLine((0, 0, 0), (xDr * self.D, 0, 0), pf=self.pf)
+        # self.rbSrf = SrfNode.buildRbSrf(
+        #     pf=self.pf, crv=crvLine, normal=-1, spans=5, p=self.SRF_GRP, alongZ=0
+        # )
         self.rbSrf = SrfNode.buildRbSrf(
-            pf=self.pf, crv=crvLine, normal=-1, spans=5, p=self.SRF_GRP, alongZ=0
+            pf=self.pf,
+            crv=crvLine,
+            normal=-1,
+            spans=5,
+            p=self.SRF_GRP,
+            # snap=self.RT_GUIDE,
+            alongZ=0,
         )
         self.rbSrf.a.inheritsTransform.set(0)
         crvLine.delete()
 
         # Generate coordinates for rivets
-        coord = [(0.5, (2 * i + 1) / (2 * self.rbJNum)) for i in range(self.rbJNum)]
+        # coord = [(0.5, (2 * i + 1) / (2 * self.rbJNum)) for i in range(self.rbJNum)]
 
-        # Create rivets and attach joints
-        pin, pinXf = common.nlRivet(
-            geo=self.rbSrf,
-            coordList=coord,
-            normal=1,
-            tangent=2 if xDr == 1 else 5,
-            p=self.SRF_GRP,
-            size=self.size,
+        crvLenRatio, self.jnts_rb = common.build_mp_ribbon(
+            rbSrf=self.rbSrf,
+            jntNum=self.rbJNum,
+            scaleAttr=self.scaleFix,
+            stretchyAttr=1,
+            # stretchyAttr=self.setting.a.stretchy,
+            pf=self.pf,
+            rSz=self.size,
+            p=self.RIG_DATA,
+            SKL_DATA=self.RBJ_GRP,
         )
+        # Create rivets and attach joints
+        # pin, pinXf = common.nlRivet(
+        #     geo=self.rbSrf,
+        #     coordList=coord,
+        #     normal=1,
+        #     tangent=2 if xDr == 1 else 5,
+        #     p=self.SRF_GRP,
+        #     size=self.size,
+        # )
 
-        for i, pin_xf in enumerate(pinXf):
-            jnt = JntNode(
-                f"rbj_{i}",
-                pf=self.pf,
-                p=self.RBJ_GRP,
-                r=self.size * 3,
-                color=Color.YELLOW,
-                addOfs=1,
-            )
-            proxy.add_height_attr([jnt], self.size / self.rbJNum * 50)
+        # for i, pin_xf in enumerate(pinXf):
+        #     jnt = JntNode(
+        #         f"rbj_{i}",
+        #         pf=self.pf,
+        #         p=self.RBJ_GRP,
+        #         r=self.size * 3,
+        #         color=Color.YELLOW,
+        #         addOfs=1,
+        #     )
+        #     proxy.add_height_attr([jnt], self.size / self.rbJNum * 50)
 
-            pin_xf.cstPar(jnt.parent)
-            pin_xf.a.inheritsTransform.set(0)
-            self.jnts_rb.append(jnt)
+        #     pin_xf.cstPar(jnt.parent)
+        #     pin_xf.a.inheritsTransform.set(0)
+        #     self.jnts_rb.append(jnt)
 
     def build_locs(self):
         """Create locators for the start, middle, and end of the ribbon."""

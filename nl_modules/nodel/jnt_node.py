@@ -103,7 +103,7 @@ class JntNode(GrpNode):
         proxy.alignTo(self, p=p)
         return proxy
 
-    def genProxyMesh(self, scale=5, scaler=None, aimDir=(1, 0, 0), skipEnd=0, p=None):
+    def genProxyMesh(self, scaler=None, aimDir=(1, 0, 0), skipEnd=0, p=None):
         """Add a proxy mesh for the joint."""
         from nl_modules.utils import common
 
@@ -112,7 +112,7 @@ class JntNode(GrpNode):
             return None
 
         children = self.childrenJt
-        base_radius = self.a.radius.get() * scale
+        base_radius = self.a.radius.get() * 5
         proxy_radius_scale = self.a["proxyRadiusScale"].get() or 1
         proxy_div = self.a["proxyDiv"].get() or 2
         proxy_height = self.a["proxyHeight"].get()

@@ -24,7 +24,7 @@ class Head(RigModule):
     def gen_sk(self):
         """Generate the skeleton for the head rig."""
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(["st", "ed"], scale=2)
+        root_list = self.gen_sk_fr_names(["st", "ed"], scale=1.5)
         jaw_list = self.gen_sk_fr_names(["jaw", "jawEnd"], scale=0.8)
         lf_eye = self.gen_sk_fr_names("lf_eye", scale=0.3)[0]
         rt_eye = self.gen_sk_fr_names("rt_eye", scale=0.3)[0]
@@ -125,8 +125,7 @@ class Head(RigModule):
         """Setup bind joints for the head rig module."""
         self.jnts_bind = [self.head, self.jaw, self.lf_eye, self.rt_eye]
         self.add_bind_jnt_set(self.jnts_bind)
-        proxy.add_proxyDiv_attr(self.jnts_bind, 3)
-        proxy.add_height_attr([self.head], self.rigSize * 40)
+        proxy.add_proxyDiv_attr([self.head], 3)
 
     def build_post(self):
         """Post setup for the head rig module."""

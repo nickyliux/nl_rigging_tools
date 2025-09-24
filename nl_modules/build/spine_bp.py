@@ -232,11 +232,15 @@ class SpineBp(RigModule):
         self.chest_ikc.a.add("tangent", min=0, dv=1) >> self.jnts_ctl[2].a.sy
 
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
-        crvLenRatio, self.jnts_rb = self.build_motionPath_ribbon(
+        crvLenRatio, self.jnts_rb = common.build_mp_ribbon(
             rbSrf=self.rbSrf,
             jntNum=self.rbnJntNum,
             scaleAttr=self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
+            pf=rID,
+            rSz=rSz,
+            p=self.RIG_DATA,
+            SKL_DATA=self.SKL_DATA,
         )
         self.jnts_bind = self.jnts_rb
 

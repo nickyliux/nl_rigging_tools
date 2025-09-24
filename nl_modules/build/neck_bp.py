@@ -1,3 +1,4 @@
+from weakref import proxy
 from nl_modules.build.spine_bp import SpineBp, SpineType
 
 
@@ -10,6 +11,10 @@ class NeckBp(SpineBp):
     def __init__(self, rigNode):
         """Initialize the NeckBp rig module."""
         super().__init__(rigNode)
+
+    def setup_bindJnt(self):
+        """Setup bind joints for the spine rig."""
+        self.add_bind_jnt_set(self.jnts_bind)
 
     def setup_anchor(self):
         """Setup the anchor controls for the neck rig."""

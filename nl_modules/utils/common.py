@@ -663,6 +663,95 @@ def addIconToCurrShelf():
     logging.info("Tool icon created at the current shelf.")
 
 
+def build_mp_ribbon(
+    rbSrf=None,
+    jntNum=5,
+    scaleAttr=None,
+    stretchyAttr=None,
+    pf="",
+    rSz=1,
+    p=None,
+    SKL_DATA=None,
+):
+    """Build a motion path ribbon on the given surface with specified joint number."""
+    from nl_modules.nodel.base.dag_node import DagNode
+    from nl_modules.nodel.crv_node import CrvNode
+    from nl_modules.nodel.grp_node import GrpNode
+    from nl_modules.nodel.jnt_node import JntNode
+    from nl_modules.nodel.loc_node import LocNode
+    from nl_modules.utils import utils_node as ut
+    from nl_modules.utils import proxy
+
+    # --- Create a curve on the surface and calculate curve length ratio ---
+    crv = CrvNode(mc.duplicateCurve(f"{rbSrf}.u[0.5]", rn=0, local=0)[0])
+    crv.a.inheritsTransform.set(0)
+    crv | p  # self.RIG_DATA
+
+    crv_info = DagNode("crvInfo#", nodeType="curveInfo")
+    crv.shape.a.worldSpace >> crv_info.a.inputCurve
+
+    # --- Calculate curve length ratio based on the surface and scale attributes ---
+    crv_len_ratio = crv_info.a.arcLength / scaleAttr / crv.length
+
+    # --- Add joints onto the surface, supporting stretch and slider ---
+    ratio_out = ut.blend2_(crv_len_ratio, 1, stretchyAttr)
+    step = 1 / jntNum
+    loc_grp = GrpNode("loc_grp", pf=pf, p=SKL_DATA)
+    rb_jnts = []
+
+    for i in range(jntNum):
+        # Motion path node
+        mp_node = DagNode("mp_#", nodeType="motionPath")
+        mp_node.a.fractionMode.set(1)
+        (
+            (i + 0.5) * step
+        ) / ratio_out >> mp_node.a.uValue  # offset 0.5 to make it center
+
+        # Surface position nodes
+        cpos_node = DagNode("cpos_#", nodeType="closestPointOnSurface")
+        posi_node = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
+        posi_node.a.turnOnPercentage.set(1)
+
+        # Aim constraint node
+        aim_cst = DagNode("aimCst_#", nodeType="aimConstraint")
+        aim_cst | p
+
+        # Locator for joint placement
+        loc = LocNode(f"{i}_loc", pf=pf, p=loc_grp)
+
+        # Connections for curve and surface
+        crv.shape.a.worldSpace >> mp_node.a.geometryPath
+        mp_node.a.allCoordinates >> cpos_node.a.inPosition
+
+        rbSrf.shape.a.worldSpace >> cpos_node.a.inputSurface
+        cpos_node.a.parameterU >> posi_node.a.parameterU
+        cpos_node.a.parameterV >> posi_node.a.parameterV
+        rbSrf.shape.a.worldSpace >> posi_node.a.inputSurface
+
+        # Connect tangent and position for orientation
+        mc.connectAttr(f"{posi_node}.tangentV", f"{aim_cst}.target[0].targetTranslate")
+        posi_node.a.tangentU >> aim_cst.a.worldUpVector
+        posi_node.a.position >> loc.a.translate
+
+        # Connect aim constraint rotation to locator
+        aim_cst.a.constraintRotateX >> loc.a.rx
+        aim_cst.a.constraintRotateY >> loc.a.ry
+        aim_cst.a.constraintRotateZ >> loc.a.rz
+
+        # Create joint at locator
+        jnt = JntNode(f"{i}_rbj", pf=pf, align=loc, r=1, p=loc, reset=1)
+        rb_jnts.append(jnt)
+        scaleAttr >> loc.a.s
+
+        loc.shape.hide()
+        loc.a.inheritsTransform.set(0)
+
+    # proxy.add_height_attr(rb_jnts, rSz * 60 / jntNum)
+    proxy.add_height_attr(rb_jnts, mc.arclen(crv) / jntNum / 2)
+
+    return crv_len_ratio, rb_jnts
+
+
 # def calcBB(tgt):
 #     from nl_modules.nodel.base.dag_node import DagNode
 #

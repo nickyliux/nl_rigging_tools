@@ -94,6 +94,7 @@ class SpineQd(RigModule):
         )
 
     def build(self):
+        """Build the spine rig module."""
         rID, rSz, xDr = self.getMyVar()
 
         self.build_pre_module()
@@ -112,11 +113,15 @@ class SpineQd(RigModule):
         self.build_ik()
         self.rbSrf.weightTo(self.ikJnts, mi=4, dr=6, chain=0)
 
-        crvLenRatio, self.jnts_rb = self.build_motionPath_ribbon(
+        crvLenRatio, self.jnts_rb = common.build_mp_ribbon(
             rbSrf=self.rbSrf,
             jntNum=self.RBN_JNT_NUM,
             scaleAttr=self.setting.a.spineScale * self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretch,
+            pf=rID,
+            rSz=rSz,
+            p=self.RIG_DATA,
+            SKL_DATA=self.SKL_DATA,
         )
         self.jnts_bind = self.jnts_rb
         self.build_volume(crvLenRatio)

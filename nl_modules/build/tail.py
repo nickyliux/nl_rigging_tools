@@ -100,11 +100,15 @@ class Tail(RigModule):
         """Create the ribbon for the tail rig."""
         logging.info(self.rigID)
 
-        crvLenRatio, self.jnts_rb = self.build_motionPath_ribbon(
+        crvLenRatio, self.jnts_rb = common.build_mp_ribbon(
             rbSrf=self.rbSrf2,
             jntNum=self.rbnJntNum,
             scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
+            pf=self.rigID,
+            rSz=self.rigSize,
+            p=self.RIG_DATA,
+            SKL_DATA=self.SKL_DATA,
         )
         self.jnts_bind = self.jnts_rb
 
@@ -268,9 +272,6 @@ class Tail(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the tail rig controls."""
         self.add_bind_jnt_set(self.jnts_bind)
-        # proxy.add_height_attr(
-        #     self.jnts_bind, CrvNode(self.LINE_GUIDE).length / (self.rbnJntNum * 1.5)
-        # )
 
     def setup_space(self):
         pass
