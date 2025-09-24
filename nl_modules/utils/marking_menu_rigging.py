@@ -44,15 +44,19 @@ class MarkingMenuRigging:
         mc.menuItem(p=create_MI, l="Loc", c="mc.spaceLocator()")
 
         display_MI = mc.menuItem(p=menu, l="Display", rp="W", subMenu=1)
-        mc.menuItem(p=display_MI, l="Show All", c=showHidden)
+        mc.menuItem(p=display_MI, l="Show Poly Only", c=showOnly)
+        mc.menuItem(p=display_MI, l="Show All", c=showAll)
         mc.menuItem(p=display_MI, l="-" * 20, en=0)
         mc.menuItem(p=display_MI, l="LRA", c=partial(display_LRA, 1, 0))
         mc.menuItem(p=display_MI, l="LRA Off", c=partial(display_LRA, 0, 0), ob=1)
         mc.menuItem(p=display_MI, l="LRA -hi", c=partial(display_LRA, 1, 1))
         mc.menuItem(p=display_MI, l="Nurbs CV", c=partial(display_CV, 1))
         mc.menuItem(p=display_MI, l="Nurbs CV Off", c=partial(display_CV, 0), ob=1)
+        mc.menuItem(p=display_MI, l="-" * 20, en=0)
         mc.menuItem(p=display_MI, l="Joint Size => 1", c=partial(jointDisplay, 1))
         mc.menuItem(p=display_MI, l="Joint Size => 0.1", c=partial(jointDisplay, 0.1))
+        mc.menuItem(p=display_MI, l="-" * 20, en=0)
+        mc.menuItem(p=display_MI, l="Show All Hidden", c=showAllHidden)
 
         connect_MI = mc.menuItem(p=menu, l="Connect", rp="NW", subMenu=1)
         mc.menuItem(p=connect_MI, l="T:  1st >> 2nd", c=partial(connect_channel, "t"))
@@ -150,9 +154,21 @@ def jointDisplay(*args):
     mc.jointDisplayScale(args[0])
 
 
-def showHidden(*args):
+def showAllHidden(*args):
     """Show all hidden objects in the scene"""
     mc.showHidden(all=1)
+
+
+def showAll(*args):
+    allPanels = mc.getPanel(type="modelPanel")
+    for p in allPanels:
+        mc.modelEditor(p, e=1, allObjects=1)
+
+
+def showOnly(*args):
+    allPanels = mc.getPanel(type="modelPanel")
+    for p in allPanels:
+        mc.modelEditor(p, e=1, allObjects=0, polymeshes=1)
 
 
 def use_last_crv_shapes(*args):
