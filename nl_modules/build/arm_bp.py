@@ -285,7 +285,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         self.setting.alignTo(
-            self.clavicle, p=self.CTL_DATA, ofs=(scale * 30, scale * 10, 0)
+            self.clavicle, p=self.CTL_DATA, ofs=(scale * 30, scale * 15, 0)
         )
         self.clavicle.cstPar(self.setting, mo=1)
 
@@ -460,7 +460,7 @@ class ArmBp(RigModule):
 
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyCtls", attrType="bool", dv=0, k=0),
+                self.setting.a.add("ShowBendy", attrType="bool", k=0, dv=0),
                 onList=self.all_bend,
             )
 

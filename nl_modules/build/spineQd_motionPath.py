@@ -113,9 +113,9 @@ class SpineQd(RigModule):
         self.build_ik()
         self.rbSrf.weightTo(self.ikJnts, mi=4, dr=6, chain=0)
 
-        crvLenRatio, self.jnts_rb = common.build_mp_ribbon(
+        crvLenRatio, self.jnts_rb = common.build_ribbon_rivet(
             rbSrf=self.rbSrf,
-            jntNum=self.RBN_JNT_NUM,
+            rivetNum=self.RBN_JNT_NUM,
             scaleAttr=self.setting.a.spineScale * self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretch,
             pf=rID,

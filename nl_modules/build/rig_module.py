@@ -335,7 +335,9 @@ class RigModule(RigBase):
         # Show rotate order attribute in channelBox
         for node in mc.ls(tr=1):
             node = DagNode(node)
-            if node.type == "nurbsCurve" or node.type == "joint":
+            if (
+                node.type == "nurbsCurve" and not node.name.endswith("_guide")
+            ) or node.type == "joint":
                 mc.setAttr(node + ".ro", cb=1)
 
         # Hide module grp

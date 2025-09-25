@@ -1197,7 +1197,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Skel</string>
+      <string>Skeleton</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

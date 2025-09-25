@@ -60,8 +60,8 @@ class HandBp(RigModule):
 
         ctl_defs = [
             ("setting", "X", None, scale, 1, 2),
-            ("palm_ctl", "rotator", None, -scale / 2, 0, -1),
-            ("thumb_ctl", "rotator", "z", -scale / 2, 0, -1),
+            ("palm_ctl", "rotator", None, -scale * 0.8, 0, -1),
+            ("thumb_ctl", "rotator", "z", -scale * 0.8, 0, -1),
             ("smart_ctl", "cube", None, scale, 0, -1),
         ]
         for name, shape, up, sca, top, w in ctl_defs:
@@ -94,10 +94,10 @@ class HandBp(RigModule):
 
         ctlList = []
         for fgr in fgrs[:-1]:
-            ctl = CrvNode(
-                f"{fgr.name}_ctl", shape="squareR", up="x", scale=scale, align=fgr
-            )
-            ctl.cv_scale(1, 0.2, 1)
+            ctl = CrvNode(f"{fgr.name}_ctl", shape="stick2", scale=scale / 3, align=fgr)
+            # up=None,
+            ctl.cv_rotate(90, 0, 0)
+            # ctl.cv_scale(1, 0.2, 1)
             ctlList.append(ctl)
         return ctlList
 

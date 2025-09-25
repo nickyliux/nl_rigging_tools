@@ -439,7 +439,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Mirror all reference joints in the scene."""
         selectedJnt = mc.ls("lf_*_refJnt", type="joint")
         if selectedJnt:
-            guide.mirrorGuide(selectedJnt, wsMirror=1)
+            guide.mirrorRef(selectedJnt, wsMirror=1)
         else:
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 

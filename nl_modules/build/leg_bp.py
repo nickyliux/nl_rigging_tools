@@ -138,7 +138,7 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "X", "z", scale / 2, 1, 2),
+            ("setting", "X", "z", scale, 1, 2),
             ("hip_fkc", "circle", "x", scale, 0, -1),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
@@ -548,11 +548,11 @@ class LegBp(RigModule):
             self.ikc.a.add("pvc", attrType="bool", dv=1, k=0),
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
-        # if self.ribbon:
-        #     self.ctl_vis_toggle(
-        #         self.setting.a.add("bendyCtls", attrType="bool", k=0, dv=1),
-        #         onList=self.all_bend,
-        #     )
+        if self.limbType == LimbType.RIBBON.value:
+            self.ctl_vis_toggle(
+                self.setting.a.add("bendyCtls", attrType="bool", k=0, dv=0),
+                onList=self.all_bend,
+            )
         mc.hide(self.ikhs, self.toeIKHs)
 
     def setup_channel(self):
@@ -664,7 +664,7 @@ class LegBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        proxy.add_height_attr([self.palm], self.rigSize * 6)
+        proxy.add_height_attr([self.palm], self.rigSize * 10)
 
     def build_post(self):
         """Post setup for the leg rig module."""

@@ -111,8 +111,8 @@ def getMasterGuide(tgtN):
             return DagNode(master_guide_name)
 
 
-def getOppositeCtl(tgtN, pfL="lf", pfR="rt", strB4Pf=1):
-    """Return opposite ctl
+def getOpposite(tgtN, pfL="lf", pfR="rt", strB4Pf=1):
+    """Return opposite
     e.g.
         lf_leg0_ikc =>              rt_leg0_ikc
         head0_lf_eye, pfB4Pf=1 =>   head0_rt_eye
@@ -187,11 +187,22 @@ def mirrorGuide(tgtList, wsMirror=0):
     """Mirror xform for tgtList objects"""
     for tgt in tgtList:
         tgt = DagNode(tgt)
-        opp = getOppositeCtl(tgt)
+        opp = getOpposite(tgt)
         mg = getMasterGuide(opp)
         if opp:
-            if mg and mg.a.mirrorable.get():
+            if mg is None or (mg and mg.a.mirrorable.get()):
                 copyGuideAttr(tgt, opp, wsMirror=wsMirror, mirror=1)
+        else:
+            logging.warning(f"opposite not found for {tgt.name}")
+
+
+def mirrorRef(tgtList, wsMirror=0):
+    """Mirror xform for tgtList objects"""
+    for tgt in tgtList:
+        tgt = DagNode(tgt)
+        opp = getOpposite(tgt)
+        if opp:
+            copyGuideAttr(tgt, opp, wsMirror=wsMirror, mirror=1)
         else:
             logging.warning(f"opposite not found for {tgt.name}")
 

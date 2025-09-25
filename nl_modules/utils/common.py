@@ -5,6 +5,8 @@ import maya.cmds as mc
 from maya import mel
 from collections import OrderedDict
 
+from nl_modules.utils.color import Color
+
 
 CST_DICT = OrderedDict(
     poi=mc.pointConstraint,
@@ -403,7 +405,6 @@ def printIkStat():
 
 def addNonRollJ(tgtJ):
     """Add non-roll joint to target joint, for roll control"""
-    from nl_modules.utils.color import Color
     from nl_modules.nodel.ik_node import IkNode, Solver
     from nl_modules.nodel.loc_node import LocNode
 
@@ -666,13 +667,14 @@ def addIconToCurrShelf():
     logging.info("Tool icon created at the current shelf.")
 
 
-def build_mp_ribbon(
+def build_ribbon_rivet(
     rbSrf=None,
-    jntNum=5,
+    rivetNum=5,
     scaleAttr=None,
     stretchyAttr=None,
     pf="",
     rSz=1,
+    outputJnt=1,
     p=None,
     SKL_DATA=None,
 ):
@@ -698,22 +700,20 @@ def build_mp_ribbon(
 
     # --- Add joints onto the surface, supporting stretch and slider ---
     ratio_out = ut.blend2_(crv_len_ratio, 1, stretchyAttr)
-    step = 1 / jntNum
+    step = 1 / rivetNum
     loc_grp = GrpNode("loc_grp", pf=pf, p=SKL_DATA)
-    rb_jnts = []
+    outputs = []
 
-    for i in range(jntNum):
+    for i in range(rivetNum):
         # Motion path node
-        mp_node = DagNode("mp_#", nodeType="motionPath")
-        mp_node.a.fractionMode.set(1)
-        (
-            (i + 0.5) * step
-        ) / ratio_out >> mp_node.a.uValue  # offset 0.5 to make it center
+        mp = DagNode("mp_#", nodeType="motionPath")
+        mp.a.fractionMode.set(1)
+        ((i + 0.5) * step) / ratio_out >> mp.a.uValue  # offset 0.5 to make it center
 
         # Surface position nodes
-        cpos_node = DagNode("cpos_#", nodeType="closestPointOnSurface")
-        posi_node = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
-        posi_node.a.turnOnPercentage.set(1)
+        cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
+        posi = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
+        posi.a.turnOnPercentage.set(1)
 
         # Aim constraint node
         aim_cst = DagNode("aimCst_#", nodeType="aimConstraint")
@@ -722,37 +722,43 @@ def build_mp_ribbon(
         # Locator for joint placement
         loc = LocNode(f"{i}_loc", pf=pf, p=loc_grp)
 
-        # Connections for curve and surface
-        crv.shape.a.worldSpace >> mp_node.a.geometryPath
-        mp_node.a.allCoordinates >> cpos_node.a.inPosition
+        crv.shape.a.worldSpace >> mp.a.geometryPath
 
-        rbSrf.shape.a.worldSpace >> cpos_node.a.inputSurface
-        cpos_node.a.parameterU >> posi_node.a.parameterU
-        cpos_node.a.parameterV >> posi_node.a.parameterV
-        rbSrf.shape.a.worldSpace >> posi_node.a.inputSurface
+        mp.a.allCoordinates >> cpos.a.inPosition
+        rbSrf.shape.a.worldSpace >> cpos.a.inputSurface
+
+        rbSrf.shape.a.worldSpace >> posi.a.inputSurface
+        cpos.a.parameterU >> posi.a.parameterU
+        cpos.a.parameterV >> posi.a.parameterV
 
         # Connect tangent and position for orientation
-        mc.connectAttr(f"{posi_node}.tangentV", f"{aim_cst}.target[0].targetTranslate")
-        posi_node.a.tangentU >> aim_cst.a.worldUpVector
-        posi_node.a.position >> loc.a.translate
+        mc.connectAttr(f"{posi}.tangentV", f"{aim_cst}.target[0].targetTranslate")
+        posi.a.tangentU >> aim_cst.a.worldUpVector
+        posi.a.position >> loc.a.translate
 
         # Connect aim constraint rotation to locator
         aim_cst.a.constraintRotateX >> loc.a.rx
         aim_cst.a.constraintRotateY >> loc.a.ry
         aim_cst.a.constraintRotateZ >> loc.a.rz
 
-        # Create joint at locator
-        jnt = JntNode(f"{i}_rbj", pf=pf, align=loc, r=1, p=loc, reset=1)
-        rb_jnts.append(jnt)
+        if outputJnt:
+            # Create joint at locator
+            jnt = JntNode(
+                f"{i}_rbj", pf=pf, align=loc, r=1, p=loc, reset=1, color=Color.D_RED
+            )
+            outputs.append(jnt)
+        else:
+            outputs.append(loc)
+
         scaleAttr >> loc.a.s
 
         loc.shape.hide()
         loc.a.inheritsTransform.set(0)
 
-    # proxy.add_height_attr(rb_jnts, rSz * 60 / jntNum)
-    proxy.add_height_attr(rb_jnts, mc.arclen(crv) / jntNum / 2)
+    # proxy.add_height_attr(output, rSz * 60 / jntNum)
+    proxy.add_height_attr(outputs, mc.arclen(crv) / rivetNum / 2)
 
-    return crv_len_ratio, rb_jnts
+    return crv_len_ratio, outputs
 
 
 # def calcBB(tgt):

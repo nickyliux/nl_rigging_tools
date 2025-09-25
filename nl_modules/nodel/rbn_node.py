@@ -114,9 +114,9 @@ class RbnNode:
         # Generate coordinates for rivets
         # coord = [(0.5, (2 * i + 1) / (2 * self.rbJNum)) for i in range(self.rbJNum)]
 
-        crvLenRatio, self.jnts_rb = common.build_mp_ribbon(
+        crvLenRatio, self.jnts_rb = common.build_ribbon_rivet(
             rbSrf=self.rbSrf,
-            jntNum=self.rbJNum,
+            rivetNum=self.rbJNum,
             scaleAttr=self.scaleFix,
             stretchyAttr=1,
             # stretchyAttr=self.setting.a.stretchy,

@@ -47,7 +47,7 @@ def mirrorCtlShape(ctl):
         logging.info(f"Missing master guide for {ctl}")
         return
 
-    opp = guide.getOppositeCtl(ctl, strB4Pf=0)
+    opp = guide.getOpposite(ctl, strB4Pf=0)
     if not opp:
         logging.info(f"No opposite found for {ctl.name}")
         return

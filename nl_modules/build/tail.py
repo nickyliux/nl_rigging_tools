@@ -99,9 +99,9 @@ class Tail(RigModule):
     def build_ribbon(self):
         """Create the ribbon for the tail rig."""
         logging.info(self.rigID)
-        crvLenRatio, self.jnts_rb = common.build_mp_ribbon(
+        crvLenRatio, self.jnts_rb = common.build_ribbon_rivet(
             rbSrf=self.rbSrf2,
-            jntNum=self.rbnJntNum,
+            rivetNum=self.rbnJntNum,
             scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
             pf=self.rigID + "_2",
@@ -170,13 +170,14 @@ class Tail(RigModule):
         # --- Build pin constraints for FK controls ---
         # coord = [(0.5, i / self.fkJntNum) for i in range(self.fkJntNum + 1)]
         # pin, pinXf = common.nlRivet(geo=self.rbSrf1, coordList=coord, p=self.RIG_DATA)
-        crvLenRatio, pinXf = common.build_mp_ribbon(
+        crvLenRatio, pinXf = common.build_ribbon_rivet(
             rbSrf=self.rbSrf1,
-            jntNum=self.fkJntNum + 1,
+            rivetNum=self.fkJntNum + 1,
             scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
             pf=rID,
             rSz=rSz,
+            outputJnt=0,
             p=self.RIG_DATA,
             SKL_DATA=self.SKL_DATA,
         )
