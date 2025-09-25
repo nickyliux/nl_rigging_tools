@@ -210,6 +210,9 @@ def nlRivet(
     e.g.
         nlRivet(geo='surf', coordList=[(0.5,0.5), (0,1)])
         nlRivet(geo='mesh', coordList=[(0.5,0.5), (0,1)])
+
+    NOTE: There is a problem of this method that the rivet does not follow the direction
+    when the surface is deformed sideway !!!
     """
     from nl_modules.nodel.base.dag_node import DagNode
     from nl_modules.nodel.loc_node import LocNode
