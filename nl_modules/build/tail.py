@@ -148,6 +148,11 @@ class Tail(RigModule):
         self.setting.snapTo(self.ctls_ik[0], p=self.FK_GRP, ofs=(0, rSz * 20, 0))
         self.ctls_ik[0].cstPar(self.setting, mo=1)
 
+        RigModule.isolate_align(
+            self.ctls_ik[0],
+            spaces=[self.ctls_ik[0].offset, self.masterC],
+        )
+
     def build_fk(self):
         """Build the FK controls for the tail rig."""
         logging.info(self.rigID)
@@ -221,21 +226,18 @@ class Tail(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the tail rig controls."""
         self.ctl_vis_toggle(
-            self.setting.a.add("ikCtls", k=0, attrType="bool", dv=1),
+            self.setting.a.add("showIk", k=0, attrType="bool", dv=1),
             onList=[self.ctls_ik[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("fkCtls", k=0, attrType="bool", dv=1),
+            self.setting.a.add("showFk", k=0, attrType="bool", dv=1),
             onList=[self.ctls_fk[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("subIkCtls", k=0, attrType="bool", dv=1),
+            self.setting.a.add("showSubIk", k=0, attrType="bool", dv=1),
             onList=self.ctls_ofs,
         )
-        self.ctl_vis_toggle(
-            self.setting.a.add("debugVis", attrType="bool", k=0, dv=0),
-            onList=self.jnts_fk + self.jnts_ik + self.jnts_ofs,
-        )
+        mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)
         mc.hide(self.rbSrf1, self.rbSrf2)
 
     def setup_channel(self):
@@ -272,6 +274,7 @@ class Tail(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the tail rig controls."""
         self.add_bind_jnt_set(self.jnts_bind)
+        proxy.add_radiusScale_attr(self.jnts_bind, 0.4)
 
     def setup_space(self):
         pass

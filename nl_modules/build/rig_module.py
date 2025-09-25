@@ -244,7 +244,7 @@ class RigModule(RigBase):
                 i += 1
 
     @staticmethod
-    def isolate_align(tgt, spaces=None, attrName="isolate", dv=0, cstType="ori"):
+    def isolate_align(tgt, spaces=None, attrName="rotateIsolate", dv=0, cstType="ori"):
         """Add isolate attr to tgt to allow separate cst for the neck"""
         allSpaces = []
         if len(spaces) == 2:
@@ -1051,7 +1051,7 @@ class RigModule(RigBase):
 
         self.all_bend = [upr_bend, lwr_bend, mid_bend]
         for ctl in self.all_bend:
-            ctl(shape="ribbon", up="x", scale=rSz)
+            ctl(shape="ribbon", up="x", scale=rSz * 1.3)
 
         upLoc.cstPar(upr_bend.offset, mo=1)
         if upLoc.children:
