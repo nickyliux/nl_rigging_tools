@@ -12,10 +12,6 @@ class NeckBp(SpineBp):
         """Initialize the NeckBp rig module."""
         super().__init__(rigNode)
 
-    def setup_bindJnt(self):
-        """Setup bind joints for the spine rig."""
-        self.add_bind_jnt_set(self.jnts_bind)
-
     def setup_anchor(self):
         """Setup the anchor controls for the neck rig."""
         m1 = (

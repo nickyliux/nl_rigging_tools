@@ -289,7 +289,10 @@ class SpineBp(RigModule):
         #     self.setting.a.add("debugVis", attrType="bool", dv=0, k=0),
         #     onList=self.jnts_ctl + self.jnts_fk,  # + self.jnts_rb,
         # )
-        mc.hide(self.jnts_ctl, self.jnts_fk)
+        if self.spineType == SpineType.RIBBON.value:
+            mc.hide(self.jnts_fk)
+
+        mc.hide(self.jnts_ctl)
         mc.hide(self.rbSrf)
         if self.is_neck():
             mc.hide(self.cog_ctl)
@@ -343,7 +346,8 @@ class SpineBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the spine rig."""
         self.add_bind_jnt_set(self.jnts_bind)
-        proxy.add_radiusScale_attr(self.jnts_bind, 2)
+        if not self.is_neck():
+            proxy.add_radiusScale_attr(self.jnts_bind, 2)
 
     def setup_ctlSet(self):
         """Setup control sets for the spine rig."""

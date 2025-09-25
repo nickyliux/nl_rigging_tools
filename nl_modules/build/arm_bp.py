@@ -112,7 +112,6 @@ class ArmBp(RigModule):
         self.clavicle_fkc.cv_rotate(0, 0, -45)
         self.ikc.cv_rotate(0, 90, 0)
         self.pvc.cv_rotate(-90, 0, 0)
-        # self.palm_ikc.cv_move(scale * 5, 0, 0)
 
     def build(self):
         """Build the arm rig module."""
@@ -305,7 +304,7 @@ class ArmBp(RigModule):
         self.ballRoll_loc | self.palmOut_loc | self.palmIn_loc | self.jnts_bf[-1]
 
         self.palm_rolling(
-            self.palm_ikc,
+            self.ikc,
             self.palm_fkc,
             self.pin_fkc,
             self.ballRoll_loc,
@@ -428,18 +427,20 @@ class ArmBp(RigModule):
         # self.updateBindJntList(remove=[self.lwr], extend=[radius_JC[0], ulna_JC[0]])
         self.jnts_bind += [radius_JC[0], ulna_JC[0]]
 
-    def palm_rolling(self, tgt, fkc, fkPin, locRoll, locIn, locOut):
+    def palm_rolling(self, ikc, fkc, fkPin, locRoll, locIn, locOut):
         """Setup palm rolling for the arm rig controls."""
-        palmRoll = tgt.a.add("palmRoll")
+        palmRoll = self.setting.a.add("palmRoll")
         palmRoll * -1 >> locRoll.a.rz
         fkc.a.add("palmRoll", proxy=palmRoll)
         fkPin.a.add("palmRoll", proxy=palmRoll)
+        ikc.a.add("palmRoll", proxy=palmRoll)
 
-        palmBank = tgt.a.add("palmBank")
+        palmBank = self.setting.a.add("palmBank")
         ut.min_(palmBank, 0) * -1 >> locIn.a.rx
         ut.max_(0, palmBank) * -1 >> locOut.a.rx
         fkc.a.add("palmBank", proxy=palmBank)
         fkPin.a.add("palmBank", proxy=palmBank)
+        ikc.a.add("palmBank", proxy=palmBank)
 
     def setup_vis(self):
         """Setup visibility toggles for the arm rig controls."""
@@ -456,6 +457,7 @@ class ArmBp(RigModule):
             self.ikc.a.add("pvc", attrType="bool", dv=1, k=0),
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
+
         mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_bf)
 
         if self.limbType == LimbType.RIBBON.value:
@@ -464,7 +466,8 @@ class ArmBp(RigModule):
                 onList=self.all_bend,
             )
 
-        self.ikc.a.v >> self.palm_ikc.a.v
+        # self.ikc.a.v >> self.palm_ikc.a.v
+        self.ikc.a.localRot >> self.palm_ikc.a.v
         mc.hide(self.ikhs)
 
     def setup_channel(self):

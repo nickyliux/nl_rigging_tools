@@ -88,7 +88,7 @@ class FingerFk(RigModule):
             # ("pvc", "pvc", "z", -scale, 0, -1),
         ]
         if self.segNum >= 2:
-            ctl_defs.append(("fgr02_fkc", "stickS", None, -scale, 1, 4))
+            ctl_defs.append(("fgr02_fkc", "stickS", None, -scale, 1, 3))
         if self.segNum >= 3:
             ctl_defs.append(("fgr03_fkc", "stickC", None, -scale, 1, -1))
         if self.segNum >= 4:
@@ -241,7 +241,7 @@ class FingerFk(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts[:-1])
-        proxy.add_height_attr(self.jnts_bind, self.rigSize * 5)
+        proxy.add_radiusScale_attr(self.jnts, 0.5)
 
     def build_post(self):
         """Post setup for the leg rig module."""

@@ -1059,7 +1059,7 @@
         <number>6</number>
        </property>
        <item>
-        <widget class="QPushButton" name="bindUsingProxy_BN">
+        <widget class="QPushButton" name="bindToSelProxy_BN">
          <property name="enabled">
           <bool>true</bool>
          </property>

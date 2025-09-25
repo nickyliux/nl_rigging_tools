@@ -221,7 +221,7 @@ def build_sets_for_binding(combinedMesh, proxies):
     cpom.delete()
 
 
-def bind_using_proxy():
+def bind_to_sel_proxy():
     """Combine all proxy meshes into a single one and create vertex sets for each original proxy mesh."""
 
     targetWrapMesh = mc.optionVar(q="targetWrapMesh")
@@ -244,14 +244,17 @@ def bind_using_proxy():
 
     combinedMesh = build_combined_mesh(proxies)
     build_sets_for_binding(combinedMesh, proxies)
-    bind_combined(combinedMesh, tgtMesh, proxies)
-    set_combined_weight(combinedMesh, proxies)
+    bind_combined(combinedMesh, proxies)
+    set_combined_weight(combinedMesh)
 
-    print(combinedMesh, tgtMesh)
+    mc.polySmooth(combinedMesh, mth=1)
     MshNode(combinedMesh).copyWeightsTo(tgtMesh)
+    combinedMesh.delete()
+
+    mc.select(tgtMesh)
 
 
-def bind_combined(combinedMesh, tgtMesh, proxies):
+def bind_combined(combinedMesh, proxies):
     """Bind the combinedMesh proxy mesh to the corresponding joints."""
     bindJnts = []
     for p in proxies:
@@ -263,7 +266,7 @@ def bind_combined(combinedMesh, tgtMesh, proxies):
         mc.skinCluster(bindJnts, combinedMesh, mi=4, nw=1, dr=4, tsb=1)[0]
 
 
-def set_combined_weight(combinedMesh, proxies):
+def set_combined_weight(combinedMesh):
     """Set skin weights for the combinedMesh proxy mesh based on the original proxy meshes."""
 
     skinC = mel.eval("findRelatedSkinCluster " + combinedMesh)
