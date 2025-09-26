@@ -239,10 +239,8 @@ def loadTemplate(removeUnused=1):
     )
     if tgtFile is None:
         return
-    else:
-        tgtFile = tgtFile[0]
 
-    rigID_dict = file.loadJson(tgtFile)
+    rigID_dict = file.loadJson(tgtFile[0])
     if removeUnused:  # Remove unused components
         idInPreset = [k + "_RGN" for k in rigID_dict.keys()]
         for node in build.getRigNodes_all():

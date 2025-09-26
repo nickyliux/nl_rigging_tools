@@ -1794,7 +1794,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QPushButton" name="batchLoadW_BN">
+        <widget class="QPushButton" name="loadWeight_BN">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -1830,7 +1830,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="batchSaveW_BN">
+        <widget class="QPushButton" name="saveWeight_BN">
          <property name="enabled">
           <bool>true</bool>
          </property>

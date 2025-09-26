@@ -1,7 +1,11 @@
+import os
 import logging
+from maya import mel
 from maya import cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.msh_node import MshNode
+from nl_modules.utils import common
+from nl_modules.utils import file
 
 
 def skinRefJnts(tgts, closestSet, thld=5, uiPB=None):
@@ -79,3 +83,87 @@ def delSkinForSkMesh():
         count += MshNode(msh).delSkin()
 
     logging.info(f"{count} skinClusters deleted.")
+
+
+def loadWeight():
+    """Load skin weight joints from a JSON file."""
+    charPath = mc.optionVar(q="charPath")
+    tgtFile = mc.fileDialog2(
+        fileFilter="*.json", dialogStyle=2, fileMode=1, dir=charPath
+    )
+    if tgtFile is None:
+        return
+
+    tgtDir = os.path.dirname(tgtFile[0])
+    weightJnt_dict = file.loadJson(tgtFile[0])
+    for mesh in weightJnt_dict.keys():
+
+        # Skip if mesh not found
+        if not mc.objExists(mesh):
+            continue
+
+        weightFile = tgtDir + "/" + mesh + ".xml"
+
+        # Skip if weight file not found
+        if not mc.file(weightFile, q=1, ex=1):
+            logging.warning(f"Weight file NOT found: {weightFile}")
+            continue
+
+        # Delete skin if exists
+        skinC = DagNode(mel.eval("findRelatedSkinCluster " + mesh))
+        if skinC.exists():
+            skinC.delete()
+
+        # Skin and load weights
+        skinC = mc.skinCluster(mesh, weightJnt_dict[mesh], tsb=1)
+        mc.select(mesh)
+        mc.deformerWeights(
+            mesh + ".xml",
+            im=1,
+            method="index",
+            deformer=skinC,
+            format="XML",
+            path=tgtDir,
+        )
+        logging.info(f"Weight loaded: {mesh}")
+
+
+def saveWeight():
+    """Save skin weight joints for selected meshes to a JSON file."""
+    charPath = mc.optionVar(q="charPath")
+    if charPath == None or charPath == "":
+        mc.confirmDialog(t="Error", m="Character path NOT set.     ", b="OK")
+        return
+
+    # mc.select(hi=1)
+    # mc.select(mc.ls(type="mesh", sl=1))
+    # mc.pickWalk(d="up")
+    # selected = mc.ls(sl=1)
+    weightJntDict = {}
+    meshesToSave = common.getTypeBelow(mc.ls(sl=1), tgtType="mesh")
+
+    for mesh in meshesToSave:
+        skinC = mel.eval("findRelatedSkinCluster " + mesh)
+        if skinC:
+            jntList = mc.listConnections(skinC + ".matrix", type="joint")
+            # if jntList and len(jntList) > 0:
+            weightJntDict[mesh.name] = jntList
+
+    if not weightJntDict:
+        logging.warning("No skin joints found.")
+        return
+
+    tgtFile = mc.fileDialog2(
+        fileFilter="*.json", dialogStyle=2, fileMode=0, dir=charPath
+    )
+    if tgtFile is None:
+        return
+    else:
+        file.saveJson(tgtFile[0], weightJntDict, force=1)
+        for mesh in meshesToSave:
+            skinC = mel.eval("findRelatedSkinCluster " + mesh)
+            if skinC:
+                mc.deformerWeights(
+                    mesh + ".xml", ex=1, deformer=skinC, format="XML", path=charPath
+                )
+        logging.info("Weight joints saved")

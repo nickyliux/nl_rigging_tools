@@ -163,6 +163,10 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.loadWrapTargetMesh_BN, self.loadWrapTargetMesh)
         self.connect(self.UI.bindToSelProxy_BN, proxy.bind_to_sel_proxy)
 
+        # Weight
+        self.connect(self.UI.loadWeight_BN, skin.loadWeight, ":openScript.png")
+        self.connect(self.UI.saveWeight_BN, skin.saveWeight, ":fileSave.png")
+
         # Bind
         self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind)
         self.connect(self.UI.delSkinForAllMeshes_BN, skin.delSkinForSkMesh)
