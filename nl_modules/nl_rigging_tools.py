@@ -154,7 +154,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.selAllProxyGrp_BN, proxy.selAllProxyMesh, ":aselect.png")
         self.connect(self.UI.showHideProxy_BN, proxy.showHideProxy, ":visible.png")
         # self.connect(self.UI.refProxy_BN, proxy.refProxy, ":templated.png")
-        self.connect(self.UI.wrapProxy_BN, proxy.wrapProxy, ":shrinkwrap.png")
+        # self.connect(self.UI.wrapProxy_BN, proxy.wrapProxy, ":shrinkwrap.png")
         # self.connect(self.UI.resetProxy_BN, proxy.resetProxy, ":refresh.png")
         # self.connect(
         #     self.UI.mirrorProxy_BN, proxy.mirrorProxy, ":polyMirrorGeometry.png"
@@ -165,7 +165,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         # Bind
         self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind)
-        self.connect(self.UI.delSkinForAllMeshes_BN, skin.delSkinForAllMeshes)
+        self.connect(self.UI.delSkinForAllMeshes_BN, skin.delSkinForSkMesh)
 
         # RigNode
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)

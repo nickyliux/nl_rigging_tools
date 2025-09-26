@@ -97,7 +97,7 @@ class ArmBp(RigModule):
 
         ctl_defs = [
             ("setting", "X", "z", scale, 1, 2),
-            ("clavicle_fkc", "stickC", None, scale, 0, 2),
+            ("clavicle_fkc", "stickC", None, scale / 2, 0, 2),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
             ("palm_fkc", "circle", "x", scale, 0, -1),
@@ -362,13 +362,13 @@ class ArmBp(RigModule):
         scapularJ | self.clavicle
 
         # Locator for aiming
-        scapuLoc = LocNode(
-            "scapuLoc", pf=rID, snap=clavEnd_guide, p=scapularJ, size=rSz * 10
+        scapLoc = LocNode(
+            "scapLoc", pf=rID, snap=clavEnd_guide, p=scapularJ, size=rSz * 10
         )
 
         # Generate and aim clavicle joints
         clavJnts = self.gen_sk_fr_names(["clavicle", "upr"], scale=0.5)
-        scapuLoc.cstAim(clavJnts[0], aim=(xDr, 0, 0), u=(0, xDr, 0), keep=0)
+        scapLoc.cstAim(clavJnts[0], aim=(xDr, 0, 0), u=(0, xDr, 0), keep=0)
         clavJnts[0].freezeXf()
         # IK handle for clavicle
         clav_ikh = IkNode(
@@ -381,7 +381,7 @@ class ArmBp(RigModule):
             vis=0,
             p=self.RIG_DATA,
         )
-        scapuLoc.cstPoi(clav_ikh)
+        scapLoc.cstPoi(clav_ikh)
 
         # Set up bind joints and constraints
         self.clavBone = clavJnts[0]

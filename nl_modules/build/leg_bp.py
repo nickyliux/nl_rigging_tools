@@ -466,7 +466,6 @@ class LegBp(RigModule):
             # ctl,
             ikJ, ikH = self.build_digit_ik(ikTgt, scale=scale / 4, p=self.ball_fkc)
             self.toeIKHs.append(ikH)
-            # ikJ.a.r >> ikTgt.a.r
 
             # FK setup for toe
             ctlList = []
@@ -484,6 +483,7 @@ class LegBp(RigModule):
             # self.toesCtlsList.append([ctl])
 
             ikJ.a.r >> ctlList[0].addOffsetGrp().a.r
+            ikJ.hide()
 
         # --- Remove palm and ball from bind joints (handled by toes) ---
         # self.updateBindJntList(remove=[self.palm, self.ball])

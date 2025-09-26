@@ -197,7 +197,8 @@ def wrapProxy(*args):
 def build_combined_mesh(proxies):
     """Combine multiple proxy meshes into a single mesh."""
     dup = mc.duplicate(proxies)
-    combinedMesh = DagNode(mc.polyUnite(dup, n="combinedProxy#", ch=0)[0])
+    combinedMesh = DagNode(mc.polyUnite(dup, n="combinedProxy#")[0])
+    mc.delete(combinedMesh, ch=1)
     return combinedMesh
 
 
@@ -247,11 +248,12 @@ def bind_to_sel_proxy():
     bind_combined(combinedMesh, proxies)
     set_combined_weight(combinedMesh)
 
-    mc.polySmooth(combinedMesh, mth=1)
+    mc.polySmooth(combinedMesh, mth=1, ch=0)
     MshNode(combinedMesh).copyWeightsTo(tgtMesh)
     combinedMesh.delete()
 
     mc.select(tgtMesh)
+    logging.info("Bind to selected proxy OK.")
 
 
 def bind_combined(combinedMesh, proxies):

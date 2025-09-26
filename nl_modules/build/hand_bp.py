@@ -341,14 +341,15 @@ class HandBp(RigModule):
 
     def setup_vis(self):
         """Setup visibility controls for the hand rig."""
-        showCtls = self.smart_ctl.a.add("fkCtls", attrType="bool", dv=1, k=0)
+        showFgrCtls = self.smart_ctl.a.add("showFgrCtls", attrType="bool", dv=0, k=0)
         for ctls in self.ctls_fgr:
-            showCtls >> ctls[0].a.v
+            showFgrCtls >> ctls[0].a.v
+
         for ctls in self.ctls_fgr:
-            # mc.hide(ctls[0].a.shapes)
             ctls[0].shape.hide()
 
         mc.hide(self.ikHs_fgr, self.jnts_ik)
+        self.setting.shape.hide()
 
     def setup_ctlSet(self):
         """Setup control sets for the hand rig module."""

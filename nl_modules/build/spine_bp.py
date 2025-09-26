@@ -79,15 +79,12 @@ class SpineBp(RigModule):
         if self.spineType == SpineType.RIBBON.value:
             ctl_defs += [
                 ("chest_ikc", "chest", None, rSz * 5, 0, 2),
-                ("mid_ikc", "cube", None, rSz * 2, 1, -1),
+                ("mid_ikc", "diamond3", None, rSz * 2, 1, -1),
                 ("hip_ikc", "hip", None, rSz * 5, 0, 2),
             ]
 
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
-
-        if self.spineType == SpineType.RIBBON.value:
-            self.mid_ikc.cv_scale(1, 0.5, 1)
 
     def build(self):
         """Build the spine rig module."""

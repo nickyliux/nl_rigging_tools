@@ -26,4 +26,4 @@ def import_model(self):
     tgtFile = get_model_file()
     if tgtFile:
         file.importFile(tgtFile)
-        common.setViewport(fit=1, jx=1)
+        common.setViewport(fit=1)  # , jx=1)

@@ -70,10 +70,10 @@ def skinRbJnts(tgts, uiPB=None):
     logging.info(f"{weighted} weighted. {ignored} ignored. {notFound} NOT found.")
 
 
-def delSkinForAllMeshes():
+def delSkinForSkMesh():
     """Delete skinClusters for all meshes in the scene."""
 
-    allMeshes = mc.ls(type="mesh") or []
+    allMeshes = mc.ls("*_bone", type="mesh") or []
     count = 0
     for msh in allMeshes:
         count += MshNode(msh).delSkin()
