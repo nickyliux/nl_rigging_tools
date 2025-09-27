@@ -169,7 +169,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         # Bind
         self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind)
-        self.connect(self.UI.delSkinForAllMeshes_BN, skin.delSkinForSkMesh)
 
         # RigNode
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
@@ -447,26 +446,25 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         else:
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 
-    def bindRefJnts(self, meshes, searchSet=None, thld=5, uiPB=None):
-        """Bind meshes to reference joints in a specified set."""
-        from nl_modules.utils import skin
+    def autoBind_refJnts(self, meshes=None, jntSet=None, thld=5, uiPB=None):
+        """Bind meshes to the closest reference joints."""
+        if not DagNode(jntSet).exists():
+            raise ValueError(f"Set {jntSet} NOT found for auto skin.")
 
-        if not DagNode(searchSet).exists():
-            raise ValueError(f"Set {searchSet} NOT found for auto skin.")
-
-        jntList = set(mc.sets(searchSet, q=1))
+        jntList = set(mc.sets(jntSet, q=1))
         jntsScap = set([o for o in jntList if o.endswith("_scapular")])
         jntsNoScap = jntList - jntsScap
 
         meshesScap = [o for o in meshes if o.a["isBlade"].exists()]
         meshesNoScap = set(meshes) - set(meshesScap)
 
-        skin.skinRefJnts(meshesNoScap, jntsNoScap, thld=thld, uiPB=uiPB)
-        skin.skinRefJnts(meshesScap, jntsScap, thld=thld, uiPB=uiPB)
+        skin.skinRefJnts(meshes=meshesNoScap, jnts=jntsNoScap, thld=thld, uiPB=uiPB)
+        skin.skinRefJnts(meshes=meshesScap, jnts=jntsScap, thld=thld, uiPB=uiPB)
 
     @common.Undo("boneAutoBind")
     def boneAutoBind(self):
-        """Bind all meshes in MODEL_GRP to reference joints and rb joints."""
+        """Bind all meshes in MODEL_GRP to reference joints and ribbon joints."""
+
         if not mc.objExists(MODEL_GRP):
             mc.confirmDialog(t="Info", m=f"{MODEL_GRP} NOT found.    ", b="OK")
             return
@@ -474,22 +472,22 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             mc.confirmDialog(t="Info", m=f"{BIND_REF_GRP} NOT found.    ", b="OK")
             return
 
-        meshSel = common.getTypeBelow(MODEL_GRP)
-        #
-        #   bind to closest refJnt in MODEL_GRP, and _rbnJnt For each in MODEL GRP
-        #
-        self.bindRefJnts(
-            meshSel, searchSet=BIND_JNT_SET, thld=15, uiPB=self.UI.progress_PB
-        )
-        # self.bindRbnJnts(meshSel, uiPB=self.UI.progress_PB)
-        from nl_modules.utils import skin
+        tgtMesh = common.getTypeBelow(MODEL_GRP)
 
-        skin.skinRbJnts(meshSel, uiPB=self.UI.progress_PB)
-        #   search the attr rbSrf & rbJSet for each rigNode and attach joints
-        #   to surface with 'closest point on surface' node
-        #
-        build.auto_attach_jnt_to_surf()
-        mc.select(cl=1)
+        # Bind either to closest refJnt, or corresponding rbnJnt
+        self.autoBind_refJnts(
+            meshes=tgtMesh,
+            jntSet=BIND_JNT_SET,
+            thld=15,
+            uiPB=self.UI.progress_PB,
+        )
+        skin.autoBind_rbnJnts(
+            tgtMesh,
+            uiPB=self.UI.progress_PB,
+        )
+
+        # Search rbSrf, rbJSet for each rigNode and attach joints with closest-point-on-surface
+        build.autoAttach_jntToSrf()
 
     def templateTarget(self):
         """Toggle template target mesh for wrap deformer."""

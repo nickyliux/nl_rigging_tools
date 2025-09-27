@@ -501,7 +501,7 @@ class RigModule(RigBase):
 
         common.sdk(driver, driven, "ry", "tx", 0, 0)
         common.sdk(driver, driven, "ry", "tx", -80, s * 1.5, tangent=1)
-        common.sdk(driver, driven, "ry", "tx", -170, -2.0 * s, tangent=1)
+        common.sdk(driver, driven, "ry", "tx", -170, 0, tangent=1)
 
     def patella_setup(self):
         """Setup patella guide and joint for the leg rig."""

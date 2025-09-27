@@ -50,8 +50,8 @@ class MshNode(DagNode):
                 sc.delete()
             except RuntimeError:
                 mc.warning(f"Failed to delete skinCluster: {sc}")
-                return 1
-        return 0
+                return 0
+        return 1
 
     @property
     def joints(self):

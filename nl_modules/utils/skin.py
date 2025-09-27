@@ -8,23 +8,22 @@ from nl_modules.utils import common
 from nl_modules.utils import file
 
 
-def skinRefJnts(tgts, closestSet, thld=5, uiPB=None):
-    """Skin target meshes to their _refJnt if found and within threshold distance."""
-
+def skinRefJnts(meshes=None, jnts=None, thld=5, uiPB=None):
+    """Skin meshes to their _refJnt if found and within threshold distance."""
     weighted = 0
     ignored = 0
 
     if uiPB:
-        uiPB.setMaximum(len(tgts))
+        uiPB.setMaximum(len(meshes))
 
-    for i, mesh in enumerate(tgts):
+    for i, mesh in enumerate(meshes):
         jnt = DagNode(mesh.name + "_refJnt")
 
         if jnt.exists():
             if mesh.skinCluster:
                 ignored += 1
             else:
-                closest = jnt.getClosestInList(closestSet)
+                closest = jnt.getClosestInList(jnts)
                 if closest:
                     if closest.o.distanceTo(jnt) < thld:
                         MshNode(mesh).weightTo(closest, mi=1, tsb=1)
@@ -44,7 +43,7 @@ def skinRefJnts(tgts, closestSet, thld=5, uiPB=None):
     logging.info(f"{weighted} weighted. {ignored} ignored.")
 
 
-def skinRbJnts(tgts, uiPB=None):
+def autoBind_rbnJnts(tgts, uiPB=None):
     """Skin target meshes to their _rbJnt if found."""
 
     weighted = 0
@@ -74,10 +73,9 @@ def skinRbJnts(tgts, uiPB=None):
     logging.info(f"{weighted} weighted. {ignored} ignored. {notFound} NOT found.")
 
 
-def delSkinForSkMesh():
+def delSkinForSel():
     """Delete skinClusters for all meshes in the scene."""
-
-    allMeshes = mc.ls("*_bone", type="mesh") or []
+    allMeshes = mc.ls(sl=1, tr=1)
     count = 0
     for msh in allMeshes:
         count += MshNode(msh).delSkin()
@@ -96,7 +94,7 @@ def loadWeight():
 
     tgtDir = os.path.dirname(tgtFile[0])
     weightJnt_dict = file.loadJson(tgtFile[0])
-    for mesh in weightJnt_dict.keys():
+    for mesh in weightJnt_dict:
 
         # Skip if mesh not found
         if not mc.objExists(mesh):
@@ -116,6 +114,7 @@ def loadWeight():
 
         # Skin and load weights
         skinC = mc.skinCluster(mesh, weightJnt_dict[mesh], tsb=1)
+
         mc.select(mesh)
         mc.deformerWeights(
             mesh + ".xml",
@@ -125,7 +124,7 @@ def loadWeight():
             format="XML",
             path=tgtDir,
         )
-        logging.info(f"Weight loaded: {mesh}")
+        logging.info(f"{mesh} : Bound and weight loaded.")
 
 
 def saveWeight():

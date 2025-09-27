@@ -407,8 +407,8 @@ def getRigNode(obj):
         logging.info("Get rigNode for non-existing object.")
 
 
-def auto_attach_jnt_to_surf():
-    """Auto attach joints to surface for all ribbon rigNodes"""
+def autoAttach_jntToSrf():
+    """Auto attach joints to surface for all rigNodes with ribbon"""
     from nl_modules.utils import common
 
     masterCtl = DagNode("master_ctl")
@@ -448,7 +448,6 @@ def auto_attach_jnt_to_surf():
             logging.warning("Surface object NOT found.")
             continue
 
-        # Attach joints in set to surface
         common.ribbonAttach(
             geo=rbSrf,
             tgtList=rbJnts,
