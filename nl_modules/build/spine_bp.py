@@ -236,6 +236,7 @@ class SpineBp(RigModule):
             stretchyAttr=self.setting.a.stretchy,
             pf=rID,
             rSz=rSz,
+            atMidOrEnd=1,
             p=self.RIG_DATA,
             SKL_DATA=self.SKL_DATA,
         )

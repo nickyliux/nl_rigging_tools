@@ -222,22 +222,18 @@ def build_sets_for_binding(combinedMesh, proxies):
     cpom.delete()
 
 
-def bind_to_sel_proxy():
+def bind_to_selected_proxy():
     """Combine all proxy meshes into a single one and create vertex sets for each original proxy mesh."""
 
     targetWrapMesh = mc.optionVar(q="targetWrapMesh")
     tgtMesh = DagNode(targetWrapMesh)
     if not tgtMesh.exists():
         mc.confirmDialog(t="Error", m="Target wrap mesh NOT found.     ", b="OK")
-        # logging.warning(f"Missing target wrap mesh")
         return
 
     skinC = mel.eval("findRelatedSkinCluster " + tgtMesh)
     if skinC:
-        mc.confirmDialog(
-            t="Error", m="Target wrap mesh is already skinned.     ", b="OK"
-        )
-        # logging.warning(f"Target wrap mesh is already skinned.")
+        mc.confirmDialog(t="Error", m="Target wrap mesh already skinned.     ", b="OK")
         return
 
     proxies = mc.ls("*_pxGeo", sl=1)
@@ -255,6 +251,7 @@ def bind_to_sel_proxy():
     mc.polySmooth(combinedMesh, mth=1)
     MshNode(combinedMesh).copyWeightsTo(tgtMesh)
     combinedMesh.delete()
+    mc.select(cl=1)
 
     logging.info("Bind to selected proxy OK.")
 

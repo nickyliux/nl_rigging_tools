@@ -693,6 +693,7 @@ def build_ribbon_rivet(
     stretchyAttr=None,
     pf="",
     rSz=1,
+    atMidOrEnd=0,  # 0=mid, 1=end
     outputJnt=1,
     p=None,
     SKL_DATA=None,
@@ -722,7 +723,7 @@ def build_ribbon_rivet(
     crv_len_ratio = crv_info.a.arcLength / scaleAttr / crv.length
     ratio_out = ut.blend2_(crv_len_ratio, 1, stretchyAttr)
 
-    step = 1 / rivetNum
+    step = 1 / rivetNum if atMidOrEnd == 0 else 1 / (rivetNum - 1)
     loc_grp = GrpNode("loc_grp", pf=pf, p=SKL_DATA)
     outputs = []
 
@@ -733,7 +734,10 @@ def build_ribbon_rivet(
 
         mp = DagNode("mp_#", nodeType="motionPath")
         mp.a.fractionMode.set(1)
-        ((i + 0.5) * step) / ratio_out >> mp.a.uValue
+
+        j = i + 0.5 if atMidOrEnd == 0 else i
+        (j * step) / ratio_out >> mp.a.uValue
+
         crv.shape.a.worldSpace >> mp.a.geometryPath
         # loc = LocNode(f"rivet_loc_{i}_#", pf=pf, p=loc_grp)
         loc = LocNode(f"rivet_loc_{i}_#", p=loc_grp)
