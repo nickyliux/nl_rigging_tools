@@ -207,14 +207,9 @@ def nlRivet(
     p=None,
     size=1,
 ):
-    """Create Rivets and return uvPin, locators
-    ( Benefit over mc.Rivet is not using selection )
+    """Create Rivets and return uvPin, locators ( better than mc.Rivet as not by selection )
     e.g.
         nlRivet(geo='surf', coordList=[(0.5,0.5), (0,1)])
-        nlRivet(geo='mesh', coordList=[(0.5,0.5), (0,1)])
-
-    NOTE: There is a problem of this method that the rivet does not follow the direction
-    when the surface is deformed sideway !!!
     """
     from nl_modules.nodel.base.dag_node import DagNode
     from nl_modules.nodel.grp_node import GrpNode
@@ -245,41 +240,45 @@ def nlRivet(
     for i, coord in enumerate(coordList):
         pos_grp = GrpNode(f"pos_{i}_#", p=p)
         uvPinN.a.outputMatrix >> pos_grp.a.offsetParentMatrix
-
         loc = LocNode(f"rivet_loc_{i}_#", size=size, color=13, p=p)
         pos_grp.cstPoi(loc)
+
         scaleAttr >> loc.a.s
 
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateU", coord[0])
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateV", coord[1])
         pinLocs.append(loc)
-        # loc.hide()
 
-        # ---
-        # MAKE RIVET LOC'S ROTATION FOLLOW UV OF SURFACE
-        # ---
-        cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
-        uvPinN.a.outputTranslate >> cpos.a.inPosition
-
-        posi = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
-        posi.a.turnOnPercentage.set(1)
-
-        aim_cst = DagNode("aimCst_#", nodeType="aimConstraint")
-        aim_cst | p
-
-        geo.shape.a.worldSpace >> cpos.a.inputSurface
-        geo.shape.a.worldSpace >> posi.a.inputSurface
-        cpos.a.parameterU >> posi.a.parameterU
-        cpos.a.parameterV >> posi.a.parameterV
-
-        # Connect tangent and position for orientation
-        mc.connectAttr(f"{posi}.tangentV", f"{aim_cst}.target[0].targetTranslate")
-        posi.a.tangentU >> aim_cst.a.worldUpVector
-
-        aim_cst.a.constraintRotate >> loc.a.r
-        # ---
+        aimAlongSrfUV(srf=geo, loc=loc, inPos=uvPinN.a.outputTranslate, p=p)
 
     return uvPinN, pinLocs
+
+
+def aimAlongSrfUV(srf=None, loc=None, inPos=None, p=None):
+    """Make rivet loc's rotation follow UV of surface"""
+    from nl_modules.nodel.base.dag_node import DagNode
+    from nl_modules.nodel.grp_node import GrpNode
+    from nl_modules.nodel.loc_node import LocNode
+
+    cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
+    inPos >> cpos.a.inPosition
+
+    posi = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
+    posi.a.turnOnPercentage.set(1)
+
+    aim_cst = DagNode("aimCst_#", nodeType="aimConstraint")
+    if p:
+        aim_cst | p
+
+    srf.shape.a.worldSpace >> cpos.a.inputSurface
+    srf.shape.a.worldSpace >> posi.a.inputSurface
+    cpos.a.parameterU >> posi.a.parameterU
+    cpos.a.parameterV >> posi.a.parameterV
+
+    # Connect tangent and position for orientation
+    mc.connectAttr(f"{posi}.tangentV", f"{aim_cst}.target[0].targetTranslate")
+    posi.a.tangentU >> aim_cst.a.worldUpVector
+    aim_cst.a.constraintRotate >> loc.a.r
 
 
 def ribbonAttach_reset(tgt):
