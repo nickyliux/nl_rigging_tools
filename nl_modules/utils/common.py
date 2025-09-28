@@ -243,18 +243,17 @@ def nlRivet(
         loc = LocNode(f"rivet_loc_{i}_#", size=size, color=13, p=p)
         pos_grp.cstPoi(loc)
 
-        scaleAttr >> loc.a.s
-
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateU", coord[0])
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateV", coord[1])
-        pinLocs.append(loc)
 
         aimAlongSrfUV(srf=geo, loc=loc, inPos=uvPinN.a.outputTranslate, p=p)
+        scaleAttr >> loc.a.s
+        pinLocs.append(loc)
 
     return uvPinN, pinLocs
 
 
-def aimAlongSrfUV(srf=None, loc=None, inPos=None, p=None):
+def aimAlongSrfUV(srf=None, loc=None, inPos=None, p=None, setLocPos=0):
     """Make rivet loc's rotation follow UV of surface"""
     from nl_modules.nodel.base.dag_node import DagNode
     from nl_modules.nodel.grp_node import GrpNode
@@ -279,6 +278,11 @@ def aimAlongSrfUV(srf=None, loc=None, inPos=None, p=None):
     mc.connectAttr(f"{posi}.tangentV", f"{aim_cst}.target[0].targetTranslate")
     posi.a.tangentU >> aim_cst.a.worldUpVector
     aim_cst.a.constraintRotate >> loc.a.r
+
+    if setLocPos:
+        posi.a.position >> loc.a.translate
+
+    loc.shape.hide()
 
 
 def ribbonAttach_reset(tgt):
@@ -707,8 +711,8 @@ def build_ribbon_rivet(
     # ---
     crv = CrvNode(mc.duplicateCurve(f"{rbSrf}.u[0.5]", rn=0, local=0)[0])
     crv.a.inheritsTransform.set(0)
-    crv | p  # self.RIG_DATA
-
+    if p:
+        crv | p
     crv_info = DagNode("crvInfo#", nodeType="curveInfo")
     crv.shape.a.worldSpace >> crv_info.a.inputCurve
 
@@ -717,6 +721,7 @@ def build_ribbon_rivet(
     # ---
     crv_len_ratio = crv_info.a.arcLength / scaleAttr / crv.length
     ratio_out = ut.blend2_(crv_len_ratio, 1, stretchyAttr)
+
     step = 1 / rivetNum
     loc_grp = GrpNode("loc_grp", pf=pf, p=SKL_DATA)
     outputs = []
@@ -725,38 +730,19 @@ def build_ribbon_rivet(
     # Create rivets along the curve
     # ---
     for i in range(rivetNum):
-        # Motion path node
+
         mp = DagNode("mp_#", nodeType="motionPath")
         mp.a.fractionMode.set(1)
-        ((i + 0.5) * step) / ratio_out >> mp.a.uValue  # offset 0.5 to make it center
+        ((i + 0.5) * step) / ratio_out >> mp.a.uValue
         crv.shape.a.worldSpace >> mp.a.geometryPath
+        # loc = LocNode(f"rivet_loc_{i}_#", pf=pf, p=loc_grp)
+        loc = LocNode(f"rivet_loc_{i}_#", p=loc_grp)
 
-        # Surface position nodes
-        cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
-        posi = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
-        posi.a.turnOnPercentage.set(1)
-
-        aim_cst = DagNode("aimCst_#", nodeType="aimConstraint")
-        aim_cst | p
-
-        loc = LocNode(f"{i}_loc", pf=pf, p=loc_grp)
-
-        mp.a.allCoordinates >> cpos.a.inPosition
-        rbSrf.shape.a.worldSpace >> cpos.a.inputSurface
-        rbSrf.shape.a.worldSpace >> posi.a.inputSurface
-        cpos.a.parameterU >> posi.a.parameterU
-        cpos.a.parameterV >> posi.a.parameterV
-
-        # Connect tangent and position for orientation
-        mc.connectAttr(f"{posi}.tangentV", f"{aim_cst}.target[0].targetTranslate")
-        posi.a.tangentU >> aim_cst.a.worldUpVector
-        posi.a.position >> loc.a.translate
-
-        # Connect aim constraint rotation to locator
-        aim_cst.a.constraintRotate >> loc.a.r
+        aimAlongSrfUV(
+            srf=rbSrf, loc=loc, inPos=mp.a.allCoordinates, p=loc_grp, setLocPos=1
+        )
 
         if outputJnt:
-            # Create joint at locator
             jnt = JntNode(
                 f"{i}_rbj", pf=pf, align=loc, r=1, p=loc, reset=1, color=Color.D_RED
             )
@@ -766,7 +752,6 @@ def build_ribbon_rivet(
 
         scaleAttr >> loc.a.s
 
-        loc.shape.hide()
         loc.a.inheritsTransform.set(0)
 
     # proxy.add_height_attr(output, rSz * 60 / jntNum)
