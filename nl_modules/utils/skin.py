@@ -159,10 +159,12 @@ def saveWeight():
         return
     else:
         file.saveJson(tgtFile[0], weightJntDict, force=1)
+        tgtDir = os.path.dirname(tgtFile[0])
+
         for mesh in meshesToSave:
             skinC = mel.eval("findRelatedSkinCluster " + mesh)
             if skinC:
                 mc.deformerWeights(
-                    mesh + ".xml", ex=1, deformer=skinC, format="XML", path=charPath
+                    mesh + ".xml", ex=1, deformer=skinC, format="XML", path=tgtDir
                 )
         logging.info("Weight joints saved")

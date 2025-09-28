@@ -276,9 +276,8 @@ def loadTemplate(removeUnused=1):
                                     guideN.a[attr].set(v, type="string")
                                 elif isinstance(v, list):
                                     guideN.a[attr].set(*v)
-    common.setViewport(fit=1)
-
-    mc.select(allTgtMG)
+    # common.setViewport(fit=1)
+    # mc.select(allTgtMG)
 
 
 def genAttrDict(obj):

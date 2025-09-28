@@ -97,7 +97,7 @@ class ArmBp(RigModule):
 
         ctl_defs = [
             ("setting", "X", "z", scale, 1, 2),
-            ("clavicle_fkc", "stickC", None, scale / 2, 0, 2),
+            ("clavicle_fkc", "stickC", None, scale * 0.8, 0, 2),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
             ("palm_fkc", "circle", "x", scale, 0, -1),

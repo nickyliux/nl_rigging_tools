@@ -89,7 +89,7 @@ def buildSelOrAll(*arg):
             buildTgt(rigN)
         masterAddProxyAttrs()
         postRig()
-        proxy.genProxy()
+        # proxy.genProxy()
 
 
 def postRig():
@@ -105,7 +105,8 @@ def postRig():
     # if RIG.exists():
     #     mc.hide(RIG)
     mc.select(cl=1)
-    common.setViewport(wos=1)
+    # common.setViewport(wos=1)
+    common.setViewport()
 
 
 def masterAddProxyAttrs():

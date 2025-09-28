@@ -1,5 +1,6 @@
 from enum import Enum
 import maya.cmds as mc
+import maya.api.OpenMaya as om2
 
 
 class Color(Enum):
@@ -86,18 +87,28 @@ class Color(Enum):
                 colorToSet = val
 
             for node in cls._getExpanded(objs):
-                if mc.objExists(f"{node}.overrideEnabled"):
+                if cls.objExists(f"{node}.overrideEnabled"):
                     mc.setAttr(f"{node}.overrideEnabled", state)
-                    if mc.objExists(f"{node}.overrideColor"):
+                    if cls.objExists(f"{node}.overrideColor"):
                         mc.setAttr(f"{node}.overrideRGBColors", 0)
                         mc.setAttr(f"{node}.overrideColor", colorToSet)
 
         elif isinstance(val, (list, tuple)):
 
             for node in cls._getExpanded(objs):
-                if mc.objExists(f"{node}.overrideEnabled"):
+                if cls.objExists(f"{node}.overrideEnabled"):
                     mc.setAttr(f"{node}.overrideEnabled", 1)
-                    if mc.objExists(f"{node}.overrideRGBColors"):
+                    if cls.objExists(f"{node}.overrideRGBColors"):
                         mc.setAttr(f"{node}.overrideRGBColors", 1)
-                        if mc.objExists(f"{node}.overrideColorRGB"):
+                        if cls.objExists(f"{node}.overrideColorRGB"):
                             mc.setAttr(f"{node}.overrideColorRGB", *val, type="double3")
+
+    @staticmethod
+    def objExists(obj):
+        """Check if object exists in the scene."""
+        sel = om2.MSelectionList()
+        try:
+            sel.add(obj)
+            return True
+        except RuntimeError:
+            return False

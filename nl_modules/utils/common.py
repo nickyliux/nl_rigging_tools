@@ -217,6 +217,7 @@ def nlRivet(
     when the surface is deformed sideway !!!
     """
     from nl_modules.nodel.base.dag_node import DagNode
+    from nl_modules.nodel.grp_node import GrpNode
     from nl_modules.nodel.loc_node import LocNode
 
     geo = DagNode(geo)
@@ -229,40 +230,55 @@ def nlRivet(
     uvPinN.a.tangentAxis.set(tangent)
     geoType = geo.shape.type
 
-    if geoType == "mesh":
-        origN.a.outMesh >> uvPinN.a.originalGeometry
-        geo.shape.a.worldMesh >> uvPinN.a.deformedGeometry
-    elif geoType == "nurbsSurface":
+    # if geoType == "mesh":
+    # origN.a.outMesh >> uvPinN.a.originalGeometry
+    # geo.shape.a.worldMesh >> uvPinN.a.deformedGeometry
+    if geoType == "nurbsSurface":
         origN.a.local >> uvPinN.a.originalGeometry
         geo.shape.a.worldSpace >> uvPinN.a.deformedGeometry
     else:
-        logging.info("Ignore unwanted geometry type")
+        logging.info("Ignore non-nurbsSurface.")
         return None, None
 
     pinLocs = []
 
     for i, coord in enumerate(coordList):
-        loc = LocNode(f"rivetLoc_{i}_#", size=size, color=13)
+        pos_grp = GrpNode(f"pos_{i}_#", p=p)
+        uvPinN.a.outputMatrix >> pos_grp.a.offsetParentMatrix
+
+        loc = LocNode(f"rivet_loc_{i}_#", size=size, color=13, p=p)
+        pos_grp.cstPoi(loc)
         scaleAttr >> loc.a.s
-        uvPinN.a.outputMatrix >> loc.a.offsetParentMatrix
+
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateU", coord[0])
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateV", coord[1])
         pinLocs.append(loc)
-        if p:
-            loc | p
-        loc.hide()
-    #
-    #   no aim needed for rivet
-    #
-    # if i > 0:
-    #     pinLocs[i - 1].cstAim(
-    #         loc,
-    #         aim=(0, 1, 0),
-    #         u=(1, 0, 0),
-    #         wu=(0, 0, 1),
-    #         worldUpType="objectrotation",
-    #         worldUpObject=pinLocs[i - 1],
-    #     )
+        # loc.hide()
+
+        # ---
+        # MAKE RIVET LOC'S ROTATION FOLLOW UV OF SURFACE
+        # ---
+        cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
+        uvPinN.a.outputTranslate >> cpos.a.inPosition
+
+        posi = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
+        posi.a.turnOnPercentage.set(1)
+
+        aim_cst = DagNode("aimCst_#", nodeType="aimConstraint")
+        aim_cst | p
+
+        geo.shape.a.worldSpace >> cpos.a.inputSurface
+        geo.shape.a.worldSpace >> posi.a.inputSurface
+        cpos.a.parameterU >> posi.a.parameterU
+        cpos.a.parameterV >> posi.a.parameterV
+
+        # Connect tangent and position for orientation
+        mc.connectAttr(f"{posi}.tangentV", f"{aim_cst}.target[0].targetTranslate")
+        posi.a.tangentU >> aim_cst.a.worldUpVector
+
+        aim_cst.a.constraintRotate >> loc.a.r
+        # ---
+
     return uvPinN, pinLocs
 
 
@@ -291,10 +307,10 @@ def ribbonAttach(tgtList=None, geo=None, scaleAttr=None, p=None):
     #  create closest node
     # ------------------------------
     cpos = None
-    if geoType == "mesh":
-        cpos = DagNode("myCPO_#", nodeType="closestPointOnMesh")
-        geo.shape.a.worldMesh >> cpos.a.inMesh
-    elif geoType == "nurbsSurface":
+    # if geoType == "mesh":
+    #     cpos = DagNode("myCPO_#", nodeType="closestPointOnMesh")
+    #     geo.shape.a.worldMesh >> cpos.a.inMesh
+    if geoType == "nurbsSurface":
         cpos = DagNode("myCPOS_#", nodeType="closestPointOnSurface")
         geo.shape.a.worldSpace >> cpos.a.inputSurface
     else:
@@ -308,15 +324,15 @@ def ribbonAttach(tgtList=None, geo=None, scaleAttr=None, p=None):
         ribbonAttach_reset(tgt)
         tgt.a.t >> cpos.a.inPosition
 
-        if geoType == "mesh":
-            vId = cpos.a.closestVertexIndex.get()
-            mc.select(f"{geo}.vtx[{vId}]")
-            mc.ConvertSelectionToUVs()
-            coordList.append(mc.polyEditUV(q=1))
-        elif geoType == "nurbsSurface":
-            u = cpos.a.parameterU.get()
-            v = cpos.a.parameterV.get()
-            coordList.append((u, v))
+        # if geoType == "mesh":
+        #     vId = cpos.a.closestVertexIndex.get()
+        #     mc.select(f"{geo}.vtx[{vId}]")
+        #     mc.ConvertSelectionToUVs()
+        #     coordList.append(mc.polyEditUV(q=1))
+        # elif geoType == "nurbsSurface":
+        u = cpos.a.parameterU.get()
+        v = cpos.a.parameterV.get()
+        coordList.append((u, v))
 
     grp = GrpNode(geo + "_rvtGrp", p=p)
     pin, pinXf = nlRivet(geo=geo, coordList=coordList, scaleAttr=scaleAttr, p=grp)
@@ -687,7 +703,9 @@ def build_ribbon_rivet(
     from nl_modules.utils import utils_node as ut
     from nl_modules.utils import proxy
 
-    # --- Create a curve on the surface and calculate curve length ratio ---
+    # ---
+    # Create a curve on the surface and calculate curve length ratio
+    # ---
     crv = CrvNode(mc.duplicateCurve(f"{rbSrf}.u[0.5]", rn=0, local=0)[0])
     crv.a.inheritsTransform.set(0)
     crv | p  # self.RIG_DATA
@@ -695,38 +713,37 @@ def build_ribbon_rivet(
     crv_info = DagNode("crvInfo#", nodeType="curveInfo")
     crv.shape.a.worldSpace >> crv_info.a.inputCurve
 
-    # --- Calculate curve length ratio based on the surface and scale attributes ---
+    # ---
+    # Calculate curve length ratio and steps
+    # ---
     crv_len_ratio = crv_info.a.arcLength / scaleAttr / crv.length
-
-    # --- Add joints onto the surface, supporting stretch and slider ---
     ratio_out = ut.blend2_(crv_len_ratio, 1, stretchyAttr)
     step = 1 / rivetNum
     loc_grp = GrpNode("loc_grp", pf=pf, p=SKL_DATA)
     outputs = []
 
+    # ---
+    # Create rivets along the curve
+    # ---
     for i in range(rivetNum):
         # Motion path node
         mp = DagNode("mp_#", nodeType="motionPath")
         mp.a.fractionMode.set(1)
         ((i + 0.5) * step) / ratio_out >> mp.a.uValue  # offset 0.5 to make it center
+        crv.shape.a.worldSpace >> mp.a.geometryPath
 
         # Surface position nodes
         cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
         posi = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
         posi.a.turnOnPercentage.set(1)
 
-        # Aim constraint node
         aim_cst = DagNode("aimCst_#", nodeType="aimConstraint")
         aim_cst | p
 
-        # Locator for joint placement
         loc = LocNode(f"{i}_loc", pf=pf, p=loc_grp)
-
-        crv.shape.a.worldSpace >> mp.a.geometryPath
 
         mp.a.allCoordinates >> cpos.a.inPosition
         rbSrf.shape.a.worldSpace >> cpos.a.inputSurface
-
         rbSrf.shape.a.worldSpace >> posi.a.inputSurface
         cpos.a.parameterU >> posi.a.parameterU
         cpos.a.parameterV >> posi.a.parameterV
@@ -737,9 +754,7 @@ def build_ribbon_rivet(
         posi.a.position >> loc.a.translate
 
         # Connect aim constraint rotation to locator
-        aim_cst.a.constraintRotateX >> loc.a.rx
-        aim_cst.a.constraintRotateY >> loc.a.ry
-        aim_cst.a.constraintRotateZ >> loc.a.rz
+        aim_cst.a.constraintRotate >> loc.a.r
 
         if outputJnt:
             # Create joint at locator

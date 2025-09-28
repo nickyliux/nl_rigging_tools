@@ -36,7 +36,7 @@ class MarkingMenuRigging:
 
     def setupMenu(self, menu, parent):
         """Setup the marking menu"""
-        create_MI = mc.menuItem(p=menu, l="Create", rp="W", subMenu=1)
+        create_MI = mc.menuItem(p=menu, l="Create", rp="S", subMenu=1)
         mc.menuItem(p=create_MI, l="Circle", c="mc.circle(normal=(0,1,0))")
         mc.menuItem(p=create_MI, l="Cube", c="mc.polyCube()")
         mc.menuItem(p=create_MI, l="Plane", c="mc.polyPlane()")
@@ -45,11 +45,11 @@ class MarkingMenuRigging:
         mc.menuItem(p=create_MI, l="Joint", c="mc.select(cl=1);mc.joint()", ob=1)
         mc.menuItem(p=create_MI, l="Joint Tool", c="mc.JointTool()")
 
-        display_MI = mc.menuItem(p=menu, l="Show", rp="SW", subMenu=1)
+        display_MI = mc.menuItem(p=menu, l="Show", rp="NW", subMenu=1)
+        mc.menuItem(p=display_MI, l="All Hidden", c=showAllHidden)
+        mc.menuItem(p=display_MI, l="-" * 20, en=0)
         mc.menuItem(p=display_MI, l="Poly Only", c=showOnly)
         mc.menuItem(p=display_MI, l="All", c=showAll)
-        mc.menuItem(p=display_MI, l="-" * 20, en=0)
-        mc.menuItem(p=display_MI, l="All Hidden", c=showAllHidden)
         mc.menuItem(p=display_MI, l="-" * 20, en=0)
         mc.menuItem(p=display_MI, l="LRA", c=partial(display_LRA, 1, 0))
         mc.menuItem(p=display_MI, l="LRA Off", c=partial(display_LRA, 0, 0), ob=1)
@@ -60,7 +60,7 @@ class MarkingMenuRigging:
         mc.menuItem(p=display_MI, l="Joint Size = 1", c=partial(jointDisplay, 1))
         mc.menuItem(p=display_MI, l="Joint Size = 0.1", c=partial(jointDisplay, 0.1))
 
-        connect_MI = mc.menuItem(p=menu, l="Connect", rp="NW", subMenu=1)
+        connect_MI = mc.menuItem(p=menu, l="Connect", rp="W", subMenu=1)
         mc.menuItem(p=connect_MI, l="From 1st To 2nd", en=0)
         mc.menuItem(p=connect_MI, l="T", c=partial(connect_channel, "t"))
         mc.menuItem(p=connect_MI, l="R", c=partial(connect_channel, "r"))
@@ -118,7 +118,7 @@ class MarkingMenuRigging:
         mc.menuItem(p=joint_MI, l="Create Chain x 10 ", c=makeJointChain10_mm)
         mc.menuItem(p=joint_MI, l="Create Golden Chain ", c=makeJointChainGold_mm)
 
-        skin_MI = mc.menuItem(p=menu, l="Skin", rp="S", subMenu=1)
+        skin_MI = mc.menuItem(p=menu, l="Skin", rp="SW", subMenu=1)
         mc.menuItem(p=skin_MI, l="Bind Skin", c=mc.SmoothBindSkin)
         mc.menuItem(p=skin_MI, l="Bind Skin", c=mc.SmoothBindSkinOptions, ob=1)
         mc.menuItem(p=skin_MI, l="Add Influence", c=addInf)
