@@ -45,6 +45,7 @@ from nl_modules.utils import (
     control,
     file,
     guide,
+    helper,
     log,
     maths,
     model,
@@ -64,6 +65,7 @@ reload(common)
 reload(control)
 reload(file)
 reload(guide)
+reload(helper)
 reload(log)
 reload(maths)
 reload(model)

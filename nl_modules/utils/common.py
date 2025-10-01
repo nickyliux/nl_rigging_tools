@@ -194,7 +194,7 @@ def cstMulti(*args, cstType="par", delete=False, w=None, **kwargs):
     if delete:
         mc.delete(cst)
     else:
-        return cst
+        return DagNode(cst)
 
 
 def nlRivet(
