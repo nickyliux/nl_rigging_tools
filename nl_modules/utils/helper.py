@@ -23,7 +23,6 @@ def corrJntSetup(
     jnt_rad = tgtJnt.a.radius.get() / 2
     grp = GrpNode("grp_#", pf="corr")
 
-    # - rz >> + ty
     # ---------------------------------------------
     grp2 = GrpNode("grp2_#", p=grp, pf="corr")
     loc = LocNode("loc_#", p=grp2, pf="corr")
@@ -36,19 +35,17 @@ def corrJntSetup(
     grp2.a.s.set(dir, dir, dir)
 
     # offset but keep corrective in the middle -------------
-    ofsInitRota = jnt.a.add("ofsInitRota")
-    ofsInitRota * dir >> loc.a[driver]
-    ((90 + ofsInitRota) / (90 - ofsInitRota)) >> oriCst.a.w0
+    # ofsInitRota = jnt.a.add("ofsInitRota")
+    # ofsInitRota * dir >> loc.a[driver]
+    # ((90 + ofsInitRota) / (90 - ofsInitRota)) >> oriCst.a.w0
     # ------------------------------------------------------
 
     ofsInit = jnt.a.add("ofsInit", dv=1, min=0)
-    ofsMulti = jnt.a.add("ofsMulti", dv=2, min=1)
+    ofsScalePos = jnt.a.add("ofsScalePos", dv=1, min=0)
+    ofsScaleNeg = jnt.a.add("ofsScaleNeg", dv=1, min=0)
+
     r = rotator.a[driver]
-    rAbs = (r < 0).setCdn(ifTrue=r * -1, ifFalse=r)
+    rAbs = (r >= 0).setCdn(ifTrue=r, ifFalse=r * -1)
 
-    ofsResult = ofsInit + ofsMulti * rAbs / 90
-
-    reverse = jnt.a.add("reverse", attrType="bool", dv=0)
-    revOut = (reverse == 0).setCdn(ifTrue=1, ifFalse=-1)
-
-    (ut.remap_(r, 0, dir * 180 * revOut, ofsInit, ofsResult) >> jnt.a[driven])
+    ofsScale = (r > 0).setCdn(ifTrue=ofsScalePos, ifFalse=ofsScaleNeg)
+    ofsInit + ofsScale * rAbs / 90 >> jnt.a[driven]
