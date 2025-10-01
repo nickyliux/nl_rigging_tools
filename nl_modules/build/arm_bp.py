@@ -466,7 +466,6 @@ class ArmBp(RigModule):
                 onList=self.all_bend,
             )
 
-        # self.ikc.a.v >> self.palm_ikc.a.v
         self.ikc.a.localRot >> self.palm_ikc.a.v
         mc.hide(self.ikhs)
 

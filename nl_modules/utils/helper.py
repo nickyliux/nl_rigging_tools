@@ -20,7 +20,8 @@ def corrSysSetup(
         mc.warning("Input not found.")
         return
 
-    corrGrp = GrpNode("grp_#", pf="corr")
+    SKL = GrpNode("SKL")
+    corrGrp = GrpNode(tgtJnt.name + "_#", pf="corr", p=SKL)
     if buildTy:
         corrJntSetup(tgtJnt, parentJnt, rotator, p=corrGrp)
         corrJntSetup(tgtJnt, parentJnt, rotator, p=corrGrp, dir=-1)
