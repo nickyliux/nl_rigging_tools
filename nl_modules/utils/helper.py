@@ -53,8 +53,8 @@ def corrJntSetup(
     # ------------------------------------------------------
 
     ofsInit = jnt.a.add("ofsInit", dv=1, min=0)
-    ofsScalePos = jnt.a.add("ofsScalePos", dv=2, min=0)
-    ofsScaleNeg = jnt.a.add("ofsScaleNeg", dv=2, min=0)
+    ofsScalePos = jnt.a.add("ofsScalePos", dv=3, min=0)
+    ofsScaleNeg = jnt.a.add("ofsScaleNeg", dv=3, min=0)
 
     r = rotator.a[driver]
     rAbs = (r >= 0).setCdn(ifTrue=r, ifFalse=r * -1)
