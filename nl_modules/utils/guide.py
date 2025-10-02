@@ -250,9 +250,9 @@ def loadTemplate(removeUnused=1):
     allTgtMG = []
     for rID in rigID_dict:
         mg = DagNode(rID + "_master_guide")
-        if mg.exists():
-            logging.info(f"master_guide for {rID} already exists!")
-        else:
+        if not mg.exists():
+            #     logging.info(f"master_guide for {rID} already exists!")
+            # else:
             tgt_mg = loadGuide(removeEndDigits(rID))
             allTgtMG.append(tgt_mg)
             mc.refresh(cv=1)
