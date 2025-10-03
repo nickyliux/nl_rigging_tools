@@ -8,7 +8,17 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.utils.color import Color
 
 
-def corrSysSetup(
+def helperSysSetup2(tgtJnt=None, buildTy=True, buildTz=False):
+    helperSysSetup(
+        tgtJnt=tgtJnt,
+        parentJnt=DagNode(tgtJnt).parent,
+        rotator=tgtJnt,
+        buildTy=buildTy,
+        buildTz=buildTz,
+    )
+
+
+def helperSysSetup(
     tgtJnt=None, parentJnt=None, rotator=None, buildTy=True, buildTz=False
 ):
     """Create a corrective joint system that responds to the rotation of a driver object."""
@@ -23,16 +33,16 @@ def corrSysSetup(
     SKL = GrpNode("SKL")
     corrGrp = GrpNode(tgtJnt.name + "_#", pf="corr", p=SKL)
     if buildTy:
-        corrJntSetup(tgtJnt, parentJnt, rotator, p=corrGrp)
-        corrJntSetup(tgtJnt, parentJnt, rotator, p=corrGrp, dir=-1)
+        helperJntSetup(tgtJnt, parentJnt, rotator, p=corrGrp)
+        helperJntSetup(tgtJnt, parentJnt, rotator, p=corrGrp, dir=-1)
     if buildTz:
-        corrJntSetup(tgtJnt, parentJnt, rotator, driver="ry", driven="tz", p=corrGrp)
-        corrJntSetup(
+        helperJntSetup(tgtJnt, parentJnt, rotator, driver="ry", driven="tz", p=corrGrp)
+        helperJntSetup(
             tgtJnt, parentJnt, rotator, driver="ry", driven="tz", p=corrGrp, dir=-1
         )
 
 
-def corrJntSetup(
+def helperJntSetup(
     tgtJnt=None, parentJnt=None, rotator=None, driver="rz", driven="ty", dir=1, p=None
 ):
     """Create a corrective joint setup that responds to the rotation of a driver object."""

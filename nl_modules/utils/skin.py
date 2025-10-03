@@ -73,7 +73,7 @@ def autoBind_rbnJnts(tgts, uiPB=None):
     logging.info(f"{weighted} weighted. {ignored} ignored. {notFound} NOT found.")
 
 
-def delSkinForSel():
+def delSkinForSel(*args):
     """Delete skinClusters for all meshes in the scene."""
     allMeshes = mc.ls(sl=1, tr=1)
     count = 0
@@ -126,6 +126,8 @@ def loadWeight():
             path=tgtDir,
         )
         logging.info(f"{mesh} : Bound and weight loaded.")
+
+    mc.select(cl=1)
 
 
 def saveWeight():

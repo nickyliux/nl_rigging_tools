@@ -38,7 +38,7 @@ class MshNode(DagNode):
 
         skinClu = mel.eval(f'findRelatedSkinCluster "{self}"')
         if skinClu == "":
-            return None
+            return DagNode(None)
         return DepNode(skinClu)
 
     def delSkin(self):
@@ -48,10 +48,10 @@ class MshNode(DagNode):
         if sc:
             try:
                 sc.delete()
+                return 1
             except RuntimeError:
                 mc.warning(f"Failed to delete skinCluster: {sc}")
-                return 0
-        return 1
+        return 0
 
     @property
     def joints(self):
