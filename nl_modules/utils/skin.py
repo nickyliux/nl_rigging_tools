@@ -108,7 +108,8 @@ def loadWeight():
             continue
 
         # Delete skin if exists
-        skinC = DagNode(mel.eval("findRelatedSkinCluster " + mesh))
+        skinC = MshNode(mesh).skinCluster
+        # skinC = DagNode(mel.eval("findRelatedSkinCluster " + mesh))
         if skinC.exists():
             skinC.delete()
 
@@ -142,7 +143,8 @@ def saveWeight():
     meshesToSave = common.getTypeBelow(mc.ls(sl=1), tgtType="mesh")
 
     for mesh in meshesToSave:
-        skinC = mel.eval("findRelatedSkinCluster " + mesh)
+        skinC = MshNode(mesh).skinCluster
+        # skinC = mel.eval("findRelatedSkinCluster " + mesh)
         if skinC:
             jntList = mc.listConnections(skinC + ".matrix", type="joint")
             # if jntList and len(jntList) > 0:
@@ -162,7 +164,8 @@ def saveWeight():
         tgtDir = os.path.dirname(tgtFile[0])
 
         for mesh in meshesToSave:
-            skinC = mel.eval("findRelatedSkinCluster " + mesh)
+            skinC = MshNode(mesh).skinCluster
+            # skinC = mel.eval("findRelatedSkinCluster " + mesh)
             if skinC:
                 mc.deformerWeights(
                     mesh + ".xml", ex=1, deformer=skinC, format="XML", path=tgtDir

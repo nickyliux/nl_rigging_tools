@@ -131,6 +131,7 @@ class MarkingMenuRigging:
         # mc.menuItem(p=freeze_MI, l="S", c=partial(frz_xform, "s"))
 
         mc.menuItem(p=menu, l="Match All", c=match_all)
+        mc.menuItem(p=menu, l="Match Pos Rot", c=match_pos_rot)
         mc.menuItem(p=menu, l="Match Pos", c=match_pos)
         mc.menuItem(p=menu, l="Match Rot", c=match_rot)
         mc.menuItem(p=menu, l="-" * 20, en=0)
@@ -359,6 +360,14 @@ def match_all(*args):
     selList = mc.ls(sl=1)
     if len(selList) > 1:
         mc.matchTransform(*selList)
+        mc.select(selList[0])
+
+
+def match_pos_rot(*args):
+    """Match the transformation of the first selected object to all others"""
+    selList = mc.ls(sl=1)
+    if len(selList) > 1:
+        mc.matchTransform(*selList, pos=1, rot=1, scl=0)
         mc.select(selList[0])
 
 
