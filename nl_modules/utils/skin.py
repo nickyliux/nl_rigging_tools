@@ -146,10 +146,8 @@ def saveWeight():
 
     for mesh in meshesToSave:
         skinC = MshNode(mesh).skinCluster
-        # skinC = mel.eval("findRelatedSkinCluster " + mesh)
-        if skinC:
+        if skinC.exists():
             jntList = mc.listConnections(skinC + ".matrix", type="joint")
-            # if jntList and len(jntList) > 0:
             weightJntDict[mesh.name] = jntList
 
     if not weightJntDict:
@@ -167,8 +165,7 @@ def saveWeight():
 
         for mesh in meshesToSave:
             skinC = MshNode(mesh).skinCluster
-            # skinC = mel.eval("findRelatedSkinCluster " + mesh)
-            if skinC:
+            if skinC.exists():
                 mc.deformerWeights(
                     mesh + ".xml", ex=1, deformer=skinC, format="XML", path=tgtDir
                 )
