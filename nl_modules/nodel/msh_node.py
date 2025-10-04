@@ -38,8 +38,9 @@ class MshNode(DagNode):
 
         skinCluster = mel.eval(f'findRelatedSkinCluster "{self}"')
         if mc.objExists(skinCluster):
-            return DagNode(None)
-        return DepNode(skinCluster)
+            return DepNode(skinCluster)
+        else:
+            return DepNode(None)
 
     def delSkin(self):
         """Delete the skinCluster connected to the mesh"""

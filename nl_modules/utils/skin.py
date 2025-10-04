@@ -142,6 +142,7 @@ def saveWeight():
     # mc.pickWalk(d="up")
     # selected = mc.ls(sl=1)
     weightJntDict = {}
+    skinDict = {}
     meshesToSave = common.getTypeBelow(mc.ls(sl=1), tgtType="mesh")
 
     for mesh in meshesToSave:
@@ -149,6 +150,7 @@ def saveWeight():
         if skinC.exists():
             jntList = mc.listConnections(skinC + ".matrix", type="joint")
             weightJntDict[mesh.name] = jntList
+            skinDict[mesh] = skinC
 
     if not weightJntDict:
         logging.warning("No skin joints found.")
@@ -163,10 +165,8 @@ def saveWeight():
         file.saveJson(tgtFile[0], weightJntDict, force=1)
         tgtDir = os.path.dirname(tgtFile[0])
 
-        for mesh in meshesToSave:
-            skinC = MshNode(mesh).skinCluster
-            if skinC.exists():
-                mc.deformerWeights(
-                    mesh + ".xml", ex=1, deformer=skinC, format="XML", path=tgtDir
-                )
-        logging.info("Weight joints saved")
+        for mesh, skinC in skinDict.items():
+            mc.deformerWeights(
+                mesh.name + ".xml", ex=1, deformer=skinC, format="XML", path=tgtDir
+            )
+        logging.info(f"{len(skinDict)} objects' weight saved.")

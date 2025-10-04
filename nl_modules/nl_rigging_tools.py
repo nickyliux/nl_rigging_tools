@@ -61,9 +61,12 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         self.setWindowTitle("nlRT 0.1.0")
         self.setCentralWidget(self.UI)
-        self.setGeometry(0, 31, 200, 810)
+        self.setGeometry(1400, 131, 200, 810)
         self.connect_UI()
         # self.addMenuBar()
+
+    def close_window(self):
+        self.close()
 
     def addMenuBar(self):
         """Add a menu bar with an 'About' section."""
@@ -554,11 +557,11 @@ def main():
     """Main function to initialize and show the rigging tools UI."""
     global nlRT_win
     try:
-        nlRT_win.close()
+        nlRT_win.close_window()
     except:
         pass
     nlRT_win = MyToolWin()
-    nlRT_win.show(dockable=True)
+    nlRT_win.show()  # dockable=False)
 
     with open(STYLE_PATH, "r") as f:
         style = f.read()
