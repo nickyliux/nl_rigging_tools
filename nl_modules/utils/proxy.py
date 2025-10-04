@@ -222,7 +222,7 @@ def build_sets_for_binding(combinedMesh, proxies):
     cpom.delete()
 
 
-def bind_to_selected_proxy():
+def bind_to_proxy():
     """Combine all proxy meshes into a single one and create vertex sets for each original proxy mesh."""
 
     targetWrapMesh = mc.optionVar(q="targetWrapMesh")
@@ -232,8 +232,7 @@ def bind_to_selected_proxy():
         return
 
     skinC = MshNode(tgtMesh).skinCluster
-    # skinC = mel.eval("findRelatedSkinCluster " + tgtMesh)
-    if skinC:
+    if skinC.exists():
         mc.confirmDialog(t="Error", m="Target wrap mesh already skinned.     ", b="OK")
         return
 

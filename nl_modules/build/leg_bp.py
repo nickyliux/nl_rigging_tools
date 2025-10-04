@@ -366,8 +366,8 @@ class LegBp(RigModule):
             self.jnts, "_bf", p=self.BF_GRP, r=rSz * 4, color=Color.D_YELLOW
         )
 
-        self.setting.snapTo(self.hip, p=self.CTL_DATA, ofs=(xDr * rSz * 15, 0, 0))
-        self.hip.cstPar(self.setting, mo=1)
+        self.setting.snapTo(self.upr, p=self.CTL_DATA, ofs=(xDr * rSz * 15, 0, 0))
+        self.upr.cstPar(self.setting, mo=1)
 
         self.setting.a.addSep()
         fkToIk = self.setting.a.add("fkToIk", min=0, max=1, dv=1)

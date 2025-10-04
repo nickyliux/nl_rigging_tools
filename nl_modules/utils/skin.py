@@ -125,7 +125,7 @@ def loadWeight():
             format="XML",
             path=tgtDir,
         )
-        logging.info(f"{mesh} : Bound and weight loaded.")
+        logging.info(f"{mesh} : weight loaded.")
 
     mc.select(cl=1)
 

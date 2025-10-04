@@ -574,8 +574,15 @@ class DagNode(DepNode):
     def dspType(self, state):
         """Set display type of shape or itself"""
         tgt = self.shape or self
-        tgt.a.overrideEnabled.set(1)
-        tgt.a.overrideDisplayType.set(state)
+
+        # Change layer's display type if connected
+        # Else change object's display type
+        lyr = tgt.a.drawOverride.inConnNode
+        if lyr and lyr.exists():
+            lyr.a.displayType.set(state)
+        else:
+            tgt.a.overrideEnabled.set(1)
+            tgt.a.overrideDisplayType.set(state)
 
     @property
     def history(self):
