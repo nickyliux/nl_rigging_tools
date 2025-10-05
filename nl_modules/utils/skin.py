@@ -73,6 +73,21 @@ def autoBind_rbnJnts(tgts, uiPB=None):
     logging.info(f"{weighted} weighted. {ignored} ignored. {notFound} NOT found.")
 
 
+def selSkinned(*args):
+    """Select all skinned meshes to this joint."""
+    selJnts = mc.ls(sl=1, type="joint")
+
+    skinned = []
+    for jnt in selJnts:
+        skinCs = DagNode(jnt).a.lockInfluenceWeights.outConnNode
+        for skinC in skinCs:
+            skinnedShape = skinC.a.outputGeometry.outConnNode
+            if skinnedShape:
+                skinned.append(skinnedShape[0].offset)
+    if skinned:
+        mc.select(skinned)
+
+
 def delSkinForSel(*args):
     """Delete skinClusters for all meshes in the scene."""
     allMeshes = mc.ls(sl=1, tr=1)
@@ -86,46 +101,46 @@ def delSkinForSel(*args):
 def loadWeight():
     """Load skin weight joints from a JSON file."""
     charPath = mc.optionVar(q="charPath")
-    tgtFile = mc.fileDialog2(
-        fileFilter="*.json", dialogStyle=2, fileMode=1, dir=charPath
+    tgtFiles = mc.fileDialog2(
+        fileFilter="*.json", dialogStyle=2, fileMode=4, dir=charPath
     )
-    if tgtFile is None:
+    if tgtFiles is None:
         return
 
-    tgtDir = os.path.dirname(tgtFile[0])
-    weightJnt_dict = file.loadJson(tgtFile[0])
-    for mesh in weightJnt_dict:
+    tgtDir = os.path.dirname(tgtFiles[0])
 
-        # Skip if mesh not found
-        if not mc.objExists(mesh):
-            continue
+    for f in tgtFiles:
+        weightJnt_dict = file.loadJson(f)
+        for mesh in weightJnt_dict:
 
-        weightFile = tgtDir + "/" + mesh + ".xml"
+            if not mc.objExists(mesh):
+                continue
 
-        # Skip if weight file not found
-        if not mc.file(weightFile, q=1, ex=1):
-            logging.warning(f"Weight file NOT found: {weightFile}")
-            continue
+            weightFile = tgtDir + "/" + mesh + ".xml"
 
-        # Delete skin if exists
-        skinC = MshNode(mesh).skinCluster
-        # skinC = DagNode(mel.eval("findRelatedSkinCluster " + mesh))
-        if skinC.exists():
-            skinC.delete()
+            # Skip if weight file not found
+            if not mc.file(weightFile, q=1, ex=1):
+                logging.warning(f"Weight file NOT found: {weightFile}")
+                continue
 
-        # Skin and load weights
-        skinC = mc.skinCluster(mesh, weightJnt_dict[mesh], tsb=1)
+            # Delete skin if exists
+            skinC = MshNode(mesh).skinCluster
+            if skinC.exists():
+                skinC.delete()
 
-        mc.select(mesh)
-        mc.deformerWeights(
-            mesh + ".xml",
-            im=1,
-            method="index",
-            deformer=skinC,
-            format="XML",
-            path=tgtDir,
-        )
-        logging.info(f"{mesh} : weight loaded.")
+            # Skin and load weights
+            skinC = mc.skinCluster(mesh, weightJnt_dict[mesh], tsb=1)
+
+            mc.select(mesh)
+            mc.deformerWeights(
+                mesh + ".xml",
+                im=1,
+                method="index",
+                deformer=skinC,
+                format="XML",
+                path=tgtDir,
+            )
+            logging.info(f"{mesh} : weight loaded.")
 
     mc.select(cl=1)
 

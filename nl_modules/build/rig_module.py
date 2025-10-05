@@ -187,7 +187,7 @@ class RigModule(RigBase):
 
     @staticmethod
     def build_fk_with_ctl_dbl(jntList, ctlList=None, drvList=None, count=1, p=None):
-        """Special FK setup for toe
+        """FK setup for toe
         P
             Ctl 1 offset        << t & r connected by the ctl from DBL
                 Ctl 1
@@ -914,7 +914,7 @@ class RigModule(RigBase):
             if jnt not in self.jnts_bind:
                 self.jnts_bind.append(jnt)
 
-    def build_specialAim(self, targets, up="y"):
+    def build_specialHelper(self, targets, up="y"):
         """Build roller joints for the specified targets."""
         rID, rSz, xDr = self.getMyVar()
 
@@ -922,19 +922,36 @@ class RigModule(RigBase):
         aim = (xDr * -1, 0, 0)
         wut = "objectrotation"
         r = rSz * 4
-        CB = Color.VD_GREEN
+        C1 = Color.PINK
+        C2 = Color.BLACK
+        helpers = []
 
         for tgt in targets:
-            # Create roller joint
             ro = tgt.a.rotateOrder.get()
-            extraJ = JntNode(tgt + "_special", align=tgt, r=r, p=tgt, ro=ro, color=CB)
+            extraJ = JntNode(tgt + "_helper", align=tgt, r=r, p=tgt, ro=ro, color=C1)
             extraJ.resetOrient()
             extraJ.resetXf()
+            helpers.append(extraJ)
             tgt_p = tgt.parent
             if tgt_p and tgt_p.type == "joint":
                 tgt_p.cstAim(
                     extraJ, aim=aim, worldUpType=wut, worldUpObject=tgt, u=u, wu=wu
                 )
+
+        for tgt in targets:
+            ro = tgt.a.rotateOrder.get()
+            extraJ = JntNode(
+                tgt + "_helper2", align=tgt, r=r * 1.5, p=tgt, ro=ro, color=C2
+            )
+            extraJ.resetOrient()
+            extraJ.resetXf()
+            helpers.append(extraJ)
+            tgt_p = tgt.parent
+            if tgt_p and tgt_p.type == "joint":
+                tgt_p.cstAim(
+                    extraJ, aim=aim, worldUpType=wut, worldUpObject=tgt_p, u=u, wu=wu
+                )
+        return helpers
 
     def build_rollChain(self, jnt0, jnt1, num=2, suffix="_ro"):
         """Build a roll chain between two joints. Add locator for delta roll"""

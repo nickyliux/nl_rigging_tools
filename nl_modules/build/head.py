@@ -53,8 +53,8 @@ class Head(RigModule):
         ctl_defs = [
             ("head_fkc", "squareR", None, rSz * 4, 0, -1),
             ("jaw_fkc", "circle", None, rSz, 0, -1),
-            ("lf_eye_fkc", "circle", "x", rSz, 0, -1),
-            ("rt_eye_fkc", "circle", "x", rSz, 0, -1),
+            ("lf_eye_fkc", "circle", "z", rSz, 0, -1),
+            ("rt_eye_fkc", "circle", "z", rSz, 0, -1),
         ]
 
         for name, shape, up, sca, top, w in ctl_defs:
