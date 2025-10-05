@@ -914,7 +914,7 @@ class RigModule(RigBase):
             if jnt not in self.jnts_bind:
                 self.jnts_bind.append(jnt)
 
-    def build_specialHelper(self, targets, up="y"):
+    def build_aimHelper(self, targets, up="y"):
         """Build roller joints for the specified targets."""
         rID, rSz, xDr = self.getMyVar()
 
@@ -928,7 +928,7 @@ class RigModule(RigBase):
 
         for tgt in targets:
             ro = tgt.a.rotateOrder.get()
-            extraJ = JntNode(tgt + "_helper", align=tgt, r=r, p=tgt, ro=ro, color=C1)
+            extraJ = JntNode(tgt + "_aimHelper", align=tgt, r=r, p=tgt, ro=ro, color=C1)
             extraJ.resetOrient()
             extraJ.resetXf()
             helpers.append(extraJ)
@@ -941,7 +941,7 @@ class RigModule(RigBase):
         for tgt in targets:
             ro = tgt.a.rotateOrder.get()
             extraJ = JntNode(
-                tgt + "_helper2", align=tgt, r=r * 1.5, p=tgt, ro=ro, color=C2
+                tgt + "_aimHelper2", align=tgt, r=r * 1.5, p=tgt, ro=ro, color=C2
             )
             extraJ.resetOrient()
             extraJ.resetXf()

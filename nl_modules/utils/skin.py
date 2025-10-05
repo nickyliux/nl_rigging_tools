@@ -129,7 +129,11 @@ def loadWeight():
                 skinC.delete()
 
             # Skin and load weights
-            skinC = mc.skinCluster(mesh, weightJnt_dict[mesh], tsb=1)
+            try:
+                skinC = mc.skinCluster(mesh, weightJnt_dict[mesh], tsb=1)
+            except Exception as e:
+                logging.warning(f"{mesh}, Skin failed: {e}")
+                continue
 
             mc.select(mesh)
             mc.deformerWeights(
@@ -140,7 +144,7 @@ def loadWeight():
                 format="XML",
                 path=tgtDir,
             )
-            logging.info(f"{mesh} : weight loaded.")
+            logging.info(f"{mesh}, weight loaded.")
 
     mc.select(cl=1)
 
