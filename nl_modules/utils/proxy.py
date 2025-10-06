@@ -288,7 +288,6 @@ def set_combined_weight(combinedMesh):
     """Set skin weights for the combinedMesh proxy mesh based on the original proxy meshes."""
 
     skinC = MshNode(combinedMesh).skinCluster
-    # skinC = mel.eval("findRelatedSkinCluster " + combinedMesh)
     bindJnts = mc.skinCluster(skinC, q=1, inf=1)
 
     for j in bindJnts:

@@ -169,6 +169,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Weight
         self.connect(self.UI.loadWeight_BN, skin.loadWeight, ":openScript.png")
         self.connect(self.UI.saveWeight_BN, skin.saveWeight, ":fileSave.png")
+        self.connect(self.UI.copyWeight_BN, skin.copyWeight, ":copySkinWeight.png")
 
         # Bind
         self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind)
@@ -268,9 +269,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if targetWrapMesh:
             tgt = DagNode(targetWrapMesh)
             if tgt.exists() and tgt.type == "mesh":
-                self.UI.loadWrapTargetMesh_BN.setText(f"< {tgt.name} >")
+                self.UI.loadWrapTargetMesh_BN.setText(f"[ {tgt.name} ]")
             else:
-                self.UI.loadWrapTargetMesh_BN.setText("< None >")
+                self.UI.loadWrapTargetMesh_BN.setText("[ None ]")
 
     # def clickDrag_CB_stateChanged(self, state):
     #     """Set the click drag preference based on the checkbox state."""

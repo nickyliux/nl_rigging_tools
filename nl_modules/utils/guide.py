@@ -258,13 +258,14 @@ def loadTemplate(removeUnused=1):
     for rID in rigID_dict:
         mg = DagNode(rID + "_master_guide")
         if not mg.exists():
-            #     logging.info(f"master_guide for {rID} already exists!")
-            # else:
+
             tgt_mg = loadGuide(removeEndDigits(rID))
             allTgtMG.append(tgt_mg)
             mc.refresh(cv=1)
 
-        for guideN, attrs in rigID_dict[rID].items():  # Load settings from preset
+        # Load settings from preset
+        for guideN, attrs in rigID_dict[rID].items():
+
             guideN = DagNode(guideN)
             if guideN.exists():
                 for attr in attrs:
@@ -283,8 +284,7 @@ def loadTemplate(removeUnused=1):
                                     guideN.a[attr].set(v, type="string")
                                 elif isinstance(v, list):
                                     guideN.a[attr].set(*v)
-    # common.setViewport(fit=1)
-    # mc.select(allTgtMG)
+    common.setViewport(fit=1)
     mc.select(cl=1)
     logging.info(f"Template loaded: {tgtFiles[-1]}")
 

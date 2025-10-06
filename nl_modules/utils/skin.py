@@ -75,16 +75,25 @@ def autoBind_rbnJnts(tgts, uiPB=None):
 
 
 def selSkinned(*args):
-    """Select all skinned meshes to this joint."""
+    """Select all skinned meshes/joint."""
     selJnts = mc.ls(sl=1, type="joint")
 
     skinned = []
-    for jnt in selJnts:
-        skinCs = DagNode(jnt).a.lockInfluenceWeights.outConnNode
-        for skinC in skinCs:
-            skinnedShape = skinC.a.outputGeometry.outConnNode
-            if skinnedShape:
-                skinned.append(skinnedShape[0].offset)
+    if selJnts:
+        for jnt in selJnts:
+            skinCs = DagNode(jnt).a.lockInfluenceWeights.outConnNode
+            for skinC in skinCs:
+                skinnedShape = skinC.a.outputGeometry.outConnNode
+                if skinnedShape:
+                    skinned.append(skinnedShape[0].offset)
+    else:
+        selMeshes = mc.ls(sl=1, tr=1)
+        for msh in selMeshes:
+            skinC = MshNode(msh).skinCluster
+            if skinC:
+                jntList = mc.listConnections(skinC + ".matrix", type="joint")
+                if jntList:
+                    skinned.extend(jntList)
     if skinned:
         mc.select(skinned)
 
@@ -202,3 +211,27 @@ def saveWeight():
                 mesh.name + ".xml", ex=1, deformer=skinC, format="XML", path=tgtDir
             )
         logging.info(f"{len(skinDict)} objects' weight saved.")
+
+
+def copyWeight(*args):
+    """Copy skin weights from selected mesh to other selected meshes."""
+    sel = mc.ls(sl=1)
+    if len(sel) < 2:
+        mc.confirmDialog(
+            t="Error", m="Select clean mesh first, then source mesh.     ", b="OK"
+        )
+        return
+
+    src = MshNode(sel[-1])
+    tgts = sel[:-1]
+
+    if not src.skinCluster.exists():
+        mc.confirmDialog(
+            t="Error", m=f"Source mesh has NO skinCluster: {src}     ", b="OK"
+        )
+        return
+
+    for tgt in tgts:
+        src.copyWeightsTo(tgts)
+
+    logging.info(f"Weight copied from {src.name} to {len(tgts)} meshes.")

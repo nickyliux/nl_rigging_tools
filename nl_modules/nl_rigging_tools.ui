@@ -448,6 +448,9 @@
        <property name="topMargin">
         <number>3</number>
        </property>
+       <property name="rightMargin">
+        <number>6</number>
+       </property>
        <property name="bottomMargin">
         <number>0</number>
        </property>
@@ -536,6 +539,9 @@
        </property>
        <property name="topMargin">
         <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>6</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
@@ -670,6 +676,9 @@
        <property name="topMargin">
         <number>0</number>
        </property>
+       <property name="rightMargin">
+        <number>6</number>
+       </property>
        <property name="bottomMargin">
         <number>0</number>
        </property>
@@ -789,6 +798,9 @@
        </property>
        <property name="topMargin">
         <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>6</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
@@ -914,6 +926,9 @@
        </property>
        <property name="topMargin">
         <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>6</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
@@ -1088,6 +1103,42 @@
          </property>
         </spacer>
        </item>
+       <item>
+        <widget class="QPushButton" name="selAllProxyGrp_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Select all proxies</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_22">
@@ -1111,6 +1162,9 @@
        </property>
        <property name="topMargin">
         <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>6</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
@@ -1212,6 +1266,42 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="copyWeight_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Save ctl shape to file</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -1625,43 +1715,7 @@
        <item>
         <widget class="QLabel" name="label_10">
          <property name="text">
-          <string>Select Proxy</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="selAllProxyGrp_BN">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>22</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>22</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Select all proxies</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string/>
+          <string>Select target prox(ies)</string>
          </property>
         </widget>
        </item>
@@ -3202,7 +3256,7 @@ for Sel</string>
        <x>0</x>
        <y>340</y>
        <width>225</width>
-       <height>181</height>
+       <height>201</height>
       </rect>
      </property>
      <property name="title">
@@ -3652,7 +3706,7 @@ below selected</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>530</y>
+       <y>550</y>
        <width>225</width>
        <height>61</height>
       </rect>
