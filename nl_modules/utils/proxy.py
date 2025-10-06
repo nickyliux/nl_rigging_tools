@@ -1,3 +1,5 @@
+import os
+import glob
 import logging
 import maya.cmds as mc
 import maya.mel as mel
@@ -94,11 +96,17 @@ def saveProxy():
         mc.confirmDialog(t="Info", m="PRX group NOT found.     ", b="OK")
         return
 
-    mc.select("PRX")
-    tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2)
+    prx = mc.ls("PRX", tr=1)
+    if not prx:
+        mc.confirmDialog(t="Info", m="Group PRX not found.     ", b="OK")
+        return
+
+    charPath = mc.optionVar(q="charPath")
+    tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, dir=charPath)
     if tgtFile:
+        mc.select("PRX")
         mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
-        logging.info("Proxies exported OK.")
+        logging.info("Proxies exported.")
         mc.select(cl=1)
 
 
@@ -107,34 +115,42 @@ def loadProxy():
     from nl_modules.utils import control
 
     charPath = mc.optionVar(q="charPath")
-    tgtFile = mc.fileDialog2(
-        fileFilter="*_prx*", dialogStyle=2, fileMode=1, dir=charPath
-    )
-    if tgtFile:
-        genProxy()
-        imported = mc.file(tgtFile, i=1, ns="prx", returnNewNodes=1)
-        ns = ""
-        if imported:
-            tempStr = imported[0].replace(":", " ").replace("|", " ")
-            ns = tempStr.split()[0]
-        else:
-            return
+    tgtFiles = []
+    if charPath:
+        tgtFiles = glob.glob(
+            os.path.join(charPath, os.path.basename(charPath) + "*_prx*.ma")
+        )
+        if not tgtFiles:
+            tgtFile = mc.fileDialog2(
+                fileFilter="*_prx*", dialogStyle=2, fileMode=1, dir=charPath
+            )
+    if not tgtFiles:
+        return
 
-        allGeo = mc.ls("*_pxGeo")
-        control.reset_all_ctl()
-        for geo in allGeo:
-            geo = DagNode(geo)
-            imported = DagNode(ns + ":" + geo)
-            if imported.exists():
-                common.matchMove([geo, imported], mode="a")
-                mc.blendShape(imported, geo, w=(0, 1), topologyCheck=0)
-                geo.deleteHistory()
+    genProxy()
+    imported = mc.file(tgtFiles, i=1, ns="prx", returnNewNodes=1)
+    ns = ""
+    if imported:
+        tempStr = imported[0].replace(":", " ").replace("|", " ")
+        ns = tempStr.split()[0]
+    else:
+        return
 
-        if imported:
-            rootGrp = DagNode(ns + ":CHR")
-            if rootGrp.exists():
-                rootGrp.delete()
-            logging.info("Proxies imported OK.")
+    allGeo = mc.ls("*_pxGeo")
+    control.reset_all_ctl()
+    for geo in allGeo:
+        geo = DagNode(geo)
+        imported = DagNode(ns + ":" + geo)
+        if imported.exists():
+            common.matchMove([geo, imported], mode="a")
+            mc.blendShape(imported, geo, w=(0, 1), topologyCheck=0)
+            geo.deleteHistory()
+
+    if imported:
+        rootGrp = DagNode(ns + ":CHR")
+        if rootGrp.exists():
+            rootGrp.delete()
+        logging.info("Proxies loaded.")
 
 
 @common.Undo("resetProxy")

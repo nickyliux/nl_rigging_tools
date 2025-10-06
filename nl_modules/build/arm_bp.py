@@ -136,7 +136,7 @@ class ArmBp(RigModule):
             self.jnts_bind += [self.lwr]
             proxy.add_height_attr([self.lwr], self.rigSize * 10)
             helpers = self.build_aimHelper([self.lwr, self.palm])
-            self.jnts_bind += helpers
+            # self.jnts_bind += helpers
 
             jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
             jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)

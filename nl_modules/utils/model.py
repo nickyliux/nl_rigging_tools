@@ -1,3 +1,5 @@
+import os
+import glob
 import maya.cmds as mc
 
 
@@ -8,22 +10,20 @@ def retopo(faceNum=200):
         mc.polyRetopo(targetFaceCount=faceNum)
 
 
-def get_model_file():
-    """Open file dialog to select a model file."""
-    charPath = mc.optionVar(q="charPath")
-
-    tgtFile = mc.fileDialog2(
-        fileFilter="*_mdl*", dialogStyle=2, fileMode=1, dir=charPath
-    )
-    return tgtFile[0] if tgtFile else None
-
-
-def import_model(self):
+def loadModel(self):
     """Import model file into the scene."""
     from nl_modules.utils import file
     from nl_modules.utils import common
 
-    tgtFile = get_model_file()
-    if tgtFile:
-        file.importFile(tgtFile)
-        common.setViewport(fit=1)  # , jx=1)
+    charPath = mc.optionVar(q="charPath")
+    if charPath:
+        tgtFiles = glob.glob(
+            os.path.join(charPath, os.path.basename(charPath) + "_mdl*.ma")
+        )
+        if tgtFiles:
+            file.importFile(tgtFiles[-1])
+            common.setViewport(fit=1, wos=1)  # , jx=1)
+        else:
+            tgtFile = mc.fileDialog2(
+                fileFilter="*_mdl*", dialogStyle=2, fileMode=1, dir=charPath
+            )

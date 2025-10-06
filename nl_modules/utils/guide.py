@@ -1,5 +1,6 @@
-import logging
 import os
+import glob
+import logging
 import re
 import maya.cmds as mc
 import nl_modules
@@ -234,13 +235,19 @@ def loadTemplate(removeUnused=1):
     """Load preset from json file"""
     charPath = mc.optionVar(q="charPath")
 
-    tgtFile = mc.fileDialog2(
-        fileFilter="*tpl*.json", dialogStyle=2, fileMode=1, dir=charPath
-    )
-    if tgtFile is None:
+    tgtFiles = []
+    if charPath:
+        tgtFiles = glob.glob(
+            os.path.join(charPath, os.path.basename(charPath) + "_tpl*.json")
+        )
+        if not tgtFiles:
+            tgtFiles = mc.fileDialog2(
+                fileFilter="*tpl*.json", dialogStyle=2, fileMode=1, dir=charPath
+            )
+    if not tgtFiles:
         return
 
-    rigID_dict = file.loadJson(tgtFile[0])
+    rigID_dict = file.loadJson(tgtFiles[-1])
     if removeUnused:  # Remove unused components
         idInPreset = [k + "_RGN" for k in rigID_dict.keys()]
         for node in build.getRigNodes_all():
@@ -278,6 +285,8 @@ def loadTemplate(removeUnused=1):
                                     guideN.a[attr].set(*v)
     # common.setViewport(fit=1)
     # mc.select(allTgtMG)
+    mc.select(cl=1)
+    logging.info(f"Template loaded: {tgtFiles[-1]}")
 
 
 def genAttrDict(obj):

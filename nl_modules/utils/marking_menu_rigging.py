@@ -123,7 +123,7 @@ class MarkingMenuRigging:
         mc.menuItem(p=skin_MI, l="Bind Skin", c=mc.SmoothBindSkinOptions, ob=1)
         mc.menuItem(p=skin_MI, l="Add Influence", c=addInf)
         mc.menuItem(p=skin_MI, l="Add Influence", c=addInfOpt, ob=1)
-        mc.menuItem(p=skin_MI, l="Select Skinned", c=skin.selSkinned)
+        mc.menuItem(p=skin_MI, l="Select Skinned Meshes", c=skin.selSkinned)
         mc.menuItem(p=skin_MI, l="-" * 20, en=0)
         # mc.menuItem(p=skin_MI, l="Detach Skin", c=mc.DetachSkin)
         mc.menuItem(p=skin_MI, l="Delete Skin", c=skin.delSkinForSel)

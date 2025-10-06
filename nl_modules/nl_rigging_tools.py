@@ -136,7 +136,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.char_explore_BN, self.explore_char, ":searchEngine.png")
 
         # Model
-        self.connect(self.UI.loadModel_BN, model.import_model, ":openScript.png")
+        self.connect(self.UI.loadModel_BN, model.loadModel, ":openScript.png")
 
         # Template
         self.connect(self.UI.loadTemplate_BN, self.loadTpl, ":openScript.png")

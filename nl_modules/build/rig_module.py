@@ -941,7 +941,7 @@ class RigModule(RigBase):
         for tgt in targets:
             ro = tgt.a.rotateOrder.get()
             extraJ = JntNode(
-                tgt + "_aimHelper2", align=tgt, r=r * 1.5, p=tgt, ro=ro, color=C2
+                tgt + "_aimHelperP", align=tgt, r=r * 1.5, p=tgt, ro=ro, color=C2
             )
             extraJ.resetOrient()
             extraJ.resetXf()

@@ -1,4 +1,5 @@
 import os
+import glob
 import logging
 from maya import mel
 from maya import cmds as mc
@@ -101,13 +102,22 @@ def delSkinForSel(*args):
 def loadWeight():
     """Load skin weight joints from a JSON file."""
     charPath = mc.optionVar(q="charPath")
-    tgtFiles = mc.fileDialog2(
-        fileFilter="*.json", dialogStyle=2, fileMode=4, dir=charPath
-    )
-    if tgtFiles is None:
+    tgtFiles = []
+    if charPath:
+        tgtFiles = glob.glob(
+            os.path.join(
+                charPath, "weight", os.path.basename(charPath) + "*_weight*.json"
+            )
+        )
+        if not tgtFiles:
+            tgtFiles = mc.fileDialog2(
+                fileFilter="*.json", dialogStyle=2, fileMode=4, dir=charPath
+            )
+    if not tgtFiles:
         return
 
-    tgtDir = os.path.dirname(tgtFiles[0])
+    tgtDir = os.path.dirname(tgtFiles[-1])
+    loaded = 0
 
     for f in tgtFiles:
         weightJnt_dict = file.loadJson(f)
@@ -131,8 +141,9 @@ def loadWeight():
             # Skin and load weights
             try:
                 skinC = mc.skinCluster(mesh, weightJnt_dict[mesh], tsb=1)
+
             except Exception as e:
-                logging.warning(f"{mesh}, Skin failed: {e}")
+                logging.warning(f"{mesh} weight loading failed: {e}")
                 continue
 
             mc.select(mesh)
@@ -144,8 +155,10 @@ def loadWeight():
                 format="XML",
                 path=tgtDir,
             )
-            logging.info(f"{mesh}, weight loaded.")
+            loaded += 1
+            logging.info(f"{mesh} weight loaded.")
 
+    logging.info(f"{loaded} objects' weight loaded.")
     mc.select(cl=1)
 
 
