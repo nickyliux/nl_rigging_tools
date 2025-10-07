@@ -224,11 +224,15 @@ class SpineBp(RigModule):
         )
 
         self.rbSrf.weightTo(self.jnts_ctl, chain=0, mi=2, dr=6)
+
+        stretchy = self.setting.a.add("stretchy", min=0, max=1, dv=0)
+        self.hip_ikc.a.add("stretchy", proxy=stretchy)
+        self.chest_ikc.a.add("stretchy", proxy=stretchy)
+
         self.hip_ikc.a.add("tangent", min=0, dv=1) >> self.jnts_ctl[0].a.sy
         self.mid_ikc.a.add("tangent", min=0, dv=1) >> self.jnts_ctl[1].a.sy
         self.chest_ikc.a.add("tangent", min=0, dv=1) >> self.jnts_ctl[2].a.sy
 
-        self.setting.a.add("stretchy", min=0, max=1, dv=1)
         crvLenRatio, self.jnts_rb = common.build_ribbon_rivet(
             rbSrf=self.rbSrf,
             rivetNum=self.rbnJntNum,
@@ -251,9 +255,9 @@ class SpineBp(RigModule):
         d = arcLD.a.arcLengthInV
         D = d.get()
 
-        volConservation = self.setting.a.add("volConservation", min=0, dv=1)
-        self.chest_ikc.a.add("volConservation", proxy=volConservation)
-        self.hip_ikc.a.add("volConservation", proxy=volConservation)
+        volConserve = self.setting.a.add("volConserve", min=0, dv=1)
+        self.chest_ikc.a.add("volConserve", proxy=volConserve)
+        self.hip_ikc.a.add("volConserve", proxy=volConserve)
 
         # keys for volume squash
         volGraph = self.setting.a.add("volGraph", dv=0)
@@ -268,7 +272,7 @@ class SpineBp(RigModule):
             volGraph >> fc.a.stream
             fc.a.varyTime.set(i)
 
-            ratio = (scaleFix * D / d) ** (fc.a.varying * volConservation)
+            ratio = (scaleFix * D / d) ** (fc.a.varying * volConserve)
             ratio >> self.jnts_rb[i].a.sy
             ratio >> self.jnts_rb[i].a.sz
 
@@ -290,8 +294,7 @@ class SpineBp(RigModule):
         if self.spineType == SpineType.RIBBON.value:
             mc.hide(self.jnts_fk)
 
-        mc.hide(self.jnts_ctl)
-        mc.hide(self.rbSrf)
+        mc.hide(self.jnts_ctl, self.rbSrf)  # , self.setting)
         if self.is_neck():
             mc.hide(self.cog_ctl)
 

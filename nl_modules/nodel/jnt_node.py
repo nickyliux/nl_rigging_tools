@@ -125,7 +125,6 @@ class JntNode(GrpNode):
             height = proxy_height
 
         if not skipEnd:
-
             proxy = self.buildCylinder(
                 proxy_name,
                 base_radius * proxy_radius_scale,
@@ -154,7 +153,7 @@ class JntNode(GrpNode):
 
             # Assign shader before constraints to avoid Maya errors
             common.assignPresetShd([proxy])
-            self.cstParSca(proxy_offset, mo=1)
+            self.cstParSca(proxy_offset)
             return proxy
         return None
 

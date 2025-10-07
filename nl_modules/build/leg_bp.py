@@ -619,8 +619,8 @@ class LegBp(RigModule):
         self.masterC.a.globalScale >> self.SKL_DATA.a.s
 
         foot_scale = self.setting.a.add("footScale", min=0.01, dv=1)
-        self.ikc.a.add("footScale", min=0.01, proxy=foot_scale)
-        self.ball_fkc.a.add("footScale", min=0.01, proxy=foot_scale)
+        self.ikc.a.add("footScale", proxy=foot_scale)
+        self.ball_fkc.a.add("footScale", proxy=foot_scale)
 
         foot_scale >> self.ball_fkc.offset.a.s
         foot_scale >> self.ikc.a.s

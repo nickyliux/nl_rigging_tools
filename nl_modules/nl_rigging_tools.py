@@ -141,6 +141,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Template
         self.connect(self.UI.loadTemplate_BN, self.loadTpl, ":openScript.png")
         self.connect(self.UI.saveTemplate_BN, guide.saveTemplate, ":fileSave.png")
+        self.connect(self.UI.delTemplate_BN, build.deleteSelOrAll, ":smallTrash.png")
 
         # Build
         self.connect(self.UI.buildAll_BN, self.buildAll, ":play_S.png")
@@ -153,8 +154,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Proxy
         self.connect(self.UI.loadProxy_BN, proxy.loadProxy, ":openScript.png")
         self.connect(self.UI.saveProxy_BN, proxy.saveProxy, ":fileSave.png")
-        self.connect(self.UI.genProxy_BN, proxy.genProxy, ":play_S.png")
-        self.connect(self.UI.selAllProxyGrp_BN, proxy.selAllProxyMesh, ":aselect.png")
+        # self.connect(self.UI.genProxy_BN, proxy.genProxy, ":play_S.png")
+        self.connect(self.UI.selAllProxyGrp_BN, proxy.selectAllProxy, ":aselect.png")
         self.connect(self.UI.showHideProxy_BN, proxy.showHideProxy, ":visible.png")
         # self.connect(self.UI.refProxy_BN, proxy.refProxy, ":templated.png")
         # self.connect(self.UI.wrapProxy_BN, proxy.wrapProxy, ":shrinkwrap.png")
@@ -271,7 +272,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             if tgt.exists() and tgt.type == "mesh":
                 self.UI.loadWrapTargetMesh_BN.setText(f"[ {tgt.name} ]")
             else:
-                self.UI.loadWrapTargetMesh_BN.setText("[ None ]")
+                self.UI.loadWrapTargetMesh_BN.setText("<< Load Wrap Mesh >>")
 
     # def clickDrag_CB_stateChanged(self, state):
     #     """Set the click drag preference based on the checkbox state."""

@@ -157,7 +157,7 @@ class SpineQd(RigModule):
                 width=2,
             )
             ctl.cv_rotate(0, 90, 0)
-            ctl.a.add("stretch", min=0, max=1, proxy=self.setting.a.stretch)
+            ctl.a.add("stretch", proxy=self.setting.a.stretch)
             self.ctls_ik.append(ctl)
 
         self.base_ctl.alignTo(self.ctls_ik[0], p=self.ctls_ik[0])

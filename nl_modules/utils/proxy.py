@@ -64,7 +64,7 @@ def nlShrinkWrap(target=None, meshes=None, keep=0, **kwargs):
         [DagNode(m).deleteHistory() for m in meshes]
 
 
-def genProxy():
+def genProxy(*args):
     """Generate proxy meshes for all bind joints in the scene."""
     MDL = GrpNode("MDL")
     PRX = GrpNode("PRX", p=MDL)
@@ -305,7 +305,7 @@ def set_combined_weight(combinedMesh):
 #             mc.select(allBelow)
 
 
-def selAllProxyMesh():
+def selectAllProxy(*args):
     """Select all proxy meshes under the 'PRX' group."""
     PRX = DagNode("PRX")
     if PRX.exists():

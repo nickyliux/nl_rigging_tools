@@ -120,7 +120,7 @@ def masterAddProxyAttrs():
         proxy = ctl.a.add("proxy", k=0, attrType="bool", dv=1)
         proxy >> prx.a.v
 
-        OPTIONS = "Nml:Tpl:Ref"
+        OPTIONS = "Normal:Template:Reference"
         proxyDsp = ctl.a.add("proxyDsp", attrType="enum", k=0, en=OPTIONS, dv=0)
         proxyDsp >> prx.a.overrideDisplayType
 
