@@ -187,40 +187,40 @@ def update_anchor_conn():
 
     # Iterate through each rigNode to find and connect the closest plug anchor
     for node in rigNodes:
+        for anchor in ["anchorS1", "anchorS2"]:
+            socket = node.a[anchor].inConnNode
+            if not socket or not socket.exists():
+                continue
 
-        socket = node.a.anchorS1.inConnNode
-        if not socket or not socket.exists():
-            continue
+            master_guide = node.a.master_guide.inConnNode
+            if not master_guide or not master_guide.exists():
+                continue
 
-        master_guide = node.a.master_guide.inConnNode
-        if not master_guide or not master_guide.exists():
-            continue
+            parentNameMatch = master_guide.a.parentNameMatch.get()
+            parentRigNodes = getRigNodes_all(match=parentNameMatch)
 
-        parentNameMatch = master_guide.a.parentNameMatch.get()
-        parentRigNodes = getRigNodes_all(match=parentNameMatch)
+            if not parentRigNodes:
+                logging.warning(f"No parent rigNode found for {node.name}.")
+                continue
 
-        if not parentRigNodes:
-            logging.warning(f"No parent rigNode found for {node.name}.")
-            continue
+            if node in parentRigNodes:  # Remove self if in parent list
+                parentRigNodes.remove(node)
 
-        if node in parentRigNodes:  # Remove self if in parent list
-            parentRigNodes.remove(node)
+            if len(parentRigNodes) == 0:  # No parent rigNode found
+                continue
 
-        if len(parentRigNodes) == 0:  # No parent rigNode found
-            continue
+            plugAnchors = getAnchors(parentRigNodes, startStr="anchorP")
+            if not plugAnchors or len(plugAnchors) == 0:
+                continue
 
-        plugAnchors = getAnchors(parentRigNodes, startStr="anchorP")
-        if not plugAnchors or len(plugAnchors) == 0:
-            continue
+            dist_dict = {}
+            for anchorP in plugAnchors:
+                dist_dict[anchorP] = socket.o.distanceTo(anchorP)
 
-        dist_dict = {}
-        for anchorP in plugAnchors:
-            dist_dict[anchorP] = socket.o.distanceTo(anchorP)
+            closestPlugAnchor = min(dist_dict, key=dist_dict.get)
 
-        closestPlugAnchor = min(dist_dict, key=dist_dict.get)
-
-        logging.info(f"{socket.name} >> {closestPlugAnchor.name}")
-        closestPlugAnchor.cstPar(socket, mo=1)
+            logging.info(f"{socket.name} << {closestPlugAnchor.name}")
+            closestPlugAnchor.cstPar(socket, mo=1)
 
 
 # ---------------------------------------------------------------

@@ -312,7 +312,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>330</y>
+       <y>320</y>
        <width>221</width>
        <height>201</height>
       </rect>
@@ -721,7 +721,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>110</y>
+        <y>140</y>
         <width>221</width>
         <height>26</height>
        </rect>
@@ -1013,7 +1013,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>140</y>
+        <y>110</y>
         <width>221</width>
         <height>26</height>
        </rect>
@@ -1178,9 +1178,9 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>610</y>
+       <y>600</y>
        <width>225</width>
-       <height>51</height>
+       <height>71</height>
       </rect>
      </property>
      <property name="title">
@@ -1303,7 +1303,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>280</y>
+       <y>270</y>
        <width>225</width>
        <height>51</height>
       </rect>
@@ -1454,13 +1454,13 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>530</y>
+       <y>520</y>
        <width>225</width>
        <height>81</height>
       </rect>
      </property>
      <property name="title">
-      <string>Proxy</string>
+      <string>Proxy Warp</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1696,42 +1696,6 @@
       </layout>
      </widget>
     </widget>
-    <widget class="QGroupBox" name="groupBox_17">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>670</y>
-       <width>225</width>
-       <height>61</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>About</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="flat">
-      <bool>true</bool>
-     </property>
-     <widget class="QLabel" name="label_5">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>20</y>
-        <width>221</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Copy Right ©2025 Nicky Liu
-www.nickyliu.com</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </widget>
    </widget>
    <widget class="QWidget" name="prepare_TB">
     <attribute name="title">
@@ -1741,7 +1705,7 @@ www.nickyliu.com</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>120</y>
+       <y>360</y>
        <width>225</width>
        <height>71</height>
       </rect>
@@ -1821,9 +1785,9 @@ for Sel</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>10</y>
+       <y>270</y>
        <width>225</width>
-       <height>101</height>
+       <height>91</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -1976,36 +1940,6 @@ for Sel</string>
        </item>
       </layout>
      </widget>
-     <widget class="QLabel" name="label_7">
-      <property name="geometry">
-       <rect>
-        <x>3</x>
-        <y>80</y>
-        <width>211</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Segoe UI</family>
-        <pointsize>8</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string> Add neck / spine / tail + _rbj_set</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_8">
       <property name="geometry">
        <rect>
@@ -2071,7 +2005,7 @@ for Sel</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>270</y>
+       <y>490</y>
        <width>225</width>
        <height>61</height>
       </rect>
@@ -2124,7 +2058,7 @@ for Sel</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>200</y>
+       <y>430</y>
        <width>225</width>
        <height>61</height>
       </rect>
@@ -2220,9 +2154,9 @@ for Sel</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>340</y>
+       <y>550</y>
        <width>225</width>
-       <height>171</height>
+       <height>181</height>
       </rect>
      </property>
      <property name="title">
@@ -2242,8 +2176,8 @@ for Sel</string>
        <rect>
         <x>0</x>
         <y>22</y>
-        <width>223</width>
-        <height>91</height>
+        <width>221</width>
+        <height>41</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -2263,14 +2197,14 @@ for Sel</string>
         <widget class="QListWidget" name="typeBelow_LW">
          <property name="minimumSize">
           <size>
-           <width>60</width>
+           <width>0</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>9999</width>
-           <height>16777215</height>
+           <height>33</height>
           </size>
          </property>
          <property name="font">
@@ -2323,7 +2257,7 @@ for Sel</string>
         <widget class="QPushButton" name="selectTypeBelow_BN">
          <property name="minimumSize">
           <size>
-           <width>150</width>
+           <width>120</width>
            <height>10</height>
           </size>
          </property>
@@ -2368,7 +2302,7 @@ below selected</string>
       <property name="geometry">
        <rect>
         <x>1</x>
-        <y>120</y>
+        <y>70</y>
         <width>221</width>
         <height>22</height>
        </rect>
@@ -2531,7 +2465,7 @@ below selected</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>146</y>
+        <y>100</y>
         <width>221</width>
         <height>21</height>
        </rect>
@@ -2681,9 +2615,9 @@ below selected</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>530</y>
+       <y>0</y>
        <width>225</width>
-       <height>251</height>
+       <height>271</height>
       </rect>
      </property>
      <property name="title">
@@ -2791,7 +2725,7 @@ below selected</string>
         <x>3</x>
         <y>50</y>
         <width>218</width>
-        <height>191</height>
+        <height>211</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -3531,7 +3465,7 @@ below selected</string>
        <x>0</x>
        <y>130</y>
        <width>225</width>
-       <height>651</height>
+       <height>541</height>
       </rect>
      </property>
      <property name="title">
@@ -3683,7 +3617,7 @@ below selected</string>
         <x>0</x>
         <y>49</y>
         <width>221</width>
-        <height>591</height>
+        <height>481</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -4532,6 +4466,72 @@ below selected</string>
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>630</y>
+     <width>211</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>16777215</width>
+     <height>20</height>
+    </size>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>8</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string> Add neck / spine / tail + _rbj_set</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_17">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>680</y>
+     <width>225</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>About</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>20</y>
+      <width>221</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Copy Right ©2025 Nicky Liu
+www.nickyliu.com</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

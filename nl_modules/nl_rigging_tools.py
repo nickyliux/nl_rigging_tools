@@ -317,8 +317,12 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Show attribute editor for rigNode"""
         itemSel = mc.ls(item.text())
         if itemSel:
-            mc.select(itemSel)
-            mc.AttributeEditor()
+            # mc.select(itemSel)
+            # mc.AttributeEditor()
+            mg = DagNode(itemSel[0]).a.master_guide.inConnNode
+            if mg and mg.exists():
+                mc.select(mg)
+                mc.AttributeEditor()
 
     def rigNode_refresh(self):
         """Refresh UI rigNode list"""
@@ -552,7 +556,7 @@ def main():
     except:
         pass
     nlRT_win = MyToolWin()
-    nlRT_win.show()  # dockable=False)
+    nlRT_win.show(dockable=True)
 
     with open(STYLE_PATH, "r") as f:
         style = f.read()

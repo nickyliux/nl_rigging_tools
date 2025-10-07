@@ -378,14 +378,10 @@ class RigModule(RigBase):
 
     def setup_anchor_module(self, anchorDict=None):
         """
-        S : socket, for driven, hand has 1 S-anchor
-        P : plug, for driver. spine has 2 P-anchors
-        e.g.
-        { 'anchorP1': loc1, 'anchorP2': loc2, }
-        or
-        { 'anchorP1': loc1, 'anchorS1': loc2, }
-        or
-        { 'anchorS1': loc1, }
+        S : socket, for driven,
+            e.g.  hand has 1 S-anchor, wire has 2 S-anchors
+        P : plug, for driver.
+            e.g.  spine has 2 P-anchors, arm has 1 P-anchor
         """
         rID, rSz, xDr = self.getMyVar()
 
@@ -400,7 +396,7 @@ class RigModule(RigBase):
                 loc.color = 13
                 loc.alignTo(tgt)
                 loc.cstPar(tgt, mo=1)
-            mc.hide(loc)
+            # mc.hide(loc)
 
     def add_ctl_set(self, tgtList):
         """Add control set for target controls"""
