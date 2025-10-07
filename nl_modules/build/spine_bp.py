@@ -350,6 +350,9 @@ class SpineBp(RigModule):
         if not self.is_neck():
             proxy.add_radiusScale_attr(self.jnts_bind, 2)
 
+        if self.spineType != SpineType.RIBBON.value:
+            proxy.add_up_attr(self.jnts_bind, 1)
+
     def setup_ctlSet(self):
         """Setup control sets for the spine rig."""
         ctls = self.ctls_fk + [self.setting]

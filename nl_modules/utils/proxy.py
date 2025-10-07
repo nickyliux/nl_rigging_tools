@@ -347,6 +347,15 @@ def add_height_attr(tgtJnts, v):
             tgt.a.add("proxyHeight", k=0, dv=v)
 
 
+def add_up_attr(tgtJnts, v):
+    """Add proxyUp attribute to target joints"""
+    # 0: x, 1: y, 2: z
+    for jnt in tgtJnts:
+        tgt = DagNode(jnt)
+        if tgt.exists():
+            tgt.a.add("proxyUp", k=0, dv=v)
+
+
 # def refProxy():
 #     """Toggle the display type of all proxy meshes between normal and reference."""
 #     for s in mc.ls("*_pxGeo") or []:

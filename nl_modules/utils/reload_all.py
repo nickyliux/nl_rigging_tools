@@ -131,6 +131,7 @@ from nl_modules.build import (
     ribbon,
     head,
     simple_fk,
+    wire,
 )
 
 reload(rig_base)
@@ -150,6 +151,7 @@ reload(spine_qd)
 reload(tail_fk)
 reload(tail)
 reload(finger_fk)
+reload(wire)
 
 if __name__ == "__main__":
     logging.info("reload modules")

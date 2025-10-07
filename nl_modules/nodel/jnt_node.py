@@ -94,6 +94,7 @@ class JntNode(GrpNode):
                 JntNode(jnt).resetOrient()
 
     def buildCylinder(self, n, r, h, ax, div, p):
+        """Build a cylinder mesh for the joint proxy."""
         proxy = DagNode(
             mc.polyCylinder(
                 n=n, r=r, h=h, ax=ax, subdivisionsAxis=8, subdivisionsHeight=div, ch=0
@@ -112,33 +113,32 @@ class JntNode(GrpNode):
             return None
 
         children = self.childrenJt
-        base_radius = self.a.radius.get() * 5
-        proxy_radius_scale = self.a["proxyRadiusScale"].get() or 1
-        proxy_div = self.a["proxyDiv"].get() or 2
-        proxy_height = self.a["proxyHeight"].get()
+        base_rad = self.a.radius.get() * 5
+        prx_rad_scale = self.a["proxyRadiusScale"].get() or 1
+        prx_div = self.a["proxyDiv"].get() or 2
+        prx_height = self.a["proxyHeight"].get()
+        prx_up = self.a["proxyUp"].get()
+        if prx_up and prx_up == 1:
+            aimDir = (0, 1, 0)
 
-        height = base_radius
-        if proxy_height is None:
+        height = base_rad
+        if prx_height is None:
             if children:
                 height = self.o.distanceTo(children[0]) * 0.7
         else:
-            height = proxy_height
+            height = prx_height
 
         if not skipEnd:
+
             proxy = self.buildCylinder(
-                proxy_name,
-                base_radius * proxy_radius_scale,
-                height,
-                aimDir,
-                proxy_div,
-                p,
+                proxy_name, base_rad * prx_rad_scale, height, aimDir, prx_div, p
             )
             proxy_offset = proxy.addOffsetGrp()
 
             if scaler is not None:
                 scaler >> proxy.a.s
 
-            if proxy_height is None and children:
+            if prx_height is None and children:
                 common.cstMulti(self, *children, proxy_offset, cstType="poi", delete=1)
 
             if children and len(children) == 1:
