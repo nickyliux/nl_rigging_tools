@@ -40,7 +40,7 @@ class RigModule(RigBase):
             raise ValueError(f"master_guide not found for {rigNode}")
 
         self.rigSize = 1
-        self.xDir = 1 if rID.startswith("lf") else -1
+        self.xDir = 1 if rID.startswith("lf") else -1 if rID.startswith("rt") else 0
         self.boneFix = None
         self.jnts_bind = []
         self.all_bend = []
@@ -328,7 +328,11 @@ class RigModule(RigBase):
 
         children = self.rootJ.childrenJt
         if children:
-            self.xDir = 1 if children[0].a.tx.get() > 0 else -1
+            self.xDir = (
+                1
+                if children[0].a.tx.get() > 0
+                else -1 if children[0].a.tx.get() < 0 else 0
+            )
 
     def build_post_module(self):
         """Post build function to finalize the module setup."""
@@ -374,8 +378,8 @@ class RigModule(RigBase):
 
     def setup_anchor_module(self, anchorDict=None):
         """
-        S is socket, for driven plugs. e.g. hand has 1 S-anchor
-        P is plug, for driver plugs. e.g spine has 2 P-anchors
+        S : socket, for driven, hand has 1 S-anchor
+        P : plug, for driver. spine has 2 P-anchors
         e.g.
         { 'anchorP1': loc1, 'anchorP2': loc2, }
         or

@@ -54,6 +54,8 @@ class MarkingMenuAutorig:
     def addExtraOptions(self, menu):
         """Add extra options to the marking menu"""
         mc.menuItem(p=menu, l="Select Ctls", c=self.selectCtlSelOrAll)
+        mc.menuItem(p=menu, l="Guide -------", en=0)
+        mc.menuItem(p=menu, l="    Delete", c=build.deleteSelOrAll)
         mc.menuItem(p=menu, l="Proxy -------", en=0)
         mc.menuItem(p=menu, l="    Gen", c=proxy.genProxy)
         mc.menuItem(p=menu, l="    Reset", c=proxy.resetProxy)

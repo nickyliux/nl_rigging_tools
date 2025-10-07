@@ -561,7 +561,7 @@ def addTwistReader(target, pf="", p=None):
     return reader_loc
 
 
-def getTypeBelow(tgt, tgtType="mesh"):
+def getObjectBelow(tgt, tgtType="mesh"):
     """Get all objects of a specific type below the target"""
     from nl_modules.nodel.base.dag_node import DagNode
     from nl_modules.nodel.crv_node import CrvNode

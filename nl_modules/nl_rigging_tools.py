@@ -250,7 +250,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if typeBelow:
             sel = mc.ls(sl=1, tr=1)
             if sel:
-                result = common.getTypeBelow(sel, tgtType=typeBelow[0].text())
+                result = common.getObjectBelow(sel, tgtType=typeBelow[0].text())
                 if result:
                     mc.select(result)
 
@@ -297,27 +297,16 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Load selected guide components."""
 
         items = self.UI.guide_LW.selectedItems()
-        side_L = self.UI.component_left_RB.isChecked()
-        side_R = self.UI.component_right_RB.isChecked()
+        # side_L = self.UI.component_left_RB.isChecked()
+        # side_R = self.UI.component_right_RB.isChecked()
 
         allTgtMG = []
         if items:
             for item in items:
                 names = guide.COMPONENT_DICT[item.text()]
-
-                guideToLoad = []
-                if len(names) == 1:
-                    guideToLoad.append(names[0])
-                else:
-                    if not side_L:
-                        guideToLoad.append(names[1])
-                    if not side_R:
-                        guideToLoad.append(names[0])
-
-                for n in guideToLoad:
+                for n in names:
                     mg = guide.loadGuide(n)
                     allTgtMG.append(mg)
-                # guide.loadGuide(names)
 
             self.rigNode_refresh()
             mc.select(allTgtMG)
@@ -477,7 +466,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             mc.confirmDialog(t="Info", m=f"{BIND_REF_GRP} NOT found.    ", b="OK")
             return
 
-        tgtMesh = common.getTypeBelow(MODEL_GRP)
+        tgtMesh = common.getObjectBelow(MODEL_GRP)
 
         # Bind either to closest refJnt, or corresponding rbnJnt
         self.autoBind_refJnts(
@@ -487,7 +476,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             uiPB=self.UI.progress_PB,
         )
         skin.autoBind_rbnJnts(
-            tgtMesh,
+            meshes=tgtMesh,
             uiPB=self.UI.progress_PB,
         )
 

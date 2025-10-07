@@ -18,33 +18,35 @@ def skinRefJnts(meshes=None, jnts=None, thld=5, uiPB=None):
         uiPB.setMaximum(len(meshes))
 
     for i, mesh in enumerate(meshes):
-        jnt = DagNode(mesh.name + "_refJnt")
+        if uiPB:
+            uiPB.setValue(i)
 
-        if jnt.exists():
-            if mesh.skinCluster:
-                ignored += 1
+        if mesh.skinCluster.exists():
+            ignored += 1
+            continue
+
+        refJ = DagNode(mesh.name + "_refJnt")
+        if not refJ.exists():
+            ignored += 1
+            continue
+
+        closest = refJ.getClosestInList(jnts)
+        if closest:
+            if closest.o.distanceTo(refJ) < thld:
+                mesh.weightTo(closest, mi=1, tsb=1)
+                weighted += 1
             else:
-                closest = jnt.getClosestInList(jnts)
-                if closest:
-                    if closest.o.distanceTo(jnt) < thld:
-                        MshNode(mesh).weightTo(closest, mi=1, tsb=1)
-                        weighted += 1
-                    else:
-                        ignored += 1
-                else:
-                    ignored += 1
+                ignored += 1
         else:
             ignored += 1
 
-        if uiPB:
-            uiPB.setValue(i)
     if uiPB:
         uiPB.setValue(0)
 
-    logging.info(f"{weighted} weighted. {ignored} ignored.")
+    logging.info(f"refJnts : {weighted} weighted. {ignored} already bind.")
 
 
-def autoBind_rbnJnts(tgts, uiPB=None):
+def autoBind_rbnJnts(meshes=None, uiPB=None):
     """Skin target meshes to their _rbJnt if found."""
 
     weighted = 0
@@ -52,26 +54,30 @@ def autoBind_rbnJnts(tgts, uiPB=None):
     notFound = 0
 
     if uiPB:
-        uiPB.setMaximum(len(tgts))
+        uiPB.setMaximum(len(meshes))
 
-    for i, mesh in enumerate(tgts):
-
-        jnt = DagNode(mesh.name + "_rbJnt")
-        if jnt.exists():
-            if mesh.skinCluster:
-                ignored += 1
-            else:
-                mesh.weightTo(jnt, mi=1, tsb=1)
-                weighted += 1
-        else:
-            notFound += 1
-
+    for i, mesh in enumerate(meshes):
         if uiPB:
             uiPB.setValue(i)
+
+        rbJnt = DagNode(mesh.name + "_rbJnt")
+        if not rbJnt.exists():
+            notFound += 1
+            continue
+
+        if mesh.skinCluster.exists():
+            ignored += 1
+            continue
+
+        mesh.weightTo(rbJnt, mi=1, tsb=1)
+        weighted += 1
+
     if uiPB:
         uiPB.setValue(0)
 
-    logging.info(f"{weighted} weighted. {ignored} ignored. {notFound} NOT found.")
+    logging.info(
+        f"rbJnts : {weighted} weighted. {ignored} already bind. {notFound} unfound."
+    )
 
 
 def selSkinned(*args):
@@ -177,14 +183,14 @@ def saveWeight():
     if charPath == None or charPath == "":
         mc.confirmDialog(t="Error", m="Character path NOT set.     ", b="OK")
         return
-
     # mc.select(hi=1)
     # mc.select(mc.ls(type="mesh", sl=1))
     # mc.pickWalk(d="up")
     # selected = mc.ls(sl=1)
+
     weightJntDict = {}
     skinDict = {}
-    meshesToSave = common.getTypeBelow(mc.ls(sl=1), tgtType="mesh")
+    meshesToSave = common.getObjectBelow(mc.ls(sl=1), tgtType="mesh")
 
     for mesh in meshesToSave:
         skinC = MshNode(mesh).skinCluster
@@ -198,7 +204,7 @@ def saveWeight():
         return
 
     tgtFile = mc.fileDialog2(
-        fileFilter="*.json", dialogStyle=2, fileMode=0, dir=charPath
+        fileFilter="*weight*.json", dialogStyle=2, fileMode=0, dir=charPath
     )
     if tgtFile is None:
         return

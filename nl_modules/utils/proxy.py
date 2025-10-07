@@ -311,7 +311,7 @@ def selectAllProxy(*args):
     if PRX.exists():
         allBelow = PRX.children
         if allBelow:
-            result = common.getTypeBelow(allBelow, tgtType="mesh")
+            result = common.getObjectBelow(allBelow, tgtType="mesh")
             if result:
                 mc.select(result)
 

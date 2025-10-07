@@ -294,7 +294,7 @@ class SpineBp(RigModule):
         if self.spineType == SpineType.RIBBON.value:
             mc.hide(self.jnts_fk)
 
-        mc.hide(self.jnts_ctl, self.rbSrf)  # , self.setting)
+        mc.hide(self.jnts_ctl, self.rbSrf, self.setting)
         if self.is_neck():
             mc.hide(self.cog_ctl)
 

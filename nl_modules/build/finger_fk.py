@@ -88,11 +88,11 @@ class FingerFk(RigModule):
             # ("pvc", "pvc", "z", -scale, 0, -1),
         ]
         if self.segNum >= 2:
-            ctl_defs.append(("fgr02_fkc", "stickS", None, -scale, 1, 3))
+            ctl_defs.append(("fgr02_fkc", "stickS", None, -scale, 0, 3))
         if self.segNum >= 3:
-            ctl_defs.append(("fgr03_fkc", "stickC", None, -scale, 1, -1))
+            ctl_defs.append(("fgr03_fkc", "stickC", None, -scale, 0, -1))
         if self.segNum >= 4:
-            ctl_defs.append(("fgr04_fkc", "stickC", None, -scale, 1, -1))
+            ctl_defs.append(("fgr04_fkc", "stickC", None, -scale, 0, -1))
 
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
@@ -103,6 +103,7 @@ class FingerFk(RigModule):
     def build_fk(self):
         """Build the FK controls for the arm rig."""
         logging.info(self.rigID)
+        rID, rSz, xDr = self.getMyVar()
 
         self.jnts_fk = common.dupSk(
             self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
@@ -112,6 +113,12 @@ class FingerFk(RigModule):
         self.ctls_fk = self.ctls_fk[: self.segNum]
 
         self.build_fk_with_ctl3(self.jnts_fk, self.ctls_fk, p=self.FK_GRP)
+
+        rot_axis = "rx" if xDr == 0 else "rz"
+        if self.segNum >= 3:
+            self.ctls_fk[1].a.add("rot1") >> self.ctls_fk[2].addOffsetGrp().a[rot_axis]
+        if self.segNum >= 4:
+            self.ctls_fk[1].a.add("rot2") >> self.ctls_fk[3].addOffsetGrp().a[rot_axis]
 
     def build_ik(self):
         """Build the IK controls for the arm rig."""
@@ -219,7 +226,7 @@ class FingerFk(RigModule):
 
     def setup_vis(self):
         """Setup visibility for the finger rig module."""
-        mc.hide(self.ikhs)
+        mc.hide(self.ikhs, self.jnts_fk, self.setting)
 
         # self.ctl_vis_toggle(
         #     self.setting.a["fkToIk"],
@@ -230,7 +237,6 @@ class FingerFk(RigModule):
         #     self.setting.a.add("debugVis", attrType="bool", dv=0, k=0),
         #     onList=self.jnts_fk,
         # )
-        mc.hide(self.jnts_fk)
 
     def setup_channel(self):
         """Setup channels for the finger rig module."""

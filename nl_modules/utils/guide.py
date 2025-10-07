@@ -28,7 +28,7 @@ COMPONENT_DICT = {
     "tail": ["tail"],
     "wing": [""],
     "finger fk": ["lfFingerFk", "rtFingerFk"],
-    "simple fk": ["lfSimpleFk", "rtSimpleFk"],
+    "simple fk": ["lfSimpleFk", "mdSimpleFk", "rtSimpleFk"],
 }
 
 
@@ -325,7 +325,7 @@ def saveTemplate():
 
     charPath = mc.optionVar(q="charPath")
     tgtFile = mc.fileDialog2(
-        fileFilter="*.json", dialogStyle=2, fileMode=0, dir=charPath
+        fileFilter="*_tpl*.json", dialogStyle=2, fileMode=0, dir=charPath
     )
     if tgtFile is None:
         return
