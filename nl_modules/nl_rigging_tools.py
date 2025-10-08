@@ -172,7 +172,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # )
         self.connect(self.UI.templateTarget_BN, self.templateTarget, ":templated.png")
         self.connect(self.UI.loadWrapTargetMesh_BN, self.loadWrapTargetMesh)
-        self.connect(self.UI.bindToSelProxy_BN, proxy.bind_to_proxy)
+        self.connect(self.UI.bindToSelProxy_BN, proxy.bind_to_proxy, ":bind.png")
 
         # Sk
         self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":play_S.png")

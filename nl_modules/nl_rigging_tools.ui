@@ -1384,7 +1384,7 @@
         <x>0</x>
         <y>20</y>
         <width>221</width>
-        <height>26</height>
+        <height>27</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_17">
@@ -1395,7 +1395,7 @@
         <number>6</number>
        </property>
        <property name="topMargin">
-        <number>3</number>
+        <number>4</number>
        </property>
        <property name="rightMargin">
         <number>3</number>
@@ -1952,7 +1952,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>rx</string>
+          <string>r x</string>
          </property>
         </widget>
        </item>
@@ -1992,7 +1992,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>ry</string>
+          <string>r y</string>
          </property>
         </widget>
        </item>
@@ -2032,7 +2032,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>rz</string>
+          <string>r z</string>
          </property>
         </widget>
        </item>
