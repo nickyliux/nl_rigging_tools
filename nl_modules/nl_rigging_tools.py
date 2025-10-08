@@ -167,13 +167,13 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.loadWrapTargetMesh_BN, self.loadWrapTargetMesh)
         self.connect(self.UI.bindToSelProxy_BN, proxy.bind_to_proxy)
 
+        # Sk
+        self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":play_S.png")
+
         # Weight
         self.connect(self.UI.loadWeight_BN, skin.loadWeight, ":openScript.png")
         self.connect(self.UI.saveWeight_BN, skin.saveWeight, ":fileSave.png")
         self.connect(self.UI.copyWeight_BN, skin.copyWeight, ":copySkinWeight.png")
-
-        # Bind
-        self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind)
 
         # RigNode
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
