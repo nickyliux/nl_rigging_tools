@@ -62,7 +62,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="main_TB">
     <attribute name="title">
@@ -2175,9 +2175,9 @@ for Sel</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>22</y>
+        <y>20</y>
         <width>221</width>
-        <height>41</height>
+        <height>27</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -2194,32 +2194,28 @@ for Sel</string>
         <number>2</number>
        </property>
        <item>
-        <widget class="QListWidget" name="typeBelow_LW">
+        <widget class="QLabel" name="label_17">
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Type Below</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="typeBelow_CB">
          <property name="minimumSize">
           <size>
            <width>0</width>
            <height>0</height>
           </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>9999</width>
-           <height>33</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="selectionMode">
-          <enum>QAbstractItemView::SingleSelection</enum>
-         </property>
-         <property name="spacing">
-          <number>0</number>
          </property>
          <item>
           <property name="text">
@@ -2257,8 +2253,8 @@ for Sel</string>
         <widget class="QPushButton" name="selectTypeBelow_BN">
          <property name="minimumSize">
           <size>
-           <width>120</width>
-           <height>10</height>
+           <width>0</width>
+           <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -2285,8 +2281,7 @@ for Sel</string>
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>Select nodes of TYPE
-below selected</string>
+          <string>Select</string>
          </property>
          <property name="checkable">
           <bool>false</bool>
@@ -2301,15 +2296,15 @@ below selected</string>
      <widget class="QWidget" name="horizontalLayoutWidget_7">
       <property name="geometry">
        <rect>
-        <x>1</x>
-        <y>70</y>
+        <x>0</x>
+        <y>50</y>
         <width>221</width>
-        <height>22</height>
+        <height>31</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_7">
        <property name="spacing">
-        <number>4</number>
+        <number>5</number>
        </property>
        <property name="leftMargin">
         <number>6</number>
@@ -2465,14 +2460,14 @@ below selected</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>100</y>
+        <y>80</y>
         <width>221</width>
-        <height>21</height>
+        <height>31</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <property name="spacing">
-        <number>4</number>
+        <number>5</number>
        </property>
        <property name="leftMargin">
         <number>6</number>
@@ -2610,6 +2605,72 @@ below selected</string>
        </item>
       </layout>
      </widget>
+     <widget class="QListWidget" name="typeBelow_LW">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>130</y>
+        <width>88</width>
+        <height>33</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>9999</width>
+        <height>33</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>8</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::SingleSelection</enum>
+      </property>
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <item>
+       <property name="text">
+        <string>curve</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>group</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>joint</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>loc</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>mesh</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>surface</string>
+       </property>
+      </item>
+     </widget>
     </widget>
     <widget class="QGroupBox" name="groupBox_12">
      <property name="geometry">
@@ -2743,7 +2804,7 @@ below selected</string>
        </font>
       </property>
       <property name="selectionMode">
-       <enum>QAbstractItemView::ExtendedSelection</enum>
+       <enum>QAbstractItemView::SingleSelection</enum>
       </property>
       <property name="spacing">
        <number>0</number>

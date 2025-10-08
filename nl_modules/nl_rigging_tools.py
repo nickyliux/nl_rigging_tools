@@ -61,7 +61,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         self.setWindowTitle("nlRT 0.1.0")
         self.setCentralWidget(self.UI)
-        self.setGeometry(1400, 131, 200, 810)
+        self.setGeometry(1400, 131, 200, 700)
         self.connect_UI()
         # self.addMenuBar()
 
@@ -246,11 +246,11 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def getTypeBelowSel(self):
         """Select objects of a specific type below the selected objects."""
-        typeBelow = self.UI.typeBelow_LW.selectedItems()
+        typeBelow = self.UI.typeBelow_CB.currentText()
         if typeBelow:
             sel = mc.ls(sl=1, tr=1)
             if sel:
-                result = common.getObjectBelow(sel, tgtType=typeBelow[0].text())
+                result = common.getObjectBelow(sel, tgtType=typeBelow)
                 if result:
                     mc.select(result)
 
