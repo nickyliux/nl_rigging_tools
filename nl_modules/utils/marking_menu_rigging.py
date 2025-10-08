@@ -47,16 +47,16 @@ class MarkingMenuRigging:
 
         display_MI = mc.menuItem(p=menu, l="Show", rp="NW", subMenu=1)
         mc.menuItem(p=display_MI, l="All Hidden", c=showAllHidden)
-        mc.menuItem(p=display_MI, l="-" * 20, en=0)
+        mc.menuItem(p=display_MI, l="-" * 15, en=0)
         mc.menuItem(p=display_MI, l="Poly Only", c=showOnly)
         mc.menuItem(p=display_MI, l="All", c=showAll)
-        mc.menuItem(p=display_MI, l="-" * 20, en=0)
+        mc.menuItem(p=display_MI, l="-" * 15, en=0)
         mc.menuItem(p=display_MI, l="LRA", c=partial(display_LRA, 1, 0))
         mc.menuItem(p=display_MI, l="LRA Off", c=partial(display_LRA, 0, 0), ob=1)
         mc.menuItem(p=display_MI, l="LRA -hi", c=partial(display_LRA, 1, 1))
         mc.menuItem(p=display_MI, l="Nurbs CV", c=partial(display_CV, 1))
         mc.menuItem(p=display_MI, l="Nurbs CV Off", c=partial(display_CV, 0), ob=1)
-        mc.menuItem(p=display_MI, l="-" * 20, en=0)
+        mc.menuItem(p=display_MI, l="-" * 15, en=0)
         mc.menuItem(p=display_MI, l="Joint Size = 1", c=partial(jointDisplay, 1))
         mc.menuItem(p=display_MI, l="Joint Size = 0.1", c=partial(jointDisplay, 0.1))
 
@@ -75,7 +75,7 @@ class MarkingMenuRigging:
         mc.menuItem(
             p=channel_MI, l="Lock Hide Off", c=partial(lockAttr, "all", 0), ob=1
         )
-        mc.menuItem(p=channel_MI, l="-" * 20, en=0)
+        mc.menuItem(p=channel_MI, l="-" * 15, en=0)
         mc.menuItem(p=channel_MI, l="Lock, Hide T", c=partial(lockAttr, "t", 1))
         mc.menuItem(p=channel_MI, l="T off", c=partial(lockAttr, "t", 0), ob=1)
         mc.menuItem(p=channel_MI, l="Lock Hide R", c=partial(lockAttr, "r", 1))
@@ -102,7 +102,7 @@ class MarkingMenuRigging:
         mc.menuItem(p=cst_MI, l="Aim  mo", c=partial(cst, "aim", 1), ob=1)
         mc.menuItem(p=cst_MI, l="PoleVector", c=partial(cst, "pvt", 0))
         mc.menuItem(p=cst_MI, l="Geo", c=partial(cst, "geo", 0))
-        mc.menuItem(p=cst_MI, l="-" * 20, en=0)
+        mc.menuItem(p=cst_MI, l="-" * 15, en=0)
 
         mc.menuItem(p=cst_MI, l="Delete All", c=del_cst_mm)
 
@@ -112,7 +112,7 @@ class MarkingMenuRigging:
         mc.menuItem(p=joint_MI, l="Spline IK", c=partial(add_IK, Solver.SPLINE))
         mc.menuItem(p=joint_MI, l="Spring IK", c=partial(add_IK, Solver.SPRING))
         mc.menuItem(p=joint_MI, l="2B IK", c=partial(add_IK, Solver.TWO_BONE))
-        mc.menuItem(p=joint_MI, l="-" * 20, en=0)
+        mc.menuItem(p=joint_MI, l="-" * 15, en=0)
         # mc.menuItem(p=joint_MI, l="LRA", c=partial(joint_LRA, 1))
         # mc.menuItem(p=joint_MI, l="Hide LRA", c=partial(joint_LRA, 0), ob=1)
         mc.menuItem(p=joint_MI, l="Create Chain x 10 ", c=makeJointChain10_mm)
@@ -124,7 +124,7 @@ class MarkingMenuRigging:
         mc.menuItem(p=skin_MI, l="Add Influence", c=addInf)
         mc.menuItem(p=skin_MI, l="Add Influence", c=addInfOpt, ob=1)
         mc.menuItem(p=skin_MI, l="Delete Skin", c=skin.delSkinForSel)
-        mc.menuItem(p=skin_MI, l="-" * 20, en=0)
+        mc.menuItem(p=skin_MI, l="-" * 15, en=0)
         mc.menuItem(p=skin_MI, l="Select Skinned Meshes/Joints", c=skin.selSkinned)
         # mc.menuItem(p=skin_MI, l="Detach Skin", c=mc.DetachSkin)
         # mc.menuItem(p=freeze_MI, l="All", c=frz_xform_mm)
@@ -136,13 +136,13 @@ class MarkingMenuRigging:
         mc.menuItem(p=menu, l="Match Pos Rot", c=match_pos_rot)
         mc.menuItem(p=menu, l="Match Pos", c=match_pos)
         mc.menuItem(p=menu, l="Match Rot", c=match_rot)
-        mc.menuItem(p=menu, l="-" * 20, en=0)
+        mc.menuItem(p=menu, l="-" * 15, en=0)
         mc.menuItem(p=menu, l="Select Constrainer", c=select_contrainers)
-        mc.menuItem(p=menu, l="-" * 20, en=0)
+        mc.menuItem(p=menu, l="-" * 15, en=0)
         mc.menuItem(p=menu, l="Use Last's Shapes", c=use_last_crv_shapes)
         mc.menuItem(p=menu, l="Add Last's Shapes", c=add_last_crv_shapes)
         mc.menuItem(p=menu, l="Break Instance", c=crvShape_breakInst)
-        mc.menuItem(p=menu, l="-" * 20, en=0)
+        mc.menuItem(p=menu, l="-" * 15, en=0)
         mc.menuItem(p=menu, l="Reload Menu", c=reload_marking_menu)
 
 

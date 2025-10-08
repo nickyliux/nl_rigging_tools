@@ -150,18 +150,27 @@ def loadCtl():
 @common.Undo("setOnTopSel")
 def setOnTopSel(*args):
     """Toggle the always draw on top state for selected shapes."""
-    selList = mc.ls(sl=1, tr=1)
-    if selList:
-        # state = DagNode(selList[0]).shape.a.alwaysDrawOnTop.get()
-        for s in selList:
-            DagNode(s).shape.a.alwaysDrawOnTop.set(args[0])
+    selList = [DagNode(n) for n in mc.ls(sl=1, tr=1)]
+    for sel in selList:
+        if sel.type == "nurbsCurve":
+            sel.shape.a.alwaysDrawOnTop.set(args[0])
+
+
+@common.Undo("toggleOnTopSel")
+def toggleOnTopSel(*args):
+    """Toggle the always draw on top state for selected shapes."""
+    selList = [DagNode(n) for n in mc.ls(sl=1, tr=1)]
+    for sel in selList:
+        if sel.type == "nurbsCurve":
+            state = sel.shape.a.alwaysDrawOnTop.get()
+            sel.shape.a.alwaysDrawOnTop.set(not state)
 
 
 @common.Undo("dspTypeSel")
 def dspTypeSel(*args):
-    for sel in mc.ls(sl=1):
-        obj = DagNode(sel)
-        obj.dspType = args[0]
+    selList = [DagNode(n) for n in mc.ls(sl=1, tr=1)]
+    for sel in selList:
+        sel.dspType = args[0]
 
 
 @common.Undo("dropSel")

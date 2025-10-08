@@ -340,8 +340,10 @@ class SpineBp(RigModule):
         """Setup anchor module for the spine rig controls."""
         isRibbon = self.spineType == SpineType.RIBBON.value
 
-        anchor1 = self.hip_ikc if isRibbon else self.ctls_fk[0]
-        anchor2 = self.jnts_rb[-1] if isRibbon else self.ctls_fk[-1]
+        # anchor1 = self.hip_ikc if isRibbon else self.ctls_fk[0]
+        anchor1 = self.hip_ikc if isRibbon else self.jnts_fk[0]
+        # anchor2 = self.jnts_rb[-1] if isRibbon else self.ctls_fk[-1]
+        anchor2 = self.jnts_rb[-1] if isRibbon else self.jnts_fk[-1]
         self.setup_anchor_module({"anchorP1": anchor1, "anchorP2": anchor2})
 
     def setup_bindJnt(self):

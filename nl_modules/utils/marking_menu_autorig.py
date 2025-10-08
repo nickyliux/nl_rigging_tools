@@ -1,9 +1,10 @@
 import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.utils import guide
-from nl_modules.utils import build
-from nl_modules.utils import proxy
 from nl_modules.utils import anim
+from nl_modules.utils import build
+from nl_modules.utils import control
+from nl_modules.utils import guide
+from nl_modules.utils import proxy
 from functools import partial
 
 MENU_NAME = "marking_menu_autorig"
@@ -53,10 +54,12 @@ class MarkingMenuAutorig:
 
     def addExtraOptions(self, menu):
         """Add extra options to the marking menu"""
-        mc.menuItem(p=menu, l="Select Ctls", c=self.selectCtlSelOrAll)
-        mc.menuItem(p=menu, l="Guide -------", en=0)
+        mc.menuItem(p=menu, l="Control  -----", en=0)
+        mc.menuItem(p=menu, l="    Select Ctls", c=self.selectCtlSelOrAll)
+        mc.menuItem(p=menu, l="    Toggle On Top", c=control.toggleOnTopSel)
+        mc.menuItem(p=menu, l="Guide  -------", en=0)
         mc.menuItem(p=menu, l="    Delete", c=build.deleteSelOrAll)
-        mc.menuItem(p=menu, l="Proxy -------", en=0)
+        mc.menuItem(p=menu, l="Proxy  -------", en=0)
         mc.menuItem(p=menu, l="    Gen", c=proxy.genProxy)
         mc.menuItem(p=menu, l="    Reset", c=proxy.resetProxy)
         mc.menuItem(p=menu, l="    Select All", c=proxy.selectAllProxy)
@@ -84,17 +87,17 @@ class MarkingMenuAutorig:
         # --- SPACE SWITCH ---
         spaceAttr = firstSelected.a.space
         if spaceAttr.exists():
-            mc.menuItem(p=menu, l="SPACES -----", en=0)
+            mc.menuItem(p=menu, l="Spaces -----", en=0)
             curr = spaceAttr.get()
             allSpaceAttr = spaceAttr.query(le=1)[0].split(":")
             for i, attr in enumerate(allSpaceAttr):
                 label = f"{attr}   <" if curr == i else attr
                 mc.menuItem(
                     p=menu,
-                    l=label,
+                    l=" " * 4 + label,
                     c=partial(self.switch_to_space, attr),
                 )
-            mc.menuItem(p=menu, l="-" * 15, en=0)
+            # mc.menuItem(p=menu, l="-" * 15, en=0)
 
         # --- IK/FK SWITCH ---
         fkIkAttr = firstSelected.a["fkToIk"]

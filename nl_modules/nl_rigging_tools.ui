@@ -1186,7 +1186,7 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>0</width>
+           <width>5</width>
            <height>0</height>
           </size>
          </property>
@@ -2276,7 +2276,7 @@
         <x>0</x>
         <y>20</y>
         <width>221</width>
-        <height>26</height>
+        <height>27</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_23">
@@ -2287,7 +2287,7 @@
         <number>6</number>
        </property>
        <property name="topMargin">
-        <number>3</number>
+        <number>4</number>
        </property>
        <property name="rightMargin">
         <number>3</number>
@@ -2296,7 +2296,7 @@
         <widget class="QPushButton" name="delTemplate_BN">
          <property name="minimumSize">
           <size>
-           <width>0</width>
+           <width>5</width>
            <height>22</height>
           </size>
          </property>
@@ -2316,7 +2316,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Unbuild components</string>
+          <string>Delete guides</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -2325,7 +2325,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Tpl</string>
+          <string>Guide</string>
          </property>
          <property name="flat">
           <bool>false</bool>
@@ -2394,13 +2394,13 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Save ctl shape to file</string>
+          <string>Copy last's weight to others</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Use Last Skn</string>
+          <string>Last Skn</string>
          </property>
         </widget>
        </item>

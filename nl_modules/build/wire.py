@@ -37,7 +37,7 @@ class Wire(RigModule):
         # --- Main rig attributes ---
         self.setting = None
         self.rbSrf1 = None
-        self.rbSrf2 = None
+        # self.rbSrf2 = None
 
         # --- Control and joint lists ---
         self.ctls_fk = []
@@ -67,7 +67,7 @@ class Wire(RigModule):
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
-        self.setting.a.add("stretchy", min=0, max=1)
+        self.setting.a.add("stretchy", min=0, max=1, dv=1)
         self.setting.a.add("localScale", min=0.01, dv=1)
 
     def build(self):
@@ -76,8 +76,8 @@ class Wire(RigModule):
 
         # Create and register rbSrf
         self.rbSrf1 = self.create_rbSrf()
-        self.rbSrf2 = self.create_rbSrf()
-        self.rigNode.setMsg({"rbSrf": self.rbSrf2})
+        # self.rbSrf2 = self.create_rbSrf()
+        self.rigNode.setMsg({"rbSrf": self.rbSrf1})
 
         self.build_ctl()
         self.build_ik()
@@ -258,7 +258,7 @@ class Wire(RigModule):
         #     onList=self.ctls_ofs,
         # )
         # mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)
-        mc.hide(self.rbSrf1, self.rbSrf2)
+        mc.hide(self.rbSrf1)  # , self.rbSrf2)
         # mc.hide(self.setting)
 
     def setup_channel(self):
