@@ -86,6 +86,8 @@ class Wire(RigModule):
         # build.add_noise_logic(ctl=self.setting, targets=self.jnts_ofs[1:])
         self.build_post()
 
+        mc.delete(self.rootJ)
+
     def create_rbSrf(self):
         """Create the ribbon surface for the wire rig."""
         return SrfNode.buildRbSrf(

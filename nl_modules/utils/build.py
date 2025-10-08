@@ -81,15 +81,23 @@ def preRig():
 
 
 @common.Undo("buildSelOrAll")
-def buildSelOrAll(*arg):
+def buildSelOrAll(*arg, uiPB=None):
     """Build rig for selected rigNodes or all if nothing selected"""
     rigNodes = getRigNodes_selOrAll()
     if rigNodes:
         preRig()
+        if uiPB:
+            uiPB.setMaximum(len(rigNodes))
+        i = 0
         for rigN in rigNodes:
             buildTgt(rigN)
+            if uiPB:
+                i += 1
+                uiPB.setValue(i)
         masterAddProxyAttrs()
         postRig()
+        if uiPB:
+            uiPB.setValue(0)
         # proxy.genProxy()
 
 
@@ -391,8 +399,12 @@ def getRigNodes_selOrAll():
 
 
 def getRigNodes_all(match="*"):
-    """Return all rigNodes in the scene"""
-    return [DagNode(r) for r in mc.ls(match + "RGN", type="script")]
+    """Return all rigNodes in the scene, optional name match filter"""
+    parts = match.split(",")
+    returnNodes = []
+    for part in parts:
+        returnNodes.extend([DagNode(r) for r in mc.ls(part + "_RGN", type="script")])
+    return returnNodes
 
 
 def getRigNode(obj):

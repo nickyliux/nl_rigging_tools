@@ -114,7 +114,7 @@ def delSkinForSel(*args):
     logging.info(f"{count} skinClusters deleted.")
 
 
-def loadWeight():
+def loadWeight(uiPB):
     """Load skin weight joints from a JSON file."""
     charPath = mc.optionVar(q="charPath")
     tgtFiles = []
@@ -136,7 +136,10 @@ def loadWeight():
 
     for f in tgtFiles:
         weightJnt_dict = file.loadJson(f)
+        i = 0
         for mesh in weightJnt_dict:
+            if uiPB:
+                uiPB.setMaximum(len(weightJnt_dict))
 
             if not mc.objExists(mesh):
                 continue
@@ -171,7 +174,14 @@ def loadWeight():
                 path=tgtDir,
             )
             loaded += 1
-            logging.info(f"{mesh} weight loaded.")
+            logging.info(mesh)
+
+            if uiPB:
+                i += 1
+                uiPB.setValue(i)
+
+        if uiPB:
+            uiPB.setValue(0)
 
     logging.info(f"{loaded} objects' weight loaded.")
     mc.select(cl=1)
