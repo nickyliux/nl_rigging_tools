@@ -124,7 +124,7 @@ def loadWeight(uiPB):
         )
         if not tgtFiles:
             tgtFiles = mc.fileDialog2(
-                fileFilter="*.json", dialogStyle=2, fileMode=2, dir=charPath
+                fileFilter="*.json", dialogStyle=2, fileMode=1, dir=charPath
             )
     if not tgtFiles:
         return
@@ -149,27 +149,7 @@ def loadWeight(uiPB):
             logging.warning(f"Weight file NOT found: {weightFile}")
             continue
 
-        # Delete skin if exists
-        skinC = MshNode(mesh).skinCluster
-        if skinC.exists():
-            skinC.delete()
-
-        try:
-            skinC = mc.skinCluster(mesh, weightJnt_dict[mesh], tsb=1)
-        except Exception as e:
-            logging.warning(f"{mesh} weight loading failed: {e}")
-            continue
-
-        mc.select(mesh)
-        mc.deformerWeights(
-            mesh + ".xml",
-            im=1,
-            method="index",
-            deformer=skinC,
-            format="XML",
-            path=tgtDir,
-        )
-        loadCount += 1
+        loadCount += skinAndLoadW(mesh, weightJnt_dict[mesh], tgtDir)
         logging.info(mesh)
 
         if uiPB:
@@ -183,15 +163,36 @@ def loadWeight(uiPB):
     mc.select(cl=1)
 
 
-def skinAndLoadW(meshes=None, jnts=None, thld=5, uiPB=None):
-    pass
+def skinAndLoadW(mesh=None, dictJnts=None, tgtDir=None):
+    """Skin a mesh to joints and load skin weights from XML file."""
+    # Delete skin if exists
+    skinC = MshNode(mesh).skinCluster
+    if skinC.exists():
+        skinC.delete()
+
+    try:
+        skinC = mc.skinCluster(mesh, dictJnts, tsb=1)
+    except Exception as e:
+        logging.warning(f"{mesh} weight loading failed: {e}")
+        return 0
+
+    mc.select(mesh)
+    mc.deformerWeights(
+        mesh + ".xml",
+        im=1,
+        method="index",
+        deformer=skinC,
+        format="XML",
+        path=tgtDir,
+    )
+    return 1
 
 
 def saveWeight():
     """Save skin weight joints for selected meshes to a JSON file."""
     charPath = mc.optionVar(q="charPath")
     if charPath == None or charPath == "":
-        mc.confirmDialog(t="Error", m="Character path NOT set.     ", b="OK")
+        mc.confirmDialog(t="Info", m="Character path NOT set.     ", b="OK")
         return
     # mc.select(hi=1)
     # mc.select(mc.ls(type="mesh", sl=1))
@@ -210,7 +211,9 @@ def saveWeight():
             skinDict[mesh] = skinC
 
     if not weightJntDict:
-        logging.warning("No skin joints found.")
+        mc.confirmDialog(
+            t="Info", m="No group containing skinned mesh selected.     ", b="OK"
+        )
         return
 
     tgtFile = mc.fileDialog2(
@@ -234,7 +237,7 @@ def copyWeight(*args):
     sel = mc.ls(sl=1)
     if len(sel) < 2:
         mc.confirmDialog(
-            t="Error", m="Select clean mesh first, then source mesh.     ", b="OK"
+            t="Info", m="Select clean mesh first, then source mesh.     ", b="OK"
         )
         return
 
@@ -243,7 +246,7 @@ def copyWeight(*args):
 
     if not src.skinCluster.exists():
         mc.confirmDialog(
-            t="Error", m=f"Source mesh has NO skinCluster: {src}     ", b="OK"
+            t="Info", m=f"Source mesh has NO skinCluster: {src}     ", b="OK"
         )
         return
 

@@ -244,12 +244,12 @@ def bind_to_proxy():
     targetWrapMesh = mc.optionVar(q="targetWrapMesh")
     tgtMesh = DagNode(targetWrapMesh)
     if not tgtMesh.exists():
-        mc.confirmDialog(t="Error", m="Target wrap mesh NOT found.     ", b="OK")
+        mc.confirmDialog(t="Info", m="Target wrap mesh NOT found.     ", b="OK")
         return
 
     skinC = MshNode(tgtMesh).skinCluster
     if skinC.exists():
-        mc.confirmDialog(t="Error", m="Target wrap mesh already skinned.     ", b="OK")
+        mc.confirmDialog(t="Info", m="Target wrap mesh already skinned.     ", b="OK")
         return
 
     proxies = mc.ls("*_pxGeo", sl=1)

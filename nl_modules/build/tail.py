@@ -270,6 +270,7 @@ class Tail(RigModule):
         self.setup_anchor_module(
             {
                 "anchorS1": self.ctls_ik[0].offset.offset,
+                "anchorP1": self.jnts_rb[-1],
             }
         )
 
