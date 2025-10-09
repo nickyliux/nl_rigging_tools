@@ -8,18 +8,19 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.utils.color import Color
 
 
-def helperSysSetup2(tgtJnt=None, buildTy=True, buildTz=False):
+def helperSysSetup2(tgtJnt=None, buildY=False, buildZ=False):
+    """Create a corrective joint system that responds to the rotation of a driver object."""
     helperSysSetup(
         tgtJnt=tgtJnt,
         parentJnt=DagNode(tgtJnt).parent,
         rotator=tgtJnt,
-        buildTy=buildTy,
-        buildTz=buildTz,
+        buildY=buildY,
+        buildZ=buildZ,
     )
 
 
 def helperSysSetup(
-    tgtJnt=None, parentJnt=None, rotator=None, buildTy=True, buildTz=False
+    tgtJnt=None, parentJnt=None, rotator=None, buildY=False, buildZ=False
 ):
     """Create a corrective joint system that responds to the rotation of a driver object."""
     tgtJnt = DagNode(tgtJnt)
@@ -30,12 +31,16 @@ def helperSysSetup(
         mc.warning("Input not found.")
         return
 
-    SKL = GrpNode("SKL")
-    corrGrp = GrpNode(tgtJnt.name + "_#", pf="corr", p=SKL)
-    if buildTy:
+    name = tgtJnt.name + "_#"
+
+    if buildY:
+        SKL = GrpNode("SKL")
+        corrGrp = GrpNode(name, pf="corrY", p=SKL)
         helperJntSetup(tgtJnt, parentJnt, rotator, p=corrGrp)
         helperJntSetup(tgtJnt, parentJnt, rotator, p=corrGrp, dir=-1)
-    if buildTz:
+    if buildZ:
+        SKL = GrpNode("SKL")
+        corrGrp = GrpNode(name, pf="corrZ", p=SKL)
         helperJntSetup(tgtJnt, parentJnt, rotator, driver="ry", driven="tz", p=corrGrp)
         helperJntSetup(
             tgtJnt, parentJnt, rotator, driver="ry", driven="tz", p=corrGrp, dir=-1
@@ -49,7 +54,7 @@ def helperJntSetup(
     # ---------------------------------------------
     grp = GrpNode("corr_grp_#", p=p, pf=tgtJnt)
     jnt_rad = tgtJnt.a.radius.get()
-    jnt = JntNode("corr_#", p=grp, pf=tgtJnt, r=jnt_rad, color=Color.YELLOW)
+    jnt = JntNode("corr_#", p=grp, pf=tgtJnt, r=jnt_rad / 2, color=Color.YELLOW)
 
     common.cstMulti(parentJnt, tgtJnt, grp, cstType="ori")
     tgtJnt.cstPoi(grp)
@@ -63,9 +68,9 @@ def helperJntSetup(
     # ((90 + ofsInitRota) / (90 - ofsInitRota)) >> oriCst.a.w0
     # ------------------------------------------------------
 
-    ofsInit = jnt.a.add("ofsInit", dv=1, min=0)
-    ofsScalePos = jnt.a.add("ofsScalePos", dv=3, min=0)
-    ofsScaleNeg = jnt.a.add("ofsScaleNeg", dv=3, min=0)
+    ofsInit = jnt.a.add("ofsInit", dv=2, min=0)
+    ofsScalePos = jnt.a.add("ofsScalePos", dv=4, min=0)
+    ofsScaleNeg = jnt.a.add("ofsScaleNeg", dv=4, min=0)
 
     r = rotator.a[driver]
     rAbs = (r >= 0).setCdn(ifTrue=r, ifFalse=r * -1)
