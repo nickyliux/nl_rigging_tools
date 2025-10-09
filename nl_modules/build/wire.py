@@ -68,7 +68,6 @@ class Wire(RigModule):
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
-        self.setting.a.add("localScale", min=0.01, dv=1)
 
     def build(self):
         """Build the wire rig."""
@@ -106,7 +105,7 @@ class Wire(RigModule):
             # rbSrf=self.rbSrf2,
             rbSrf=self.rbSrf1,
             rivetNum=self.rbnJntNum,
-            scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,
+            scaleAttr=self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
             pf=self.rigID + "_2",
             rSz=self.rigSize,
@@ -149,6 +148,16 @@ class Wire(RigModule):
             # if i > 0:
             #     ctl.offset | self.ctls_ik[0]
             self.rigNode.setMsg({f"ikc{i}": ctl})
+
+        if self.ikCtlNum > 2:
+            for i in range(self.ikCtlNum - 2):
+                common.cstMulti(
+                    self.ctls_ik[-1],
+                    self.ctls_ik[0],
+                    self.ctls_ik[i + 1],
+                    w=(i + 1) / (self.ikCtlNum - 1),
+                    cstType="poi",
+                )
 
         SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6, chain=0)
         # SrfNode(self.rbSrf1).weightTo(self.jnts_ik, chain=0)
@@ -258,8 +267,7 @@ class Wire(RigModule):
         #     onList=self.ctls_ofs,
         # )
         # mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)
-        mc.hide(self.rbSrf1)  # , self.rbSrf2)
-        # mc.hide(self.setting)
+        mc.hide(self.rbSrf1, self.setting)  # , self.rbSrf2)
 
     def setup_channel(self):
         """Setup channel attributes for the wire rig controls."""
@@ -280,15 +288,14 @@ class Wire(RigModule):
         """Setup anchor module for the arm rig controls."""
         self.setup_anchor_module(
             {
-                "anchorS1": self.ctls_ik[0].offset.offset,
+                "anchorS1": self.ctls_ik[0].offset,
                 "anchorS2": self.ctls_ik[-1].offset,
             }
         )
 
     def setup_scale(self):
         """Setup scale attributes for the wire rig controls."""
-        self.setting.a["localScale"] >> self.IK_GRP.a.s
-        self.setting.a["localScale"] >> self.FK_GRP.a.s
+        pass
 
     def setup_ctlSet(self):
         """Setup control sets for the wire rig controls."""

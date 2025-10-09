@@ -78,12 +78,12 @@ class SimpleFk(RigModule):
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
-        scale = xDr * rSz * 2
+        scale = rSz * 4
         up = "z" if rID.startswith("md") else "x"
 
         ctl_defs = [
-            ("setting", "X", "x", scale, 1, 2),
-            ("simple01_fkc", "squareR", up, scale, 1, -1),
+            ("setting", "X", up, scale, 1, 2),
+            ("simple01_fkc", "squareR", up, scale, 0, -1),
         ]
 
         if self.segNum >= 2:
@@ -141,7 +141,12 @@ class SimpleFk(RigModule):
         """Setup scale for the arm rig module."""
         self.masterC.a.globalScale >> self.SKL_DATA.a.scale
 
+        localScale = self.setting.a.add("localScale", dv=1, min=0.01)
+        localScale >> self.CTL_DATA.a.scale
+        self.ctls_fk[0].a.add("localScale", proxy=localScale)
+
     def setup_anchor(self):
+        """Setup anchor for the simple rig module."""
         self.setup_anchor_module(
             {
                 "anchorS1": self.ctls_fk[0].offset,

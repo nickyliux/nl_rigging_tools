@@ -61,7 +61,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         self.setWindowTitle("nlRT 0.1.0")
         self.setCentralWidget(self.UI)
-        self.setGeometry(1400, 131, 200, 700)
+        self.setGeometry(1400, 131, 200, 650)
         self.connect_UI()
         # self.addMenuBar()
 
@@ -181,6 +181,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.delTemplate_BN, build.deleteSelOrAll, ":smallTrash.png")
         self.connect(self.UI.genProxy_BN, proxy.genProxy, ":play_S.png")
         self.connect(self.UI.copyWeight_BN, skin.copyWeight, ":copySkinWeight.png")
+        self.connect(self.UI.assignPresetColor_BN, common.assignPresetShd)
 
         # RigNode
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
@@ -236,9 +237,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Joint Orientation
         self.connect(self.UI.createRefUpLoc_BN, JntNode.createRefUpLoc)
         self.connect(self.UI.reOrient_BN, JntNode.reOrientSel)
-
-        # Coloring
-        self.connect(self.UI.assignPresetColor_BN, common.assignPresetShd)
 
         # Misc
         self.connect(self.UI.dsp_normal_BN, partial(control.dspTypeSel, 0))

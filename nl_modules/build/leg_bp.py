@@ -145,7 +145,7 @@ class LegBp(RigModule):
             ("palm_fkc", "circle", "x", scale, 0, -1),
             ("ball_fkc", "circle", "x", scale / 2, 0, -1),
             ("ikc", "cube", None, rSz, 0, -1),
-            ("pvc", "pvc", None, rSz, 0, -1),
+            ("pvc", "diamond3", None, rSz * 2, 0, -1),
             ("smart_ctl", "cube", None, scale / 4, 0, -1),
         ]
         if self.scapularExtra:

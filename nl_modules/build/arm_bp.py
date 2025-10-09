@@ -102,7 +102,7 @@ class ArmBp(RigModule):
             ("lwr_fkc", "circle", "x", scale, 0, -1),
             ("palm_fkc", "circle", "x", scale, 0, -1),
             ("ikc", "cube", None, scale * 1.5, 0, -1),
-            ("pvc", "pvc", None, rSz, 0, -1),
+            ("pvc", "diamond3", None, rSz * 2, 0, -1),
             ("palm_ikc", "squareR", "x", scale, 0, 2),
         ]
 

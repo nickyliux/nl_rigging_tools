@@ -102,7 +102,7 @@ def saveProxy():
         return
 
     charPath = mc.optionVar(q="charPath")
-    tgtFile = mc.fileDialog2(fileFilter="*.ma", dialogStyle=2, dir=charPath)
+    tgtFile = mc.fileDialog2(fileFilter="*prx*.ma", dialogStyle=2, dir=charPath)
     if tgtFile:
         mc.select("PRX")
         mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
