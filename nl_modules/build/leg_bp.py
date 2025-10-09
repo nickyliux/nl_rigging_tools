@@ -146,7 +146,7 @@ class LegBp(RigModule):
             ("ball_fkc", "circle", "x", scale / 2, 0, -1),
             ("ikc", "cube", None, rSz, 0, -1),
             ("pvc", "diamond3", None, rSz * 2, 0, -1),
-            ("smart_ctl", "cube", None, scale / 4, 0, -1),
+            ("smart_ctl", "cube", None, scale / 2, 0, -1),
         ]
         if self.scapularExtra:
             ctl_defs.append(("scap_fkc", "shoulder", None, scale, 0, -1))

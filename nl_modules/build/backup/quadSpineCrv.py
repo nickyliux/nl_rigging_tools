@@ -103,7 +103,7 @@ class SpineQdCrv(rig_module.RigModule):
 
         crv = DagNode(self.rigID + "_line_guide")
         if crv is None:
-            logging.info("Missing line guide")
+            logging.info("Missing line guide.")
             return
 
         # BUILD JOINT CHAIN

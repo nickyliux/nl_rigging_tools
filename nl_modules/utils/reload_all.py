@@ -154,7 +154,7 @@ reload(finger_fk)
 reload(wire)
 
 if __name__ == "__main__":
-    logging.info("reload modules")
+    logging.info("reload modules.")
 
 # def deleteAllAcProcessor():
 #     for s in mc.ls("acProcessor*"):

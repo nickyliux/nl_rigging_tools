@@ -286,7 +286,7 @@ class HandBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
         if len(self.jnts_fgr) != 5:
-            logging.info("Smart setup for 5-fgr only")
+            logging.info("Smart setup for 5-fgr only.")
             return
 
         # smart_ctl, with group scaling with rootJ

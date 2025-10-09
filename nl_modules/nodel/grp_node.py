@@ -27,7 +27,7 @@ class GrpNode(DagNode):
         p=None,
     ):
         if node is None:
-            logging.info("Fail to create group for None")
+            logging.info("Fail to create group for none.")
             return
         if str(pf) and str(pf)[-1] != "_":
             pf += "_"
@@ -138,7 +138,7 @@ class GrpNode(DagNode):
         f = f"{SHAPE_PATH}/{name}.json"
 
         file.saveJson(f, dictList, force=True)
-        logging.info(f"Saved to {f}")
+        logging.info(f"Saved to {f}.")
 
     def shape_getDictListFrLib(self, name):
         """Get the shape dictionary list from the library by name"""
@@ -275,7 +275,7 @@ class GrpNode(DagNode):
 
     def break_instance(self):
         """Un-instance all instances of this shape"""
-        logging.info(f"Break all instances")
+        logging.info(f"Break all instances.")
 
         selfShapes = self.shapes
 

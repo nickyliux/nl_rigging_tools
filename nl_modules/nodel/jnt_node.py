@@ -118,8 +118,8 @@ class JntNode(GrpNode):
         prx_div = self.a["proxyDiv"].get() or 2
         prx_height = self.a["proxyHeight"].get()
         prx_up = self.a["proxyUp"].get()
-        if prx_up and prx_up == 1:
-            aimDir = (0, 1, 0)
+        if prx_up:
+            aimDir = (0, 1, 0) if prx_up == 1 else (0, 0, 1)
 
         height = base_rad
         if prx_height is None:

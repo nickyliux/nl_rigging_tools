@@ -120,71 +120,71 @@ def loadWeight(uiPB):
     tgtFiles = []
     if charPath:
         tgtFiles = glob.glob(
-            os.path.join(
-                charPath, "weight", os.path.basename(charPath) + "*_weight*.json"
-            )
+            os.path.join(charPath, "weight", os.path.basename(charPath) + "_skn*.json")
         )
         if not tgtFiles:
             tgtFiles = mc.fileDialog2(
-                fileFilter="*.json", dialogStyle=2, fileMode=4, dir=charPath
+                fileFilter="*.json", dialogStyle=2, fileMode=2, dir=charPath
             )
     if not tgtFiles:
         return
 
     tgtDir = os.path.dirname(tgtFiles[-1])
-    loaded = 0
+    weightJnt_dict = file.loadJson(tgtFiles[-1])
 
-    for f in tgtFiles:
-        weightJnt_dict = file.loadJson(f)
-        i = 0
-        for mesh in weightJnt_dict:
-            if uiPB:
-                uiPB.setMaximum(len(weightJnt_dict))
-
-            if not mc.objExists(mesh):
-                continue
-
-            weightFile = tgtDir + "/" + mesh + ".xml"
-
-            # Skip if weight file not found
-            if not mc.file(weightFile, q=1, ex=1):
-                logging.warning(f"Weight file NOT found: {weightFile}")
-                continue
-
-            # Delete skin if exists
-            skinC = MshNode(mesh).skinCluster
-            if skinC.exists():
-                skinC.delete()
-
-            # Skin and load weights
-            try:
-                skinC = mc.skinCluster(mesh, weightJnt_dict[mesh], tsb=1)
-
-            except Exception as e:
-                logging.warning(f"{mesh} weight loading failed: {e}")
-                continue
-
-            mc.select(mesh)
-            mc.deformerWeights(
-                mesh + ".xml",
-                im=1,
-                method="index",
-                deformer=skinC,
-                format="XML",
-                path=tgtDir,
-            )
-            loaded += 1
-            logging.info(mesh)
-
-            if uiPB:
-                i += 1
-                uiPB.setValue(i)
+    i = 0
+    loadCount = 0
+    for mesh in weightJnt_dict:
+        i += 1
+        if not mc.objExists(mesh):
+            continue
 
         if uiPB:
-            uiPB.setValue(0)
+            uiPB.setMaximum(len(weightJnt_dict))
 
-    logging.info(f"{loaded} objects' weight loaded.")
+        weightFile = tgtDir + "/" + mesh + ".xml"
+
+        # Skip if weight file not found
+        if not mc.file(weightFile, q=1, ex=1):
+            logging.warning(f"Weight file NOT found: {weightFile}")
+            continue
+
+        # Delete skin if exists
+        skinC = MshNode(mesh).skinCluster
+        if skinC.exists():
+            skinC.delete()
+
+        try:
+            skinC = mc.skinCluster(mesh, weightJnt_dict[mesh], tsb=1)
+        except Exception as e:
+            logging.warning(f"{mesh} weight loading failed: {e}")
+            continue
+
+        mc.select(mesh)
+        mc.deformerWeights(
+            mesh + ".xml",
+            im=1,
+            method="index",
+            deformer=skinC,
+            format="XML",
+            path=tgtDir,
+        )
+        loadCount += 1
+        logging.info(mesh)
+
+        if uiPB:
+            uiPB.setValue(i)
+
+    if uiPB:
+        uiPB.setValue(0)
+
+    logging.info(f"Weight file loaded: {tgtFiles[-1]}.")
+    logging.info(f"{loadCount} objects' weight loaded.")
     mc.select(cl=1)
+
+
+def skinAndLoadW(meshes=None, jnts=None, thld=5, uiPB=None):
+    pass
 
 
 def saveWeight():

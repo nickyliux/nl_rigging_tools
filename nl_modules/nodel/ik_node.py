@@ -166,16 +166,16 @@ class IkNode(DagNode):
         """Add stretch logic to translate channel of ikHandle with spline solver."""
 
         if ikH is None or ctl is None:
-            logging.info("Require ikH and ctl input")
+            logging.info("Require ikH and ctl input.")
             return
         ikH = DagNode(ikH)
         ctl = DagNode(ctl)
         if ikH.type != "ikHandle":
-            logging.info("No stretch for non ikhandle")
+            logging.info("No stretch for non ikhandle.")
             return
         solver = mc.ikHandle(ikH, q=1, sol=1)
         if solver != "ikSplineSolver":
-            logging.info("No stretch for non ikSplineSolver")
+            logging.info("No stretch for non ikSplineSolver.")
             return
         # ----------------------------------------
         jl = mc.ikHandle(ikH, q=1, jl=1)

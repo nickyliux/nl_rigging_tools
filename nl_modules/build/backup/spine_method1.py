@@ -30,7 +30,7 @@ class Spine(rig_module.RigModule):
         """
         super().__init__(rigNode)
 
-        logging.info("load rigNode's connected into attr")
+        logging.info("Load rigNode's connected into attr.")
 
         self.SPINE_SETUP = GrpNode("spine_setup", pf=self.rigID, p=self.CTL_DATA)
 
@@ -57,7 +57,7 @@ class Spine(rig_module.RigModule):
 
     def build(self):
 
-        logging.info("build : %s" % self.rigID)
+        logging.info("build: %s" % self.rigID)
 
         joints = [self.rootJ] + self.rootJ.allChildren
 

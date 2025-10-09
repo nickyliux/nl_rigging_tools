@@ -227,7 +227,7 @@ def update_anchor_conn():
 
             closestPlugAnchor = min(dist_dict, key=dist_dict.get)
 
-            logging.info(f"{socket.name} << {closestPlugAnchor.name}")
+            logging.info(f"{closestPlugAnchor.name} >> {socket.name}.")
             closestPlugAnchor.cstPar(socket, mo=1)
 
 
@@ -245,7 +245,7 @@ def update_anchor_conn():
 
 def update_space_switch():
     """Update space switch for all rigNodes"""
-    logging.info("Update All Space Switches")
+    logging.info("Update all space switches.")
 
     spaceData = collect_space_data()
 

@@ -72,9 +72,9 @@ def xferGuideSel(*arg, skipMasterXf=1):
                 for g1, g2 in zip(guideList1, guideList2):
                     copyGuideAttr(g1, g2, skipMasterXf=skipMasterXf)
             else:
-                logging.info("Ignore copy for different rig classes")
+                logging.info("Ignore copy for different rig classes.")
         else:
-            logging.info("Can not find rigNodes to copy")
+            logging.info("Can not find rigNodes to copy.")
 
 
 def duplicateGuideSel(*arg):
@@ -287,7 +287,7 @@ def loadTemplate(removeUnused=1):
                                     guideN.a[attr].set(*v)
     common.setViewport(fit=1)
     mc.select(cl=1)
-    logging.info(f"Template loaded: {tgtFiles[-1]}")
+    logging.info(f"Template loaded: {tgtFiles[-1]}.")
 
 
 def genAttrDict(obj):
@@ -334,7 +334,7 @@ def saveTemplate():
         tgtFile = tgtFile[0]
 
     file.saveJson(tgtFile, idDict, force=True)
-    logging.info("guides saved")
+    logging.info("Guide template saved.")
 
 
 def explore(*args):

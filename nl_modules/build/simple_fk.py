@@ -78,7 +78,7 @@ class SimpleFk(RigModule):
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
-        scale = rSz * 4
+        scale = rSz * 3
         up = "z" if rID.startswith("md") else "x"
 
         ctl_defs = [
@@ -139,10 +139,12 @@ class SimpleFk(RigModule):
 
     def setup_scale(self):
         """Setup scale for the arm rig module."""
-        self.masterC.a.globalScale >> self.SKL_DATA.a.scale
 
         localScale = self.setting.a.add("localScale", dv=1, min=0.01)
         localScale >> self.CTL_DATA.a.scale
+        # prx_grp = DagNode(self.rigID + "_PRX")
+        # localScale >> prx_grp.a.scale
+        self.masterC.a.globalScale * localScale >> self.SKL_DATA.a.scale
         self.ctls_fk[0].a.add("localScale", proxy=localScale)
 
     def setup_anchor(self):
@@ -167,7 +169,8 @@ class SimpleFk(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts[:-1])
-        # proxy.add_radiusScale_attr(self.jnts, 0.5)
+        if self.xDir == 0:
+            proxy.add_up_attr(self.jnts_bind, 2)
 
     def build_post(self):
         """Post setup for the leg rig module."""

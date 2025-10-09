@@ -87,7 +87,7 @@ def genProxy(*args):
 
     mc.select(cl=1)
     common.setViewport()  # jx=1, wos=1)
-    logging.info("Gen Proxy Mesh OK")
+    logging.info("Proxy mesh generated.")
 
 
 def saveProxy():

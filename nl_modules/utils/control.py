@@ -39,19 +39,19 @@ def mirrorCtlShape(ctl):
     """Mirror the control shape to its opposite counterpart."""
     ctl = DagNode(ctl)
     if not ctl.shape:
-        logging.info(f"Missing shape in {ctl}")
+        logging.info(f"Missing shape in {ctl}.")
         return
 
     pf = ctl.name.split("_")[0]
     mg = DagNode(pf + "_master_guide")
 
     if not mg.exists():
-        logging.info(f"Missing master guide for {ctl}")
+        logging.info(f"Missing master guide for {ctl}.")
         return
 
     opp = guide.getOpposite(ctl, strB4Pf=0)
     if not opp:
-        logging.info(f"No opposite found for {ctl.name}")
+        logging.info(f"No opposite found for {ctl.name}.")
         return
 
     dup = ctl.duplicate()
@@ -96,7 +96,7 @@ def saveCtl():
             except Exception as e:
                 raise SystemError(f"Error saving {tgtFile}: {e}")
 
-            logging.info("Curve shape exported OK.")
+            logging.info("Curve shape exported.")
             mc.select(cl=1)
 
 

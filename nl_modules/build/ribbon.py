@@ -28,7 +28,7 @@ class Ribbon(RigModule):
         super().__init__(rigNode)
 
         # Joint references
-        logging.info("load rigNode's connected into attr")
+        logging.info("Load rigNode's connected into attr.")
         self.startJ: JntNode = rigNode.a.upr.inConnNode
         self.midJ: JntNode = rigNode.a.lwr.inConnNode
         self.endJ: JntNode = rigNode.a.foot.inConnNode
@@ -59,7 +59,7 @@ class Ribbon(RigModule):
         """
         axis = -1 if self.startJ.a.tx.get() < 0 else 1
 
-        logging.info("make ribbon bezier curves -----------------------------------")
+        logging.info("Make ribbon bezier curves -----------------------------------")
 
         rbCrv0, rbCrvLine0 = self.buildSurf(
             self.startJ, self.midJ, segNum=5, p=self.RB_GRP
@@ -70,7 +70,7 @@ class Ribbon(RigModule):
         (rbCrv0, rbCrv1) | self.RB_GRP
         rbCrv = [rbCrv0, rbCrv1]
 
-        logging.info("add ribbon controls -----------------------------------")
+        logging.info("Add ribbon controls -----------------------------------")
         rbCtl0 = self.addRibbonCtl(self.startJ, idx=0)
         rbCtl1 = self.addRibbonCtl(self.startJ, idx=1, offsetValue=0.5)
         rbCtl2 = self.addRibbonCtl([self.startJ, self.midJ], idx=2)
@@ -80,18 +80,18 @@ class Ribbon(RigModule):
         rbCrvLine0 | rbCtl0
         rbCrvLine1 | rbCtl2
 
-        logging.info("add clusters to controls -----------------------------------")
+        logging.info("Add clusters to controls -----------------------------------")
         self.addClusterToCtl(rbCrv, rbCtl)
 
-        logging.info("add twist readers -----------------------------------")
+        logging.info("Add twist readers -----------------------------------")
         rbRdr0 = self.addTwistReader(self.startJ, axis, idx=0, p=self.RB_GRP)
         rbRdr1 = self.addTwistReader(self.midJ, axis, idx=1, p=self.RB_GRP)
         # rbRdr = [rbRdr0, rbRdr1]
 
-        logging.info("add ribbon joints -----------------------------------")
+        logging.info("Add ribbon joints -----------------------------------")
         # rbJnts = self.addRibbonJnt(rbCrv, axis, seg=6, upObj=[self.startJ, self.midJ])
 
-        logging.info("add twist and squash -----------------------------------")
+        logging.info("Add twist & squash -----------------------------------")
         # half = int(len(rbJnts) / 2)
         #
         # self.deformTwist(rbJnts[:half], rbCtl1, start=rbRdr0, end=self.startJ)

@@ -24,7 +24,7 @@ class Spd3Leg(rig_module.RigModule):
         """
         super().__init__(rigNode)
 
-        logging.info("load rigNode's connected into attr")
+        logging.info("Load rigNode's connected into attr.")
 
         self.FK_SETUP = GrpNode("FK_SETUP", pf=self.rigID, p=self.CTL_DATA)
         self.IK_SETUP = GrpNode("IK_SETUP", pf=self.rigID, p=self.CTL_DATA)
