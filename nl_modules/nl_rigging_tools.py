@@ -175,7 +175,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.bindToSelProxy_BN, proxy.bind_to_proxy, ":bind.png")
 
         # Sk
-        self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":play_S.png")
+        self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
 
         # Misc
         self.connect(self.UI.delTemplate_BN, build.deleteSelOrAll, ":smallTrash.png")

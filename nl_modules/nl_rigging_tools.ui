@@ -1090,7 +1090,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Skt*</string>
+          <string>Sk*</string>
          </property>
         </widget>
        </item>
@@ -1157,10 +1157,10 @@
      <widget class="QWidget" name="horizontalLayoutWidget_20">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>0</x>
         <y>230</y>
-        <width>81</width>
-        <height>16</height>
+        <width>101</width>
+        <height>21</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="model_LO_6">
@@ -1198,8 +1198,8 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>9999</width>
-           <height>9</height>
+           <width>85</width>
+           <height>12</height>
           </size>
          </property>
          <property name="value">

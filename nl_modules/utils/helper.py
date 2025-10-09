@@ -13,48 +13,41 @@ def helperSysSetup2(tgtJnt=None, buildY=False, buildZ=False):
     helperSysSetup(
         tgtJnt=tgtJnt,
         parentJnt=DagNode(tgtJnt).parent,
-        rotator=tgtJnt,
+        holder=tgtJnt,
         buildY=buildY,
         buildZ=buildZ,
     )
 
 
 def helperSysSetup(
-    tgtJnt=None, parentJnt=None, rotator=None, buildY=False, buildZ=False
+    tgtJnt=None, parentJnt=None, holder=None, buildY=False, buildZ=False
 ):
     """Create a corrective joint system that responds to the rotation of a driver object."""
     tgtJnt = DagNode(tgtJnt)
     parentJnt = DagNode(parentJnt)
-    rotator = DagNode(rotator)
+    holder = DagNode(holder)
 
-    if not tgtJnt.exists() or not parentJnt.exists() or not rotator.exists():
+    if not tgtJnt.exists() or not parentJnt.exists() or not holder.exists():
         mc.warning("Input not found.")
         return
-
-    name = tgtJnt.name + "_#"
+    SKL = GrpNode("SKL")
 
     if buildY:
-        SKL = GrpNode("SKL")
-        corrGrp = GrpNode(name, pf="corrY", p=SKL)
-        helperJntSetup(tgtJnt, parentJnt, rotator, p=corrGrp)
-        helperJntSetup(tgtJnt, parentJnt, rotator, p=corrGrp, dir=-1)
+        helperJntSetup(tgtJnt, parentJnt, holder, fr="rz", to="ty", p=SKL)
+        helperJntSetup(tgtJnt, parentJnt, holder, fr="rz", to="ty", dir=-1, p=SKL)
     if buildZ:
-        SKL = GrpNode("SKL")
-        corrGrp = GrpNode(name, pf="corrZ", p=SKL)
-        helperJntSetup(tgtJnt, parentJnt, rotator, driver="ry", driven="tz", p=corrGrp)
-        helperJntSetup(
-            tgtJnt, parentJnt, rotator, driver="ry", driven="tz", p=corrGrp, dir=-1
-        )
+        helperJntSetup(tgtJnt, parentJnt, holder, fr="ry", to="tz", p=SKL)
+        helperJntSetup(tgtJnt, parentJnt, holder, fr="ry", to="tz", dir=-1, p=SKL)
 
 
 def helperJntSetup(
-    tgtJnt=None, parentJnt=None, rotator=None, driver="rz", driven="ty", dir=1, p=None
+    tgtJnt=None, parentJnt=None, rotator=None, fr=None, to=None, dir=1, p=None
 ):
     """Create a corrective joint setup that responds to the rotation of a driver object."""
     # ---------------------------------------------
     grp = GrpNode("corr_grp_#", p=p, pf=tgtJnt)
     jnt_rad = tgtJnt.a.radius.get()
-    jnt = JntNode("corr_#", p=grp, pf=tgtJnt, r=jnt_rad / 2, color=Color.YELLOW)
+    jnt = JntNode("corr_jnt_#", p=grp, pf=tgtJnt, r=jnt_rad / 2, color=Color.YELLOW)
 
     common.cstMulti(parentJnt, tgtJnt, grp, cstType="ori")
     tgtJnt.cstPoi(grp)
@@ -72,10 +65,10 @@ def helperJntSetup(
     ofsScalePos = jnt.a.add("ofsScalePos", dv=4, min=0)
     ofsScaleNeg = jnt.a.add("ofsScaleNeg", dv=4, min=0)
 
-    r = rotator.a[driver]
+    r = rotator.a[fr]
     rAbs = (r >= 0).setCdn(ifTrue=r, ifFalse=r * -1)
 
     ofsScale = (r > 0).setCdn(ifTrue=ofsScalePos, ifFalse=ofsScaleNeg)
-    ofsInit + ofsScale * rAbs / 90 >> jnt.a[driven]
+    ofsInit + ofsScale * rAbs / 90 >> jnt.a[to]
 
     jnt.a.showAttr()

@@ -139,11 +139,11 @@ class LegBp(RigModule):
 
         ctl_defs = [
             ("setting", "X", "z", scale, 1, 2),
-            ("hip_fkc", "circle", "x", scale, 0, -1),
-            ("upr_fkc", "circle", "x", scale, 0, -1),
-            ("lwr_fkc", "circle", "x", scale, 0, -1),
-            ("palm_fkc", "circle", "x", scale, 0, -1),
-            ("ball_fkc", "circle", "x", scale / 2, 0, -1),
+            ("hip_fkc", "stick", None, -scale / 2, 0, -1),
+            ("upr_fkc", "squareR", "x", scale, 0, -1),
+            ("lwr_fkc", "squareR", "x", scale, 0, -1),
+            ("palm_fkc", "squareR", "x", scale, 0, -1),
+            ("ball_fkc", "squareR", "x", scale / 2, 0, -1),
             ("ikc", "cube", None, rSz, 0, -1),
             ("pvc", "diamond3", None, rSz * 2, 0, -1),
             ("smart_ctl", "cube", None, scale / 2, 0, -1),
@@ -154,8 +154,9 @@ class LegBp(RigModule):
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
-        self.smart_ctl.cv_move(15 * scale, 0, 0)
+        self.smart_ctl.cv_move(20 * scale, 0, 0)
         self.smart_ctl.color = Color.D_YELLOW
+        self.smart_ctl.cv_scale(0.5, 0.5, 1)
         self.ikc.cv_move(0, 0, rSz * 2)
         self.ikc.cv_scale(1.5, 1.5, 4)
 
