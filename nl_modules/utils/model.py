@@ -23,7 +23,7 @@ def loadModel(self):
         )
         if tgtFiles:
             file.importFile(tgtFiles[-1])
-            common.setViewport(fit=1, wos=1)  # , jx=1)
+            common.setViewport(fit=1)  # , wos=1)  # , jx=1)
             logging.info(f"Model imported: {tgtFiles[-1]}.")
         else:
             tgtFile = mc.fileDialog2(
