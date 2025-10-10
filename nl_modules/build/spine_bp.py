@@ -74,13 +74,13 @@ class SpineBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
             ("setting", "X", "z", rSz * 2, 1, 2),
-            ("cog_ctl", "cog", None, rSz * 7, 0, 2),
+            ("cog_ctl", "cog", None, rSz * 7, 0, -1),
         ]
         if self.spineType == SpineType.RIBBON.value:
             ctl_defs += [
-                ("chest_ikc", "chest", None, rSz * 5, 0, 2),
+                ("chest_ikc", "chest", None, rSz * 5, 0, -1),
                 ("mid_ikc", "diamond3", None, rSz * 2, 1, -1),
-                ("hip_ikc", "hip", None, rSz * 5, 0, 2),
+                ("hip_ikc", "hip", None, rSz * 5, 0, -1),
             ]
 
         for name, shape, up, sca, top, w in ctl_defs:

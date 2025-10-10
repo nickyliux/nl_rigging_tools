@@ -120,7 +120,7 @@ def loadWeight(uiPB):
     tgtFiles = []
     if charPath:
         tgtFiles = glob.glob(
-            os.path.join(charPath, "weight", os.path.basename(charPath) + "_skn*.json")
+            os.path.join(charPath, "weight", os.path.basename(charPath) + "_wgh*.json")
         )
         if not tgtFiles:
             tgtFiles = mc.fileDialog2(
@@ -217,7 +217,7 @@ def saveWeight():
         return
 
     tgtFile = mc.fileDialog2(
-        fileFilter="*weight*.json", dialogStyle=2, fileMode=0, dir=charPath
+        fileFilter="*wgh*.json", dialogStyle=2, fileMode=0, dir=charPath
     )
     if tgtFile is None:
         return
