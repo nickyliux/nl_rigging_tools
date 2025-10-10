@@ -46,10 +46,10 @@ class MarkingMenuRigging:
         mc.menuItem(p=create_MI, l="Joint Tool", c="mc.JointTool()")
 
         display_MI = mc.menuItem(p=menu, l="Show", rp="NW", subMenu=1)
-        mc.menuItem(p=display_MI, l="All Hidden", c=showAllHidden)
-        mc.menuItem(p=display_MI, l="-" * 15, en=0)
-        mc.menuItem(p=display_MI, l="Poly Only", c=showOnly)
         mc.menuItem(p=display_MI, l="All", c=showAll)
+        mc.menuItem(p=display_MI, l="Poly Only", c=showOnly)
+        mc.menuItem(p=display_MI, l="-" * 15, en=0)
+        mc.menuItem(p=display_MI, l="All Hidden", c=showAllHidden)
         mc.menuItem(p=display_MI, l="-" * 15, en=0)
         mc.menuItem(p=display_MI, l="LRA", c=partial(display_LRA, 1, 0))
         mc.menuItem(p=display_MI, l="LRA Off", c=partial(display_LRA, 0, 0), ob=1)

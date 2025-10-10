@@ -759,7 +759,8 @@ def build_ribbon_rivet(
         loc.a.inheritsTransform.set(0)
 
     # proxy.add_height_attr(output, rSz * 60 / jntNum)
-    proxy.add_height_attr(outputs, mc.arclen(crv) / rivetNum / 2)
+    prx_height = mc.arclen(crv) / rivetNum / 1.5
+    proxy.add_height_attr(outputs, prx_height)
 
     return crv_len_ratio, outputs
 

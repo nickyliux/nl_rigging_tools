@@ -117,18 +117,17 @@ def loadProxy():
     charPath = mc.optionVar(q="charPath")
     tgtFiles = []
     if charPath:
-        tgtFiles = glob.glob(
-            os.path.join(charPath, os.path.basename(charPath) + "*_prx*.ma")
-        )
+        fileToSearch = os.path.join(charPath, os.path.basename(charPath) + "*_prx*.ma")
+        tgtFiles = glob.glob(fileToSearch)
         if not tgtFiles:
-            tgtFile = mc.fileDialog2(
+            tgtFiles = mc.fileDialog2(
                 fileFilter="*_prx*", dialogStyle=2, fileMode=1, dir=charPath
             )
     if not tgtFiles:
         return
 
     genProxy()
-    imported = mc.file(tgtFiles, i=1, ns="prx", returnNewNodes=1)
+    imported = mc.file(tgtFiles[-1], i=1, ns="prx", returnNewNodes=1)
     ns = ""
     if imported:
         tempStr = imported[0].replace(":", " ").replace("|", " ")

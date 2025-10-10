@@ -124,7 +124,7 @@ class JntNode(GrpNode):
         height = base_rad
         if prx_height is None:
             if children:
-                height = self.o.distanceTo(children[0]) * 0.7
+                height = self.o.distanceTo(children[0]) * 0.8
         else:
             height = prx_height
 
@@ -153,7 +153,7 @@ class JntNode(GrpNode):
 
             # Assign shader before constraints to avoid Maya errors
             common.assignPresetShd([proxy])
-            self.cstParSca(proxy_offset)
+            self.cstParSca(proxy_offset, mo=1)
             return proxy
         return None
 
