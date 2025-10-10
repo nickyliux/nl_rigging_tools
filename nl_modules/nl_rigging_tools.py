@@ -10,6 +10,7 @@ from nl_modules.utils import (
     file,
     guide,
     log,
+    helper,
     model,
     build,
     proxy,
@@ -244,10 +245,22 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.dsp_reference_BN, partial(control.dspTypeSel, 2))
         self.connect(self.UI.selectTypeBelow_BN, self.getTypeBelowSel)
 
+        self.connect(self.UI.addCorrJntY_BN, partial(self.addCorrJnt, 1))
+        self.connect(self.UI.addCorrJntZ_BN, partial(self.addCorrJnt, 2))
+
         self.rigNode_refresh()
         self.crvShape_refresh()
         self.updateLoadWrapTargetMesh()
         self.updateCharPath()
+
+    def addCorrJnt(self, axis):
+        """Add corrective joint system for Y-axis translation."""
+        selList = [DagNode(s) for s in mc.ls(sl=1, tr=1)]
+        for sel in selList:
+            if sel.type == "joint":
+                helper.helperSysSetup2(
+                    tgtJnt=sel, buildY=(axis == 1), buildZ=(axis == 2)
+                )
 
     def getTypeBelowSel(self):
         """Select objects of a specific type below the selected objects."""

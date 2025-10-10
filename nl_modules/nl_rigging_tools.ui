@@ -79,7 +79,7 @@
       <rect>
        <x>0</x>
        <y>60</y>
-       <width>111</width>
+       <width>95</width>
        <height>261</height>
       </rect>
      </property>
@@ -95,7 +95,7 @@
      <widget class="QPushButton" name="guide_load_BN">
       <property name="geometry">
        <rect>
-        <x>94</x>
+        <x>80</x>
         <y>23</y>
         <width>10</width>
         <height>111</height>
@@ -138,7 +138,7 @@
      <widget class="QPushButton" name="guide_explore_BN">
       <property name="geometry">
        <rect>
-        <x>94</x>
+        <x>80</x>
         <y>143</y>
         <width>10</width>
         <height>111</height>
@@ -177,7 +177,7 @@
        <rect>
         <x>6</x>
         <y>24</y>
-        <width>81</width>
+        <width>71</width>
         <height>231</height>
        </rect>
       </property>
@@ -317,9 +317,9 @@
     <widget class="QGroupBox" name="groupBox_3">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>101</x>
        <y>60</y>
-       <width>102</width>
+       <width>121</width>
        <height>261</height>
       </rect>
      </property>
@@ -337,7 +337,7 @@
        <rect>
         <x>0</x>
         <y>20</y>
-        <width>101</width>
+        <width>121</width>
         <height>27</height>
        </rect>
       </property>
@@ -437,6 +437,28 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QLabel" name="label_21">
+         <property name="minimumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_17">
@@ -444,7 +466,7 @@
        <rect>
         <x>0</x>
         <y>80</y>
-        <width>101</width>
+        <width>121</width>
         <height>26</height>
        </rect>
       </property>
@@ -566,6 +588,28 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QLabel" name="label_22">
+         <property name="minimumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_16">
@@ -573,7 +617,7 @@
        <rect>
         <x>0</x>
         <y>50</y>
-        <width>101</width>
+        <width>121</width>
         <height>26</height>
        </rect>
       </property>
@@ -682,6 +726,36 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="delTemplate_BN">
+         <property name="minimumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Save template to file</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_18">
@@ -689,7 +763,7 @@
        <rect>
         <x>0</x>
         <y>140</y>
-        <width>101</width>
+        <width>121</width>
         <height>26</height>
        </rect>
       </property>
@@ -803,6 +877,28 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QLabel" name="label_24">
+         <property name="minimumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_24">
@@ -810,7 +906,7 @@
        <rect>
         <x>0</x>
         <y>170</y>
-        <width>101</width>
+        <width>121</width>
         <height>26</height>
        </rect>
       </property>
@@ -849,6 +945,42 @@
          </property>
          <property name="text">
           <string>Prx</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="genProxy_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Save proxy file</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
          </property>
         </widget>
        </item>
@@ -931,7 +1063,7 @@
        <rect>
         <x>0</x>
         <y>110</y>
-        <width>101</width>
+        <width>121</width>
         <height>26</height>
        </rect>
       </property>
@@ -1045,6 +1177,28 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QLabel" name="label_23">
+         <property name="minimumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_25">
@@ -1052,7 +1206,7 @@
        <rect>
         <x>0</x>
         <y>200</y>
-        <width>101</width>
+        <width>143</width>
         <height>26</height>
        </rect>
       </property>
@@ -1131,6 +1285,50 @@
         </widget>
        </item>
        <item>
+        <widget class="QLabel" name="label_25">
+         <property name="minimumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_26">
+         <property name="minimumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="label_20">
          <property name="minimumSize">
           <size>
@@ -1158,8 +1356,8 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>230</y>
-        <width>101</width>
+        <y>237</y>
+        <width>121</width>
         <height>21</height>
        </rect>
       </property>
@@ -1198,7 +1396,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>85</width>
+           <width>105</width>
            <height>12</height>
           </size>
          </property>
@@ -1670,7 +1868,7 @@
         <number>6</number>
        </property>
        <property name="topMargin">
-        <number>3</number>
+        <number>4</number>
        </property>
        <property name="rightMargin">
         <number>3</number>
@@ -1698,7 +1896,7 @@
          <property name="maximumSize">
           <size>
            <width>999</width>
-           <height>16</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -1740,7 +1938,7 @@
          <property name="maximumSize">
           <size>
            <width>999</width>
-           <height>16</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -1782,7 +1980,7 @@
          <property name="maximumSize">
           <size>
            <width>999</width>
-           <height>16</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -1824,7 +2022,7 @@
          <property name="maximumSize">
           <size>
            <width>999</width>
-           <height>16</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -1866,7 +2064,7 @@
          <property name="maximumSize">
           <size>
            <width>999</width>
-           <height>16</height>
+           <height>18</height>
           </size>
          </property>
          <property name="baseSize">
@@ -1902,7 +2100,7 @@
        <rect>
         <x>0</x>
         <y>40</y>
-        <width>111</width>
+        <width>221</width>
         <height>24</height>
        </rect>
       </property>
@@ -1914,7 +2112,7 @@
         <number>6</number>
        </property>
        <property name="topMargin">
-        <number>2</number>
+        <number>4</number>
        </property>
        <property name="rightMargin">
         <number>3</number>
@@ -1942,7 +2140,7 @@
          <property name="maximumSize">
           <size>
            <width>999</width>
-           <height>16</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -1982,7 +2180,7 @@
          <property name="maximumSize">
           <size>
            <width>999</width>
-           <height>16</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -2022,7 +2220,7 @@
          <property name="maximumSize">
           <size>
            <width>999</width>
-           <height>16</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -2042,33 +2240,6 @@
          </property>
         </widget>
        </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget_30">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>40</y>
-        <width>111</width>
-        <height>25</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_21">
-       <property name="spacing">
-        <number>5</number>
-       </property>
-       <property name="leftMargin">
-        <number>3</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>3</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
        <item>
         <widget class="QPushButton" name="lineWidthDefault_BN">
          <property name="enabled">
@@ -2089,7 +2260,7 @@
          <property name="maximumSize">
           <size>
            <width>999</width>
-           <height>16</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -2131,7 +2302,7 @@
          <property name="maximumSize">
           <size>
            <width>999</width>
-           <height>16</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -2173,7 +2344,7 @@
          <property name="maximumSize">
           <size>
            <width>999</width>
-           <height>16</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -2233,7 +2404,7 @@
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>18</height>
+           <height>22</height>
           </size>
          </property>
          <property name="font">
@@ -2299,82 +2470,6 @@
         <number>3</number>
        </property>
        <item>
-        <widget class="QPushButton" name="delTemplate_BN">
-         <property name="minimumSize">
-          <size>
-           <width>5</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>9999</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-           <kerning>true</kerning>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Delete guides</string>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Guide</string>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="genProxy_BN">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>9999</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Generate proxy</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Gen Prx</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="copyWeight_BN">
          <property name="enabled">
           <bool>true</bool>
@@ -2406,7 +2501,29 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Last Skn</string>
+          <string>Use Last Skn</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="assignPresetColor_BN">
+         <property name="minimumSize">
+          <size>
+           <width>5</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Assign color to selected</string>
+         </property>
+         <property name="text">
+          <string>Set Color</string>
          </property>
         </widget>
        </item>
@@ -2435,28 +2552,6 @@
         <number>3</number>
        </property>
        <item>
-        <widget class="QPushButton" name="assignPresetColor_BN">
-         <property name="minimumSize">
-          <size>
-           <width>5</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Assign color to selected</string>
-         </property>
-         <property name="text">
-          <string>Set Color</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="addCorrJntY_BN">
          <property name="minimumSize">
           <size>
@@ -2474,7 +2569,7 @@
           <string>Assign color to selected</string>
          </property>
          <property name="text">
-          <string>Corr Y</string>
+          <string>Corr Jnt Y</string>
          </property>
         </widget>
        </item>
@@ -2496,7 +2591,7 @@
           <string>Assign color to selected</string>
          </property>
          <property name="text">
-          <string>Corr Z</string>
+          <string>Corr Jnt Z</string>
          </property>
         </widget>
        </item>
