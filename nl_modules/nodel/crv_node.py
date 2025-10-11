@@ -153,33 +153,50 @@ class CrvNode(GrpNode):
         return crv
 
     @staticmethod
+    def linkLineCV(crv=None, tgt=None, cvId=0):
+        """Link a curve CV to a target object"""
+        nodes = tgt.a.worldMatrix.outConnNode
+        dcmNodes = [n for n in nodes if n.type == "decomposeMatrix"]
+        dcm = dcmNodes[0] if dcmNodes else DepNode("DCM_#", nodeType="decomposeMatrix")
+        tgt.a.worldMatrix >> dcm.a.inputMatrix
+        mc.connectAttr(dcm + ".outputTranslate", crv.shape + f".cv[{cvId}]")
+
+    @staticmethod
     def buildLineLinked(
         tgt1=None, tgt2=None, pf="", width=-1, inheritXf=0, dspType=0, p=None
     ):
         """Build a line between two target objects or positions."""
 
-        tgt1 = DagNode(tgt1)
-        tgt2 = DagNode(tgt2)
+        tgt1 = DagNode(tgt1) if isinstance(tgt1, str) else tgt1
+        tgt2 = DagNode(tgt2) if isinstance(tgt2, str) else tgt2
         line = CrvNode.buildLine(
-            tgt1,
-            tgt2,
-            pf=pf,
-            width=width,
-            inheritXf=inheritXf,
-            dspType=dspType,
-            p=p,
+            tgt1, tgt2, pf=pf, width=width, inheritXf=inheritXf, dspType=dspType
         )
-
         if line:
-            nodes = tgt1.a.worldMatrix.outConnNode
-            dcm = nodes[0] if nodes else DepNode("DCM_#", nodeType="decomposeMatrix")
-            tgt1.a.worldMatrix >> dcm.a.inputMatrix
-            mc.connectAttr(dcm + ".outputTranslate", line.shape + ".cv[0]")
+            CrvNode.linkLineCV(crv=line, tgt=tgt1, cvId=0)
+            CrvNode.linkLineCV(crv=line, tgt=tgt2, cvId=1)
+            # nodes = tgt1.a.worldMatrix.outConnNode
+            # dcmNodes = [n for n in nodes if n.type == "decomposeMatrix"]
+            # dcm = (
+            #     dcmNodes[0]
+            #     if dcmNodes
+            #     else DepNode("DCM_#", nodeType="decomposeMatrix")
+            # )
+            # tgt1.a.worldMatrix >> dcm.a.inputMatrix
+            # mc.connectAttr(dcm + ".outputTranslate", line.shape + ".cv[0]")
 
-            nodes = tgt2.a.worldMatrix.outConnNode
-            dcm = nodes[0] if nodes else DepNode("DCM_#", nodeType="decomposeMatrix")
-            tgt2.a.worldMatrix >> dcm.a.inputMatrix
-            mc.connectAttr(dcm + ".outputTranslate", line.shape + ".cv[1]")
+            # nodes = tgt2.a.worldMatrix.outConnNode
+            # dcmNodes = [n for n in nodes if n.type == "decomposeMatrix"]
+            # dcm = (
+            #     dcmNodes[0]
+            #     if dcmNodes
+            #     else DepNode("DCM_#", nodeType="decomposeMatrix")
+            # )
+            # tgt2.a.worldMatrix >> dcm.a.inputMatrix
+            # mc.connectAttr(dcm + ".outputTranslate", line.shape + ".cv[1]")
+
+            if p:
+                line | p
             return line
 
     @staticmethod

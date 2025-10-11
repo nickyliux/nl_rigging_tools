@@ -2552,7 +2552,7 @@
         <number>3</number>
        </property>
        <item>
-        <widget class="QPushButton" name="addCorrJntY_BN">
+        <widget class="QPushButton" name="addCorrJntRZ_BN">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -2569,12 +2569,12 @@
           <string>Assign color to selected</string>
          </property>
          <property name="text">
-          <string>Corr Jnt Y</string>
+          <string>Corr Jnt RZ</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="addCorrJntZ_BN">
+        <widget class="QPushButton" name="addCorrJntRY_BN">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -2591,7 +2591,7 @@
           <string>Assign color to selected</string>
          </property>
          <property name="text">
-          <string>Corr Jnt Z</string>
+          <string>Corr Jnt RY</string>
          </property>
         </widget>
        </item>

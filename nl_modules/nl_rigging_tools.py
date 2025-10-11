@@ -245,8 +245,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.dsp_reference_BN, partial(control.dspTypeSel, 2))
         self.connect(self.UI.selectTypeBelow_BN, self.getTypeBelowSel)
 
-        self.connect(self.UI.addCorrJntY_BN, partial(self.addCorrJnt, 1))
-        self.connect(self.UI.addCorrJntZ_BN, partial(self.addCorrJnt, 2))
+        self.connect(self.UI.addCorrJntRZ_BN, partial(self.addCorrJnt, 1))
+        self.connect(self.UI.addCorrJntRY_BN, partial(self.addCorrJnt, 2))
 
         self.rigNode_refresh()
         self.crvShape_refresh()
@@ -259,7 +259,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         for sel in selList:
             if sel.type == "joint":
                 helper.helperSysSetup2(
-                    tgtJnt=sel, buildY=(axis == 1), buildZ=(axis == 2)
+                    tgtJnt=sel, buildRZ=(axis == 1), buildRY=(axis == 2)
                 )
 
     def getTypeBelowSel(self):
