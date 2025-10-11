@@ -190,6 +190,7 @@ class HandBp(RigModule):
         """Setup SDK for spread pose on fingers."""
         drv = self.smart_ctl
         for i in range(4):
+            # -------------------------------------------
             dataList_rz = [
                 [(0, -6), (1, 0), (2, 30)],
                 [(0, -3), (1, 0), (2, 10)],
@@ -200,6 +201,7 @@ class HandBp(RigModule):
             for k in range(3):
                 common.sdk(drv, ofs, "sy", "rz", *dataList_rz[i][k], inf=1)
 
+            # -------------------------------------------
             dataList_rz2 = [
                 [(0, -1), (1, 0), (2, 5)],
                 [(0, -0.3), (1, 0), (2, 2)],

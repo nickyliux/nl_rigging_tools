@@ -517,8 +517,8 @@ def sdk(dvr, dvn, attr1, attr2, v1, v2, tangent=0, inf=0):
         itt=opt[tangent],
         ott=opt[tangent],
     )
-    # if inf:
-    #     mc.setInfinity(dvn, pri="linear", poi="linear", attribute=attr2)
+    if inf:
+        mc.setInfinity(dvn, pri="linear", poi="linear", attribute=attr2)
 
 
 def sdk2(attr1, attr2, v1, v2, tangent=0):
