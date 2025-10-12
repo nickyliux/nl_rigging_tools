@@ -63,7 +63,7 @@ def corrJntSetup(
     hlpJnt.color = Color.RED if xDr * dir == 1 else Color.YELLOW
     grp.a.s.set(dir, dir, dir)
 
-    CrvNode.buildLineLinked(tgt1=hlpJnt, tgt2=tgtJnt, dspType=2, p=grp)
+    CrvNode.buildLineLinked(tgt1=hlpJnt, tgt2=tgtJnt, dspType=2, top=1, p=grp)
 
     # offset but keep corrective in the middle -------------
     # ofsInitRota = hlpJnt.a.add("ofsInitRota")

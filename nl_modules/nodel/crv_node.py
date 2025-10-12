@@ -115,6 +115,7 @@ class CrvNode(GrpNode):
         dspType=0,
         snap=None,
         inheritXf=1,
+        top=0,
         p=None,
     ):
         """Build a line between two target objects or positions."""
@@ -149,6 +150,9 @@ class CrvNode(GrpNode):
             crv.snapTo(snap)
         if p:
             mc.parent(crv, p)
+        if top:
+            for s in crv.shapes:
+                s.a["alwaysDrawOnTop"].set(1)
         crv.a.inheritsTransform.set(inheritXf)
         return crv
 
@@ -163,14 +167,20 @@ class CrvNode(GrpNode):
 
     @staticmethod
     def buildLineLinked(
-        tgt1=None, tgt2=None, pf="", width=-1, inheritXf=0, dspType=0, p=None
+        tgt1=None, tgt2=None, pf="", width=-1, inheritXf=0, dspType=0, top=0, p=None
     ):
         """Build a line between two target objects or positions."""
 
         tgt1 = DagNode(tgt1) if isinstance(tgt1, str) else tgt1
         tgt2 = DagNode(tgt2) if isinstance(tgt2, str) else tgt2
         line = CrvNode.buildLine(
-            tgt1, tgt2, pf=pf, width=width, inheritXf=inheritXf, dspType=dspType
+            tgt1,
+            tgt2,
+            pf=pf,
+            width=width,
+            inheritXf=inheritXf,
+            dspType=dspType,
+            top=top,
         )
         if line:
             CrvNode.linkLineCV(crv=line, tgt=tgt1, cvId=0)
