@@ -51,19 +51,20 @@ def corrJntSetup(
     dir_name = "pos" if dir * xDr == -1 else "neg"
 
     ro = tgtJnt.a.rotateOrder.get()
-    grp = GrpNode(f"{dir_name}_{fr}", p=p, pf=tgtJnt)
-    jnt_rad = tgtJnt.a.radius.get()
-    hlpJnt = JntNode(f"{dir_name}_{fr}_jnt", p=grp, pf=tgtJnt, r=jnt_rad * 0.8)
-    grp.a.rotateOrder.set(ro)
+    cstGrp = GrpNode(f"{dir_name}_{fr}", pf=tgtJnt, p=p)
+    ofsGrp = GrpNode(f"{dir_name}_{fr}_ofs", pf=tgtJnt, p=p)
+    hlpJnt = JntNode(f"{dir_name}_{fr}_jnt", pf=tgtJnt, r=tgtJnt.a.radius.get() * 0.8)
+    cstGrp.a.rotateOrder.set(ro)
     hlpJnt.a.rotateOrder.set(ro)
+    hlpJnt | ofsGrp | cstGrp
 
-    common.cstMulti(parentJnt, tgtJnt, grp, cstType="ori")
-    tgtJnt.cstPoi(grp)
+    common.cstMulti(parentJnt, tgtJnt, cstGrp, cstType="ori")
+    tgtJnt.cstPoi(cstGrp)
 
     hlpJnt.color = Color.RED if xDr * dir == 1 else Color.YELLOW
-    grp.a.s.set(dir, dir, dir)
+    cstGrp.a.s.set(dir, dir, dir)
 
-    CrvNode.buildLineLinked(tgt1=hlpJnt, tgt2=tgtJnt, dspType=2, top=1, p=grp)
+    CrvNode.buildLineLinked(tgt1=hlpJnt, tgt2=tgtJnt, dspType=2, top=1, p=cstGrp)
 
     # offset but keep corrective in the middle -------------
     # ofsInitRota = hlpJnt.a.add("ofsInitRota")
@@ -77,19 +78,17 @@ def corrJntSetup(
     tgtJnt.a.message >> hlpJnt.a.helperTgt
 
     hlpJnt.a.add("dir", dv=dir, lock=1)
-    INIT = 2
-    SCALE = 3
-    init = hlpJnt.a.add("init", dv=INIT, min=0)
-    scalePos = hlpJnt.a.add("scalePos", dv=SCALE, min=0)
-    scaleNeg = hlpJnt.a.add("scaleNeg", dv=SCALE, min=0)
+    hlpJnt.a[to].set(1)
+    scalePos = hlpJnt.a.add("scalePos", dv=0, min=0)
+    scaleNeg = hlpJnt.a.add("scaleNeg", dv=2, min=0)
 
     r = rotator.a[fr]
     rAbs = (r >= 0).setCdn(ifTrue=r, ifFalse=r * -1)
 
     ofsScale = (r > 0).setCdn(ifTrue=scalePos, ifFalse=scaleNeg)
-    init + ofsScale * rAbs / 90 >> hlpJnt.a[to]
+    hlpJnt.a[to] + ofsScale * rAbs / 90 >> ofsGrp.a[to]
 
-    hlpJnt.a.showAttr()
+    hlpJnt.a.showAttr(t=1)
     return hlpJnt
 
 
@@ -124,13 +123,9 @@ def loadHlpJnt(*args):
             tgtJnt=tgtJnt, buildRY=buildRY, buildRZ=buildRZ, dir=dir
         )
         if helperJnt:
-            helperJnt.a.init.set(init)
+            helperJnt.a[data["to"]].set(init)
             helperJnt.a.scalePos.set(scalePos)
             helperJnt.a.scaleNeg.set(scaleNeg)
-
-        # helperJnt.a.init.set(data["init"])
-        # helperJnt.a.scalePos.set(data["scalePos"])
-        # helperJnt.a.scaleNeg.set(data["scaleNeg"])
 
 
 def saveHlpJnt(*args):
@@ -163,7 +158,7 @@ def saveHlpJnt(*args):
                         "fr": hlp.a.fr.get(),
                         "to": hlp.a.to.get(),
                         "dir": hlp.a.dir.get(),
-                        "init": hlp.a.init.get(),
+                        "init": hlp.a[hlp.a.to.get()].get(),
                         "scalePos": hlp.a.scalePos.get(),
                         "scaleNeg": hlp.a.scaleNeg.get(),
                     }
