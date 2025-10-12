@@ -201,6 +201,13 @@ def saveWeight():
 
     weightJntDict = {}
     skinDict = {}
+
+    tgtFile = mc.fileDialog2(
+        fileFilter="*wgh*.json", dialogStyle=2, fileMode=0, dir=charPath
+    )
+    if tgtFile is None:
+        return
+
     meshesToSave = common.getObjectBelow(mc.ls(sl=1), tgtType="mesh")
 
     for mesh in meshesToSave:
@@ -216,20 +223,14 @@ def saveWeight():
         )
         return
 
-    tgtFile = mc.fileDialog2(
-        fileFilter="*wgh*.json", dialogStyle=2, fileMode=0, dir=charPath
-    )
-    if tgtFile is None:
-        return
-    else:
-        file.saveJson(tgtFile[0], weightJntDict, force=1)
-        tgtDir = os.path.dirname(tgtFile[0])
+    file.saveJson(tgtFile[0], weightJntDict, force=1)
+    tgtDir = os.path.dirname(tgtFile[0])
 
-        for mesh, skinC in skinDict.items():
-            mc.deformerWeights(
-                mesh.name + ".xml", ex=1, deformer=skinC, format="XML", path=tgtDir
-            )
-        logging.info(f"{len(skinDict)} objects' weight saved.")
+    for mesh, skinC in skinDict.items():
+        mc.deformerWeights(
+            mesh.name + ".xml", ex=1, deformer=skinC, format="XML", path=tgtDir
+        )
+    logging.info(f"{len(skinDict)} objects' weight saved.")
 
 
 def copyWeight(*args):

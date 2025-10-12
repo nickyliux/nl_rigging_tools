@@ -178,6 +178,10 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Sk
         self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
 
+        # Corrective Joint
+        self.connect(self.UI.loadHlpJnt_BN, helper.loadHlpJnt, ":openScript.png")
+        self.connect(self.UI.saveHlpJnt_BN, helper.saveHlpJnt, ":fileSave.png")
+
         # Misc
         self.connect(self.UI.delTemplate_BN, build.deleteSelOrAll, ":smallTrash.png")
         self.connect(self.UI.genProxy_BN, proxy.genProxy, ":play_S.png")
@@ -258,8 +262,11 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         selList = [DagNode(s) for s in mc.ls(sl=1, tr=1)]
         for sel in selList:
             if sel.type == "joint":
-                helper.helperSysSetup2(
+                helper.corrSysSetup2(
                     tgtJnt=sel, buildRZ=(axis == 1), buildRY=(axis == 2)
+                )
+                helper.corrSysSetup2(
+                    tgtJnt=sel, buildRZ=(axis == 1), buildRY=(axis == 2), dir=-1
                 )
 
     def getTypeBelowSel(self):
