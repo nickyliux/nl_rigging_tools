@@ -33,31 +33,34 @@ def addSysSetup(
         mc.warning("Target or it's parent not found.")
         return
 
-    SKL = GrpNode("SKL")
     if buildRZ:
-        return hlpJntSetup(tgtJnt, parentJnt, holder, fr="rz", to="ty", dir=dir, p=SKL)
+        return hlpJntSetup(tgtJnt, parentJnt, holder, fr="rz", to="ty", dir=dir)
     if buildRY:
-        return hlpJntSetup(tgtJnt, parentJnt, holder, fr="ry", to="tz", dir=dir, p=SKL)
+        return hlpJntSetup(tgtJnt, parentJnt, holder, fr="ry", to="tz", dir=dir)
 
 
-def hlpJntSetup(
-    tgtJnt=None, parentJnt=None, rotator=None, fr=None, to=None, dir=1, p=None
-):
+def hlpJntSetup(tgtJnt=None, parentJnt=None, rotator=None, fr=None, to=None, dir=1):
     """Create a corrective joint setup that responds to the rotation of a driver object."""
-    # ---------------------------------------------
+
     xDr = 1 if tgtJnt.a.tx.get() > 0 else -1
     dir = 1 if dir > 0 else -1
-
-    dir_name = "pos" if dir * xDr == -1 else "neg"
-
+    dirName = "A" if dir * xDr == 1 else "B"
     ro = tgtJnt.a.rotateOrder.get()
 
-    tgt_grp = DagNode(f"{dir_name}_{fr}_grp")
-    if tgt_grp.exists():
-        mc.delete(tgt_grp)
-    cstGrp = GrpNode(f"{dir_name}_{fr}_grp", pf=tgtJnt, p=p)
-    ofsGrp = GrpNode(f"{dir_name}_{fr}_ofs", pf=tgtJnt, p=p)
-    hlpJnt = JntNode(f"{dir_name}_{fr}_jnt", pf=tgtJnt, r=tgtJnt.a.radius.get() * 0.8)
+    # Delete existing setup -------------------
+    hlpName = f"{tgtJnt.name}_{fr}_{dirName}"
+    tgtGrp = DagNode(hlpName + "_grp")
+    if tgtGrp.exists():
+        mc.delete(tgtGrp)
+
+    # Setup group hierarchy ----------------------
+    pf = tgtJnt.name.split("_")[0]
+    SKL_DATA = DagNode(f"{pf}_skl_data")
+    p = SKL_DATA if SKL_DATA.exists() else None
+
+    cstGrp = GrpNode(f"{hlpName}_grp", p=p)
+    ofsGrp = GrpNode(f"{hlpName}_ofs")
+    hlpJnt = JntNode(f"{hlpName}_jnt", r=tgtJnt.a.radius.get() * 0.8)
     cstGrp.a.rotateOrder.set(ro)
     hlpJnt.a.rotateOrder.set(ro)
     hlpJnt | ofsGrp | cstGrp
@@ -81,15 +84,14 @@ def hlpJntSetup(
     hlpJnt.a.add("helperTgt", attrType="message")
     tgtJnt.a.message >> hlpJnt.a.helperTgt
 
-    hlpJnt.a.add("dir", dv=dir, lock=1)
+    scaling1 = hlpJnt.a.add("scaling1", dv=0, min=0)
+    scaling2 = hlpJnt.a.add("scaling2", dv=2, min=0)
+    hlpJnt.a.add("dir", dv=dir, k=0, cb=0)
     hlpJnt.a[to].set(1)
-    scalePos = hlpJnt.a.add("scalePos", dv=0, min=0)
-    scaleNeg = hlpJnt.a.add("scaleNeg", dv=2, min=0)
-
     r = rotator.a[fr]
-    rAbs = (r >= 0).setCdn(ifTrue=r, ifFalse=r * -1)
 
-    ofsScale = (r > 0).setCdn(ifTrue=scalePos, ifFalse=scaleNeg)
+    rAbs = (r >= 0).setCdn(ifTrue=r, ifFalse=r * -1)
+    ofsScale = (r > 0).setCdn(ifTrue=scaling1, ifFalse=scaling2)
     hlpJnt.a[to] + ofsScale * rAbs / 90 >> ofsGrp.a[to]
 
     hlpJnt.a.showAttr(t=1)
@@ -121,19 +123,19 @@ def loadHlpJnt(*args):
         buildRZ = data["fr"] == "rz"
         dir = data["dir"]
         init = data["init"]
-        scalePos = data["scalePos"]
-        scaleNeg = data["scaleNeg"]
+        scaling1 = data["scaling1"]
+        scaling2 = data["scaling2"]
         helperJnt = addSysSetup2(
             tgtJnt=tgtJnt, buildRY=buildRY, buildRZ=buildRZ, dir=dir
         )
         if helperJnt:
             helperJnt.a[data["to"]].set(init)
-            helperJnt.a.scalePos.set(scalePos)
-            helperJnt.a.scaleNeg.set(scaleNeg)
+            helperJnt.a.scaling1.set(scaling1)
+            helperJnt.a.scaling2.set(scaling2)
 
 
 def selAllHlpGrp(*args):
-    helperJnts = [JntNode(j) for j in mc.ls("*_???_r?_jnt", type="joint")]
+    helperJnts = [JntNode(j) for j in mc.ls("*_r?_?_jnt", type="joint")]
     if helperJnts:
         mc.select(helperJnts)
         mc.pickWalk(d="up")
@@ -171,8 +173,8 @@ def saveHlpJnt(*args):
                         "to": hlp.a.to.get(),
                         "dir": hlp.a.dir.get(),
                         "init": hlp.a[hlp.a.to.get()].get(),
-                        "scalePos": hlp.a.scalePos.get(),
-                        "scaleNeg": hlp.a.scaleNeg.get(),
+                        "scaling1": hlp.a.scaling1.get(),
+                        "scaling2": hlp.a.scaling2.get(),
                     }
                 )
 
