@@ -12,10 +12,10 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.utils.color import Color
 
 
-def corrSysSetup2(tgtJnt=None, buildRY=False, buildRZ=False, dir=1):
+def addSysSetup2(tgtJnt=None, buildRY=False, buildRZ=False, dir=1):
     """Create a corrective joint system that responds to the rotation of a driver object."""
     tgtJntN = DagNode(tgtJnt) if isinstance(tgtJnt, str) else tgtJnt
-    return corrSysSetup(
+    return addSysSetup(
         tgtJnt=tgtJntN,
         parentJnt=tgtJntN.parent,
         holder=tgtJntN,
@@ -25,7 +25,7 @@ def corrSysSetup2(tgtJnt=None, buildRY=False, buildRZ=False, dir=1):
     )
 
 
-def corrSysSetup(
+def addSysSetup(
     tgtJnt=None, parentJnt=None, holder=None, buildRY=False, buildRZ=False, dir=1
 ):
     """Create a corrective joint system that responds to the rotation of a driver object."""
@@ -35,12 +35,12 @@ def corrSysSetup(
 
     SKL = GrpNode("SKL")
     if buildRZ:
-        return corrJntSetup(tgtJnt, parentJnt, holder, fr="rz", to="ty", dir=dir, p=SKL)
+        return hlpJntSetup(tgtJnt, parentJnt, holder, fr="rz", to="ty", dir=dir, p=SKL)
     if buildRY:
-        return corrJntSetup(tgtJnt, parentJnt, holder, fr="ry", to="tz", dir=dir, p=SKL)
+        return hlpJntSetup(tgtJnt, parentJnt, holder, fr="ry", to="tz", dir=dir, p=SKL)
 
 
-def corrJntSetup(
+def hlpJntSetup(
     tgtJnt=None, parentJnt=None, rotator=None, fr=None, to=None, dir=1, p=None
 ):
     """Create a corrective joint setup that responds to the rotation of a driver object."""
@@ -51,7 +51,11 @@ def corrJntSetup(
     dir_name = "pos" if dir * xDr == -1 else "neg"
 
     ro = tgtJnt.a.rotateOrder.get()
-    cstGrp = GrpNode(f"{dir_name}_{fr}", pf=tgtJnt, p=p)
+
+    tgt_grp = DagNode(f"{dir_name}_{fr}_grp")
+    if tgt_grp.exists():
+        mc.delete(tgt_grp)
+    cstGrp = GrpNode(f"{dir_name}_{fr}_grp", pf=tgtJnt, p=p)
     ofsGrp = GrpNode(f"{dir_name}_{fr}_ofs", pf=tgtJnt, p=p)
     hlpJnt = JntNode(f"{dir_name}_{fr}_jnt", pf=tgtJnt, r=tgtJnt.a.radius.get() * 0.8)
     cstGrp.a.rotateOrder.set(ro)
@@ -119,13 +123,21 @@ def loadHlpJnt(*args):
         init = data["init"]
         scalePos = data["scalePos"]
         scaleNeg = data["scaleNeg"]
-        helperJnt = corrSysSetup2(
+        helperJnt = addSysSetup2(
             tgtJnt=tgtJnt, buildRY=buildRY, buildRZ=buildRZ, dir=dir
         )
         if helperJnt:
             helperJnt.a[data["to"]].set(init)
             helperJnt.a.scalePos.set(scalePos)
             helperJnt.a.scaleNeg.set(scaleNeg)
+
+
+def selAllHlpGrp(*args):
+    helperJnts = [JntNode(j) for j in mc.ls("*_???_r?_jnt", type="joint")]
+    if helperJnts:
+        mc.select(helperJnts)
+        mc.pickWalk(d="up")
+        mc.pickWalk(d="up")
 
 
 def saveHlpJnt(*args):

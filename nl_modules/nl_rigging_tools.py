@@ -181,6 +181,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Corrective Joint
         self.connect(self.UI.loadHlpJnt_BN, helper.loadHlpJnt, ":openScript.png")
         self.connect(self.UI.saveHlpJnt_BN, helper.saveHlpJnt, ":fileSave.png")
+        self.connect(self.UI.selAllHlpGrp_BN, helper.selAllHlpGrp, ":aselect.png")
 
         # Misc
         self.connect(self.UI.delTemplate_BN, build.deleteSelOrAll, ":smallTrash.png")
@@ -249,25 +250,27 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.dsp_reference_BN, partial(control.dspTypeSel, 2))
         self.connect(self.UI.selectTypeBelow_BN, self.getTypeBelowSel)
 
-        self.connect(self.UI.addCorrJntRZ_BN, partial(self.addCorrJnt, 1))
-        self.connect(self.UI.addCorrJntRY_BN, partial(self.addCorrJnt, 2))
+        self.connect(self.UI.addHlpSysTY_BN, partial(self.addHlpSys, 1))
+        self.connect(self.UI.addHlpSysTZ_BN, partial(self.addHlpSys, 2))
 
         self.rigNode_refresh()
         self.crvShape_refresh()
         self.updateLoadWrapTargetMesh()
         self.updateCharPath()
 
-    def addCorrJnt(self, axis):
+    def addHlpSys(self, axis):
         """Add corrective joint system for Y-axis translation."""
         selList = [DagNode(s) for s in mc.ls(sl=1, tr=1)]
         for sel in selList:
             if sel.type == "joint":
-                helper.corrSysSetup2(
+                helper.addSysSetup2(
                     tgtJnt=sel, buildRZ=(axis == 1), buildRY=(axis == 2)
                 )
-                helper.corrSysSetup2(
+                helper.addSysSetup2(
                     tgtJnt=sel, buildRZ=(axis == 1), buildRY=(axis == 2), dir=-1
                 )
+        if selList:
+            mc.select(selList)
 
     def getTypeBelowSel(self):
         """Select objects of a specific type below the selected objects."""

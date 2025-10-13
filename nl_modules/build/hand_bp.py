@@ -94,7 +94,7 @@ class HandBp(RigModule):
 
         ctlList = []
         for fgr in fgrs[:-1]:
-            ctl = CrvNode(f"{fgr.name}_ctl", shape="stick2", scale=scale / 3, align=fgr)
+            ctl = CrvNode(f"{fgr.name}_ctl", shape="stick", scale=scale / 3, align=fgr)
             # up=None,
             ctl.cv_rotate(90, 0, 0)
             # ctl.cv_scale(1, 0.2, 1)
@@ -351,7 +351,7 @@ class HandBp(RigModule):
             ctls[0].shape.hide()
 
         mc.hide(self.ikHs_fgr, self.jnts_ik)
-        self.setting.shape.hide()
+        # self.setting.shape.hide()
 
     def setup_ctlSet(self):
         """Setup control sets for the hand rig module."""
