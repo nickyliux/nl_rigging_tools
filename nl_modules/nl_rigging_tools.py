@@ -250,23 +250,23 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.dsp_reference_BN, partial(control.dspTypeSel, 2))
         self.connect(self.UI.selectTypeBelow_BN, self.getTypeBelowSel)
 
-        self.connect(self.UI.addHlpSysTY_BN, partial(self.addHlpSys, 1))
-        self.connect(self.UI.addHlpSysTZ_BN, partial(self.addHlpSys, 2))
+        # Helper
+        self.connect(self.UI.addHlpTy_BN, partial(self.addHelper, 1))
+        self.connect(self.UI.addHlpTz_BN, partial(self.addHelper, 2))
+        self.connect(self.UI.mirrorHlp_BN, helper.mirrorHelper)
 
         self.rigNode_refresh()
         self.crvShape_refresh()
         self.updateLoadWrapTargetMesh()
         self.updateCharPath()
 
-    def addHlpSys(self, axis):
+    def addHelper(self, axis):
         """Add corrective joint system for Y-axis translation."""
         selList = [DagNode(s) for s in mc.ls(sl=1, tr=1)]
         for sel in selList:
             if sel.type == "joint":
-                helper.addSysSetup2(
-                    tgtJnt=sel, buildRZ=(axis == 1), buildRY=(axis == 2)
-                )
-                helper.addSysSetup2(
+                helper.addHlpJnt(tgtJnt=sel, buildRZ=(axis == 1), buildRY=(axis == 2))
+                helper.addHlpJnt(
                     tgtJnt=sel, buildRZ=(axis == 1), buildRY=(axis == 2), dir=-1
                 )
         if selList:

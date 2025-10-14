@@ -350,7 +350,7 @@ class HandBp(RigModule):
         for ctls in self.ctls_fgr:
             ctls[0].shape.hide()
 
-        mc.hide(self.ikHs_fgr, self.jnts_ik)
+        mc.hide(self.ikHs_fgr, self.jnts_ik, self.setting)
         # self.setting.shape.hide()
 
     def setup_ctlSet(self):
