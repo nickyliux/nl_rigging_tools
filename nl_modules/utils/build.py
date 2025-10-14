@@ -110,11 +110,8 @@ def postRig():
     update_space_switch()
     # control.reset_all_pv_ctl()
 
-    # RIG = DagNode("RIG")
-    # if RIG.exists():
-    #     mc.hide(RIG)
     mc.select(cl=1)
-    # common.setViewport(wos=1)
+    common.setViewport(jx=1)
     common.setViewport()
 
 

@@ -13,6 +13,19 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.utils.color import Color
 
 
+def addHelperSel(*args):
+    """Add corrective joint system for Y-axis translation."""
+    selList = [DagNode(s) for s in mc.ls(sl=1, tr=1)]
+    for sel in selList:
+        if sel.type == "joint":
+            addHlpJnt(tgtJnt=sel, buildRZ=(args[0] == 1), buildRY=(args[0] == 2))
+            addHlpJnt(
+                tgtJnt=sel, buildRZ=(args[0] == 1), buildRY=(args[0] == 2), dir=-1
+            )
+    if selList:
+        mc.select(selList)
+
+
 @common.Undo("Add Helper Joints")
 def addHlpJnt(
     tgtJnt=None, buildRY=False, buildRZ=False, dir=1, init=1, scaling1=0, scaling2=2
@@ -113,7 +126,7 @@ def hlpJntSetup(
     common.cstMulti(parentJnt, tgtJnt, cstGrp, cstType="ori")
     tgtJnt.cstPoi(cstGrp)
 
-    hlpJnt.color = Color.D_BLUE if xDr * dir == 1 else Color.D_RED
+    hlpJnt.color = Color.D_RED  # Color.D_BLUE if xDr * dir == 1 else Color.D_RED
     cstGrp.a.s.set(dir, dir, dir)
 
     CrvNode.buildLineLinked(tgt1=hlpJnt, tgt2=tgtJnt, dspType=2, top=1, p=cstGrp)
@@ -195,7 +208,7 @@ def mirrorHelper(*args):
         logging.info(f"Helper joint {helperJnt.name} created.")
 
 
-def selAllHlpGrp(*args):
+def selAllHlpGrps(*args):
     """Select all helper joint groups in the scene."""
     helperJnts = [JntNode(j) for j in mc.ls("*_r?_?_jnt", type="joint")]
     if helperJnts:
@@ -205,7 +218,7 @@ def selAllHlpGrp(*args):
 
 
 @common.Undo("Load Helper Joints")
-def loadHlpJnt(*args):
+def loadHlpJnt(uiPB):
     """Load helper joint data from a JSON file and recreate the joints in the scene."""
     charPath = mc.optionVar(q="charPath")
     tgtFiles = []
@@ -221,6 +234,10 @@ def loadHlpJnt(*args):
         return
 
     corrDataList = file.loadJson(tgtFiles[-1])
+    if uiPB:
+        uiPB.setMaximum(len(corrDataList))
+
+    i = 0
     for data in corrDataList:
 
         # Load data
@@ -231,6 +248,10 @@ def loadHlpJnt(*args):
         init = data["init"]
         scaling1 = data["scaling1"]
         scaling2 = data["scaling2"]
+
+        if uiPB:
+            i += 1
+            uiPB.setValue(i)
 
         if not tgtJnt.exists():
             logging.warning(f"Target joint {data['tgt']} NOT found.")
@@ -246,6 +267,9 @@ def loadHlpJnt(*args):
             scaling1=scaling1,
             scaling2=scaling2,
         )
+
+    if uiPB:
+        uiPB.setValue(0)
 
 
 def saveHlpJnt(*args):

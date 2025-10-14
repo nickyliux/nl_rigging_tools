@@ -178,10 +178,14 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Sk
         self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
 
-        # Corrective Joint
-        self.connect(self.UI.loadHlpJnt_BN, helper.loadHlpJnt, ":openScript.png")
+        # Helper
+        self.connect(
+            self.UI.loadHlpJnt_BN,
+            partial(helper.loadHlpJnt, self.UI.progress_PB),
+            ":openScript.png",
+        )
         self.connect(self.UI.saveHlpJnt_BN, helper.saveHlpJnt, ":fileSave.png")
-        self.connect(self.UI.selAllHlpGrp_BN, helper.selAllHlpGrp, ":aselect.png")
+        self.connect(self.UI.selAllHlpGrp_BN, helper.selAllHlpGrps, ":aselect.png")
 
         # Misc
         self.connect(self.UI.delTemplate_BN, build.deleteSelOrAll, ":smallTrash.png")
@@ -250,27 +254,10 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.dsp_reference_BN, partial(control.dspTypeSel, 2))
         self.connect(self.UI.selectTypeBelow_BN, self.getTypeBelowSel)
 
-        # Helper
-        self.connect(self.UI.addHlpTy_BN, partial(self.addHelper, 1))
-        self.connect(self.UI.addHlpTz_BN, partial(self.addHelper, 2))
-        self.connect(self.UI.mirrorHlp_BN, helper.mirrorHelper)
-
         self.rigNode_refresh()
         self.crvShape_refresh()
         self.updateLoadWrapTargetMesh()
         self.updateCharPath()
-
-    def addHelper(self, axis):
-        """Add corrective joint system for Y-axis translation."""
-        selList = [DagNode(s) for s in mc.ls(sl=1, tr=1)]
-        for sel in selList:
-            if sel.type == "joint":
-                helper.addHlpJnt(tgtJnt=sel, buildRZ=(axis == 1), buildRY=(axis == 2))
-                helper.addHlpJnt(
-                    tgtJnt=sel, buildRZ=(axis == 1), buildRY=(axis == 2), dir=-1
-                )
-        if selList:
-            mc.select(selList)
 
     def getTypeBelowSel(self):
         """Select objects of a specific type below the selected objects."""

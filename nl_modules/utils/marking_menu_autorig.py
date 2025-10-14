@@ -3,6 +3,7 @@ from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.utils import anim
 from nl_modules.utils import build
 from nl_modules.utils import control
+from nl_modules.utils import helper
 from nl_modules.utils import guide
 from nl_modules.utils import proxy
 from functools import partial
@@ -36,27 +37,43 @@ class MarkingMenuAutorig:
         """Setup the marking menu with various options"""
         self.addBuildOptions(menu)
         self.addGuideOptions(menu)
+        self.addCtlOptions(menu)
+        self.addHelperOptions(menu)
         self.addSpaceIKFKOptions(menu)
         self.addExtraOptions(menu)
+
+    def addCtlOptions(self, menu):
+        mc.menuItem(p=menu, l="Control  -----", en=0)
+        mc.menuItem(p=menu, l="    Select Ctls", c=self.selectCtlSelOrAll)
+        mc.menuItem(p=menu, l="    Toggle On Top", c=control.toggleOnTopSel)
 
     def addBuildOptions(self, menu):
         """Add build options to the marking menu"""
         mc.menuItem(p=menu, l="Build", rp="N", c=build.buildSelOrAll)
         mc.menuItem(p=menu, l="Unbuild", rp="NW", c=build.unbuildSelOrAll)
 
+    def addHelperOptions(self, menu):
+        mi = mc.menuItem(p=menu, l="Helper", rp="E", subMenu=1)
+        mc.menuItem(p=mi, l="Select All Groups", c=helper.selAllHlpGrps)
+        mc.menuItem(p=mi, l="-" * 15, en=0)
+        mc.menuItem(p=mi, l="Add : Ty", c=partial(helper.addHelperSel, 1))
+        mc.menuItem(p=mi, l="Add : Tz", c=partial(helper.addHelperSel, 2))
+        mc.menuItem(p=mi, l="-" * 15, en=0)
+        mc.menuItem(p=mi, l="Mirror Sel", c=helper.mirrorHelper)
+
     def addGuideOptions(self, menu):
         """Add guide options to the marking menu"""
-        mc.menuItem(p=menu, l="Duplicate Guide", rp="NE", c=guide.duplicateGuideSel)
-        mc.menuItem(p=menu, l="Mirror Guide", rp="SE", c=guide.mirrorGuideSelOrAll)
-        mc.menuItem(p=menu, l="Transfer Guide", rp="E", c=guide.xferGuideSel)
+        mi = mc.menuItem(p=menu, l="Guide", rp="NE", subMenu=1)
+        mc.menuItem(p=mi, l="Duplicate Guide", c=guide.duplicateGuideSel)
+        mc.menuItem(p=mi, l="Mirror Guide", c=guide.mirrorGuideSelOrAll)
+        mc.menuItem(p=mi, l="Transfer Guide", c=guide.xferGuideSel)
+        mc.menuItem(p=mi, l="-" * 15, en=0)
+        mc.menuItem(p=mi, l="Delete", c=build.deleteSelOrAll)
         mc.menuItem(p=menu, l="Mirror Pose", rp="SW", c=guide.mirrorPose)
         mc.menuItem(p=menu, l="Mirror Shape", rp="W", c=self.mirrorShapeSelOrAll)
 
     def addExtraOptions(self, menu):
         """Add extra options to the marking menu"""
-        mc.menuItem(p=menu, l="Control  -----", en=0)
-        mc.menuItem(p=menu, l="    Select Ctls", c=self.selectCtlSelOrAll)
-        mc.menuItem(p=menu, l="    Toggle On Top", c=control.toggleOnTopSel)
         mc.menuItem(p=menu, l="Proxy  -------", en=0)
         mc.menuItem(p=menu, l="    Gen", c=proxy.genProxy)
         mc.menuItem(p=menu, l="    Wrap", c=proxy.wrapProxy)
@@ -64,8 +81,6 @@ class MarkingMenuAutorig:
         mc.menuItem(p=menu, l="    Reset", c=proxy.resetProxy)
         mc.menuItem(p=menu, l="    Select All", c=proxy.selectAllProxy)
         # mc.menuItem(p=menu, l="Delete Guide", c=build.deleteSelOrAll)
-        mc.menuItem(p=menu, l="Guide  -------", en=0)
-        mc.menuItem(p=menu, l="    Delete", c=build.deleteSelOrAll)
         mc.menuItem(p=menu, l="-" * 15, en=0)
         mc.menuItem(p=menu, l="Reload Menu", c=self.reload_marking_menu)
 
