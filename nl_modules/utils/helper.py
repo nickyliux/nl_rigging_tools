@@ -157,31 +157,6 @@ def hlpJntSetup(
     return hlpJnt
 
 
-def getOpposite(tgt):
-    """Get the opposite joint based on naming convention."""
-    tgt = DagNode(tgt) if isinstance(tgt, str) else tgt
-
-    pfL = "lf"
-    pfR = "rt"
-    pattern = re.compile(rf"^{pfL}(\w+)$")
-    match = re.match(pattern, tgt.name)
-    if match:
-        opp = DagNode(f"{pfR}{match.group(1)}")
-        if opp.exists():
-            return opp
-        else:
-            logging.warning(f"Opposite of {tgt.name} NOT found.")
-    else:
-        pattern = re.compile(rf"^{pfR}(\w+)$")
-        match = re.match(pattern, tgt.name)
-        if match:
-            opp = DagNode(f"{pfL}{match.group(1)}")
-            if opp.exists():
-                return opp
-        else:
-            logging.warning(f"Opposite of {tgt.name} NOT found.")
-
-
 @common.Undo("mirror Helper Joints")
 def mirrorHelper(*args):
     """Mirror helper joints for selected helper joints."""
@@ -192,7 +167,7 @@ def mirrorHelper(*args):
         if not tgt:
             continue
 
-        opp = getOpposite(tgt)
+        opp = common.getOpposite(tgt)
         if not opp:
             continue
 

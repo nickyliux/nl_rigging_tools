@@ -3038,42 +3038,6 @@ for Sel</string>
         <number>0</number>
        </property>
        <item>
-        <widget class="QPushButton" name="joint_addRb_BN">
-         <property name="minimumSize">
-          <size>
-           <width>5</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>999</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Add a ribbon joint for each selected</string>
-         </property>
-         <property name="statusTip">
-          <string/>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Rb Jnt</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="joint_addRef_BN">
          <property name="minimumSize">
           <size>
@@ -3110,6 +3074,66 @@ for Sel</string>
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="joint_addRb_BN">
+         <property name="minimumSize">
+          <size>
+           <width>5</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>999</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Add a ribbon joint for each selected</string>
+         </property>
+         <property name="statusTip">
+          <string/>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Rb Jnt</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget_8">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>50</y>
+        <width>221</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_8">
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <property name="leftMargin">
+        <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>2</number>
+       </property>
+       <item>
         <widget class="QPushButton" name="mirrorAllRefJnt_BN">
          <property name="minimumSize">
           <size>
@@ -3141,34 +3165,10 @@ for Sel</string>
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Ref Jnt</string>
+          <string>Mirror Ref Jnt</string>
          </property>
         </widget>
        </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget_8">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>50</y>
-        <width>221</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_8">
-       <property name="spacing">
-        <number>5</number>
-       </property>
-       <property name="leftMargin">
-        <number>6</number>
-       </property>
-       <property name="topMargin">
-        <number>2</number>
-       </property>
-       <property name="rightMargin">
-        <number>2</number>
-       </property>
        <item>
         <widget class="QPushButton" name="addBladeAttr_BN">
          <property name="minimumSize">
@@ -3331,7 +3331,7 @@ for Sel</string>
         <x>0</x>
         <y>20</y>
         <width>221</width>
-        <height>21</height>
+        <height>23</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -3340,6 +3340,9 @@ for Sel</string>
        </property>
        <property name="leftMargin">
         <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>4</number>
        </property>
        <property name="rightMargin">
         <number>2</number>
@@ -3510,7 +3513,7 @@ for Sel</string>
         <number>6</number>
        </property>
        <property name="topMargin">
-        <number>3</number>
+        <number>2</number>
        </property>
        <property name="rightMargin">
         <number>3</number>

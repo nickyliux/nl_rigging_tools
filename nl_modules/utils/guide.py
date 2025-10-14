@@ -113,39 +113,6 @@ def getMasterGuide(tgtN):
             return DagNode(master_guide_name)
 
 
-def getOppositeForSide(tgtN, pfL="lf", pfR="rt"):
-
-    pattern = re.compile(rf"^{pfL}(\w+)$")
-    match = re.match(pattern, tgtN.name)
-
-    if match:
-        opp = DagNode(f"{pfR}{match.group(1)}")
-        if opp.exists():
-            return opp
-    else:
-        pattern = re.compile(rf"^(\w*){pfL}(\w+)$")
-        match = re.match(pattern, tgtN.name)
-        if match:
-            opp = DagNode(f"{match.group(1)}{pfR}{match.group(2)}")
-            if opp.exists():
-                return opp
-
-
-def getOpposite(tgtN, pfL="lf", pfR="rt"):
-    """Return opposite
-    e.g.
-        lf_leg0_ikc =>              rt_leg0_ikc
-        head0_lf_eye, pfB4Pf=1 =>   head0_rt_eye
-    """
-    leftOpposite = getOppositeForSide(tgtN, pfL, pfR)
-    if leftOpposite:
-        return leftOpposite
-
-    rightOpposite = getOppositeForSide(tgtN, pfR, pfL)
-    if rightOpposite:
-        return rightOpposite
-
-
 def copyGuideAttr(A, B, wsMirror=0, mirror=0, skipMasterXf=0):
     """Copy/mirror transform & user defined attribute values"""
     A = DagNode(A) if isinstance(A, str) else A
@@ -185,7 +152,7 @@ def mirrorGuide(tgtList, wsMirror=0):
     """Mirror xform for tgtList objects"""
     for tgt in tgtList:
         tgt = DagNode(tgt)
-        opp = getOpposite(tgt)
+        opp = common.getOpposite(tgt)
         mg = getMasterGuide(opp)
         if opp:
             if mg is None or (mg and mg.a.mirrorable.get()):
@@ -198,7 +165,7 @@ def mirrorRef(tgtList, wsMirror=0):
     """Mirror xform for tgtList objects"""
     for tgt in tgtList:
         tgt = DagNode(tgt)
-        opp = getOpposite(tgt)
+        opp = common.getOpposite(tgt)
         if opp:
             copyGuideAttr(tgt, opp, wsMirror=wsMirror, mirror=1)
         else:

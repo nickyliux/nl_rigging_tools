@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import logging
 import maya.cmds as mc
@@ -739,7 +740,6 @@ def build_ribbon_rivet(
         (j * step) / ratio_out >> mp.a.uValue
 
         crv.shape.a.worldSpace >> mp.a.geometryPath
-        # loc = LocNode(f"rivet_loc_{i}_#", pf=pf, p=loc_grp)
         loc = LocNode(f"rivet_loc_{i}_#", p=loc_grp)
 
         aimAlongSrfUV(
@@ -758,7 +758,6 @@ def build_ribbon_rivet(
 
         loc.a.inheritsTransform.set(0)
 
-    # proxy.add_height_attr(output, rSz * 60 / jntNum)
     prx_height = mc.arclen(crv) / rivetNum / 1.5
     proxy.add_height_attr(outputs, prx_height)
 
@@ -833,3 +832,38 @@ def build_ribbon_rivet(
 #         [po | p for po in uvPinOut]
 #
 #     return uvPin, uvPinOut
+
+
+def getOppositeForSide(tgtN, pfL="lf", pfR="rt"):
+    """Return opposite for one side"""
+    from nl_modules.nodel.base.dag_node import DagNode
+
+    pattern = re.compile(rf"^{pfL}(\w+)$")
+    match = re.match(pattern, tgtN.name)
+
+    if match:
+        opp = DagNode(f"{pfR}{match.group(1)}")
+        if opp.exists():
+            return opp
+    else:
+        pattern = re.compile(rf"^(\w*){pfL}(\w+)$")
+        match = re.match(pattern, tgtN.name)
+        if match:
+            opp = DagNode(f"{match.group(1)}{pfR}{match.group(2)}")
+            if opp.exists():
+                return opp
+
+
+def getOpposite(tgtN, pfL="lf", pfR="rt"):
+    """Return opposite
+    e.g.
+        lf_leg0_ikc =>              rt_leg0_ikc
+        head0_lf_eye, pfB4Pf=1 =>   head0_rt_eye
+    """
+    leftOpposite = getOppositeForSide(tgtN, pfL, pfR)
+    if leftOpposite:
+        return leftOpposite
+
+    rightOpposite = getOppositeForSide(tgtN, pfR, pfL)
+    if rightOpposite:
+        return rightOpposite
