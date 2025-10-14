@@ -117,7 +117,7 @@ def loadCtl():
 
     imported = None
     try:
-        imported = mc.file(tgtFiles, i=1, ns="ctl", returnNewNodes=1)
+        imported = mc.file(tgtFiles[-1], i=1, ns="ctl", returnNewNodes=1)
     except Exception as e:
         raise SystemError(f"Error loading {tgtFiles}: {e}")
 

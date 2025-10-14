@@ -719,7 +719,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Save template to file</string>
+          <string>Save guide template to file</string>
          </property>
          <property name="text">
           <string/>
@@ -867,7 +867,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Save ctl shape to file</string>
+          <string>Save all ctl shapes to file</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1010,7 +1010,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Save proxy file</string>
+          <string>Save all proxies to file</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1234,7 +1234,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Save ctl shape to file</string>
+          <string>Save weight of selected objects</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1270,7 +1270,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Use last's skin for others</string>
+          <string>Apply last's skin weight  to others</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1355,7 +1355,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Load char_corr {*last} .json</string>
+          <string>Load char_hlp {*last} .json</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1391,7 +1391,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Save char_corr {*last} .json</string>
+          <string>Save all helpers to file</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>

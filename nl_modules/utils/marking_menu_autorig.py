@@ -35,17 +35,15 @@ class MarkingMenuAutorig:
 
     def setupMenu(self, menu, parent):
         """Setup the marking menu with various options"""
+        mc.menuItem(p=menu, l="Mirror Pose", rp="E", c=guide.mirrorPose)
+        mc.menuItem(p=menu, l="Mirror Shape", rp="W", c=self.mirrorShapeSelOrAll)
+        mc.menuItem(p=menu, l="Select Ctls", rp="SW", c=self.selectCtlSelOrAll)
+
         self.addBuildOptions(menu)
         self.addGuideOptions(menu)
-        self.addCtlOptions(menu)
         self.addHelperOptions(menu)
         self.addSpaceIKFKOptions(menu)
         self.addExtraOptions(menu)
-
-    def addCtlOptions(self, menu):
-        mc.menuItem(p=menu, l="Control  -----", en=0)
-        mc.menuItem(p=menu, l="    Select Ctls", c=self.selectCtlSelOrAll)
-        mc.menuItem(p=menu, l="    Toggle On Top", c=control.toggleOnTopSel)
 
     def addBuildOptions(self, menu):
         """Add build options to the marking menu"""
@@ -64,18 +62,15 @@ class MarkingMenuAutorig:
     def addGuideOptions(self, menu):
         """Add guide options to the marking menu"""
         mi = mc.menuItem(p=menu, l="Guide", rp="SE", subMenu=1)
+        mc.menuItem(p=mi, l="Mirror Guide", c=guide.mirrorGuideSelOrAll)
+        mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Duplicate", c=guide.duplicateGuideSel)
         mc.menuItem(p=mi, l="Transfer", c=guide.xferGuideSel)
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Delete", c=build.deleteSelOrAll)
 
-        mc.menuItem(p=menu, l="Mirror Guide", rp="E", c=guide.mirrorGuideSelOrAll)
-
     def addExtraOptions(self, menu):
         """Add extra options to the marking menu"""
-        mc.menuItem(p=menu, l="Mirror Pose", rp="SW", c=guide.mirrorPose)
-        mc.menuItem(p=menu, l="Mirror Shape", rp="W", c=self.mirrorShapeSelOrAll)
-
         mc.menuItem(p=menu, l="Proxy  -------", en=0)
         mc.menuItem(p=menu, l="    Gen", c=proxy.genProxy)
         mc.menuItem(p=menu, l="    Wrap", c=proxy.wrapProxy)

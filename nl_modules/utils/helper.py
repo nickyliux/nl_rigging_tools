@@ -154,6 +154,8 @@ def hlpJntSetup(
     ofsScale = (r > 0).setCdn(ifTrue=scaling1_attr, ifFalse=scaling2_attr)
     hlpJnt.a[to] + ofsScale * rAbs / 90 >> ofsGrp.a[to]
     hlpJnt.a.showAttr(t=1)
+    logging.info(f"Helper joint {hlpJnt.name} created.")
+
     return hlpJnt
 
 

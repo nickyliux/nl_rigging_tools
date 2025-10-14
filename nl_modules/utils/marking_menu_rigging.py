@@ -67,8 +67,8 @@ class MarkingMenuRigging:
         mc.menuItem(p=connect_MI, l="S", c=partial(connect_channel, "s"))
 
         offset_MI = mc.menuItem(p=menu, l="Offset", rp="N", subMenu=1)
-        mc.menuItem(p=offset_MI, l="Add Offset", c=add_ofs)
-        mc.menuItem(p=offset_MI, l="Add Offset ( below )", c=add_ofs_below)
+        mc.menuItem(p=offset_MI, l="Add Offset Group", c=add_ofs)
+        mc.menuItem(p=offset_MI, l="Add Offset Group ( below )", c=add_ofs_below)
 
         channel_MI = mc.menuItem(p=menu, l="Channel", rp="E", subMenu=1)
         mc.menuItem(p=channel_MI, l="Lock, Hide All", c=partial(lockAttr, "all", 1))
@@ -119,13 +119,14 @@ class MarkingMenuRigging:
         mc.menuItem(p=joint_MI, l="Create Golden Chain ", c=makeJointChainGold_mm)
 
         skin_MI = mc.menuItem(p=menu, l="Skin", rp="SW", subMenu=1)
+        mc.menuItem(p=skin_MI, l="Select Skinned Meshes/Joints", c=skin.selSkinned)
+        mc.menuItem(p=skin_MI, l="-" * 15, en=0)
         mc.menuItem(p=skin_MI, l="Bind Skin", c=mc.SmoothBindSkin)
         mc.menuItem(p=skin_MI, l="Bind Skin", c=mc.SmoothBindSkinOptions, ob=1)
         mc.menuItem(p=skin_MI, l="Add Influence", c=addInf)
         mc.menuItem(p=skin_MI, l="Add Influence", c=addInfOpt, ob=1)
-        mc.menuItem(p=skin_MI, l="Delete Skin", c=skin.delSkinForSel)
         mc.menuItem(p=skin_MI, l="-" * 15, en=0)
-        mc.menuItem(p=skin_MI, l="Select Skinned Meshes/Joints", c=skin.selSkinned)
+        mc.menuItem(p=skin_MI, l="Delete Skin", c=skin.delSkinForSel)
         # mc.menuItem(p=skin_MI, l="Detach Skin", c=mc.DetachSkin)
         # mc.menuItem(p=freeze_MI, l="All", c=frz_xform_mm)
         # mc.menuItem(p=freeze_MI, l="T", c=partial(frz_xform, "t"))
