@@ -113,41 +113,37 @@ def getMasterGuide(tgtN):
             return DagNode(master_guide_name)
 
 
-def getOpposite(tgtN, pfL="lf", pfR="rt", strB4Pf=1):
+def getOppositeForSide(tgtN, pfL="lf", pfR="rt"):
+
+    pattern = re.compile(rf"^{pfL}(\w+)$")
+    match = re.match(pattern, tgtN.name)
+
+    if match:
+        opp = DagNode(f"{pfR}{match.group(1)}")
+        if opp.exists():
+            return opp
+    else:
+        pattern = re.compile(rf"^(\w*){pfL}(\w+)$")
+        match = re.match(pattern, tgtN.name)
+        if match:
+            opp = DagNode(f"{match.group(1)}{pfR}{match.group(2)}")
+            if opp.exists():
+                return opp
+
+
+def getOpposite(tgtN, pfL="lf", pfR="rt"):
     """Return opposite
     e.g.
         lf_leg0_ikc =>              rt_leg0_ikc
         head0_lf_eye, pfB4Pf=1 =>   head0_rt_eye
     """
-    patternL = (
-        re.compile(rf"^(\w*){pfL}(\w+)$") if strB4Pf else re.compile(rf"^{pfL}(\w+)$")
-    )
-    matchL = re.match(patternL, tgtN.name)
-    if matchL:
-        oppName = (
-            f"{matchL.group(1)}{pfR}{matchL.group(2)}"
-            if strB4Pf
-            else f"{pfR}{matchL.group(1)}"
-        )
-        opp = DagNode(oppName)
-        if opp.exists():
-            return opp
-    else:
-        patternR = (
-            re.compile(rf"^(\w*){pfR}(\w+)$")
-            if strB4Pf
-            else re.compile(rf"^{pfR}(\w+)$")
-        )
-        matchR = re.match(patternR, tgtN.name)
-        if matchR:
-            oppName = (
-                f"{matchR.group(1)}{pfL}{matchR.group(2)}"
-                if strB4Pf
-                else f"{pfL}{matchR.group(1)}"
-            )
-            opp = DagNode(oppName)
-            if opp.exists():
-                return opp
+    leftOpposite = getOppositeForSide(tgtN, pfL, pfR)
+    if leftOpposite:
+        return leftOpposite
+
+    rightOpposite = getOppositeForSide(tgtN, pfR, pfL)
+    if rightOpposite:
+        return rightOpposite
 
 
 def copyGuideAttr(A, B, wsMirror=0, mirror=0, skipMasterXf=0):
