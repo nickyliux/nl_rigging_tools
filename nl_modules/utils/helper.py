@@ -73,6 +73,7 @@ def addHlpJntGeneral(
             scaling1=scaling1,
             scaling2=scaling2,
         )
+        logging.info("Helper joint for TY created.")
     if buildRY:
         return hlpJntSetup(
             tgtJnt,
@@ -85,6 +86,7 @@ def addHlpJntGeneral(
             scaling1=scaling1,
             scaling2=scaling2,
         )
+        logging.info("Helper joint for TZ created.")
 
 
 def hlpJntSetup(
@@ -109,7 +111,11 @@ def hlpJntSetup(
     hlpName = f"{tgtJnt.name}_{fr}_{dirName}"
     tgtGrp = DagNode(hlpName + "_grp")
     if tgtGrp.exists():
-        mc.delete(tgtGrp)
+        tgtHlp = DagNode(hlpName + "_jnt")
+        tgtHlp.a.init.set(tgtHlp.a.init.get())
+        tgtHlp.a.scaling1.set(tgtHlp.a.scaling1.get())
+        tgtHlp.a.scaling2.set(tgtHlp.a.scaling2.get())
+        return tgtHlp
 
     # Setup group hierarchy ----------------------
     pf = tgtJnt.name.split("_")[0]
@@ -142,19 +148,23 @@ def hlpJntSetup(
     hlpJnt.a.add("helperTgt", attrType="message")
     tgtJnt.a.message >> hlpJnt.a.helperTgt
 
+    init_attr = hlpJnt.a.add("init", dv=1, min=0)
     scaling1_attr = hlpJnt.a.add("scaling1", dv=0, min=0)
     scaling2_attr = hlpJnt.a.add("scaling2", dv=2, min=0)
+
     scaling1_attr.set(scaling1)
     scaling2_attr.set(scaling2)
+    init_attr.set(init)
+    init_attr >> hlpJnt.a[to]
+
     hlpJnt.a.add("dir", dv=dir, k=0, cb=0)
-    hlpJnt.a[to].set(init)
     r = rotator.a[fr]
+    # hlpJnt.a[to].set(init)
 
     rAbs = (r >= 0).setCdn(ifTrue=r, ifFalse=r * -1)
     ofsScale = (r > 0).setCdn(ifTrue=scaling1_attr, ifFalse=scaling2_attr)
     hlpJnt.a[to] + ofsScale * rAbs / 90 >> ofsGrp.a[to]
-    hlpJnt.a.showAttr(t=1)
-    logging.info(f"Helper joint {hlpJnt.name} created.")
+    hlpJnt.a.showAttr()
 
     return hlpJnt
 
@@ -178,11 +188,11 @@ def mirrorHelper(*args):
             buildRY=hlp.a.fr.get() == "ry",
             buildRZ=hlp.a.fr.get() == "rz",
             dir=1 - hlp.a.dir.get(),
-            init=hlp.a["ty"].get() if hlp.a.to.get() == "ty" else hlp.a["tz"].get(),
+            init=hlp.a.init.get(),
             scaling1=hlp.a.scaling1.get(),
             scaling2=hlp.a.scaling2.get(),
         )
-        logging.info(f"Helper joint {helperJnt.name} created.")
+        logging.info(f"Helper joint {helperJnt.name} mirrored.")
 
 
 def selAllHlpGrps(*args):
@@ -279,7 +289,7 @@ def saveHlpJnt(*args):
                     "fr": hlp.a.fr.get(),
                     "to": hlp.a.to.get(),
                     "dir": hlp.a.dir.get(),
-                    "init": hlp.a[hlp.a.to.get()].get(),
+                    "init": hlp.a.init.get(),
                     "scaling1": hlp.a.scaling1.get(),
                     "scaling2": hlp.a.scaling2.get(),
                 }
