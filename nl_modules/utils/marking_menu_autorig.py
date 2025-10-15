@@ -35,9 +35,9 @@ class MarkingMenuAutorig:
 
     def setupMenu(self, menu, parent):
         """Setup the marking menu with various options"""
-        mc.menuItem(p=menu, l="Mirror Pose", rp="E", c=guide.mirrorPose)
+        mc.menuItem(p=menu, l="Select Ctls", rp="E", c=self.selectCtlSelOrAll)
+        mc.menuItem(p=menu, l="Mirror Pose", rp="SW", c=guide.mirrorPose)
         mc.menuItem(p=menu, l="Mirror Shape", rp="W", c=self.mirrorShapeSelOrAll)
-        mc.menuItem(p=menu, l="Select Ctls", rp="SW", c=self.selectCtlSelOrAll)
 
         self.addBuildOptions(menu)
         self.addGuideOptions(menu)
@@ -52,12 +52,12 @@ class MarkingMenuAutorig:
 
     def addHelperOptions(self, menu):
         mi = mc.menuItem(p=menu, l="Helper", rp="NE", subMenu=1)
-        mc.menuItem(p=mi, l="Select All Groups", c=helper.selAllHlpGrps)
-        mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="Add : Ty", c=partial(helper.addHelperSel, 1))
-        mc.menuItem(p=mi, l="Add : Tz", c=partial(helper.addHelperSel, 2))
-        mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Mirror Sel", c=helper.mirrorHelper)
+        mc.menuItem(p=mi, l="-" * 15, en=0)
+        mc.menuItem(p=mi, l="Add : Y-axis", c=partial(helper.addHlpJnt_sel, 1))
+        mc.menuItem(p=mi, l="Add : Z-axis", c=partial(helper.addHlpJnt_sel, 2))
+        mc.menuItem(p=mi, l="-" * 15, en=0)
+        mc.menuItem(p=mi, l="Select All Groups", c=helper.selAllHlpGrps)
 
     def addGuideOptions(self, menu):
         """Add guide options to the marking menu"""
