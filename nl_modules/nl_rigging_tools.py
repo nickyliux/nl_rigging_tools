@@ -185,7 +185,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             ":openScript.png",
         )
         self.connect(self.UI.saveHlpJnt_BN, helper.saveHlpJnt, ":fileSave.png")
-        self.connect(self.UI.selAllHlpGrp_BN, helper.selAllHlpGrps, ":aselect.png")
+        self.connect(self.UI.selAllHlpGrp_BN, helper.selAllHlp, ":aselect.png")
 
         # Misc
         self.connect(self.UI.delTemplate_BN, build.deleteSelOrAll, ":smallTrash.png")

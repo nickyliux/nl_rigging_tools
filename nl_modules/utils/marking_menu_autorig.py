@@ -52,17 +52,18 @@ class MarkingMenuAutorig:
 
     def addHelperOptions(self, menu):
         mi = mc.menuItem(p=menu, l="Helper", rp="NE", subMenu=1)
-        mc.menuItem(p=mi, l="Mirror Sel", c=helper.mirrorHelper)
-        mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Add : Y-axis", c=partial(helper.addHlpJnt_sel, 1))
         mc.menuItem(p=mi, l="Add : Z-axis", c=partial(helper.addHlpJnt_sel, 2))
         mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="Select All Groups", c=helper.selAllHlpGrps)
+        mc.menuItem(p=mi, l="Mirror Sel", c=helper.mirrorHelper)
+        mc.menuItem(p=mi, l="Select All", c=helper.selAllHlp)
+        mc.menuItem(p=mi, l="-" * 15, en=0)
+        mc.menuItem(p=mi, l="Delete Sel", c=helper.delGrpForSel)
 
     def addGuideOptions(self, menu):
         """Add guide options to the marking menu"""
         mi = mc.menuItem(p=menu, l="Guide", rp="SE", subMenu=1)
-        mc.menuItem(p=mi, l="Mirror Guide", c=guide.mirrorGuideSelOrAll)
+        mc.menuItem(p=mi, l="Mirror", c=guide.mirrorGuideSelOrAll)
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Duplicate", c=guide.duplicateGuideSel)
         mc.menuItem(p=mi, l="Transfer", c=guide.xferGuideSel)

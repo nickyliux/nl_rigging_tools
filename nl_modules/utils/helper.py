@@ -29,7 +29,15 @@ def addHlpJnt_sel(*args):
 
 @common.Undo("Add Helper Joints")
 def addHlpJnt(
-    tgtJnt=None, buildRY=0, buildRZ=0, dir=1, init=1, initR=0, scaling1=0, scaling2=2
+    tgtJnt=None,
+    buildRY=0,
+    buildRZ=0,
+    dir=1,
+    init=1,
+    initAngle=0,
+    # offsetAngle=0,
+    scaling1=0,
+    scaling2=2,
 ):
     """Create a corrective joint system that responds to the rotation of a driver object."""
     tgtJntN = DagNode(tgtJnt) if isinstance(tgtJnt, str) else tgtJnt
@@ -41,7 +49,8 @@ def addHlpJnt(
         buildRY=buildRY,
         dir=dir,
         init=init,
-        initR=initR,
+        initAngle=initAngle,
+        # offsetAngle=offsetAngle,
         scaling1=scaling1,
         scaling2=scaling2,
     )
@@ -55,7 +64,8 @@ def addHlpJntGeneral(
     buildRZ=0,
     dir=1,
     init=1,
-    initR=0,
+    initAngle=0,
+    # offsetAngle=0,
     scaling1=0,
     scaling2=2,
 ):
@@ -73,7 +83,8 @@ def addHlpJntGeneral(
             to="ty",
             dir=dir,
             init=init,
-            initR=initR,
+            initAngle=initAngle,
+            # offsetAngle=offsetAngle,
             scaling1=scaling1,
             scaling2=scaling2,
         )
@@ -86,7 +97,8 @@ def addHlpJntGeneral(
             to="tz",
             dir=dir,
             init=init,
-            initR=initR,
+            initAngle=initAngle,
+            # offsetAngle=offsetAngle,
             scaling1=scaling1,
             scaling2=scaling2,
         )
@@ -100,7 +112,8 @@ def hlpJntSetup(
     to=None,
     dir=1,
     init=1,
-    initR=0,
+    initAngle=0,
+    # offsetAngle=0,
     scaling1=0,
     scaling2=2,
 ):
@@ -118,7 +131,8 @@ def hlpJntSetup(
         tgtHlp = DagNode(hlpName + "_jnt")
         if tgtHlp.exists():
             tgtHlp.a.init.set(init)
-            tgtHlp.a.initR.set(initR)
+            tgtHlp.a.initAngle.set(initAngle)
+            # tgtHlp.a.offsetAngle.set(offsetAngle)
             tgtHlp.a.scaling1.set(scaling1)
             tgtHlp.a.scaling2.set(scaling2)
 
@@ -132,10 +146,13 @@ def hlpJntSetup(
 
     cstGrp = GrpNode(f"{hlpName}_grp", p=p)
     ofsGrp = GrpNode(f"{hlpName}_ofs")
+    bseJnt = JntNode(f"{hlpName}_bse", r=tgtJnt.a.radius.get() * 0.25)
     hlpJnt = JntNode(f"{hlpName}_jnt", r=tgtJnt.a.radius.get() * 0.75)
     cstGrp.a.rotateOrder.set(ro)
     hlpJnt.a.rotateOrder.set(ro)
-    hlpJnt | ofsGrp | cstGrp
+    hlpJnt | bseJnt | ofsGrp | cstGrp
+    # bseJnt.setDrawStyle(2)
+    # bseJnt.dspType = 2
 
     common.cstMulti(parentJnt, tgtJnt, cstGrp, cstType="ori")
     tgtJnt.cstPoi(cstGrp)
@@ -143,7 +160,7 @@ def hlpJntSetup(
     hlpJnt.color = Color.D_RED
     cstGrp.a.s.set(dir, dir, dir)
 
-    CrvNode.buildLineLinked(tgt1=hlpJnt, tgt2=tgtJnt, dspType=2, top=1, p=cstGrp)
+    CrvNode.buildLineLinked(tgt1=bseJnt, tgt2=tgtJnt, dspType=2, top=1, p=cstGrp)
 
     # offset but keep corrective in the middle -------------
     # ofsInitRota = hlpJnt.a.add("ofsInitRota")
@@ -156,7 +173,8 @@ def hlpJntSetup(
     hlpJnt.a.add("helperTgt", attrType="message")
     hlpJnt.a.add("dir", dv=dir, k=0, cb=0)
     hlpJnt.a.add("init", dv=1, min=0)
-    hlpJnt.a.add("initR", dv=0)
+    hlpJnt.a.add("initAngle", dv=0)
+    # hlpJnt.a.add("offsetAngle", dv=0)
     hlpJnt.a.add("scaling1", dv=0, min=0)
     hlpJnt.a.add("scaling2", dv=2, min=0)
 
@@ -164,14 +182,17 @@ def hlpJntSetup(
     hlpJnt.a.scaling1.set(scaling1)
     hlpJnt.a.scaling2.set(scaling2)
     hlpJnt.a.init.set(init)
-    hlpJnt.a.initR.set(initR)
-    hlpJnt.a.initR >> ofsGrp.a[fr]
+    hlpJnt.a.initAngle.set(initAngle)
+    hlpJnt.a.initAngle >> ofsGrp.a[fr]
+    # hlpJnt.a.offsetAngle.set(offsetAngle)
+    # hlpJnt.a.offsetAngle >> bseJnt.a[fr]
 
     r = rotator.a[fr]
 
     rAbs = (r >= 0).setCdn(ifTrue=r, ifFalse=r * -1)
     ofsScale = (r > 0).setCdn(ifTrue=hlpJnt.a.scaling1, ifFalse=hlpJnt.a.scaling2)
-    hlpJnt.a.init + ofsScale * rAbs / 90 >> hlpJnt.a[to]
+    hlpJnt.a.init >> bseJnt.a[to]
+    ofsScale * rAbs / 90 >> hlpJnt.a[to]
     hlpJnt.a.showAttr()
 
     logging.info(f"Helper joint {hlpJnt.name} created.")
@@ -194,26 +215,39 @@ def mirrorHelper(*args):
             logging.warning(f"Opposite joint for {tgt.name} NOT found.")
             continue
 
-        print(sel.a.init.get())
         addHlpJnt(
             tgtJnt=opp,
             buildRY=sel.a.fr.get() == "ry",
             buildRZ=sel.a.fr.get() == "rz",
             dir=1 - sel.a.dir.get(),
             init=sel.a.init.get(),
-            initR=sel.a.initR.get(),
+            initAngle=sel.a.initAngle.get(),
+            # offsetAngle=sel.a.offsetAngle.get(),
             scaling1=sel.a.scaling1.get(),
             scaling2=sel.a.scaling2.get(),
         )
 
 
-def selAllHlpGrps(*args):
+@common.Undo("Delete Helper Joint Groups")
+def delGrpForSel(*args):
+    """Delete helper joint groups for selected helper joints."""
+    selList = [JntNode(j) for j in mc.ls("*_r?_?_jnt", sl=1, type="joint")]
+    try:
+        for sel in selList:
+            grp = sel.parent.parent.parent
+            if grp.exists():
+                mc.delete(grp)
+    except Exception as e:
+        logging.warning(f"Failed to delete group for {sel.name}: {e}")
+
+
+def selAllHlp(*args):
     """Select all helper joint groups in the scene."""
     helperJnts = [JntNode(j) for j in mc.ls("*_r?_?_jnt", type="joint")]
     if helperJnts:
         mc.select(helperJnts)
-        mc.pickWalk(d="up")
-        mc.pickWalk(d="up")
+    else:
+        mc.select(cl=1)
 
 
 @common.Undo("Load Helper Joints")
@@ -245,7 +279,8 @@ def loadHlpJnt(uiPB):
         buildRZ = data["fr"] == "rz"
         dir = data["dir"]
         init = data["init"]
-        initR = data["initR"]
+        initAngle = data["initAngle"]
+        # offsetAngle = data["offsetAngle"]
         scaling1 = data["scaling1"]
         scaling2 = data["scaling2"]
 
@@ -264,7 +299,8 @@ def loadHlpJnt(uiPB):
             buildRZ=buildRZ,
             dir=dir,
             init=init,
-            initR=initR,
+            initAngle=initAngle,
+            # offsetAngle=offsetAngle,
             scaling1=scaling1,
             scaling2=scaling2,
         )
@@ -304,7 +340,8 @@ def saveHlpJnt(*args):
                     "to": hlp.a.to.get(),
                     "dir": hlp.a.dir.get(),
                     "init": hlp.a.init.get(),
-                    "initR": hlp.a.initR.get(),
+                    "initAngle": hlp.a.initAngle.get(),
+                    # "offsetAngle": hlp.a.offsetAngle.get(),
                     "scaling1": hlp.a.scaling1.get(),
                     "scaling2": hlp.a.scaling2.get(),
                 }
