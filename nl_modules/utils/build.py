@@ -123,8 +123,8 @@ def masterAddProxyAttrs():
     if ctl.exists() and prx.exists():
         prx.a.overrideEnabled.set(1)
 
-        proxy = ctl.a.add("proxy", k=0, attrType="bool", dv=1)
-        proxy >> prx.a.v
+        proxyVis = ctl.a.add("proxyVis", k=0, attrType="bool", dv=1)
+        proxyVis >> prx.a.v
 
         OPTIONS = "Normal:Template:Reference"
         proxyDsp = ctl.a.add("proxyDsp", attrType="enum", k=0, en=OPTIONS, dv=0)

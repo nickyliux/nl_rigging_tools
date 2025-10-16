@@ -52,8 +52,8 @@ class MarkingMenuAutorig:
 
     def addHelperOptions(self, menu):
         mi = mc.menuItem(p=menu, l="Helper", rp="NE", subMenu=1)
-        mc.menuItem(p=mi, l="Add : Y-axis", c=partial(helper.addHlpJnt_sel, 1))
-        mc.menuItem(p=mi, l="Add : Z-axis", c=partial(helper.addHlpJnt_sel, 2))
+        mc.menuItem(p=mi, l="Add : Y", c=partial(helper.addHlpJnt_sel, 1))
+        mc.menuItem(p=mi, l="Add : Z", c=partial(helper.addHlpJnt_sel, 2))
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Mirror Sel", c=helper.mirrorHelper)
         mc.menuItem(p=mi, l="Select All", c=helper.selAllHlp)
@@ -74,7 +74,7 @@ class MarkingMenuAutorig:
         """Add extra options to the marking menu"""
         mc.menuItem(p=menu, l="Proxy  -------", en=0)
         mc.menuItem(p=menu, l="    Gen", c=proxy.genProxy)
-        mc.menuItem(p=menu, l="    Wrap", c=proxy.wrapProxy)
+        mc.menuItem(p=menu, l="    Warp", c=proxy.wrapProxy)
         mc.menuItem(p=menu, l="    Mirror", c=proxy.mirrorProxy)
         mc.menuItem(p=menu, l="    Reset", c=proxy.resetProxy)
         mc.menuItem(p=menu, l="    Select All", c=proxy.selectAllProxy)

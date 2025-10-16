@@ -23,8 +23,6 @@ def addHlpJnt_sel(*args):
         j2 = addHlpJnt(tgtJnt=sel, buildRZ=isRZ, buildRY=isRY, dir=-1)
         if j1 and j2:
             mc.select(j1, j2)
-    # if selList:
-    #     mc.select(selList)
 
 
 @common.Undo("Add Helper Joints")
@@ -38,6 +36,7 @@ def addHlpJnt(
     # offsetAngle=0,
     scaling1=0,
     scaling2=2,
+    mirror=0,
 ):
     """Create a corrective joint system that responds to the rotation of a driver object."""
     tgtJntN = DagNode(tgtJnt) if isinstance(tgtJnt, str) else tgtJnt
@@ -53,6 +52,7 @@ def addHlpJnt(
         # offsetAngle=offsetAngle,
         scaling1=scaling1,
         scaling2=scaling2,
+        mirror=mirror,
     )
 
 
@@ -68,6 +68,7 @@ def addHlpJntGeneral(
     # offsetAngle=0,
     scaling1=0,
     scaling2=2,
+    mirror=0,
 ):
     """Create a corrective joint system that responds to the rotation of a driver object."""
     if not tgtJnt.exists() or not parentJnt.exists() or not holder.exists():
@@ -87,6 +88,7 @@ def addHlpJntGeneral(
             # offsetAngle=offsetAngle,
             scaling1=scaling1,
             scaling2=scaling2,
+            mirror=mirror,
         )
     if buildRY:
         return hlpJntSetup(
@@ -101,6 +103,7 @@ def addHlpJntGeneral(
             # offsetAngle=offsetAngle,
             scaling1=scaling1,
             scaling2=scaling2,
+            mirror=mirror,
         )
 
 
@@ -116,6 +119,7 @@ def hlpJntSetup(
     # offsetAngle=0,
     scaling1=0,
     scaling2=2,
+    mirror=0,
 ):
     """Create a corrective joint setup that responds to the rotation of a driver object."""
 
@@ -130,14 +134,17 @@ def hlpJntSetup(
     if tgtGrp.exists():
         tgtHlp = DagNode(hlpName + "_jnt")
         if tgtHlp.exists():
-            tgtHlp.a.init.set(init)
-            tgtHlp.a.initAngle.set(initAngle)
-            # tgtHlp.a.offsetAngle.set(offsetAngle)
-            tgtHlp.a.scaling1.set(scaling1)
-            tgtHlp.a.scaling2.set(scaling2)
+            if mirror == 1:
+                tgtHlp.a.init.set(init)
+                tgtHlp.a.initAngle.set(initAngle)
+                tgtHlp.a.scaling1.set(scaling1)
+                tgtHlp.a.scaling2.set(scaling2)
 
-            logging.info(f"Helper joint {tgtHlp.name} updated")
-            return tgtHlp
+                logging.info(f"Helper joint {tgtHlp.name} updated")
+                return tgtHlp
+            else:
+                logging.warning(f"Helper joint {tgtHlp.name} already exists.")
+                return
 
     # Setup group hierarchy ----------------------
     pf = tgtJnt.name.split("_")[0]
@@ -146,18 +153,17 @@ def hlpJntSetup(
 
     cstGrp = GrpNode(f"{hlpName}_grp", p=p)
     ofsGrp = GrpNode(f"{hlpName}_ofs")
-    bseJnt = JntNode(f"{hlpName}_bse", r=tgtJnt.a.radius.get() * 0.25)
-    hlpJnt = JntNode(f"{hlpName}_jnt", r=tgtJnt.a.radius.get() * 0.75)
+    bseJnt = JntNode(f"{hlpName}_bse", r=tgtJnt.a.radius.get() * 0.5)
+    hlpJnt = JntNode(f"{hlpName}_jnt", r=tgtJnt.a.radius.get())
     cstGrp.a.rotateOrder.set(ro)
     hlpJnt.a.rotateOrder.set(ro)
     hlpJnt | bseJnt | ofsGrp | cstGrp
-    # bseJnt.setDrawStyle(2)
-    # bseJnt.dspType = 2
+    bseJnt.dspType = 2
 
     common.cstMulti(parentJnt, tgtJnt, cstGrp, cstType="ori")
     tgtJnt.cstPoi(cstGrp)
 
-    hlpJnt.color = Color.D_RED
+    hlpJnt.color = Color.D_BLUE
     cstGrp.a.s.set(dir, dir, dir)
 
     CrvNode.buildLineLinked(tgt1=bseJnt, tgt2=tgtJnt, dspType=2, top=1, p=cstGrp)
@@ -225,7 +231,10 @@ def mirrorHelper(*args):
             # offsetAngle=sel.a.offsetAngle.get(),
             scaling1=sel.a.scaling1.get(),
             scaling2=sel.a.scaling2.get(),
+            mirror=1,
         )
+    if selList:
+        mc.select(selList)
 
 
 @common.Undo("Delete Helper Joint Groups")
@@ -271,6 +280,7 @@ def loadHlpJnt(uiPB):
         uiPB.setMaximum(len(corrDataList))
 
     i = 0
+    loaded = 0
     for data in corrDataList:
 
         # Load data
@@ -293,7 +303,7 @@ def loadHlpJnt(uiPB):
             continue
 
         # Add helper joint
-        addHlpJnt(
+        j = addHlpJnt(
             tgtJnt=tgtJnt,
             buildRY=buildRY,
             buildRZ=buildRZ,
@@ -304,9 +314,12 @@ def loadHlpJnt(uiPB):
             scaling1=scaling1,
             scaling2=scaling2,
         )
+        if j:
+            loaded += 1
 
     if uiPB:
         uiPB.setValue(0)
+    logging.info(f"{loaded} helper joints loaded.")
 
 
 def saveHlpJnt(*args):

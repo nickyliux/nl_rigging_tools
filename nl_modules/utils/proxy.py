@@ -92,10 +92,6 @@ def genProxy(*args):
 
 def saveProxy():
     """Export all proxy meshes to a file."""
-    if not mc.ls("PRX"):
-        mc.confirmDialog(t="Info", m="PRX group NOT found.     ", b="OK")
-        return
-
     prx = mc.ls("PRX", tr=1)
     if not prx:
         mc.confirmDialog(t="Info", m="Group PRX not found.     ", b="OK")
@@ -133,12 +129,12 @@ def loadProxy():
         tempStr = imported[0].replace(":", " ").replace("|", " ")
         ns = tempStr.split()[0]
     else:
+        logging.warning("No proxies imported.")
         return
 
-    allGeo = mc.ls("*_pxGeo")
+    allGeo = [DagNode(geo) for geo in mc.ls("*_pxGeo")]
     control.reset_all_ctl()
     for geo in allGeo:
-        geo = DagNode(geo)
         imported = DagNode(ns + ":" + geo)
         if imported.exists():
             common.matchMove([geo, imported], mode="a")
@@ -146,7 +142,7 @@ def loadProxy():
             geo.deleteHistory()
 
     if imported:
-        rootGrp = DagNode(ns + ":CHR")
+        rootGrp = DagNode(ns + ":*")
         if rootGrp.exists():
             rootGrp.delete()
         logging.info("Proxies loaded.")
@@ -319,7 +315,7 @@ def showHideProxy():
     """Toggle visibility of the proxy meshes under the 'PRX' group."""
     m2 = DagNode("master2_ctl")
     if m2.exists():
-        m2.a.proxy.set(1 - m2.a.proxy.get())
+        m2.a.proxyVis.set(1 - m2.a.proxyVis.get())
 
 
 def add_radiusScale_attr(tgtJnts, v):
