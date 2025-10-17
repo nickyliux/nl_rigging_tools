@@ -63,6 +63,7 @@ class HandBp(RigModule):
             ("palm_ctl", "rotator", None, -scale * 0.8, 0, -1),
             ("thumb_ctl", "rotator", "z", -scale * 0.8, 0, -1),
             ("smart_ctl", "cube", None, scale, 0, -1),
+            ("smart_ctl2", "cube", None, scale / 3, 0, -1),
         ]
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
@@ -72,6 +73,7 @@ class HandBp(RigModule):
         self.palm_ctl.color = Color.YELLOW
         self.thumb_ctl.color = Color.YELLOW
         self.smart_ctl.color = Color.D_YELLOW
+        self.smart_ctl2.color = Color.D_YELLOW
 
     def build(self):
         """Build the hand rig module."""
@@ -132,37 +134,42 @@ class HandBp(RigModule):
             tgtGrp.addOffsetGrp()
             ikJ.a.r >> tgtGrp.a.r
 
+    def setup_claw_sdk(self):
+        pass
+
     def setup_close_sdk(self):
         """Setup SDK for finger base controls."""
         drv = self.smart_ctl
-        dataList00 = [(-90, -30), (0, 0), (90, 40)]  # for thumb 1st
-        dataList01 = [(-90, -75), (0, 0), (90, 60)]  # for 1st
+        dataList_00 = [(-90, -30), (0, 0), (90, 40)]  # for thumb 1st
+        dataList_01 = [(-90, -75), (0, 0), (90, 60)]  # for 1st
 
-        dataList1 = [(-90, -90), (0, 0), (90, 60)]  # for 1st
-        dataList2 = [(-90, -100), (0, 0), (90, 55)]  # for 2nd
-        dataList3 = [(-90, -70), (-45, -25), (0, 0), (90, 35)]  # for 3rd
+        dataList_a1 = [(-90, -90), (0, 0), (90, 60)]  # for 1st
+        dataList_a2 = [(-90, -100), (0, 0), (90, 55)]  # for 2nd
+        dataList_a3 = [(-90, -70), (-45, -25), (0, 0), (90, 35)]  # for 3rd
 
+        # Fingers 2, 3, 4, 5
         for i in range(1, 5):
             for k in range(3):
                 common.sdk(
-                    drv, self.ctls_fgr[i][1].offset, "ry", "ry", *dataList1[k], inf=1
+                    drv, self.ctls_fgr[i][1].offset, "ry", "ry", *dataList_a1[k], inf=1
                 )
             for k in range(3):
                 common.sdk(
-                    drv, self.ctls_fgr[i][2].offset, "ry", "ry", *dataList2[k], inf=1
+                    drv, self.ctls_fgr[i][2].offset, "ry", "ry", *dataList_a2[k], inf=1
                 )
             for k in range(4):
                 common.sdk(
-                    drv, self.ctls_fgr[i][3].offset, "ry", "ry", *dataList3[k], inf=1
+                    drv, self.ctls_fgr[i][3].offset, "ry", "ry", *dataList_a3[k], inf=1
                 )
+        # Thumb
         i = 0
         for k in range(3):
             common.sdk(
-                drv, self.ctls_fgr[i][1].offset, "ry", "ry", *dataList00[k], inf=1
+                drv, self.ctls_fgr[i][1].offset, "ry", "ry", *dataList_00[k], inf=1
             )
         for k in range(3):
             common.sdk(
-                drv, self.ctls_fgr[i][2].offset, "ry", "ry", *dataList01[k], inf=1
+                drv, self.ctls_fgr[i][2].offset, "ry", "ry", *dataList_01[k], inf=1
             )
 
     def setup_flap_sdk(self):
@@ -296,6 +303,7 @@ class HandBp(RigModule):
         offsetX = rSz * xDr * 100
         self.smart_ctl.alignTo(self.rootJ, ofs=(offsetX, 0, 0), p=scaleGrp)
         self.smart_ctl.addOffsetGrp()
+        self.smart_ctl2.alignTo(self.smart_ctl, p=self.smart_ctl)
 
         self.hand_grp.cstPar(scaleGrp, mo=1)
         self.rootJ.a.s >> scaleGrp.a.s
@@ -303,6 +311,7 @@ class HandBp(RigModule):
         # Add handScale attribute and connect to rootJ scale
         self.smart_ctl.a.add("handScale", min=0, dv=1) >> self.rootJ.a.scale
         self.setup_close_sdk()
+        self.setup_claw_sdk()
         self.setup_flap_sdk()
         self.setup_spread_sdk()
         self.setup_updn_sdk()
@@ -325,6 +334,7 @@ class HandBp(RigModule):
         """Setup channels for the hand rig controls."""
         self.setting.a.showAttr()
         self.smart_ctl.a.showAttr(t=1, r=1, s=1)
+        self.smart_ctl2.a.showAttr(t=0, r=1, s=0)
         self.palm_ctl.a.showAttr(r=1)
 
         for ctls in self.ctls_fgr:
