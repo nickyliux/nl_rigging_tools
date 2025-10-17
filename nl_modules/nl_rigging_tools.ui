@@ -1090,7 +1090,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QProgressBar" name="progress_PB">
+        <widget class="QProgressBar" name="bar_PB">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
            <horstretch>0</horstretch>

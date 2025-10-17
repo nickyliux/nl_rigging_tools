@@ -67,6 +67,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # self.addMenuBar()
 
     def close_window(self):
+        """Close the main window."""
         self.close()
 
     def addMenuBar(self):
@@ -105,14 +106,17 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             btn.setIcon(QIcon(icon))
 
     def buildAll(self):
-        build.buildSelOrAll(uiPB=self.UI.progress_PB)
+        """Build all rig components."""
+        build.buildSelOrAll(uiPB=self.UI.bar_PB)
         self.rigNode_refresh()
 
     def unbuildAll(self):
+        """Unbuild all rig components."""
         build.unbuildSelOrAll()
         self.rigNode_refresh()
 
     def loadTpl(self):
+        """Load template for the guide."""
         guide.loadTemplate()
         self.rigNode_refresh()
 
@@ -136,62 +140,56 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.charPath_BN, self.set_char_path, ":openScript.png")
         self.connect(self.UI.char_explore_BN, self.explore_char, ":searchEngine.png")
 
-        # Model
+        # MDL
         self.connect(self.UI.loadModel_BN, model.loadModel, ":openScript.png")
 
-        # Template
+        # TPL
         self.connect(self.UI.loadTemplate_BN, self.loadTpl, ":openScript.png")
         self.connect(self.UI.saveTemplate_BN, guide.saveTemplate, ":fileSave.png")
+        self.connect(self.UI.delTemplate_BN, build.deleteSelOrAll, ":smallTrash.png")
 
-        # Build
+        # BLD
         self.connect(self.UI.buildAll_BN, self.buildAll, ":play_S.png")
         self.connect(self.UI.unbuildAll_BN, self.unbuildAll, ":smallTrash.png")
 
-        # Skin
-        self.connect(
-            self.UI.loadWeight_BN,
-            partial(skin.loadWeight, self.UI.progress_PB),
-            ":openScript.png",
-        )
-        self.connect(self.UI.saveWeight_BN, skin.saveWeight, ":fileSave.png")
-
-        # Control
-        self.connect(self.UI.loadCtl_BN, control.loadCtl, ":openScript.png")
-        self.connect(self.UI.saveCtl_BN, control.saveCtl, ":fileSave.png")
-
-        # Proxy
+        # PRX
         self.connect(self.UI.loadProxy_BN, proxy.loadProxy, ":openScript.png")
         self.connect(self.UI.saveProxy_BN, proxy.saveProxy, ":fileSave.png")
+        self.connect(self.UI.genProxy_BN, proxy.genProxy, ":play_S.png")
 
-        self.connect(self.UI.selAllProxyGrp_BN, proxy.selectAllProxy, ":aselect.png")
-        self.connect(self.UI.showHideProxy_BN, proxy.showHideProxy, ":visible.png")
-        # self.connect(self.UI.refProxy_BN, proxy.refProxy, ":templated.png")
-        # self.connect(self.UI.wrapProxy_BN, proxy.wrapProxy, ":shrinkwrap.png")
-        # self.connect(self.UI.resetProxy_BN, proxy.resetProxy, ":refresh.png")
-        # self.connect(
-        #     self.UI.mirrorProxy_BN, proxy.mirrorProxy, ":polyMirrorGeometry.png"
-        # )
-        self.connect(self.UI.templateTarget_BN, self.templateTarget, ":templated.png")
         self.connect(self.UI.loadWrapTargetMesh_BN, self.loadWrapTargetMesh)
+        self.connect(self.UI.templateTarget_BN, self.templateTarget, ":templated.png")
+        self.connect(self.UI.selAllProxyGrp_BN, proxy.selectAllProxy, ":aselect.png")
         self.connect(self.UI.bindToSelProxy_BN, proxy.bind_to_proxy, ":bind.png")
+        self.connect(self.UI.showHideProxy_BN, proxy.showHideProxy, ":visible.png")
 
-        # Sk
-        self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
+        # CTL
+        self.connect(self.UI.loadCtl_BN, control.loadCtl, ":openScript.png")
+        self.connect(self.UI.saveCtl_BN, control.saveCtl, ":fileSave.png")
 
         # Helper
         self.connect(
             self.UI.loadHlpJnt_BN,
-            partial(helper.loadHlpJnt, self.UI.progress_PB),
+            partial(helper.loadHlpJnt, self.UI.bar_PB),
             ":openScript.png",
         )
         self.connect(self.UI.saveHlpJnt_BN, helper.saveHlpJnt, ":fileSave.png")
         self.connect(self.UI.selAllHlpGrp_BN, helper.selAllHlp, ":aselect.png")
 
-        # Misc
-        self.connect(self.UI.delTemplate_BN, build.deleteSelOrAll, ":smallTrash.png")
-        self.connect(self.UI.genProxy_BN, proxy.genProxy, ":play_S.png")
+        # WGH
+        self.connect(
+            self.UI.loadWeight_BN,
+            partial(skin.loadWeight, self.UI.bar_PB),
+            ":openScript.png",
+        )
+        self.connect(self.UI.saveWeight_BN, skin.saveWeight, ":fileSave.png")
         self.connect(self.UI.copyWeight_BN, skin.copyWeight, ":copySkinWeight.png")
-        self.connect(self.UI.assignPresetColor_BN, common.assignPresetShd)
+
+        # Sk
+        self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
+
+        # Misc
+        # self.connect(self.UI.assignPresetColor_BN, common.assignPresetShd)
 
         # RigNode
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
@@ -201,7 +199,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Ctl
         self.UI.crvShape_LW.itemDoubleClicked.connect(self.crvShape_LW_dblClicked)
         self.connect(self.UI.crvShape_breakInst_BN, self.crvShape_breakInst)
-
         self.connect(self.UI.crvShape_new_BN, self.crvShape_new, ":fileNew.png")
         self.connect(self.UI.crvShape_apply_BN, self.crvShape_apply, ":openScript.png")
         self.connect(self.UI.crvShape_save_BN, self.crvShape_save, ":fileSave.png")
@@ -332,8 +329,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Show attribute editor for rigNode"""
         itemSel = mc.ls(item.text())
         if itemSel:
-            # mc.select(itemSel)
-            # mc.AttributeEditor()
             mg = DagNode(itemSel[0]).a.master_guide.inConnNode
             if mg and mg.exists():
                 mc.select(mg)
@@ -492,11 +487,11 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             meshes=tgtMesh,
             jntSet=BIND_JNT_SET,
             thld=15,
-            uiPB=self.UI.progress_PB,
+            uiPB=self.UI.bar_PB,
         )
         skin.autoBind_rbnJnts(
             meshes=tgtMesh,
-            uiPB=self.UI.progress_PB,
+            uiPB=self.UI.bar_PB,
         )
 
         # Search rbSrf, rbJSet for each rigNode and attach joints with closest-point-on-surface
@@ -532,6 +527,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 file.importFile(SHADER_FILE)
 
     def set_char_path(self):
+        """Set character path via file dialog."""
         CHAR_PATH = "D:/_PROJECT/GIT/nl_rigging_tools_examples"
         charPaths = mc.fileDialog2(
             dialogStyle=2,
