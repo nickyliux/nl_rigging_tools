@@ -33,23 +33,35 @@ def addHlpJnt(
     dir=1,
     init=1,
     initAngle=0,
-    # offsetAngle=0,
     scaling1=0,
     scaling2=2,
     mirror=0,
 ):
     """Create a corrective joint system that responds to the rotation of a driver object."""
-    tgtJntN = DagNode(tgtJnt) if isinstance(tgtJnt, str) else tgtJnt
+    # Normalize inputs: accept either a DagNode or a name
+    if tgtJnt is None:
+        mc.warning("No target joint specified for addHlpJnt.")
+        return
+
+    tgt_node = DagNode(tgtJnt) if isinstance(tgtJnt, str) else tgtJnt
+
+    # Validate that the resolved node exists
+    if not hasattr(tgt_node, "exists") or not tgt_node.exists():
+        mc.warning(f"Target joint {tgtJnt} NOT found.")
+        return
+
+    parent = tgt_node.parent
+    holder = tgt_node
+
     return addHlpJntGeneral(
-        tgtJnt=tgtJntN,
-        parentJnt=tgtJntN.parent,
-        holder=tgtJntN,
+        tgtJnt=tgt_node,
+        parentJnt=parent,
+        holder=holder,
         buildRZ=buildRZ,
         buildRY=buildRY,
         dir=dir,
         init=init,
         initAngle=initAngle,
-        # offsetAngle=offsetAngle,
         scaling1=scaling1,
         scaling2=scaling2,
         mirror=mirror,
@@ -65,46 +77,46 @@ def addHlpJntGeneral(
     dir=1,
     init=1,
     initAngle=0,
-    # offsetAngle=0,
     scaling1=0,
     scaling2=2,
     mirror=0,
 ):
     """Create a corrective joint system that responds to the rotation of a driver object."""
-    if not tgtJnt.exists() or not parentJnt.exists() or not holder.exists():
-        mc.warning("Target or it's parent not found.")
+    # Defensive normalization: allow names or DagNode objects for parent/holder
+    tgt = DagNode(tgtJnt) if isinstance(tgtJnt, str) else tgtJnt
+    parent = DagNode(parentJnt) if isinstance(parentJnt, str) else parentJnt
+    hold = DagNode(holder) if isinstance(holder, str) else holder
+
+    if (
+        not (hasattr(tgt, "exists") and tgt.exists())
+        or not (hasattr(parent, "exists") and parent.exists())
+        or not (hasattr(hold, "exists") and hold.exists())
+    ):
+        mc.warning("Target or its parent/holder not found.")
         return
 
+    # Determine which axis mapping to build; ensure only one is requested
     if buildRZ:
-        return hlpJntSetup(
-            tgtJnt,
-            parentJnt,
-            holder,
-            fr="rz",
-            to="ty",
-            dir=dir,
-            init=init,
-            initAngle=initAngle,
-            # offsetAngle=offsetAngle,
-            scaling1=scaling1,
-            scaling2=scaling2,
-            mirror=mirror,
-        )
-    if buildRY:
-        return hlpJntSetup(
-            tgtJnt,
-            parentJnt,
-            holder,
-            fr="ry",
-            to="tz",
-            dir=dir,
-            init=init,
-            initAngle=initAngle,
-            # offsetAngle=offsetAngle,
-            scaling1=scaling1,
-            scaling2=scaling2,
-            mirror=mirror,
-        )
+        fr, to = "rz", "ty"
+    elif buildRY:
+        fr, to = "ry", "tz"
+    else:
+        mc.warning("No rotation axis specified (buildRY or buildRZ).")
+        return
+
+    return hlpJntSetup(
+        tgtJnt=tgt,
+        parentJnt=parent,
+        rotator=hold,
+        fr=fr,
+        to=to,
+        dir=dir,
+        init=init,
+        initAngle=initAngle,
+        scaling1=scaling1,
+        scaling2=scaling2,
+        mirror=mirror,
+    )
 
 
 def hlpJntSetup(
@@ -116,25 +128,26 @@ def hlpJntSetup(
     dir=1,
     init=1,
     initAngle=0,
-    # offsetAngle=0,
     scaling1=0,
     scaling2=2,
     mirror=0,
 ):
     """Create a corrective joint setup that responds to the rotation of a driver object."""
-
-    xDr = 1 if tgtJnt.a.tx.get() > 0 else -1
-    dir = 1 if dir > 0 else -1
-    dirName = "A" if dir * xDr == 1 else "B"
+    # Cache commonly accessed values to avoid repeated attribute lookups
+    tx = tgtJnt.a.tx.get()
+    xDr = 1 if tx > 0 else -1
+    dir_sign = 1 if dir > 0 else -1
+    dir_name = "A" if dir_sign * xDr == 1 else "B"
     ro = tgtJnt.a.rotateOrder.get()
 
-    # Delete existing setup -------------------
-    hlpName = f"{tgtJnt.name}_{fr}_{dirName}"
+    # Name and quick existence check for pre-existing setup
+    hlpName = f"{tgtJnt.name}_{fr}_{dir_name}"
     tgtGrp = DagNode(hlpName + "_grp")
     if tgtGrp.exists():
         tgtHlp = DagNode(hlpName + "_jnt")
         if tgtHlp.exists():
             if mirror == 1:
+                # Update parameters on mirror instead of recreating
                 tgtHlp.a.init.set(init)
                 tgtHlp.a.initAngle.set(initAngle)
                 tgtHlp.a.scaling1.set(scaling1)
@@ -149,52 +162,57 @@ def hlpJntSetup(
     # Setup group hierarchy ----------------------
     pf = tgtJnt.name.split("_")[0]
     SKL_DATA = DagNode(f"{pf}_skl_data")
-    p = SKL_DATA if SKL_DATA.exists() else None
+    parent_for_group = SKL_DATA if SKL_DATA.exists() else None
 
-    cstGrp = GrpNode(f"{hlpName}_grp", p=p)
+    cstGrp = GrpNode(f"{hlpName}_grp", p=parent_for_group)
     ofsGrp = GrpNode(f"{hlpName}_ofs")
     bseJnt = JntNode(f"{hlpName}_bse", r=tgtJnt.a.radius.get() * 0.5)
     hlpJnt = JntNode(f"{hlpName}_jnt", r=tgtJnt.a.radius.get())
+
+    # Configure rotation order once
     cstGrp.a.rotateOrder.set(ro)
     hlpJnt.a.rotateOrder.set(ro)
+
+    # Build hierarchy quickly
     hlpJnt | bseJnt | ofsGrp | cstGrp
     bseJnt.dspType = 2
 
+    # Create constraints and visual helpers
     common.cstMulti(parentJnt, tgtJnt, cstGrp, cstType="ori")
     tgtJnt.cstPoi(cstGrp)
 
     hlpJnt.color = Color.D_BLUE
-    cstGrp.a.s.set(dir, dir, dir)
+    cstGrp.a.s.set(dir_sign, dir_sign, dir_sign)
 
     CrvNode.buildLineLinked(tgt1=bseJnt, tgt2=tgtJnt, dspType=2, top=1, p=cstGrp)
 
-    # offset but keep corrective in the middle -------------
-    # ofsInitRota = hlpJnt.a.add("ofsInitRota")
-    # ofsInitRota * dir >> loc.a[driver]
-    # ((90 + ofsInitRota) / (90 - ofsInitRota)) >> oriCst.a.w0
-    # ------------------------------------------------------
+    # Add attributes (grouped for clarity)
+    attr_defs = [
+        ("fr", {"attrType": "string", "txt": fr}),
+        ("to", {"attrType": "string", "txt": to}),
+        ("helperTgt", {"attrType": "message"}),
+        ("dir", {"dv": dir, "k": 0, "cb": 0}),
+        ("init", {"dv": 1, "min": 0}),
+        ("initAngle", {"dv": 0}),
+        ("scaling1", {"dv": 0, "min": 0}),
+        ("scaling2", {"dv": 2, "min": 0}),
+    ]
 
-    hlpJnt.a.add("fr", attrType="string", txt=fr)
-    hlpJnt.a.add("to", attrType="string", txt=to)
-    hlpJnt.a.add("helperTgt", attrType="message")
-    hlpJnt.a.add("dir", dv=dir, k=0, cb=0)
-    hlpJnt.a.add("init", dv=1, min=0)
-    hlpJnt.a.add("initAngle", dv=0)
-    # hlpJnt.a.add("offsetAngle", dv=0)
-    hlpJnt.a.add("scaling1", dv=0, min=0)
-    hlpJnt.a.add("scaling2", dv=2, min=0)
+    for name, kwargs in attr_defs:
+        # avoid re-adding if the attribute already exists
+        # if name not in hlpJnt.a._attrDict:
+        hlpJnt.a.add(name, **kwargs)
 
+    # connect and initialize values
     tgtJnt.a.message >> hlpJnt.a.helperTgt
     hlpJnt.a.scaling1.set(scaling1)
     hlpJnt.a.scaling2.set(scaling2)
     hlpJnt.a.init.set(init)
     hlpJnt.a.initAngle.set(initAngle)
     hlpJnt.a.initAngle >> ofsGrp.a[fr]
-    # hlpJnt.a.offsetAngle.set(offsetAngle)
-    # hlpJnt.a.offsetAngle >> bseJnt.a[fr]
 
+    # Build conditional nodes and wire up behavior
     r = rotator.a[fr]
-
     rAbs = (r >= 0).setCdn(ifTrue=r, ifFalse=r * -1)
     ofsScale = (r > 0).setCdn(ifTrue=hlpJnt.a.scaling1, ifFalse=hlpJnt.a.scaling2)
     hlpJnt.a.init >> bseJnt.a[to]
@@ -228,7 +246,6 @@ def mirrorHelper(*args):
             dir=1 - sel.a.dir.get(),
             init=sel.a.init.get(),
             initAngle=sel.a.initAngle.get(),
-            # offsetAngle=sel.a.offsetAngle.get(),
             scaling1=sel.a.scaling1.get(),
             scaling2=sel.a.scaling2.get(),
             mirror=1,
@@ -290,7 +307,6 @@ def loadHlpJnt(uiPB):
         dir = data["dir"]
         init = data["init"]
         initAngle = data["initAngle"]
-        # offsetAngle = data["offsetAngle"]
         scaling1 = data["scaling1"]
         scaling2 = data["scaling2"]
 
@@ -310,7 +326,6 @@ def loadHlpJnt(uiPB):
             dir=dir,
             init=init,
             initAngle=initAngle,
-            # offsetAngle=offsetAngle,
             scaling1=scaling1,
             scaling2=scaling2,
         )
@@ -354,7 +369,6 @@ def saveHlpJnt(*args):
                     "dir": hlp.a.dir.get(),
                     "init": hlp.a.init.get(),
                     "initAngle": hlp.a.initAngle.get(),
-                    # "offsetAngle": hlp.a.offsetAngle.get(),
                     "scaling1": hlp.a.scaling1.get(),
                     "scaling2": hlp.a.scaling2.get(),
                 }

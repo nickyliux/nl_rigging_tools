@@ -41,6 +41,7 @@ class MarkingMenuRigging:
         mc.menuItem(p=create_MI, l="Cube", c="mc.polyCube()")
         mc.menuItem(p=create_MI, l="Plane", c="mc.polyPlane()")
         mc.menuItem(p=create_MI, l="Sphere", c="mc.polySphere()")
+        mc.menuItem(p=create_MI, l="Cylinder", c="mc.polyCylinder()")
         mc.menuItem(p=create_MI, l="Loc", c="mc.spaceLocator()")
         mc.menuItem(p=create_MI, l="Joint", c="mc.select(cl=1);mc.joint()", ob=1)
         mc.menuItem(p=create_MI, l="Joint Tool", c="mc.JointTool()")
