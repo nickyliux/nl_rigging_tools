@@ -112,13 +112,25 @@ class Tail(RigModule):
         self.jnts_bind = self.jnts_rb
 
     def build_ik(self):
-        """Build the IK controls for the tail rig."""
+        """Build the IK controls for the tail rig.
+        Given crv
+        Create 5 ik jnts on crv
+        Create 5 ik ctl aligned to ik jnts
+        Parent ik jnts to ctls
+        Parent all ctls under 1st ctl
+        """
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
         # --- Create IK joint chain from guide curve ---
         self.jnts_ik = JntNode.createJntFrCrv(
-            self.LINE_GUIDE, num=5, name="ikj", pf=rID, aimV=(0, 0, -1), size=rSz * 2
+            self.LINE_GUIDE,
+            num=5,
+            name="ikj",
+            pf=rID,
+            aimV=(0, 0, -1),
+            size=rSz * 3,
+            color=Color.D_RED,
         )
         # --- Attach ribbon surface weights to IK joints ---
         # --- Create and parent IK controls ---
@@ -131,6 +143,7 @@ class Tail(RigModule):
                 scale=rSz,
                 align=self.jnts_ik[i],
                 addOfs=1,
+                color=Color.PINK,
                 p=self.IK_GRP,
             )
             ctl.cv_scale(1, 1, 0.5)
@@ -160,10 +173,11 @@ class Tail(RigModule):
         # --- Build FK joint chain from guide curve ---
         self.jnts_fk = JntNode.createJntFrCrv(
             self.LINE_GUIDE,
-            num=self.fkJntNum + 1,
+            num=self.fkJntNum,
             pf=rID,
             aimV=(0, 0, -1),
-            size=rSz,
+            size=rSz * 2,
+            color=Color.BLUE,
             p=self.FK_GRP,
         )
 
@@ -172,7 +186,8 @@ class Tail(RigModule):
         # pin, pinXf = common.nlRivet(geo=self.rbSrf1, coordList=coord, p=self.RIG_DATA)
         crvLenRatio, pinXf = common.build_ribbon_rivet(
             rbSrf=self.rbSrf1,
-            rivetNum=self.fkJntNum + 1,
+            rivetNum=self.fkJntNum,
+            atMidOrEnd=1,
             scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
             pf=rID,
@@ -183,10 +198,9 @@ class Tail(RigModule):
         )
 
         # --- Create FK controls and register ---
-        for i in range(self.fkJntNum + 1):
-            tgt = self.jnts_fk[i]
+        for i in range(self.fkJntNum):
             ctl = CrvNode(
-                f"{i}_fkc", pf=rID, shape="circle", up="z", scale=rSz * 0.8, align=tgt
+                f"{i}_fkc", pf=rID, up="z", scale=rSz * 0.8, align=self.jnts_fk[i]
             )
             self.rigNode.setMsg({f"fkc{i}": ctl})
             self.ctls_fk.append(ctl)
@@ -194,7 +208,7 @@ class Tail(RigModule):
         # --- Build group chain and connect pins ---
         chainGrps = []
         lastGrp = self.FK_GRP
-        for i in range(self.fkJntNum + 1):
+        for i in range(self.fkJntNum):
             grp = GrpNode(f"{i}_chainGrp", pf=rID, align=self.ctls_fk[i], p=lastGrp)
             pinXf[i].cstPar(grp, mo=1)
             chainGrps.append(grp)
@@ -204,12 +218,12 @@ class Tail(RigModule):
         self.build_fk_with_ctl3(self.jnts_fk, self.ctls_fk, p=self.FK_GRP)
 
         # --- Connect chain groups to FK control offsets ---
-        for i in range(self.fkJntNum + 1):
+        for i in range(self.fkJntNum):
             chainGrps[i].a.t >> self.ctls_fk[i].offset.a.t
             chainGrps[i].a.r >> self.ctls_fk[i].offset.a.r
 
         # --- Build offset control layer ---
-        for i in range(self.fkJntNum + 1):
+        for i in range(self.fkJntNum):
             ctl = CrvNode(
                 f"{i}_ofs_ctl",
                 pf=rID,
