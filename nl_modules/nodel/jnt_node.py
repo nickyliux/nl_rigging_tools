@@ -210,15 +210,13 @@ class JntNode(GrpNode):
         p=None,
     ):
         """Create a joint chain from a curve."""
-
         joints = []
         mc.select(cl=1)
         if pf and pf[-1] != "_":
             pf += "_"
 
         for i in range(num):
-
-            loc = DagNode("_#", nodeType="transform")
+            grp = DagNode("_#", nodeType="transform")
             mp = DagNode("_#", nodeType="motionPath")
             DagNode(crv).shape.a.worldSpace >> mp.a.geometryPath
             mp.a.fractionMode.set(1)
@@ -233,17 +231,17 @@ class JntNode(GrpNode):
             mc.connectAttr(
                 f"{poci}.tangent", f"{aimCst}.target[0].targetTranslate", f=1
             )
-            poci.a.position >> loc.a.translate
+            poci.a.position >> grp.a.translate
 
             aimCst.a.aimVector.set(*aimV)
-            aimCst.a.constraintRotateX >> loc.a.rx
-            aimCst.a.constraintRotateY >> loc.a.ry
-            aimCst.a.constraintRotateZ >> loc.a.rz
+            aimCst.a.constraintRotateX >> grp.a.rx
+            aimCst.a.constraintRotateY >> grp.a.ry
+            aimCst.a.constraintRotateZ >> grp.a.rz
 
-            j = JntNode(f"{i}_{name}", pf=pf, align=loc, r=size, color=color)
+            j = JntNode(f"{i}_{name}", pf=pf, align=grp, r=size, color=color)
             joints.append(j)
 
-            mc.delete(mp, poci, aimCst, loc)
+            mc.delete(mp, poci, aimCst, grp)
 
         root = joints[-1] if rev else joints[0]
         last = joints[0] if rev else joints[-1]
@@ -256,7 +254,6 @@ class JntNode(GrpNode):
                 if chain:
                     joints[i] | joints[i + 1]
 
-        last.resetOrient()
         if addEndJ:
             endJ = last.duplicate(n=last + "_end")
             endJ | last
@@ -267,19 +264,8 @@ class JntNode(GrpNode):
             else:
                 joints = [endJ] + joints  # 1st in list is the end joint
 
-        if chain:
-            if p:
-                root | p
-            if not rev:
-                joints[0].freezeXf()
-                joints[-1].resetOrient()
-            else:
-                joints[-1].freezeXf()
-                joints[0].resetOrient()
-        else:
-            if p:
-                for j in joints:
-                    j | p
+        if p:
+            root | p
 
         return joints
 

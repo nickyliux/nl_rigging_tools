@@ -98,7 +98,8 @@ def buildSelOrAll(*arg, uiPB=None):
         postRig()
         if uiPB:
             uiPB.setValue(0)
-        # proxy.genProxy()
+        # Gen proxy after build
+        proxy.genProxy()
 
 
 def postRig():
@@ -111,8 +112,8 @@ def postRig():
     # control.reset_all_pv_ctl()
 
     mc.select(cl=1)
-    common.setViewport(jx=1)
-    common.setViewport()
+    common.setViewport(jx=1, wos=1)
+    # common.setViewport()
 
 
 def masterAddProxyAttrs():
