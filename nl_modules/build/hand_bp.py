@@ -63,7 +63,6 @@ class HandBp(RigModule):
             ("palm_ctl", "rotator", None, -scale * 0.8, 0, -1),
             ("thumb_ctl", "rotator", "z", -scale * 0.8, 0, -1),
             ("smart_ctl", "cube", None, scale, 0, -1),
-            ("smart_ctl2", "cube", None, scale / 3, 0, -1),
         ]
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
@@ -73,7 +72,6 @@ class HandBp(RigModule):
         self.palm_ctl.color = Color.YELLOW
         self.thumb_ctl.color = Color.YELLOW
         self.smart_ctl.color = Color.D_YELLOW
-        self.smart_ctl2.color = Color.D_YELLOW
 
     def build(self):
         """Build the hand rig module."""
@@ -96,7 +94,7 @@ class HandBp(RigModule):
 
         ctlList = []
         for fgr in fgrs[:-1]:
-            ctl = CrvNode(f"{fgr.name}_ctl", shape="stick", scale=scale / 3, align=fgr)
+            ctl = CrvNode(f"{fgr.name}_ctl", shape="stick", scale=-scale / 3, align=fgr)
             # up=None,
             ctl.cv_rotate(90, 0, 0)
             # ctl.cv_scale(1, 0.2, 1)
@@ -134,46 +132,55 @@ class HandBp(RigModule):
             tgtGrp.addOffsetGrp()
             ikJ.a.r >> tgtGrp.a.r
 
-    def setup_claw_sdk(self):
-        pass
-
-    def setup_close_sdk(self):
-        """Setup SDK for finger base controls."""
-        drv = self.smart_ctl
-
-        # Fgr 1, 2, 3, 4
-        data = [
-            [(-90, -90), (0, 0), (90, 60)],  # 1st
-            [(-90, -100), (0, 0), (90, 55)],  # 2nd
-            [(-90, -70), (-45, -25), (0, 0), (90, 35)],  # 3rd
-        ]
-        for i in range(1, 5):
-            for j in range(len(data)):
-                for k in range(len(data[j])):
-                    common.sdk(
-                        drv,
-                        self.ctls_fgr[i][j + 1].offset,
-                        "ry",
-                        "ry",
-                        *data[j][k],
-                        inf=1,
-                    )
-        # Fgr 0
-        data = [
-            [(-90, -30), (0, 0), (90, 40)],  # 1st
-            [(-90, -75), (0, 0), (90, 60)],  # 2nd
-        ]
-        i = 0
+    def setSDK(self, drv, data, i=0, attr1="ry", attr2="ry", tgtOfs=0):
+        """Setup SDK for finger base controls.
+        tgtOfs = which seg of finger to start with
+        """
         for j in range(len(data)):
+            # for j in tgtId:
             for k in range(len(data[j])):
                 common.sdk(
                     drv,
-                    self.ctls_fgr[i][j + 1].offset,
-                    "ry",
-                    "ry",
+                    self.ctls_fgr[i][j + tgtOfs].offset,
+                    attr1,
+                    attr2,
                     *data[j][k],
                     inf=1,
                 )
+
+    def setup_claw_sdk(self):
+        claw = self.smart_ctl.a.add("claw", attrType="float", dv=0, k=1)
+        drv = self.smart_ctl
+        # Fgr 1, 2, 3, 4
+        data = [
+            [(-90, -90), (0, 0), (90, 55)],  # id = 2
+            [(-90, -70), (0, 0), (90, 35)],  # id = 3
+        ]
+        for i in range(1, 5):
+            self.setSDK(drv, data, i=i, tgtOfs=2, attr1="claw")
+        # Fgr 0
+        data = [
+            [(-90, -75), (0, 0), (90, 60)],  # id = 2
+        ]
+        self.setSDK(drv, data, i=0, tgtOfs=2, attr1="claw")
+
+    def setup_close_sdk(self):
+        """Setup SDK for finger close controls."""
+        drv = self.smart_ctl
+        # Fgr 1, 2, 3, 4
+        data = [
+            [(-90, -90), (0, 0), (90, 60)],  # id = 1
+            [(-90, -90), (0, 0), (90, 50)],  # id = 2
+            [(-90, -70), (-45, -25), (0, 0), (90, 35)],  # id = 3
+        ]
+        for i in range(1, 5):
+            self.setSDK(drv, data, i=i, tgtOfs=1)
+        # Fgr 0
+        data = [
+            [(-90, -30), (0, 0), (90, 40)],  # id = 1
+            [(-90, -75), (0, 0), (90, 60)],  # id = 2
+        ]
+        self.setSDK(drv, data, i=0, tgtOfs=1)
 
     def setup_flap_sdk(self):
         """Setup SDK for finger flap controls."""
@@ -306,7 +313,6 @@ class HandBp(RigModule):
         offsetX = rSz * xDr * 100
         self.smart_ctl.alignTo(self.rootJ, ofs=(offsetX, 0, 0), p=scaleGrp)
         self.smart_ctl.addOffsetGrp()
-        self.smart_ctl2.alignTo(self.smart_ctl, p=self.smart_ctl)
 
         self.hand_grp.cstPar(scaleGrp, mo=1)
         self.rootJ.a.s >> scaleGrp.a.s
@@ -337,7 +343,6 @@ class HandBp(RigModule):
         """Setup channels for the hand rig controls."""
         self.setting.a.showAttr()
         self.smart_ctl.a.showAttr(t=1, r=1, s=1)
-        self.smart_ctl2.a.showAttr(t=0, r=1, s=0)
         self.palm_ctl.a.showAttr(r=1)
 
         for ctls in self.ctls_fgr:
@@ -356,7 +361,7 @@ class HandBp(RigModule):
 
     def setup_vis(self):
         """Setup visibility controls for the hand rig."""
-        showFgrCtls = self.smart_ctl.a.add("showFgrCtls", attrType="bool", dv=0, k=0)
+        showFgrCtls = self.smart_ctl.a.add("showFgrCtls", attrType="bool", dv=1, k=0)
         for ctls in self.ctls_fgr:
             showFgrCtls >> ctls[0].a.v
 
