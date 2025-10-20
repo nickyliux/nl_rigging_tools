@@ -468,7 +468,7 @@ class ArmBp(RigModule):
             )
 
         self.ikc.a.localRot >> self.palm_ikc.a.v
-        mc.hide(self.ikhs, self.setting)
+        mc.hide(self.ikhs)  # , self.setting)
 
     def setup_channel(self):
         """Setup channel attributes for the arm rig controls."""

@@ -198,13 +198,13 @@ class SpineQd(RigModule):
         #
         #   set rbj scale acc to surf length
         #
-        autoVol = self.setting.a.add("autoVol", dv=1)
+        keepVol = self.setting.a.add("keepVol", dv=1)
         for i in range(self.RBN_JNT_NUM):
 
             fc = DagNode("fc__#", nodeType="frameCache")
             volGraph >> fc.a.stream
             fc.a.varyTime.set(i)
-            ratio = (1 / crvLenRatio) ** (fc.a.varying * autoVol)
+            ratio = (1 / crvLenRatio) ** (fc.a.varying * keepVol)
             ratio >> self.jnts_rb[i].a.sy
             ratio >> self.jnts_rb[i].a.sz
 

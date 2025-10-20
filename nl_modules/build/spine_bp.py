@@ -255,9 +255,9 @@ class SpineBp(RigModule):
         d = arcLD.a.arcLengthInV
         D = d.get()
 
-        volConserve = self.setting.a.add("volConserve", min=0, dv=1)
-        self.chest_ikc.a.add("volConserve", proxy=volConserve)
-        self.hip_ikc.a.add("volConserve", proxy=volConserve)
+        keepVol = self.setting.a.add("keepVol", min=0, dv=1)
+        self.chest_ikc.a.add("keepVol", proxy=keepVol)
+        self.hip_ikc.a.add("keepVol", proxy=keepVol)
 
         # keys for volume squash
         volGraph = self.setting.a.add("volGraph", dv=0)
@@ -272,7 +272,8 @@ class SpineBp(RigModule):
             volGraph >> fc.a.stream
             fc.a.varyTime.set(i)
 
-            ratio = (scaleFix * D / d) ** (fc.a.varying * volConserve)
+            # ratio = (scaleFix * D / d) ** (fc.a.varying * keepVol)
+            ratio = (D / (d / scaleFix)) ** (fc.a.varying * keepVol)
             ratio >> self.jnts_rb[i].a.sy
             ratio >> self.jnts_rb[i].a.sz
 
@@ -294,7 +295,7 @@ class SpineBp(RigModule):
         if self.spineType == SpineType.RIBBON.value:
             mc.hide(self.jnts_fk)
 
-        mc.hide(self.jnts_ctl, self.rbSrf, self.setting)
+        mc.hide(self.jnts_ctl, self.rbSrf)  # , self.setting)
         if self.is_neck():
             mc.hide(self.cog_ctl)
 

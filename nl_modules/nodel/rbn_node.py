@@ -27,7 +27,7 @@ class RbnNode:
         self,
         tgt,
         pf="",
-        rbJNum=5,
+        rbnJntNum=5,
         volMode=1,  # 0: upper, 1: lower
         scaleFix=None,
         forSpine=0,
@@ -59,12 +59,12 @@ class RbnNode:
             setattr(self, name, None)
 
         # Volume and control attributes
-        self.autoVol = 0
+        self.keepVol = 0
         self.volType = 0
         self.forSpine = forSpine
         self.scaleFix = scaleFix
         self.volMode = volMode
-        self.rbJNum = rbJNum
+        self.rbnJntNum = rbnJntNum
         self.size = self.tgt.o.distanceTo(self.tgtChild) / 100
         self.ikhs = []
 
@@ -112,11 +112,11 @@ class RbnNode:
         crvLine.delete()
 
         # Generate coordinates for rivets
-        # coord = [(0.5, (2 * i + 1) / (2 * self.rbJNum)) for i in range(self.rbJNum)]
+        # coord = [(0.5, (2 * i + 1) / (2 * self.rbnJntNum)) for i in range(self.rbnJntNum)]
 
         crvLenRatio, self.jnts_rb = common.build_ribbon_rivet(
             rbSrf=self.rbSrf,
-            rivetNum=self.rbJNum,
+            rivetNum=self.rbnJntNum,
             scaleAttr=self.scaleFix,
             stretchyAttr=1,
             # stretchyAttr=self.setting.a.stretchy,
@@ -144,7 +144,7 @@ class RbnNode:
         #         color=Color.YELLOW,
         #         addOfs=1,
         #     )
-        #     proxy.add_height_attr([jnt], self.size / self.rbJNum * 50)
+        #     proxy.add_height_attr([jnt], self.size / self.rbnJntNum * 50)
 
         #     pin_xf.cstPar(jnt.parent)
         #     pin_xf.a.inheritsTransform.set(0)
@@ -317,7 +317,7 @@ class RbnNode:
         # d = arcLenDim.a.arcLength
         d = arcLenDim.a.arcLengthInV
         D = d.get()
-        self.autoVol = self.RBN_GRP.a.add("autoVol")
+        self.keepVol = self.RBN_GRP.a.add("keepVol")
         self.volType = self.RBN_GRP.a.add(
             "volType", attrType="enum", enumName="whole:separate", k=0
         )
@@ -326,25 +326,25 @@ class RbnNode:
         volGraph1 = self.RBN_GRP.a.add("volGraph1", dv=0)
         volValue = self.volMode
         mc.setKeyframe(volGraph1, t=0, v=volValue)
-        mc.setKeyframe(volGraph1, t=self.rbJNum - 1, v=1 - volValue)
+        mc.setKeyframe(volGraph1, t=self.rbnJntNum - 1, v=1 - volValue)
         mc.setAttr(volGraph1, l=1)
 
         volGraph2 = self.RBN_GRP.a.add("volGraph2", dv=0)
         mc.setKeyframe(volGraph2, t=0, v=0)
-        mid_t = (self.rbJNum - 1) / 2
+        mid_t = (self.rbnJntNum - 1) / 2
         mc.setKeyframe(volGraph2, t=mid_t, v=1)
-        mc.setKeyframe(volGraph2, t=self.rbJNum - 1, v=0)
+        mc.setKeyframe(volGraph2, t=self.rbnJntNum - 1, v=0)
         mc.setAttr(volGraph2, l=1)
 
         choice = ut.choice_([volGraph1, volGraph2], self.volType)
 
-        for i in range(self.rbJNum):
+        for i in range(self.rbnJntNum):
 
-            frameCache = DagNode("fc__#", nodeType="frameCache")
-            choice >> frameCache.a.stream
-            frameCache.a.varyTime.set(i)
+            fc = DagNode("fc__#", nodeType="frameCache")
+            choice >> fc.a.stream
+            fc.a.varyTime.set(i)
 
-            ratio = (D / (d / scaleFix)) ** (frameCache.a.varying * self.autoVol)
+            ratio = (D / (d / scaleFix)) ** (fc.a.varying * self.keepVol)
             ratio >> self.jnts_rb[i].a.sy
             ratio >> self.jnts_rb[i].a.sz
 

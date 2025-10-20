@@ -356,9 +356,9 @@ class SpineQd(RigModule):
         d = arcLD.a.arcLengthInV
         D = d.get()
 
-        autoVol = self.setting.a.add("autoVol", dv=1)
-        self.chest_ctl.a.add("autoVol", proxy=autoVol)
-        self.base_ctl.a.add("autoVol", proxy=autoVol)
+        keepVol = self.setting.a.add("keepVol", dv=1)
+        self.chest_ctl.a.add("keepVol", proxy=keepVol)
+        self.base_ctl.a.add("keepVol", proxy=keepVol)
         #
         #   add graph keys
         #
@@ -374,7 +374,7 @@ class SpineQd(RigModule):
             volGraph >> fc.a.stream
             fc.a.varyTime.set(i)
 
-            ratio = (D / (d / scaleFix)) ** (fc.a.varying * autoVol)
+            ratio = (D / (d / scaleFix)) ** (fc.a.varying * keepVol)
             ratio >> self.jnts_bind[i].a.sx
             ratio >> self.jnts_bind[i].a.sy
 
