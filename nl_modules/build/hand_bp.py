@@ -95,9 +95,7 @@ class HandBp(RigModule):
         ctlList = []
         for fgr in fgrs[:-1]:
             ctl = CrvNode(f"{fgr.name}_ctl", shape="stick", scale=-scale / 3, align=fgr)
-            # up=None,
             ctl.cv_rotate(90, 0, 0)
-            # ctl.cv_scale(1, 0.2, 1)
             ctlList.append(ctl)
         return ctlList
 
@@ -137,7 +135,6 @@ class HandBp(RigModule):
         tgtOfs = which seg of finger to start with
         """
         for j in range(len(data)):
-            # for j in tgtId:
             for k in range(len(data[j])):
                 common.sdk(
                     drv,

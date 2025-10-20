@@ -219,7 +219,6 @@ class LegQd(RigModule):
             rJ.a.segmentScaleCompensate.set(0)
 
         self.build_digits()
-        # self.updateBindJntList(remove=[self.tip, self.digit, self.ball, self.palm])
 
     def build_fk(self):
         """Build the FK controls and joints for the quadruped leg rig."""
@@ -534,9 +533,6 @@ class LegQd(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-
-        # --- Update bind joints ---
-        # self.updateBindJntList(remove=[self.boneFix], extend=[radius_JC[0], ulna_JC[0]])
         self.jnts_bind += [radius_JC[0], ulna_JC[0]]
 
     def singleBallCtl_setup(self):

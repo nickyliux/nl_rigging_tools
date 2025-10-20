@@ -144,7 +144,7 @@ class ArmBp(RigModule):
 
         elif self.limbType == LimbType.RIBBON.value:
             self.build_bendy_ribbon(
-                rbJNum=self.rbnJntNum,
+                rbnJntNum=self.rbnJntNum,
                 root=self.clavicle,
                 upr=self.upr,
                 lwr=self.lwr,
@@ -181,12 +181,12 @@ class ArmBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         # Align IK controls to palm
-        self.ikc.alignTo(self.palm)
+        self.ikc.alignTo(self.palm, p=self.IK_GRP)
         self.palm_ikc.alignTo(self.palm, p=self.IK_GRP)
 
         # Align PVC to guide
         pvc_guide = DagNode(f"{rID}_pvc_guide")
-        self.pvc.alignTo(pvc_guide)
+        self.pvc.alignTo(pvc_guide, p=self.IK_GRP)
 
         # Create IK joints
         self.jnts_ik = common.dupSk(
@@ -214,7 +214,7 @@ class ArmBp(RigModule):
         self.ikc_gimbal = CrvNode(self.ikc).add_gimbal()
 
         # IK constraint group
-        self.ikCstG = GrpNode("ikCstG", pf=rID, align=self.palm)
+        self.ikCstG = GrpNode("ikCstG", pf=rID, align=self.palm, p=self.IK_GRP)
         if xDr == 1:
             self.ikCstG.a.rx.set2(180, add=1)
         ikH1 | self.ikCstG
@@ -239,7 +239,6 @@ class ArmBp(RigModule):
         )
 
         # Parent controls and lines
-        (self.ikc, self.pvc, self.ikCstG) | self.IK_GRP
         self.pvc_line = CrvNode.buildLineLinked(
             tgt1=self.jnts_ik[2],
             tgt2=self.pvc,
@@ -284,10 +283,10 @@ class ArmBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
 
-        self.setting.alignTo(
-            self.clavicle, p=self.CTL_DATA, ofs=(scale * 30, scale * 15, 0)
-        )
+        self.setting.alignTo(self.clavicle, p=self.CTL_DATA)
+        # , ofs=(0, scale * 10, 0))
         self.clavicle.cstPar(self.setting, mo=1)
+        # scale * 30
 
         # Extract blend joints
         self.jnts_bf = common.dupSk(
@@ -341,7 +340,6 @@ class ArmBp(RigModule):
 
         # Add blend attribute to all controls
         for ctl in self.ctls_fk + self.ctls_ik:
-
             ctl.a.add("fkToIk", proxy=fkToIk, k=0)
 
         # Create matcher group for snapping
@@ -389,7 +387,6 @@ class ArmBp(RigModule):
         self.clavBone | self.SKL_DATA
         self.clavicle.cstPoi(self.clavBone)
 
-        # self.updateBindJntList(remove=[self.clavicle], extend=[self.clavBone])
         self.jnts_bind += [self.clavBone]
 
     def build_dual_bones(self):
@@ -424,8 +421,6 @@ class ArmBp(RigModule):
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
 
-        # Update bind joints
-        # self.updateBindJntList(remove=[self.lwr], extend=[radius_JC[0], ulna_JC[0]])
         self.jnts_bind += [radius_JC[0], ulna_JC[0]]
 
     def palm_rolling(self, ikc, fkc, fkPin, locRoll, locIn, locOut):
@@ -553,7 +548,6 @@ class ArmBp(RigModule):
         logging.info(self.rigID)
 
         common.add_mirror_attr([self.pvc])
-
         self.setup_scale()
         self.setup_bindJnt()
         self.setup_ctlSet()

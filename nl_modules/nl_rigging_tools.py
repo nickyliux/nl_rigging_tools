@@ -184,6 +184,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         )
         self.connect(self.UI.saveWeight_BN, skin.saveWeight, ":fileSave.png")
         self.connect(self.UI.copyWeight_BN, skin.copyWeight, ":copySkinWeight.png")
+        self.connect(self.UI.mirrorSym_BN, partial(skin.mirrorWeight, 1))
+        self.connect(self.UI.mirrorAsym_BN, partial(skin.mirrorWeight, 0))
+        self.connect(self.UI.prune_BN, skin.pruneWeight)
 
         # Sk
         self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")

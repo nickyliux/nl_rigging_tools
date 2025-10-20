@@ -484,9 +484,6 @@ class RigModule(RigBase):
         self.boneFix_sdk(tgt, tgtDup)
         upLoc.hide()
 
-        # self.updateBindJntList(remove=[self.lwr], extend=[self.boneFix])
-        # self.jnts_bind += [self.boneFix]
-
     def boneFix_sdk(self, driver, driven):
         """ "Setup SDK for bone fix to drive the leg joint."""
         rID, rSz, xDr = self.getMyVar()
@@ -904,15 +901,6 @@ class RigModule(RigBase):
         setattr(self, name, ctl)
         self.rigNode.setMsg({name: ctl})
 
-    def updateBindJntList(self, extend=None, remove=None):
-        """Remove joints from bindJnts list"""
-        for jnt in remove or []:
-            if jnt in self.jnts_bind:
-                self.jnts_bind.remove(jnt)
-        for jnt in extend or []:
-            if jnt not in self.jnts_bind:
-                self.jnts_bind.append(jnt)
-
     def build_aimHelper(self, targets, up="y"):
         """Build roller joints for the specified targets."""
         rID, rSz, xDr = self.getMyVar()
@@ -1031,27 +1019,26 @@ class RigModule(RigBase):
         JntNode(roll_jnt0).setDrawStyle(2)
         return roll_jnt0
 
-    def build_rbn(self, tgt, name="", rbJNum=5, volMode=1):
+    def build_rbn(self, tgt, name="", rbnJntNum=5, volMode=1):
         """Build a ribbon node for the target with specified parameters."""
         return RbnNode(
             tgt,
             pf=f"{self.rigID}_{name}_",
-            rbnJntNum=rbJNum,
+            rbnJntNum=rbnJntNum,
             volMode=volMode,
             scaleFix=self.masterC.a["globalScale"],
             RIG_DATA=self.RIG_DATA,
         )
 
     def build_bendy_ribbon(
-        self, rbJNum=5, root=None, upr=None, lwr=None, palm=None, kneeFix=0
+        self, rbnJntNum=5, root=None, upr=None, lwr=None, palm=None, kneeFix=0
     ):
         """Build a ribbon rig with upper and lower parts, and setup controls."""
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
-
-        ribbonUp = self.build_rbn(upr, name="up", rbJNum=rbJNum, volMode=0)
-        ribbonLw = self.build_rbn(lwr, name="lw", rbJNum=rbJNum, volMode=1)
+        ribbonUp = self.build_rbn(upr, name="up", rbnJntNum=rbnJntNum, volMode=0)
+        ribbonLw = self.build_rbn(lwr, name="lw", rbnJntNum=rbnJntNum, volMode=1)
 
         # Upper Ribbon
         upr.cstPoi(ribbonUp.stt_loc)
@@ -1102,10 +1089,6 @@ class RigModule(RigBase):
         volType >> ribbonUp.volType
         volType >> ribbonLw.volType
 
-        # Update bind joints
-        # self.updateBindJntList(
-        #    remove=[upr, lwr], extend=ribbonUp.jnts_rb + ribbonLw.jnts_rb
-        # )
         self.jnts_bind += ribbonUp.jnts_rb + ribbonLw.jnts_rb
 
         return [ribbonUp, ribbonLw]

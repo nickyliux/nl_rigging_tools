@@ -213,7 +213,7 @@ class LegBp(RigModule):
 
         elif self.limbType == LimbType.RIBBON.value:
             self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(
-                rbJNum=self.rbnJntNum,
+                rbnJntNum=self.rbnJntNum,
                 root=self.hip,
                 upr=self.upr,
                 lwr=self.lwr,
@@ -368,7 +368,8 @@ class LegBp(RigModule):
             self.jnts, "_bf", p=self.BF_GRP, r=rSz * 4, color=Color.D_YELLOW
         )
 
-        self.setting.snapTo(self.upr, p=self.CTL_DATA, ofs=(xDr * rSz * 15, 0, 0))
+        self.setting.snapTo(self.upr, p=self.CTL_DATA)
+        # ofs=(xDr * rSz * 15, 0, 0))
         self.upr.cstPar(self.setting, mo=1)
 
         self.setting.a.addSep()
@@ -487,9 +488,6 @@ class LegBp(RigModule):
             ikJ.a.r >> ctlList[0].addOffsetGrp().a.r
             ikJ.hide()
 
-        # --- Remove palm and ball from bind joints (handled by toes) ---
-        # self.updateBindJntList(remove=[self.palm, self.ball])
-
         # --- (Optional) Splay logic for toes (commented out) ---
         # splay = self.ball_fkc.a.add("splay", min=-5, max=5)
         # toeCount = len(self.toesJntList)
@@ -524,9 +522,6 @@ class LegBp(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-        # self.updateBindJntList(
-        #     remove=[self.lwr, self.boneFix], extend=[radius_JC[0], ulna_JC[0]]
-        # )
         self.jnts_bind += [radius_JC[0], ulna_JC[0]]
 
     def setup_vis(self):
@@ -555,7 +550,7 @@ class LegBp(RigModule):
                 self.setting.a.add("bendyCtls", attrType="bool", k=0, dv=0),
                 onList=self.all_bend,
             )
-        mc.hide(self.ikhs, self.toeIKHs, self.setting)
+        mc.hide(self.ikhs, self.toeIKHs)  # , self.setting)
 
     def setup_channel(self):
         """Setup channels for the leg rig controls."""

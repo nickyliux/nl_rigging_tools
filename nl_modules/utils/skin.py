@@ -255,3 +255,29 @@ def copyWeight(*args):
         src.copyWeightsTo(tgts)
 
     logging.info(f"Weight copied from {src.name} to {len(tgts)} meshes.")
+
+
+def mirrorWeight(*args):
+    """Mirror skin weights symmetrically for selected meshes."""
+    sel = mc.ls(sl=1, tr=1)
+    if not sel:
+        mc.confirmDialog(t="Info", m="Select skinned meshes to mirror.     ", b="OK")
+        return
+
+    for msh in sel:
+        MshNode(msh).mirrorWeight(sym=args[0])
+
+    logging.info(f"Symmetrical skin weights mirrored for {len(sel)} meshes.")
+
+
+def pruneWeight(*args):
+    """Prune skin weights below threshold for selected meshes."""
+    sel = mc.ls(sl=1, tr=1)
+    if not sel:
+        mc.confirmDialog(t="Info", m="Select skinned meshes to prune.     ", b="OK")
+        return
+
+    for msh in sel:
+        MshNode(msh).pruneWeight()
+
+    logging.info(f"Skin weights pruned for {len(sel)} meshes.")
