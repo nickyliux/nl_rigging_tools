@@ -188,9 +188,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Sk
         self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
 
-        # Misc
-        # self.connect(self.UI.assignPresetColor_BN, common.assignPresetShd)
-
         # RigNode
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
         self.UI.rigNode_refresh_BN.clicked.connect(self.rigNode_refresh)
@@ -203,7 +200,11 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.crvShape_apply_BN, self.crvShape_apply, ":openScript.png")
         self.connect(self.UI.crvShape_save_BN, self.crvShape_save, ":fileSave.png")
         self.connect(self.UI.crvShape_del_BN, self.crvShape_del, ":smallTrash.png")
-
+        self.connect(
+            self.UI.assignPresetColor_BN,
+            common.assignPresetShd,
+            "render_swColorPerVertex.png",
+        )
         self.connect(self.UI.shapeRotaX_BN, partial(control.rotaCVForSel, 90, 0, 0))
         self.connect(self.UI.shapeRotaY_BN, partial(control.rotaCVForSel, 0, 90, 0))
         self.connect(self.UI.shapeRotaZ_BN, partial(control.rotaCVForSel, 0, 0, 90))

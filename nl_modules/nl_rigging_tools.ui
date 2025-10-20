@@ -3775,6 +3775,28 @@ for Sel</string>
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="assignPresetColor_BN">
+         <property name="minimumSize">
+          <size>
+           <width>5</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Assign color to selected</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QListWidget" name="crvShape_LW">
@@ -4581,34 +4603,6 @@ www.nickyliu.com</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-  </widget>
-  <widget class="QPushButton" name="assignPresetColor_BN">
-   <property name="geometry">
-    <rect>
-     <x>300</x>
-     <y>550</y>
-     <width>50</width>
-     <height>18</height>
-    </rect>
-   </property>
-   <property name="minimumSize">
-    <size>
-     <width>10</width>
-     <height>0</height>
-    </size>
-   </property>
-   <property name="maximumSize">
-    <size>
-     <width>16777215</width>
-     <height>18</height>
-    </size>
-   </property>
-   <property name="toolTip">
-    <string>Assign color to selected</string>
-   </property>
-   <property name="text">
-    <string>Set Col</string>
-   </property>
   </widget>
   <widget class="QWidget" name="horizontalLayoutWidget_32">
    <property name="geometry">
