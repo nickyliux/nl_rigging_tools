@@ -74,7 +74,7 @@ class SpineBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
-            ("setting", "X", "z", rSz * 2, 1, 2),
+            ("setting", "X", "z", rSz * 3, 1, 2),
             ("cog_ctl", "cog", None, rSz * 7, 0, -1),
         ]
         if self.spineType == SpineType.RIBBON.value:
@@ -183,7 +183,10 @@ class SpineBp(RigModule):
         self.add_mid_ikc_follow(mid_parent)
 
         self.build_ribbon()
-        self.ctls_ik = [self.hip_ikc, self.mid_ikc, self.chest_ikc]
+
+        self.ctls_ik = [self.mid_ikc, self.chest_ikc]
+        if not self.is_neck():
+            self.ctls_ik += [self.hip_ikc]
 
     def add_mid_ikc_follow(self, mid_parent):
         """Add follow setup for mid control"""
@@ -253,7 +256,12 @@ class SpineBp(RigModule):
         """Setup volume squash/stretch for the spine rig."""
         scaleFix = self.masterC.a["globalScale"]
 
+        # To get the correct arc length of the spine, get the V value from the posi node for the last ribbon jnt
+        rivet_loc = self.jnts_rb[-1].parent
+        posi = rivet_loc.a.tx.inConnNode
+
         arcLD = ut.arcLenDim_(self.rbSrf)
+        posi.a.parameterV >> arcLD.a.vParamValue
         d = arcLD.a.arcLengthInV
         D = d.get()
 
@@ -291,9 +299,9 @@ class SpineBp(RigModule):
         if self.spineType == SpineType.RIBBON.value:
             mc.hide(self.jnts_fk)
 
-        mc.hide(self.jnts_ctl, self.rbSrf)  # , self.setting)
+        mc.hide(self.jnts_ctl, self.RIG_DATA)
         if self.is_neck():
-            mc.hide(self.cog_ctl)
+            mc.hide(self.cog_ctl, self.hip_ikc)
 
     def setup_channel(self):
         """Setup channel attributes for the spine rig controls."""

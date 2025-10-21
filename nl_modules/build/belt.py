@@ -13,11 +13,11 @@ from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
 
 
-class Wire(RigModule):
-    """wire rig module class, inherits from RigModule."""
+class Belt(RigModule):
+    """belt rig module class, inherits from RigModule."""
 
     def __init__(self, rigNode):
-        """Initialize the wire rig module with the given rigNode."""
+        """Initialize the belt rig module with the given rigNode."""
         super().__init__(rigNode)
 
         # Guide attributes
@@ -50,7 +50,7 @@ class Wire(RigModule):
         self.jnts_bind = []
 
     def gen_sk(self):
-        """Generate the skeleton for the wire rig."""
+        """Generate the skeleton for the belt rig."""
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
@@ -58,7 +58,7 @@ class Wire(RigModule):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
-        """Build control nodes for the wire rig."""
+        """Build control nodes for the belt rig."""
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
@@ -70,7 +70,7 @@ class Wire(RigModule):
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
 
     def build(self):
-        """Build the wire rig."""
+        """Build the belt rig."""
         self.build_pre_module()
 
         # Create and register rbSrf
@@ -88,7 +88,7 @@ class Wire(RigModule):
         mc.delete(self.rootJ)
 
     def create_rbSrf(self):
-        """Create the ribbon surface for the wire rig."""
+        """Create the ribbon surface for the belt rig."""
         return SrfNode.buildRbSrf(
             pf=self.rigID,
             crv=self.LINE_GUIDE,
@@ -99,7 +99,7 @@ class Wire(RigModule):
         )
 
     def build_ribbon(self):
-        """Create the ribbon for the wire rig."""
+        """Create the ribbon for the belt rig."""
         logging.info(self.rigID)
         crvLenRatio, self.jnts_rb = common.build_ribbon_rivet(
             # rbSrf=self.rbSrf2,
@@ -116,7 +116,7 @@ class Wire(RigModule):
         self.jnts_bind = self.jnts_rb
 
     def build_ik(self):
-        """Build the IK controls for the wire rig."""
+        """Build the IK controls for the belt rig."""
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
@@ -172,7 +172,7 @@ class Wire(RigModule):
         )
 
     # def build_fk(self):
-    #     """Build the FK controls for the wire rig."""
+    #     """Build the FK controls for the belt rig."""
     #     logging.info(self.rigID)
 
     #     rID, rSz, xDr = self.getMyVar()
@@ -253,7 +253,7 @@ class Wire(RigModule):
     #     self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def setup_vis(self):
-        """Setup visibility toggles for the wire rig controls."""
+        """Setup visibility toggles for the belt rig controls."""
         # self.ctl_vis_toggle(
         #     self.setting.a.add("showIk", k=0, attrType="bool", dv=1),
         #     onList=[self.ctls_ik[0]],
@@ -270,7 +270,7 @@ class Wire(RigModule):
         mc.hide(self.rbSrf1, self.setting)  # , self.rbSrf2)
 
     def setup_channel(self):
-        """Setup channel attributes for the wire rig controls."""
+        """Setup channel attributes for the belt rig controls."""
         for ctl in self.ctls_fk + self.ctls_ik + self.ctls_ofs:
             ctl.a.showAttr(t=1, r=1)
         self.setting.a.showAttr()
@@ -280,7 +280,7 @@ class Wire(RigModule):
         self.ctls_ik[-1].a.add("stretchy", proxy=self.setting.a.stretchy)
 
     def setup_rotate_order(self):
-        """Setup rotate order for the wire rig controls."""
+        """Setup rotate order for the belt rig controls."""
         for ctl in self.ctls_fk:
             ctl.a.ro.set(3)
 
@@ -294,15 +294,15 @@ class Wire(RigModule):
         )
 
     def setup_scale(self):
-        """Setup scale attributes for the wire rig controls."""
+        """Setup scale attributes for the belt rig controls."""
         pass
 
     def setup_ctlSet(self):
-        """Setup control sets for the wire rig controls."""
+        """Setup control sets for the belt rig controls."""
         self.add_ctl_set(self.ctls_ik + self.ctls_fk + self.ctls_ofs + [self.setting])
 
     def setup_bindJnt(self):
-        """Setup bind joints for the wire rig controls."""
+        """Setup bind joints for the belt rig controls."""
         self.add_bind_jnt_set(self.jnts_bind)
         # proxy.add_radiusScale_attr(self.jnts_bind, 0.4)
 
@@ -310,7 +310,7 @@ class Wire(RigModule):
         pass
 
     def build_post(self):
-        """Post setup for the wire rig."""
+        """Post setup for the belt rig."""
         logging.info(self.rigID)
 
         self.setup_scale()

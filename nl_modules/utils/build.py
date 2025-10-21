@@ -21,7 +21,7 @@ from nl_modules.build.neck_qd import NeckQd
 from nl_modules.build.spine_qd import SpineQd
 from nl_modules.build.tail_fk import TailFk
 from nl_modules.build.tail import Tail
-from nl_modules.build.wire import Wire
+from nl_modules.build.belt import Belt
 from nl_modules.build.finger_fk import FingerFk
 from nl_modules.build.simple_fk import SimpleFk
 
@@ -99,7 +99,7 @@ def buildSelOrAll(*arg, uiPB=None):
         if uiPB:
             uiPB.setValue(0)
         # Gen proxy after build
-        # proxy.genProxy()
+        proxy.genProxy()
 
 
 def postRig():

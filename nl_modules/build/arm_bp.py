@@ -95,7 +95,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "X", "z", scale * 2, 1, 2),
+            ("setting", "X", "z", scale, 1, 2),
             ("clavicle_fkc", "stick", None, scale * 0.8, 0, -1),
             ("upr_fkc", "squareR", "x", scale, 0, -1),
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
@@ -281,7 +281,9 @@ class ArmBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
 
-        self.setting.alignTo(self.clavicle, p=self.CTL_DATA, ofs=(0, scale * 10, 0))
+        self.setting.alignTo(
+            self.clavicle, p=self.CTL_DATA
+        )  # , ofs=(0, scale * 10, 0))
         self.clavicle.cstPar(self.setting, mo=1)
 
         # Extract blend joints

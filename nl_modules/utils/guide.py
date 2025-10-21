@@ -29,7 +29,7 @@ COMPONENT_DICT = {
     "wing": [""],
     "finger fk": ["lfFingerFk", "rtFingerFk"],
     "simple fk": ["lfSimpleFk", "mdSimpleFk", "rtSimpleFk"],
-    "wire": ["wire"],
+    "belt": ["belt"],
 }
 
 
