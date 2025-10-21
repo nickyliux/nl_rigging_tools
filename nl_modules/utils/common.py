@@ -5,7 +5,6 @@ import logging
 import maya.cmds as mc
 from maya import mel
 from collections import OrderedDict
-
 from nl_modules.utils.color import Color
 
 
@@ -867,3 +866,33 @@ def getOpposite(tgtN, pfL="lf", pfR="rt"):
     rightOpposite = getOppositeForSide(tgtN, pfR, pfL)
     if rightOpposite:
         return rightOpposite
+
+
+def addKeys(tgt, attrName=None, data=None):
+    """Add keyframes to target attributes"""
+    from nl_modules.nodel.base.dag_node import DagNode
+
+    tgt = DagNode(tgt) if isinstance(tgt, str) else tgt
+    if not tgt.exists():
+        logging.info(f"Target {tgt} does not exist.")
+        return
+
+    attr = tgt.a.add(attrName, dv=0)
+    for pair in data:
+        mc.setKeyframe(attr, t=pair[0], v=pair[1])
+
+    mc.setAttr(attr, l=1)
+    return attr
+
+
+def setupFrameCache(graph=None, joints=None, base=None, keepVol=0):
+    """Setup frame cache scaling on joints"""
+    from nl_modules.nodel.base.dag_node import DagNode
+
+    for i in range(len(joints)):
+        fc = DagNode("fc__#", nodeType="frameCache")
+        graph >> fc.a.stream
+        fc.a.varyTime.set(i)
+        ratio = base ** (fc.a.varying * keepVol)
+        ratio >> joints[i].a.sy
+        ratio >> joints[i].a.sz

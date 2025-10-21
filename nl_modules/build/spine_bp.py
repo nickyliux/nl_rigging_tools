@@ -1,4 +1,5 @@
 import logging
+from secrets import choice
 import maya.cmds as mc
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
@@ -246,36 +247,31 @@ class SpineBp(RigModule):
         )
         self.jnts_bind = self.jnts_rb
 
-        self.volume_setup()
+        self.build_volume_setup()
 
-    def volume_setup(self):
+    def build_volume_setup(self):
         """Setup volume squash/stretch for the spine rig."""
         scaleFix = self.masterC.a["globalScale"]
+
         arcLD = ut.arcLenDim_(self.rbSrf)
         d = arcLD.a.arcLengthInV
         D = d.get()
 
-        keepVol = self.setting.a.add("keepVol", min=0, dv=1)
+        keepVol = self.setting.a.add("keepVol", dv=1)
         self.chest_ikc.a.add("keepVol", proxy=keepVol)
         self.hip_ikc.a.add("keepVol", proxy=keepVol)
 
-        # keys for volume squash
-        volGraph = self.setting.a.add("volGraph", dv=0)
-        mc.setKeyframe(volGraph, t=0, v=0)
-        mc.setKeyframe(volGraph, t=(self.rbnJntNum - 1) / 2, v=1)
-        mc.setKeyframe(volGraph, t=self.rbnJntNum - 1, v=0)
-        mc.setAttr(volGraph, l=1)
-
-        for i in range(self.rbnJntNum):
-
-            fc = DagNode("fc__#", nodeType="frameCache")
-            volGraph >> fc.a.stream
-            fc.a.varyTime.set(i)
-
-            # ratio = (scaleFix * D / d) ** (fc.a.varying * keepVol)
-            ratio = (D / (d / scaleFix)) ** (fc.a.varying * keepVol)
-            ratio >> self.jnts_rb[i].a.sy
-            ratio >> self.jnts_rb[i].a.sz
+        volGraph = common.addKeys(
+            self.setting,
+            "volGraph",
+            [(0, 0), ((self.rbnJntNum - 1) / 2, 1), (self.rbnJntNum - 1, 0)],
+        )
+        common.setupFrameCache(
+            graph=volGraph,
+            joints=self.jnts_rb,
+            base=D / (d / scaleFix),
+            keepVol=keepVol,
+        )
 
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""

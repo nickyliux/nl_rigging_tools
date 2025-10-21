@@ -312,42 +312,32 @@ class RbnNode:
     def build_volume_setup(self):
         """Set up the volume control for the ribbon rig."""
         logging.info(self.pf)
+        scaleFix = self.RBN_GRP.a.sy
 
-        arcLenDim = ut.arcLenDim_(self.rbSrf)
-        # d = arcLenDim.a.arcLength
-        d = arcLenDim.a.arcLengthInV
+        arcLD = ut.arcLenDim_(self.rbSrf)
+        d = arcLD.a.arcLengthInV
         D = d.get()
-        self.keepVol = self.RBN_GRP.a.add("keepVol")
+
+        self.keepVol = self.RBN_GRP.a.add("keepVol", dv=1)
         self.volType = self.RBN_GRP.a.add(
             "volType", attrType="enum", enumName="whole:separate", k=0
         )
-        scaleFix = self.RBN_GRP.a.sy
-
-        volGraph1 = self.RBN_GRP.a.add("volGraph1", dv=0)
-        volValue = self.volMode
-        mc.setKeyframe(volGraph1, t=0, v=volValue)
-        mc.setKeyframe(volGraph1, t=self.rbnJntNum - 1, v=1 - volValue)
-        mc.setAttr(volGraph1, l=1)
-
-        volGraph2 = self.RBN_GRP.a.add("volGraph2", dv=0)
-        mc.setKeyframe(volGraph2, t=0, v=0)
-        mid_t = (self.rbnJntNum - 1) / 2
-        mc.setKeyframe(volGraph2, t=mid_t, v=1)
-        mc.setKeyframe(volGraph2, t=self.rbnJntNum - 1, v=0)
-        mc.setAttr(volGraph2, l=1)
-
-        choice = ut.choice_([volGraph1, volGraph2], self.volType)
-
-        for i in range(self.rbnJntNum):
-
-            fc = DagNode("fc__#", nodeType="frameCache")
-            choice >> fc.a.stream
-            fc.a.varyTime.set(i)
-
-            ratio = (D / (d / scaleFix)) ** (fc.a.varying * self.keepVol)
-            ratio >> self.jnts_rb[i].a.sy
-            ratio >> self.jnts_rb[i].a.sz
-
+        volGraph1 = common.addKeys(
+            self.RBN_GRP,
+            "volGraph1",
+            [(0, self.volMode), (self.rbnJntNum - 1, 1 - self.volMode)],
+        )
+        volGraph2 = common.addKeys(
+            self.RBN_GRP,
+            "volGraph2",
+            [(0, 0), ((self.rbnJntNum - 1) / 2, 1), (self.rbnJntNum - 1, 0)],
+        )
+        common.setupFrameCache(
+            graph=ut.choice_([volGraph1, volGraph2], self.volType),
+            joints=self.jnts_rb,
+            base=D / (d / scaleFix),
+            keepVol=self.keepVol,
+        )
         self.d = d
 
     def setup_rotate_order(self):
