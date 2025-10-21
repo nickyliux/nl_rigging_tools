@@ -281,10 +281,8 @@ class ArmBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
 
-        self.setting.alignTo(self.clavicle, p=self.CTL_DATA)
-        # , ofs=(0, scale * 10, 0))
+        self.setting.alignTo(self.clavicle, p=self.CTL_DATA, ofs=(0, scale * 10, 0))
         self.clavicle.cstPar(self.setting, mo=1)
-        # scale * 30
 
         # Extract blend joints
         self.jnts_bf = common.dupSk(

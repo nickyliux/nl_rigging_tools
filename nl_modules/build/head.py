@@ -53,8 +53,8 @@ class Head(RigModule):
         ctl_defs = [
             ("head_fkc", "squareR", None, rSz * 4, 0, -1),
             ("jaw_fkc", "circle", None, rSz, 0, -1),
-            # ("lf_eye_fkc", "circle", "z", rSz, 0, -1),
-            # ("rt_eye_fkc", "circle", "z", rSz, 0, -1),
+            ("lf_eye_fkc", "circle", "z", rSz, 0, -1),
+            ("rt_eye_fkc", "circle", "z", rSz, 0, -1),
         ]
 
         for name, shape, up, sca, top, w in ctl_defs:
@@ -64,10 +64,7 @@ class Head(RigModule):
         """Build the FK controls for the head rig module."""
         logging.info(self.rigID)
 
-        self.ctls_fk = [
-            self.head_fkc,
-            self.jaw_fkc,
-        ]  # , self.lf_eye_fkc, self.rt_eye_fkc]
+        self.ctls_fk = [self.head_fkc, self.jaw_fkc, self.lf_eye_fkc, self.rt_eye_fkc]
         for ctl in self.ctls_fk:
             ctl | self.CTL_DATA
 
@@ -80,15 +77,15 @@ class Head(RigModule):
         self.jaw_fkc.cstPar(self.jaw, mo=1)
         self.jaw_fkc.cv_moveTo(self.jaw.childrenJt[0].o.pos)
 
-        # (self.lf_eye_fkc, self.rt_eye_fkc) | self.head_fkc
+        (self.lf_eye_fkc, self.rt_eye_fkc) | self.head_fkc
 
-        # self.lf_eye_fkc.alignTo(self.lf_eye)
-        # self.lf_eye_fkc.addOffsetGrp()
-        # self.lf_eye_fkc.cstPar(self.lf_eye, mo=1)
+        self.lf_eye_fkc.alignTo(self.lf_eye)
+        self.lf_eye_fkc.addOffsetGrp()
+        self.lf_eye_fkc.cstPar(self.lf_eye, mo=1)
 
-        # self.rt_eye_fkc.alignTo(self.rt_eye)
-        # self.rt_eye_fkc.addOffsetGrp()
-        # self.rt_eye_fkc.cstPar(self.rt_eye, mo=1)
+        self.rt_eye_fkc.alignTo(self.rt_eye)
+        self.rt_eye_fkc.addOffsetGrp()
+        self.rt_eye_fkc.cstPar(self.rt_eye, mo=1)
 
         # self.isolate_align(self.ctls_fk[0], [self.ctls_fk[0].parent, self.masterC])
         # self.isolate_align(self.head_fkc, spaces=[self.head_fkc.parent, self.masterC])

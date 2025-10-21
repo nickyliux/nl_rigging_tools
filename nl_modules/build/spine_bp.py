@@ -80,7 +80,7 @@ class SpineBp(RigModule):
         if self.spineType == SpineType.RIBBON.value:
             ctl_defs += [
                 ("chest_ikc", "chest", None, rSz * 5, 0, -1),
-                ("mid_ikc", "diamond3", None, rSz * 2, 1, -1),
+                ("mid_ikc", "diamond3", None, rSz * 4, 1, -1),
                 ("hip_ikc", "hip", None, rSz * 5, 0, -1),
             ]
 
@@ -98,7 +98,7 @@ class SpineBp(RigModule):
             self.build_ik()
 
         self.setting.snapTo(
-            self.cog_ctl, p=self.CTL_DATA  # , ofs=(0, 0, self.rigSize * -90)
+            self.cog_ctl, p=self.CTL_DATA, ofs=(self.rigSize * 100, 0, 0)
         )
         self.cog_ctl.cstPar(self.setting, mo=1)
 
@@ -203,7 +203,7 @@ class SpineBp(RigModule):
             self.mid_ikc,
             spaces=[self.mid_ikc.offset.offset, mid_loc],
             cstType="par",
-            attrName="alignIK",
+            attrName="CenterIk",
         )
 
     def build_ribbon(self):

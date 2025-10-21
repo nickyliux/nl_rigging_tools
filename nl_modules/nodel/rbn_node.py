@@ -15,12 +15,10 @@ from nl_modules.utils.color import Color
 
 
 class RbnNode:
-    """Ribbon node class for creating a ribbon rig with joints, locators, and IK handles.
+    """Ribbon node class for creating a ribbon rig for arm or leg.
 
     from nl_modules.nodel.rbn_node import RbnNode
-    RbnNode(
-        'joint2', pf='temp', rbJNum=5, volMode=0, scaleFix=None, size=1
-    )
+    RbnNode('joint1', pf='temp', num=5, volMode=0)
     """
 
     def __init__(
@@ -181,7 +179,7 @@ class RbnNode:
         self.rbSrf.weightTo(sttMidEnd_jnts, chain=0, mi=2, dr=2)
 
         for j in sttMidEnd_jnts:
-            j.setRadius(self.size * 3)
+            j.setRadius(self.size * 10)
             j.color = Color.PINK
 
         # if not self.forSpine:
