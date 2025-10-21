@@ -8,10 +8,10 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common
-
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
-from nl_modules.utils.common import Vec
+
+# from nl_modules.utils.common import Vec
 
 
 class RbnNode:
@@ -27,7 +27,7 @@ class RbnNode:
         self,
         tgt,
         pf="",
-        rbnJntNum=5,
+        num=5,
         volMode=1,  # 0: upper, 1: lower
         scaleFix=None,
         forSpine=0,
@@ -64,17 +64,16 @@ class RbnNode:
         self.forSpine = forSpine
         self.scaleFix = scaleFix
         self.volMode = volMode
-        self.rbnJntNum = rbnJntNum
+        self.rbnJntNum = num
         self.size = self.tgt.o.distanceTo(self.tgtChild) / 100
         self.ikhs = []
 
-        # Build the ribbon rig
         self.build()
 
     def build(self):
         """Build the ribbon rig."""
         self.build_grps()
-        self.build_surf_with_rivet()
+        self.build_rivets()
         self.build_locs()
         self.build_aim_chains()
         # self.build_twist_chains()
@@ -87,68 +86,35 @@ class RbnNode:
         self.RBN_GRP = GrpNode("rbn_grp", pf=self.pf, p=self.RIG_DATA)
         self.SRF_GRP = GrpNode("srf_grp", pf=self.pf, p=self.RBN_GRP)
         self.LOC_GRP = GrpNode("loc_grp", pf=self.pf, p=self.RBN_GRP)
-        self.RBJ_GRP = GrpNode("rbj_grp", pf=self.pf, p=self.RBN_GRP)
+        self.JNT_GRP = GrpNode("jnt_grp", pf=self.pf, p=self.RBN_GRP)
         self.AIM_GRP = GrpNode("aim_grp", pf=self.pf, p=self.RBN_GRP)
 
-    def build_surf_with_rivet(self):
+    def build_rivets(self):
         """Create the surface for the ribbon rig."""
         logging.info(self.pf)
         xDr = self.xDir
-
-        crvLine = CrvNode.buildLine((0, 0, 0), (xDr * self.D, 0, 0), pf=self.pf)
-        # self.rbSrf = SrfNode.buildRbSrf(
-        #     pf=self.pf, crv=crvLine, normal=-1, spans=5, p=self.SRF_GRP, alongZ=0
-        # )
+        line = CrvNode.buildLine((0, 0, 0), (xDr * self.D, 0, 0), pf=self.pf)
         self.rbSrf = SrfNode.buildRbSrf(
             pf=self.pf,
-            crv=crvLine,
+            crv=line,
             normal=-1,
             spans=5,
             p=self.SRF_GRP,
-            # snap=self.RT_GUIDE,
             alongZ=0,
         )
+        line.delete()
         self.rbSrf.a.inheritsTransform.set(0)
-        crvLine.delete()
-
-        # Generate coordinates for rivets
-        # coord = [(0.5, (2 * i + 1) / (2 * self.rbnJntNum)) for i in range(self.rbnJntNum)]
 
         crvLenRatio, self.jnts_rb = common.build_ribbon_rivet(
             rbSrf=self.rbSrf,
             rivetNum=self.rbnJntNum,
             scaleAttr=self.scaleFix,
             stretchyAttr=1,
-            # stretchyAttr=self.setting.a.stretchy,
             pf=self.pf,
             rSz=self.size,
             p=self.RIG_DATA,
-            SKL_DATA=self.RBJ_GRP,
+            SKL_DATA=self.JNT_GRP,
         )
-        # Create rivets and attach joints
-        # pin, pinXf = common.nlRivet(
-        #     geo=self.rbSrf,
-        #     coordList=coord,
-        #     normal=1,
-        #     tangent=2 if xDr == 1 else 5,
-        #     p=self.SRF_GRP,
-        #     size=self.size,
-        # )
-
-        # for i, pin_xf in enumerate(pinXf):
-        #     jnt = JntNode(
-        #         f"rbj_{i}",
-        #         pf=self.pf,
-        #         p=self.RBJ_GRP,
-        #         r=self.size * 3,
-        #         color=Color.YELLOW,
-        #         addOfs=1,
-        #     )
-        #     proxy.add_height_attr([jnt], self.size / self.rbnJntNum * 50)
-
-        #     pin_xf.cstPar(jnt.parent)
-        #     pin_xf.a.inheritsTransform.set(0)
-        #     self.jnts_rb.append(jnt)
 
     def build_locs(self):
         """Create locators for the start, middle, and end of the ribbon."""
@@ -159,21 +125,16 @@ class RbnNode:
         Dx = self.D * self.xDir
 
         for name in self.locNames:
-            setattr(
-                self,
-                name,
-                LocNode(
-                    name, pf=self.pf, size=size, p=self.LOC_GRP, color=Color.YELLOW
-                ),
+            loc = LocNode(
+                name, pf=self.pf, size=size, color=Color.YELLOW, p=self.LOC_GRP
             )
+            setattr(self, name, loc)
 
         self.sttUp_loc | self.stt_loc
-        self.sttUp_loc.a.ty.set(offset)
-
         self.endUp_loc | self.end_loc
-        self.end_loc.a.tx.set(Dx)
+        self.sttUp_loc.a.ty.set(offset)
         self.endUp_loc.a.ty.set(offset)
-
+        self.end_loc.a.tx.set(Dx)
         self.mid_loc.a.tx.set(Dx / 2)
         self.mid_loc.addOffsetGrp(count=2)
 
@@ -197,7 +158,6 @@ class RbnNode:
     def build_aim_chains(self):
         """Create aim chains for the start, middle, and end of the ribbon."""
         logging.info(self.pf)
-
         ofsX = self.D * self.xDir / 4
 
         # Start aim chain
@@ -224,10 +184,10 @@ class RbnNode:
             j.setRadius(self.size * 3)
             j.color = Color.PINK
 
-        if not self.forSpine:
-            mid_loc_ofs2 = self.mid_loc.offset.offset
-            common.cstMulti(self.stt_loc, self.end_loc, mid_loc_ofs2, cstType="poi")
-            mid_aimJ.cstOri(mid_loc_ofs2)
+        # if not self.forSpine:
+        mid_loc_ofs2 = self.mid_loc.offset.offset
+        common.cstMulti(self.stt_loc, self.end_loc, mid_loc_ofs2, cstType="poi")
+        mid_aimJ.cstOri(mid_loc_ofs2)
 
         # Create IK handles for the aim chains
         stt_ikh = self.build_ik("stt", stt_aimJ, stt_aimJ_end, self.AIM_GRP)
@@ -236,18 +196,17 @@ class RbnNode:
 
         self.ikhs.extend([stt_ikh, mid_ikh, end_ikh])
 
-        if self.forSpine:
-            # For spine, use parent constraints to maintain hierarchy
-            self.stt_loc.cstPar(stt_ikh, mo=1)
-            self.end_loc.cstPoi(mid_ikh)
-            self.end_loc.cstPar(end_ikh, mo=1)
-        else:
-            # For non-spine, use point constraints for aiming
-            self.mid_loc.cstPoi(stt_ikh)
-            self.end_loc.cstPoi(mid_ikh)
-            self.mid_loc.cstPoi(end_ikh)
+        # if self.forSpine:
+        #     # For spine, use parent constraints to maintain hierarchy
+        #     self.stt_loc.cstPar(stt_ikh, mo=1)
+        #     self.end_loc.cstPoi(mid_ikh)
+        #     self.end_loc.cstPar(end_ikh, mo=1)
+        # else:
+        # For non-spine, use point constraints for aiming
+        self.mid_loc.cstPoi(stt_ikh)
+        self.end_loc.cstPoi(mid_ikh)
+        self.mid_loc.cstPoi(end_ikh)
 
-        # Drive the end_jnt by the mid_loc
         self.mid_loc.cstAim(
             self.end_jnt,
             aim=(-self.xDir, 0, 0),
@@ -258,6 +217,51 @@ class RbnNode:
 
         # mid_loc's rx is controlled by the start and end joints
         ut.blend2_(self.stt_jnt.a.rx, self.end_jnt.a.rx) >> self.mid_loc.a.rx
+
+    def build_volume_setup(self):
+        """Set up the volume control for the ribbon rig."""
+        logging.info(self.pf)
+        scaleFix = self.RBN_GRP.a.sy
+
+        arcLD = ut.arcLenDim_(self.rbSrf)
+        self.d = arcLD.a.arcLengthInV
+        D = self.d.get()
+
+        self.keepVol = self.RBN_GRP.a.add("keepVol", dv=1)
+        self.volType = self.RBN_GRP.a.add(
+            "volType", attrType="enum", enumName="whole:separate", k=0
+        )
+        volGraph1 = common.addKeys(
+            self.RBN_GRP,
+            "volGraph1",
+            [(0, self.volMode), (self.rbnJntNum - 1, 1 - self.volMode)],
+        )
+        volGraph2 = common.addKeys(
+            self.RBN_GRP,
+            "volGraph2",
+            [(0, 0), ((self.rbnJntNum - 1) / 2, 1), (self.rbnJntNum - 1, 0)],
+        )
+        common.setupFrameCache(
+            graph=ut.choice_([volGraph1, volGraph2], self.volType),
+            joints=self.jnts_rb,
+            base=D / (self.d / scaleFix),
+            keepVol=self.keepVol,
+        )
+
+    def setup_rotate_order(self):
+        """Set up the rotate order for the start, middle, and end joints."""
+        for j in (self.stt_loc, self.end_loc):
+            j.a.rotateOrder.set(1)
+
+    def setup_vis(self):
+        """Set up visibility for the ribbon rig."""
+        mc.hide(self.ikhs)
+        mc.hide(self.SRF_GRP, self.AIM_GRP, self.LOC_GRP)
+
+    def build_post(self):
+        """Post setup for the ribbon rig."""
+        self.setup_rotate_order()
+        self.setup_vis()
 
     # def build_twist_chains(self):
     #     """Create twist chains for the start and end of the ribbon."""
@@ -308,52 +312,6 @@ class RbnNode:
 
     #     self.stt_twistJ = stt_twistJ
     #     self.end_twistJ = end_twistJ
-
-    def build_volume_setup(self):
-        """Set up the volume control for the ribbon rig."""
-        logging.info(self.pf)
-        scaleFix = self.RBN_GRP.a.sy
-
-        arcLD = ut.arcLenDim_(self.rbSrf)
-        d = arcLD.a.arcLengthInV
-        D = d.get()
-
-        self.keepVol = self.RBN_GRP.a.add("keepVol", dv=1)
-        self.volType = self.RBN_GRP.a.add(
-            "volType", attrType="enum", enumName="whole:separate", k=0
-        )
-        volGraph1 = common.addKeys(
-            self.RBN_GRP,
-            "volGraph1",
-            [(0, self.volMode), (self.rbnJntNum - 1, 1 - self.volMode)],
-        )
-        volGraph2 = common.addKeys(
-            self.RBN_GRP,
-            "volGraph2",
-            [(0, 0), ((self.rbnJntNum - 1) / 2, 1), (self.rbnJntNum - 1, 0)],
-        )
-        common.setupFrameCache(
-            graph=ut.choice_([volGraph1, volGraph2], self.volType),
-            joints=self.jnts_rb,
-            base=D / (d / scaleFix),
-            keepVol=self.keepVol,
-        )
-        self.d = d
-
-    def setup_rotate_order(self):
-        """Set up the rotate order for the start, middle, and end joints."""
-        for j in (self.stt_loc, self.end_loc):
-            j.a.rotateOrder.set(1)  # yzx
-
-    def setup_vis(self):
-        """Set up visibility for the ribbon rig."""
-        mc.hide(self.ikhs)
-        mc.hide(self.SRF_GRP, self.AIM_GRP, self.LOC_GRP)
-
-    def build_post(self):
-        """Post setup for the ribbon rig."""
-        self.setup_rotate_order()
-        self.setup_vis()
 
 
 # def buildRibbon(pf):

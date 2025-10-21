@@ -17,6 +17,8 @@ from enum import Enum
 
 
 class LimbType(Enum):
+    """Enumeration for different limb types in the leg rig."""
+
     BASIC = 0
     BASIC_ROLL = 1
     RIBBON = 2
@@ -27,12 +29,9 @@ class LegBp(RigModule):
     """Quadruped leg rig module class, inherits from RigModule."""
 
     def __init__(self, rigNode):
-        # Accept DagNode or string for rigNode
-
         rigNode = DagNode(rigNode) if isinstance(rigNode, str) else rigNode
         super().__init__(rigNode)
 
-        # Guide attributes
         guide_attrs = [
             "limbType",
             "rollJntNum",
@@ -154,9 +153,9 @@ class LegBp(RigModule):
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
-        self.smart_ctl.cv_move(20 * scale, 0, 0)
+        self.smart_ctl.cv_move(25 * scale, 0, 0)
         self.smart_ctl.color = Color.D_YELLOW
-        self.smart_ctl.cv_scale(0.5, 0.5, 1)
+        self.smart_ctl.cv_scale(0.5, 0.5, 1.5)
         self.ikc.cv_move(0, 0, rSz * 2)
         self.ikc.cv_scale(1.5, 1.5, 4)
 
@@ -189,9 +188,9 @@ class LegBp(RigModule):
         if self.kneeFix:
             self.boneFix_setup(self.lwr, self.palm)
 
-        # ---------------------------------------------------------------
+        # -----------------------------
         #   Setup base on LimbType
-        # ---------------------------------------------------------------
+        # -----------------------------
         if self.limbType == LimbType.BASIC.value:
             self.jnts_bind += [self.upr]
             if self.kneeFix:
@@ -267,8 +266,9 @@ class LegBp(RigModule):
         toePos_guide = DagNode(rID + "_palm_toePos_guide")
         pvc_guide = DagNode(rID + "_pvc_guide")
 
-        self.ikc.alignTo(mg)
-        self.pvc.alignTo(pvc_guide)
+        self.ikc.snapAlignTo(self.palm, mg, p=self.IK_GRP)
+        self.ikc.cv_drop()
+        self.pvc.alignTo(pvc_guide, p=self.IK_GRP)
         self.jnts_ik = common.dupSk(
             self.jnts, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.D_RED
         )
@@ -315,33 +315,18 @@ class LegBp(RigModule):
 
         ikH1 | ballRollG | inRollG
         (ikH2, ikH3) | toe_wiggle_grp | inRollG
-        inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG
-        self.ikc.snapTo(self.palm)
-        self.ikc.cv_drop()
+        inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG | self.IK_GRP
+
         self.ikc_gimbal = CrvNode(self.ikc).add_gimbal()
-        #   Constrain ikCstG supporting fk limb
-        #   self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
         self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
-        fkPin = self.pvc.a.add("fkPin", min=0, max=1)
-        self.pin_fkc = CrvNode(
-            rID + "_pin_fkc",
-            shape="squareR",
-            up="x",
-            scale=rSz,
-            align=self.palm,
-            p=self.pvc,
-            addOfs=1,
-        )
-        common.cstMulti(
-            self.ikc_gimbal, self.pin_fkc, self.ikCstG, w=fkPin, cstType="par", mo=1
-        )
+
+        self.fk_pin_setup()
 
         self.foot_rolling(
             self.smart_ctl, heelRollG, ballRollG, footRollG, toeRollG, inRollG, outRollG
         )
 
         self.ikc.a.add("kneeTwist") * xDr >> ikH1.a.twist
-        (self.ikc, self.pvc, self.ikCstG) | self.IK_GRP
         self.pvc_line = CrvNode.buildLineLinked(
             tgt1=self.jnts_ik[2], tgt2=self.pvc, pf=rID, dspType=2, p=self.IK_GRP
         )
@@ -358,6 +343,39 @@ class LegBp(RigModule):
         self.toe_wiggle_grp = toe_wiggle_grp
 
         self.subCtl_setup(ballRollG, toeRollG, inRollG, outRollG, heelRollG)
+        self.smart_ctl_setup(toeRollG)
+
+    def smart_ctl_setup(self, toeRollG):
+        # Smart Ctl setup
+        rID, rSz, xDr = self.getMyVar()
+        scale = rSz * xDr
+
+        self.smart_ctl | self.ikc_gimbal
+        self.smart_ctl.snapAlignTo(self.palm, self.master_guide)
+        self.smart_ctl.addOffsetGrp()
+        self.palm.cstPoi(self.smart_ctl)
+
+        self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
+        -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry
+        -xDr * self.smart_ctl.a.rz >> self.smart_ctl.a["footBank"]
+
+    def fk_pin_setup(self):
+        """Setup FK pin control for the leg rig."""
+        rID, rSz, xDr = self.getMyVar()
+
+        fkPin = self.pvc.a.add("fkPin", min=0, max=1)
+        self.pin_fkc = CrvNode(
+            rID + "_pin_fkc",
+            shape="squareR",
+            up="x",
+            scale=rSz,
+            align=self.palm,
+            p=self.pvc,
+            addOfs=1,
+        )
+        common.cstMulti(
+            self.ikc_gimbal, self.pin_fkc, self.ikCstG, w=fkPin, cstType="par", mo=1
+        )
 
     def blend_fk_ik(self):
         """Blend FK and IK controls for the leg rig."""
@@ -435,42 +453,26 @@ class LegBp(RigModule):
         self.rigNode.setMsg({"ball_ikc": self.ball_ikc})
         self.ctls_ik.append(self.ball_ikc)
 
-        # Smart Ctl setup
-        self.smart_ctl | self.ikc_gimbal
-        self.smart_ctl.addOffsetGrp()
-        self.smart_ctl.snapAlignTo(self.palm, self.master_guide)
-        self.palm.cstPoi(self.smart_ctl)
-
-        self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
-        -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry
-        -xDr * self.smart_ctl.a.rz >> self.smart_ctl.a["footBank"]
-
     def build_toes(self):
         """Build the toe controls for the leg rig."""
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        # --- Parent toes root to palm ---
         self.toesRootJ | self.palm
-
-        # --- Gather all toe joint chains ---
         self.toesJntList = []
         for rootJ in self.toesRootJ.childrenJt:
             self.toesJntList.append([fgr for fgr in rootJ.allChildrenJt2])
             rootJ.a.segmentScaleCompensate.set(0)
 
-        # --- Build toe controls ---
         self.toesCtlsList = []
         scale = xDr * rSz
 
         for toeJs in self.toesJntList:
-            # IK setup for toe
+
             ikTgt = JntNode(toeJs[1])
-            # ctl,
             ikJ, ikH = self.build_digit_ik(ikTgt, scale=scale / 4, p=self.ball_fkc)
             self.toeIKHs.append(ikH)
 
-            # FK setup for toe
             ctlList = []
             self.jnts_bind.extend(toeJs[:-1])
             fkToeList = toeJs[1:-1]
@@ -483,19 +485,9 @@ class LegBp(RigModule):
 
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
             self.toesCtlsList.append(ctlList)
-            # self.toesCtlsList.append([ctl])
 
             ikJ.a.r >> ctlList[0].addOffsetGrp().a.r
             ikJ.hide()
-
-        # --- (Optional) Splay logic for toes (commented out) ---
-        # splay = self.ball_fkc.a.add("splay", min=-5, max=5)
-        # toeCount = len(self.toesJntList)
-        # splayRange = 45
-        # for i in range(toeCount):
-        #     tgt = toeLocList[i].a.rz
-        #     common.sdk2(splay, tgt, -5, splayRange * (-1 + 2 / (toeCount - 1) * i))
-        #     common.sdk2(splay, tgt, 5, -splayRange * (-1 + 2 / (toeCount - 1) * i))
 
     def build_dual_bones(self):
         """Build dual bones for the lower leg."""
@@ -510,17 +502,19 @@ class LegBp(RigModule):
 
         radius_loc = LocNode("radius_loc", pf=rID, align=radius_JC[1], p=self.palm)
         ulna_loc = LocNode("ulna_loc", pf=rID, align=ulna_JC[1], p=self.palm)
+
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
-        uType = "objectrotation"
+
+        type = "objectrotation"
         aim = (xDr, 0, 0)
         z = (0, 0, 1)
 
         radius_loc.cstAim(
-            radius_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
+            radius_JC[0], worldUpType=type, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
         ulna_loc.cstAim(
-            ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
+            ulna_JC[0], worldUpType=type, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
         self.jnts_bind += [radius_JC[0], ulna_JC[0]]
 
@@ -532,14 +526,7 @@ class LegBp(RigModule):
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             offList=self.ctls_fk[1:-1],
         )
-        # self.ctl_vis_toggle(
-        #     self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
-        #     onList=self.ctls_sub,
-        # )
-        # self.ctl_vis_toggle(
-        #     self.setting.a.add("debugVis", attrType="bool", k=0, dv=0),
-        #     onList=self.jnts_fk + self.jnts_ik + self.jnts_bf # + self.jnts_ro,
-        # )
+
         mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_bf)
         self.ctl_vis_toggle(
             self.ikc.a.add("pvc", attrType="bool", dv=1, k=0),
@@ -550,7 +537,7 @@ class LegBp(RigModule):
                 self.setting.a.add("bendyCtls", attrType="bool", k=0, dv=0),
                 onList=self.all_bend,
             )
-        mc.hide(self.ikhs, self.toeIKHs)  # , self.setting)
+        mc.hide(self.ikhs, self.toeIKHs)
 
     def setup_channel(self):
         """Setup channels for the leg rig controls."""
@@ -560,7 +547,6 @@ class LegBp(RigModule):
         self.ball_ikc.a.showAttr(r=1)
 
         for ctl in self.ctls_fk + self.ctls_sub + self.ctls_ik:
-            # [self.ikc, self.pvc, self.pin_fkc]:
             ctl.a.showAttr(t=1, r=1)
         for ctl in self.all_bend or []:
             ctl.a.showAttr(t=1, r=1, s=1)
@@ -614,15 +600,15 @@ class LegBp(RigModule):
         self.masterC.a.globalScale >> self.RIG_DATA.a.s
         self.masterC.a.globalScale >> self.SKL_DATA.a.s
 
-        foot_scale = self.setting.a.add("footScale", min=0.01, dv=1)
-        self.ikc.a.add("footScale", proxy=foot_scale)
-        self.ball_fkc.a.add("footScale", proxy=foot_scale)
+        footScale = self.setting.a.add("footScale", min=0.01, dv=1)
+        self.ikc.a.add("footScale", proxy=footScale, min=0.01)
+        self.ball_fkc.a.add("footScale", proxy=footScale, min=0.01)
 
-        foot_scale >> self.ball_fkc.offset.a.s
-        foot_scale >> self.ikc.a.s
+        footScale >> self.ball_fkc.offset.a.s
+        footScale >> self.ikc.a.s
 
         for jnt in [self.palm, self.jnts_fk[3], self.jnts_ik[3], self.jnts_bf[3]]:
-            foot_scale >> jnt.a.s
+            footScale >> jnt.a.s
 
         for jnt in [
             self.palm,
@@ -676,3 +662,21 @@ class LegBp(RigModule):
         self.setup_channel()
         self.setup_rotate_order()
         self.build_post_module()
+
+        # --- (Optional) Splay logic for toes (commented out) ---
+        # splay = self.ball_fkc.a.add("splay", min=-5, max=5)
+        # toeCount = len(self.toesJntList)
+        # splayRange = 45
+        # for i in range(toeCount):
+        #     tgt = toeLocList[i].a.rz
+        #     common.sdk2(splay, tgt, -5, splayRange * (-1 + 2 / (toeCount - 1) * i))
+        #     common.sdk2(splay, tgt, 5, -splayRange * (-1 + 2 / (toeCount - 1) * i))
+        #
+        # self.ctl_vis_toggle(
+        #     self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
+        #     onList=self.ctls_sub,
+        # )
+        # self.ctl_vis_toggle(
+        #     self.setting.a.add("debugVis", attrType="bool", k=0, dv=0),
+        #     onList=self.jnts_fk + self.jnts_ik + self.jnts_bf # + self.jnts_ro,
+        # )

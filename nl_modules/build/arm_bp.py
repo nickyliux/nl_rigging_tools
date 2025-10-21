@@ -29,7 +29,6 @@ class ArmBp(RigModule):
         rigNode = DagNode(rigNode) if isinstance(rigNode, str) else rigNode
         super().__init__(rigNode)
 
-        # Guide attributes
         guide_attrs = [
             "limbType",
             "rollJntNum",
@@ -96,7 +95,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "X", "z", scale, 1, 2),
+            ("setting", "X", "z", scale * 2, 1, 2),
             ("clavicle_fkc", "stick", None, scale * 0.8, 0, -1),
             ("upr_fkc", "squareR", "x", scale, 0, -1),
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
@@ -136,7 +135,6 @@ class ArmBp(RigModule):
             self.jnts_bind += [self.lwr]
             proxy.add_height_attr([self.lwr], self.rigSize * 10)
             helpers = self.build_aimHelper([self.lwr, self.palm])
-            # self.jnts_bind += helpers
 
             jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
             jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
@@ -180,20 +178,14 @@ class ArmBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
 
-        # Align IK controls to palm
         self.ikc.alignTo(self.palm, p=self.IK_GRP)
         self.palm_ikc.alignTo(self.palm, p=self.IK_GRP)
-
-        # Align PVC to guide
         pvc_guide = DagNode(f"{rID}_pvc_guide")
         self.pvc.alignTo(pvc_guide, p=self.IK_GRP)
 
-        # Create IK joints
         self.jnts_ik = common.dupSk(
             self.jnts, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.D_RED
         )
-
-        # Create IK handle
         ikH1 = IkNode(
             "1",
             pf=rID,
@@ -210,7 +202,6 @@ class ArmBp(RigModule):
             RIG_DATA=self.RIG_DATA,
         )
         self.ikH1 = ikH1
-
         self.ikc_gimbal = CrvNode(self.ikc).add_gimbal()
 
         # IK constraint group
@@ -222,7 +213,33 @@ class ArmBp(RigModule):
         # Constrain IK group to IK control
         self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
 
-        # Pin FK control
+        # Parent controls and lines
+        self.pvc_line = CrvNode.buildLineLinked(
+            tgt1=self.jnts_ik[2],
+            tgt2=self.pvc,
+            pf=rID,
+            dspType=2,
+            p=self.IK_GRP,
+        )
+
+        self.ikc.addOffsetGrp()
+        self.pvc.addOffsetGrp()
+        self.pvc_line.addOffsetGrp()
+
+        # IK controls list
+        self.ctls_ik += [self.ikc, self.pvc, self.ikc, self.ikc_gimbal]
+
+        ikH1.stretchyIk(soft=1)
+        self.ikhs = [ikH1]
+        self.clavicle_fkc.cstPar(self.jnts_ik[0], mo=1)
+
+        self.fk_pin_local_rot()
+
+    def fk_pin_local_rot(self):
+        """Setup palm IK control constraints."""
+        logging.info(self.rigID)
+        rID, rSz, xDr = self.getMyVar()
+
         fkPin = self.pvc.a.add("fkPin", min=0, max=1)
         self.pin_fkc = CrvNode(
             "pin_fkc",
@@ -238,44 +255,25 @@ class ArmBp(RigModule):
             self.ikc_gimbal, self.pin_fkc, self.ikCstG, w=fkPin, cstType="par", mo=1
         )
 
-        # Parent controls and lines
-        self.pvc_line = CrvNode.buildLineLinked(
-            tgt1=self.jnts_ik[2],
-            tgt2=self.pvc,
-            pf=rID,
-            dspType=2,
-            p=self.IK_GRP,
-        )
-
-        self.ikc.addOffsetGrp()
-        self.pvc.addOffsetGrp()
-        self.pvc_line.addOffsetGrp()
-
-        ikH1.stretchyIk(soft=1)
-        self.ikhs = [ikH1]
-        self.clavicle_fkc.cstPar(self.jnts_ik[0], mo=1)
-
-        # IK controls list
-        self.ctls_ik = [
-            self.ikc,
-            self.pvc,
-            self.ikc,
-            self.ikc_gimbal,
-            self.palm_ikc,
-            self.pin_fkc,
-        ]
-
-        # palm_ikc setup
-        palm_ik = self.jnts_ik[3]
+        palm_ikj = self.jnts_ik[3]
         palm_ikc_ofs = self.palm_ikc.addOffsetGrp()
         self.ikc_gimbal.cstPoi(palm_ikc_ofs)
 
-        localRot = self.ikc.a.add("localRot", min=0, max=1, dv=0)
         common.cstMulti(
-            self.ikc_gimbal, palm_ik.offset, palm_ikc_ofs, w=localRot, cstType="parR"
+            self.ikc_gimbal,
+            palm_ikj.offset,
+            palm_ikc_ofs,
+            w=self.ikc.a.add("localRot", min=0, max=1, dv=0),
+            cstType="parR",
         )
-
-        common.cstMulti(self.palm_ikc, self.pin_fkc, palm_ik, w=fkPin, cstType="ori")
+        common.cstMulti(
+            self.palm_ikc,
+            self.pin_fkc,
+            palm_ikj,
+            w=fkPin,
+            cstType="ori",
+        )
+        self.ctls_ik += [self.palm_ikc, self.pin_fkc]
 
     def blend_fk_ik(self):
         """Blend FK and IK joints for the arm rig."""

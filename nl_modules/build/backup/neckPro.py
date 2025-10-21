@@ -166,7 +166,7 @@ class NeckPro(rig_module.RigModule):
         spine_RB = RbnNode(
             dummyG1,
             pf=self.rigID,
-            rbnJntNum=self.BIND_JNT_NUM,
+            num=self.BIND_JNT_NUM,
             forSpine=1,
             scaleFix=self.masterC.a["globalScale"],
             size=rSz,

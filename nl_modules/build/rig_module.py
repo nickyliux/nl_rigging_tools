@@ -1024,7 +1024,7 @@ class RigModule(RigBase):
         return RbnNode(
             tgt,
             pf=f"{self.rigID}_{name}_",
-            rbnJntNum=rbnJntNum,
+            num=rbnJntNum,
             volMode=volMode,
             scaleFix=self.masterC.a["globalScale"],
             RIG_DATA=self.RIG_DATA,
