@@ -51,7 +51,7 @@ def mirrorCtlShape(ctl):
 
     opp = common.getOpposite(ctl)
     if not opp:
-        logging.info(f"No opposite found for {ctl.name}.")
+        logging.info(f"No opposite found for {ctl}.")
         return
 
     dup = ctl.duplicate()

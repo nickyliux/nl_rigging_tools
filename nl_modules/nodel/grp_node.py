@@ -113,6 +113,7 @@ class GrpNode(DagNode):
                 mc.scale(args[0], args[0], args[0], self.cvs, pivot=p, **kwargs)
             else:
                 mc.scale(*args, self.cvs, pivot=p, **kwargs)
+            mc.delete(self, ch=1)
             mc.select(self)
         else:
             if len(args) == 1:
