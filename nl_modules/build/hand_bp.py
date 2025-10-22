@@ -59,7 +59,7 @@ class HandBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "X", None, scale, 1, 2),
+            ("setting", "spiral", None, scale, 1, 2),
             ("palm_ctl", "rotator", None, -scale * 0.8, 0, -1),
             ("thumb_ctl", "rotator", "z", -scale * 0.8, 0, -1),
             ("smart_ctl", "cube", None, scale, 0, -1),
@@ -94,7 +94,9 @@ class HandBp(RigModule):
 
         ctlList = []
         for fgr in fgrs[:-1]:
-            ctl = CrvNode(f"{fgr.name}_ctl", shape="stick", scale=-scale / 3, align=fgr)
+            ctl = CrvNode(
+                f"{fgr.name}_ctl", shape="stickC", scale=-scale / 3, align=fgr
+            )
             ctl.cv_rotate(90, 0, 0)
             ctlList.append(ctl)
         return ctlList
@@ -365,7 +367,7 @@ class HandBp(RigModule):
         for ctls in self.ctls_fgr:
             ctls[0].shape.hide()
 
-        mc.hide(self.ikHs_fgr, self.jnts_ik, self.setting)
+        mc.hide(self.ikHs_fgr, self.jnts_ik)  # , self.setting)
         # self.setting.shape.hide()
 
     def setup_ctlSet(self):

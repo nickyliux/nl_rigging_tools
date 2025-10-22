@@ -77,7 +77,7 @@ class MshNode(DagNode):
     def mirrorWeight(self, sym=1):
         """Mirror skin weights symmetrically"""
         if self.skinCluster.exists():
-            influenceAssociation = "oneToOne" if sym else "closestPoint"
+            influenceAssociation = "oneToOne" if sym else "closestJoint"
             mc.copySkinWeights(
                 ss=self.skinCluster.name,
                 ds=self.skinCluster.name,
@@ -101,8 +101,8 @@ class MshNode(DagNode):
                     ss=self.skinCluster.name,
                     ds=item.skinCluster.name,
                     noMirror=1,
-                    sa="closestPoint",
-                    ia="oneToOne",
+                    surfaceAssociation="closestPoint",
+                    influenceAssociation="oneToOne",
                 )
 
     def copyWeightsFr(self, item):

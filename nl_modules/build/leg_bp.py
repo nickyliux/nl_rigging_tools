@@ -137,7 +137,7 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "X", "z", scale, 1, 2),
+            ("setting", "spiral", "z", scale, 1, 2),
             ("hip_fkc", "stick", None, -scale / 2, 0, -1),
             ("upr_fkc", "squareR", "x", scale, 0, -1),
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
@@ -386,9 +386,9 @@ class LegBp(RigModule):
             self.jnts, "_bf", p=self.BF_GRP, r=rSz * 4, color=Color.D_YELLOW
         )
 
-        self.setting.snapTo(self.upr, p=self.CTL_DATA)
+        self.setting.snapTo(self.hip, p=self.CTL_DATA)
         # ofs=(xDr * rSz * 15, 0, 0))
-        self.upr.cstPar(self.setting, mo=1)
+        self.hip.cstPar(self.setting, mo=1)
 
         self.setting.a.addSep()
         fkToIk = self.setting.a.add("fkToIk", min=0, max=1, dv=1)

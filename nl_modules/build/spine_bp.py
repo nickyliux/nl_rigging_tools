@@ -74,7 +74,7 @@ class SpineBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
-            ("setting", "X", "z", rSz * 3, 1, 2),
+            ("setting", "spiral", "z", rSz * 2, 1, -1),
             ("cog_ctl", "cog", None, rSz * 7, 0, -1),
         ]
         if self.spineType == SpineType.RIBBON.value:
@@ -97,9 +97,8 @@ class SpineBp(RigModule):
         if self.spineType == SpineType.RIBBON.value:
             self.build_ik()
 
-        self.setting.snapTo(
-            self.cog_ctl, p=self.CTL_DATA, ofs=(self.rigSize * 100, 0, 0)
-        )
+        self.setting.snapTo(self.cog_ctl, p=self.CTL_DATA)
+        # , ofs=(self.rigSize * 100, 0, 0)
         self.cog_ctl.cstPar(self.setting, mo=1)
 
         self.build_post()
