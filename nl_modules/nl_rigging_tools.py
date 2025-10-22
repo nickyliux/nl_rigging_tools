@@ -62,7 +62,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         self.setWindowTitle("nlRT 0.1.0")
         self.setCentralWidget(self.UI)
-        self.setGeometry(1070, 260, 200, 650)
+        self.setGeometry(1070, 260, 200, 660)
         self.connect_UI()
         # self.addMenuBar()
 
@@ -571,7 +571,8 @@ def main():
     except:
         pass
     nlRT_win = MyToolWin()
-    nlRT_win.show()
+    # nlRT_win.show()
+    nlRT_win.show(dockable=1)
 
     with open(STYLE_PATH, "r") as f:
         style = f.read()

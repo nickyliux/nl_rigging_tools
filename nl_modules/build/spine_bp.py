@@ -271,7 +271,7 @@ class SpineBp(RigModule):
         d = arcLD.a.arcLengthInV
         D = d.get()
 
-        keepVol = self.setting.a.add("keepVol", dv=1)
+        keepVol = self.setting.a.add("keepVol", dv=0.5)
         self.chest_ikc.a.add("keepVol", proxy=keepVol)
         self.hip_ikc.a.add("keepVol", proxy=keepVol)
 
