@@ -120,7 +120,7 @@ class GrpNode(DagNode):
             else:
                 mc.scale(*args, self.cvs, **kwargs)
 
-    def add_gimbal(self, relScale=0.8, attrTgt=None, dv=0):
+    def add_gimbal(self, relScale=0.8, attrTgt=None, dv=1):
         """Add a gimbal control to the curve"""
         gmb_ctl = self.duplicate(n=self.node + "_gmb")
         gmb_ctl | self
@@ -129,7 +129,7 @@ class GrpNode(DagNode):
         attrTgt = attrTgt or self
         attr = attrTgt.a.add("gimbalCtl", attrType="bool", dv=dv, k=0)
         gmb_ctl.a.add("gimbalCtl", proxy=attr)
-        attr >> gmb_ctl.shape.a.v
+        attr >> gmb_ctl.a.v
 
         return gmb_ctl
 

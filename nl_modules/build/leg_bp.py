@@ -350,7 +350,7 @@ class LegBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
         scale = rSz * xDr
 
-        self.smart_ctl | self.ikc_gimbal
+        self.smart_ctl | self.ikc
         self.smart_ctl.snapAlignTo(self.palm, self.master_guide)
         self.smart_ctl.addOffsetGrp()
         self.palm.cstPoi(self.smart_ctl)
