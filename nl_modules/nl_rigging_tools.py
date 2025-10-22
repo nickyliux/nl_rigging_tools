@@ -206,7 +206,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(
             self.UI.assignPresetColor_BN,
             common.assignPresetShd,
-            "render_swColorPerVertex.png",
+            ":render_swColorPerVertex.png",
         )
         self.connect(self.UI.shapeRotaX_BN, partial(control.rotaCVForSel, 90, 0, 0))
         self.connect(self.UI.shapeRotaY_BN, partial(control.rotaCVForSel, 0, 90, 0))

@@ -3816,7 +3816,7 @@ for Sel</string>
       </rect>
      </property>
      <property name="title">
-      <string>Shape Presets</string>
+      <string>Shapes</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

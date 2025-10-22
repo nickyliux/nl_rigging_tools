@@ -62,13 +62,13 @@ class HandBp(RigModule):
             ("setting", "spiral", None, scale, 1, 2),
             ("palm_ctl", "rotator", None, -scale * 0.8, 0, -1),
             ("thumb_ctl", "rotator", "z", -scale * 0.8, 0, -1),
-            ("smart_ctl", "cube", None, scale, 0, -1),
+            ("smart_ctl", "cube", None, scale * 2, 0, -1),
         ]
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
-        self.smart_ctl.cv_scale(0.7, 3, 0.7)
+        self.smart_ctl.cv_scale(0.5, 1.5, 0.5)
         self.palm_ctl.color = Color.YELLOW
         self.thumb_ctl.color = Color.YELLOW
         self.smart_ctl.color = Color.D_YELLOW
