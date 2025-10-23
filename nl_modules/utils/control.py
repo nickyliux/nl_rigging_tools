@@ -59,18 +59,16 @@ def mirrorCtlShape(ctl):
     if dup.children:
         mc.delete(dup.children)
 
-    # Group the duplicated
-    # Neg scale it
-    # Blend to opposite
-    myGrp = GrpNode("myG", align=mg, snap=dup)
-    dup | myGrp
+    # tempGrp = GrpNode("tempGrp", align=mg, snap=dup)
+    tempGrp = GrpNode("tempGrp", align=dup, snap=dup)
+    dup | tempGrp
 
     if dup.a["wsMirror"].exists():
-        myGrp.a.sx.set(-1)
+        tempGrp.a.sx.set(-1)
     else:
-        myGrp.a.s.set(-1, -1, -1)
+        tempGrp.a.s.set(-1, -1, -1)
 
-    myGrp.freezeXf(t=0, r=0, s=1)
+    tempGrp.freezeXf(t=0, r=0, s=1)
     try:
         mc.blendShape(dup.shape, opp.shape, w=(0, 1))
     except Exception as e:
@@ -78,7 +76,7 @@ def mirrorCtlShape(ctl):
         return
 
     opp.deleteHistory()
-    mc.delete(dup, myGrp)
+    mc.delete(dup, tempGrp)
 
     return opp
 

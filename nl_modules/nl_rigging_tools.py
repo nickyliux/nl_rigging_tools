@@ -617,42 +617,6 @@ for item in cmds.resourceManager(nf='*png'):
 getenv "XBMLANGPATH" ;
 """
 
-# items = self.UI.preset_LW.selectedItems()
-# if items:
-#     itemText = items[0].text()
-#     result = mc.confirmDialog(
-#         t="Save Preset",
-#         m=f'Overwrite "{itemText}" ?        ',
-#         b=["Yes", "No"],
-#         db="No",
-#     )
-#     if result == "Yes":
-#         guide.savePreset(itemText)
-
-# def template_new_BN_clicked(self):
-#     result = mc.promptDialog(
-#         t="New Preset", m="Enter name:", b=["OK", "Cancel"], db="OK"
-#     )
-#     if result == "OK":
-#         newName = mc.promptDialog(q=1, t=1)
-#         guide.savePreset(newName)
-#         self.preset_refresh_BN_clicked()
-
-# def template_del_BN_clicked(self):
-#     items = self.UI.preset_LW.selectedItems()
-#     if items:
-#         itemText = items[0].text()
-#         result = mc.confirmDialog(
-#             t="Delete Preset ",
-#             m=f'Delete "{itemText}" ?        ',
-#             b=["Yes", "No"],
-#             db="No",
-#         )
-#         if result == "Yes":
-#             tgtFile = f"{PATH_PRESET}\\{itemText}.json"
-#             file.deleteFile(tgtFile)
-#             self.preset_refresh_BN_clicked()
-
 
 #     mc.displayRGBColor("lead", *color)
 #     mc.displayRGBColor("referenceLayer", *color)
