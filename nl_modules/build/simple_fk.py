@@ -78,7 +78,7 @@ class SimpleFk(RigModule):
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
-        scale = rSz * 3
+        scale = rSz * 5
         up = "z" if rID.startswith("md") else "x"
 
         ctl_defs = [
