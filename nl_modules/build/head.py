@@ -33,6 +33,7 @@ class Head(RigModule):
         self.rootJ = root_list[0]
         self.rootJ | self.SKL_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
+        return self.rootJ
 
     def build(self):
         """Build the head rig module."""

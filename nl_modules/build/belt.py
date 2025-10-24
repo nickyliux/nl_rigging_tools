@@ -56,6 +56,7 @@ class Belt(RigModule):
 
         self.rootJ = root_list[0]
         self.rigNode.setMsg({"rootJ": self.rootJ})
+        return self.rootJ
 
     def build_ctl(self):
         """Build control nodes for the belt rig."""

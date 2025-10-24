@@ -49,7 +49,10 @@ def buildTgt(rigN):
         if rigObj:
             state = rigN.a["nodeState"].get()
             if state == 0:
-                rigObj.gen_sk()
+                sk = rigObj.gen_sk()
+                if sk:
+                    mc.select(sk)
+                    mc.refresh(f=1)
                 rigObj.build()
             elif state == 1:
                 rigObj.build()
@@ -78,6 +81,8 @@ def preRig():
     ctl = DagNode("master_ctl")
     ctl.a.showAttr(t=1, r=1)
     ctl.offset.a.showAttr(t=1, r=1)
+    common.setViewport(jx=1, wos=1)
+    # common.setViewport()
 
 
 @common.Undo("buildSelOrAll")
@@ -112,8 +117,6 @@ def postRig():
     # control.reset_all_pv_ctl()
 
     mc.select(cl=1)
-    common.setViewport(jx=1, wos=1)
-    # common.setViewport()
 
 
 def masterAddProxyAttrs():

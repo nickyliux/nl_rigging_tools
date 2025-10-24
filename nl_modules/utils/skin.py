@@ -133,27 +133,25 @@ def loadWeight(uiPB):
     weightJnt_dict = file.loadJson(tgtFiles[-1])
     logging.info(f"Weight file {tgtFiles[-1]} loaded.")
 
+    if uiPB:
+        uiPB.setMaximum(len(weightJnt_dict))
     i = 0
     loadCount = 0
     for mesh in weightJnt_dict:
-        i += 1
+
         if not mc.objExists(mesh):
             continue
 
-        if uiPB:
-            uiPB.setMaximum(len(weightJnt_dict))
-
         weightFile = tgtDir + "/" + mesh + ".xml"
-
-        # Skip if weight file not found
         if not mc.file(weightFile, q=1, ex=1):
             logging.warning(f"Weight file NOT found: {weightFile}")
             continue
+
         loadCount += skinAndLoadW(mesh, weightJnt_dict[mesh], tgtDir)
 
         if uiPB:
+            i += 1
             uiPB.setValue(i)
-
     if uiPB:
         uiPB.setValue(0)
 
@@ -180,6 +178,7 @@ def skinAndLoadW(mesh=None, bindJnts=None, tgtDir=None):
         return 0
 
     mc.select(mesh)
+    mc.refresh(f=1)
     mc.deformerWeights(
         mesh + ".xml",
         im=1,

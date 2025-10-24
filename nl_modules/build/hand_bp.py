@@ -52,6 +52,7 @@ class HandBp(RigModule):
         self.rootJ | self.SKL_DATA
         self.rootGrp = self.rootJ.addOffsetGrp()
         self.rigNode.setMsg({"rootJ": self.rootJ})
+        return self.rootJ
 
     def build_ctl(self):
         """Build the controls for the hand rig module."""
