@@ -909,13 +909,14 @@ class RigModule(RigBase):
         aim = (xDr * -1, 0, 0)
         wut = "objectrotation"
         r = rSz * 4
-        C1 = Color.PINK
-        C2 = Color.BLACK
+        COL = Color.D_YELLOW
         helpers = []
 
         for tgt in targets:
             ro = tgt.a.rotateOrder.get()
-            extraJ = JntNode(tgt + "_aimHelper", align=tgt, r=r, p=tgt, ro=ro, color=C1)
+            extraJ = JntNode(
+                tgt + "_aimHelper", align=tgt, r=r, p=tgt, ro=ro, color=COL
+            )
             extraJ.resetOrient()
             extraJ.resetXf()
             helpers.append(extraJ)
@@ -928,7 +929,7 @@ class RigModule(RigBase):
         for tgt in targets:
             ro = tgt.a.rotateOrder.get()
             extraJ = JntNode(
-                tgt + "_aimHelperP", align=tgt, r=r * 1.5, p=tgt, ro=ro, color=C2
+                tgt + "_aimHelperP", align=tgt, r=r * 1.5, p=tgt, ro=ro, color=COL
             )
             extraJ.resetOrient()
             extraJ.resetXf()

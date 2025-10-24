@@ -144,7 +144,7 @@ class LegBp(RigModule):
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
             ("palm_fkc", "squareR", "x", scale, 0, -1),
             ("ball_fkc", "squareR", "x", scale / 2, 0, -1),
-            ("ikc", "cube", None, rSz * 2, 0, -1),
+            ("ikc", "cube", None, rSz, 0, -1),
             ("pvc", "diamond3", None, rSz * 2, 0, -1),
             ("smart_ctl", "cube", None, scale, 0, -1),
         ]

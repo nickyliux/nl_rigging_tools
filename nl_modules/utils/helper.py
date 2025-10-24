@@ -140,6 +140,8 @@ def hlpJntSetup(
     dir_name = "A" if dir_sign * xDr == 1 else "B"
     ro = tgtJnt.a.rotateOrder.get()
 
+    mc.refresh(f=1)
+
     # Name and quick existence check for pre-existing setup
     hlpName = f"{tgtJnt.name}_{fr}_{dir_name}"
     tgtGrp = DagNode(hlpName + "_grp")

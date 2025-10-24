@@ -88,8 +88,8 @@ class SpineBp(RigModule):
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        if self.is_ribbon():
-            self.mid_ikc.cv_move(0, 0, rSz * -70)
+        # if self.is_ribbon():
+        #     self.mid_ikc.cv_move(0, 0, rSz * -70)
 
     def is_ribbon(self):
         """Check if the spine rig is of ribbon type."""

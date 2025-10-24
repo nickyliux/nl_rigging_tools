@@ -18,6 +18,8 @@ def skinRefJnts(meshes=None, jnts=None, thld=5, uiPB=None):
         uiPB.setMaximum(len(meshes))
 
     for i, mesh in enumerate(meshes):
+        mc.select(mesh)
+        mc.refresh(f=1)
         if uiPB:
             uiPB.setValue(i)
 
@@ -69,6 +71,8 @@ def autoBind_rbnJnts(meshes=None, uiPB=None):
             ignored += 1
             continue
 
+        mc.select(mesh)
+        mc.refresh(f=1)
         mesh.weightTo(rbJnt, mi=1, tsb=1)
         weighted += 1
 

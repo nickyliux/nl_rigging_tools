@@ -10,7 +10,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>463</width>
+    <width>327</width>
     <height>753</height>
    </rect>
   </property>
@@ -4611,42 +4611,6 @@ for Sel</string>
      </widget>
     </item>
    </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_17">
-   <property name="geometry">
-    <rect>
-     <x>270</x>
-     <y>400</y>
-     <width>161</width>
-     <height>61</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>About</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-   <property name="flat">
-    <bool>true</bool>
-   </property>
-   <widget class="QLabel" name="label_5">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>20</y>
-      <width>151</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Copy Right ©2025 Nicky Liu
-www.nickyliu.com</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
   </widget>
  </widget>
  <resources/>
