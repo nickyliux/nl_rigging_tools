@@ -3,6 +3,7 @@ import logging
 import os
 import re
 import maya.cmds as mc
+from nl_modules.utils import build
 from nl_modules.utils import common
 from nl_modules.utils import file
 from nl_modules.utils import utils_node as ut
@@ -139,8 +140,6 @@ def hlpJntSetup(
     dir_sign = 1 if dir > 0 else -1
     dir_name = "A" if dir_sign * xDr == 1 else "B"
     ro = tgtJnt.a.rotateOrder.get()
-
-    mc.refresh(f=1)
 
     # Name and quick existence check for pre-existing setup
     hlpName = f"{tgtJnt.name}_{fr}_{dir_name}"
@@ -281,6 +280,16 @@ def selAllHlp(*args):
 @common.Undo("Load Helper Joints")
 def loadHlpJnt(uiPB):
     """Load helper joint data from a JSON file and recreate the joints in the scene."""
+
+    at_least_one_built = 0
+    for node in build.getRigNodes_all():
+        if node.a.nodeState.get() == 2:
+            at_least_one_built = 1
+
+    if at_least_one_built == 0:
+        mc.confirmDialog(t="Info", m="The rig is not built !     ", b="OK")
+        return
+
     charPath = mc.optionVar(q="charPath")
     tgtFiles = []
     if charPath:

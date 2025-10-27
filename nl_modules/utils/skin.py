@@ -196,15 +196,13 @@ def skinAndLoadW(mesh=None, bindJnts=None, tgtDir=None):
 
 
 def saveWeight():
-    """Save skin weight joints for selected meshes to a JSON file."""
+    """Save skin weight joints for selected meshes to a JSON file.
+    If nothing selected, look up at the "character" group.
+    """
     charPath = mc.optionVar(q="charPath")
     if charPath == None or charPath == "":
         mc.confirmDialog(t="Info", m="Character path NOT set.     ", b="OK")
         return
-    # mc.select(hi=1)
-    # mc.select(mc.ls(type="mesh", sl=1))
-    # mc.pickWalk(d="up")
-    # selected = mc.ls(sl=1)
 
     weightJntDict = {}
     skinDict = {}
@@ -215,7 +213,15 @@ def saveWeight():
     if tgtFile is None:
         return
 
-    meshesToSave = common.getObjectBelow(mc.ls(sl=1), tgtType="mesh")
+    selList = mc.ls(sl=1, tr=1)
+    if not selList:
+        charName = os.path.basename(charPath)
+        mdlGrp = DagNode(charName)
+        if mdlGrp.exists():
+            selList = mc.ls(mdlGrp)
+        else:
+            return
+    meshesToSave = common.getObjectBelow(selList, tgtType="mesh")
 
     for mesh in meshesToSave:
         skinC = MshNode(mesh).skinCluster
@@ -226,7 +232,7 @@ def saveWeight():
 
     if not weightJntDict:
         mc.confirmDialog(
-            t="Info", m="No group containing skinned mesh selected.     ", b="OK"
+            t="Info", m="No skinned mesh found under selected.     ", b="OK"
         )
         return
 
