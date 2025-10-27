@@ -237,7 +237,7 @@ def saveWeight():
         mc.deformerWeights(
             mesh.name + ".xml", ex=1, deformer=skinC, format="XML", path=tgtDir
         )
-    logging.info(f"{len(skinDict)} objects' weight saved.")
+    logging.info(f"{len(skinDict)} object weights saved.")
 
 
 def copyWeight(*args):

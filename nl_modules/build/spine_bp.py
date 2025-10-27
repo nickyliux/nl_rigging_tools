@@ -81,7 +81,7 @@ class SpineBp(RigModule):
         if self.is_ribbon():
             ctl_defs += [
                 ("chest_ikc", "chest", None, rSz * 5, 0, -1),
-                ("mid_ikc", "diamond3", None, rSz * 4, 0, -1),
+                ("mid_ikc", "diamond3", None, rSz * 3, 1, -1),
                 ("hip_ikc", "hip", None, rSz * 5, 0, -1),
             ]
 
@@ -236,7 +236,7 @@ class SpineBp(RigModule):
 
         self.rbSrf.weightTo(self.jnts_ctl, chain=0, mi=2, dr=6)
 
-        stretchy = self.setting.a.add("stretchy", min=0, max=1, dv=0)
+        stretchy = self.setting.a.add("stretchy", min=0, max=1, dv=1)
         self.hip_ikc.a.add("stretchy", proxy=stretchy)
         self.chest_ikc.a.add("stretchy", proxy=stretchy)
 

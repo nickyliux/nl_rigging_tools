@@ -1178,7 +1178,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Save char_corr {*last} .json</string>
+          <string>Select all helpers</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1659,7 +1659,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Proxy Warp</string>
+      <string>Proxy Warpping</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

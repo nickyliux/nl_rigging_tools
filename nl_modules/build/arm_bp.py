@@ -313,7 +313,7 @@ class ArmBp(RigModule):
 
         # Add blend attribute
         self.setting.a.addSep()
-        fkToIk = self.setting.a.add("fkToIk", min=0, max=1, dv=1)
+        fkToIk = self.setting.a.add("fkToIk", min=0, max=1, dv=0)
         total = len(self.jnts) - 1
 
         # Blend FK/IK to BF joints and drive output joints
