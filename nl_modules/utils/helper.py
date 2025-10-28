@@ -185,7 +185,7 @@ def hlpJntSetup(
     hlpJnt.color = (0.0, 0.1, 0.0)
     cstGrp.a.s.set(dir_sign, dir_sign, dir_sign)
 
-    CrvNode.buildLineLinked(tgt1=bseJnt, tgt2=tgtJnt, dspType=2, top=1, p=cstGrp)
+    CrvNode.buildLineLinked(tgt1=bseJnt, tgt2=tgtJnt, dspType=1, top=1, p=cstGrp)
 
     # Add attributes (grouped for clarity)
     attr_defs = [

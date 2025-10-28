@@ -1233,7 +1233,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Prx</string>
+          <string>Pxy</string>
          </property>
         </widget>
        </item>
@@ -3045,9 +3045,9 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>340</y>
+       <y>334</y>
        <width>224</width>
-       <height>8</height>
+       <height>14</height>
       </rect>
      </property>
      <property name="sizePolicy">
@@ -3065,7 +3065,7 @@
      <property name="maximumSize">
       <size>
        <width>99999</width>
-       <height>8</height>
+       <height>14</height>
       </size>
      </property>
      <property name="styleSheet">

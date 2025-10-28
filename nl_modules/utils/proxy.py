@@ -86,7 +86,7 @@ def genProxy(*args):
         JntNode(j).genProxyMesh(p=PRX_GRP)
 
     mc.select(cl=1)
-    common.setViewport()  # jx=1, wos=1)
+    common.setViewport(wos=1)  # jx=1, wos=1
     logging.info("Proxy mesh generated.")
 
 
@@ -98,7 +98,7 @@ def saveProxy():
         return
 
     charPath = mc.optionVar(q="charPath")
-    tgtFile = mc.fileDialog2(fileFilter="*prx*.ma", dialogStyle=2, dir=charPath)
+    tgtFile = mc.fileDialog2(fileFilter="*pxy*.ma", dialogStyle=2, dir=charPath)
     if tgtFile:
         mc.select("PRX")
         mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
@@ -113,17 +113,17 @@ def loadProxy():
     charPath = mc.optionVar(q="charPath")
     tgtFiles = []
     if charPath:
-        fileToSearch = os.path.join(charPath, os.path.basename(charPath) + "*_prx*.ma")
+        fileToSearch = os.path.join(charPath, os.path.basename(charPath) + "*_pxy*.ma")
         tgtFiles = glob.glob(fileToSearch)
         if not tgtFiles:
             tgtFiles = mc.fileDialog2(
-                fileFilter="*_prx*", dialogStyle=2, fileMode=1, dir=charPath
+                fileFilter="*_pxy*", dialogStyle=2, fileMode=1, dir=charPath
             )
     if not tgtFiles:
         return
 
     genProxy()
-    imported = mc.file(tgtFiles[-1], i=1, ns="prx", returnNewNodes=1)
+    imported = mc.file(tgtFiles[-1], i=1, ns="proxy", returnNewNodes=1)
     ns = ""
     if imported:
         tempStr = imported[0].replace(":", " ").replace("|", " ")
