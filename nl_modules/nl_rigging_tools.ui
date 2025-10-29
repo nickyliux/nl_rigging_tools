@@ -10,7 +10,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>327</width>
+    <width>671</width>
     <height>753</height>
    </rect>
   </property>
@@ -79,8 +79,8 @@
       <rect>
        <x>0</x>
        <y>60</y>
-       <width>95</width>
-       <height>281</height>
+       <width>78</width>
+       <height>301</height>
       </rect>
      </property>
      <property name="title">
@@ -96,7 +96,7 @@
       <property name="geometry">
        <rect>
         <x>6</x>
-        <y>24</y>
+        <y>20</y>
         <width>71</width>
         <height>251</height>
        </rect>
@@ -233,18 +233,33 @@
        </property>
       </item>
      </widget>
-     <widget class="QWidget" name="verticalLayoutWidget">
+     <widget class="QWidget" name="horizontalLayoutWidget_14">
       <property name="geometry">
        <rect>
-        <x>80</x>
-        <y>23</y>
-        <width>16</width>
-        <height>251</height>
+        <x>5</x>
+        <y>270</y>
+        <width>71</width>
+        <height>28</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
+      <layout class="QHBoxLayout" name="model_LO_13">
        <property name="spacing">
         <number>4</number>
+       </property>
+       <property name="sizeConstraint">
+        <enum>QLayout::SetDefaultConstraint</enum>
+       </property>
+       <property name="leftMargin">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>3</number>
+       </property>
+       <property name="rightMargin">
+        <number>3</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
        </property>
        <item>
         <widget class="QPushButton" name="guide_load_BN">
@@ -256,8 +271,8 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>10</width>
-           <height>9999</height>
+           <width>22</width>
+           <height>22</height>
           </size>
          </property>
          <property name="font">
@@ -293,8 +308,8 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>10</width>
-           <height>9999</height>
+           <width>22</width>
+           <height>22</height>
           </size>
          </property>
          <property name="font">
@@ -320,10 +335,10 @@
     <widget class="QGroupBox" name="groupBox_3">
      <property name="geometry">
       <rect>
-       <x>101</x>
+       <x>83</x>
        <y>60</y>
-       <width>121</width>
-       <height>281</height>
+       <width>128</width>
+       <height>301</height>
       </rect>
      </property>
      <property name="title">
@@ -1653,7 +1668,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>350</y>
+       <y>360</y>
        <width>225</width>
        <height>91</height>
       </rect>
@@ -1922,7 +1937,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>440</y>
+       <y>450</y>
        <width>225</width>
        <height>111</height>
       </rect>
@@ -2415,41 +2430,11 @@
       </layout>
      </widget>
     </widget>
-    <widget class="QWidget" name="horizontalLayoutWidget_20">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>624</y>
-       <width>221</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="model_LO_6">
-      <property name="spacing">
-       <number>6</number>
-      </property>
-      <property name="sizeConstraint">
-       <enum>QLayout::SetDefaultConstraint</enum>
-      </property>
-      <property name="leftMargin">
-       <number>4</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>4</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-     </layout>
-    </widget>
     <widget class="QGroupBox" name="groupBox_15">
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>550</y>
+       <y>560</y>
        <width>225</width>
        <height>81</height>
       </rect>
@@ -3044,10 +3029,10 @@
     <widget class="QProgressBar" name="bar_PB">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>334</y>
-       <width>224</width>
-       <height>14</height>
+       <x>214</x>
+       <y>60</y>
+       <width>10</width>
+       <height>301</height>
       </rect>
      </property>
      <property name="sizePolicy">
@@ -3065,7 +3050,7 @@
      <property name="maximumSize">
       <size>
        <width>99999</width>
-       <height>14</height>
+       <height>99999</height>
       </size>
      </property>
      <property name="styleSheet">
@@ -3081,7 +3066,7 @@
       <bool>false</bool>
      </property>
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Vertical</enum>
      </property>
      <property name="invertedAppearance">
       <bool>false</bool>

@@ -187,10 +187,9 @@ class SpineBp(RigModule):
         mid_parent = self.ctls_fk[len(self.ctls_fk) // 2]
         self.mid_ikc | mid_parent
         self.hip_ikc.addOffsetGrp()
-        self.mid_ikc.addOffsetGrp(count=2)
+        self.mid_ikc.addOffsetGrp(count=3)
         self.chest_ikc.addOffsetGrp()
 
-        # self.hip_ikc.a.ry @ self.chest_ikc.a.ry >> self.mid_ikc.offset.a.ry
         self.chest_ikc.a.t @ self.hip_ikc.a.t >> self.mid_ikc.offset.offset.a.t
         (-self.chest_ikc.a.ry / 2) @ self.hip_ikc.a.ry >> self.mid_ikc.offset.a.ry
         self.chest_ikc.cstAim(
@@ -203,34 +202,11 @@ class SpineBp(RigModule):
         )
         self.chest_ikc.cstOri(self.jnts_fk[-1], mo=1)
 
-        # self.add_mid_ikc_follow(mid_parent)
-
         self.build_ribbon()
 
         self.ctls_ik = [self.mid_ikc, self.chest_ikc]
         if not self.is_neck():
             self.ctls_ik += [self.hip_ikc]
-
-    # def add_mid_ikc_follow(self, mid_parent):
-    #     """Add follow setup for mid control"""
-    #     mid_loc = LocNode("mid_loc", p=mid_parent, pf=self.rigID, vis=0)
-
-    #     common.cstMulti(self.chest_ikc, self.hip_ikc, mid_loc, cstType="poi")
-    #     self.chest_ikc.cstAim(
-    #         mid_loc,
-    #         worldUpObject=self.chest_ikc,
-    #         worldUpType="objectrotation",
-    #         aim=(0, 1, 0),
-    #         u=(1, 0, 0),
-    #         wu=(1, 0, 0),
-    #     )
-
-    # RigModule.isolate_align(
-    #     self.mid_ikc,
-    #     spaces=[self.mid_ikc.offset.offset, mid_loc],
-    #     cstType="par",
-    #     attrName="followIk",
-    # )
 
     def build_ribbon(self):
         """Build the ribbon for the spine rig."""

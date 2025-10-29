@@ -60,6 +60,7 @@ class ArmBp(RigModule):
         self.ctls_ik = []
         self.ctls_fk = []
         self.ikhs = []
+        self.ctls_up = []
 
         # IK/FK/Blend/Other attributes
         self.ikc = None
@@ -97,10 +98,10 @@ class ArmBp(RigModule):
 
         ctl_defs = [
             ("setting", "spiral", "z", scale, 1, 2),
-            ("clavicle_fkc", "sphereH", None, scale * 2, 0, -1),
-            ("upr_fkc", "squareR", "x", scale, 0, -1),
-            ("lwr_fkc", "squareR", "x", scale, 0, -1),
-            ("palm_fkc", "squareR", "x", scale, 0, -1),
+            ("clavicle_fkc", "stick2", "z", scale, 0, 2),
+            ("upr_fkc", "circle", "x", scale, 0, -1),
+            ("lwr_fkc", "circle", "x", scale, 0, -1),
+            ("palm_fkc", "circle", "x", scale, 0, -1),
             ("ikc", "cube", None, scale * 2, 0, -1),
             ("pvc", "diamond3", None, rSz * 2, 0, -1),
             ("palm_ikc", "squareR", "x", scale, 0, 2),
@@ -109,8 +110,8 @@ class ArmBp(RigModule):
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        # self.clavicle_fkc.cv_rotate(0, 0, -45)
-        self.clavicle_fkc.cv_move(scale * 30, scale * 10, 0)
+        self.clavicle_fkc.cv_rotate(0, 0, 90)
+        # self.clavicle_fkc.cv_move(scale * 30, scale * 10, 0)
         self.ikc.cv_rotate(0, 90, 0)
         self.pvc.cv_rotate(-90, 0, 0)
 
@@ -136,7 +137,8 @@ class ArmBp(RigModule):
         elif self.limbType == LimbType.BASIC_ROLL.value:
             self.jnts_bind += [self.lwr]
             proxy.add_height_attr([self.lwr], self.rigSize * 10)
-            helpers = self.build_aimHelper([self.lwr, self.palm])
+            self.build_aimHelper([self.lwr])
+            self.ctls_up = self.build_aimHelper([self.palm], addCtl=1)
 
             jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
             jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
@@ -474,6 +476,8 @@ class ArmBp(RigModule):
             ctl.a.showAttr(t=1, r=1)
         for ctl in self.all_bend or []:
             ctl.a.showAttr(t=1, r=1, s=1)
+        for ctl in self.ctls_up or []:
+            ctl.a.showAttr(t=0, r=1, s=0)
 
     def setup_rotate_order(self):
         """Setup rotate order for the arm rig controls."""
@@ -541,6 +545,8 @@ class ArmBp(RigModule):
         ctlSet = self.ctls_fk + self.ctls_ik + [self.setting, self.pin_fkc]
         if self.limbType == LimbType.RIBBON.value:
             ctlSet.extend(self.all_bend)
+        if self.ctls_up:
+            ctlSet.extend(self.ctls_up)
         self.add_ctl_set(ctlSet)
 
     def build_post(self):

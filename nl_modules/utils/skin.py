@@ -141,6 +141,7 @@ def loadWeight(uiPB):
         uiPB.setMaximum(len(weightJnt_dict))
     i = 0
     loadCount = 0
+    mc.setToolTo("selectSuperContext")
     for mesh in weightJnt_dict:
 
         if not mc.objExists(mesh):

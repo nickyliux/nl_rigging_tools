@@ -70,7 +70,7 @@ class GrpNode(DagNode):
             self.snapTo(snap)
         if addOfs:
             self.addOffsetGrp()
-        if nodeType == "joint" and radius:
+        if nodeType == "joint" and radius != None:
             self.a.radius.set(radius)
         return self
 
@@ -121,7 +121,7 @@ class GrpNode(DagNode):
             else:
                 mc.scale(*args, self.cvs, **kwargs)
 
-    def add_gimbal(self, relScale=0.8, attrTgt=None, dv=1):
+    def add_gimbal(self, relScale=0.88, attrTgt=None, dv=1):
         """Add a gimbal control to the curve"""
         gmb_ctl = self.duplicate(n=self.node + "_gmb")
         gmb_ctl | self

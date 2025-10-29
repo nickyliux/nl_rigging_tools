@@ -154,7 +154,7 @@ class LegBp(RigModule):
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
-        self.smart_ctl.cv_move(15 * scale, 0, 0)
+        self.smart_ctl.cv_move(20 * scale, 0, 0)
         self.smart_ctl.cv_scale(1, -1, -1)
         self.ikc.cv_move(0, 0, rSz * 2)
         self.ikc.cv_scale(1.5, 1.5, 4)
@@ -203,8 +203,7 @@ class LegBp(RigModule):
             self.jnts_bind += [self.lwr]
             proxy.add_height_attr([self.lwr], self.rigSize * 10)
 
-            helpers = self.build_aimHelper([self.lwr, self.palm])
-            # self.jnts_bind += helpers
+            self.build_aimHelper([self.lwr, self.palm])
 
             jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
             jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)

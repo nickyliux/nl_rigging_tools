@@ -81,8 +81,7 @@ def preRig():
     ctl = DagNode("master_ctl")
     ctl.a.showAttr(t=1, r=1)
     ctl.offset.a.showAttr(t=1, r=1)
-    # common.setViewport(jx=1, wos=1)
-    common.setViewport(jx=1)
+    common.setViewport(jx=1, wos=1)
 
 
 @common.Undo("buildSelOrAll")
@@ -105,7 +104,7 @@ def buildSelOrAll(*arg, uiPB=None):
         if uiPB:
             uiPB.setValue(0)
         # Gen proxy after build
-        proxy.genProxy()
+        # proxy.genProxy()
 
 
 def postRig():

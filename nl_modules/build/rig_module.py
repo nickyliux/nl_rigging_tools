@@ -901,7 +901,7 @@ class RigModule(RigBase):
         setattr(self, name, ctl)
         self.rigNode.setMsg({name: ctl})
 
-    def build_aimHelper(self, targets, up="y"):
+    def build_aimHelper(self, targets, up="y", addCtl=0):
         """Build roller joints for the specified targets."""
         rID, rSz, xDr = self.getMyVar()
 
@@ -910,7 +910,6 @@ class RigModule(RigBase):
         wut = "objectrotation"
         r = rSz * 4
         COL = Color.D_YELLOW
-        helpers = []
 
         for tgt in targets:
             ro = tgt.a.rotateOrder.get()
@@ -919,27 +918,40 @@ class RigModule(RigBase):
             )
             extraJ.resetOrient()
             extraJ.resetXf()
-            helpers.append(extraJ)
             tgt_p = tgt.parent
             if tgt_p and tgt_p.type == "joint":
                 tgt_p.cstAim(
                     extraJ, aim=aim, worldUpType=wut, worldUpObject=tgt, u=u, wu=wu
                 )
 
+        upCtls = []
         for tgt in targets:
+            if addCtl:
+                upCtl = CrvNode(
+                    "" + tgt.name + "_upCtl",
+                    shape="rotator",
+                    align=tgt,
+                    scale=rSz * self.xDir,
+                    p=self.CTL_DATA,
+                    addOfs=1,
+                )
+                tgt.cstPar(upCtl.offset)
+                upCtls.append(upCtl)
+
             ro = tgt.a.rotateOrder.get()
             extraJ = JntNode(
                 tgt + "_aimHelperP", align=tgt, r=r * 1.5, p=tgt, ro=ro, color=COL
             )
             extraJ.resetOrient()
             extraJ.resetXf()
-            helpers.append(extraJ)
             tgt_p = tgt.parent
             if tgt_p and tgt_p.type == "joint":
+                wuo = upCtl if addCtl else tgt_p
                 tgt_p.cstAim(
-                    extraJ, aim=aim, worldUpType=wut, worldUpObject=tgt_p, u=u, wu=wu
+                    extraJ, aim=aim, worldUpType=wut, worldUpObject=wuo, u=u, wu=wu
                 )
-        return helpers
+
+            return upCtls
 
     def build_rollChain(self, jnt0, jnt1, num=2, suffix="_ro"):
         """Build a roll chain between two joints. Add locator for delta roll"""
