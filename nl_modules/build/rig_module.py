@@ -951,7 +951,7 @@ class RigModule(RigBase):
                     extraJ, aim=aim, worldUpType=wut, worldUpObject=wuo, u=u, wu=wu
                 )
 
-            return upCtls
+        return upCtls
 
     def build_rollChain(self, jnt0, jnt1, num=2, suffix="_ro"):
         """Build a roll chain between two joints. Add locator for delta roll"""

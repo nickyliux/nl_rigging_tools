@@ -155,7 +155,8 @@ class LegBp(RigModule):
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
         self.smart_ctl.cv_move(20 * scale, 0, 0)
-        self.smart_ctl.cv_scale(1, -1, -1)
+        if xDr == -1:
+            self.smart_ctl.cv_rotate(180, 0, 0)
         self.ikc.cv_move(0, 0, rSz * 2)
         self.ikc.cv_scale(1.5, 1.5, 4)
 

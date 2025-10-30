@@ -248,7 +248,7 @@ def loadTemplate(removeUnused=1):
                                     guideN.a[attr].set(v, type="string")
                                 elif isinstance(v, list):
                                     guideN.a[attr].set(*v)
-    common.setViewport(fit=1)
+    # common.setViewport(fit=1)
     mc.select(cl=1)
     logging.info(f"Template loaded: {tgtFiles[-1]}.")
 
