@@ -150,6 +150,7 @@ def loadProxy():
         rootGrp = DagNode(ns + ":*")
         if rootGrp.exists():
             rootGrp.delete()
+        mc.refresh(f=1)
         logging.info(f"{load_count} proxy meshes loaded.")
         mc.confirmDialog(t="Info", m=f"{load_count} proxy meshes loaded.     ", b="OK")
 

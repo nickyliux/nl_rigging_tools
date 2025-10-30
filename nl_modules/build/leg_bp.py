@@ -537,7 +537,7 @@ class LegBp(RigModule):
                 self.setting.a.add("bendyCtls", attrType="bool", k=0, dv=0),
                 onList=self.all_bend,
             )
-        mc.hide(self.ikhs, self.toeIKHs)
+        mc.hide(self.ikhs, self.toeIKHs, self.setting)
 
     def setup_channel(self):
         """Setup channels for the leg rig controls."""

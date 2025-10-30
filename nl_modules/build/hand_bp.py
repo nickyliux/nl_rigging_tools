@@ -70,8 +70,8 @@ class HandBp(RigModule):
 
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
         self.smart_ctl.cv_scale(0.5, 1.5, 0.5)
-        self.palm_ctl.color = Color.YELLOW
-        self.thumb_ctl.color = Color.YELLOW
+        self.palm_ctl.color = Color.D_YELLOW
+        self.thumb_ctl.color = Color.D_YELLOW
         self.smart_ctl.color = Color.D_YELLOW
 
     def build(self):
@@ -146,6 +146,7 @@ class HandBp(RigModule):
                     attr2,
                     *data[j][k],
                     inf=1,
+                    tangent=3,
                 )
 
     def setup_claw_sdk(self):
@@ -157,12 +158,12 @@ class HandBp(RigModule):
             [(-90, -70), (0, 0), (90, 35)],  # id = 3
         ]
         for i in range(1, 5):
-            self.setSDK(drv, data, i=i, tgtOfs=2, attr1="claw")
+            self.setSDK(drv, data, i=i, tgtOfs=2, attr1="claw")  # , inf=1, tangent=3)
         # Fgr 0
         data = [
             [(-90, -75), (0, 0), (90, 60)],  # id = 2
         ]
-        self.setSDK(drv, data, i=0, tgtOfs=2, attr1="claw")
+        self.setSDK(drv, data, i=0, tgtOfs=2, attr1="claw")  # , inf=1, tangent=3)
 
     def setup_close_sdk(self):
         """Setup SDK for finger close controls."""
@@ -216,18 +217,18 @@ class HandBp(RigModule):
             ]
             ofs = self.ctls_fgr[i + 1][1].offset
             for k in range(3):
-                common.sdk(drv, ofs, "sy", "rz", *data_rz[i][k], inf=1)
+                common.sdk(drv, ofs, "sy", "rz", *data_rz[i][k], inf=1, tangent=3)
 
             # -------------------------------------------
             data_rz2 = [
-                [(0, -1), (1, 0), (2, 5)],
-                [(0, -0.3), (1, 0), (2, 2)],
-                [(0, 0.3), (1, 0), (2, -2)],
-                [(0, 1), (1, 0), (2, -5)],
+                [(0, -1), (1, 0), (2, 3)],
+                [(0, -0.3), (1, 0), (2, 1)],
+                [(0, 0.3), (1, 0), (2, -1)],
+                [(0, 1), (1, 0), (2, -3)],
             ]
             ofs = self.ctls_fgr[i + 1][0].offset
             for k in range(3):
-                common.sdk(drv, ofs, "sy", "rz", *data_rz2[i][k], inf=1)
+                common.sdk(drv, ofs, "sy", "rz", *data_rz2[i][k], inf=1, tangent=3)
 
     def setup_updn_sdk(self):
         """Setup SDK for up/down pose on fingers."""
@@ -368,7 +369,7 @@ class HandBp(RigModule):
         for ctls in self.ctls_fgr:
             ctls[0].shape.hide()
 
-        mc.hide(self.ikHs_fgr, self.jnts_ik)  # , self.setting)
+        mc.hide(self.ikHs_fgr, self.jnts_ik, self.setting)
         # self.setting.shape.hide()
 
     def setup_ctlSet(self):
