@@ -257,14 +257,17 @@ def mirrorHelper(*args):
 
 
 @common.Undo("Delete Helper Joint Groups")
-def delGrpForSel(*args):
-    """Delete helper joint groups for selected helper joints."""
-    selList = [JntNode(j) for j in mc.ls("*_r?_?_jnt", sl=1, type="joint")]
+def delGrpAllOrSel(*args):
+    """Delete helper joint groups for selected / all helper joints."""
+    selList = mc.ls(sl=1)
+    selList = [JntNode(j) for j in mc.ls("*_r?_?_jnt", sl=bool(selList), type="joint")]
+
     try:
         for sel in selList:
             grp = sel.parent.parent.parent
             if grp.exists():
-                mc.delete(grp)
+                logging.info(f"Helper joint group {grp.name} deleted.")
+                grp.delete()
     except Exception as e:
         logging.warning(f"Failed to delete group for {sel.name}: {e}")
 
@@ -309,7 +312,7 @@ def loadHlpJnt(uiPB):
         uiPB.setMaximum(len(corrDataList))
 
     i = 0
-    loaded = 0
+    load_count = 0
     for data in corrDataList:
 
         # Load data
@@ -342,11 +345,11 @@ def loadHlpJnt(uiPB):
             scaling2=scaling2,
         )
         if j:
-            loaded += 1
+            load_count += 1
 
     if uiPB:
         uiPB.setValue(0)
-    mc.confirmDialog(t="Info", m=f"{loaded} helper joints loaded.     ", b="OK")
+    mc.confirmDialog(t="Info", m=f"{load_count} helper joints loaded.     ", b="OK")
     # logging.info(f"{loaded} helper joints loaded.")
 
 

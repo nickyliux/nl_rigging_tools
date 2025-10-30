@@ -1,11 +1,11 @@
 import os
 import glob
 import logging
-from maya import mel
 from maya import cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.msh_node import MshNode
 from nl_modules.utils import common
+from nl_modules.utils import control
 from nl_modules.utils import file
 
 
@@ -142,6 +142,7 @@ def loadWeight(uiPB):
     i = 0
     loadCount = 0
     mc.setToolTo("selectSuperContext")
+    control.reset_all_ctl()
     for mesh in weightJnt_dict:
 
         if not mc.objExists(mesh):
@@ -160,8 +161,8 @@ def loadWeight(uiPB):
     if uiPB:
         uiPB.setValue(0)
 
+    logging.info(f"{loadCount} objects weight loaded.")
     mc.confirmDialog(t="Info", m=f"{loadCount} objects weight loaded.     ", b="OK")
-    # logging.info(f"{loadCount} objects' weight loaded.")
     mc.select(cl=1)
 
 
@@ -174,8 +175,8 @@ def skinAndLoadW(mesh=None, bindJnts=None, tgtDir=None):
 
     for jnt in bindJnts:
         if not mc.objExists(jnt):
+            logging.info(f"{mesh}'s weight NOT loaded. Bind joint missing: {jnt}.")
             mc.confirmDialog(t="Info", m=f"Bind joint Missing.\n'{jnt}'     ", b="OK")
-            # logging.info(f"{mesh}'s weight NOT loaded : {jnt} NOT found.")
             return 0
     try:
         skinC = mc.skinCluster(mesh, bindJnts, tsb=1)
@@ -193,7 +194,7 @@ def skinAndLoadW(mesh=None, bindJnts=None, tgtDir=None):
         format="XML",
         path=tgtDir,
     )
-    logging.info(f"{mesh}'s weight loaded.")
+    # logging.info(f"{mesh}'s weight loaded.")
     return 1
 
 

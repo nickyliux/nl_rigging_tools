@@ -10,11 +10,13 @@ from nl_modules.nodel.grp_node import GrpNode
 
 def reset_all_ctl():
     """Reset all ctl's attr to default"""
-    logging.info("Reset All Ctl's Attr")
+    reset_count = 0
     for ctl in common.getRigCtlsAll():
         for attr in ctl.a.list(k=1, u=1, se=1, s=1):
             if attr.settable():
                 attr.reset()
+        reset_count += 1
+    logging.info(f"{reset_count} ctls reset.")
 
 
 # def getRigNodes_all():

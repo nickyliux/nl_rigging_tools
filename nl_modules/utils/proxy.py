@@ -80,14 +80,16 @@ def genProxy(*args):
         logging.warning(f"Set '{BIND_JNT_SET}' not found.")
         return
 
+    proxy_count = 0
     for j in bindJnts:
         grpName = str(j).split("_")[0]
         PRX_GRP = GrpNode(grpName + "_PRX", p=PRX)
         JntNode(j).genProxyMesh(p=PRX_GRP)
+        proxy_count += 1
 
     mc.select(cl=1)
     common.setViewport(wos=1)  # jx=1, wos=1
-    logging.info("Proxy mesh generated.")
+    logging.info(f"{proxy_count} proxy meshes generated.")
 
 
 def saveProxy():
@@ -134,21 +136,22 @@ def loadProxy():
 
     allGeo = [DagNode(geo) for geo in mc.ls("*_pxGeo")]
     control.reset_all_ctl()
-    loaded = 0
+    load_count = 0
     for geo in allGeo:
         imported = DagNode(ns + ":" + geo)
         if imported.exists():
             common.matchMove([geo, imported], mode="a")
             mc.blendShape(imported, geo, w=(0, 1), topologyCheck=0)
             geo.deleteHistory()
-            loaded += 1
+            load_count += 1
 
+    mc.refresh(f=1)
     if imported:
         rootGrp = DagNode(ns + ":*")
         if rootGrp.exists():
             rootGrp.delete()
-        mc.confirmDialog(t="Info", m=f"{loaded} proxy meshes loaded.     ", b="OK")
-        # logging.info(f"{loaded} proxy meshes loaded.")
+        logging.info(f"{load_count} proxy meshes loaded.")
+        mc.confirmDialog(t="Info", m=f"{load_count} proxy meshes loaded.     ", b="OK")
 
 
 @common.Undo("resetProxy")

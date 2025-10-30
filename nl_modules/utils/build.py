@@ -53,10 +53,10 @@ def buildTgt(rigN):
                 if sk:
                     mc.select(sk)
                     mc.refresh(f=1)
-                rigObj.build()
-            elif state == 1:
-                rigObj.build()
-            mc.refresh(cv=1)
+                    rigObj.build()
+            # elif state == 1:
+            #     rigObj.build()
+            # mc.refresh(cv=1)
 
 
 def loadBase():
@@ -114,6 +114,8 @@ def postRig():
     control.reset_all_ctl()
     update_anchor_conn()
     update_space_switch()
+    logging.info("Rig built.")
+    print("")
 
 
 def masterAddProxyAttrs():
@@ -191,6 +193,7 @@ def update_anchor_conn():
         logging.warning("No socket anchors found.")
         return
 
+    update_count = 0
     # Iterate through each rigNode to find and connect the closest plug anchor
     for node in rigNodes:
         for anchor in ["anchorS1", "anchorS2"]:
@@ -205,14 +208,17 @@ def update_anchor_conn():
             parentNameMatch = master_guide.a.parentNameMatch.get()
             parentRigNodes = getRigNodes_all(match=parentNameMatch)
 
-            if not parentRigNodes:
-                logging.warning(f"No parent rigNode found for {node.name}.")
-                continue
+            # if not parentRigNodes:
+            #     logging.warning(f"No parent rigNode found for {node.name}.")
+            #     continue
 
-            if node in parentRigNodes:  # Remove self if in parent list
+            if (
+                parentRigNodes and node in parentRigNodes
+            ):  # Remove self if in parent list
                 parentRigNodes.remove(node)
 
             if len(parentRigNodes) == 0:  # No parent rigNode found
+                logging.warning(f"No parent rigNode found for {node.name}.")
                 continue
 
             plugAnchors = getAnchors(parentRigNodes, startStr="anchorP")
@@ -225,8 +231,11 @@ def update_anchor_conn():
 
             closestPlugAnchor = min(dist_dict, key=dist_dict.get)
 
-            logging.info(f"{closestPlugAnchor.name} >> {socket.name}.")
             closestPlugAnchor.cstPar(socket, mo=1)
+            update_count += 1
+            # logging.info(f"{closestPlugAnchor.name} >> {socket.name}.")
+
+    logging.info(f"{update_count} anchor connections updated.")
 
 
 # ---------------------------------------------------------------
@@ -243,10 +252,8 @@ def update_anchor_conn():
 
 def update_space_switch():
     """Update space switch for all rigNodes"""
-    logging.info("Update all space switches.")
-
     spaceData = collect_space_data()
-
+    update_count = 0
     for ctl, spaceList, rigNode in spaceData:
         if ctl.a.space.exists():
             # delete space and related groups
@@ -289,6 +296,9 @@ def update_space_switch():
                 names=":".join(resultDict.keys()),
                 spaces=resultDict.values(),
             )
+            update_count += 1
+
+    logging.info(f"{update_count} space switches updated.")
 
 
 def get_space_obj(rigNode):
