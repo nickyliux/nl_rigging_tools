@@ -134,18 +134,21 @@ def loadProxy():
 
     allGeo = [DagNode(geo) for geo in mc.ls("*_pxGeo")]
     control.reset_all_ctl()
+    loaded = 0
     for geo in allGeo:
         imported = DagNode(ns + ":" + geo)
         if imported.exists():
             common.matchMove([geo, imported], mode="a")
             mc.blendShape(imported, geo, w=(0, 1), topologyCheck=0)
             geo.deleteHistory()
+            loaded += 1
 
     if imported:
         rootGrp = DagNode(ns + ":*")
         if rootGrp.exists():
             rootGrp.delete()
-        logging.info("Proxies loaded.")
+        mc.confirmDialog(t="Info", m=f"{loaded} proxy meshes loaded.     ", b="OK")
+        # logging.info(f"{loaded} proxy meshes loaded.")
 
 
 @common.Undo("resetProxy")

@@ -160,8 +160,8 @@ def loadWeight(uiPB):
     if uiPB:
         uiPB.setValue(0)
 
-    # logging.info(f"Weight file {tgtFiles[-1]} loaded.")
-    logging.info(f"{loadCount} objects' weight loaded.")
+    mc.confirmDialog(t="Info", m=f"{loadCount} objects weight loaded.     ", b="OK")
+    # logging.info(f"{loadCount} objects' weight loaded.")
     mc.select(cl=1)
 
 
@@ -174,7 +174,8 @@ def skinAndLoadW(mesh=None, bindJnts=None, tgtDir=None):
 
     for jnt in bindJnts:
         if not mc.objExists(jnt):
-            logging.info(f"{mesh}'s weight NOT loaded : {jnt} NOT found.")
+            mc.confirmDialog(t="Info", m=f"Bind joint Missing.\n'{jnt}'     ", b="OK")
+            # logging.info(f"{mesh}'s weight NOT loaded : {jnt} NOT found.")
             return 0
     try:
         skinC = mc.skinCluster(mesh, bindJnts, tsb=1)
