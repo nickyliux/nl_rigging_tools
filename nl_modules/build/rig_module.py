@@ -415,16 +415,20 @@ class RigModule(RigBase):
 
         self.jnts_bind.extend(tgtList)
 
-    def add_movable_pivot(self, tgt, snap=None, hide=1):
+    @staticmethod
+    def add_movable_pivot(tgt, snap=None, hide=1):
         """Add movable pivot ctl under tgt"""
-        pvt_ctl = LocNode(tgt + "_pvt", align=tgt, p=tgt)
-        pvt_ctl.a.t >> tgt.a.rotatePivot
-        if snap:
-            pvt_ctl.snapTo(snap)
-        if hide:
-            pvt_ctl.hide()
+        if isinstance(tgt, str):
+            tgt = DagNode(tgt)
 
-        return pvt_ctl
+        pvt = LocNode(tgt + "_pvt", align=tgt, p=tgt)
+        pvt.a.t >> tgt.a.rotatePivot
+        if snap:
+            pvt.snapTo(snap)
+        if hide:
+            pvt.hide()
+
+        return pvt
 
     def add_movable_pivotX(
         self, tgt, scale=1, inRange=500, maxOfs=500, ty=1, tz=1, settable=1

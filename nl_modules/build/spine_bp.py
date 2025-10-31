@@ -191,16 +191,18 @@ class SpineBp(RigModule):
         self.chest_ikc.addOffsetGrp()
 
         self.chest_ikc.a.t @ self.hip_ikc.a.t >> self.mid_ikc.offset.offset.a.t
-        (-self.chest_ikc.a.ry / 2) @ self.hip_ikc.a.ry >> self.mid_ikc.offset.a.ry
-        self.chest_ikc.cstAim(
+        (-self.hip_ikc.a.ry / 2) @ self.chest_ikc.a.ry >> self.mid_ikc.offset.a.ry
+        self.hip_ikc.cstAim(
             self.mid_ikc.offset.offset,
-            worldUpObject=self.chest_ikc,
+            worldUpObject=self.hip_ikc,
             worldUpType="objectrotation",
-            aim=(0, 1, 0),
+            aim=(0, -1, 0),
             u=(0, 0, 1),
             wu=(0, 0, 1),
         )
         self.chest_ikc.cstOri(self.jnts_fk[-1], mo=1)
+        RigModule.add_movable_pivot(self.chest_ikc, snap=self.ctls_fk[-1])
+        # self.chest_ikc.a.add("pvtOffset") >> pvt.a.ty
 
         self.build_ribbon()
 
