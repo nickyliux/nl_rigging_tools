@@ -80,7 +80,7 @@ class SpineBp(RigModule):
         ]
         if self.is_ribbon():
             ctl_defs += [
-                ("chest_ikc", "chest", None, rSz * 5, 0, -1),
+                ("chest_ikc", "chest", None, rSz * 7, 0, -1),
                 ("mid_ikc", "diamond3", None, rSz * 3, 1, -1),
                 ("hip_ikc", "hip", None, rSz * 5, 0, -1),
             ]

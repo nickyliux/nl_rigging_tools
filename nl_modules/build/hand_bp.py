@@ -150,6 +150,7 @@ class HandBp(RigModule):
                 )
 
     def setup_claw_sdk(self):
+        """Setup SDK for finger claw controls."""
         claw = self.smart_ctl.a.add("claw", attrType="float", dv=0, k=1)
         drv = self.smart_ctl
         # Fgr 1, 2, 3, 4
@@ -158,12 +159,12 @@ class HandBp(RigModule):
             [(-90, -70), (0, 0), (90, 35)],  # id = 3
         ]
         for i in range(1, 5):
-            self.setSDK(drv, data, i=i, tgtOfs=2, attr1="claw")  # , inf=1, tangent=3)
+            self.setSDK(drv, data, i=i, tgtOfs=2, attr1="claw")
         # Fgr 0
         data = [
             [(-90, -75), (0, 0), (90, 60)],  # id = 2
         ]
-        self.setSDK(drv, data, i=0, tgtOfs=2, attr1="claw")  # , inf=1, tangent=3)
+        self.setSDK(drv, data, i=0, tgtOfs=2, attr1="claw")
 
     def setup_close_sdk(self):
         """Setup SDK for finger close controls."""
@@ -250,6 +251,7 @@ class HandBp(RigModule):
             mc.setInfinity(pri="linear", poi="linear")
 
     def setup_thumbCtl(self):
+        """Setup thumb control for the hand rig."""
         rID, rSz, xDr = self.getMyVar()
         fkc_ofs0 = self.ctls_fgr[0][0].offset.addOffsetGrp()
 

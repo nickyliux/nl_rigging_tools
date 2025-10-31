@@ -349,6 +349,7 @@ def loadHlpJnt(uiPB):
 
     if uiPB:
         uiPB.setValue(0)
+    mc.refresh(f=1)
     mc.confirmDialog(t="Info", m=f"{load_count} helper joints loaded.     ", b="OK")
     # logging.info(f"{loaded} helper joints loaded.")
 
