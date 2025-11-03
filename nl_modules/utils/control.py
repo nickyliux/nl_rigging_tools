@@ -105,6 +105,7 @@ def saveCtl():
             mc.select(cl=1)
 
 
+@common.Undo("loadCtl")
 def loadCtl():
     """Load control curves from a file and replace existing controls."""
     charPath = mc.optionVar(q="charPath")

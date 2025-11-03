@@ -196,8 +196,8 @@ def hlpJntSetup(
         ("dir", {"dv": dir, "k": 0, "cb": 0}),
         ("init", {"dv": 1, "min": 0}),
         ("initAngle", {"dv": 0}),
-        ("scaling1", {"dv": 0, "min": 0}),
-        ("scaling2", {"dv": 2, "min": 0}),
+        ("scaling1", {"dv": 0}),
+        ("scaling2", {"dv": 2}),
     ]
 
     for name, kwargs in attr_defs:

@@ -13,8 +13,6 @@ from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
 
-BIND_JNT_SET = "bind_jnt_set"
-
 
 class RigModule(RigBase):
     """Base class for rig modules, providing common functionality for rigging operations."""
@@ -406,12 +404,12 @@ class RigModule(RigBase):
         else:
             mc.sets(tgtList, n=setName)
 
-    def add_bind_jnt_set(self, tgtList):
+    def add_bind_jnt_set(self, tgtList, tgtSet="auto_bind_jnt_set"):
         """Add bind joint set for target joints"""
-        if DagNode(BIND_JNT_SET).exists():
-            mc.sets(tgtList, add=BIND_JNT_SET)
+        if DagNode(tgtSet).exists():
+            mc.sets(tgtList, add=tgtSet)
         else:
-            mc.sets(tgtList, n=BIND_JNT_SET)
+            mc.sets(tgtList, n=tgtSet)
 
         self.jnts_bind.extend(tgtList)
 
@@ -493,13 +491,13 @@ class RigModule(RigBase):
         rID, rSz, xDr = self.getMyVar()
 
         s = rSz * xDr
-        common.sdk(driver, driven, "ry", "tz", 0, 0)
-        common.sdk(driver, driven, "ry", "tz", -70, -3 * s, tangent=1)
+        common.sdk(driver, driven, "ry", "tz", 0, 0, tangent=1)
+        common.sdk(driver, driven, "ry", "tz", -70, -2 * s, tangent=1)
         # common.sdk(driver, driven, "ry", "tz", -70, -3.8 * s, tangent=1)
         common.sdk(driver, driven, "ry", "tz", -150, -5 * s, tangent=1)
         # common.sdk(driver, driven, "ry", "tz", -150, -6.8 * s, tangent=1)
 
-        common.sdk(driver, driven, "ry", "tx", 0, 0)
+        common.sdk(driver, driven, "ry", "tx", 0, 0, tangent=1)
         common.sdk(driver, driven, "ry", "tx", -80, s * 1.5, tangent=1)
         common.sdk(driver, driven, "ry", "tx", -170, 0, tangent=1)
 
@@ -538,7 +536,7 @@ class RigModule(RigBase):
         from nl_modules.utils import utils_node as ut
 
         footRoll = targetCtl.a.add("footRoll")
-        footBreak = targetCtl.a.add("footBreak", min=0, dv=30, k=0)
+        footBreak = targetCtl.a.add("footBreak", min=0, dv=50, k=0)
         ut.min_(0, footRoll) >> heelRollG.a.rx
         ut.clp_(footRoll, min=0, max=footBreak) >> ballRollG.a.rx
         ut.max_(0, (footRoll - footBreak)) >> footRollG.a.rx

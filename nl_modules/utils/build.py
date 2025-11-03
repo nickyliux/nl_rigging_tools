@@ -411,7 +411,7 @@ def getRigNodes_all(match="*"):
     parts = match.split(",")
     returnNodes = []
     for part in parts:
-        returnNodes.extend([DagNode(r) for r in mc.ls(part + "_RGN", type="script")])
+        returnNodes.extend([DagNode(r) for r in mc.ls(part + "RGN", type="script")])
     return returnNodes
 
 

@@ -46,9 +46,7 @@ UI_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.ui")
 STYLE_PATH = os.path.join(MOD_DIR, "style.qss")
 LIGHTING_FILE = os.path.join(LIGHT_PATH, "lighting4.ma")
 SHADER_FILE = os.path.join(LIGHT_PATH, "bone_SHD.ma")
-BIND_JNT_SET = "bind_jnt_set"
-MODEL_GRP = "mdl_grp"
-BIND_REF_GRP = "jnt_grp"
+AUTO_BIND_JNT_GRP = "auto_bind_jnt_grp"
 
 
 class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
@@ -183,10 +181,10 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             ":openScript.png",
         )
         self.connect(self.UI.saveWeight_BN, skin.saveWeight, ":fileSave.png")
-        self.connect(self.UI.copyWeight_BN, skin.copyWeight, ":copySkinWeight.png")
         self.connect(self.UI.mirrorSym_BN, partial(skin.mirrorWeight, 1))
         self.connect(self.UI.mirrorAsym_BN, partial(skin.mirrorWeight, 0))
         self.connect(self.UI.prune_BN, skin.pruneWeight)
+        self.connect(self.UI.copyWeight_BN, skin.copyWeight)  # , ":copySkinWeight.png")
 
         # Sk
         self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
@@ -436,11 +434,11 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         meshSel = [DagNode(m).parent for m in mc.ls(sl=1, type="mesh")]
 
         if meshSel:
-            jnt_grp = GrpNode("jnt_grp")
+            grp = GrpNode(AUTO_BIND_JNT_GRP)
             for mesh in meshSel:
                 sf = "_rbJnt" if rb else "_refJnt"
                 color = Color.RED if rb else Color.WHITE
-                jnt = JntNode(mesh + sf, color=color, p=jnt_grp)
+                jnt = JntNode(mesh + sf, color=color, p=grp, r=0.3)
                 jnt.a.t.set(*mesh.o.bbCenter)
 
         mc.select(cl=1)
@@ -458,7 +456,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         else:
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 
-    def autoBind_refJnts(self, meshes=None, jntSet=None, thld=5, uiPB=None):
+    def autoBind_refJnts(
+        self, meshes=None, jntSet="auto_bind_jnt_set", thld=5, uiPB=None
+    ):
         """Bind meshes to the closest reference joints."""
         if not DagNode(jntSet).exists():
             raise ValueError(f"Set {jntSet} NOT found for auto skin.")
@@ -477,24 +477,28 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def boneAutoBind(self):
         """Bind all meshes in MODEL_GRP to reference joints and ribbon joints."""
 
-        if not mc.objExists(MODEL_GRP):
-            mc.confirmDialog(t="Info", m=f"{MODEL_GRP} NOT found.    ", b="OK")
-            return
-        if not mc.objExists(BIND_REF_GRP):
-            mc.confirmDialog(t="Info", m=f"{BIND_REF_GRP} NOT found.    ", b="OK")
+        selList = mc.ls(sl=1, tr=1)
+        if not selList:
+            mc.confirmDialog(t="Info", m="No mesh selected.    ", b="OK")
             return
 
-        tgtMesh = common.getObjectBelow(MODEL_GRP)
+        tgtMeshes = common.getObjectBelow(selList)
+        if not tgtMeshes:
+            mc.confirmDialog(t="Info", m="No mesh found below selection.    ", b="OK")
+            return
+
+        if not mc.objExists(AUTO_BIND_JNT_GRP):
+            mc.confirmDialog(t="Info", m=f"{AUTO_BIND_JNT_GRP} NOT found.    ", b="OK")
+            return
 
         # Bind either to closest refJnt, or corresponding rbnJnt
         self.autoBind_refJnts(
-            meshes=tgtMesh,
-            jntSet=BIND_JNT_SET,
+            meshes=tgtMeshes,
             thld=15,
             uiPB=self.UI.bar_PB,
         )
         skin.autoBind_rbnJnts(
-            meshes=tgtMesh,
+            meshes=tgtMeshes,
             uiPB=self.UI.bar_PB,
         )
 
