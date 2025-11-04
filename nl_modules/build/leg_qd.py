@@ -18,7 +18,7 @@ from enum import Enum
 
 class LimbType(Enum):
     BASIC = 0
-    # BASIC_ROLL = 1
+    # ROBOT = 1
     # RIBBON = 2
     SKEL = 1
 

@@ -128,8 +128,8 @@ class GrpNode(DagNode):
         gmb_ctl.cv_scale(relScale, atCVCetner=1)
 
         attrTgt = attrTgt or self
-        attr = attrTgt.a.add("gimbalCtl", attrType="bool", dv=dv, k=0)
-        gmb_ctl.a.add("gimbalCtl", proxy=attr)
+        attr = attrTgt.a.add("gimbalVis", attrType="bool", dv=dv, k=0)
+        gmb_ctl.a.add("gimbalVis", proxy=attr, k=0)
         attr >> gmb_ctl.a.v
 
         return gmb_ctl
@@ -271,6 +271,9 @@ class GrpNode(DagNode):
         for xform in tgtXforms:
             [sh.delete() for sh in xform.shapes]
             mc.parent(self.shapes, xform, r=1, s=1, add=1)
+
+        for sh in self.shapes:
+            sh.rename(xform + "Shape")
 
         if not keepSrc:
             self.delete()

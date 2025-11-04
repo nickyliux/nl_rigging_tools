@@ -17,7 +17,7 @@ from enum import Enum
 
 class LimbType(Enum):
     BASIC = 0
-    BASIC_ROLL = 1
+    ROBOT = 1
     RIBBON = 2
     SKEL = 3
 
@@ -110,9 +110,7 @@ class ArmBp(RigModule):
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        # self.clavicle_fkc.cv_rotate(0, 0, 90)
-        # self.clavicle_fkc.cv_scale(1, 0.5, 1)
-        self.clavicle_fkc.cv_move(scale * 40, 0, 0)
+        self.clavicle_fkc.cv_move(scale * 30, 0, 0)
         self.ikc.cv_rotate(0, 90, 0)
         self.pvc.cv_rotate(-90, 0, 0)
 
@@ -135,7 +133,7 @@ class ArmBp(RigModule):
         if self.limbType == LimbType.BASIC.value:
             self.jnts_bind += [self.upr, self.lwr]
 
-        elif self.limbType == LimbType.BASIC_ROLL.value:
+        elif self.limbType == LimbType.ROBOT.value:
             self.jnts_bind += [self.lwr]
             proxy.add_height_attr([self.lwr], self.rigSize * 10)
             self.build_aimHelper([self.lwr])
@@ -453,7 +451,7 @@ class ArmBp(RigModule):
             onList=[self.pin_fkc],
         )
         self.ctl_vis_toggle(
-            self.ikc.a.add("pvc", attrType="bool", dv=1, k=0),
+            self.ikc.a.add("pvcVis", attrType="bool", dv=1, k=0),
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
 

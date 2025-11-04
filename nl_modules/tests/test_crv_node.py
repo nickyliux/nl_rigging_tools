@@ -143,11 +143,11 @@ class Test_CrvNode_Advanced(Test_CrvNode_Base):
     def test_addGimbal(self):
         gim = self.circle.add_gimbal()
         self.assertEqual(gim.parent, self.circle)
-        self.assertEqual(self.circle.a.gimbalCtl.exists(), True)
+        self.assertEqual(self.circle.a.gimbalVis.exists(), True)
 
     def test_addGimbal2(self):
         gim = self.circle.add_gimbal(attrTgt=self.crv)
-        self.crv.a.gimbalCtl.set(0)
+        self.crv.a.gimbalVis.set(0)
         self.assertEqual(gim.a.v.get(), False)
 
 

@@ -63,13 +63,13 @@ class HandBp(RigModule):
             ("setting", "spiral", None, scale, 1, 2),
             ("palm_ctl", "rotator", None, -scale * 0.8, 0, -1),
             ("thumb_ctl", "rotator", "z", -scale * 0.8, 0, -1),
-            ("smart_ctl", "cube", None, scale * 2, 0, -1),
+            ("smart_ctl", "rotator", "x", scale * 2, 0, -1),
         ]
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
-        self.smart_ctl.cv_scale(0.5, 1.5, 0.5)
+        self.smart_ctl.cv_rotate(90, 0, 0)
         self.palm_ctl.color = Color.D_YELLOW
         self.thumb_ctl.color = Color.D_YELLOW
         self.smart_ctl.color = Color.D_YELLOW
@@ -313,8 +313,8 @@ class HandBp(RigModule):
 
         # smart_ctl, with group scaling with rootJ
         scaleGrp = GrpNode("smartScale", pf=rID, align=self.rootJ, p=self.CTL_DATA)
-        offsetX = rSz * xDr * 100
-        self.smart_ctl.alignTo(self.rootJ, ofs=(offsetX, 0, 0), p=scaleGrp)
+        offsetX = rSz * xDr * 60
+        self.smart_ctl.alignTo(self.rootJ, p=scaleGrp, ofs=(offsetX, 0, 0))
         self.smart_ctl.addOffsetGrp()
 
         self.hand_grp.cstPar(scaleGrp, mo=1)

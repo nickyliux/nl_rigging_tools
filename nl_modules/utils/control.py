@@ -61,7 +61,6 @@ def mirrorCtlShape(ctl):
     if dup.children:
         mc.delete(dup.children)
 
-    # tempGrp = GrpNode("tempGrp", align=mg, snap=dup)
     tempGrp = GrpNode("tempGrp", align=dup, snap=dup)
     dup | tempGrp
 
@@ -72,11 +71,10 @@ def mirrorCtlShape(ctl):
 
     tempGrp.freezeXf(t=0, r=0, s=1)
     try:
-        mc.blendShape(dup.shape, opp.shape, w=(0, 1))
+        mc.blendShape(dup, opp, w=(0, 1))
     except Exception as e:
         logging.error(f"Error blending shapes: {e}")
         return
-
     opp.deleteHistory()
     mc.delete(dup, tempGrp)
 

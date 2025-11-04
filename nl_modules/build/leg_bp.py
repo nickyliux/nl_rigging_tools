@@ -20,7 +20,7 @@ class LimbType(Enum):
     """Enumeration for different limb types in the leg rig."""
 
     BASIC = 0
-    BASIC_ROLL = 1
+    ROBOT = 1
     RIBBON = 2
     SKEL = 3
 
@@ -144,9 +144,9 @@ class LegBp(RigModule):
             ("lwr_fkc", "circle", "x", scale, 0, -1),
             ("palm_fkc", "circle", "x", scale, 0, -1),
             ("ball_fkc", "circle", "x", scale / 2, 0, -1),
-            ("ikc", "cube", None, rSz, 0, -1),
-            ("pvc", "diamond3", None, rSz * 2, 0, -1),
-            ("smart_ctl", "rotate", None, scale, 0, -1),
+            ("ikc", "foot", None, rSz, 0, -1),
+            ("pvc", "pvc", None, rSz, 0, -1),
+            ("smart_ctl", "rotator", None, scale / 2, 0, -1),
         ]
         if self.scapularExtra:
             ctl_defs.append(("scap_fkc", "shoulder", None, scale, 0, -1))
@@ -154,11 +154,11 @@ class LegBp(RigModule):
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
-        self.smart_ctl.cv_move(20 * scale, 0, 0)
+        self.smart_ctl.cv_rotate(-90, 0, 0)
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
-        self.ikc.cv_move(0, 0, rSz * 2)
-        self.ikc.cv_scale(1.5, 1.5, 4)
+        self.smart_ctl.cv_rotate(0, 0, 90)
+        self.smart_ctl.cv_move(0, 0, rSz * -10)
 
         if self.scapularExtra:
             self.scap_fkc.cv_move(scale * 20, 0, 0)
@@ -199,7 +199,7 @@ class LegBp(RigModule):
             else:
                 self.jnts_bind += [self.lwr]
 
-        elif self.limbType == LimbType.BASIC_ROLL.value:
+        elif self.limbType == LimbType.ROBOT.value:
 
             self.jnts_bind += [self.lwr]
             proxy.add_height_attr([self.lwr], self.rigSize * 10)
@@ -529,7 +529,7 @@ class LegBp(RigModule):
 
         mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_bf)
         self.ctl_vis_toggle(
-            self.ikc.a.add("pvc", attrType="bool", dv=1, k=0),
+            self.ikc.a.add("pvcVis", attrType="bool", dv=1, k=0),
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
         if self.limbType == LimbType.RIBBON.value:

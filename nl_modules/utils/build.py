@@ -104,7 +104,7 @@ def buildSelOrAll(*arg, uiPB=None):
         if uiPB:
             uiPB.setValue(0)
         # Gen proxy after build
-        # proxy.genProxy()
+        proxy.genProxy()
 
 
 def postRig():

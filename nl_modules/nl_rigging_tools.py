@@ -477,10 +477,22 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def boneAutoBind(self):
         """Bind all meshes in MODEL_GRP to reference joints and ribbon joints."""
 
+        charPath = mc.optionVar(q="charPath")
+        if charPath == None or charPath == "":
+            mc.confirmDialog(t="Info", m="Character path NOT set.     ", b="OK")
+            return
+
         selList = mc.ls(sl=1, tr=1)
         if not selList:
-            mc.confirmDialog(t="Info", m="No mesh selected.    ", b="OK")
-            return
+            charName = os.path.basename(charPath)
+            mdlGrp = DagNode(charName)
+            if mdlGrp.exists():
+                selList = mc.ls(mdlGrp)
+            else:
+                mc.confirmDialog(
+                    t="Info", m="No mesh selected and charPath not set.    ", b="OK"
+                )
+                return
 
         tgtMeshes = common.getObjectBelow(selList)
         if not tgtMeshes:
