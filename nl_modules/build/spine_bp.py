@@ -161,7 +161,7 @@ class SpineBp(RigModule):
 
         if self.is_neck():
             self.isolate_align(
-                self.ctls_fk[0], spaces=[self.ctls_fk[0].parent, self.masterC]
+                self.ctls_fk[0], spaces=[self.ctls_fk[0].parent, self.masterC], dv=1
             )
 
     def reverse_fk_hip(self):
