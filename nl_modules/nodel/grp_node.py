@@ -128,7 +128,7 @@ class GrpNode(DagNode):
         gmb_ctl.cv_scale(relScale, atCVCetner=1)
 
         attrTgt = attrTgt or self
-        attr = attrTgt.a.add("gimbalVis", attrType="bool", dv=dv, k=0)
+        attr = attrTgt.a.add("gimbalVis", type="bool", dv=dv, k=0)
         gmb_ctl.a.add("gimbalVis", proxy=attr, k=0)
         attr >> gmb_ctl.a.v
 

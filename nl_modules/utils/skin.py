@@ -17,6 +17,7 @@ def skinRefJnts(meshes=None, jnts=None, thld=5, uiPB=None):
     if uiPB:
         uiPB.setMaximum(len(meshes))
 
+    common.xRayAllGeo(1)
     for i, mesh in enumerate(meshes):
         mc.select(mesh)
         mc.refresh(f=1)
@@ -41,10 +42,10 @@ def skinRefJnts(meshes=None, jnts=None, thld=5, uiPB=None):
                 ignored += 1
         else:
             ignored += 1
+    common.xRayAllGeo(0)
 
     if uiPB:
         uiPB.setValue(0)
-
     logging.info(f"refJnts : {weighted} weighted. {ignored} already bind.")
 
 

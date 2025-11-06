@@ -150,8 +150,8 @@ def loadProxy():
         if rootGrp.exists():
             rootGrp.delete()
         mc.refresh(f=1)
-        logging.info(f"{load_count} proxy meshes loaded.")
-        mc.confirmDialog(t="Info", m=f"{load_count} proxy meshes loaded.     ", b="OK")
+        logging.info(f"{load_count} proxy loaded.")
+        # mc.confirmDialog(t="Info", m=f"{load_count} proxy loaded.     ", b="OK")
 
 
 @common.Undo("resetProxy")
@@ -321,7 +321,7 @@ def showHideProxy():
     """Toggle visibility of the proxy meshes under the 'PRX' group."""
     m2 = DagNode("master2_ctl")
     if m2.exists():
-        m2.a.proxyVis.set(1 - m2.a.proxyVis.get())
+        m2.a.pxyVis.set(1 - m2.a.pxyVis.get())
 
 
 def add_radiusScale_attr(tgtJnts, v):

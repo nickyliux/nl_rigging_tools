@@ -51,15 +51,13 @@ class AttributeHolder:
 
         return attrList
 
-    def add(
-        self, name, attrType="double", lock=False, k=True, txt=None, cb=True, **kwargs
-    ):
+    def add(self, name, type="double", lock=False, k=True, txt=None, cb=True, **kwargs):
         """Add attribute to it's node and return it
         e.g.
             obj.a.add('myAttr', dv=1, min=0, max=1)
-            obj.a.add('myAttr', dv=1, attrType='long')
-            obj.a.add('myAttr', dv=2, attrType='enum', en='a:b:c:d')
-            obj.a.add('myAttr', attrType='string', txt='myText')
+            obj.a.add('myAttr', dv=1, type='long')
+            obj.a.add('myAttr', dv=2, type='enum', en='a:b:c:d')
+            obj.a.add('myAttr', type='string', txt='myText')
         """
         from nl_modules.nodel.base.attribute import Attribute
 
@@ -67,12 +65,12 @@ class AttributeHolder:
         if mc.objExists(attrStr):
             return Attribute(self.node, name)
 
-        if attrType == "string":
-            mc.addAttr(self.node, ln=name, sn=name, dt=attrType, **kwargs)
+        if type == "string":
+            mc.addAttr(self.node, ln=name, sn=name, dt=type, **kwargs)
             if txt:
                 mc.setAttr(attrStr, txt, type="string")
         else:
-            mc.addAttr(self.node, ln=name, sn=name, at=attrType, **kwargs)
+            mc.addAttr(self.node, ln=name, sn=name, at=type, **kwargs)
 
         if k == 1:
             mc.setAttr(attrStr, k=1)
@@ -88,7 +86,7 @@ class AttributeHolder:
 
         while self.node.a[name].exists():
             name += "_"
-        self.add(name, lock=1, attrType="enum", k=1, en=" ")
+        self.add(name, lock=1, type="enum", k=1, en=" ")
 
     def reset(self, **kwargs):
         """Reset object's xform

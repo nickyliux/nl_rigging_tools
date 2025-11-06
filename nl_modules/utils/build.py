@@ -109,6 +109,7 @@ def buildSelOrAll(*arg, uiPB=None):
         proxy.genProxy()
     common.modelPanelShow(jnt=1)
     # common.xRayAllGeo(state=0)
+    print("")
 
 
 def postRig():
@@ -119,7 +120,6 @@ def postRig():
     update_anchor_conn()
     update_space_switch()
     logging.info("Rig built.")
-    print("")
 
 
 def masterAddAttrs():
@@ -131,12 +131,12 @@ def masterAddAttrs():
     if ctl.exists() and prx.exists():
         prx.a.overrideEnabled.set(1)
 
-        ctl.a.add("proxyVis", k=0, attrType="bool", dv=1) >> prx.a.v
-        ctl.a.add("jointVis", k=0, attrType="bool", dv=0) >> skl.a.v
+        ctl.a.add("pxyVis", k=0, type="bool", dv=1) >> prx.a.v
+        ctl.a.add("sklVis", k=0, type="bool", dv=0) >> skl.a.v
 
         OPTIONS = "Normal:Template:Reference"
         (
-            ctl.a.add("proxyDsp", attrType="enum", k=0, en=OPTIONS, dv=0)
+            ctl.a.add("pxyDsp", type="enum", k=0, en=OPTIONS, dv=0)
             >> prx.a.overrideDisplayType
         )
 

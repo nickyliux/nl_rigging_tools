@@ -287,14 +287,14 @@ class RigModule(RigBase):
         elif cstType == "ori":
             tgt.a.add("spaceType", dv=1, k=0, cb=0)
 
-        weight = w or tgt.a.add("space", attrType="enum", dv=dv, enumName=names)
+        weight = w or tgt.a.add("space", type="enum", dv=dv, enumName=names)
 
         v = tgt.a["spaceType"].get()
         tgtCstType = "par" if v == 0 else "ori"
         common.cstMulti(*allSpacesGrp, tgt_ofs, cstType=tgtCstType, w=weight, **kwargs)
 
         if v == 2 and w is None:
-            weight = tgt.a.add("posSpace", attrType="enum", dv=dv, enumName=names)
+            weight = tgt.a.add("posSpace", type="enum", dv=dv, enumName=names)
             common.cstMulti(*allSpacesGrp, tgt_ofs, cstType="poi", w=weight, **kwargs)
 
     def calc_rig_size(self, rootJ):
@@ -863,7 +863,7 @@ class RigModule(RigBase):
         common.add_mirror_attr(allPsdCtl)
         self.add_ctl_set(allPsdCtl + [ctl_main])
 
-        aimCtl = self.masterC2.a.add("aimCtl", attrType="bool", dv=1)
+        aimCtl = self.masterC2.a.add("aimCtl", type="bool", dv=1)
         aimCtl >> psd_grp.a.v
         #
         #   Connect total weight
@@ -1099,7 +1099,7 @@ class RigModule(RigBase):
         keepVol >> ribbonLw.keepVol
 
         volType = self.setting.a.add(
-            "volType", attrType="enum", enumName="whole:separate", k=0
+            "volType", type="enum", enumName="whole:separate", k=0
         )
         volType >> ribbonUp.volType
         volType >> ribbonLw.volType

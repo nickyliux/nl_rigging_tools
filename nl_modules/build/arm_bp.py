@@ -97,7 +97,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "spiral", "z", scale * 2, 1, 2),
+            ("setting", "spiral", "z", scale, 1, 2),
             ("clavicle_fkc", "rotator", None, scale, 0, -1),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
@@ -451,27 +451,18 @@ class ArmBp(RigModule):
             onList=[self.pin_fkc],
         )
         self.ctl_vis_toggle(
-            self.ikc.a.add("pvcVis", attrType="bool", dv=1, k=0),
+            self.ikc.a.add("pvcVis", type="bool", dv=1, k=0),
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
 
         # mc.hide(self.jnts_bf + self.jnts_fk + self.jnts_ik)
-        (
-            self.setting.a.add("fkJntVis", attrType="bool", dv=0, k=0)
-            >> self.jnts_fk[0].a.v
-        )
-        (
-            self.setting.a.add("ikJntVis", attrType="bool", dv=0, k=0)
-            >> self.jnts_ik[0].a.v
-        )
-        (
-            self.setting.a.add("bfJntVis", attrType="bool", dv=0, k=0)
-            >> self.jnts_bf[0].a.v
-        )
+        self.setting.a.add("fkJntVis", type="bool", k=0) >> self.jnts_fk[0].a.v
+        self.setting.a.add("ikJntVis", type="bool", k=0) >> self.jnts_ik[0].a.v
+        self.setting.a.add("bfJntVis", type="bool", k=0) >> self.jnts_bf[0].a.v
 
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
-                self.setting.a.add("ShowBendy", attrType="bool", k=0, dv=0),
+                self.setting.a.add("ShowBendy", type="bool", k=0, dv=0),
                 onList=self.all_bend,
             )
 
@@ -507,12 +498,12 @@ class ArmBp(RigModule):
         # Add space names for UI or switching
         self.rigNode.a.add(
             "spaceName1",
-            attrType="string",
+            type="string",
             txt="master, COG, uprBody, lwrBody, head",
         )
         self.rigNode.a.add(
             "spaceName2",
-            attrType="string",
+            type="string",
             txt="arm, master, clavicle, COG, uprBody, lwrBody",
         )
 

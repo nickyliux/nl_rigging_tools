@@ -151,7 +151,7 @@ class HandBp(RigModule):
 
     def setup_claw_sdk(self):
         """Setup SDK for finger claw controls."""
-        claw = self.smart_ctl.a.add("claw", attrType="float", dv=0, k=1)
+        claw = self.smart_ctl.a.add("claw", type="float", dv=0, k=1)
         drv = self.smart_ctl
         # Fgr 1, 2, 3, 4
         data = [
@@ -333,8 +333,8 @@ class HandBp(RigModule):
 
     def setup_space(self):
         """Setup space switching for the hand rig controls."""
-        self.rigNode.a.add("spaceName1", attrType="string", txt="palm")
-        self.rigNode.a.add("spaceName2", attrType="string", txt="palmIK")
+        self.rigNode.a.add("spaceName1", type="string", txt="palm")
+        self.rigNode.a.add("spaceName2", type="string", txt="palmIK")
         self.rigNode.setMsg(
             {
                 "spaceHolder1": self.rootJ,
@@ -364,7 +364,7 @@ class HandBp(RigModule):
 
     def setup_vis(self):
         """Setup visibility controls for the hand rig."""
-        showFgrCtls = self.smart_ctl.a.add("showFgrCtls", attrType="bool", dv=1, k=0)
+        showFgrCtls = self.smart_ctl.a.add("showFgrCtls", type="bool", dv=1, k=0)
         for ctls in self.ctls_fgr:
             showFgrCtls >> ctls[0].a.v
 

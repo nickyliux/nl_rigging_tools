@@ -42,7 +42,7 @@ class MarkingMenuAutorig:
         self.addBuildOptions(menu)
         self.addGuideOptions(menu)
         self.addHelperOptions(menu)
-        self.addSpaceFkIkOptions(menu)
+        self.addAdvancedOptions(menu)
         self.addExtraOptions(menu)
 
     def addBuildOptions(self, menu):
@@ -74,7 +74,7 @@ class MarkingMenuAutorig:
     def addExtraOptions(self, menu):
         """Add extra options to the marking menu"""
         mc.menuItem(p=menu, l="Select Ctls", c=self.selectCtlSelOrAll)
-        mc.menuItem(p=menu, l="Proxy  -------", en=0)
+        mc.menuItem(p=menu, l="PROXY  -------", en=0)
         mc.menuItem(p=menu, l="    Gen", c=proxy.genProxy)
         mc.menuItem(p=menu, l="    Warp", c=proxy.wrapProxy)
         mc.menuItem(p=menu, l="    Reset", c=proxy.resetProxy)
@@ -84,7 +84,7 @@ class MarkingMenuAutorig:
         mc.menuItem(p=menu, l="-" * 15, en=0)
         mc.menuItem(p=menu, l="Reload Menu", c=self.reload_marking_menu)
 
-    def addSpaceFkIkOptions(self, menu):
+    def addAdvancedOptions(self, menu):
         """Add space switch and IK/FK options to the marking menu"""
         selList = mc.ls(sl=1, tr=1)
         if not selList:
@@ -99,31 +99,41 @@ class MarkingMenuAutorig:
         if not rigNode.exists():
             return
 
-        # --- SPACE SWITCH ---
-        spaceAttr = firstSelected.a.space
-        if spaceAttr.exists():
-            mc.menuItem(p=menu, l="Spaces -----", en=0)
-            curr = spaceAttr.get()
-            allSpaceAttr = spaceAttr.query(le=1)[0].split(":")
-            for i, attr in enumerate(allSpaceAttr):
-                label = f"{attr}   <" if curr == i else attr
+        # --- Space Switch ---
+        attr = firstSelected.a.space
+        if attr.exists():
+            mc.menuItem(p=menu, l="SPACE -----", en=0)
+            val = attr.get()
+            allSpaceAttr = attr.query(le=1)[0].split(":")
+            for i, a in enumerate(allSpaceAttr):
+                # label = f"{a}   <" if val == i else a
                 mc.menuItem(
                     p=menu,
-                    l=" " * 4 + label,
-                    c=partial(self.switch_to_space, attr),
+                    l=" " * 4 + str(a) + (f"   <" if val == i else ""),
+                    c=partial(self.switch_to_space, a),
                 )
             # mc.menuItem(p=menu, l="-" * 15, en=0)
 
-        # --- IK/FK SWITCH ---
-        fkIkAttr = firstSelected.a["fkIk"]
-        if fkIkAttr.exists():
-            mode = 0 if fkIkAttr.get() > 0.5 else 1
-            label = "Switch To FK" if mode == 0 else "Switch To IK"
+        # --- IK / FK ---
+        attr = firstSelected.a["fkIk"]
+        if attr.exists():
+            val = 0 if attr.get() > 0.5 else 1
             mc.menuItem(
                 p=menu,
-                l=label,
+                l="FK / IK",
                 rp="S",
-                c=partial(self.switch_fk_ik, fkIkAttr, mode, rigNode),
+                c=partial(self.switch_fk_ik, attr, val, rigNode),
+            )
+
+        # --- Local / Global ---
+        attr = firstSelected.a["global"]
+        if attr.exists():
+            val = 1 - attr.get()
+            mc.menuItem(
+                p=menu,
+                l="Local / Global",
+                # rp="S",
+                c=partial(self.switch_local_global, attr, val, rigNode),
             )
 
     def mirrorShapeSelOrAll(*args):
@@ -166,6 +176,11 @@ class MarkingMenuAutorig:
     def switch_fk_ik(self, *args):
         """Switch FK/IK mode for the specified rig node"""
         anim.switch_fk_ik(attr=args[0], toIKMode=args[1], rigNode=args[2])
+        self.reload_marking_menu()
+
+    def switch_local_global(self, *args):
+        """Switch Local/Global mode for the specified rig node"""
+        anim.switch_local_global(attr=args[0], toGlobal=args[1], rigNode=args[2])
         self.reload_marking_menu()
 
     def reload_marking_menu(*args):

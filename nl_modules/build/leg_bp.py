@@ -528,16 +528,20 @@ class LegBp(RigModule):
         )
 
         # mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_bf)
+        self.setting.a.add("fkJntVis", type="bool", k=0) >> self.jnts_fk[0].a.v
+        self.setting.a.add("ikJntVis", type="bool", k=0) >> self.jnts_ik[0].a.v
+        self.setting.a.add("bfJntVis", type="bool", k=0) >> self.jnts_bf[0].a.v
+
         self.ctl_vis_toggle(
-            self.ikc.a.add("pvcVis", attrType="bool", dv=1, k=0),
+            self.ikc.a.add("pvcVis", type="bool", dv=1, k=0),
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyCtls", attrType="bool", k=0, dv=0),
+                self.setting.a.add("bendyCtls", type="bool", k=0, dv=0),
                 onList=self.all_bend,
             )
-        mc.hide(self.ikhs, self.toeIKHs, self.setting)
+        mc.hide(self.ikhs, self.toeIKHs)  # , self.setting)
 
     def setup_channel(self):
         """Setup channels for the leg rig controls."""
@@ -574,9 +578,9 @@ class LegBp(RigModule):
 
     def setup_space(self):
         """Setup space switching for the leg rig controls."""
-        self.rigNode.a.add("spaceName1", attrType="string", txt="master, COG, lwrBody")
+        self.rigNode.a.add("spaceName1", type="string", txt="master, COG, lwrBody")
         self.rigNode.a.add(
-            "spaceName2", attrType="string", txt="leg, foot, master, hip, COG"
+            "spaceName2", type="string", txt="leg, foot, master, hip, COG"
         )
 
         self.ikH1.build_pvfkPinSetup(ikTarget=self.ikc_gimbal)
@@ -673,10 +677,10 @@ class LegBp(RigModule):
         #     common.sdk2(splay, tgt, 5, -splayRange * (-1 + 2 / (toeCount - 1) * i))
         #
         # self.ctl_vis_toggle(
-        #     self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
+        #     self.ikc.a.add("extraCtl", dv=1, type="bool", k=0),
         #     onList=self.ctls_sub,
         # )
         # self.ctl_vis_toggle(
-        #     self.setting.a.add("debugVis", attrType="bool", k=0, dv=0),
+        #     self.setting.a.add("debugVis", type="bool", k=0, dv=0),
         #     onList=self.jnts_fk + self.jnts_ik + self.jnts_bf # + self.jnts_ro,
         # )

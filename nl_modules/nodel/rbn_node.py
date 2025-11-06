@@ -228,7 +228,7 @@ class RbnNode:
 
         self.keepVol = self.RBN_GRP.a.add("keepVol", dv=1)
         self.volType = self.RBN_GRP.a.add(
-            "volType", attrType="enum", enumName="whole:separate", k=0
+            "volType", type="enum", enumName="whole:separate", k=0
         )
         volGraph1 = common.addKeys(
             self.RBN_GRP,

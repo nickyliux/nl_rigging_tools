@@ -583,11 +583,11 @@ class LegQd(RigModule):
             offList=self.ctls_fk[1:-1],
         )
         self.ctl_vis_toggle(
-            self.ikc.a.add("extraCtl", dv=1, attrType="bool", k=0),
+            self.ikc.a.add("extraCtl", dv=1, type="bool", k=0),
             onList=self.ctls_sub,
         )
         # self.ctl_vis_toggle(
-        #     self.setting.a.add("debugVis", dv=0, attrType="bool", k=0),
+        #     self.setting.a.add("debugVis", dv=0, type="bool", k=0),
         #     onList=self.jnts_fk + self.jnts_ik,
         # )
         mc.hide(self.jnts_ik, self.jnts_fk)
@@ -616,8 +616,8 @@ class LegQd(RigModule):
 
     def setup_space(self):
         """Setup space switching for the quadruped leg rig controls."""
-        self.rigNode.a.add("spaceName1", attrType="string", txt="master, bodyBase, COG")
-        self.rigNode.a.add("spaceName2", attrType="string", txt="leg, master, COG")
+        self.rigNode.a.add("spaceName1", type="string", txt="master, bodyBase, COG")
+        self.rigNode.a.add("spaceName2", type="string", txt="leg, master, COG")
 
         self.rigNode.setMsg(
             {

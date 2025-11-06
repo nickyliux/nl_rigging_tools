@@ -59,6 +59,14 @@ def getJntsCtlsFromRigNode(rootJ, rigNode):
     return jnts, fkCtlNames
 
 
+def switch_local_global(attr=None, toGlobal=0, rigNode=None):
+    """Switch Local/Global mode for the specified rig node."""
+    ctl = attr.node
+    mtx = ctl.getMtx()
+    attr.set(1 - attr.get())
+    ctl.setMtx(mtx)
+
+
 def switch_fk_ik(attr=None, toIKMode=0, rigNode=None):
     # Validate rigNode and its state
     if not rigNode or rigNode.a.nodeState.get() != 2:

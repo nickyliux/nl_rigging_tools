@@ -285,16 +285,16 @@ class SpineBp(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""
         # self.ctl_vis_toggle(
-        #     self.setting.a.add("fkCtls", attrType="bool", dv=1, k=0),
+        #     self.setting.a.add("fkCtls", type="bool", dv=1, k=0),
         #     onList=self.ctls_fk,
         # )
         # if self.ribbon:
         #     self.ctl_vis_toggle(
-        #         self.setting.a.add("ikCtls", attrType="bool", dv=1, k=0),
+        #         self.setting.a.add("ikCtls", type="bool", dv=1, k=0),
         #         onList=self.ctls_ik,
         #     )
         # self.ctl_vis_toggle(
-        #     self.setting.a.add("debugVis", attrType="bool", dv=0, k=0),
+        #     self.setting.a.add("debugVis", type="bool", dv=0, k=0),
         #     onList=self.jnts_ctl + self.jnts_fk,  # + self.jnts_rb,
         # )
         if self.is_ribbon():

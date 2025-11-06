@@ -256,15 +256,15 @@ class Belt(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the belt rig controls."""
         # self.ctl_vis_toggle(
-        #     self.setting.a.add("showIk", k=0, attrType="bool", dv=1),
+        #     self.setting.a.add("showIk", k=0, type="bool", dv=1),
         #     onList=[self.ctls_ik[0]],
         # )
         # self.ctl_vis_toggle(
-        #     self.setting.a.add("showFk", k=0, attrType="bool", dv=1),
+        #     self.setting.a.add("showFk", k=0, type="bool", dv=1),
         #     onList=[self.ctls_fk[0]],
         # )
         # self.ctl_vis_toggle(
-        #     self.setting.a.add("showSubIk", k=0, attrType="bool", dv=1),
+        #     self.setting.a.add("showSubIk", k=0, type="bool", dv=1),
         #     onList=self.ctls_ofs,
         # )
         # mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)

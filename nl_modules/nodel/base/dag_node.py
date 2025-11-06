@@ -608,7 +608,7 @@ class DagNode(DepNode):
             self.setMsg( { 'upr':upr, 'lwr':lwr, } )
         """
         for name, obj in msgDict.items():
-            attr = self.a.add(name, attrType="message")
+            attr = self.a.add(name, type="message")
             obj = DagNode(obj)
             if obj.exists():
                 obj.a.message >> attr

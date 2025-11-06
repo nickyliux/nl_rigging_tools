@@ -362,13 +362,13 @@ class SpineQd(RigModule):
 
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""
-        attr = self.base_ctl.a.add("showTangent", attrType="bool", k=0)
+        attr = self.base_ctl.a.add("showTangent", type="bool", k=0)
         attr >> self.tangent0_ctl.a.v
-        attr = self.fore_ctl.a.add("showTangent", attrType="bool", k=0)
+        attr = self.fore_ctl.a.add("showTangent", type="bool", k=0)
         attr >> self.tangent1_ctl.a.v
 
         self.ctl_vis_toggle(
-            self.setting.a.add("debugVis", attrType="bool", dv=0, k=0),
+            self.setting.a.add("debugVis", type="bool", dv=0, k=0),
             onList=self.jnts_ik
             + self.jnts_fk
             + self.jnts_spIk

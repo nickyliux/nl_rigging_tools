@@ -144,7 +144,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # TPL
         self.connect(self.UI.loadTemplate_BN, self.loadTpl, ":openScript.png")
         self.connect(self.UI.saveTemplate_BN, guide.saveTemplate, ":fileSave.png")
-        self.connect(self.UI.delTemplate_BN, build.deleteSelOrAll, ":smallTrash.png")
+        # self.connect(self.UI.delTemplate_BN, build.deleteSelOrAll, ":smallTrash.png")
 
         # BLD
         self.connect(self.UI.buildAll_BN, self.buildAll, ":play_S.png")
@@ -172,7 +172,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             ":openScript.png",
         )
         self.connect(self.UI.saveHlpJnt_BN, helper.saveHlpJnt, ":fileSave.png")
-        self.connect(self.UI.selAllHlpGrp_BN, helper.selAllHlp, ":aselect.png")
+        # self.connect(self.UI.selAllHlpGrp_BN, helper.selAllHlp, ":aselect.png")
 
         # WGH
         self.connect(

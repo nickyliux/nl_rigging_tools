@@ -64,14 +64,14 @@ class Test_AttributeHolder_Main(Test_Attribute_Base):
         self.sphere.a.add("myAttr")
         self.assertEqual(self.sphere.a.myAttr.get(), 0)
 
-        self.sphere.a.add("myAttr2", dv=10, attrType="long")
+        self.sphere.a.add("myAttr2", dv=10, type="long")
         self.assertEqual(self.sphere.a.myAttr2.get(), 10)
 
-        self.sphere.a.add("myAttr3", dv=1, attrType="enum", en="a:b:c")
+        self.sphere.a.add("myAttr3", dv=1, type="enum", en="a:b:c")
         self.assertEqual(self.sphere.a.myAttr3.get(), 1)
 
     def test_add_str(self):
-        self.sphere.a.add("myAttr", attrType="string", txt="myText")
+        self.sphere.a.add("myAttr", type="string", txt="myText")
         self.assertEqual(self.sphere.a.myAttr.get(), "myText")
 
     def test_addSep(self):

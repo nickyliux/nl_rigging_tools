@@ -495,7 +495,7 @@ def addMovablePivot(tgt):
 def addVisOption(ctl, attrName):
     """Add vis attribute to ctl, return drivers [v0, v1]"""
     attrName = str(attrName)
-    ctl.a.add(attrName, attrType="long", k=0, dv=2, min=0, max=2)
+    ctl.a.add(attrName, type="long", k=0, dv=2, min=0, max=2)
     v0 = (ctl.a[attrName] > 1).setCdn(ifTrue=1, ifFalse=0)
     v1 = (ctl.a[attrName] > 0).setCdn(ifTrue=1, ifFalse=0)
     return [v0, v1]

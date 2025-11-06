@@ -11,6 +11,8 @@ from nl_modules.utils import build, common, file
 MOD_DIR = os.path.dirname(nl_modules.__file__)
 COMPONENT_PATH = MOD_DIR + "/build/components"
 LF_CTL_SET = "lf*_ctl_set"
+RT_CTL_SET = "rt*_ctl_set"
+ALL_CTL_SET = "*_ctl_set"
 
 COMPONENT_DICT = {
     "head": ["head"],
@@ -152,13 +154,16 @@ def mirrorGuide(tgtList, wsMirror=0):
     """Mirror xform for tgtList objects"""
     for tgt in tgtList:
         tgt = DagNode(tgt)
-        opp = common.getOpposite(tgt)
-        mg = getMasterGuide(opp)
-        if opp:
-            if mg is None or (mg and mg.a.mirrorable.get()):
-                copyGuideAttr(tgt, opp, wsMirror=wsMirror, mirror=1)
+        if tgt.name.startswith("lf") or tgt.name.startswith("rt"):
+            opp = common.getOpposite(tgt)
+            mg = getMasterGuide(opp)
+            if opp:
+                if mg is None or (mg and mg.a.mirrorable.get()):
+                    copyGuideAttr(tgt, opp, wsMirror=wsMirror, mirror=1)
+            else:
+                logging.warning(f"opposite not found for {tgt.name}")
         else:
-            logging.warning(f"opposite not found for {tgt.name}")
+            copyGuideAttr(tgt, tgt, wsMirror=1, mirror=1)
 
 
 def mirrorRef(tgtList, wsMirror=0):
@@ -178,8 +183,13 @@ def mirrorPose(*arg):
     selList = list(set(selList))
 
     if not selList:
-        if mc.ls(LF_CTL_SET, type="objectSet"):
-            selList = mc.sets(LF_CTL_SET, q=1)
+        # if mc.ls(LF_CTL_SET, type="objectSet"):
+        #     selList = mc.sets(LF_CTL_SET, q=1)
+        lf = mc.sets(LF_CTL_SET, q=1) or []
+        rt = mc.sets(RT_CTL_SET, q=1) or []
+        all = mc.sets(ALL_CTL_SET, q=1) or []
+        selList = list(set(all) - set(rt))
+
     if selList:
         mirrorGuide(selList)
 

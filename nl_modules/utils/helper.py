@@ -190,9 +190,9 @@ def hlpJntSetup(
 
     # Add attributes (grouped for clarity)
     attr_defs = [
-        ("fr", {"attrType": "string", "txt": fr}),
-        ("to", {"attrType": "string", "txt": to}),
-        ("helperTgt", {"attrType": "message"}),
+        ("fr", {"type": "string", "txt": fr}),
+        ("to", {"type": "string", "txt": to}),
+        ("helperTgt", {"type": "message"}),
         ("dir", {"dv": dir, "k": 0, "cb": 0}),
         ("init", {"dv": 1, "min": 0}),
         ("initAngle", {"dv": 0}),
