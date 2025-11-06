@@ -97,7 +97,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "spiral", "z", scale, 1, 2),
+            ("setting", "spiral", "z", scale * 2, 1, 2),
             ("clavicle_fkc", "rotator", None, scale, 0, -1),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
@@ -455,7 +455,19 @@ class ArmBp(RigModule):
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
 
-        mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_bf)
+        # mc.hide(self.jnts_bf + self.jnts_fk + self.jnts_ik)
+        (
+            self.setting.a.add("fkJntVis", attrType="bool", dv=0, k=0)
+            >> self.jnts_fk[0].a.v
+        )
+        (
+            self.setting.a.add("ikJntVis", attrType="bool", dv=0, k=0)
+            >> self.jnts_ik[0].a.v
+        )
+        (
+            self.setting.a.add("bfJntVis", attrType="bool", dv=0, k=0)
+            >> self.jnts_bf[0].a.v
+        )
 
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
@@ -464,7 +476,7 @@ class ArmBp(RigModule):
             )
 
         self.ikc.a.localRot >> self.palm_ikc.a.v
-        mc.hide(self.ikhs, self.setting)
+        mc.hide(self.ikhs)  # , self.setting)
 
     def setup_channel(self):
         """Setup channel attributes for the arm rig controls."""

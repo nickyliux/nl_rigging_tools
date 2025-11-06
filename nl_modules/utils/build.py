@@ -89,7 +89,7 @@ def buildSelOrAll(*arg, uiPB=None):
     """Build rig for selected rigNodes or all if nothing selected"""
     rigNodes = getRigNodes_selOrAll()
     common.modelPanelShow(jnt=0)
-    common.xRayAllGeo(state=1)
+    # common.xRayAllGeo(state=1)
     if rigNodes:
         preRig()
         if uiPB:
@@ -100,7 +100,7 @@ def buildSelOrAll(*arg, uiPB=None):
             if uiPB:
                 i += 1
                 uiPB.setValue(i)
-        masterAddProxyAttrs()
+        masterAddAttrs()
         postRig()
         mc.select(cl=1)
         if uiPB:
@@ -108,7 +108,7 @@ def buildSelOrAll(*arg, uiPB=None):
         # Gen proxy after build
         proxy.genProxy()
     common.modelPanelShow(jnt=1)
-    common.xRayAllGeo(state=0)
+    # common.xRayAllGeo(state=0)
 
 
 def postRig():
@@ -122,20 +122,23 @@ def postRig():
     print("")
 
 
-def masterAddProxyAttrs():
+def masterAddAttrs():
     """Add proxy attributes to master2_ctl"""
     ctl = DagNode("master2_ctl")
     prx = DagNode("PRX")
+    skl = DagNode("SKL")
 
     if ctl.exists() and prx.exists():
         prx.a.overrideEnabled.set(1)
 
-        proxyVis = ctl.a.add("proxyVis", k=0, attrType="bool", dv=1)
-        proxyVis >> prx.a.v
+        ctl.a.add("proxyVis", k=0, attrType="bool", dv=1) >> prx.a.v
+        ctl.a.add("jointVis", k=0, attrType="bool", dv=0) >> skl.a.v
 
         OPTIONS = "Normal:Template:Reference"
-        proxyDsp = ctl.a.add("proxyDsp", attrType="enum", k=0, en=OPTIONS, dv=0)
-        proxyDsp >> prx.a.overrideDisplayType
+        (
+            ctl.a.add("proxyDsp", attrType="enum", k=0, en=OPTIONS, dv=0)
+            >> prx.a.overrideDisplayType
+        )
 
 
 def unbuildTgt(rigN):

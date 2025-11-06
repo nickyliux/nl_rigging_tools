@@ -527,7 +527,7 @@ class LegBp(RigModule):
             offList=self.ctls_fk[1:-1],
         )
 
-        mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_bf)
+        # mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_bf)
         self.ctl_vis_toggle(
             self.ikc.a.add("pvcVis", attrType="bool", dv=1, k=0),
             onList=[self.pvc.offset, self.pvc_line.offset],

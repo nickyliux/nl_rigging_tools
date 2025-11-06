@@ -79,7 +79,7 @@
       <rect>
        <x>0</x>
        <y>60</y>
-       <width>101</width>
+       <width>109</width>
        <height>301</height>
       </rect>
      </property>
@@ -348,10 +348,10 @@
     <widget class="QGroupBox" name="groupBox_3">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>115</x>
        <y>60</y>
-       <width>101</width>
-       <height>301</height>
+       <width>109</width>
+       <height>291</height>
       </rect>
      </property>
      <property name="title">
@@ -368,7 +368,7 @@
        <rect>
         <x>0</x>
         <y>20</y>
-        <width>94</width>
+        <width>101</width>
         <height>27</height>
        </rect>
       </property>
@@ -475,7 +475,7 @@
        <rect>
         <x>0</x>
         <y>80</y>
-        <width>94</width>
+        <width>101</width>
         <height>26</height>
        </rect>
       </property>
@@ -604,7 +604,7 @@
        <rect>
         <x>0</x>
         <y>50</y>
-        <width>94</width>
+        <width>101</width>
         <height>26</height>
        </rect>
       </property>
@@ -720,7 +720,7 @@
        <rect>
         <x>0</x>
         <y>170</y>
-        <width>94</width>
+        <width>101</width>
         <height>26</height>
        </rect>
       </property>
@@ -841,7 +841,7 @@
        <rect>
         <x>0</x>
         <y>260</y>
-        <width>94</width>
+        <width>101</width>
         <height>26</height>
        </rect>
       </property>
@@ -948,7 +948,7 @@
        <rect>
         <x>0</x>
         <y>110</y>
-        <width>94</width>
+        <width>101</width>
         <height>26</height>
        </rect>
       </property>
@@ -1069,7 +1069,7 @@
        <rect>
         <x>0</x>
         <y>200</y>
-        <width>94</width>
+        <width>101</width>
         <height>26</height>
        </rect>
       </property>
@@ -1190,7 +1190,7 @@
        <rect>
         <x>0</x>
         <y>140</y>
-        <width>94</width>
+        <width>101</width>
         <height>26</height>
        </rect>
       </property>
@@ -1311,7 +1311,7 @@
        <rect>
         <x>0</x>
         <y>230</y>
-        <width>94</width>
+        <width>101</width>
         <height>26</height>
        </rect>
       </property>
@@ -1419,7 +1419,7 @@
       <rect>
        <x>0</x>
        <y>6</y>
-       <width>221</width>
+       <width>225</width>
        <height>51</height>
       </rect>
      </property>
@@ -2921,10 +2921,10 @@
     <widget class="QProgressBar" name="bar_PB">
      <property name="geometry">
       <rect>
-       <x>218</x>
-       <y>60</y>
-       <width>3</width>
-       <height>301</height>
+       <x>115</x>
+       <y>354</y>
+       <width>108</width>
+       <height>6</height>
       </rect>
      </property>
      <property name="sizePolicy">
@@ -2942,7 +2942,7 @@
      <property name="maximumSize">
       <size>
        <width>99999</width>
-       <height>99999</height>
+       <height>6</height>
       </size>
      </property>
      <property name="styleSheet">
@@ -2958,7 +2958,7 @@
       <bool>false</bool>
      </property>
      <property name="orientation">
-      <enum>Qt::Vertical</enum>
+      <enum>Qt::Horizontal</enum>
      </property>
      <property name="invertedAppearance">
       <bool>false</bool>

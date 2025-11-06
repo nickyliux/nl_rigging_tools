@@ -24,32 +24,16 @@ def switch_to_space_target(spaceName):
                 ctl.setMtx(mtx)
 
 
-def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
-
-    # Validate rigNode and its state
-    if not rigNode or rigNode.a.nodeState.get() != 2:
-        return
-
-    rigID = rigNode.a.rigID.get()
-    rigClass = rigNode.a.rigClass.get()
-
-    rootJ = rigNode.a.rootJ.inConnNode
-    if rootJ is None:
-        logging.warning(f"Root joint for {rigID} NOT found. Cannot switch IK/FK.")
-        return
-
+def getJntsCtlsFromRigNode(rootJ, rigNode):
+    """Get joint and FK control names based on rig class."""
     jnts = []
     fkCtlNames = []
+    rigClass = rigNode.a.rigClass.get()
+    rigID = rigNode.a.rigID.get()
 
     if rigClass == "LegBp":
         jnts = rootJ.allChildrenJt2[:5]
-        fkCtlNames = [
-            "hip_fkc",
-            "upr_fkc",
-            "lwr_fkc",
-            "palm_fkc",
-            "ball_fkc",
-        ]
+        fkCtlNames = ["hip_fkc", "upr_fkc", "lwr_fkc", "palm_fkc", "ball_fkc"]
     elif rigClass == "LegQd":
         jnts = rootJ.allChildrenJt2[:6]
         fkCtlNames = [
@@ -62,19 +46,33 @@ def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
         ]
     elif rigClass == "ArmBp":
         jnts = rootJ.allChildrenJt2[:4]
-        fkCtlNames = [
-            "clavicle_fkc",
-            "upr_fkc",
-            "lwr_fkc",
-            "palm_fkc",
-        ]
+        fkCtlNames = ["clavicle_fkc", "upr_fkc", "lwr_fkc", "palm_fkc"]
     elif rigClass == "Finger":
         jnts = rootJ.allChildrenJt2
         fkCtlNames = ["fgr01_fkc", "fgr02_fkc", "fgr03_fkc", "fgr04_fkc"]
 
     if not all(jnts):
-        logging.warning(f"Leg joints for {rigID} NOT found. Cannot switch IK/FK.")
+        mc.confirmDialog(
+            t="Info", m=f"Some joints for {rigID} NOT found. Cannot switch IK/FK."
+        )
+
+    return jnts, fkCtlNames
+
+
+def switch_fk_ik(attr=None, toIKMode=0, rigNode=None):
+    # Validate rigNode and its state
+    if not rigNode or rigNode.a.nodeState.get() != 2:
         return
+
+    rigID = rigNode.a.rigID.get()
+    rootJ = rigNode.a.rootJ.inConnNode
+    if rootJ is None:
+        logging.warning(f"Root joint for {rigID} NOT found. Cannot switch IK/FK.")
+        return
+
+    jnts = []
+    fkCtlNames = []
+    jnts, fkCtlNames = getJntsCtlsFromRigNode(rootJ, rigNode)
 
     # FK Ctls
     fkCtls = [rigNode.a[name].inConnNode for name in fkCtlNames]
@@ -141,11 +139,12 @@ def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
             mc.xform(pvc, ws=1, t=pvc_pos)
 
         attr.set(1)
+        mc.select(ikc)
 
     # Apply ball ctl after switching
     fkCtls[-1].setMtx(ball_mtx)
 
-    logging.info(f"Switched {'to IK' if toIKMode else 'to FK'} mode for {rigID}.")
+    logging.info(f"{rigID}: Switched to {'IK' if toIKMode else 'FK'}.")
 
 
 def calc_pvc_pos(obj1, obj2, obj3):

@@ -123,7 +123,7 @@ class MarkingMenuAutorig:
                 p=menu,
                 l=label,
                 rp="S",
-                c=partial(self.switch_ik_fk, fkIkAttr, mode, rigNode),
+                c=partial(self.switch_fk_ik, fkIkAttr, mode, rigNode),
             )
 
     def mirrorShapeSelOrAll(*args):
@@ -163,9 +163,9 @@ class MarkingMenuAutorig:
         """Switch space for all selected controls to the specified space"""
         anim.switch_to_space_target(args[0])
 
-    def switch_ik_fk(self, *args):
+    def switch_fk_ik(self, *args):
         """Switch FK/IK mode for the specified rig node"""
-        anim.switch_ik_fk(attr=args[0], toIKMode=args[1], rigNode=args[2])
+        anim.switch_fk_ik(attr=args[0], toIKMode=args[1], rigNode=args[2])
         self.reload_marking_menu()
 
     def reload_marking_menu(*args):
