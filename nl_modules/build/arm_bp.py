@@ -315,7 +315,7 @@ class ArmBp(RigModule):
 
         # Add blend attribute
         self.setting.a.addSep()
-        fkToIk = self.setting.a.add("fkToIk", min=0, max=1, dv=0)
+        fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=0)
         total = len(self.jnts) - 1
 
         # Blend FK/IK to BF joints and drive output joints
@@ -325,9 +325,9 @@ class ArmBp(RigModule):
             bfj = self.jnts_bf[i]
             jnt = self.jnts[i]
             if i > 0:
-                common.cstMulti(fkj, ikj, bfj, w=fkToIk)
-                # ut.blendN_(fkj.a.t, ikj.a.t, w=fkToIk) >> bfj.a.t
-                # ut.blendN_(fkj.a.r, ikj.a.r, w=fkToIk) >> bfj.a.r
+                common.cstMulti(fkj, ikj, bfj, w=fkIk)
+                # ut.blendN_(fkj.a.t, ikj.a.t, w=fkIk) >> bfj.a.t
+                # ut.blendN_(fkj.a.r, ikj.a.r, w=fkIk) >> bfj.a.r
 
             if i == 0:
                 self.clavicle_fkc.cstPar(jnt, mo=1)
@@ -341,7 +341,7 @@ class ArmBp(RigModule):
 
         # Add blend attribute to all controls
         for ctl in self.ctls_fk + self.ctls_ik:
-            ctl.a.add("fkToIk", proxy=fkToIk, k=0)
+            ctl.a.add("fkIk", proxy=fkIk, k=0)
 
         # Create matcher group for snapping
         GrpNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
@@ -442,7 +442,7 @@ class ArmBp(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the arm rig controls."""
         self.ctl_vis_toggle(
-            self.setting.a["fkToIk"],
+            self.setting.a["fkIk"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             offList=self.ctls_fk[1:],
         )

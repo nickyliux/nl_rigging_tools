@@ -391,7 +391,7 @@ class LegBp(RigModule):
         self.hip.cstPar(self.setting, mo=1)
 
         self.setting.a.addSep()
-        fkToIk = self.setting.a.add("fkToIk", min=0, max=1, dv=1)
+        fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=1)
         total = len(self.jnts) - 1
 
         for i in range(total):
@@ -400,9 +400,9 @@ class LegBp(RigModule):
             bfj = self.jnts_bf[i]
             jnt = self.jnts[i]
             if i > 0:
-                common.cstMulti(fkj, ikj, bfj, w=fkToIk)
-                # ut.blendN_(fkj.a.t, ikj.a.t, w=fkToIk) >> bfj.a.t
-                # ut.blendN_(fkj.a.r, ikj.a.r, w=fkToIk) >> bfj.a.r
+                common.cstMulti(fkj, ikj, bfj, w=fkIk)
+                # ut.blendN_(fkj.a.t, ikj.a.t, w=fkIk) >> bfj.a.t
+                # ut.blendN_(fkj.a.r, ikj.a.r, w=fkIk) >> bfj.a.r
 
             if i == 0:
                 self.hip_fkc.cstPar(jnt, mo=1)
@@ -422,7 +422,7 @@ class LegBp(RigModule):
         # Useful for fk ik switch popUp menu
         for ctl in self.ctls_fk + self.ctls_ik + [self.smart_ctl]:
 
-            ctl.a.add("fkToIk", proxy=fkToIk, k=0)
+            ctl.a.add("fkIk", proxy=fkIk, k=0)
 
         GrpNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
 
@@ -522,7 +522,7 @@ class LegBp(RigModule):
         """Setup visibility for the leg rig controls."""
         self.pvc.a["fkPin"] >> self.pin_fkc.a.v
         self.ctl_vis_toggle(
-            self.setting.a["fkToIk"],
+            self.setting.a["fkIk"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             offList=self.ctls_fk[1:-1],
         )

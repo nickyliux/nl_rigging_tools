@@ -42,7 +42,7 @@ class MarkingMenuAutorig:
         self.addBuildOptions(menu)
         self.addGuideOptions(menu)
         self.addHelperOptions(menu)
-        self.addSpaceIKFKOptions(menu)
+        self.addSpaceFkIkOptions(menu)
         self.addExtraOptions(menu)
 
     def addBuildOptions(self, menu):
@@ -84,7 +84,7 @@ class MarkingMenuAutorig:
         mc.menuItem(p=menu, l="-" * 15, en=0)
         mc.menuItem(p=menu, l="Reload Menu", c=self.reload_marking_menu)
 
-    def addSpaceIKFKOptions(self, menu):
+    def addSpaceFkIkOptions(self, menu):
         """Add space switch and IK/FK options to the marking menu"""
         selList = mc.ls(sl=1, tr=1)
         if not selList:
@@ -115,10 +115,10 @@ class MarkingMenuAutorig:
             # mc.menuItem(p=menu, l="-" * 15, en=0)
 
         # --- IK/FK SWITCH ---
-        fkIkAttr = firstSelected.a["fkToIk"]
+        fkIkAttr = firstSelected.a["fkIk"]
         if fkIkAttr.exists():
             mode = 0 if fkIkAttr.get() > 0.5 else 1
-            label = "To FK Mode" if mode == 0 else "To IK Mode"
+            label = "Switch To FK" if mode == 0 else "Switch To IK"
             mc.menuItem(
                 p=menu,
                 l=label,

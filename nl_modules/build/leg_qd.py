@@ -352,17 +352,17 @@ class LegQd(RigModule):
         self.hip.cstPar(self.setting, mo=1)
 
         # --- Add blend attribute and set up blending constraints ---
-        fkToIk = self.setting.a.add("fkToIk", min=0, max=1, dv=1)
+        fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=1)
         for i in range(len(self.jnts) - 1):
             fkJ = self.jnts_fk[i]
             ikJ = self.jnts_ik[i]
             jnt = self.jnts[i]
-            common.cstMulti(fkJ, ikJ, jnt, w=fkToIk)
+            common.cstMulti(fkJ, ikJ, jnt, w=fkIk)
 
         # --- Add proxy attribute for easy FK/IK switch on controls ---
         for ctl in self.ctls_fk + self.ctls_ik + [self.smart_ctl]:
 
-            ctl.a.add("fkToIk", proxy=fkToIk, k=0)
+            ctl.a.add("fkIk", proxy=fkIk, k=0)
 
         # --- Create matcher group for IK control alignment ---
         GrpNode(f"{self.ikc.name}_matcher", align=self.ikc, p=self.digit_fkc)
@@ -540,7 +540,7 @@ class LegQd(RigModule):
         logging.info(self.rigID)
 
         # --- Prepare blend attribute and offsets ---
-        fkToIk = self.setting.a["fkToIk"]
+        fkIk = self.setting.a["fkIk"]
         ball_fkc_ofs = self.ball_fkc.offset
         ball_fkc_ofs.removeCstNodes()
 
@@ -552,7 +552,7 @@ class LegQd(RigModule):
         self.space_align(
             self.ball_fkc,
             spaces=[ball_fkj.offset, self.toe_wiggle_grp],
-            w=fkToIk,
+            w=fkIk,
             cstType="par",
         )
 
@@ -570,7 +570,7 @@ class LegQd(RigModule):
         self.space_align(
             ball_fkj,
             spaces=[self.ball_fkc, ball_fkj.offset],
-            w=fkToIk,
+            w=fkIk,
             cstType="ori",
             mo=1,
         )
@@ -578,7 +578,7 @@ class LegQd(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the quadruped leg rig controls."""
         self.ctl_vis_toggle(
-            self.setting.a["fkToIk"],
+            self.setting.a["fkIk"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             offList=self.ctls_fk[1:-1],
         )

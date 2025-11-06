@@ -896,3 +896,18 @@ def setupFrameCache(graph=None, joints=None, base=None, keepVol=0):
         ratio = base ** (fc.a.varying * keepVol)
         ratio >> joints[i].a.sy
         ratio >> joints[i].a.sz
+
+
+def xRayAllGeo(state=1):
+    """Set xRay on mesh shapes"""
+    selList = mc.ls(type=["nurbsSurface", "mesh"], l=1, ni=1)
+    for sel in selList:
+        mc.displaySurface(sel, xRay=state)
+    mc.refresh(f=1)
+
+
+def modelPanelShow(jnt=1):
+    """Set model panel to show joints"""
+    allModelPanel = mc.getPanel(type="modelPanel")
+    for modelP in allModelPanel:
+        mc.modelEditor(modelP, e=1, joints=jnt)

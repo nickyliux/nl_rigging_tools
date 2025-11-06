@@ -51,9 +51,9 @@ def buildTgt(rigN):
             if state == 0:
                 sk = rigObj.gen_sk()
                 if sk:
-                    mc.select(sk)
-                    mc.refresh(f=1)
+                    # mc.select(sk)
                     rigObj.build()
+                    mc.refresh(f=1)
             # elif state == 1:
             #     rigObj.build()
             # mc.refresh(cv=1)
@@ -88,6 +88,8 @@ def preRig():
 def buildSelOrAll(*arg, uiPB=None):
     """Build rig for selected rigNodes or all if nothing selected"""
     rigNodes = getRigNodes_selOrAll()
+    common.modelPanelShow(jnt=0)
+    common.xRayAllGeo(state=1)
     if rigNodes:
         preRig()
         if uiPB:
@@ -105,6 +107,8 @@ def buildSelOrAll(*arg, uiPB=None):
             uiPB.setValue(0)
         # Gen proxy after build
         proxy.genProxy()
+    common.modelPanelShow(jnt=1)
+    common.xRayAllGeo(state=0)
 
 
 def postRig():

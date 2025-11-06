@@ -193,16 +193,16 @@ class FingerFk(RigModule):
         logging.info(self.rigID)
         # rID, rSz, xDr = self.getMyVar()
 
-        # fkToIk = self.setting.a.add("fkToIk", min=0, max=1, dv=0)
+        # fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=0)
         # for i in range(len(self.jnts) - 1):
         #     fkJ = self.jnts_fk[i]
         #     ikJ = self.jnts_ikB[i]
         #     jnt = self.jnts[i]
-        #     common.cstMulti(fkJ, ikJ, jnt, w=fkToIk)
+        #     common.cstMulti(fkJ, ikJ, jnt, w=fkIk)
 
         # # Add blend attribute to all controls
         # for ctl in self.ctls_fk + self.ctls_ik:
-        #     ctl.a.add("fkToIk", proxy=fkToIk, k=0)
+        #     ctl.a.add("fkIk", proxy=fkIk, k=0)
 
         for i in range(len(self.jnts)):
             fkJ = self.jnts_fk[i]
@@ -230,7 +230,7 @@ class FingerFk(RigModule):
         mc.hide(self.ikhs, self.jnts_fk, self.setting)
 
         # self.ctl_vis_toggle(
-        #     self.setting.a["fkToIk"],
+        #     self.setting.a["fkIk"],
         #     onList=self.ctls_ik,
         #     offList=self.ctls_fk,
         # )

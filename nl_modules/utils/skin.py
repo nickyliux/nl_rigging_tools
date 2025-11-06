@@ -143,6 +143,8 @@ def loadWeight(uiPB):
     loadCount = 0
     mc.setToolTo("selectSuperContext")
     control.reset_all_ctl()
+    common.xRayAllGeo(state=1)
+
     for mesh in weightJnt_dict:
 
         if not mc.objExists(mesh):
@@ -162,7 +164,8 @@ def loadWeight(uiPB):
         uiPB.setValue(0)
 
     logging.info(f"{loadCount} objects weight loaded.")
-    mc.confirmDialog(t="Info", m=f"{loadCount} objects weight loaded.     ", b="OK")
+    # mc.confirmDialog(t="Info", m=f"{loadCount} objects weight loaded.     ", b="OK")
+    common.xrayAllGeo(state=0)
     mc.select(cl=1)
 
 

@@ -101,13 +101,13 @@ def switch_ik_fk(attr=None, toIKMode=0, rigNode=None):
     ball_mtx = jnts[-1].getMtx()
 
     if toIKMode == 0:
-        # Switch to FK mode
+        # Switch to FK
         for ctl, jnt in zip(fkCtls, jnts):
             if ctl:
                 ctl.alignTo(jnt)
         attr.set(0)
     else:
-        # Switch to IK mode
+        # Switch to IK
         root_mtx = jnts[0].getMtx()
 
         autoAim = fkCtls[0].a["autoAim"]
