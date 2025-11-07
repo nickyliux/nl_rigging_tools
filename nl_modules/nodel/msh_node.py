@@ -117,3 +117,8 @@ class MshNode(DagNode):
             )
             if tweaks:
                 mc.delete(tweaks)
+
+    def setMaxInfl(self, val=8):
+        """Set maximum influences for the skinCluster of the mesh"""
+        if self.skinCluster.exists():
+            mc.skinCluster(self, e=1, mi=val)

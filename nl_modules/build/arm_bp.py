@@ -97,7 +97,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "spiral", "z", scale, 1, 2),
+            ("setting", "cross", "z", scale, 1, -1),
             ("clavicle_fkc", "rotator", None, scale, 0, -1),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),

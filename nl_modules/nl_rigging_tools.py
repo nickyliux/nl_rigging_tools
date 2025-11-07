@@ -252,11 +252,22 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.dsp_template_BN, partial(control.dspTypeSel, 1))
         self.connect(self.UI.dsp_reference_BN, partial(control.dspTypeSel, 2))
         self.connect(self.UI.selectTypeBelow_BN, self.getTypeBelowSel)
+        self.connect(self.UI.maxInfl_BN, self.setMaxInfl)
 
         self.rigNode_refresh()
         self.crvShape_refresh()
         self.updateLoadWrapTargetMesh()
         self.updateCharPath()
+
+    def setMaxInfl(self):
+        """Set maximum influences for selected skinned meshes."""
+        from nl_modules.nodel.msh_node import MshNode
+
+        selList = mc.ls(sl=1, tr=1)
+        if selList:
+            for s in selList:
+                MshNode(s).setMaxInfl()
+                logging.info(f"Set max influences to 8 for {s}")
 
     def getTypeBelowSel(self):
         """Select objects of a specific type below the selected objects."""

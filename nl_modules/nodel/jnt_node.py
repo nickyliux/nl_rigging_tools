@@ -170,7 +170,7 @@ class JntNode(GrpNode):
         aimTgt=None,
         u=(0, 1, 0),
         wu=(0, 1, 0),
-        color=Color.L_BLUE,
+        color=None,  # Color.L_BLUE,
     ):
         """Create a two-joint chain with optional alignment and constraints."""
 

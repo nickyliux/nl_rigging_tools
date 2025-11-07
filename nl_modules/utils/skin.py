@@ -142,9 +142,9 @@ def loadWeight(uiPB):
         uiPB.setMaximum(len(weightJnt_dict))
     i = 0
     loadCount = 0
+    common.xRayAllGeo(1)
     mc.setToolTo("selectSuperContext")
     control.reset_all_ctl()
-    common.xRayAllGeo(1)
 
     for mesh in weightJnt_dict:
 

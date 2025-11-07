@@ -151,20 +151,22 @@ class HandBp(RigModule):
 
     def setup_claw_sdk(self):
         """Setup SDK for finger claw controls."""
-        claw = self.smart_ctl.a.add("claw", type="float", dv=0, k=1)
+        attrName = "fgrClaw"
         drv = self.smart_ctl
+        self.smart_ctl.a.add(attrName, type="float", dv=0, k=1)
+
         # Fgr 1, 2, 3, 4
         data = [
             [(-90, -90), (0, 0), (90, 55)],  # id = 2
             [(-90, -70), (0, 0), (90, 35)],  # id = 3
         ]
         for i in range(1, 5):
-            self.setSDK(drv, data, i=i, tgtOfs=2, attr1="claw")
+            self.setSDK(drv, data, i=i, tgtOfs=2, attr1=attrName)
         # Fgr 0
         data = [
             [(-90, -75), (0, 0), (90, 60)],  # id = 2
         ]
-        self.setSDK(drv, data, i=0, tgtOfs=2, attr1="claw")
+        self.setSDK(drv, data, i=0, tgtOfs=2, attr1=attrName)
 
     def setup_close_sdk(self):
         """Setup SDK for finger close controls."""
@@ -320,8 +322,6 @@ class HandBp(RigModule):
         self.hand_grp.cstPar(scaleGrp, mo=1)
         self.rootJ.a.s >> scaleGrp.a.s
 
-        # Add handScale attribute and connect to rootJ scale
-        self.smart_ctl.a.add("handScale", min=0, dv=1) >> self.rootJ.a.scale
         self.setup_close_sdk()
         self.setup_claw_sdk()
         self.setup_flap_sdk()
@@ -389,6 +389,7 @@ class HandBp(RigModule):
         handScale = self.smart_ctl.a.add("handScale", min=0, dv=1)
         handScale >> self.rootJ.a.scale
         handScale >> self.palm_ctl.offset.a.scale
+        handScale >> self.hand_grp.a.scale
 
         for root in self.rootJ.childrenJt:
             root.a.segmentScaleCompensate.set(0)

@@ -75,7 +75,7 @@ class SpineBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
-            ("setting", "spiral", "z", rSz * 2, 1, -1),
+            ("setting", "cross", "z", rSz * 2, 1, -1),
             ("cog_ctl", "cog", None, rSz * 7, 0, -1),
         ]
         if self.is_ribbon():
@@ -298,11 +298,13 @@ class SpineBp(RigModule):
         #     onList=self.jnts_ctl + self.jnts_fk,  # + self.jnts_rb,
         # )
         if self.is_ribbon():
-            mc.hide(self.jnts_fk)
+            # mc.hide(self.jnts_fk)
+            self.setting.a.add("fkJntVis", type="bool", k=0) >> self.jnts_fk[0].a.v
         if self.is_neck():
             mc.hide(self.cog_ctl, self.hip_ikc)
-        mc.hide(self.jnts_ctl, self.RIG_DATA, self.setting)
-        mc.hide(self.jnts_rb)
+        mc.hide(self.jnts_ctl, self.RIG_DATA)  # , self.setting)
+        # mc.hide(self.jnts_rb)
+        self.setting.a.add("rbJntVis", type="bool", k=0) >> self.jnts_rb[0].a.v
 
     def setup_channel(self):
         """Setup channel attributes for the spine rig controls."""

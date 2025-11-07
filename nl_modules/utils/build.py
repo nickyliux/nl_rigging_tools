@@ -131,8 +131,8 @@ def masterAddAttrs():
     if ctl.exists() and prx.exists():
         prx.a.overrideEnabled.set(1)
 
+        ctl.a.add("sklVis", k=0, type="bool", dv=1) >> skl.a.v
         ctl.a.add("pxyVis", k=0, type="bool", dv=1) >> prx.a.v
-        ctl.a.add("sklVis", k=0, type="bool", dv=0) >> skl.a.v
 
         OPTIONS = "Normal:Template:Reference"
         (
@@ -159,6 +159,7 @@ def unbuildSelOrAll(*arg):
         for rigN in rigNodes:
             unbuildTgt(rigN)
         postRig()
+        mc.refresh(f=1)
 
 
 def deleteTgt(rigNode):

@@ -138,7 +138,7 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "spiral", "z", scale, 1, 2),
+            ("setting", "cross", "z", scale, 1, -1),
             ("hip_fkc", "stick", None, -scale / 2, 0, -1),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
@@ -383,7 +383,7 @@ class LegBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.jnts_bf = common.dupSk(
-            self.jnts, "_bf", p=self.BF_GRP, r=rSz * 4, color=Color.D_YELLOW
+            self.jnts, "_bf", p=self.BF_GRP, r=rSz * 4, color=Color.SKY
         )
 
         self.setting.snapTo(self.hip, p=self.CTL_DATA)
