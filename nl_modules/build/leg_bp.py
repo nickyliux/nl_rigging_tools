@@ -538,7 +538,7 @@ class LegBp(RigModule):
         )
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyCtls", type="bool", k=0, dv=0),
+                self.setting.a.add("bendyCtlVis", type="bool", k=0, dv=0),
                 onList=self.all_bend,
             )
         mc.hide(self.ikhs, self.toeIKHs)  # , self.setting)

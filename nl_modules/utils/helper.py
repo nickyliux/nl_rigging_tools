@@ -167,26 +167,26 @@ def hlpJntSetup(
 
     cstGrp = GrpNode(f"{hlpName}_grp", p=parent_for_group)
     ofsGrp = GrpNode(f"{hlpName}_ofs")
-    bseJnt = JntNode(f"{hlpName}_bse", r=0)
-    hlpJnt = JntNode(f"{hlpName}_jnt", r=tgtJnt.a.radius.get())
+    # bseJnt = JntNode(f"{hlpName}_bse", r=0)
+    hlpJnt = JntNode(f"{hlpName}_jnt", r=tgtJnt.a.radius.get() / 2)
 
     # Configure rotation order once
     cstGrp.a.rotateOrder.set(ro)
     hlpJnt.a.rotateOrder.set(ro)
 
     # Build hierarchy quickly
-    hlpJnt | bseJnt | ofsGrp | cstGrp
-    bseJnt.dspType = 2
+    hlpJnt | ofsGrp | cstGrp
+    # bseJnt.dspType = 2
     # bseJnt.setRadius(0)
 
     # Create constraints and visual helpers
     common.cstMulti(parentJnt, tgtJnt, cstGrp, cstType="ori")
     tgtJnt.cstPoi(cstGrp)
 
-    hlpJnt.color = (0.0, 0.1, 0.0)
+    hlpJnt.color = Color.PINK  # (0.0, 0.1, 0.0)
     cstGrp.a.s.set(dir_sign, dir_sign, dir_sign)
 
-    CrvNode.buildLineLinked(tgt1=bseJnt, tgt2=tgtJnt, dspType=2, top=1, p=cstGrp)
+    CrvNode.buildLineLinked(tgt1=ofsGrp, tgt2=tgtJnt, dspType=2, top=1, p=cstGrp)
 
     # Add attributes (grouped for clarity)
     attr_defs = [
@@ -217,7 +217,7 @@ def hlpJntSetup(
     r = rotator.a[fr]
     rAbs = (r >= 0).setCdn(ifTrue=r, ifFalse=r * -1)
     ofsScale = (r > 0).setCdn(ifTrue=hlpJnt.a.scaling1, ifFalse=hlpJnt.a.scaling2)
-    hlpJnt.a.init >> bseJnt.a[to]
+    # hlpJnt.a.init >> bseJnt.a[to]
     ofsScale * rAbs / 90 >> hlpJnt.a[to]
     hlpJnt.a.showAttr()
 
