@@ -13,7 +13,7 @@ blockquote {
 </style>
 -->
 
-# nl-rigging-tools ( nlRT )  ![nlRT logo](install/nl_rigging_tools.bmp)  
+# nl-rigging-tools ( nlRT )  ![nlRT logo](nl_modules/nl_rigging_tools.bmp)  
 
 ![License](https://img.shields.io/badge/license-GPLv3-red.svg?style=plastic)
 [![Blog](https://img.shields.io/badge/blog-nickyliu.com-blue)](http://www.nickyliu.com)
@@ -27,12 +27,12 @@ While working intensively on a project that involving Ziva muscle plugin, I had 
 
 ## Features
 
-- **Modular**: Supports characters with multiple parts/limbs.
-- **Data Reuse**: Restorable templates, controls, and proxies.
-- **Auto Connect**: Common limbs are auto connected
-- **Marking Menus**: Custom marking menus for the rig and rigging tasks.
-- **Custom Framework**: Faster and more readable coding.
-- **Skeletal Setup**: 
+- **Modular**: Support multiple parts / limbs.
+- **Skeletal Build**: Support skeleton models rigging.
+- **Cartoony Build**: Support ribbons setup for cartoony control.
+- **Data Reuse**: Restorable templates, controls, proxies, weights.
+- **Custom Marking Menus**: Speed up rig build and general rigging tasks.
+- **Custom Framework**: Less and more readable code in module development.
 
 ## Framework Classes
 ```mermaid
@@ -58,11 +58,14 @@ flowchart
     RigModule --> SpineBp
     SpineBp --> NeckBp
     RigModule --> ArmBp
+    RigModule --> HandBp
     RigModule --> LegBp
     RigModule --> SpineQd
     SpineQd --> NeckQd
     RigModule --> LegQd
     RigModule --> Tail
+    RigModule --> SimplyFk
+    RigModule --> FingerFk
 ```
 
 ## Marking menus
