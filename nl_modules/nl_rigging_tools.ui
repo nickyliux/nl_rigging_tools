@@ -2877,7 +2877,7 @@
        <x>115</x>
        <y>354</y>
        <width>108</width>
-       <height>6</height>
+       <height>4</height>
       </rect>
      </property>
      <property name="sizePolicy">
@@ -2895,7 +2895,7 @@
      <property name="maximumSize">
       <size>
        <width>99999</width>
-       <height>6</height>
+       <height>4</height>
       </size>
      </property>
      <property name="styleSheet">

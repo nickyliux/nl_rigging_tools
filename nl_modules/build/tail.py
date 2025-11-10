@@ -54,7 +54,7 @@ class Tail(RigModule):
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
         self.rootJ = root_list[0]
-        self.rootJ.color = Color.D_RED
+        # self.rootJ.color = Color.BLACK
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 

@@ -49,7 +49,7 @@ class HandBp(RigModule):
             fgr_roots.append(jnts[0])
 
         self.rootJ = root_list[0]
-        self.rootJ.color = Color.D_RED
+        # self.rootJ.color = Color.BLACK
         self.rootJ | self.SKL_DATA
         self.rootGrp = self.rootJ.addOffsetGrp()
         self.rigNode.setMsg({"rootJ": self.rootJ})

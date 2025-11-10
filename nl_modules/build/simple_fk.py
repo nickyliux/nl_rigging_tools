@@ -54,6 +54,7 @@ class SimpleFk(RigModule):
             JntNode(j).a["preferredAngleZ"].set(-10)
 
         self.rootJ = root_list[0]
+        # self.rootJ.color = Color.BLACK
         self.rootJ | self.SKL_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ

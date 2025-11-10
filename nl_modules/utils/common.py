@@ -744,17 +744,14 @@ def build_ribbon_rivet(
         aimAlongSrfUV(
             srf=rbSrf, loc=loc, inPos=mp.a.allCoordinates, p=loc_grp, setLocPos=1
         )
-
         if outputJnt:
-            jnt = JntNode(
-                f"{i}_rbj", pf=pf, align=loc, r=1, p=loc, reset=1, color=Color.D_RED
-            )
+            jnt = JntNode(f"{i}_rbj", pf=pf, align=loc, r=1, p=loc, reset=1)
+            # , color=Color.D_RED
             outputs.append(jnt)
         else:
             outputs.append(loc)
 
         scaleAttr >> loc.a.s
-
         loc.a.inheritsTransform.set(0)
 
     prx_height = mc.arclen(crv) / rivetNum / 1.5

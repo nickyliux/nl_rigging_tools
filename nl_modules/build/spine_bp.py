@@ -123,7 +123,7 @@ class SpineBp(RigModule):
             aimV=(0, 1, 0),
             size=rSz * 2,
             p=self.SKL_DATA,
-            color=Color.D_RED,
+            # color=Color.D_RED,
         )
         mc.delete(self.rootJ)
         self.rootJ = self.jnts_fk[0]
@@ -136,7 +136,7 @@ class SpineBp(RigModule):
                 pf=rID,
                 shape="squareR",
                 scale=rSz * 5,
-                color=Color.D_YELLOW,
+                # color=Color.D_YELLOW,
             )
             self.ctls_fk.append(c)
 

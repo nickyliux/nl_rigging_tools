@@ -127,7 +127,7 @@ class LegBp(RigModule):
                 fgr_jnts[0] | self.toesRootJ
 
         self.rootJ = root_list[0]
-        self.rootJ.color = Color.D_RED
+        # self.rootJ.color = Color.BLACK
         self.rootJ | self.SKL_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
@@ -384,7 +384,7 @@ class LegBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.jnts_bf = common.dupSk(
-            self.jnts, "_bf", p=self.BF_GRP, r=rSz * 4, color=Color.SKY
+            self.jnts, "_bf", p=self.BF_GRP, r=rSz * 4, color=Color.D_YELLOW
         )
 
         self.setting.snapTo(self.hip, p=self.CTL_DATA)

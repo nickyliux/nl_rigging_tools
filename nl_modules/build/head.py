@@ -33,7 +33,7 @@ class Head(RigModule):
 
         self.rootJ = root_list[0]
         self.rootJ | self.SKL_DATA
-        self.rootJ.color = Color.D_RED
+        # self.rootJ.color = Color.BLACK
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 
