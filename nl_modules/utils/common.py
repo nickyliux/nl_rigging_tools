@@ -651,39 +651,39 @@ def add_mirror_attr(tgts=None):
             t.a.add("wsMirror", lock=1, k=0, cb=0, dv=1)
 
 
-def addIconToCurrShelf():
-    """Add icon to current shelf"""
-    if sys.version_info.major < 3:
-        raise ImportError("nl_rigging_tools does not support Python 2.")
+# def addIconToCurrShelf():
+#     """Add icon to current shelf"""
+#     if sys.version_info.major < 3:
+#         raise ImportError("nl_rigging_tools does not support Python 2.")
 
-    currDir = os.path.dirname(__file__)
-    iconPath = os.path.join(currDir, "nl_rigging_tools.bmp")
+#     currDir = os.path.dirname(__file__)
+#     iconPath = os.path.join(currDir, "nl_rigging_tools.bmp")
 
-    if not os.path.exists(iconPath):
-        logging.warning(f"Icon file not found: {iconPath}")
-        return
+#     if not os.path.exists(iconPath):
+#         logging.warning(f"Icon file not found: {iconPath}")
+#         return
 
-    shelfCmd = (
-        "from nl_modules import nl_rigging_tools\n"
-        + "from importlib import reload\n"
-        + "reload(nl_rigging_tools)\n\n"
-        + "nl_rigging_tools.main()\n"
-    )
-    shelfLayout = mel.eval(
-        "global string $gShelfTopLevel; string $tmp = $gShelfTopLevel;"
-    )
-    currShelf = mc.tabLayout(shelfLayout, q=1, selectTab=1)
+#     shelfCmd = (
+#         "from nl_modules import nl_rigging_tools\n"
+#         + "from importlib import reload\n"
+#         + "reload(nl_rigging_tools)\n\n"
+#         + "nl_rigging_tools.showUI()\n"
+#     )
+#     shelfLayout = mel.eval(
+#         "global string $gShelfTopLevel; string $tmp = $gShelfTopLevel;"
+#     )
+#     currShelf = mc.tabLayout(shelfLayout, q=1, selectTab=1)
 
-    mc.setParent(currShelf)
-    mc.shelfButton(
-        c=shelfCmd,
-        annotation="nl_rigging_tools",
-        label="nl",
-        image=iconPath,
-        image1=iconPath,
-        sourceType="python",
-    )
-    logging.info("Tool icon created at the current shelf.")
+#     mc.setParent(currShelf)
+#     mc.shelfButton(
+#         c=shelfCmd,
+#         annotation="nl_rigging_tools",
+#         label="nl",
+#         image=iconPath,
+#         image1=iconPath,
+#         sourceType="python",
+#     )
+#     logging.info("Tool icon created at the current shelf.")
 
 
 def build_ribbon_rivet(

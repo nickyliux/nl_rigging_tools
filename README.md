@@ -27,11 +27,12 @@ While working on a project that required extensive use of the Ziva muscle plugin
 
 ## Features
 
-- **Modular**: Supports characters with any number of parts.
-- **Data Reuse**: Save and restore templates, controls, and proxies.
-- **Auto Connect/Bind**: Components and skeletal meshes are automatically connected and bound.
-- **Marking Menus**: Speed up rigging with custom marking menus.
-- **Concise Python code**: For easy extension.
+- **Modular**: Supports characters with multiple parts/limbs.
+- **Data Reuse**: Restorable templates, controls, and proxies.
+- **Auto Connect**: Common limbs are auto connected
+- **Marking Menus**: Custom marking menus for the rig and rigging tasks.
+- **Custom Framework**: Faster and more readable coding.
+- **Skeletal Setup**: 
 
 ## Framework Classes
 ```mermaid
@@ -65,7 +66,7 @@ flowchart
 ```
 
 ## Marking menus
-Two Marking menus are made to speed up rigging work.
+Two Marking menus are made to speed up rigging tasks.
 |Menu|Shortcut|Interface|
 |:-:|:-:|:-:|
 |Rig Building |Ctrl + MMB|![The Autorig](nl_modules/doc/marking_menu_autorig.png)|
@@ -78,20 +79,17 @@ Two Marking menus are made to speed up rigging work.
 |:-:|:-:|:-:|
 |2023.3 |3.9.7|Win 11
 
-The tool might work in 2022, but it is not tested.
 ## Installation
 
-1. Download and extract repository
-2. In Maya, click to the shelf you want to have the tool icon added
-3. Drag and drop the file "install/dragAndDrop.py" into the viewport
+1. Download and extract to arbitary location
+2. Drag nl_rigging_tools_install.py onto Maya viewport
+3. Go to your shelf and run "More > Add Icon to Current Shelf" 
 
 
 ## Reference
 1. [BoneClones](https://boneclones.com/category/all-zoology-skeletons/fields-of-study)
-
 2. [ivlpaleontology](https://sketchfab.com/ivlpaleontology)
-
 3. [Python for Maya : Beginner to Advanced Rigging Automation by Nick Hughes](https://www.udemy.com/course/python-for-maya-beginner-to-advanced-rigging-automation)
 
 ##
-For more details, visit my blog [www.nickyliu.com](http://www.nickyliu.com)
+For more details, visit my blog at [https://www.nickyliu.com](https://www.nickyliu.com)

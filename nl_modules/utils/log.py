@@ -23,8 +23,8 @@ def update_root_logger():
     stream_hdl.setFormatter(formatter)
     logger.addHandler(stream_hdl)
 
-    print(f"{'Type':5s} {'File':20s} {'Method':20s} Message")
-    print(f"{'----':5s} {'----':20s} {'------':20s} -------")
+    # print(f"{'Type':5s} {'File':20s} {'Method':20s} Message")
+    # print(f"{'----':5s} {'----':20s} {'------':20s} -------")
 
 
 # def print_methods(className):

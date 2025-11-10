@@ -1,5 +1,6 @@
 import logging
 import os
+import maya.mel as mel
 from functools import partial
 from importlib import reload
 import maya.cmds as mc
@@ -55,43 +56,70 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         """Initialize the main window and load the UI."""
         super(MyToolWin, self).__init__(parent)
-        logging.info("load " + UI_PATH)
+        # logging.info("Load " + UI_PATH)
         self.UI = QUiLoader().load(UI_PATH)
 
-        self.setWindowTitle("nlRT 0.1.0")
+        self.setWindowTitle("nlRT")
         self.setCentralWidget(self.UI)
-        self.setGeometry(1070, 260, 230, 660)
+        self.setGeometry(1070, 260, 230, 680)
         self.connect_UI()
-        # self.addMenuBar()
+        self.addMenuBar()
 
     def close_window(self):
         """Close the main window."""
         self.close()
 
+    def addIcon2CurrShelf(*args):
+        """Add icon to current shelf"""
+        currDir = os.path.dirname(__file__)
+        base = os.path.basename(__file__)
+        icon_path = os.path.join(currDir, base.split(".")[0] + ".bmp")
+
+        if not os.path.exists(icon_path):
+            logging.warning(f"Icon file not found: {icon_path}")
+            return
+
+        shelfCmd = (
+            "import nl_modules.nl_rigging_tools as nlRT\n"
+            + "from importlib import reload\n"
+            + "reload(nlRT)\n"
+            + "nlRT.showUI()\n"
+        )
+        shelfLayout = mel.eval(
+            "global string $gShelfTopLevel; string $tmp = $gShelfTopLevel;"
+        )
+        currShelf = mc.tabLayout(shelfLayout, q=1, selectTab=1)
+
+        mc.setParent(currShelf)
+        mc.shelfButton(
+            c=shelfCmd,
+            annotation="nl_rigging_tools",
+            label="nl_rigging_tools",
+            image=icon_path,
+            image1=icon_path,
+            sourceType="python",
+        )
+        logging.info("Tool icon created at the current shelf.")
+
     def addMenuBar(self):
         """Add a menu bar with an 'About' section."""
         menuBar = QMenuBar(self)
+        ver_QM = QMenu("&2025.11.10", self)
         more_QM = QMenu("&More", self)
-        # about_QM = QMenu("&About", self)
 
         addIcon_QA = QAction(self)
         addIcon_QA.setText("&Add Icon to Current Shelf")
-        addIcon_QA.triggered.connect(self.addIconToCurrShelf)
-
-        clickDrag_QA = QAction(self)
-        clickDrag_QA.setText("&Toggle Click Drag")
-        clickDrag_QA.triggered.connect(self.toggleClickDrag)
-
+        addIcon_QA.triggered.connect(self.addIcon2CurrShelf)
         more_QM.addAction(addIcon_QA)
-        more_QM.addAction(clickDrag_QA)
 
+        # clickDrag_QA = QAction(self)
+        # clickDrag_QA.setText("&Toggle Click Drag")
+        # clickDrag_QA.triggered.connect(self.toggleClickDrag)
+        # more_QM.addAction(clickDrag_QA)
+
+        menuBar.addMenu(ver_QM)
         menuBar.addMenu(more_QM)
-        # menuBar.addMenu(about_QM)
         self.setMenuBar(menuBar)
-
-    def addIconToCurrShelf(self):
-        """Add the rigging tools icon to the current shelf."""
-        common.addIconToCurrShelf()
 
     def toggleClickDrag(self):
         """Toggle the click drag preference in Maya."""
@@ -590,7 +618,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 global nlRT_win
 
 
-def main():
+def showUI():
     """Main function to initialize and show the rigging tools UI."""
     global nlRT_win
     try:
@@ -607,7 +635,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    showUI()
 
 mc.evalDeferred("reloadMenus()")
 mc.scriptJob(permanent=1, runOnce=1, event=["SelectionChanged", "reloadMenusAutorig"])
