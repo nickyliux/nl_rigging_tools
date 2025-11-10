@@ -76,7 +76,7 @@ class RbnNode:
         self.build_aim_chains()
         # self.build_twist_chains()
         self.build_volume_setup()
-        logging.info(f"{self.pf} : build rivets/loc/aim chains.")
+        logging.info(self.pf)
         self.build_post()
         self.tgt.cstPar(self.RBN_GRP, keep=0)
 
@@ -221,6 +221,7 @@ class RbnNode:
         """Set up the volume control for the ribbon rig."""
         # logging.info(self.pf)
         scaleFix = self.RBN_GRP.a.sy
+        # scaleFix2 = self.master_scale.a.sy
 
         arcLD = ut.arcLenDim_(self.rbSrf)
         self.d = arcLD.a.arcLengthInV

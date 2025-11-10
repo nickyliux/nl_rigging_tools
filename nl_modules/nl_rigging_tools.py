@@ -56,8 +56,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         """Initialize the main window and load the UI."""
         super(MyToolWin, self).__init__(parent)
-        logging.info("Load " + UI_PATH)
         self.UI = QUiLoader().load(UI_PATH)
+        # logging.info("Load " + UI_PATH)
 
         self.setWindowTitle("nlRT")
         self.setCentralWidget(self.UI)
@@ -116,14 +116,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def connect_UI(self):
         """Connect UI buttons to their respective functions."""
-        # Pick mask & click drag
-        # self.connect(self.UI.pickMaskCrv_BN, self.pickMaskCrv, ":pickCurveObj.png")
-        # self.connect(self.UI.pickMaskMsh_BN, self.pickMaskMsh, ":pickGeometryObj.png")
-        # self.connect(self.UI.pickMaskAll_BN, self.pickMaskAll)
-
-        # self.UI.clickDrag_CB.stateChanged.connect(self.clickDrag_CB_stateChanged)
-        # if mc.selectPref(clickDrag=1, q=1):
-        #     self.UI.clickDrag_CB.setChecked(1)
 
         # Guide
         self.connect(self.UI.guide_load_BN, self.guide_load, ":openScript.png")

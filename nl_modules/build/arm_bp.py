@@ -86,6 +86,7 @@ class ArmBp(RigModule):
         DagNode(root_list[0]).a.ro.set(2)
 
         self.rootJ = root_list[0]
+        self.rootJ.color = Color.D_RED
         self.rootJ | self.SKL_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
@@ -98,7 +99,7 @@ class ArmBp(RigModule):
 
         ctl_defs = [
             ("setting", "cross", "z", scale, 1, -1),
-            ("clavicle_fkc", "stick2", "z", scale, 0, -1),
+            ("clavicle_fkc", "stick2", "z", scale, 0, 2),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
             ("palm_fkc", "circle", "x", scale, 0, -1),
@@ -188,7 +189,7 @@ class ArmBp(RigModule):
         self.pvc.alignTo(pvc_guide, p=self.IK_GRP)
 
         self.jnts_ik = common.dupSk(
-            self.jnts, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.D_RED
+            self.jnts, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.RED
         )
         ikH1 = IkNode(
             "1",

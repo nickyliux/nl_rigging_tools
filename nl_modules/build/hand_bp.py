@@ -49,6 +49,7 @@ class HandBp(RigModule):
             fgr_roots.append(jnts[0])
 
         self.rootJ = root_list[0]
+        self.rootJ.color = Color.D_RED
         self.rootJ | self.SKL_DATA
         self.rootGrp = self.rootJ.addOffsetGrp()
         self.rigNode.setMsg({"rootJ": self.rootJ})
@@ -61,9 +62,9 @@ class HandBp(RigModule):
 
         ctl_defs = [
             ("setting", "spiral", None, scale, 1, 2),
-            ("palm_ctl", "rotator", None, -scale * 0.8, 0, -1),
-            ("thumb_ctl", "rotator", "z", -scale * 0.8, 0, -1),
-            ("smart_ctl", "rotator", "x", scale * 2, 0, -1),
+            ("palm_ctl", "rotator", None, -scale * 0.8, 0, 2),
+            ("thumb_ctl", "rotator", "z", -scale * 0.8, 0, 2),
+            ("smart_ctl", "rotator", "x", scale * 2, 0, 2),
         ]
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)

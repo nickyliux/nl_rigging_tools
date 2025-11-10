@@ -1,6 +1,7 @@
 import logging
 from nl_modules.build.rig_module import RigModule
 from nl_modules.utils import proxy
+from nl_modules.utils.color import Color
 
 
 class Head(RigModule):
@@ -32,6 +33,7 @@ class Head(RigModule):
 
         self.rootJ = root_list[0]
         self.rootJ | self.SKL_DATA
+        self.rootJ.color = Color.D_RED
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 

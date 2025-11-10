@@ -494,12 +494,12 @@ class RigModule(RigBase):
         common.sdk(driver, driven, "ry", "tz", 0, 0, tangent=1)
         common.sdk(driver, driven, "ry", "tz", -70, -2 * s, tangent=1)
         # common.sdk(driver, driven, "ry", "tz", -70, -3.8 * s, tangent=1)
-        common.sdk(driver, driven, "ry", "tz", -150, -5 * s, tangent=1)
+        common.sdk(driver, driven, "ry", "tz", -150, -8 * s, tangent=1)
         # common.sdk(driver, driven, "ry", "tz", -150, -6.8 * s, tangent=1)
 
         common.sdk(driver, driven, "ry", "tx", 0, 0, tangent=1)
-        common.sdk(driver, driven, "ry", "tx", -80, s * 1.5, tangent=1)
-        common.sdk(driver, driven, "ry", "tx", -170, 0, tangent=1)
+        common.sdk(driver, driven, "ry", "tx", -80, s * 2.5, tangent=1)
+        common.sdk(driver, driven, "ry", "tx", -180, -1, tangent=1)
 
     def patella_setup(self):
         """Setup patella guide and joint for the leg rig."""
@@ -1055,6 +1055,10 @@ class RigModule(RigBase):
         ribbonUp = self.build_rbn(upr, name="up", rbnJntNum=rbnJntNum, volMode=0)
         ribbonLw = self.build_rbn(lwr, name="lw", rbnJntNum=rbnJntNum, volMode=1)
 
+        # Connect master guide scale to the ribbon groups
+        self.masterC2.a.s >> ribbonUp.RBN_GRP.a.s
+        self.masterC2.a.s >> ribbonLw.RBN_GRP.a.s
+
         # Upper Ribbon
         upr.cstPoi(ribbonUp.stt_loc)
         root.cstOri(ribbonUp.stt_loc, mo=1)
@@ -1066,6 +1070,7 @@ class RigModule(RigBase):
         # Bend Ctl Setup
         upLoc = ribbonUp.mid_loc
         lwLoc = ribbonLw.mid_loc
+
         grp = self.CTL_DATA
         upr_bend = CrvNode("upr_bend", pf=rID, align=upLoc, addOfs=1, p=grp)
         lwr_bend = CrvNode("lwr_bend", pf=rID, align=lwLoc, addOfs=1, p=grp)

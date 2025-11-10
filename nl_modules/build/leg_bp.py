@@ -127,6 +127,7 @@ class LegBp(RigModule):
                 fgr_jnts[0] | self.toesRootJ
 
         self.rootJ = root_list[0]
+        self.rootJ.color = Color.D_RED
         self.rootJ | self.SKL_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
@@ -270,7 +271,7 @@ class LegBp(RigModule):
         self.ikc.cv_drop()
         self.pvc.alignTo(pvc_guide, p=self.IK_GRP)
         self.jnts_ik = common.dupSk(
-            self.jnts, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.D_RED
+            self.jnts, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.RED
         )
 
         ikH1 = IkNode(

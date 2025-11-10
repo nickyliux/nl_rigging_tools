@@ -54,6 +54,7 @@ class Tail(RigModule):
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
         self.rootJ = root_list[0]
+        self.rootJ.color = Color.D_RED
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 
@@ -62,7 +63,7 @@ class Tail(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        ctl_defs = [("setting", "X", "z", rSz * 2, 1, 2)]
+        ctl_defs = [("setting", "cross", "z", rSz * 2, 1, 2)]
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
@@ -227,7 +228,7 @@ class Tail(RigModule):
                 scale=rSz / 4,
                 align=self.ctls_fk[i],
                 p=self.ctls_fk[i],
-                color=Color.D_RED,
+                color=Color.L_BLUE,
                 top=1,
             )
             jnt = JntNode(f"{i}_ofs_jnt", pf=rID, align=ctl, p=ctl)
@@ -242,20 +243,20 @@ class Tail(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the tail rig controls."""
         self.ctl_vis_toggle(
-            self.setting.a.add("showIk", k=0, type="bool", dv=1),
+            self.setting.a.add("ikCtlVis", k=0, type="bool", dv=1),
             onList=[self.ctls_ik[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("showFk", k=0, type="bool", dv=1),
+            self.setting.a.add("fkCtlVis", k=0, type="bool", dv=1),
             onList=[self.ctls_fk[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("showSubIk", k=0, type="bool", dv=1),
+            self.setting.a.add("subIkCtlVis", k=0, type="bool", dv=1),
             onList=self.ctls_ofs,
         )
         mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)
         # mc.hide(self.rbSrf1, self.rbSrf2, self.setting)
-        mc.hide(self.RIG_DATA, self.setting)
+        mc.hide(self.RIG_DATA)  # , self.setting)
 
     def setup_channel(self):
         """Setup channel attributes for the tail rig controls."""
