@@ -19,11 +19,11 @@ blockquote {
 [![Blog](https://img.shields.io/badge/blog-nickyliu.com-blue)](http://www.nickyliu.com)
 
 ![nlRT Main](ui_images/nlRT_UI_Main.png) 
-![nlRT Prepare](ui_images/nlRT_UI_Prepare.png) 
 ![nlRT Control](ui_images/nlRT_UI_Control.png) 
+![nlRT Prepare](ui_images/nlRT_UI_Prepare.png) 
 
 ## Background
-While working on a project that required extensive use of the Ziva muscle plugin, I encountered challenges rigging the skeleton meshes. This experience inspired me to create a tool that not only automates the rigging process for any vertebrate animal, but also a chance to apply anatomy knowledge.
+While working intensively on a project that involving Ziva muscle plugin, I had to rig the skeleton meshes first. This experience inspired me to create a tool that could automates the process, in addition to the cartoony features.
 
 ## Features
 
@@ -81,9 +81,9 @@ Two Marking menus are made to speed up rigging tasks.
 
 ## Installation
 
-1. Download and extract to arbitary location
-2. Drag nl_rigging_tools_install.py onto Maya viewport
-3. Go to your shelf and run "More > Add Icon to Current Shelf" 
+1. Download and extract to your target location.
+2. Click to the shelf you want the tool icon to add.
+3. Drag and drop "nl_rigging_tools_drag.py" into Maya.
 
 
 ## Reference

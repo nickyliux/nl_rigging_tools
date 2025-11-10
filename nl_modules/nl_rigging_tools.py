@@ -56,7 +56,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         """Initialize the main window and load the UI."""
         super(MyToolWin, self).__init__(parent)
-        # logging.info("Load " + UI_PATH)
+        logging.info("Load " + UI_PATH)
         self.UI = QUiLoader().load(UI_PATH)
 
         self.setWindowTitle("nlRT")
@@ -69,38 +69,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Close the main window."""
         self.close()
 
-    def addIcon2CurrShelf(*args):
-        """Add icon to current shelf"""
-        currDir = os.path.dirname(__file__)
-        base = os.path.basename(__file__)
-        icon_path = os.path.join(currDir, base.split(".")[0] + ".bmp")
-
-        if not os.path.exists(icon_path):
-            logging.warning(f"Icon file not found: {icon_path}")
-            return
-
-        shelfCmd = (
-            "import nl_modules.nl_rigging_tools as nlRT\n"
-            + "from importlib import reload\n"
-            + "reload(nlRT)\n"
-            + "nlRT.showUI()\n"
-        )
-        shelfLayout = mel.eval(
-            "global string $gShelfTopLevel; string $tmp = $gShelfTopLevel;"
-        )
-        currShelf = mc.tabLayout(shelfLayout, q=1, selectTab=1)
-
-        mc.setParent(currShelf)
-        mc.shelfButton(
-            c=shelfCmd,
-            annotation="nl_rigging_tools",
-            label="nl_rigging_tools",
-            image=icon_path,
-            image1=icon_path,
-            sourceType="python",
-        )
-        logging.info("Tool icon created at the current shelf.")
-
     def addMenuBar(self):
         """Add a menu bar with an 'About' section."""
         menuBar = QMenuBar(self)
@@ -109,7 +77,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         addIcon_QA = QAction(self)
         addIcon_QA.setText("&Add Icon to Current Shelf")
-        addIcon_QA.triggered.connect(self.addIcon2CurrShelf)
+        addIcon_QA.triggered.connect(addIcon2CurrShelf)
         more_QM.addAction(addIcon_QA)
 
         # clickDrag_QA = QAction(self)
@@ -632,6 +600,39 @@ def showUI():
     with open(STYLE_PATH, "r") as f:
         style = f.read()
         nlRT_win.setStyleSheet(style)
+
+
+def addIcon2CurrShelf():
+    """Add icon to current shelf"""
+    currDir = os.path.dirname(__file__)
+    base = os.path.basename(__file__)
+    icon_path = os.path.join(currDir, base.split(".")[0] + ".bmp")
+
+    if not os.path.exists(icon_path):
+        logging.warning(f"Icon file not found: {icon_path}")
+        return
+
+    shelfCmd = (
+        "import nl_modules.nl_rigging_tools as nlRT\n"
+        + "from importlib import reload\n"
+        + "reload(nlRT)\n"
+        + "nlRT.showUI()\n"
+    )
+    shelfLayout = mel.eval(
+        "global string $gShelfTopLevel; string $tmp = $gShelfTopLevel;"
+    )
+    currShelf = mc.tabLayout(shelfLayout, q=1, selectTab=1)
+
+    mc.setParent(currShelf)
+    mc.shelfButton(
+        c=shelfCmd,
+        annotation="nl_rigging_tools",
+        label="nl_rigging_tools",
+        image=icon_path,
+        image1=icon_path,
+        sourceType="python",
+    )
+    logging.info("Tool icon created at the current shelf.")
 
 
 if __name__ == "__main__":

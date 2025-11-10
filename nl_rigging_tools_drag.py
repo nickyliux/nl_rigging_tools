@@ -6,7 +6,20 @@ sys.dont_write_bytecode = True
 
 
 def onMayaDroppedPythonFile(*args):
+    """Install nl_rigging_tools module when the script is dropped into Maya."""
+    print(
+        r"""
+     _______________________________
+    |          _   ____    ______   |
+    |         | | |  _ `| |__  __`| | 
+    |  _ __   | | | |_| |    | |    |
+    | | '_ `| | | |  _  /    | |    |
+    | | | | | | | | | \ \    | |    |
+    | |_| |_| |_| |_|  \_\   |_|    |
+    |_______________________________|
 
+    """
+    )
     mod_name = "nl_rigging_tools"
     cur_dir = os.path.dirname(__file__)
     app_dir = os.environ["MAYA_APP_DIR"]
@@ -18,7 +31,7 @@ def onMayaDroppedPythonFile(*args):
     try:
         with open(mod_path, "w") as f:
             f.write(mod_content)
-        logging.info(f"Module file created at: {mod_path}")
+        logging.info(f"Module file created : {mod_path}")
     except Exception as e:
         logging.error(f"Failed to create module file: {e}")
 
@@ -27,4 +40,5 @@ def onMayaDroppedPythonFile(*args):
     from importlib import reload
 
     reload(nlRT)
+    nlRT.addIcon2CurrShelf()
     nlRT.showUI()

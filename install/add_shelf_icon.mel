@@ -16,10 +16,10 @@ string $currDir = dirname($whatIsPath) + "/";
 
 string $icon = $currDir + "nl_rigging_tools.png";
 string $command = "" +
-    "from nl_modules import nl_rigging_tools\n" +
+    "import nl_modules.nl_rigging_tools as nlRT\n" +
     "from importlib import reload\n" +
-    "reload(nl_rigging_tools)\n\n" +
-    "nl_rigging_tools.main()\n";
+    "reload(nlRT)\n\n" +
+    "nlRT.showUI()\n";
 
 shelfButton
 	-command $command

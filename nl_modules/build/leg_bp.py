@@ -143,10 +143,10 @@ class LegBp(RigModule):
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
             ("palm_fkc", "circle", "x", scale, 0, -1),
-            ("ball_fkc", "circle", "x", scale / 2, 0, -1),
+            ("ball_fkc", "circle", "x", scale, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
             ("pvc", "pvc", None, rSz, 0, -1),
-            ("smart_ctl", "rotator", None, scale / 2, 0, -1),
+            ("smart_ctl", "rotator", None, scale / 2, 0, 2),
         ]
         if self.scapularExtra:
             ctl_defs.append(("scap_fkc", "shoulder", None, scale, 0, -1))
@@ -158,10 +158,10 @@ class LegBp(RigModule):
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
         self.smart_ctl.cv_rotate(0, 0, 90)
-        self.smart_ctl.cv_move(0, 0, rSz * -10)
+        self.smart_ctl.cv_move(0, 0, rSz * -15)
 
         if self.scapularExtra:
-            self.scap_fkc.cv_move(scale * 20, 0, 0)
+            self.scap_fkc.cv_move(scale * 15, 0, 0)
 
     def build(self):
         """Build the leg rig module."""
@@ -448,7 +448,7 @@ class LegBp(RigModule):
             shape="rotator",
             scale=-scale / 2,
             rotateY=90,
-            width=2,
+            width=-1,
         )
         self.rigNode.setMsg({"ball_ikc": self.ball_ikc})
         self.ctls_ik.append(self.ball_ikc)

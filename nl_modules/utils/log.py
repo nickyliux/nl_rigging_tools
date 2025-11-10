@@ -17,14 +17,14 @@ def update_root_logger():
 
     stream_hdl = logging.StreamHandler()
     formatter = logging.Formatter(
-        "[%(levelname).1s] %(filename)-20s %(funcName)-20s %(message)s"
+        "[%(levelname).1s] %(filename)-24s %(funcName)-24s %(message)s"
     )
     # %(asctime)s "%Y-%m-%d %H:%M:%S",
     stream_hdl.setFormatter(formatter)
     logger.addHandler(stream_hdl)
 
-    # print(f"{'Type':5s} {'File':20s} {'Method':20s} Message")
-    # print(f"{'----':5s} {'----':20s} {'------':20s} -------")
+    # print(f"{'Type':5s} {'File':24s} {'Method':24s} Message")
+    # print(f"{'----':5s} {'----':24s} {'------':24s} -------")
 
 
 # def print_methods(className):

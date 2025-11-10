@@ -98,7 +98,7 @@ class ArmBp(RigModule):
 
         ctl_defs = [
             ("setting", "cross", "z", scale, 1, -1),
-            ("clavicle_fkc", "rotator", None, scale, 0, -1),
+            ("clavicle_fkc", "stick2", "z", scale, 0, -1),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
             ("palm_fkc", "circle", "x", scale, 0, -1),
@@ -110,7 +110,8 @@ class ArmBp(RigModule):
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        self.clavicle_fkc.cv_move(scale * 30, 0, 0)
+        # self.clavicle_fkc.cv_move(scale * 30, 0, 0)
+        self.clavicle_fkc.cv_rotate(0, 0, 90)
         self.ikc.cv_rotate(0, 90, 0)
         self.pvc.cv_rotate(-90, 0, 0)
 
