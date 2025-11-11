@@ -202,14 +202,33 @@ class SpineBp(RigModule):
             wu=(0, 0, 1),
         )
         self.chest_ikc.cstOri(self.jnts_fk[-1], mo=1)
+
         RigModule.add_movable_pivot(self.chest_ikc, snap=self.ctls_fk[-1])
         # self.chest_ikc.a.add("pvtOffset") >> pvt.a.ty
-
         self.build_ribbon()
 
         self.ctls_ik = [self.mid_ikc, self.chest_ikc]
         if not self.is_neck():
             self.ctls_ik += [self.hip_ikc]
+
+        self.addAutoBend()
+
+    def addAutoBend(self):
+        # Add neck auto bend
+        autoBendLoc = LocNode(
+            f"autoBend_loc", pf=self.rigID, align=self.mid_ikc, p=self.mid_ikc.parent
+        )
+        autoBendGrp = self.mid_ikc.addOffsetGrp()
+        autoBend = self.mid_ikc.a.add("autoBend", min=0, max=1, dv=0.5)
+        # self.chest_ikc.cstParT(autoBendLoc, mo=1)
+        common.cstMulti(self.chest_ikc, self.hip_ikc, autoBendLoc, cstType="parT", mo=1)
+        autoBendLoc.a.ty.disconnect()
+
+        autoBendLoc.a.tx * autoBend >> autoBendGrp.a.tx
+        autoBendLoc.a.tz * autoBend >> autoBendGrp.a.tz
+
+        self.chest_ikc.a.add("autoBend", proxy=autoBend)
+        self.hip_ikc.a.add("autoBend", proxy=autoBend)
 
     def build_ribbon(self):
         """Build the ribbon for the spine rig."""

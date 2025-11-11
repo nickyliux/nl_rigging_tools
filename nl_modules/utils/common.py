@@ -746,7 +746,6 @@ def build_ribbon_rivet(
         )
         if outputJnt:
             jnt = JntNode(f"{i}_rbj", pf=pf, align=loc, r=1, p=loc, reset=1)
-            # , color=Color.D_RED
             outputs.append(jnt)
         else:
             outputs.append(loc)
