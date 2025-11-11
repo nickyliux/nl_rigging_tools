@@ -68,13 +68,23 @@ def mirrorCtlShape(ctl):
         tempGrp.a.sx.set(-1)
     else:
         tempGrp.a.s.set(-1, -1, -1)
-
     tempGrp.freezeXf(t=0, r=0, s=1)
-    try:
-        mc.blendShape(dup, opp, w=(0, 1))
-    except Exception as e:
-        logging.error(f"Error blending shapes: {e}")
-        return
+
+    # try:
+    #     mc.blendShape(dup, opp, w=(0, 1))
+    # except Exception as e:
+    #     logging.error(f"Error blending shapes: {e}")
+    #     return
+    oppShapes = opp.shapes
+    if oppShapes:
+        mc.delete(oppShapes)
+    for shape in dup.shapes:
+        mc.parent(shape, opp, s=1, r=1)
+    for shape in opp.shapes:
+        shape.rename(opp.name + "Shape#")
+
+    common.assignPresetShd(tgts=[opp])
+
     opp.deleteHistory()
     mc.delete(dup, tempGrp)
 

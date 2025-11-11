@@ -134,7 +134,7 @@ class SpineBp(RigModule):
             c = CrvNode(
                 f"{i + 1}_fkc",
                 pf=rID,
-                shape="squareR",
+                # shape="circle",
                 scale=rSz * 5,
                 # color=Color.D_YELLOW,
             )
