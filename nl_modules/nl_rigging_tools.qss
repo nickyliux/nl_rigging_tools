@@ -1,6 +1,6 @@
 QGroupBox {
+    border: 1px solid #37c;
     background-color: #333;
-    border: 1px solid #59f;
     border-radius: 6px;
     opacity: 50;
 }
@@ -13,7 +13,7 @@ QGroupBox::title {
 }
 QProgressBar {
      border: 0px solid grey;
-     border-radius: 3px;
+     border-radius: 1px;
      background-color: black;
 }
 QProgressBar::chunk {

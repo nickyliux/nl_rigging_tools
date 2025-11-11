@@ -75,7 +75,7 @@ class SpineBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
-            ("setting", "cross", "z", rSz * 2, 1, -1),
+            ("setting", "cross", None, rSz * 3, 1, -1),
             ("cog_ctl", "cog", None, rSz * 7, 0, -1),
         ]
         if self.is_ribbon():
@@ -203,13 +203,15 @@ class SpineBp(RigModule):
         )
         self.chest_ikc.cstOri(self.jnts_fk[-1], mo=1)
 
-        RigModule.add_movable_pivot(self.chest_ikc, snap=self.ctls_fk[-1])
         # self.chest_ikc.a.add("pvtOffset") >> pvt.a.ty
         self.build_ribbon()
 
         self.ctls_ik = [self.mid_ikc, self.chest_ikc]
         if not self.is_neck():
             self.ctls_ik += [self.hip_ikc]
+
+        if not self.is_neck():
+            RigModule.add_movable_pivot(self.chest_ikc, snap=self.ctls_fk[-1])
 
         self.addAutoBend()
 
@@ -318,9 +320,11 @@ class SpineBp(RigModule):
         #     onList=self.jnts_ctl + self.jnts_fk,  # + self.jnts_rb,
         # )
         if self.is_ribbon():
-            # mc.hide(self.jnts_fk)
             self.setting.a.add("fkJntVis", type="bool", k=0) >> self.jnts_fk[0].a.v
-            self.setting.a.add("rbJntVis", type="bool", k=0) >> self.jnts_rb[0].a.v
+            # self.setting.a.add("rbJntVis", type="bool", k=0) >> self.jnts_rb[0].a.v
+
+        if self.is_neck():
+            self.ctls_fk[0].shape.a.alwaysDrawOnTop.set(1)
 
         if self.is_neck():
             mc.hide(self.cog_ctl, self.hip_ikc)
