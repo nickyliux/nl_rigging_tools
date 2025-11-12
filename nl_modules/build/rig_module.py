@@ -1078,7 +1078,7 @@ class RigModule(RigBase):
 
         self.all_bendy = [upr_bend, lwr_bend, mid_bend]
         for ctl in self.all_bendy:
-            ctl(shape="sphere", up="x", scale=rSz * 2, top=1)
+            ctl(shape="sphere", up="x", scale=rSz, top=1)
 
         upLoc.cstPar(upr_bend.offset, mo=1)
         if upLoc.children:

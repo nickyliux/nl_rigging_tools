@@ -357,9 +357,7 @@ class ArmBp(RigModule):
         scapular_guide = DagNode(f"{rID}_scapular_guide")
 
         # Create scapular joint and parent to clavicle
-        scapularJ = JntNode(
-            "scapularJ", pf=rID, align=scapular_guide, r=rSz * 10, color=4
-        )
+        scapularJ = JntNode("scapularJ", pf=rID, align=scapular_guide, r=rSz * 5)
         scapularJ.freezeXf()
         scapularJ | self.clavicle
 
