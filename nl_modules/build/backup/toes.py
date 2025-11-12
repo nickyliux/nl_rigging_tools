@@ -128,7 +128,7 @@
 #         #
 #         # # Lock Hide Attr
 #         # [c.a.lockHide(t=1, r=1) for c in self.ctls_fk]
-#         # [c.a.lockHide(t=1, s=1) for c in self.all_bend]
+#         # [c.a.lockHide(t=1, s=1) for c in self.all_bendy]
 #         #
 #         # self.ikc.a.lockHide(t=1, r=1)
 #         # self.ikc.gimbal.a.lockHide(t=1, r=1)

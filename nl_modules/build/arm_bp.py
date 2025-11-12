@@ -98,8 +98,8 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "cross", "x", scale, 1, -1),
-            ("clavicle_fkc", "stick2", "z", scale, 0, 2),
+            ("setting", "cross", "x", scale * 2, 1, -1),
+            ("clavicle_fkc", "rotator", "x", scale / 2, 1, 2),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
             ("palm_fkc", "circle", "x", scale, 0, -1),
@@ -112,7 +112,7 @@ class ArmBp(RigModule):
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         self.clavicle_fkc.cv_rotate(0, 0, 90)
-        self.clavicle_fkc.cv_move(scale * 30, 0, 0)
+        self.clavicle_fkc.cv_move(scale * 40, 0, 0)
         self.ikc.cv_rotate(0, 90, 0)
         self.pvc.cv_rotate(-90, 0, 0)
 
@@ -465,7 +465,7 @@ class ArmBp(RigModule):
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
                 self.setting.a.add("ShowBendy", type="bool", k=0, dv=0),
-                onList=self.all_bend,
+                onList=self.all_bendy,
             )
 
         self.ikc.a.localRot >> self.palm_ikc.a.v
@@ -478,7 +478,7 @@ class ArmBp(RigModule):
 
         for ctl in self.ctls_fk + [self.ikc, self.pvc]:
             ctl.a.showAttr(t=1, r=1)
-        for ctl in self.all_bend or []:
+        for ctl in self.all_bendy or []:
             ctl.a.showAttr(t=1, r=1, s=1)
         for ctl in self.ctls_up or []:
             ctl.a.showAttr(t=0, r=1, s=0)
@@ -548,7 +548,7 @@ class ArmBp(RigModule):
         """Setup control sets for the arm rig module."""
         ctlSet = self.ctls_fk + self.ctls_ik + [self.setting, self.pin_fkc]
         if self.limbType == LimbType.RIBBON.value:
-            ctlSet.extend(self.all_bend)
+            ctlSet.extend(self.all_bendy)
         if self.ctls_up:
             ctlSet.extend(self.ctls_up)
         self.add_ctl_set(ctlSet)

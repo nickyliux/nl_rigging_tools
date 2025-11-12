@@ -85,14 +85,18 @@ Two Marking menus are made to speed up rigging tasks.
 ## Installation
 
 1. Download and extract to your target location.
-2. Click to the shelf you want the tool icon to add.
+2. Go to the shelf you want the tool icon to add.
 3. Drag and drop "nl_rigging_tools_drag.py" into Maya.
+
+The interface will show up with tool icon added into current shelf.
+
 
 
 ## Reference
-1. [BoneClones](https://boneclones.com/category/all-zoology-skeletons/fields-of-study)
-2. [ivlpaleontology](https://sketchfab.com/ivlpaleontology)
-3. [Python for Maya : Beginner to Advanced Rigging Automation by Nick Hughes](https://www.udemy.com/course/python-for-maya-beginner-to-advanced-rigging-automation)
+1. [Python for Maya : Beginner to Advanced Rigging Automation by Nick Hughes](https://www.udemy.com/course/python-for-maya-beginner-to-advanced-rigging-automation)
+2. [Ramon Arango's rigs](https://ramonarango.gumroad.com/)
+2. [BoneClones](https://boneclones.com/category/all-zoology-skeletons/fields-of-study)
+3. [Ivlpaleontology](https://sketchfab.com/ivlpaleontology)
 
 ##
 For more details, visit my blog at [https://www.nickyliu.com](https://www.nickyliu.com)

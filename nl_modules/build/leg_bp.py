@@ -139,7 +139,7 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "cross", "z", scale, 1, -1),
+            ("setting", "cross", None, scale, 1, -1),
             ("hip_fkc", "stick", None, -scale / 2, 0, -1),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
@@ -540,7 +540,7 @@ class LegBp(RigModule):
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
                 self.setting.a.add("bendyCtlVis", type="bool", k=0, dv=0),
-                onList=self.all_bend,
+                onList=self.all_bendy,
             )
         mc.hide(self.ikhs, self.toeIKHs)  # , self.setting)
 
@@ -553,7 +553,7 @@ class LegBp(RigModule):
 
         for ctl in self.ctls_fk + self.ctls_sub + self.ctls_ik:
             ctl.a.showAttr(t=1, r=1)
-        for ctl in self.all_bend or []:
+        for ctl in self.all_bendy or []:
             ctl.a.showAttr(t=1, r=1, s=1)
 
         if self.scapularExtra:
@@ -633,7 +633,7 @@ class LegBp(RigModule):
             + [self.setting, self.smart_ctl, self.pin_fkc]
         )
         if self.limbType == LimbType.RIBBON.value:
-            ctlSet.extend(self.all_bend)
+            ctlSet.extend(self.all_bendy)
 
         if self.toeBones:
             [ctlSet.extend(s) for s in self.toesCtlsList]

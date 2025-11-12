@@ -79,7 +79,7 @@ class LegQd(RigModule):
         self.scapularG = None
         self.quadScap_ikc = None
         self.all_ikH = {}
-        self.all_bend = []
+        self.all_bendy = []
 
         # Toes and digits
         self.toesJntList = None
@@ -602,7 +602,7 @@ class LegQd(RigModule):
             ctl.a.showAttr(t=1, r=1)
 
         self.ball_ikc.a.showAttr(r=1)
-        for ctl in self.all_bend or []:
+        for ctl in self.all_bendy or []:
             ctl.a.showAttr(t=1, r=1, s=1)
 
         if self.scapularExtra:
@@ -642,7 +642,7 @@ class LegQd(RigModule):
             + [self.smart_ctl, self.setting, self.extra_ikc]
         )
         # if self.RBN_BONES:
-        #     ctlSet.extend(self.all_bend)
+        #     ctlSet.extend(self.all_bendy)
         if self.toeBones:
             [ctlSet.extend(s) for s in self.toesCtlsList or []]
         self.add_ctl_set(ctlSet)

@@ -92,10 +92,9 @@ class CrvNode(GrpNode):
             if any(vec):
                 self.cv_move(*vec)
 
-        if top:
-            for s in self.shapes:
-                s.a["alwaysDrawOnTop"].set(1)
         self.width = width
+        if top:
+            self.setOnTop(1)
 
     @property
     def length(self):
@@ -151,8 +150,8 @@ class CrvNode(GrpNode):
         if p:
             mc.parent(crv, p)
         if top:
-            for s in crv.shapes:
-                s.a["alwaysDrawOnTop"].set(1)
+            CrvNode(crv).setOnTop(1)
+
         crv.a.inheritsTransform.set(inheritXf)
         return crv
 
@@ -303,8 +302,7 @@ class CrvNode(GrpNode):
         if addOfs:
             self.addOffsetGrp()
         if top:
-            for s in self.shapes:
-                s.a["alwaysDrawOnTop"].set(1)
+            CrvNode(self).setOnTop(1)
         self.width = width
         return self
 
@@ -336,3 +334,7 @@ class CrvNode(GrpNode):
         ids = [1, 12, 15, 16]
         cvs = [self.shape + f".cv[{id}]" for id in ids]
         mc.move(0, -self.o.height / 3, 0, cvs, os=1, r=1)
+
+    def setOnTop(self, val=1):
+        for sh in self.shapes:
+            sh.a.alwaysDrawOnTop.set(val)

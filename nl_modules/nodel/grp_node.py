@@ -244,7 +244,7 @@ class GrpNode(DagNode):
         first = DagNode(targets[0])
         self.color = first.color
         lineWidth = first.shape.a.lineWidth.get()
-        top = first.shape.a.alwaysDrawOnTop.get()
+        onTop = first.shape.a.alwaysDrawOnTop.get()
 
         for tgt in targets:
             tgt = DagNode(tgt)
@@ -253,7 +253,7 @@ class GrpNode(DagNode):
             if tgtShapes:
                 for sh in self.shapes:
                     sh.a.lineWidth.set(lineWidth)
-                    sh.a.alwaysDrawOnTop.set(top)
+                    sh.a.alwaysDrawOnTop.set(onTop)
 
                 allXf = mc.listRelatives(tgtShapes, ap=1)
                 allXf = [DagNode(x) for x in list(set(allXf))]

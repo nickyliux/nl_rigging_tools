@@ -80,8 +80,8 @@ class SpineBp(RigModule):
         ]
         if self.is_ribbon():
             ctl_defs += [
-                ("chest_ikc", "chest", None, rSz * 5, 0, -1),
-                ("mid_ikc", "diamond3", None, rSz * 3, 1, -1),
+                ("chest_ikc", "cube", None, rSz * 9, 0, -1),
+                ("mid_ikc", "sphere", None, rSz * 3, 1, -1),
                 ("hip_ikc", "hip", None, rSz * 5, 0, -1),
             ]
 
@@ -90,6 +90,7 @@ class SpineBp(RigModule):
 
         # if self.is_ribbon():
         #     self.mid_ikc.cv_move(0, 0, rSz * -70)
+        self.chest_ikc.cv_scale(1, 0.1, 1)
 
     def is_ribbon(self):
         """Check if the spine rig is of ribbon type."""
@@ -324,7 +325,7 @@ class SpineBp(RigModule):
             # self.setting.a.add("rbJntVis", type="bool", k=0) >> self.jnts_rb[0].a.v
 
         if self.is_neck():
-            self.ctls_fk[0].shape.a.alwaysDrawOnTop.set(1)
+            CrvNode(self.ctls_fk[0]).setOnTop(1)
 
         if self.is_neck():
             mc.hide(self.cog_ctl, self.hip_ikc)

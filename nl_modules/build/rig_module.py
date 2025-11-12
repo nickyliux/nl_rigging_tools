@@ -41,7 +41,7 @@ class RigModule(RigBase):
         self.xDir = 1 if rID.startswith("lf") else -1 if rID.startswith("rt") else 0
         self.boneFix = None
         self.jnts_bind = []
-        self.all_bend = []
+        self.all_bendy = []
 
         if rigNode.a.rootJ.exists():
             self.rootJ = rigNode.a.rootJ.inConnNode
@@ -1076,9 +1076,9 @@ class RigModule(RigBase):
         lwr_bend = CrvNode("lwr_bend", pf=rID, align=lwLoc, addOfs=1, p=grp)
         mid_bend = CrvNode("mid_bend", pf=rID, align=lwr, addOfs=1, p=grp)
 
-        self.all_bend = [upr_bend, lwr_bend, mid_bend]
-        for ctl in self.all_bend:
-            ctl(shape="ribbon", up="x", scale=rSz * 1.3)
+        self.all_bendy = [upr_bend, lwr_bend, mid_bend]
+        for ctl in self.all_bendy:
+            ctl(shape="sphere", up="x", scale=rSz * 2, top=1)
 
         upLoc.cstPar(upr_bend.offset, mo=1)
         if upLoc.children:

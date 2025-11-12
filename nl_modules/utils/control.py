@@ -5,6 +5,7 @@ import maya.cmds as mc
 from nl_modules.utils import common
 from nl_modules.utils import guide
 from nl_modules.nodel.base.dag_node import DagNode
+from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 
 
@@ -57,6 +58,8 @@ def mirrorCtlShape(ctl):
         return
 
     dup = ctl.duplicate()
+    dup.shape.a.lineWidth.set(ctl.shape.a.lineWidth.get())
+
     dup.a.showAttr(t=1, r=1, s=1)
     if dup.children:
         mc.delete(dup.children)
@@ -80,6 +83,7 @@ def mirrorCtlShape(ctl):
         mc.delete(oppShapes)
     for shape in dup.shapes:
         mc.parent(shape, opp, s=1, r=1)
+
     for shape in opp.shapes:
         shape.rename(opp.name + "Shape#")
 
@@ -167,7 +171,7 @@ def setOnTopSel(*args):
     selList = [DagNode(n) for n in mc.ls(sl=1, tr=1)]
     for sel in selList:
         if sel.type == "nurbsCurve":
-            sel.shape.a.alwaysDrawOnTop.set(args[0])
+            CrvNode(sel).setOnTop(args[0])
 
 
 @common.Undo("toggleOnTopSel")
@@ -177,7 +181,7 @@ def toggleOnTopSel(*args):
     for sel in selList:
         if sel.type == "nurbsCurve":
             state = sel.shape.a.alwaysDrawOnTop.get()
-            sel.shape.a.alwaysDrawOnTop.set(not state)
+            CrvNode(sel).setOnTop(not state)
 
 
 @common.Undo("dspTypeSel")
