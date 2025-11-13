@@ -356,30 +356,10 @@ class ArmBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
         self.CLV_GRP = GrpNode("CLAVICLE", pf=self.rigID, p=self.CTL_DATA)
 
-        # Clavicle bone -----------------------------------------------------------
         clavEnd_guide = DagNode(f"{rID}_clavEnd_guide")
-        scapLoc = LocNode(
-            "scapLoc", pf=rID, snap=clavEnd_guide, size=rSz * 10, p=self.CLV_GRP
-        )
-        clavJnts = self.gen_sk_fr_names(["clavicle", "upr"])
-        scapLoc.cstAim(clavJnts[0], aim=(xDr, 0, 0), u=(0, xDr, 0), keep=0)
-        clavJnts[0].freezeXf()
-        clav_ikh = IkNode(
-            "clav",
-            solver=Solver.RP,
-            pf=rID,
-            sj=clavJnts[0],
-            ee=clavJnts[1],
-            vis=0,
-            p=self.RIG_DATA,
-        )
-
-        scapLoc.cstPoi(clav_ikh)
-        clavJnts[0] | self.SKL_DATA
-        self.clavicle.cstPoi(clavJnts[0])
-
-        # Scapular bone -----------------------------------------------------------
         scapular_guide = DagNode(f"{rID}_scapular_guide")
+
+        # SCAPULAR -----------------------------------------------------------------
         scapJnts = JntNode.makeTwoJointChain(
             "scapular",
             pf=rID,
@@ -387,6 +367,7 @@ class ArmBp(RigModule):
             aimTgt=scapular_guide,
             offset=(xDr, 0, 0),
             u=(0, xDr, 0),
+            rad=rSz,
             p=self.SKL_DATA,
         )
 
@@ -398,6 +379,28 @@ class ArmBp(RigModule):
         self.clavicle_fkc.a.rz * -0.25 >> ofsGrps[0].a.rz
 
         self.scap_fkc.cstPar(scapJnts[0], mo=1)
+
+        # CLAVICLE -----------------------------------------------------------------
+        clavJnts = JntNode.makeTwoJointChain(
+            "clavicleSk",
+            pf=rID,
+            snap=self.clavicle,
+            aimTgt=clavEnd_guide,
+            offset=(xDr, 0, 0),
+            u=(0, xDr, 0),
+            rad=rSz,
+            p=self.SKL_DATA,
+        )
+        clav_ikh = IkNode(
+            "clav",
+            solver=Solver.RP,
+            pf=rID,
+            sj=clavJnts[0],
+            ee=clavJnts[1],
+            vis=0,
+            p=self.scap_fkc,
+        )
+        self.clavicle.cstPoi(clavJnts[0])
 
         self.jnts_bind += [clavJnts[0], scapJnts[0]]
 
