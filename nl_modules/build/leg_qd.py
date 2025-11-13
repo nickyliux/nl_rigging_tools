@@ -181,7 +181,7 @@ class LegQd(RigModule):
         # self.jnts_bind = self.jnts[1:-1] + [self.boneFix]
         self.jnts_bind = [self.upr, self.palm]
 
-        self.scapularG = self.build_scapular(
+        self.scapularG = self.build_legScapular(
             ikc=self.ikc,
             fkc=self.ctls_fk[0],
             jnts=self.jnts,

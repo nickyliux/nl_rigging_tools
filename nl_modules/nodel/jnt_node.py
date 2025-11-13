@@ -186,7 +186,7 @@ class JntNode(GrpNode):
         if offset:
             j1.a.t.set(*offset)
 
-        if aimTgt:
+        if aimTgt and offset:
             aimTgt.cstAim(j0, keep=0, aim=offset, u=u, wu=wu)
             aimTgt.cstPoi(j1, keep=0)
             j0.freezeXf()

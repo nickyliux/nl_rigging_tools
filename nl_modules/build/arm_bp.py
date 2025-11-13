@@ -68,7 +68,6 @@ class ArmBp(RigModule):
         self.pin_fkc = None
         self.palm_ikc = None
         self.ballRoll_loc = None
-        self.clavBone = None
         self.toe_wiggle_grp = None
         self.ikc_gimbal = None
         self.pvc_line = None
@@ -108,11 +107,14 @@ class ArmBp(RigModule):
             ("palm_ikc", "squareR", "x", scale, 0, 2),
         ]
 
+        if self.scapularBone:
+            ctl_defs.append(["scap_fkc", "squareRH", "z", scale, 0, 2])
+
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         self.clavicle_fkc.cv_rotate(0, 0, 90)
-        self.clavicle_fkc.cv_move(scale * 40, 0, 0)
+        self.clavicle_fkc.cv_move(scale * 30, 0, 0)
         self.ikc.cv_rotate(0, 90, 0)
         self.pvc.cv_rotate(-90, 0, 0)
 
@@ -160,6 +162,7 @@ class ArmBp(RigModule):
 
         if self.scapularBone:
             self.build_armScapular()
+
         else:
             self.jnts_bind += [self.clavicle]
 
@@ -351,44 +354,52 @@ class ArmBp(RigModule):
     def build_armScapular(self):
         """Build the scapular setup for the arm rig."""
         rID, rSz, xDr = self.getMyVar()
+        self.CLV_GRP = GrpNode("CLAVICLE", pf=self.rigID, p=self.CTL_DATA)
 
-        # Guides for clavicle end and scapular
+        # Clavicle bone -----------------------------------------------------------
         clavEnd_guide = DagNode(f"{rID}_clavEnd_guide")
-        scapular_guide = DagNode(f"{rID}_scapular_guide")
-
-        # Create scapular joint and parent to clavicle
-        scapularJ = JntNode("scapularJ", pf=rID, align=scapular_guide, r=rSz * 5)
-        scapularJ.freezeXf()
-        scapularJ | self.clavicle
-
-        # Locator for aiming
         scapLoc = LocNode(
-            "scapLoc", pf=rID, snap=clavEnd_guide, p=scapularJ, size=rSz * 10
+            "scapLoc", pf=rID, snap=clavEnd_guide, size=rSz * 10, p=self.CLV_GRP
         )
-
-        # Generate and aim clavicle joints
-        clavJnts = self.gen_sk_fr_names(["clavicle", "upr"], scale=0.5)
+        clavJnts = self.gen_sk_fr_names(["clavicle", "upr"])
         scapLoc.cstAim(clavJnts[0], aim=(xDr, 0, 0), u=(0, xDr, 0), keep=0)
         clavJnts[0].freezeXf()
-        # IK handle for clavicle
         clav_ikh = IkNode(
             "clav",
             solver=Solver.RP,
-            pvc=scapularJ,
             pf=rID,
             sj=clavJnts[0],
             ee=clavJnts[1],
             vis=0,
             p=self.RIG_DATA,
         )
+
         scapLoc.cstPoi(clav_ikh)
+        clavJnts[0] | self.SKL_DATA
+        self.clavicle.cstPoi(clavJnts[0])
 
-        # Set up bind joints and constraints
-        self.clavBone = clavJnts[0]
-        self.clavBone | self.SKL_DATA
-        self.clavicle.cstPoi(self.clavBone)
+        # Scapular bone -----------------------------------------------------------
+        scapular_guide = DagNode(f"{rID}_scapular_guide")
+        scapJnts = JntNode.makeTwoJointChain(
+            "scapular",
+            pf=rID,
+            snap=clavEnd_guide,
+            aimTgt=scapular_guide,
+            offset=(xDr, 0, 0),
+            u=(0, xDr, 0),
+            p=self.SKL_DATA,
+        )
 
-        self.jnts_bind += [self.clavBone]
+        self.scap_fkc.alignTo(scapJnts[0], p=self.CLV_GRP)
+        ofsGrps = self.scap_fkc.addOffsetGrp(count=3)
+        self.clavicle_fkc.offset.cstPar(ofsGrps[2], mo=1)
+        self.clavicle_fkc.cstParT(ofsGrps[1], mo=1)
+        self.clavicle_fkc.a.ry >> ofsGrps[0].a.ry
+        self.clavicle_fkc.a.rz * -0.25 >> ofsGrps[0].a.rz
+
+        self.scap_fkc.cstPar(scapJnts[0], mo=1)
+
+        self.jnts_bind += [clavJnts[0], scapJnts[0]]
 
     def build_dual_bones(self):
         """Build dual bones for the lower arm."""
@@ -480,6 +491,8 @@ class ArmBp(RigModule):
             ctl.a.showAttr(t=1, r=1, s=1)
         for ctl in self.ctls_up or []:
             ctl.a.showAttr(t=0, r=1, s=0)
+        if self.scapularBone:
+            self.scap_fkc.a.showAttr(t=1, r=1)
 
     def setup_rotate_order(self):
         """Setup rotate order for the arm rig controls."""

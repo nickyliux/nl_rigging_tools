@@ -179,7 +179,7 @@ class LegBp(RigModule):
         # )
         self.jnts_bind = [self.palm]
 
-        self.scapularG = self.build_scapular(
+        self.scapularG = self.build_legScapular(
             ikc=self.ikc,
             fkc=self.ctls_fk[0],
             jnts=self.jnts,

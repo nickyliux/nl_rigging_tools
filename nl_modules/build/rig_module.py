@@ -674,7 +674,7 @@ class RigModule(RigBase):
         auto_ikH.hide()
         # self.jnts_am[0].hide()
 
-    def build_scapular(self, ikc=None, fkc=None, jnts=None, EXTRA=0, scapCtl=None):
+    def build_legScapular(self, ikc=None, fkc=None, jnts=None, EXTRA=0, scapCtl=None):
         """Build scapular joint and auto aim function."""
         rID, rSz, xDr = self.getMyVar()
         hipJ = jnts[0]
