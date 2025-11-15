@@ -674,13 +674,13 @@ class RigModule(RigBase):
         auto_ikH.hide()
         # self.jnts_am[0].hide()
 
-    def build_legScapular(self, ikc=None, fkc=None, jnts=None, EXTRA=0, scapCtl=None):
-        """Build scapular joint and auto aim function."""
+    def build_legScapula(self, ikc=None, fkc=None, jnts=None, EXTRA=0, scapCtl=None):
+        """Build scapula joint and auto aim function."""
         rID, rSz, xDr = self.getMyVar()
         hipJ = jnts[0]
         uprJ = jnts[1]
 
-        # --- Main scapular group setup ---
+        # --- Main scapula group setup ---
         mainGrp = GrpNode("quadScap", pf=rID, align=hipJ, p=self.FK_GRP, addOfs=1)
         fkc.offset | mainGrp
 
@@ -724,13 +724,13 @@ class RigModule(RigBase):
             common.cstMulti(mainGrp.offset, j1, mainGrp, w=legLock, cstType="poi")
             j0.hide()
 
-            # --- Extra scapular joint setup ---
+            # --- Extra scapula joint setup ---
             scapCtl.snapTo(uprJ, p=self.CTL_DATA)
             if xDr < 0:
                 scapCtl.a.rx.set(180)
             scapCtl.addOffsetGrp()
             j0, j1 = JntNode.makeTwoJointChain(
-                "scapular",
+                "scapula",
                 pf=rID,
                 snap=uprJ,
                 offset=aim,
@@ -743,7 +743,7 @@ class RigModule(RigBase):
             scapCtl.cstOri(j0, mo=1)
             self.jnts_bind.append(j0)
 
-            # --- Scapular helper setup (if guide exists) ---
+            # --- Scapula helper setup (if guide exists) ---
             scapHelper = DagNode(rID + "_scapHelper_guide")
             if scapHelper.exists():
                 j0, j1 = JntNode.makeTwoJointChain(

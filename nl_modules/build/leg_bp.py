@@ -39,7 +39,7 @@ class LegBp(RigModule):
             "patellaBone",
             "toeBones",
             "kneeFix",
-            "scapularExtra",
+            "scapulaExtra",
         ]
         for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
@@ -94,7 +94,7 @@ class LegBp(RigModule):
         self.patellaJ = None
         self.ribbon_up = None
         self.ribbon_lw = None
-        self.scapularG = None
+        self.scapulaG = None
         self.scap_fkc = None
 
     def gen_sk(self):
@@ -149,7 +149,7 @@ class LegBp(RigModule):
             ("pvc", "pvc", None, rSz, 0, -1),
             ("smart_ctl", "rotator", None, scale / 2, 0, 2),
         ]
-        if self.scapularExtra:
+        if self.scapulaExtra:
             ctl_defs.append(("scap_fkc", "shoulder", None, scale, 0, -1))
 
         for name, shape, up, sca, top, w in ctl_defs:
@@ -161,7 +161,7 @@ class LegBp(RigModule):
         self.smart_ctl.cv_rotate(0, 0, 90)
         self.smart_ctl.cv_move(0, 0, rSz * -15)
 
-        if self.scapularExtra:
+        if self.scapulaExtra:
             self.scap_fkc.cv_move(scale * 15, 0, 0)
 
     def build(self):
@@ -179,11 +179,11 @@ class LegBp(RigModule):
         # )
         self.jnts_bind = [self.palm]
 
-        self.scapularG = self.build_legScapular(
+        self.scapulaG = self.build_legScapula(
             ikc=self.ikc,
             fkc=self.ctls_fk[0],
             jnts=self.jnts,
-            EXTRA=self.scapularExtra,
+            EXTRA=self.scapulaExtra,
             scapCtl=self.scap_fkc,
         )
 
@@ -556,7 +556,7 @@ class LegBp(RigModule):
         for ctl in self.all_bendy or []:
             ctl.a.showAttr(t=1, r=1, s=1)
 
-        if self.scapularExtra:
+        if self.scapulaExtra:
             self.scap_fkc.a.showAttr(t=1, r=1)
 
     def setup_rotate_order(self):
@@ -598,7 +598,7 @@ class LegBp(RigModule):
 
     def setup_anchor(self):
         """Setup anchor for the leg rig controls."""
-        self.setup_anchor_module({"anchorS1": self.scapularG.offset})
+        self.setup_anchor_module({"anchorS1": self.scapulaG.offset})
 
     def setup_scale(self):
         """Setup scaling for the leg rig controls."""

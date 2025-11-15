@@ -463,7 +463,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             raise ValueError(f"Set {jntSet} NOT found for auto skin.")
 
         jntList = set(mc.sets(jntSet, q=1))
-        jntsScap = set([o for o in jntList if o.endswith("_scapular")])
+        jntsScap = set([o for o in jntList if o.endswith("_scapula")])
         jntsNoScap = jntList - jntsScap
 
         meshesScap = [o for o in meshes if o.a["isBlade"].exists()]

@@ -33,7 +33,7 @@ class ArmBp(RigModule):
             "limbType",
             "rollJntNum",
             "rbnJntNum",
-            "scapularBone",
+            "scapulaBone",
         ]
         for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
@@ -107,14 +107,17 @@ class ArmBp(RigModule):
             ("palm_ikc", "squareR", "x", scale, 0, 2),
         ]
 
-        if self.scapularBone:
-            ctl_defs.append(["scap_fkc", "squareRH", "z", scale, 0, 2])
+        if self.scapulaBone:
+            ctl_defs.append(["scap_fkc", "circle", "z", scale, 0, 2])
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         self.clavicle_fkc.cv_rotate(0, 0, 90)
         self.clavicle_fkc.cv_move(scale * 30, 0, 0)
+        if self.scapulaBone:
+            self.scap_fkc.cv_move(0, 0, rSz * 20)
+
         self.ikc.cv_rotate(0, 90, 0)
         self.pvc.cv_rotate(-90, 0, 0)
 
@@ -160,8 +163,8 @@ class ArmBp(RigModule):
             self.jnts_bind += [self.upr]
             self.build_dual_bones()
 
-        if self.scapularBone:
-            self.build_armScapular()
+        if self.scapulaBone:
+            self.build_armScapula()
         # else:
         #     self.jnts_bind += [self.clavicle]
 
@@ -350,35 +353,57 @@ class ArmBp(RigModule):
         # Create matcher group for snapping
         GrpNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
 
-    def build_armScapular(self):
-        """Build the scapular setup for the arm rig."""
+    def build_armScapula(self):
+        """Build the scapula setup for the arm rig."""
         rID, rSz, xDr = self.getMyVar()
         self.CLV_GRP = GrpNode("CLAVICLE", pf=self.rigID, p=self.CTL_DATA)
 
         clavStart_guide = DagNode(f"{rID}_clavStart_guide")
         clavEnd_guide = DagNode(f"{rID}_clavEnd_guide")
-        scapular_guide = DagNode(f"{rID}_scapular_guide")
+        scapula_guide = DagNode(f"{rID}_scapula_guide")
+        scapAim_guide = DagNode(f"{rID}_scapAim_guide")
 
-        # SCAPULAR -----------------------------------------------------------------
+        Y = Color.YELLOW
+
+        # SCAPULA -----------------------------------------------------------------
         scapJnts = JntNode.makeTwoJointChain(
-            "scapular",
+            "scapula",
             pf=rID,
-            snap=clavEnd_guide,
-            aimTgt=scapular_guide,
+            snap=self.upr,
+            aimTgt=scapula_guide,
             offset=(xDr, 0, 0),
             u=(0, xDr, 0),
             rad=rSz / 2,
             p=self.SKL_DATA,
         )
+        # scapLoc = LocNode(
+        #     "scapLoc", pf=rID, snap=self.upr, p=self.clavicle_fkc, size=rSz * 5, color=Y
+        # )
+        # scapAimLoc = LocNode(
+        #     "scapAimLoc",
+        #     pf=rID,
+        #     snap=scapAim_guide,
+        #     p=self.clavicle_fkc.offset,
+        #     size=rSz * 5,
+        #     color=Y,
+        # )
+        # scapAimLoc.cstAim(
+        #     scapLoc,
+        #     worldUpType="objectrotation",
+        #     worldUpObject=self.clavicle_fkc.offset,
+        #     aim=(xDr, 0, 0),
+        #     u=(0, 0, 1),
+        #     wu=(0, 0, 1),
+        # )
 
-        # self.scap_fkc.alignTo(scapJnts[0], p=self.CLV_GRP)
-        # self.scap_fkc.alignTo(self.upr, p=self.CLV_GRP)
-        self.scap_fkc.snapAlignTo(self.upr, scapJnts[0], p=self.CLV_GRP)
+        self.scap_fkc.snapAlignTo(self.upr, scapJnts[0], p=self.CLV_GRP)  # , p=scapLoc)
+        # self.scap_fkc.addOffsetGrp()
         ofsGrps = self.scap_fkc.addOffsetGrp(count=3)
-        self.clavicle_fkc.offset.cstPar(ofsGrps[2], mo=1)
-        self.clavicle_fkc.cstParT(ofsGrps[1], mo=1)
+        # self.clavicle_fkc.offset.cstPar(ofsGrps[2], mo=1)
+        self.clavicle_fkc.cstParT(ofsGrps[-1], mo=1)
+        # self.clavicle_fkc.cstParT(self.scap_fkc.offset, mo=1)
         self.clavicle_fkc.a.ry >> ofsGrps[0].a.ry
-        self.clavicle_fkc.a.rz * -0.25 >> ofsGrps[0].a.rz
+        self.clavicle_fkc.a.rz * 0.25 >> ofsGrps[0].a.rz
 
         self.scap_fkc.cstPar(scapJnts[0], mo=1)
 
@@ -496,7 +521,7 @@ class ArmBp(RigModule):
             ctl.a.showAttr(t=1, r=1, s=1)
         for ctl in self.ctls_up or []:
             ctl.a.showAttr(t=0, r=1, s=0)
-        if self.scapularBone:
+        if self.scapulaBone:
             self.scap_fkc.a.showAttr(t=1, r=1)
 
     def setup_rotate_order(self):
@@ -574,6 +599,9 @@ class ArmBp(RigModule):
         logging.info(self.rigID)
 
         common.add_mirror_attr([self.pvc])
+        # if self.scapulaBone:
+        #     common.add_mirror_attr([self.scap_fkc])
+
         self.setup_scale()
         self.setup_bindJnt()
         self.setup_ctlSet()

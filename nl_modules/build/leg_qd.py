@@ -40,7 +40,7 @@ class LegQd(RigModule):
             "toeBones",
             "toeNum",
             "kneeFix",
-            "scapularExtra",
+            "scapulaExtra",
         ]
         for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
@@ -76,7 +76,7 @@ class LegQd(RigModule):
         self.ikCstG = None
         self.ball_ikc = None
         self.extra_ikc = None
-        self.scapularG = None
+        self.scapulaG = None
         self.quadScap_ikc = None
         self.all_ikH = {}
         self.all_bendy = []
@@ -152,13 +152,13 @@ class LegQd(RigModule):
             ("smart_ctl", "cube", None, scale / 3, 0, -1),
         ]
 
-        if self.scapularExtra:
+        if self.scapulaExtra:
             ctl_defs.append(("quadScap_ikc", "shoulder", None, scale, 0, -1))
 
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
-        if self.scapularExtra:
+        if self.scapulaExtra:
             self.quadScap_ikc.cv_move(scale * 20, 0, 0)
 
         # self.smart_ctl.cv_scale(2, 0.2, 0.2)
@@ -181,11 +181,11 @@ class LegQd(RigModule):
         # self.jnts_bind = self.jnts[1:-1] + [self.boneFix]
         self.jnts_bind = [self.upr, self.palm]
 
-        self.scapularG = self.build_legScapular(
+        self.scapulaG = self.build_legScapula(
             ikc=self.ikc,
             fkc=self.ctls_fk[0],
             jnts=self.jnts,
-            EXTRA=self.scapularExtra,
+            EXTRA=self.scapulaExtra,
             scapCtl=self.quadScap_ikc,
         )
 
@@ -605,7 +605,7 @@ class LegQd(RigModule):
         for ctl in self.all_bendy or []:
             ctl.a.showAttr(t=1, r=1, s=1)
 
-        if self.scapularExtra:
+        if self.scapulaExtra:
             self.quadScap_ikc.a.showAttr("ty", "tz", r=1)
 
     def setup_rotate_order(self):
@@ -631,7 +631,7 @@ class LegQd(RigModule):
 
     def setup_anchor(self):
         """Setup anchor points for the quadruped leg rig."""
-        self.setup_anchor_module({"anchorS1": self.scapularG.offset})
+        self.setup_anchor_module({"anchorS1": self.scapulaG.offset})
 
     def setup_ctlSet(self):
         """Setup control sets for the quadruped leg rig module."""

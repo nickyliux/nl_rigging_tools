@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: lfArmBp.ma
-//Last modified: Sat, Nov 15, 2025 03:36:26 PM
+//Last modified: Sat, Nov 15, 2025 05:16:24 PM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,7 +12,7 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26200)";
-fileInfo "UUID" "1D095500-420C-3B4D-EEE7-E9B863ECCA68";
+fileInfo "UUID" "270B5C18-44D1-0F72-B8FB-C78D9BBD7391";
 createNode transform -n "module_grp";
 	rename -uid "A08207E3-49BA-E61C-5646-E09F599D0878";
 	addAttr -ci true -sn "mirrorCode" -ln "mirrorCode" -dt "string";
@@ -25,7 +25,7 @@ createNode transform -n "master_guide" -p "module_grp";
 		-at "enum";
 	addAttr -ci true -sn "rbnJntNum" -ln "rbnJntNum" -dv 5 -min 3 -at "long";
 	addAttr -ci true -sn "rollJntNum" -ln "rollJntNum" -dv 2 -min 2 -at "long";
-	addAttr -ci true -sn "scapularBone" -ln "scapularBone" -min 0 -max 1 -at "bool";
+	addAttr -ci true -sn "scapulaBone" -ln "scapulaBone" -min 0 -max 1 -at "bool";
 	addAttr -ci true -sn "parentNameMatch" -ln "parentNameMatch" -dt "string";
 	addAttr -ci true -sn "mirrorable" -ln "mirrorable" -min 0 -max 1 -at "bool";
 	setAttr ".t" -type "double3" 15 145 0 ;
@@ -33,7 +33,7 @@ createNode transform -n "master_guide" -p "module_grp";
 	setAttr -cb on ".limbType" 2;
 	setAttr -cb on ".rbnJntNum" 4;
 	setAttr -cb on ".rollJntNum";
-	setAttr -cb on ".scapularBone";
+	setAttr -cb on ".scapulaBone" yes;
 	setAttr -k on ".parentNameMatch" -type "string" "spine*";
 	setAttr -cb on ".mirrorable" yes;
 createNode transform -n "clavicle_guide_ofs" -p "master_guide";
@@ -813,7 +813,7 @@ createNode transform -n "clavEnd_guide" -p "clavEnd_guide_ofs";
 	setAttr -l on -k off ".sz";
 	setAttr ".rp" -type "double3" 0 -4.4408920985006262e-16 8.8817841970012523e-16 ;
 	setAttr ".sp" -type "double3" 0 -4.4408920985006262e-16 8.8817841970012523e-16 ;
-createNode nurbsCurve -n "scapular_guideShape" -p "clavEnd_guide";
+createNode nurbsCurve -n "scapula_guideShape" -p "clavEnd_guide";
 	rename -uid "FB084792-47F1-A046-638A-22AFD3EEEAC2";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
@@ -879,10 +879,10 @@ createNode nurbsCurve -n "scapular_guideShape" -p "clavEnd_guide";
 		1.1175862388241376e-08 0.0019030124809698748 -0.27985162220148341
 		;
 	setAttr ".adot" yes;
-createNode transform -n "scapular_guide_ofs" -p "clavEnd_guide";
+createNode transform -n "scapula_guide_ofs" -p "master_guide";
 	rename -uid "3C099AA2-458C-FBF8-5388-69BC7F38657E";
 	setAttr ".t" -type "double3" -10 0 -5 ;
-createNode transform -n "scapular_guide" -p "scapular_guide_ofs";
+createNode transform -n "scapula_guide" -p "scapula_guide_ofs";
 	rename -uid "54C17A27-4CDE-682D-1574-35B4DE404CAC";
 	setAttr -k off ".v";
 	setAttr ".ovc" 1;
@@ -894,12 +894,12 @@ createNode transform -n "scapular_guide" -p "scapular_guide_ofs";
 	setAttr -l on -k off ".sz";
 	setAttr ".rp" -type "double3" 0 -4.4408920985006262e-16 8.8817841970012523e-16 ;
 	setAttr ".sp" -type "double3" 0 -4.4408920985006262e-16 8.8817841970012523e-16 ;
-createNode transform -n "clavStart_guide_ofs" -p "clavEnd_guide";
+createNode transform -n "clavStart_guide_ofs" -p "master_guide";
 	rename -uid "228F69C7-481E-3A99-7A2E-C1B86837AB70";
-	setAttr ".t" -type "double3" -10 0 5 ;
+	setAttr ".t" -type "double3" -10 5 5 ;
 createNode transform -n "clavStart_guide" -p "clavStart_guide_ofs";
 	rename -uid "FD9F8B18-4627-6508-0F11-A3ABF4C0187B";
-	setAttr -l on -k off ".v";
+	setAttr -k off ".v";
 	setAttr ".ovc" 1;
 	setAttr -l on -k off ".rx";
 	setAttr -l on -k off ".ry";
@@ -914,6 +914,87 @@ createNode nurbsCurve -n "clavStart_guideShape" -p "clavStart_guide";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
 	setAttr ".ovc" 20;
+	setAttr ".ls" 3;
+	setAttr ".cc" -type "nurbsCurve" 
+		1 52 0 no 3
+		53 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
+		 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52
+		53
+		0.27985780970142182 0 3.8857805861880479e-16
+		0.25984105990158934 0.10762968642370312 3.8857805861880479e-16
+		0.19887374801126248 0.19887374801126248 3.8857805861880479e-16
+		0.10762968642370312 0.25984105990158934 3.8857805861880479e-16
+		0 0.27985124720148746 3.8857805861880479e-16
+		-0.10762968642370312 0.25984105990158934 3.8857805861880479e-16
+		-0.19887374801126248 0.19887374801126248 3.8857805861880479e-16
+		-0.25984105990158934 0.10762968642370312 3.8857805861880479e-16
+		-0.27985780970142182 -1.3259456117405438e-08 3.8857805861880479e-16
+		-0.25984105990158934 -0.10762968642370312 3.8857805861880479e-16
+		-0.19887374801126248 -0.19887374801126248 3.8857805861880479e-16
+		-0.10762968642370312 -0.25984105990158934 3.8857805861880479e-16
+		1.1175862388241376e-08 -0.27985124720148746 -0.0019029374809702367
+		0.10762968642370312 -0.25984105990158934 3.8857805861880479e-16
+		0.19887374801126248 -0.19887374801126248 3.8857805861880479e-16
+		0.25984105990158934 -0.10762968642370312 3.8857805861880479e-16
+		0.27985780970142182 0 3.8857805861880479e-16
+		0.25855480991445184 0.00072824249271757511 -0.10709456142905399
+		0.19788937302110626 0.0013456274865437251 -0.19788506052114901
+		0.10709699892903 0.0017581499824185001 -0.25854918491450773
+		1.1175862388241376e-08 0.0019030124809698748 -0.27985162220148341
+		-0.10709699892903 0.0017581499824185001 -0.25854918491450773
+		-0.19788937302110626 0.0013456274865437251 -0.19788506052114901
+		-0.25855480991445184 0.00072824249271757511 -0.10709456142905399
+		-0.27985780970142182 -1.3259456117405438e-08 3.8857805861880479e-16
+		-0.25855480991445184 -0.00072826874271731247 0.10709418642905852
+		-0.19788937302110626 -0.0013456537365434625 0.19788487302115162
+		-0.10709699892903 -0.0017581762324182378 0.25854880991451229
+		1.1175862388241376e-08 -0.0019030312309696879 0.27985124720148791
+		0.10709699892903 -0.0017581762324182378 0.25854880991451229
+		0.19788937302110626 -0.0013456537365434625 0.19788487302115162
+		0.25855480991445184 -0.00072826874271731247 0.10709418642905852
+		0.27985780970142182 0 3.8857805861880479e-16
+		0.25855480991445184 0.00072824249271757511 -0.10709456142905399
+		0.19788937302110626 0.0013456274865437251 -0.19788506052114901
+		0.10709699892903 0.0017581499824185001 -0.25854918491450773
+		1.1175862388241376e-08 0.0019030124809698748 -0.27985162220148341
+		1.1175862388241376e-08 0.10885256141147438 -0.25782074742179206
+		1.1175862388241376e-08 0.19923037300769625 -0.19653937303460586
+		1.1175862388241376e-08 0.25927705990722938 -0.10533637394663586
+		0 0.27985124720148746 3.8857805861880479e-16
+		1.1175862388241376e-08 0.25782055992179442 0.10885256141147477
+		1.1175862388241376e-08 0.19653918553460809 0.19923018550769855
+		1.1175862388241376e-08 0.10533637394663625 0.25927705990722977
+		1.1175862388241376e-08 -0.0019030312309696879 0.27985124720148791
+		1.1175862388241376e-08 -0.10885256141147438 0.25782037242179662
+		1.1175862388241376e-08 -0.19923037300769625 0.19653899803461042
+		1.1175862388241376e-08 -0.25927705990722938 0.10533599894664038
+		1.1175862388241376e-08 -0.27985124720148746 -0.0019029374809702367
+		1.1175862388241376e-08 -0.25782055992179442 -0.10885293641147023
+		1.1175862388241376e-08 -0.19653918553460809 -0.199230560507694
+		1.1175862388241376e-08 -0.10533637394663625 -0.25927743490722527
+		1.1175862388241376e-08 0.0019030124809698748 -0.27985162220148341
+		;
+	setAttr ".adot" yes;
+createNode transform -n "scapAim_guide_ofs" -p "master_guide";
+	rename -uid "3E9C01AC-4D94-24A3-E239-99A52C57AF7F";
+	setAttr ".t" -type "double3" -10 -29.999999999999972 5.0000000000000009 ;
+createNode transform -n "scapAim_guide" -p "scapAim_guide_ofs";
+	rename -uid "51675EBA-4B6A-0686-5BA6-9A97780B7109";
+	setAttr -k off ".v";
+	setAttr ".ovc" 1;
+	setAttr -l on -k off ".rx";
+	setAttr -l on -k off ".ry";
+	setAttr -l on -k off ".rz";
+	setAttr -l on -k off ".sx";
+	setAttr -l on -k off ".sy";
+	setAttr -l on -k off ".sz";
+	setAttr ".rp" -type "double3" 0 -4.4408920985006262e-16 8.8817841970012523e-16 ;
+	setAttr ".sp" -type "double3" 0 -4.4408920985006262e-16 8.8817841970012523e-16 ;
+createNode nurbsCurve -n "scapAim_guideShape" -p "scapAim_guide";
+	rename -uid "2FF4DB5D-4DCD-5821-C850-F587FAEACEB1";
+	setAttr -k off ".v";
+	setAttr ".ove" yes;
+	setAttr ".ovc" 13;
 	setAttr ".ls" 3;
 	setAttr ".cc" -type "nurbsCurve" 
 		1 52 0 no 3
@@ -1170,33 +1251,6 @@ createNode nurbsCurve -n "line_7Shape" -p "line_7";
 		69 145 -4.0000000000000009
 		;
 	setAttr ".adot" yes;
-createNode transform -n "line_8" -p "line_grp";
-	rename -uid "E7EF14B6-4B90-50FE-6540-93A72C4A14D7";
-	setAttr -k off ".v";
-	setAttr -l on ".tx";
-	setAttr -l on ".ty";
-	setAttr -l on ".tz";
-	setAttr -l on ".rx";
-	setAttr -l on ".ry";
-	setAttr -l on ".rz";
-	setAttr -l on ".sx";
-	setAttr -l on ".sy";
-	setAttr -l on ".sz";
-	setAttr ".it" no;
-createNode nurbsCurve -n "curveShape1" -p "line_8";
-	rename -uid "D96FF921-43EB-FA9D-CB77-BF9356870612";
-	setAttr -k off ".v";
-	setAttr ".ove" yes;
-	setAttr ".ovc" 20;
-	setAttr -s 2 ".cp";
-	setAttr ".cc" -type "nurbsCurve" 
-		1 1 0 no 3
-		2 0 1
-		2
-		15 150 0
-		5 150 -5
-		;
-	setAttr ".adot" yes;
 createNode transform -n "line_9" -p "line_grp";
 	rename -uid "61F61891-4BE9-65CD-E27B-A0B10B918E70";
 	setAttr -k off ".v";
@@ -1222,6 +1276,30 @@ createNode nurbsCurve -n "curveShape2" -p "line_9";
 		2
 		15 150 0
 		5 150 5
+		;
+	setAttr ".adot" yes;
+createNode transform -n "line_10" -p "line_grp";
+	rename -uid "F518DB2B-456E-3C86-0428-56A6993AAD1D";
+	setAttr -k off ".v";
+	setAttr -l on -k off ".rx";
+	setAttr -l on -k off ".ry";
+	setAttr -l on -k off ".rz";
+	setAttr -l on -k off ".sx";
+	setAttr -l on -k off ".sy";
+	setAttr -l on -k off ".sz";
+	setAttr ".it" no;
+createNode nurbsCurve -n "curveShape3" -p "line_10";
+	rename -uid "3B0567A7-495F-0C5D-85F8-36A08E1B9456";
+	setAttr -k off ".v";
+	setAttr ".ove" yes;
+	setAttr ".ovc" 20;
+	setAttr -s 2 ".cp";
+	setAttr ".cc" -type "nurbsCurve" 
+		1 1 0 no 3
+		2 0 1
+		2
+		15 145 -8.8817841970012523e-16
+		5 145 -5
 		;
 	setAttr ".adot" yes;
 createNode transform -n "pole_plane_grp" -p "module_grp";
@@ -1406,13 +1484,13 @@ createNode mesh -n "pPlaneShape1Orig" -p "pPlane1";
 	setAttr ".hfd" -type "dataPolyComponent" Index_Data Face 0 ;
 createNode transform -s -n "persp";
 	rename -uid "AB7E52E5-4BC6-549B-1229-4BA904DD5D93";
-	setAttr ".t" -type "double3" 104.24671579121451 194.30818663803151 71.335248444119713 ;
-	setAttr ".r" -type "double3" -28.538352727063465 38.600000000007711 2.0348505213305486e-15 ;
+	setAttr ".t" -type "double3" 92.325674570377842 186.98479189684588 135.70693639657952 ;
+	setAttr ".r" -type "double3" -18.938352727020501 24.599999999999337 -8.7451286025059642e-16 ;
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "19F6DB4F-4918-877A-57DD-5EBBE38E71A5";
 	setAttr -k off ".v";
 	setAttr ".fl" 34.999999999999993;
-	setAttr ".coi" 129.21085100141431;
+	setAttr ".coi" 155.46438533444376;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -1473,22 +1551,22 @@ parent -s -nc -r -add "|module_grp|master_guide|lwr_guide_ofs|lwr_guide|radius_g
 parent -s -nc -r -add "|module_grp|master_guide|lwr_guide_ofs|lwr_guide|radius_guide_ZRO|radius_guide|radius_guideShape" "radiusEnd_guide" ;
 parent -s -nc -r -add "|module_grp|master_guide|palm_guide_ofs|palm_guide|ball_guide_ofs|ball_guide|palmIn_guide_ofs|palmIn_guide|palmIn_guideShape" "palmOut_guide" ;
 parent -s -nc -r -add "|module_grp|master_guide|palm_guide_ofs|palm_guide|ball_guide_ofs|ball_guide|sphereLShape1" "palm_guide" ;
-parent -s -nc -r -add "|module_grp|master_guide|clavEnd_guide_ofs|clavEnd_guide|scapular_guideShape" "scapular_guide" ;
+parent -s -nc -r -add "|module_grp|master_guide|clavEnd_guide_ofs|clavEnd_guide|scapula_guideShape" "scapula_guide" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "12AA51ED-4AAB-9EE5-3BCA-419093AE95B9";
+	rename -uid "0BB3982D-42B7-D140-D6A4-AFB7F690CCBA";
 	setAttr -s 2 ".lnk";
 	setAttr -s 2 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "E6AA474B-4F94-BED9-02F0-6D9EE3A693C7";
+	rename -uid "118E9155-4799-28DF-E7FA-AB8ED0062791";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "499072C8-4D3E-AD03-4547-F18CCE5675F0";
+	rename -uid "4B30A933-4E1E-0038-22A8-7C85D03ECE0C";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "2A40A836-490D-E5C9-1932-4BB1D92BD963";
+	rename -uid "31E26095-49C9-9D41-EE0A-EFADAEBE4F6F";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "4011EB8B-4296-1EB2-2E08-40844F6318E5";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "853CD84D-40A6-D760-16AE-4083C7CB6194";
+	rename -uid "C1F4905B-40E9-BC2A-25C1-CAA1DB6CC98E";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "BD18B807-4968-E110-0D94-B9A28F4760A6";
 	setAttr ".g" yes;
@@ -1668,42 +1746,42 @@ createNode condition -n "condition2";
 	setAttr ".cf" -type "float3" -3 1 1 ;
 createNode decomposeMatrix -n "DCM_7";
 	rename -uid "48C5219B-4AFD-37B5-1D28-E28AA5168BEA";
-createNode decomposeMatrix -n "DCM_8";
-	rename -uid "2FAF9AA2-4A00-83B6-A3D6-EF8C5D3946C5";
 createNode decomposeMatrix -n "DCM_9";
 	rename -uid "9AA03C48-4D2F-FADB-FE88-5FB4D36E5682";
+createNode decomposeMatrix -n "DCM_10";
+	rename -uid "3D4B80F2-4BA6-7680-20D4-EB9D2FA07C92";
 createNode nodeGraphEditorInfo -n "MayaNodeEditorSavedTabsInfo";
-	rename -uid "84D429AA-452B-0E1D-02A2-0A9B9C48A3CE";
+	rename -uid "85EA1797-453D-AE54-A332-208422545E55";
 	setAttr ".tgi[0].tn" -type "string" "Untitled_1";
-	setAttr ".tgi[0].vl" -type "double2" -1361.4311612976526 -3747.1366794335026 ;
-	setAttr ".tgi[0].vh" -type "double2" -149.08656486500766 -3382.3911704781221 ;
+	setAttr ".tgi[0].vl" -type "double2" -930.02262791064152 -4474.964583206096 ;
+	setAttr ".tgi[0].vh" -type "double2" 585.38518833284638 -4019.0395955110635 ;
 	setAttr -s 9 ".tgi[0].ni";
-	setAttr ".tgi[0].ni[0].x" -1217.142822265625;
-	setAttr ".tgi[0].ni[0].y" -2620;
+	setAttr ".tgi[0].ni[0].x" -591.4285888671875;
+	setAttr ".tgi[0].ni[0].y" -3468.571533203125;
 	setAttr ".tgi[0].ni[0].nvs" 18304;
-	setAttr ".tgi[0].ni[1].x" -1217.142822265625;
-	setAttr ".tgi[0].ni[1].y" -2725.71435546875;
+	setAttr ".tgi[0].ni[1].x" -898.5714111328125;
+	setAttr ".tgi[0].ni[1].y" -3468.571533203125;
 	setAttr ".tgi[0].ni[1].nvs" 18304;
-	setAttr ".tgi[0].ni[2].x" -908.41815185546875;
-	setAttr ".tgi[0].ni[2].y" -3529.447265625;
+	setAttr ".tgi[0].ni[2].x" -591.4285888671875;
+	setAttr ".tgi[0].ni[2].y" -3362.857177734375;
 	setAttr ".tgi[0].ni[2].nvs" 18304;
-	setAttr ".tgi[0].ni[3].x" -979.31683349609375;
-	setAttr ".tgi[0].ni[3].y" -3424.076416015625;
+	setAttr ".tgi[0].ni[3].x" -284.28570556640625;
+	setAttr ".tgi[0].ni[3].y" -3415.71435546875;
 	setAttr ".tgi[0].ni[3].nvs" 18304;
-	setAttr ".tgi[0].ni[4].x" -1217.142822265625;
-	setAttr ".tgi[0].ni[4].y" -2860;
-	setAttr ".tgi[0].ni[4].nvs" 18306;
-	setAttr ".tgi[0].ni[5].x" -910;
-	setAttr ".tgi[0].ni[5].y" -2672.857177734375;
+	setAttr ".tgi[0].ni[4].x" -267.12216186523438;
+	setAttr ".tgi[0].ni[4].y" -4208.646484375;
+	setAttr ".tgi[0].ni[4].nvs" 18304;
+	setAttr ".tgi[0].ni[5].x" -284.28570556640625;
+	setAttr ".tgi[0].ni[5].y" -4314.28564453125;
 	setAttr ".tgi[0].ni[5].nvs" 18304;
-	setAttr ".tgi[0].ni[6].x" -1524.2857666015625;
-	setAttr ".tgi[0].ni[6].y" -2620;
-	setAttr ".tgi[0].ni[6].nvs" 18304;
-	setAttr ".tgi[0].ni[7].x" -908.84210205078125;
-	setAttr ".tgi[0].ni[7].y" -3605.00830078125;
+	setAttr ".tgi[0].ni[6].x" -591.4285888671875;
+	setAttr ".tgi[0].ni[6].y" -3602.857177734375;
+	setAttr ".tgi[0].ni[6].nvs" 18306;
+	setAttr ".tgi[0].ni[7].x" -898.5714111328125;
+	setAttr ".tgi[0].ni[7].y" -3362.857177734375;
 	setAttr ".tgi[0].ni[7].nvs" 18304;
-	setAttr ".tgi[0].ni[8].x" -1524.2857666015625;
-	setAttr ".tgi[0].ni[8].y" -2725.71435546875;
+	setAttr ".tgi[0].ni[8].x" -298.98526000976562;
+	setAttr ".tgi[0].ni[8].y" -4260.75244140625;
 	setAttr ".tgi[0].ni[8].nvs" 18304;
 select -ne :time1;
 	setAttr -av -k on ".cch";
@@ -2243,8 +2321,10 @@ connectAttr "lwr_guide.rp" "pv_loc_aimConstraint1.tg[0].trp";
 connectAttr "lwr_guide.rpt" "pv_loc_aimConstraint1.tg[0].trt";
 connectAttr "lwr_guide.pm" "pv_loc_aimConstraint1.tg[0].tpm";
 connectAttr "pv_loc_aimConstraint1.w0" "pv_loc_aimConstraint1.tg[0].tw";
-connectAttr "master_guide.scapularBone" "clavEnd_guide.v" -l on;
-connectAttr "master_guide.scapularBone" "scapular_guide.v" -l on;
+connectAttr "master_guide.scapulaBone" "clavEnd_guide.v" -l on;
+connectAttr "master_guide.scapulaBone" "scapula_guide.v" -l on;
+connectAttr "master_guide.scapulaBone" "clavStart_guide.v" -l on;
+connectAttr "master_guide.scapulaBone" "scapAim_guide.v" -l on;
 connectAttr "DCM_1.ot" "line_1Shape.cp[0]";
 connectAttr "DCM_2.ot" "line_1Shape.cp[1]";
 connectAttr "DCM_2.ot" "line_2Shape.cp[0]";
@@ -2261,12 +2341,12 @@ connectAttr "lf_forearm_fix_DCM_2.ot" "line_6Shape.cp[1]";
 connectAttr "multDoubleLinear1.o" "line_7.v" -l on;
 connectAttr "lf_forearm_fix_DCM_3.ot" "line_7Shape.cp[0]";
 connectAttr "lf_forearm_fix_DCM_4.ot" "line_7Shape.cp[1]";
-connectAttr "master_guide.scapularBone" "line_8.v" -l on;
-connectAttr "DCM_7.ot" "curveShape1.cp[0]";
-connectAttr "DCM_8.ot" "curveShape1.cp[1]";
-connectAttr "master_guide.scapularBone" "line_9.v" -l on;
+connectAttr "master_guide.scapulaBone" "line_9.v" -l on;
 connectAttr "DCM_7.ot" "curveShape2.cp[0]";
 connectAttr "DCM_9.ot" "curveShape2.cp[1]";
+connectAttr "master_guide.scapulaBone" "line_10.v" -l on;
+connectAttr "DCM_2.ot" "curveShape3.cp[0]";
+connectAttr "DCM_10.ot" "curveShape3.cp[1]";
 connectAttr "cluster1Handle_pointConstraint1.ctx" "cluster1Handle.tx";
 connectAttr "cluster1Handle_pointConstraint1.cty" "cluster1Handle.ty";
 connectAttr "cluster1Handle_pointConstraint1.ctz" "cluster1Handle.tz";
@@ -2356,17 +2436,17 @@ connectAttr "cluster3Handle.wm" "cluster3.ma";
 connectAttr "cluster3HandleShape.x" "cluster3.x";
 connectAttr "lwr_guide.tz" "condition2.ft";
 connectAttr "clavEnd_guide.wm" "DCM_7.imat";
-connectAttr "scapular_guide.wm" "DCM_8.imat";
 connectAttr "clavStart_guide.wm" "DCM_9.imat";
-connectAttr "DCM_7.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[0].dn";
-connectAttr "DCM_8.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[1].dn";
-connectAttr "line_9.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[2].dn";
+connectAttr "scapula_guide.wm" "DCM_10.imat";
+connectAttr "DCM_9.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[0].dn";
+connectAttr "clavStart_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[1].dn";
+connectAttr "DCM_7.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[2].dn";
 connectAttr "curveShape2.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[3].dn";
-connectAttr "master_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[4].dn";
-connectAttr "curveShape1.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[5].dn";
-connectAttr "clavEnd_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[6].dn";
-connectAttr "line_8.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[7].dn";
-connectAttr "scapular_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[8].dn";
+connectAttr "curveShape3.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[4].dn";
+connectAttr "line_9.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[5].dn";
+connectAttr "master_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[6].dn";
+connectAttr "clavEnd_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[7].dn";
+connectAttr "line_10.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[8].dn";
 connectAttr "condition1.msg" ":defaultRenderUtilityList1.u" -na;
 connectAttr "multDoubleLinear1.msg" ":defaultRenderUtilityList1.u" -na;
 connectAttr "condition2.msg" ":defaultRenderUtilityList1.u" -na;
