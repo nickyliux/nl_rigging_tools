@@ -129,7 +129,7 @@ class ArmBp(RigModule):
         self.build_ik()
         self.blend_fk_ik()
         # self.build_nlAutoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
-        self.jnts_bind = [self.palm]
+        self.jnts_bind = [self.palm, self.clavicle]
 
         # ---------------------------------------------------------------
         #   Setup base on LimbType
@@ -162,9 +162,8 @@ class ArmBp(RigModule):
 
         if self.scapularBone:
             self.build_armScapular()
-
-        else:
-            self.jnts_bind += [self.clavicle]
+        # else:
+        #     self.jnts_bind += [self.clavicle]
 
         self.build_post()
 
@@ -356,6 +355,7 @@ class ArmBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
         self.CLV_GRP = GrpNode("CLAVICLE", pf=self.rigID, p=self.CTL_DATA)
 
+        clavStart_guide = DagNode(f"{rID}_clavStart_guide")
         clavEnd_guide = DagNode(f"{rID}_clavEnd_guide")
         scapular_guide = DagNode(f"{rID}_scapular_guide")
 
@@ -367,11 +367,13 @@ class ArmBp(RigModule):
             aimTgt=scapular_guide,
             offset=(xDr, 0, 0),
             u=(0, xDr, 0),
-            rad=rSz,
+            rad=rSz / 2,
             p=self.SKL_DATA,
         )
 
-        self.scap_fkc.alignTo(scapJnts[0], p=self.CLV_GRP)
+        # self.scap_fkc.alignTo(scapJnts[0], p=self.CLV_GRP)
+        # self.scap_fkc.alignTo(self.upr, p=self.CLV_GRP)
+        self.scap_fkc.snapAlignTo(self.upr, scapJnts[0], p=self.CLV_GRP)
         ofsGrps = self.scap_fkc.addOffsetGrp(count=3)
         self.clavicle_fkc.offset.cstPar(ofsGrps[2], mo=1)
         self.clavicle_fkc.cstParT(ofsGrps[1], mo=1)
@@ -384,11 +386,11 @@ class ArmBp(RigModule):
         clavJnts = JntNode.makeTwoJointChain(
             "clavicleSk",
             pf=rID,
-            snap=self.clavicle,
+            snap=clavStart_guide,
             aimTgt=clavEnd_guide,
             offset=(xDr, 0, 0),
             u=(0, xDr, 0),
-            rad=rSz,
+            rad=rSz / 2,
             p=self.SKL_DATA,
         )
         clav_ikh = IkNode(
@@ -400,7 +402,7 @@ class ArmBp(RigModule):
             vis=0,
             p=self.scap_fkc,
         )
-        self.clavicle.cstPoi(clavJnts[0])
+        self.clavicle.cstPoi(clavJnts[0], mo=1)
 
         self.jnts_bind += [clavJnts[0], scapJnts[0]]
 
