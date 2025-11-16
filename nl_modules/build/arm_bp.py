@@ -131,7 +131,7 @@ class ArmBp(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        # self.build_nlAutoAim(self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc)
+
         self.jnts_bind = [self.palm, self.clavicle]
 
         # ---------------------------------------------------------------
@@ -165,8 +165,10 @@ class ArmBp(RigModule):
 
         if self.scapulaBone:
             self.build_armScapula()
-        # else:
-        #     self.jnts_bind += [self.clavicle]
+
+        # self.build_nlAutoAim(
+        #     self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc
+        # )
 
         self.build_post()
 
