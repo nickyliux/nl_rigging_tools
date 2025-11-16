@@ -98,7 +98,7 @@ class ArmBp(RigModule):
 
         ctl_defs = [
             ("setting", "cross", "x", scale * 2, 1, -1),
-            ("clavicle_fkc", "rotator", "x", scale / 2, 1, 2),
+            ("clavicle_fkc", "stick2", "z", scale / 2, 1, 2),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
             ("palm_fkc", "circle", "x", scale, 0, -1),
@@ -108,15 +108,15 @@ class ArmBp(RigModule):
         ]
 
         if self.scapulaBone:
-            ctl_defs.append(["scap_fkc", "circle", "z", scale, 0, 2])
+            ctl_defs.append(["scap_fkc", "triangle", "z", scale, 0, 2])
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
         self.clavicle_fkc.cv_rotate(0, 0, 90)
-        self.clavicle_fkc.cv_move(scale * 30, 0, 0)
+        # self.clavicle_fkc.cv_move(scale * 30, 0, 0)
         if self.scapulaBone:
-            self.scap_fkc.cv_move(0, 0, rSz * 20)
+            self.scap_fkc.cv_move(0, 0, scale * 20)
 
         self.ikc.cv_rotate(0, 90, 0)
         self.pvc.cv_rotate(-90, 0, 0)
@@ -403,7 +403,7 @@ class ArmBp(RigModule):
         self.clavicle_fkc.cstParT(ofsGrps[-1], mo=1)
         # self.clavicle_fkc.cstParT(self.scap_fkc.offset, mo=1)
         self.clavicle_fkc.a.ry >> ofsGrps[0].a.ry
-        self.clavicle_fkc.a.rz * 0.25 >> ofsGrps[0].a.rz
+        self.clavicle_fkc.a.rz * -0.25 >> ofsGrps[0].a.rz
 
         self.scap_fkc.cstPar(scapJnts[0], mo=1)
 

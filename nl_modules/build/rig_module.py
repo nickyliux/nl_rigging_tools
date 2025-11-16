@@ -242,7 +242,7 @@ class RigModule(RigBase):
                 i += 1
 
     @staticmethod
-    def isolate_align(tgt, spaces=None, attrName="global", dv=0, cstType="ori"):
+    def isolate_align(tgt, spaces=None, attrName="global", dv=1, cstType="ori"):
         """Add isolate attr to tgt to allow separate cst for the neck"""
         allSpaces = []
         if len(spaces) == 2:
