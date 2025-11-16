@@ -139,7 +139,7 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "cross", None, scale, 1, -1),
+            ("setting", "gear", None, scale, 1, 2),
             ("hip_fkc", "stick", None, -scale / 2, 0, -1),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
@@ -388,8 +388,7 @@ class LegBp(RigModule):
         )
 
         self.setting.snapTo(self.hip, p=self.CTL_DATA)
-        # ofs=(xDr * rSz * 15, 0, 0))
-        self.hip.cstPar(self.setting, mo=1)
+        self.ctls_fk[0].offset.cstPar(self.setting, mo=1)
 
         self.setting.a.addSep()
         fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=1)
@@ -539,7 +538,7 @@ class LegBp(RigModule):
         )
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyCtlVis", type="bool", k=0, dv=0),
+                self.setting.a.add("bendyVis", type="bool", k=0, dv=0),
                 onList=self.all_bendy,
             )
         mc.hide(self.ikhs, self.toeIKHs)  # , self.setting)

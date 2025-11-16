@@ -75,7 +75,7 @@ class SpineBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
-            ("setting", "cross", None, rSz * 3, 1, -1),
+            ("setting", "gear", None, rSz * 3, 1, -1),
             ("cog_ctl", "cog", None, rSz * 7, 0, -1),
         ]
         if self.is_ribbon():

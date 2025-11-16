@@ -97,7 +97,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "cross", "x", scale * 2, 1, -1),
+            ("setting", "gear", "x", scale * 2, 1, 2),
             ("clavicle_fkc", "stick2", "z", scale / 2, 1, 2),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
@@ -291,10 +291,8 @@ class ArmBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
 
-        self.setting.alignTo(
-            self.clavicle, p=self.CTL_DATA
-        )  # , ofs=(0, scale * 10, 0))
-        self.clavicle.cstPar(self.setting, mo=1)
+        self.setting.alignTo(self.clavicle, p=self.CTL_DATA)
+        self.ctls_fk[0].offset.cstPar(self.setting, mo=1)
 
         # Extract blend joints
         self.jnts_bf = common.dupSk(
@@ -396,12 +394,10 @@ class ArmBp(RigModule):
         #     wu=(0, 0, 1),
         # )
 
-        self.scap_fkc.snapAlignTo(self.upr, scapJnts[0], p=self.CLV_GRP)  # , p=scapLoc)
-        # self.scap_fkc.addOffsetGrp()
+        self.scap_fkc.snapAlignTo(self.upr, scapJnts[0], p=self.CLV_GRP)
         ofsGrps = self.scap_fkc.addOffsetGrp(count=3)
-        # self.clavicle_fkc.offset.cstPar(ofsGrps[2], mo=1)
         self.clavicle_fkc.cstParT(ofsGrps[-1], mo=1)
-        # self.clavicle_fkc.cstParT(self.scap_fkc.offset, mo=1)
+        self.clavicle_fkc.offset.cstParR(ofsGrps[-1], mo=1)
         self.clavicle_fkc.a.ry >> ofsGrps[0].a.ry
         self.clavicle_fkc.a.rz * -0.25 >> ofsGrps[0].a.rz
 
@@ -503,7 +499,7 @@ class ArmBp(RigModule):
 
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
-                self.setting.a.add("ShowBendy", type="bool", k=0, dv=0),
+                self.setting.a.add("bendyVis", type="bool", k=0, dv=0),
                 onList=self.all_bendy,
             )
 

@@ -63,7 +63,7 @@ class Tail(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        ctl_defs = [("setting", "cross", "z", rSz * 2, 1, 2)]
+        ctl_defs = [("setting", "gear", "z", rSz * 2, 1, 2)]
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
