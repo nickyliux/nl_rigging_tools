@@ -139,7 +139,8 @@ class MarkingMenuRigging:
         mc.menuItem(p=menu, l="Match Pos", c=match_pos)
         mc.menuItem(p=menu, l="Match Rot", c=match_rot)
         mc.menuItem(p=menu, l="-" * 15, en=0)
-        mc.menuItem(p=menu, l="Select Constrainer", c=select_contrainers)
+        mc.menuItem(p=menu, l="Select Constrainer", c=select_constrainers)
+        mc.menuItem(p=menu, l="Select Constrained", c=select_constrained)
         mc.menuItem(p=menu, l="-" * 15, en=0)
         mc.menuItem(p=menu, l="Use Last's Shapes", c=use_last_crv_shapes)
         mc.menuItem(p=menu, l="Add Last's Shapes", c=add_last_crv_shapes)
@@ -208,11 +209,20 @@ def crvShape_breakInst(*args):
         mc.select(selList[0])
 
 
-def select_contrainers(*args):
+def select_constrainers(*args):
     """Select the constraining objects of the first selected object"""
     selList = mc.ls(sl=1, tr=1)
     if selList:
         cstObj = DagNode(selList[0]).getCstObjects()
+        if cstObj:
+            mc.select(cstObj)
+
+
+def select_constrained(*args):
+    """Select the constraining objects of the first selected object"""
+    selList = mc.ls(sl=1, tr=1)
+    if selList:
+        cstObj = DagNode(selList[0]).getCstObjects(isSrc=0)
         if cstObj:
             mc.select(cstObj)
 

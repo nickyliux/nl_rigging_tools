@@ -160,20 +160,20 @@ class DagNode(DepNode):
         if n:
             return DagNode(n)
 
-    def removeCstNodes(self, driven=1):
+    def removeCstNodes(self, isSrc=1):
         """Remove all constraints"""
-        cstList = self.getCstNodes(driven=driven)
+        cstList = self.getCstNodes(isSrc=isSrc)
         if cstList:
             mc.delete(cstList)
 
-    def getCstNodes(self, cstType=None, driven=1):
+    def getCstNodes(self, cstType=None, isSrc=1):
         """Return constraints
         driven
             1 => object being driven
             0 => object driving others
         """
         typ = cstType if cstType else ""
-        cstNodes = mc.listConnections(self, s=driven, d=not driven, t=typ) or []
+        cstNodes = mc.listConnections(self, s=isSrc, d=not isSrc, t=typ) or []
         CST_TYPE_LIST = common.getUniqueCstDictNames()
 
         result = []
@@ -188,7 +188,7 @@ class DagNode(DepNode):
         """Return weight attrs of constraint node of cstType."""
         from nl_modules.nodel.base.attribute import Attribute
 
-        cst = self.getCstNodes(cstType=cstType, driven=1)
+        cst = self.getCstNodes(cstType=cstType, isSrc=1)
         weightList = []
         if cst:
             for attr in mc.listAttr(cst[0], k=1, c=1) or []:
@@ -196,10 +196,10 @@ class DagNode(DepNode):
                     weightList.append(Attribute(cst[0], attr))
         return weightList
 
-    def getCstObjects(self, cstType=None):
+    def getCstObjects(self, cstType=None, isSrc=1):
         """Return constraint objects"""
         result = []
-        cstNodes = self.getCstNodes(cstType=cstType, driven=1)
+        cstNodes = self.getCstNodes(cstType=cstType, isSrc=isSrc)
         if cstNodes:
 
             CST_TYPE_LIST = common.getUniqueCstDictNames()
