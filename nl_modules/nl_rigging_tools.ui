@@ -2285,7 +2285,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Curve Shape</string>
+      <string>Shape Edit</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -2932,7 +2932,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Shapes</string>
+      <string>Shape Store</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
