@@ -170,7 +170,7 @@ class NeckPro(rig_module.RigModule):
             forSpine=1,
             scaleFix=self.masterC.a["globalScale"],
             size=rSz,
-            RIG_DATA=self.RIG_DATA,
+            p_data=self.RIG_DATA,
         )
 
         mc.delete(dummyG1)

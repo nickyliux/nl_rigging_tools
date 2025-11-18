@@ -29,7 +29,7 @@ class RbnNode:
         volMode=1,  # 0: upper, 1: lower
         scaleFix=None,
         forSpine=0,
-        RIG_DATA=None,
+        p_data=None,
     ):
         # Initialize target and child
         self.tgt = DagNode(tgt) if isinstance(tgt, str) else tgt
@@ -45,7 +45,7 @@ class RbnNode:
         # Core attributes
         self.d = None
         self.rbSrf = None
-        self.RIG_DATA = RIG_DATA
+        self.RIG_DATA = p_data
         self.pf = pf
         self.jnts_rb = []
 
@@ -169,11 +169,17 @@ class RbnNode:
         self.stt_loc.cstPoi(mid_aimJ)
         self.end_loc.cstPoi(end_aimJ)
 
-        self.stt_jnt = JntNode("stt_jnt", pf=self.pf, p=stt_aimJ, align=self.stt_loc)
-        self.end_jnt = JntNode("end_jnt", pf=self.pf, p=end_aimJ, align=self.end_loc)
+        self.stt_jnt = JntNode(
+            "stt_jnt", pf=self.pf, p=stt_aimJ, align=self.stt_loc, r=self.size
+        )
+        self.end_jnt = JntNode(
+            "end_jnt", pf=self.pf, p=end_aimJ, align=self.end_loc, r=self.size
+        )
         self.mid_jnt = JntNode(
             "mid_jnt", pf=self.pf, p=self.mid_loc, align=self.mid_loc
         )
+        # self.mid_jnt.a.s >> self.stt_jnt.a.s
+        # self.mid_jnt.a.s >> self.end_jnt.a.s
 
         # Skin the joints to the surface
         sttMidEnd_jnts = [self.stt_jnt, self.mid_jnt, self.end_jnt]

@@ -1034,7 +1034,7 @@ class RigModule(RigBase):
             num=rbnJntNum,
             volMode=volMode,
             scaleFix=self.masterC.a["globalScale"],
-            RIG_DATA=self.RIG_DATA,
+            p_data=self.RIG_DATA,
         )
 
     def build_bendy_ribbon(
@@ -1048,8 +1048,8 @@ class RigModule(RigBase):
         ribbonLw = self.build_rbn(lwr, name="lw", rbnJntNum=rbnJntNum, volMode=1)
 
         # Connect master guide scale to the ribbon groups
-        self.masterC2.a.s >> ribbonUp.RBN_GRP.a.s
-        self.masterC2.a.s >> ribbonLw.RBN_GRP.a.s
+        # self.masterC2.a.s >> ribbonUp.RBN_GRP.a.s
+        # self.masterC2.a.s >> ribbonLw.RBN_GRP.a.s
 
         # Upper Ribbon
         upr.cstPoi(ribbonUp.stt_loc)
@@ -1075,12 +1075,12 @@ class RigModule(RigBase):
         upLoc.cstPar(upr_bend.offset, mo=1)
         if upLoc.children:
             mid_jnt = upLoc.children[0]
-            upr_bend.cstParSca(mid_jnt, mo=1)
+            upr_bend.cstPar(mid_jnt, mo=1)
 
         lwLoc.cstPar(lwr_bend.offset, mo=1)
         if lwLoc.children:
             mid_jnt = lwLoc.children[0]
-            lwr_bend.cstParSca(mid_jnt, mo=1)
+            lwr_bend.cstPar(mid_jnt, mo=1)
 
         lwr.cstPar(mid_bend.offset, mo=1)
         mid_bend.cstParSca(ribbonUp.end_loc, mo=1)
