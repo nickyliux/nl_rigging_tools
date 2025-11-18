@@ -27,7 +27,7 @@ class RigModule(RigBase):
         rID = self.rigID
         self.RIG_DATA = GrpNode(rID + "_rig_data", p=self.RIG)
         self.CTL_DATA = GrpNode(rID + "_ctl_data", p=self.masterC)
-        self.SKL_DATA = GrpNode(rID + "_skl_data", p=self.SKL)
+        self.JNT_DATA = GrpNode(rID + "_jnt_data", p=self.JNT)
 
         self.moduleG = rigNode.a.moduleG.inConnNode
         if not self.moduleG:
@@ -351,7 +351,7 @@ class RigModule(RigBase):
 
         self.moduleG.show()
         self.CTL_DATA.delete()
-        self.SKL_DATA.delete()
+        self.JNT_DATA.delete()
         self.RIG_DATA.delete()
 
         rootJ = self.rigNode.a.rootJ.inConnNode
@@ -384,7 +384,7 @@ class RigModule(RigBase):
         rID, rSz, xDr = self.getMyVar()
 
         for name, tgt in anchorDict.items():
-            loc = LocNode(name, pf=rID, size=rSz * 15, p=self.masterC)
+            loc = LocNode(name, pf=rID, size=rSz * 15, p=self.CTL_DATA)
             self.rigNode.setMsg({name: loc})
 
             if name.startswith("anchorP"):  # plug color
@@ -671,7 +671,7 @@ class RigModule(RigBase):
         #     common.sdk(self.jnts_am[0], auto_dvn, "ry", "ry", _, _)
         #     common.sdk(self.jnts_am[0], auto_dvn, "rz", "rz", _, _)
 
-        auto_ikH.hide()
+        # auto_ikH.hide()
         # self.jnts_am[0].hide()
 
     def build_legScapula(self, ikc=None, fkc=None, jnts=None, EXTRA=0, scapCtl=None):
@@ -752,7 +752,7 @@ class RigModule(RigBase):
                     align=scapHelper,
                     align_end=uprJ,
                     rad=rSz,
-                    p=self.SKL_DATA,
+                    p=self.JNT_DATA,
                 )
                 IkNode("scapHelperJ", pf=rID, sj=j0, ee=j1, p=scapCtl)
                 ofs = fkc.addOffsetGrp()
@@ -884,14 +884,6 @@ class RigModule(RigBase):
     def getMyVar(self):
         """Get rig ID, size and x direction for the current rig instance."""
         return str(self.rigID), float(self.rigSize), int(self.xDir)
-
-    # def genCrvLenRatio(self, rbSrf=None, scaleAttr=None):
-    #     crv = CrvNode(mc.duplicateCurve(rbSrf + ".u[0.5]", rn=0, local=0)[0])
-    #     crv | self.RIG_DATA
-    #     crvInfo = DagNode("crvInfo#", nodeType="curveInfo")
-    #     return (
-    #         crvInfo.a.arcLength / self.masterC.a.globalScale / scaleAttr / crv.length
-    #     )
 
     def get_guide_attr(self, name):
         """Get attribute from master guide"""

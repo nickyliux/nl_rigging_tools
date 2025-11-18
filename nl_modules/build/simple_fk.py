@@ -55,7 +55,7 @@ class SimpleFk(RigModule):
 
         self.rootJ = root_list[0]
         # self.rootJ.color = Color.BLACK
-        self.rootJ | self.SKL_DATA
+        self.rootJ | self.JNT_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 
@@ -148,7 +148,7 @@ class SimpleFk(RigModule):
         localScale >> self.CTL_DATA.a.scale
         # prx_grp = DagNode(self.rigID + "_PRX")
         # localScale >> prx_grp.a.scale
-        self.masterC.a.globalScale * localScale >> self.SKL_DATA.a.scale
+        self.masterC.a.globalScale * localScale >> self.JNT_DATA.a.scale
         self.ctls_fk[0].a.add("localScale", proxy=localScale)
 
     def setup_anchor(self):

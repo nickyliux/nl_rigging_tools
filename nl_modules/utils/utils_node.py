@@ -77,9 +77,9 @@ def distDim_(obj1, obj2):
     from nl_modules.nodel.grp_node import GrpNode
     from nl_modules.nodel.loc_node import LocNode
 
-    grpN = GrpNode("distDim_grp#", p="distDim_GRP", pf=obj2.name)
-    locA = LocNode("distLocA__#", p=grpN)
-    locB = LocNode("distLocB__#", p=grpN)
+    grpN = GrpNode("#", p="distDim", pf=obj2.name)
+    locA = LocNode("distLocA_#", p=grpN)
+    locB = LocNode("distLocB_#", p=grpN)
     distDim = DagNode(mc.distanceDimension(locA, locB))
     distDim.parent | grpN
 

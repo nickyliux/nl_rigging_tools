@@ -32,7 +32,7 @@ class Head(RigModule):
         (jaw_list[0], lf_eye, rt_eye) | root_list[0]
 
         self.rootJ = root_list[0]
-        self.rootJ | self.SKL_DATA
+        self.rootJ | self.JNT_DATA
         # self.rootJ.color = Color.BLACK
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
@@ -121,7 +121,7 @@ class Head(RigModule):
 
     def setup_scale(self):
         """Setup scale for the head rig module."""
-        self.head_fkc.a.s * self.masterC.a["globalScale"] >> self.SKL_DATA.a.s
+        self.head_fkc.a.s * self.masterC.a["globalScale"] >> self.JNT_DATA.a.s
 
     def setup_ctlSet(self):
         """Setup control sets for the head rig module."""

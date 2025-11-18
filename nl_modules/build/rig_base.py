@@ -31,14 +31,14 @@ class RigBase:
         self.RIG = GrpNode("RIG", p=self.CHR)
         self.MDL = GrpNode("MDL", p=self.CHR)
         self.PRX = GrpNode("PRX", p=self.MDL)
-        self.SKL = GrpNode("SKL", p=self.CHR)
+        self.JNT = GrpNode("JNT", p=self.CHR)
         self.CTL = GrpNode("CTL", p=self.CHR)
-        self.DIM = GrpNode("distDim_GRP")
+        self.DIM = GrpNode("distDim")
 
         root = self.masterC2
         if not root.parent:
             root | self.CTL
 
         if not self.DIM.parent:
-            self.DIM | self.RIG
-            self.DIM.hide()
+            self.DIM | self.CTL
+            # self.DIM.hide()

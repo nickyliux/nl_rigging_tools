@@ -104,7 +104,7 @@ class Tail(RigModule):
             pf=self.rigID + "_2",
             rSz=self.rigSize,
             p=self.RIG_DATA,
-            SKL_DATA=self.SKL_DATA,
+            JNT_DATA=self.JNT_DATA,
         )
         self.jnts_bind = self.jnts_rb
 
@@ -196,7 +196,7 @@ class Tail(RigModule):
             rSz=rSz,
             outputJnt=0,
             p=self.RIG_DATA,
-            SKL_DATA=self.SKL_DATA,
+            JNT_DATA=self.JNT_DATA,
         )
 
         chainGrps = []

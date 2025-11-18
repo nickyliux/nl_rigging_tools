@@ -108,7 +108,7 @@ class SpineQdCrv(rig_module.RigModule):
 
         # BUILD JOINT CHAIN
         self.jnts = JntNode.createJntFrCrv(
-            crv, num=self.mg_jntNum, pf=self.rigID, p=self.SKL_DATA
+            crv, num=self.mg_jntNum, pf=self.rigID, p=self.JNT_DATA
         )
 
         mc.delete(self.rootJ)

@@ -54,7 +54,7 @@ class FingerFk(RigModule):
 
         self.rootJ = root_list[0]
         # self.rootJ.color = Color.BLACK
-        self.rootJ | self.SKL_DATA
+        self.rootJ | self.JNT_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 
@@ -217,7 +217,7 @@ class FingerFk(RigModule):
 
     def setup_scale(self):
         """Setup scale for the arm rig module."""
-        self.masterC.a.globalScale >> self.SKL_DATA.a.scale
+        self.masterC.a.globalScale >> self.JNT_DATA.a.scale
 
     def setup_anchor(self):
         self.setup_anchor_module(

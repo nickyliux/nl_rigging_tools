@@ -162,8 +162,8 @@ def hlpJntSetup(
 
     # Setup group hierarchy ----------------------
     pf = tgtJnt.name.split("_")[0]
-    SKL_DATA = DagNode(f"{pf}_skl_data")
-    parent_for_group = SKL_DATA if SKL_DATA.exists() else None
+    JNT_DATA = DagNode(f"{pf}_JNT_DATA")
+    parent_for_group = JNT_DATA if JNT_DATA.exists() else None
 
     cstGrp = GrpNode(f"{hlpName}_grp", p=parent_for_group)
     ofsGrp = GrpNode(f"{hlpName}_ofs")

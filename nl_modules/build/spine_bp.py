@@ -65,7 +65,7 @@ class SpineBp(RigModule):
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
         self.rootJ = root_list[0]
-        self.rootJ | self.SKL_DATA
+        self.rootJ | self.JNT_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 
@@ -123,7 +123,7 @@ class SpineBp(RigModule):
             pf=rID,
             aimV=(0, 1, 0),
             size=rSz * 2,
-            p=self.SKL_DATA,
+            p=self.JNT_DATA,
             # color=Color.D_RED,
         )
         mc.delete(self.rootJ)
@@ -163,7 +163,8 @@ class SpineBp(RigModule):
 
         if self.is_neck():
             self.isolate_align(
-                self.ctls_fk[0], spaces=[self.ctls_fk[0].parent, self.masterC]
+                self.ctls_fk[0],
+                spaces=[self.ctls_fk[0].parent, self.masterC],
             )
 
     def reverse_fk_hip(self):
@@ -270,7 +271,7 @@ class SpineBp(RigModule):
             rSz=rSz,
             atMidOrEnd=1,
             p=self.RIG_DATA,
-            SKL_DATA=self.SKL_DATA,
+            JNT_DATA=self.JNT_DATA,
         )
         self.jnts_bind = self.jnts_rb
 
@@ -396,7 +397,7 @@ class SpineBp(RigModule):
 
     def setup_scale(self):
         """Setup scale attributes for the spine rig."""
-        self.masterC.a.globalScale >> self.SKL_DATA.a.s
+        self.masterC.a.globalScale >> self.JNT_DATA.a.s
         for ctl in self.ctls_fk:
             self.cog_ctl.a.s >> ctl.offset.a.s
 

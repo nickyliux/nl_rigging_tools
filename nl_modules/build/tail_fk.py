@@ -67,7 +67,7 @@ class TailFk(RigModule):
                 surf=self.rbSrf,
                 size=rSz,
                 rigData=self.RIG_DATA,
-                sklData=self.SKL_DATA,
+                jntGrp=self.JNT_DATA,
             )
             self.jnts_bind = self.rbJnt
         else:
@@ -141,7 +141,7 @@ class TailFk(RigModule):
 
         mc.delete(self.rootJ)
         self.rootJ = self.fkJnt[0]
-        self.rootJ | self.SKL_DATA
+        self.rootJ | self.JNT_DATA
 
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
@@ -151,7 +151,7 @@ class TailFk(RigModule):
         [x | cluGrp2 for x in self.allClusters]
 
         # scalable
-        self.ctls_fk[0].a.s >> self.SKL_DATA.a.s
+        self.ctls_fk[0].a.s >> self.JNT_DATA.a.s
         self.ctls_fk[0].a.s >> cluGrp2.a.s
 
         self.setting.snapTo(self.ctls_fk[0])

@@ -69,7 +69,7 @@ class SpineQd(RigModule):
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
         self.rootJ = root_list[0]
-        self.rootJ | self.SKL_DATA
+        self.rootJ | self.JNT_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
@@ -229,7 +229,7 @@ class SpineQd(RigModule):
         crv_len_ratio = crv_info.a.arcLength / global_scale / scaleAttr / crv.length
 
         # --- Create joint groups and constraints ---
-        loc_grp = GrpNode("loc_grp", pf=rID, p=self.SKL_DATA)
+        loc_grp = GrpNode("loc_grp", pf=rID, p=self.JNT_DATA)
         rb_jnts = []
         for i in range(jntNum):
             # Decompose matrix and get position on surface

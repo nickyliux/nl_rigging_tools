@@ -126,12 +126,12 @@ def masterAddAttrs():
     """Add proxy attributes to master2_ctl"""
     ctl = DagNode("master2_ctl")
     prx = DagNode("PRX")
-    skl = DagNode("SKL")
+    jnt = DagNode("JNT")
 
     if ctl.exists() and prx.exists():
         prx.a.overrideEnabled.set(1)
 
-        ctl.a.add("sklVis", k=0, type="bool", dv=1) >> skl.a.v
+        ctl.a.add("jntVis", k=0, type="bool", dv=1) >> jnt.a.v
         ctl.a.add("pxyVis", k=0, type="bool", dv=1) >> prx.a.v
 
         OPTIONS = "Normal:Template:Reference"

@@ -112,7 +112,7 @@ class RbnNode:
             pf=self.pf,
             rSz=self.size,
             p=self.RIG_DATA,
-            SKL_DATA=self.JNT_GRP,
+            JNT_DATA=self.JNT_GRP,
         )
 
     def build_locs(self):
@@ -255,8 +255,10 @@ class RbnNode:
 
     def setup_vis(self):
         """Set up visibility for the ribbon rig."""
-        mc.hide(self.ikhs)
-        mc.hide(self.SRF_GRP, self.AIM_GRP, self.LOC_GRP)
+        pass
+        # mc.hide(self.ikhs)
+        # mc.hide(self.RBN_GRP)
+        # mc.hide(self.SRF_GRP, self.AIM_GRP, self.LOC_GRP)
 
     def build_post(self):
         """Post setup for the ribbon rig."""

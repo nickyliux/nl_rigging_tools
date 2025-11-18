@@ -107,7 +107,7 @@ class LegBp(RigModule):
 
         if self.toeBones:
             self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
-            self.toesRootJ | self.SKL_DATA
+            self.toesRootJ | self.JNT_DATA
             self.toesRootJ.a.segmentScaleCompensate.set(0)
             self.rigNode.setMsg({"toesRootJ": self.toesRootJ})
             TOE_NAMES = [
@@ -128,7 +128,7 @@ class LegBp(RigModule):
 
         self.rootJ = root_list[0]
         # self.rootJ.color = Color.BLACK
-        self.rootJ | self.SKL_DATA
+        self.rootJ | self.JNT_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 
@@ -538,7 +538,7 @@ class LegBp(RigModule):
         )
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyVis", type="bool", k=0, dv=0),
+                self.setting.a.add("bendyVis", type="bool", k=0, dv=1),
                 onList=self.all_bendy,
             )
         mc.hide(self.ikhs, self.toeIKHs)  # , self.setting)
@@ -602,7 +602,7 @@ class LegBp(RigModule):
     def setup_scale(self):
         """Setup scaling for the leg rig controls."""
         self.masterC.a.globalScale >> self.RIG_DATA.a.s
-        self.masterC.a.globalScale >> self.SKL_DATA.a.s
+        self.masterC.a.globalScale >> self.JNT_DATA.a.s
 
         footScale = self.setting.a.add("footScale", min=0.01, dv=1)
         self.ikc.a.add("footScale", proxy=footScale, min=0.01)

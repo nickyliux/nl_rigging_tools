@@ -121,7 +121,7 @@ class SpineQd(RigModule):
             pf=rID,
             rSz=rSz,
             p=self.RIG_DATA,
-            SKL_DATA=self.SKL_DATA,
+            JNT_DATA=self.JNT_DATA,
         )
         self.jnts_bind = self.jnts_rb
         self.build_volume(crvLenRatio)

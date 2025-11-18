@@ -62,7 +62,7 @@ class Spd3Leg(rig_module.RigModule):
 
         """Build basic groups and custom setup"""
 
-        self.leg_01.parentTo(self.SKL)
+        self.leg_01.parentTo(self.JNT)
         self.moduleG.parentTo(self.masterC)
         self.anchor.snapTo(self.leg_01, p=self.masterC)
 

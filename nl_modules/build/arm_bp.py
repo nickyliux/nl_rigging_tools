@@ -86,7 +86,7 @@ class ArmBp(RigModule):
 
         self.rootJ = root_list[0]
         # self.rootJ.color = Color.BLACK
-        self.rootJ | self.SKL_DATA
+        self.rootJ | self.JNT_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 
@@ -182,7 +182,10 @@ class ArmBp(RigModule):
         self.ctls_fk = [self.clavicle_fkc, self.upr_fkc, self.lwr_fkc, self.palm_fkc]
 
         self.build_fk_with_ctl2(self.jnts_fk, self.ctls_fk, p=self.FK_GRP)
-        self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
+        self.isolate_align(
+            self.upr_fkc,
+            spaces=[self.upr_fkc.parent, self.masterC],
+        )
 
     def build_ik(self):
         """Build the IK controls for the arm rig."""
@@ -363,7 +366,7 @@ class ArmBp(RigModule):
         scapula_guide = DagNode(f"{rID}_scapula_guide")
         scapAim_guide = DagNode(f"{rID}_scapAim_guide")
 
-        Y = Color.YELLOW
+        # Y = Color.YELLOW
 
         # SCAPULA -----------------------------------------------------------------
         scapJnts = JntNode.makeTwoJointChain(
@@ -374,7 +377,7 @@ class ArmBp(RigModule):
             offset=(xDr, 0, 0),
             u=(0, xDr, 0),
             rad=rSz / 2,
-            p=self.SKL_DATA,
+            p=self.JNT_DATA,
         )
         # scapLoc = LocNode(
         #     "scapLoc", pf=rID, snap=self.upr, p=self.clavicle_fkc, size=rSz * 5, color=Y
@@ -414,7 +417,7 @@ class ArmBp(RigModule):
             offset=(xDr, 0, 0),
             u=(0, xDr, 0),
             rad=rSz / 2,
-            p=self.SKL_DATA,
+            p=self.JNT_DATA,
         )
         clav_ikh = IkNode(
             "clav",
@@ -501,7 +504,7 @@ class ArmBp(RigModule):
 
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyVis", type="bool", k=0, dv=0),
+                self.setting.a.add("bendyVis", type="bool", k=0, dv=1),
                 onList=self.all_bendy,
             )
 
@@ -576,7 +579,7 @@ class ArmBp(RigModule):
 
     def setup_scale(self):
         """Setup scale for the arm rig module."""
-        self.masterC.a.globalScale >> self.SKL_DATA.a.scale
+        self.masterC.a.globalScale >> self.JNT_DATA.a.scale
 
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""

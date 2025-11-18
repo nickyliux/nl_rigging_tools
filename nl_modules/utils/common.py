@@ -696,7 +696,7 @@ def build_ribbon_rivet(
     atMidOrEnd=0,  # 0=mid, 1=end
     outputJnt=1,
     p=None,
-    SKL_DATA=None,
+    JNT_DATA=None,
 ):
     """Build a motion path ribbon on the given surface with specified joint number."""
     from nl_modules.nodel.base.dag_node import DagNode
@@ -724,7 +724,7 @@ def build_ribbon_rivet(
     ratio_out = ut.blend2_(crv_len_ratio, 1, stretchyAttr)
 
     step = 1 / rivetNum if atMidOrEnd == 0 else 1 / (rivetNum - 1)
-    loc_grp = GrpNode("loc_grp", pf=pf, p=SKL_DATA)
+    loc_grp = GrpNode("loc_grp", pf=pf, p=JNT_DATA)
     outputs = []
 
     # ---

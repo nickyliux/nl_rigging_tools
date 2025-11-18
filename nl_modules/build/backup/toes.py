@@ -25,7 +25,7 @@
 #     def gen_sk(self):
 #         s = self.rigSize
 #         root = self.gen_sk_fr_names(["root"], pf=self.rigID)[0]
-#         root | self.SKL
+#         root | self.JNT
 #         self.rigNode.setMsg({"rootJ": root})
 #         all_names = [
 #             ["toe00_1", "toe00_2", "toe00_3", "toe00_4"],

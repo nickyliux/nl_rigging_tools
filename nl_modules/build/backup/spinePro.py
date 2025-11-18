@@ -104,7 +104,7 @@ class SpinePro(rig_module.RigModule):
             parentJ = j
 
         self.fkJnt[0].alignTo(self.rootJ)
-        self.fkJnt[0] | self.SKL_DATA
+        self.fkJnt[0] | self.JNT_DATA
 
         for j in self.fkJnt[1:]:
             j.a.ty.set(D / (self.FK_JNT_NUM - 1))

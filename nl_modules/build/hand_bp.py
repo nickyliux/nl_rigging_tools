@@ -50,7 +50,7 @@ class HandBp(RigModule):
 
         self.rootJ = root_list[0]
         # self.rootJ.color = Color.BLACK
-        self.rootJ | self.SKL_DATA
+        self.rootJ | self.JNT_DATA
         self.rootGrp = self.rootJ.addOffsetGrp()
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
@@ -395,7 +395,7 @@ class HandBp(RigModule):
         for root in self.rootJ.childrenJt:
             root.a.segmentScaleCompensate.set(0)
 
-        self.masterC.a.globalScale >> self.SKL_DATA.a.scale
+        self.masterC.a.globalScale >> self.JNT_DATA.a.scale
         self.rootJ.cstSca(self.RIG_DATA)
 
     def build_post(self):

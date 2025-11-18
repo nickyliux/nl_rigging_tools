@@ -164,45 +164,45 @@ class SrfNode(GrpNode):
         mc.delete(pathLine, sweepLine)
         return rbSrf
 
-    # @staticmethod
-    # def buildRbJnt(
-    #     num,
-    #     pf="",
-    #     size=1,
-    #     surf=None,
-    #     rigData=None,
-    #     normalize=1,
-    #     sklData=None,
-    #     color=Color.RED,
-    # ):
-    #     """Build ribbon joints from surface"""
+    @staticmethod
+    def buildRbJnt(
+        num,
+        pf="",
+        size=1,
+        surf=None,
+        rigData=None,
+        normalize=1,
+        jntGrp=None,
+        color=Color.RED,
+    ):
+        """Build ribbon joints from surface"""
 
-    #     from nl_modules.nodel.jnt_node import JntNode
-    #     from nl_modules.utils import common
+        from nl_modules.nodel.jnt_node import JntNode
+        from nl_modules.utils import common
 
-    #     if num > 1:
-    #         coord = [(0.5, i / (num - 1)) for i in range(num)]
+        if num > 1:
+            coord = [(0.5, i / (num - 1)) for i in range(num)]
 
-    #         pin, pinXf = common.nlRivet(
-    #             geo=surf,
-    #             coordList=coord,
-    #             normalize=normalize,
-    #             p=rigData,
-    #             normal=2,
-    #             tangent=1,
-    #         )
+            pin, pinXf = common.nlRivet(
+                geo=surf,
+                coordList=coord,
+                normalize=normalize,
+                p=rigData,
+                normal=2,
+                tangent=1,
+            )
 
-    #         rbJnts = []
-    #         for i, loc in enumerate(pinXf):
-    #             jnt = JntNode(
-    #                 f"{i}_rbj",
-    #                 pf=pf,
-    #                 align=loc,
-    #                 r=size / num * 12,
-    #                 color=color,
-    #                 p=sklData,
-    #             )
-    #             loc.cstPar(jnt)
-    #             rbJnts.append(jnt)
+            rbJnts = []
+            for i, loc in enumerate(pinXf):
+                jnt = JntNode(
+                    f"{i}_rbj",
+                    pf=pf,
+                    align=loc,
+                    r=size / num * 12,
+                    color=color,
+                    p=jntGrp,
+                )
+                loc.cstPar(jnt)
+                rbJnts.append(jnt)
 
-    #         return rbJnts
+            return rbJnts

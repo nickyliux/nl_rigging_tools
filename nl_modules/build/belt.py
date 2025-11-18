@@ -111,7 +111,7 @@ class Belt(RigModule):
             pf=self.rigID + "_2",
             rSz=self.rigSize,
             p=self.RIG_DATA,
-            SKL_DATA=self.SKL_DATA,
+            JNT_DATA=self.JNT_DATA,
             atMidOrEnd=1,
         )
         self.jnts_bind = self.jnts_rb
@@ -199,7 +199,7 @@ class Belt(RigModule):
     #         rSz=rSz,
     #         outputJnt=0,
     #         p=self.RIG_DATA,
-    #         SKL_DATA=self.SKL_DATA,
+    #         JNT_DATA=self.JNT_DATA,
     #     )
 
     #     # --- Create FK controls and register ---

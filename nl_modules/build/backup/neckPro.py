@@ -97,7 +97,7 @@ class NeckPro(rig_module.RigModule):
 
         parentJ = None
         for i in range(self.FK_JNT_NUM):
-            j = JntNode("fkj_#", pf=self.rigID, p=self.SKL_DATA)
+            j = JntNode("fkj_#", pf=self.rigID, p=self.JNT_DATA)
             self.fkJnt.append(j)
             if parentJ:
                 j | parentJ

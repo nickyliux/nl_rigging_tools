@@ -128,7 +128,7 @@ class SpineQd(RigModule):
             name="fkj",
             num=self.FK_JNT_NUM,
             size=rSz,
-            p=self.SKL_DATA,
+            p=self.JNT_DATA,
         )
         mc.delete(self.rootJ)
         self.rootJ = self.fkJnt[0]
@@ -172,7 +172,7 @@ class SpineQd(RigModule):
                 name="fkj_A",
                 num=self.FK_JNT_NUM,
                 size=rSz,
-                p=self.SKL_DATA,
+                p=self.JNT_DATA,
                 addEndJ=1,
             )
             self.fkJ_B = JntNode.createJntFrCrv(
@@ -181,7 +181,7 @@ class SpineQd(RigModule):
                 name="fkj_B",
                 num=self.FK_JNT_NUM,
                 size=rSz,
-                p=self.SKL_DATA,
+                p=self.JNT_DATA,
                 addEndJ=1,
                 rev=1,
             )
@@ -296,7 +296,7 @@ class SpineQd(RigModule):
             size=rSz,
             surf=self.rbSrf,
             rigData=self.RIG_DATA,
-            sklData=self.SKL_DATA,
+            jntGrp=self.JNT_DATA,
         )
         self.rbSrf.weightTo(self.rootJ.allChildrenJt2, mi=1)  # , chain=0)
         #

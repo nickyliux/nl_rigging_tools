@@ -99,7 +99,7 @@ class LegQd(RigModule):
         if self.toeBones:
             # Create toes root joint and parent to skeleton data
             self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
-            self.toesRootJ | self.SKL_DATA
+            self.toesRootJ | self.JNT_DATA
             self.rigNode.setMsg({"toesRootJ": self.toesRootJ})
 
             # Define all possible toe joint name lists
@@ -129,7 +129,7 @@ class LegQd(RigModule):
 
         # --- Finalize root joint setup ---
         self.rootJ = root_list[0]
-        self.rootJ | self.SKL_DATA
+        self.rootJ | self.JNT_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
@@ -654,7 +654,7 @@ class LegQd(RigModule):
 
     def setup_scale(self):
         """Setup scale for the quadruped leg rig module."""
-        self.masterC.a.globalScale >> self.SKL_DATA.a.scale
+        self.masterC.a.globalScale >> self.JNT_DATA.a.scale
 
     def build_post(self):
         """Post setup for the quadruped leg rig module."""

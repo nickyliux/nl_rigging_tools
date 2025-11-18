@@ -204,7 +204,7 @@ class DagNode(DepNode):
 
             CST_TYPE_LIST = common.getUniqueCstDictNames()
             for cstNode in cstNodes:
-                cstObjs = mc.listConnections(cstNode, s=1, d=0) or []
+                cstObjs = mc.listConnections(cstNode, s=isSrc, d=not isSrc) or []
                 for cstObj in cstObjs:
                     cstObj = DagNode(cstObj)
                     if (
