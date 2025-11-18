@@ -214,7 +214,7 @@ class ArmBp(RigModule):
             setting=self.setting,
             localScale=1,
             scaleFix=self.masterC.a["globalScale"],
-            RIG_DATA=self.RIG_DATA,
+            p_data=self.CTL_DATA,
         )
         self.ikH1 = ikH1
         self.ikc_gimbal = CrvNode(self.ikc).add_gimbal()

@@ -583,7 +583,7 @@ class RigModule(RigBase):
             sj=ikJ,
             ee=ikJ_end,
             scaleFix=scale,
-            RIG_DATA=self.RIG_DATA,
+            p_data=self.RIG_DATA,
             p=p,
         )
 
@@ -1034,7 +1034,7 @@ class RigModule(RigBase):
             num=rbnJntNum,
             volMode=volMode,
             scaleFix=self.masterC.a["globalScale"],
-            p_data=self.RIG_DATA,
+            p_data=self.CTL_DATA,
         )
 
     def build_bendy_ribbon(

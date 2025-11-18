@@ -75,7 +75,7 @@ class SpineBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
-            ("setting", "gear", None, rSz * 3, 1, -1),
+            ("setting", "gear", None, rSz * 4, 1, -1),
             ("cog_ctl", "cog", None, rSz * 7, 0, -1),
         ]
         if self.is_ribbon():
@@ -90,7 +90,9 @@ class SpineBp(RigModule):
 
         # if self.is_ribbon():
         #     self.mid_ikc.cv_move(0, 0, rSz * -70)
-        self.chest_ikc.cv_scale(1, 0.1, 1)
+
+        if self.is_ribbon():
+            self.chest_ikc.cv_scale(1, 0.1, 1)
 
     def is_ribbon(self):
         """Check if the spine rig is of ribbon type."""
@@ -244,8 +246,10 @@ class SpineBp(RigModule):
             normal=-1,
             snap=self.rootJ,
             spans=self.fkJntNum - 1,
-            p=self.RIG_DATA,
+            p=self.CTL_DATA,
+            inheritsXf=0,
         )
+
         self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
         self.jnts_ctl = self.build_ctl_jnt(
@@ -270,7 +274,7 @@ class SpineBp(RigModule):
             pf=rID,
             rSz=rSz,
             atMidOrEnd=1,
-            p=self.RIG_DATA,
+            p=self.CTL_DATA,
             JNT_DATA=self.JNT_DATA,
         )
         self.jnts_bind = self.jnts_rb
@@ -330,7 +334,7 @@ class SpineBp(RigModule):
 
         if self.is_neck():
             mc.hide(self.cog_ctl, self.hip_ikc)
-        mc.hide(self.jnts_ctl, self.RIG_DATA)  # , self.setting)
+        mc.hide(self.jnts_ctl)
 
     def setup_channel(self):
         """Setup channel attributes for the spine rig controls."""

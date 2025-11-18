@@ -185,7 +185,7 @@ class FingerFk(RigModule):
             pvc=self.pvc,
             setting=self.setting,
             scaleFix=self.masterC.a["globalScale"],
-            RIG_DATA=self.RIG_DATA,
+            p_data=self.RIG_DATA,
             p=p,
         )
 

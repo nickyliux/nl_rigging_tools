@@ -272,7 +272,7 @@ class LegQd(RigModule):
             setting=self.setting,
             localScale=1,
             scaleFix=self.masterC.a["globalScale"],
-            RIG_DATA=self.RIG_DATA,
+            p_data=self.RIG_DATA,
         )
         ikHX = IkNode("X", pf=rID, sj=self.palm, ee=self.digit, jsf="_ik")
         ikH2 = IkNode("2", pf=rID, sj=self.digit, ee=self.ball, jsf="_ik")
@@ -488,7 +488,7 @@ class LegQd(RigModule):
                 sj=toeJs[1],
                 ee=toeJs[2],
                 scaleFix=self.masterC.a["globalScale"],
-                RIG_DATA=self.RIG_DATA,
+                p_data=self.RIG_DATA,
                 vis=0,
                 p=self.ball_fkc,
             )

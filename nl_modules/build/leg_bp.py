@@ -287,7 +287,7 @@ class LegBp(RigModule):
             localScale=1,
             scaleFix=self.masterC.a["globalScale"],
             scaleFix2=self.CTL_DATA.a.sy,
-            RIG_DATA=self.RIG_DATA,
+            p_data=self.CTL_DATA,
         )
         ikH2 = IkNode("2", pf=rID, sj=self.palm, ee=self.ball, jsf="_ik")
         ikH3 = IkNode("3", pf=rID, sj=self.ball, ee=self.tip, jsf="_ik")
@@ -601,7 +601,7 @@ class LegBp(RigModule):
 
     def setup_scale(self):
         """Setup scaling for the leg rig controls."""
-        self.masterC.a.globalScale >> self.RIG_DATA.a.s
+        # self.masterC.a.globalScale >> self.RIG_DATA.a.s
         self.masterC.a.globalScale >> self.JNT_DATA.a.s
 
         footScale = self.setting.a.add("footScale", min=0.01, dv=1)

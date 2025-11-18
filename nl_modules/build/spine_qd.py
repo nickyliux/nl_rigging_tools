@@ -71,6 +71,7 @@ class SpineQd(RigModule):
         self.rootJ = root_list[0]
         self.rootJ | self.JNT_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
+        return self.rootJ
 
     def build_ctl(self):
         """Build control nodes for the spine rig."""
@@ -79,7 +80,7 @@ class SpineQd(RigModule):
 
         #   Define control shapes and attributes
         ctl_defs = [
-            ("setting", "X", "z", rSz * 3, 1, 2),
+            ("setting", "gear", "z", rSz * 3, 1, 2),
             ("cog_ctl", "trapezoid", None, rSz, 0, -1),
             ("fore_ctl", "chest_qd", None, rSz * 4, 0, -1),
             ("mid_ctl", "squareR", "z", rSz * 4, 0, -1),
@@ -108,7 +109,8 @@ class SpineQd(RigModule):
             crv=self.LINE_GUIDE,
             spans=2,
             snap=self.RT_GUIDE,
-            p=self.RIG_DATA,
+            p=self.CTL_DATA,
+            inheritsXf=0,
         )
 
     def build(self):
@@ -201,10 +203,12 @@ class SpineQd(RigModule):
 
         # --- Create ribbon curve and joints ---
         crv = CrvNode(mc.duplicateCurve(f"{rbSrf}.u[0.5]", rn=0, local=0)[0])
-        crv | self.RIG_DATA
+        crv.a.inheritsTransform.set(0)
+        crv | self.CTL_DATA
         jntFrCrv = JntNode.createJntFrCrv(
-            crv, pf=rID, name="spikj", num=jntNum, size=rSz, p=self.RIG_DATA
+            crv, pf=rID, name="spikj", num=jntNum, size=rSz, p=self.CTL_DATA
         )
+        jntFrCrv[0].a.inheritsTransform.set(0)
 
         global_scale = self.masterC.a.globalScale
         ik_handle = IkNode(
@@ -219,7 +223,7 @@ class SpineQd(RigModule):
             scaleFix=global_scale,
             scaleFix2=None,
             scaleFix3=self.masterC2.a.sy,
-            p=self.RIG_DATA,
+            p=self.CTL_DATA,
         )
         ik_handle.stretchySp(axis="tz", axisDir=1)
 
@@ -246,7 +250,7 @@ class SpineQd(RigModule):
 
             # Aim constraint for orientation
             aim_cst = DagNode("aimCst_#", nodeType="aimConstraint")
-            aim_cst | self.RIG_DATA
+            aim_cst | self.CTL_DATA
             rbSrf.shape.a.worldSpace >> posi.a.inputSurface
             mc.connectAttr(f"{posi}.tangentV", f"{aim_cst}.target[0].targetTranslate")
             posi.a.turnOnPercentage.set(1)
@@ -284,7 +288,7 @@ class SpineQd(RigModule):
             self.end_ctl.cstPar(self.end_jnt, mo=1)
             self.jnts_bind.append(self.end_jnt)
 
-        ik_handle.hide()
+        # ik_handle.hide()
         return crv_len_ratio, jntFrCrv, rb_jnts
 
     def build_twoJ_ik(self):
@@ -367,16 +371,20 @@ class SpineQd(RigModule):
         attr = self.fore_ctl.a.add("showTangent", type="bool", k=0)
         attr >> self.tangent1_ctl.a.v
 
-        self.ctl_vis_toggle(
-            self.setting.a.add("debugVis", type="bool", dv=0, k=0),
-            onList=self.jnts_ik
-            + self.jnts_fk
-            + self.jnts_spIk
-            + self.jnts_twoIk
-            + [self.anchorToRbj],
-        )
+        # self.setting.a.add("fkJntVis", type="bool", k=0) >> self.jnts_fk[0].a.v
+        self.setting.a.add("spIkJntVis", type="bool", k=0) >> self.jnts_spIk[0].a.v
+        self.setting.a.add("twoIkJntVis", type="bool", k=0) >> self.jnts_twoIk[0].a.v
+
+        # self.ctl_vis_toggle(
+        #     self.setting.a.add("debugVis", type="bool", dv=0, k=0),
+        #     onList=self.jnts_ik
+        #     + self.jnts_fk
+        #     + self.jnts_spIk
+        #     + self.jnts_twoIk
+        #     + [self.anchorToRbj],
+        # )
         # + self.jnts_rb
-        mc.hide(self.rbSrf)
+        # mc.hide(self.rbSrf)
 
         if self.is_neck():
             self.cog_ctl.shape.hide()

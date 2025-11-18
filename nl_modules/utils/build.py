@@ -54,6 +54,8 @@ def buildTgt(rigN):
                     # mc.select(sk)
                     rigObj.build()
                     mc.refresh(f=1)
+                else:
+                    logging.warning(f"Skip building {rigN.name}, no skeleton found.")
             # elif state == 1:
             #     rigObj.build()
             # mc.refresh(cv=1)

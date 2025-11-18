@@ -49,7 +49,7 @@ class IkNode(DagNode):
         scaleFix2=None,
         scaleFix3=None,
         quat=None,
-        RIG_DATA=None,
+        p_data=None,
         vis=1,
         p=None,
     ):
@@ -85,7 +85,7 @@ class IkNode(DagNode):
         self.rSz = rSz
         self.softJ = None
         self.pvJnt = None
-        self.RIG_DATA = RIG_DATA
+        self.RIG_DATA = p_data
 
         # --- Create IK handle and store joints ---
         self.createIK(

@@ -138,7 +138,9 @@ class SrfNode(GrpNode):
             xf.delete()
 
     @staticmethod
-    def buildRbSrf(pf="", crv=None, normal=1, snap=None, spans=3, p=None, alongZ=1):
+    def buildRbSrf(
+        pf="", crv=None, normal=1, snap=None, spans=3, p=None, alongZ=1, inheritsXf=1
+    ):
         """Build ribbon surface from curve"""
         from nl_modules.nodel.crv_node import CrvNode
 
@@ -161,6 +163,10 @@ class SrfNode(GrpNode):
         )
         if p:
             rbSrf | p
+
+        if inheritsXf == 0:
+            rbSrf.a.inheritsTransform.set(0)
+
         mc.delete(pathLine, sweepLine)
         return rbSrf
 

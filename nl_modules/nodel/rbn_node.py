@@ -100,9 +100,9 @@ class RbnNode:
             spans=5,
             p=self.SRF_GRP,
             alongZ=0,
+            inheritsXf=0,
         )
         line.delete()
-        self.rbSrf.a.inheritsTransform.set(0)
 
         crvLenRatio, self.jnts_rb = common.build_ribbon_rivet(
             rbSrf=self.rbSrf,
