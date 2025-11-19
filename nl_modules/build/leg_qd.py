@@ -131,6 +131,7 @@ class LegQd(RigModule):
         self.rootJ = root_list[0]
         self.rootJ | self.JNT_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
+        return self.rootJ
 
     def build_ctl(self):
         """Build control nodes for the quadruped leg rig."""
@@ -139,7 +140,7 @@ class LegQd(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "X", "z", scale, 1, 2),
+            ("setting", "gear", "z", scale, 1, 2),
             ("hip_fkc", "circle", "x", scale, 0, -1),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
@@ -149,7 +150,7 @@ class LegQd(RigModule):
             ("ikc", "foot", None, rSz, 0, -1),
             ("extra_ikc", "rotator", None, -scale, 0, -1),
             ("pvc", "pvc", None, rSz, 0, -1),
-            ("smart_ctl", "cube", None, scale / 3, 0, -1),
+            ("smart_ctl", "rotator", None, scale / 2, 0, -1),
         ]
 
         if self.scapulaExtra:
@@ -163,8 +164,14 @@ class LegQd(RigModule):
 
         # self.smart_ctl.cv_scale(2, 0.2, 0.2)
         # self.smart_ctl.cv_move(0, rSz * 6, rSz * 12)
-        self.smart_ctl.cv_move(scale * 10, 0, 0)
-        self.smart_ctl.color = Color.D_YELLOW
+        # self.smart_ctl.cv_move(scale * 10, 0, 0)
+        # self.smart_ctl.color = Color.D_YELLOW
+
+        self.smart_ctl.cv_rotate(-90, 0, 0)
+        if xDr == -1:
+            self.smart_ctl.cv_rotate(180, 0, 0)
+        self.smart_ctl.cv_rotate(0, 0, 90)
+        self.smart_ctl.cv_move(0, 0, rSz * -10)
 
     def build(self):
         """Build the quadruped leg rig module."""
@@ -272,7 +279,7 @@ class LegQd(RigModule):
             setting=self.setting,
             localScale=1,
             scaleFix=self.masterC.a["globalScale"],
-            p_data=self.RIG_DATA,
+            p_data=self.CTL_DATA,
         )
         ikHX = IkNode("X", pf=rID, sj=self.palm, ee=self.digit, jsf="_ik")
         ikH2 = IkNode("2", pf=rID, sj=self.digit, ee=self.ball, jsf="_ik")
@@ -488,7 +495,7 @@ class LegQd(RigModule):
                 sj=toeJs[1],
                 ee=toeJs[2],
                 scaleFix=self.masterC.a["globalScale"],
-                p_data=self.RIG_DATA,
+                p_data=self.CTL_DATA,
                 vis=0,
                 p=self.ball_fkc,
             )

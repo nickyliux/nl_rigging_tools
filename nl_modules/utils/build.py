@@ -108,7 +108,7 @@ def buildSelOrAll(*arg, uiPB=None):
         if uiPB:
             uiPB.setValue(0)
         # Gen proxy after build
-        # proxy.genProxy()
+        proxy.genProxy()
     common.modelPanelShow(jnt=1)
     # common.xRayAllGeo(state=0)
     print("")

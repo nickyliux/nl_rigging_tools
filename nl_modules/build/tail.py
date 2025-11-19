@@ -89,8 +89,9 @@ class Tail(RigModule):
             crv=self.LINE_GUIDE,
             normal=-1,
             spans=spans,
-            p=self.RIG_DATA,
+            p=self.CTL_DATA,
             snap=self.RT_GUIDE,
+            inheritsXf=0,
         )
 
     def build_ribbon(self):
@@ -103,7 +104,7 @@ class Tail(RigModule):
             stretchyAttr=self.setting.a.stretchy,
             pf=self.rigID + "_2",
             rSz=self.rigSize,
-            p=self.RIG_DATA,
+            p=self.CTL_DATA,
             JNT_DATA=self.JNT_DATA,
         )
         self.jnts_bind = self.jnts_rb
@@ -195,7 +196,7 @@ class Tail(RigModule):
             pf=rID,
             rSz=rSz,
             outputJnt=0,
-            p=self.RIG_DATA,
+            p=self.CTL_DATA,
             JNT_DATA=self.JNT_DATA,
         )
 
@@ -251,12 +252,12 @@ class Tail(RigModule):
             onList=[self.ctls_fk[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("subIkCtlVis", k=0, type="bool", dv=1),
+            self.setting.a.add("subIkCtlVis", k=0, type="bool", dv=0),
             onList=self.ctls_ofs,
         )
         mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)
         # mc.hide(self.rbSrf1, self.rbSrf2, self.setting)
-        mc.hide(self.RIG_DATA)  # , self.setting)
+        # mc.hide(self.CTL_DATA)  # , self.setting)
 
     def setup_channel(self):
         """Setup channel attributes for the tail rig controls."""

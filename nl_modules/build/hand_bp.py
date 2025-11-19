@@ -396,7 +396,7 @@ class HandBp(RigModule):
             root.a.segmentScaleCompensate.set(0)
 
         self.masterC.a.globalScale >> self.JNT_DATA.a.scale
-        self.rootJ.cstSca(self.RIG_DATA)
+        # self.rootJ.cstSca(self.RIG_DATA)
 
     def build_post(self):
         """Post setup for the hand rig module."""

@@ -64,7 +64,7 @@ class Belt(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
 
-        ctl_defs = [("setting", "X", "z", rSz * 2, 1, 2)]
+        ctl_defs = [("setting", "gear", "z", rSz * 2, 1, 2)]
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
@@ -95,8 +95,9 @@ class Belt(RigModule):
             crv=self.LINE_GUIDE,
             normal=-1,
             spans=4,
-            p=self.RIG_DATA,
+            p=self.CTL_DATA,
             snap=self.RT_GUIDE,
+            inheritsXf=0,
         )
 
     def build_ribbon(self):
@@ -110,7 +111,7 @@ class Belt(RigModule):
             stretchyAttr=self.setting.a.stretchy,
             pf=self.rigID + "_2",
             rSz=self.rigSize,
-            p=self.RIG_DATA,
+            p=self.CTL_DATA,
             JNT_DATA=self.JNT_DATA,
             atMidOrEnd=1,
         )
@@ -189,7 +190,7 @@ class Belt(RigModule):
 
     #     # --- Build pin constraints for FK controls ---
     #     # coord = [(0.5, i / self.fkJntNum) for i in range(self.fkJntNum + 1)]
-    #     # pin, pinXf = common.nlRivet(geo=self.rbSrf1, coordList=coord, p=self.RIG_DATA)
+    #     # pin, pinXf = common.nlRivet(geo=self.rbSrf1, coordList=coord, p=self.CTL_DATA)
     #     crvLenRatio, pinXf = common.build_ribbon_rivet(
     #         rbSrf=self.rbSrf1,
     #         rivetNum=self.fkJntNum + 1,
@@ -198,7 +199,7 @@ class Belt(RigModule):
     #         pf=rID,
     #         rSz=rSz,
     #         outputJnt=0,
-    #         p=self.RIG_DATA,
+    #         p=self.CTL_DATA,
     #         JNT_DATA=self.JNT_DATA,
     #     )
 
@@ -255,6 +256,7 @@ class Belt(RigModule):
 
     def setup_vis(self):
         """Setup visibility toggles for the belt rig controls."""
+        pass
         # self.ctl_vis_toggle(
         #     self.setting.a.add("showIk", k=0, type="bool", dv=1),
         #     onList=[self.ctls_ik[0]],
@@ -268,7 +270,7 @@ class Belt(RigModule):
         #     onList=self.ctls_ofs,
         # )
         # mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)
-        mc.hide(self.rbSrf1, self.setting)  # , self.rbSrf2)
+        # mc.hide(self.rbSrf1, self.setting)  # , self.rbSrf2)
 
     def setup_channel(self):
         """Setup channel attributes for the belt rig controls."""

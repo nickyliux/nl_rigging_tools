@@ -28,7 +28,7 @@ class RigBase:
         self.rigID = rigNode.a["rigID"].get()
 
         self.CHR = GrpNode("CHR")
-        self.RIG = GrpNode("RIG", p=self.CHR)
+        # self.RIG = GrpNode("RIG", p=self.CHR)
         self.MDL = GrpNode("MDL", p=self.CHR)
         self.PRX = GrpNode("PRX", p=self.MDL)
         self.JNT = GrpNode("JNT", p=self.CHR)

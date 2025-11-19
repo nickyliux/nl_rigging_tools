@@ -25,7 +25,7 @@ class RigModule(RigBase):
         super().__init__(rigNode)
 
         rID = self.rigID
-        self.RIG_DATA = GrpNode(rID + "_rig_data", p=self.RIG)
+        # self.RIG_DATA = GrpNode(rID + "_rig_data", p=self.RIG)
         self.CTL_DATA = GrpNode(rID + "_ctl_data", p=self.masterC)
         self.JNT_DATA = GrpNode(rID + "_jnt_data", p=self.JNT)
 
@@ -352,7 +352,7 @@ class RigModule(RigBase):
         self.moduleG.show()
         self.CTL_DATA.delete()
         self.JNT_DATA.delete()
-        self.RIG_DATA.delete()
+        # self.RIG_DATA.delete()
 
         rootJ = self.rigNode.a.rootJ.inConnNode
         if rootJ:
@@ -583,7 +583,7 @@ class RigModule(RigBase):
             sj=ikJ,
             ee=ikJ_end,
             scaleFix=scale,
-            p_data=self.RIG_DATA,
+            p_data=self.CTL_DATA,  # RIG_DATA,
             p=p,
         )
 
@@ -626,7 +626,7 @@ class RigModule(RigBase):
             sj=self.jnts_am[0],
             ee=self.jnts_am[1],
             solver=Solver.RP,
-            p=self.RIG_DATA,
+            p=self.CTL_DATA,
         )
         if ikcGim:
             ikcGim.cstPoi(auto_ikH)

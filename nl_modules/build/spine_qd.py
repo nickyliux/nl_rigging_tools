@@ -263,9 +263,8 @@ class SpineQd(RigModule):
 
             # Create joint at group
             rad = rSz / jntNum * 15
-            jnt = JntNode(
-                f"{i}_rbj", pf=rID, align=grp, r=rad, p=grp, reset=1, color=Color.RED
-            )
+            jnt = JntNode(f"{i}_rbj", pf=rID, align=grp, r=rad, p=grp, reset=1)
+            # , color=Color.RED
             rb_jnts.append(jnt)
             self.masterC.a.globalScale >> grp.a.s
 
@@ -316,8 +315,8 @@ class SpineQd(RigModule):
         (
             ut.clp_(
                 crvLenRatio,
-                min=self.setting.a.squash,
-                max=self.setting.a.stretch,
+                min=self.setting.a["stretchMin"],
+                max=self.setting.a["stretchMax"],
             )
             >> j0.a.sz
         )
@@ -366,14 +365,15 @@ class SpineQd(RigModule):
 
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""
-        attr = self.base_ctl.a.add("showTangent", type="bool", k=0)
+        attr = self.base_ctl.a.add("tangentVis", type="bool", k=0)
         attr >> self.tangent0_ctl.a.v
-        attr = self.fore_ctl.a.add("showTangent", type="bool", k=0)
+        attr = self.fore_ctl.a.add("tangentVis", type="bool", k=0)
         attr >> self.tangent1_ctl.a.v
 
         # self.setting.a.add("fkJntVis", type="bool", k=0) >> self.jnts_fk[0].a.v
-        self.setting.a.add("spIkJntVis", type="bool", k=0) >> self.jnts_spIk[0].a.v
-        self.setting.a.add("twoIkJntVis", type="bool", k=0) >> self.jnts_twoIk[0].a.v
+        # ikJntVis = self.setting.a.add("ikJntVis", type="bool", k=0)
+        # ikJntVis >> self.jnts_spIk[0].a.v
+        # ikJntVis >> self.jnts_twoIk[0].a.v
 
         # self.ctl_vis_toggle(
         #     self.setting.a.add("debugVis", type="bool", dv=0, k=0),
