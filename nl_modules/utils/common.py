@@ -755,6 +755,7 @@ def build_ribbon_rivet(
 
     prx_height = mc.arclen(crv) / rivetNum / 1.5
     proxy.add_height_attr(outputs, prx_height)
+    crv.hide()
 
     return crv_len_ratio, outputs
 

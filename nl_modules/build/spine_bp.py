@@ -326,7 +326,10 @@ class SpineBp(RigModule):
         #     onList=self.jnts_ctl + self.jnts_fk,  # + self.jnts_rb,
         # )
         if self.is_ribbon():
-            self.setting.a.add("fkJntVis", type="bool", k=0) >> self.jnts_fk[0].a.v
+            (
+                self.setting.a.add("fkJntVis", type="bool", dv=1, k=0)
+                >> self.jnts_fk[0].a.v
+            )
             # self.setting.a.add("rbJntVis", type="bool", k=0) >> self.jnts_rb[0].a.v
 
         if self.is_neck():

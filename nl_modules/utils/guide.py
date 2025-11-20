@@ -182,12 +182,17 @@ def mirrorPose(*arg):
     selList = mc.ls(sl=1, tr=1)
     selList = list(set(selList))
 
+    lf = []
+    rt = []
+    all = []
     if not selList:
-        # if mc.ls(LF_CTL_SET, type="objectSet"):
-        #     selList = mc.sets(LF_CTL_SET, q=1)
-        lf = mc.sets(LF_CTL_SET, q=1) or []
-        rt = mc.sets(RT_CTL_SET, q=1) or []
-        all = mc.sets(ALL_CTL_SET, q=1) or []
+        if mc.ls(LF_CTL_SET, type="objectSet"):
+            lf = mc.sets(LF_CTL_SET, q=1)
+        if mc.ls(RT_CTL_SET, type="objectSet"):
+            rt = mc.sets(RT_CTL_SET, q=1)
+        if mc.ls(ALL_CTL_SET, type="objectSet"):
+            all = mc.sets(ALL_CTL_SET, q=1)
+
         selList = list(set(all) - set(rt))
 
     if selList:
