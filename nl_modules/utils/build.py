@@ -452,41 +452,39 @@ def autoAttach_jntToSrf():
         raise ValueError("globalScale attr NOT found")
 
     for node in getRigNodes_all():
+
         if node.a.nodeState.get() != 2:
+            logging.info(f"Skip non-rigged node {node.name}.")
             continue
 
         rbJntSetAttr = node.a["rbJntSet"]
-        if not rbJntSetAttr.exists():
-            continue
-
         rbSrfAttr = node.a["rbSrf"]
-        if not rbSrfAttr.exists():
-            logging.warning(f"Attr rbSrf NOT found in {node}.")
-            continue
 
-        rbJntSetName = rbJntSetAttr.get()
-        rbJntSet = DagNode(rbJntSetName)
-        if not rbJntSet.exists():
-            logging.warning(f"Set {rbJntSetName} NOT found.")
-            continue
+        if rbJntSetAttr.exists() and rbSrfAttr.exists():
 
-        rbJnts = mc.sets(rbJntSet, q=1)
-        if not rbJnts:
-            logging.warning(f"No joints found in Set {rbJntSet}.")
-            continue
+            rbJntSetName = rbJntSetAttr.get()
+            rbJntSet = DagNode(rbJntSetName)
+            if not rbJntSet.exists():
+                logging.warning(f"Set {rbJntSetName} NOT found.")
+                continue
 
-        rbSrf = rbSrfAttr.inConnNode
-        if not rbSrf:
-            logging.warning("Surface object NOT found.")
-            continue
+            rbJnts = mc.sets(rbJntSet, q=1)
+            if not rbJnts:
+                logging.warning(f"No joints found in Set {rbJntSet}.")
+                continue
 
-        common.ribbonAttach(
-            geo=rbSrf,
-            tgtList=rbJnts,
-            scaleAttr=globalScale,
-            p=DagNode("RIG"),
-        )
-        logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")
+            rbSrf = rbSrfAttr.inConnNode
+            if not rbSrf:
+                logging.warning("Surface object NOT found.")
+                continue
+
+            # common.ribbonAttach(
+            #     geo=rbSrf,
+            #     tgtList=rbJnts,
+            #     scaleAttr=globalScale,
+            #     p=DagNode("RIG"),
+            # )
+            logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")
 
 
 def add_noise_logic(ctl=None, targets=None, rot=0):

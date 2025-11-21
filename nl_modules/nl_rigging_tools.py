@@ -503,15 +503,12 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             return
 
         # Bind either to closest refJnt, or corresponding rbnJnt
-        self.autoBind_refJnts(
-            meshes=tgtMeshes,
-            thld=15,
-            uiPB=self.UI.bar_PB,
-        )
-        skin.autoBind_rbnJnts(
-            meshes=tgtMeshes,
-            uiPB=self.UI.bar_PB,
-        )
+        # self.autoBind_refJnts(
+        #     meshes=tgtMeshes,
+        #     thld=15,
+        #     uiPB=self.UI.bar_PB,
+        # )
+        skin.autoBind_rbnJnts(meshes=tgtMeshes, uiPB=self.UI.bar_PB)
 
         # Search rbSrf, rbJSet for each rigNode and attach joints with closest-point-on-surface
         build.autoAttach_jntToSrf()

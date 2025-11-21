@@ -52,9 +52,9 @@ def skinRefJnts(meshes=None, jnts=None, thld=5, uiPB=None):
 def autoBind_rbnJnts(meshes=None, uiPB=None):
     """Skin target meshes to their _rbJnt if found."""
 
-    weighted = 0
+    found = 0
     ignored = 0
-    notFound = 0
+    weighted = 0
 
     if uiPB:
         uiPB.setMaximum(len(meshes))
@@ -65,9 +65,9 @@ def autoBind_rbnJnts(meshes=None, uiPB=None):
 
         rbJnt = DagNode(mesh.name + "_rbJnt")
         if not rbJnt.exists():
-            notFound += 1
             continue
 
+        found += 1
         if mesh.skinCluster.exists():
             ignored += 1
             continue
@@ -80,9 +80,7 @@ def autoBind_rbnJnts(meshes=None, uiPB=None):
     if uiPB:
         uiPB.setValue(0)
 
-    logging.info(
-        f"rbJnts : {weighted} weighted. {ignored} already bind. {notFound} unfound."
-    )
+    logging.info(f"{found} rbJnts found, {ignored} ignored, {weighted} weighted.")
 
 
 def selSkinned(*args):

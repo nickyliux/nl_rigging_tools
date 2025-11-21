@@ -177,7 +177,7 @@ class ArmBp(RigModule):
         logging.info(self.rigID)
 
         self.jnts_fk = common.dupSk(
-            self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize, color=Color.BLUE
+            self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize / 2, color=Color.BLUE
         )
         self.ctls_fk = [self.clavicle_fkc, self.upr_fkc, self.lwr_fkc, self.palm_fkc]
 
