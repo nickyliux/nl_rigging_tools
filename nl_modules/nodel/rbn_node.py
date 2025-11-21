@@ -186,7 +186,7 @@ class RbnNode:
         self.rbSrf.weightTo(sttMidEnd_jnts, chain=0, mi=2, dr=2)
 
         for j in sttMidEnd_jnts:
-            j.setRadius(self.size * 10)
+            j.setRadius(self.size * 5)
             j.color = Color.PINK
 
         # if not self.forSpine:

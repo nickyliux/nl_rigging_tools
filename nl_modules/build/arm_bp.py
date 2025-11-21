@@ -177,7 +177,7 @@ class ArmBp(RigModule):
         logging.info(self.rigID)
 
         self.jnts_fk = common.dupSk(
-            self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
+            self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize, color=Color.BLUE
         )
         self.ctls_fk = [self.clavicle_fkc, self.upr_fkc, self.lwr_fkc, self.palm_fkc]
 
@@ -199,7 +199,7 @@ class ArmBp(RigModule):
         self.pvc.alignTo(pvc_guide, p=self.IK_GRP)
 
         self.jnts_ik = common.dupSk(
-            self.jnts, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.RED
+            self.jnts, "_ik", p=self.IK_GRP, r=rSz, color=Color.RED
         )
         ikH1 = IkNode(
             "1",
@@ -301,7 +301,7 @@ class ArmBp(RigModule):
 
         # Extract blend joints
         self.jnts_bf = common.dupSk(
-            self.jnts, "_bf", p=self.BF_GRP, r=rSz * 4, color=Color.D_YELLOW
+            self.jnts, "_bf", p=self.BF_GRP, r=rSz * 3, color=Color.ORANGE
         )
 
         palmIn_guide = DagNode(f"{rID}_palmIn_guide")
@@ -342,7 +342,7 @@ class ArmBp(RigModule):
             if i == 0:
                 self.clavicle_fkc.cstPar(jnt, mo=1)
                 self.clavicle_fkc.cstPar(bfj, mo=1)
-                bfj.a.r >> jnt.a.r
+                # bfj.a.r >> jnt.a.r
             elif i < total - 1:
                 bfj.a.t >> jnt.a.t
                 bfj.a.r >> jnt.a.r
@@ -498,9 +498,9 @@ class ArmBp(RigModule):
         )
 
         # mc.hide(self.jnts_bf + self.jnts_fk + self.jnts_ik)
-        self.setting.a.add("fkJntVis", type="bool", k=0) >> self.jnts_fk[0].a.v
-        self.setting.a.add("ikJntVis", type="bool", k=0) >> self.jnts_ik[0].a.v
-        self.setting.a.add("bfJntVis", type="bool", k=0) >> self.jnts_bf[0].a.v
+        self.setting.a.add("fkJntVis", type="bool", dv=1, k=0) >> self.jnts_fk[0].a.v
+        self.setting.a.add("ikJntVis", type="bool", dv=1, k=0) >> self.jnts_ik[0].a.v
+        self.setting.a.add("bfJntVis", type="bool", dv=1, k=0) >> self.jnts_bf[0].a.v
 
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
