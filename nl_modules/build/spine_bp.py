@@ -92,7 +92,7 @@ class SpineBp(RigModule):
         #     self.mid_ikc.cv_move(0, 0, rSz * -70)
 
         if self.is_ribbon():
-            self.chest_ikc.cv_scale(1, 0.1, 1)
+            self.chest_ikc.cv_scale(1, 0.2, 1)
 
     def is_ribbon(self):
         """Check if the spine rig is of ribbon type."""

@@ -2881,16 +2881,16 @@ createNode materialInfo -n "materialInfo1";
 	rename -uid "84720570-452A-387B-845D-3AACC84E4203";
 createNode ilrOptionsNode -s -n "TurtleRenderOptions";
 	rename -uid "9F0E203B-46F0-D7E1-A8BC-E79DA77D8D56";
-lockNode -l 1 ;
+
 createNode ilrUIOptionsNode -s -n "TurtleUIOptions";
 	rename -uid "89C5F28B-44D1-3819-D191-F4A0E2BCB373";
-lockNode -l 1 ;
+
 createNode ilrBakeLayerManager -s -n "TurtleBakeLayerManager";
 	rename -uid "9DB09F2E-48A0-C655-E5D8-48B027D7EFD1";
-lockNode -l 1 ;
+
 createNode ilrBakeLayer -s -n "TurtleDefaultBakeLayer";
 	rename -uid "F140319A-4D6D-45A2-B9EB-078F69551C54";
-lockNode -l 1 ;
+
 createNode nodeGraphEditorInfo -n "MayaNodeEditorSavedTabsInfo";
 	rename -uid "9566F4CB-4024-8EA3-7191-3B8AE78DC794";
 	setAttr ".tgi[0].tn" -type "string" "Untitled_1";

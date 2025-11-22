@@ -5,7 +5,6 @@ import logging
 import maya.cmds as mc
 from maya import mel
 from collections import OrderedDict
-from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.utils.color import Color
 
 
@@ -307,6 +306,7 @@ def ribbonAttach2(
     from nl_modules.nodel.base.dag_node import DagNode
     from nl_modules.nodel.grp_node import GrpNode
     from nl_modules.nodel.loc_node import LocNode
+    from nl_modules.nodel.crv_node import CrvNode
     from nl_modules.utils import utils_node as ut
 
     if not isinstance(tgtList, list):

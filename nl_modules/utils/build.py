@@ -504,7 +504,7 @@ def autoAttach_jntToSrf():
                 crv=rbCrv,
                 stretchyAttr=setting.a.stretchy,
                 scaleAttr=globalScale,
-                p=DagNode("CTL"),
+                p=DagNode("JNT"),
             )
             logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")
 

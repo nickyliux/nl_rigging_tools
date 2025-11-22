@@ -2874,16 +2874,16 @@ createNode decomposeMatrix -n "DCM_25";
 	rename -uid "28B112B6-4715-CC03-9FB3-D1A3477A634E";
 createNode ilrOptionsNode -s -n "TurtleRenderOptions";
 	rename -uid "9F0E203B-46F0-D7E1-A8BC-E79DA77D8D56";
-lockNode -l 1 ;
+
 createNode ilrUIOptionsNode -s -n "TurtleUIOptions";
 	rename -uid "89C5F28B-44D1-3819-D191-F4A0E2BCB373";
-lockNode -l 1 ;
+
 createNode ilrBakeLayerManager -s -n "TurtleBakeLayerManager";
 	rename -uid "9DB09F2E-48A0-C655-E5D8-48B027D7EFD1";
-lockNode -l 1 ;
+
 createNode ilrBakeLayer -s -n "TurtleDefaultBakeLayer";
 	rename -uid "F140319A-4D6D-45A2-B9EB-078F69551C54";
-lockNode -l 1 ;
+
 createNode shapeEditorManager -n "zivaMax_mdl:shapeEditorManager";
 	rename -uid "9A89284F-480C-9642-0072-D08312BAB8A1";
 	setAttr -s 4 ".bsdt";
