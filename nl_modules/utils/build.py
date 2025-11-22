@@ -91,14 +91,20 @@ def buildSelOrAll(*arg, uiPB=None):
     """Build rig for selected rigNodes or all if nothing selected"""
     rigNodes = getRigNodes_selOrAll()
     common.modelPanelShow(jnt=0)
-    # common.xRayAllGeo(state=1)
-    if rigNodes:
+
+    rigNodesToBuild = []
+    for rN in rigNodes:
+        state = rN.a.nodeState.get()
+        if state == 0:
+            rigNodesToBuild.append(rN)
+
+    if rigNodesToBuild:
         preRig()
         if uiPB:
             uiPB.setMaximum(len(rigNodes))
         i = 0
-        for rigN in rigNodes:
-            buildTgt(rigN)
+        for rN in rigNodesToBuild:
+            buildTgt(rN)
             if uiPB:
                 i += 1
                 uiPB.setValue(i)
@@ -107,11 +113,11 @@ def buildSelOrAll(*arg, uiPB=None):
         mc.select(cl=1)
         if uiPB:
             uiPB.setValue(0)
-        # Gen proxy after build
+
         # proxy.genProxy()
+
     common.modelPanelShow(jnt=1)
     # common.xRayAllGeo(state=0)
-    print("")
 
 
 def postRig():
@@ -143,13 +149,14 @@ def masterAddAttrs():
         )
 
 
-def unbuildTgt(rigN):
+def unbuildTgt(rN):
     """Unbuild target rigNode"""
-    if rigN:
-        state = rigN.a.nodeState.get()
+    rN = DagNode(rN) if isinstance(rN, str) else rN
+    if rN.exists():
+        state = rN.a.nodeState.get()
         if state == 2:
-            rigClass = rigN.a.rigClass.get()
-            rigObj = eval(rigClass)(rigN)
+            rigClass = rN.a.rigClass.get()
+            rigObj = eval(rigClass)(rN)
             rigObj.unbuild_pre_module()
 
 
@@ -157,36 +164,28 @@ def unbuildTgt(rigN):
 def unbuildSelOrAll(*arg):
     """Unbuild rig for selected rigNodes or all if nothing selected"""
     rigNodes = getRigNodes_selOrAll()
-    if rigNodes:
-        for rigN in rigNodes:
-            unbuildTgt(rigN)
-        postRig()
-        mc.refresh(f=1)
+    for rN in rigNodes:
+        unbuildTgt(rN)
+    mc.refresh(f=1)
 
 
-def deleteTgt(rigNode):
+def deleteTgt(rN):
     """Delete guide component for input rigNode"""
-    rigNode = DagNode(rigNode)
-    if rigNode.exists():
-        rigID = rigNode.a.rigID.get()
-        state = rigNode.a.nodeState.get()
-        if state == 2:
-            rigClass = rigNode.a.rigClass.get()
-            rigObj = eval(rigClass)(rigNode)
-            rigObj.unbuild_pre_module()
+    rN = DagNode(rN) if isinstance(rN, str) else rN
+    if rN.exists():
+        rigID = rN.a.rigID.get()
         obj = mc.ls(rigID + "_*")
         if obj:
             mc.delete(obj)
-            rigNode.delete()
+            rN.delete()
 
 
 @common.Undo("deleteSelOrAll")
 def deleteSelOrAll(*arg):
     """Delete rigNodes for selected objects or all if nothing selected"""
     rigNodes = getRigNodes_selOrAll()
-    if rigNodes:
-        for rigN in rigNodes:
-            deleteTgt(rigN)
+    for rN in rigNodes:
+        deleteTgt(rN)
 
 
 def update_anchor_conn():
@@ -440,7 +439,11 @@ def getRigNode(obj):
 
 
 def autoAttach_jntToSrf():
-    """Auto attach joints to surface for all rigNodes with ribbon"""
+    """Auto attach joints to surface for all rigNodes.
+
+    rigNode.a.rbJntSet: target joints
+    rigNode.a.rbSrf: target surface
+    """
     from nl_modules.utils import common
 
     masterCtl = DagNode("master_ctl")
@@ -459,8 +462,9 @@ def autoAttach_jntToSrf():
 
         rbJntSetAttr = node.a["rbJntSet"]
         rbSrfAttr = node.a["rbSrf"]
+        rbCrvAttr = node.a["rbCrv"]
 
-        if rbJntSetAttr.exists() and rbSrfAttr.exists():
+        if rbJntSetAttr.exists() and rbSrfAttr.exists() and rbCrvAttr.exists():
 
             rbJntSetName = rbJntSetAttr.get()
             rbJntSet = DagNode(rbJntSetName)
@@ -475,15 +479,33 @@ def autoAttach_jntToSrf():
 
             rbSrf = rbSrfAttr.inConnNode
             if not rbSrf:
-                logging.warning("Surface object NOT found.")
+                logging.warning("Ribbon surface NOT found.")
+                continue
+
+            rbCrv = rbCrvAttr.inConnNode
+            if not rbCrv:
+                logging.warning("Ribbon curve NOT found.")
+                continue
+
+            setting = node.a.setting.inConnNode
+            if not setting:
+                logging.warning("Setting NOT found.")
                 continue
 
             # common.ribbonAttach(
             #     geo=rbSrf,
             #     tgtList=rbJnts,
             #     scaleAttr=globalScale,
-            #     p=DagNode("RIG"),
+            #     p=DagNode("CTL"),
             # )
+            common.ribbonAttach2(
+                tgtList=rbJnts,
+                srf=rbSrf,
+                crv=rbCrv,
+                stretchyAttr=setting.a.stretchy,
+                scaleAttr=globalScale,
+                p=DagNode("CTL"),
+            )
             logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")
 
 

@@ -139,7 +139,7 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "gear", None, scale, 1, 2),
+            ("setting", "gear", "z", scale, 1, 2),
             ("hip_fkc", "stick", None, -scale / 2, 0, -1),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),

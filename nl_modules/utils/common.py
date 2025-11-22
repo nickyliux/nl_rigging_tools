@@ -5,6 +5,7 @@ import logging
 import maya.cmds as mc
 from maya import mel
 from collections import OrderedDict
+from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.utils.color import Color
 
 
@@ -269,6 +270,7 @@ def aimAlongSrfUV(srf=None, loc=None, inPos=None, p=None, setLocPos=0):
     if p:
         aim_cst | p
 
+    srf = DagNode(srf) if isinstance(srf, str) else srf
     srf.shape.a.worldSpace >> cpos.a.inputSurface
     srf.shape.a.worldSpace >> posi.a.inputSurface
     cpos.a.parameterU >> posi.a.parameterU
@@ -294,6 +296,74 @@ def ribbonAttach_reset(tgt):
             pa.delete()
 
 
+def ribbonAttach2(
+    tgtList=None, srf=None, crv=None, scaleAttr=None, stretchyAttr=1, p=None
+):
+    """Attach target list to srf along crv, using closestPointOnSurface
+
+    from nl_modules.utils import common
+    common.ribbonAttach2(srf='srf', tgtList=[jnt1, jnt2])
+    """
+    from nl_modules.nodel.base.dag_node import DagNode
+    from nl_modules.nodel.grp_node import GrpNode
+    from nl_modules.nodel.loc_node import LocNode
+    from nl_modules.utils import utils_node as ut
+
+    if not isinstance(tgtList, list):
+        raise TypeError("Input objects must be in list.")
+    if not mc.objExists(srf):
+        raise ValueError(f"Missing object: {srf}")
+
+    rvtGrp = GrpNode(srf + "_rvtGrp", p=p)
+    srf = DagNode(srf) if isinstance(srf, str) else srf
+    srfType = srf.shape.type
+
+    if crv:
+        crv = CrvNode(crv)  # if isinstance(crv, str) else crv
+    else:
+        crv = CrvNode(mc.duplicateCurve(f"{srf}.u[0.5]", rn=0, local=0)[0])
+        crv.a.inheritsTransform.set(0)
+        if p:
+            crv | p
+
+    cpos = None
+    if srfType == "nurbsSurface":
+        cpos = DagNode("myCPOS_#", nodeType="closestPointOnSurface")
+        srf.shape.a.worldSpace >> cpos.a.inputSurface
+    else:
+        raise TypeError(f"Attachment not working on {srf}")
+
+    coordList = []
+    for tgt in tgtList:
+        tgt = DagNode(tgt) if isinstance(tgt, str) else tgt
+        ribbonAttach_reset(tgt)
+        tgt.a.t >> cpos.a.inPosition
+        coordList.append(cpos.a.parameterV.get())
+    cpos.delete()
+
+    crv_info = DagNode("crvInfo#", nodeType="curveInfo")
+    crv.shape.a.worldSpace >> crv_info.a.inputCurve
+    crv_len_ratio = crv_info.a.arcLength / crv.length
+    ratio_out = ut.blend2_(crv_len_ratio, 1, stretchyAttr)
+
+    for i, tgt in enumerate(tgtList):
+
+        mp = DagNode("mp_#", nodeType="motionPath")
+        mp.a.fractionMode.set(1)
+        coordList[i] / ratio_out >> mp.a.uValue
+
+        crv.shape.a.worldSpace >> mp.a.geometryPath
+        loc = LocNode(f"rivet_loc_{i}_#", p=rvtGrp)
+
+        aimAlongSrfUV(
+            srf=srf, loc=loc, inPos=mp.a.allCoordinates, p=rvtGrp, setLocPos=1
+        )
+        if scaleAttr:
+            scaleAttr >> loc.a.s
+        loc.a.inheritsTransform.set(0)
+        tgt | loc
+
+
 def ribbonAttach(tgtList=None, geo=None, scaleAttr=None, p=None):
     """Attach target list to geo, using closestPointOnMesh or closestPointOnSurface"""
     if not isinstance(tgtList, list):
@@ -304,8 +374,9 @@ def ribbonAttach(tgtList=None, geo=None, scaleAttr=None, p=None):
     from nl_modules.nodel.base.dag_node import DagNode
     from nl_modules.nodel.grp_node import GrpNode
 
-    geo = DagNode(geo)
+    geo = DagNode(geo) if isinstance(geo, str) else geo
     geoType = geo.shape.type
+
     # ------------------------------
     #  create closest node
     # ------------------------------
@@ -690,7 +761,7 @@ def build_ribbon_rivet(
     rbSrf=None,
     rivetNum=5,
     scaleAttr=None,
-    stretchyAttr=None,
+    stretchyAttr=1,
     pf="",
     rSz=1,
     atMidOrEnd=0,  # 0=mid, 1=end
@@ -698,7 +769,11 @@ def build_ribbon_rivet(
     p=None,
     JNT_DATA=None,
 ):
-    """Build a motion path ribbon on the given surface with specified joint number."""
+    """Build a motion path ribbon on the given surface with specified joint number.
+
+    from nl_modules.utils import common
+    common.build_ribbon_rivet(rbSrf='srf', pf='tmp')
+    """
     from nl_modules.nodel.base.dag_node import DagNode
     from nl_modules.nodel.crv_node import CrvNode
     from nl_modules.nodel.grp_node import GrpNode
@@ -750,14 +825,15 @@ def build_ribbon_rivet(
         else:
             outputs.append(loc)
 
-        scaleAttr >> loc.a.s
+        if scaleAttr:
+            scaleAttr >> loc.a.s
         loc.a.inheritsTransform.set(0)
 
     prx_height = mc.arclen(crv) / rivetNum / 1.5
     proxy.add_height_attr(outputs, prx_height)
     crv.hide()
 
-    return crv_len_ratio, outputs
+    return crv_len_ratio, outputs, crv
 
 
 # def calcBB(tgt):

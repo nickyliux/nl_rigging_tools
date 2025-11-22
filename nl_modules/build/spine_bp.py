@@ -75,7 +75,7 @@ class SpineBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
-            ("setting", "gear", None, rSz * 4, 1, -1),
+            ("setting", "gear", "z", rSz * 3, 1, -1),
             ("cog_ctl", "cog", None, rSz * 7, 0, -1),
         ]
         if self.is_ribbon():
@@ -249,13 +249,9 @@ class SpineBp(RigModule):
             p=self.CTL_DATA,
             inheritsXf=0,
         )
-
-        self.rigNode.setMsg({"rbSrf": self.rbSrf})
-
         self.jnts_ctl = self.build_ctl_jnt(
             [self.hip_ikc, self.mid_ikc, self.chest_ikc], r=rSz * 10
         )
-
         self.rbSrf.weightTo(self.jnts_ctl, chain=0, mi=2, dr=6)
 
         stretchy = self.setting.a.add("stretchy", min=0, max=1, dv=1)
@@ -266,7 +262,7 @@ class SpineBp(RigModule):
         self.mid_ikc.a.add("tangent", min=0, dv=1) >> self.jnts_ctl[1].a.sy
         self.chest_ikc.a.add("tangent", min=0, dv=1) >> self.jnts_ctl[2].a.sy
 
-        crvLenRatio, self.jnts_rb = common.build_ribbon_rivet(
+        crvLenRatio, self.jnts_rb, crv = common.build_ribbon_rivet(
             rbSrf=self.rbSrf,
             rivetNum=self.rbnJntNum,
             scaleAttr=self.masterC.a.globalScale,
@@ -278,6 +274,8 @@ class SpineBp(RigModule):
             JNT_DATA=self.JNT_DATA,
         )
         self.jnts_bind = self.jnts_rb
+        self.rigNode.setMsg({"rbCrv": crv})
+        self.rigNode.setMsg({"rbSrf": self.rbSrf})
 
         self.build_volume_setup()
 

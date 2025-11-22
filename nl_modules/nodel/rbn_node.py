@@ -104,11 +104,10 @@ class RbnNode:
         )
         line.delete()
 
-        crvLenRatio, self.jnts_rb = common.build_ribbon_rivet(
+        crvLenRatio, self.jnts_rb, crv = common.build_ribbon_rivet(
             rbSrf=self.rbSrf,
             rivetNum=self.rbnJntNum,
             scaleAttr=self.scaleFix,
-            stretchyAttr=1,
             pf=self.pf,
             rSz=self.size,
             p=self.RIG_DATA,

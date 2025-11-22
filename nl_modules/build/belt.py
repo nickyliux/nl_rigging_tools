@@ -103,7 +103,7 @@ class Belt(RigModule):
     def build_ribbon(self):
         """Create the ribbon for the belt rig."""
         logging.info(self.rigID)
-        crvLenRatio, self.jnts_rb = common.build_ribbon_rivet(
+        crvLenRatio, self.jnts_rb, crv = common.build_ribbon_rivet(
             # rbSrf=self.rbSrf2,
             rbSrf=self.rbSrf1,
             rivetNum=self.rbnJntNum,
@@ -191,7 +191,7 @@ class Belt(RigModule):
     #     # --- Build pin constraints for FK controls ---
     #     # coord = [(0.5, i / self.fkJntNum) for i in range(self.fkJntNum + 1)]
     #     # pin, pinXf = common.nlRivet(geo=self.rbSrf1, coordList=coord, p=self.CTL_DATA)
-    #     crvLenRatio, pinXf = common.build_ribbon_rivet(
+    #     crvLenRatio, pinXf, crv = common.build_ribbon_rivet(
     #         rbSrf=self.rbSrf1,
     #         rivetNum=self.fkJntNum + 1,
     #         scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,

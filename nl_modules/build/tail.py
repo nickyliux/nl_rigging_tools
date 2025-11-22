@@ -97,7 +97,7 @@ class Tail(RigModule):
     def build_ribbon(self):
         """Create the ribbon for the tail rig."""
         logging.info(self.rigID)
-        crvLenRatio, self.jnts_rb = common.build_ribbon_rivet(
+        crvLenRatio, self.jnts_rb, crv = common.build_ribbon_rivet(
             rbSrf=self.rbSrf2,
             rivetNum=self.rbnJntNum,
             scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,
@@ -187,7 +187,7 @@ class Tail(RigModule):
 
         self.build_fk_with_ctl3(self.jnts_fk, self.ctls_fk, p=self.FK_GRP)
 
-        crvLenRatio, pinXf = common.build_ribbon_rivet(
+        crvLenRatio, pinXf, crv = common.build_ribbon_rivet(
             rbSrf=self.rbSrf1,
             rivetNum=self.fkJntNum,
             atMidOrEnd=1,
