@@ -1101,6 +1101,7 @@ class RigModule(RigBase):
         volType >> ribbonUp.volType
         volType >> ribbonLw.volType
 
+        mc.hide(ribbonUp.RBN_GRP, ribbonLw.RBN_GRP)
         self.jnts_bind += ribbonUp.jnts_rb + ribbonLw.jnts_rb
 
         return [ribbonUp, ribbonLw]

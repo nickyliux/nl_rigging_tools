@@ -45,7 +45,7 @@ class RbnNode:
         # Core attributes
         self.d = None
         self.rbSrf = None
-        self.RIG_DATA = p_data
+        self.DATA = p_data
         self.pf = pf
         self.jnts_rb = []
 
@@ -65,6 +65,7 @@ class RbnNode:
         self.rbnJntNum = num
         self.size = self.tgt.o.distanceTo(self.tgtChild) / 100
         self.ikhs = []
+        self.RBN_GRP = None
 
         self.build()
 
@@ -82,7 +83,7 @@ class RbnNode:
 
     def build_grps(self):
         """Create the main groups for the ribbon rig."""
-        self.RBN_GRP = GrpNode("rbn_grp", pf=self.pf, p=self.RIG_DATA)
+        self.RBN_GRP = GrpNode("rbn_grp", pf=self.pf, p=self.DATA)
         self.SRF_GRP = GrpNode("srf_grp", pf=self.pf, p=self.RBN_GRP)
         self.LOC_GRP = GrpNode("loc_grp", pf=self.pf, p=self.RBN_GRP)
         self.JNT_GRP = GrpNode("jnt_grp", pf=self.pf, p=self.RBN_GRP)
@@ -110,7 +111,7 @@ class RbnNode:
             scaleAttr=self.scaleFix,
             pf=self.pf,
             rSz=self.size,
-            p=self.RIG_DATA,
+            p=self.DATA,
             JNT_DATA=self.JNT_GRP,
         )
 

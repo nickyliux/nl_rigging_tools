@@ -132,21 +132,26 @@ def postRig():
 
 def masterAddAttrs():
     """Add proxy attributes to master2_ctl"""
+    OPTIONS = "Normal:Tpl:Ref"
+
     ctl = DagNode("master2_ctl")
-    prx = DagNode("PRX")
-    jnt = DagNode("JNT")
+    if not ctl.exists():
+        logging.warning("master2_ctl NOT found.")
+        return
 
-    if ctl.exists() and prx.exists():
-        prx.a.overrideEnabled.set(1)
+    grp = DagNode("JNT")
+    if grp.exists():
+        ctl.a.add("jntVis", k=0, type="bool", dv=1) >> grp.a.v
+        grp.a.overrideEnabled.set(1)
+        dspType = ctl.a.add("jntDspType", type="enum", k=0, en=OPTIONS)
+        dspType >> grp.a.overrideDisplayType
 
-        ctl.a.add("jntVis", k=0, type="bool", dv=1) >> jnt.a.v
-        ctl.a.add("pxyVis", k=0, type="bool", dv=1) >> prx.a.v
-
-        OPTIONS = "Normal:Template:Reference"
-        (
-            ctl.a.add("pxyDsp", type="enum", k=0, en=OPTIONS, dv=0)
-            >> prx.a.overrideDisplayType
-        )
+    grp = DagNode("PRX")
+    if grp.exists():
+        ctl.a.add("pxyVis", k=0, type="bool", dv=1) >> grp.a.v
+        grp.a.overrideEnabled.set(1)
+        dspType = ctl.a.add("pxyDspType", type="enum", k=0, en=OPTIONS)
+        dspType >> grp.a.overrideDisplayType
 
 
 def unbuildTgt(rN):
