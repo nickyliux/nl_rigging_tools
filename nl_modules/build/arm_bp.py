@@ -364,7 +364,6 @@ class ArmBp(RigModule):
         clavStart_guide = DagNode(f"{rID}_clavStart_guide")
         clavEnd_guide = DagNode(f"{rID}_clavEnd_guide")
         scapula_guide = DagNode(f"{rID}_scapula_guide")
-        scapAim_guide = DagNode(f"{rID}_scapAim_guide")
 
         # Y = Color.YELLOW
 

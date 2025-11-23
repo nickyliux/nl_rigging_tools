@@ -526,15 +526,13 @@ class LegBp(RigModule):
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             offList=self.ctls_fk[1:-1],
         )
-
-        # mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_bf)
-        self.setting.a.add("fkJntVis", type="bool", k=0) >> self.jnts_fk[0].a.v
-        self.setting.a.add("ikJntVis", type="bool", k=0) >> self.jnts_ik[0].a.v
-        self.setting.a.add("bfJntVis", type="bool", k=0) >> self.jnts_bf[0].a.v
-
         self.ctl_vis_toggle(
             self.ikc.a.add("pvcVis", type="bool", dv=1, k=0),
             onList=[self.pvc.offset, self.pvc_line.offset],
+        )
+        self.ctl_vis_toggle(
+            self.setting.a.add("setupJntVis", type="bool", dv=0, k=0),
+            onList=self.jnts_fk + self.jnts_ik + self.jnts_bf,
         )
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(

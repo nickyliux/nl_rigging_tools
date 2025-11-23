@@ -41,4 +41,4 @@ class RigBase:
 
         if not self.DIM.parent:
             self.DIM | self.CTL
-            # self.DIM.hide()
+            self.DIM.hide()

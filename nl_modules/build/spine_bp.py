@@ -324,11 +324,10 @@ class SpineBp(RigModule):
         #     onList=self.jnts_ctl + self.jnts_fk,  # + self.jnts_rb,
         # )
         if self.is_ribbon():
-            (
-                self.setting.a.add("fkJntVis", type="bool", dv=1, k=0)
-                >> self.jnts_fk[0].a.v
+            self.ctl_vis_toggle(
+                self.setting.a.add("setupVis", type="bool", dv=0, k=0),
+                onList=self.jnts_fk + [self.rbSrf],
             )
-            # self.setting.a.add("rbJntVis", type="bool", k=0) >> self.jnts_rb[0].a.v
 
         if self.is_neck():
             CrvNode(self.ctls_fk[0]).setOnTop(1)
