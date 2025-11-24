@@ -6,7 +6,7 @@ from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.ik_node import Solver
 from functools import partial
 
-from nl_modules.utils import skin
+from nl_modules.utils import common, skin
 
 mel.eval("ikSpringSolver")
 mel.eval("ik2Bsolver")
@@ -59,6 +59,7 @@ class MarkingMenuRigging:
         mc.menuItem(p=display_MI, l="Nurbs CV Off", c=partial(display_CV, 0), ob=1)
         mc.menuItem(p=display_MI, l="-" * 15, en=0)
         mc.menuItem(p=display_MI, l="Joint Size = 1", c=partial(jointDisplay, 1))
+        mc.menuItem(p=display_MI, l="Joint Size = 0.5", c=partial(jointDisplay, 0.5))
         mc.menuItem(p=display_MI, l="Joint Size = 0.1", c=partial(jointDisplay, 0.1))
 
         connect_MI = mc.menuItem(p=menu, l="Connect", rp="W", subMenu=1)
@@ -158,16 +159,19 @@ def addInfOpt(*args):
     mel.eval("AddInfluenceOptions")
 
 
+@common.Undo("jointDisplay")
 def jointDisplay(*args):
     """Set the joint display scale"""
     mc.jointDisplayScale(args[0])
 
 
+@common.Undo("showAllHidden")
 def showAllHidden(*args):
     """Show all hidden objects in the scene"""
     mc.showHidden(all=1)
 
 
+@common.Undo("showAll")
 def showAll(*args):
     allPanels = mc.getPanel(type="modelPanel")
     for p in allPanels:
@@ -346,8 +350,6 @@ def lockAttr(*args):
 
 def cst(*args):
     """Create a constraint of the specified type on the selected objects"""
-    from nl_modules.utils import common
-
     selList = mc.ls(sl=1)
     if len(selList) > 1:
         skipR = ["x", "y", "z"] if args[0] == "parT" else []

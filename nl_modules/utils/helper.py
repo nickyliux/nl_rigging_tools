@@ -34,8 +34,10 @@ def addHlpJnt(
     dir=1,
     init=1,
     initAngle=0,
-    scaling1=0,
-    scaling2=2,
+    ofsMultiA=0,
+    ofsMultiB=2,
+    angleMultiA=0,
+    angleMultiB=0,
     mirror=0,
 ):
     """Create a corrective joint system that responds to the rotation of a driver object."""
@@ -63,8 +65,10 @@ def addHlpJnt(
         dir=dir,
         init=init,
         initAngle=initAngle,
-        scaling1=scaling1,
-        scaling2=scaling2,
+        ofsMultiA=ofsMultiA,
+        ofsMultiB=ofsMultiB,
+        angleMultiA=angleMultiA,
+        angleMultiB=angleMultiB,
         mirror=mirror,
     )
 
@@ -78,8 +82,10 @@ def addHlpJntGeneral(
     dir=1,
     init=1,
     initAngle=0,
-    scaling1=0,
-    scaling2=2,
+    ofsMultiA=0,
+    ofsMultiB=2,
+    angleMultiA=0,
+    angleMultiB=0,
     mirror=0,
 ):
     """Create a corrective joint system that responds to the rotation of a driver object."""
@@ -114,8 +120,10 @@ def addHlpJntGeneral(
         dir=dir,
         init=init,
         initAngle=initAngle,
-        scaling1=scaling1,
-        scaling2=scaling2,
+        ofsMultiA=ofsMultiA,
+        ofsMultiB=ofsMultiB,
+        angleMultiA=angleMultiA,
+        angleMultiB=angleMultiB,
         mirror=mirror,
     )
 
@@ -129,8 +137,10 @@ def hlpJntSetup(
     dir=1,
     init=1,
     initAngle=0,
-    scaling1=0,
-    scaling2=2,
+    ofsMultiA=0,
+    ofsMultiB=2,
+    angleMultiA=0,
+    angleMultiB=0,
     mirror=0,
 ):
     """Create a corrective joint setup that responds to the rotation of a driver object."""
@@ -151,8 +161,10 @@ def hlpJntSetup(
                 # Update parameters on mirror instead of recreating
                 tgtHlp.a.init.set(init)
                 tgtHlp.a.initAngle.set(initAngle)
-                tgtHlp.a.scaling1.set(scaling1)
-                tgtHlp.a.scaling2.set(scaling2)
+                tgtHlp.a.ofsMultiA.set(ofsMultiA)
+                tgtHlp.a.ofsMultiB.set(ofsMultiB)
+                tgtHlp.a.angleMultiA.set(angleMultiA)
+                tgtHlp.a.angleMultiB.set(angleMultiB)
 
                 logging.info(f"Helper joint {tgtHlp.name} updated")
                 return tgtHlp
@@ -167,7 +179,7 @@ def hlpJntSetup(
 
     cstGrp = GrpNode(f"{hlpName}_grp", p=parent_for_group)
     ofsGrp = GrpNode(f"{hlpName}_ofs")
-    # bseJnt = JntNode(f"{hlpName}_bse", r=0)
+    bseJnt = JntNode(f"{hlpName}_bse", r=0.1)
     hlpJnt = JntNode(f"{hlpName}_jnt", r=tgtJnt.a.radius.get() / 2)
 
     # Configure rotation order once
@@ -175,9 +187,8 @@ def hlpJntSetup(
     hlpJnt.a.rotateOrder.set(ro)
 
     # Build hierarchy quickly
-    hlpJnt | ofsGrp | cstGrp
-    # bseJnt.dspType = 2
-    # bseJnt.setRadius(0)
+    hlpJnt | bseJnt | ofsGrp | cstGrp
+    bseJnt.dspType = 2
 
     # Create constraints and visual helpers
     common.cstMulti(parentJnt, tgtJnt, cstGrp, cstType="ori")
@@ -186,7 +197,7 @@ def hlpJntSetup(
     hlpJnt.color = Color.PINK  # (0.0, 0.1, 0.0)
     cstGrp.a.s.set(dir_sign, dir_sign, dir_sign)
 
-    CrvNode.buildLineLinked(tgt1=ofsGrp, tgt2=tgtJnt, dspType=2, top=1, p=cstGrp)
+    # CrvNode.buildLineLinked(tgt1=ofsGrp, tgt2=cstGrp, dspType=2, top=1, p=cstGrp)
 
     # Add attributes (grouped for clarity)
     attr_defs = [
@@ -196,8 +207,10 @@ def hlpJntSetup(
         ("dir", {"dv": dir, "k": 0, "cb": 0}),
         ("init", {"dv": 1, "min": 0}),
         ("initAngle", {"dv": 0}),
-        ("scaling1", {"dv": 0}),
-        ("scaling2", {"dv": 2}),
+        ("ofsMultiA", {"dv": 0}),
+        ("angleMultiA", {"min": -2, "max": 2, "dv": 0}),
+        ("ofsMultiB", {"dv": 2}),
+        ("angleMultiB", {"min": -2, "max": 2, "dv": 0}),
     ]
 
     for name, kwargs in attr_defs:
@@ -207,8 +220,10 @@ def hlpJntSetup(
 
     # connect and initialize values
     tgtJnt.a.message >> hlpJnt.a.helperTgt
-    hlpJnt.a.scaling1.set(scaling1)
-    hlpJnt.a.scaling2.set(scaling2)
+    hlpJnt.a.ofsMultiA.set(ofsMultiA)
+    hlpJnt.a.ofsMultiB.set(ofsMultiB)
+    hlpJnt.a.angleMultiA.set(angleMultiA)
+    hlpJnt.a.angleMultiB.set(angleMultiB)
     hlpJnt.a.init.set(init)
     hlpJnt.a.initAngle.set(initAngle)
     hlpJnt.a.initAngle >> ofsGrp.a[fr]
@@ -216,9 +231,14 @@ def hlpJntSetup(
     # Build conditional nodes and wire up behavior
     r = rotator.a[fr]
     rAbs = (r >= 0).setCdn(ifTrue=r, ifFalse=r * -1)
-    ofsScale = (r > 0).setCdn(ifTrue=hlpJnt.a.scaling1, ifFalse=hlpJnt.a.scaling2)
-    # hlpJnt.a.init >> bseJnt.a[to]
-    ofsScale * rAbs / 90 >> hlpJnt.a[to]
+
+    outScale = (r > 0).setCdn(ifTrue=hlpJnt.a.ofsMultiA, ifFalse=hlpJnt.a.ofsMultiB)
+    hlpJnt.a.init >> bseJnt.a[to]
+    outScale * rAbs / 90 >> hlpJnt.a[to]
+
+    outRot = (r > 0).setCdn(ifTrue=hlpJnt.a.angleMultiA, ifFalse=hlpJnt.a.angleMultiB)
+    r * outRot >> bseJnt.a[fr]
+
     hlpJnt.a.showAttr()
 
     logging.info(f"Helper joint {hlpJnt.name} created.")
@@ -248,8 +268,10 @@ def mirrorHelper(*args):
             dir=1 - sel.a.dir.get(),
             init=sel.a.init.get(),
             initAngle=sel.a.initAngle.get(),
-            scaling1=sel.a.scaling1.get(),
-            scaling2=sel.a.scaling2.get(),
+            ofsMultiA=sel.a.ofsMultiA.get(),
+            angleMultiA=sel.a.angleMultiA.get(),
+            ofsMultiB=sel.a.ofsMultiB.get(),
+            angleMultiB=sel.a.angleMultiB.get(),
             mirror=1,
         )
     if selList:
@@ -307,13 +329,13 @@ def loadHlpJnt(uiPB):
     if not tgtFiles:
         return
 
-    corrDataList = file.loadJson(tgtFiles[-1])
+    fileDataList = file.loadJson(tgtFiles[-1])
     if uiPB:
-        uiPB.setMaximum(len(corrDataList))
+        uiPB.setMaximum(len(fileDataList))
 
     i = 0
     load_count = 0
-    for data in corrDataList:
+    for data in fileDataList:
 
         # Load data
         tgtJnt = DagNode(data["tgt"])
@@ -322,8 +344,10 @@ def loadHlpJnt(uiPB):
         dir = data["dir"]
         init = data["init"]
         initAngle = data["initAngle"]
-        scaling1 = data["scaling1"]
-        scaling2 = data["scaling2"]
+        ofsMultiA = data["ofsMultiA"]
+        ofsMultiB = data["ofsMultiB"]
+        angleMultiA = data["angleMultiA"] if "angleMultiA" in data else 0
+        angleMultiB = data["angleMultiB"] if "angleMultiB" in data else 0
 
         if uiPB:
             i += 1
@@ -341,8 +365,10 @@ def loadHlpJnt(uiPB):
             dir=dir,
             init=init,
             initAngle=initAngle,
-            scaling1=scaling1,
-            scaling2=scaling2,
+            ofsMultiA=ofsMultiA,
+            angleMultiA=angleMultiA,
+            ofsMultiB=ofsMultiB,
+            angleMultiB=angleMultiB,
         )
         if j:
             load_count += 1
@@ -386,8 +412,10 @@ def saveHlpJnt(*args):
                     "dir": hlp.a.dir.get(),
                     "init": hlp.a.init.get(),
                     "initAngle": hlp.a.initAngle.get(),
-                    "scaling1": hlp.a.scaling1.get(),
-                    "scaling2": hlp.a.scaling2.get(),
+                    "ofsMultiA": hlp.a.ofsMultiA.get(),
+                    "angleMultiA": hlp.a.angleMultiA.get(),
+                    "ofsMultiB": hlp.a.ofsMultiB.get(),
+                    "angleMultiB": hlp.a.angleMultiB.get(),
                 }
             )
 
