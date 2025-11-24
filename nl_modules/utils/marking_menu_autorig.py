@@ -52,12 +52,14 @@ class MarkingMenuAutorig:
 
     def addHelperOptions(self, menu):
         mi = mc.menuItem(p=menu, l="Helper", rp="NE", subMenu=1)
-        mc.menuItem(p=mi, l="rz  >>  ty", c=partial(helper.addHlpJnt_sel, 1))
-        mc.menuItem(p=mi, l="ry  >>  tz", c=partial(helper.addHlpJnt_sel, 2))
+        mc.menuItem(p=mi, l="rz  >>  ty", c=partial(helper.addHlpJnt_sel, "rz", "ty"))
+        mc.menuItem(p=mi, l="ry  >>  tz", c=partial(helper.addHlpJnt_sel, "ry", "tz"))
         mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="Mirror", c=helper.mirrorHelper)
+        mc.menuItem(p=mi, l="ry  >>  ty", c=partial(helper.addHlpJnt_sel, "ry", "ty"))
+        mc.menuItem(p=mi, l="rz  >>  tz", c=partial(helper.addHlpJnt_sel, "rz", "tz"))
+        mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Select All", c=helper.selAllHlp)
-        mc.menuItem(p=mi, l="-" * 15, en=0)
+        mc.menuItem(p=mi, l="Mirror", c=helper.mirrorHelper)
         mc.menuItem(p=mi, l="Delete", c=helper.delGrpAllOrSel)
 
     def addGuideOptions(self, menu):

@@ -18,10 +18,8 @@ def addHlpJnt_sel(*args):
     """Add helper joints to selected joints based on the specified rotation axis."""
     selList = [DagNode(s) for s in mc.ls(sl=1, type="joint")]
     for sel in selList:
-        isRZ = args[0] == 1
-        isRY = args[0] == 2
-        j1 = addHlpJnt(tgtJnt=sel, buildRZ=isRZ, buildRY=isRY)
-        j2 = addHlpJnt(tgtJnt=sel, buildRZ=isRZ, buildRY=isRY, dir=-1)
+        j1 = addHlpJnt(tgtJnt=sel, r=args[0], t=args[1])
+        j2 = addHlpJnt(tgtJnt=sel, r=args[0], t=args[1], dir=-1)
         if j1 and j2:
             mc.select(j1, j2)
 
@@ -29,15 +27,15 @@ def addHlpJnt_sel(*args):
 @common.Undo("Add Helper Joints")
 def addHlpJnt(
     tgtJnt=None,
-    buildRY=0,
-    buildRZ=0,
+    r="ry",
+    t="tz",
     dir=1,
     init=1,
     initAngle=0,
-    ofsMultiA=0,
-    ofsMultiB=2,
-    angleMultiA=0,
-    angleMultiB=0,
+    offset1=0,
+    offset2=2,
+    offsetAngle1=0,
+    offsetAngle2=0,
     mirror=0,
 ):
     """Create a corrective joint system that responds to the rotation of a driver object."""
@@ -60,15 +58,15 @@ def addHlpJnt(
         tgtJnt=tgt_node,
         parentJnt=parent,
         holder=holder,
-        buildRZ=buildRZ,
-        buildRY=buildRY,
+        r=r,
+        t=t,
         dir=dir,
         init=init,
         initAngle=initAngle,
-        ofsMultiA=ofsMultiA,
-        ofsMultiB=ofsMultiB,
-        angleMultiA=angleMultiA,
-        angleMultiB=angleMultiB,
+        offset1=offset1,
+        offset2=offset2,
+        offsetAngle1=offsetAngle1,
+        offsetAngle2=offsetAngle2,
         mirror=mirror,
     )
 
@@ -77,15 +75,15 @@ def addHlpJntGeneral(
     tgtJnt=None,
     parentJnt=None,
     holder=None,
-    buildRY=0,
-    buildRZ=0,
+    r="ry",
+    t="tz",
     dir=1,
     init=1,
     initAngle=0,
-    ofsMultiA=0,
-    ofsMultiB=2,
-    angleMultiA=0,
-    angleMultiB=0,
+    offset1=0,
+    offset2=2,
+    offsetAngle1=0,
+    offsetAngle2=0,
     mirror=0,
 ):
     """Create a corrective joint system that responds to the rotation of a driver object."""
@@ -102,28 +100,19 @@ def addHlpJntGeneral(
         mc.warning("Target or its parent/holder not found.")
         return
 
-    # Determine which axis mapping to build; ensure only one is requested
-    if buildRZ:
-        fr, to = "rz", "ty"
-    elif buildRY:
-        fr, to = "ry", "tz"
-    else:
-        mc.warning("No rotation axis specified (buildRY or buildRZ).")
-        return
-
     return hlpJntSetup(
         tgtJnt=tgt,
         parentJnt=parent,
         rotator=hold,
-        fr=fr,
-        to=to,
+        fr=r,
+        to=t,
         dir=dir,
         init=init,
         initAngle=initAngle,
-        ofsMultiA=ofsMultiA,
-        ofsMultiB=ofsMultiB,
-        angleMultiA=angleMultiA,
-        angleMultiB=angleMultiB,
+        offset1=offset1,
+        offset2=offset2,
+        offsetAngle1=offsetAngle1,
+        offsetAngle2=offsetAngle2,
         mirror=mirror,
     )
 
@@ -137,10 +126,10 @@ def hlpJntSetup(
     dir=1,
     init=1,
     initAngle=0,
-    ofsMultiA=0,
-    ofsMultiB=2,
-    angleMultiA=0,
-    angleMultiB=0,
+    offset1=0,
+    offset2=2,
+    offsetAngle1=0,
+    offsetAngle2=0,
     mirror=0,
 ):
     """Create a corrective joint setup that responds to the rotation of a driver object."""
@@ -152,7 +141,7 @@ def hlpJntSetup(
     ro = tgtJnt.a.rotateOrder.get()
 
     # Name and quick existence check for pre-existing setup
-    hlpName = f"{tgtJnt.name}_{fr}_{dir_name}"
+    hlpName = f"{tgtJnt.name}_{fr}_{to}_{dir_name}"
     tgtGrp = DagNode(hlpName + "_grp")
     if tgtGrp.exists():
         tgtHlp = DagNode(hlpName + "_jnt")
@@ -161,10 +150,10 @@ def hlpJntSetup(
                 # Update parameters on mirror instead of recreating
                 tgtHlp.a.init.set(init)
                 tgtHlp.a.initAngle.set(initAngle)
-                tgtHlp.a.ofsMultiA.set(ofsMultiA)
-                tgtHlp.a.ofsMultiB.set(ofsMultiB)
-                tgtHlp.a.angleMultiA.set(angleMultiA)
-                tgtHlp.a.angleMultiB.set(angleMultiB)
+                tgtHlp.a.offset1.set(offset1)
+                tgtHlp.a.offset2.set(offset2)
+                tgtHlp.a.offsetAngle1.set(offsetAngle1)
+                tgtHlp.a.offsetAngle2.set(offsetAngle2)
 
                 logging.info(f"Helper joint {tgtHlp.name} updated")
                 return tgtHlp
@@ -179,8 +168,9 @@ def hlpJntSetup(
 
     cstGrp = GrpNode(f"{hlpName}_grp", p=parent_for_group)
     ofsGrp = GrpNode(f"{hlpName}_ofs")
-    bseJnt = JntNode(f"{hlpName}_bse", r=0.1)
-    hlpJnt = JntNode(f"{hlpName}_jnt", r=tgtJnt.a.radius.get() / 2)
+    rad = tgtJnt.a.radius.get()
+    bseJnt = JntNode(f"{hlpName}_bse", r=rad / 4)
+    hlpJnt = JntNode(f"{hlpName}_jnt", r=rad / 2)
 
     # Configure rotation order once
     cstGrp.a.rotateOrder.set(ro)
@@ -207,10 +197,10 @@ def hlpJntSetup(
         ("dir", {"dv": dir, "k": 0, "cb": 0}),
         ("init", {"dv": 1, "min": 0}),
         ("initAngle", {"dv": 0}),
-        ("ofsMultiA", {"dv": 0}),
-        ("angleMultiA", {"min": -2, "max": 2, "dv": 0}),
-        ("ofsMultiB", {"dv": 2}),
-        ("angleMultiB", {"min": -2, "max": 2, "dv": 0}),
+        ("offset1", {"dv": 0}),
+        ("offsetAngle1", {"dv": 0}),
+        ("offset2", {"dv": 2}),
+        ("offsetAngle2", {"dv": 0}),
     ]
 
     for name, kwargs in attr_defs:
@@ -220,10 +210,10 @@ def hlpJntSetup(
 
     # connect and initialize values
     tgtJnt.a.message >> hlpJnt.a.helperTgt
-    hlpJnt.a.ofsMultiA.set(ofsMultiA)
-    hlpJnt.a.ofsMultiB.set(ofsMultiB)
-    hlpJnt.a.angleMultiA.set(angleMultiA)
-    hlpJnt.a.angleMultiB.set(angleMultiB)
+    hlpJnt.a.offset1.set(offset1)
+    hlpJnt.a.offset2.set(offset2)
+    hlpJnt.a.offsetAngle1.set(offsetAngle1)
+    hlpJnt.a.offsetAngle2.set(offsetAngle2)
     hlpJnt.a.init.set(init)
     hlpJnt.a.initAngle.set(initAngle)
     hlpJnt.a.initAngle >> ofsGrp.a[fr]
@@ -232,11 +222,11 @@ def hlpJntSetup(
     r = rotator.a[fr]
     rAbs = (r >= 0).setCdn(ifTrue=r, ifFalse=r * -1)
 
-    outScale = (r > 0).setCdn(ifTrue=hlpJnt.a.ofsMultiA, ifFalse=hlpJnt.a.ofsMultiB)
+    outScale = (r > 0).setCdn(ifTrue=hlpJnt.a.offset1, ifFalse=hlpJnt.a.offset2)
     hlpJnt.a.init >> bseJnt.a[to]
     outScale * rAbs / 90 >> hlpJnt.a[to]
 
-    outRot = (r > 0).setCdn(ifTrue=hlpJnt.a.angleMultiA, ifFalse=hlpJnt.a.angleMultiB)
+    outRot = (r > 0).setCdn(ifTrue=hlpJnt.a.offsetAngle1, ifFalse=hlpJnt.a.offsetAngle2)
     r * outRot >> bseJnt.a[fr]
 
     hlpJnt.a.showAttr()
@@ -263,15 +253,15 @@ def mirrorHelper(*args):
 
         addHlpJnt(
             tgtJnt=opp,
-            buildRY=sel.a.fr.get() == "ry",
-            buildRZ=sel.a.fr.get() == "rz",
+            r=sel.a.fr.get(),
+            t=sel.a.to.get(),
             dir=1 - sel.a.dir.get(),
             init=sel.a.init.get(),
             initAngle=sel.a.initAngle.get(),
-            ofsMultiA=sel.a.ofsMultiA.get(),
-            angleMultiA=sel.a.angleMultiA.get(),
-            ofsMultiB=sel.a.ofsMultiB.get(),
-            angleMultiB=sel.a.angleMultiB.get(),
+            offset1=sel.a.offset1.get(),
+            offsetAngle1=sel.a.offsetAngle1.get(),
+            offset2=sel.a.offset2.get(),
+            offsetAngle2=sel.a.offsetAngle2.get(),
             mirror=1,
         )
     if selList:
@@ -282,7 +272,9 @@ def mirrorHelper(*args):
 def delGrpAllOrSel(*args):
     """Delete helper joint groups for selected / all helper joints."""
     selList = mc.ls(sl=1)
-    selList = [JntNode(j) for j in mc.ls("*_r?_?_jnt", sl=bool(selList), type="joint")]
+    selList = [
+        JntNode(j) for j in mc.ls("*_r?_t?_?_jnt", sl=bool(selList), type="joint")
+    ]
 
     try:
         for sel in selList:
@@ -296,7 +288,7 @@ def delGrpAllOrSel(*args):
 
 def selAllHlp(*args):
     """Select all helper joint groups in the scene."""
-    helperJnts = [JntNode(j) for j in mc.ls("*_r?_?_jnt", type="joint")]
+    helperJnts = [JntNode(j) for j in mc.ls("*_r?_t?_?_jnt", type="joint")]
     if helperJnts:
         mc.select(helperJnts)
     else:
@@ -339,15 +331,13 @@ def loadHlpJnt(uiPB):
 
         # Load data
         tgtJnt = DagNode(data["tgt"])
-        buildRY = data["fr"] == "ry"
-        buildRZ = data["fr"] == "rz"
         dir = data["dir"]
         init = data["init"]
         initAngle = data["initAngle"]
-        ofsMultiA = data["ofsMultiA"]
-        ofsMultiB = data["ofsMultiB"]
-        angleMultiA = data["angleMultiA"] if "angleMultiA" in data else 0
-        angleMultiB = data["angleMultiB"] if "angleMultiB" in data else 0
+        offset1 = data["offset1"]
+        offset2 = data["offset2"]
+        offsetAngle1 = data["offsetAngle1"] if "offsetAngle1" in data else 0
+        offsetAngle2 = data["offsetAngle2"] if "offsetAngle2" in data else 0
 
         if uiPB:
             i += 1
@@ -360,15 +350,15 @@ def loadHlpJnt(uiPB):
         # Add helper joint
         j = addHlpJnt(
             tgtJnt=tgtJnt,
-            buildRY=buildRY,
-            buildRZ=buildRZ,
+            r=data["fr"],
+            t=data["to"],
             dir=dir,
             init=init,
             initAngle=initAngle,
-            ofsMultiA=ofsMultiA,
-            angleMultiA=angleMultiA,
-            ofsMultiB=ofsMultiB,
-            angleMultiB=angleMultiB,
+            offset1=offset1,
+            offsetAngle1=offsetAngle1,
+            offset2=offset2,
+            offsetAngle2=offsetAngle2,
         )
         if j:
             load_count += 1
@@ -412,10 +402,10 @@ def saveHlpJnt(*args):
                     "dir": hlp.a.dir.get(),
                     "init": hlp.a.init.get(),
                     "initAngle": hlp.a.initAngle.get(),
-                    "ofsMultiA": hlp.a.ofsMultiA.get(),
-                    "angleMultiA": hlp.a.angleMultiA.get(),
-                    "ofsMultiB": hlp.a.ofsMultiB.get(),
-                    "angleMultiB": hlp.a.angleMultiB.get(),
+                    "offset1": hlp.a.offset1.get(),
+                    "offsetAngle1": hlp.a.offsetAngle1.get(),
+                    "offset2": hlp.a.offset2.get(),
+                    "offsetAngle2": hlp.a.offsetAngle2.get(),
                 }
             )
 
