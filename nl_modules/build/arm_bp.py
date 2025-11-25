@@ -17,9 +17,8 @@ from enum import Enum
 
 class LimbType(Enum):
     BASIC = 0
-    ROBOT = 1
-    RIBBON = 2
-    SKEL = 3
+    RIBBON = 1
+    SKEL = 2
 
 
 class ArmBp(RigModule):
@@ -140,18 +139,8 @@ class ArmBp(RigModule):
         if self.limbType == LimbType.BASIC.value:
             self.jnts_bind += [self.upr, self.lwr]
 
-        elif self.limbType == LimbType.ROBOT.value:
-            self.jnts_bind += [self.lwr]
-            proxy.add_height_attr([self.lwr], self.rigSize * 10)
-            self.build_aimHelper([self.lwr])
-            self.ctls_up = self.build_aimHelper([self.palm], addCtl=1)
-
-            jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
-            jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
-            self.jnts_roll = [jnt_ro1, jnt_ro2]
-
         elif self.limbType == LimbType.RIBBON.value:
-            self.ribbonUp, self.ribbonLw = self.build_bendy_ribbon(
+            self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(
                 rbnJntNum=self.rbnJntNum,
                 root=self.clavicle,
                 upr=self.upr,
@@ -165,6 +154,12 @@ class ArmBp(RigModule):
 
         if self.scapulaBone:
             self.build_armScapula()
+
+        self.build_aimHelper([self.lwr])
+        self.ctls_up = self.build_aimHelper([self.palm], addCtl=1)
+        jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
+        jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
+        # self.jnts_roll = [jnt_ro1, jnt_ro2]
 
         # self.build_nlAutoAim(
         #     self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc
@@ -502,17 +497,15 @@ class ArmBp(RigModule):
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
                 self.setting.a["setupJntVis"],
-                onList=[self.ribbonUp.RBN_GRP, self.ribbonLw.RBN_GRP],
+                onList=[self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP],
             )
-
-        if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyVis", type="bool", k=0, dv=1),
+                self.setting.a.add("bendyVis", type="bool", k=0, dv=0),
                 onList=self.all_bendy,
             )
 
         self.ikc.a.localRot >> self.palm_ikc.a.v
-        mc.hide(self.ikhs)  # , self.setting)
+        mc.hide(self.ikhs)
 
     def setup_channel(self):
         """Setup channel attributes for the arm rig controls."""

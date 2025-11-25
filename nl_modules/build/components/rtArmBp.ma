@@ -24,7 +24,7 @@ createNode transform -n "master_guide" -p "master_guide_ofs";
 	rename -uid "50807175-43FF-E7F4-58C3-EABB95B14D6E";
 	addAttr -ci true -sn "______________" -ln "______________" -min 0 -max 0 -en " " 
 		-at "enum";
-	addAttr -ci true -sn "limbType" -ln "limbType" -min 0 -max 3 -en "basic:robot:ribbon:skeleton" 
+	addAttr -ci true -sn "limbType" -ln "limbType" -min 0 -max 3 -en "basic:ribbon:skeleton" 
 		-at "enum";
 	addAttr -ci true -sn "rbnJntNum" -ln "rbnJntNum" -dv 5 -min 3 -at "long";
 	addAttr -ci true -sn "rollJntNum" -ln "rollJntNum" -dv 2 -min 2 -at "long";
@@ -33,7 +33,7 @@ createNode transform -n "master_guide" -p "master_guide_ofs";
 	addAttr -ci true -sn "mirrorable" -ln "mirrorable" -min 0 -max 1 -at "bool";
 	setAttr ".t" -type "double3" -15 -145 -1.2038616263919976e-15 ;
 	setAttr -l on -k on ".______________";
-	setAttr -cb on ".limbType" 2;
+	setAttr -cb on ".limbType" 1;
 	setAttr -cb on ".rbnJntNum" 4;
 	setAttr -cb on ".rollJntNum";
 	setAttr -cb on ".scapulaBone" yes;

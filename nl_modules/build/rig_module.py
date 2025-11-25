@@ -894,8 +894,8 @@ class RigModule(RigBase):
         wu = u = (0, 1, 0)
         aim = (xDr * -1, 0, 0)
         wut = "objectrotation"
-        r = rSz * 4
-        COL = Color.D_YELLOW
+        r = rSz * 5
+        COL = Color.VD_GREEN
 
         for tgt in targets:
             ro = tgt.a.rotateOrder.get()
@@ -984,14 +984,14 @@ class RigModule(RigBase):
         for i in range(num):
             j = jnt0.duplicate(po=1, p=roll_jnt0)
             j.color = Color.YELLOW
+            j.a.radius.set(self.rigSize * 4)
             j.rename(f"{jnt0.name}{suffix}_{i}")
-            j.a.radius.set(self.rigSize)
             proxy.add_height_attr([j], self.rigSize / num * 20)
 
             ratio = i / num
             common.cstMulti(jnt0, jnt1, j, cstType="poi", w=1 - ratio)
             roll_loc.a.rx * ratio >> j.a.rx
-            self.jnts_bind.append(j)
+            # self.jnts_bind.append(j)
 
         mc.hide(roll_loc)
         JntNode(roll_jnt0).setDrawStyle(2)
@@ -1004,15 +1004,15 @@ class RigModule(RigBase):
         for i in range(num):
             j = jnt0.duplicate(po=1)
             j.color = Color.YELLOW
+            j.a.radius.set(self.rigSize * 4)
             j.rename(f"{jnt0.name}{suffix}_{i}")
-            j.a.radius.set(self.rigSize)
             proxy.add_height_attr([j], self.rigSize / num * 20)
 
             ratio = i / num
             common.cstMulti(jnt0, jnt0.parent, j, cstType="poi", w=1 - ratio)
             roll_loc.a.rx * (1 - ratio) >> j.a.rx
-            if i > 0:
-                self.jnts_bind.append(j)
+            # if i > 0:
+            #     self.jnts_bind.append(j)
 
         mc.hide(roll_loc)
         JntNode(roll_jnt0).setDrawStyle(2)

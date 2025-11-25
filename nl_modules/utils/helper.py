@@ -17,11 +17,15 @@ from nl_modules.utils.color import Color
 def addHlpJnt_sel(*args):
     """Add helper joints to selected joints based on the specified rotation axis."""
     selList = [DagNode(s) for s in mc.ls(sl=1, type="joint")]
+    hlpJnts = []
     for sel in selList:
-        addHlpJnt(tgtJnt=sel, r=args[0], t=args[1])
-        addHlpJnt(tgtJnt=sel, r=args[0], t=args[1], dir=-1)
+        j1 = addHlpJnt(tgtJnt=sel, r=args[0], t=args[1])
+        j2 = addHlpJnt(tgtJnt=sel, r=args[0], t=args[1], dir=-1)
+        hlpJnts.extend([j1, j2])
 
     common.showRotateOrder()
+    if hlpJnts:
+        mc.select(hlpJnts)
 
 
 @common.Undo("Add Helper Joints")
@@ -181,14 +185,14 @@ def hlpJntSetup(
     bseJnt.dspType = 2
     hlpJnt.dspType = 0
 
-    # Create constraints and visual helpers
-    common.cstMulti(parentJnt, tgtJnt, cstGrp, cstType="ori")
-    tgtJnt.cstPoi(cstGrp)
+    common.cstMulti(parentJnt, tgtJnt, cstGrp, cstType="ori", delete=1)
+    # cstGrp.alignTo(tgtJnt)
+    # cstGrp.addOffsetGrp()
+    # tgtJnt.a.r * (-0.5, -0.5, -0.5) >> cstGrp.a.r
+    # tgtJnt.cstPoi(cstGrp)
 
-    # hlpJnt.color = Color.PINK  # (0.0, 0.1, 0.0)
     cstGrp.a.s.set(dir_sign, dir_sign, dir_sign)
 
-    # Add attributes (grouped for clarity)
     attr_defs = [
         ("fr", {"type": "string", "txt": fr}),
         ("to", {"type": "string", "txt": to}),
@@ -201,7 +205,6 @@ def hlpJntSetup(
         ("offset2", {"dv": 2}),
         ("offsetAngle2", {"dv": 0}),
     ]
-
     for name, kwargs in attr_defs:
         hlpJnt.a.add(name, **kwargs)
 

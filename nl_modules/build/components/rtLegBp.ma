@@ -21,7 +21,7 @@ createNode transform -n "master_guide" -p "module_grp";
 	rename -uid "F9A81B29-43EB-067F-B3D9-4B8E3C9B1943";
 	addAttr -ci true -sn "______________" -ln "______________" -min 0 -max 0 -en " " 
 		-at "enum";
-	addAttr -ci true -sn "limbType" -ln "limbType" -min 0 -max 3 -en "basic:robot:ribbon:skeleton" 
+	addAttr -ci true -sn "limbType" -ln "limbType" -min 0 -max 3 -en "basic:ribbon:skeleton" 
 		-at "enum";
 	addAttr -ci true -sn "wsMirror" -ln "wsMirror" -at "float";
 	addAttr -ci true -sn "rbnJntNum" -ln "rbnJntNum" -dv 5 -min 3 -at "long";
@@ -35,7 +35,7 @@ createNode transform -n "master_guide" -p "module_grp";
 	setAttr ".ovc" 13;
 	setAttr ".t" -type "double3" -15 0 0 ;
 	setAttr -l on -k on ".______________";
-	setAttr -cb on ".limbType" 2;
+	setAttr -cb on ".limbType" 1;
 	setAttr -l on ".wsMirror";
 	setAttr -cb on ".rbnJntNum" 4;
 	setAttr -cb on ".rollJntNum";

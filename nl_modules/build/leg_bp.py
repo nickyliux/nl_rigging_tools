@@ -20,9 +20,8 @@ class LimbType(Enum):
     """Enumeration for different limb types in the leg rig."""
 
     BASIC = 0
-    ROBOT = 1
-    RIBBON = 2
-    SKEL = 3
+    RIBBON = 1
+    SKEL = 2
 
 
 class LegBp(RigModule):
@@ -200,16 +199,16 @@ class LegBp(RigModule):
             else:
                 self.jnts_bind += [self.lwr]
 
-        elif self.limbType == LimbType.ROBOT.value:
+        # elif self.limbType == LimbType.ROBOT.value:
 
-            self.jnts_bind += [self.lwr]
-            proxy.add_height_attr([self.lwr], self.rigSize * 10)
+        #     self.jnts_bind += [self.lwr]
+        #     proxy.add_height_attr([self.lwr], self.rigSize * 10)
 
-            self.build_aimHelper([self.lwr, self.palm])
+        #     self.build_aimHelper([self.lwr, self.palm])
 
-            jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
-            jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
-            self.jnts_ro = [jnt_ro1, jnt_ro2]
+        #     jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
+        #     jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
+        #     self.jnts_ro = [jnt_ro1, jnt_ro2]
 
         elif self.limbType == LimbType.RIBBON.value:
             self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(
@@ -235,6 +234,11 @@ class LegBp(RigModule):
             self.jnts_bind += [self.palm]
         else:
             self.jnts_bind += [self.palm, self.ball]
+
+        self.build_aimHelper([self.lwr, self.palm])
+        jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
+        jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
+        self.jnts_ro = [jnt_ro1, jnt_ro2]
 
         self.build_post()
 
@@ -536,10 +540,14 @@ class LegBp(RigModule):
         )
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
+                self.setting.a["setupJntVis"],
+                onList=[self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP],
+            )
+            self.ctl_vis_toggle(
                 self.setting.a.add("bendyVis", type="bool", k=0, dv=1),
                 onList=self.all_bendy,
             )
-        mc.hide(self.ikhs, self.toeIKHs)  # , self.setting)
+        mc.hide(self.ikhs, self.toeIKHs)
 
     def setup_channel(self):
         """Setup channels for the leg rig controls."""

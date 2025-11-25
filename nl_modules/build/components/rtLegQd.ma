@@ -21,7 +21,7 @@ createNode transform -n "master_guide" -p "module_grp";
 	rename -uid "F9A81B29-43EB-067F-B3D9-4B8E3C9B1943";
 	addAttr -ci true -sn "____________" -ln "____________" -nn "______________" -min 
 		0 -max 0 -en " " -at "enum";
-	addAttr -ci true -sn "limbType" -ln "limbType" -min 0 -max 1 -en "basic:skel" -at "enum";
+	addAttr -ci true -sn "limbType" -ln "limbType" -min 0 -max 1 -en "basic:skeleton" -at "enum";
 	addAttr -ci true -sn "wsMirror" -ln "wsMirror" -at "float";
 	addAttr -ci true -sn "patellaBone" -ln "patellaBone" -min 0 -max 1 -at "bool";
 	addAttr -ci true -sn "toeBones" -ln "toeBones" -min 0 -max 1 -at "bool";
