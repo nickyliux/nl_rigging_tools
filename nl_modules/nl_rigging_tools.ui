@@ -10,7 +10,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>313</width>
+    <width>339</width>
     <height>753</height>
    </rect>
   </property>
@@ -3919,111 +3919,6 @@ for Sel</string>
      </widget>
     </widget>
    </widget>
-  </widget>
-  <widget class="QWidget" name="verticalLayoutWidget_3">
-   <property name="geometry">
-    <rect>
-     <x>240</x>
-     <y>10</y>
-     <width>47</width>
-     <height>63</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout_3">
-    <property name="spacing">
-     <number>0</number>
-    </property>
-    <property name="leftMargin">
-     <number>6</number>
-    </property>
-    <property name="topMargin">
-     <number>6</number>
-    </property>
-    <property name="rightMargin">
-     <number>6</number>
-    </property>
-    <property name="bottomMargin">
-     <number>6</number>
-    </property>
-    <item>
-     <widget class="QRadioButton" name="component_both_RB">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>9999</height>
-       </size>
-      </property>
-      <property name="toolTip">
-       <string>Both side</string>
-      </property>
-      <property name="text">
-       <string>L&amp;R</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QRadioButton" name="component_left_RB">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>9999</height>
-       </size>
-      </property>
-      <property name="toolTip">
-       <string>Left side</string>
-      </property>
-      <property name="text">
-       <string>L</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QRadioButton" name="component_right_RB">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>9999</height>
-       </size>
-      </property>
-      <property name="toolTip">
-       <string>Right side</string>
-      </property>
-      <property name="autoFillBackground">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string>R</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
   </widget>
  </widget>
  <resources/>

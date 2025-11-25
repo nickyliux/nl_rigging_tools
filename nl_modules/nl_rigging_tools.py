@@ -308,11 +308,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     @common.Undo("guide_load")
     def guide_load(self, *args):
         """Load selected guide components."""
-
         items = self.UI.guide_LW.selectedItems()
-        # side_L = self.UI.component_left_RB.isChecked()
-        # side_R = self.UI.component_right_RB.isChecked()
-
         allTgtMG = []
         if items:
             for item in items:

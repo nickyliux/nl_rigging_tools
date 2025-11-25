@@ -151,7 +151,7 @@ class ArmBp(RigModule):
             self.jnts_roll = [jnt_ro1, jnt_ro2]
 
         elif self.limbType == LimbType.RIBBON.value:
-            self.build_bendy_ribbon(
+            self.ribbonUp, self.ribbonLw = self.build_bendy_ribbon(
                 rbnJntNum=self.rbnJntNum,
                 root=self.clavicle,
                 upr=self.upr,
@@ -497,8 +497,13 @@ class ArmBp(RigModule):
         )
         self.ctl_vis_toggle(
             self.setting.a.add("setupJntVis", type="bool", dv=0, k=0),
-            onList=self.jnts_fk + self.jnts_ik + self.jnts_bf,
+            onList=(self.jnts_fk + self.jnts_ik + self.jnts_bf),
         )
+        if self.limbType == LimbType.RIBBON.value:
+            self.ctl_vis_toggle(
+                self.setting.a["setupJntVis"],
+                onList=[self.ribbonUp.RBN_GRP, self.ribbonLw.RBN_GRP],
+            )
 
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(

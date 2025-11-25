@@ -334,14 +334,6 @@ class RigModule(RigBase):
 
     def build_post_module(self):
         """Post build function to finalize the module setup."""
-        # Show rotate order attribute in channelBox
-        for node in mc.ls(tr=1):
-            node = DagNode(node)
-            if (
-                node.type == "nurbsCurve" and not node.name.endswith("_guide")
-            ) or node.type == "joint":
-                mc.setAttr(node + ".ro", cb=1)
-
         # Hide module grp
         mc.hide(self.moduleG)
 
@@ -1101,7 +1093,5 @@ class RigModule(RigBase):
         volType >> ribbonUp.volType
         volType >> ribbonLw.volType
 
-        mc.hide(ribbonUp.RBN_GRP, ribbonLw.RBN_GRP)
         self.jnts_bind += ribbonUp.jnts_rb + ribbonLw.jnts_rb
-
         return [ribbonUp, ribbonLw]

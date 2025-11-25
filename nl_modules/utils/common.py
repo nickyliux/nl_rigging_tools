@@ -984,3 +984,15 @@ def modelPanelShow(jnt=1):
     allModelPanel = mc.getPanel(type="modelPanel")
     for modelP in allModelPanel:
         mc.modelEditor(modelP, e=1, joints=jnt)
+
+
+def showRotateOrder():
+    """Show rotate order attribute in channelBox"""
+    from nl_modules.nodel.base.dag_node import DagNode
+
+    for node in mc.ls(tr=1):
+        nodeN = DagNode(node)
+        if (
+            nodeN.type == "joint" or nodeN.type == "nurbsCurve"
+        ) and not nodeN.name.endswith("_guide"):
+            mc.setAttr(nodeN + ".ro", cb=1)

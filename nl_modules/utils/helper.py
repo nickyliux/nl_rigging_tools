@@ -18,10 +18,10 @@ def addHlpJnt_sel(*args):
     """Add helper joints to selected joints based on the specified rotation axis."""
     selList = [DagNode(s) for s in mc.ls(sl=1, type="joint")]
     for sel in selList:
-        j1 = addHlpJnt(tgtJnt=sel, r=args[0], t=args[1])
-        j2 = addHlpJnt(tgtJnt=sel, r=args[0], t=args[1], dir=-1)
-        if j1 and j2:
-            mc.select(j1, j2)
+        addHlpJnt(tgtJnt=sel, r=args[0], t=args[1])
+        addHlpJnt(tgtJnt=sel, r=args[0], t=args[1], dir=-1)
+
+    common.showRotateOrder()
 
 
 @common.Undo("Add Helper Joints")
@@ -170,24 +170,23 @@ def hlpJntSetup(
     ofsGrp = GrpNode(f"{hlpName}_ofs")
     rad = tgtJnt.a.radius.get()
     bseJnt = JntNode(f"{hlpName}_bse", r=rad / 4)
-    hlpJnt = JntNode(f"{hlpName}_jnt", r=rad / 2)
+    hlpJnt = JntNode(f"{hlpName}_jnt", r=rad)
 
     # Configure rotation order once
     cstGrp.a.rotateOrder.set(ro)
     hlpJnt.a.rotateOrder.set(ro)
 
     # Build hierarchy quickly
-    hlpJnt | bseJnt | ofsGrp | cstGrp
+    hlpJnt | bseJnt | ofsGrp | cstGrp | parentJnt
     bseJnt.dspType = 2
+    hlpJnt.dspType = 0
 
     # Create constraints and visual helpers
     common.cstMulti(parentJnt, tgtJnt, cstGrp, cstType="ori")
     tgtJnt.cstPoi(cstGrp)
 
-    hlpJnt.color = Color.PINK  # (0.0, 0.1, 0.0)
+    # hlpJnt.color = Color.PINK  # (0.0, 0.1, 0.0)
     cstGrp.a.s.set(dir_sign, dir_sign, dir_sign)
-
-    # CrvNode.buildLineLinked(tgt1=ofsGrp, tgt2=cstGrp, dspType=2, top=1, p=cstGrp)
 
     # Add attributes (grouped for clarity)
     attr_defs = [
@@ -204,11 +203,8 @@ def hlpJntSetup(
     ]
 
     for name, kwargs in attr_defs:
-        # avoid re-adding if the attribute already exists
-        # if name not in hlpJnt.a._attrDict:
         hlpJnt.a.add(name, **kwargs)
 
-    # connect and initialize values
     tgtJnt.a.message >> hlpJnt.a.helperTgt
     hlpJnt.a.offset1.set(offset1)
     hlpJnt.a.offset2.set(offset2)
@@ -230,6 +226,7 @@ def hlpJntSetup(
     r * outRot >> bseJnt.a[fr]
 
     hlpJnt.a.showAttr()
+    CrvNode.buildLineLinked(tgt1=bseJnt, tgt2=ofsGrp, dspType=2, top=1, p=cstGrp)
 
     logging.info(f"Helper joint {hlpJnt.name} created.")
     return hlpJnt
@@ -366,7 +363,7 @@ def loadHlpJnt(uiPB):
     if uiPB:
         uiPB.setValue(0)
     mc.refresh(f=1)
-    # mc.confirmDialog(t="Info", m=f"{load_count} helper joints loaded.     ", b="OK")
+    common.showRotateOrder()
     logging.info(f"{load_count} helper joints loaded.")
 
 
