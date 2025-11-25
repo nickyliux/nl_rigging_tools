@@ -139,7 +139,10 @@ class JntNode(GrpNode):
                 scaler >> proxy.a.s
 
             if prx_height is None and children:
-                common.cstMulti(self, *children, proxy_offset, cstType="poi", delete=1)
+                # common.cstMulti(self, *children, proxy_offset, cstType="poi", delete=1)
+                common.cstMulti(
+                    self, children[0], proxy_offset, cstType="poi", delete=1
+                )
 
             if children and len(children) == 1:
                 tgt_child = children[0]

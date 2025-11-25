@@ -58,7 +58,7 @@ class MarkingMenuAutorig:
         mc.menuItem(p=mi, l="ry  >>  ty", c=partial(helper.addHlpJnt_sel, "ry", "ty"))
         mc.menuItem(p=mi, l="rz  >>  tz", c=partial(helper.addHlpJnt_sel, "rz", "tz"))
         mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="Select All", c=helper.selAllHlp)
+        mc.menuItem(p=mi, l="Select all Grps", c=helper.selAllHlp)
         mc.menuItem(p=mi, l="Mirror", c=helper.mirrorHelper)
         mc.menuItem(p=mi, l="Delete", c=helper.delGrpAllOrSel)
 

@@ -31,7 +31,6 @@ class RbnNode:
         forSpine=0,
         p_data=None,
     ):
-        # Initialize target and child
         self.tgt = DagNode(tgt) if isinstance(tgt, str) else tgt
         self.tgtChild = self.tgt.children[0] if self.tgt.children else None
         if not self.tgtChild:
@@ -77,7 +76,6 @@ class RbnNode:
         self.build_aim_chains()
         # self.build_twist_chains()
         self.build_volume_setup()
-        logging.info(self.pf)
         self.build_post()
         self.tgt.cstPar(self.RBN_GRP, keep=0)
 
@@ -91,7 +89,7 @@ class RbnNode:
 
     def build_rivets(self):
         """Create the surface for the ribbon rig."""
-        # logging.info(self.pf)
+        logging.info(self.pf)
         xDr = self.xDir
         line = CrvNode.buildLine((0, 0, 0), (xDr * self.D, 0, 0), pf=self.pf)
         self.rbSrf = SrfNode.buildRbSrf(
@@ -117,7 +115,7 @@ class RbnNode:
 
     def build_locs(self):
         """Create locators for the start, middle, and end of the ribbon."""
-        # logging.info(self.pf)
+        logging.info(self.pf)
 
         offset = self.D / 2
         size = self.D / 5
@@ -156,7 +154,7 @@ class RbnNode:
 
     def build_aim_chains(self):
         """Create aim chains for the start, middle, and end of the ribbon."""
-        # logging.info(self.pf)
+        logging.info(self.pf)
         ofsX = self.D * self.xDir / 4
 
         # Start aim chain
@@ -225,9 +223,8 @@ class RbnNode:
 
     def build_volume_setup(self):
         """Set up the volume control for the ribbon rig."""
-        # logging.info(self.pf)
-        scaleFix = self.RBN_GRP.a.sy
-        # scaleFix2 = self.master_scale.a.sy
+        logging.info(self.pf)
+        grpScaleFix = self.RBN_GRP.a.sy
 
         arcLD = ut.arcLenDim_(self.rbSrf)
         self.d = arcLD.a.arcLengthInV
@@ -250,7 +247,7 @@ class RbnNode:
         common.setupFrameCache(
             graph=ut.choice_([volGraph1, volGraph2], self.volType),
             joints=self.jnts_rb,
-            base=D / (self.d / scaleFix),
+            base=D / (self.d / grpScaleFix / self.scaleFix),
             keepVol=self.keepVol,
         )
 
@@ -261,10 +258,7 @@ class RbnNode:
 
     def setup_vis(self):
         """Set up visibility for the ribbon rig."""
-        pass
-        # mc.hide(self.ikhs)
-        # mc.hide(self.RBN_GRP)
-        # mc.hide(self.SRF_GRP, self.AIM_GRP, self.LOC_GRP)
+        mc.hide(self.ikhs)
 
     def build_post(self):
         """Post setup for the ribbon rig."""

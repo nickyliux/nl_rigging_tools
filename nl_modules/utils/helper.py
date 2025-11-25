@@ -185,11 +185,8 @@ def hlpJntSetup(
     bseJnt.dspType = 2
     hlpJnt.dspType = 0
 
-    common.cstMulti(parentJnt, tgtJnt, cstGrp, cstType="ori", delete=1)
-    # cstGrp.alignTo(tgtJnt)
-    # cstGrp.addOffsetGrp()
-    # tgtJnt.a.r * (-0.5, -0.5, -0.5) >> cstGrp.a.r
-    # tgtJnt.cstPoi(cstGrp)
+    common.cstMulti(parentJnt, tgtJnt, cstGrp, cstType="ori")
+    tgtJnt.cstPoi(cstGrp)
 
     cstGrp.a.s.set(dir_sign, dir_sign, dir_sign)
 
@@ -288,9 +285,9 @@ def delGrpAllOrSel(*args):
 
 def selAllHlp(*args):
     """Select all helper joint groups in the scene."""
-    helperJnts = [JntNode(j) for j in mc.ls("*_r?_t?_?_jnt", type="joint")]
-    if helperJnts:
-        mc.select(helperJnts)
+    helperGrp = [JntNode(j) for j in mc.ls("*_r?_t?_?_grp", type="transform")]
+    if helperGrp:
+        mc.select(helperGrp)
     else:
         mc.select(cl=1)
 

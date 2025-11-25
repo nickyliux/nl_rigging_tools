@@ -939,7 +939,7 @@ class RigModule(RigBase):
 
         return upCtls
 
-    def build_rollChain(self, jnt0, jnt1, num=2, suffix="_ro"):
+    def build_rollChain(self, jnt0, jnt1, num=2, name="_ro_#"):
         """Build a roll chain between two joints. Add locator for delta roll"""
         rID, rSz, xDr = self.getMyVar()
         tgt_p = jnt0.parent
@@ -947,18 +947,17 @@ class RigModule(RigBase):
             raise ValueError(f"No target parent or it is not a joint")
 
         # Create roll ik joints, and IK
-        self.jnts_ro = common.dupSk([jnt0, jnt1], suffix, r=rSz)
+        self.jnts_ro = common.dupSk([jnt0, jnt1], name, r=rSz)
         # Allow only TX to have value. Important for case like the foot
         self.jnts_ro[1].a.ty.set(0)
         self.jnts_ro[1].a.tz.set(0)
 
         roll_ikH = IkNode(
-            f"roll{suffix}",
-            pf=rID,
+            f"{name}_#",
             rSz=rSz,
             sj=jnt0,
             ee=jnt1,
-            jsf=suffix,
+            jsf=name,
             solver=Solver.RP,
             quat=1,
             p=jnt0,
@@ -967,8 +966,7 @@ class RigModule(RigBase):
 
         # Create roll locator
         roll_loc = LocNode(
-            f"loc{suffix}",
-            pf=rID,
+            f"{name}_loc_#",
             size=rSz * 10,
             align=self.jnts_ro[0],
             p=self.jnts_ro[0],
@@ -977,15 +975,15 @@ class RigModule(RigBase):
         jnt0.cstOri(roll_loc)
         return roll_loc, self.jnts_ro[0]
 
-    def build_uprRollJ(self, jnt0, jnt1, num=2, suffix="_roll1"):
+    def build_uprRollJ(self, jnt0, jnt1, num=2, suffix="roll"):
         """Build upper roller joints. They are added between jnt0 and jnt1."""
-        roll_loc, roll_jnt0 = self.build_rollChain(jnt0, jnt1, num, suffix=suffix)
-        # Create roller joints, parented to roll_jnt0
+        name = jnt0 + "_" + suffix
+        roll_loc, roll_jnt0 = self.build_rollChain(jnt0, jnt1, num, name)
         for i in range(num):
             j = jnt0.duplicate(po=1, p=roll_jnt0)
             j.color = Color.YELLOW
-            j.a.radius.set(self.rigSize * 4)
-            j.rename(f"{jnt0.name}{suffix}_{i}")
+            j.a.radius.set(self.rigSize * 2)
+            j.rename(f"{name}_{i}")
             proxy.add_height_attr([j], self.rigSize / num * 20)
 
             ratio = i / num
@@ -997,26 +995,27 @@ class RigModule(RigBase):
         JntNode(roll_jnt0).setDrawStyle(2)
         return roll_jnt0
 
-    def build_lwrRollJ(self, jnt0, jnt1, num=2, suffix="_roll2"):
-        """Build lower roller joints. They are added between jnt0's parent and jnt0."""
-        roll_loc, roll_jnt0 = self.build_rollChain(jnt0, jnt1, num, suffix=suffix)
-        # Create roller joints, parented to roll_jnt0's parent
-        for i in range(num):
-            j = jnt0.duplicate(po=1)
-            j.color = Color.YELLOW
-            j.a.radius.set(self.rigSize * 4)
-            j.rename(f"{jnt0.name}{suffix}_{i}")
-            proxy.add_height_attr([j], self.rigSize / num * 20)
+    # def build_lwrRollJ(self, jnt0, jnt1, num=2, suffix="_roll2"):
+    #     """Build lower roller joints. They are added between jnt0's parent and jnt0."""
+    #     pf = jnt0 + '_' + suffix
+    #     roll_loc, roll_jnt0 = self.build_rollChain(jnt0, jnt1, num, suffix=pf)
+    #     # Create roller joints, parented to roll_jnt0's parent
+    #     for i in range(num):
+    #         j = jnt0.duplicate(po=1)
+    #         j.color = Color.YELLOW
+    #         j.a.radius.set(self.rigSize * 3)
+    #         j.rename(f"{pf}_roll_{i}")
+    #         proxy.add_height_attr([j], self.rigSize / num * 20)
 
-            ratio = i / num
-            common.cstMulti(jnt0, jnt0.parent, j, cstType="poi", w=1 - ratio)
-            roll_loc.a.rx * (1 - ratio) >> j.a.rx
-            # if i > 0:
-            #     self.jnts_bind.append(j)
+    #         ratio = i / num
+    #         common.cstMulti(jnt0, jnt0.parent, j, cstType="poi", w=1 - ratio)
+    #         roll_loc.a.rx * (1 - ratio) >> j.a.rx
+    #         # if i > 0:
+    #         #     self.jnts_bind.append(j)
 
-        mc.hide(roll_loc)
-        JntNode(roll_jnt0).setDrawStyle(2)
-        return roll_jnt0
+    #     mc.hide(roll_loc)
+    #     JntNode(roll_jnt0).setDrawStyle(2)
+    #     return roll_jnt0
 
     def build_rbn(self, tgt, name="", rbnJntNum=5, volMode=1):
         """Build a ribbon node for the target with specified parameters."""

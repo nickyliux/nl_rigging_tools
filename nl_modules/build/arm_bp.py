@@ -157,8 +157,9 @@ class ArmBp(RigModule):
 
         self.build_aimHelper([self.lwr])
         self.ctls_up = self.build_aimHelper([self.palm], addCtl=1)
-        jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
-        jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
+        self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
+        self.build_uprRollJ(self.lwr, self.palm, num=self.rollJntNum)
+        # jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
         # self.jnts_roll = [jnt_ro1, jnt_ro2]
 
         # self.build_nlAutoAim(

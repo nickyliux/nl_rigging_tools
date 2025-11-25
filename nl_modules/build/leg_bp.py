@@ -146,7 +146,7 @@ class LegBp(RigModule):
             ("ball_fkc", "circle", "x", scale, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
             ("pvc", "pvc", None, rSz, 0, -1),
-            ("smart_ctl", "rotator", None, scale / 2, 0, 2),
+            ("smart_ctl", "rotate", None, scale, 0, 2),
         ]
         if self.scapulaExtra:
             ctl_defs.append(("scap_fkc", "shoulder", None, scale, 0, -1))
@@ -154,11 +154,12 @@ class LegBp(RigModule):
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
-        self.smart_ctl.cv_rotate(-90, 0, 0)
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
-        self.smart_ctl.cv_rotate(0, 0, 90)
-        self.smart_ctl.cv_move(0, 0, rSz * -15)
+        self.smart_ctl.cv_move(scale * 15, 0, 0)
+        #     self.smart_ctl.cv_rotate(180, 0, 0)
+        # self.smart_ctl.cv_rotate(0, 0, 90)
+        # self.smart_ctl.cv_move(0, 0, rSz * -15)
 
         if self.scapulaExtra:
             self.scap_fkc.cv_move(scale * 15, 0, 0)
@@ -199,17 +200,6 @@ class LegBp(RigModule):
             else:
                 self.jnts_bind += [self.lwr]
 
-        # elif self.limbType == LimbType.ROBOT.value:
-
-        #     self.jnts_bind += [self.lwr]
-        #     proxy.add_height_attr([self.lwr], self.rigSize * 10)
-
-        #     self.build_aimHelper([self.lwr, self.palm])
-
-        #     jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
-        #     jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
-        #     self.jnts_ro = [jnt_ro1, jnt_ro2]
-
         elif self.limbType == LimbType.RIBBON.value:
             self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(
                 rbnJntNum=self.rbnJntNum,
@@ -237,8 +227,9 @@ class LegBp(RigModule):
 
         self.build_aimHelper([self.lwr, self.palm])
         jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
-        jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
-        self.jnts_ro = [jnt_ro1, jnt_ro2]
+        jnt_ro2 = self.build_uprRollJ(self.lwr, self.palm, num=self.rollJntNum)
+        # jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
+        # self.jnts_ro = [jnt_ro1, jnt_ro2]
 
         self.build_post()
 
@@ -544,7 +535,7 @@ class LegBp(RigModule):
                 onList=[self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP],
             )
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyVis", type="bool", k=0, dv=1),
+                self.setting.a.add("bendyVis", type="bool", k=0, dv=0),
                 onList=self.all_bendy,
             )
         mc.hide(self.ikhs, self.toeIKHs)
