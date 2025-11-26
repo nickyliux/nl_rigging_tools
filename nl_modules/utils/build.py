@@ -127,7 +127,7 @@ def postRig():
     control.reset_all_ctl()
     update_anchor_conn()
     update_space_switch()
-    common.showRotateOrder()
+    common.showRO()
     logging.info("Rig built.")
 
 

@@ -986,7 +986,7 @@ def modelPanelShow(jnt=1):
         mc.modelEditor(modelP, e=1, joints=jnt)
 
 
-def showRotateOrder():
+def showRO():
     """Show rotate order attribute in channelBox"""
     from nl_modules.nodel.base.dag_node import DagNode
 

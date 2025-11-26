@@ -25,7 +25,7 @@ def addHelpers(*args):
         if j1 and j2:
             hlpJnts.extend([j1, j2])
 
-    common.showRotateOrder()
+    common.showRO()
     if hlpJnts:
         mc.select(hlpJnts)
 
@@ -231,9 +231,8 @@ def loadHlpJnt(uiPB):
     if uiPB:
         uiPB.setMaximum(len(fileDataList))
 
-    i = 0
     load_count = 0
-    for data in fileDataList:
+    for i, data in enumerate(fileDataList, start=1):
 
         tgtJnt = DagNode(data["tgt"])
         if not tgtJnt.exists():
@@ -241,10 +240,9 @@ def loadHlpJnt(uiPB):
             continue
 
         if uiPB:
-            i += 1
             uiPB.setValue(i)
 
-        j = addOrUpdateHlp(
+        jnt = addOrUpdateHlp(
             tgtJnt=tgtJnt,
             fr=data["fr"],
             to=data["to"],
@@ -256,13 +254,13 @@ def loadHlpJnt(uiPB):
             offsetAngle1=data["offsetAngle1"],
             offsetAngle2=data["offsetAngle2"],
         )
-        if j:
+        if jnt:
             load_count += 1
 
     if uiPB:
         uiPB.setValue(0)
     mc.refresh(f=1)
-    common.showRotateOrder()
+    common.showRO()
     logging.info(f"{load_count} helper joints loaded.")
 
 
@@ -289,21 +287,23 @@ def saveHlpJnt(*args):
     tgtList = []
     for hlp in helperJnts:
         tgt = hlp.a.helperTgt.inConnNode
-        if tgt and tgt.exists():
-            tgtList.append(
-                {
-                    "tgt": tgt.name,
-                    "fr": hlp.a.fr.get(),
-                    "to": hlp.a.to.get(),
-                    "dir": hlp.a.dir.get(),
-                    "init": hlp.a.init.get(),
-                    "initAngle": hlp.a.initAngle.get(),
-                    "offset1": hlp.a.offset1.get(),
-                    "offsetAngle1": hlp.a.offsetAngle1.get(),
-                    "offset2": hlp.a.offset2.get(),
-                    "offsetAngle2": hlp.a.offsetAngle2.get(),
-                }
-            )
+        if not (tgt and tgt.exists()):
+            continue
+
+        tgtList.append(
+            {
+                "tgt": tgt.name,
+                "fr": hlp.a.fr.get(),
+                "to": hlp.a.to.get(),
+                "dir": hlp.a.dir.get(),
+                "init": hlp.a.init.get(),
+                "initAngle": hlp.a.initAngle.get(),
+                "offset1": hlp.a.offset1.get(),
+                "offsetAngle1": hlp.a.offsetAngle1.get(),
+                "offset2": hlp.a.offset2.get(),
+                "offsetAngle2": hlp.a.offsetAngle2.get(),
+            }
+        )
 
     file.saveJson(tgtFile[0], tgtList, force=1)
     logging.info(f"{len(helperJnts)} helper joints saved.")
