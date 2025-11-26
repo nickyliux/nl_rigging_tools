@@ -72,7 +72,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def addMenuBar(self):
         """Add a menu bar with an 'About' section."""
         menuBar = QMenuBar(self)
-        ver_QM = QMenu("&2025.11.10", self)
+        ver_QM = QMenu("&2025.11.26", self)
         more_QM = QMenu("&More", self)
 
         addIcon_QA = QAction(self)
@@ -191,8 +191,15 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.crvShape_del_BN, self.crvShape_del, ":smallTrash.png")
         self.connect(
             self.UI.assignPresetColor_BN,
-            common.assignPresetShd,
-            ":render_swColorPerVertex.png",
+            partial(common.assignPresetShd, 0),
+            # ":render_swColorPerVertex.png",
+            ":colorPresetSpectrum.png",
+        )
+        self.connect(
+            self.UI.assignPresetColor2_BN,
+            partial(common.assignPresetShd, 1),
+            # ":render_swColorPerVertex.png",
+            ":colorPresetGrayscale.png",
         )
         self.connect(self.UI.shapeRotaX_BN, partial(control.rotaCVForSel, 90, 0, 0))
         self.connect(self.UI.shapeRotaY_BN, partial(control.rotaCVForSel, 0, 90, 0))

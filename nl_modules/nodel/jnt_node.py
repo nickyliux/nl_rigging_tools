@@ -155,7 +155,7 @@ class JntNode(GrpNode):
                 )
 
             # Assign shader before constraints to avoid Maya errors
-            common.assignPresetShd([proxy])
+            common.assignPresetShd(tgts=[proxy])
             self.cstParSca(proxy_offset, mo=1)
             return proxy
         return None

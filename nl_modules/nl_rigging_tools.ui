@@ -3094,6 +3094,28 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="assignPresetColor2_BN">
+         <property name="minimumSize">
+          <size>
+           <width>5</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Assign color to selected</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QListWidget" name="crvShape_LW">

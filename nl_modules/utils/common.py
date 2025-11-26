@@ -86,7 +86,7 @@ def assignShd(n, geo=None, color=(0, 0, 0), faceID=None):
         mc.sets(geo, forceElement=sg)
 
 
-def assignPresetShd(tgts=None):
+def assignPresetShd(*args, tgts=None):
     """Assign preset shader to target objects"""
     from nl_modules.nodel.base.dag_node import DagNode
 
@@ -104,15 +104,15 @@ def assignPresetShd(tgts=None):
     for tgt_name in tgts:
         tgt = DagNode(tgt_name)
         name = "proxy_mid_shd"
-        color = DagNode.COLOR_MID
+        color = DagNode.COLOR_MID if args[0] == 0 else DagNode.COLOR_MID_D
 
         # Determine shader name and color based on target name
         if tgt.name.startswith("lf"):
             name = "proxy_lf_shd"
-            color = DagNode.COLOR_LEFT
+            color = DagNode.COLOR_LEFT if args[0] == 0 else DagNode.COLOR_LEFT_D
         elif tgt.name.startswith("rt"):
             name = "proxy_rt_shd"
-            color = DagNode.COLOR_RIGHT
+            color = DagNode.COLOR_RIGHT if args[0] == 0 else DagNode.COLOR_RIGHT_D
 
         # Assign shader based on type
         if tgt.type == "mesh":

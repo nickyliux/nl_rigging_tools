@@ -18,6 +18,10 @@ class DagNode(DepNode):
     COLOR_LEFT = (0.36, 0.66, 1)
     COLOR_RIGHT = (0.710, 0.300, 0.300)
 
+    COLOR_MID_D = (0.06, 0.04, 0.02)
+    COLOR_LEFT_D = (0.0, 0.0, 0.50)
+    COLOR_RIGHT_D = (0.3, 0.0, 0.0)
+
     def __init__(self, n, nodeType=None):
         """Initialize DagNode with node name and type."""
         self._dag = None
