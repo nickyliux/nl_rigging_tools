@@ -590,6 +590,8 @@ class ArmBp(RigModule):
             ctlSet.extend(self.all_bendy)
         if self.ctls_up:
             ctlSet.extend(self.ctls_up)
+        if self.scapulaBone:
+            ctlSet.append(self.scap_fkc)
         self.add_ctl_set(ctlSet)
 
     def build_post(self):
