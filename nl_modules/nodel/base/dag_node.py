@@ -14,11 +14,11 @@ class DagNode(DepNode):
         n = DagNode('new', nodeType='transform')
     """
 
-    COLOR_MID = (0.995, 0.8, 0.236)
+    COLOR_MID = (1.0, 0.8, 0.24)
     COLOR_LEFT = (0.36, 0.66, 1)
-    COLOR_RIGHT = (0.710, 0.300, 0.300)
+    COLOR_RIGHT = (0.71, 0.30, 0.30)
 
-    COLOR_MID_D = (0.06, 0.04, 0.02)
+    COLOR_MID_D = (0.1, 0.05, 0.0)
     COLOR_LEFT_D = (0.0, 0.0, 0.50)
     COLOR_RIGHT_D = (0.3, 0.0, 0.0)
 

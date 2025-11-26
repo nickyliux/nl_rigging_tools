@@ -190,7 +190,7 @@ def mirrorProxy(*args):
                 g.a.sx.set(-1)
                 dup | oppParent
                 g.delete()
-                common.assignPresetShd(tgts=[dup])
+                common.assignPresetShd(0, tgts=[dup])
 
                 # Add to process list
                 processedList.append(opp)

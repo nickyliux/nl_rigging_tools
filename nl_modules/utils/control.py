@@ -87,7 +87,7 @@ def mirrorCtlShape(ctl):
     for shape in opp.shapes:
         shape.rename(opp.name + "Shape#")
 
-    common.assignPresetShd(tgts=[opp])
+    common.assignPresetShd(0, tgts=[opp])
 
     opp.deleteHistory()
     mc.delete(dup, tempGrp)

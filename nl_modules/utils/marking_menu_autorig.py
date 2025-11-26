@@ -64,7 +64,8 @@ class MarkingMenuAutorig:
 
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Mirror", c=helper.mirrorHelpers)
-        mc.menuItem(p=mi, l="Delete Helpers", c=helper.deleteHelpers)
+        mc.menuItem(p=mi, l="-" * 15, en=0)
+        mc.menuItem(p=mi, l="Delete", c=helper.deleteHelpers)
 
     def addGuideOptions(self, menu):
         """Add guide options to the marking menu"""

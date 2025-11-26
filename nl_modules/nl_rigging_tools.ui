@@ -3087,7 +3087,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Assign color to selected</string>
+          <string>Assign preset color to selected</string>
          </property>
          <property name="text">
           <string/>
@@ -3109,7 +3109,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Assign color to selected</string>
+          <string>Assign dark preset color to selected</string>
          </property>
          <property name="text">
           <string/>
