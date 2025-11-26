@@ -45,23 +45,17 @@ def addHlpJnt(
     """Create a corrective joint system that responds to the rotation of a driver object."""
     # Normalize inputs: accept either a DagNode or a name
     if tgtJnt is None:
-        mc.warning("No target joint specified for addHlpJnt.")
+        logging.warning("No target joint specified for addHlpJnt.")
         return
 
-    tgt_node = DagNode(tgtJnt) if isinstance(tgtJnt, str) else tgtJnt
-
-    # Validate that the resolved node exists
-    if not hasattr(tgt_node, "exists") or not tgt_node.exists():
-        mc.warning(f"Target joint {tgtJnt} NOT found.")
+    jnt = DagNode(tgtJnt) if isinstance(tgtJnt, str) else tgtJnt
+    if not jnt.exists():
+        logging.warning(f"Target joint {tgtJnt} NOT found.")
         return
-
-    parent = tgt_node.parent
-    holder = tgt_node
 
     return addHlpJntGeneral(
-        tgtJnt=tgt_node,
-        parentJnt=parent,
-        holder=holder,
+        tgtJnt=jnt,
+        parentJnt=jnt.parent,
         r=r,
         t=t,
         dir=dir,
@@ -78,7 +72,6 @@ def addHlpJnt(
 def addHlpJntGeneral(
     tgtJnt=None,
     parentJnt=None,
-    holder=None,
     r="ry",
     t="tz",
     dir=1,
@@ -91,23 +84,16 @@ def addHlpJntGeneral(
     mirror=0,
 ):
     """Create a corrective joint system that responds to the rotation of a driver object."""
-    # Defensive normalization: allow names or DagNode objects for parent/holder
     tgt = DagNode(tgtJnt) if isinstance(tgtJnt, str) else tgtJnt
     parent = DagNode(parentJnt) if isinstance(parentJnt, str) else parentJnt
-    hold = DagNode(holder) if isinstance(holder, str) else holder
 
-    if (
-        not (hasattr(tgt, "exists") and tgt.exists())
-        or not (hasattr(parent, "exists") and parent.exists())
-        or not (hasattr(hold, "exists") and hold.exists())
-    ):
-        mc.warning("Target or its parent/holder not found.")
+    if not (tgt.exists() and parent.exists()):
+        logging.warning("Target or its parent not found.")
         return
 
     return hlpJntSetup(
         tgtJnt=tgt,
         parentJnt=parent,
-        rotator=hold,
         fr=r,
         to=t,
         dir=dir,
@@ -124,7 +110,6 @@ def addHlpJntGeneral(
 def hlpJntSetup(
     tgtJnt=None,
     parentJnt=None,
-    rotator=None,
     fr=None,
     to=None,
     dir=1,
@@ -151,7 +136,6 @@ def hlpJntSetup(
         tgtHlp = DagNode(hlpName + "_jnt")
         if tgtHlp.exists():
             if mirror == 1:
-                # Update parameters on mirror instead of recreating
                 tgtHlp.a.init.set(init)
                 tgtHlp.a.initAngle.set(initAngle)
                 tgtHlp.a.offset1.set(offset1)
@@ -215,7 +199,7 @@ def hlpJntSetup(
     hlpJnt.a.initAngle >> ofsGrp.a[fr]
 
     # Build conditional nodes and wire up behavior
-    r = rotator.a[fr]
+    r = tgtJnt.a[fr]
     rAbs = (r >= 0).setCdn(ifTrue=r, ifFalse=r * -1)
 
     outScale = (r > 0).setCdn(ifTrue=hlpJnt.a.offset1, ifFalse=hlpJnt.a.offset2)

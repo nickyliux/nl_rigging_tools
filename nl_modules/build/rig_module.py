@@ -982,7 +982,7 @@ class RigModule(RigBase):
         for i in range(num):
             j = jnt0.duplicate(po=1, p=roll_jnt0)
             j.color = Color.YELLOW
-            j.a.radius.set(self.rigSize * 2)
+            j.a.radius.set(self.rigSize * 3)
             j.rename(f"{name}_{i}")
             proxy.add_height_attr([j], self.rigSize / num * 20)
 
