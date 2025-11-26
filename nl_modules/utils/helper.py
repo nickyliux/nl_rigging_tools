@@ -15,13 +15,13 @@ from nl_modules.utils.color import Color
 
 
 @common.Undo("addHlpJnt_sel")
-def addHlpJnt_sel(*args):
+def addHelpers(*args):
     """Add helper joints to selected joints based on the specified rotation axis."""
     selList = [DagNode(s) for s in mc.ls(sl=1, type="joint")]
     hlpJnts = []
     for sel in selList:
-        j1 = addHlpJnt(tgtJnt=sel, fr=args[0], to=args[1])
-        j2 = addHlpJnt(tgtJnt=sel, fr=args[0], to=args[1], dir=-1)
+        j1 = addOrUpdateHlp(tgtJnt=sel, fr=args[0], to=args[1])
+        j2 = addOrUpdateHlp(tgtJnt=sel, fr=args[0], to=args[1], dir=-1)
         if j1 and j2:
             hlpJnts.extend([j1, j2])
 
@@ -30,8 +30,8 @@ def addHlpJnt_sel(*args):
         mc.select(hlpJnts)
 
 
-@common.Undo("addHlpJnt")
-def addHlpJnt(
+@common.Undo("addOrUpdateHlp")
+def addOrUpdateHlp(
     tgtJnt=None,
     fr="ry",
     to="tz",
@@ -60,44 +60,45 @@ def addHlpJnt(
     xDr = 1 if tx > 0 else -1
     dir_sign = 1 if dir > 0 else -1
     dir_name = "A" if dir_sign * xDr == 1 else "B"
-    ro = tgtJnt.a.rotateOrder.get()
 
     # Name and quick existence check for pre-existing setup
     hlpName = f"{tgtJnt.name}_{fr}_{to}_{dir_name}"
     tgtGrp = DagNode(hlpName + "_grp")
-    if tgtGrp.exists():
-        tgtHlp = DagNode(hlpName + "_jnt")
-        if tgtHlp.exists():
-            if mirror == 1:
-                for attr, val in [
-                    ("init", init),
-                    ("initAngle", initAngle),
-                    ("offset1", offset1),
-                    ("offset2", offset2),
-                    ("offsetAngle1", offsetAngle1),
-                    ("offsetAngle2", offsetAngle2),
-                ]:
-                    tgtHlp.a[attr].set(val)
+    tgtHlp = DagNode(hlpName + "_jnt")
 
-                logging.info(f"Helper joint {tgtHlp.name} updated")
-                return tgtHlp
-            else:
-                logging.warning(f"Helper joint {tgtHlp.name} already exists.")
-                return
+    if tgtGrp.exists() and tgtHlp.exists():
+        if mirror == 0:
+            logging.warning(f"Helper joint {tgtHlp.name} already exists.")
+            return
+        else:
+            for attr, val in [
+                ("init", init),
+                ("initAngle", initAngle),
+                ("offset1", offset1),
+                ("offset2", offset2),
+                ("offsetAngle1", offsetAngle1),
+                ("offsetAngle2", offsetAngle2),
+            ]:
+                tgtHlp.a[attr].set(val)
+
+            logging.info(f"Helper joint {tgtHlp.name} updated")
+            return tgtHlp
 
     # Setup group hierarchy ----------------------
-    pf = tgtJnt.name.split("_")[0]
-    JNT_DATA = DagNode(f"{pf}_JNT_DATA")
-    parent_for_group = JNT_DATA if JNT_DATA.exists() else None
+    # pf = tgtJnt.name.split("_")[0]
+    # JNT_DATA = DagNode(f"{pf}_JNT_DATA")
+    # parent_for_group = JNT_DATA if JNT_DATA.exists() else None
 
-    cstGrp = GrpNode(f"{hlpName}_grp", p=parent_for_group)
+    cstGrp = GrpNode(f"{hlpName}_grp")  # , p=parent_for_group)
     ofsGrp = GrpNode(f"{hlpName}_ofs")
+
     rad = tgtJnt.a.radius.get()
     bseJnt = JntNode(f"{hlpName}_bse", r=rad / 4)
     hlpJnt = JntNode(f"{hlpName}_jnt", r=rad)
 
-    cstGrp.a.rotateOrder.set(ro)
-    hlpJnt.a.rotateOrder.set(ro)
+    ro = tgtJnt.a.rotateOrder.get()
+    for xf in [cstGrp, ofsGrp, bseJnt, hlpJnt]:
+        xf.a.rotateOrder.set(ro)
 
     hlpJnt | bseJnt | ofsGrp | cstGrp | parentJnt
     bseJnt.dspType = 2
@@ -105,7 +106,6 @@ def addHlpJnt(
 
     common.cstMulti(parentJnt, tgtJnt, cstGrp, cstType="ori")
     tgtJnt.cstPoi(cstGrp)
-
     cstGrp.a.s.set(dir_sign, dir_sign, dir_sign)
 
     attr_defs = [
@@ -134,15 +134,14 @@ def addHlpJnt(
     ]:
         hlpJnt.a[attr].set(val)
 
+    # Build conditional nodes and wire up behavior
+    hlpJnt.a.init >> bseJnt.a[to]
     hlpJnt.a["initAngle"] >> ofsGrp.a[fr]
 
-    # Build conditional nodes and wire up behavior
     r = tgtJnt.a[fr]
+    outOfs = (r > 0).setCdn(ifTrue=hlpJnt.a.offset1, ifFalse=hlpJnt.a.offset2)
     rAbs = (r >= 0).setCdn(ifTrue=r, ifFalse=r * -1)
-
-    outScale = (r > 0).setCdn(ifTrue=hlpJnt.a.offset1, ifFalse=hlpJnt.a.offset2)
-    hlpJnt.a.init >> bseJnt.a[to]
-    outScale * rAbs / 90 >> hlpJnt.a[to]
+    outOfs * rAbs / 90 >> hlpJnt.a[to]
 
     outRot = (r > 0).setCdn(ifTrue=hlpJnt.a.offsetAngle1, ifFalse=hlpJnt.a.offsetAngle2)
     r * outRot >> bseJnt.a[fr]
@@ -155,7 +154,7 @@ def addHlpJnt(
 
 
 @common.Undo("mirror Helper Joints")
-def mirrorHelper(*args):
+def mirrorHelpers(*args):
     """Mirror helper joints for selected helper joints."""
     selList = [JntNode(j) for j in mc.ls("*_r?_t?_?_jnt", sl=1, type="joint")]
 
@@ -174,7 +173,7 @@ def mirrorHelper(*args):
 
     for sel, opp in pairs:
         s = sel.a
-        addHlpJnt(
+        addOrUpdateHlp(
             tgtJnt=opp,
             fr=s.fr.get(),
             to=s.to.get(),
@@ -190,7 +189,7 @@ def mirrorHelper(*args):
 
 
 @common.Undo("Delete helper joints with group")
-def delHlpJnts(*args):
+def deleteHelpers(*args):
     """Delete helper joint groups for selected / all helper joints."""
     selList = mc.ls(sl=1)
     selList = [
@@ -250,7 +249,7 @@ def loadHlpJnt(uiPB):
             i += 1
             uiPB.setValue(i)
 
-        j = addHlpJnt(
+        j = addOrUpdateHlp(
             tgtJnt=tgtJnt,
             fr=data["fr"],
             to=data["to"],

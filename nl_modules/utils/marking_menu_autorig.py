@@ -52,21 +52,19 @@ class MarkingMenuAutorig:
 
     def addHelperOptions(self, menu):
         mi = mc.menuItem(p=menu, l="Helper", rp="NE", subMenu=1)
-        mc.menuItem(
-            p=mi, l="Simple : rz ~> ty", c=partial(helper.addHlpJnt_sel, "rz", "ty")
-        )
-        mc.menuItem(
-            p=mi, l="Simple : ry ~> tz", c=partial(helper.addHlpJnt_sel, "ry", "tz")
-        )
-        mc.menuItem(
-            p=mi, l="Simple : ry ~> ty", c=partial(helper.addHlpJnt_sel, "ry", "ty")
-        )
-        mc.menuItem(
-            p=mi, l="Simple : rz ~> tz", c=partial(helper.addHlpJnt_sel, "rz", "tz")
-        )
+        mc.menuItem(p=mi, l="Simple : rz ty", c=partial(helper.addHelpers, "rz", "ty"))
+        mc.menuItem(p=mi, l="Simple : ry tz", c=partial(helper.addHelpers, "ry", "tz"))
+        mc.menuItem(p=mi, l="Simple : ry ty", c=partial(helper.addHelpers, "ry", "ty"))
+        mc.menuItem(p=mi, l="Simple : rz tz", c=partial(helper.addHelpers, "rz", "tz"))
         mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="Mirror", c=helper.mirrorHelper)
-        mc.menuItem(p=mi, l="Delete Helpers", c=helper.delHlpJnts)
+        mc.menuItem(p=mi, l="OnRoll : rz ty", c=partial(helper.addHelpers, "rz", "ty"))
+        mc.menuItem(p=mi, l="OnRoll : ry tz", c=partial(helper.addHelpers, "ry", "tz"))
+        mc.menuItem(p=mi, l="OnRoll : ry ty", c=partial(helper.addHelpers, "ry", "ty"))
+        mc.menuItem(p=mi, l="OnRoll : rz tz", c=partial(helper.addHelpers, "rz", "tz"))
+
+        mc.menuItem(p=mi, l="-" * 15, en=0)
+        mc.menuItem(p=mi, l="Mirror", c=helper.mirrorHelpers)
+        mc.menuItem(p=mi, l="Delete Helpers", c=helper.deleteHelpers)
 
     def addGuideOptions(self, menu):
         """Add guide options to the marking menu"""
