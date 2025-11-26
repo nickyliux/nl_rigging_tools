@@ -84,11 +84,6 @@ def addOrUpdateHlp(
             logging.info(f"Helper joint {tgtHlp.name} updated")
             return tgtHlp
 
-    # Setup group hierarchy ----------------------
-    # pf = tgtJnt.name.split("_")[0]
-    # JNT_DATA = DagNode(f"{pf}_JNT_DATA")
-    # parent_for_group = JNT_DATA if JNT_DATA.exists() else None
-
     cstGrp = GrpNode(f"{hlpName}_grp")  # , p=parent_for_group)
     ofsGrp = GrpNode(f"{hlpName}_ofs")
 
