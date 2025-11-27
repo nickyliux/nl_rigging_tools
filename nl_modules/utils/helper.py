@@ -1,12 +1,10 @@
 import glob
 import logging
 import os
-import re
 import maya.cmds as mc
 from nl_modules.utils import build
 from nl_modules.utils import common
 from nl_modules.utils import file
-from nl_modules.utils import utils_node as ut
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
@@ -19,9 +17,29 @@ def addHelpers(*args):
     """Add helper joints to selected joints based on the specified rotation axis."""
     selList = [DagNode(s) for s in mc.ls(sl=1, type="joint")]
     hlpJnts = []
+    fr, to = args[0], args[1]
+
     for sel in selList:
-        j1 = addOrUpdateHlp(tgtJnt=sel, fr=args[0], to=args[1])
-        j2 = addOrUpdateHlp(tgtJnt=sel, fr=args[0], to=args[1], dir=-1)
+        j1 = addOrUpdateHlp(tgtJnt=sel, fr=fr, to=to)
+        j2 = addOrUpdateHlp(tgtJnt=sel, fr=fr, to=to, dir=-1)
+        if j1 and j2:
+            hlpJnts.extend([j1, j2])
+
+    common.showRO()
+    if hlpJnts:
+        mc.select(hlpJnts)
+
+
+@common.Undo("addHelpersRoll")
+def addHelpersRoll(*args):
+    """Add helper joints to selected joints based on the specified rotation axis."""
+    selList = [DagNode(s) for s in mc.ls(sl=1, type="joint")]
+    hlpJnts = []
+    fr, to = args[0], args[1]
+
+    if len(selList) == 2:
+        j1 = addOrUpdateHlp(tgtJnt=selList[0], fr=fr, to=to, rollJnt=selList[1])
+        j2 = addOrUpdateHlp(tgtJnt=selList[0], fr=fr, to=to, rollJnt=selList[1], dir=-1)
         if j1 and j2:
             hlpJnts.extend([j1, j2])
 
@@ -33,6 +51,7 @@ def addHelpers(*args):
 @common.Undo("addOrUpdateHlp")
 def addOrUpdateHlp(
     tgtJnt=None,
+    rollJnt=None,
     fr="ry",
     to="tz",
     dir=1,
@@ -55,6 +74,9 @@ def addOrUpdateHlp(
     if not parentJnt.exists():
         logging.warning("Target joint's parent NOT found.")
         return
+
+    # rollJnt = DagNode(rollJnt)
+    # isRoll = rollJnt.exists()
 
     tx = tgtJnt.a.tx.get()
     xDr = 1 if tx > 0 else -1
@@ -204,7 +226,6 @@ def deleteHelpers(*args):
 @common.Undo("Load Helper Joints")
 def loadHlpJnt(uiPB):
     """Load helper joint data from a JSON file and recreate the joints in the scene."""
-
     at_least_one_built = 0
     for node in build.getRigNodes_all():
         if node.a.nodeState.get() == 2:

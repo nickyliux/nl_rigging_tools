@@ -52,20 +52,21 @@ class MarkingMenuAutorig:
 
     def addHelperOptions(self, menu):
         mi = mc.menuItem(p=menu, l="Helper", rp="NE", subMenu=1)
-        mc.menuItem(p=mi, l="Simple : rz ty", c=partial(helper.addHelpers, "rz", "ty"))
-        mc.menuItem(p=mi, l="Simple : ry tz", c=partial(helper.addHelpers, "ry", "tz"))
-        mc.menuItem(p=mi, l="Simple : ry ty", c=partial(helper.addHelpers, "ry", "ty"))
-        mc.menuItem(p=mi, l="Simple : rz tz", c=partial(helper.addHelpers, "rz", "tz"))
-        mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="OnRoll : rz ty", c=partial(helper.addHelpers, "rz", "ty"))
-        mc.menuItem(p=mi, l="OnRoll : ry tz", c=partial(helper.addHelpers, "ry", "tz"))
-        mc.menuItem(p=mi, l="OnRoll : ry ty", c=partial(helper.addHelpers, "ry", "ty"))
-        mc.menuItem(p=mi, l="OnRoll : rz tz", c=partial(helper.addHelpers, "rz", "tz"))
+        mc.menuItem(p=mi, l="BASIC -------", en=0)
+        mc.menuItem(p=mi, l="    rz ty", c=partial(helper.addHelpers, "rz", "ty"))
+        mc.menuItem(p=mi, l="    ry tz", c=partial(helper.addHelpers, "ry", "tz"))
+        mc.menuItem(p=mi, l="    ry ty", c=partial(helper.addHelpers, "ry", "ty"))
+        mc.menuItem(p=mi, l="    rz tz", c=partial(helper.addHelpers, "rz", "tz"))
+        mc.menuItem(p=mi, l="ROLL --------", en=0)
+        mc.menuItem(p=mi, l="    rz ty", c=partial(helper.addHelpersRoll, "rz", "ty"))
+        mc.menuItem(p=mi, l="    ry tz", c=partial(helper.addHelpersRoll, "ry", "tz"))
+        mc.menuItem(p=mi, l="    ry ty", c=partial(helper.addHelpersRoll, "ry", "ty"))
+        mc.menuItem(p=mi, l="    rz tz", c=partial(helper.addHelpersRoll, "rz", "tz"))
 
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Mirror", c=helper.mirrorHelpers)
-        mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Delete", c=helper.deleteHelpers)
+        mc.menuItem(p=mi, l="-" * 15, en=0)
 
     def addGuideOptions(self, menu):
         """Add guide options to the marking menu"""
