@@ -637,12 +637,7 @@ class LegBp(RigModule):
         self.add_ctl_set(ctlSet)
 
         common.add_mirror_attr(
-            [
-                self.ikc,
-                self.ikc_gimbal,
-                self.smart_ctl,
-                self.pvc,
-            ]
+            [self.ikc, self.ikc_gimbal, self.smart_ctl, self.pvc, self.setting]
         )
 
     def setup_bindJnt(self):

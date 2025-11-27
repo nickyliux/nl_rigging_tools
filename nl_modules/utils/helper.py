@@ -70,13 +70,13 @@ def addOrUpdateHlp(
         logging.warning(f"Target joint {tgtJnt} NOT found.")
         return
 
-    parentJnt = DagNode(tgtJnt.parent)
+    rollJnt = DagNode(rollJnt) if isinstance(rollJnt, str) else rollJnt
+    isRoll = rollJnt.exists()
+
+    parentJnt = DagNode(tgtJnt.parent) if not isRoll else rollJnt
     if not parentJnt.exists():
         logging.warning("Target joint's parent NOT found.")
         return
-
-    # rollJnt = DagNode(rollJnt)
-    # isRoll = rollJnt.exists()
 
     tx = tgtJnt.a.tx.get()
     xDr = 1 if tx > 0 else -1
@@ -106,7 +106,7 @@ def addOrUpdateHlp(
             logging.info(f"Helper joint {tgtHlp.name} updated")
             return tgtHlp
 
-    cstGrp = GrpNode(f"{hlpName}_grp")  # , p=parent_for_group)
+    cstGrp = GrpNode(f"{hlpName}_grp")
     ofsGrp = GrpNode(f"{hlpName}_ofs")
 
     rad = tgtJnt.a.radius.get()
@@ -121,14 +121,20 @@ def addOrUpdateHlp(
     bseJnt.dspType = 2
     hlpJnt.dspType = 0
 
-    common.cstMulti(parentJnt, tgtJnt, cstGrp, cstType="ori")
-    tgtJnt.cstPoi(cstGrp)
+    if not isRoll:
+        tgtJnt.cstPoi(cstGrp)
+        common.cstMulti(parentJnt, tgtJnt, cstGrp, cstType="ori")
+    else:
+        cstGrp.alignTo(rollJnt)
+        tgtJnt.a.r * (0, -0.5, -0.5) >> cstGrp.a.r
+
     cstGrp.a.s.set(dir_sign, dir_sign, dir_sign)
 
     attr_defs = [
         ("fr", {"type": "string", "txt": fr}),
         ("to", {"type": "string", "txt": to}),
         ("helperTgt", {"type": "message"}),
+        ("rollTgt", {"type": "message"}),
         ("dir", {"dv": dir, "k": 0, "cb": 0}),
         ("init", {"dv": 1, "min": 0}),
         ("initAngle", {"dv": 0}),
@@ -141,6 +147,9 @@ def addOrUpdateHlp(
         hlpJnt.a.add(name, **kwargs)
 
     tgtJnt.a.message >> hlpJnt.a.helperTgt
+    if isRoll:
+        rollJnt.a.message >> hlpJnt.a.rollTgt
+
     for attr, val in [
         ("init", init),
         ("initAngle", initAngle),
@@ -176,22 +185,28 @@ def mirrorHelpers(*args):
     selList = [JntNode(j) for j in mc.ls("*_r?_t?_?_jnt", sl=1, type="joint")]
 
     pairs = []
+    rollTgtOpp = None
     for sel in selList:
         tgt = sel.a.helperTgt.inConnNode
         if not tgt:
             logging.warning(f"Target joint for {sel.name} NOT found.")
             continue
-
-        opp = common.getOpposite(tgt)
-        if not opp:
+        tgtOpp = common.getOpposite(tgt)
+        if not tgtOpp:
             logging.warning(f"Opposite joint for {tgt.name} NOT found.")
             continue
-        pairs.append((sel, opp))
 
-    for sel, opp in pairs:
+        rollTgt = sel.a.rollTgt.inConnNode
+        if rollTgt:
+            rollTgtOpp = common.getOpposite(rollTgt)
+
+        pairs.append((sel, tgtOpp, rollTgtOpp))
+
+    for sel, tgtOpp, rollTgtOpp in pairs:
         s = sel.a
         addOrUpdateHlp(
-            tgtJnt=opp,
+            tgtJnt=tgtOpp,
+            rollJnt=rollTgtOpp,
             fr=s.fr.get(),
             to=s.to.get(),
             dir=1 - s.dir.get(),
@@ -232,7 +247,7 @@ def loadHlpJnt(uiPB):
             at_least_one_built = 1
 
     if at_least_one_built == 0:
-        mc.confirmDialog(t="Info", m="The rig is not built !     ", b="OK")
+        mc.confirmDialog(t="Info", m="NO built rig found !     ", b="OK")
         return
 
     charPath = mc.optionVar(q="charPath")
@@ -260,11 +275,16 @@ def loadHlpJnt(uiPB):
             logging.warning(f"Target joint {data['tgt']} NOT found.")
             continue
 
+        rollTgtJnt = DagNode(data["rollTgt"])
+        if not tgtJnt.exists():
+            rollTgtJnt = None
+
         if uiPB:
             uiPB.setValue(i)
 
         jnt = addOrUpdateHlp(
             tgtJnt=tgtJnt,
+            rollJnt=rollTgtJnt,
             fr=data["fr"],
             to=data["to"],
             dir=data["dir"],
@@ -299,7 +319,7 @@ def saveHlpJnt(*args):
         return
 
     # Get all helper joints in the scene
-    helperJnts = [JntNode(j) for j in mc.ls("*_r?_?_jnt", type="joint")]
+    helperJnts = [JntNode(j) for j in mc.ls("*_r?_t?_?_jnt", type="joint")]
     if not helperJnts:
         mc.confirmDialog(t="Info", m="No helper joint found.     ", b="OK")
         return
@@ -311,9 +331,12 @@ def saveHlpJnt(*args):
         if not (tgt and tgt.exists()):
             continue
 
+        rollTgt = hlp.a.rollTgt.inConnNode
+
         tgtList.append(
             {
                 "tgt": tgt.name,
+                "rollTgt": rollTgt.name if rollTgt else None,
                 "fr": hlp.a.fr.get(),
                 "to": hlp.a.to.get(),
                 "dir": hlp.a.dir.get(),
