@@ -67,6 +67,7 @@ class LegBp(RigModule):
         self.ctls_fk = []
         self.ctls_sub = []
         self.ikhs = []
+        self.rollJnts = []
 
         # Toes related attributes
         self.toesJntList = []
@@ -226,10 +227,13 @@ class LegBp(RigModule):
             self.jnts_bind += [self.palm, self.ball]
 
         self.build_aimHelper([self.lwr, self.palm])
-        jnt_ro1 = self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
-        jnt_ro2 = self.build_uprRollJ(self.lwr, self.palm, num=self.rollJntNum)
-        # jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
-        # self.jnts_ro = [jnt_ro1, jnt_ro2]
+        self.rollJnts.extend(
+            self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
+        )
+        self.rollJnts.extend(
+            self.build_uprRollJ(self.lwr, self.palm, num=self.rollJntNum)
+        )
+        # self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
 
         self.build_post()
 
@@ -526,12 +530,16 @@ class LegBp(RigModule):
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJntVis", type="bool", dv=0, k=0),
+            self.setting.a.add("ikFkJntVis", type="bool", dv=0, k=0),
             onList=self.jnts_fk + self.jnts_ik + self.jnts_bf,
+        )
+        self.ctl_vis_toggle(
+            self.setting.a.add("rollJntVis", type="bool", dv=1, k=0),
+            onList=self.rollJnts,
         )
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
-                self.setting.a["setupJntVis"],
+                self.setting.a.add("ribbonVis", type="bool", dv=0, k=0),
                 onList=[self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP],
             )
             self.ctl_vis_toggle(

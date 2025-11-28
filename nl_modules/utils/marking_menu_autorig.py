@@ -53,15 +53,23 @@ class MarkingMenuAutorig:
     def addHelperOptions(self, menu):
         mi = mc.menuItem(p=menu, l="Helper", rp="NE", subMenu=1)
         mc.menuItem(p=mi, l="BASIC -------", en=0)
-        mc.menuItem(p=mi, l="    rz ty", c=partial(helper.addHelpers, "rz", "ty"))
-        mc.menuItem(p=mi, l="    ry tz", c=partial(helper.addHelpers, "ry", "tz"))
-        mc.menuItem(p=mi, l="    ry ty", c=partial(helper.addHelpers, "ry", "ty"))
-        mc.menuItem(p=mi, l="    rz tz", c=partial(helper.addHelpers, "rz", "tz"))
+        mc.menuItem(p=mi, l="    rz ~> ty", c=partial(helper.addHelpers, "rz", "ty"))
+        mc.menuItem(p=mi, l="    ry ~> tz", c=partial(helper.addHelpers, "ry", "tz"))
+        mc.menuItem(p=mi, l="    ry ~> ty", c=partial(helper.addHelpers, "ry", "ty"))
+        mc.menuItem(p=mi, l="    rz ~> tz", c=partial(helper.addHelpers, "rz", "tz"))
         mc.menuItem(p=mi, l="ROLL --------", en=0)
-        mc.menuItem(p=mi, l="    rz ty", c=partial(helper.addHelpersRoll, "rz", "ty"))
-        mc.menuItem(p=mi, l="    ry tz", c=partial(helper.addHelpersRoll, "ry", "tz"))
-        mc.menuItem(p=mi, l="    ry ty", c=partial(helper.addHelpersRoll, "ry", "ty"))
-        mc.menuItem(p=mi, l="    rz tz", c=partial(helper.addHelpersRoll, "rz", "tz"))
+        mc.menuItem(
+            p=mi, l="    rz ~> ty", c=partial(helper.addHelpersRoll, "rz", "ty")
+        )
+        mc.menuItem(
+            p=mi, l="    ry ~> tz", c=partial(helper.addHelpersRoll, "ry", "tz")
+        )
+        mc.menuItem(
+            p=mi, l="    ry ~> ty", c=partial(helper.addHelpersRoll, "ry", "ty")
+        )
+        mc.menuItem(
+            p=mi, l="    rz ~> tz", c=partial(helper.addHelpersRoll, "rz", "tz")
+        )
 
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Mirror", c=helper.mirrorHelpers)

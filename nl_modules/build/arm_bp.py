@@ -60,6 +60,7 @@ class ArmBp(RigModule):
         self.ctls_fk = []
         self.ikhs = []
         self.ctls_up = []
+        self.rollJnts = []
 
         # IK/FK/Blend/Other attributes
         self.ikc = None
@@ -97,7 +98,7 @@ class ArmBp(RigModule):
 
         ctl_defs = [
             ("setting", "gear", "z", scale, 1, 2),
-            ("clavicle_fkc", "stick2", "z", scale / 2, 1, 2),
+            ("clavicle_fkc", "stick2", "z", scale / 2, 1, -1),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
             ("palm_fkc", "circle", "x", scale, 0, -1),
@@ -107,7 +108,7 @@ class ArmBp(RigModule):
         ]
 
         if self.scapulaBone:
-            ctl_defs.append(["scap_fkc", "triangle", "z", scale, 0, 2])
+            ctl_defs.append(["scap_fkc", "triangle", "z", scale, 0, -1])
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
@@ -157,8 +158,13 @@ class ArmBp(RigModule):
 
         self.build_aimHelper([self.lwr])
         self.ctls_up = self.build_aimHelper([self.palm], addCtl=1)
-        self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
-        self.build_uprRollJ(self.lwr, self.palm, num=self.rollJntNum)
+
+        self.rollJnts.extend(
+            self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
+        )
+        self.rollJnts.extend(
+            self.build_uprRollJ(self.lwr, self.palm, num=self.rollJntNum)
+        )
         # jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
         # self.jnts_roll = [jnt_ro1, jnt_ro2]
 
@@ -492,12 +498,16 @@ class ArmBp(RigModule):
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJntVis", type="bool", dv=0, k=0),
+            self.setting.a.add("ikFkJntVis", type="bool", dv=0, k=0),
             onList=(self.jnts_fk + self.jnts_ik + self.jnts_bf),
+        )
+        self.ctl_vis_toggle(
+            self.setting.a.add("rollJntVis", type="bool", dv=1, k=0),
+            onList=self.rollJnts,
         )
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
-                self.setting.a["setupJntVis"],
+                self.setting.a.add("ribbonVis", type="bool", dv=0, k=0),
                 onList=[self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP],
             )
             self.ctl_vis_toggle(

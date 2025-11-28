@@ -979,6 +979,7 @@ class RigModule(RigBase):
         """Build upper roller joints. They are added between jnt0 and jnt1."""
         name = jnt0 + "_" + suffix
         roll_loc, roll_jnt0 = self.build_rollChain(jnt0, jnt1, num, name)
+        rollJnts = []
         for i in range(num):
             j = jnt0.duplicate(po=1, p=roll_jnt0)
             j.color = Color.YELLOW
@@ -990,10 +991,11 @@ class RigModule(RigBase):
             common.cstMulti(jnt0, jnt1, j, cstType="poi", w=1 - ratio)
             roll_loc.a.rx * ratio >> j.a.rx
             # self.jnts_bind.append(j)
+            rollJnts.append(j)
 
         mc.hide(roll_loc)
         JntNode(roll_jnt0).setDrawStyle(2)
-        return roll_jnt0
+        return rollJnts
 
     # def build_lwrRollJ(self, jnt0, jnt1, num=2, suffix="_roll2"):
     #     """Build lower roller joints. They are added between jnt0's parent and jnt0."""
