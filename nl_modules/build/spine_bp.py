@@ -80,19 +80,13 @@ class SpineBp(RigModule):
         ]
         if self.is_ribbon():
             ctl_defs += [
-                ("chest_ikc", "cube", None, rSz * 9, 0, -1),
-                ("mid_ikc", "sphere", None, rSz * 3, 1, -1),
-                ("hip_ikc", "hip", None, rSz * 5, 0, -1),
+                ("chest_ikc", "chest", None, rSz * 2, 0, -1),
+                ("mid_ikc", "cube", None, rSz, 1, -1),
+                ("hip_ikc", "hip", None, rSz * 2, 0, -1),
             ]
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
-
-        # if self.is_ribbon():
-        #     self.mid_ikc.cv_move(0, 0, rSz * -70)
-
-        if self.is_ribbon():
-            self.chest_ikc.cv_scale(1, 0.2, 1)
 
     def is_ribbon(self):
         """Check if the spine rig is of ribbon type."""
@@ -235,6 +229,7 @@ class SpineBp(RigModule):
 
         self.chest_ikc.a.add("autoBend", proxy=autoBend)
         self.hip_ikc.a.add("autoBend", proxy=autoBend)
+        self.ctls_fk[0].a.add("autoBend", proxy=autoBend)
 
     def build_ribbon(self):
         """Build the ribbon for the spine rig."""
@@ -310,31 +305,15 @@ class SpineBp(RigModule):
 
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""
-        # self.ctl_vis_toggle(
-        #     self.setting.a.add("fkCtls", type="bool", dv=1, k=0),
-        #     onList=self.ctls_fk,
-        # )
-        # if self.ribbon:
-        #     self.ctl_vis_toggle(
-        #         self.setting.a.add("ikCtls", type="bool", dv=1, k=0),
-        #         onList=self.ctls_ik,
-        #     )
-        # self.ctl_vis_toggle(
-        #     self.setting.a.add("debugVis", type="bool", dv=0, k=0),
-        #     onList=self.jnts_ctl + self.jnts_fk,  # + self.jnts_rb,
-        # )
         if self.is_ribbon():
             self.ctl_vis_toggle(
                 self.setting.a.add("setupVis", type="bool", dv=0, k=0),
-                onList=self.jnts_fk + [self.rbSrf],
+                onList=self.jnts_fk + self.jnts_ctl + [self.rbSrf],
             )
 
         if self.is_neck():
             CrvNode(self.ctls_fk[0]).setOnTop(1)
-
-        if self.is_neck():
             mc.hide(self.cog_ctl, self.hip_ikc)
-        mc.hide(self.jnts_ctl)
 
     def setup_channel(self):
         """Setup channel attributes for the spine rig controls."""
@@ -349,6 +328,8 @@ class SpineBp(RigModule):
 
         for ctl in ctls:
             ctl.a.showAttr(t=1, r=1)
+
+        self.ctls_fk[0].a.showAttr(t=0, r=1)
 
     def setup_rotate_order(self):
         """Setup rotate order for the spine rig controls."""
