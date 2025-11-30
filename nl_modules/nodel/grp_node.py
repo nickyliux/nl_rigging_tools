@@ -121,12 +121,17 @@ class GrpNode(DagNode):
             else:
                 mc.scale(*args, self.cvs, **kwargs)
 
-    def add_gimbal(self, relScale=0.88, attrTgt=None, dv=1):
+    def add_gimbal(self, attrTgt=None, dv=1):
         """Add a gimbal control to the curve"""
-        gmb_ctl = self.duplicate(n=self.node + "_gmb")
-        gmb_ctl | self
-        gmb_ctl.cv_scale(relScale, atCVCetner=1)
+        from nl_modules.nodel.crv_node import CrvNode
 
+        gmb_ctl = CrvNode(
+            self.node + "_gmb",
+            shape="locator",
+            align=self,
+            p=self,
+            scale=self.o.diagonal2 * 1.5,
+        )
         attrTgt = attrTgt or self
         attr = attrTgt.a.add("gimbalVis", type="bool", dv=dv, k=0)
         gmb_ctl.a.add("gimbalVis", proxy=attr, k=0)

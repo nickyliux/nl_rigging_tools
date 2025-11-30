@@ -507,7 +507,7 @@ class ArmBp(RigModule):
         )
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
-                self.setting.a.add("ribbonVis", type="bool", k=0, dv=1),
+                self.setting.a.add("ribbonVis", type="bool", k=0),  # , dv=1),
                 onList=[self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP],
             )
             self.ctl_vis_toggle(
