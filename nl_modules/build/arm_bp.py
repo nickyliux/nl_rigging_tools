@@ -498,20 +498,20 @@ class ArmBp(RigModule):
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("ikFkJntVis", type="bool", dv=0, k=0),
+            self.setting.a.add("ikFkJntVis", type="bool", k=0),  # , dv=1),
             onList=(self.jnts_fk + self.jnts_ik + self.jnts_bf),
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("rollJntVis", type="bool", dv=1, k=0),
+            self.setting.a.add("rollJntVis", type="bool", k=0, dv=1),
             onList=self.rollJnts,
         )
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
-                self.setting.a.add("ribbonVis", type="bool", dv=0, k=0),
+                self.setting.a.add("ribbonVis", type="bool", k=0, dv=1),
                 onList=[self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP],
             )
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyVis", type="bool", k=0, dv=0),
+                self.setting.a.add("bendyVis", type="bool", k=0, dv=1),
                 onList=self.all_bendy,
             )
 

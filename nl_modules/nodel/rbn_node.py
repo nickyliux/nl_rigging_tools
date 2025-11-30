@@ -129,8 +129,8 @@ class RbnNode:
 
         self.sttUp_loc | self.stt_loc
         self.endUp_loc | self.end_loc
-        self.sttUp_loc.a.ty.set(offset)
-        self.endUp_loc.a.ty.set(offset)
+        self.sttUp_loc.a.tz.set(offset)
+        self.endUp_loc.a.tz.set(offset)
         self.end_loc.a.tx.set(Dx)
         self.mid_loc.a.tx.set(Dx / 2)
         self.mid_loc.addOffsetGrp(count=2)
@@ -215,7 +215,8 @@ class RbnNode:
             aim=(-self.xDir, 0, 0),
             worldUpType="object",
             worldUpObject=self.endUp_loc,
-            u=(0, 1, 0),
+            # u=(0, 1, 0),
+            u=(0, 0, 1),
         )
 
         # mid_loc's rx is controlled by the start and end joints
