@@ -1019,7 +1019,7 @@ class RigModule(RigBase):
     #     JntNode(roll_jnt0).setDrawStyle(2)
     #     return roll_jnt0
 
-    def build_rbn(self, tgt, name="", rbnJntNum=5, volMode=1):
+    def build_rbn(self, tgt, name="", rbnJntNum=5, volMode=1, up="tz"):
         """Build a ribbon node for the target with specified parameters."""
         return RbnNode(
             tgt,
@@ -1028,17 +1028,18 @@ class RigModule(RigBase):
             volMode=volMode,
             scaleFix=self.masterC.a["globalScale"],
             p_data=self.CTL_DATA,
+            up=up,
         )
 
     def build_bendy_ribbon(
-        self, rbnJntNum=5, root=None, upr=None, lwr=None, palm=None, kneeFix=0
+        self, rbnJntNum=5, root=None, upr=None, lwr=None, palm=None, kneeFix=0, up="tz"
     ):
         """Build a ribbon rig with upper and lower parts, and setup controls."""
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
-        ribbonUp = self.build_rbn(upr, name="up", rbnJntNum=rbnJntNum, volMode=0)
-        ribbonLw = self.build_rbn(lwr, name="lw", rbnJntNum=rbnJntNum, volMode=1)
+        ribbonUp = self.build_rbn(upr, name="up", rbnJntNum=rbnJntNum, volMode=0, up=up)
+        ribbonLw = self.build_rbn(lwr, name="lw", rbnJntNum=rbnJntNum, volMode=1, up=up)
 
         # Connect master guide scale to the ribbon groups
         # self.masterC2.a.s >> ribbonUp.RBN_GRP.a.s

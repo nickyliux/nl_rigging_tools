@@ -148,6 +148,7 @@ class ArmBp(RigModule):
                 lwr=self.lwr,
                 palm=self.palm,
                 kneeFix=0,
+                up="tz",
             )
         elif self.limbType == LimbType.SKEL.value:
             self.jnts_bind += [self.upr]

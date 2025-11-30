@@ -30,6 +30,7 @@ class RbnNode:
         scaleFix=None,
         forSpine=0,
         p_data=None,
+        up="tz",
     ):
         self.tgt = DagNode(tgt) if isinstance(tgt, str) else tgt
         self.tgtChild = self.tgt.children[0] if self.tgt.children else None
@@ -47,6 +48,7 @@ class RbnNode:
         self.DATA = p_data
         self.pf = pf
         self.jnts_rb = []
+        self.up = up
 
         self.grpNames = ["RBN_GRP", "BSE_GRP", "CTL_GRP", "JNT_GRP", "AIM_GRP"]
         self.locNames = ["stt_loc", "mid_loc", "end_loc", "sttUp_loc", "endUp_loc"]
@@ -129,8 +131,8 @@ class RbnNode:
 
         self.sttUp_loc | self.stt_loc
         self.endUp_loc | self.end_loc
-        self.sttUp_loc.a.tz.set(offset)
-        self.endUp_loc.a.tz.set(offset)
+        self.sttUp_loc.a[self.up].set(offset)
+        self.endUp_loc.a[self.up].set(offset)
         self.end_loc.a.tx.set(Dx)
         self.mid_loc.a.tx.set(Dx / 2)
         self.mid_loc.addOffsetGrp(count=2)
@@ -210,13 +212,16 @@ class RbnNode:
         self.end_loc.cstPoi(mid_ikh)
         self.mid_loc.cstPoi(end_ikh)
 
+        if self.up != "tz" and self.up != "ty":
+            logging.warning(f"Unsupported up axis '{self.up}'. Defaulting to 'tz'.")
+            return
+
         self.mid_loc.cstAim(
             self.end_jnt,
             aim=(-self.xDir, 0, 0),
             worldUpType="object",
             worldUpObject=self.endUp_loc,
-            # u=(0, 1, 0),
-            u=(0, 0, 1),
+            u=(0, 0, 1) if self.up == "tz" else (0, 1, 0),
         )
 
         # mid_loc's rx is controlled by the start and end joints

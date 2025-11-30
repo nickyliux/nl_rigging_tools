@@ -209,6 +209,7 @@ class LegBp(RigModule):
                 lwr=self.lwr,
                 palm=self.palm,
                 kneeFix=self.kneeFix,
+                up="ty",
             )
             if self.kneeFix:
                 self.boneFix.cstPoi(self.ribbon_lw.stt_loc)
