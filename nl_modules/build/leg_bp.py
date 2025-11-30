@@ -147,7 +147,7 @@ class LegBp(RigModule):
             ("ball_fkc", "circle", "x", scale, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
             ("pvc", "pvc", None, rSz, 0, -1),
-            ("smart_ctl", "rotate", None, scale, 0, 2),
+            ("smart_ctl", "rotate", None, scale, 0, -1),
         ]
         if self.scapulaExtra:
             ctl_defs.append(("scap_fkc", "shoulder", None, scale, 0, -1))
