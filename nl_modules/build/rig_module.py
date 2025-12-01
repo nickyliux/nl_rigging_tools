@@ -1,4 +1,5 @@
 import logging
+from unittest import result
 import maya.cmds as mc
 from nl_modules.build.rig_base import RigBase
 from nl_modules.nodel.base.dag_node import DagNode
@@ -520,6 +521,29 @@ class RigModule(RigBase):
             jnt.resetXf()
             result.append(jnt)
         return result
+
+    def build_rbnBindJnt(self, ctls, r=1, color=1):
+        """Create ribbon bind joints for given controls."""
+        rbnBindJnts = []
+        for ctl in ctls:
+            jnt = JntNode(ctl, sf="_rbnBdJ", r=r, color=color, p=ctl)
+            jnt.resetOrient()
+            jnt.resetXf()
+            rbnBindJnts.append(jnt)
+
+        endJ1 = rbnBindJnts[0].duplicate()
+        common.cstMulti(
+            rbnBindJnts[0], rbnBindJnts[1], endJ1, cstType="poi", w=0.5, delete=1
+        )
+        endJ1 | rbnBindJnts[0]
+
+        endJ2 = rbnBindJnts[-1].duplicate()
+        common.cstMulti(
+            rbnBindJnts[-1], rbnBindJnts[-2], endJ2, cstType="poi", w=0.5, delete=1
+        )
+        endJ2 | rbnBindJnts[-1]
+
+        return rbnBindJnts
 
     def foot_rolling(
         self, targetCtl, heelRollG, ballRollG, footRollG, toeRollG, inRollG, outRollG

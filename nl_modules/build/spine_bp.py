@@ -247,7 +247,7 @@ class SpineBp(RigModule):
             p=self.CTL_DATA,
             inheritsXf=0,
         )
-        self.jnts_ctl = self.build_ctlJnt(
+        self.jnts_ctl = self.build_rbnBindJnt(
             [self.hip_ikc, self.mid_ikc, self.chest_ikc], r=rSz * 10
         )
         self.rbSrf.weightTo(self.jnts_ctl, chain=0, mi=3, dr=5)
