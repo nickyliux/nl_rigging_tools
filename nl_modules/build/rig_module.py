@@ -511,7 +511,7 @@ class RigModule(RigBase):
             patella_sdk(self.lwr, j)
             return j
 
-    def build_ctl_jnt(self, ctls, r=1, color=1):
+    def build_ctlJnt(self, ctls, r=1, color=1):
         """Create joint nodes for given controls."""
         result = []
         for ctl in ctls:
@@ -1068,13 +1068,13 @@ class RigModule(RigBase):
 
         upLoc.cstPar(upr_bend.offset, mo=1)
         if upLoc.children:
-            mid_jnt = upLoc.children[0]
-            upr_bend.cstPar(mid_jnt, mo=1)
+            upr_bend.cstPar(upLoc.children[0], mo=1)
+            upr_bend.a.s >> upLoc.children[0].a.s
 
         lwLoc.cstPar(lwr_bend.offset, mo=1)
         if lwLoc.children:
-            mid_jnt = lwLoc.children[0]
-            lwr_bend.cstPar(mid_jnt, mo=1)
+            lwr_bend.cstPar(lwLoc.children[0], mo=1)
+            lwr_bend.a.s >> lwLoc.children[0].a.s
 
         lwr.cstPar(mid_bend.offset, mo=1)
         mid_bend.cstParSca(ribbonUp.end_loc, mo=1)

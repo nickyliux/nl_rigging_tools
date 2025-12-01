@@ -100,7 +100,7 @@ class SpineBp(RigModule):
         self.build_fk()
 
         if self.is_ribbon():
-            self.build_ik()
+            self.build_spine_ik()
 
         self.setting.snapTo(self.jnts_fk[0], p=self.CTL_DATA)
         # , ofs=(self.rigSize * 100, 0, 0)
@@ -171,7 +171,7 @@ class SpineBp(RigModule):
         ctl.cv_move(0, self.rigSize * -20, 0)
         ctl.cstPar(self.jnts_fk[0], mo=1)
 
-    def build_ik(self):
+    def build_spine_ik(self):
         """Build the IK controls for the spine rig."""
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
@@ -240,11 +240,12 @@ class SpineBp(RigModule):
             crv=self.LINE_GUIDE,
             normal=-1,
             snap=self.rootJ,
-            spans=self.fkJntNum - 1,
+            # spans=self.fkJntNum - 1,
+            spans=self.fkJntNum,
             p=self.CTL_DATA,
             inheritsXf=0,
         )
-        self.jnts_ctl = self.build_ctl_jnt(
+        self.jnts_ctl = self.build_ctlJnt(
             [self.hip_ikc, self.mid_ikc, self.chest_ikc], r=rSz * 10
         )
         self.rbSrf.weightTo(self.jnts_ctl, chain=0, mi=2, dr=6)
@@ -303,7 +304,7 @@ class SpineBp(RigModule):
         """Setup visibility toggles for the spine rig controls."""
         if self.is_ribbon():
             self.ctl_vis_toggle(
-                self.setting.a.add("setupVis", type="bool", dv=0, k=0),
+                self.setting.a.add("setupVis", type="bool", k=0, dv=1),
                 onList=self.jnts_fk + self.jnts_ctl + [self.rbSrf],
             )
 

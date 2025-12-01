@@ -97,7 +97,7 @@ class Spine(rig_module.RigModule):
             ptMM.a.outputX >> joints[i + 1].a.sy
             ptMM.a.outputX >> joints[i + 1].a.sz
 
-    def build_ctl_jnt(self, jointList, NUM, p=None):
+    def build_ctlJnt(self, jointList, NUM, p=None):
 
         staJ = JntNode("sta_ikj", pf=self.rigID, r=8, color=13)
         staJ.snapTo(jointList[0])
@@ -140,7 +140,7 @@ class Spine(rig_module.RigModule):
 
         self.jnts_as = common.dupSk(joints, "_as")
 
-        self.jnts_ctl = self.build_ctl_jnt(joints, NUM, p=cog_ctl)
+        self.jnts_ctl = self.build_ctlJnt(joints, NUM, p=cog_ctl)
         staJ, midJ, endJ = self.jnts_ctl
 
         sta_ikc, mid_ikc, end_ikc = ikCtl

@@ -229,7 +229,7 @@ class SpineQd(RigModule):
         chest_gimbal = self.chest_ctl.add_gimbal()
         base_gimbal = self.base_ctl.add_gimbal()
 
-        self.jnts_ctl = self.build_ctl_jnt(
+        self.jnts_ctl = self.build_ctlJnt(
             [base_gimbal, self.mid_ctl, chest_gimbal],
             r=rSz * 12,
         )
