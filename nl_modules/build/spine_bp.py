@@ -81,7 +81,7 @@ class SpineBp(RigModule):
         if self.is_ribbon():
             ctl_defs += [
                 ("chest_ikc", "chest", None, rSz * 2, 0, -1),
-                ("mid_ikc", "cube", None, rSz, 1, -1),
+                ("mid_ikc", "cube", None, rSz * 2, 1, -1),
                 ("hip_ikc", "hip", None, rSz * 2, 0, -1),
             ]
 
@@ -190,10 +190,12 @@ class SpineBp(RigModule):
         self.chest_ikc.addOffsetGrp()
 
         self.chest_ikc.a.t @ self.hip_ikc.a.t >> self.mid_ikc.offset.offset.a.t
-        (-self.hip_ikc.a.ry / 2) @ self.chest_ikc.a.ry >> self.mid_ikc.offset.a.ry
+        # (-self.hip_ikc.a.ry / 2) @ self.chest_ikc.a.ry >> self.mid_ikc.offset.a.ry
+        (self.hip_ikc.a.ry / 2) @ self.chest_ikc.a.ry >> self.mid_ikc.offset.a.ry
         self.hip_ikc.cstAim(
             self.mid_ikc.offset.offset,
-            worldUpObject=self.hip_ikc,
+            # worldUpObject=self.hip_ikc,
+            worldUpObject=self.cog_ctl,
             worldUpType="objectrotation",
             aim=(0, -1, 0),
             u=(0, 0, 1),
@@ -241,14 +243,14 @@ class SpineBp(RigModule):
             normal=-1,
             snap=self.rootJ,
             # spans=self.fkJntNum - 1,
-            spans=self.fkJntNum,
+            spans=self.fkJntNum + 1,
             p=self.CTL_DATA,
             inheritsXf=0,
         )
         self.jnts_ctl = self.build_ctlJnt(
             [self.hip_ikc, self.mid_ikc, self.chest_ikc], r=rSz * 10
         )
-        self.rbSrf.weightTo(self.jnts_ctl, chain=0, mi=2, dr=6)
+        self.rbSrf.weightTo(self.jnts_ctl, chain=0, mi=3, dr=5)
 
         stretchy = self.setting.a.add("stretchy", min=0, max=1, dv=1)
         self.hip_ikc.a.add("stretchy", proxy=stretchy)
