@@ -253,10 +253,6 @@ class SpineBp(RigModule):
         self.hip_ikc.a.add("stretchy", proxy=stretchy)
         self.chest_ikc.a.add("stretchy", proxy=stretchy)
 
-        self.hip_ikc.a.add("tangent", min=0, dv=1) >> self.jnts_ctl[0].a.sy
-        self.mid_ikc.a.add("tangent", min=0, dv=1) >> self.jnts_ctl[1].a.sy
-        self.chest_ikc.a.add("tangent", min=0, dv=1) >> self.jnts_ctl[2].a.sy
-
         crvLenRatio, self.jnts_rb, crv = common.build_ribbon_rivet(
             rbSrf=self.rbSrf,
             rivetNum=self.rbnJntNum,
@@ -324,7 +320,8 @@ class SpineBp(RigModule):
             self.cog_gmb,
         ]
         if self.is_ribbon():
-            ctls += [self.hip_ikc, self.mid_ikc, self.chest_ikc]
+            for ctl in [self.hip_ikc, self.mid_ikc, self.chest_ikc]:
+                ctl.a.showAttr("sy", t=1, r=1, s=0)
 
         for ctl in ctls:
             ctl.a.showAttr(t=1, r=1)
