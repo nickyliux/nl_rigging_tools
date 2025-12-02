@@ -81,12 +81,14 @@ class SpineBp(RigModule):
         if self.is_ribbon():
             ctl_defs += [
                 ("chest_ikc", "chest", None, rSz * 2, 0, -1),
-                ("mid_ikc", "cube", None, rSz * 2, 1, -1),
+                ("mid_ikc", "cube", None, (rSz * 2, rSz, rSz * 2), 1, -1),
                 ("hip_ikc", "hip", None, rSz * 2, 0, -1),
             ]
 
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
+
+        self.setting.cv_move(0, -rSz * 20, 0)
 
     def is_ribbon(self):
         """Check if the spine rig is of ribbon type."""
@@ -191,7 +193,14 @@ class SpineBp(RigModule):
 
         self.chest_ikc.a.t @ self.hip_ikc.a.t >> self.mid_ikc.offset.offset.a.t
         # (-self.hip_ikc.a.ry / 2) @ self.chest_ikc.a.ry >> self.mid_ikc.offset.a.ry
-        (self.hip_ikc.a.ry / 2) @ self.chest_ikc.a.ry >> self.mid_ikc.offset.a.ry
+        # (self.hip_ikc.a.ry / 2) @ self.chest_ikc.a.ry >> self.mid_ikc.offset.a.ry
+        # self.hip_ikc.a.ry @ self.chest_ikc.a.ry >> self.mid_ikc.offset.a.ry
+        twistRatio = self.mid_ikc.a.add("twistRatio", min=0, max=1, dv=0.5)
+        (
+            ut.blend2_(self.hip_ikc.a.ry, self.chest_ikc.a.ry, w=twistRatio)
+            >> self.mid_ikc.offset.a.ry
+        )
+
         self.hip_ikc.cstAim(
             self.mid_ikc.offset.offset,
             # worldUpObject=self.hip_ikc,

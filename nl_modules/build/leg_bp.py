@@ -141,7 +141,7 @@ class LegBp(RigModule):
 
         ctl_defs = [
             ("setting", "gear", "z", scale, 1, 2),
-            ("hip_fkc", "stick", None, -scale / 2, 0, -1),
+            ("hip_fkc", "stick2", "z", -scale / 2, 1, -1),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
             ("palm_fkc", "circle", "x", scale, 0, -1),
@@ -165,6 +165,8 @@ class LegBp(RigModule):
 
         if self.scapulaExtra:
             self.scap_fkc.cv_move(scale * 15, 0, 0)
+
+        self.setting.cv_move(scale * 15, 0, 0)
 
     def build(self):
         """Build the leg rig module."""
