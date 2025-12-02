@@ -61,6 +61,7 @@ class ArmBp(RigModule):
         self.ikhs = []
         self.ctls_up = []
         self.rollJnts = []
+        self.aimJnts = []
 
         # IK/FK/Blend/Other attributes
         self.ikc = None
@@ -157,8 +158,8 @@ class ArmBp(RigModule):
         if self.scapulaBone:
             self.build_armScapula()
 
-        self.build_aimHelper([self.lwr])
-        self.ctls_up = self.build_aimHelper([self.palm], addCtl=1)
+        self.aimJnts, self.ctls_up = self.build_aimHelper([self.palm], addCtl=1)
+        self.aimJnts.extend(self.build_aimHelper([self.lwr]))
 
         self.rollJnts.extend(
             self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
@@ -499,16 +500,22 @@ class ArmBp(RigModule):
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("ikFkJntVis", type="bool", k=0),  # , dv=1),
+            self.setting.a.add("setupJntVis", type="bool", k=0),
             onList=(self.jnts_fk + self.jnts_ik + self.jnts_bf),
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("rollJntVis", type="bool", k=0, dv=1),
-            onList=self.rollJnts,
+            self.setting.a.add("rollJntVis", type="bool", k=0),
+            onList=self.rollJnts + self.aimJnts,
         )
+        if self.ctls_up:
+            self.ctl_vis_toggle(
+                self.setting.a.add("rollupCtlVis", type="bool", k=0),
+                onList=self.ctls_up,
+            )
+
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
-                self.setting.a.add("ribbonVis", type="bool", k=0),  # , dv=1),
+                self.setting.a.add("ribbonVis", type="bool", k=0),
                 onList=[self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP],
             )
             self.ctl_vis_toggle(

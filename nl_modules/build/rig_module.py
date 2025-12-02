@@ -921,6 +921,7 @@ class RigModule(RigBase):
         r = rSz * 5
         COL = Color.VD_GREEN
 
+        aimJnts = []
         for tgt in targets:
             ro = tgt.a.rotateOrder.get()
             extraJ = JntNode(
@@ -933,6 +934,7 @@ class RigModule(RigBase):
                 tgt_p.cstAim(
                     extraJ, aim=aim, worldUpType=wut, worldUpObject=tgt, u=u, wu=wu
                 )
+            aimJnts.append(extraJ)
 
         upCtls = []
         for tgt in targets:
@@ -960,8 +962,12 @@ class RigModule(RigBase):
                 tgt_p.cstAim(
                     extraJ, aim=aim, worldUpType=wut, worldUpObject=wuo, u=u, wu=wu
                 )
+            aimJnts.append(extraJ)
 
-        return upCtls
+        if addCtl:
+            return aimJnts, upCtls
+        else:
+            return aimJnts
 
     def build_rollChain(self, jnt0, jnt1, num=2, name="_ro_#"):
         """Build a roll chain between two joints. Add locator for delta roll"""
@@ -1088,7 +1094,7 @@ class RigModule(RigBase):
 
         self.all_bendy = [upr_bend, lwr_bend, mid_bend]
         for ctl in self.all_bendy:
-            ctl(shape="sphere", up="x", scale=rSz, top=1)
+            ctl(shape="cube", scale=(rSz / 4, rSz / 2, rSz / 2), top=1)
 
         upLoc.cstPar(upr_bend.offset, mo=1)
         if upLoc.children:

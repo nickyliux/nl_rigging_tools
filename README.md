@@ -85,10 +85,8 @@ Two Marking menus are made to speed up rigging tasks.
 ## Installation
 
 1. Download and extract to your target location.
-2. Go to the shelf you want the tool icon to add.
-3. Drag and drop "nl_rigging_tools_drag.py" into Maya.
-
-The interface will show up with tool icon added into current shelf.
+2. Click on the shelf for the icon button.
+3. Drag and drop "nl_rigging_tools_drag.py" into Maya. The window will show and icon button added onto current shelf.
 
 
 

@@ -103,8 +103,8 @@ class IkNode(DagNode):
         self.xDir = 1 if self.ee.a.tx.get() > 0 else -1
 
         # --- Hide if not visible ---
-        # if not vis:
-        #     mc.hide(self)
+        if not vis:
+            mc.hide(self)
 
     def createIK(
         self, node, quat=False, createCrv=1, inputCrv=None, numSpans=3, p=None
@@ -341,8 +341,8 @@ class IkNode(DagNode):
         Ds = D * (1 - s)
         ds = D * (1 - s * math.e ** -(d - Ds))
         (((d > Ds).setCdn(ifTrue=ds, ifFalse=d)) * ratio * self.xDir >> softJ[1].a.tx)
-        # ikH.hide()
         self.softJ = softJ
+        ikH.hide()
 
     def build_pvfkPinSetup(self, ikTarget=None):
         """Build a pole vector FK pin setup for the IK handle."""
@@ -360,7 +360,7 @@ class IkNode(DagNode):
             p=self.sj.parent,
         )
         pinIk = IkNode(
-            "pvJnt",
+            "_#",
             pf=pvJnt[0].name,
             sj=pvJnt[0],
             ee=pvJnt[1],

@@ -59,7 +59,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI = QUiLoader().load(UI_PATH)
         # logging.info("Load " + UI_PATH)
 
-        self.setWindowTitle("nlRT 0.1.0")
+        self.setWindowTitle("nlRT")
         self.setCentralWidget(self.UI)
         self.setGeometry(1070, 260, 230, 680)
         self.connect_UI()
