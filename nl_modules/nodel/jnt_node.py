@@ -197,7 +197,7 @@ class JntNode(GrpNode):
         return [j0, j1]
 
     @staticmethod
-    def createJntFrCrv(
+    def createJntsFrCrv(
         crv,
         chain=1,
         name="fkj",

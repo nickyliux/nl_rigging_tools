@@ -122,7 +122,7 @@ class SpineQd(RigModule):
 
     def build_fk(self):
         rID, rSz, xDr = self.getMyVar()
-        self.fkJnt = JntNode.createJntFrCrv(
+        self.fkJnt = JntNode.createJntsFrCrv(
             self.LINE_GUIDE,
             pf=rID,
             name="fkj",
@@ -166,7 +166,7 @@ class SpineQd(RigModule):
                 "sp", sj=self.fkJnt[0], ej=self.fkJnt[-1], crv=self.rbCrv
             )
         else:
-            self.fkJ_A = JntNode.createJntFrCrv(
+            self.fkJ_A = JntNode.createJntsFrCrv(
                 self.LINE_GUIDE,
                 pf=rID,
                 name="fkj_A",
@@ -175,7 +175,7 @@ class SpineQd(RigModule):
                 p=self.JNT_DATA,
                 addEndJ=1,
             )
-            self.fkJ_B = JntNode.createJntFrCrv(
+            self.fkJ_B = JntNode.createJntsFrCrv(
                 self.LINE_GUIDE,
                 pf=rID,
                 name="fkj_B",

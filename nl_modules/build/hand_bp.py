@@ -152,9 +152,10 @@ class HandBp(RigModule):
 
     def setup_claw_sdk(self):
         """Setup SDK for finger claw controls."""
-        attrName = "fgrClaw"
         drv = self.smart_ctl
-        self.smart_ctl.a.add(attrName, type="float", dv=0, k=1)
+
+        for i in range(5):
+            self.smart_ctl.a.add(f"claw{str(i)}", type="float", dv=0, k=1)
 
         # Fgr 1, 2, 3, 4
         data = [
@@ -162,12 +163,13 @@ class HandBp(RigModule):
             [(-90, -70), (0, 0), (90, 35)],  # id = 3
         ]
         for i in range(1, 5):
-            self.setSDK(drv, data, i=i, tgtOfs=2, attr1=attrName)
+            self.setSDK(drv, data, i=i, tgtOfs=2, attr1=f"claw{str(i)}")
+
         # Fgr 0
         data = [
             [(-90, -75), (0, 0), (90, 60)],  # id = 2
         ]
-        self.setSDK(drv, data, i=0, tgtOfs=2, attr1=attrName)
+        self.setSDK(drv, data, i=0, tgtOfs=2, attr1="claw0")
 
     def setup_close_sdk(self):
         """Setup SDK for finger close controls."""
@@ -365,15 +367,14 @@ class HandBp(RigModule):
 
     def setup_vis(self):
         """Setup visibility controls for the hand rig."""
-        showFgrCtls = self.smart_ctl.a.add("showFgrCtls", type="bool", dv=1, k=0)
+        fgrCtlVis = self.smart_ctl.a.add("fgrCtlVis", type="bool", dv=1, k=0)
         for ctls in self.ctls_fgr:
-            showFgrCtls >> ctls[0].a.v
+            fgrCtlVis >> ctls[0].a.v
 
         for ctls in self.ctls_fgr:
             ctls[0].shape.hide()
 
         mc.hide(self.ikHs_fgr, self.jnts_ik, self.setting)
-        # self.setting.shape.hide()
 
     def setup_ctlSet(self):
         """Setup control sets for the hand rig module."""

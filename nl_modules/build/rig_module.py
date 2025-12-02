@@ -1115,7 +1115,7 @@ class RigModule(RigBase):
             self.boneFix_sdk(lwr, stt_ofs[1])
 
         # Add volume attributes to setting
-        keepVol = self.setting.a.add("keepVol", dv=1)
+        keepVol = self.setting.a.add("keepVol", min=0, dv=1)
         keepVol >> ribbonUp.keepVol
         keepVol >> ribbonLw.keepVol
 

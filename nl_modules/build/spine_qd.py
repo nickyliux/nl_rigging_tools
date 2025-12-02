@@ -61,6 +61,7 @@ class SpineQd(RigModule):
 
         # Ribbon and anchor
         self.rbSrf = None
+        self.rbCrv = None
         self.anchorToRbj = None
 
     def gen_sk(self):
@@ -85,8 +86,8 @@ class SpineQd(RigModule):
             ("fore_ctl", "chest_qd", None, rSz * 4, 0, -1),
             ("mid_ctl", "squareR", "z", rSz * 4, 0, -1),
             ("base_ctl", "hip_qd", None, rSz * 4, 0, -1),
-            ("tangent0_ctl", "stick2", None, rSz, 1, -1),
-            ("tangent1_ctl", "stick2", None, rSz, 1, -1),
+            ("tangent0_ctl", "T", "z", rSz * 4, 1, -1),
+            ("tangent1_ctl", "T", "z", rSz * 4, 1, -1),
         ]
         if self.endCtl:
             ctl_defs.append(("end_ctl", "rotator", None, rSz * 1.5, 0, -1))
@@ -96,7 +97,7 @@ class SpineQd(RigModule):
 
         self.cog_ctl.cv_move(0, rSz * 40, rSz * 10)
         self.cog_ctl.cv_scale(1, 1.5, 2)
-        # self.setting.cv_move(0, rSz * 40, 0)
+        self.setting.cv_move(0, rSz * 30, 0)
         # self.base_ctl.cv_rotate(0, 180, 0)
 
         if self.end_ctl:
@@ -157,7 +158,7 @@ class SpineQd(RigModule):
         #
         #   build 3 ik joints from crv
         #
-        self.jnts_ik = JntNode.createJntFrCrv(
+        self.jnts_ik = JntNode.createJntsFrCrv(
             self.LINE_GUIDE, num=3, name="ikj", pf=rID, size=rSz, chain=0
         )
         ikj0, ikj1, ikj2 = self.jnts_ik
@@ -202,23 +203,23 @@ class SpineQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         # --- Create ribbon curve and joints ---
-        crv = CrvNode(mc.duplicateCurve(f"{rbSrf}.u[0.5]", rn=0, local=0)[0])
-        crv.a.inheritsTransform.set(0)
-        crv | self.CTL_DATA
-        jntFrCrv = JntNode.createJntFrCrv(
-            crv, pf=rID, name="spikj", num=jntNum, size=rSz, p=self.CTL_DATA
+        self.rbCrv = CrvNode(mc.duplicateCurve(f"{rbSrf}.u[0.5]", rn=0, local=0)[0])
+        self.rbCrv.a.inheritsTransform.set(0)
+        self.rbCrv | self.CTL_DATA
+        jntsFrCrv = JntNode.createJntsFrCrv(
+            self.rbCrv, pf=rID, name="spikj", num=jntNum, size=rSz, p=self.CTL_DATA
         )
-        jntFrCrv[0].a.inheritsTransform.set(0)
+        jntsFrCrv[0].a.inheritsTransform.set(0)
 
         global_scale = self.masterC.a.globalScale
         ik_handle = IkNode(
             "sp",
             pf=rID,
-            sj=jntFrCrv[0],
-            ee=jntFrCrv[-1],
+            sj=jntsFrCrv[0],
+            ee=jntsFrCrv[-1],
             solver=Solver.SPLINE,
             createCrv=0,
-            inputCrv=crv,
+            inputCrv=self.rbCrv,
             setting=setting,
             scaleFix=global_scale,
             scaleFix2=None,
@@ -229,8 +230,10 @@ class SpineQd(RigModule):
 
         # --- Calculate curve length ratio ---
         crv_info = DagNode("crvInfo#", nodeType="curveInfo")
-        crv.shape.a.worldSpace >> crv_info.a.inputCurve
-        crv_len_ratio = crv_info.a.arcLength / global_scale / scaleAttr / crv.length
+        self.rbCrv.shape.a.worldSpace >> crv_info.a.inputCurve
+        crv_len_ratio = (
+            crv_info.a.arcLength / global_scale / scaleAttr / self.rbCrv.length
+        )
 
         # --- Create joint groups and constraints ---
         loc_grp = GrpNode("loc_grp", pf=rID, p=self.JNT_DATA)
@@ -242,7 +245,7 @@ class SpineQd(RigModule):
             posi = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
             grp = GrpNode(f"{i}_rbj_grp", pf=rID, p=loc_grp)
 
-            jntFrCrv[i].a.worldMatrix >> dcpm.a.inputMatrix
+            jntsFrCrv[i].a.worldMatrix >> dcpm.a.inputMatrix
             dcpm.a.outputTranslate >> cpos.a.inPosition
             rbSrf.shape.a.worldSpace >> cpos.a.inputSurface
             cpos.a.parameterU >> posi.a.parameterU
@@ -287,8 +290,8 @@ class SpineQd(RigModule):
             self.end_ctl.cstPar(self.end_jnt, mo=1)
             self.jnts_bind.append(self.end_jnt)
 
-        # ik_handle.hide()
-        return crv_len_ratio, jntFrCrv, rb_jnts
+        ik_handle.hide()
+        return crv_len_ratio, jntsFrCrv, rb_jnts
 
     def build_twoJ_ik(self):
         """Build a two-joint IK system for the spine rig."""
@@ -342,12 +345,17 @@ class SpineQd(RigModule):
 
         # --- Drive mid control rz by average of fore and base controls ---
         self.mid_ctl.addOffsetGrp()
-        (self.fore_ctl.a.rz @ self.base_ctl.a.rz) >> self.mid_ctl.offset.a.rz
+        # (self.fore_ctl.a.rz @ self.base_ctl.a.rz) >> self.mid_ctl.offset.a.rz
+        twistRatio = self.mid_ctl.a.add("twistRatio", min=0, max=1, dv=0.25)
+        (
+            ut.blend2_(self.fore_ctl.a.rz, self.base_ctl.a.rz, w=twistRatio)
+            >> self.mid_ctl.offset.a.rz
+        )
 
     def build_volume(self, crvLenRatio):
         """Build volume control for the spine rig."""
         # add volume graph keys
-        volConserve = self.setting.a.add("volConserve", dv=1, min=0)
+        keepVol = self.setting.a.add("keepVol", dv=1, min=0)
         volGraph = self.setting.a.add("volGraph", dv=0)
         mc.setKeyframe(volGraph, t=0, v=0)
         mc.setKeyframe(volGraph, t=(self.rbnJntNum - 1) / 2, v=1)
@@ -359,7 +367,7 @@ class SpineQd(RigModule):
             fc = DagNode("fc__#", nodeType="frameCache")
             volGraph >> fc.a.stream
             fc.a.varyTime.set(i)
-            ratio = (1 / crvLenRatio) ** (fc.a.varying * volConserve)
+            ratio = (1 / crvLenRatio) ** (fc.a.varying * keepVol)
             ratio >> self.jnts_rb[i].a.sy
             ratio >> self.jnts_rb[i].a.sz
 
@@ -375,14 +383,15 @@ class SpineQd(RigModule):
         # ikJntVis >> self.jnts_spIk[0].a.v
         # ikJntVis >> self.jnts_twoIk[0].a.v
 
-        # self.ctl_vis_toggle(
-        #     self.setting.a.add("debugVis", type="bool", dv=0, k=0),
-        #     onList=self.jnts_ik
-        #     + self.jnts_fk
-        #     + self.jnts_spIk
-        #     + self.jnts_twoIk
-        #     + [self.anchorToRbj],
-        # )
+        self.ctl_vis_toggle(
+            self.setting.a.add("setupJntVis", type="bool", dv=0, k=0),
+            onList=self.jnts_ik
+            + self.jnts_fk
+            + self.jnts_spIk
+            + self.jnts_twoIk
+            + [self.rbSrf, self.rbCrv],
+            # + [self.anchorToRbj],
+        )
         # + self.jnts_rb
         # mc.hide(self.rbSrf)
 

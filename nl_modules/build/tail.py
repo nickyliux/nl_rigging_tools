@@ -119,7 +119,7 @@ class Tail(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        self.jnts_ik = JntNode.createJntFrCrv(
+        self.jnts_ik = JntNode.createJntsFrCrv(
             self.LINE_GUIDE,
             num=5,
             name="ikj",
@@ -169,7 +169,7 @@ class Tail(RigModule):
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
-        self.jnts_fk = JntNode.createJntFrCrv(
+        self.jnts_fk = JntNode.createJntsFrCrv(
             self.LINE_GUIDE,
             num=self.fkJntNum,
             pf=rID,

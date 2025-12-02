@@ -74,10 +74,10 @@ class Test_JntNode_Main(Test_JntNode_Base):
 
     def test_makeJChainFrCrv(self):
         crv = mc.circle()[0]
-        jnts = JntNode.createJntFrCrv(crv, num=6)
+        jnts = JntNode.createJntsFrCrv(crv, num=6)
         self.assertEqual(len(jnts), 6)
 
-        jnts = JntNode.createJntFrCrv(crv, num=6, addEndJ=1)
+        jnts = JntNode.createJntsFrCrv(crv, num=6, addEndJ=1)
         self.assertEqual(len(jnts), 7)
 
     def test_duplicate(self):

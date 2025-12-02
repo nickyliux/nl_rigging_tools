@@ -107,7 +107,7 @@ class SpineQdCrv(rig_module.RigModule):
             return
 
         # BUILD JOINT CHAIN
-        self.jnts = JntNode.createJntFrCrv(
+        self.jnts = JntNode.createJntsFrCrv(
             crv, num=self.mg_jntNum, pf=self.rigID, p=self.JNT_DATA
         )
 

@@ -99,7 +99,7 @@ class TailFk(RigModule):
         rID, rSz, xDr = self.getMyVar()
         cluName = rID + "clu_#"
 
-        self.fkJnt = JntNode.createJntFrCrv(
+        self.fkJnt = JntNode.createJntsFrCrv(
             self.LINE_GUIDE,
             num=self.FK_BONE_NUM + 1,
             pf=rID,

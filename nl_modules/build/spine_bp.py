@@ -84,11 +84,10 @@ class SpineBp(RigModule):
                 ("mid_ikc", "cube", None, (rSz * 2, rSz, rSz * 2), 1, -1),
                 ("hip_ikc", "hip", None, rSz * 2, 0, -1),
             ]
-
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        self.setting.cv_move(0, -rSz * 20, 0)
+        self.setting.cv_move(0, rSz * 15, 0)
 
     def is_ribbon(self):
         """Check if the spine rig is of ribbon type."""
@@ -115,7 +114,7 @@ class SpineBp(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        self.jnts_fk = JntNode.createJntFrCrv(
+        self.jnts_fk = JntNode.createJntsFrCrv(
             self.LINE_GUIDE,
             num=self.fkJntNum,
             pf=rID,
@@ -295,7 +294,7 @@ class SpineBp(RigModule):
         d = arcLD.a.arcLengthInV
         D = d.get()
 
-        keepVol = self.setting.a.add("keepVol", dv=0.5)
+        keepVol = self.setting.a.add("keepVol", min=0, dv=0.5)
         self.chest_ikc.a.add("keepVol", proxy=keepVol)
         self.hip_ikc.a.add("keepVol", proxy=keepVol)
 

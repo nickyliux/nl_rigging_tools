@@ -123,7 +123,7 @@ class Belt(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         # --- Create IK joint chain from guide curve ---
-        self.jnts_ik = JntNode.createJntFrCrv(
+        self.jnts_ik = JntNode.createJntsFrCrv(
             self.LINE_GUIDE,
             num=self.ikCtlNum,
             name="ikj",
