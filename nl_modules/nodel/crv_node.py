@@ -32,7 +32,7 @@ class CrvNode(GrpNode):
         scaleY=1,
         scaleZ=1,
         dspType=0,
-        width=-1,
+        width=2,
         up="",
         top=0,
     ):
@@ -92,7 +92,7 @@ class CrvNode(GrpNode):
             if any(vec):
                 self.cv_move(*vec)
 
-        self.width = width
+        self.width = 2  # width
         if top:
             self.setOnTop(1)
 
@@ -266,7 +266,7 @@ class CrvNode(GrpNode):
         addOfs=0,
         p=None,
         top=0,
-        width=-1,
+        width=2,
         *args,
         **kwargs,
     ):
@@ -303,7 +303,7 @@ class CrvNode(GrpNode):
             self.addOffsetGrp()
         if top:
             CrvNode(self).setOnTop(1)
-        self.width = width
+        self.width = 2  # width
         return self
 
     def reverse(self):

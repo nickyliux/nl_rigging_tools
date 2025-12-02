@@ -113,11 +113,9 @@ def buildSelOrAll(*arg, uiPB=None):
         mc.select(cl=1)
         if uiPB:
             uiPB.setValue(0)
-
-        proxy.genProxy()
+        # proxy.genProxy()
 
     common.modelPanelShow(jnt=1)
-    # common.xRayAllGeo(state=0)
 
 
 def postRig():

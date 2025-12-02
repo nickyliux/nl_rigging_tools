@@ -76,14 +76,14 @@ def matchMove(targetList, mode=None):
     mc.matchTransform(*others, last, position=t, rotation=r, scale=s)
 
 
-def assignShd(n, geo=None, color=(0, 0, 0), faceID=None):
-    """Assign shader to entire or faceID"""
-    shd, sg = addShader(n, color=color)
-    if faceID:
-        for fID in faceID:
-            mc.sets(f"{geo}.f[{fID}]", forceElement=sg)
-    else:
-        mc.sets(geo, forceElement=sg)
+# def assignShd(n, geo=None, color=(0, 0, 0), faceID=None):
+#     """Assign shader to entire or faceID"""
+#     shd, sg = addShader(n, color=color)
+#     if faceID:
+#         for fID in faceID:
+#             mc.sets(f"{geo}.f[{fID}]", forceElement=sg)
+#     else:
+#         mc.sets(geo, forceElement=sg)
 
 
 def assignPresetShd(*args, tgts=None):
@@ -101,21 +101,19 @@ def assignPresetShd(*args, tgts=None):
         34: [0, 1, 4, 5, 8, 9, 12, 13, 16, 17, 20, 21, 24, 25, 28, 29],
     }
 
-    colorSet = [DagNode.COLOR_MID, DagNode.COLOR_LEFT, DagNode.COLOR_RIGHT]
-    if args[0] == 1:
-        colorSet = [DagNode.COLOR_MID_D, DagNode.COLOR_LEFT_D, DagNode.COLOR_RIGHT_D]
+    colorPreset = DagNode.COLOR_PRESET_1 if args[0] == 0 else DagNode.COLOR_PRESET_2
 
     for tgt_name in tgts:
         tgt = DagNode(tgt_name)
 
         name = "proxy_mid_shd"
-        color = colorSet[0]
+        color = colorPreset[0]
         if tgt.name.startswith("lf"):
             name = "proxy_lf_shd"
-            color = colorSet[1]
+            color = colorPreset[1]
         elif tgt.name.startswith("rt"):
             name = "proxy_rt_shd"
-            color = colorSet[2]
+            color = colorPreset[2]
 
         # Assign shader based on type
         if tgt.type == "mesh":

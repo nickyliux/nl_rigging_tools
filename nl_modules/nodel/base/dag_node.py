@@ -14,13 +14,9 @@ class DagNode(DepNode):
         n = DagNode('new', nodeType='transform')
     """
 
-    COLOR_MID = (1.0, 0.8, 0.24)
-    COLOR_LEFT = (0.36, 0.66, 1)
-    COLOR_RIGHT = (0.71, 0.30, 0.30)
-
-    COLOR_MID_D = (0.1, 0.05, 0.0)
-    COLOR_LEFT_D = (0.0, 0.0, 0.50)
-    COLOR_RIGHT_D = (0.3, 0.0, 0.0)
+    # color for [ mid, left, right ]
+    COLOR_PRESET_1 = [(1.0, 0.8, 0.24), (0.36, 0.66, 1), (0.71, 0.30, 0.30)]
+    COLOR_PRESET_2 = [(0.1, 0.05, 0.0), (0.0, 0.0, 0.50), (0.3, 0.0, 0.0)]
 
     def __init__(self, n, nodeType=None):
         """Initialize DagNode with node name and type."""
@@ -652,12 +648,14 @@ class DagNode(DepNode):
 
     def get_side_color(self):
         """Return color depending on side"""
-        color = self.COLOR_MID
+        colorPreset = DagNode.COLOR_PRESET_2
         n = str(self.node)
+
+        color = colorPreset[0]
         if n.startswith("lf"):
-            color = self.COLOR_LEFT
+            color = colorPreset[1]
         elif n.startswith("rt"):
-            color = self.COLOR_RIGHT
+            color = colorPreset[2]
         return color
 
     def getMtx(self):

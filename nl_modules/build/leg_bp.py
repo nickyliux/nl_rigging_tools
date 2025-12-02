@@ -446,12 +446,7 @@ class LegBp(RigModule):
         # Ball IK control
         self.ball_ikc = ballRollG.addOffsetGrp(below=1)
         CrvNode(self.ball_ikc)(
-            name="ball_ikc",
-            pf=rID,
-            shape="rotator",
-            scale=-scale / 2,
-            rotateY=90,
-            width=-1,
+            name="ball_ikc", pf=rID, shape="rotator", scale=-scale / 2, rotateY=90
         )
         self.rigNode.setMsg({"ball_ikc": self.ball_ikc})
         self.ctls_ik.append(self.ball_ikc)

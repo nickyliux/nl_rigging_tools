@@ -174,7 +174,6 @@ class ArmBp(RigModule):
         # self.build_nlAutoAim(
         #     self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc
         # )
-
         self.build_post()
 
     def build_fk(self):

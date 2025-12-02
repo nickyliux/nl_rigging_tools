@@ -907,7 +907,7 @@ class RigModule(RigBase):
 
     def create_and_register_ctl(self, name, shape, up, scale, top, w, rID):
         """Create a control node and register it in the rigNode"""
-        ctl = CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, width=w, top=top)
+        ctl = CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, width=2, top=top)
         setattr(self, name, ctl)
         self.rigNode.setMsg({name: ctl})
 
@@ -1094,7 +1094,8 @@ class RigModule(RigBase):
 
         self.all_bendy = [upr_bend, lwr_bend, mid_bend]
         for ctl in self.all_bendy:
-            ctl(shape="cube", scale=(rSz / 4, rSz / 2, rSz / 2), top=1)
+            ctl(shape="diamond3", scale=rSz, top=1)
+            # (rSz / 4, rSz / 2, rSz / 2)
 
         upLoc.cstPar(upr_bend.offset, mo=1)
         if upLoc.children:
