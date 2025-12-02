@@ -101,18 +101,21 @@ def assignPresetShd(*args, tgts=None):
         34: [0, 1, 4, 5, 8, 9, 12, 13, 16, 17, 20, 21, 24, 25, 28, 29],
     }
 
+    colorSet = [DagNode.COLOR_MID, DagNode.COLOR_LEFT, DagNode.COLOR_RIGHT]
+    if args[0] == 1:
+        colorSet = [DagNode.COLOR_MID_D, DagNode.COLOR_LEFT_D, DagNode.COLOR_RIGHT_D]
+
     for tgt_name in tgts:
         tgt = DagNode(tgt_name)
-        name = "proxy_mid_shd"
-        color = DagNode.COLOR_MID if args[0] == 0 else DagNode.COLOR_MID_D
 
-        # Determine shader name and color based on target name
+        name = "proxy_mid_shd"
+        color = colorSet[0]
         if tgt.name.startswith("lf"):
             name = "proxy_lf_shd"
-            color = DagNode.COLOR_LEFT if args[0] == 0 else DagNode.COLOR_LEFT_D
+            color = colorSet[1]
         elif tgt.name.startswith("rt"):
             name = "proxy_rt_shd"
-            color = DagNode.COLOR_RIGHT if args[0] == 0 else DagNode.COLOR_RIGHT_D
+            color = colorSet[2]
 
         # Assign shader based on type
         if tgt.type == "mesh":

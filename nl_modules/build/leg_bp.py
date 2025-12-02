@@ -148,7 +148,7 @@ class LegBp(RigModule):
             ("ball_fkc", "circle", "x", scale, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
             ("pvc", "pvc", None, rSz, 0, -1),
-            ("smart_ctl", "rotate", None, scale, 0, -1),
+            ("smart_ctl", "rotate", None, scale / 2, 0, -1),
         ]
         if self.scapulaExtra:
             ctl_defs.append(("scap_fkc", "shoulder", None, scale, 0, -1))
@@ -530,24 +530,24 @@ class LegBp(RigModule):
             offList=self.ctls_fk[1:-1],
         )
         self.ctl_vis_toggle(
-            self.ikc.a.add("pvcVis", type="bool", dv=1, k=0),
+            self.ikc.a.add("pvcVis", type="bool", k=0, dv=1),
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJntVis", type="bool", dv=0, k=0),
+            self.setting.a.add("setupJntVis", type="bool", k=0),
             onList=self.jnts_fk + self.jnts_ik + self.jnts_bf,
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("rollJntVis", type="bool", dv=1, k=0),
+            self.setting.a.add("rollJntVis", type="bool", k=0),
             onList=self.rollJnts + self.aimJnts,
         )
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
-                self.setting.a.add("ribbonVis", type="bool", dv=0, k=0),
+                self.setting.a.add("ribbonVis", type="bool", k=0),
                 onList=[self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP],
             )
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyVis", type="bool", k=0, dv=0),
+                self.setting.a.add("bendyVis", type="bool", k=0),
                 onList=self.all_bendy,
             )
         mc.hide(self.ikhs, self.toeIKHs)

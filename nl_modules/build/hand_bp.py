@@ -71,9 +71,9 @@ class HandBp(RigModule):
 
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
         self.smart_ctl.cv_rotate(90, 0, 0)
-        self.palm_ctl.color = Color.D_YELLOW
-        self.thumb_ctl.color = Color.D_YELLOW
-        self.smart_ctl.color = Color.D_YELLOW
+        # self.palm_ctl.color = Color.D_YELLOW
+        # self.thumb_ctl.color = Color.D_YELLOW
+        # self.smart_ctl.color = Color.D_YELLOW
 
     def build(self):
         """Build the hand rig module."""
@@ -97,7 +97,11 @@ class HandBp(RigModule):
         ctlList = []
         for fgr in fgrs[:-1]:
             ctl = CrvNode(
-                f"{fgr.name}_ctl", shape="stickC", scale=-scale / 2, align=fgr, width=2
+                # f"{fgr.name}_ctl", shape="stickC", scale=-scale / 2, align=fgr, width=2
+                f"{fgr.name}_ctl",
+                scale=-scale / 2,
+                align=fgr,
+                width=2,
             )
             ctl.cv_rotate(90, 0, 0)
             ctlList.append(ctl)
