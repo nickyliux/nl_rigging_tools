@@ -153,6 +153,7 @@ class ArmBp(RigModule):
                 up1="ty",
                 up2="tz",
             )
+            self.ikc.a.add("keepVol", proxy=self.setting.a.keepVol)
             self.ikc.a.add("volType", proxy=self.setting.a.volType)
 
         elif self.limbType == LimbType.SKEL.value:

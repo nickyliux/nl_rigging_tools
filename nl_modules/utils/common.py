@@ -450,12 +450,18 @@ def dupSk(jntList, sf="", p=None, color=None, r=1):
         ikJList = extractSk(jointList, sf='_ik)
     """
     from nl_modules.nodel.jnt_node import JntNode
+    from nl_modules.nodel.base.dag_node import DagNode
 
     dupJList = mc.duplicate(jntList, po=1, rc=1)
 
     newJList = []
     for dupJ, jnt in zip(dupJList, jntList):
-        j = JntNode(dupJ).rename(jnt + sf)
+        newName = jnt + sf
+        if DagNode(newName).exists():
+            logging.warning(f"Joint {newName} exists, rename skipped.")
+            continue
+
+        j = JntNode(dupJ).rename(newName)
         j.setRadius(r)
         newJList.append(j)
 
