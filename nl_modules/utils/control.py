@@ -58,8 +58,6 @@ def mirrorCtlShape(ctl):
         return
 
     dup = ctl.duplicate()
-    dup.shape.a.lineWidth.set(ctl.shape.a.lineWidth.get())
-
     dup.a.showAttr(t=1, r=1, s=1)
     if dup.children:
         mc.delete(dup.children)
@@ -79,14 +77,14 @@ def mirrorCtlShape(ctl):
     for shape in dup.shapes:
         mc.parent(shape, opp, s=1, r=1)
 
+    w = ctl.shape.a.lineWidth.get()
     for shape in opp.shapes:
         shape.rename(opp.name + "Shape#")
+        shape.a.lineWidth.set(w)
 
     common.assignPresetShd(1, tgts=[opp])
-
     opp.deleteHistory()
     mc.delete(dup, tempGrp)
-
     return opp
 
 
