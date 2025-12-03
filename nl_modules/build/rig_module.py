@@ -1062,14 +1062,22 @@ class RigModule(RigBase):
         )
 
     def build_bendy_ribbon(
-        self, rbnJntNum=5, root=None, upr=None, lwr=None, palm=None, kneeFix=0, up="tz"
+        self,
+        jntNum=5,
+        root=None,
+        upr=None,
+        lwr=None,
+        palm=None,
+        kneeFix=0,
+        up1="tz",
+        up2="tz",
     ):
         """Build a ribbon rig with upper and lower parts, and setup controls."""
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
-        ribbonUp = self.build_rbn(upr, name="up", rbnJntNum=rbnJntNum, volMode=0, up=up)
-        ribbonLw = self.build_rbn(lwr, name="lw", rbnJntNum=rbnJntNum, volMode=1, up=up)
+        ribbonUp = self.build_rbn(upr, name="up", rbnJntNum=jntNum, volMode=0, up=up1)
+        ribbonLw = self.build_rbn(lwr, name="lw", rbnJntNum=jntNum, volMode=1, up=up2)
 
         # Connect master guide scale to the ribbon groups
         # self.masterC2.a.s >> ribbonUp.RBN_GRP.a.s

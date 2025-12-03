@@ -144,13 +144,14 @@ class ArmBp(RigModule):
 
         elif self.limbType == LimbType.RIBBON.value:
             self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(
-                rbnJntNum=self.rbnJntNum,
+                jntNum=self.rbnJntNum,
                 root=self.clavicle,
                 upr=self.upr,
                 lwr=self.lwr,
                 palm=self.palm,
                 kneeFix=0,
-                up="ty",
+                up1="ty",
+                up2="tz",
             )
             self.ikc.a.add("volType", proxy=self.setting.a.volType)
 
@@ -521,11 +522,11 @@ class ArmBp(RigModule):
                 onList=[self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP],
             )
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyVis", type="bool", k=0, dv=1),
+                self.setting.a.add("bendyCtlVis", type="bool", k=0, dv=1),
                 onList=self.all_bendy,
             )
 
-        self.ikc.a.localRot >> self.palm_ikc.a.v
+        self.ikc.a.fkIk * self.ikc.a.localRot >> self.palm_ikc.a.v
         mc.hide(self.ikhs)
 
     def setup_channel(self):

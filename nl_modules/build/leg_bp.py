@@ -206,13 +206,14 @@ class LegBp(RigModule):
 
         elif self.limbType == LimbType.RIBBON.value:
             self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(
-                rbnJntNum=self.rbnJntNum,
+                jntNum=self.rbnJntNum,
                 root=self.hip,
                 upr=self.upr,
                 lwr=self.lwr,
                 palm=self.palm,
                 kneeFix=self.kneeFix,
-                up="ty",
+                up1="ty",
+                up2="ty",
             )
             if self.kneeFix:
                 self.boneFix.cstPoi(self.ribbon_lw.stt_loc)
@@ -542,7 +543,7 @@ class LegBp(RigModule):
                 onList=[self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP],
             )
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyVis", type="bool", k=0),
+                self.setting.a.add("bendyCtlVis", type="bool", k=0),
                 onList=self.all_bendy,
             )
         mc.hide(self.ikhs, self.toeIKHs)
