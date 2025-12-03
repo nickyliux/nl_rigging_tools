@@ -166,14 +166,9 @@ class ArmBp(RigModule):
         self.aimJnts, self.ctls_up = self.build_aimHelper([self.palm], addCtl=1)
         self.aimJnts.extend(self.build_aimHelper([self.lwr]))
 
-        self.rollJnts.extend(
-            self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
-        )
-        self.rollJnts.extend(
-            self.build_uprRollJ(self.lwr, self.palm, num=self.rollJntNum)
-        )
-        # jnt_ro2 = self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
-        # self.jnts_roll = [jnt_ro1, jnt_ro2]
+        n = self.rollJntNum
+        self.rollJnts.extend(self.build_uprRollJ(self.upr, self.lwr, num=n, sf="_ro1"))
+        self.rollJnts.extend(self.build_uprRollJ(self.lwr, self.palm, num=n, sf="_ro2"))
 
         # self.build_nlAutoAim(
         #     self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc
@@ -513,7 +508,7 @@ class ArmBp(RigModule):
         )
         if self.ctls_up:
             self.ctl_vis_toggle(
-                self.setting.a.add("rollupCtlVis", type="bool", k=0),
+                self.setting.a.add("aimUpCtlVis", type="bool", k=0),
                 onList=self.ctls_up,
             )
 

@@ -147,7 +147,7 @@ class LegBp(RigModule):
             ("palm_fkc", "squareR", "x", scale, 0, -1),
             ("ball_fkc", "squareR", "x", scale, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
-            ("pvc", "pvc", None, rSz, 0, -1),
+            ("pvc", "sphere", None, rSz, 0, -1),
             ("smart_ctl", "rotate", None, scale / 2, 0, -1),
         ]
         if self.scapulaExtra:
@@ -232,13 +232,10 @@ class LegBp(RigModule):
             self.jnts_bind += [self.palm, self.ball]
 
         self.aimJnts = self.build_aimHelper([self.lwr, self.palm])
-        self.rollJnts.extend(
-            self.build_uprRollJ(self.upr, self.lwr, num=self.rollJntNum)
-        )
-        self.rollJnts.extend(
-            self.build_uprRollJ(self.lwr, self.palm, num=self.rollJntNum)
-        )
-        # self.build_lwrRollJ(self.palm, self.ball, num=self.rollJntNum)
+
+        n = self.rollJntNum
+        self.rollJnts.extend(self.build_uprRollJ(self.upr, self.lwr, num=n, sf="_ro1"))
+        self.rollJnts.extend(self.build_uprRollJ(self.lwr, self.palm, num=n, sf="_ro2"))
 
         self.build_post()
 

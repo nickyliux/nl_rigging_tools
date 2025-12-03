@@ -969,44 +969,49 @@ class RigModule(RigBase):
         else:
             return aimJnts
 
-    def build_rollChain(self, jnt0, jnt1, num=2, name="rollChain_#"):
+    def build_rollChain(self, jnt0, jnt1, num=2, sf="_ro"):
         """Build a roll chain between two joints. Add locator for delta roll"""
         rID, rSz, xDr = self.getMyVar()
         tgt_p = jnt0.parent
         if not tgt_p or tgt_p.type != "joint":
             raise ValueError(f"No target parent or it is not a joint")
 
-        self.jnts_ro = common.dupSk([jnt0, jnt1], "_ro_#", r=rSz)
+        self.jnts_ro = common.dupSk([jnt0, jnt1], sf, r=rSz)
         self.jnts_ro[1].a.ty.set(0)
         self.jnts_ro[1].a.tz.set(0)
 
         roll_ikH = IkNode(
-            f"{name}_#",
+            f"{jnt0.name}_roll",
             rSz=rSz,
             sj=jnt0,
             ee=jnt1,
+            jsf=sf,
             solver=Solver.RP,
             quat=1,
             p=jnt0,
             vis=0,
         )
         roll_loc = LocNode(
-            f"{name}_loc_#", size=rSz * 10, align=self.jnts_ro[0], p=self.jnts_ro[0]
+            jnt0.name,
+            sf="_loc",
+            size=rSz * 10,
+            align=self.jnts_ro[0],
+            p=self.jnts_ro[0],
         )
         jnt0.cstOri(roll_loc)
         return roll_loc, self.jnts_ro[0]
 
-    def build_uprRollJ(self, jnt0, jnt1, num=2, suffix="roll"):
+    def build_uprRollJ(self, jnt0, jnt1, num=2, sf="_ro"):
         """Build upper roller joints. They are added between jnt0 and jnt1."""
-        name = jnt0 + "_" + suffix
-        roll_loc, roll_jnt0 = self.build_rollChain(jnt0, jnt1, num, name)
+        # name = jnt0 + "_" + suffix
+        roll_loc, roll_jnt0 = self.build_rollChain(jnt0, jnt1, num, sf)
         rollJnts = []
 
         for i in range(num):
             j = jnt0.duplicate(po=1, p=roll_jnt0)
-            j.color = Color.YELLOW
+            j.color = Color.PINK
             j.a.radius.set(self.rigSize * 3)
-            j.rename(f"{name}_{i}")
+            j.rename(f"{jnt0.name}{sf}_{i}")
             proxy.add_height_attr([j], self.rigSize / num * 20)
 
             ratio = i / num
