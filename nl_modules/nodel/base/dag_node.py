@@ -648,7 +648,7 @@ class DagNode(DepNode):
 
     def get_side_color(self):
         """Return color depending on side"""
-        colorPreset = DagNode.COLOR_PRESET_2
+        colorPreset = DagNode.COLOR_PRESET_1
         n = str(self.node)
 
         color = colorPreset[0]

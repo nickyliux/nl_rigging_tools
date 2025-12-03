@@ -104,7 +104,7 @@ class ArmBp(RigModule):
             ("lwr_fkc", "circle", "x", scale, 0, -1),
             ("palm_fkc", "circle", "x", scale, 0, -1),
             ("ikc", "cube", None, scale * 2, 0, -1),
-            ("pvc", "diamond3", None, rSz * 2, 0, -1),
+            ("pvc", "pvc", None, rSz, 0, -1),
             ("palm_ikc", "squareR", "x", scale, 0, 2),
         ]
 
@@ -121,7 +121,7 @@ class ArmBp(RigModule):
 
         self.ikc.cv_rotate(0, 90, 0)
         self.pvc.cv_rotate(-90, 0, 0)
-        self.setting.cv_move(0, scale * 10, 0)
+        self.setting.cv_move(0, scale * 15, 0)
 
     def build(self):
         """Build the arm rig module."""
@@ -150,8 +150,10 @@ class ArmBp(RigModule):
                 lwr=self.lwr,
                 palm=self.palm,
                 kneeFix=0,
-                up="tz",
+                up="ty",
             )
+            self.ikc.a.add("volType", proxy=self.setting.a.volType)
+
         elif self.limbType == LimbType.SKEL.value:
             self.jnts_bind += [self.upr]
             self.build_dual_bones()
