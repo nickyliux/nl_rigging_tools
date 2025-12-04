@@ -64,7 +64,7 @@ class Belt(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
 
-        ctl_defs = [("setting", "gear", "z", rSz * 2, 1, 2)]
+        ctl_defs = [("setting", "gear", "z", rSz * 3, 1, 2)]
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
@@ -256,7 +256,10 @@ class Belt(RigModule):
 
     def setup_vis(self):
         """Setup visibility toggles for the belt rig controls."""
-        pass
+        self.ctl_vis_toggle(
+            self.setting.a.add("ribbonVis", k=0, type="bool"),
+            onList=[self.rbSrf1],
+        )
         # self.ctl_vis_toggle(
         #     self.setting.a.add("showIk", k=0, type="bool", dv=1),
         #     onList=[self.ctls_ik[0]],

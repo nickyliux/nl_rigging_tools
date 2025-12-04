@@ -140,6 +140,8 @@ def loadWeight(uiPB):
         uiPB.setMaximum(len(weightJnt_dict))
     i = 0
     loadCount = 0
+
+    common.setViewport(fit=1)
     common.xRayAllGeo(1)
     mc.setToolTo("selectSuperContext")
     control.reset_all_ctl()
@@ -148,12 +150,10 @@ def loadWeight(uiPB):
 
         if not mc.objExists(mesh):
             continue
-
         weightFile = tgtDir + "/" + mesh + ".xml"
         if not mc.file(weightFile, q=1, ex=1):
             logging.warning(f"Weight file NOT found: {weightFile}")
             continue
-
         loadCount += skinAndLoadW(mesh, weightJnt_dict[mesh], tgtDir)
 
         if uiPB:

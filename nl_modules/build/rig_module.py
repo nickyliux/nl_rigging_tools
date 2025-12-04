@@ -13,6 +13,7 @@ from nl_modules.utils import common
 from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
+from nl_modules.utils.common import Vec
 
 
 class RigModule(RigBase):
@@ -1097,9 +1098,9 @@ class RigModule(RigBase):
         lwr_bend = CrvNode("lwr_bend", pf=rID, align=lwLoc, addOfs=1, p=grp)
         mid_bend = CrvNode("mid_bend", pf=rID, align=lwr, addOfs=1, p=grp)
 
-        self.all_bendy = [upr_bend, lwr_bend, mid_bend]
+        self.all_bendy = [upr_bend, mid_bend, lwr_bend]
         for ctl in self.all_bendy:
-            ctl(shape="cube", scale=(rSz / 4, rSz / 2, rSz / 2), top=1)
+            ctl(shape="cube", scale=Vec((0.25, 0.5, 0.5)) * rSz, top=1)
             # (rSz / 4, rSz / 2, rSz / 2)
 
         upLoc.cstPar(upr_bend.offset, mo=1)

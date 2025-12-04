@@ -63,7 +63,7 @@ class Tail(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        ctl_defs = [("setting", "gear", "z", rSz * 2, 1, 2)]
+        ctl_defs = [("setting", "gear", "z", rSz, 1, 2)]
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
@@ -252,8 +252,12 @@ class Tail(RigModule):
             onList=[self.ctls_fk[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("subIkCtlVis", k=0, type="bool", dv=0),
+            self.setting.a.add("subIkCtlVis", k=0, type="bool"),
             onList=self.ctls_ofs,
+        )
+        self.ctl_vis_toggle(
+            self.setting.a.add("ribbonVis", k=0, type="bool"),
+            onList=[self.rbSrf1, self.rbSrf2],
         )
         mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)
         # mc.hide(self.rbSrf1, self.rbSrf2, self.setting)

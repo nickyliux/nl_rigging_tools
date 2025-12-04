@@ -90,7 +90,7 @@ class FingerFk(RigModule):
             # ("pvc", "pvc", "z", -scale, 0, -1),
         ]
         if self.segNum >= 2:
-            ctl_defs.append(("fgr02_fkc", "stick", None, -scale, 0, 3))
+            ctl_defs.append(("fgr02_fkc", "stickC", None, -scale * 1.5, 0, -1))
         if self.segNum >= 3:
             ctl_defs.append(("fgr03_fkc", "stickC", None, -scale, 0, -1))
         if self.segNum >= 4:

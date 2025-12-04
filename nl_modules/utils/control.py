@@ -82,7 +82,7 @@ def mirrorCtlShape(ctl):
         shape.rename(opp.name + "Shape#")
         shape.a.lineWidth.set(w)
 
-    common.assignPresetShd(1, tgts=[opp])
+    common.assignPresetShd(0, tgts=[opp])
     opp.deleteHistory()
     mc.delete(dup, tempGrp)
     return opp

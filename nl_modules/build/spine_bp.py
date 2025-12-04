@@ -81,7 +81,7 @@ class SpineBp(RigModule):
         if self.is_ribbon():
             ctl_defs += [
                 ("chest_ikc", "chest", None, rSz * 5, 0, -1),
-                ("mid_ikc", "cube", None, rSz * Vec((1, 0.5, 1)), 1, -1),
+                ("mid_ikc", "cube", None, rSz * Vec((2, 1, 2)), 1, -1),
                 ("hip_ikc", "hip", None, rSz * 5, 0, -1),
                 #  (rSz * 2, rSz, rSz * 2)
             ]
@@ -195,15 +195,14 @@ class SpineBp(RigModule):
         # (-self.hip_ikc.a.ry / 2) @ self.chest_ikc.a.ry >> self.mid_ikc.offset.a.ry
         # (self.hip_ikc.a.ry / 2) @ self.chest_ikc.a.ry >> self.mid_ikc.offset.a.ry
         # self.hip_ikc.a.ry @ self.chest_ikc.a.ry >> self.mid_ikc.offset.a.ry
-        twistRatio = self.mid_ikc.a.add("twistRatio", min=0, max=1, dv=0.5)
-        (
-            ut.blend2_(self.hip_ikc.a.ry, self.chest_ikc.a.ry, w=twistRatio)
-            >> self.mid_ikc.offset.a.ry
-        )
+        twistRatio_dv = 0.25 if self.is_neck() else 0.75
+        twistRatio = self.mid_ikc.a.add("twistRatio", min=0, max=1, dv=twistRatio_dv)
+
+        blendRy = ut.blend2_(self.hip_ikc.a.ry, self.chest_ikc.a.ry, w=twistRatio)
+        blendRy >> self.mid_ikc.offset.a.ry
 
         self.hip_ikc.cstAim(
             self.mid_ikc.offset.offset,
-            # worldUpObject=self.hip_ikc,
             worldUpObject=self.cog_ctl,
             worldUpType="objectrotation",
             aim=(0, -1, 0),

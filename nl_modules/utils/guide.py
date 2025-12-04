@@ -193,7 +193,8 @@ def mirrorPose(*arg):
         if mc.ls(ALL_CTL_SET, type="objectSet"):
             all = mc.sets(ALL_CTL_SET, q=1)
 
-        selList = list(set(all) - set(rt))
+        # selList = list(set(all) - set(rt))
+        selList = list(set(lf))
 
     if selList:
         mirrorGuide(selList)
