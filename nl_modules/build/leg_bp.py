@@ -540,7 +540,7 @@ class LegBp(RigModule):
                 onList=[self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP],
             )
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyCtlVis", type="bool", k=0),
+                self.setting.a.add("bendyCtlVis", type="bool", k=0, v=1),
                 onList=self.all_bendy,
             )
         mc.hide(self.ikhs, self.toeIKHs)
@@ -559,6 +559,11 @@ class LegBp(RigModule):
 
         if self.scapulaExtra:
             self.scap_fkc.a.showAttr(t=1, r=1)
+
+        if self.limbType == LimbType.RIBBON.value:
+            self.all_bendy[0].a.showAttr("sx", t=1, r=1)
+            self.all_bendy[1].a.showAttr(t=1)
+            self.all_bendy[2].a.showAttr("sx", t=1, r=1)
 
     def setup_rotate_order(self):
         """Setup rotate order for the leg rig controls."""

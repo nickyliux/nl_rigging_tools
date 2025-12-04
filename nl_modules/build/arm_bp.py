@@ -11,6 +11,8 @@ from nl_modules.utils import common
 from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
+from nl_modules.utils.common import Vec
+
 
 from enum import Enum
 
@@ -99,7 +101,7 @@ class ArmBp(RigModule):
 
         ctl_defs = [
             ("setting", "gear", "z", scale, 1, 2),
-            ("clavicle_fkc", "stick2", "z", scale / 2, 1, -1),
+            ("clavicle_fkc", "cube", None, Vec((0.4, 0.4, 1)) * scale, 1, -1),
             ("upr_fkc", "squareR", "x", scale, 0, -1),
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
             ("palm_fkc", "squareR", "x", scale, 0, -1),
@@ -114,7 +116,7 @@ class ArmBp(RigModule):
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        self.clavicle_fkc.cv_rotate(0, 0, 90)
+        # self.clavicle_fkc.cv_rotate(0, 0, 90)
         # self.clavicle_fkc.cv_move(scale * 30, 0, 0)
         if self.scapulaBone:
             self.scap_fkc.cv_move(0, 0, scale * 20)
@@ -538,6 +540,11 @@ class ArmBp(RigModule):
             ctl.a.showAttr(t=0, r=1, s=0)
         if self.scapulaBone:
             self.scap_fkc.a.showAttr(t=1, r=1)
+
+        if self.limbType == LimbType.RIBBON.value:
+            self.all_bendy[0].a.showAttr("sx", t=1, r=1)
+            self.all_bendy[1].a.showAttr(t=1)
+            self.all_bendy[2].a.showAttr("sx", t=1, r=1)
 
     def setup_rotate_order(self):
         """Setup rotate order for the arm rig controls."""

@@ -178,7 +178,6 @@ def skinAndLoadW(mesh=None, bindJnts=None, tgtDir=None):
     for jnt in bindJnts:
         if not mc.objExists(jnt):
             logging.info(f"{mesh}'s weight NOT loaded. Bind joint missing: {jnt}.")
-            mc.confirmDialog(t="Info", m=f"Bind joint Missing.\n'{jnt}'     ", b="OK")
             return 0
     try:
         skinC = mc.skinCluster(mesh, bindJnts, tsb=1)
