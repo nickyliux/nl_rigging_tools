@@ -394,15 +394,18 @@ class HandBp(RigModule):
     def setup_scale(self):
         """Setup scaling for the hand rig module."""
         handScale = self.smart_ctl.a.add("handScale", min=0, dv=1)
-        handScale >> self.rootJ.a.scale
-        handScale >> self.palm_ctl.offset.a.scale
-        handScale >> self.hand_grp.a.scale
+        for tgt in [
+            self.rootJ,
+            self.thumb_ctl.offset,
+            self.palm_ctl.offset,
+            self.hand_grp,
+        ]:
+            handScale >> tgt.a.scale
 
         for root in self.rootJ.childrenJt:
             root.a.segmentScaleCompensate.set(0)
 
         self.masterC.a.globalScale >> self.JNT_DATA.a.scale
-        # self.rootJ.cstSca(self.RIG_DATA)
 
     def build_post(self):
         """Post setup for the hand rig module."""

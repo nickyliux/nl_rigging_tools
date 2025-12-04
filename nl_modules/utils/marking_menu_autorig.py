@@ -48,6 +48,7 @@ class MarkingMenuAutorig:
     def addBuildOptions(self, menu):
         """Add build options to the marking menu"""
         mc.menuItem(p=menu, l="Build", rp="N", c=build.buildSelOrAll)
+        mc.menuItem(p=menu, l="Build", rp="N", c=partial(build.buildSelOrAll, 1), ob=1)
         mc.menuItem(p=menu, l="Unbuild", rp="NW", c=build.unbuildSelOrAll)
 
     def addHelperOptions(self, menu):
