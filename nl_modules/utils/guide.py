@@ -154,16 +154,16 @@ def mirrorGuide(tgtList, wsMirror=0):
     """Mirror xform for tgtList objects"""
     for tgt in tgtList:
         tgt = DagNode(tgt)
-        if tgt.name.startswith("lf") or tgt.name.startswith("rt"):
-            opp = common.getOpposite(tgt)
-            mg = getMasterGuide(opp)
-            if opp:
-                if mg is None or (mg and mg.a.mirrorable.get()):
-                    copyGuideAttr(tgt, opp, wsMirror=wsMirror, mirror=1)
-            else:
-                logging.warning(f"opposite not found for {tgt.name}")
+        # if tgt.name.startswith("lf") or tgt.name.startswith("rt"):
+        opp = common.getOpposite(tgt)
+        mg = getMasterGuide(opp)
+        if opp:
+            if mg is None or (mg and mg.a.mirrorable.get()):
+                copyGuideAttr(tgt, opp, wsMirror=wsMirror, mirror=1)
         else:
-            copyGuideAttr(tgt, tgt, wsMirror=1, mirror=1)
+            logging.warning(f"opposite not found for {tgt.name}")
+        # else:
+        #     copyGuideAttr(tgt, tgt, wsMirror=1, mirror=1)
 
 
 def mirrorRef(tgtList, wsMirror=0):
@@ -227,6 +227,7 @@ def loadTemplate(removeUnused=1):
     if not tgtFiles:
         return
 
+    common.pauseVP(1)
     rigID_dict = file.loadJson(tgtFiles[-1])
     if removeUnused:  # Remove unused components
         idInPreset = [k + "_RGN" for k in rigID_dict.keys()]
@@ -234,14 +235,10 @@ def loadTemplate(removeUnused=1):
             if node not in idInPreset:
                 build.deleteTgt(node)
 
-    allTgtMG = []
     for rID in rigID_dict:
         mg = DagNode(rID + "_master_guide")
         if not mg.exists():
-
-            tgt_mg = loadGuide(removeEndDigits(rID))
-            allTgtMG.append(tgt_mg)
-            mc.refresh(cv=1)
+            loadGuide(removeEndDigits(rID))
 
         # Load settings from preset
         for guideN, attrs in rigID_dict[rID].items():
@@ -266,6 +263,8 @@ def loadTemplate(removeUnused=1):
                                     guideN.a[attr].set(*v)
     # common.setViewport(fit=1)
     mc.select(cl=1)
+    common.pauseVP(0)
+    common.setViewport(fit=1)
     logging.info(f"Template loaded: {tgtFiles[-1]}.")
 
 

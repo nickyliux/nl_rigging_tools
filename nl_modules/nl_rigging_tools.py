@@ -101,6 +101,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def buildAll(self):
         """Build all rig components."""
+        common.setViewport(fit=1)
         build.buildSelOrAll(uiPB=self.UI.bar_PB)
         self.rigNode_refresh()
 
@@ -514,6 +515,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             uiPB=self.UI.bar_PB,
         )
         build.autoAttach_jntToSrf()
+        mc.select(cl=1)
 
     def templateTarget(self):
         """Toggle template target mesh for wrap deformer."""

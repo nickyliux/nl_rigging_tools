@@ -87,7 +87,7 @@ def preRig():
 
 
 @common.Undo("buildSelOrAll")
-def buildSelOrAll(*arg, uiPB=None):
+def buildSelOrAll(*args, uiPB=None):
     """Build rig for selected rigNodes or all if nothing selected"""
     rigNodes = getRigNodes_selOrAll()
     common.modelPanelShow(jnt=0)
@@ -114,7 +114,7 @@ def buildSelOrAll(*arg, uiPB=None):
         if uiPB:
             uiPB.setValue(0)
 
-        if arg[0] == 1:
+        if args and args[0] == 1:
             proxy.genProxy()
 
     common.modelPanelShow(jnt=1)
@@ -192,6 +192,7 @@ def deleteSelOrAll(*arg):
     rigNodes = getRigNodes_selOrAll()
     for rN in rigNodes:
         deleteTgt(rN)
+    logging.info(f"Deleted {len(rigNodes)} rigNodes.")
 
 
 def update_anchor_conn():

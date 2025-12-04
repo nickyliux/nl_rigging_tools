@@ -1003,3 +1003,7 @@ def showRO():
             nodeN.type == "joint" or nodeN.type == "nurbsCurve"
         ) and not nodeN.name.endswith("_guide"):
             mc.setAttr(nodeN + ".ro", cb=1)
+
+
+def pauseVP(pause=1):
+    mc.optionVar(iv=("vp2PauseState", pause))
