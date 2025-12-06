@@ -70,7 +70,6 @@ class AttributeHolder:
             if txt:
                 mc.setAttr(attrStr, txt, type="string")
         else:
-            print(name, type)
             mc.addAttr(self.node, ln=name, sn=name, at=type, **kwargs)
 
         if k == 1:

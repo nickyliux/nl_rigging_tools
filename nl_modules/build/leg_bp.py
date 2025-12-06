@@ -141,14 +141,14 @@ class LegBp(RigModule):
 
         ctl_defs = [
             ("setting", "gear", "z", scale, 1, 2),
-            ("hip_fkc", "stick2", "z", -scale / 2, 1, -1),
+            ("hip_fkc", "diamond3", "x", scale, 1, -1),
             ("upr_fkc", "squareR", "x", scale, 0, -1),
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
             ("palm_fkc", "squareR", "x", scale, 0, -1),
             ("ball_fkc", "squareR", "x", scale, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
             ("pvc", "sphere", None, rSz, 0, -1),
-            ("smart_ctl", "rotate", None, scale / 2, 0, -1),
+            ("smart_ctl", "rotate", None, scale, 0, -1),
         ]
         if self.scapulaExtra:
             ctl_defs.append(("scap_fkc", "shoulder", None, scale, 0, -1))
@@ -166,7 +166,7 @@ class LegBp(RigModule):
         if self.scapulaExtra:
             self.scap_fkc.cv_move(scale * 15, 0, 0)
 
-        self.setting.cv_move(scale * 15, 0, 0)
+        self.setting.cv_move(scale * 10, 0, 0)
 
     def build(self):
         """Build the leg rig module."""
@@ -540,7 +540,7 @@ class LegBp(RigModule):
                 onList=[self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP],
             )
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyCtlVis", type="bool", k=0),
+                self.setting.a.add("bendyCtlVis", type="bool", k=0, dv=1),
                 onList=self.all_bendy,
             )
         mc.hide(self.ikhs, self.toeIKHs)

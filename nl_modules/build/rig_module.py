@@ -344,9 +344,8 @@ class RigModule(RigBase):
         logging.info(self.rigID)
 
         self.moduleG.show()
-        self.CTL_DATA.delete()
         self.JNT_DATA.delete()
-        # self.RIG_DATA.delete()
+        self.CTL_DATA.delete()
 
         rootJ = self.rigNode.a.rootJ.inConnNode
         if rootJ:
