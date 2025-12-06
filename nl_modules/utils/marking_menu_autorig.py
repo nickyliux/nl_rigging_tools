@@ -59,19 +59,10 @@ class MarkingMenuAutorig:
         mc.menuItem(p=mi, l="    ry ~> ty", c=partial(helper.addHelpers, "ry", "ty"))
         mc.menuItem(p=mi, l="    rz ~> tz", c=partial(helper.addHelpers, "rz", "tz"))
         mc.menuItem(p=mi, l="ROLL --------", en=0)
-        mc.menuItem(
-            p=mi, l="    rz ~> ty", c=partial(helper.addHelpersRoll, "rz", "ty")
-        )
-        mc.menuItem(
-            p=mi, l="    ry ~> tz", c=partial(helper.addHelpersRoll, "ry", "tz")
-        )
-        mc.menuItem(
-            p=mi, l="    ry ~> ty", c=partial(helper.addHelpersRoll, "ry", "ty")
-        )
-        mc.menuItem(
-            p=mi, l="    rz ~> tz", c=partial(helper.addHelpersRoll, "rz", "tz")
-        )
-
+        mc.menuItem(p=mi, l="    rz ~> ty", c=partial(helper.addHelpers2, "rz", "ty"))
+        mc.menuItem(p=mi, l="    ry ~> tz", c=partial(helper.addHelpers2, "ry", "tz"))
+        mc.menuItem(p=mi, l="    ry ~> ty", c=partial(helper.addHelpers2, "ry", "ty"))
+        mc.menuItem(p=mi, l="    rz ~> tz", c=partial(helper.addHelpers2, "rz", "tz"))
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Mirror", c=helper.mirrorHelpers)
         mc.menuItem(p=mi, l="Delete", c=helper.deleteHelpers)
@@ -127,7 +118,6 @@ class MarkingMenuAutorig:
                     l=" " * 4 + str(a) + (f"   <" if val == i else ""),
                     c=partial(self.switch_to_space, a),
                 )
-            # mc.menuItem(p=menu, l="-" * 15, en=0)
 
         # --- IK / FK ---
         attr = firstSelected.a["fkIk"]
@@ -205,11 +195,9 @@ class MarkingMenuAutorig:
 from importlib import reload
 import nl_modules.utils.marking_menu_autorig as mma
 reload(mma)
-# mma.MarkingMenuAutorig()
 """
         )
 
 
 MarkingMenuAutorig()
-
 # mc.inViewMessage(amg="Marking Menu Reloaded", pos="midCenter", fade=True)

@@ -607,8 +607,8 @@ def addIcon2CurrShelf():
 
     shelfCmd = (
         "import nl_modules.nl_rigging_tools as nlRT\n"
-        + "import importlib\n"
-        + "importlib.reload(nlRT)\n"
+        + "from importlib import reload\n"
+        + "reload(nlRT)\n"
         + "nlRT.showUI()\n"
     )
     shelfLayout = mel.eval(
@@ -631,6 +631,7 @@ def addIcon2CurrShelf():
 if __name__ == "__main__":
     showUI()
 
+# Calling functions in userSetup.py
 mc.evalDeferred("reloadMenus()")
 mc.scriptJob(permanent=1, runOnce=1, event=["SelectionChanged", "reloadMenusAutorig"])
 

@@ -30,8 +30,8 @@ def addHelpers(*args):
         mc.select(hlpJnts)
 
 
-@common.Undo("addHelpersRoll")
-def addHelpersRoll(*args):
+@common.Undo("addHelpers2")
+def addHelpers2(*args):
     """Add helper joints to selected joints based on the specified rotation axis."""
     selList = [DagNode(s) for s in mc.ls(sl=1, type="joint")]
     hlpJnts = []
