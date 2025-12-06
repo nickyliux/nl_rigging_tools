@@ -72,7 +72,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def addMenuBar(self):
         """Add a menu bar with an 'About' section."""
         menuBar = QMenuBar(self)
-        ver_QM = QMenu("&2025.11.26", self)
+        ver_QM = QMenu("&2025.12.06", self)
         more_QM = QMenu("&More", self)
 
         addIcon_QA = QAction(self)

@@ -540,7 +540,7 @@ class LegBp(RigModule):
                 onList=[self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP],
             )
             self.ctl_vis_toggle(
-                self.setting.a.add("bendyCtlVis", type="bool", k=0, v=1),
+                self.setting.a.add("bendyCtlVis", type="bool", k=0),
                 onList=self.all_bendy,
             )
         mc.hide(self.ikhs, self.toeIKHs)

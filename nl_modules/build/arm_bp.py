@@ -105,7 +105,7 @@ class ArmBp(RigModule):
             ("upr_fkc", "squareR", "x", scale, 0, -1),
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
             ("palm_fkc", "squareR", "x", scale, 0, -1),
-            ("ikc", "cube", None, scale * 2, 0, -1),
+            ("ikc", "cube", None, Vec((1, 2, 2)) * scale, 0, -1),
             ("pvc", "sphere", None, rSz * 2, 0, -1),
             ("palm_ikc", "squareR", "x", scale, 0, 2),
         ]
@@ -121,7 +121,7 @@ class ArmBp(RigModule):
         if self.scapulaBone:
             self.scap_fkc.cv_move(0, 0, scale * 20)
 
-        self.ikc.cv_rotate(0, 90, 0)
+        # self.ikc.cv_rotate(0, 90, 0)
         self.pvc.cv_rotate(-90, 0, 0)
         self.setting.cv_move(0, scale * 15, 0)
 
