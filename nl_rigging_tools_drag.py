@@ -43,8 +43,7 @@ def onMayaDroppedPythonFile(*args):
 
     # Load the tool
     import nl_modules.nl_rigging_tools as nlRT
-    from importlib import reload
-
-    reload(nlRT)
+    import importlib
+    importlib.reload(nlRT)
     nlRT.addIcon2CurrShelf()
     nlRT.showUI()

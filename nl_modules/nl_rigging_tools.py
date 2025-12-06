@@ -607,8 +607,8 @@ def addIcon2CurrShelf():
 
     shelfCmd = (
         "import nl_modules.nl_rigging_tools as nlRT\n"
-        + "from importlib import reload\n"
-        + "reload(nlRT)\n"
+        + "import importlib\n"
+        + "importlib.reload(nlRT)\n"
         + "nlRT.showUI()\n"
     )
     shelfLayout = mel.eval(
