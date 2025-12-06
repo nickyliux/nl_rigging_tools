@@ -9,14 +9,14 @@ def onMayaDroppedPythonFile(*args):
     """Install nl_rigging_tools module when the script is dropped into Maya."""
     print(
         r"""
-     _______________________________
-    |          _   ____    ______   |
-    |         | | |  _ `| |__  __`| | 
-    |  _ __   | | | |_| |    | |    |
-    | | '_ `| | | |  _  /    | |    |
-    | | | | | | | | | \ \    | |    |
-    | |_| |_| |_| |_|  \_\   |_|    |
-    |_______________________________|
+     _____________
+    |          _  |
+    |         | | | 
+    |  _ __   | | |
+    | | '_ `| | | |
+    | | | | | | | |
+    | |_| |_| |_| |
+    |_____________|
 
     """
     )
@@ -30,8 +30,8 @@ def onMayaDroppedPythonFile(*args):
         "modules",
         f"{mod_name}.mod",
     )
+    cur_dir = os.path.dirname(__file__)
     try:
-        cur_dir = os.path.dirname(__file__)
         content = f"+ {mod_name} any {cur_dir}\nscripts: .\n"
         with open(mod_path, "w") as f:
             f.write(content)
@@ -41,9 +41,13 @@ def onMayaDroppedPythonFile(*args):
     except Exception as e:
         logging.error(f"Failed to create module file: {e}")
 
+    if cur_dir not in sys.path:
+        sys.path.insert(0, cur_dir)
+
     # Load the tool
     import nl_modules.nl_rigging_tools as nlRT
     import importlib
+
     importlib.reload(nlRT)
     nlRT.addIcon2CurrShelf()
     nlRT.showUI()
