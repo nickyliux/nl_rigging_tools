@@ -63,8 +63,7 @@ class Belt(RigModule):
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
-
-        ctl_defs = [("setting", "gear", "z", rSz * 3, 1, 2)]
+        ctl_defs = [("setting", "gear", "z", rSz * 3, 1, -1)]
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 

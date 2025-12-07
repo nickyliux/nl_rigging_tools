@@ -80,22 +80,29 @@ class SimpleFk(RigModule):
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
+        up = "x"
         scale = rSz * 3
+        scale3 = [scale * 2, scale * 2, scale * 2]
         if rID.startswith("lf"):
             scale *= -1
-        up = None
+            scale3[0] *= -0.5
+        elif rID.startswith("rt"):
+            scale3[0] *= 0.5
+        else:
+            up = "z"
+            scale3[2] *= 0.5
 
         ctl_defs = [
             ("setting", "X", up, scale, 1, 2),
-            ("simple01_fkc", "stick", up, scale, 0, -1),
+            ("simple01_fkc", "cube", up, scale3, 0, -1),
         ]
 
         if self.segNum >= 2:
-            ctl_defs.append(("simple02_fkc", "stickC", up, scale, 0, -1))
+            ctl_defs.append(("simple02_fkc", "squareR", up, scale, 0, -1))
         if self.segNum >= 3:
-            ctl_defs.append(("simple03_fkc", "stickC", up, scale, 0, -1))
+            ctl_defs.append(("simple03_fkc", "squareR", up, scale, 0, -1))
         if self.segNum >= 4:
-            ctl_defs.append(("simple04_fkc", "stickC", up, scale, 0, -1))
+            ctl_defs.append(("simple04_fkc", "squareR", up, scale, 0, -1))
 
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)

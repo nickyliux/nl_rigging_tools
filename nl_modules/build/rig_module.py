@@ -907,7 +907,7 @@ class RigModule(RigBase):
 
     def create_and_register_ctl(self, name, shape, up, scale, top, w, rID):
         """Create a control node and register it in the rigNode"""
-        ctl = CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, width=2, top=top)
+        ctl = CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, width=w, top=top)
         setattr(self, name, ctl)
         self.rigNode.setMsg({name: ctl})
 

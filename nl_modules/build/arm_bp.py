@@ -100,14 +100,14 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "gear", "z", scale, 1, 2),
+            ("setting", "gear", "z", scale, 1, -1),
             ("clavicle_fkc", "diamond3", "x", scale, 1, -1),
             ("upr_fkc", "squareR", "x", scale, 0, -1),
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
             ("palm_fkc", "squareR", "x", scale, 0, -1),
             ("ikc", "cube", None, Vec((1, 2, 2)) * scale, 0, -1),
             ("pvc", "sphere", None, rSz * 2, 0, -1),
-            ("palm_ikc", "squareR", "x", scale, 0, 2),
+            ("palm_ikc", "squareR", "x", scale, 0, -1),
         ]
 
         if self.scapulaBone:
