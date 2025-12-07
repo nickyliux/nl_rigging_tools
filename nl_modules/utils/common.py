@@ -967,7 +967,7 @@ def addKeys(tgt, attrName=None, data=None):
     return attr
 
 
-def setupFrameCache(graph=None, joints=None, base=None, keepVol=0):
+def setupFrameCache(graph=None, joints=None, base=None, autoVol=0):
     """Setup frame cache scaling on joints"""
     from nl_modules.nodel.base.dag_node import DagNode
 
@@ -975,7 +975,7 @@ def setupFrameCache(graph=None, joints=None, base=None, keepVol=0):
         fc = DagNode("fc__#", nodeType="frameCache")
         graph >> fc.a.stream
         fc.a.varyTime.set(i)
-        ratio = base ** (fc.a.varying * keepVol)
+        ratio = base ** (fc.a.varying * autoVol)
         ratio >> joints[i].a.sy
         ratio >> joints[i].a.sz
 

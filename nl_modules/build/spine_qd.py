@@ -355,7 +355,7 @@ class SpineQd(RigModule):
     def build_volume(self, crvLenRatio):
         """Build volume control for the spine rig."""
         # add volume graph keys
-        keepVol = self.setting.a.add("keepVol", dv=1, min=0)
+        autoVol = self.setting.a.add("autoVol", dv=1, min=0)
         volGraph = self.setting.a.add("volGraph", dv=0)
         mc.setKeyframe(volGraph, t=0, v=0)
         mc.setKeyframe(volGraph, t=(self.rbnJntNum - 1) / 2, v=1)
@@ -367,7 +367,7 @@ class SpineQd(RigModule):
             fc = DagNode("fc__#", nodeType="frameCache")
             volGraph >> fc.a.stream
             fc.a.varyTime.set(i)
-            ratio = (1 / crvLenRatio) ** (fc.a.varying * keepVol)
+            ratio = (1 / crvLenRatio) ** (fc.a.varying * autoVol)
             ratio >> self.jnts_rb[i].a.sy
             ratio >> self.jnts_rb[i].a.sz
 

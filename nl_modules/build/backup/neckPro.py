@@ -183,7 +183,7 @@ class NeckPro(rig_module.RigModule):
         self.ctls_fk[len(self.ctls_fk) // 2].cstPar(self.md_ikc.addOffsetGrp(), mo=1)
 
         self.md_ikc.cstParSca(spine_RB.mid_sknJ, mo=1)
-        self.setting.a.add("keepVol", min=0, max=2, dv=1, k=0) >> spine_RB.volPower
+        self.setting.a.add("autoVol", min=0, max=2, dv=1, k=0) >> spine_RB.volPower
 
         self.spine_RB = spine_RB
         self.add_bind_jnt_set(spine_RB.rbJnt)

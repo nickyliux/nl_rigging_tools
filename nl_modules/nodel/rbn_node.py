@@ -58,7 +58,7 @@ class RbnNode:
             setattr(self, name, None)
 
         # Volume and control attributes
-        self.keepVol = 0
+        self.autoVol = 0
         self.volType = 0
         self.forSpine = forSpine
         self.scaleFix = scaleFix
@@ -236,7 +236,7 @@ class RbnNode:
         self.d = arcLD.a.arcLengthInV
         D = self.d.get()
 
-        self.keepVol = self.RBN_GRP.a.add("keepVol", min=0, dv=1)
+        self.autoVol = self.RBN_GRP.a.add("autoVol", min=0, dv=1)
         self.volType = self.RBN_GRP.a.add(
             "volType", type="enum", enumName="whole:separate", k=0
         )
@@ -254,7 +254,7 @@ class RbnNode:
             graph=ut.choice_([volGraph1, volGraph2], self.volType),
             joints=self.jnts_rb,
             base=D / (self.d / grpScaleFix / self.scaleFix),
-            keepVol=self.keepVol,
+            autoVol=self.autoVol,
         )
 
     def setup_rotate_order(self):

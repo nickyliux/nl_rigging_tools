@@ -294,9 +294,9 @@ class SpineBp(RigModule):
         d = arcLD.a.arcLengthInV
         D = d.get()
 
-        keepVol = self.setting.a.add("keepVol", min=0, dv=0.5)
-        self.chest_ikc.a.add("keepVol", proxy=keepVol)
-        self.hip_ikc.a.add("keepVol", proxy=keepVol)
+        autoVol = self.setting.a.add("autoVol", min=0, dv=1)
+        self.chest_ikc.a.add("autoVol", proxy=autoVol)
+        self.hip_ikc.a.add("autoVol", proxy=autoVol)
 
         volGraph = common.addKeys(
             self.setting,
@@ -307,7 +307,7 @@ class SpineBp(RigModule):
             graph=volGraph,
             joints=self.jnts_rb,
             base=D / (d / scaleFix),
-            keepVol=keepVol,
+            autoVol=autoVol,
         )
 
     def setup_vis(self):

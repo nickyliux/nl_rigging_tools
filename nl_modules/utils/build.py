@@ -140,19 +140,19 @@ def masterAddAttrs():
         logging.warning("master2_ctl NOT found.")
         return
 
-    grp = DagNode("JNT")
-    if grp.exists():
-        ctl.a.add("jntVis", k=0, type="bool", dv=1) >> grp.a.v
-        grp.a.overrideEnabled.set(1)
-        dspType = ctl.a.add("jntDspType", type="enum", k=0, en=OPTIONS)
-        dspType >> grp.a.overrideDisplayType
+    # grp = DagNode("JNT")
+    # if grp.exists():
+    #     ctl.a.add("jntVis", k=0, type="bool", dv=1) >> grp.a.v
+    #     grp.a.overrideEnabled.set(1)
+    #     dspType = ctl.a.add("jntDspType", type="enum", k=0, en=OPTIONS)
+    #     dspType >> grp.a.overrideDisplayType
 
-    grp = DagNode("PRX")
-    if grp.exists():
-        ctl.a.add("pxyVis", k=0, type="bool", dv=1) >> grp.a.v
-        grp.a.overrideEnabled.set(1)
-        dspType = ctl.a.add("pxyDspType", type="enum", k=0, en=OPTIONS)
-        dspType >> grp.a.overrideDisplayType
+    # grp = DagNode("PRX")
+    # if grp.exists():
+    #     ctl.a.add("pxyVis", k=0, type="bool", dv=1) >> grp.a.v
+    #     grp.a.overrideEnabled.set(1)
+    #     dspType = ctl.a.add("pxyDspType", type="enum", k=0, en=OPTIONS)
+    #     dspType >> grp.a.overrideDisplayType
 
 
 def unbuildTgt(rN):
