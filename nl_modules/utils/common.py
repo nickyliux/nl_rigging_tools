@@ -76,17 +76,7 @@ def matchMove(targetList, mode=None):
     mc.matchTransform(*others, last, position=t, rotation=r, scale=s)
 
 
-# def assignShd(n, geo=None, color=(0, 0, 0), faceID=None):
-#     """Assign shader to entire or faceID"""
-#     shd, sg = addShader(n, color=color)
-#     if faceID:
-#         for fID in faceID:
-#             mc.sets(f"{geo}.f[{fID}]", forceElement=sg)
-#     else:
-#         mc.sets(geo, forceElement=sg)
-
-
-def assignPresetShd(*args, tgts=None):
+def assignShd(*args, tgts=None):
     """Assign preset shader to target objects"""
     from nl_modules.nodel.base.dag_node import DagNode
 

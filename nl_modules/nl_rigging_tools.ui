@@ -960,7 +960,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="loadHlpJnt_BN">
+        <widget class="QPushButton" name="loadHlp_BN">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -996,7 +996,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="saveHlpJnt_BN">
+        <widget class="QPushButton" name="saveHlp_BN">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -3073,7 +3073,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="assignPresetColor_BN">
+        <widget class="QPushButton" name="assignShd_BN">
          <property name="minimumSize">
           <size>
            <width>5</width>
@@ -3095,7 +3095,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="assignPresetColor2_BN">
+        <widget class="QPushButton" name="assignShd2_BN">
          <property name="minimumSize">
           <size>
            <width>5</width>

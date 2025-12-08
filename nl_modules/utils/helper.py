@@ -239,7 +239,7 @@ def deleteHelpers(*args):
 
 
 @common.Undo("Load Helper Joints")
-def loadHlpJnt(uiPB):
+def loadHlp(uiPB):
     """Load helper joint data from a JSON file and recreate the joints in the scene."""
     at_least_one_built = 0
     for node in build.getRigNodes_all():
@@ -305,7 +305,7 @@ def loadHlpJnt(uiPB):
     logging.info(f"{load_count} helper joints loaded.")
 
 
-def saveHlpJnt(*args):
+def saveHlp(*args):
     """Save skin weight joints for selected meshes to a JSON file."""
     charPath = mc.optionVar(q="charPath")
     if charPath == None or charPath == "":

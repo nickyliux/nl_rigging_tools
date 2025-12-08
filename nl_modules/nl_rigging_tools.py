@@ -57,8 +57,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Initialize the main window and load the UI."""
         super(MyToolWin, self).__init__(parent)
         self.UI = QUiLoader().load(UI_PATH)
-        # logging.info("Load " + UI_PATH)
-
         self.setWindowTitle("nlRT")
         self.setCentralWidget(self.UI)
         self.setGeometry(1070, 260, 230, 680)
@@ -70,7 +68,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.close()
 
     def addMenuBar(self):
-        """Add a menu bar with an 'About' section."""
+        """Add menu bar to the main window."""
         menuBar = QMenuBar(self)
         ver_QM = QMenu("&2025.12.07", self)
         more_QM = QMenu("&More", self)
@@ -80,18 +78,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         addIcon_QA.triggered.connect(addIcon2CurrShelf)
         more_QM.addAction(addIcon_QA)
 
-        # clickDrag_QA = QAction(self)
-        # clickDrag_QA.setText("&Toggle Click Drag")
-        # clickDrag_QA.triggered.connect(self.toggleClickDrag)
-        # more_QM.addAction(clickDrag_QA)
-
         menuBar.addMenu(ver_QM)
         menuBar.addMenu(more_QM)
         self.setMenuBar(menuBar)
-
-    def toggleClickDrag(self):
-        """Toggle the click drag preference in Maya."""
-        mc.selectPref(clickDrag=not mc.selectPref(clickDrag=1, q=1))
 
     def connect(self, btn, func, icon=None):
         """Connect a button to a function with an optional icon."""
@@ -117,7 +106,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def connect_UI(self):
         """Connect UI buttons to their respective functions."""
-
         # Guide
         self.connect(self.UI.guide_load_BN, self.guide_load, ":openScript.png")
         self.connect(self.UI.guide_explore_BN, guide.explore, ":searchEngine.png")
@@ -127,79 +115,58 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.charPath_BN, self.set_char_path, ":openScript.png")
         self.connect(self.UI.char_explore_BN, self.explore_char, ":searchEngine.png")
 
-        # MDL
+        # From MDL to SK
         self.connect(self.UI.loadModel_BN, model.loadModel, ":openScript.png")
-
-        # TPL
         self.connect(self.UI.loadTemplate_BN, self.loadTpl, ":openScript.png")
         self.connect(self.UI.saveTemplate_BN, guide.saveTemplate, ":fileSave.png")
-        # self.connect(self.UI.delTemplate_BN, build.deleteSelOrAll, ":smallTrash.png")
-
-        # BLD
         self.connect(self.UI.buildAll_BN, self.buildAll, ":play_S.png")
         self.connect(self.UI.unbuildAll_BN, self.unbuildAll, ":smallTrash.png")
-
-        # PRX
         self.connect(self.UI.loadProxy_BN, proxy.loadProxy, ":openScript.png")
         self.connect(self.UI.saveProxy_BN, proxy.saveProxy, ":fileSave.png")
         self.connect(self.UI.genProxy_BN, proxy.genProxy, ":play_S.png")
-
         self.connect(self.UI.loadWrapTargetMesh_BN, self.loadWrapTargetMesh)
         self.connect(self.UI.templateTarget_BN, self.templateTarget, ":templated.png")
         self.connect(self.UI.selAllProxyGrp_BN, proxy.selectAllProxy, ":aselect.png")
         self.connect(self.UI.bindToSelProxy_BN, proxy.bind_to_proxy, ":bind.png")
         self.connect(self.UI.showHideProxy_BN, proxy.showHideProxy, ":visible.png")
-
-        # CTL
         self.connect(self.UI.loadCtl_BN, control.loadCtl, ":openScript.png")
         self.connect(self.UI.saveCtl_BN, control.saveCtl, ":fileSave.png")
-
-        # Helper
         self.connect(
-            self.UI.loadHlpJnt_BN,
-            partial(helper.loadHlpJnt, self.UI.bar_PB),
+            self.UI.loadHlp_BN,
+            partial(helper.loadHlp, self.UI.bar_PB),
             ":openScript.png",
         )
-        self.connect(self.UI.saveHlpJnt_BN, helper.saveHlpJnt, ":fileSave.png")
-        # self.connect(self.UI.selAllHlpGrp_BN, helper.selAllHlp, ":aselect.png")
-
-        # WGH
+        self.connect(self.UI.saveHlp_BN, helper.saveHlp, ":fileSave.png")
         self.connect(
             self.UI.loadWeight_BN,
             partial(skin.loadWeight, self.UI.bar_PB),
             ":openScript.png",
         )
         self.connect(self.UI.saveWeight_BN, skin.saveWeight, ":fileSave.png")
+        self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
+
         self.connect(self.UI.mirrorSym_BN, partial(skin.mirrorWeight, 1))
         self.connect(self.UI.mirrorAsym_BN, partial(skin.mirrorWeight, 0))
         self.connect(self.UI.prune_BN, skin.pruneWeight)
-        self.connect(self.UI.copyWeight_BN, skin.copyWeight)  # , ":copySkinWeight.png")
-
-        # Sk
-        self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
+        self.connect(self.UI.copyWeight_BN, skin.copyWeight)
 
         # RigNode
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
         self.UI.rigNode_refresh_BN.clicked.connect(self.rigNode_refresh)
         self.UI.rigNode_selectAll_BN.clicked.connect(self.rigNode_selectAll)
 
-        # Ctl
+        # Ctl Tab
         self.UI.crvShape_LW.itemDoubleClicked.connect(self.crvShape_LW_dblClicked)
         self.connect(self.UI.crvShape_breakInst_BN, self.crvShape_breakInst)
         self.connect(self.UI.crvShape_new_BN, self.crvShape_new, ":fileNew.png")
         self.connect(self.UI.crvShape_apply_BN, self.crvShape_apply, ":openScript.png")
         self.connect(self.UI.crvShape_save_BN, self.crvShape_save, ":fileSave.png")
         self.connect(self.UI.crvShape_del_BN, self.crvShape_del, ":smallTrash.png")
-        self.connect(
-            self.UI.assignPresetColor_BN,
-            partial(common.assignPresetShd, 0),
-            ":colorPresetSpectrum.png",
-        )
-        self.connect(
-            self.UI.assignPresetColor2_BN,
-            partial(common.assignPresetShd, 1),
-            ":colorPresetGrayscale.png",
-        )
+        icon = ":colorPresetSpectrum.png"
+        self.connect(self.UI.assignShd_BN, partial(common.assignShd, 0), icon)
+        icon = ":colorPresetGrayscale.png"
+        self.connect(self.UI.assignShd2_BN, partial(common.assignShd, 1), icon)
+
         self.connect(self.UI.shapeRotaX_BN, partial(control.rotaCVForSel, 90, 0, 0))
         self.connect(self.UI.shapeRotaY_BN, partial(control.rotaCVForSel, 0, 90, 0))
         self.connect(self.UI.shapeRotaZ_BN, partial(control.rotaCVForSel, 0, 0, 90))
@@ -208,11 +175,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.onTop_BN, partial(control.setOnTopSel, 1))
         self.connect(self.UI.onTopOff_BN, partial(control.setOnTopSel, 0))
         self.connect(self.UI.drop_BN, control.dropSel)
-        self.connect(
-            self.UI.lineWidthDefault_BN, partial(control.setLineWidthForSel, -1)
-        )
-        self.connect(self.UI.lineWidth2_BN, partial(control.setLineWidthForSel, 2))
-        self.connect(self.UI.lineWidth3_BN, partial(control.setLineWidthForSel, 3))
+        self.connect(self.UI.lineWidthDefault_BN, partial(control.setLineWidth, -1))
+        self.connect(self.UI.lineWidth2_BN, partial(control.setLineWidth, 2))
+        self.connect(self.UI.lineWidth3_BN, partial(control.setLineWidth, 3))
 
         # Prepare
         self.connect(
@@ -292,24 +257,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 self.UI.loadWrapTargetMesh_BN.setText(f"[ {tgt.name} ]")
             else:
                 self.UI.loadWrapTargetMesh_BN.setText("<< Load Wrap Mesh >>")
-
-    # def clickDrag_CB_stateChanged(self, state):
-    #     """Set the click drag preference based on the checkbox state."""
-    #     mc.selectPref(clickDrag=state)
-
-    # def pickMaskCrv(self):
-    #     """Set the object pick mask to curves."""
-    #     mel.eval('setObjectPickMask "All" 0')
-    #     mel.eval('setObjectPickMask "Curve" 1')
-
-    # def pickMaskMsh(self):
-    #     """Set the object pick mask to geometry."""
-    #     mel.eval('setObjectPickMask "All" 0')
-    #     mel.eval('setObjectPickMask "Surface" 1')
-
-    # def pickMaskAll(self):
-    #     """Set the object pick mask to all."""
-    #     mel.eval('setObjectPickMask "All" 1')
 
     @common.Undo("guide_load")
     def guide_load(self, *args):
@@ -478,6 +425,10 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def boneAutoBind(self):
         """Bind all meshes in MODEL_GRP to reference joints and ribbon joints."""
 
+        if not mc.objExists(AUTO_BIND_JNT_GRP):
+            mc.confirmDialog(t="Info", m=f"{AUTO_BIND_JNT_GRP} NOT found.    ", b="OK")
+            return
+
         charPath = mc.optionVar(q="charPath")
         if charPath == None or charPath == "":
             mc.confirmDialog(t="Info", m="Character path NOT set.     ", b="OK")
@@ -490,35 +441,22 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             if mdlGrp.exists():
                 selList = mc.ls(mdlGrp)
             else:
-                mc.confirmDialog(
-                    t="Info", m="No mesh selected and charPath not set.    ", b="OK"
-                )
+                mc.confirmDialog(t="Info", m="Model group not found.    ", b="OK")
                 return
 
         tgtMeshes = common.getObjectBelow(selList)
         if not tgtMeshes:
-            mc.confirmDialog(t="Info", m="No mesh found below selection.    ", b="OK")
+            mc.confirmDialog(t="Info", m="No mesh found.    ", b="OK")
             return
 
-        if not mc.objExists(AUTO_BIND_JNT_GRP):
-            mc.confirmDialog(t="Info", m=f"{AUTO_BIND_JNT_GRP} NOT found.    ", b="OK")
-            return
-
-        # Bind either to closest refJnt, or corresponding rbnJnt
-        self.autoBind_refJnts(
-            meshes=tgtMeshes,
-            thld=15,
-            uiPB=self.UI.bar_PB,
-        )
-        skin.autoBind_rbnJnts(
-            meshes=tgtMeshes,
-            uiPB=self.UI.bar_PB,
-        )
+        self.autoBind_refJnts(meshes=tgtMeshes, thld=15, uiPB=self.UI.bar_PB)
+        skin.autoBind_rbnJnts(meshes=tgtMeshes, uiPB=self.UI.bar_PB)
         build.autoAttach_jntToSrf()
+
         mc.select(cl=1)
 
     def templateTarget(self):
-        """Toggle template target mesh for wrap deformer."""
+        """Toggle display type of the target wrap mesh."""
         targetWrapMesh = mc.optionVar(q="targetWrapMesh")
         tgt = DagNode(targetWrapMesh)
         if tgt.exists():
@@ -531,6 +469,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         tgt = DagNode(targetWrapMesh)
         if tgt.exists():
             tgt.dspType = 0
+
         if selList:
             mc.optionVar(sv=("targetWrapMesh", selList[0]))
             self.updateLoadWrapTargetMesh()
@@ -538,7 +477,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             mc.select(tgt)
 
     def misc_importEnvAndShd(self):
-        """Import lighting and shader files if not exists."""
+        """Import environment and shader files if not already present."""
         if not mc.objExists("env_grp"):
             if os.path.isfile(LIGHTING_FILE):
                 file.importFile(LIGHTING_FILE)
@@ -587,7 +526,6 @@ def showUI():
     except:
         pass
     nlRT_win = MyToolWin()
-    # nlRT_win.show()
     nlRT_win.show(dockable=1)
 
     with open(STYLE_PATH, "r") as f:
@@ -635,38 +573,10 @@ if __name__ == "__main__":
 mc.evalDeferred("reloadMenus()")
 mc.scriptJob(permanent=1, runOnce=1, event=["SelectionChanged", "reloadMenusAutorig"])
 
-"""
-    toeNum = DagNode('master_guide').a.toeNum
-    cond = (toeNum <= 4)
-    for c in mc.ls('toe00_*_guide', 'toe_line_grp1'):
-        cond >> DagNode(c).a.v
-    cond = (toeNum <= 3)
-    for c in mc.ls('toe04_*_guide', 'toe_line_grp5'):
-        cond >> DagNode(c).a.v
-    cond = (toeNum <= 2)
-    for c in mc.ls('toe01_*_guide', 'toe_line_grp2'):
-        cond >> DagNode(c).a.v
-
-        from PySide2 import QtCore, QtGui, QtWidgets
-
-button = QtWidgets.QPushButton("X")
-button.setStyleSheet("font-size: 100px")
-
-layout = QtWidgets.QVBoxLayout()
-layout.addWidget(button)
-
-window = QtWidgets.QWidget()
-window.setLayout(layout)
-window.show()
-"""
-"""
-import maya.cmds as cmds
-for item in cmds.resourceManager(nf='*png'):
-    cmds.resourceManager(s=(item, "C:/temp/mayaicons/{0}".format(item)))
-#
-getenv "XBMLANGPATH" ;
-"""
-
-
 #     mc.displayRGBColor("lead", *color)
 #     mc.displayRGBColor("referenceLayer", *color)
+#     mc.selectPref(clickDrag=not mc.selectPref(clickDrag=1, q=1))
+#     mc.selectPref(clickDrag=state)
+#     mel.eval('setObjectPickMask "All" 0')
+#     mel.eval('setObjectPickMask "Curve" 1')
+#     mel.eval('setObjectPickMask "Surface" 1')

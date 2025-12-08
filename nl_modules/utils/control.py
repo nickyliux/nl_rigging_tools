@@ -82,7 +82,7 @@ def mirrorCtlShape(ctl):
         shape.rename(opp.name + "Shape#")
         shape.a.lineWidth.set(w)
 
-    common.assignPresetShd(0, tgts=[opp])
+    common.assignShd(0, tgts=[opp])
     opp.deleteHistory()
     mc.delete(dup, tempGrp)
     return opp
@@ -208,7 +208,7 @@ def scaleCVForSel(value):
 
 
 @common.Undo("updateLineWidthForSel")
-def setLineWidthForSel(value):
+def setLineWidth(value):
     """Update the line width of selected curves."""
     for sel in [DagNode(selList) for selList in mc.ls(sl=1, tr=1)]:
         if sel.type == "nurbsCurve":
