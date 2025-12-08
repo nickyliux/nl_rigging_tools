@@ -53,7 +53,6 @@ class FingerFk(RigModule):
             JntNode(j).a["preferredAngleZ"].set(-10)
 
         self.rootJ = root_list[0]
-        # self.rootJ.color = Color.BLACK
         self.rootJ | self.JNT_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
@@ -71,7 +70,6 @@ class FingerFk(RigModule):
 
         self.build_ctl()
         self.build_fk()
-        # self.build_ik()
         self.blend_fk_ik()
         self.build_post()
 
@@ -85,9 +83,6 @@ class FingerFk(RigModule):
         ctl_defs = [
             ("setting", "X", "x", scale, 1, 2),
             ("fgr01_fkc", "squareR", None, -scale * 0.7, 0, -1),
-            # ("ikc", "cube", None, scale, 1, 2),
-            # ("extra_rota", "rotator", None, scale, 0, -1),
-            # ("pvc", "pvc", "z", -scale, 0, -1),
         ]
         if self.segNum >= 2:
             ctl_defs.append(("fgr02_fkc", "squareR", None, -scale, 0, 2))
@@ -131,56 +126,6 @@ class FingerFk(RigModule):
         if self.segNum >= 4:
             self.ctls_fk[1].a.add("rot2") >> self.ctls_fk[3].addOffsetGrp().a[rot_axis]
 
-    def build_ik(self):
-        """Build the IK controls for the arm rig."""
-        logging.info(self.rigID)
-        rID, rSz, xDr = self.getMyVar()
-
-        # Create IK joints
-        self.jnts_ikA = common.dupSk(
-            self.jnts, "_ikA", p=self.IK_GRP, r=rSz * 3, color=Color.D_RED
-        )
-        self.jnts_ikB = common.dupSk(
-            self.jnts, "_ikB", p=self.IK_GRP, r=rSz * 4, color=Color.PINK
-        )
-
-        #   ikc_zro
-        #   |_ikc
-        #   |   |__tipRot_grp_zro          <<-  par cst by one of the 3-joint chain
-        #   |       |_tipRot_grp
-        #   |           |_extra_rota zro
-        #   |               |_extra_rota    ->>  ori cst the end segment of finger
-
-        mg = self.master_guide
-        self.ikc.snapAlignTo(self.fgr04, mg)
-        self.pvc.alignTo(self.fgr01)
-        self.tipRot_grp = GrpNode("tipRot_grp", pf=rID, snap=self.fgr04, alignR=mg)
-        self.extra_rota.snapAlignTo(self.fgr03, mg)
-        self.extra_rota | self.tipRot_grp | self.ikc
-
-        (self.ikc, self.pvc) | self.CTL_DATA
-        self.ikc.addOffsetGrp()
-        self.pvc.addOffsetGrp()
-        self.tipRot_grp.addOffsetGrp()
-        self.extra_rota.addOffsetGrp()
-        self.ikc.a.add("pitch") >> self.tipRot_grp.a.rz
-        self.ikc.a.add("yaw") >> self.tipRot_grp.a.ry
-        self.ikc.a.add("roll") >> self.tipRot_grp.a.rx
-
-        self.jnts_ikA[-2].cstPar(self.tipRot_grp.offset, mo=1)
-        self.extra_rota.cstOri(self.jnts_ikB[-2], mo=1)
-
-        # Create IK handle
-        ikH_A = self.create_ik(
-            "A", sj=self.fgr01, ee=self.fgr04, jsf="_ikA", p=self.ikc
-        )
-        ikH_B = self.create_ik(
-            "B", sj=self.fgr01, ee=self.fgr03, jsf="_ikB", p=self.extra_rota
-        )
-
-        self.ctls_ik = [self.ikc, self.extra_rota, self.pvc]
-        self.ikhs = [ikH_A, ikH_B]
-
     def create_ik(self, name, sj, ee, jsf, p):
         """Create an IK handle for the finger rig."""
         return IkNode(
@@ -201,19 +146,6 @@ class FingerFk(RigModule):
     def blend_fk_ik(self):
         """Blend FK and IK joints for the arm rig."""
         logging.info(self.rigID)
-        # rID, rSz, xDr = self.getMyVar()
-
-        # fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=0)
-        # for i in range(len(self.jnts) - 1):
-        #     fkJ = self.jnts_fk[i]
-        #     ikJ = self.jnts_ikB[i]
-        #     jnt = self.jnts[i]
-        #     common.cstMulti(fkJ, ikJ, jnt, w=fkIk)
-
-        # # Add blend attribute to all controls
-        # for ctl in self.ctls_fk + self.ctls_ik:
-        #     ctl.a.add("fkIk", proxy=fkIk, k=0)
-
         for i in range(len(self.jnts)):
             fkJ = self.jnts_fk[i]
             jnt = self.jnts[i]
@@ -239,11 +171,6 @@ class FingerFk(RigModule):
         """Setup visibility for the finger rig module."""
         mc.hide(self.ikhs, self.jnts_fk, self.setting)
 
-        # self.ctl_vis_toggle(
-        #     self.setting.a["fkIk"],
-        #     onList=self.ctls_ik,
-        #     offList=self.ctls_fk,
-        # )
         # self.ctl_vis_toggle(
         #     self.setting.a.add("debugVis", type="bool", dv=0, k=0),
         #     onList=self.jnts_fk,

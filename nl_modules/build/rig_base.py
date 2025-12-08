@@ -30,7 +30,7 @@ class RigBase:
         self.CHR = GrpNode("CHR")
         # self.RIG = GrpNode("RIG", p=self.CHR)
         self.MDL = GrpNode("MDL", p=self.CHR)
-        self.PRX = GrpNode("PRX", p=self.MDL)
+        self.PRX = GrpNode("PRX", p=self.CHR)
         self.JNT = GrpNode("JNT", p=self.CHR)
         self.CTL = GrpNode("CTL", p=self.CHR)
         self.DIM = GrpNode("distDim")

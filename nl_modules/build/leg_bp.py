@@ -423,7 +423,7 @@ class LegBp(RigModule):
         # Useful for fk ik switch popUp menu
         for ctl in self.ctls_fk + self.ctls_ik + [self.smart_ctl]:
 
-            ctl.a.add("fkIk", proxy=fkIk, k=0)
+            ctl.a.add("fkIk", proxy=fkIk)
 
         GrpNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
 
@@ -475,8 +475,9 @@ class LegBp(RigModule):
             for jnt in fkToeList:
                 crvName = f"{jnt.name}_ctl_#"
                 crv = CrvNode(
-                    crvName, shape="stickC", up="z", scale=-scale / 10, align=jnt
+                    crvName, shape="squareR", up="z", scale=scale * 0.03, align=jnt
                 )
+                crv.cv_move(scale * 0.5, 0, -scale * 2)
                 ctlList.append(crv)
 
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)

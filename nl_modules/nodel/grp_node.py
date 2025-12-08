@@ -77,7 +77,7 @@ class GrpNode(DagNode):
     def cv_move(self, *args, **kwargs):
         """Move all cvs of the curve"""
         kwargs = kwargs or {"r": 1}
-        mc.move(*args, self.cvs, **kwargs)
+        mc.move(*args, self.cvs, os=1, **kwargs)
 
     def cv_moveTo(self, pos):
         """Move all cvs of the curve to the specified position"""
@@ -134,8 +134,8 @@ class GrpNode(DagNode):
             top=1,
         )
         attrTgt = attrTgt or self
-        attr = attrTgt.a.add("gimbalVis", type="bool", dv=dv, k=0)
-        gmb_ctl.a.add("gimbalVis", proxy=attr, k=0)
+        attr = attrTgt.a.add("showGimbal", type="bool", dv=dv, k=0)
+        gmb_ctl.a.add("showGimbal", proxy=attr, k=0)
         attr >> gmb_ctl.a.v
 
         return gmb_ctl

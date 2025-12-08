@@ -140,6 +140,22 @@ def masterAddAttrs():
         logging.warning("master2_ctl NOT found.")
         return
 
+    grp = DagNode("MDL")
+    if grp.exists():
+        ctl.a.add("showMdl", k=0, type="bool", dv=1) >> grp.a.v
+
+    grp = DagNode("PRX")
+    if grp.exists():
+        ctl.a.add("showPxy", k=0, type="bool", dv=1) >> grp.a.v
+
+    grp = DagNode("JNT")
+    if grp.exists():
+        ctl.a.add("showJnt", k=0, type="bool", dv=1) >> grp.a.v
+
+    grp = DagNode("CTL")
+    if grp.exists():
+        ctl.a.add("showCtl", k=0, type="bool", dv=1) >> grp.a.v
+
     # grp = DagNode("JNT")
     # if grp.exists():
     #     ctl.a.add("jntVis", k=0, type="bool", dv=1) >> grp.a.v

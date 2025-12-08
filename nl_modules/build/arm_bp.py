@@ -356,7 +356,7 @@ class ArmBp(RigModule):
 
         # Add blend attribute to all controls
         for ctl in self.ctls_fk + self.ctls_ik:
-            ctl.a.add("fkIk", proxy=fkIk, k=0)
+            ctl.a.add("fkIk", proxy=fkIk)
 
         # Create matcher group for snapping
         GrpNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)

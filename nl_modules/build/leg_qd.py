@@ -369,7 +369,7 @@ class LegQd(RigModule):
         # --- Add proxy attribute for easy FK/IK switch on controls ---
         for ctl in self.ctls_fk + self.ctls_ik + [self.smart_ctl]:
 
-            ctl.a.add("fkIk", proxy=fkIk, k=0)
+            ctl.a.add("fkIk", proxy=fkIk)
 
         # --- Create matcher group for IK control alignment ---
         GrpNode(f"{self.ikc.name}_matcher", align=self.ikc, p=self.digit_fkc)

@@ -66,8 +66,9 @@ def nlShrinkWrap(target=None, meshes=None, keep=0, **kwargs):
 
 def genProxy(*args, tgtSet="auto_bind_jnt_set"):
     """Generate proxy meshes for all bind joints in the scene."""
+    CHR = GrpNode("CHR")
     MDL = GrpNode("MDL")
-    PRX = GrpNode("PRX", p=MDL)
+    PRX = GrpNode("PRX", p=CHR)
     bindSet = DagNode(tgtSet)
 
     if bindSet.exists():
@@ -287,23 +288,13 @@ def bind_combined(combinedMesh, proxies):
 
 def set_combined_weight(combinedMesh):
     """Set skin weights for the combinedMesh proxy mesh based on the original proxy meshes."""
-
-    skinC = MshNode(combinedMesh).skinCluster
-    bindJnts = mc.skinCluster(skinC, q=1, inf=1)
+    sc = MshNode(combinedMesh).skinCluster
+    bindJnts = mc.skinCluster(sc, q=1, inf=1)
 
     for j in bindJnts:
         ptSet = DagNode(j + "_pxGeo_PS")
         if ptSet.exists():
-            mc.skinPercent(skinC, ptSet, tv=[(j, 1)])
-
-
-# def selAllProxyGrp():
-#     """Select all groups under the 'PRX' group."""
-#     PRX = DagNode("PRX")
-#     if PRX.exists():
-#         allBelow = PRX.children
-#         if allBelow:
-#             mc.select(allBelow)
+            mc.skinPercent(sc, ptSet, tv=[(j, 1)])
 
 
 def selectAllProxy(*args):
@@ -317,11 +308,11 @@ def selectAllProxy(*args):
                 mc.select(result)
 
 
-def showHideProxy():
+def toggleProxy():
     """Toggle visibility of the proxy meshes under the 'PRX' group."""
-    m2 = DagNode("master2_ctl")
-    if m2.exists():
-        m2.a.pxyVis.set(1 - m2.a.pxyVis.get())
+    PRX = DagNode("PRX")
+    if PRX.exists():
+        PRX.a.v.set(1 - PRX.a.v.get())
 
 
 def add_radiusScale_attr(tgtJnts, v):

@@ -98,13 +98,12 @@ class HandBp(RigModule):
         for fgr in fgrs[:-1]:
             ctl = CrvNode(
                 f"{fgr.name}_ctl",
-                shape="stickC",
-                scale=-scale * 0.3,
+                up="z",
+                shape="squareR",
+                scale=scale * 0.25,
                 align=fgr,
-                width=2,
             )
-            # f"{fgr.name}_ctl", up="x", scale=-scale * 0.7, align=fgr, width=2
-            ctl.cv_rotate(90, 0, 0)
+            ctl.cv_move(scale * 4, 0, -scale * 8)
             ctlList.append(ctl)
         return ctlList
 
