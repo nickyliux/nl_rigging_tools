@@ -70,7 +70,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def addMenuBar(self):
         """Add menu bar to the main window."""
         menuBar = QMenuBar(self)
-        ver_QM = QMenu("&2025.12.07", self)
+        ver_QM = QMenu("&2025.12.09", self)
         more_QM = QMenu("&More", self)
 
         addIcon_QA = QAction(self)
@@ -487,11 +487,10 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def set_char_path(self):
         """Set character path via file dialog."""
-        CHAR_PATH = "D:/_PROJECT/GIT/nl_rigging_tools_examples"
         charPaths = mc.fileDialog2(
             dialogStyle=2,
             fileMode=3,
-            dir=CHAR_PATH,
+            # dir=CHAR_PATH,
             cap="Select Character Path",
             okc="Select",
         )
@@ -504,7 +503,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Open the character path in the file explorer."""
         import subprocess
 
-        charPath = mc.optionVar(q="charPath")
+        # charPath = mc.optionVar(q="charPath")
+        charPath = self.UI.charPath_LE.text()
         if not charPath:
             mc.confirmDialog(t="Info", m="Character path not set.     ", b="OK")
             return

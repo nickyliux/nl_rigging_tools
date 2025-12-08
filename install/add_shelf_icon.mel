@@ -1,9 +1,3 @@
-/* ------------------------------------------ *\
-
-    Add shelf icon for nl_rigging_tools
-
-\* ------------------------------------------ */
-
 global string $gShelfTopLevel;
 string $currentShelf = `tabLayout -query -selectTab $gShelfTopLevel`;
 setParent $currentShelf;
@@ -24,7 +18,7 @@ string $command = "" +
 shelfButton
 	-command $command
 	-annotation "nl_rigging_tools"
-	-label "Oh"
+	-label "nlRt"
 	-image $icon
 	-image1 $icon
 	-sourceType "python";

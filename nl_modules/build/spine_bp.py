@@ -51,7 +51,7 @@ class SpineBp(RigModule):
         # Control and joint lists
         self.ctls_ik = []
         self.ctls_fk = []
-        self.jnts_ctl = []
+        self.jnts_five = []
         self.jnts_bind = []
         self.jnts_fk = []
         self.jnts_rb = []
@@ -255,10 +255,16 @@ class SpineBp(RigModule):
             p=self.CTL_DATA,
             inheritsXf=0,
         )
-        self.jnts_ctl = self.build_rbnBindJnt(
-            [self.hip_ikc, self.mid_ikc, self.chest_ikc], r=rSz * 10
+        self.jnts_five = self.build_fiveJnts(
+            [self.hip_ikc, self.mid_ikc, self.chest_ikc], r=rSz * 5
         )
-        self.rbSrf.weightTo(self.jnts_ctl, chain=0, mi=3, dr=5)
+        self.rbSrf.weightTo(self.jnts_five, chain=0, mi=3, dr=5)
+
+        self.jnts_five[1] | self.jnts_five[0]
+        self.jnts_five[-2] | self.jnts_five[-1]
+        self.hip_ikc.a.add("tangent", min=0.001, dv=1) >> self.jnts_five[0].a.sy
+        self.mid_ikc.a.add("tangent", min=0.001, dv=1) >> self.jnts_five[2].a.sy
+        self.chest_ikc.a.add("tangent", min=0.001, dv=1) >> self.jnts_five[-1].a.sy
 
         stretchy = self.setting.a.add("stretchy", min=0, max=1, dv=1)
         self.hip_ikc.a.add("stretchy", proxy=stretchy)
@@ -314,8 +320,8 @@ class SpineBp(RigModule):
         """Setup visibility toggles for the spine rig controls."""
         if self.is_ribbon():
             self.ctl_vis_toggle(
-                self.setting.a.add("setupJntVis", type="bool", k=0),  # , dv=1),
-                onList=self.jnts_fk + self.jnts_ctl + [self.rbSrf],
+                self.setting.a.add("showSetup", type="bool", k=0),
+                onList=self.jnts_fk + self.jnts_five + [self.rbSrf],
             )
 
         if self.is_neck():
@@ -332,7 +338,7 @@ class SpineBp(RigModule):
         ]
         if self.is_ribbon():
             for ctl in [self.hip_ikc, self.mid_ikc, self.chest_ikc]:
-                ctl.a.showAttr("sy", t=1, r=1, s=0)
+                ctl.a.showAttr(t=1, r=1, s=0)
 
         for ctl in ctls:
             ctl.a.showAttr(t=1, r=1)
