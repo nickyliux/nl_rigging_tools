@@ -46,12 +46,8 @@ def loadGuide(name):
                 count += 1
         return f"{n}{count}"
 
-    # if not isinstance(names, list):
-    #     raise TypeError("names should be a list of string")
-
-    # for name in names:
     nextRigID = genNextRigID(name)
-    TplLoader(name + ".ma", nextRigID).load_base_tpl()
+    TplLoader(name, nextRigID).load_base_tpl()
     return DagNode(nextRigID + "_master_guide")
 
 

@@ -1,3 +1,4 @@
+import logging
 import os
 import maya.cmds as mc
 
@@ -6,12 +7,12 @@ class TplLoader:
     """
     Class for loading base & guide for the component
     e.g.
-        loader = TplLoader('lfArm.ma', 'lfArm0')
+        loader = TplLoader('lfArm', 'lfArm0')
         loader.load_base_tpl()
     """
 
-    def __init__(self, tpl_name, rigID):
-        self.tpl_name = tpl_name
+    def __init__(self, fileName, rigID):
+        self.fileName = fileName
         self.rigID = rigID
         self.rigNode = None
         self.masterC = None
@@ -26,14 +27,14 @@ class TplLoader:
         if mc.objExists(rigNode_name):
             raise ValueError(f"{rigNode_name} already exist")
 
-        build_dir = os.path.dirname(os.path.abspath(__file__))
-        MAYA_TPL_DIR = os.path.join(build_dir, "components")
+        curr_dir = os.path.dirname(os.path.abspath(__file__))
+        tplFile = os.path.join(curr_dir, "components", self.fileName + ".ma")
 
-        try:
-            tplFile = f"{MAYA_TPL_DIR}/{self.tpl_name}"
+        if os.path.isfile(tplFile):
             mc.file(tplFile, i=1, mnc=0, renameAll=1, renamingPrefix=rID)
-        except Exception as e:
-            print(f"Load template file error: {e}")
+        else:
+            logging.error(f"Template file not found: {tplFile}")
+            return
 
         scale_grp = GrpNode("modules_scale_grp")
         mod_grp = DagNode(rID + "_module_grp")
