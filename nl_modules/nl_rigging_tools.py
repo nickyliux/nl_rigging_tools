@@ -247,6 +247,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 self.UI.charPath_LE.setText(charPath)
             else:
                 mc.optionVar(sv=("charPath", ""))
+                mc.savePrefs()
 
     def updateLoadWrapTargetMesh(self):
         """Update the button text for loading wrap target mesh."""
@@ -472,6 +473,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         if selList:
             mc.optionVar(sv=("targetWrapMesh", selList[0]))
+            mc.savePrefs()
             self.updateLoadWrapTargetMesh()
         else:
             mc.select(tgt)
@@ -488,18 +490,18 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def set_char_path(self):
         """Set character path via file dialog."""
         charPath = self.UI.charPath_LE.text()
-        charPaths = mc.fileDialog2(
+        new_charPaths = mc.fileDialog2(
             dialogStyle=2,
             fileMode=3,
-            # dir=CHAR_PATH,
             dir=charPath,
             cap="Select Character Path",
             okc="Select",
         )
-        if charPaths:
-            charPath = charPaths[0]
-            mc.optionVar(sv=("charPath", charPath))
+        if new_charPaths:
+            charPath = new_charPaths[0]
             self.UI.charPath_LE.setText(charPath)
+            mc.optionVar(sv=("charPath", charPath))
+            mc.savePrefs()
 
     def explore_char(self):
         """Open the character path in the file explorer."""
