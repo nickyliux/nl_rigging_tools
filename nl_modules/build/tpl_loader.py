@@ -1,6 +1,5 @@
+import os
 import maya.cmds as mc
-
-MAYA_TPL_DIR = "D:/_PROJECT/GIT/nl_rigging_tools/nl_modules/build/components"
 
 
 class TplLoader:
@@ -26,6 +25,9 @@ class TplLoader:
 
         if mc.objExists(rigNode_name):
             raise ValueError(f"{rigNode_name} already exist")
+
+        build_dir = os.path.dirname(os.path.abspath(__file__))
+        MAYA_TPL_DIR = os.path.join(build_dir, "components")
 
         try:
             tplFile = f"{MAYA_TPL_DIR}/{self.tpl_name}"

@@ -1,4 +1,5 @@
 import logging
+import os
 import re
 import maya.cmds as mc
 
@@ -63,9 +64,9 @@ def buildTgt(rigN):
 
 def loadBase():
     """Load base template file for rigging"""
-    MAYA_TPL_DIR = "D:/_PROJECT/GIT/nl_rigging_tools/nl_modules/build/components"
-    BASE_FILE_NAME = "base.ma"
-    base_file = f"{MAYA_TPL_DIR}/{BASE_FILE_NAME}"
+    util_dir = os.path.dirname(os.path.abspath(__file__))
+    MAYA_TPL_DIR = os.path.join(util_dir, "..", "build", "components")
+    base_file = f"{MAYA_TPL_DIR}/base.ma"
 
     try:
         mc.file(base_file, i=1)
@@ -83,7 +84,7 @@ def preRig():
     ctl = DagNode("master_ctl")
     ctl.a.showAttr(t=1, r=1)
     ctl.offset.a.showAttr(t=1, r=1)
-    common.setViewport(jx=1, wos=1)
+    common.setViewport(wos=1)
 
 
 @common.Undo("buildSelOrAll")
@@ -155,20 +156,6 @@ def masterAddAttrs():
     grp = DagNode("CTL")
     if grp.exists():
         ctl.a.add("showCtl", k=0, type="bool", dv=1) >> grp.a.v
-
-    # grp = DagNode("JNT")
-    # if grp.exists():
-    #     ctl.a.add("jntVis", k=0, type="bool", dv=1) >> grp.a.v
-    #     grp.a.overrideEnabled.set(1)
-    #     dspType = ctl.a.add("jntDspType", type="enum", k=0, en=OPTIONS)
-    #     dspType >> grp.a.overrideDisplayType
-
-    # grp = DagNode("PRX")
-    # if grp.exists():
-    #     ctl.a.add("pxyVis", k=0, type="bool", dv=1) >> grp.a.v
-    #     grp.a.overrideEnabled.set(1)
-    #     dspType = ctl.a.add("pxyDspType", type="enum", k=0, en=OPTIONS)
-    #     dspType >> grp.a.overrideDisplayType
 
 
 def unbuildTgt(rN):

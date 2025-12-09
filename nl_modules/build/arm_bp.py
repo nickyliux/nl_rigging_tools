@@ -123,7 +123,7 @@ class ArmBp(RigModule):
 
         # self.ikc.cv_rotate(0, 90, 0)
         self.pvc.cv_rotate(-90, 0, 0)
-        self.setting.cv_move(0, scale * 15, 0)
+        self.setting.cv_move(0, scale * 10, 0)
 
     def build(self):
         """Build the arm rig module."""
@@ -329,7 +329,7 @@ class ArmBp(RigModule):
         )
 
         # Add blend attribute
-        self.setting.a.addSep()
+        # self.setting.a.addSep()
         fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=0)
         total = len(self.jnts) - 1
 
@@ -514,7 +514,7 @@ class ArmBp(RigModule):
         )
         if self.ctls_up:
             self.ctl_vis_toggle(
-                self.setting.a.add("showAimUp", type="bool", k=0),
+                self.setting.a.add("showUpCtl", type="bool", k=0),
                 onList=self.ctls_up,
             )
 

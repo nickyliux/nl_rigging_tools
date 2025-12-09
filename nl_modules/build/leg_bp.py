@@ -536,7 +536,7 @@ class LegBp(RigModule):
             self.setting.a.add("showSetup", type="bool", k=0), onList=setupTgt
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("showRollJnt", type="bool", k=0),
+            self.setting.a.add("showRollJnts", type="bool", k=0),
             onList=self.rollJnts + self.aimJnts,
         )
         if self.limbType == LimbType.RIBBON.value:

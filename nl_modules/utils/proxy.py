@@ -100,7 +100,7 @@ def saveProxy():
         return
 
     charPath = mc.optionVar(q="charPath")
-    tgtFile = mc.fileDialog2(fileFilter="*pxy*.ma", dialogStyle=2, dir=charPath)
+    tgtFile = mc.fileDialog2(fileFilter="*prx*.ma", dialogStyle=2, dir=charPath)
     if tgtFile:
         mc.select("PRX")
         mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
@@ -115,11 +115,11 @@ def loadProxy():
     charPath = mc.optionVar(q="charPath")
     tgtFiles = []
     if charPath:
-        fileToSearch = os.path.join(charPath, os.path.basename(charPath) + "*_pxy*.ma")
+        fileToSearch = os.path.join(charPath, os.path.basename(charPath) + "*_prx*.ma")
         tgtFiles = glob.glob(fileToSearch)
         if not tgtFiles:
             tgtFiles = mc.fileDialog2(
-                fileFilter="*_pxy*", dialogStyle=2, fileMode=1, dir=charPath
+                fileFilter="*_prx*", dialogStyle=2, fileMode=1, dir=charPath
             )
     if not tgtFiles:
         return
