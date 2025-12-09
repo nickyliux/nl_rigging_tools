@@ -88,7 +88,7 @@ class SpineBp(RigModule):
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        self.setting.cv_move(0, rSz * 10, 0)
+        self.setting.cv_move(0, -rSz * 15, 0)
 
     def is_ribbon(self):
         """Check if the spine rig is of ribbon type."""
@@ -320,7 +320,7 @@ class SpineBp(RigModule):
         """Setup visibility toggles for the spine rig controls."""
         if self.is_ribbon():
             self.ctl_vis_toggle(
-                self.setting.a.add("showSetup", type="bool", k=0),
+                self.setting.a.add("showSetup", type="bool", k=0, dv=1),
                 onList=self.jnts_fk + self.jnts_five + [self.rbSrf],
             )
 

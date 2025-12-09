@@ -30,9 +30,10 @@ def onMayaDroppedPythonFile(*args):
         "modules",
         f"{mod_name}.mod",
     )
-    cur_dir = os.path.dirname(__file__)
+    install_dir = os.path.dirname(__file__)
+    script_dir = os.path.dirname(install_dir)
     try:
-        content = f"+ {mod_name} any {cur_dir}\nscripts: .\n"
+        content = f"+ {mod_name} any {script_dir}\nscripts: .\n"
         with open(mod_path, "w") as f:
             f.write(content)
 
@@ -41,8 +42,8 @@ def onMayaDroppedPythonFile(*args):
     except Exception as e:
         logging.error(f"Failed to create module file: {e}")
 
-    if cur_dir not in sys.path:
-        sys.path.insert(0, cur_dir)
+    if script_dir not in sys.path:
+        sys.path.insert(0, script_dir)
 
     # Load the tool
     import nl_modules.nl_rigging_tools as nlRT

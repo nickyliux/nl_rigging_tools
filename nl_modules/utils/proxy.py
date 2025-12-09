@@ -310,9 +310,12 @@ def selectAllProxy(*args):
 
 def toggleProxy():
     """Toggle visibility of the proxy meshes under the 'PRX' group."""
-    PRX = DagNode("PRX")
-    if PRX.exists():
-        PRX.a.v.set(1 - PRX.a.v.get())
+    m = DagNode("master2_ctl")
+    if m.exists():
+        prxAttr = m.a.showPrx
+        if prxAttr.exists():
+            prxAttr.set(not prxAttr.get())
+            logging.info(f"Toggle proxy visibility.")
 
 
 def add_radiusScale_attr(tgtJnts, v):

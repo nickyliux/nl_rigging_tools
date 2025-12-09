@@ -336,15 +336,22 @@ class RigModule(RigBase):
 
     def build_post_module(self):
         """Post build function to finalize the module setup."""
-        # Hide module grp
         mc.hide(self.moduleG)
 
     def unbuild_pre_module(self):
         """Prepare for unbuilding the rig module, resetting the rigNode state."""
         logging.info(self.rigID)
-
         self.moduleG.show()
+
+        # Delete in the following order otherwise error may occur
         self.JNT_DATA.delete()
+
+        setting = self.rigNode.a.setting.inConnNode
+        if setting and setting.a.showSetup.exists():
+            setupNodes = setting.a.showSetup.outConnNode
+            if setupNodes:
+                mc.delete(setupNodes)
+
         self.CTL_DATA.delete()
 
         rootJ = self.rigNode.a.rootJ.inConnNode
@@ -890,7 +897,6 @@ class RigModule(RigBase):
 
     def ctl_vis_toggle(self, attr, onList=None, offList=None):
         """Toggle visibility of controls based on the given attribute."""
-
         if onList:
             [attr >> ctl.a.v for ctl in onList if ctl != None and ctl.exists()]
         if offList:

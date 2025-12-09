@@ -128,7 +128,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.templateTarget_BN, self.templateTarget, ":templated.png")
         self.connect(self.UI.selAllProxyGrp_BN, proxy.selectAllProxy, ":aselect.png")
         self.connect(self.UI.bindToSelProxy_BN, proxy.bind_to_proxy, ":bind.png")
-        self.connect(self.UI.showHideProxy_BN, proxy.toggleProxy, ":visible.png")
+        self.connect(self.UI.toggleProxy_BN, proxy.toggleProxy, ":visible.png")
         self.connect(self.UI.loadCtl_BN, control.loadCtl, ":openScript.png")
         self.connect(self.UI.saveCtl_BN, control.saveCtl, ":fileSave.png")
         self.connect(
@@ -487,10 +487,12 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def set_char_path(self):
         """Set character path via file dialog."""
+        charPath = self.UI.charPath_LE.text()
         charPaths = mc.fileDialog2(
             dialogStyle=2,
             fileMode=3,
             # dir=CHAR_PATH,
+            dir=charPath,
             cap="Select Character Path",
             okc="Select",
         )

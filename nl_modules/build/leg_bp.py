@@ -524,24 +524,24 @@ class LegBp(RigModule):
             offList=self.ctls_fk[1:-1],
         )
         self.ctl_vis_toggle(
-            self.ikc.a.add("pvcVis", type="bool", k=0, dv=1),
+            self.ikc.a.add("showPvc", type="bool", k=0, dv=1),
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
+        setupTgt = [self.jnts_fk[0], self.jnts_ik[0], self.jnts_bf[0]]
+        if self.limbType == LimbType.RIBBON.value:
+            # setupTgt.extend([self.ribbon_up.stt_jnt, self.ribbon_lw.end_jnt])
+            setupTgt.extend([self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP])
+
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJntVis", type="bool", k=0),
-            onList=self.jnts_fk + self.jnts_ik + self.jnts_bf,
+            self.setting.a.add("showSetup", type="bool", k=0), onList=setupTgt
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("rollJntVis", type="bool", k=0),
+            self.setting.a.add("showRollJnt", type="bool", k=0),
             onList=self.rollJnts + self.aimJnts,
         )
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
-                self.setting.a.add("ribbonVis", type="bool", k=0),
-                onList=[self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP],
-            )
-            self.ctl_vis_toggle(
-                self.setting.a.add("bendyCtlVis", type="bool", k=0, dv=1),
+                self.setting.a.add("showBendy", type="bool", k=0, dv=1),
                 onList=self.all_bendy,
             )
         mc.hide(self.ikhs, self.toeIKHs)

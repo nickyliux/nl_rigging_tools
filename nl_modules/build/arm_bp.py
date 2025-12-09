@@ -497,30 +497,30 @@ class ArmBp(RigModule):
             onList=[self.pin_fkc],
         )
         self.ctl_vis_toggle(
-            self.ikc.a.add("pvcVis", type="bool", dv=1, k=0),
+            self.ikc.a.add("showPvc", type="bool", dv=1, k=0),
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
+
+        setupTgt = [self.jnts_fk[0], self.jnts_ik[0], self.jnts_bf[0]]
+        if self.limbType == LimbType.RIBBON.value:
+            setupTgt.extend([self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP])
+
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJntVis", type="bool", k=0),
-            onList=(self.jnts_fk + self.jnts_ik + self.jnts_bf),
+            self.setting.a.add("showSetup", type="bool", k=0), onList=setupTgt
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("rollJntVis", type="bool", k=0),
+            self.setting.a.add("showRollJnts", type="bool", k=0),
             onList=self.rollJnts + self.aimJnts,
         )
         if self.ctls_up:
             self.ctl_vis_toggle(
-                self.setting.a.add("aimUpCtlVis", type="bool", k=0),
+                self.setting.a.add("showAimUp", type="bool", k=0),
                 onList=self.ctls_up,
             )
 
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
-                self.setting.a.add("ribbonVis", type="bool", k=0),
-                onList=[self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP],
-            )
-            self.ctl_vis_toggle(
-                self.setting.a.add("bendyCtlVis", type="bool", k=0, dv=1),
+                self.setting.a.add("showBendy", type="bool", k=0, dv=1),
                 onList=self.all_bendy,
             )
 

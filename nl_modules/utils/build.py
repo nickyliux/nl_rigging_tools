@@ -146,7 +146,7 @@ def masterAddAttrs():
 
     grp = DagNode("PRX")
     if grp.exists():
-        ctl.a.add("showPxy", k=0, type="bool", dv=1) >> grp.a.v
+        ctl.a.add("showPrx", k=0, type="bool", dv=1) >> grp.a.v
 
     grp = DagNode("JNT")
     if grp.exists():
