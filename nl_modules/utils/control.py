@@ -88,6 +88,13 @@ def mirrorCtlShape(ctl):
     return opp
 
 
+@common.Undo("removeAllCst")
+def removeAllCst():
+    """Remove all constraints in scene."""
+    allCsts = mc.ls(type="constraint")
+    mc.delete(allCsts)
+
+
 def saveCtl():
     """Save control curves to a file."""
     allCtls = common.getRigCtlsAll()
@@ -97,12 +104,15 @@ def saveCtl():
 
     allCtls.extend(["master_ctl", "master1_ctl", "master2_ctl"])
     if allCtls:
+        removeAllCst()
         mc.select(allCtls)
         charPath = mc.optionVar(q="charPath")
         tgtFile = mc.fileDialog2(fileFilter="*_ctl*.ma", dialogStyle=2, dir=charPath)
         if tgtFile:
             try:
                 mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
+                mc.undo()
+                mc.undo()
             except Exception as e:
                 raise SystemError(f"Error saving {tgtFile}: {e}")
 
@@ -150,11 +160,13 @@ def loadCtl():
             mc.parent(imported.shapes, tgt, s=1, r=1)
             for s in tgt.shapes:
                 s.rename(tgt + "Shape#")
+
+    logging.info(f"Control shapes loaded.")
+
     if imported:
         rootGrp = DagNode(ns + ":CHR")
         if rootGrp.exists():
             rootGrp.delete()
-            logging.info(f"Control shapes loaded.")
             mc.select(cl=1)
 
 

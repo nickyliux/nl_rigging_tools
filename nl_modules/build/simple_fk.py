@@ -82,7 +82,7 @@ class SimpleFk(RigModule):
         rID, rSz, xDr = self.getMyVar()
         up = "x"
         scale = rSz * 3
-        scale3 = [scale * 2, scale * 2, scale * 2]
+        scale3 = [scale * 3, scale * 3, scale * 3]
         if rID.startswith("lf"):
             scale *= -1
             scale3[0] *= -0.5

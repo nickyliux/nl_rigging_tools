@@ -97,7 +97,7 @@ class FingerFk(RigModule):
         self.setting.alignTo(self.rootJ, p=self.CTL_DATA)
         self.rootJ.cstPar(self.setting, mo=1)
 
-        offset = [scale * 10, scale * -20, 0]
+        offset = [scale * 10, scale * -15, 0]
         self.fgr01_fkc.cv_move(*offset)
         if self.segNum >= 2:
             self.fgr02_fkc.cv_move(*offset)
