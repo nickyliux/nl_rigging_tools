@@ -17,7 +17,6 @@ class DagNode(DepNode):
     # color for [ mid, left, right ]
     COLOR_PRESET_1 = [(1.0, 0.8, 0.24), (0.36, 0.66, 1), (0.71, 0.30, 0.30)]
     COLOR_PRESET_2 = [22, 6, 13]
-    # COLOR_PRESET_2 = [(0.1, 0.05, 0.0), (0.0, 0.0, 0.50), (0.3, 0.0, 0.0)]
 
     def __init__(self, n, nodeType=None):
         """Initialize DagNode with node name and type."""

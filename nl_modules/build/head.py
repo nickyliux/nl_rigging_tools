@@ -54,7 +54,7 @@ class Head(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
-            ("head_fkc", "squareR", None, rSz * 2, 0, -1),
+            ("head_fkc", "squareR", None, rSz * 6, 0, -1),
             ("jaw_fkc", "jaw", None, rSz, 0, -1),
             ("lf_eye_fkc", "circle", "z", rSz, 0, -1),
             ("rt_eye_fkc", "circle", "z", rSz, 0, -1),
@@ -63,7 +63,7 @@ class Head(RigModule):
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
-        # self.head_fkc.cv_move(0, rSz * 25, 0)
+        self.jaw_fkc.cv_move(0, -rSz * 10, 0)
 
     def build_fk(self):
         """Build the FK controls for the head rig module."""
@@ -76,7 +76,7 @@ class Head(RigModule):
         self.head_fkc.alignTo(self.head)
         self.head_fkc.addOffsetGrp()
         self.head_fkc.cstPar(self.head, mo=1)
-        self.head_fkc.cv_moveTo(self.headEnd.o.pos)
+        # self.head_fkc.cv_moveTo(self.headEnd.o.pos)
 
         self.jaw_fkc.snapTo(self.jaw, p=self.head_fkc)
         self.jaw_fkc.addOffsetGrp()

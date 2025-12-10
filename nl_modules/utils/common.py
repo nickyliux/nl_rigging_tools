@@ -84,30 +84,28 @@ def assignShd(*args, tgts=None):
     if not tgts:
         return
 
-    DARKENING = 0.8
     faceDict = {
         18: [0, 1, 4, 5, 8, 9, 12, 13],
         26: [0, 1, 4, 5, 8, 9, 12, 13, 16, 17, 20, 21],
         34: [0, 1, 4, 5, 8, 9, 12, 13, 16, 17, 20, 21, 24, 25, 28, 29],
     }
 
-    colorPreset = DagNode.COLOR_PRESET_1 if args[0] == 0 else DagNode.COLOR_PRESET_2
+    colorPreset = DagNode.COLOR_PRESET_1 if args[0] == 1 else DagNode.COLOR_PRESET_2
 
     for tgt_name in tgts:
         tgt = DagNode(tgt_name)
 
-        name = "proxy_mid_shd"
-        color = colorPreset[0]
+        name = "proxy_shd"
+        color_id = 0
         if tgt.name.startswith("lf"):
-            name = "proxy_lf_shd"
-            color = colorPreset[1]
+            color_id = 1
         elif tgt.name.startswith("rt"):
-            name = "proxy_rt_shd"
-            color = colorPreset[2]
+            color_id = 2
+        color = colorPreset[color_id]
 
         # Assign shader based on type
         if tgt.type == "mesh":
-            shd, sg = addShader(name, color=Vec(color) * DARKENING)
+            shd, sg = addShader(name, color=(0.5, 0.3, 0.1))
             # mc.sets(tgt, forceElement=sg)
             faceNum = mc.polyEvaluate(tgt, f=1)
             for fID in faceDict[faceNum]:
@@ -131,11 +129,10 @@ def addShader(name, shaderType="lambert", color=(1, 1, 1)):
             sg = nodes[0]
     else:
         shd = DepNode(mc.shadingNode(shaderType, name=name, asShader=1))
+        shd.a.diffuse.set(0.8)
         shd.a.color.set(*color)
-        shd.a.diffuse.set(0.6)
-        sg = DepNode(
-            mc.sets(name=f"{name}SG", empty=1, renderable=1, noSurfaceShader=1)
-        )
+
+        sg = DepNode(mc.sets(name=f"{name}SG", em=1, r=1, noSurfaceShader=1))
         mc.connectAttr(f"{shd}.outColor", f"{sg}.surfaceShader")
     return shd, sg
 
