@@ -163,8 +163,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.crvShape_save_BN, self.crvShape_save, ":fileSave.png")
         self.connect(self.UI.crvShape_del_BN, self.crvShape_del, ":smallTrash.png")
         icon = ":colorPresetSpectrum.png"
+        # icon = ":colorPresetGrayscale.png"
         self.connect(self.UI.assignShd_BN, partial(common.assignShd, 0), icon)
-        icon = ":colorPresetGrayscale.png"
         self.connect(self.UI.assignShd2_BN, partial(common.assignShd, 1), icon)
 
         self.connect(self.UI.shapeRotaX_BN, partial(control.rotaCVForSel, 90, 0, 0))

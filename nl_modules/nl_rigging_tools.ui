@@ -3090,7 +3090,7 @@
           <string>Assign preset color to selected</string>
          </property>
          <property name="text">
-          <string/>
+          <string>1</string>
          </property>
         </widget>
        </item>
@@ -3112,7 +3112,7 @@
           <string>Assign dark preset color to selected</string>
          </property>
          <property name="text">
-          <string/>
+          <string>2</string>
          </property>
         </widget>
        </item>
