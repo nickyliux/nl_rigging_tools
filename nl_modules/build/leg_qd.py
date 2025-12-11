@@ -141,12 +141,12 @@ class LegQd(RigModule):
 
         ctl_defs = [
             ("setting", "gear", "z", rSz, 1, -1),
-            ("hip_fkc", "circle", "x", scale, 0, -1),
-            ("upr_fkc", "circle", "x", scale, 0, -1),
-            ("lwr_fkc", "circle", "x", scale, 0, -1),
-            ("palm_fkc", "circle", "x", scale, 0, -1),
-            ("digit_fkc", "circle", "x", scale, 0, -1),
-            ("ball_fkc", "circle", "x", scale / 2, 0, -1),
+            ("hip_fkc", "squareR", "x", scale, 0, -1),
+            ("upr_fkc", "squareR", "x", scale, 0, -1),
+            ("lwr_fkc", "squareR", "x", scale, 0, -1),
+            ("palm_fkc", "squareR", "x", scale, 0, -1),
+            ("digit_fkc", "squareR", "x", scale, 0, -1),
+            ("ball_fkc", "squareR", "x", scale / 2, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
             ("extra_ikc", "rotator", None, -scale, 0, -1),
             ("pvc", "sphere", None, rSz, 0, -1),

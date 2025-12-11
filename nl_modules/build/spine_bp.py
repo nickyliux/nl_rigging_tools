@@ -130,13 +130,7 @@ class SpineBp(RigModule):
 
         self.ctls_fk = []
         for i, j in enumerate(self.jnts_fk[:-1]):
-            c = CrvNode(
-                f"{i + 1}_fkc",
-                pf=rID,
-                # shape="circle",
-                scale=rSz * 5,
-                # color=Color.D_YELLOW,
-            )
+            c = CrvNode(f"{i + 1}_fkc", pf=rID, shape="squareR", scale=rSz * 5)
             self.ctls_fk.append(c)
 
         if self.is_neck():
