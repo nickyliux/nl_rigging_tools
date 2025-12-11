@@ -29,3 +29,6 @@ def loadModel(self):
             tgtFile = mc.fileDialog2(
                 fileFilter="*_mdl*", dialogStyle=2, fileMode=1, dir=charPath
             )
+            if tgtFile:
+                file.importFile(tgtFile)
+                logging.info(f"Model imported: {tgtFile}.")

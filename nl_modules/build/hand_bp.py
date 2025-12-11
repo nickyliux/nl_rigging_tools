@@ -61,16 +61,17 @@ class HandBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "spiral", None, scale, 1, 2),
-            ("palm_ctl", "rotator", None, -scale, 0, 2),
-            ("thumb_ctl", "rotator", "z", -scale, 0, 2),
-            ("smart_ctl", "rotator", "x", scale * 2, 0, 2),
+            ("setting", "gear", None, scale * 2, 1, -1),
+            ("palm_ctl", "rotator", None, -scale, 0, -1),
+            ("thumb_ctl", "rotator", "z", -scale, 0, -1),
+            ("smart_ctl", "rotator", "x", scale * 2, 0, -1),
         ]
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
         self.smart_ctl.cv_rotate(90, 0, 0)
+        self.setting.cv_move(0, 0, -scale * 20)
         # self.palm_ctl.color = Color.D_YELLOW
         # self.thumb_ctl.color = Color.D_YELLOW
         # self.smart_ctl.color = Color.D_YELLOW
@@ -410,8 +411,8 @@ class HandBp(RigModule):
         """Post setup for the hand rig module."""
         logging.info(self.rigID)
 
-        self.setting.alignTo(self.smart_ctl, p=self.smart_ctl)  # p=self.CTL_DATA)
-        # self.rootJ.cstPar(self.setting, mo=1)
+        self.setting.alignTo(self.rootJ, p=self.CTL_DATA)
+        self.rootJ.cstPar(self.setting, mo=1)
 
         self.setup_scale()
         self.setup_bindJnt()
