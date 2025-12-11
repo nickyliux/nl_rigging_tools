@@ -169,7 +169,10 @@ class SimpleFk(RigModule):
 
     def setup_vis(self):
         """Setup visibility for the finger rig module."""
-        mc.hide(self.ikhs, self.jnts_fk, self.setting)
+        self.ctl_vis_toggle(
+            self.setting.a.add("showSetup", k=0, type="bool", dv=1),
+            onList=[self.jnts_fk[0]] + self.ikhs,
+        )
 
     def setup_channel(self):
         """Setup channels for the finger rig module."""
@@ -192,6 +195,6 @@ class SimpleFk(RigModule):
         # self.setup_space()
         self.setup_anchor()
         self.setup_vis()
-        self.setup_channel()
         # self.setup_rotate_order()
         self.build_post_module()
+        self.setup_channel()

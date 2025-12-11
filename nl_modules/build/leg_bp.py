@@ -666,9 +666,9 @@ class LegBp(RigModule):
         self.setup_space()
         self.setup_anchor()
         self.setup_vis()
-        self.setup_channel()
         self.setup_rotate_order()
         self.build_post_module()
+        self.setup_channel()
 
         # --- (Optional) Splay logic for toes (commented out) ---
         # splay = self.ball_fkc.a.add("splay", min=-5, max=5)

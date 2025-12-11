@@ -336,6 +336,14 @@ class RigModule(RigBase):
 
     def build_post_module(self):
         """Post build function to finalize the module setup."""
+        from nl_modules.utils import build
+
+        showSetting = self.masterC2.a.add("showSetting", k=0, type="bool", dv=1)
+        for node in build.getRigNodes_all():
+            setting = node.a.setting.inConnNode
+            if setting and setting.exists():
+                showSetting >> setting.a.v
+
         mc.hide(self.moduleG)
 
     def unbuild_pre_module(self):

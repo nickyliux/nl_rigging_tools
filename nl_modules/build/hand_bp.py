@@ -371,14 +371,14 @@ class HandBp(RigModule):
 
     def setup_vis(self):
         """Setup visibility controls for the hand rig."""
-        fgrCtlVis = self.smart_ctl.a.add("fgrCtlVis", type="bool", dv=1, k=0)
+        fgrCtlVis = self.smart_ctl.a.add("showFgrCtl", type="bool", dv=1, k=0)
         for ctls in self.ctls_fgr:
             fgrCtlVis >> ctls[0].a.v
 
         for ctls in self.ctls_fgr:
             ctls[0].shape.hide()
 
-        mc.hide(self.ikHs_fgr, self.jnts_ik, self.setting)
+        mc.hide(self.ikHs_fgr, self.jnts_ik)
 
     def setup_ctlSet(self):
         """Setup control sets for the hand rig module."""
@@ -419,6 +419,6 @@ class HandBp(RigModule):
         self.setup_space()
         self.setup_anchor_module({"anchorS1": self.rootGrp})
         self.setup_vis()
-        self.setup_channel()
         self.setup_rotate_order()
         self.build_post_module()
+        self.setup_channel()

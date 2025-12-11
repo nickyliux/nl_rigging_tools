@@ -101,7 +101,7 @@ class ArmBp(RigModule):
 
         ctl_defs = [
             ("setting", "gear", "z", scale, 1, -1),
-            ("clavicle_fkc", "diamond3", "x", scale, 1, -1),
+            ("clavicle_fkc", "diamond3", "x", scale * 2, 1, -1),
             ("upr_fkc", "squareR", "x", scale, 0, -1),
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
             ("palm_fkc", "squareR", "x", scale, 0, -1),
@@ -632,6 +632,6 @@ class ArmBp(RigModule):
         self.setup_space()
         self.setup_anchor()
         self.setup_vis()
-        self.setup_channel()
         self.setup_rotate_order()
         self.build_post_module()
+        self.setup_channel()

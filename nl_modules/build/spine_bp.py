@@ -83,12 +83,11 @@ class SpineBp(RigModule):
                 ("chest_ikc", "chest", None, rSz * 5, 0, -1),
                 ("mid_ikc", "sphere", None, rSz * 3, 1, -1),
                 ("hip_ikc", "hip", None, rSz * 5, 0, -1),
-                #  (rSz * 2, rSz, rSz * 2)
             ]
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        self.setting.cv_move(0, -rSz * 15, 0)
+        self.setting.cv_move(0, rSz * 15, 0)
 
     def is_ribbon(self):
         """Check if the spine rig is of ribbon type."""
@@ -317,10 +316,12 @@ class SpineBp(RigModule):
                 self.setting.a.add("showSetup", type="bool", k=0),
                 onList=[self.jnts_fk[0]] + self.jnts_five + [self.rbSrf],
             )
-
         if self.is_neck():
             CrvNode(self.ctls_fk[0]).setOnTop(1)
             mc.hide(self.cog_ctl, self.hip_ikc)
+
+        if self.masterC2.a.showSetting.exists():
+            self.masterC2.a.showSetting >> self.setting.a.v
 
     def setup_channel(self):
         """Setup channel attributes for the spine rig controls."""
@@ -408,6 +409,6 @@ class SpineBp(RigModule):
         self.setup_space()
         self.setup_anchor()
         self.setup_vis()
-        self.setup_channel()
         self.setup_rotate_order()
         self.build_post_module()
+        self.setup_channel()

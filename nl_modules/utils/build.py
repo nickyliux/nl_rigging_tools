@@ -109,7 +109,6 @@ def buildSelOrAll(*args, uiPB=None):
             if uiPB:
                 i += 1
                 uiPB.setValue(i)
-        masterAddAttrs()
         postRig()
         mc.select(cl=1)
         if uiPB:
@@ -125,6 +124,7 @@ def postRig():
     """Post rigging operations"""
     from nl_modules.utils import control
 
+    masterAddAttrs()
     control.reset_all_ctl()
     update_anchor_conn()
     update_space_switch()
@@ -156,7 +156,7 @@ def masterAddAttrs():
     grp = DagNode("CTL")
     if grp.exists():
         ctl.a.add("showCtl", k=0, type="bool", dv=1) >> grp.a.v
-
+    
 
 def unbuildTgt(rN):
     """Unbuild target rigNode"""

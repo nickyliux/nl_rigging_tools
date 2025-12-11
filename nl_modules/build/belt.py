@@ -155,13 +155,13 @@ class Belt(RigModule):
                 common.cstMulti(
                     self.ctls_ik[-1],
                     self.ctls_ik[0],
-                    self.ctls_ik[i + 1],
+                    # self.ctls_ik[i + 1],
+                    self.ctls_ik[i + 1].addOffsetGrp(),
                     w=(i + 1) / (self.ikCtlNum - 1),
                     cstType="poi",
                 )
 
         SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6, chain=0)
-        # SrfNode(self.rbSrf1).weightTo(self.jnts_ik, chain=0)
 
         # --- Snap setting control to first IK control and constrain ---
         self.setting.snapTo(self.ctls_ik[0], p=self.FK_GRP, ofs=(0, rSz * 20, 0))
@@ -256,28 +256,19 @@ class Belt(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the belt rig controls."""
         self.ctl_vis_toggle(
-            self.setting.a.add("ribbonVis", k=0, type="bool"),
-            onList=[self.rbSrf1],
+            self.setting.a.add("showSetup", k=0, type="bool"),
+            onList=self.jnts_ik + [self.rbSrf1],
         )
-        # self.ctl_vis_toggle(
-        #     self.setting.a.add("showIk", k=0, type="bool", dv=1),
-        #     onList=[self.ctls_ik[0]],
-        # )
-        # self.ctl_vis_toggle(
-        #     self.setting.a.add("showFk", k=0, type="bool", dv=1),
-        #     onList=[self.ctls_fk[0]],
-        # )
         # self.ctl_vis_toggle(
         #     self.setting.a.add("showSubIk", k=0, type="bool", dv=1),
         #     onList=self.ctls_ofs,
         # )
-        # mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)
-        # mc.hide(self.rbSrf1, self.setting)  # , self.rbSrf2)
 
     def setup_channel(self):
         """Setup channel attributes for the belt rig controls."""
         for ctl in self.ctls_fk + self.ctls_ik + self.ctls_ofs:
             ctl.a.showAttr(t=1, r=1)
+
         self.setting.a.showAttr()
 
         # self.ctls_fk[-1].a.add("stretchy", proxy=self.setting.a.stretchy)
@@ -324,6 +315,6 @@ class Belt(RigModule):
         self.setup_space()
         self.setup_anchor()
         self.setup_vis()
-        self.setup_channel()
         self.setup_rotate_order()
         self.build_post_module()
+        self.setup_channel()

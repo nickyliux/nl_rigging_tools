@@ -198,6 +198,6 @@ class FingerFk(RigModule):
         # self.setup_space()
         self.setup_anchor()
         self.setup_vis()
-        self.setup_channel()
         # self.setup_rotate_order()
         self.build_post_module()
+        self.setup_channel()
