@@ -529,11 +529,11 @@ class LegBp(RigModule):
         )
         setupTgt = [self.jnts_fk[0], self.jnts_ik[0], self.jnts_bf[0]]
         if self.limbType == LimbType.RIBBON.value:
-            # setupTgt.extend([self.ribbon_up.stt_jnt, self.ribbon_lw.end_jnt])
             setupTgt.extend([self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP])
 
         self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", type="bool", k=0), onList=setupTgt
+            self.setting.a.add("showSetup", type="bool", k=0),
+            onList=setupTgt,
         )
         self.ctl_vis_toggle(
             self.setting.a.add("showRollJnts", type="bool", k=0),

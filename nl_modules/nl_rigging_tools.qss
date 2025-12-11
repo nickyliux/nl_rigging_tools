@@ -9,7 +9,7 @@ QGroupBox::title {
     subcontrol-position: top center;
     padding: 2px 8000px 2px 8000px;
     background-color: #000;
-    border: 2px solid #37c;
+    border: 2px solid rgba(51, 120, 204, 1);
 }
 QProgressBar {
      border: 0px solid grey;
@@ -17,7 +17,7 @@ QProgressBar {
      background-color: black;
 }
 QProgressBar::chunk {
-    background-color: #f55;
+    background-color: rgba(255, 132, 89, 1);
 }
 # width: 20px;
 # border: 1px solid #f95;  

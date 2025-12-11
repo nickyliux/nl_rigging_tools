@@ -103,11 +103,10 @@ def assignShd(*args, tgts=None):
             color_id = 2
         color = colorPreset[color_id]
 
-        # Assign shader based on type
         if tgt.type == "mesh":
-            shd, sg = addShader(name, color=(0.5, 0.3, 0.1))
-            # mc.sets(tgt, forceElement=sg)
+            shd, sg = addShader(name)
             faceNum = mc.polyEvaluate(tgt, f=1)
+            # mc.sets(tgt, forceElement=sg)
             for fID in faceDict[faceNum]:
                 mc.sets(f"{tgt}.f[{fID}]", forceElement=sg)
         elif tgt.type == "nurbsCurve":
@@ -116,7 +115,7 @@ def assignShd(*args, tgts=None):
     mc.select(cl=1)
 
 
-def addShader(name, shaderType="lambert", color=(1, 1, 1)):
+def addShader(name, shaderType="lambert", color=(1, 0.52, 0.35)):
     """Create shader and return shader, shading group"""
     from nl_modules.nodel.base.dep_node import DepNode
 
@@ -676,7 +675,7 @@ def setViewport(jx=0, xray=0, wos=0, fit=0, ao=0, aa=0):
             mc.modelEditor(p, e=1, wos=1)
 
     if fit:
-        mc.viewFit(all=1)
+        mc.viewFit(all=1, f=0.5)
     if ao:
         mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
     if aa:

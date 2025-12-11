@@ -81,7 +81,7 @@ class SpineQd(RigModule):
 
         #   Define control shapes and attributes
         ctl_defs = [
-            ("setting", "gear", "z", rSz * 3, 1, 2),
+            ("setting", "gear", "z", rSz * 3, 1, -1),
             ("cog_ctl", "trapezoid", None, rSz, 0, -1),
             ("fore_ctl", "chest_qd", None, rSz * 4, 0, -1),
             ("mid_ctl", "squareR", "z", rSz * 4, 0, -1),
@@ -382,18 +382,14 @@ class SpineQd(RigModule):
         # ikJntVis = self.setting.a.add("ikJntVis", type="bool", k=0)
         # ikJntVis >> self.jnts_spIk[0].a.v
         # ikJntVis >> self.jnts_twoIk[0].a.v
-
+        setupTgt = [self.jnts_ik[0], self.jnts_spIk[0], self.jnts_twoIk[0]]
         self.ctl_vis_toggle(
-            self.setting.a.add("setupJntVis", type="bool", dv=0, k=0),
-            onList=self.jnts_ik
-            + self.jnts_fk
-            + self.jnts_spIk
-            + self.jnts_twoIk
-            + [self.rbSrf, self.rbCrv],
-            # + [self.anchorToRbj],
+            self.setting.a.add("showSetup", type="bool", k=0),
+            onList=setupTgt + [self.rbSrf, self.rbCrv],
         )
+        # self.jnts_fk[0],
+        # + [self.anchorToRbj],
         # + self.jnts_rb
-        # mc.hide(self.rbSrf)
 
         if self.is_neck():
             self.cog_ctl.shape.hide()

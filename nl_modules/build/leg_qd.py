@@ -140,7 +140,7 @@ class LegQd(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "gear", "z", rSz, 1, 2),
+            ("setting", "gear", "z", rSz, 1, -1),
             ("hip_fkc", "circle", "x", scale, 0, -1),
             ("upr_fkc", "circle", "x", scale, 0, -1),
             ("lwr_fkc", "circle", "x", scale, 0, -1),
@@ -149,7 +149,7 @@ class LegQd(RigModule):
             ("ball_fkc", "circle", "x", scale / 2, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
             ("extra_ikc", "rotator", None, -scale, 0, -1),
-            ("pvc", "pvc", None, rSz, 0, -1),
+            ("pvc", "sphere", None, rSz, 0, -1),
             ("smart_ctl", "rotator", None, scale / 2, 0, -1),
         ]
 
@@ -593,11 +593,14 @@ class LegQd(RigModule):
             self.ikc.a.add("extraCtl", dv=1, type="bool", k=0),
             onList=self.ctls_sub,
         )
+        self.ctl_vis_toggle(
+            self.setting.a.add("showSetup", type="bool", k=0),
+            onList=[self.jnts_fk[0], self.jnts_ik[0]],
+        )
         # self.ctl_vis_toggle(
         #     self.setting.a.add("debugVis", dv=0, type="bool", k=0),
         #     onList=self.jnts_fk + self.jnts_ik,
         # )
-        mc.hide(self.jnts_ik, self.jnts_fk)
         [ikh.hide() for ikh in self.all_ikH.values()]
 
     def setup_channel(self):

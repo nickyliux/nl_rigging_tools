@@ -76,7 +76,7 @@ class SpineBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
             ("setting", "gear", "z", rSz * 2, 1, -1),
-            ("cog_ctl", "cog", None, rSz * 6, 0, -1),
+            ("cog_ctl", "cog", None, rSz * 7, 0, -1),
         ]
         if self.is_ribbon():
             ctl_defs += [
@@ -321,7 +321,7 @@ class SpineBp(RigModule):
         if self.is_ribbon():
             self.ctl_vis_toggle(
                 self.setting.a.add("showSetup", type="bool", k=0),
-                onList=self.jnts_fk + self.jnts_five + [self.rbSrf],
+                onList=[self.jnts_fk[0]] + self.jnts_five + [self.rbSrf],
             )
 
         if self.is_neck():
