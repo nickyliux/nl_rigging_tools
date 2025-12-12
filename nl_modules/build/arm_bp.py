@@ -100,7 +100,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "gear", "z", scale, 1, -1),
+            ("setting", "star4", "z", scale / 2, 0, -1),
             ("clavicle_fkc", "diamond3", "x", scale * 2, 1, -1),
             ("upr_fkc", "squareR", "x", scale, 0, -1),
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
@@ -123,7 +123,8 @@ class ArmBp(RigModule):
 
         # self.ikc.cv_rotate(0, 90, 0)
         self.pvc.cv_rotate(-90, 0, 0)
-        self.setting.cv_move(0, scale * 10, 0)
+        self.setting.cv_move(0, scale * 20, 0)
+        self.setting.color = Color.L_BLUE
 
     def build(self):
         """Build the arm rig module."""
@@ -301,13 +302,14 @@ class ArmBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
 
-        self.setting.alignTo(self.clavicle, p=self.CTL_DATA)
-        self.ctls_fk[0].offset.cstPar(self.setting, mo=1)
+        self.setting.alignTo(self.palm, p=self.CTL_DATA)
+        self.palm.cstPar(self.setting, mo=1)
 
-        # Extract blend joints
         self.jnts_bf = common.dupSk(
             self.jnts, "_bf", p=self.BF_GRP, r=rSz * 3, color=Color.ORANGE
         )
+
+        fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=0)
 
         palmIn_guide = DagNode(f"{rID}_palmIn_guide")
         palmOut_guide = DagNode(f"{rID}_palmOut_guide")
@@ -327,10 +329,6 @@ class ArmBp(RigModule):
             self.palmIn_loc,
             self.palmOut_loc,
         )
-
-        # Add blend attribute
-        # self.setting.a.addSep()
-        fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=0)
         total = len(self.jnts) - 1
 
         # Blend FK/IK to BF joints and drive output joints

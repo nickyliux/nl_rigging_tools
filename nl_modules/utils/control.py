@@ -82,9 +82,11 @@ def mirrorCtlShape(ctl):
         shape.rename(opp.name + "Shape#")
         shape.a.lineWidth.set(w)
 
-    common.assignShd(0, tgts=[opp])
+    opp.color = ctl.get_opp_side_color()
     opp.deleteHistory()
+
     mc.delete(dup, tempGrp)
+    mc.select(cl=1)
     return opp
 
 

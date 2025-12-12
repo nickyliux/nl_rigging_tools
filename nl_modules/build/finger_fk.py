@@ -81,11 +81,11 @@ class FingerFk(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "X", "x", scale, 1, 2),
+            ("setting", "X", "x", scale, 0, -1),
             ("fgr01_fkc", "squareR", None, -scale * 0.7, 0, -1),
         ]
         if self.segNum >= 2:
-            ctl_defs.append(("fgr02_fkc", "squareR", None, -scale, 0, 2))
+            ctl_defs.append(("fgr02_fkc", "squareR", None, -scale, 0, -1))
         if self.segNum >= 3:
             ctl_defs.append(("fgr03_fkc", "squareR", None, -scale, 0, -1))
         if self.segNum >= 4:
@@ -105,6 +105,8 @@ class FingerFk(RigModule):
             self.fgr03_fkc.cv_move(*offset)
         if self.segNum >= 4:
             self.fgr04_fkc.cv_move(*offset)
+
+        self.setting.color = Color.L_BLUE
 
     def build_fk(self):
         """Build the FK controls for the arm rig."""
@@ -169,7 +171,7 @@ class FingerFk(RigModule):
 
     def setup_vis(self):
         """Setup visibility for the finger rig module."""
-        mc.hide(self.ikhs, self.jnts_fk, self.setting)
+        mc.hide(self.ikhs, self.jnts_fk)  # , self.setting)
 
         # self.ctl_vis_toggle(
         #     self.setting.a.add("debugVis", type="bool", dv=0, k=0),

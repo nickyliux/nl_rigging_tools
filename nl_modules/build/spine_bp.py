@@ -75,19 +75,21 @@ class SpineBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
-            ("setting", "gear", "z", rSz * 2, 1, -1),
+            ("setting", "star4", "z", rSz, 0, -1),
             ("cog_ctl", "cog", None, rSz * 7, 0, -1),
         ]
         if self.is_ribbon():
             ctl_defs += [
                 ("chest_ikc", "chest", None, rSz * 5, 0, -1),
-                ("mid_ikc", "sphere", None, rSz * 3, 1, -1),
+                ("mid_ikc", "diamond3", None, rSz * 3, 1, -1),
                 ("hip_ikc", "hip", None, rSz * 5, 0, -1),
             ]
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        self.setting.cv_move(0, rSz * 15, 0)
+        self.setting.cv_move(rSz * 60, 0, 0)
+        self.setting.color = Color.L_BLUE
+        self.cog_ctl.color = Color.PINK
 
     def is_ribbon(self):
         """Check if the spine rig is of ribbon type."""

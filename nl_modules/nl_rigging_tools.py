@@ -59,7 +59,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI = QUiLoader().load(UI_PATH)
         self.setWindowTitle("nlRT")
         self.setCentralWidget(self.UI)
-        self.setGeometry(1070, 260, 230, 680)
+        self.setGeometry(1420, 200, 230, 680)
         self.connect_UI()
         self.addMenuBar()
 
@@ -163,9 +163,10 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.crvShape_save_BN, self.crvShape_save, ":fileSave.png")
         self.connect(self.UI.crvShape_del_BN, self.crvShape_del, ":smallTrash.png")
         icon = ":colorPresetSpectrum.png"
+        self.connect(self.UI.assignShd_BN, common.assignColor, icon)
+        # self.connect(self.UI.assignShd_BN, partial(common.assignShd, 0), icon)
         # icon = ":colorPresetGrayscale.png"
-        self.connect(self.UI.assignShd_BN, partial(common.assignShd, 0), icon)
-        self.connect(self.UI.assignShd2_BN, partial(common.assignShd, 1), icon)
+        # self.connect(self.UI.assignShd2_BN, partial(common.assignShd, 1), icon)
 
         self.connect(self.UI.shapeRotaX_BN, partial(control.rotaCVForSel, 90, 0, 0))
         self.connect(self.UI.shapeRotaY_BN, partial(control.rotaCVForSel, 0, 90, 0))
@@ -530,7 +531,8 @@ def showUI():
     except:
         pass
     nlRT_win = MyToolWin()
-    nlRT_win.show(dockable=1)
+    # nlRT_win.show(dockable=1)
+    nlRT_win.show()
 
     with open(STYLE_PATH, "r") as f:
         style = f.read()

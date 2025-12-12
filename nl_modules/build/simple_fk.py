@@ -93,7 +93,7 @@ class SimpleFk(RigModule):
             scale3[2] *= 0.5
 
         ctl_defs = [
-            ("setting", "X", up, scale, 1, 2),
+            ("setting", "star4", up, scale, 0, -1),
             ("simple01_fkc", "cube", up, scale3, 0, -1),
         ]
 
@@ -108,6 +108,7 @@ class SimpleFk(RigModule):
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
         self.setting.alignTo(self.rootJ, p=self.CTL_DATA)
+        self.setting.color = Color.L_BLUE
         self.rootJ.cstPar(self.setting, mo=1)
 
     def build_fk(self):
@@ -170,7 +171,7 @@ class SimpleFk(RigModule):
     def setup_vis(self):
         """Setup visibility for the finger rig module."""
         self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", k=0, type="bool", dv=1),
+            self.setting.a.add("showSetup", k=0, type="bool"),
             onList=[self.jnts_fk[0]] + self.ikhs,
         )
 

@@ -61,7 +61,7 @@ class HandBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "gear", None, scale * 2, 1, -1),
+            ("setting", "star4", "z", scale, 0, -1),
             ("palm_ctl", "rotator", None, -scale, 0, -1),
             ("thumb_ctl", "rotator", "z", -scale, 0, -1),
             ("smart_ctl", "rotator", "x", scale * 2, 0, -1),
@@ -71,10 +71,11 @@ class HandBp(RigModule):
 
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
         self.smart_ctl.cv_rotate(90, 0, 0)
-        self.setting.cv_move(0, 0, -scale * 20)
-        # self.palm_ctl.color = Color.D_YELLOW
-        # self.thumb_ctl.color = Color.D_YELLOW
-        # self.smart_ctl.color = Color.D_YELLOW
+        self.setting.cv_move(0, -scale * 30, 0)
+        self.setting.color = Color.L_BLUE
+        self.palm_ctl.color = Color.PINK
+        self.thumb_ctl.color = Color.PINK
+        self.smart_ctl.color = Color.PINK
 
     def build(self):
         """Build the hand rig module."""
@@ -372,7 +373,8 @@ class HandBp(RigModule):
 
     def setup_vis(self):
         """Setup visibility controls for the hand rig."""
-        fgrCtlVis = self.smart_ctl.a.add("showFgrCtl", type="bool", dv=1, k=0)
+        fgrCtlVis = self.setting.a.add("showFgrCtl", type="bool", dv=1, k=0)
+
         for ctls in self.ctls_fgr:
             fgrCtlVis >> ctls[0].a.v
 
@@ -393,7 +395,8 @@ class HandBp(RigModule):
 
     def setup_scale(self):
         """Setup scaling for the hand rig module."""
-        handScale = self.smart_ctl.a.add("handScale", min=0, dv=1)
+        handScale = self.setting.a.add("handScale", min=0, dv=1)
+        self.smart_ctl.a.add("handScale", proxy=handScale)
         for tgt in [
             self.rootJ,
             self.thumb_ctl.offset,

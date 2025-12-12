@@ -1098,8 +1098,8 @@ class RigModule(RigBase):
         root.cstOri(ribbonUp.stt_loc, mo=1)
 
         # Lower Ribbon
+        # lwr.cstOri(ribbonLw.stt_jnt, mo=1)
         palm.cstPar(ribbonLw.end_loc, mo=1)
-        lwr.cstOri(ribbonLw.stt_jnt, mo=1)
 
         # Bend Ctl Setup
         upLoc = ribbonUp.mid_loc
@@ -1112,7 +1112,7 @@ class RigModule(RigBase):
 
         self.all_bendy = [upr_bend, mid_bend, lwr_bend]
         for ctl in self.all_bendy:
-            ctl(shape="sphere", scale=rSz, top=1)
+            ctl(shape="octagon", up="x", scale=rSz * 1.2, color=Color.D_YELLOW)
 
         upLoc.cstPar(upr_bend.offset, mo=1)
         if upLoc.children:

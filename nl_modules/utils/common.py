@@ -76,6 +76,22 @@ def matchMove(targetList, mode=None):
     mc.matchTransform(*others, last, position=t, rotation=r, scale=s)
 
 
+def assignColor(tgts=None):
+    """Assign preset color to target objects"""
+    from nl_modules.nodel.base.dag_node import DagNode
+
+    tgts = tgts or mc.ls(sl=1, tr=1)
+    if not tgts:
+        return
+
+    for tgt in tgts:
+        tgt = DagNode(tgt)
+        if tgt.type == "nurbsCurve":
+            tgt.color = tgt.get_side_color()
+
+    mc.select(cl=1)
+
+
 def assignShd(*args, tgts=None):
     """Assign preset shader to target objects"""
     from nl_modules.nodel.base.dag_node import DagNode
@@ -83,34 +99,24 @@ def assignShd(*args, tgts=None):
     tgts = tgts or mc.ls(sl=1, tr=1)
     if not tgts:
         return
-
     faceDict = {
         18: [0, 1, 4, 5, 8, 9, 12, 13],
         26: [0, 1, 4, 5, 8, 9, 12, 13, 16, 17, 20, 21],
         34: [0, 1, 4, 5, 8, 9, 12, 13, 16, 17, 20, 21, 24, 25, 28, 29],
     }
-
-    colorPreset = DagNode.COLOR_PRESET_1 if args[0] == 1 else DagNode.COLOR_PRESET_2
-
     for tgt_name in tgts:
         tgt = DagNode(tgt_name)
 
         name = "proxy_shd"
-        color_id = 0
-        if tgt.name.startswith("lf"):
-            color_id = 1
-        elif tgt.name.startswith("rt"):
-            color_id = 2
-        color = colorPreset[color_id]
-
         if tgt.type == "mesh":
             shd, sg = addShader(name)
             faceNum = mc.polyEvaluate(tgt, f=1)
             # mc.sets(tgt, forceElement=sg)
             for fID in faceDict[faceNum]:
                 mc.sets(f"{tgt}.f[{fID}]", forceElement=sg)
-        elif tgt.type == "nurbsCurve":
-            tgt.color = color
+        # elif tgt.type == "nurbsCurve":
+        #     pass
+        #     tgt.color = color
 
     mc.select(cl=1)
 
