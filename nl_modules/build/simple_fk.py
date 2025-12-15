@@ -93,7 +93,7 @@ class SimpleFk(RigModule):
             scale3[2] *= 0.5
 
         ctl_defs = [
-            ("setting", "star4", up, scale, 0, -1),
+            ("setting", "star4_2", up, scale, 0, -1),
             ("simple01_fkc", "cube", up, scale3, 0, -1),
         ]
 

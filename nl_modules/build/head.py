@@ -27,8 +27,8 @@ class Head(RigModule):
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["st", "ed"], scale=1.5)
         jaw_list = self.gen_sk_fr_names(["jaw", "jawEnd"], scale=0.8)
-        lf_eye = self.gen_sk_fr_names("lf_eye", scale=0.3)[0]
-        rt_eye = self.gen_sk_fr_names("rt_eye", scale=0.3)[0]
+        lf_eye = self.gen_sk_fr_names("lf_eye", scale=1)[0]
+        rt_eye = self.gen_sk_fr_names("rt_eye", scale=1)[0]
         (jaw_list[0], lf_eye, rt_eye) | root_list[0]
 
         self.rootJ = root_list[0]
@@ -56,8 +56,8 @@ class Head(RigModule):
         ctl_defs = [
             ("head_fkc", "squareR", None, rSz * 3, 0, -1),
             ("jaw_fkc", "jaw", None, rSz, 0, -1),
-            ("lf_eye_fkc", "circle", "z", rSz, 0, -1),
-            ("rt_eye_fkc", "circle", "z", rSz, 0, -1),
+            ("lf_eye_fkc", "squareR", "z", rSz, 0, -1),
+            ("rt_eye_fkc", "squareR", "z", rSz, 0, -1),
         ]
 
         for name, shape, up, sca, top, w in ctl_defs:

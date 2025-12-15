@@ -63,7 +63,7 @@ class Belt(RigModule):
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
-        ctl_defs = [("setting", "star4", "z", rSz * 2, 0, -1)]
+        ctl_defs = [("setting", "star4_2", "z", rSz * 2, 0, -1)]
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
@@ -234,7 +234,7 @@ class Belt(RigModule):
     #         ctl = CrvNode(
     #             f"{i}_ofs_ctl",
     #             pf=rID,
-    #             shape="diamond3",
+    #             shape="diamond_3d",
     #             scale=rSz,
     #             align=self.ctls_fk[i],
     #             p=self.ctls_fk[i],

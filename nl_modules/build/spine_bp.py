@@ -75,13 +75,13 @@ class SpineBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
-            ("setting", "star4", "z", rSz, 0, -1),
+            ("setting", "star4_2", "z", rSz, 0, -1),
             ("cog_ctl", "cog", None, rSz * 7, 0, -1),
         ]
         if self.is_ribbon():
             ctl_defs += [
                 ("chest_ikc", "chest", None, rSz * 5, 0, -1),
-                ("mid_ikc", "diamond3", None, rSz * 3, 1, -1),
+                ("mid_ikc", "diamond_3d", None, rSz * 3, 1, -1),
                 ("hip_ikc", "hip", None, rSz * 5, 0, -1),
             ]
         for name, shape, up, scale, top, w in ctl_defs:

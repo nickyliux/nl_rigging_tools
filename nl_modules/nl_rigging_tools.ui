@@ -3073,7 +3073,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="assignShd_BN">
+        <widget class="QPushButton" name="assignColor_BN">
          <property name="minimumSize">
           <size>
            <width>5</width>
@@ -3095,7 +3095,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="assignShd2_BN">
+        <widget class="QPushButton" name="assignColor2_BN">
          <property name="minimumSize">
           <size>
            <width>5</width>

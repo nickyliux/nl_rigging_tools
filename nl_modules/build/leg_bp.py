@@ -140,15 +140,15 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "star4", "z", rSz / 2, 0, -1),
-            ("hip_fkc", "diamond3", "x", scale, 1, -1),
+            ("setting", "star4_2", "z", rSz / 2, 0, -1),
+            ("hip_fkc", "diamond_3d", "x", scale, 1, -1),
             ("upr_fkc", "squareR", "x", scale, 0, -1),
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
             ("palm_fkc", "squareR", "x", scale, 0, -1),
             ("ball_fkc", "squareR", "x", scale, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
             ("pvc", "sphere", None, rSz, 0, -1),
-            ("smart_ctl", "rotate", None, scale, 0, -1),
+            ("smart_ctl", "rotate4_3d", None, scale / 2, 0, -1),
         ]
         if self.scapulaExtra:
             ctl_defs.append(("scap_fkc", "shoulder", None, scale, 0, -1))
@@ -158,7 +158,7 @@ class LegBp(RigModule):
 
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
-        self.smart_ctl.cv_move(scale * 15, 0, 0)
+        self.smart_ctl.cv_move(scale * 20, 0, 0)
         #     self.smart_ctl.cv_rotate(180, 0, 0)
         # self.smart_ctl.cv_rotate(0, 0, 90)
         # self.smart_ctl.cv_move(0, 0, rSz * -15)
@@ -437,14 +437,14 @@ class LegBp(RigModule):
         for g in [toeRollG, inRollG, outRollG, heelRollG]:
             ctl = g.addOffsetGrp(below=1)
             CrvNode(ctl)(
-                name=g.name + "_ctl", shape="diamond3", scale=scale / 3, width=2
+                name=g.name + "_ctl", shape="diamond_3d", scale=scale / 3, width=2
             )
             self.ctls_sub.append(ctl)
 
         # Ball IK control
         self.ball_ikc = ballRollG.addOffsetGrp(below=1)
         CrvNode(self.ball_ikc)(
-            name="ball_ikc", pf=rID, shape="rotator", scale=-scale / 2, rotateY=90
+            name="ball_ikc", pf=rID, shape="rotate2_3d", scale=-scale / 2, rotateY=90
         )
         self.rigNode.setMsg({"ball_ikc": self.ball_ikc})
         self.ctls_ik.append(self.ball_ikc)

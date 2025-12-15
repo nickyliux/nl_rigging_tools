@@ -140,7 +140,7 @@ class LegQd(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "star4", "z", rSz, 0, -1),
+            ("setting", "star4_2", "z", rSz, 0, -1),
             ("hip_fkc", "squareR", "x", scale, 0, -1),
             ("upr_fkc", "squareR", "x", scale, 0, -1),
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
@@ -148,9 +148,9 @@ class LegQd(RigModule):
             ("digit_fkc", "squareR", "x", scale, 0, -1),
             ("ball_fkc", "squareR", "x", scale / 2, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
-            ("extra_ikc", "rotator", None, -scale, 0, -1),
+            ("extra_ikc", "rotate2_3d", None, -scale, 0, -1),
             ("pvc", "sphere", None, rSz, 0, -1),
-            ("smart_ctl", "rotator", None, scale / 2, 0, -1),
+            ("smart_ctl", "rotate2_3d", None, scale / 2, 0, -1),
         ]
 
         if self.scapulaExtra:
@@ -429,7 +429,7 @@ class LegQd(RigModule):
         roll_groups = [toeRollG, inRollG, outRollG, heelRollG]
         for g in roll_groups:
             ctl = g.addOffsetGrp(below=1)
-            CrvNode(ctl)(name=f"{g.name}_ctl", shape="diamond3", scale=rSz / 4)
+            CrvNode(ctl)(name=f"{g.name}_ctl", shape="diamond_3d", scale=rSz / 4)
             self.ctls_sub.append(ctl)
 
         # --- Ball group IK control ---

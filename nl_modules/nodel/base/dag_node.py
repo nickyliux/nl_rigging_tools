@@ -15,7 +15,7 @@ class DagNode(DepNode):
     """
 
     COLOR_PRESET_0 = [22, 6, 13]
-    # COLOR_PRESET_1 = [(1.0, 0.8, 0.24), (0.36, 0.66, 1), (0.71, 0.30, 0.30)]
+    COLOR_PRESET_1 = [(1.0, 0.8, 0.24), (0.36, 0.66, 1), (0.71, 0.30, 0.30)]
 
     def __init__(self, n, nodeType=None):
         """Initialize DagNode with node name and type."""
@@ -645,9 +645,9 @@ class DagNode(DepNode):
         else:
             mc.scale(*args, self, **kwargs)
 
-    def get_side_color(self):
+    def get_side_color(self, preset=0):
         """Return color depending on side"""
-        preset = DagNode.COLOR_PRESET_0
+        preset = DagNode.COLOR_PRESET_0 if preset == 0 else DagNode.COLOR_PRESET_1
         n = str(self.node)
 
         if n.startswith("lf"):
@@ -659,14 +659,12 @@ class DagNode(DepNode):
 
     def get_opp_side_color(self):
         """Return color depending on side"""
-        if self.color == Color.D_YELLOW.value:
-            return Color.D_YELLOW
-        elif self.color == Color.PINK.value:
-            return Color.PINK
+        if self.color in [Color.L_BLUE.value, Color.D_YELLOW.value, Color.PINK.value]:
+            return self.color
 
         preset = DagNode.COLOR_PRESET_0
         n = str(self.node)
-        
+
         if n.startswith("lf"):
             return preset[2]
         elif n.startswith("rt"):

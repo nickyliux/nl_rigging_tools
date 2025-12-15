@@ -82,7 +82,7 @@ class SpineQd(RigModule):
         self.cog_ctl.cv_move(0, 70 * rSz, 40 * rSz)
 
         self.chest_ctl = CrvNode(
-            "chest_ctl", pf=rID, shape="rotator", scale=rSz * 8, width=2
+            "chest_ctl", pf=rID, shape="rotate2_3d", scale=rSz * 8, width=2
         )
         self.chest_ctl.cv_rotate(0, 90, 0)
 
@@ -90,7 +90,7 @@ class SpineQd(RigModule):
             "mid_ctl", pf=rID, shape="circleC", scale=rSz * 4, up="z", width=2
         )
         self.base_ctl = CrvNode(
-            "base_ctl", pf=rID, shape="rotator", scale=rSz * 8, width=2
+            "base_ctl", pf=rID, shape="rotate2_3d", scale=rSz * 8, width=2
         )
         self.base_ctl.cv_rotate(0, 90, 0)
 
@@ -102,7 +102,7 @@ class SpineQd(RigModule):
         )
         self.rigNode.setMsg(
             {
-                "setting": self.setting,
+                "star4_2": self.setting,
                 "cog_ctl": self.cog_ctl,
                 "chest_ctl": self.chest_ctl,
                 "mid_ctl": self.mid_ctl,

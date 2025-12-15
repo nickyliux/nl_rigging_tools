@@ -954,7 +954,7 @@ class RigModule(RigBase):
             if addCtl:
                 upCtl = CrvNode(
                     "" + tgt.name + "_upCtl",
-                    shape="rotator",
+                    shape="rotate2_3d",
                     align=tgt,
                     scale=rSz * self.xDir,
                     p=self.CTL_DATA,
@@ -1112,7 +1112,7 @@ class RigModule(RigBase):
 
         self.all_bendy = [upr_bend, mid_bend, lwr_bend]
         for ctl in self.all_bendy:
-            ctl(shape="octagon", up="x", scale=rSz * 1.2, color=Color.D_YELLOW)
+            ctl(shape="star4", up="x", scale=rSz * 1.2, color=Color.PINK)
 
         upLoc.cstPar(upr_bend.offset, mo=1)
         if upLoc.children:

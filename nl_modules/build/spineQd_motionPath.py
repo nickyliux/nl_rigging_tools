@@ -149,7 +149,7 @@ class SpineQd(RigModule):
             ctl = CrvNode(
                 f"{i}_ikc",
                 pf=rID,
-                shape="rotator",
+                shape="rotate2_3d",
                 scale=rSz * 10,
                 align=self.ikJnts[i * 2],
                 addOfs=1,

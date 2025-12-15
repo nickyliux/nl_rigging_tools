@@ -170,7 +170,6 @@ def loadWeight(uiPB):
 
 def skinAndLoadW(mesh=None, bindJnts=None, tgtDir=None):
     """Skin a mesh to joints and load skin weights from XML file."""
-    # Delete skin if exists
     skinC = MshNode(mesh).skinCluster
     if skinC.exists():
         skinC.delete()
@@ -195,7 +194,6 @@ def skinAndLoadW(mesh=None, bindJnts=None, tgtDir=None):
         format="XML",
         path=tgtDir,
     )
-    # logging.info(f"{mesh}'s weight loaded.")
     return 1
 
 

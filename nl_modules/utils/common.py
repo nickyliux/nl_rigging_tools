@@ -76,7 +76,7 @@ def matchMove(targetList, mode=None):
     mc.matchTransform(*others, last, position=t, rotation=r, scale=s)
 
 
-def assignColor(tgts=None):
+def assignColor(tgts=None, preset=0):
     """Assign preset color to target objects"""
     from nl_modules.nodel.base.dag_node import DagNode
 
@@ -87,7 +87,7 @@ def assignColor(tgts=None):
     for tgt in tgts:
         tgt = DagNode(tgt)
         if tgt.type == "nurbsCurve":
-            tgt.color = tgt.get_side_color()
+            tgt.color = tgt.get_side_color(preset=preset)
 
     mc.select(cl=1)
 

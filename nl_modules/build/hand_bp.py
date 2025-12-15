@@ -61,10 +61,10 @@ class HandBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "star4", "z", scale, 0, -1),
-            ("palm_ctl", "rotator", None, -scale, 0, -1),
-            ("thumb_ctl", "rotator", "z", -scale, 0, -1),
-            ("smart_ctl", "rotator", "x", scale * 2, 0, -1),
+            ("setting", "star4_2", "z", scale, 0, -1),
+            ("palm_ctl", "rotate2_3d", None, -scale, 0, -1),
+            ("thumb_ctl", "rotate2_3d", "z", -scale, 0, -1),
+            ("smart_ctl", "rotate2_3d", "x", scale * 2, 0, -1),
         ]
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
