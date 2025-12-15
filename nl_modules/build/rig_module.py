@@ -354,14 +354,6 @@ class RigModule(RigBase):
         # Delete in the following order otherwise error may occur
         self.JNT_DATA.delete()
 
-        setting = self.rigNode.a.setting.inConnNode
-        if setting and setting.a.showSetup.exists():
-            setupNodes = setting.a.showSetup.outConnNode
-            if setupNodes:
-                mc.delete(setupNodes)
-
-        self.CTL_DATA.delete()
-
         rootJ = self.rigNode.a.rootJ.inConnNode
         if rootJ:
             rootJ.delete()
@@ -376,6 +368,17 @@ class RigModule(RigBase):
             anchor = self.rigNode.a[attr]
             if anchor.exists() and anchor.inConnNode:
                 anchor.inConnNode.delete()
+
+        setting = self.rigNode.a.setting.inConnNode
+        if setting:
+            showSetup = setting.a.showSetup
+            if showSetup.exists():
+                showSetup.set(1)
+                nodes = showSetup.outConnNode
+                if nodes:
+                    mc.delete(nodes)
+
+        self.CTL_DATA.delete()
 
         self.rigNode.a.nodeState.set(0)
         prx = mc.ls(self.rigID + "_*_pxGeo*")

@@ -189,7 +189,8 @@ class Attribute:
         drivenList = other.atChildren or [other]
 
         for driver, driven in zip(driverList, drivenList):
-            if not mc.isConnected(driver, driven, iuc=1):
+            # if not mc.isConnected(driver, driven, iuc=1):
+            if mc.getAttr(driven, settable=1):
                 mc.connectAttr(driver, driven, f=1)
         # except (RuntimeError, AttributeError):
         #     mc.connectAttr(self, other, f=1)
