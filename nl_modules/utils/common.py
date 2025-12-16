@@ -288,7 +288,7 @@ def ribbonAttach_reset(tgt):
             pa.delete()
 
 
-def ribbonAttach2(
+def attachTgtsToSrf(
     tgtList=None, srf=None, crv=None, scaleAttr=None, stretchyAttr=1, p=None
 ):
     """Attach target list to srf along crv, using closestPointOnSurface
@@ -306,6 +306,8 @@ def ribbonAttach2(
         raise TypeError("Input objects must be in list.")
     if not mc.objExists(srf):
         raise ValueError(f"Missing object: {srf}")
+
+    logging.info(f"Attaching targets to {srf.name} along {crv.name}.")
 
     rvtGrp = GrpNode(srf + "_rvtGrp", p=p)
     srf = DagNode(srf) if isinstance(srf, str) else srf
@@ -331,15 +333,14 @@ def ribbonAttach2(
         tgt = DagNode(tgt) if isinstance(tgt, str) else tgt
         ribbonAttach_reset(tgt)
         tgt.a.t >> cpos.a.inPosition
-        coordList.append(cpos.a.parameterV.get())
+        paramV = cpos.a.parameterV.get()
+        coordList.append(paramV)
     cpos.delete()
 
     crv_info = DagNode("crvInfo#", nodeType="curveInfo")
     crv.shape.a.worldSpace >> crv_info.a.inputCurve
     crv_len_ratio = crv_info.a.arcLength / crv.length
     ratio_out = ut.blend2_(crv_len_ratio, 1, stretchyAttr)
-
-    logging.info(f"TgtList: {tgtList}")
 
     for i, tgt in enumerate(tgtList):
 

@@ -156,7 +156,7 @@ def masterAddAttrs():
     grp = DagNode("CTL")
     if grp.exists():
         ctl.a.add("showCtl", k=0, type="bool", dv=1) >> grp.a.v
-    
+
 
 def unbuildTgt(rN):
     """Unbuild target rigNode"""
@@ -474,49 +474,51 @@ def autoAttach_jntToSrf():
         rbSrfAttr = node.a["rbSrf"]
         rbCrvAttr = node.a["rbCrv"]
 
-        if rbJntSetAttr.exists() and rbSrfAttr.exists() and rbCrvAttr.exists():
+        if not (rbJntSetAttr.exists() or rbSrfAttr.exists() or rbCrvAttr.exists()):
+            logging.info(f"Skip node {node.name}, ribbon attributes NOT found.")
+            continue
 
-            rbJntSetName = rbJntSetAttr.get()
-            rbJntSet = DagNode(rbJntSetName)
-            if not rbJntSet.exists():
-                logging.warning(f"Set {rbJntSetName} NOT found.")
-                continue
+        rbJntSetName = rbJntSetAttr.get()
+        rbJntSet = DagNode(rbJntSetName)
+        if not rbJntSet.exists():
+            logging.warning(f"Set {rbJntSetName} NOT found.")
+            continue
 
-            rbJnts = mc.sets(rbJntSet, q=1)
-            if not rbJnts:
-                logging.warning(f"No joints found in Set {rbJntSet}.")
-                continue
+        rbJnts = mc.sets(rbJntSet, q=1)
+        if not rbJnts:
+            logging.warning(f"No joints found in Set {rbJntSet}.")
+            continue
 
-            rbSrf = rbSrfAttr.inConnNode
-            if not rbSrf:
-                logging.warning("Ribbon surface NOT found.")
-                continue
+        rbSrf = rbSrfAttr.inConnNode
+        if not rbSrf:
+            logging.warning("Ribbon surface NOT found.")
+            continue
 
-            rbCrv = rbCrvAttr.inConnNode
-            if not rbCrv:
-                logging.warning("Ribbon curve NOT found.")
-                continue
+        rbCrv = rbCrvAttr.inConnNode
+        if not rbCrv:
+            logging.warning("Ribbon curve NOT found.")
+            continue
 
-            setting = node.a.setting.inConnNode
-            if not setting:
-                logging.warning("Setting NOT found.")
-                continue
+        setting = node.a.setting.inConnNode
+        if not setting:
+            logging.warning("Setting NOT found.")
+            continue
 
-            # common.ribbonAttach(
-            #     geo=rbSrf,
-            #     tgtList=rbJnts,
-            #     scaleAttr=globalScale,
-            #     p=DagNode("CTL"),
-            # )
-            common.ribbonAttach2(
-                tgtList=rbJnts,
-                srf=rbSrf,
-                crv=rbCrv,
-                stretchyAttr=setting.a.stretchy,
-                scaleAttr=globalScale,
-                p=DagNode("JNT"),
-            )
-            logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")
+        # common.ribbonAttach(
+        #     geo=rbSrf,
+        #     tgtList=rbJnts,
+        #     scaleAttr=globalScale,
+        #     p=DagNode("CTL"),
+        # )
+        common.attachTgtsToSrf(
+            tgtList=rbJnts,
+            srf=rbSrf,
+            crv=rbCrv,
+            stretchyAttr=setting.a.stretchy,
+            scaleAttr=globalScale,
+            p=DagNode("JNT"),
+        )
+        logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")
 
 
 def add_noise_logic(ctl=None, targets=None, rot=0):

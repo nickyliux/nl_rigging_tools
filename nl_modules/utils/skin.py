@@ -49,7 +49,7 @@ def skinRefJnts(meshes=None, jnts=None, thld=5, uiPB=None):
     logging.info(f"refJnts : {weighted} weighted. {ignored} already bind.")
 
 
-def autoBind_rbnJnts(meshes=None, uiPB=None):
+def autoBind_rbJnts(meshes=None, uiPB=None):
     """Skin target meshes to their _rbJnt if found."""
 
     found = 0

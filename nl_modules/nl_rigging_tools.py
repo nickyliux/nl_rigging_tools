@@ -456,7 +456,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             return
 
         self.autoBind_refJnts(meshes=tgtMeshes, thld=15, uiPB=self.UI.bar_PB)
-        skin.autoBind_rbnJnts(meshes=tgtMeshes, uiPB=self.UI.bar_PB)
+        skin.autoBind_rbJnts(meshes=tgtMeshes, uiPB=self.UI.bar_PB)
         build.autoAttach_jntToSrf()
 
         mc.select(cl=1)
