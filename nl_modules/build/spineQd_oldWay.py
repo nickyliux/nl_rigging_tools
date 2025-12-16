@@ -102,7 +102,7 @@ class SpineQd(RigModule):
         )
         self.rigNode.setMsg(
             {
-                "star4_2": self.setting,
+                "setting": self.setting,
                 "cog_ctl": self.cog_ctl,
                 "chest_ctl": self.chest_ctl,
                 "mid_ctl": self.mid_ctl,

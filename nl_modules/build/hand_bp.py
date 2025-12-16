@@ -61,7 +61,7 @@ class HandBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "star4_2", "z", scale, 0, -1),
+            ("setting", "screw_nut", "z", scale, 0, -1),
             ("palm_ctl", "rotate2_3d", None, -scale, 0, -1),
             ("thumb_ctl", "rotate2_3d", "z", -scale, 0, -1),
             ("smart_ctl", "rotate2_3d", "x", scale * 2, 0, -1),

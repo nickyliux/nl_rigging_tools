@@ -659,7 +659,7 @@ class DagNode(DepNode):
 
     def get_opp_side_color(self):
         """Return color depending on side"""
-        if self.color in [Color.L_BLUE.value, Color.D_YELLOW.value, Color.PINK.value]:
+        if self.name.endswith("_setting"):
             return self.color
 
         preset = DagNode.COLOR_PRESET_0

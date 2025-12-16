@@ -339,6 +339,8 @@ def ribbonAttach2(
     crv_len_ratio = crv_info.a.arcLength / crv.length
     ratio_out = ut.blend2_(crv_len_ratio, 1, stretchyAttr)
 
+    logging.info(f"TgtList: {tgtList}")
+
     for i, tgt in enumerate(tgtList):
 
         mp = DagNode("mp_#", nodeType="motionPath")

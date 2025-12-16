@@ -63,12 +63,13 @@ class Tail(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        ctl_defs = [("setting", "star4_2", "z", rSz, 0, 2)]
+        ctl_defs = [("setting", "screw_nut", "z", rSz, 0, -1)]
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
         self.setting.a.add("stretchy", min=0, max=1)
         self.setting.a.add("localScale", min=0.01, dv=1)
+        self.setting.color = Color.L_BLUE
 
     def build(self):
         """Build the tail rig."""
@@ -244,19 +245,19 @@ class Tail(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the tail rig controls."""
         self.ctl_vis_toggle(
-            self.setting.a.add("ikCtlVis", k=0, type="bool", dv=1),
+            self.setting.a.add("showIkCtl", k=0, type="bool", dv=1),
             onList=[self.ctls_ik[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("fkCtlVis", k=0, type="bool", dv=1),
+            self.setting.a.add("showFkCtl", k=0, type="bool", dv=1),
             onList=[self.ctls_fk[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("subIkCtlVis", k=0, type="bool"),
+            self.setting.a.add("showSubIkCtl", k=0, type="bool"),
             onList=self.ctls_ofs,
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("ribbonVis", k=0, type="bool"),
+            self.setting.a.add("showRibbon", k=0, type="bool"),
             onList=[self.rbSrf1, self.rbSrf2],
         )
         mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)

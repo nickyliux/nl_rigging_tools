@@ -91,7 +91,7 @@ class TailFk(RigModule):
         )
         self.rigNode.setMsg(
             {
-                "star4_2": self.setting,
+                "setting": self.setting,
             }
         )
 

@@ -81,7 +81,7 @@ class SpineQd(RigModule):
 
         #   Define control shapes and attributes
         ctl_defs = [
-            ("setting", "star4_2", "z", rSz, 0, -1),
+            ("setting", "screw_nut", "z", rSz, 0, -1),
             ("cog_ctl", "trapezoid", None, rSz, 0, -1),
             ("fore_ctl", "chest_qd", None, rSz * 4, 0, -1),
             ("mid_ctl", "squareR", "z", rSz * 4, 0, -1),
@@ -97,7 +97,7 @@ class SpineQd(RigModule):
 
         self.cog_ctl.cv_move(0, rSz * 40, rSz * 10)
         self.cog_ctl.cv_scale(1, 1.5, 2)
-        self.setting.cv_move(0, rSz * 40, 0)
+        self.setting.cv_move(0, rSz * 20, 0)
         self.setting.color = Color.L_BLUE
         # self.base_ctl.cv_rotate(0, 180, 0)
 

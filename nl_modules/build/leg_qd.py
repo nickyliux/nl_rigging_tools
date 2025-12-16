@@ -140,17 +140,17 @@ class LegQd(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "star4_2", "z", rSz, 0, -1),
+            ("setting", "screw_nut", "z", rSz, 0, -1),
             ("hip_fkc", "squareR", "x", scale, 0, -1),
             ("upr_fkc", "squareR", "x", scale, 0, -1),
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
             ("palm_fkc", "squareR", "x", scale, 0, -1),
             ("digit_fkc", "squareR", "x", scale, 0, -1),
             ("ball_fkc", "squareR", "x", scale / 2, 0, -1),
-            ("ikc", "foot", None, rSz, 0, -1),
+            ("ikc", "foot_quad", None, rSz, 0, -1),
             ("extra_ikc", "rotate2_3d", None, -scale, 0, -1),
             ("pvc", "sphere", None, rSz, 0, -1),
-            ("smart_ctl", "rotate2_3d", None, scale / 2, 0, -1),
+            ("smart_ctl", "rotate4_3d", None, scale / 2, 0, -1),
         ]
 
         if self.scapulaExtra:
@@ -162,16 +162,11 @@ class LegQd(RigModule):
         if self.scapulaExtra:
             self.quadScap_ikc.cv_move(scale * 20, 0, 0)
 
-        # self.smart_ctl.cv_scale(2, 0.2, 0.2)
-        # self.smart_ctl.cv_move(0, rSz * 6, rSz * 12)
-        # self.smart_ctl.cv_move(scale * 10, 0, 0)
-        # self.smart_ctl.color = Color.D_YELLOW
-
-        self.smart_ctl.cv_rotate(-90, 0, 0)
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
-        self.smart_ctl.cv_rotate(0, 0, 90)
-        self.smart_ctl.cv_move(0, 0, rSz * -10)
+        self.smart_ctl.cv_move(scale * 15, 0, 0)
+        self.setting.color = Color.L_BLUE
+        self.setting.cv_move(scale * 15, 0, 0)
 
     def build(self):
         """Build the quadruped leg rig module."""
@@ -355,8 +350,10 @@ class LegQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         # --- Snap setting control to upper joint and constrain ---
-        self.setting.snapTo(self.hip, p=self.CTL_DATA, ofs=(xDr * rSz * 15, 0, 0))
-        self.hip.cstPar(self.setting, mo=1)
+        self.setting.snapTo(
+            self.digit, p=self.CTL_DATA
+        )  # , ofs=(xDr * rSz * 15, 0, 0))
+        self.digit.cstPar(self.setting, mo=1)
 
         # --- Add blend attribute and set up blending constraints ---
         fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=1)
@@ -446,11 +443,10 @@ class LegQd(RigModule):
         self.ctls_ik.append(self.ball_ikc)
 
         # --- Smart control setup ---
-        # self.smart_ctl.snapAlignTo(toeRollG, self.master_guide)
-        self.smart_ctl.snapAlignTo(self.ikc, self.master_guide)
-        self.digit.cstPoi(self.smart_ctl)
-        self.smart_ctl | self.ikc_gimbal
+        self.smart_ctl.snapAlignTo(self.digit, self.master_guide)
+        self.smart_ctl | self.IK_GRP
         self.smart_ctl.addOffsetGrp()
+        self.palm.cstPar(self.smart_ctl.offset, mo=1)
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         (-xDr * self.smart_ctl.a.ry) >> toeRollG.a.ry
         (-xDr * self.smart_ctl.a.rz) >> self.smart_ctl.a["footBank"]
