@@ -448,7 +448,7 @@ def getRigNode(obj):
         logging.info("Get rigNode for non-existing object.")
 
 
-def autoAttach_jntToSrf():
+def autoAttach():
     """Auto attach joints to surface for all rigNodes.
 
     rigNode.a.rbJntSet: target joints
@@ -467,36 +467,36 @@ def autoAttach_jntToSrf():
     for node in getRigNodes_all():
 
         if node.a.nodeState.get() != 2:
-            logging.info(f"Skip non-rigged node {node.name}.")
             continue
+            # logging.info(f"Skip non-rigged node {node.name}.")
 
         rbJntSetAttr = node.a["rbJntSet"]
         rbSrfAttr = node.a["rbSrf"]
         rbCrvAttr = node.a["rbCrv"]
 
         if not (rbJntSetAttr.exists() or rbSrfAttr.exists() or rbCrvAttr.exists()):
-            logging.info(f"Skip node {node.name}, ribbon attributes NOT found.")
+            # logging.info(f"Skip {node.name}: ribbon attributes NOT found.")
             continue
 
         rbJntSetName = rbJntSetAttr.get()
         rbJntSet = DagNode(rbJntSetName)
         if not rbJntSet.exists():
-            logging.warning(f"Set {rbJntSetName} NOT found.")
+            logging.warning(f"{node.name}: Missing set {rbJntSetName}.")
             continue
 
         rbJnts = mc.sets(rbJntSet, q=1)
         if not rbJnts:
-            logging.warning(f"No joints found in Set {rbJntSet}.")
+            logging.warning(f"{node.name}: No joints in Set {rbJntSet}.")
             continue
 
         rbSrf = rbSrfAttr.inConnNode
         if not rbSrf:
-            logging.warning("Ribbon surface NOT found.")
+            logging.warning(f"{node.name}: Missing ribbon surface.")
             continue
 
         rbCrv = rbCrvAttr.inConnNode
         if not rbCrv:
-            logging.warning("Ribbon curve NOT found.")
+            logging.warning(f"{node.name}: Missing ribbon curve.")
             continue
 
         setting = node.a.setting.inConnNode
@@ -514,11 +514,11 @@ def autoAttach_jntToSrf():
             tgtList=rbJnts,
             srf=rbSrf,
             crv=rbCrv,
-            stretchyAttr=setting.a.stretchy,
+            # stretchyAttr=setting.a.stretchy,
             scaleAttr=globalScale,
             p=DagNode("JNT"),
         )
-        logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")
+        # logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")
 
 
 def add_noise_logic(ctl=None, targets=None, rot=0):

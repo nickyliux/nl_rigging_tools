@@ -81,7 +81,7 @@ class SpineQd(RigModule):
 
         #   Define control shapes and attributes
         ctl_defs = [
-            ("setting", "screw_nut", "z", rSz, 0, -1),
+            ("setting", "screw_nut", "z", rSz * 2, 0, -1),
             ("cog_ctl", "trapezoid", None, rSz, 0, -1),
             ("fore_ctl", "chest_qd", None, rSz * 4, 0, -1),
             ("mid_ctl", "squareR", "z", rSz * 4, 0, -1),
@@ -99,7 +99,6 @@ class SpineQd(RigModule):
         self.cog_ctl.cv_scale(1, 1.5, 2)
         self.setting.cv_move(0, rSz * 20, 0)
         self.setting.color = Color.L_BLUE
-        # self.base_ctl.cv_rotate(0, 180, 0)
 
         if self.end_ctl:
             self.end_ctl.cv_rotate(0, 90, 0)
@@ -207,6 +206,9 @@ class SpineQd(RigModule):
         self.rbCrv = CrvNode(mc.duplicateCurve(f"{rbSrf}.u[0.5]", rn=0, local=0)[0])
         self.rbCrv.a.inheritsTransform.set(0)
         self.rbCrv | self.CTL_DATA
+
+        self.rigNode.setMsg({"rbCrv": self.rbCrv})
+
         jntsFrCrv = JntNode.createJntsFrCrv(
             self.rbCrv, pf=rID, name="spikj", num=jntNum, size=rSz, p=self.CTL_DATA
         )

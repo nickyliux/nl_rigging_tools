@@ -307,7 +307,7 @@ def attachTgtsToSrf(
     if not mc.objExists(srf):
         raise ValueError(f"Missing object: {srf}")
 
-    logging.info(f"Attaching targets to {srf.name} along {crv.name}.")
+    logging.info(f"Attaching jnts to {srf.name}, along {crv.name}.")
 
     rvtGrp = GrpNode(srf + "_rvtGrp", p=p)
     srf = DagNode(srf) if isinstance(srf, str) else srf

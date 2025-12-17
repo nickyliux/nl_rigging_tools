@@ -297,7 +297,8 @@ class Attribute:
             obj1.a.tz << obj2.a.tz
             obj1.a.tz << 12
         """
-        other.connect(self)
+        if other:
+            other.connect(self)
         return self
 
     def __rshift__(self, other):
@@ -306,7 +307,8 @@ class Attribute:
             obj1.a.tz >> obj2.a.tz
             obj1.a.t >> obj2.a.t
         """
-        self.connect(other)
+        if self:
+            self.connect(other)
         return other
 
     def __rrshift__(self, val):

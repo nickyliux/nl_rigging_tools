@@ -411,17 +411,19 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 
     def autoBind_refJnts(
-        self, meshes=None, jntSet="auto_bind_jnt_set", thld=5, uiPB=None
+        self, meshes=None, jntSet="auto_bind_jnt_set", thld=999, uiPB=None
     ):
         """Bind meshes to the closest reference joints."""
         if not DagNode(jntSet).exists():
             raise ValueError(f"Set {jntSet} NOT found for auto skin.")
 
         jntList = set(mc.sets(jntSet, q=1))
-        jntsScap = set([o for o in jntList if o.endswith("_scapula")])
+        # jntsScap = set([o for o in jntList if o.endswith("_scapula")])
+        jntsScap = set([n for n in jntList if "scapula" in DagNode(n).name])
         jntsNoScap = jntList - jntsScap
 
-        meshesScap = [o for o in meshes if o.a["isBlade"].exists()]
+        # meshesScap = [o for o in meshes if o.a["isBlade"].exists()]
+        meshesScap = [n for n in meshes if "scapula" in DagNode(n).name]
         meshesNoScap = set(meshes) - set(meshesScap)
 
         skin.skinRefJnts(meshes=meshesNoScap, jnts=jntsNoScap, thld=thld, uiPB=uiPB)
@@ -456,8 +458,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             return
 
         self.autoBind_refJnts(meshes=tgtMeshes, thld=15, uiPB=self.UI.bar_PB)
-        skin.autoBind_rbJnts(meshes=tgtMeshes, uiPB=self.UI.bar_PB)
-        build.autoAttach_jntToSrf()
+        skin.skinRbJnts(meshes=tgtMeshes, uiPB=self.UI.bar_PB)
+        build.autoAttach()
 
         mc.select(cl=1)
 

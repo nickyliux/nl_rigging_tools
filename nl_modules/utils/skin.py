@@ -46,13 +46,13 @@ def skinRefJnts(meshes=None, jnts=None, thld=5, uiPB=None):
 
     if uiPB:
         uiPB.setValue(0)
-    logging.info(f"refJnts : {weighted} weighted. {ignored} already bind.")
+    logging.info(f"refJnts : weighted {weighted}, and skipped {ignored}.")
 
 
-def autoBind_rbJnts(meshes=None, uiPB=None):
+def skinRbJnts(meshes=None, uiPB=None):
     """Skin target meshes to their _rbJnt if found."""
 
-    found = 0
+    # found = 0
     ignored = 0
     weighted = 0
 
@@ -67,7 +67,7 @@ def autoBind_rbJnts(meshes=None, uiPB=None):
         if not rbJnt.exists():
             continue
 
-        found += 1
+        # found += 1
         if mesh.skinCluster.exists():
             ignored += 1
             continue
@@ -80,7 +80,7 @@ def autoBind_rbJnts(meshes=None, uiPB=None):
     if uiPB:
         uiPB.setValue(0)
 
-    logging.info(f"{found} rbJnts found, {ignored} ignored, {weighted} weighted.")
+    logging.info(f"weighted {weighted}, and skipped {ignored}.")
 
 
 def selSkinned(*args):

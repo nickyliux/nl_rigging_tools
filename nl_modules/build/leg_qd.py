@@ -141,26 +141,26 @@ class LegQd(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0, -1),
-            ("hip_fkc", "squareR", "x", scale, 0, -1),
+            ("hip_fkc", "stickC", None, -scale / 2, 0, -1),
             ("upr_fkc", "squareR", "x", scale, 0, -1),
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
             ("palm_fkc", "squareR", "x", scale, 0, -1),
             ("digit_fkc", "squareR", "x", scale, 0, -1),
             ("ball_fkc", "squareR", "x", scale / 2, 0, -1),
-            ("ikc", "foot_quad", None, rSz, 0, -1),
+            ("ikc", "foot", None, rSz, 0, -1),
             ("extra_ikc", "rotate2_3d", None, -scale, 0, -1),
             ("pvc", "sphere", None, rSz, 0, -1),
             ("smart_ctl", "rotate4_3d", None, scale / 2, 0, -1),
         ]
 
         if self.scapulaExtra:
-            ctl_defs.append(("quadScap_ikc", "shoulder", None, scale, 0, -1))
+            ctl_defs.append(("quadScap_ikc", "rotate2_3d", None, scale, 0, -1))
 
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
         if self.scapulaExtra:
-            self.quadScap_ikc.cv_move(scale * 20, 0, 0)
+            self.quadScap_ikc.cv_move(0, scale * 20, 0)
 
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
