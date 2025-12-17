@@ -61,7 +61,7 @@ class HandBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", scale, 0, -1),
+            ("setting", "screw_nut", "z", scale * 2, 0, -1),
             ("palm_ctl", "rotate2_3d", None, -scale, 0, -1),
             ("thumb_ctl", "rotate2_3d", "z", -scale, 0, -1),
             ("smart_ctl", "rotate2_3d", "x", scale * 2, 0, -1),
@@ -71,7 +71,7 @@ class HandBp(RigModule):
 
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
         self.smart_ctl.cv_rotate(90, 0, 0)
-        self.setting.cv_move(0, -scale * 30, 0)
+        self.setting.cv_move(0, 0, -scale * 30)
         self.setting.color = Color.L_BLUE
         self.palm_ctl.color = Color.PINK
         self.thumb_ctl.color = Color.PINK

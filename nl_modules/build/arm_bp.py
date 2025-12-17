@@ -518,7 +518,7 @@ class ArmBp(RigModule):
 
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
-                self.setting.a.add("showBendy", type="bool", k=0, dv=1),
+                self.setting.a.add("showBendy", type="bool", k=0),  # , dv=1),
                 onList=self.all_bendy,
             )
 

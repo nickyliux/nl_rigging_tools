@@ -63,7 +63,7 @@ class Tail(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        ctl_defs = [("setting", "screw_nut", "z", rSz, 0, -1)]
+        ctl_defs = [("setting", "screw_nut", "z", rSz * 2, 0, -1)]
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
@@ -108,6 +108,7 @@ class Tail(RigModule):
             p=self.CTL_DATA,
             JNT_DATA=self.JNT_DATA,
         )
+        self.rigNode.setMsg({"rbCrv": crv})
         self.jnts_bind = self.jnts_rb
 
     def build_ik(self):

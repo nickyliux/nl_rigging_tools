@@ -141,7 +141,7 @@ class LegBp(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0, -1),
-            ("hip_fkc", "stickC", None, -scale/2, 1, -1),
+            ("hip_fkc", "stickC", None, -scale / 2, 1, -1),
             ("upr_fkc", "squareR", "x", scale, 0, -1),
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
             ("palm_fkc", "squareR", "x", scale, 0, -1),
@@ -541,7 +541,7 @@ class LegBp(RigModule):
         )
         if self.limbType == LimbType.RIBBON.value:
             self.ctl_vis_toggle(
-                self.setting.a.add("showBendy", type="bool", k=0, dv=1),
+                self.setting.a.add("showBendy", type="bool", k=0),  # , dv=1),
                 onList=self.all_bendy,
             )
         mc.hide(self.ikhs, self.toeIKHs)
