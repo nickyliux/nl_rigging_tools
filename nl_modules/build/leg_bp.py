@@ -141,7 +141,7 @@ class LegBp(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0, -1),
-            ("hip_fkc", "diamond_3d", "x", scale, 1, -1),
+            ("hip_fkc", "stickC", None, -scale/2, 1, -1),
             ("upr_fkc", "squareR", "x", scale, 0, -1),
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
             ("palm_fkc", "squareR", "x", scale, 0, -1),
@@ -151,7 +151,7 @@ class LegBp(RigModule):
             ("smart_ctl", "rotate4_3d", None, scale / 2, 0, -1),
         ]
         if self.scapulaExtra:
-            ctl_defs.append(("scap_fkc", "shoulder", None, scale, 0, -1))
+            ctl_defs.append(("scap_fkc", "rotate2_3d", None, scale, 0, -1))
 
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
@@ -164,7 +164,7 @@ class LegBp(RigModule):
         # self.smart_ctl.cv_move(0, 0, rSz * -15)
 
         if self.scapulaExtra:
-            self.scap_fkc.cv_move(scale * 15, 0, 0)
+            self.scap_fkc.cv_move(0, scale * 25, 0)
 
         self.setting.cv_move(scale * 20, 0, 0)
         self.setting.color = Color.L_BLUE
@@ -639,11 +639,15 @@ class LegBp(RigModule):
             + self.ctls_sub
             + [self.setting, self.smart_ctl, self.pin_fkc]
         )
+
         if self.limbType == LimbType.RIBBON.value:
             ctlSet.extend(self.all_bendy)
 
         if self.toeBones:
             [ctlSet.extend(s) for s in self.toesCtlsList]
+
+        if self.scapulaExtra:
+            ctlSet.append(self.scap_fkc)
 
         self.add_ctl_set(ctlSet)
 

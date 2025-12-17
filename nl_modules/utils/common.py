@@ -684,7 +684,7 @@ def setViewport(jx=0, xray=0, wos=0, fit=0, ao=0, aa=0):
             mc.modelEditor(p, e=1, wos=1)
 
     if fit:
-        mc.viewFit(all=1, f=0.8)
+        mc.viewFit(all=1)  # , f=0.8)
     if ao:
         mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
     if aa:
