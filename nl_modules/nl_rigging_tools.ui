@@ -1227,7 +1227,8 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Load /weight/char_weight {*} .json</string>
+          <string>Load /weight/char_weight {*} .json for meshes under selected.
+( If selection is None, the group of name [character] is used )</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>

@@ -81,10 +81,10 @@ class MarkingMenuAutorig:
         """Add extra options to the marking menu"""
         mc.menuItem(p=menu, l="Select Ctls", c=self.selectCtlSelOrAll)
         mc.menuItem(p=menu, l="PROXY  -----", en=0)
-        mc.menuItem(p=menu, l="    Gen", c=proxy.genProxy)
         mc.menuItem(p=menu, l="    Warp", c=proxy.wrapProxy)
-        mc.menuItem(p=menu, l="    Reset", c=proxy.resetProxy)
         mc.menuItem(p=menu, l="    Mirror", c=proxy.mirrorProxy)
+        mc.menuItem(p=menu, l="    Gen", c=proxy.genProxy)
+        mc.menuItem(p=menu, l="    Reset", c=proxy.resetProxy)
         mc.menuItem(p=menu, l="    Select All", c=proxy.selectAllProxy)
         # mc.menuItem(p=menu, l="Delete Guide", c=build.deleteSelOrAll)
         mc.menuItem(p=menu, l="-" * 15, en=0)
