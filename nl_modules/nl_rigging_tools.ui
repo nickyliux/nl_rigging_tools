@@ -878,7 +878,8 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Bind skeleton meshes</string>
+          <string>Bind skeleton meshes
+( If selection is None, the group of name [character] is used )</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
