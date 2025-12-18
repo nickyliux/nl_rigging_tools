@@ -36,6 +36,7 @@ class LegQd(RigModule):
         # Guide attributes
         guide_attrs = [
             "limbType",
+            "dualBone",
             "patellaBone",
             "toeBones",
             "toeNum",
@@ -199,7 +200,8 @@ class LegQd(RigModule):
         if self.patellaBone:
             self.patella_setup()
 
-        if self.limbType == LimbType.SKEL.value:
+        # if self.limbType == LimbType.SKEL.value:
+        if self.dualBone:
             self.build_dual_bones()
         else:
             self.jnts_bind += [self.lwr]
