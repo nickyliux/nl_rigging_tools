@@ -35,9 +35,8 @@ class MarkingMenuAutorig:
 
     def setupMenu(self, menu, parent):
         """Setup the marking menu with various options"""
-
-        mc.menuItem(p=menu, l="Mirror Shape", rp="NW", c=self.mirrorShapeSelOrAll)
-        mc.menuItem(p=menu, l="Mirror Pose", rp="W", c=guide.mirrorPose)
+        mc.menuItem(p=menu, l="Mirror Shape", rp="W", c=self.mirrorShapeSelOrAll)
+        mc.menuItem(p=menu, l="Mirror Pose", rp="NW", c=guide.mirrorPose)
         mc.menuItem(p=menu, l="Mirror Guide", rp="SW", c=guide.mirrorGuideSelOrAll)
 
         self.addBuildOptions(menu)

@@ -141,7 +141,7 @@ def loadWeight(uiPB):
     i = 0
     loadCount = 0
 
-    common.setViewport(fit=1)
+    common.setVP(fit=1)
     common.xRayAllGeo(1)
     mc.setToolTo("selectSuperContext")
     control.reset_all_ctl()

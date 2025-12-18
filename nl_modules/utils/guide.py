@@ -260,7 +260,7 @@ def loadTemplate(removeUnused=1):
     # common.setViewport(fit=1)
     mc.select(cl=1)
     common.pauseVP(0)
-    common.setViewport(fit=1)
+    common.setVP(fit=1)
     logging.info(f"Template loaded: {tgtFiles[-1]}.")
 
 

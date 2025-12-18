@@ -88,7 +88,7 @@ def genProxy(*args, tgtSet="auto_bind_jnt_set"):
         proxy_count += 1
 
     mc.select(cl=1)
-    common.setViewport(wos=1)  # jx=1, wos=1
+    common.setVP(wos=1)
     logging.info(f"{proxy_count} proxy meshes generated.")
 
 

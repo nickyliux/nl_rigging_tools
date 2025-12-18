@@ -349,41 +349,42 @@ class RigModule(RigBase):
     def unbuild_pre_module(self):
         """Prepare for unbuilding the rig module, resetting the rigNode state."""
         logging.info(self.rigID)
+
+        common.pauseVP(1)
         self.moduleG.show()
 
-        # Delete in the following order otherwise error may occur
+        prx = mc.ls(self.rigID + "_*_pxGeo*")
+        if prx:
+            mc.delete(prx)
+
         self.JNT_DATA.delete()
 
         rootJ = self.rigNode.a.rootJ.inConnNode
         if rootJ:
             rootJ.delete()
-        for xf in self.DIM.children:
-            if xf.name.startswith(self.rigID):
-                xf.delete()
-        for xf in self.masterC.children:
-            if xf.name.startswith(self.rigID):
-                xf.delete()
 
-        for attr in ["anchorS1", "anchorP1", "anchorP2"]:
-            anchor = self.rigNode.a[attr]
-            if anchor.exists() and anchor.inConnNode:
-                anchor.inConnNode.delete()
+        for n in (self.DIM.children + self.masterC.children):
+            if n.name.startswith(self.rigID):
+                n.delete()
 
-        setting = self.rigNode.a.setting.inConnNode
-        if setting:
-            showSetup = setting.a.showSetup
-            if showSetup.exists():
-                showSetup.set(1)
-                nodes = showSetup.outConnNode
-                if nodes:
-                    mc.delete(nodes)
+        # for attr in ["anchorS1", "anchorP1", "anchorP2"]:
+        #     anchor = self.rigNode.a[attr]
+        #     if anchor.exists() and anchor.inConnNode:
+        #         anchor.inConnNode.delete()
+
+        # setting = self.rigNode.a.setting.inConnNode
+        # if setting:
+        #     showSetup = setting.a.showSetup
+        #     if showSetup.exists():
+        #         showSetup.set(1)
+        #         nodes = showSetup.outConnNode
+        #         if nodes:
+        #             print(nodes)
+        #             mc.delete(nodes)
 
         self.CTL_DATA.delete()
-
         self.rigNode.a.nodeState.set(0)
-        prx = mc.ls(self.rigID + "_*_pxGeo*")
-        if prx:
-            mc.delete(prx)
+        common.pauseVP(0)
 
     def setup_anchor_module(self, anchorDict=None):
         """

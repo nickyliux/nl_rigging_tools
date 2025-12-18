@@ -667,7 +667,11 @@ def getObjectBelow(tgt, tgtType="mesh"):
     return returnNodes
 
 
-def setViewport(jx=0, xray=0, wos=0, fit=0, ao=0, aa=0):
+def pauseVP(state=1):
+    mc.optionVar(iv=("vp2PauseState", state))
+
+
+def setVP(jx=0, xray=0, wos=0, fit=0, ao=0, aa=0):
     """Set viewport options"""
     for p in mc.getPanel(type="modelPanel"):
 
@@ -684,7 +688,7 @@ def setViewport(jx=0, xray=0, wos=0, fit=0, ao=0, aa=0):
             mc.modelEditor(p, e=1, wos=1)
 
     if fit:
-        mc.viewFit(all=1)  # , f=0.8)
+        mc.viewFit(all=1)
     if ao:
         mc.setAttr("hardwareRenderingGlobals.ssaoEnable", 1)
     if aa:
@@ -1003,7 +1007,3 @@ def showRO():
             nodeN.type == "joint" or nodeN.type == "nurbsCurve"
         ) and not nodeN.name.endswith("_guide"):
             mc.setAttr(nodeN + ".ro", cb=1)
-
-
-def pauseVP(pause=1):
-    mc.optionVar(iv=("vp2PauseState", pause))

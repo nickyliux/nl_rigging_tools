@@ -52,14 +52,10 @@ def buildTgt(rigN):
             if state == 0:
                 sk = rigObj.gen_sk()
                 if sk:
-                    # mc.select(sk)
                     rigObj.build()
                     mc.refresh(f=1)
                 else:
                     logging.warning(f"Skip building {rigN.name}, no skeleton found.")
-            # elif state == 1:
-            #     rigObj.build()
-            # mc.refresh(cv=1)
 
 
 def loadBase():
@@ -84,14 +80,13 @@ def preRig():
     ctl = DagNode("master_ctl")
     ctl.a.showAttr(t=1, r=1)
     ctl.offset.a.showAttr(t=1, r=1)
-    common.setViewport(wos=1)
+    common.setVP(wos=1)
 
 
 @common.Undo("buildSelOrAll")
 def buildSelOrAll(*args, uiPB=None):
     """Build rig for selected rigNodes or all if nothing selected"""
     rigNodes = getRigNodes_selOrAll()
-    common.modelPanelShow(jnt=0)
 
     rigNodesToBuild = []
     for rN in rigNodes:
@@ -100,6 +95,7 @@ def buildSelOrAll(*args, uiPB=None):
             rigNodesToBuild.append(rN)
 
     if rigNodesToBuild:
+
         preRig()
         if uiPB:
             uiPB.setMaximum(len(rigNodes))
@@ -116,8 +112,6 @@ def buildSelOrAll(*args, uiPB=None):
 
         if args and args[0] == 1:
             proxy.genProxy()
-
-    common.modelPanelShow(jnt=1)
 
 
 def postRig():
@@ -167,15 +161,18 @@ def unbuildTgt(rN):
             rigClass = rN.a.rigClass.get()
             rigObj = eval(rigClass)(rN)
             rigObj.unbuild_pre_module()
+            return 1
+    return 0
 
 
 @common.Undo("unbuildSelOrAll")
 def unbuildSelOrAll(*arg):
     """Unbuild rig for selected rigNodes or all if nothing selected"""
     rigNodes = getRigNodes_selOrAll()
+    unBuilt = 0
     for rN in rigNodes:
-        unbuildTgt(rN)
-    mc.refresh(f=1)
+        unBuilt += unbuildTgt(rN)
+    logging.info(f"Unbuilt {unBuilt} rigNodes.")
 
 
 def deleteTgt(rN):

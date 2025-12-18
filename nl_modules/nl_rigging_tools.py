@@ -90,8 +90,10 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def buildAll(self):
         """Build all rig components."""
-        common.setViewport(fit=1)
+        common.setVP(fit=1)
+        common.pauseVP(1)
         build.buildSelOrAll(uiPB=self.UI.bar_PB)
+        common.pauseVP(0)
         self.rigNode_refresh()
 
     def unbuildAll(self):
@@ -279,7 +281,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             self.rigNode_refresh()
             mc.select(allTgtMG)
             mc.setToolTo("moveSuperContext")
-            common.setViewport(fit=1)
+            common.setVP(fit=1)
 
     def rigNode_LW_dblClicked(self, item):
         """Show attribute editor for rigNode"""
