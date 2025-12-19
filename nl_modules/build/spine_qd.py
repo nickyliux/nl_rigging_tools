@@ -196,6 +196,9 @@ class SpineQd(RigModule):
 
         # self.add_movable_pivot(self.fore_ctl, snap=self.MD_GUIDE)
         # self.add_movable_pivot(self.base_ctl, snap=self.BASE_PVT_GUIDE)
+        self.add_movable_pivot2(self.fore_ctl, endTgt=self.MD_GUIDE, axis="tz")
+        self.add_movable_pivot2(self.base_ctl, endTgt=self.MD_GUIDE, axis="tz")
+        self.add_movable_pivot2(self.cog_ctl, endTgt=self.fore_ctl, axis="tz")
 
     def build_spik_ribbon(self, rbSrf=None, jntNum=5, setting=None, scaleAttr=None):
         """Build a spine IK ribbon."""

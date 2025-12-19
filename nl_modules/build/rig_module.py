@@ -363,7 +363,7 @@ class RigModule(RigBase):
         if rootJ:
             rootJ.delete()
 
-        for n in (self.DIM.children + self.masterC.children):
+        for n in self.DIM.children + self.masterC.children:
             if n.name.startswith(self.rigID):
                 n.delete()
 
@@ -440,41 +440,38 @@ class RigModule(RigBase):
 
         return pvt
 
-    def add_movable_pivotX(
-        self, tgt, scale=1, inRange=500, maxOfs=500, ty=1, tz=1, settable=1
-    ):
-        """Add pivot offset to target ctl"""
-        if settable:
-            piv_ref = CrvNode(
-                tgt + "_pvt_ctl", shape="locator", align=tgt, scale=scale, p=tgt
-            )
-            # piv_ref.dspType = 2
+    @staticmethod
+    def add_movable_pivot2(tgt, endTgt=None, axis="ty", dv=0):
+        """Add movable pivot ctl under tgt"""
+        pivPos = tgt.a.add("pivotPos", min=0, max=1, dv=dv)
+        wsXformTgt = mc.xform(tgt.name, q=1, ws=1, t=1)
 
-        if tz:
-            rmN = DagNode("rmpZ_#", nodeType="remapValue")
-            rmN.a.inputMin.set(inRange)
-            rmN.a.inputMax.set(-inRange)
-            rmN.a.outputMin.set(maxOfs)
-            rmN.a.outputMax.set(-maxOfs)
-            rmN.a.outValue >> tgt.a.rotatePivotZ
+        # Calculate world space end position (wsEndPos)
+        wsEndPos = 0
+        if DagNode(endTgt).exists():
+            if axis == "ty":
+                wsEndPos = mc.xform(endTgt, q=1, ws=1, t=1)[1] - wsXformTgt[1]
+            else:
+                wsEndPos = mc.xform(endTgt, q=1, ws=1, t=1)[2] - wsXformTgt[2]
+        else:
+            if axis == "ty":
+                wsEndPos = -wsXformTgt[1]
+            else:
+                wsEndPos = -wsXformTgt[2]
 
-            if settable:
-                rmN.a.outValue >> piv_ref.a.tz
-                pivotTz = tgt.a.add("pivotTz", min=-inRange, max=inRange, dv=0)
-                pivotTz >> rmN.a.inputValue
+        # Drive rotate pivot
+        remapped = ut.remap_(pivPos, 0, 1, 0, wsEndPos)
+        if axis == "ty":
+            remapped >> tgt.a.rotatePivotY
+        else:
+            remapped >> tgt.a.rotatePivotZ
 
-        if ty:
-            rmN = DagNode("rmpY_#", nodeType="remapValue")
-            rmN.a.inputMin.set(-inRange)
-            rmN.a.inputMax.set(inRange)
-            rmN.a.outputMin.set(-maxOfs)
-            rmN.a.outputMax.set(maxOfs)
-            rmN.a.outValue >> tgt.a.rotatePivotY
-
-            if settable:
-                rmN.a.outValue >> piv_ref.a.ty
-                pivotTy = tgt.a.add("pivotTy", min=-inRange, max=inRange, dv=0)
-                pivotTy >> rmN.a.inputValue
+        # Show pivot location using annotation
+        ann = DagNode("ann_#", nodeType="annotationShape")
+        ann.a.text.set(".", type="string")
+        ann.a.displayArrow.set(0)
+        ann.parent.snapTo(tgt, p=tgt)
+        tgt.a.rotatePivot >> ann.parent.a.t
 
     def boneFix_setup(self, tgt, tgtChild):
         """Setup bone fix for the leg rig."""
