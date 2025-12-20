@@ -214,9 +214,7 @@ class SpineBp(RigModule):
             self.ctls_ik += [self.hip_ikc]
 
         if not self.is_neck():
-            RigModule.add_movable_pivot2(self.chest_ikc, endTgt=self.hip_ikc, dv=0.33)
-
-        RigModule.add_movable_pivot2(self.cog_ctl)
+            RigModule.add_dyn_pivot(self.chest_ikc, endTgt=self.hip_ikc, dv=0.33)
 
         self.addAutoBend()
 

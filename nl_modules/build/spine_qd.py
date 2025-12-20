@@ -34,8 +34,8 @@ class SpineQd(RigModule):
         self.RT_GUIDE = DagNode(f"{self.rigID}_rt_guide")
         self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA, snap=self.RT_GUIDE)
 
-        guide = DagNode(f"{self.rigID}_base_pivot_guide")
-        self.BASE_PVT_GUIDE = guide if guide.exists() else None
+        # guide = DagNode(f"{self.rigID}_base_pivot_guide")
+        # self.BASE_PVT_GUIDE = guide if guide.exists() else None
         guide = DagNode(f"{self.rigID}_end_jnt_guide")
         self.END_JNT_GUIDE = guide if guide.exists() else None
 
@@ -95,7 +95,7 @@ class SpineQd(RigModule):
         for name, shape, up, scale, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
 
-        self.cog_ctl.cv_move(0, rSz * 40, rSz * 10)
+        self.cog_ctl.cv_move(0, rSz * 40, 0)  # rSz * 10)
         self.cog_ctl.cv_scale(1, 1.5, 2)
         self.setting.cv_move(0, rSz * 20, 0)
         self.setting.color = Color.L_BLUE
@@ -173,7 +173,8 @@ class SpineQd(RigModule):
         #
         #   parenting
         #
-        self.base_ctl.alignTo(self.BASE_PVT_GUIDE or ikj0)
+        # self.base_ctl.alignTo(self.BASE_PVT_GUIDE or ikj0)
+        self.base_ctl.alignTo(ikj0)
         self.mid_ctl.alignTo(ikj1)
         self.fore_ctl.alignTo(ikj2)
         self.tangent0_ctl.alignTo(ikj0)
@@ -194,11 +195,10 @@ class SpineQd(RigModule):
         [ctl.addOffsetGrp() for ctl in self.ctls_ik]
         self.mid_ctl.addOffsetGrp()
 
-        # self.add_movable_pivot(self.fore_ctl, snap=self.MD_GUIDE)
-        # self.add_movable_pivot(self.base_ctl, snap=self.BASE_PVT_GUIDE)
-        self.add_movable_pivot2(self.fore_ctl, endTgt=self.MD_GUIDE, axis="tz")
-        self.add_movable_pivot2(self.base_ctl, endTgt=self.MD_GUIDE, axis="tz")
-        self.add_movable_pivot2(self.cog_ctl, endTgt=self.fore_ctl, axis="tz")
+        RigModule.add_dyn_pivot(self.fore_ctl, endTgt=self.MD_GUIDE, axis="tz", dv=0.5)
+        RigModule.add_dyn_pivot(self.base_ctl, endTgt=self.MD_GUIDE, axis="tz", dv=0.5)
+        RigModule.add_dyn_pivot(self.cog_ctl, axis="ty", dv=0.2)
+        RigModule.add_dyn_pivot(self.cog_ctl, endTgt=self.fore_ctl, axis="tz", dv=0.5)
 
     def build_spik_ribbon(self, rbSrf=None, jntNum=5, setting=None, scaleAttr=None):
         """Build a spine IK ribbon."""

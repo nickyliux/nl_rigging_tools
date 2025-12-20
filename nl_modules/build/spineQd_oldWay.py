@@ -319,8 +319,8 @@ class SpineQd(RigModule):
 
         self.build_volume()
 
-        self.add_movable_pivot(self.chest_ctl, snap=self.MD_GUIDE)
-        self.add_movable_pivot(self.base_ctl, snap=self.PVT_GUIDE)
+        self.add_dyn_pivot_extra(self.chest_ctl, snap=self.MD_GUIDE)
+        self.add_dyn_pivot_extra(self.base_ctl, snap=self.PVT_GUIDE)
 
         self.ctls = [
             self.chest_ctl,

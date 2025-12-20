@@ -338,6 +338,7 @@ class RigModule(RigBase):
         """Post build function to finalize the module setup."""
         from nl_modules.utils import build
 
+        self.masterC2.a.addSep()
         showSetting = self.masterC2.a.add("showSetting", k=0, type="bool", dv=1)
         for node in build.getRigNodes_all():
             setting = node.a.setting.inConnNode
@@ -426,44 +427,49 @@ class RigModule(RigBase):
         self.jnts_bind.extend(tgtList)
 
     @staticmethod
-    def add_movable_pivot(tgt, snap=None, hide=1):
+    def add_dyn_pivot_extra(tgt, snap=None, scale=1):
         """Add movable pivot ctl under tgt"""
-        if isinstance(tgt, str):
-            tgt = DagNode(tgt)
+        tgt = DagNode(tgt) if isinstance(tgt, str) else tgt
 
-        pvt = LocNode(tgt + "_pvt", align=tgt, p=tgt)
+        pvt = CrvNode(
+            tgt + "_pvt", shape="locator", align=tgt, p=tgt, scale=scale, top=1
+        )
         pvt.a.t >> tgt.a.rotatePivot
+        tgt.a.add("showPivotCtl", k=1, dv=1, type="bool") >> pvt.a.v
         if snap:
             pvt.snapTo(snap)
-        if hide:
-            pvt.hide()
 
+        pvt.a.showAttr(t=1)
         return pvt
 
     @staticmethod
-    def add_movable_pivot2(tgt, endTgt=None, axis="ty", dv=0):
+    def add_dyn_pivot(tgt, endTgt=None, axis="ty", dv=0):
         """Add movable pivot ctl under tgt"""
-        pivPos = tgt.a.add("pivotPos", min=0, max=1, dv=dv)
-        wsXformTgt = mc.xform(tgt.name, q=1, ws=1, t=1)
 
-        # Calculate world space end position (wsEndPos)
-        wsEndPos = 0
-        if DagNode(endTgt).exists():
-            if axis == "ty":
-                wsEndPos = mc.xform(endTgt, q=1, ws=1, t=1)[1] - wsXformTgt[1]
-            else:
-                wsEndPos = mc.xform(endTgt, q=1, ws=1, t=1)[2] - wsXformTgt[2]
+        # Calculate world space end value in this axis (wsEndValue)
+        # Assume ending at origin if endTgt is not given
+        wsXformTgt = mc.xform(tgt.name, q=1, ws=1, t=1)
+        endValue = 0
+        wsEndValue = 0
+
+        if axis == "ty":
+            if DagNode(endTgt).exists():
+                endValue = mc.xform(endTgt, q=1, ws=1, t=1)[1]
+            wsEndValue = endValue - wsXformTgt[1]
         else:
-            if axis == "ty":
-                wsEndPos = -wsXformTgt[1]
-            else:
-                wsEndPos = -wsXformTgt[2]
+            zeroValue = wsXformTgt[2]
+            if DagNode(endTgt).exists():
+                endValue = mc.xform(endTgt, q=1, ws=1, t=1)[2]
+            wsEndValue = endValue - wsXformTgt[2]
 
         # Drive rotate pivot
-        remapped = ut.remap_(pivPos, 0, 1, 0, wsEndPos)
         if axis == "ty":
+            pivPosY = tgt.a.add("pivotPosY", min=0, max=1, dv=dv)
+            remapped = ut.remap_(pivPosY, 0, 1, 0, wsEndValue)
             remapped >> tgt.a.rotatePivotY
         else:
+            pivPosZ = tgt.a.add("pivotPosZ", min=0, max=1, dv=dv)
+            remapped = ut.remap_(pivPosZ, 0, 1, 0, wsEndValue)
             remapped >> tgt.a.rotatePivotZ
 
         # Show pivot location using annotation

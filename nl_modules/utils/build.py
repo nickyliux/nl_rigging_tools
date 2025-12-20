@@ -118,7 +118,7 @@ def postRig():
     """Post rigging operations"""
     from nl_modules.utils import control
 
-    masterAddAttrs()
+    addMasterAttrs()
     control.reset_all_ctl()
     update_anchor_conn()
     update_space_switch()
@@ -126,27 +126,27 @@ def postRig():
     logging.info("Rig built.")
 
 
-def masterAddAttrs():
+def addMasterAttrs():
     """Add proxy attributes to master2_ctl"""
-    OPTIONS = "Normal:Tpl:Ref"
-
     ctl = DagNode("master2_ctl")
     if not ctl.exists():
         logging.warning("master2_ctl NOT found.")
         return
 
+    OPTIONS = "normal:template:reference"
     grp = DagNode("MDL")
     if grp.exists():
         ctl.a.add("showMdl", k=0, type="bool", dv=1) >> grp.a.v
-
+        grp.a.overrideEnabled.set(1)
+        ctl.a.add("dspMdl", k=0, type="enum", en=OPTIONS) >> grp.a.overrideDisplayType
     grp = DagNode("PRX")
     if grp.exists():
         ctl.a.add("showPrx", k=0, type="bool", dv=1) >> grp.a.v
-
+        grp.a.overrideEnabled.set(1)
+        ctl.a.add("dspPrx", k=0, type="enum", en=OPTIONS) >> grp.a.overrideDisplayType
     grp = DagNode("JNT")
     if grp.exists():
-        ctl.a.add("showJnt", k=0, type="bool", dv=1) >> grp.a.v
-
+        ctl.a.add("showJnt", k=0, type="bool", dv=0) >> grp.a.v
     grp = DagNode("CTL")
     if grp.exists():
         ctl.a.add("showCtl", k=0, type="bool", dv=1) >> grp.a.v

@@ -183,8 +183,8 @@ class SpineQd(RigModule):
         )
         self.ikJnts[1].a.tz * -1 >> self.ikJnts[3].a.tz
 
-        self.add_movable_pivot(self.ctls_ik[2], snap=self.MD_GUIDE)
-        self.add_movable_pivot(self.ctls_ik[0], snap=self.PVT_GUIDE)
+        self.add_dyn_pivot_extra(self.ctls_ik[2], snap=self.MD_GUIDE)
+        self.add_dyn_pivot_extra(self.ctls_ik[0], snap=self.PVT_GUIDE)
 
     def build_volume(self, crvLenRatio):
         #
