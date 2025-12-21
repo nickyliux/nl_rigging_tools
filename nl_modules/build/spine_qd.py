@@ -333,30 +333,47 @@ class SpineQd(RigModule):
         # --- Constrain mid IK control rotation ---
         self.fore_ctl.a.r >> j1.a.r
 
+        # twistRatio = self.mid_ctl.a.add("twistRatio", min=0, max=1, dv=0.5)
+        baseLoc = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.base_ctl, vis=0)
+        foreLoc = LocNode("loc#", pf=rID, align=self.mid_ctl, p=j1, vis=0)
+        tgt = self.mid_ctl.offset
+        # common.cstMulti(foreLoc, baseLoc, tgt, cstType="parR", mo=1, w=twistRatio)
+        common.cstMulti(foreLoc, baseLoc, tgt, cstType="par", mo=1)
         # --- Use POI or parent constraint for mid control offset ---
-        if self.is_neck():
-            common.cstMulti(self.base_ctl, j1, self.mid_ctl.offset, cstType="poi", mo=1)
-        else:
-            loc0 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.base_ctl, vis=0)
-            loc1 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=j1, vis=0)
-            common.cstMulti(loc0, loc1, self.mid_ctl.offset, cstType="parT", mo=1)
+        # if self.is_neck():
+        #     # common.cstMulti(self.base_ctl, j1, self.mid_ctl.offset, cstType="poi", mo=1)
+        #     common.cstMulti(
+        #         self.base_ctl,
+        #         j1,
+        #         self.mid_ctl.offset,
+        #         cstType="par",
+        #         mo=1,
+        #         w=twistRatio,
+        #     )
+        # else:
+        #     loc0 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.base_ctl, vis=0)
+        #     loc1 = LocNode("loc#", pf=rID, align=self.mid_ctl, p=j1, vis=0)
+        #     # common.cstMulti(loc0, loc1, self.mid_ctl.offset, cstType="parT", mo=1)
+        #     common.cstMulti(
+        #         loc0, loc1, self.mid_ctl.offset, cstType="par", mo=1, w=twistRatio
+        #     )
 
         # --- Make mid control aim forward ---
-        j1.cstAim(
-            self.mid_ctl.offset,
-            aim=(0, 0, 1),
-            worldUpType="objectrotation",
-            worldUpObject=self.cog_ctl,
-        )
+        # j1.cstAim(
+        #     self.mid_ctl.offset,
+        #     aim=(0, 0, 1),
+        #     worldUpType="objectrotation",
+        #     worldUpObject=self.cog_ctl,
+        # )
 
         # --- Drive mid control rz by average of fore and base controls ---
-        self.mid_ctl.addOffsetGrp()
+        # self.mid_ctl.addOffsetGrp()
         # (self.fore_ctl.a.rz @ self.base_ctl.a.rz) >> self.mid_ctl.offset.a.rz
-        twistRatio = self.mid_ctl.a.add("twistRatio", min=0, max=1, dv=0.25)
-        (
-            ut.blend2_(self.fore_ctl.a.rz, self.base_ctl.a.rz, w=twistRatio)
-            >> self.mid_ctl.offset.a.rz
-        )
+        # twistRatio = self.mid_ctl.a.add("twistRatio", min=0, max=1, dv=0.25)
+        # (
+        #     ut.blend2_(self.fore_ctl.a.rz, self.base_ctl.a.rz, w=twistRatio)
+        #     >> self.mid_ctl.offset.a.rz
+        # )
 
     def build_volume(self, crvLenRatio):
         """Build volume control for the spine rig."""
@@ -403,7 +420,10 @@ class SpineQd(RigModule):
 
     def setup_rotate_order(self):
         """Setup rotate order for the spine rig controls."""
-        [ctl.a.ro.set(3) for ctl in [self.fore_ctl, self.base_ctl, self.cog_ctl]]
+        [
+            ctl.a.ro.set(3)
+            for ctl in [self.fore_ctl, self.mid_ctl, self.base_ctl, self.cog_ctl]
+        ]
         if self.endCtl:
             self.end_ctl.a.ro.set(3)
 

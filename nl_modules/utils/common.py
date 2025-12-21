@@ -150,6 +150,10 @@ def cstMulti(*args, cstType="par", delete=False, w=None, **kwargs):
         cstMulti([obj1, obj2])
         cstMulti([obj1, obj2, obj3], cstType='ori')
         cstMulti([obj1, obj2, obj3], cstType='poi', w=obj3.a.myAttr)
+
+    NOTE: the weight will be added to parT in the following lines. (to be fixed)
+        common.cstMulti(a, b, c, cstType="parT", mo=1)
+        common.cstMulti(a, b, c, cstType="parR", mo=1, w=myW)
     """
     from nl_modules.nodel.base.dag_node import DagNode
 
@@ -166,7 +170,7 @@ def cstMulti(*args, cstType="par", delete=False, w=None, **kwargs):
     else:
         cst = cstCmd(args[:-1], lastObj, n=name, **kwargs)[0]
 
-    # Look like that shortest is a better option for orientation transition
+    # 'shortest' for orientation and parent constraint
     if cstCmd:
         if cstCmd == mc.orientConstraint or cstCmd == mc.parentConstraint:
             mc.setAttr(cst + ".interpType", 2)
