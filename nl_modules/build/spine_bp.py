@@ -192,6 +192,8 @@ class SpineBp(RigModule):
         # self.hip_ikc.a.ry @ self.chest_ikc.a.ry >> self.mid_ikc.offset.a.ry
         twistRatio_dv = 0.25 if self.is_neck() else 0.75
         twistRatio = self.mid_ikc.a.add("twistRatio", min=0, max=1, dv=twistRatio_dv)
+        # self.chest_ikc.a.add("twistRatio", proxy=twistRatio, k=0)
+        # self.hip_ikc.a.add("twistRatio", proxy=twistRatio, k=0)
 
         blendRy = ut.blend2_(self.hip_ikc.a.ry, self.chest_ikc.a.ry, w=twistRatio)
         blendRy >> self.mid_ikc.offset.a.ry
@@ -214,27 +216,27 @@ class SpineBp(RigModule):
             self.ctls_ik += [self.hip_ikc]
 
         if not self.is_neck():
-            RigModule.add_dyn_pivot(self.chest_ikc, endTgt=self.hip_ikc, dv=0.33)
+            RigModule.add_dyn_pivot(self.chest_ikc, endTgt=self.mid_ikc, dv=1)
+            RigModule.add_dyn_pivot(self.cog_ctl)
 
-        self.addAutoBend()
+        # self.addMiddleBend()
 
-    def addAutoBend(self):
-        # Add neck auto bend
-        autoBendLoc = LocNode(
-            f"autoBend_loc", pf=self.rigID, align=self.mid_ikc, p=self.mid_ikc.parent
+    def addMiddleBend(self):
+        """Add middle bend control for the spine rig."""
+        loc = LocNode(
+            f"midBend_loc", pf=self.rigID, align=self.mid_ikc, p=self.mid_ikc.parent
         )
-        autoBendGrp = self.mid_ikc.addOffsetGrp()
-        autoBend = self.mid_ikc.a.add("autoBend", min=0, max=1, dv=0.5)
-        # self.chest_ikc.cstParT(autoBendLoc, mo=1)
-        common.cstMulti(self.chest_ikc, self.hip_ikc, autoBendLoc, cstType="parT", mo=1)
-        autoBendLoc.a.ty.disconnect()
+        grp = self.mid_ikc.addOffsetGrp()
+        midBend = self.mid_ikc.a.add("midBend", min=0, max=1, dv=0)
+        # self.chest_ikc.cstParT(loc, mo=1)
+        common.cstMulti(self.chest_ikc, self.hip_ikc, loc, cstType="parT", mo=1)
+        loc.a.ty.disconnect()
 
-        autoBendLoc.a.tx * autoBend >> autoBendGrp.a.tx
-        autoBendLoc.a.tz * autoBend >> autoBendGrp.a.tz
+        loc.a.tx * midBend >> grp.a.tx
+        loc.a.tz * midBend >> grp.a.tz
 
-        self.chest_ikc.a.add("autoBend", proxy=autoBend)
-        self.hip_ikc.a.add("autoBend", proxy=autoBend)
-        self.ctls_fk[0].a.add("autoBend", proxy=autoBend)
+        self.chest_ikc.a.add("midBend", proxy=midBend)
+        self.hip_ikc.a.add("midBend", proxy=midBend)
 
     def build_ribbon(self):
         """Build the ribbon for the spine rig."""

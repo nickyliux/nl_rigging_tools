@@ -334,11 +334,11 @@ class SpineQd(RigModule):
         self.fore_ctl.a.r >> j1.a.r
 
         # twistRatio = self.mid_ctl.a.add("twistRatio", min=0, max=1, dv=0.5)
-        baseLoc = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.base_ctl, vis=0)
-        foreLoc = LocNode("loc#", pf=rID, align=self.mid_ctl, p=j1, vis=0)
-        tgt = self.mid_ctl.offset
+        # baseLoc = LocNode("loc#", pf=rID, align=self.mid_ctl, p=self.base_ctl, vis=0)
+        # foreLoc = LocNode("loc#", pf=rID, align=self.mid_ctl, p=j1, vis=0)
+        # tgt = self.mid_ctl.offset
         # common.cstMulti(foreLoc, baseLoc, tgt, cstType="parR", mo=1, w=twistRatio)
-        common.cstMulti(foreLoc, baseLoc, tgt, cstType="par", mo=1)
+        # common.cstMulti(foreLoc, baseLoc, tgt, cstType="par", mo=1)
         # --- Use POI or parent constraint for mid control offset ---
         # if self.is_neck():
         #     # common.cstMulti(self.base_ctl, j1, self.mid_ctl.offset, cstType="poi", mo=1)
@@ -368,12 +368,14 @@ class SpineQd(RigModule):
 
         # --- Drive mid control rz by average of fore and base controls ---
         # self.mid_ctl.addOffsetGrp()
-        # (self.fore_ctl.a.rz @ self.base_ctl.a.rz) >> self.mid_ctl.offset.a.rz
-        # twistRatio = self.mid_ctl.a.add("twistRatio", min=0, max=1, dv=0.25)
-        # (
-        #     ut.blend2_(self.fore_ctl.a.rz, self.base_ctl.a.rz, w=twistRatio)
-        #     >> self.mid_ctl.offset.a.rz
-        # )
+        self.mid_ctl.addOffsetGrp(count=3)
+        (self.fore_ctl.a.rz @ self.base_ctl.a.rz) >> self.mid_ctl.offset.offset.a.rz
+
+        twistRatio_dv = 0.25 if self.is_neck() else 0.75
+        twistRatio = self.mid_ctl.a.add("twistRatio", min=0, max=1, dv=twistRatio_dv)
+
+        blendRy = ut.blend2_(self.base_ctl.a.rz, self.fore_ctl.a.rz, w=twistRatio)
+        blendRy >> self.mid_ctl.offset.a.rz
 
     def build_volume(self, crvLenRatio):
         """Build volume control for the spine rig."""

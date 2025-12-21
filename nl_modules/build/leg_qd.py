@@ -142,7 +142,7 @@ class LegQd(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0, -1),
-            ("hip_fkc", "trapezoid", "x", -scale, 0, -1),
+            ("hip_fkc", "rotate2_3d", "x", -scale, 0, -1),
             ("upr_fkc", "squareR", "x", scale, 0, -1),
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
             ("palm_fkc", "squareR", "x", scale, 0, -1),
@@ -168,6 +168,7 @@ class LegQd(RigModule):
         self.smart_ctl.cv_move(scale * 15, 0, 0)
         self.setting.color = Color.L_BLUE
         self.setting.cv_move(scale * 15, 0, 0)
+        self.hip_fkc.cv_move(scale * 20, 0, 0)
 
     def build(self):
         """Build the quadruped leg rig module."""
