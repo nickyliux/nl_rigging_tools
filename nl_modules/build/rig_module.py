@@ -762,7 +762,8 @@ class RigModule(RigBase):
             j0.hide()
 
             # --- Extra scapula joint setup ---
-            scapCtl.snapTo(uprJ, p=self.CTL_DATA)
+            # scapCtl.snapTo(uprJ, p=self.CTL_DATA)
+            scapCtl.snapTo(uprJ, p=fkc)
             if xDr < 0:
                 scapCtl.a.rx.set(180)
             scapCtl.addOffsetGrp()
@@ -777,25 +778,25 @@ class RigModule(RigBase):
                 rad=rSz,
                 aimTgt=hipJ,
             )
-            scapCtl.cstOri(j0, mo=1)
+            IkNode("scapAim", pf=rID, sj=j0, ee=j1, p=scapCtl, vis=0)
             self.jnts_bind.append(j0)
 
             # --- Scapula helper setup (if guide exists) ---
-            scapHelper = DagNode(rID + "_scapHelper_guide")
-            if scapHelper.exists():
-                j0, j1 = JntNode.makeTwoJointChain(
-                    "scapHelper",
-                    pf=rID,
-                    align=scapHelper,
-                    align_end=uprJ,
-                    rad=rSz,
-                    p=self.JNT_DATA,
-                )
-                IkNode("scapHelperJ", pf=rID, sj=j0, ee=j1, p=scapCtl)
-                ofs = fkc.addOffsetGrp()
-                j1.cstPoi(ofs, mo=1)
-                mainGrp.cstPar(scapCtl.offset, mo=1)
-                mainGrp.cstPar(j0, mo=1)
+            # scapHelper = DagNode(rID + "_scapHelper_guide")
+            # if scapHelper.exists():
+            #     j0, j1 = JntNode.makeTwoJointChain(
+            #         "scapHelper",
+            #         pf=rID,
+            #         align=scapHelper,
+            #         align_end=uprJ,
+            #         rad=rSz,
+            #         p=self.JNT_DATA,
+            #     )
+            #     IkNode("scapHelperJ", pf=rID, sj=j0, ee=j1, p=scapCtl)
+            #     ofs = fkc.addOffsetGrp()
+            #     j1.cstPoi(ofs, mo=1)
+            #     mainGrp.cstPar(scapCtl.offset, mo=1)
+            #     mainGrp.cstPar(j0, mo=1)
 
         return mainGrp
 

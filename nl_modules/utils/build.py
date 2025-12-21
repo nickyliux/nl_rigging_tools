@@ -146,7 +146,7 @@ def addMasterAttrs():
         ctl.a.add("dspPrx", k=0, type="enum", en=OPTIONS) >> grp.a.overrideDisplayType
     grp = DagNode("JNT")
     if grp.exists():
-        ctl.a.add("showJnt", k=0, type="bool", dv=0) >> grp.a.v
+        ctl.a.add("showJnt", k=0, type="bool", dv=1) >> grp.a.v
     grp = DagNode("CTL")
     if grp.exists():
         ctl.a.add("showCtl", k=0, type="bool", dv=1) >> grp.a.v

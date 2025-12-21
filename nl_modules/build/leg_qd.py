@@ -142,7 +142,7 @@ class LegQd(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0, -1),
-            ("hip_fkc", "stickC", None, -scale / 2, 0, -1),
+            ("hip_fkc", "trapezoid", "x", -scale, 0, -1),
             ("upr_fkc", "squareR", "x", scale, 0, -1),
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
             ("palm_fkc", "squareR", "x", scale, 0, -1),
@@ -155,13 +155,13 @@ class LegQd(RigModule):
         ]
 
         if self.scapulaExtra:
-            ctl_defs.append(("quadScap_ikc", "rotate2_3d", None, scale, 0, -1))
+            ctl_defs.append(("quadScap_ikc", "sphere", None, scale / 2, 0, -1))
 
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
         if self.scapulaExtra:
-            self.quadScap_ikc.cv_move(0, scale * 20, 0)
+            self.quadScap_ikc.cv_move(0, scale * 10, 0)
 
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
@@ -191,6 +191,8 @@ class LegQd(RigModule):
             EXTRA=self.scapulaExtra,
             scapCtl=self.quadScap_ikc,
         )
+        if self.scapulaExtra:
+            self.quadScap_ikc.cv_moveTo(self.hip.o.pos)
 
         self.singleBallCtl_setup()
 
@@ -614,7 +616,8 @@ class LegQd(RigModule):
             ctl.a.showAttr(t=1, r=1, s=1)
 
         if self.scapulaExtra:
-            self.quadScap_ikc.a.showAttr("ty", "tz", r=1)
+            self.quadScap_ikc.a.showAttr(t=1, r=1)
+        # self.quadScap_ikc.a.showAttr("ty", "tz", r=1)
 
     def setup_rotate_order(self):
         """Setup rotate order for the quadruped leg rig controls."""
