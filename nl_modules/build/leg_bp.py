@@ -148,17 +148,17 @@ class LegBp(RigModule):
             ("ball_fkc", "squareR", "x", scale, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
             ("pvc", "sphere", None, rSz, 0, -1),
-            ("smart_ctl", "rotate4_3d", None, scale / 2, 0, -1),
+            ("smart_ctl", "diamond_3d", None, scale / 2, 0, -1),
         ]
         if self.scapulaExtra:
-            ctl_defs.append(("scap_fkc", "rotate2_3d", None, scale, 0, -1))
+            ctl_defs.append(("scap_fkc", "arrow", "z", scale / 2, 0, -1))
 
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
-        self.smart_ctl.cv_move(scale * 20, 0, 0)
+        self.smart_ctl.cv_move(scale * 15, 0, 0)
         #     self.smart_ctl.cv_rotate(180, 0, 0)
         # self.smart_ctl.cv_rotate(0, 0, 90)
         # self.smart_ctl.cv_move(0, 0, rSz * -15)
@@ -166,8 +166,10 @@ class LegBp(RigModule):
         if self.scapulaExtra:
             self.scap_fkc.cv_move(0, scale * 25, 0)
 
-        self.setting.cv_move(scale * 20, 0, 0)
+        self.setting.cv_move(scale * 15, 0, 0)
         self.setting.color = Color.L_BLUE
+        self.hip_fkc.cv_rotate(0, 90, 0)
+        self.hip_fkc.cv_move(scale * 10, -scale * 20, 0)
 
     def build(self):
         """Build the leg rig module."""
@@ -354,9 +356,9 @@ class LegBp(RigModule):
         scale = rSz * xDr
 
         self.smart_ctl | self.ikc
-        self.smart_ctl.snapAlignTo(self.palm, self.master_guide)
+        self.smart_ctl.snapAlignTo(self.ball, self.master_guide)
         self.smart_ctl.addOffsetGrp()
-        self.palm.cstPoi(self.smart_ctl)
+        self.ball.cstPoi(self.smart_ctl)
 
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry

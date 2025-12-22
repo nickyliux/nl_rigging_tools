@@ -78,7 +78,7 @@ class LegQd(RigModule):
         self.ball_ikc = None
         self.extra_ikc = None
         self.scapulaG = None
-        self.quadScap_ikc = None
+        self.scap_fkc = None
         self.all_ikH = {}
         self.all_bendy = []
 
@@ -156,14 +156,14 @@ class LegQd(RigModule):
         ]
 
         if self.scapulaExtra:
-            ctl_defs.append(("quadScap_ikc", "arrow", "z", scale / 2, 0, -1))
+            ctl_defs.append(("scap_fkc", "arrow", "z", scale / 2, 0, -1))
 
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
         if self.scapulaExtra:
-            self.quadScap_ikc.cv_move(0, scale * 15, 0)
-            self.quadScap_ikc.cv_rotate(0, 90, 0)
+            self.scap_fkc.cv_move(0, scale * 15, 0)
+            self.scap_fkc.cv_rotate(0, 90, 0)
 
         # if xDr == -1:
         #     self.smart_ctl.cv_rotate(180, 0, 0)
@@ -194,10 +194,10 @@ class LegQd(RigModule):
             fkc=self.ctls_fk[0],
             jnts=self.jnts,
             EXTRA=self.scapulaExtra,
-            scapCtl=self.quadScap_ikc,
+            scapCtl=self.scap_fkc,
         )
         if self.scapulaExtra:
-            self.quadScap_ikc.cv_moveTo(self.hip.o.pos)
+            self.scap_fkc.cv_moveTo(self.hip.o.pos)
 
         self.singleBallCtl_setup()
 
@@ -621,8 +621,8 @@ class LegQd(RigModule):
             ctl.a.showAttr(t=1, r=1, s=1)
 
         if self.scapulaExtra:
-            self.quadScap_ikc.a.showAttr(t=1, r=1)
-        # self.quadScap_ikc.a.showAttr("ty", "tz", r=1)
+            self.scap_fkc.a.showAttr(t=1, r=1)
+        # self.scap_fkc.a.showAttr("ty", "tz", r=1)
 
     def setup_rotate_order(self):
         """Setup rotate order for the quadruped leg rig controls."""
@@ -660,7 +660,7 @@ class LegQd(RigModule):
         # if self.RBN_BONES:
         #     ctlSet.extend(self.all_bendy)
         if self.scapulaExtra:
-            ctlSet.append(self.quadScap_ikc)
+            ctlSet.append(self.scap_fkc)
         if self.toeBones:
             [ctlSet.extend(s) for s in self.toesCtlsList or []]
         self.add_ctl_set(ctlSet)
