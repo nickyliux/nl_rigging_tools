@@ -40,6 +40,11 @@ class SpineBp(RigModule):
         self.LINE_GUIDE = DagNode(f"{self.rigID}_line_guide")
         self.MD_GUIDE = DagNode(f"{self.rigID}_md_guide")
 
+        # guide = DagNode(f"{self.rigID}_chest_pivot_guide")
+        # self.CHEST_PVT_GUIDE = guide if guide.exists() else None
+        guide = DagNode(f"{self.rigID}_base_pivot_guide")
+        self.BASE_PVT_GUIDE = guide if guide.exists() else None
+
         # Main settings and controls
         self.setting = None
         self.cog_ctl = None
@@ -164,8 +169,10 @@ class SpineBp(RigModule):
         """modify first fkc specific for hip rotation."""
         ctl = self.ctls_fk[0]
         ctl(p=self.CTL_DATA, addOfs=1, color=Color.BLUE, width=2)
-        ctl.offset.snapAlignTo(self.jnts_fk[1], self.jnts_fk[0])
-        ctl.cv_move(0, self.rigSize * -20, 0)
+        # ctl.offset.snapAlignTo(self.jnts_fk[1], self.jnts_fk[0])
+        ctl.offset.snapAlignTo(self.BASE_PVT_GUIDE, self.jnts_fk[0])
+        # ctl.cv_move(0, self.rigSize * -20, 0)
+        ctl.cv_scale(1.2, 1.2, 1.2)
         ctl.cstPar(self.jnts_fk[0], mo=1)
 
     def build_spine_ik(self):
@@ -176,6 +183,7 @@ class SpineBp(RigModule):
         self.hip_ikc.snapAlignTo(self.jnts_fk[0], self.master_guide)
         self.mid_ikc.snapAlignTo(self.MD_GUIDE, self.master_guide)
         self.chest_ikc.snapAlignTo(self.jnts_fk[-1], self.master_guide)
+        # self.chest_ikc.snapAlignTo(self.CHEST_PVT_GUIDE, self.master_guide)
 
         self.hip_ikc | self.ctls_fk[0]
         self.chest_ikc | self.ctls_fk[-1]
@@ -183,7 +191,7 @@ class SpineBp(RigModule):
         mid_parent = self.ctls_fk[len(self.ctls_fk) // 2]
         self.mid_ikc | mid_parent
         self.hip_ikc.addOffsetGrp()
-        self.mid_ikc.addOffsetGrp(count=3)
+        self.mid_ikc.addOffsetGrp(count=2)
         self.chest_ikc.addOffsetGrp()
 
         self.chest_ikc.a.t @ self.hip_ikc.a.t >> self.mid_ikc.offset.offset.a.t
@@ -216,10 +224,10 @@ class SpineBp(RigModule):
             self.ctls_ik += [self.hip_ikc]
 
         if not self.is_neck():
-            RigModule.add_dyn_pivot(self.chest_ikc, endTgt=self.mid_ikc, dv=1)
+            RigModule.add_dyn_pivot(self.chest_ikc, endTgt=self.mid_ikc, dv=0.5)
             RigModule.add_dyn_pivot(self.cog_ctl)
 
-        # self.addMiddleBend()
+        self.addMiddleBend()
 
     def addMiddleBend(self):
         """Add middle bend control for the spine rig."""
@@ -227,16 +235,16 @@ class SpineBp(RigModule):
             f"midBend_loc", pf=self.rigID, align=self.mid_ikc, p=self.mid_ikc.parent
         )
         grp = self.mid_ikc.addOffsetGrp()
-        midBend = self.mid_ikc.a.add("midBend", min=0, max=1, dv=0)
+        autoMidBend = self.mid_ikc.a.add("autoMidBend", min=0, max=1, dv=0.5)
         # self.chest_ikc.cstParT(loc, mo=1)
         common.cstMulti(self.chest_ikc, self.hip_ikc, loc, cstType="parT", mo=1)
         loc.a.ty.disconnect()
 
-        loc.a.tx * midBend >> grp.a.tx
-        loc.a.tz * midBend >> grp.a.tz
+        loc.a.tx * autoMidBend >> grp.a.tx
+        loc.a.tz * autoMidBend >> grp.a.tz
 
-        self.chest_ikc.a.add("midBend", proxy=midBend)
-        self.hip_ikc.a.add("midBend", proxy=midBend)
+        self.chest_ikc.a.add("autoMidBend", proxy=autoMidBend)
+        self.hip_ikc.a.add("autoMidBend", proxy=autoMidBend)
 
     def build_ribbon(self):
         """Build the ribbon for the spine rig."""
@@ -297,7 +305,7 @@ class SpineBp(RigModule):
         d = arcLD.a.arcLengthInV
         D = d.get()
 
-        autoVol = self.setting.a.add("autoVol", min=0, dv=1)
+        autoVol = self.setting.a.add("autoVol", min=0, dv=0.5)
         self.chest_ikc.a.add("autoVol", proxy=autoVol)
         self.hip_ikc.a.add("autoVol", proxy=autoVol)
 

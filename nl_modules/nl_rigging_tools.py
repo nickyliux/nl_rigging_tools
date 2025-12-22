@@ -450,14 +450,26 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             mdlGrp = DagNode(charName)
             if mdlGrp.exists():
                 selList = mc.ls(mdlGrp)
+                tgtMeshes = common.getObjectBelow(selList)
+                if not tgtMeshes:
+                    mc.confirmDialog(
+                        t="Info",
+                        m=f"No mesh found under group '{charName}'.    ",
+                        b="OK",
+                    )
+                    return
             else:
-                mc.confirmDialog(t="Info", m="Model group not found.    ", b="OK")
+                mc.confirmDialog(
+                    t="Info", m=f"Model group '{charName}' not found.    ", b="OK"
+                )
                 return
-
-        tgtMeshes = common.getObjectBelow(selList)
-        if not tgtMeshes:
-            mc.confirmDialog(t="Info", m="No mesh found.    ", b="OK")
-            return
+        else:
+            tgtMeshes = common.getObjectBelow(selList)
+            if not tgtMeshes:
+                mc.confirmDialog(
+                    t="Info", m="No mesh found under selected.    ", b="OK"
+                )
+                return
 
         self.autoBind_refJnts(meshes=tgtMeshes, thld=15, uiPB=self.UI.bar_PB)
         skin.skinRbJnts(meshes=tgtMeshes, uiPB=self.UI.bar_PB)

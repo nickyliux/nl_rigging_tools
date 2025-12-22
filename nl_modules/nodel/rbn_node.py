@@ -236,7 +236,7 @@ class RbnNode:
         self.d = arcLD.a.arcLengthInV
         D = self.d.get()
 
-        self.autoVol = self.RBN_GRP.a.add("autoVol", min=0, dv=1)
+        self.autoVol = self.RBN_GRP.a.add("autoVol", min=0, dv=0.5)
         self.volType = self.RBN_GRP.a.add(
             "volType", type="enum", enumName="whole:separate", k=0
         )

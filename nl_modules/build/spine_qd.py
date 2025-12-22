@@ -34,10 +34,13 @@ class SpineQd(RigModule):
         self.RT_GUIDE = DagNode(f"{self.rigID}_rt_guide")
         self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA, snap=self.RT_GUIDE)
 
+        guide = DagNode(f"{self.rigID}_chest_pivot_guide")
+        self.CHEST_PVT_GUIDE = guide if guide.exists() else None
         guide = DagNode(f"{self.rigID}_base_pivot_guide")
         self.BASE_PVT_GUIDE = guide if guide.exists() else None
-        guide = DagNode(f"{self.rigID}_end_jnt_guide")
-        self.END_JNT_GUIDE = guide if guide.exists() else None
+
+        # guide = DagNode(f"{self.rigID}_end_jnt_guide")
+        # self.END_JNT_GUIDE = guide if guide.exists() else None
 
         # Main settings and controls
         self.setting = None
@@ -173,7 +176,7 @@ class SpineQd(RigModule):
         self.cog_ctl.snapTo(self.RT_GUIDE)
         self.base_ctl.alignTo(self.BASE_PVT_GUIDE or ikj0)
         self.mid_ctl.alignTo(ikj1)
-        self.fore_ctl.alignTo(ikj2)
+        self.fore_ctl.alignTo(self.CHEST_PVT_GUIDE or ikj2)
         self.tangent0_ctl.alignTo(ikj0)
         self.tangent1_ctl.alignTo(ikj2)
 
@@ -195,7 +198,7 @@ class SpineQd(RigModule):
         # RigModule.add_dyn_pivot(self.fore_ctl, endTgt=self.MD_GUIDE, axis="tz", dv=0.5)
         # RigModule.add_dyn_pivot(self.base_ctl, endTgt=self.MD_GUIDE, axis="tz", dv=0.5)
         RigModule.add_dyn_pivot(self.cog_ctl, axis="ty", dv=0.2)
-        RigModule.add_dyn_pivot(self.cog_ctl, endTgt=self.fore_ctl, axis="tz", dv=0.5)
+        RigModule.add_dyn_pivot(self.cog_ctl, endTgt=self.TP_GUIDE, axis="tz", dv=0.5)
 
     def build_spik_ribbon(self, rbSrf=None, jntNum=5, setting=None, scaleAttr=None):
         """Build a spine IK ribbon."""
@@ -285,11 +288,11 @@ class SpineQd(RigModule):
                 "end",
                 pf=rID,
                 r=rSz * 1.5,
-                snap=self.END_JNT_GUIDE,
+                snap=self.RT_GUIDE,
                 alignR=rb_jnts[0],
                 p=self.IK_GRP,
             )
-            self.end_ctl.alignTo(self.END_JNT_GUIDE, p=self.base_ctl, addOfs=1)
+            self.end_ctl.alignTo(self.RT_GUIDE, p=self.base_ctl, addOfs=1)
             self.end_ctl.cstPar(self.end_jnt, mo=1)
             self.jnts_bind.append(self.end_jnt)
 
@@ -378,7 +381,7 @@ class SpineQd(RigModule):
     def build_volume(self, crvLenRatio):
         """Build volume control for the spine rig."""
         # add volume graph keys
-        autoVol = self.setting.a.add("autoVol", dv=1, min=0)
+        autoVol = self.setting.a.add("autoVol", min=0, dv=0.5)
         volGraph = self.setting.a.add("volGraph", dv=0)
         mc.setKeyframe(volGraph, t=0, v=0)
         mc.setKeyframe(volGraph, t=(self.rbnJntNum - 1) / 2, v=1)

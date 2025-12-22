@@ -142,14 +142,14 @@ class LegQd(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0, -1),
-            ("hip_fkc", "rotate", "x", -scale, 0, -1),
+            ("hip_fkc", "arrow2", None, -scale, 0, -1),
             ("upr_fkc", "squareR", "x", scale, 0, -1),
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
             ("palm_fkc", "squareR", "x", scale, 0, -1),
             ("digit_fkc", "squareR", "x", scale, 0, -1),
             ("ball_fkc", "rotate", "z", scale / 2, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
-            ("extra_ikc", "rotate", None, -scale, 0, -1),
+            ("extra_ikc", "rotate2_3d", None, -scale, 0, -1),
             ("pvc", "sphere", None, rSz, 0, -1),
             # ("smart_ctl", "rotate4_3d", None, scale / 2, 0, -1),
             ("smart_ctl", "diamond_3d", None, scale, 0, -1),
@@ -167,10 +167,12 @@ class LegQd(RigModule):
 
         # if xDr == -1:
         #     self.smart_ctl.cv_rotate(180, 0, 0)
-        self.smart_ctl.cv_move(0, rSz * 10, rSz * 20)
+        self.smart_ctl.cv_move(scale * 15, 0, 0)
         self.setting.color = Color.L_BLUE
         self.setting.cv_move(scale * 15, 0, 0)
-        self.hip_fkc.cv_move(scale * 30, -scale * 20, 0)
+        self.hip_fkc.cv_rotate(0, 90, 0)
+        # self.hip_fkc.cv_move(scale * 30, -scale * 20, 0)
+        self.hip_fkc.cv_move(scale * 10, -scale * 20, 0)
 
     def build(self):
         """Build the quadruped leg rig module."""
@@ -357,10 +359,8 @@ class LegQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         # --- Snap setting control to upper joint and constrain ---
-        self.setting.snapTo(
-            self.digit, p=self.CTL_DATA
-        )  # , ofs=(xDr * rSz * 15, 0, 0))
-        self.digit.cstPar(self.setting, mo=1)
+        self.setting.snapTo(self.palm, p=self.CTL_DATA)  # , ofs=(xDr * rSz * 15, 0, 0))
+        self.palm.cstPar(self.setting, mo=1)
 
         # --- Add blend attribute and set up blending constraints ---
         fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=1)
@@ -659,6 +659,8 @@ class LegQd(RigModule):
         )
         # if self.RBN_BONES:
         #     ctlSet.extend(self.all_bendy)
+        if self.scapulaExtra:
+            ctlSet.append(self.quadScap_ikc)
         if self.toeBones:
             [ctlSet.extend(s) for s in self.toesCtlsList or []]
         self.add_ctl_set(ctlSet)

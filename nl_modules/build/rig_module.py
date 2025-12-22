@@ -338,7 +338,6 @@ class RigModule(RigBase):
         """Post build function to finalize the module setup."""
         from nl_modules.utils import build
 
-        self.masterC2.a.addSep()
         showSetting = self.masterC2.a.add("showSetting", k=0, type="bool", dv=1)
         for node in build.getRigNodes_all():
             setting = node.a.setting.inConnNode
@@ -548,7 +547,7 @@ class RigModule(RigBase):
         """Create five joint nodes for given controls, with two additional end joints."""
         rbnBindJnts = []
         for ctl in ctls:
-            jnt = JntNode(ctl, sf="_rbnBdJ", r=r, color=color, p=ctl)
+            jnt = JntNode(ctl, sf="_rbBdJ", r=r, color=color, p=ctl)
             jnt.resetOrient()
             jnt.resetXf()
             rbnBindJnts.append(jnt)
@@ -733,7 +732,7 @@ class RigModule(RigBase):
             aimTgt=ikc,
         )
         IkNode("autoAimJ", solver=Solver.RP, pf=rID, sj=j0, ee=j1, p=ikc, quat=1, vis=0)
-        autoAim = fkc.a.add("autoAim", min=0, max=1, dv=0)
+        autoAim = fkc.a.add("autoAim", min=0, max=1, dv=0.7)
         common.cstMulti(mainGrp.offset, j0, mainGrp, w=autoAim, cstType="parR", mo=1)
         j0.hide()
 
@@ -1141,7 +1140,7 @@ class RigModule(RigBase):
             self.boneFix_sdk(lwr, stt_ofs[1])
 
         # Add volume attributes to setting
-        autoVol = self.setting.a.add("autoVol", min=0, dv=1)
+        autoVol = self.setting.a.add("autoVol", min=0, dv=0.5)
         autoVol >> ribbonUp.autoVol
         autoVol >> ribbonLw.autoVol
 
