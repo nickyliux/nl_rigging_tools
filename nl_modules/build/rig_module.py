@@ -762,10 +762,10 @@ class RigModule(RigBase):
             j0.hide()
 
             # --- Extra scapula joint setup ---
-            # scapCtl.snapTo(uprJ, p=self.CTL_DATA)
-            scapCtl.snapTo(uprJ, p=fkc)
             if xDr < 0:
                 scapCtl.a.rx.set(180)
+            scapCtl.snapTo(uprJ, p=fkc)
+
             scapCtl.addOffsetGrp()
             j0, j1 = JntNode.makeTwoJointChain(
                 "scapula",

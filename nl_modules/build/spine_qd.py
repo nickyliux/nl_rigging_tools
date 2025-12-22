@@ -34,8 +34,8 @@ class SpineQd(RigModule):
         self.RT_GUIDE = DagNode(f"{self.rigID}_rt_guide")
         self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA, snap=self.RT_GUIDE)
 
-        # guide = DagNode(f"{self.rigID}_base_pivot_guide")
-        # self.BASE_PVT_GUIDE = guide if guide.exists() else None
+        guide = DagNode(f"{self.rigID}_base_pivot_guide")
+        self.BASE_PVT_GUIDE = guide if guide.exists() else None
         guide = DagNode(f"{self.rigID}_end_jnt_guide")
         self.END_JNT_GUIDE = guide if guide.exists() else None
 
@@ -86,8 +86,8 @@ class SpineQd(RigModule):
             ("fore_ctl", "chest_qd", None, rSz * 4, 0, -1),
             ("mid_ctl", "squareR", "z", rSz * 4, 0, -1),
             ("base_ctl", "hip_qd", None, rSz * 4, 0, -1),
-            ("tangent0_ctl", "T", "z", rSz * 4, 1, -1),
-            ("tangent1_ctl", "T", "z", rSz * 4, 1, -1),
+            ("tangent0_ctl", "stick2", None, rSz, 1, -1),
+            ("tangent1_ctl", "stick2", None, rSz, 1, -1),
         ]
         if self.endCtl:
             ctl_defs.append(("end_ctl", "rotate2_3d", None, rSz * 1.5, 0, -1))
@@ -97,8 +97,10 @@ class SpineQd(RigModule):
 
         self.cog_ctl.cv_move(0, rSz * 40, 0)  # rSz * 10)
         self.cog_ctl.cv_scale(1, 1.5, 2)
-        self.setting.cv_move(0, rSz * 20, 0)
+        self.setting.cv_move(rSz * 40, 0, 0)
         self.setting.color = Color.L_BLUE
+        self.tangent0_ctl.cv_rotate(0, 90, 0)
+        self.tangent1_ctl.cv_rotate(0, 90, 0)
 
         if self.end_ctl:
             self.end_ctl.cv_rotate(0, 90, 0)
@@ -159,22 +161,17 @@ class SpineQd(RigModule):
         #   build 3 ik joints from crv
         #
         self.jnts_ik = JntNode.createJntsFrCrv(
-            self.LINE_GUIDE, num=3, name="ikj", pf=rID, size=rSz, chain=0
+            self.LINE_GUIDE, num=3, name="ikj", pf=rID, size=rSz * 10, chain=0
         )
         ikj0, ikj1, ikj2 = self.jnts_ik
 
-        ikj2.a.r.set(0, 0, 0)
+        # ikj2.a.r.set(0, 0, 0)
 
         # if self.is_neck():
         #     self.cog_ctl.alignTo(self.RT_GUIDE, addOfs=1)
         # else:
         self.cog_ctl.snapTo(self.RT_GUIDE)
-
-        #
-        #   parenting
-        #
-        # self.base_ctl.alignTo(self.BASE_PVT_GUIDE or ikj0)
-        self.base_ctl.alignTo(ikj0)
+        self.base_ctl.alignTo(self.BASE_PVT_GUIDE or ikj0)
         self.mid_ctl.alignTo(ikj1)
         self.fore_ctl.alignTo(ikj2)
         self.tangent0_ctl.alignTo(ikj0)
@@ -195,8 +192,8 @@ class SpineQd(RigModule):
         [ctl.addOffsetGrp() for ctl in self.ctls_ik]
         self.mid_ctl.addOffsetGrp()
 
-        RigModule.add_dyn_pivot(self.fore_ctl, endTgt=self.MD_GUIDE, axis="tz", dv=0.5)
-        RigModule.add_dyn_pivot(self.base_ctl, endTgt=self.MD_GUIDE, axis="tz", dv=0.5)
+        # RigModule.add_dyn_pivot(self.fore_ctl, endTgt=self.MD_GUIDE, axis="tz", dv=0.5)
+        # RigModule.add_dyn_pivot(self.base_ctl, endTgt=self.MD_GUIDE, axis="tz", dv=0.5)
         RigModule.add_dyn_pivot(self.cog_ctl, axis="ty", dv=0.2)
         RigModule.add_dyn_pivot(self.cog_ctl, endTgt=self.fore_ctl, axis="tz", dv=0.5)
 
@@ -309,7 +306,7 @@ class SpineQd(RigModule):
             pf=rID,
             align=self.RT_GUIDE,
             align_end=self.TP_GUIDE,
-            rad=rSz * 10,
+            rad=rSz * 5,
             p=self.base_ctl,
         )
         j0, j1 = self.jnts_twoIk
@@ -368,14 +365,15 @@ class SpineQd(RigModule):
 
         # --- Drive mid control rz by average of fore and base controls ---
         # self.mid_ctl.addOffsetGrp()
-        self.mid_ctl.addOffsetGrp(count=3)
-        (self.fore_ctl.a.rz @ self.base_ctl.a.rz) >> self.mid_ctl.offset.offset.a.rz
-
-        twistRatio_dv = 0.25 if self.is_neck() else 0.75
-        twistRatio = self.mid_ctl.a.add("twistRatio", min=0, max=1, dv=twistRatio_dv)
-
-        blendRy = ut.blend2_(self.base_ctl.a.rz, self.fore_ctl.a.rz, w=twistRatio)
-        blendRy >> self.mid_ctl.offset.a.rz
+        self.mid_ctl.addOffsetGrp()
+        common.cstMulti(
+            self.fore_ctl, self.base_ctl, self.mid_ctl.offset, cstType="par", mo=1
+        )
+        # -(self.fore_ctl.a.rz @ self.base_ctl.a.rz) >> self.mid_ctl.offset.offset.a.rz
+        # twistRatio_dv = 0.25 if self.is_neck() else 0.75
+        # twistRatio = self.mid_ctl.a.add("twistRatio", min=0, max=1, dv=0.5)
+        # blend = ut.blend2_(self.base_ctl.a.rz, self.fore_ctl.a.rz, w=twistRatio)
+        # -blend >> self.mid_ctl.offset.a.rz
 
     def build_volume(self, crvLenRatio):
         """Build volume control for the spine rig."""
@@ -407,7 +405,7 @@ class SpineQd(RigModule):
         # ikJntVis = self.setting.a.add("ikJntVis", type="bool", k=0)
         # ikJntVis >> self.jnts_spIk[0].a.v
         # ikJntVis >> self.jnts_twoIk[0].a.v
-        setupTgt = [self.jnts_ik[0], self.jnts_spIk[0], self.jnts_twoIk[0]]
+        setupTgt = self.jnts_ik + [self.jnts_spIk[0], self.jnts_twoIk[0]]
         self.ctl_vis_toggle(
             self.setting.a.add("showSetup", type="bool", k=0),
             onList=setupTgt + [self.rbSrf, self.rbCrv],

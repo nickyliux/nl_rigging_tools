@@ -142,33 +142,35 @@ class LegQd(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0, -1),
-            ("hip_fkc", "rotate2_3d", "x", -scale, 0, -1),
+            ("hip_fkc", "rotate", "x", -scale, 0, -1),
             ("upr_fkc", "squareR", "x", scale, 0, -1),
             ("lwr_fkc", "squareR", "x", scale, 0, -1),
             ("palm_fkc", "squareR", "x", scale, 0, -1),
             ("digit_fkc", "squareR", "x", scale, 0, -1),
-            ("ball_fkc", "squareR", "x", scale / 2, 0, -1),
+            ("ball_fkc", "rotate", "z", scale / 2, 0, -1),
             ("ikc", "foot", None, rSz, 0, -1),
-            ("extra_ikc", "rotate2_3d", None, -scale, 0, -1),
+            ("extra_ikc", "rotate", None, -scale, 0, -1),
             ("pvc", "sphere", None, rSz, 0, -1),
-            ("smart_ctl", "rotate4_3d", None, scale / 2, 0, -1),
+            # ("smart_ctl", "rotate4_3d", None, scale / 2, 0, -1),
+            ("smart_ctl", "diamond_3d", None, scale, 0, -1),
         ]
 
         if self.scapulaExtra:
-            ctl_defs.append(("quadScap_ikc", "sphere", None, scale / 2, 0, -1))
+            ctl_defs.append(("quadScap_ikc", "arrow", "z", scale / 2, 0, -1))
 
         for name, shape, up, sca, top, w in ctl_defs:
             self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
 
         if self.scapulaExtra:
-            self.quadScap_ikc.cv_move(0, scale * 10, 0)
+            self.quadScap_ikc.cv_move(0, scale * 15, 0)
+            self.quadScap_ikc.cv_rotate(0, 90, 0)
 
-        if xDr == -1:
-            self.smart_ctl.cv_rotate(180, 0, 0)
-        self.smart_ctl.cv_move(scale * 15, 0, 0)
+        # if xDr == -1:
+        #     self.smart_ctl.cv_rotate(180, 0, 0)
+        self.smart_ctl.cv_move(0, rSz * 10, rSz * 20)
         self.setting.color = Color.L_BLUE
         self.setting.cv_move(scale * 15, 0, 0)
-        self.hip_fkc.cv_move(scale * 20, 0, 0)
+        self.hip_fkc.cv_move(scale * 30, -scale * 20, 0)
 
     def build(self):
         """Build the quadruped leg rig module."""
@@ -449,9 +451,11 @@ class LegQd(RigModule):
 
         # --- Smart control setup ---
         self.smart_ctl.snapAlignTo(self.digit, self.master_guide)
+        # self.smart_ctl.snapAlignTo(self.tip, self.master_guide)
         self.smart_ctl | self.IK_GRP
         self.smart_ctl.addOffsetGrp()
         self.palm.cstPar(self.smart_ctl.offset, mo=1)
+        # self.tip.cstPar(self.smart_ctl.offset, mo=1)
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         (-xDr * self.smart_ctl.a.ry) >> toeRollG.a.ry
         (-xDr * self.smart_ctl.a.rz) >> self.smart_ctl.a["footBank"]
