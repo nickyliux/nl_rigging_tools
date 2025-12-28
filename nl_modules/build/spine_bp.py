@@ -80,17 +80,17 @@ class SpineBp(RigModule):
 
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
-            ("setting", "screw_nut", "z", rSz * 3, 0, -1),
-            ("cog_ctl", "cog", None, rSz * 8, 0, -1),
+            ("setting", "screw_nut", "z", rSz * 3, 0),
+            ("cog_ctl", "cog", None, rSz * 8, 0),
         ]
         if self.is_ribbon():
             ctl_defs += [
-                ("chest_ikc", "chest", None, rSz * 5, 0, -1),
-                ("mid_ikc", "diamond_3d", None, rSz * 3, 1, -1),
-                ("hip_ikc", "hip", None, rSz * 5, 0, -1),
+                ("chest_ikc", "chest", None, rSz * 5, 0),
+                ("mid_ikc", "diamond_3d", None, rSz * 3, 1),
+                ("hip_ikc", "hip", None, rSz * 5, 0),
             ]
-        for name, shape, up, scale, top, w in ctl_defs:
-            self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
+        for name, shape, up, scale, top in ctl_defs:
+            self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         self.setting.cv_move(rSz * 60, 0, 0)
         self.setting.color = Color.L_BLUE

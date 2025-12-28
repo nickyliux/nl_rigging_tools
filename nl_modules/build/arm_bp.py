@@ -100,21 +100,21 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", scale, 0, -1),
-            ("clavicle_fkc", "sphere", "x", scale * 2, 1, -1),
-            ("upr_fkc", "squareR", "x", scale, 0, -1),
-            ("lwr_fkc", "squareR", "x", scale, 0, -1),
-            ("palm_fkc", "squareR", "x", scale, 0, -1),
-            ("ikc", "cube", None, Vec((1, 2, 2)) * scale, 0, -1),
-            ("pvc", "sphere", None, rSz * 2, 0, -1),
-            ("palm_ikc", "squareR", "x", scale, 0, -1),
+            ("setting", "screw_nut", "z", scale, 0),
+            ("clavicle_fkc", "sphere", "x", scale * 2, 1),
+            ("upr_fkc", "squareR", "x", scale, 0),
+            ("lwr_fkc", "squareR", "x", scale, 0),
+            ("palm_fkc", "squareR", "x", scale, 0),
+            ("ikc", "cube", None, Vec((1, 2, 2)) * scale, 0),
+            ("pvc", "sphere", None, rSz * 2, 0),
+            ("palm_ikc", "squareR", "x", scale, 0),
         ]
 
         if self.scapulaBone:
-            ctl_defs.append(["scap_fkc", "triangle", "z", scale, 0, -1])
+            ctl_defs.append(["scap_fkc", "triangle", "z", scale, 0])
 
-        for name, shape, up, scale, top, w in ctl_defs:
-            self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
+        for name, shape, up, scale, top in ctl_defs:
+            self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         # self.clavicle_fkc.cv_rotate(0, 0, 90)
         # self.clavicle_fkc.cv_move(scale * 30, 0, 0)

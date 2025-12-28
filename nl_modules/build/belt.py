@@ -63,9 +63,9 @@ class Belt(RigModule):
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
-        ctl_defs = [("setting", "screw_nut", "z", rSz * 2, 0, -1)]
-        for name, shape, up, sca, top, w in ctl_defs:
-            self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
+        ctl_defs = [("setting", "screw_nut", "z", rSz * 2, 0)]
+        for name, shape, up, sca, top in ctl_defs:
+            self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
         self.setting.color = Color.L_BLUE

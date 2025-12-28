@@ -33,7 +33,7 @@ class CrvNode(GrpNode):
         scaleY=1,
         scaleZ=1,
         dspType=0,
-        width=-1,
+        width=2,
         up="",
         top=0,
     ):
@@ -268,7 +268,7 @@ class CrvNode(GrpNode):
         addOfs=0,
         p=None,
         top=0,
-        width=-1,
+        width=2,
         *args,
         **kwargs,
     ):

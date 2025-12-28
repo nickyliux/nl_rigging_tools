@@ -141,28 +141,28 @@ class LegQd(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", rSz, 0, -1),
-            ("hip_fkc", "arrow2", None, -scale, 0, -1),
-            ("upr_fkc", "squareR", "x", scale, 0, -1),
-            ("lwr_fkc", "squareR", "x", scale, 0, -1),
-            ("palm_fkc", "squareR", "x", scale, 0, -1),
-            ("digit_fkc", "squareR", "x", scale, 0, -1),
-            ("ball_fkc", "rotate", "z", scale / 2, 0, -1),
-            ("ikc", "foot", None, rSz, 0, -1),
-            ("extra_ikc", "rotate2_3d", None, -scale, 0, -1),
-            ("pvc", "sphere", None, rSz, 0, -1),
-            # ("smart_ctl", "rotate4_3d", None, scale / 2, 0, -1),
-            ("smart_ctl", "diamond_3d", None, scale, 0, -1),
+            ("setting", "screw_nut", "z", rSz, 0),
+            ("hip_fkc", "arrow2", None, -scale, 0),
+            ("upr_fkc", "squareR", "x", scale, 0),
+            ("lwr_fkc", "squareR", "x", scale, 0),
+            ("palm_fkc", "squareR", "x", scale, 0),
+            ("digit_fkc", "squareR", "x", scale, 0),
+            ("ball_fkc", "rotate", "z", scale / 2, 0),
+            ("ikc", "foot", None, rSz, 0),
+            ("extra_ikc", "rotate2_3d", None, -scale, 0),
+            ("pvc", "sphere", None, rSz, 0),
+            # ("smart_ctl", "rotate4_3d", None, scale / 2, 0),
+            ("smart_ctl", "diamond_3d", None, scale, 0),
         ]
 
         if self.scapulaExtra:
-            ctl_defs.append(("scap_fkc", "arrow", "z", scale / 2, 0, -1))
+            ctl_defs.append(("scap_fkc", "arrow", "z", scale / 2, 0))
 
-        for name, shape, up, sca, top, w in ctl_defs:
-            self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
+        for name, shape, up, sca, top in ctl_defs:
+            self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
         if self.scapulaExtra:
-            self.scap_fkc.cv_move(0, scale * 15, 0)
+            self.scap_fkc.cv_move(0, scale * 10, 0)
             self.scap_fkc.cv_rotate(0, 90, 0)
 
         # if xDr == -1:
@@ -171,8 +171,7 @@ class LegQd(RigModule):
         self.setting.color = Color.L_BLUE
         self.setting.cv_move(scale * 15, 0, 0)
         self.hip_fkc.cv_rotate(0, 90, 0)
-        # self.hip_fkc.cv_move(scale * 30, -scale * 20, 0)
-        self.hip_fkc.cv_move(scale * 10, -scale * 20, 0)
+        self.hip_fkc.cv_move(scale * 5, -scale * 15, 0)
 
     def build(self):
         """Build the quadruped leg rig module."""

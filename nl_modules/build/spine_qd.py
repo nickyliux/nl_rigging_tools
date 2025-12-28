@@ -84,19 +84,18 @@ class SpineQd(RigModule):
 
         #   Define control shapes and attributes
         ctl_defs = [
-            ("setting", "screw_nut", "z", rSz * 2, 0, -1),
-            ("cog_ctl", "trapezoid", None, rSz, 0, -1),
-            ("fore_ctl", "chest_qd", None, rSz * 4, 0, -1),
-            ("mid_ctl", "squareR", "z", rSz * 4, 0, -1),
-            ("base_ctl", "hip_qd", None, rSz * 4, 0, -1),
-            ("tangent0_ctl", "stick2", None, rSz, 1, -1),
-            ("tangent1_ctl", "stick2", None, rSz, 1, -1),
+            ("setting", "screw_nut", "z", rSz * 2, 0),
+            ("cog_ctl", "trapezoid", None, rSz, 0),
+            ("fore_ctl", "chest_qd", None, rSz * 4, 0),
+            ("mid_ctl", "squareR", "z", rSz * 4, 0),
+            ("base_ctl", "hip_qd", None, rSz * 4, 0),
+            ("tangent0_ctl", "diamond_3d", None, rSz * 2, 1),
+            ("tangent1_ctl", "diamond_3d", None, rSz * 2, 1),
         ]
         if self.endCtl:
-            ctl_defs.append(("end_ctl", "rotate2_3d", None, rSz * 1.5, 0, -1))
-
-        for name, shape, up, scale, top, w in ctl_defs:
-            self.create_and_register_ctl(name, shape, up, scale, top, w, rID)
+            ctl_defs.append(("end_ctl", "rotate2_3d", None, rSz * 1.5, 0))
+        for name, shape, up, scale, top in ctl_defs:
+            self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         self.cog_ctl.cv_move(0, rSz * 40, 0)  # rSz * 10)
         self.cog_ctl.cv_scale(1, 1.5, 2)

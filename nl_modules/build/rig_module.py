@@ -925,9 +925,11 @@ class RigModule(RigBase):
         """Get attribute from master guide"""
         return self.master_guide.a[name].get()
 
-    def create_and_register_ctl(self, name, shape, up, scale, top, w, rID):
+    def create_and_register_ctl(
+        self, rID="tmp_", name="x", shape="circle", up="x", scale=1, top=0, w=2
+    ):
         """Create a control node and register it in the rigNode"""
-        ctl = CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, width=w, top=top)
+        ctl = CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, width=2, top=top)
         setattr(self, name, ctl)
         self.rigNode.setMsg({name: ctl})
 

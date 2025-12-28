@@ -85,14 +85,14 @@ class FingerFk(RigModule):
             ("fgr01_fkc", "squareR", None, -scale * 0.7, 0, -1),
         ]
         if self.segNum >= 2:
-            ctl_defs.append(("fgr02_fkc", "squareR", None, -scale, 0, -1))
+            ctl_defs.append(("fgr02_fkc", "squareR", None, -scale, 0))
         if self.segNum >= 3:
-            ctl_defs.append(("fgr03_fkc", "squareR", None, -scale, 0, -1))
+            ctl_defs.append(("fgr03_fkc", "squareR", None, -scale, 0))
         if self.segNum >= 4:
-            ctl_defs.append(("fgr04_fkc", "squareR", None, -scale, 0, -1))
+            ctl_defs.append(("fgr04_fkc", "squareR", None, -scale, 0))
 
-        for name, shape, up, sca, top, w in ctl_defs:
-            self.create_and_register_ctl(name, shape, up, sca, top, w, rID)
+        for name, shape, up, sca, top in ctl_defs:
+            self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
         self.setting.alignTo(self.rootJ, p=self.CTL_DATA)
         self.rootJ.cstPar(self.setting, mo=1)
