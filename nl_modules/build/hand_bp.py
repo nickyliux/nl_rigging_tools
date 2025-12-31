@@ -30,10 +30,8 @@ class HandBp(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the hand rig."""
-        HAND_SCALE = 0.2
-
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(["handJ"], scale=HAND_SCALE)
+        root_list = self.gen_sk_fr_names(["handJ"])
         ALL_FGR_NAMES = [
             ["fgr00_1", "fgr00_2", "fgr00_3", "fgr00_4"],
             ["fgr01_1", "fgr01_2", "fgr01_3", "fgr01_4", "fgr01_5"],
@@ -43,7 +41,7 @@ class HandBp(RigModule):
         ]
         fgr_roots = []
         for fgr_names in ALL_FGR_NAMES:
-            jnts = self.gen_sk_fr_names(fgr_names, scale=HAND_SCALE)
+            jnts = self.gen_sk_fr_names(fgr_names)
             jnts[0].reOrient(upRef=jnts[1], xDir=self.xDir)
             jnts[0] | root_list[0]
             fgr_roots.append(jnts[0])

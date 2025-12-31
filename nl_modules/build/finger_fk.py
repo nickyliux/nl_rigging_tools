@@ -48,7 +48,7 @@ class FingerFk(RigModule):
     def gen_sk(self):
         """Generate the skeleton for the finger rig."""
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(self.jnt_names, scale=1)
+        root_list = self.gen_sk_fr_names(self.jnt_names)
         for j in root_list:
             JntNode(j).a["preferredAngleZ"].set(-10)
 
@@ -81,8 +81,8 @@ class FingerFk(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "X", "x", scale, 0, -1),
-            ("fgr01_fkc", "squareR", None, -scale * 0.7, 0, -1),
+            ("setting", "X", "x", scale, 0),
+            ("fgr01_fkc", "squareR", None, -scale * 0.7, 0),
         ]
         if self.segNum >= 2:
             ctl_defs.append(("fgr02_fkc", "squareR", None, -scale, 0))

@@ -77,8 +77,8 @@ class RigModule(RigBase):
             lastJ = jN
             joints.append(jN)
 
-        for j in joints:
-            j.a.radius.set(self.rigSize * scale)
+        diagSize = self.master_guide.o.diagonal2 / 100 * scale
+        [j.a.radius.set(diagSize) for j in joints]
 
         joints[0].freezeXf()
         return joints
@@ -299,9 +299,9 @@ class RigModule(RigBase):
             weight = tgt.a.add("posSpace", type="enum", dv=dv, enumName=names)
             common.cstMulti(*allSpacesGrp, tgt_ofs, cstType="poi", w=weight, **kwargs)
 
-    def calc_rig_size(self, rootJ):
-        """Calculate the rig size based on the root joint's diagonal2 attribute."""
-        return rootJ.o.diagonal2 / 100 or 1
+    def calc_rig_size(self, tgt):
+        """Calculate the rig size based on tgt's BBox."""
+        return tgt.o.diagonal2 / 100 or 1
 
     def add_minus_scale_grp(self, tgt):
         """Add a minus scale group to the target control."""
@@ -1121,7 +1121,7 @@ class RigModule(RigBase):
 
         self.all_bendy = [upr_bend, mid_bend, lwr_bend]
         for ctl in self.all_bendy:
-            ctl(shape="star4", up="x", scale=rSz * 1.2, color=Color.PINK)
+            ctl(shape="cross", up="x", scale=rSz * 1.2, color=Color.PINK)
 
         upLoc.cstPar(upr_bend.offset, mo=1)
         if upLoc.children:

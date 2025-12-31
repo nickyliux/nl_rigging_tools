@@ -120,7 +120,7 @@ class LegQd(RigModule):
             TOE_NAMES = TOE_DICT.get(self.toeNum, [])
 
             for names in TOE_NAMES:
-                fgr_jnts = self.gen_sk_fr_names(names, scale=0.2)
+                fgr_jnts = self.gen_sk_fr_names(names, scale=0.15)
                 fgr_jnts[0].reOrient(
                     upRef=fgr_jnts[1],
                     xDir=self.xDir,
@@ -147,7 +147,7 @@ class LegQd(RigModule):
             ("lwr_fkc", "squareR", "x", scale, 0),
             ("palm_fkc", "squareR", "x", scale, 0),
             ("digit_fkc", "squareR", "x", scale, 0),
-            ("ball_fkc", "rotate", "z", scale / 2, 0),
+            ("ball_fkc", "rotate2_3d", "z", -scale / 2, 0),
             ("ikc", "foot", None, rSz, 0),
             ("extra_ikc", "rotate2_3d", None, -scale, 0),
             ("pvc", "sphere", None, rSz, 0),

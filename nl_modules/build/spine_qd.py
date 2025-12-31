@@ -368,9 +368,21 @@ class SpineQd(RigModule):
         # --- Drive mid control rz by average of fore and base controls ---
         # self.mid_ctl.addOffsetGrp()
         self.mid_ctl.addOffsetGrp()
-        common.cstMulti(
-            self.fore_ctl, self.base_ctl, self.mid_ctl.offset, cstType="par", mo=1
-        )
+
+        if not self.is_neck():
+            common.cstMulti(
+                self.fore_ctl, self.base_ctl, self.mid_ctl.offset, cstType="par", mo=1
+            )
+        else:
+            common.cstMulti(
+                self.fore_ctl, self.base_ctl, self.mid_ctl.offset, cstType="poi", mo=1
+            )
+            self.fore_ctl.cstAim(
+                self.mid_ctl.offset,
+                aim=(0, 0, 1),
+                worldUpType="objectrotation",
+                worldUpObject=self.cog_ctl,
+            )
         # -(self.fore_ctl.a.rz @ self.base_ctl.a.rz) >> self.mid_ctl.offset.offset.a.rz
         # twistRatio_dv = 0.25 if self.is_neck() else 0.75
         # twistRatio = self.mid_ctl.a.add("twistRatio", min=0, max=1, dv=0.5)
