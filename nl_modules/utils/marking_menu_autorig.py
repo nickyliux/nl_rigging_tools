@@ -6,6 +6,8 @@ from nl_modules.utils import control
 from nl_modules.utils import helper
 from nl_modules.utils import guide
 from nl_modules.utils import proxy
+from nl_modules.utils import common
+
 from functools import partial
 
 MENU_NAME = "marking_menu_autorig"
@@ -80,6 +82,11 @@ class MarkingMenuAutorig:
     def addExtraOptions(self, menu):
         """Add extra options to the marking menu"""
         mc.menuItem(p=menu, l="Select Ctls", c=self.selectCtlSelOrAll)
+
+        ns = common.getNsFrOptVar()
+        curr_ns_str = "None" if ns == "" else ns
+
+        mc.menuItem(p=menu, l="ns = " + curr_ns_str, c=self.setNsFrSel)
         mc.menuItem(p=menu, l="PROXY  -----", en=0)
         mc.menuItem(p=menu, l="    Gen", c=proxy.genProxy)
         mc.menuItem(p=menu, l="    Mirror", c=proxy.mirrorProxy)
@@ -118,6 +125,7 @@ class MarkingMenuAutorig:
                     l=" " * 4 + str(a) + (f"   <" if val == i else ""),
                     c=partial(self.switch_to_space, a),
                 )
+            mc.menuItem(p=menu, l="-" * 15, en=0)
 
         # --- IK / FK ---
         attr = firstSelected.a["fkIk"]
@@ -153,6 +161,18 @@ class MarkingMenuAutorig:
             for sel in selList:
                 control.mirrorCtlShape(sel)
 
+    def setNsFrSel(*args):
+        """Get the namespace from the first selected object"""
+        selected = mc.ls(sl=1, tr=1)
+        if selected:
+            ns = DagNode(selected[0]).namespace
+            if ns:
+                mc.optionVar(sv=("curr_ns", ns))
+            else:
+                mc.optionVar(sv=("curr_ns", ""))
+        else:
+            mc.optionVar(sv=("curr_ns", ""))
+
     def selectCtlSelOrAll(self, *args):
         """Select all controls in the rig node or all controls in LF_CTL_SET"""
         from nl_modules.utils import common
@@ -168,7 +188,9 @@ class MarkingMenuAutorig:
                 if node.exists():
                     rigNodes = [node]
         else:
-            rigNodes = mc.ls("*RGN", type="script") or []
+            # curr_ns = mc.optionVar(q="curr_ns")
+            # curr_ns_str = "" if curr_ns == 0 else curr_ns + ":"
+            rigNodes = mc.ls(common.getNsFrOptVar() + "*RGN", type="script") or []
 
         setList = common.getRigCtls(rigNodes)
         if setList:

@@ -701,6 +701,12 @@ def setVP(jx=0, xray=0, wos=0, fit=0, ao=0, aa=0):
     mc.refresh(f=1)
 
 
+def getNsFrOptVar():
+    """Get current namespace from optionVar"""
+    curr_ns = mc.optionVar(q="curr_ns")
+    return curr_ns + ":" if curr_ns else ""
+
+
 def getRigCtlsAll():
     """Get all rig controls in the scene"""
     return getRigCtls(mc.ls("*RGN", type="script"))
@@ -711,8 +717,10 @@ def getRigCtls(rigNodes):
     from nl_modules.nodel.base.dag_node import DagNode
 
     setList = []
+
+    ns = getNsFrOptVar()
     for rigNode in rigNodes:
-        ctlSet = DagNode(rigNode).a.rigID.get() + "_ctl_set"
+        ctlSet = ns + DagNode(rigNode).a.rigID.get() + "_ctl_set"
         ctlSet = mc.ls(ctlSet, type="objectSet")
         if ctlSet:
             setList.append(ctlSet[0])
@@ -944,8 +952,8 @@ def getOppositeForSide(tgtN, pfL="lf", pfR="rt"):
 def getOpposite(tgtN, pfL="lf", pfR="rt"):
     """Return opposite
     e.g.
-        lf_leg0_ikc =>              rt_leg0_ikc
-        head0_lf_eye, pfB4Pf=1 =>   head0_rt_eye
+        lf_leg0_ikc => rt_leg0_ikc
+        ns:lf_leg0_ikc => ns:rt_leg0_ikc
     """
     leftOpposite = getOppositeForSide(tgtN, pfL, pfR)
     if leftOpposite:

@@ -150,7 +150,6 @@ def mirrorGuide(tgtList, wsMirror=0):
     """Mirror xform for tgtList objects"""
     for tgt in tgtList:
         tgt = DagNode(tgt)
-        # if tgt.name.startswith("lf") or tgt.name.startswith("rt"):
         opp = common.getOpposite(tgt)
         mg = getMasterGuide(opp)
         if opp:
@@ -158,8 +157,6 @@ def mirrorGuide(tgtList, wsMirror=0):
                 copyGuideAttr(tgt, opp, wsMirror=wsMirror, mirror=1)
         else:
             logging.warning(f"opposite not found for {tgt.name}")
-        # else:
-        #     copyGuideAttr(tgt, tgt, wsMirror=1, mirror=1)
 
 
 def mirrorRef(tgtList, wsMirror=0):
@@ -182,12 +179,13 @@ def mirrorPose(*arg):
     rt = []
     all = []
     if not selList:
-        if mc.ls(LF_CTL_SET, type="objectSet"):
-            lf = mc.sets(LF_CTL_SET, q=1)
-        if mc.ls(RT_CTL_SET, type="objectSet"):
-            rt = mc.sets(RT_CTL_SET, q=1)
-        if mc.ls(ALL_CTL_SET, type="objectSet"):
-            all = mc.sets(ALL_CTL_SET, q=1)
+        ns = common.getNsFrOptVar()
+        if mc.ls(ns + LF_CTL_SET, type="objectSet"):
+            lf = mc.sets(ns + LF_CTL_SET, q=1)
+        if mc.ls(ns + RT_CTL_SET, type="objectSet"):
+            rt = mc.sets(ns + RT_CTL_SET, q=1)
+        if mc.ls(ns + ALL_CTL_SET, type="objectSet"):
+            all = mc.sets(ns + ALL_CTL_SET, q=1)
 
         # selList = list(set(all) - set(rt))
         selList = list(set(lf))
