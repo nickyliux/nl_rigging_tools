@@ -106,12 +106,12 @@ def saveCtl():
 
     allCtls.extend(["master_ctl", "master1_ctl", "master2_ctl"])
     if allCtls:
-        removeAllCst()
-        mc.select(allCtls)
         charPath = mc.optionVar(q="charPath")
         tgtFile = mc.fileDialog2(fileFilter="*_ctl*.ma", dialogStyle=2, dir=charPath)
         if tgtFile:
             try:
+                removeAllCst()
+                mc.select(allCtls)
                 mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
                 mc.undo()
                 mc.undo()

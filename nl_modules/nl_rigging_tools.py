@@ -59,7 +59,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI = QUiLoader().load(UI_PATH)
         self.setWindowTitle("nlRT")
         self.setCentralWidget(self.UI)
-        self.setGeometry(1420, 200, 230, 680)
+        self.setGeometry(1420, 200, 230, 780)
         self.connect_UI()
         self.addMenuBar()
 
@@ -196,7 +196,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(
             self.UI.mirrorAllRefJnt_BN, self.mirrorAllRefJnt, ":kinMirrorJoint_S.png"
         )
-        self.connect(self.UI.addBladeAttr_BN, self.addBladeAttr)
+        # self.connect(self.UI.addBladeAttr_BN, self.addBladeAttr)
 
         # Retopo
         self.connect(self.UI.misc_retopo20_BN, partial(model.retopo, faceNum=20))
@@ -399,11 +399,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         mc.select(cl=1)
 
-    def addBladeAttr(self):
-        """Add attribute 'isBlade' to selected joints"""
-        for s in mc.ls(sl=1, tr=1):
-            DagNode(s).a.add("isBlade", lock=1, dv=1)
-
     def mirrorAllRefJnt(self):
         """Mirror all reference joints in the scene."""
         selectedJnt = mc.ls("lf_*_refJnt", type="joint")
@@ -420,11 +415,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             raise ValueError(f"Set {jntSet} NOT found for auto skin.")
 
         jntList = set(mc.sets(jntSet, q=1))
-        # jntsScap = set([o for o in jntList if o.endswith("_scapula")])
         jntsScap = set([n for n in jntList if "scapula" in DagNode(n).name])
         jntsNoScap = jntList - jntsScap
 
-        # meshesScap = [o for o in meshes if o.a["isBlade"].exists()]
         meshesScap = [n for n in meshes if "scapula" in DagNode(n).name]
         meshesNoScap = set(meshes) - set(meshesScap)
 
@@ -551,8 +544,8 @@ def showUI():
     except:
         pass
     nlRT_win = MyToolWin()
-    # nlRT_win.show(dockable=1)
-    nlRT_win.show()
+    nlRT_win.show(dockable=1)
+    # nlRT_win.show()
 
     with open(STYLE_PATH, "r") as f:
         style = f.read()
@@ -598,11 +591,3 @@ if __name__ == "__main__":
 # Calling functions in userSetup.py
 mc.evalDeferred("reloadMenus()")
 mc.scriptJob(permanent=1, runOnce=1, event=["SelectionChanged", "reloadMenusAutorig"])
-
-#     mc.displayRGBColor("lead", *color)
-#     mc.displayRGBColor("referenceLayer", *color)
-#     mc.selectPref(clickDrag=not mc.selectPref(clickDrag=1, q=1))
-#     mc.selectPref(clickDrag=state)
-#     mel.eval('setObjectPickMask "All" 0')
-#     mel.eval('setObjectPickMask "Curve" 1')
-#     mel.eval('setObjectPickMask "Surface" 1')

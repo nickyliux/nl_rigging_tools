@@ -10,8 +10,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>339</width>
-    <height>753</height>
+    <width>528</width>
+    <height>893</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -52,7 +52,7 @@
      <x>1</x>
      <y>0</y>
      <width>230</width>
-     <height>991</height>
+     <height>791</height>
     </rect>
    </property>
    <property name="minimumSize">
@@ -237,7 +237,7 @@
       <property name="geometry">
        <rect>
         <x>94</x>
-        <y>24</y>
+        <y>25</y>
         <width>10</width>
         <height>133</height>
        </rect>
@@ -280,7 +280,7 @@
       <property name="geometry">
        <rect>
         <x>94</x>
-        <y>163</y>
+        <y>162</y>
         <width>10</width>
         <height>133</height>
        </rect>
@@ -1553,7 +1553,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>364</y>
+       <y>370</y>
        <width>225</width>
        <height>81</height>
       </rect>
@@ -1766,11 +1766,57 @@
       </layout>
      </widget>
     </widget>
+    <widget class="QProgressBar" name="bar_PB">
+     <property name="geometry">
+      <rect>
+       <x>115</x>
+       <y>355</y>
+       <width>108</width>
+       <height>4</height>
+      </rect>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>99999</width>
+       <height>8</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="textVisible">
+      <bool>false</bool>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="invertedAppearance">
+      <bool>false</bool>
+     </property>
+    </widget>
     <widget class="QGroupBox" name="groupBox_10">
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>440</y>
+       <y>450</y>
        <width>225</width>
        <height>101</height>
       </rect>
@@ -2277,13 +2323,233 @@
       </layout>
      </widget>
     </widget>
+    <widget class="QGroupBox" name="groupBox_11">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>550</y>
+       <width>225</width>
+       <height>91</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="title">
+      <string>Model Preparation</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="horizontalLayoutWidget_15">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>20</y>
+        <width>221</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="model_LO_7">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="sizeConstraint">
+        <enum>QLayout::SetDefaultConstraint</enum>
+       </property>
+       <property name="leftMargin">
+        <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>2</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="joint_addRef_BN">
+         <property name="minimumSize">
+          <size>
+           <width>5</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>999</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Add a ref joint for each selected</string>
+         </property>
+         <property name="statusTip">
+          <string/>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Ref Jnt</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="mirrorAllRefJnt_BN">
+         <property name="minimumSize">
+          <size>
+           <width>5</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>9999</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Mirror ref joints, L to R</string>
+         </property>
+         <property name="statusTip">
+          <string/>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Ref Jnt L to  R</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget_8">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>50</y>
+        <width>221</width>
+        <height>33</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_8">
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <property name="leftMargin">
+        <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>2</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="joint_addRb_BN">
+         <property name="minimumSize">
+          <size>
+           <width>5</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>999</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Add a ribbon joint for each selected</string>
+         </property>
+         <property name="statusTip">
+          <string/>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Rb Jnt</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="addBladeAttr_BN">
+         <property name="minimumSize">
+          <size>
+           <width>5</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>999</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Add &quot;blade&quot; attribute to selected</string>
+         </property>
+         <property name="statusTip">
+          <string/>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Mark as Blade</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
     <widget class="QGroupBox" name="groupBox_15">
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>540</y>
+       <y>640</y>
        <width>225</width>
-       <height>91</height>
+       <height>81</height>
       </rect>
      </property>
      <property name="title">
@@ -2873,52 +3139,6 @@
       </layout>
      </widget>
     </widget>
-    <widget class="QProgressBar" name="bar_PB">
-     <property name="geometry">
-      <rect>
-       <x>115</x>
-       <y>354</y>
-       <width>108</width>
-       <height>4</height>
-      </rect>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>99999</width>
-       <height>4</height>
-      </size>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="value">
-      <number>0</number>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="textVisible">
-      <bool>false</bool>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="invertedAppearance">
-      <bool>false</bool>
-     </property>
-    </widget>
    </widget>
    <widget class="QWidget" name="ctl_TB">
     <attribute name="title">
@@ -2930,7 +3150,7 @@
        <x>0</x>
        <y>6</y>
        <width>225</width>
-       <height>625</height>
+       <height>761</height>
       </rect>
      </property>
      <property name="title">
@@ -3124,9 +3344,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>43</y>
+        <y>51</y>
         <width>221</width>
-        <height>578</height>
+        <height>708</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -3160,7 +3380,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>370</y>
+       <y>310</y>
        <width>225</width>
        <height>71</height>
       </rect>
@@ -3236,231 +3456,11 @@ for Sel</string>
       </layout>
      </widget>
     </widget>
-    <widget class="QGroupBox" name="groupBox_11">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>280</y>
-       <width>225</width>
-       <height>91</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="title">
-      <string>Model Preparation</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="flat">
-      <bool>true</bool>
-     </property>
-     <widget class="QWidget" name="horizontalLayoutWidget_15">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>20</y>
-        <width>221</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="model_LO_7">
-       <property name="spacing">
-        <number>6</number>
-       </property>
-       <property name="sizeConstraint">
-        <enum>QLayout::SetDefaultConstraint</enum>
-       </property>
-       <property name="leftMargin">
-        <number>6</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>2</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QPushButton" name="joint_addRef_BN">
-         <property name="minimumSize">
-          <size>
-           <width>5</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>999</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Add a ref joint for each selected</string>
-         </property>
-         <property name="statusTip">
-          <string/>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Ref Jnt</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="mirrorAllRefJnt_BN">
-         <property name="minimumSize">
-          <size>
-           <width>5</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>9999</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Mirror ref joints, L to R</string>
-         </property>
-         <property name="statusTip">
-          <string/>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Ref Jnt L to  R</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget_8">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>50</y>
-        <width>221</width>
-        <height>33</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_8">
-       <property name="spacing">
-        <number>5</number>
-       </property>
-       <property name="leftMargin">
-        <number>6</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>2</number>
-       </property>
-       <item>
-        <widget class="QPushButton" name="joint_addRb_BN">
-         <property name="minimumSize">
-          <size>
-           <width>5</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>999</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Add a ribbon joint for each selected</string>
-         </property>
-         <property name="statusTip">
-          <string/>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Rb Jnt</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="addBladeAttr_BN">
-         <property name="minimumSize">
-          <size>
-           <width>20</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>999</width>
-           <height>23</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Add &quot;blade&quot; attribute to selected</string>
-         </property>
-         <property name="statusTip">
-          <string/>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Mark as Blade</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
     <widget class="QGroupBox" name="groupBox_13">
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>440</y>
+       <y>380</y>
        <width>225</width>
        <height>61</height>
       </rect>
@@ -3556,7 +3556,7 @@ for Sel</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>500</y>
+       <y>440</y>
        <width>225</width>
        <height>131</height>
       </rect>
@@ -3809,7 +3809,7 @@ for Sel</string>
        <x>0</x>
        <y>6</y>
        <width>225</width>
-       <height>271</height>
+       <height>291</height>
       </rect>
      </property>
      <property name="title">
@@ -3917,7 +3917,7 @@ for Sel</string>
         <x>3</x>
         <y>50</y>
         <width>218</width>
-        <height>211</height>
+        <height>241</height>
        </rect>
       </property>
       <property name="minimumSize">
