@@ -93,13 +93,13 @@ class SpineQd(RigModule):
             ("tangent1_ctl", "diamond_3d", None, rSz * 2, 1),
         ]
         if self.endCtl:
-            ctl_defs.append(("end_ctl", "rotate2_3d", None, rSz * 1.5, 0))
+            ctl_defs.append(("end_ctl", "rotate2_3d", None, rSz * 2, 0))
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
-        self.cog_ctl.cv_move(0, rSz * 40, 0)  # rSz * 10)
+        self.cog_ctl.cv_move(0, rSz * 40, 0)
         self.cog_ctl.cv_scale(1, 1.5, 2)
-        self.setting.cv_move(rSz * 40, 0, 0)
+        self.setting.cv_move(0, rSz * 30, 0)
         self.setting.color = Color.L_BLUE
         self.tangent0_ctl.cv_rotate(0, 90, 0)
         self.tangent1_ctl.cv_rotate(0, 90, 0)

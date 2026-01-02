@@ -156,8 +156,7 @@ class Tail(RigModule):
         self.ctls_ik[0].cstPar(self.setting, mo=1)
 
         RigModule.isolate_align(
-            self.ctls_ik[0],
-            spaces=[self.ctls_ik[0].offset, self.masterC],
+            self.ctls_ik[0], spaces=[self.ctls_ik[0].offset, self.masterC], dv=0
         )
 
     def build_fk(self):
