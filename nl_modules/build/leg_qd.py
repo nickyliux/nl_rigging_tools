@@ -94,7 +94,7 @@ class LegQd(RigModule):
         """Generate the skeleton for the quadruped leg rig."""
         # --- Generate main skeleton module and root joints ---
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(self.jnt_names)
+        root_list = self.gen_sk_fr_names(self.jnt_names, scale=0.7)
 
         # --- Toes setup (if enabled) ---
         if self.toeBones:
@@ -167,7 +167,7 @@ class LegQd(RigModule):
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
         self.smart_ctl.cv_move(scale * 15, 0, 0)
-        self.setting.color = Color.L_BLUE
+        self.setting.color = Color.PINK
         self.setting.cv_move(scale * 15, 0, 0)
         self.hip_fkc.cv_rotate(0, 90, 0)
         self.hip_fkc.cv_move(scale * 5, -scale * 15, 0)
@@ -518,8 +518,8 @@ class LegQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         # --- Generate dual joint chains ---
-        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.7)
-        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=0.7)
+        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.5)
+        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=0.5)
 
         # --- Parent dual chains to appropriate joint ---
         parent = self.boneFix if self.kneeFix else self.lwr

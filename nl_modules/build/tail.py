@@ -69,7 +69,7 @@ class Tail(RigModule):
 
         self.setting.a.add("stretchy", min=0, max=1)
         self.setting.a.add("localScale", min=0.01, dv=1)
-        self.setting.color = Color.L_BLUE
+        self.setting.color = Color.PINK
 
     def build(self):
         """Build the tail rig."""
@@ -139,7 +139,7 @@ class Tail(RigModule):
                 scale=rSz,
                 align=self.jnts_ik[i],
                 addOfs=1,
-                color=Color.PINK,
+                color=Color.VD_GREEN,
                 p=self.IK_GRP,
             )
             ctl.cv_scale(1, 1, 0.5)

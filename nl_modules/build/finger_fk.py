@@ -106,7 +106,7 @@ class FingerFk(RigModule):
         if self.segNum >= 4:
             self.fgr04_fkc.cv_move(*offset)
 
-        self.setting.color = Color.L_BLUE
+        self.setting.color = Color.PINK
 
     def build_fk(self):
         """Build the FK controls for the arm rig."""

@@ -415,10 +415,10 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             raise ValueError(f"Set {jntSet} NOT found for auto skin.")
 
         jntList = set(mc.sets(jntSet, q=1))
-        jntsScap = set([n for n in jntList if "scapula" in DagNode(n).name])
+        jntsScap = set([n for n in jntList if "scapula" in DagNode(n).name.lower()])
         jntsNoScap = jntList - jntsScap
 
-        meshesScap = [n for n in meshes if "scapula" in DagNode(n).name]
+        meshesScap = [n for n in meshes if "scapula" in DagNode(n).name.lower()]
         meshesNoScap = set(meshes) - set(meshesScap)
 
         skin.skinRefJnts(meshes=meshesNoScap, jnts=jntsNoScap, thld=thld, uiPB=uiPB)

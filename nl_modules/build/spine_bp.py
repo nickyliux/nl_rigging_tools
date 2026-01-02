@@ -93,7 +93,7 @@ class SpineBp(RigModule):
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         self.setting.cv_move(rSz * 60, 0, 0)
-        self.setting.color = Color.L_BLUE
+        self.setting.color = Color.PINK
         self.cog_ctl.color = Color.PINK
 
     def is_ribbon(self):

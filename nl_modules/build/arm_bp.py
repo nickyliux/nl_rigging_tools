@@ -124,7 +124,7 @@ class ArmBp(RigModule):
         # self.ikc.cv_rotate(0, 90, 0)
         self.pvc.cv_rotate(-90, 0, 0)
         self.setting.cv_move(0, scale * 20, 0)
-        self.setting.color = Color.L_BLUE
+        self.setting.color = Color.PINK
 
     def build(self):
         """Build the arm rig module."""

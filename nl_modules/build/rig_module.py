@@ -926,10 +926,10 @@ class RigModule(RigBase):
         return self.master_guide.a[name].get()
 
     def create_and_register_ctl(
-        self, rID="tmp_", name="x", shape="circle", up="x", scale=1, top=0, w=2
+        self, rID="tmp_", name="x", shape="circle", up="x", scale=1, top=0, w=-1
     ):
         """Create a control node and register it in the rigNode"""
-        ctl = CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, width=2, top=top)
+        ctl = CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, width=w, top=top)
         setattr(self, name, ctl)
         self.rigNode.setMsg({name: ctl})
 

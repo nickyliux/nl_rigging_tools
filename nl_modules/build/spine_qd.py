@@ -23,7 +23,7 @@ class SpineQd(RigModule):
         super().__init__(rigNode)
 
         # Guide attributes
-        guide_attrs = ["endCtl", "rbnJntNum"]
+        guide_attrs = ["rbnJntNum"]
         for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
 
@@ -39,9 +39,6 @@ class SpineQd(RigModule):
         guide = DagNode(f"{self.rigID}_base_pivot_guide")
         self.BASE_PVT_GUIDE = guide if guide.exists() else None
 
-        # guide = DagNode(f"{self.rigID}_end_jnt_guide")
-        # self.END_JNT_GUIDE = guide if guide.exists() else None
-
         # Main settings and controls
         self.setting = None
         self.cog_ctl = None
@@ -51,7 +48,6 @@ class SpineQd(RigModule):
         self.tangent0_ctl = None
         self.tangent1_ctl = None
         self.end_ctl = None
-        self.end_jnt = None
 
         # Control and joint lists
         self.ctls_fk = []
@@ -91,21 +87,18 @@ class SpineQd(RigModule):
             ("base_ctl", "hip_qd", None, rSz * 4, 0),
             ("tangent0_ctl", "diamond_3d", None, rSz * 2, 1),
             ("tangent1_ctl", "diamond_3d", None, rSz * 2, 1),
+            ("end_ctl", "rotate2_3d", None, rSz * 2, 0),
         ]
-        if self.endCtl:
-            ctl_defs.append(("end_ctl", "rotate2_3d", None, rSz * 2, 0))
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         self.cog_ctl.cv_move(0, rSz * 40, 0)
         self.cog_ctl.cv_scale(1, 1.5, 2)
         self.setting.cv_move(0, rSz * 30, 0)
-        self.setting.color = Color.L_BLUE
+        self.setting.color = Color.PINK
         self.tangent0_ctl.cv_rotate(0, 90, 0)
         self.tangent1_ctl.cv_rotate(0, 90, 0)
-
-        if self.end_ctl:
-            self.end_ctl.cv_rotate(0, 90, 0)
+        self.end_ctl.cv_rotate(0, 90, 0)
 
     def create_rbSrf(self):
         """Create the ribbon surface for the spine rig."""
@@ -281,19 +274,8 @@ class SpineQd(RigModule):
             "anchorToRbj", pf=rID, snap=rb_jnts[-1], p=self.fore_ctl
         )
         rb_jnts[-1].cstPoi(self.anchorToRbj)
-
-        if self.endCtl:
-            self.end_jnt = JntNode(
-                "end",
-                pf=rID,
-                r=rSz * 1.5,
-                snap=self.RT_GUIDE,
-                alignR=rb_jnts[0],
-                p=self.IK_GRP,
-            )
-            self.end_ctl.alignTo(self.RT_GUIDE, p=self.base_ctl, addOfs=1)
-            self.end_ctl.cstPar(self.end_jnt, mo=1)
-            self.jnts_bind.append(self.end_jnt)
+        self.end_ctl.alignTo(self.RT_GUIDE, p=self.base_ctl, addOfs=1)
+        self.end_ctl.cstOri(rb_jnts[0], mo=1)
 
         ik_handle.hide()
         return crv_len_ratio, jntsFrCrv, rb_jnts
@@ -438,8 +420,7 @@ class SpineQd(RigModule):
             ctl.a.ro.set(3)
             for ctl in [self.fore_ctl, self.mid_ctl, self.base_ctl, self.cog_ctl]
         ]
-        if self.endCtl:
-            self.end_ctl.a.ro.set(3)
+        self.end_ctl.a.ro.set(3)
 
     def setup_channel(self):
         """Setup channel attributes for the spine rig controls."""
@@ -449,14 +430,12 @@ class SpineQd(RigModule):
         self.cog_ctl.a.showAttr(t=not self.is_neck(), r=1)
         self.tangent0_ctl.a.showAttr("sz", r=1)
         self.tangent1_ctl.a.showAttr("sz", r=1)
-
-        if self.endCtl:
-            self.end_ctl.a.showAttr(r=1)
+        self.end_ctl.a.showAttr(r=1)
 
     def setup_anchor(self):
         """Setup anchor points for the spine rig controls."""
         if self.jnts_rb:
-            anchor = self.end_jnt if self.endCtl else self.jnts_rb[0]
+            anchor = self.jnts_rb[0]
             self.setup_anchor_module({"anchorP1": anchor})
 
         if self.anchorToRbj:
@@ -479,10 +458,7 @@ class SpineQd(RigModule):
 
     def setup_ctlSets(self):
         """Setup control sets for the spine rig."""
-        ctls = self.ctls_ik + [self.cog_ctl, self.setting]
-        if self.endCtl:
-            ctls.append(self.end_ctl)
-
+        ctls = self.ctls_ik + [self.cog_ctl, self.setting, self.end_ctl]
         self.add_ctl_set(ctls)
 
     def setup_bindJnt(self):
