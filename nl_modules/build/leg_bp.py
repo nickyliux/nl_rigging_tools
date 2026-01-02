@@ -148,7 +148,7 @@ class LegBp(RigModule):
             ("ball_fkc", "squareR", "x", scale, 0),
             ("ikc", "foot", None, rSz * 1.5, 0),
             ("pvc", "sphere", None, rSz, 0),
-            ("smart_ctl", "diamond_3d", None, scale, 0),
+            ("smart_ctl", "roll", None, scale / 2, 0),
         ]
         if self.scapulaExtra:
             ctl_defs.append(("scap_fkc", "arrow", "z", scale / 2, 0))
@@ -163,9 +163,6 @@ class LegBp(RigModule):
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
         self.smart_ctl.cv_move(scale * 15, 0, 0)
-        #     self.smart_ctl.cv_rotate(180, 0, 0)
-        # self.smart_ctl.cv_rotate(0, 0, 90)
-        # self.smart_ctl.cv_move(0, 0, rSz * -15)
 
         if self.scapulaExtra:
             self.scap_fkc.cv_move(0, scale * 25, 0)

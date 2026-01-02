@@ -151,8 +151,7 @@ class LegQd(RigModule):
             ("ikc", "foot", None, rSz, 0),
             ("extra_ikc", "rotate2_3d", None, -scale, 0),
             ("pvc", "sphere", None, rSz, 0),
-            # ("smart_ctl", "rotate4_3d", None, scale / 2, 0),
-            ("smart_ctl", "diamond_3d", None, scale, 0),
+            ("smart_ctl", "roll", None, scale / 2, 0),
         ]
 
         if self.scapulaExtra:
@@ -165,8 +164,8 @@ class LegQd(RigModule):
             self.scap_fkc.cv_move(0, scale * 10, 0)
             self.scap_fkc.cv_rotate(0, 90, 0)
 
-        # if xDr == -1:
-        #     self.smart_ctl.cv_rotate(180, 0, 0)
+        if xDr == -1:
+            self.smart_ctl.cv_rotate(180, 0, 0)
         self.smart_ctl.cv_move(scale * 15, 0, 0)
         self.setting.color = Color.L_BLUE
         self.setting.cv_move(scale * 15, 0, 0)
