@@ -40,7 +40,7 @@ class MshNode(DagNode):
     def delSkin(self):
         """Delete the skinCluster connected to the mesh"""
         sc = self.skinCluster
-        if sc:
+        if sc.exists():
             try:
                 sc.delete()
                 return 1

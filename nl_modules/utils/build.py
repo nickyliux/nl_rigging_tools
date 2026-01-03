@@ -100,18 +100,20 @@ def buildSelOrAll(*args, uiPB=None):
         if uiPB:
             uiPB.setMaximum(len(rigNodes))
         i = 0
+        common.xRayAllGeo(1)
         for rN in rigNodesToBuild:
             buildTgt(rN)
             if uiPB:
                 i += 1
                 uiPB.setValue(i)
         postRig()
-        mc.select(cl=1)
         if uiPB:
             uiPB.setValue(0)
 
         if args and args[0] == 1:
             proxy.genProxy()
+        common.xRayAllGeo(0)
+        mc.select(cl=1)
 
 
 def postRig():

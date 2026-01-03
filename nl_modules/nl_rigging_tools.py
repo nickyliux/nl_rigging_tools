@@ -35,6 +35,7 @@ from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
+from nl_modules.nodel.msh_node import MshNode
 
 # --- Logging ---
 log.update_root_logger()
@@ -145,7 +146,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             ":openScript.png",
         )
         self.connect(self.UI.saveWeight_BN, skin.saveWeight, ":fileSave.png")
-        self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
+        self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":smoothSkin.png")
+        self.connect(self.UI.boneAutoUnBind_BN, self.boneAutoUnBind, ":detachSkin.png")
 
         self.connect(self.UI.mirrorSym_BN, partial(skin.mirrorWeight, 1))
         self.connect(self.UI.mirrorAsym_BN, partial(skin.mirrorWeight, 0))
@@ -227,8 +229,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def setMaxInfl(self):
         """Set maximum influences for selected skinned meshes."""
-        from nl_modules.nodel.msh_node import MshNode
-
         selList = mc.ls(sl=1, tr=1)
         if selList:
             for s in selList:
@@ -424,6 +424,24 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         skin.skinRefJnts(meshes=meshesNoScap, jnts=jntsNoScap, thld=thld, uiPB=uiPB)
         skin.skinRefJnts(meshes=meshesScap, jnts=jntsScap, thld=thld, uiPB=uiPB)
 
+    @common.Undo("boneAutoUnBind")
+    def boneAutoUnBind(self):
+        charPath = mc.optionVar(q="charPath")
+        if charPath == None or charPath == "":
+            mc.confirmDialog(t="Info", m="Character path NOT set.     ", b="OK")
+            return
+
+        charName = os.path.basename(charPath)
+        count = 0
+        mdlGrp = DagNode(charName)
+        if mdlGrp.exists():
+            selList = mc.ls(mdlGrp)
+            tgtMeshes = common.getObjectBelow(selList)
+            for mesh in tgtMeshes:
+                count += MshNode(mesh).delSkin()
+
+        mc.confirmDialog(t="Info", m=f"{count} skinCluster deleted.    ", b="OK")
+
     @common.Undo("boneAutoBind")
     def boneAutoBind(self):
         """Bind all meshes in MODEL_GRP to reference joints and ribbon joints."""
@@ -464,10 +482,11 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 )
                 return
 
+        common.xRayAllGeo(1)
         self.autoBind_refJnts(meshes=tgtMeshes, thld=15, uiPB=self.UI.bar_PB)
         skin.skinRbJnts(meshes=tgtMeshes, uiPB=self.UI.bar_PB)
         build.autoAttach()
-
+        common.xRayAllGeo(0)
         mc.select(cl=1)
 
     def templateTarget(self):

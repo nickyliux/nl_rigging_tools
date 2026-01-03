@@ -17,7 +17,6 @@ def skinRefJnts(meshes=None, jnts=None, thld=5, uiPB=None):
     if uiPB:
         uiPB.setMaximum(len(meshes))
 
-    common.xRayAllGeo(1)
     for i, mesh in enumerate(meshes):
         mc.select(mesh)
         mc.refresh(f=1)
@@ -42,7 +41,6 @@ def skinRefJnts(meshes=None, jnts=None, thld=5, uiPB=None):
                 ignored += 1
         else:
             ignored += 1
-    common.xRayAllGeo(0)
 
     if uiPB:
         uiPB.setValue(0)
@@ -170,16 +168,16 @@ def loadWeight(uiPB):
 
 def skinAndLoadW(mesh=None, bindJnts=None, tgtDir=None):
     """Skin a mesh to joints and load skin weights from XML file."""
-    skinC = MshNode(mesh).skinCluster
-    if skinC.exists():
-        skinC.delete()
+    sc = MshNode(mesh).skinCluster
+    if sc.exists():
+        sc.delete()
 
     for jnt in bindJnts:
         if not mc.objExists(jnt):
             logging.info(f"{mesh}'s weight NOT loaded. Bind joint missing: {jnt}.")
             return 0
     try:
-        skinC = mc.skinCluster(mesh, bindJnts, tsb=1)
+        sc = mc.skinCluster(mesh, bindJnts, tsb=1)
     except Exception as e:
         logging.warning(f"Skinning {mesh}failed: {e}")
         return 0
@@ -190,7 +188,7 @@ def skinAndLoadW(mesh=None, bindJnts=None, tgtDir=None):
         mesh + ".xml",
         im=1,
         method="index",
-        deformer=skinC,
+        deformer=sc,
         format="XML",
         path=tgtDir,
     )
@@ -226,11 +224,11 @@ def saveWeight():
     meshesToSave = common.getObjectBelow(selList, tgtType="mesh")
 
     for mesh in meshesToSave:
-        skinC = MshNode(mesh).skinCluster
-        if skinC.exists():
-            jntList = mc.listConnections(skinC + ".matrix", type="joint")
+        sc = MshNode(mesh).skinCluster
+        if sc.exists():
+            jntList = mc.listConnections(sc + ".matrix", type="joint")
             weightJntDict[mesh.name] = jntList
-            skinDict[mesh] = skinC
+            skinDict[mesh] = sc
 
     if not weightJntDict:
         mc.confirmDialog(
@@ -241,9 +239,9 @@ def saveWeight():
     file.saveJson(tgtFile[0], weightJntDict, force=1)
     tgtDir = os.path.dirname(tgtFile[0])
 
-    for mesh, skinC in skinDict.items():
+    for mesh, sc in skinDict.items():
         mc.deformerWeights(
-            mesh.name + ".xml", ex=1, deformer=skinC, format="XML", path=tgtDir
+            mesh.name + ".xml", ex=1, deformer=sc, format="XML", path=tgtDir
         )
     logging.info(f"{len(skinDict)} object weights saved.")
 

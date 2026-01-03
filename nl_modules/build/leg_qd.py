@@ -42,6 +42,8 @@ class LegQd(RigModule):
             "toeNum",
             "kneeFix",
             "scapulaExtra",
+            "scapulaAutoAim",
+            "palmAimRatio",
         ]
         for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
@@ -149,7 +151,7 @@ class LegQd(RigModule):
             ("digit_fkc", "squareR", "x", scale, 0),
             ("ball_fkc", "rotate2_3d", "z", -scale / 2, 0),
             ("ikc", "foot", None, rSz, 0),
-            ("extra_ikc", "rotate2_3d", None, -scale, 0),
+            ("extra_ikc", "rotate2_3d", None, (-scale * 3, -scale, -scale), 0),
             ("pvc", "sphere", None, rSz, 0),
             ("smart_ctl", "roll", None, scale / 2, 0),
         ]
@@ -193,6 +195,7 @@ class LegQd(RigModule):
             jnts=self.jnts,
             EXTRA=self.scapulaExtra,
             scapCtl=self.scap_fkc,
+            autoAim_dv=self.scapulaAutoAim,
         )
         if self.scapulaExtra:
             self.scap_fkc.cv_moveTo(self.hip.o.pos)
@@ -389,10 +392,9 @@ class LegQd(RigModule):
         self.ikc.cstPoi(aimG_loc, mo=1)
 
         # --- Add palm aim attributes ---
-        palmAim = self.extra_ikc.a.add("palmAim", min=0, max=1)  # , dv=1)
-        palmAimRatio = self.extra_ikc.a.add(
-            "palmAimRatio", min=-2, max=2, dv=-0.5 if "Arm" in self.rigID else 0.5
-        )
+        autoAim = self.extra_ikc.a.add("autoAim", min=0, max=1, dv=1)
+        aimRatio = self.extra_ikc.a.add("aimRatio", min=-2, max=2, dv=self.palmAimRatio)
+        # , dv=-0.5 if "Arm" in self.rigID else 0.5
 
         # --- Setup aim constraint ---
         common.cstMulti(
@@ -400,7 +402,7 @@ class LegQd(RigModule):
             uprIkJ,
             aimGrp,
             cstType="aim",
-            w=palmAim,
+            w=autoAim,
             worldUpType=2,
             worldUpObject=self.ikc,
             u=(0, 1, 0),
@@ -413,7 +415,7 @@ class LegQd(RigModule):
         d = ut.distDim_(self.ikc, self.jnts_ik[1])
         D = d.get()
         d /= self.masterC.a["globalScale"]
-        ((d - D) * palmAimRatio * palmAim) >> extraRollG.a.rx
+        ((d - D) * aimRatio * autoAim) >> extraRollG.a.rx
 
         # --- Align extra IK control ---
         grp_ofs = extraRollG.addOffsetGrp(below=1)

@@ -39,6 +39,7 @@ class LegBp(RigModule):
             "toeBones",
             "kneeFix",
             "scapulaExtra",
+            "scapulaAutoAim",
         ]
         for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
@@ -141,7 +142,7 @@ class LegBp(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
-            ("hip_fkc", "arrow2", None, -scale, 0),
+            ("hip_fkc", "arrow2", None, -scale / 2, 0),
             ("upr_fkc", "squareR", "x", scale, 0),
             ("lwr_fkc", "squareR", "x", scale, 0),
             ("palm_fkc", "squareR", "x", scale, 0),
@@ -193,6 +194,7 @@ class LegBp(RigModule):
             jnts=self.jnts,
             EXTRA=self.scapulaExtra,
             scapCtl=self.scap_fkc,
+            autoAim_dv=self.scapulaAutoAim,
         )
 
         if self.kneeFix:

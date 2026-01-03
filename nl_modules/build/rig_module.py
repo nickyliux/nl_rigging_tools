@@ -710,7 +710,9 @@ class RigModule(RigBase):
         # auto_ikH.hide()
         # self.jnts_am[0].hide()
 
-    def build_legScapula(self, ikc=None, fkc=None, jnts=None, EXTRA=0, scapCtl=None):
+    def build_legScapula(
+        self, ikc=None, fkc=None, jnts=None, EXTRA=0, scapCtl=None, autoAim_dv=0
+    ):
         """Build scapula joint and auto aim function."""
         rID, rSz, xDr = self.getMyVar()
         hipJ = jnts[0]
@@ -732,7 +734,7 @@ class RigModule(RigBase):
             aimTgt=ikc,
         )
         IkNode("autoAimJ", solver=Solver.RP, pf=rID, sj=j0, ee=j1, p=ikc, quat=1, vis=0)
-        autoAim = fkc.a.add("autoAim", min=0, max=1, dv=0.7)
+        autoAim = fkc.a.add("autoAim", min=0, max=1, dv=autoAim_dv)
         common.cstMulti(mainGrp.offset, j0, mainGrp, w=autoAim, cstType="parR", mo=1)
         j0.hide()
 

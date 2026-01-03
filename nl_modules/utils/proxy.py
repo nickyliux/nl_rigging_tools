@@ -249,8 +249,8 @@ def bind_to_proxy():
         mc.confirmDialog(t="Info", m="Target wrap mesh NOT found.     ", b="OK")
         return
 
-    skinC = MshNode(tgtMesh).skinCluster
-    if skinC.exists():
+    sc = MshNode(tgtMesh).skinCluster
+    if sc.exists():
         mc.confirmDialog(t="Info", m="Target wrap mesh already skinned.     ", b="OK")
         return
 

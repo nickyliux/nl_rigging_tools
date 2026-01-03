@@ -139,7 +139,7 @@ class Tail(RigModule):
                 scale=rSz,
                 align=self.jnts_ik[i],
                 addOfs=1,
-                color=Color.VD_GREEN,
+                color=Color.D_BROWN,
                 p=self.IK_GRP,
             )
             ctl.cv_scale(1, 1, 0.5)
