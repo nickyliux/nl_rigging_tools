@@ -9,14 +9,14 @@ def onMayaDroppedPythonFile(*args):
     """Install nl_rigging_tools module when the script is dropped into Maya."""
     print(
         r"""
-     _____________
-    |          _  |
-    |         | | | 
-    |  _ __   | | |
-    | | '_ `| | | |
-    | | | | | | | |
-    | |_| |_| |_| |
-    |_____________|
+     ______________________________
+    |          _   ____    _____  |
+    |         | | |  _ `| |_   _| |
+    |  _ __   | | | |_| |   | |   |
+    | | '_ `| | | |  _  /   | |   |
+    | | | | | | | | | |`|   | |   |
+    | |_| |_| |_| |_| |_|   |_|   |
+    |_____________________________|
 
     """
     )
@@ -31,9 +31,8 @@ def onMayaDroppedPythonFile(*args):
         f"{mod_name}.mod",
     )
     install_dir = os.path.dirname(__file__)
-    script_dir = os.path.dirname(install_dir)
     try:
-        content = f"+ {mod_name} any {script_dir}\nscripts: .\n"
+        content = f"+ {mod_name} any {install_dir}\nscripts: .\n"
         with open(mod_path, "w") as f:
             f.write(content)
 
@@ -42,13 +41,17 @@ def onMayaDroppedPythonFile(*args):
     except Exception as e:
         logging.error(f"Failed to create module file: {e}")
 
-    if script_dir not in sys.path:
-        sys.path.insert(0, script_dir)
+    if install_dir not in sys.path:
+        sys.path.insert(0, install_dir)
 
-    # Load the tool
+    # Load startup to create menu
+    import startUp
+
+    startUp.createMenu()
+
+    # Show the UI
     import nl_modules.nl_rigging_tools as nlRT
     import importlib
 
     importlib.reload(nlRT)
-    nlRT.addIcon2CurrShelf()
     nlRT.showUI()

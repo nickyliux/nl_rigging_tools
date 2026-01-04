@@ -71,7 +71,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def addMenuBar(self):
         """Add menu bar to the main window."""
         menuBar = QMenuBar(self)
-        ver_QM = QMenu("&2025.12.18", self)
+        ver_QM = QMenu("&2026.01.04", self)
         more_QM = QMenu("&More", self)
 
         addIcon_QA = QAction(self)
@@ -575,11 +575,7 @@ def addIcon2CurrShelf():
     """Add icon to current shelf"""
     currDir = os.path.dirname(__file__)
     base = os.path.basename(__file__)
-    icon_path = os.path.join(currDir, base.split(".")[0] + ".bmp")
-
-    if not os.path.exists(icon_path):
-        logging.warning(f"Icon file not found: {icon_path}")
-        return
+    icon = base.replace(".py", ".bmp")
 
     shelfCmd = (
         "import nl_modules.nl_rigging_tools as nlRT\n"
@@ -597,16 +593,14 @@ def addIcon2CurrShelf():
         c=shelfCmd,
         annotation="nl_rigging_tools",
         label="nl_rigging_tools",
-        image=icon_path,
-        image1=icon_path,
+        image=icon,
+        image1=icon,
         sourceType="python",
     )
-    logging.info("Tool icon created at the current shelf.")
+    logging.info("Shelve icon added at the current shelf.")
 
+
+mc.scriptJob(permanent=1, runOnce=1, event=["SelectionChanged", "reloadMenusAutorig"])
 
 if __name__ == "__main__":
     showUI()
-
-# Calling functions in userSetup.py
-mc.evalDeferred("reloadMenus()")
-mc.scriptJob(permanent=1, runOnce=1, event=["SelectionChanged", "reloadMenusAutorig"])

@@ -1,6 +1,12 @@
 import logging
 from importlib import reload
 
+import startUp
+import install_by_drag_n_drop
+
+reload(startUp)
+reload(install_by_drag_n_drop)
+
 from nl_modules.nodel import (
     crv_node,
     grp_node,
