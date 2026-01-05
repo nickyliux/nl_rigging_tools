@@ -13,26 +13,24 @@ blockquote {
 </style>
 -->
 
-# nl-rigging-tools ( nlRT )  ![nlRT logo](nl_modules/nl_rigging_tools.bmp)  
+# nl-rigging-tools ( nlRT )  ![nlRT logo](icons/nl_rigging_tools.bmp)  
 
 ![License](https://img.shields.io/badge/license-GPLv3-red.svg?style=plastic)
 [![Blog](https://img.shields.io/badge/blog-nickyliu.com-blue)](http://www.nickyliu.com)
 
-![nlRT Main](ui_images/nlRT_UI_Main.png) 
-![nlRT Control](ui_images/nlRT_UI_Control.png) 
-![nlRT Prepare](ui_images/nlRT_UI_Prepare.png) 
-
 ## Background
-While working intensively on a project that involving Ziva muscle plugin, I had to rig the skeleton meshes first. This experience inspired me to create a tool that could automates the process, in addition to the cartoony features.
+
+In my last job I encountered a project with characters involving Ziva muscle setup. The very first step was to rig the skeleton mesh  as an input of simulation. It required unusal skill that was inspirating to me. Wouldn't it be great to build an autorig tool for every vetebra on Earth ?
+
 
 ## Features
 
-- **Modular**: Support multiple parts / limbs.
-- **Skeletal Build**: Support skeleton models rigging.
-- **Cartoony Build**: Support ribbons setup for cartoony control.
-- **Data Reuse**: Restorable templates, controls, proxies, weights.
-- **Custom Marking Menus**: Speed up rig build and general rigging tasks.
-- **Custom Framework**: Less and more readable code in module development.
+- **Modular :** Support multiple limbs.
+- **Skeletal Build :** Support skeleton rigging.
+- **Cartoony Build :** Support bendy limbs.
+- **Data Reuse :** Reuse of templates, controls, proxies, weights.
+- **Custom Marking Menus :** Handy menus for rig creation.
+- **Custom Framework :** Less redundant code for rig development.
 
 ## Framework Classes
 ```mermaid
@@ -72,8 +70,8 @@ flowchart
 Two Marking menus are made to speed up rigging tasks.
 |Menu|Shortcut|Interface|
 |:-:|:-:|:-:|
-|Rig Building |Ctrl + MMB|![The Autorig](nl_modules/doc/marking_menu_autorig.png)|
-|Daily Rigging Operations|Ctrl + Alt + MMB| ![General Rigging](nl_modules/doc/marking_menu_rigging.png)|
+|Rig Build |Ctrl + MMB|![The Autorig](docs/mm_rigBuild.png)|
+|General|Ctrl + Alt + MMB| ![General Rigging](docs/mm_general.png)|
 
 
 
@@ -90,6 +88,8 @@ Two Marking menus are made to speed up rigging tasks.
 You can add icon to the active shelf by "More > Add Icon to Current Shelf" in the tool UI.
 
 ## Usage
+
+![nlRT Main](ui_images/nlRT_UI_Main.png) 
 
 Firstly, files are read with the naming convention like below
 
