@@ -89,7 +89,7 @@ You can add icon to the active shelf by "More > Add Icon to Current Shelf" in th
 
 ## Usage
 
-![nlRT Main](ui_images/nlRT_UI_Main.png) 
+![nlRT Main](docs/nlRT_UI.png) 
 
 Firstly, files are read with the naming convention like below
 
