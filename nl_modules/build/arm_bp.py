@@ -81,7 +81,7 @@ class ArmBp(RigModule):
     def gen_sk(self):
         """Generate the skeleton for the arm rig."""
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(self.jnt_names)
+        root_list = self.gen_sk_fr_names(self.jnt_names, scale=0.5)
 
         for jnt in root_list:
             DagNode(jnt).a.ro.set(5)

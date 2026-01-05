@@ -4,7 +4,7 @@ table {
     border-collapse: collapse;
 }
 table, th, td {
-   border: 1px solid black;
+   border: 2px solid black;
 }
 blockquote {
     border-left: solid blue;
@@ -88,6 +88,26 @@ Two Marking menus are made to speed up rigging tasks.
 2. Drag and drop "nl_rigging_tools_drag.py" onto Maya. "nlRT" will be added into main menu and the tool UI will show up.
 
 You can add icon to the active shelf by "More > Add Icon to Current Shelf" in the tool UI.
+
+## Usage
+
+Firstly, files are read with the naming convention like below
+
+`(char)`  
+&emsp;`  |_ mdl`  
+&emsp;&emsp;&emsp;`    |_ (char)_mdl*.ma`  
+&emsp;`  |_ weight`  
+&emsp;&emsp;&emsp;`  |_ (char)_wgh*.json`  
+&emsp;`  |_ (char)_tpl*.json`  
+&emsp;`  |_ (char)_ctl*.ma`  
+&emsp;`  |_ (char)_prx*.ma`  
+
+Typical Workflow
+1. Browse the character directory.
+2. Create guide components or load from saved.
+3. Build rig.
+4. To bind character with proxy, gen proxy, edit and bind . Otherwise bind manually.
+5. Edit ctl shapes.
 
 
 

@@ -4,14 +4,14 @@
  <class>nlRT_form</class>
  <widget class="QWidget" name="nlRT_form">
   <property name="windowModality">
-   <enum>Qt::WindowModal</enum>
+   <enum>Qt::NonModal</enum>
   </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>528</width>
-    <height>893</height>
+    <width>321</width>
+    <height>835</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,7 +23,7 @@
   <property name="minimumSize">
    <size>
     <width>228</width>
-    <height>550</height>
+    <height>750</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -52,8 +52,14 @@
      <x>1</x>
      <y>0</y>
      <width>230</width>
-     <height>791</height>
+     <height>751</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
    </property>
    <property name="minimumSize">
     <size>
@@ -80,7 +86,7 @@
        <x>0</x>
        <y>60</y>
        <width>109</width>
-       <height>301</height>
+       <height>304</height>
       </rect>
      </property>
      <property name="title">
@@ -239,7 +245,7 @@
         <x>94</x>
         <y>25</y>
         <width>10</width>
-        <height>133</height>
+        <height>130</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -282,7 +288,7 @@
         <x>94</x>
         <y>162</y>
         <width>10</width>
-        <height>133</height>
+        <height>130</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -320,7 +326,7 @@
        <x>115</x>
        <y>60</y>
        <width>109</width>
-       <height>291</height>
+       <height>295</height>
       </rect>
      </property>
      <property name="title">
@@ -1598,7 +1604,7 @@
         <number>6</number>
        </property>
        <property name="topMargin">
-        <number>2</number>
+        <number>5</number>
        </property>
        <property name="rightMargin">
         <number>3</number>
@@ -1635,7 +1641,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Pick Wrap Target</string>
+          <string>Pick Warp Target</string>
          </property>
         </widget>
        </item>
@@ -1767,7 +1773,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Bind wrap target using proxy</string>
+          <string>Bind warp target using proxy</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1784,7 +1790,7 @@
      <property name="geometry">
       <rect>
        <x>115</x>
-       <y>355</y>
+       <y>359</y>
        <width>108</width>
        <height>4</height>
       </rect>
@@ -1830,7 +1836,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>450</y>
+       <y>530</y>
        <width>225</width>
        <height>101</height>
       </rect>
@@ -1850,7 +1856,7 @@
         <x>0</x>
         <y>20</y>
         <width>221</width>
-        <height>23</height>
+        <height>24</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -1861,7 +1867,7 @@
         <number>6</number>
        </property>
        <property name="topMargin">
-        <number>4</number>
+        <number>5</number>
        </property>
        <property name="rightMargin">
         <number>2</number>
@@ -2341,7 +2347,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>550</y>
+       <y>630</y>
        <width>225</width>
        <height>91</height>
       </rect>
@@ -2350,7 +2356,7 @@
       <string notr="true"/>
      </property>
      <property name="title">
-      <string>Model Preparation</string>
+      <string>Skeleton Prep</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -2378,7 +2384,7 @@
         <number>6</number>
        </property>
        <property name="topMargin">
-        <number>0</number>
+        <number>3</number>
        </property>
        <property name="rightMargin">
         <number>2</number>
@@ -2418,7 +2424,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Ref Jnt</string>
+          <string>Add Ref Jnt</string>
          </property>
         </widget>
        </item>
@@ -2514,7 +2520,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Rb Jnt</string>
+          <string>Add Rb Jnt</string>
          </property>
         </widget>
        </item>
@@ -2561,7 +2567,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>640</y>
+       <y>450</y>
        <width>225</width>
        <height>81</height>
       </rect>
@@ -2579,7 +2585,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>20</y>
+        <y>23</y>
         <width>221</width>
         <height>21</height>
        </rect>
@@ -2592,7 +2598,7 @@
         <number>6</number>
        </property>
        <property name="topMargin">
-        <number>4</number>
+        <number>3</number>
        </property>
        <property name="rightMargin">
         <number>3</number>
@@ -2823,7 +2829,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>44</y>
+        <y>50</y>
         <width>221</width>
         <height>24</height>
        </rect>
@@ -3164,7 +3170,7 @@
        <x>0</x>
        <y>6</y>
        <width>225</width>
-       <height>761</height>
+       <height>723</height>
       </rect>
      </property>
      <property name="title">
@@ -3193,7 +3199,7 @@
         <number>3</number>
        </property>
        <property name="topMargin">
-        <number>3</number>
+        <number>5</number>
        </property>
        <property name="rightMargin">
         <number>3</number>
@@ -3360,7 +3366,7 @@
         <x>0</x>
         <y>51</y>
         <width>221</width>
-        <height>708</height>
+        <height>670</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -3390,91 +3396,11 @@
     <attribute name="title">
      <string>Misc</string>
     </attribute>
-    <widget class="QGroupBox" name="groupBox_8">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>310</y>
-       <width>225</width>
-       <height>71</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>Guide Tools</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="flat">
-      <bool>true</bool>
-     </property>
-     <widget class="QWidget" name="horizontalLayoutWidget_29">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>20</y>
-        <width>221</width>
-        <height>39</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_20">
-       <property name="spacing">
-        <number>5</number>
-       </property>
-       <property name="leftMargin">
-        <number>6</number>
-       </property>
-       <property name="topMargin">
-        <number>4</number>
-       </property>
-       <property name="rightMargin">
-        <number>2</number>
-       </property>
-       <item>
-        <widget class="QPushButton" name="misc_buildLineSel_BN">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Selected objects and create lines between</string>
-         </property>
-         <property name="text">
-          <string>Build Line
-for Sel</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="addMirrorAttr_BN">
-         <property name="text">
-          <string>Add Hidden Attr
- for WS Mirror</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
     <widget class="QGroupBox" name="groupBox_13">
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>380</y>
+       <y>330</y>
        <width>225</width>
        <height>61</height>
       </rect>
@@ -3503,6 +3429,9 @@ for Sel</string>
        </property>
        <property name="leftMargin">
         <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>4</number>
        </property>
        <property name="rightMargin">
         <number>2</number>
@@ -3570,7 +3499,7 @@ for Sel</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>440</y>
+       <y>390</y>
        <width>225</width>
        <height>131</height>
       </rect>
@@ -3593,7 +3522,7 @@ for Sel</string>
         <x>0</x>
         <y>20</y>
         <width>221</width>
-        <height>23</height>
+        <height>25</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -3604,7 +3533,7 @@ for Sel</string>
         <number>6</number>
        </property>
        <property name="topMargin">
-        <number>4</number>
+        <number>6</number>
        </property>
        <property name="rightMargin">
         <number>2</number>
@@ -3816,6 +3745,67 @@ for Sel</string>
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget_29">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>70</y>
+        <width>221</width>
+        <height>39</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_20">
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <property name="leftMargin">
+        <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>4</number>
+       </property>
+       <property name="rightMargin">
+        <number>2</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="misc_buildLineSel_BN">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Selected objects and create lines between</string>
+         </property>
+         <property name="text">
+          <string>Build Line
+for Sel</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="addMirrorAttr_BN">
+         <property name="text">
+          <string>Add Hidden Attr
+ for WS Mirror</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
     <widget class="QGroupBox" name="groupBox_12">
      <property name="geometry">
@@ -3823,7 +3813,7 @@ for Sel</string>
        <x>0</x>
        <y>6</y>
        <width>225</width>
-       <height>291</height>
+       <height>321</height>
       </rect>
      </property>
      <property name="title">
@@ -3852,7 +3842,7 @@ for Sel</string>
         <number>6</number>
        </property>
        <property name="topMargin">
-        <number>2</number>
+        <number>4</number>
        </property>
        <property name="rightMargin">
         <number>3</number>
@@ -3931,7 +3921,7 @@ for Sel</string>
         <x>3</x>
         <y>50</y>
         <width>218</width>
-        <height>241</height>
+        <height>271</height>
        </rect>
       </property>
       <property name="minimumSize">
