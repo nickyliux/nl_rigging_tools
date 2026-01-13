@@ -71,7 +71,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def addMenuBar(self):
         """Add menu bar to the main window."""
         menuBar = QMenuBar(self)
-        ver_QM = QMenu("&2026.01.04", self)
+        ver_QM = QMenu("&2026.01.13", self)
         more_QM = QMenu("&More", self)
 
         addIcon_QA = QAction(self)
@@ -156,6 +156,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         # RigNode
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
+        self.UI.rigNode_LW.itemClicked.connect(self.rigNode_LW_clicked)
         self.UI.rigNode_refresh_BN.clicked.connect(self.rigNode_refresh)
         self.UI.rigNode_selectAll_BN.clicked.connect(self.rigNode_selectAll)
 
@@ -283,11 +284,18 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             mc.setToolTo("moveSuperContext")
             common.setVP(fit=1)
 
+    def rigNode_LW_clicked(self, item):
+        """Select rigNode in the scene when clicked in the UI."""
+        itemSel = mc.ls(item.text())
+        if itemSel:
+            mc.select(itemSel)
+
     def rigNode_LW_dblClicked(self, item):
         """Show attribute editor for rigNode"""
         itemSel = mc.ls(item.text())
         if itemSel:
             mg = DagNode(itemSel[0]).a.master_guide.inConnNode
+            # mg = DagNode(itemSel[0])
             if mg and mg.exists():
                 mc.select(mg)
                 mc.AttributeEditor()
