@@ -147,9 +147,9 @@ class LegBp(RigModule):
             ("lwr_fkc", "squareR", "x", scale, 0),
             ("palm_fkc", "squareR", "x", scale, 0),
             ("ball_fkc", "squareR", "x", scale, 0),
-            ("ikc", "foot", None, rSz * 1.5, 0),
+            ("ikc", "trapezoid", None, Vec((1.5, 1.5, 2)) * rSz, 0),
             ("pvc", "sphere", None, rSz, 0),
-            ("smart_ctl", "roll", None, scale / 2, 0),
+            ("smart_ctl", "trapezoid2", None, scale / 2, 0),
         ]
         if self.scapulaExtra:
             ctl_defs.append(("scap_fkc", "arrow", "z", scale / 2, 0))

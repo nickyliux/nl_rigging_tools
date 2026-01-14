@@ -133,6 +133,9 @@ class JntNode(GrpNode):
             proxy = self.buildCylinder(
                 proxy_name, base_rad * prx_rad_scale, height, aimDir, prx_div, p
             )
+            # Assign shader before constraints to avoid Maya errors
+            common.assignShd(0, tgts=[proxy])
+
             proxy_offset = proxy.addOffsetGrp()
 
             if scaler is not None:
@@ -144,7 +147,8 @@ class JntNode(GrpNode):
                     self, children[0], proxy_offset, cstType="poi", delete=1
                 )
 
-            if children and len(children) == 1:
+            # Only one child
+            if children:  # and len(children) == 1:
                 tgt_child = children[0]
                 tgt_child.cstAim(
                     proxy_offset,
@@ -154,8 +158,6 @@ class JntNode(GrpNode):
                     keep=0,
                 )
 
-            # Assign shader before constraints to avoid Maya errors
-            common.assignShd(0, tgts=[proxy])
             self.cstParSca(proxy_offset, mo=1)
             return proxy
         return None

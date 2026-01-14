@@ -64,7 +64,7 @@ def nlShrinkWrap(target=None, meshes=None, keep=0, **kwargs):
         [DagNode(m).deleteHistory() for m in meshes]
 
 
-def genProxy(*args, tgtSet="auto_bind_jnt_set"):
+def genProxyForSet(*args, tgtSet="auto_bind_jnt_set"):
     """Generate proxy meshes for all bind joints in the scene."""
     CHR = GrpNode("CHR")
     MDL = GrpNode("MDL")
@@ -124,7 +124,7 @@ def loadProxy():
     if not tgtFiles:
         return
 
-    genProxy()
+    genProxyForSet()
     imported = mc.file(tgtFiles[-1], i=1, ns="proxy", returnNewNodes=1)
     ns = ""
     if imported:

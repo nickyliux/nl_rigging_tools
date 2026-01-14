@@ -88,7 +88,7 @@ class MarkingMenuAutorig:
 
         mc.menuItem(p=menu, l="ns = " + curr_ns_str, c=self.setNsFrSel)
         mc.menuItem(p=menu, l="PROXY  -----", en=0)
-        mc.menuItem(p=menu, l="    Gen", c=proxy.genProxy)
+        mc.menuItem(p=menu, l="    Gen", c=proxy.genProxyForSet)
         mc.menuItem(p=menu, l="    Mirror", c=proxy.mirrorProxy)
         mc.menuItem(p=menu, l="    Warp", c=proxy.wrapProxy)
         mc.menuItem(p=menu, l="    Reset", c=proxy.resetProxy)

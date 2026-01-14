@@ -820,7 +820,7 @@ def build_ribbon_rivet(
             scaleAttr >> loc.a.s
         loc.a.inheritsTransform.set(0)
 
-    prx_height = mc.arclen(crv) / rivetNum  # / 1.5
+    prx_height = mc.arclen(crv) / rivetNum / 1.5
     proxy.add_height_attr(outputs, prx_height)
     crv.hide()
 

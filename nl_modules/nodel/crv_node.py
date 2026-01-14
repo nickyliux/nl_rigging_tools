@@ -3,6 +3,8 @@ from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.base.dep_node import DepNode
 from nl_modules.nodel.grp_node import GrpNode
 
+DEFAULT_LINE_WIDTH = -1
+
 
 class CrvNode(GrpNode):
     """Curve node class"""
@@ -33,7 +35,7 @@ class CrvNode(GrpNode):
         scaleY=1,
         scaleZ=1,
         dspType=0,
-        width=2,
+        width=DEFAULT_LINE_WIDTH,
         up="",
         top=0,
     ):
@@ -268,7 +270,7 @@ class CrvNode(GrpNode):
         addOfs=0,
         p=None,
         top=0,
-        width=2,
+        width=DEFAULT_LINE_WIDTH,
         *args,
         **kwargs,
     ):

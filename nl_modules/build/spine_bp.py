@@ -92,7 +92,7 @@ class SpineBp(RigModule):
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
-        self.setting.cv_move(rSz * 60, 0, 0)
+        self.setting.cv_move(0, 0, rSz * -110)
         self.setting.color = Color.PINK
         self.cog_ctl.color = Color.YELLOW
 
@@ -279,7 +279,7 @@ class SpineBp(RigModule):
             scaleAttr=self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
             pf=rID,
-            rSz=rSz * 2,
+            rSz=rSz * 2.5,
             atMidOrEnd=1,
             p=self.CTL_DATA,
             JNT_DATA=self.JNT_DATA,
@@ -384,8 +384,12 @@ class SpineBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the spine rig."""
         self.add_bind_jnt_set(self.jnts_bind)
-        if not self.is_neck():
-            proxy.add_radiusScale_attr(self.jnts_bind, 2)
+
+        neckRadScale = 2
+        if self.is_neck():
+            neckRadScale = 3
+
+        proxy.add_radiusScale_attr(self.jnts_bind, neckRadScale)
 
         if not self.is_ribbon():
             proxy.add_up_attr(self.jnts_bind, 1)

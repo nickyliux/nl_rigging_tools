@@ -239,6 +239,13 @@ def loadTemplate(removeUnused=1):
 
 def loadGuideFrIdDict(rigID_dict):
     """Load guides from rigID_dict"""
+
+    # Remove unused
+    idInPreset = [k + "_RGN" for k in rigID_dict.keys()]
+    for node in build.getRigNodes_all():
+        if node not in idInPreset:
+            build.deleteTgt(node)
+
     for rID in rigID_dict:
         mg = DagNode(rID + "_master_guide")
         if not mg.exists():

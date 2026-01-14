@@ -25,7 +25,7 @@ class Head(RigModule):
     def gen_sk(self):
         """Generate the skeleton for the head rig."""
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(["st", "ed"], scale=0.5)
+        root_list = self.gen_sk_fr_names(["st", "ed"])
         jaw_list = self.gen_sk_fr_names(["jaw", "jawEnd"], scale=0.2)
         lf_eye = self.gen_sk_fr_names("lf_eye")[0]
         rt_eye = self.gen_sk_fr_names("rt_eye")[0]
@@ -33,7 +33,6 @@ class Head(RigModule):
 
         self.rootJ = root_list[0]
         self.rootJ | self.JNT_DATA
-        # self.rootJ.color = Color.BLACK
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 

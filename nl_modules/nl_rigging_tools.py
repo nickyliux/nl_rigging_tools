@@ -44,6 +44,7 @@ log.update_root_logger()
 MOD_DIR = os.path.dirname(nl_modules.__file__)
 SHAPE_PATH = os.path.join(MOD_DIR, "build", "shapes")
 LIGHT_PATH = os.path.join(MOD_DIR, "build", "others")
+PRESET_GUIDE_PATH = os.path.join(MOD_DIR, "build", "presets")
 UI_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.ui")
 STYLE_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.qss")
 LIGHTING_FILE = os.path.join(LIGHT_PATH, "lighting4.ma")
@@ -60,7 +61,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI = QUiLoader().load(UI_PATH)
         self.setWindowTitle("nlRT")
         self.setCentralWidget(self.UI)
-        self.setGeometry(1420, 200, 228, 750)
+        self.setGeometry(1420, 200, 228, 700)
         self.connect_UI()
         self.addMenuBar()
 
@@ -126,7 +127,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.unbuildAll_BN, self.unbuildAll, ":smallTrash.png")
         self.connect(self.UI.loadProxy_BN, proxy.loadProxy, ":openScript.png")
         self.connect(self.UI.saveProxy_BN, proxy.saveProxy, ":fileSave.png")
-        self.connect(self.UI.genProxy_BN, proxy.genProxy, ":play_S.png")
+        self.connect(self.UI.genProxy_BN, proxy.genProxyForSet, ":play_S.png")
         self.connect(self.UI.loadWrapTargetMesh_BN, self.loadWrapTargetMesh)
         self.connect(self.UI.templateTarget_BN, self.templateTarget, ":templated.png")
         self.connect(self.UI.selAllProxyGrp_BN, proxy.selectAllProxy, ":aselect.png")
@@ -293,20 +294,22 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                         mg = guide.loadGuide(names["R"], -10)
                         allTgtMG.append(mg)
 
-                elif itemText == "planti grade":
-                    self.loadSpecialGuide("planti_grade_tpl")
-                elif itemText == "digiti grade":
-                    self.loadSpecialGuide("digiti_grade_tpl")
-                elif itemText == "unguli grade":
-                    self.loadSpecialGuide("unguli_grade_tpl")
+                elif itemText == "biped":
+                    self.loadPresetGuide("biped_tpl")
+                elif itemText == "quad / planti":
+                    self.loadPresetGuide("quad_digiti_tpl")
+                elif itemText == "quad / digiti":
+                    self.loadPresetGuide("quad_digiti_tpl")
+                elif itemText == "quad / unguli":
+                    self.loadPresetGuide("quad_unguli_tpl")
 
             self.rigNode_refresh()
             mc.select(allTgtMG)
             mc.setToolTo("moveSuperContext")
             common.setVP(fit=1)
 
-    def loadSpecialGuide(self, name):
-        tpl = os.path.join(MOD_DIR, "build", name + ".json")
+    def loadPresetGuide(self, name):
+        tpl = os.path.join(PRESET_GUIDE_PATH, name + ".json")
         rigID_dict = file.loadJson(tpl)
         if rigID_dict:
             guide.loadGuideFrIdDict(rigID_dict)

@@ -15,6 +15,8 @@ from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
 from nl_modules.utils.common import Vec
 
+DEFAULT_LINE_WIDTH = -1
+
 
 class RigModule(RigBase):
     """Base class for rig modules, providing common functionality for rigging operations."""
@@ -925,7 +927,14 @@ class RigModule(RigBase):
         return self.master_guide.a[name].get()
 
     def create_and_register_ctl(
-        self, rID="tmp_", name="x", shape="circle", up="x", scale=1, top=0, w=2
+        self,
+        rID="tmp_",
+        name="x",
+        shape="circle",
+        up="x",
+        scale=1,
+        top=0,
+        w=DEFAULT_LINE_WIDTH,
     ):
         """Create a control node and register it in the rigNode"""
         ctl = CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, width=w, top=top)

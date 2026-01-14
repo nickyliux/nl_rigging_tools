@@ -48,7 +48,7 @@ class SimpleFk(RigModule):
     def gen_sk(self):
         """Generate the skeleton for the finger rig."""
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(self.jnt_names, scale=1)
+        root_list = self.gen_sk_fr_names(self.jnt_names)
 
         for j in root_list:
             JntNode(j).a["preferredAngleZ"].set(-10)

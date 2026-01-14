@@ -81,12 +81,12 @@ class SpineQd(RigModule):
         #   Define control shapes and attributes
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2, 0),
-            ("cog_ctl", "trapezoid", None, rSz, 0),
+            ("cog_ctl", "trapezoid2", None, rSz, 0),
             ("fore_ctl", "chest_qd", None, rSz * 4, 0),
             ("mid_ctl", "squareR", "z", rSz * 4, 0),
             ("base_ctl", "hip_qd", None, rSz * 4, 0),
-            ("tangent0_ctl", "diamond_3d", None, rSz * 2, 1),
-            ("tangent1_ctl", "diamond_3d", None, rSz * 2, 1),
+            ("tangent0_ctl", "diamond_3d", None, rSz * 3, 1),
+            ("tangent1_ctl", "diamond_3d", None, rSz * 3, 1),
             ("end_ctl", "rotate2_3d", None, rSz * 2, 0),
         ]
         for name, shape, up, scale, top in ctl_defs:

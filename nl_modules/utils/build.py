@@ -111,7 +111,7 @@ def buildSelOrAll(*args, uiPB=None):
             uiPB.setValue(0)
 
         if args and args[0] == 1:
-            proxy.genProxy()
+            proxy.genProxyForSet()
         common.xRayAllGeo(0)
         mc.select(cl=1)
 

@@ -96,7 +96,7 @@ class LegQd(RigModule):
         """Generate the skeleton for the quadruped leg rig."""
         # --- Generate main skeleton module and root joints ---
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(self.jnt_names, scale=0.7)
+        root_list = self.gen_sk_fr_names(self.jnt_names)
 
         # --- Toes setup (if enabled) ---
         if self.toeBones:
@@ -150,10 +150,10 @@ class LegQd(RigModule):
             ("palm_fkc", "squareR", "x", scale, 0),
             ("digit_fkc", "squareR", "x", scale, 0),
             ("ball_fkc", "rotate2_3d", "z", -scale / 2, 0),
-            ("ikc", "foot", None, rSz, 0),
+            ("ikc", "trapezoid", None, Vec((1.5, 1.5, 2)) * rSz, 0),
             ("extra_ikc", "rotate2_3d", None, (-scale * 3, -scale, -scale), 0),
             ("pvc", "sphere", None, rSz, 0),
-            ("smart_ctl", "roll", None, scale / 2, 0),
+            ("smart_ctl", "trapezoid2", None, scale / 2, 0),
         ]
 
         if self.scapulaExtra:
