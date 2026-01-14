@@ -93,8 +93,8 @@ class SpineBp(RigModule):
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         self.setting.cv_move(0, 0, rSz * -110)
-        self.setting.color = Color.PINK
-        self.cog_ctl.color = Color.YELLOW
+        # self.setting.color = Color.PINK
+        # self.cog_ctl.color = Color.YELLOW
 
     def is_ribbon(self):
         """Check if the spine rig is of ribbon type."""

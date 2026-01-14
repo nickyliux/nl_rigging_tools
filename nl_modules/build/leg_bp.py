@@ -142,14 +142,15 @@ class LegBp(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
-            ("hip_fkc", "arrow2", None, -scale / 2, 0),
+            # ("hip_fkc", "arrow2", None, -scale / 2, 0),
+            ("hip_fkc", "rotate2_3d", "x", -scale, 0),
             ("upr_fkc", "squareR", "x", scale, 0),
             ("lwr_fkc", "squareR", "x", scale, 0),
             ("palm_fkc", "squareR", "x", scale, 0),
             ("ball_fkc", "squareR", "x", scale, 0),
             ("ikc", "trapezoid", None, Vec((1.5, 1.5, 2)) * rSz, 0),
             ("pvc", "sphere", None, rSz, 0),
-            ("smart_ctl", "trapezoid2", None, scale / 2, 0),
+            ("smart_ctl", "trapezoid2", None, scale / 3, 0),
         ]
         if self.scapulaExtra:
             ctl_defs.append(("scap_fkc", "arrow", "z", scale / 2, 0))
@@ -170,7 +171,7 @@ class LegBp(RigModule):
 
         self.setting.cv_move(scale * 15, 0, 0)
         self.setting.color = Color.PINK
-        self.hip_fkc.cv_rotate(0, 90, 0)
+        # self.hip_fkc.cv_rotate(0, 90, 0)
         self.hip_fkc.cv_move(scale * 5, -scale * 15, 0)
 
     def build(self):

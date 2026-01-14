@@ -61,7 +61,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI = QUiLoader().load(UI_PATH)
         self.setWindowTitle("nlRT")
         self.setCentralWidget(self.UI)
-        self.setGeometry(1420, 200, 228, 700)
+        self.setGeometry(1420, 200, 228, 750)
         self.connect_UI()
         self.addMenuBar()
 
@@ -147,8 +147,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             ":openScript.png",
         )
         self.connect(self.UI.saveWeight_BN, skin.saveWeight, ":fileSave.png")
-        self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":smoothSkin.png")
-        self.connect(self.UI.boneAutoUnBind_BN, self.boneAutoUnBind, ":detachSkin.png")
+        self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
+        self.connect(self.UI.boneAutoUnBind_BN, self.boneAutoUnBind, ":unbind.png")
 
         self.connect(self.UI.mirrorSym_BN, partial(skin.mirrorWeight, 1))
         self.connect(self.UI.mirrorAsym_BN, partial(skin.mirrorWeight, 0))
