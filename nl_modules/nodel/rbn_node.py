@@ -110,7 +110,7 @@ class RbnNode:
             rivetNum=self.rbnJntNum,
             scaleAttr=self.scaleFix,
             pf=self.pf,
-            rSz=self.size,
+            rSz=self.size * 3,
             p=self.DATA,
             JNT_DATA=self.JNT_GRP,
         )

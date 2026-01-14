@@ -786,7 +786,10 @@ def build_ribbon_rivet(
     crv_len_ratio = crv_info.a.arcLength / scaleAttr / crv.length
     ratio_out = ut.blend2_(crv_len_ratio, 1, stretchyAttr)
 
-    step = 1 / rivetNum if atMidOrEnd == 0 else 1 / (rivetNum - 1)
+    step = 1 / (rivetNum - 1)
+    if atMidOrEnd == 0:
+        step = 1 / rivetNum
+
     loc_grp = GrpNode("loc_grp", pf=pf, p=JNT_DATA)
     outputs = []
 
@@ -808,7 +811,7 @@ def build_ribbon_rivet(
             srf=rbSrf, loc=loc, inPos=mp.a.allCoordinates, p=loc_grp, setLocPos=1
         )
         if outputJnt:
-            jnt = JntNode(f"{i}_rbj", pf=pf, align=loc, r=1, p=loc, reset=1)
+            jnt = JntNode(f"{i}_rbj", pf=pf, align=loc, r=rSz, p=loc, reset=1)
             outputs.append(jnt)
         else:
             outputs.append(loc)
@@ -817,7 +820,7 @@ def build_ribbon_rivet(
             scaleAttr >> loc.a.s
         loc.a.inheritsTransform.set(0)
 
-    prx_height = mc.arclen(crv) / rivetNum / 1.5
+    prx_height = mc.arclen(crv) / rivetNum  # / 1.5
     proxy.add_height_attr(outputs, prx_height)
     crv.hide()
 

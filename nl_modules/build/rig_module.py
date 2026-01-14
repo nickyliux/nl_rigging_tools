@@ -255,12 +255,9 @@ class RigModule(RigBase):
 
             tgt = DagNode(tgt) if isinstance(tgt, str) else tgt
             tgt_ofs = tgt.addOffsetGrp()
-            common.cstMulti(
-                *allSpaces,
-                tgt_ofs,
-                cstType=cstType,
-                w=tgt.a.add(attrName, min=0, max=1, dv=dv),
-            )
+            attr = tgt.a.add(attrName, min=0, max=1, dv=dv)
+            common.cstMulti(*allSpaces, tgt_ofs, cstType=cstType, w=attr)
+            return attr
 
     @classmethod
     def isolate_neck_to_spine(cls, neckCog, spineCtl, wSpaceObj):
@@ -928,7 +925,7 @@ class RigModule(RigBase):
         return self.master_guide.a[name].get()
 
     def create_and_register_ctl(
-        self, rID="tmp_", name="x", shape="circle", up="x", scale=1, top=0, w=-1
+        self, rID="tmp_", name="x", shape="circle", up="x", scale=1, top=0, w=2
     ):
         """Create a control node and register it in the rigNode"""
         ctl = CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, width=w, top=top)

@@ -110,7 +110,7 @@ class Belt(RigModule):
             scaleAttr=self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
             pf=self.rigID + "_2",
-            rSz=self.rigSize,
+            rSz=self.rigSize * 3,
             p=self.CTL_DATA,
             JNT_DATA=self.JNT_DATA,
             atMidOrEnd=1,

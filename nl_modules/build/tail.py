@@ -52,7 +52,6 @@ class Tail(RigModule):
         """Generate the skeleton for the tail rig."""
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
-
         self.rootJ = root_list[0]
         # self.rootJ.color = Color.BLACK
         self.rigNode.setMsg({"rootJ": self.rootJ})
@@ -104,7 +103,7 @@ class Tail(RigModule):
             scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
             pf=self.rigID + "_2",
-            rSz=self.rigSize,
+            rSz=self.rigSize * 3,
             p=self.CTL_DATA,
             JNT_DATA=self.JNT_DATA,
         )
@@ -155,9 +154,11 @@ class Tail(RigModule):
         self.setting.snapTo(self.ctls_ik[0], p=self.FK_GRP, ofs=(0, rSz * 20, 0))
         self.ctls_ik[0].cstPar(self.setting, mo=1)
 
-        RigModule.isolate_align(
+        isolateAttr = RigModule.isolate_align(
             self.ctls_ik[0], spaces=[self.ctls_ik[0].offset, self.masterC], dv=0
         )
+        if isolateAttr:
+            self.setting.a.add("global", proxy=isolateAttr)
 
     def build_fk(self):
         """Build the FK controls for the tail rig.
@@ -195,7 +196,7 @@ class Tail(RigModule):
             scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
             pf=rID,
-            rSz=rSz,
+            rSz=rSz * 3,
             outputJnt=0,
             p=self.CTL_DATA,
             JNT_DATA=self.JNT_DATA,

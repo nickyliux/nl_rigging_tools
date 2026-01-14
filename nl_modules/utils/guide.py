@@ -15,27 +15,23 @@ RT_CTL_SET = "rt*_ctl_set"
 ALL_CTL_SET = "*_ctl_set"
 
 COMPONENT_DICT = {
-    "head": ["head"],
-    "limb": ["lfLimb"],
-    "neck / bp": ["neckBp"],
-    "spine / bp": ["spineBp"],
-    "arm / bp": ["lfArmBp", "rtArmBp"],
-    "leg / bp": ["lfLegBp", "rtLegBp"],
-    "hand / bp": ["lfHandBp", "rtHandBp"],
-    "neck / qd": ["neckQd"],
-    "spine / qd": ["spineQd"],
-    "arm / qd": ["lfArmQd", "rtArmQd"],
-    "leg / qd": ["lfLegQd", "rtLegQd"],
-    "tail fk": ["tailFk"],
-    "tail": ["tail"],
-    "wing": [""],
-    "finger fk": ["lfFingerFk", "rtFingerFk"],
-    "simple fk": ["lfSimpleFk", "mdSimpleFk", "rtSimpleFk"],
-    "belt": ["belt"],
+    "head": {"M": "head"},
+    "neck / bp": {"M": "neckBp"},
+    "spine / bp": {"M": "spineBp"},
+    "neck / qd": {"M": "neckQd"},
+    "spine / qd": {"M": "spineQd"},
+    "tail": {"M": "tail"},
+    "arm / bp": {"L": "lfArmBp", "R": "rtArmBp"},
+    "hand / bp": {"L": "lfHandBp", "R": "rtHandBp"},
+    "leg / bp": {"L": "lfLegBp", "R": "rtLegBp"},
+    "leg / qd": {"L": "lfLegQd", "R": "rtLegQd"},
+    "finger fk": {"L": "lfFingerFk", "R": "rtFingerFk"},
+    "simple fk": {"M": "mdSimpleFk", "L": "lfSimpleFk", "R": "rtSimpleFk"},
+    "belt": {"M": "belt"},
 }
 
 
-def loadGuide(name):
+def loadGuide(name, offset=0):
     """Load component(s) for names"""
 
     def genNextRigID(n):
@@ -48,7 +44,10 @@ def loadGuide(name):
 
     nextRigID = genNextRigID(name)
     TplLoader(name, nextRigID).load_base_tpl()
-    return DagNode(nextRigID + "_master_guide")
+    mg = DagNode(nextRigID + "_master_guide")
+    if offset != 0:
+        mg.a.tx.set(offset)
+    return mg
 
 
 def xferGuideSel(*arg, skipMasterXf=1):
@@ -223,18 +222,28 @@ def loadTemplate(removeUnused=1):
 
     common.pauseVP(1)
     rigID_dict = file.loadJson(tgtFiles[-1])
-    if removeUnused:  # Remove unused components
-        idInPreset = [k + "_RGN" for k in rigID_dict.keys()]
-        for node in build.getRigNodes_all():
-            if node not in idInPreset:
-                build.deleteTgt(node)
 
+    # if removeUnused:
+    #     idInPreset = [k + "_RGN" for k in rigID_dict.keys()]
+    #     for node in build.getRigNodes_all():
+    #         if node not in idInPreset:
+    #             build.deleteTgt(node)
+
+    loadGuideFrIdDict(rigID_dict)
+
+    common.pauseVP(0)
+    common.setVP(fit=1)
+    mc.select(cl=1)
+    logging.info(f"Template loaded: {tgtFiles[-1]}.")
+
+
+def loadGuideFrIdDict(rigID_dict):
+    """Load guides from rigID_dict"""
     for rID in rigID_dict:
         mg = DagNode(rID + "_master_guide")
         if not mg.exists():
             loadGuide(removeEndDigits(rID))
 
-        # Load settings from preset
         for guideN, attrs in rigID_dict[rID].items():
 
             guideN = DagNode(guideN)
@@ -255,11 +264,6 @@ def loadTemplate(removeUnused=1):
                                     guideN.a[attr].set(v, type="string")
                                 elif isinstance(v, list):
                                     guideN.a[attr].set(*v)
-    # common.setViewport(fit=1)
-    mc.select(cl=1)
-    common.pauseVP(0)
-    common.setVP(fit=1)
-    logging.info(f"Template loaded: {tgtFiles[-1]}.")
 
 
 def genAttrDict(obj):

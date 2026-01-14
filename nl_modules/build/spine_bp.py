@@ -94,7 +94,7 @@ class SpineBp(RigModule):
 
         self.setting.cv_move(rSz * 60, 0, 0)
         self.setting.color = Color.PINK
-        self.cog_ctl.color = Color.PINK
+        self.cog_ctl.color = Color.YELLOW
 
     def is_ribbon(self):
         """Check if the spine rig is of ribbon type."""
@@ -111,7 +111,6 @@ class SpineBp(RigModule):
             self.build_spine_ik()
 
         self.setting.snapTo(self.jnts_fk[0], p=self.CTL_DATA)
-        # , ofs=(self.rigSize * 100, 0, 0)
         self.jnts_fk[0].cstPar(self.setting, mo=1)
 
         self.build_post()
@@ -128,7 +127,6 @@ class SpineBp(RigModule):
             aimV=(0, 1, 0),
             size=rSz * 2,
             p=self.JNT_DATA,
-            # color=Color.D_RED,
         )
         mc.delete(self.rootJ)
         self.rootJ = self.jnts_fk[0]
@@ -281,7 +279,7 @@ class SpineBp(RigModule):
             scaleAttr=self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
             pf=rID,
-            rSz=rSz,
+            rSz=rSz * 2,
             atMidOrEnd=1,
             p=self.CTL_DATA,
             JNT_DATA=self.JNT_DATA,

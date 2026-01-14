@@ -112,7 +112,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Guide
         self.connect(self.UI.guide_load_BN, self.guide_load, ":openScript.png")
         self.connect(self.UI.guide_explore_BN, guide.explore, ":searchEngine.png")
-        self.UI.guide_LW.itemDoubleClicked.connect(self.guide_load)
+        self.UI.guide_LW.itemDoubleClicked.connect(partial(self.guide_load, 0))
 
         # Char Path
         self.connect(self.UI.charPath_BN, self.set_char_path, ":openScript.png")
@@ -272,17 +272,44 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Load selected guide components."""
         items = self.UI.guide_LW.selectedItems()
         allTgtMG = []
+
+        isM = self.UI.guideSide_M_CB.isChecked()
+        isL = self.UI.guideSide_L_CB.isChecked()
+        isR = self.UI.guideSide_R_CB.isChecked()
+
         if items:
             for item in items:
-                names = guide.COMPONENT_DICT[item.text()]
-                for n in names:
-                    mg = guide.loadGuide(n)
-                    allTgtMG.append(mg)
+                itemText = item.text()
+                if itemText in guide.COMPONENT_DICT:
+                    names = guide.COMPONENT_DICT[item.text()]
+
+                    if isM and "M" in names:
+                        mg = guide.loadGuide(names["M"], 0)
+                        allTgtMG.append(mg)
+                    if isL and "L" in names:
+                        mg = guide.loadGuide(names["L"], 10)
+                        allTgtMG.append(mg)
+                    if isR and "R" in names:
+                        mg = guide.loadGuide(names["R"], -10)
+                        allTgtMG.append(mg)
+
+                elif itemText == "planti grade":
+                    self.loadSpecialGuide("planti_grade_tpl")
+                elif itemText == "digiti grade":
+                    self.loadSpecialGuide("digiti_grade_tpl")
+                elif itemText == "unguli grade":
+                    self.loadSpecialGuide("unguli_grade_tpl")
 
             self.rigNode_refresh()
             mc.select(allTgtMG)
             mc.setToolTo("moveSuperContext")
             common.setVP(fit=1)
+
+    def loadSpecialGuide(self, name):
+        tpl = os.path.join(MOD_DIR, "build", name + ".json")
+        rigID_dict = file.loadJson(tpl)
+        if rigID_dict:
+            guide.loadGuideFrIdDict(rigID_dict)
 
     def rigNode_LW_clicked(self, item):
         """Select rigNode in the scene when clicked in the UI."""
