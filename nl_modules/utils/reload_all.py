@@ -133,7 +133,7 @@ from nl_modules.build import (
     spine_bp,
     spine_qd,
     tail,
-    tail_fk,
+    # tail_fk,
     tpl_loader,
     # ribbon,
     head,
@@ -154,7 +154,7 @@ reload(leg_bp)
 reload(leg_qd)
 reload(neck_qd)
 reload(spine_qd)
-reload(tail_fk)
+# reload(tail_fk)
 reload(tail)
 reload(finger_fk)
 reload(belt)
@@ -162,8 +162,4 @@ reload(belt)
 if __name__ == "__main__":
     logging.info("reload modules.")
 
-# def deleteAllAcProcessor():
-#     for s in mc.ls("acProcessor*"):
-#         mc.lockNode(s, l=0)
-#         mc.delete(s)
 # mc.scriptEditorInfo(ch=1)
