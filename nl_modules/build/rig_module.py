@@ -29,7 +29,6 @@ class RigModule(RigBase):
         super().__init__(rigNode)
 
         rID = self.rigID
-        # self.RIG_DATA = GrpNode(rID + "_rig_data", p=self.RIG)
         self.CTL_DATA = GrpNode(rID + "_ctl_data", p=self.masterC)
         self.JNT_DATA = GrpNode(rID + "_jnt_data", p=self.JNT)
 
@@ -506,9 +505,7 @@ class RigModule(RigBase):
         s = rSz * xDr
         common.sdk(driver, driven, "ry", "tz", 0, 0, tangent=1)
         common.sdk(driver, driven, "ry", "tz", -70, -2 * s, tangent=1)
-        # common.sdk(driver, driven, "ry", "tz", -70, -3.8 * s, tangent=1)
         common.sdk(driver, driven, "ry", "tz", -150, -8 * s, tangent=1)
-        # common.sdk(driver, driven, "ry", "tz", -150, -6.8 * s, tangent=1)
 
         common.sdk(driver, driven, "ry", "tx", 0, 0, tangent=1)
         common.sdk(driver, driven, "ry", "tx", -80, s * 2.5, tangent=1)
@@ -555,13 +552,10 @@ class RigModule(RigBase):
         common.cstMulti(
             rbnBindJnts[0], rbnBindJnts[1], endJ1, cstType="poi", w=0.5, delete=1
         )
-        # endJ1 | rbnBindJnts[0]
         endJ2 = rbnBindJnts[-1].duplicate()
         common.cstMulti(
             rbnBindJnts[-1], rbnBindJnts[-2], endJ2, cstType="poi", w=0.5, delete=1
         )
-        # endJ2 | rbnBindJnts[-1]
-
         return [rbnBindJnts[0], endJ1, rbnBindJnts[1], endJ2, rbnBindJnts[2]]
 
     def foot_rolling(
@@ -599,30 +593,15 @@ class RigModule(RigBase):
 
     def build_digit_ik(self, ikTgt, scale=1, p=None):
         """Build an IK setup for a digit (e.g., finger or toe) with a control and joints."""
-        # --- Create IK control for the digit ---
-        # n = f"{ikTgt.name}_ikc"
-        # ctl = CrvNode(
-        #     n, shape="stickS", align=ikTgt, up="-z", scale=scale, addOfs=1, p=p
-        # )
-        # ctl.addOffsetGrp()
-
-        # --- Duplicate joints for IK chain ---
         ikJ, ikJ_end = self.build_digit_ik_chain(ikTgt)
-        # ikJ.cstPoi(ctl.offset)
-
-        # --- Create IK handle for the digit ---
-        scale = self.masterC.a["globalScale"]
         ikH = IkNode(
-            # ikJ, sj=ikJ, ee=ikJ_end, scaleFix=scale, RIG_DATA=self.RIG_DATA, p=ctl
             ikJ,
             sj=ikJ,
             ee=ikJ_end,
-            scaleFix=scale,
-            p_data=self.CTL_DATA,  # RIG_DATA,
+            scaleFix=self.masterC.a["globalScale"],
+            p_data=self.CTL_DATA,
             p=p,
         )
-
-        # return ctl, ikJ, ikH
         return ikJ, ikH
 
     def get_autoAim_preset(self):
@@ -740,7 +719,6 @@ class RigModule(RigBase):
         if not EXTRA:
             self.jnts_bind.append(self.jnts[0])
         else:
-            # --- Leg lock function setup ---
             aim = (xDr, 0, 0)
             u = (0, xDr, 0)
             wu = (0, 0, xDr)
@@ -780,23 +758,6 @@ class RigModule(RigBase):
             )
             IkNode("scapAim", pf=rID, sj=j0, ee=j1, p=scapCtl, vis=0)
             self.jnts_bind.append(j0)
-
-            # --- Scapula helper setup (if guide exists) ---
-            # scapHelper = DagNode(rID + "_scapHelper_guide")
-            # if scapHelper.exists():
-            #     j0, j1 = JntNode.makeTwoJointChain(
-            #         "scapHelper",
-            #         pf=rID,
-            #         align=scapHelper,
-            #         align_end=uprJ,
-            #         rad=rSz,
-            #         p=self.JNT_DATA,
-            #     )
-            #     IkNode("scapHelperJ", pf=rID, sj=j0, ee=j1, p=scapCtl)
-            #     ofs = fkc.addOffsetGrp()
-            #     j1.cstPoi(ofs, mo=1)
-            #     mainGrp.cstPar(scapCtl.offset, mo=1)
-            #     mainGrp.cstPar(j0, mo=1)
 
         return mainGrp
 
@@ -1033,7 +994,6 @@ class RigModule(RigBase):
 
     def build_uprRollJ(self, jnt0, jnt1, num=2, sf="_ro"):
         """Build upper roller joints. They are added between jnt0 and jnt1."""
-        # name = jnt0 + "_" + suffix
         roll_loc, roll_jnt0 = self.build_rollChain(jnt0, jnt1, num, sf)
         rollJnts = []
 
@@ -1047,34 +1007,11 @@ class RigModule(RigBase):
             ratio = i / num
             common.cstMulti(jnt0, jnt1, j, cstType="poi", w=1 - ratio)
             roll_loc.a.rx * ratio >> j.a.rx
-            # self.jnts_bind.append(j)
             rollJnts.append(j)
 
         mc.hide(roll_loc)
         JntNode(roll_jnt0).setDrawStyle(2)
         return rollJnts
-
-    # def build_lwrRollJ(self, jnt0, jnt1, num=2, suffix="_roll2"):
-    #     """Build lower roller joints. They are added between jnt0's parent and jnt0."""
-    #     pf = jnt0 + '_' + suffix
-    #     roll_loc, roll_jnt0 = self.build_rollChain(jnt0, jnt1, num, suffix=pf)
-    #     # Create roller joints, parented to roll_jnt0's parent
-    #     for i in range(num):
-    #         j = jnt0.duplicate(po=1)
-    #         j.color = Color.YELLOW
-    #         j.a.radius.set(self.rigSize * 3)
-    #         j.rename(f"{pf}_roll_{i}")
-    #         proxy.add_height_attr([j], self.rigSize / num * 20)
-
-    #         ratio = i / num
-    #         common.cstMulti(jnt0, jnt0.parent, j, cstType="poi", w=1 - ratio)
-    #         roll_loc.a.rx * (1 - ratio) >> j.a.rx
-    #         # if i > 0:
-    #         #     self.jnts_bind.append(j)
-
-    #     mc.hide(roll_loc)
-    #     JntNode(roll_jnt0).setDrawStyle(2)
-    #     return roll_jnt0
 
     def build_rbn(self, tgt, name="", rbnJntNum=5, volMode=1, up="tz"):
         """Build a ribbon node for the target with specified parameters."""
@@ -1105,10 +1042,6 @@ class RigModule(RigBase):
         rID, rSz, xDr = self.getMyVar()
         ribbonUp = self.build_rbn(upr, name="up", rbnJntNum=jntNum, volMode=0, up=up1)
         ribbonLw = self.build_rbn(lwr, name="lw", rbnJntNum=jntNum, volMode=1, up=up2)
-
-        # Connect master guide scale to the ribbon groups
-        # self.masterC2.a.s >> ribbonUp.RBN_GRP.a.s
-        # self.masterC2.a.s >> ribbonLw.RBN_GRP.a.s
 
         # Upper Ribbon
         upr.cstPoi(ribbonUp.stt_loc)

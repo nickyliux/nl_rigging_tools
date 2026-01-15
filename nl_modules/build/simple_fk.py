@@ -19,7 +19,6 @@ class SimpleFk(RigModule):
         rigNode = DagNode(rigNode) if isinstance(rigNode, str) else rigNode
         super().__init__(rigNode)
 
-        # Guide attributes
         guide_attrs = ["segNum"]
         for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
@@ -54,7 +53,6 @@ class SimpleFk(RigModule):
             JntNode(j).a["preferredAngleZ"].set(-10)
 
         self.rootJ = root_list[0]
-        # self.rootJ.color = Color.BLACK
         self.rootJ | self.JNT_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
@@ -153,8 +151,6 @@ class SimpleFk(RigModule):
 
         localScale = self.setting.a.add("localScale", dv=1, min=0.01)
         localScale >> self.CTL_DATA.a.scale
-        # prx_grp = DagNode(self.rigID + "_PRX")
-        # localScale >> prx_grp.a.scale
         self.masterC.a.globalScale * localScale >> self.JNT_DATA.a.scale
         self.ctls_fk[0].a.add("localScale", proxy=localScale)
 

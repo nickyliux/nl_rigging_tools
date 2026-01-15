@@ -1843,7 +1843,7 @@
       <set>Qt::AlignCenter</set>
      </property>
      <property name="textVisible">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>

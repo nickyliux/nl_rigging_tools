@@ -18,8 +18,6 @@ from enum import Enum
 
 class LimbType(Enum):
     BASIC = 0
-    # ROBOT = 1
-    # RIBBON = 2
     SKEL = 1
 
 
@@ -33,7 +31,6 @@ class LegQd(RigModule):
 
         super().__init__(rigNode)
 
-        # Guide attributes
         guide_attrs = [
             "limbType",
             "dualBone",
@@ -52,7 +49,6 @@ class LegQd(RigModule):
         self.FK_GRP = GrpNode("FK", pf=self.rigID, p=self.CTL_DATA)
         self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA)
 
-        # Main rig attributes
         self.setting = None
         self.jnts = []
         self.jnts_fk = []
@@ -144,7 +140,6 @@ class LegQd(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
-            # ("hip_fkc", "arrow2", None, -scale, 0),
             ("hip_fkc", "rotate2_3d", "x", -scale, 0),
             ("upr_fkc", "squareR", "x", scale, 0),
             ("lwr_fkc", "squareR", "x", scale, 0),
@@ -186,7 +181,6 @@ class LegQd(RigModule):
         self.build_ik()
         self.blend_fk_ik()
 
-        # self.jnts_bind = self.jnts[1:-1] + [self.boneFix]
         self.jnts_bind = [self.upr, self.palm]
 
         self.scapulaG = self.build_legScapula(
@@ -208,7 +202,6 @@ class LegQd(RigModule):
         if self.patellaBone:
             self.patella_setup()
 
-        # if self.limbType == LimbType.SKEL.value:
         if self.dualBone:
             self.build_dual_bones()
         else:
@@ -359,11 +352,9 @@ class LegQd(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        # --- Snap setting control to upper joint and constrain ---
-        self.setting.snapTo(self.palm, p=self.CTL_DATA)  # , ofs=(xDr * rSz * 15, 0, 0))
+        self.setting.snapTo(self.palm, p=self.CTL_DATA)
         self.palm.cstPar(self.setting, mo=1)
 
-        # --- Add blend attribute and set up blending constraints ---
         fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=1)
         for i in range(len(self.jnts) - 1):
             fkJ = self.jnts_fk[i]
@@ -371,12 +362,9 @@ class LegQd(RigModule):
             jnt = self.jnts[i]
             common.cstMulti(fkJ, ikJ, jnt, w=fkIk)
 
-        # --- Add proxy attribute for easy FK/IK switch on controls ---
         for ctl in self.ctls_fk + self.ctls_ik + [self.smart_ctl]:
-
             ctl.a.add("fkIk", proxy=fkIk)
 
-        # --- Create matcher group for IK control alignment ---
         GrpNode(f"{self.ikc.name}_matcher", align=self.ikc, p=self.digit_fkc)
         GrpNode(f"{self.extra_ikc.name}_matcher", align=self.extra_ikc, p=self.palm_fkc)
 
@@ -384,17 +372,14 @@ class LegQd(RigModule):
         """Setup extra roll logic for the quadruped leg rig."""
         logging.info(self.rigID)
 
-        # --- Setup aim group and locator ---
         aimGrp = extraRollG.addOffsetGrp(below=1, relink=0)
         aimGrp | extraRollG.offset
         uprIkJ = self.jnts_ik[1]
         aimG_loc = LocNode(f"{aimGrp.name}_loc", align=uprIkJ, p=grp)
         self.ikc.cstPoi(aimG_loc, mo=1)
 
-        # --- Add palm aim attributes ---
         autoAim = self.extra_ikc.a.add("autoAim", min=0, max=1, dv=1)
         aimRatio = self.extra_ikc.a.add("aimRatio", min=-2, max=2, dv=self.palmAimRatio)
-        # , dv=-0.5 if "Arm" in self.rigID else 0.5
 
         # --- Setup aim constraint ---
         common.cstMulti(
@@ -421,8 +406,6 @@ class LegQd(RigModule):
         grp_ofs = extraRollG.addOffsetGrp(below=1)
         self.extra_ikc.alignTo(grp_ofs, p=extraRollG)
         grp_ofs | self.extra_ikc
-
-        # --- Hide aim locator ---
         aimG_loc.hide()
 
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
@@ -451,12 +434,11 @@ class LegQd(RigModule):
 
         # --- Smart control setup ---
         self.smart_ctl.snapAlignTo(self.digit, self.master_guide)
-        # self.smart_ctl.snapAlignTo(self.tip, self.master_guide)
         self.smart_ctl | self.IK_GRP
         self.smart_ctl.addOffsetGrp()
         self.palm.cstPar(self.smart_ctl.offset, mo=1)
-        # self.tip.cstPar(self.smart_ctl.offset, mo=1)
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
+
         (-xDr * self.smart_ctl.a.ry) >> toeRollG.a.ry
         (-xDr * self.smart_ctl.a.rz) >> self.smart_ctl.a["footBank"]
 
@@ -491,7 +473,6 @@ class LegQd(RigModule):
                 ctlList.append(c)
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
             self.toesCtlsList.append(ctlList)
-            # mc.hide(ikH, ikJ)
 
         # --- Add hidden IK handles for toe segments ---
         for toeJs in self.toesJntList:
@@ -505,29 +486,17 @@ class LegQd(RigModule):
                 p=self.ball_fkc,
             )
 
-        # # Splay logic (commented out)
-        # splay = self.ball_fkc.a.add("splay", min=-5, max=5)
-        # toeCount = len(self.toesJntList)
-        # splayRange = 45
-        # for i in range(toeCount):
-        #     tgt = toeLocList[i].a.rz
-        #     common.sdk2(splay, tgt, -5, splayRange * (-1 + 2 / (toeCount - 1) * i))
-        #     common.sdk2(splay, tgt, 5, -splayRange * (-1 + 2 / (toeCount - 1) * i))
-
     def build_dual_bones(self):
         """Build dual bones for the lower leg."""
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        # --- Generate dual joint chains ---
         radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.5)
         ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=0.5)
 
-        # --- Parent dual chains to appropriate joint ---
         parent = self.boneFix if self.kneeFix else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent
 
-        # --- Create and align locators for dual chains ---
         radius_loc = LocNode(
             "radius_loc", pf=rID, align=radius_JC[1], p=self.palm, size=rSz
         )
@@ -535,7 +504,6 @@ class LegQd(RigModule):
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
 
-        # --- Setup aim constraints for dual locators ---
         uType = "objectrotation"
         aim = (xDr, 0, 0)
         z = (0, 0, 1)
@@ -602,10 +570,6 @@ class LegQd(RigModule):
             self.setting.a.add("showSetup", type="bool", k=0),
             onList=[self.jnts_fk[0], self.jnts_ik[0]],
         )
-        # self.ctl_vis_toggle(
-        #     self.setting.a.add("debugVis", dv=0, type="bool", k=0),
-        #     onList=self.jnts_fk + self.jnts_ik,
-        # )
         [ikh.hide() for ikh in self.all_ikH.values()]
 
     def setup_channel(self):
@@ -622,7 +586,6 @@ class LegQd(RigModule):
 
         if self.scapulaExtra:
             self.scap_fkc.a.showAttr(t=1, r=1)
-        # self.scap_fkc.a.showAttr("ty", "tz", r=1)
 
     def setup_rotate_order(self):
         """Setup rotate order for the quadruped leg rig controls."""
@@ -657,8 +620,6 @@ class LegQd(RigModule):
             + self.ctls_sub
             + [self.smart_ctl, self.setting, self.extra_ikc]
         )
-        # if self.RBN_BONES:
-        #     ctlSet.extend(self.all_bendy)
         if self.scapulaExtra:
             ctlSet.append(self.scap_fkc)
         if self.toeBones:
@@ -668,7 +629,6 @@ class LegQd(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the quadruped leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        # proxy.add_radiusScale_attr(self.jnts_bind, 2)
 
     def setup_scale(self):
         """Setup scale for the quadruped leg rig module."""
@@ -678,6 +638,7 @@ class LegQd(RigModule):
         """Post setup for the quadruped leg rig module."""
         logging.info(self.rigID)
         common.add_mirror_attr([self.ikc, self.ikc_gimbal, self.pvc, self.smart_ctl])
+
         self.setup_scale()
         self.setup_bindJnt()
         self.setup_ctlSet()

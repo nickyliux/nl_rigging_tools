@@ -135,7 +135,7 @@ from nl_modules.build import (
     tail,
     tail_fk,
     tpl_loader,
-    ribbon,
+    # ribbon,
     head,
     simple_fk,
 )
@@ -143,7 +143,7 @@ from nl_modules.build import (
 reload(rig_base)
 reload(rig_module)
 reload(tpl_loader)
-reload(ribbon)
+# reload(ribbon)
 reload(head)
 reload(neck_bp)
 reload(spine_bp)

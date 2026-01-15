@@ -20,8 +20,6 @@ class Belt(RigModule):
         """Initialize the belt rig module with the given rigNode."""
         super().__init__(rigNode)
 
-        # Guide attributes
-        # guide_attrs = ["fkJntNum", "rbnJntNum"]
         guide_attrs = ["rbnJntNum", "ikCtlNum"]
         for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
@@ -74,14 +72,11 @@ class Belt(RigModule):
         """Build the belt rig."""
         self.build_pre_module()
 
-        # Create and register rbSrf
         self.rbSrf1 = self.create_rbSrf()
-        # self.rbSrf2 = self.create_rbSrf()
         self.rigNode.setMsg({"rbSrf": self.rbSrf1})
 
         self.build_ctl()
         self.build_ik()
-        # self.build_fk()
         self.build_ribbon()
         # build.add_noise_logic(ctl=self.setting, targets=self.jnts_ofs[1:])
         self.build_post()
@@ -104,7 +99,6 @@ class Belt(RigModule):
         """Create the ribbon for the belt rig."""
         logging.info(self.rigID)
         crvLenRatio, self.jnts_rb, crv = common.build_ribbon_rivet(
-            # rbSrf=self.rbSrf2,
             rbSrf=self.rbSrf1,
             rivetNum=self.rbnJntNum,
             scaleAttr=self.masterC.a.globalScale,
@@ -147,8 +141,6 @@ class Belt(RigModule):
             ctl.cv_scale(1, 1, 0.5)
             self.jnts_ik[i] | ctl
             self.ctls_ik.append(ctl)
-            # if i > 0:
-            #     ctl.offset | self.ctls_ik[0]
             self.rigNode.setMsg({f"ikc{i}": ctl})
 
         if self.ikCtlNum > 2:
@@ -156,7 +148,6 @@ class Belt(RigModule):
                 common.cstMulti(
                     self.ctls_ik[-1],
                     self.ctls_ik[0],
-                    # self.ctls_ik[i + 1],
                     self.ctls_ik[i + 1].addOffsetGrp(),
                     w=(i + 1) / (self.ikCtlNum - 1),
                     cstType="poi",
@@ -173,97 +164,12 @@ class Belt(RigModule):
             spaces=[self.ctls_ik[0].offset, self.masterC],
         )
 
-    # def build_fk(self):
-    #     """Build the FK controls for the belt rig."""
-    #     logging.info(self.rigID)
-
-    #     rID, rSz, xDr = self.getMyVar()
-    #     # --- Build FK joint chain from guide curve ---
-    #     self.jnts_fk = JntNode.createJntFrCrv(
-    #         self.LINE_GUIDE,
-    #         num=self.fkJntNum + 1,
-    #         pf=rID,
-    #         aimV=(0, 0, -1),
-    #         size=rSz,
-    #         p=self.FK_GRP,
-    #     )
-
-    #     # --- Build pin constraints for FK controls ---
-    #     # coord = [(0.5, i / self.fkJntNum) for i in range(self.fkJntNum + 1)]
-    #     # pin, pinXf = common.nlRivet(geo=self.rbSrf1, coordList=coord, p=self.CTL_DATA)
-    #     crvLenRatio, pinXf, crv = common.build_ribbon_rivet(
-    #         rbSrf=self.rbSrf1,
-    #         rivetNum=self.fkJntNum + 1,
-    #         scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,
-    #         stretchyAttr=self.setting.a.stretchy,
-    #         pf=rID,
-    #         rSz=rSz,
-    #         outputJnt=0,
-    #         p=self.CTL_DATA,
-    #         JNT_DATA=self.JNT_DATA,
-    #     )
-
-    #     # --- Create FK controls and register ---
-    #     for i in range(self.fkJntNum + 1):
-    #         tgt = self.jnts_fk[i]
-    #         ctl = CrvNode(
-    #             f"{i}_fkc", pf=rID, shape="circle", up="z", scale=rSz * 0.8, align=tgt
-    #         )
-    #         self.rigNode.setMsg({f"fkc{i}": ctl})
-    #         self.ctls_fk.append(ctl)
-
-    #     # --- Build group chain and connect pins ---
-    #     chainGrps = []
-    #     lastGrp = self.FK_GRP
-    #     for i in range(self.fkJntNum + 1):
-    #         grp = GrpNode(f"{i}_chainGrp", pf=rID, align=self.ctls_fk[i], p=lastGrp)
-    #         pinXf[i].cstPar(grp, mo=1)
-    #         chainGrps.append(grp)
-    #         lastGrp = grp
-
-    #     # --- Build FK with controls ---
-    #     self.build_fk_with_ctl3(self.jnts_fk, self.ctls_fk, p=self.FK_GRP)
-
-    #     # --- Connect chain groups to FK control offsets ---
-    #     for i in range(self.fkJntNum + 1):
-    #         chainGrps[i].a.t >> self.ctls_fk[i].offset.a.t
-    #         chainGrps[i].a.r >> self.ctls_fk[i].offset.a.r
-
-    #     # --- Build offset control layer ---
-    #     for i in range(self.fkJntNum + 1):
-    #         ctl = CrvNode(
-    #             f"{i}_ofs_ctl",
-    #             pf=rID,
-    #             shape="diamond_3d",
-    #             scale=rSz,
-    #             align=self.ctls_fk[i],
-    #             p=self.ctls_fk[i],
-    #             color=Color.L_BLUE,
-    #             top=1,
-    #         )
-    #         # ctl.cv_move(0, rSz * 20, 0)
-    #         jnt = JntNode(f"{i}_ofs_jnt", pf=rID, align=ctl, p=ctl)
-    #         self.ctls_ofs.append(ctl)
-    #         self.jnts_ofs.append(jnt)
-
-    #     # --- Attach ribbon surface weights to offset joints ---
-    #     SrfNode(self.rbSrf2).weightTo(self.jnts_ofs, chain=0, mi=2, dr=6)
-
-    #     # --- Cleanup and update root joint ---
-    #     mc.delete(self.rootJ)
-    #     self.rootJ = self.jnts_fk[0]
-    #     self.rigNode.setMsg({"rootJ": self.rootJ})
-
     def setup_vis(self):
         """Setup visibility toggles for the belt rig controls."""
         self.ctl_vis_toggle(
             self.setting.a.add("showSetup", k=0, type="bool"),
             onList=self.jnts_ik + [self.rbSrf1],
         )
-        # self.ctl_vis_toggle(
-        #     self.setting.a.add("showSubIk", k=0, type="bool", dv=1),
-        #     onList=self.ctls_ofs,
-        # )
 
     def setup_channel(self):
         """Setup channel attributes for the belt rig controls."""
@@ -271,8 +177,6 @@ class Belt(RigModule):
             ctl.a.showAttr(t=1, r=1)
 
         self.setting.a.showAttr()
-
-        # self.ctls_fk[-1].a.add("stretchy", proxy=self.setting.a.stretchy)
         self.ctls_ik[0].a.add("stretchy", proxy=self.setting.a.stretchy)
         self.ctls_ik[-1].a.add("stretchy", proxy=self.setting.a.stretchy)
 
@@ -301,7 +205,6 @@ class Belt(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the belt rig controls."""
         self.add_bind_jnt_set(self.jnts_bind)
-        # proxy.add_radiusScale_attr(self.jnts_bind, 0.4)
 
     def setup_space(self):
         pass

@@ -1,7 +1,8 @@
 import logging
 from nl_modules.build.rig_module import RigModule
 from nl_modules.utils import proxy
-from nl_modules.utils.color import Color
+
+# from nl_modules.utils.color import Color
 
 
 class Head(RigModule):
@@ -11,13 +12,11 @@ class Head(RigModule):
         """Initialize the Head rig module with the given rigNode."""
         super().__init__(rigNode)
 
-        # Joint names and attributes
         self.jnt_names = ["head", "jaw", "lf_eye", "rt_eye"]
         for name in self.jnt_names:
             setattr(self, name, None)
             setattr(self, f"{name}_fkc", None)
 
-        # Main attributes
         self.jnts = []
         self.ctls_fk = []
         self.rootJ = None
@@ -75,7 +74,7 @@ class Head(RigModule):
         self.head_fkc.alignTo(self.head)
         self.head_fkc.addOffsetGrp()
         self.head_fkc.cstPar(self.head, mo=1)
-        # self.head_fkc.cv_moveTo(self.headEnd.o.pos)
+        self.head_fkc.cv_moveTo(self.headEnd.o.pos)
 
         self.jaw_fkc.snapTo(self.jaw, p=self.head_fkc)
         self.jaw_fkc.addOffsetGrp()
@@ -128,7 +127,7 @@ class Head(RigModule):
 
     def setup_bindJnt(self):
         """Setup bind joints for the head rig module."""
-        self.jnts_bind = [self.head, self.jaw]  # , self.lf_eye, self.rt_eye]
+        self.jnts_bind = [self.head, self.jaw]
         self.add_bind_jnt_set(self.jnts_bind)
         proxy.add_proxyDiv_attr([self.head], 3)
 
@@ -146,7 +145,7 @@ class Head(RigModule):
                 "anchorP1": self.headEnd,
             }
         )
-        self.setup_vis()
-        self.setup_rotate_order()
+        # self.setup_vis()
+        # self.setup_rotate_order()
         self.build_post_module()
         self.setup_channel()

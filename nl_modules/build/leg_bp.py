@@ -129,7 +129,6 @@ class LegBp(RigModule):
                 fgr_jnts[0] | self.toesRootJ
 
         self.rootJ = root_list[0]
-        # self.rootJ.color = Color.BLACK
         self.rootJ | self.JNT_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
@@ -142,8 +141,7 @@ class LegBp(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
-            # ("hip_fkc", "arrow2", None, -scale / 2, 0),
-            ("hip_fkc", "rotate2_3d", "x", -scale, 0),
+            ("hip_fkc", "shoulder", "x", -scale / 2, 0),
             ("upr_fkc", "squareR", "x", scale, 0),
             ("lwr_fkc", "squareR", "x", scale, 0),
             ("palm_fkc", "squareR", "x", scale, 0),
@@ -171,7 +169,6 @@ class LegBp(RigModule):
 
         self.setting.cv_move(scale * 15, 0, 0)
         self.setting.color = Color.PINK
-        # self.hip_fkc.cv_rotate(0, 90, 0)
         self.hip_fkc.cv_move(scale * 5, -scale * 15, 0)
 
     def build(self):
@@ -355,9 +352,8 @@ class LegBp(RigModule):
         self.smart_ctl_setup(toeRollG)
 
     def smart_ctl_setup(self, toeRollG):
-        # Smart Ctl setup
+        """Setup the smart control for foot rolling."""
         rID, rSz, xDr = self.getMyVar()
-        scale = rSz * xDr
 
         self.smart_ctl | self.ikc
         self.smart_ctl.snapAlignTo(self.ball, self.master_guide)
@@ -426,9 +422,7 @@ class LegBp(RigModule):
                 bfj.cstPar(ofg, mo=1)
                 self.ball_fkc.cstPar(jnt)
 
-        # Useful for fk ik switch popUp menu
         for ctl in self.ctls_fk + self.ctls_ik + [self.smart_ctl]:
-
             ctl.a.add("fkIk", proxy=fkIk)
 
         GrpNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
@@ -574,19 +568,6 @@ class LegBp(RigModule):
 
     def setup_rotate_order(self):
         """Setup rotate order for the leg rig controls."""
-        # for c in (
-        #     self.ctls_fk
-        #     + self.ctls_ik
-        #     + [
-        #         self.lwr,
-        #         self.jnts_bf[2],
-        #         self.jnts_fk[2],
-        #         self.jnts_ik[2],
-        #         self.pin_fkc,
-        #     ]
-        # ):
-        #     c.a.ro.set(2)
-        # self.smart_ctl.a.ro.set(3)
         for ctl in self.ctls_fk + self.ctls_ik + self.ctls_sub + [self.smart_ctl]:
             ctl.a.ro.set(5)
 
@@ -615,7 +596,6 @@ class LegBp(RigModule):
 
     def setup_scale(self):
         """Setup scaling for the leg rig controls."""
-        # self.masterC.a.globalScale >> self.RIG_DATA.a.s
         self.masterC.a.globalScale >> self.JNT_DATA.a.s
 
         footScale = self.setting.a.add("footScale", min=0.01, dv=1)
@@ -679,21 +659,3 @@ class LegBp(RigModule):
         self.setup_rotate_order()
         self.build_post_module()
         self.setup_channel()
-
-        # --- (Optional) Splay logic for toes (commented out) ---
-        # splay = self.ball_fkc.a.add("splay", min=-5, max=5)
-        # toeCount = len(self.toesJntList)
-        # splayRange = 45
-        # for i in range(toeCount):
-        #     tgt = toeLocList[i].a.rz
-        #     common.sdk2(splay, tgt, -5, splayRange * (-1 + 2 / (toeCount - 1) * i))
-        #     common.sdk2(splay, tgt, 5, -splayRange * (-1 + 2 / (toeCount - 1) * i))
-        #
-        # self.ctl_vis_toggle(
-        #     self.ikc.a.add("extraCtl", dv=1, type="bool", k=0),
-        #     onList=self.ctls_sub,
-        # )
-        # self.ctl_vis_toggle(
-        #     self.setting.a.add("debugVis", type="bool", k=0, dv=0),
-        #     onList=self.jnts_fk + self.jnts_ik + self.jnts_bf # + self.jnts_ro,
-        # )

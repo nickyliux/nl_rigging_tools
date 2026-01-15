@@ -28,7 +28,6 @@ class SpineBp(RigModule):
         """Initialize the SpineBp rig module."""
         super().__init__(rigNode)
 
-        # Guide attributes
         for attr in (
             "spineType",
             "fkJntNum",
@@ -40,8 +39,6 @@ class SpineBp(RigModule):
         self.LINE_GUIDE = DagNode(f"{self.rigID}_line_guide")
         self.MD_GUIDE = DagNode(f"{self.rigID}_md_guide")
 
-        # guide = DagNode(f"{self.rigID}_chest_pivot_guide")
-        # self.CHEST_PVT_GUIDE = guide if guide.exists() else None
         guide = DagNode(f"{self.rigID}_base_pivot_guide")
         self.BASE_PVT_GUIDE = guide if guide.exists() else None
 
@@ -77,7 +74,6 @@ class SpineBp(RigModule):
     def build_ctl(self):
         """Build control nodes for the spine rig."""
         logging.info(self.rigID)
-
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 3, 0),
@@ -93,8 +89,6 @@ class SpineBp(RigModule):
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         self.setting.cv_move(0, 0, rSz * -110)
-        # self.setting.color = Color.PINK
-        # self.cog_ctl.color = Color.YELLOW
 
     def is_ribbon(self):
         """Check if the spine rig is of ribbon type."""
@@ -167,10 +161,9 @@ class SpineBp(RigModule):
         """modify first fkc specific for hip rotation."""
         ctl = self.ctls_fk[0]
         ctl(p=self.CTL_DATA, addOfs=1, color=Color.BLUE)
-        # ctl.offset.snapAlignTo(self.jnts_fk[1], self.jnts_fk[0])
-        ctl.offset.snapAlignTo(self.BASE_PVT_GUIDE, self.jnts_fk[0])
-        # ctl.cv_move(0, self.rigSize * -20, 0)
         ctl.cv_scale(1.2, 1.2, 1.2)
+
+        ctl.offset.snapAlignTo(self.BASE_PVT_GUIDE, self.jnts_fk[0])
         ctl.cstPar(self.jnts_fk[0], mo=1)
 
     def build_spine_ik(self):
@@ -181,7 +174,6 @@ class SpineBp(RigModule):
         self.hip_ikc.snapAlignTo(self.jnts_fk[0], self.master_guide)
         self.mid_ikc.snapAlignTo(self.MD_GUIDE, self.master_guide)
         self.chest_ikc.snapAlignTo(self.jnts_fk[-1], self.master_guide)
-        # self.chest_ikc.snapAlignTo(self.CHEST_PVT_GUIDE, self.master_guide)
 
         self.hip_ikc | self.ctls_fk[0]
         self.chest_ikc | self.ctls_fk[-1]
@@ -193,13 +185,8 @@ class SpineBp(RigModule):
         self.chest_ikc.addOffsetGrp()
 
         self.chest_ikc.a.t @ self.hip_ikc.a.t >> self.mid_ikc.offset.offset.a.t
-        # (-self.hip_ikc.a.ry / 2) @ self.chest_ikc.a.ry >> self.mid_ikc.offset.a.ry
-        # (self.hip_ikc.a.ry / 2) @ self.chest_ikc.a.ry >> self.mid_ikc.offset.a.ry
-        # self.hip_ikc.a.ry @ self.chest_ikc.a.ry >> self.mid_ikc.offset.a.ry
         twistRatio_dv = 0.25 if self.is_neck() else 0.75
         twistRatio = self.mid_ikc.a.add("twistRatio", min=0, max=1, dv=twistRatio_dv)
-        # self.chest_ikc.a.add("twistRatio", proxy=twistRatio, k=0)
-        # self.hip_ikc.a.add("twistRatio", proxy=twistRatio, k=0)
 
         blendRy = ut.blend2_(self.hip_ikc.a.ry, self.chest_ikc.a.ry, w=twistRatio)
         blendRy >> self.mid_ikc.offset.a.ry
@@ -214,7 +201,6 @@ class SpineBp(RigModule):
         )
         self.chest_ikc.cstOri(self.jnts_fk[-1], mo=1)
 
-        # self.chest_ikc.a.add("pvtOffset") >> pvt.a.ty
         self.build_ribbon()
 
         self.ctls_ik = [self.mid_ikc, self.chest_ikc]
@@ -234,7 +220,6 @@ class SpineBp(RigModule):
         )
         grp = self.mid_ikc.addOffsetGrp()
         autoMidBend = self.mid_ikc.a.add("autoMidBend", min=0, max=1, dv=0.5)
-        # self.chest_ikc.cstParT(loc, mo=1)
         common.cstMulti(self.chest_ikc, self.hip_ikc, loc, cstType="parT", mo=1)
         loc.a.ty.disconnect()
 
@@ -253,7 +238,6 @@ class SpineBp(RigModule):
             crv=self.LINE_GUIDE,
             normal=-1,
             snap=self.rootJ,
-            # spans=self.fkJntNum - 1,
             spans=self.fkJntNum + 1,
             p=self.CTL_DATA,
             inheritsXf=0,
@@ -376,7 +360,6 @@ class SpineBp(RigModule):
 
     def setup_anchor(self):
         """Setup anchor module for the spine rig controls."""
-
         anchor1 = self.hip_ikc if self.is_ribbon() else self.jnts_fk[0]
         anchor2 = self.jnts_rb[-1] if self.is_ribbon() else self.jnts_fk[-1]
         self.setup_anchor_module({"anchorP1": anchor1, "anchorP2": anchor2})

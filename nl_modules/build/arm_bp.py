@@ -88,7 +88,6 @@ class ArmBp(RigModule):
         DagNode(root_list[0]).a.ro.set(2)
 
         self.rootJ = root_list[0]
-        # self.rootJ.color = Color.BLACK
         self.rootJ | self.JNT_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
@@ -116,12 +115,9 @@ class ArmBp(RigModule):
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
-        # self.clavicle_fkc.cv_rotate(0, 0, 90)
-        # self.clavicle_fkc.cv_move(scale * 30, 0, 0)
         if self.scapulaBone:
             self.scap_fkc.cv_move(0, 0, scale * 20)
 
-        # self.ikc.cv_rotate(0, 90, 0)
         self.pvc.cv_rotate(-90, 0, 0)
         self.setting.cv_move(0, scale * 20, 0)
         self.setting.color = Color.PINK
@@ -331,7 +327,6 @@ class ArmBp(RigModule):
         )
         total = len(self.jnts) - 1
 
-        # Blend FK/IK to BF joints and drive output joints
         for i in range(total):
             fkj = self.jnts_fk[i]
             ikj = self.jnts_ik[i]
@@ -352,11 +347,9 @@ class ArmBp(RigModule):
             else:
                 self.ballRoll_loc.cstPar(jnt, mo=1)
 
-        # Add blend attribute to all controls
         for ctl in self.ctls_fk + self.ctls_ik:
             ctl.a.add("fkIk", proxy=fkIk)
 
-        # Create matcher group for snapping
         GrpNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
 
     def build_armScapula(self):
@@ -367,8 +360,6 @@ class ArmBp(RigModule):
         clavStart_guide = DagNode(f"{rID}_clavStart_guide")
         clavEnd_guide = DagNode(f"{rID}_clavEnd_guide")
         scapula_guide = DagNode(f"{rID}_scapula_guide")
-
-        # Y = Color.YELLOW
 
         # SCAPULA -----------------------------------------------------------------
         scapJnts = JntNode.makeTwoJointChain(
@@ -381,25 +372,6 @@ class ArmBp(RigModule):
             rad=rSz / 2,
             p=self.JNT_DATA,
         )
-        # scapLoc = LocNode(
-        #     "scapLoc", pf=rID, snap=self.upr, p=self.clavicle_fkc, size=rSz * 5, color=Y
-        # )
-        # scapAimLoc = LocNode(
-        #     "scapAimLoc",
-        #     pf=rID,
-        #     snap=scapAim_guide,
-        #     p=self.clavicle_fkc.offset,
-        #     size=rSz * 5,
-        #     color=Y,
-        # )
-        # scapAimLoc.cstAim(
-        #     scapLoc,
-        #     worldUpType="objectrotation",
-        #     worldUpObject=self.clavicle_fkc.offset,
-        #     aim=(xDr, 0, 0),
-        #     u=(0, 0, 1),
-        #     wu=(0, 0, 1),
-        # )
 
         self.scap_fkc.snapAlignTo(self.upr, scapJnts[0], p=self.CLV_GRP)
         ofsGrps = self.scap_fkc.addOffsetGrp(count=3)
@@ -437,25 +409,20 @@ class ArmBp(RigModule):
     def build_dual_bones(self):
         """Build dual bones for the lower arm."""
         logging.info(self.rigID)
-
         rID, rSz, xDr = self.getMyVar()
 
-        # Generate radius and ulna joint chains
         radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.6)
         ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=0.6)
-
-        # Parent dual chains to lower arm
         (radius_JC[0], ulna_JC[0]) | self.lwr
 
-        # Create locators for dual  orientation
         radius_loc = LocNode(
             "radius_loc", pf=rID, align=radius_JC[1], p=self.palm, size=rSz
         )
         ulna_loc = LocNode("ulna_loc", pf=rID, align=ulna_JC[1], p=self.palm, size=rSz)
+
         radius_loc.cstPoi(radius_JC[1])
         ulna_loc.cstPoi(ulna_JC[1])
 
-        # Aim constraints for dual  orientation
         uType = "objectrotation"
         aim = (xDr, 0, 0)
         z = (0, 0, 1)
@@ -546,19 +513,13 @@ class ArmBp(RigModule):
 
     def setup_rotate_order(self):
         """Setup rotate order for the arm rig controls."""
-        # for ctl in [self.ikc, self.clavicle_fkc]:
-        #     ctl.a.ro.set(2)
-        # self.lwr_fkc.a.ro.set(3)
-        # self.upr_fkc.a.ro.set(4)
-        # self.palm_fkc.a.ro.set(5)
-
         for ctl in self.ctls_fk + self.ctls_ik:
             ctl.a.ro.set(5)
         self.ctls_fk[0].a.ro.set(2)
 
     def setup_space(self):
         """Setup space switching for the arm rig controls."""
-        # Add space names for UI or switching
+
         self.rigNode.a.add(
             "spaceName1",
             type="string",
@@ -570,10 +531,8 @@ class ArmBp(RigModule):
             txt="arm, master, clavicle, COG, uprBody, lwrBody",
         )
 
-        # Build pole vector and FK/IK pin setup
         self.ikH1.build_pvfkPinSetup(ikTarget=self.ikc)
 
-        # Set up space switching message connections
         PALM_ID = 3
         self.rigNode.setMsg(
             {
@@ -621,8 +580,6 @@ class ArmBp(RigModule):
         logging.info(self.rigID)
 
         common.add_mirror_attr([self.pvc])
-        # if self.scapulaBone:
-        #     common.add_mirror_attr([self.scap_fkc])
 
         self.setup_scale()
         self.setup_bindJnt()
