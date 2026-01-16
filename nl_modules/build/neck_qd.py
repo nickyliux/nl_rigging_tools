@@ -43,7 +43,6 @@ class NeckQd(SpineQd):
     def setup_bindJnt(self):
         """Setup bind joints for the neck rig."""
         self.add_bind_jnt_set(self.jnts_bind)
-        # proxy.add_radiusScale_attr(self.jnts_bind, 2)
 
     def setup_ctlSet(self):
         """Setup control sets for the neck rig."""
