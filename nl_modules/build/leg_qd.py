@@ -22,10 +22,9 @@ class LimbType(Enum):
 
 
 class LegQd(RigModule):
-    """Quadruped leg rig module class, inherits from RigModule."""
+    """Quadruped leg rig module."""
 
     def __init__(self, rigNode):
-        """Initialize the quadruped leg rig module."""
         if isinstance(rigNode, str):
             rigNode = DagNode(rigNode)
 

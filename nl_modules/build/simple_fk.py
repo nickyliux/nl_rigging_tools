@@ -12,10 +12,9 @@ from nl_modules.utils.color import Color
 
 
 class SimpleFk(RigModule):
-    """Finger rig module for creating and managing finger rigs in a character rig."""
+    """Simple fk rig module."""
 
     def __init__(self, rigNode):
-        """Initialize the Finger rig module."""
         rigNode = DagNode(rigNode) if isinstance(rigNode, str) else rigNode
         super().__init__(rigNode)
 

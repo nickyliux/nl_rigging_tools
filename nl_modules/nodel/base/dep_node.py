@@ -76,6 +76,8 @@ class DepNode:
             if mc.objExists(n):
                 self._dep = open_maya_api.toDpNode(n)
                 return True  # DagNode.dag will be None without return
+            else:
+                return False
         return False
 
     @property

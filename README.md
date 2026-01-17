@@ -90,10 +90,22 @@ flowchart
 ```
 ```python
 # Example
-ctl = GrpNode(ctl)
-grp = GrpNode('myGrp')
-grp.alignTo(ctl)
+from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.jnt_node import JntNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.srf_node import SrfNode
 
+grp = GrpNode('newGrp')
+jnt = JntNode('newJnt')
+crv = CrvNode('newCrv')
+srf = SrfNode('newSrf')
+
+crv.weightTo([jnt])
+srf.weightTo([jnt])
+
+grp.a.t.set(0,10,0)
+jnt.alignTo(grp)
+jnt.addOffsetGrp()
 ```
 ## Custom Component Classes
 ```mermaid
@@ -114,8 +126,11 @@ flowchart
 ```
 ```python
 # Example
-grp = GrpNode('myGrp')
-test = Grapee
+from nl_modules.build.leg_bp import LegBp
+
+cpn = LegBp('lfLegBp0_RGN')
+cpn.gen_sk()
+cpn.build()
 ```
 
 ## Dev Environment

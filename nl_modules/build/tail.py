@@ -14,12 +14,10 @@ from nl_modules.utils.color import Color
 
 
 class Tail(RigModule):
-    """Tail rig module class, inherits from RigModule."""
+    """Tail rig module."""
 
     def __init__(self, rigNode):
-        """Initialize the Tail rig module with the given rigNode."""
         super().__init__(rigNode)
-
         # Guide attributes
         guide_attrs = ["fkJntNum", "rbnJntNum"]
         for attr in guide_attrs:

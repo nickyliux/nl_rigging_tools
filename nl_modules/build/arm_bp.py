@@ -24,7 +24,7 @@ class LimbType(Enum):
 
 
 class ArmBp(RigModule):
-    """Arm rig module class, inherits from RigModule."""
+    """Biped arm rig module."""
 
     def __init__(self, rigNode):
         rigNode = DagNode(rigNode) if isinstance(rigNode, str) else rigNode

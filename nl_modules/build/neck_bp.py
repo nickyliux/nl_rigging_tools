@@ -3,13 +3,9 @@ from nl_modules.build.spine_bp import SpineBp, SpineType
 
 
 class NeckBp(SpineBp):
-    """
-    Builds the neck rig based on the spine blueprint.
-    Inherits from SpineBp and customizes anchor and space setup for the neck.
-    """
+    """Biped neck rig module"""
 
     def __init__(self, rigNode):
-        """Initialize the NeckBp rig module."""
         super().__init__(rigNode)
 
     def setup_anchor(self):

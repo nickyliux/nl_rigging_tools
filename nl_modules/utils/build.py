@@ -57,31 +57,6 @@ def buildTgt(rigN):
                     logging.warning(f"Skip building {rigN.name}, no skeleton found.")
 
 
-def loadBase():
-    """Load base template file for rigging"""
-    util_dir = os.path.dirname(os.path.abspath(__file__))
-    MAYA_TPL_DIR = os.path.join(util_dir, "..", "build", "components")
-    base_file = f"{MAYA_TPL_DIR}/base.ma"
-
-    try:
-        mc.file(base_file, i=1)
-    except Exception as e:
-        raise ValueError(f"Error loading {base_file}: {e}")
-
-    if not mc.objExists("master_ctl"):
-        raise ValueError("master_ctl NOT found.")
-
-
-def preRig():
-    """Prepare for rigging"""
-    if not mc.objExists("master_ctl"):
-        loadBase()
-    ctl = DagNode("master_ctl")
-    ctl.a.showAttr(t=1, r=1)
-    ctl.offset.a.showAttr(t=1, r=1)
-    common.setVP(wos=1)
-
-
 @common.Undo("buildSelOrAll")
 def buildSelOrAll(*args, uiPB=None):
     """Build rig for selected rigNodes or all if nothing selected"""
@@ -95,11 +70,11 @@ def buildSelOrAll(*args, uiPB=None):
 
     if rigNodesToBuild:
 
-        preRig()
+        common.setVP(wos=1)
+        common.xRayAllGeo(1)
         if uiPB:
             uiPB.setMaximum(len(rigNodes))
         i = 0
-        common.xRayAllGeo(1)
         for rN in rigNodesToBuild:
             buildTgt(rN)
             if uiPB:

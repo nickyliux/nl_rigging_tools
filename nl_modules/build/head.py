@@ -6,10 +6,9 @@ from nl_modules.utils import proxy
 
 
 class Head(RigModule):
-    """Head rig module class, inherits from RigModule."""
+    """Head Rig Module."""
 
     def __init__(self, rigNode):
-        """Initialize the Head rig module with the given rigNode."""
         super().__init__(rigNode)
 
         self.jnt_names = ["head", "jaw", "lf_eye", "rt_eye"]

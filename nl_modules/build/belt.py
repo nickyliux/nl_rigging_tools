@@ -14,12 +14,10 @@ from nl_modules.utils.color import Color
 
 
 class Belt(RigModule):
-    """belt rig module class, inherits from RigModule."""
+    """Belt rig module."""
 
     def __init__(self, rigNode):
-        """Initialize the belt rig module with the given rigNode."""
         super().__init__(rigNode)
-
         guide_attrs = ["rbnJntNum", "ikCtlNum"]
         for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))

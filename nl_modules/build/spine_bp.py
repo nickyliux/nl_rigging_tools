@@ -22,12 +22,10 @@ class SpineType(Enum):
 
 
 class SpineBp(RigModule):
-    """Spine rig module class, inherits from RigModule."""
+    """Biped spine rig module."""
 
     def __init__(self, rigNode):
-        """Initialize the SpineBp rig module."""
         super().__init__(rigNode)
-
         for attr in (
             "spineType",
             "fkJntNum",

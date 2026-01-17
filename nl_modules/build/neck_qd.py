@@ -5,13 +5,9 @@ from nl_modules.build.spine_qd import SpineQd
 
 
 class NeckQd(SpineQd):
-    """
-    NeckQd class for building a neck rig with quick setup features.
-    Inherits from SpineQd and customizes anchor, space, bind joint, and control set setup.
-    """
+    """Quadruped neck rig module"""
 
     def __init__(self, rigNode):
-        """Initialize the NeckQd rig module."""
         super().__init__(rigNode)
 
     def setup_anchor(self):

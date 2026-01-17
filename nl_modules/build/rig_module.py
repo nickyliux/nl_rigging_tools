@@ -26,6 +26,12 @@ class RigModule(RigBase):
         if isinstance(rigNode, str):
             rigNode = DagNode(rigNode)
 
+        if not rigNode.exists():
+            mc.confirmDialog(
+                title="Info", message="Missing rigNode !      ", button=["OK"]
+            )
+            raise RuntimeError("Missing rigNode !")
+
         super().__init__(rigNode)
 
         rID = self.rigID

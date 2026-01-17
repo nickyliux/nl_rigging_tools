@@ -10,10 +10,9 @@ from nl_modules.utils.color import Color
 
 
 class HandBp(RigModule):
-    """Hand rig module class, inherits from RigModule."""
+    """Hand rig module."""
 
     def __init__(self, rigNode):
-        """Initialize the Hand rig module."""
         super().__init__(rigNode)
 
         # Finger and control lists

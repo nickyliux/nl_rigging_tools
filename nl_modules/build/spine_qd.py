@@ -16,12 +16,10 @@ from nl_modules.utils.common import Vec
 
 
 class SpineQd(RigModule):
-    """Spine rig module class, inherits from RigModule."""
+    """Quadruped spine rig module."""
 
     def __init__(self, rigNode):
-        """Initialize the SpineQd rig module."""
         super().__init__(rigNode)
-
         guide_attrs = ["rbnJntNum"]
         for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
