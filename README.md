@@ -88,25 +88,26 @@ flowchart
     Dimension
     AttributeHolder --> Attribute
 ```
+
 ```python
-# Example
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.srf_node import SrfNode
 
-grp = GrpNode('newGrp')
-jnt = JntNode('newJnt')
-crv = CrvNode('newCrv')
-srf = SrfNode('newSrf')
+grp = GrpNode('newGrp') # create group 'newGrp'
+jnt = JntNode('newJnt') # create joint 'newJnt'
+crv = CrvNode('newCrv') # create nurbs curve 'newCrv'
+srf = SrfNode('newSrf') # create nurbs surface 'newSrf'
 
-crv.weightTo([jnt])
-srf.weightTo([jnt])
+crv.weightTo([jnt]) # bind jnt to crv
+srf.weightTo([jnt]) # bind jnt to srf
 
-grp.a.t.set(0,10,0)
-jnt.alignTo(grp)
-jnt.addOffsetGrp()
+grp.a.t.set(0,10,0) # set position
+jnt.alignTo(grp) # align jnt to grp
+jnt.addOffsetGrp() # add offset group for jnt
 ```
+
 ## Custom Component Classes
 ```mermaid
 flowchart
@@ -124,13 +125,13 @@ flowchart
     RigModule --> SimplyFk
     RigModule --> FingerFk
 ```
+
 ```python
-# Example
 from nl_modules.build.leg_bp import LegBp
 
-cpn = LegBp('lfLegBp0_RGN')
-cpn.gen_sk()
-cpn.build()
+cpn = LegBp('lfLegBp0_RGN') # create legBp object given rigNode in scene
+cpn.gen_sk() # generate skeleton
+cpn.build() # build rig
 ```
 
 ## Dev Environment
