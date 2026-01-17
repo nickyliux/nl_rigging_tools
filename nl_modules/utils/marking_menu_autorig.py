@@ -198,16 +198,16 @@ class MarkingMenuAutorig:
 
     def switch_to_space(self, *args):
         """Switch space for all selected controls to the specified space"""
-        anim.switch_to_space_target(args[0])
+        anim.switchToSpaceTarget(args[0])
 
     def switch_fk_ik(self, *args):
         """Switch FK/IK mode for the specified rig node"""
-        anim.switch_fk_ik(attr=args[0], toIKMode=args[1], rigNode=args[2])
+        anim.switchFkIk(attr=args[0], toIKMode=args[1], rigNode=args[2])
         self.reload_marking_menu()
 
     def switch_local_global(self, *args):
         """Switch Local/Global mode for the specified rig node"""
-        anim.switch_local_global(attr=args[0], toGlobal=args[1], rigNode=args[2])
+        anim.switchLocalGlobal(attr=args[0], toGlobal=args[1], rigNode=args[2])
         self.reload_marking_menu()
 
     def reload_marking_menu(*args):

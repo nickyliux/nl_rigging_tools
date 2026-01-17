@@ -6,7 +6,7 @@ from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.loc_node import LocNode
 
 
-def switch_to_space_target(spaceName):
+def switchToSpaceTarget(spaceName):
     """Switch space target for selected controls to the specified spaceName."""
 
     for sel in mc.ls(sl=1):
@@ -59,7 +59,7 @@ def getJntsCtlsFromRigNode(rootJ, rigNode):
     return jnts, fkCtlNames
 
 
-def switch_local_global(attr=None, toGlobal=0, rigNode=None):
+def switchLocalGlobal(attr=None, toGlobal=0, rigNode=None):
     """Switch Local/Global mode for the specified rig node."""
     ctl = attr.node
     mtx = ctl.getMtx()
@@ -67,7 +67,7 @@ def switch_local_global(attr=None, toGlobal=0, rigNode=None):
     ctl.setMtx(mtx)
 
 
-def switch_fk_ik(attr=None, toIKMode=0, rigNode=None):
+def switchFkIk(attr=None, toIKMode=0, rigNode=None):
     # Validate rigNode and its state
     if not rigNode or rigNode.a.nodeState.get() != 2:
         return
@@ -143,7 +143,7 @@ def switch_fk_ik(attr=None, toIKMode=0, rigNode=None):
         if pvLock and pvLock > 0.5:
             pvc.alignTo(jnts[2])
         else:
-            pvc_pos = calc_pvc_pos(jnts[1], jnts[2], jnts[3])
+            pvc_pos = calcPvcPos(jnts[1], jnts[2], jnts[3])
             mc.xform(pvc, ws=1, t=pvc_pos)
 
         attr.set(1)
@@ -155,7 +155,7 @@ def switch_fk_ik(attr=None, toIKMode=0, rigNode=None):
     logging.info(f"{rigID}: Switched to {'IK' if toIKMode else 'FK'}.")
 
 
-def calc_pvc_pos(obj1, obj2, obj3):
+def calcPvcPos(obj1, obj2, obj3):
     """Calculate the position for the pole vector control based on three objects' positions."""
     from nl_modules.utils import maths
 

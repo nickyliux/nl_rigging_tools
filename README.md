@@ -88,7 +88,13 @@ flowchart
     Dimension
     AttributeHolder --> Attribute
 ```
+```python
+# Example
+ctl = GrpNode(ctl)
+grp = GrpNode('myGrp')
+grp.alignTo(ctl)
 
+```
 ## Custom Component Classes
 ```mermaid
 flowchart
@@ -106,7 +112,11 @@ flowchart
     RigModule --> SimplyFk
     RigModule --> FingerFk
 ```
-
+```python
+# Example
+grp = GrpNode('myGrp')
+test = Grapee
+```
 
 ## Dev Environment
 | Maya | Python | OS |
