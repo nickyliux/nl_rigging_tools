@@ -71,15 +71,15 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def addMenuBar(self):
         """Add menu bar to the main window."""
-        menuBar = QMenuBar(self)
-        ver_QM = QMenu("&2026.01.13", self)
-        more_QM = QMenu("&More", self)
-
         addIcon_QA = QAction(self)
         addIcon_QA.setText("&Add Icon to Current Shelf")
         addIcon_QA.triggered.connect(addIcon2CurrShelf)
+
+        ver_QM = QMenu("&2026.01.18", self)
+        more_QM = QMenu("&More", self)
         more_QM.addAction(addIcon_QA)
 
+        menuBar = QMenuBar(self)
         menuBar.addMenu(ver_QM)
         menuBar.addMenu(more_QM)
         self.setMenuBar(menuBar)
@@ -92,21 +92,18 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def buildAll(self):
         """Build all rig components."""
-        common.setVP(fit=1)
-        common.pauseVP(1)
         build.buildSelOrAll(uiPB=self.UI.bar_PB)
-        common.pauseVP(0)
-        self.rigNode_refresh()
+        self.rigNode_UI_refresh()
 
     def unbuildAll(self):
         """Unbuild all rig components."""
         build.unbuildSelOrAll()
-        self.rigNode_refresh()
+        self.rigNode_UI_refresh()
 
     def loadTpl(self):
         """Load template for the guide."""
         guide.loadTemplate()
-        self.rigNode_refresh()
+        self.rigNode_UI_refresh()
 
     def connect_UI(self):
         """Connect UI buttons to their respective functions."""
@@ -158,7 +155,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # RigNode
         self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
         self.UI.rigNode_LW.itemClicked.connect(self.rigNode_LW_clicked)
-        self.UI.rigNode_refresh_BN.clicked.connect(self.rigNode_refresh)
+        self.UI.rigNode_refresh_BN.clicked.connect(self.rigNode_UI_refresh)
         self.UI.rigNode_selectAll_BN.clicked.connect(self.rigNode_selectAll)
 
         # Ctl Tab
@@ -224,7 +221,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.selectTypeBelow_BN, self.getTypeBelowSel)
         self.connect(self.UI.maxInfl_BN, self.setMaxInfl)
 
-        self.rigNode_refresh()
+        self.rigNode_UI_refresh()
         self.crvShape_refresh()
         self.updateLoadWrapTargetMesh()
         self.updateCharPath()
@@ -303,7 +300,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 elif itemText == "quad / unguli":
                     self.loadPresetGuide("quad_unguli_tpl")
 
-            self.rigNode_refresh()
+            self.rigNode_UI_refresh()
             mc.select(allTgtMG)
             mc.setToolTo("moveSuperContext")
             common.setVP(fit=1)
@@ -330,7 +327,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 mc.select(mg)
                 mc.AttributeEditor()
 
-    def rigNode_refresh(self):
+    def rigNode_UI_refresh(self):
         """Refresh UI rigNode list"""
         rigNodes = build.getRigNodes_all()
         self.UI.rigNode_LW.clear()

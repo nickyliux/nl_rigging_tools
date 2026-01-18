@@ -60,33 +60,34 @@ def buildTgt(rigN):
 @common.Undo("buildSelOrAll")
 def buildSelOrAll(*args, uiPB=None):
     """Build rig for selected rigNodes or all if nothing selected"""
-    rigNodes = getRigNodes_selOrAll()
 
+    rigNodes = getRigNodes_selOrAll()
     rigNodesToBuild = []
+
     for rN in rigNodes:
         state = rN.a.nodeState.get()
         if state == 0:
             rigNodesToBuild.append(rN)
 
     if rigNodesToBuild:
-
-        common.setVP(wos=1)
-        common.xRayAllGeo(1)
         if uiPB:
             uiPB.setMaximum(len(rigNodes))
         i = 0
+        common.xRayAllGeo(1)
+        common.setVP(fit=1, jx=1, wos=1)
         for rN in rigNodesToBuild:
             buildTgt(rN)
             if uiPB:
                 i += 1
                 uiPB.setValue(i)
         postRig()
+        common.xRayAllGeo(0)
         if uiPB:
             uiPB.setValue(0)
 
         if args and args[0] == 1:
             proxy.genProxyForSet()
-        common.xRayAllGeo(0)
+
         mc.select(cl=1)
 
 
@@ -99,7 +100,7 @@ def postRig():
     update_anchor_conn()
     update_space_switch()
     common.showRO()
-    logging.info("Rig built.")
+    logging.info("Post rig done.")
 
 
 def addMasterAttrs():

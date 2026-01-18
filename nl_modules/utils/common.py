@@ -967,7 +967,6 @@ def xRayAllGeo(state=1):
     selList = mc.ls(type=["nurbsSurface", "mesh"], l=1, ni=1)
     for sel in selList:
         mc.displaySurface(sel, xRay=state)
-    mc.refresh(f=1)
 
 
 def modelPanelShow(jnt=1):

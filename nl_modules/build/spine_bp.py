@@ -158,7 +158,7 @@ class SpineBp(RigModule):
     def reverse_fk_hip(self):
         """modify first fkc specific for hip rotation."""
         ctl = self.ctls_fk[0]
-        ctl(p=self.CTL_DATA, addOfs=1, color=Color.BLUE)
+        ctl(p=self.CTL_DATA, addOfs=1, color=Color.D_YELLOW)
         ctl.cv_scale(1.2, 1.2, 1.2)
 
         ctl.offset.snapAlignTo(self.BASE_PVT_GUIDE, self.jnts_fk[0])

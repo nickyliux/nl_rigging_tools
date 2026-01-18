@@ -131,7 +131,7 @@ class Belt(RigModule):
                 pf=rID,
                 shape="square",
                 up="z",
-                scale=rSz,
+                scale=rSz * 2,
                 align=self.jnts_ik[i],
                 addOfs=1,
                 p=self.IK_GRP,
@@ -154,7 +154,7 @@ class Belt(RigModule):
         SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6, chain=0)
 
         # --- Snap setting control to first IK control and constrain ---
-        self.setting.snapTo(self.ctls_ik[0], p=self.FK_GRP, ofs=(0, rSz * 20, 0))
+        self.setting.snapTo(self.ctls_ik[0], p=self.FK_GRP, ofs=(0, rSz * 30, 0))
         self.ctls_ik[0].cstPar(self.setting, mo=1)
 
         RigModule.isolate_align(

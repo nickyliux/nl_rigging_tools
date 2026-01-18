@@ -11,14 +11,15 @@ QGroupBox::title {
     background-color: #000;
     border: 2px solid rgba(51, 120, 204, 1);
 }
-# QProgressBar {
-#     border: 0px solid grey;
-#     border-radius: 1px;
-#     background-color: black;
-# }
 QProgressBar::chunk {
-    background-color: rgba(255, 132, 89, 1);
+    background-color: rgba(255, 156, 27, 0.86);
 }
+QProgressBar {
+    border: 0px solid black;
+    border-radius: 1px;
+    background-color: rgba(20, 20, 20, 1);
+}
+
 # width: 20px;
 # border: 1px solid #f95;  
 # padding: 1px;

@@ -50,6 +50,12 @@ In my last job I encountered a project with characters involving Ziva muscle set
 "nlRT" will be added into Maya main menu and the tool UI will show up. You can also add icon to the active shelf by "More > Add Icon to Current Shelf" in the tool UI.
 
 ## Usage
+```python
+import nl_modules.nl_rigging_tools as nlRT
+from importlib import reload
+reload(nlRT)
+nlRT.showUI()
+```
 
 Typical Workflow
 1. Set the character directory.

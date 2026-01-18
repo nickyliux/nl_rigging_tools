@@ -81,7 +81,7 @@ class FingerFk(RigModule):
 
         ctl_defs = [
             ("setting", "X", "x", scale, 0),
-            ("fgr01_fkc", "squareR", None, -scale * 0.7, 0),
+            ("fgr01_fkc", "squareR", None, -scale, 0),
         ]
         if self.segNum >= 2:
             ctl_defs.append(("fgr02_fkc", "squareR", None, -scale, 0))
