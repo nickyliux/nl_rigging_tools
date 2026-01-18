@@ -15,7 +15,7 @@ blockquote {
 
 # nl-rigging-tools ( nlRT )  ![nlRT logo](icons/nl_rigging_tools.bmp)  
 
-![License](https://img.shields.io/badge/license-GPLv3-red.svg?style=plastic)
+![License](https://img.shields.io/badge/license-MIT-red.svg?style=plastic)
 [![Blog](https://img.shields.io/badge/blog-nickyliu.com-blue)](http://www.nickyliu.com)
 
 ![nlRT Main](docs/nlRT_UI.png) 
@@ -38,20 +38,29 @@ In my last job I encountered a project with characters involving Ziva muscle set
 ## Marking menus
 
 |nl Rig Tool|General Tasks|
-|-|-|
+|:-:|:-:|
 |Ctrl + MMB|Ctrl + Alt + MMB|
 |![nlRT Main](docs/menu_nlRig.png)|![nlRT Main](docs/menu_general.png)|
 
 ## Installation
 
 1. Download and extract to your target location.
-2. Drag and drop "nl_rigging_tools_drag.py" onto Maya. "nlRT" will be added into Maya main menu and the tool UI will show up.
+2. Drag and drop "install_by_drag_n_drop.py" onto Maya.
 
-You can add icon to the active shelf by "More > Add Icon to Current Shelf" in the tool UI.
+"nlRT" will be added into Maya main menu and the tool UI will show up. You can also add icon to the active shelf by "More > Add Icon to Current Shelf" in the tool UI.
 
 ## Usage
 
-Files are read with the naming convention.  
+Typical Workflow
+1. Set the character directory.
+2. Load the model.
+3. Create guides and fit into the model.
+4. Build rig.
+5. Gen proxy (For preview or skinning).
+6. Skin using proxy.
+7. Edit control shapes.
+
+If you follow the naming convention, file can be read without browsing.
 e.g.
 
 `horse`  
@@ -62,16 +71,7 @@ e.g.
 &emsp;`  weight`  
 &emsp;&emsp;&emsp;`  horse_wgh*.json`  
 
-> Note that "*" can be any number where the largest will be loaded
-
-Typical Workflow
-1. Set the character directory.
-2. Load the model.
-3. Create guides and fit into the model.
-4. Build rig.
-5. Gen proxy (For preview or skinning).
-6. Skin using proxy.
-7. Edit control shapes.
+> Note that * is any number where the largest will be loaded
 
 ## Custom Objects Classes
 ```mermaid
