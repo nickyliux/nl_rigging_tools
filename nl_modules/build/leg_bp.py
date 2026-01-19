@@ -148,7 +148,7 @@ class LegBp(RigModule):
             ("ball_fkc", "squareR", "x", scale, 0),
             ("ikc", "trapezoid", None, Vec((1.5, 1.5, 2)) * rSz, 0),
             ("pvc", "sphere", None, rSz, 0),
-            ("smart_ctl", "trapezoid2", None, scale / 3, 0),
+            ("smart_ctl", "trapezoid2", None, scale / 2, 0),
         ]
         if self.scapulaExtra:
             ctl_defs.append(("scap_fkc", "arrow", "z", scale / 2, 0))
@@ -162,12 +162,12 @@ class LegBp(RigModule):
 
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
-        self.smart_ctl.cv_move(scale * 15, 0, 0)
+        self.smart_ctl.cv_move(scale * 20, 0, 0)
 
         if self.scapulaExtra:
             self.scap_fkc.cv_move(0, scale * 25, 0)
 
-        self.setting.cv_move(scale * 15, 0, 0)
+        self.setting.cv_move(scale * 20, 0, 0)
         self.setting.color = Color.PINK
         self.hip_fkc.cv_move(scale * 5, -scale * 15, 0)
 
@@ -238,8 +238,8 @@ class LegBp(RigModule):
         self.aimJnts = self.build_aimHelper([self.lwr, self.palm])
 
         n = self.rollJntNum
-        self.rollJnts.extend(self.build_uprRollJ(self.upr, self.lwr, num=n, sf="_ro1"))
-        self.rollJnts.extend(self.build_uprRollJ(self.lwr, self.palm, num=n, sf="_ro2"))
+        self.rollJnts.append(self.build_uprRollJ(self.upr, self.lwr, num=n, sf="_ro1"))
+        self.rollJnts.append(self.build_uprRollJ(self.lwr, self.palm, num=n, sf="_ro2"))
 
         self.build_post()
 
@@ -275,6 +275,9 @@ class LegBp(RigModule):
         self.ikc.snapAlignTo(self.palm, mg, p=self.IK_GRP)
         self.ikc.cv_drop()
         self.pvc.alignTo(pvc_guide, p=self.IK_GRP)
+        if xDr == 1:
+            self.pvc.a.ry.set2(180, add=1)
+
         self.jnts_ik = common.dupSk(
             self.jnts, "_ik", p=self.IK_GRP, r=rSz, color=Color.RED
         )
@@ -637,10 +640,6 @@ class LegBp(RigModule):
 
         self.add_ctl_set(ctlSet)
 
-        common.add_mirror_attr(
-            [self.ikc, self.ikc_gimbal, self.smart_ctl, self.pvc, self.setting]
-        )
-
     def setup_bindJnt(self):
         """Setup bind joints for the leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
@@ -649,6 +648,10 @@ class LegBp(RigModule):
     def build_post(self):
         """Post setup for the leg rig module."""
         logging.info(self.rigID)
+
+        common.add_mirror_attr(
+            [self.ikc, self.ikc_gimbal, self.pvc, self.smart_ctl, self.setting]
+        )
 
         self.setup_scale()
         self.setup_ctlSet()

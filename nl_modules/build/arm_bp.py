@@ -119,7 +119,7 @@ class ArmBp(RigModule):
             self.scap_fkc.cv_move(0, 0, scale * 20)
 
         self.pvc.cv_rotate(-90, 0, 0)
-        self.setting.cv_move(0, scale * 20, 0)
+        self.setting.cv_move(0, scale * 30, 0)
         self.setting.color = Color.PINK
 
     def build(self):
@@ -166,8 +166,8 @@ class ArmBp(RigModule):
         self.aimJnts.extend(self.build_aimHelper([self.lwr]))
 
         n = self.rollJntNum
-        self.rollJnts.extend(self.build_uprRollJ(self.upr, self.lwr, num=n, sf="_ro1"))
-        self.rollJnts.extend(self.build_uprRollJ(self.lwr, self.palm, num=n, sf="_ro2"))
+        self.rollJnts.append(self.build_uprRollJ(self.upr, self.lwr, num=n, sf="_ro1"))
+        self.rollJnts.append(self.build_uprRollJ(self.lwr, self.palm, num=n, sf="_ro2"))
 
         # self.build_nlAutoAim(
         #     self.clavicle, self.upr, fkc=self.clavicle_fkc, ikc=self.ikc

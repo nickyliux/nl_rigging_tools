@@ -36,7 +36,7 @@ class TplLoader:
             logging.error(f"Template file not found: {tplFile}")
             return
 
-        scale_grp = GrpNode("modules_scale_grp")
+        scale_grp = GrpNode("modules_grp")
         mod_grp = DagNode(rID + "_module_grp")
 
         if mod_grp.exists():

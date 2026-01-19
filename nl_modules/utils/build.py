@@ -52,7 +52,6 @@ def buildTgt(rigN):
                 sk = rigObj.gen_sk()
                 if sk:
                     rigObj.build()
-                    mc.refresh(f=1)
                 else:
                     logging.warning(f"Skip building {rigN.name}, no skeleton found.")
 
@@ -73,15 +72,17 @@ def buildSelOrAll(*args, uiPB=None):
         if uiPB:
             uiPB.setMaximum(len(rigNodes))
         i = 0
-        common.xRayAllGeo(1)
-        common.setVP(fit=1, jx=1, wos=1)
+        common.pauseVP(1)
+        # common.xRayAllGeo(1)
+        # common.setVP(fit=1, jx=1, wos=1)
         for rN in rigNodesToBuild:
             buildTgt(rN)
+            mc.refresh(f=1)
             if uiPB:
                 i += 1
                 uiPB.setValue(i)
         postRig()
-        common.xRayAllGeo(0)
+        # common.xRayAllGeo(0)
         if uiPB:
             uiPB.setValue(0)
 
@@ -89,6 +90,7 @@ def buildSelOrAll(*args, uiPB=None):
             proxy.genProxyForSet()
 
         mc.select(cl=1)
+        common.pauseVP(0)
 
 
 def postRig():
