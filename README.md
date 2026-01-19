@@ -13,7 +13,7 @@ blockquote {
 </style>
 -->
 
-# nl-rigging-tools ( nlRT )  ![nlRT logo](icons/nl_rigging_tools.bmp)  
+# nl-rigging-tools ( nlRT )
 
 ![License](https://img.shields.io/badge/license-MIT-red.svg?style=plastic)
 [![Blog](https://img.shields.io/badge/blog-nickyliu.com-blue)](http://www.nickyliu.com)
@@ -23,7 +23,7 @@ blockquote {
 
 ## Background
 
-In my last job I encountered a project with characters involving Ziva muscle setup. The very first step was to rig the skeleton mesh  as an input of simulation. It required unusal skill that was inspirating to me. It would be great to build an autorig tool for every vetebra on Earth. And I can learn anatomy in a practical way, and apply python along ...
+In my last job I encountered a project with characters in need of Ziva muscle. The very first step was to rig the skeleton mesh as the input of simulation. It required unusal skill that was inspirating to me. It would be great to build an autorig tool for every vetebra on Earth. And I can learn anatomy in a practical way, and apply python along ...
 
 
 ## Features
@@ -50,6 +50,7 @@ In my last job I encountered a project with characters involving Ziva muscle set
 "nlRT" will be added into Maya main menu and the tool UI will show up. You can also add icon to the active shelf by "More > Add Icon to Current Shelf" in the tool UI.
 
 ## Usage
+
 ```python
 import nl_modules.nl_rigging_tools as nlRT
 from importlib import reload
@@ -66,7 +67,7 @@ Typical Workflow
 6. Skin using proxy.
 7. Edit control shapes.
 
-If you follow the naming convention, file can be read without browsing.
+If you follow the naming convention, file can be read with less browsing.
 e.g.
 
 `horse`  
