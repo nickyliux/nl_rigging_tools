@@ -73,7 +73,6 @@ def buildSelOrAll(*args, uiPB=None):
             uiPB.setMaximum(len(rigNodes))
         i = 0
         common.pauseVP(1)
-        # common.xRayAllGeo(1)
         # common.setVP(fit=1, jx=1, wos=1)
         for rN in rigNodesToBuild:
             buildTgt(rN)
@@ -82,13 +81,14 @@ def buildSelOrAll(*args, uiPB=None):
                 i += 1
                 uiPB.setValue(i)
         postRig()
-        # common.xRayAllGeo(0)
         if uiPB:
             uiPB.setValue(0)
 
         if args and args[0] == 1:
             proxy.genProxyForSet()
 
+        logging.info(f"{len(rigNodesToBuild)} rigNodes built.")
+        print("")
         mc.select(cl=1)
         common.pauseVP(0)
 

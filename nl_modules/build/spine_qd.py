@@ -24,7 +24,6 @@ class SpineQd(RigModule):
         for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
 
-        # Guide nodes
         self.LINE_GUIDE = CrvNode(f"{self.rigID}_line_guide")
         self.TP_GUIDE = DagNode(f"{self.rigID}_tp_guide")
         self.MD_GUIDE = DagNode(f"{self.rigID}_md_guide")
@@ -36,7 +35,6 @@ class SpineQd(RigModule):
         guide = DagNode(f"{self.rigID}_base_pivot_guide")
         self.BASE_PVT_GUIDE = guide if guide.exists() else None
 
-        # Main settings and controls
         self.setting = None
         self.cog_ctl = None
         self.fore_ctl = None
@@ -46,7 +44,6 @@ class SpineQd(RigModule):
         self.tangent1_ctl = None
         self.end_ctl = None
 
-        # Control and joint lists
         self.ctls_fk = []
         self.ctls_ik = []
         self.jnts_fk = []
@@ -55,7 +52,6 @@ class SpineQd(RigModule):
         self.jnts_spIk = []
         self.jnts_twoIk = []
 
-        # Ribbon and anchor
         self.rbSrf = None
         self.rbCrv = None
         self.anchorToRbj = None
@@ -75,7 +71,7 @@ class SpineQd(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        #   Define control shapes and attributes
+        print(f"{rSz=}")
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2, 0),
             ("cog_ctl", "trapezoid2", None, rSz, 0),
@@ -88,10 +84,6 @@ class SpineQd(RigModule):
         ]
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
-
-        if self.is_neck():
-            self.fore_ctl.cv_scale(2)
-            self.base_ctl.cv_scale(2)
 
         self.cog_ctl.cv_move(0, rSz * 40, 0)
         self.cog_ctl.cv_scale(1, 1.5, 2)
@@ -152,9 +144,7 @@ class SpineQd(RigModule):
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
-        #
-        #   build 3 ik joints from crv
-        #
+        # Build 3 ik joints from crv
         self.jnts_ik = JntNode.createJntsFrCrv(
             self.LINE_GUIDE, num=3, name="ikj", pf=rID, size=rSz * 10, chain=0
         )
