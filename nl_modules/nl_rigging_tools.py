@@ -57,11 +57,10 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def __init__(self, parent=None):
         """Initialize the main window and load the UI."""
-        super(MyToolWin, self).__init__(parent)
-        self.UI = QUiLoader().load(UI_PATH)
+        super(self.__class__, self).__init__(parent=parent)
         self.setWindowTitle("nlRT")
+        self.UI = QUiLoader().load(UI_PATH)
         self.setCentralWidget(self.UI)
-        self.setGeometry(1420, 200, 228, 750)
         self.connect_UI()
         self.addMenuBar()
 
@@ -75,7 +74,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         addIcon_QA.setText("&Add Icon to Current Shelf")
         addIcon_QA.triggered.connect(addIcon2CurrShelf)
 
-        ver_QM = QMenu("&2026.01.18", self)
+        ver_QM = QMenu("&2026.01.21", self)
         more_QM = QMenu("&More", self)
         more_QM.addAction(addIcon_QA)
 
@@ -575,7 +574,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Open the character path in the file explorer."""
         import subprocess
 
-        # charPath = mc.optionVar(q="charPath")
         charPath = self.UI.charPath_LE.text()
         if not charPath:
             mc.confirmDialog(t="Info", m="Character path not set.     ", b="OK")
@@ -598,9 +596,7 @@ def showUI():
     except:
         pass
     nlRT_win = MyToolWin()
-    nlRT_win.show(dockable=1)
-    # nlRT_win.show()
-
+    nlRT_win.show(dockable=1, floating=0, area="left")
     with open(STYLE_PATH, "r") as f:
         style = f.read()
         nlRT_win.setStyleSheet(style)
