@@ -23,7 +23,7 @@ blockquote {
 
 ## Background
 
-In my last job I encountered a project with characters in need of Ziva muscle. The very first step was to rig the skeleton mesh as the input of simulation. It required unusal skill that was inspirating to me. It would be great to build an autorig tool for every vetebra on Earth. And I can learn anatomy in a practical way, and apply python along ...
+In my last job I encountered a project with characters in need of Ziva muscle. The very first step was to rig the skeleton mesh as the input of simulation. It required unusal skill like creating IK with backward initial knee, bone adjustment to avoid breaking the simulation... These are inspirating to me. It would be great to build an autorig tool for every vetebra on Earth. And I can learn anatomy in a practical way, and apply python along.
 
 
 ## Features
@@ -151,6 +151,8 @@ cpn.build() # build rig
 2. [Ramon Arango's rigs](https://ramonarango.gumroad.com/)
 2. [BoneClones](https://boneclones.com/category/all-zoology-skeletons/fields-of-study)
 3. [Ivlpaleontology](https://sketchfab.com/ivlpaleontology)
+4. [Rigamajig2](https://github.com/masonSmigel/rigamajig2)
+
 
 ##
 Visit my blog at [https://www.nickyliu.com](https://www.nickyliu.com)
