@@ -44,19 +44,12 @@ In my last job I encountered a project with characters in need of Ziva muscle. T
 
 ## Installation
 
-1. Download and extract to your target location.
-2. Drag and drop "install_by_drag_n_drop.py" onto Maya.
+1. Download and extract to somewhere you could keep the files.
+2. Find "install_by_drag_n_drop.py" and drag it onto Maya viewport.
 
-"nlRT" will be added into Maya main menu and the tool UI will show up. You can also add icon to the active shelf by "More > Add Icon to Current Shelf" in the tool UI.
+The tool UI will show up and "nlRT" seen in the main menu. You can also add icon to the active shelf by "More > Add Icon to Current Shelf" in the tool.
 
 ## Usage
-
-```python
-import nl_modules.nl_rigging_tools as nlRT
-from importlib import reload
-reload(nlRT)
-nlRT.showUI()
-```
 
 Typical Workflow
 1. Set the character directory.
@@ -67,7 +60,7 @@ Typical Workflow
 6. Skin using proxy.
 7. Edit control shapes.
 
-If you follow the naming convention, file can be read with less browsing.
+If you follow the naming convention below, file can be read with less browsing.
 e.g.
 
 `horse`  
