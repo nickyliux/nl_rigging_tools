@@ -33,12 +33,13 @@ class LegBp(RigModule):
 
         guide_attrs = [
             "limbType",
+            "toeBones",
+            # "dualBone",
+            "patellaBone",
+            "scapulaBone",
+            "kneeFix",
             "rollJntNum",
             "rbnJntNum",
-            "patellaBone",
-            "toeBones",
-            "kneeFix",
-            "scapulaExtra",
             "scapulaAutoAim",
         ]
         for attr in guide_attrs:
@@ -46,18 +47,15 @@ class LegBp(RigModule):
 
         self.setting = None
 
-        # Groups
         self.FK_GRP = GrpNode("FK", pf=self.rigID, p=self.CTL_DATA)
         self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA)
         self.BF_GRP = GrpNode("BF", pf=self.rigID, p=self.CTL_DATA)
 
-        # Joint names and attributes
         self.jnt_names = ["hip", "upr", "lwr", "palm", "ball", "tip"]
         for name in self.jnt_names:
             setattr(self, name, None)
             setattr(self, f"{name}_fkc", None)
 
-        # Joint and control lists
         self.jnts = []
         self.jnts_fk = []
         self.jnts_ik = []
@@ -71,12 +69,10 @@ class LegBp(RigModule):
         self.rollJnts = []
         self.aimJnts = []
 
-        # Toes related attributes
         self.toesJntList = []
         self.toesCtlsList = []
         self.toeIKHs = []
 
-        # IK/FK/Blend/Other attributes
         self.jntsFix = None
         self.pvc = None
         self.ikc = None
@@ -150,13 +146,13 @@ class LegBp(RigModule):
             ("pvc", "sphere", None, rSz, 0),
             ("smart_ctl", "trapezoid2", None, scale / 2, 0),
         ]
-        if self.scapulaExtra:
+        if self.scapulaBone:
             ctl_defs.append(("scap_fkc", "arrow", "z", scale / 2, 0))
 
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
-        if self.scapulaExtra:
+        if self.scapulaBone:
             self.scap_fkc.cv_move(0, scale * 10, 0)
             self.scap_fkc.cv_rotate(0, 90, 0)
 
@@ -164,7 +160,7 @@ class LegBp(RigModule):
             self.smart_ctl.cv_rotate(180, 0, 0)
         self.smart_ctl.cv_move(scale * 20, 0, 0)
 
-        if self.scapulaExtra:
+        if self.scapulaBone:
             self.scap_fkc.cv_move(0, scale * 25, 0)
 
         self.setting.cv_move(scale * 20, 0, 0)
@@ -190,7 +186,7 @@ class LegBp(RigModule):
             ikc=self.ikc,
             fkc=self.ctls_fk[0],
             jnts=self.jnts,
-            EXTRA=self.scapulaExtra,
+            EXTRA=self.scapulaBone,
             scapCtl=self.scap_fkc,
             autoAim_dv=self.scapulaAutoAim,
         )
@@ -561,7 +557,7 @@ class LegBp(RigModule):
         for ctl in self.all_bendy or []:
             ctl.a.showAttr(t=1, r=1, s=1)
 
-        if self.scapulaExtra:
+        if self.scapulaBone:
             self.scap_fkc.a.showAttr(t=1, r=1)
 
         if self.limbType == LimbType.RIBBON.value:
@@ -635,7 +631,7 @@ class LegBp(RigModule):
         if self.toeBones:
             [ctlSet.extend(s) for s in self.toesCtlsList]
 
-        if self.scapulaExtra:
+        if self.scapulaBone:
             ctlSet.append(self.scap_fkc)
 
         self.add_ctl_set(ctlSet)

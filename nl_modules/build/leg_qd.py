@@ -32,19 +32,18 @@ class LegQd(RigModule):
 
         guide_attrs = [
             "limbType",
+            "toeBones",
             "dualBone",
             "patellaBone",
-            "toeBones",
-            "toeNum",
+            "scapulaBone",
             "kneeFix",
-            "scapulaExtra",
+            "toeNum",
             "scapulaAutoAim",
             "palmAimRatio",
         ]
         for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
 
-        # Group nodes
         self.FK_GRP = GrpNode("FK", pf=self.rigID, p=self.CTL_DATA)
         self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA)
 
@@ -54,13 +53,11 @@ class LegQd(RigModule):
         self.jnts_ik = []
         self.jntsFix = None
 
-        # Joint names and related attributes
         self.jnt_names = ["hip", "upr", "lwr", "palm", "digit", "ball", "tip"]
         for name in self.jnt_names:
             setattr(self, name, None)
             setattr(self, f"{name}_fkc", None)
 
-        # Controls and groups
         self.ikc = None
         self.pvc = None
         self.smart_ctl = None
@@ -79,12 +76,10 @@ class LegQd(RigModule):
         self.all_ikH = {}
         self.all_bendy = []
 
-        # Toes and digits
         self.toesJntList = None
         self.toesCtlsList = None
         self.toesRootJ = rigNode.a.toesRootJ.inConnNode
 
-        # IK handles and helpers
         self.ikH1 = None
 
     def gen_sk(self):
@@ -151,13 +146,13 @@ class LegQd(RigModule):
             ("smart_ctl", "trapezoid2", None, scale / 3, 0),
         ]
 
-        if self.scapulaExtra:
+        if self.scapulaBone:
             ctl_defs.append(("scap_fkc", "arrow", "z", scale / 2, 0))
 
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
-        if self.scapulaExtra:
+        if self.scapulaBone:
             self.scap_fkc.cv_move(0, scale * 10, 0)
             self.scap_fkc.cv_rotate(0, 90, 0)
 
@@ -186,11 +181,11 @@ class LegQd(RigModule):
             ikc=self.ikc,
             fkc=self.ctls_fk[0],
             jnts=self.jnts,
-            EXTRA=self.scapulaExtra,
+            EXTRA=self.scapulaBone,
             scapCtl=self.scap_fkc,
             autoAim_dv=self.scapulaAutoAim,
         )
-        if self.scapulaExtra:
+        if self.scapulaBone:
             self.scap_fkc.cv_moveTo(self.hip.o.pos)
 
         self.singleBallCtl_setup()
@@ -583,7 +578,7 @@ class LegQd(RigModule):
         for ctl in self.all_bendy or []:
             ctl.a.showAttr(t=1, r=1, s=1)
 
-        if self.scapulaExtra:
+        if self.scapulaBone:
             self.scap_fkc.a.showAttr(t=1, r=1)
 
     def setup_rotate_order(self):
@@ -619,7 +614,7 @@ class LegQd(RigModule):
             + self.ctls_sub
             + [self.smart_ctl, self.setting, self.extra_ikc]
         )
-        if self.scapulaExtra:
+        if self.scapulaBone:
             ctlSet.append(self.scap_fkc)
         if self.toeBones:
             [ctlSet.extend(s) for s in self.toesCtlsList or []]
