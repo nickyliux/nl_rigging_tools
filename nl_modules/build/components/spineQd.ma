@@ -86,10 +86,9 @@ createNode transform -n "module_grp";
 	setAttr -cb on ".ro";
 createNode transform -n "master_guide" -p "module_grp";
 	rename -uid "177DBE6B-4E8E-B711-3C19-589C4E949A6A";
-	addAttr -ci true -sn "__________" -ln "__________" -min 0 -max 0 -en "__________" 
-		-at "enum";
+	addAttr -ci true -sn "_____" -ln "_____" -min 0 -max 0 -en "_____" -at "enum";
 	addAttr -ci true -sn "rbnJntNum" -ln "rbnJntNum" -dv 7 -min 0 -at "long";
-	setAttr -l on -k on ".__________";
+	setAttr -l on -k on "._____";
 	setAttr -cb on ".rbnJntNum" 8;
 createNode transform -n "st_guide_ofs" -p "master_guide";
 	rename -uid "F0DCF307-4AFE-F9B7-4833-678378A04ECB";

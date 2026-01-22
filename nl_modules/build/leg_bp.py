@@ -13,28 +13,19 @@ from nl_modules.utils import utils_node as ut
 from nl_modules.utils.common import Vec
 from nl_modules.utils.color import Color
 
-from enum import Enum
-
-
-class LimbType(Enum):
-    """Enumeration for different limb types in the leg rig."""
-
-    BASIC = 0
-    RIBBON = 1
-    SKEL = 2
-
 
 class LegBp(RigModule):
     """Biped leg rig module."""
 
     def __init__(self, rigNode):
-        rigNode = DagNode(rigNode) if isinstance(rigNode, str) else rigNode
+        if isinstance(rigNode, str):
+            rigNode = DagNode(rigNode)
         super().__init__(rigNode)
 
         guide_attrs = [
-            "limbType",
+            "ribbon",
+            "dualBone",
             "toeBones",
-            # "dualBone",
             "patellaBone",
             "scapulaBone",
             "kneeFix",
@@ -138,10 +129,10 @@ class LegBp(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
             ("hip_fkc", "shoulder", "x", -scale / 2, 0),
-            ("upr_fkc", "squareR", "x", scale, 0),
-            ("lwr_fkc", "squareR", "x", scale, 0),
-            ("palm_fkc", "squareR", "x", scale, 0),
-            ("ball_fkc", "squareR", "x", scale, 0),
+            ("upr_fkc", "circle", "x", scale, 0),
+            ("lwr_fkc", "circle", "x", scale, 0),
+            ("palm_fkc", "circle", "x", scale, 0),
+            ("ball_fkc", "circle", "x", scale, 0),
             ("ikc", "trapezoid", None, Vec((1.5, 1.5, 2)) * rSz, 0),
             ("pvc", "sphere", None, rSz, 0),
             ("smart_ctl", "trapezoid2", None, scale / 2, 0),
@@ -192,19 +183,9 @@ class LegBp(RigModule):
         )
 
         if self.kneeFix:
-            self.boneFix_setup(self.lwr, self.palm)
+            self.kneeFix_setup(self.lwr, self.palm)
 
-        # -----------------------------
-        #   Setup base on LimbType
-        # -----------------------------
-        if self.limbType == LimbType.BASIC.value:
-            self.jnts_bind += [self.upr]
-            if self.kneeFix:
-                self.jnts_bind += [self.boneFix]
-            else:
-                self.jnts_bind += [self.lwr]
-
-        elif self.limbType == LimbType.RIBBON.value:
+        if self.ribbon:
             self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(
                 jntNum=self.rbnJntNum,
                 root=self.hip,
@@ -217,10 +198,15 @@ class LegBp(RigModule):
             )
             if self.kneeFix:
                 self.boneFix.cstPoi(self.ribbon_lw.stt_loc)
-
-        elif self.limbType == LimbType.SKEL.value:
-            self.build_dual_bones()
+        else:
             self.jnts_bind += [self.upr]
+            if self.kneeFix:
+                self.jnts_bind += [self.boneFix]
+            else:
+                self.jnts_bind += [self.lwr]
+
+        if self.dualBone:
+            self.build_dual_bones()
 
         if self.patellaBone:
             self.patellaJ = self.patella_setup()
@@ -512,7 +498,7 @@ class LegBp(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=type, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-        self.jnts_bind += [radius_JC[0], ulna_JC[0]]
+        # self.jnts_bind += [radius_JC[0], ulna_JC[0]]
 
     def setup_vis(self):
         """Setup visibility for the leg rig controls."""
@@ -527,22 +513,22 @@ class LegBp(RigModule):
             onList=[self.pvc.offset, self.pvc_line.offset],
         )
         setupTgt = [self.jnts_fk[0], self.jnts_ik[0], self.jnts_bf[0]]
-        if self.limbType == LimbType.RIBBON.value:
+        if self.ribbon:
             setupTgt.extend([self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP])
 
-        self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", type="bool", k=0),
-            onList=setupTgt,
-        )
         self.ctl_vis_toggle(
             self.setting.a.add("showRollJnts", type="bool", k=0),
             onList=self.rollJnts + self.aimJnts,
         )
-        if self.limbType == LimbType.RIBBON.value:
+        if self.ribbon:
             self.ctl_vis_toggle(
                 self.setting.a.add("showBendy", type="bool", k=0),  # , dv=1),
                 onList=self.all_bendy,
             )
+        self.ctl_vis_toggle(
+            self.setting.a.add("showSetup", type="bool", k=0),
+            onList=setupTgt,
+        )
         mc.hide(self.ikhs, self.toeIKHs)
 
     def setup_channel(self):
@@ -558,9 +544,9 @@ class LegBp(RigModule):
             ctl.a.showAttr(t=1, r=1, s=1)
 
         if self.scapulaBone:
-            self.scap_fkc.a.showAttr(t=1, r=1)
+            self.scap_fkc.a.showAttr(r=1)
 
-        if self.limbType == LimbType.RIBBON.value:
+        if self.ribbon:
             self.all_bendy[0].a.showAttr("sx", t=1, r=1)
             self.all_bendy[1].a.showAttr(t=1)
             self.all_bendy[2].a.showAttr("sx", t=1, r=1)
@@ -624,8 +610,7 @@ class LegBp(RigModule):
             + self.ctls_sub
             + [self.setting, self.smart_ctl, self.pin_fkc]
         )
-
-        if self.limbType == LimbType.RIBBON.value:
+        if self.ribbon:
             ctlSet.extend(self.all_bendy)
 
         if self.toeBones:

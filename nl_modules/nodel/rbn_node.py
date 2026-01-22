@@ -178,8 +178,6 @@ class RbnNode:
         self.mid_jnt = JntNode(
             "mid_jnt", pf=self.pf, p=self.mid_loc, align=self.mid_loc
         )
-        # self.mid_jnt.a.s >> self.stt_jnt.a.s
-        # self.mid_jnt.a.s >> self.end_jnt.a.s
 
         # Skin the joints to the surface
         sttMidEnd_jnts = [self.stt_jnt, self.mid_jnt, self.end_jnt]

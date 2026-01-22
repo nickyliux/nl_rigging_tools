@@ -13,13 +13,6 @@ from nl_modules.utils import utils_node as ut
 from nl_modules.utils.common import Vec
 from nl_modules.utils.color import Color
 
-from enum import Enum
-
-
-class SpineType(Enum):
-    BASIC = 0
-    RIBBON = 1
-
 
 class SpineBp(RigModule):
     """Biped spine rig module."""
@@ -27,7 +20,7 @@ class SpineBp(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
         for attr in (
-            "spineType",
+            "ribbon",
             "fkJntNum",
             "rbnJntNum",
         ):
@@ -77,7 +70,7 @@ class SpineBp(RigModule):
             ("setting", "screw_nut", "z", rSz * 3, 0),
             ("cog_ctl", "cog", None, rSz * 8, 0),
         ]
-        if self.is_ribbon():
+        if self.ribbon:
             ctl_defs += [
                 ("chest_ikc", "chest", None, rSz * 5, 0),
                 ("mid_ikc", "diamond_3d", None, rSz * 3, 1),
@@ -89,10 +82,6 @@ class SpineBp(RigModule):
         self.setting.cv_move(0, 0, rSz * -110)
         self.setting.color = Color.PINK
 
-    def is_ribbon(self):
-        """Check if the spine rig is of ribbon type."""
-        return self.spineType == SpineType.RIBBON.value
-
     def build(self):
         """Build the spine rig module."""
         self.build_pre_module()
@@ -100,7 +89,7 @@ class SpineBp(RigModule):
         self.build_ctl()
         self.build_fk()
 
-        if self.is_ribbon():
+        if self.ribbon:
             self.build_spine_ik()
 
         self.setting.snapTo(self.jnts_fk[0], p=self.CTL_DATA)
@@ -304,7 +293,7 @@ class SpineBp(RigModule):
 
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""
-        if self.is_ribbon():
+        if self.ribbon:
             self.ctl_vis_toggle(
                 self.setting.a.add("showSetup", type="bool", k=0),
                 onList=[self.jnts_fk[0]] + self.jnts_five + [self.rbSrf],
@@ -324,7 +313,7 @@ class SpineBp(RigModule):
             self.cog_ctl,
             self.cog_gmb,
         ]
-        if self.is_ribbon():
+        if self.ribbon:
             for ctl in [self.hip_ikc, self.mid_ikc, self.chest_ikc]:
                 ctl.a.showAttr(t=1, r=1, s=0)
 
@@ -339,7 +328,7 @@ class SpineBp(RigModule):
             self.cog_ctl,
             self.cog_gmb,
         ]
-        if self.is_ribbon():
+        if self.ribbon:
             ctls += self.ctls_ik
 
         for ctl in ctls:
@@ -349,7 +338,7 @@ class SpineBp(RigModule):
         """Setup space switching for the spine rig controls."""
         self.rigNode.setMsg({"space_COG": self.cog_ctl})
 
-        if self.is_ribbon():
+        if self.ribbon:
             self.rigNode.setMsg(
                 {
                     "space_lwrBody": self.hip_ikc,
@@ -359,8 +348,8 @@ class SpineBp(RigModule):
 
     def setup_anchor(self):
         """Setup anchor module for the spine rig controls."""
-        anchor1 = self.hip_ikc if self.is_ribbon() else self.jnts_fk[0]
-        anchor2 = self.jnts_rb[-1] if self.is_ribbon() else self.jnts_fk[-1]
+        anchor1 = self.hip_ikc if self.ribbon else self.jnts_fk[0]
+        anchor2 = self.jnts_rb[-1] if self.ribbon else self.jnts_fk[-1]
         self.setup_anchor_module({"anchorP1": anchor1, "anchorP2": anchor2})
 
     def setup_bindJnt(self):
@@ -373,13 +362,13 @@ class SpineBp(RigModule):
 
         proxy.add_radiusScale_attr(self.jnts_bind, neckRadScale)
 
-        if not self.is_ribbon():
+        if not self.ribbon:
             proxy.add_up_attr(self.jnts_bind, 1)
 
     def setup_ctlSet(self):
         """Setup control sets for the spine rig."""
         ctls = self.ctls_fk + [self.setting]
-        if self.is_ribbon():
+        if self.ribbon:
             ctls += self.ctls_ik
         if not self.is_neck():
             ctls += [self.cog_ctl, self.cog_gmb]

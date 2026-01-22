@@ -256,7 +256,7 @@ class Tail(RigModule):
             onList=self.ctls_ofs,
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("showRibbon", k=0, type="bool"),
+            self.setting.a.add("showSetup", k=0, type="bool"),
             onList=[self.rbSrf1, self.rbSrf2],
         )
         mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)

@@ -86,12 +86,11 @@ createNode transform -n "module_grp";
 	setAttr -cb on ".ro";
 createNode transform -n "master_guide" -p "module_grp";
 	rename -uid "177DBE6B-4E8E-B711-3C19-589C4E949A6A";
-	addAttr -ci true -sn "__________" -ln "__________" -min 0 -max 0 -en "__________" 
-		-at "enum";
+	addAttr -ci true -sn "_____" -ln "_____" -min 0 -max 0 -en "_____" -at "enum";
 	addAttr -ci true -sn "fkJntNum" -ln "fkJntNum" -dv 8 -min 0 -at "long";
 	addAttr -ci true -sn "rbnJntNum" -ln "rbnJntNum" -dv 24 -min 0 -at "long";
 	addAttr -ci true -sn "parentNameMatch" -ln "parentNameMatch" -dt "string";
-	setAttr -l on -k on ".__________";
+	setAttr -l on -k on "._____";
 	setAttr -cb on ".fkJntNum";
 	setAttr -cb on ".rbnJntNum" 10;
 	setAttr -k on ".parentNameMatch" -type "string" "spine*";

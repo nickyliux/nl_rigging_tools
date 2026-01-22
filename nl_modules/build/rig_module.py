@@ -482,7 +482,7 @@ class RigModule(RigBase):
         ann.parent.snapTo(tgt, p=tgt)
         tgt.a.rotatePivot >> ann.parent.a.t
 
-    def boneFix_setup(self, tgt, tgtChild):
+    def kneeFix_setup(self, tgt, tgtChild):
         """Setup bone fix for the leg rig."""
         rID, rSz, xDr = self.getMyVar()
 
@@ -1055,7 +1055,7 @@ class RigModule(RigBase):
         root.cstOri(ribbonUp.stt_loc, mo=1)
 
         # Lower Ribbon
-        # lwr.cstOri(ribbonLw.stt_jnt, mo=1)
+        ribbonUp.end_jnt.a.rx >> ribbonLw.stt_jnt.a.rx
         palm.cstPar(ribbonLw.end_loc, mo=1)
 
         # Bend Ctl Setup
@@ -1069,7 +1069,7 @@ class RigModule(RigBase):
 
         self.all_bendy = [upr_bend, mid_bend, lwr_bend]
         for ctl in self.all_bendy:
-            ctl(shape="cross", up="x", scale=rSz * 1.2, color=Color.PINK)
+            ctl(shape="square", up="x", scale=rSz * 1.2, color=Color.PINK)
 
         upLoc.cstPar(upr_bend.offset, mo=1)
         if upLoc.children:

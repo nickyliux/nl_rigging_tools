@@ -14,15 +14,6 @@ from nl_modules.utils.color import Color
 from nl_modules.utils.common import Vec
 
 
-from enum import Enum
-
-
-class LimbType(Enum):
-    BASIC = 0
-    RIBBON = 1
-    SKEL = 2
-
-
 class ArmBp(RigModule):
     """Biped arm rig module."""
 
@@ -31,10 +22,11 @@ class ArmBp(RigModule):
         super().__init__(rigNode)
 
         guide_attrs = [
-            "limbType",
+            "ribbon",
+            "scapulaBone",
+            "dualBone",
             "rollJntNum",
             "rbnJntNum",
-            "scapulaBone",
         ]
         for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
@@ -100,10 +92,10 @@ class ArmBp(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", scale, 0),
-            ("clavicle_fkc", "sphere", "x", scale * 2, 1),
-            ("upr_fkc", "squareR", "x", scale, 0),
-            ("lwr_fkc", "squareR", "x", scale, 0),
-            ("palm_fkc", "squareR", "x", scale, 0),
+            ("clavicle_fkc", "cube", "x", scale / 2, 1),
+            ("upr_fkc", "circle", "x", scale, 0),
+            ("lwr_fkc", "circle", "x", scale, 0),
+            ("palm_fkc", "circle", "x", scale, 0),
             ("ikc", "cube", None, Vec((1, 2, 2)) * scale, 0),
             ("pvc", "sphere", None, rSz * 2, 0),
             ("palm_ikc", "squareR", "x", scale, 0),
@@ -135,13 +127,7 @@ class ArmBp(RigModule):
 
         self.jnts_bind = [self.palm, self.clavicle]
 
-        # ---------------------------------------------------------------
-        #   Setup base on LimbType
-        # ---------------------------------------------------------------
-        if self.limbType == LimbType.BASIC.value:
-            self.jnts_bind += [self.upr, self.lwr]
-
-        elif self.limbType == LimbType.RIBBON.value:
+        if self.ribbon:
             self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(
                 jntNum=self.rbnJntNum,
                 root=self.clavicle,
@@ -154,9 +140,10 @@ class ArmBp(RigModule):
             )
             self.ikc.a.add("autoVol", proxy=self.setting.a.autoVol)
             self.ikc.a.add("volType", proxy=self.setting.a.volType)
+        else:
+            self.jnts_bind += [self.upr, self.lwr]
 
-        elif self.limbType == LimbType.SKEL.value:
-            self.jnts_bind += [self.upr]
+        if self.dualBone:
             self.build_dual_bones()
 
         if self.scapulaBone:
@@ -404,7 +391,7 @@ class ArmBp(RigModule):
         )
         self.clavicle.cstPoi(clavJnts[0], mo=1)
 
-        self.jnts_bind += [clavJnts[0], scapJnts[0]]
+        # self.jnts_bind += [clavJnts[0], scapJnts[0]]
 
     def build_dual_bones(self):
         """Build dual bones for the lower arm."""
@@ -432,8 +419,7 @@ class ArmBp(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-
-        self.jnts_bind += [radius_JC[0], ulna_JC[0]]
+        # self.jnts_bind += [radius_JC[0], ulna_JC[0]]
 
     def palm_rolling(self, ikc, fkc, fkPin, locRoll, locIn, locOut):
         """Setup palm rolling for the arm rig controls."""
@@ -467,12 +453,9 @@ class ArmBp(RigModule):
         )
 
         setupTgt = [self.jnts_fk[0], self.jnts_ik[0], self.jnts_bf[0]]
-        if self.limbType == LimbType.RIBBON.value:
+        if self.ribbon:
             setupTgt.extend([self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP])
 
-        self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", type="bool", k=0), onList=setupTgt
-        )
         self.ctl_vis_toggle(
             self.setting.a.add("showRollJnts", type="bool", k=0),
             onList=self.rollJnts + self.aimJnts,
@@ -483,12 +466,15 @@ class ArmBp(RigModule):
                 onList=self.ctls_up,
             )
 
-        if self.limbType == LimbType.RIBBON.value:
+        if self.ribbon:
             self.ctl_vis_toggle(
                 self.setting.a.add("showBendy", type="bool", k=0),  # , dv=1),
                 onList=self.all_bendy,
             )
 
+        self.ctl_vis_toggle(
+            self.setting.a.add("showSetup", type="bool", k=0), onList=setupTgt
+        )
         self.ikc.a.fkIk * self.ikc.a.localRot >> self.palm_ikc.a.v
         mc.hide(self.ikhs)
 
@@ -506,7 +492,7 @@ class ArmBp(RigModule):
         if self.scapulaBone:
             self.scap_fkc.a.showAttr(t=1, r=1)
 
-        if self.limbType == LimbType.RIBBON.value:
+        if self.ribbon:
             self.all_bendy[0].a.showAttr("sx", t=1, r=1)
             self.all_bendy[1].a.showAttr(t=1)
             self.all_bendy[2].a.showAttr("sx", t=1, r=1)
@@ -567,7 +553,7 @@ class ArmBp(RigModule):
     def setup_ctlSet(self):
         """Setup control sets for the arm rig module."""
         ctlSet = self.ctls_fk + self.ctls_ik + [self.setting, self.pin_fkc]
-        if self.limbType == LimbType.RIBBON.value:
+        if self.ribbon:
             ctlSet.extend(self.all_bendy)
         if self.ctls_up:
             ctlSet.extend(self.ctls_up)

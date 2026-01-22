@@ -5,6 +5,7 @@ from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode, Solver
+from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
 from nl_modules.utils import proxy
@@ -13,27 +14,18 @@ from nl_modules.utils.common import Vec
 from nl_modules.utils.color import Color
 
 
-from enum import Enum
-
-
-class LimbType(Enum):
-    BASIC = 0
-    SKEL = 1
-
-
 class LegQd(RigModule):
     """Quadruped leg rig module."""
 
     def __init__(self, rigNode):
         if isinstance(rigNode, str):
             rigNode = DagNode(rigNode)
-
         super().__init__(rigNode)
 
         guide_attrs = [
-            "limbType",
-            "toeBones",
+            "ribbon",
             "dualBone",
+            "toeBones",
             "patellaBone",
             "scapulaBone",
             "kneeFix",
@@ -48,6 +40,7 @@ class LegQd(RigModule):
         self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA)
 
         self.setting = None
+
         self.jnts = []
         self.jnts_fk = []
         self.jnts_ik = []
@@ -191,15 +184,16 @@ class LegQd(RigModule):
         self.singleBallCtl_setup()
 
         if self.kneeFix:
-            self.boneFix_setup(self.lwr, self.palm)
+            self.kneeFix_setup(self.lwr, self.palm)
+            self.jnts_bind += [self.boneFix]
+        else:
+            self.jnts_bind += [self.lwr]
 
         if self.patellaBone:
             self.patella_setup()
 
         if self.dualBone:
             self.build_dual_bones()
-        else:
-            self.jnts_bind += [self.lwr]
 
         if self.toeBones:
             self.build_toes()
@@ -507,7 +501,7 @@ class LegQd(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-        self.jnts_bind += [radius_JC[0], ulna_JC[0]]
+        # self.jnts_bind += [radius_JC[0], ulna_JC[0]]
 
     def singleBallCtl_setup(self):
         """Make ball ctl the single ctl in both FK and IK modes."""
