@@ -1055,7 +1055,7 @@ class RigModule(RigBase):
         root.cstOri(ribbonUp.stt_loc, mo=1)
 
         # Lower Ribbon
-        ribbonUp.end_jnt.a.rx >> ribbonLw.stt_jnt.a.rx
+        ribbonUp.end_jnt.a.rx >> ribbonLw.stt_jnt.a.rx  # twist follow
         palm.cstPar(ribbonLw.end_loc, mo=1)
 
         # Bend Ctl Setup
