@@ -389,6 +389,7 @@ class HandBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the hand rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
+        self.add_bind_sk_set(self.jnts_bind)
 
     def setup_scale(self):
         """Setup scaling for the hand rig module."""

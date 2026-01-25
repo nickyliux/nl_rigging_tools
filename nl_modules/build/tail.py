@@ -306,7 +306,6 @@ class Tail(RigModule):
     def build_post(self):
         """Post setup for the tail rig."""
         logging.info(self.rigID)
-
         # --- Cleanup and update root joint ---
         mc.delete(self.rootJ)
         self.rootJ = self.jnts_fk[0]

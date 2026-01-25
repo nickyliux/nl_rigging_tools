@@ -72,14 +72,17 @@ class SpineBp(RigModule):
         ]
         if self.ribbon:
             ctl_defs += [
-                ("chest_ikc", "chest", None, rSz * 5, 0),
-                ("mid_ikc", "diamond_3d", None, rSz * 3, 1),
-                ("hip_ikc", "hip", None, rSz * 5, 0),
+                ("chest_ikc", "cube", None, rSz * 7, 0),
+                ("mid_ikc", "cube", None, rSz * 2, 1),
+                ("hip_ikc", "cube", None, rSz * 7, 0),
             ]
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         self.setting.cv_move(0, 0, rSz * -110)
+        self.chest_ikc.cv_scale(1, 0.2, 0.8)
+        self.mid_ikc.cv_scale(1, 0.2, 0.8)
+        self.hip_ikc.cv_scale(1, 0.2, 0.8)
         self.setting.color = Color.PINK
 
     def build(self):
@@ -116,7 +119,7 @@ class SpineBp(RigModule):
 
         self.ctls_fk = []
         for i, j in enumerate(self.jnts_fk[:-1]):
-            c = CrvNode(f"{i + 1}_fkc", pf=rID, shape="squareR", scale=rSz * 5)
+            c = CrvNode(f"{i + 1}_fkc", pf=rID, shape="circle", scale=rSz * 5)
             self.ctls_fk.append(c)
 
         if self.is_neck():
@@ -148,7 +151,7 @@ class SpineBp(RigModule):
     def reverse_fk_hip(self):
         """modify first fkc specific for hip rotation."""
         ctl = self.ctls_fk[0]
-        ctl(p=self.CTL_DATA, addOfs=1, color=Color.D_YELLOW)
+        ctl(p=self.CTL_DATA, addOfs=1, color=Color.D_BLUE)
         ctl.cv_scale(1.2, 1.2, 1.2)
 
         ctl.offset.snapAlignTo(self.BASE_PVT_GUIDE, self.jnts_fk[0])
@@ -355,6 +358,7 @@ class SpineBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the spine rig."""
         self.add_bind_jnt_set(self.jnts_bind)
+        self.add_bind_sk_set(self.jnts_bind[0])
 
         neckRadScale = 2
         if self.is_neck():

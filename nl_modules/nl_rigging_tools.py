@@ -441,14 +441,14 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         else:
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 
-    def autoBind_refJnts(
-        self, meshes=None, jntSet="auto_bind_jnt_set", thld=999, uiPB=None
-    ):
+    def autoBind_refJnts(self, meshes=None, thld=999, uiPB=None):
         """Bind meshes to the closest reference joints."""
-        if not DagNode(jntSet).exists():
-            raise ValueError(f"Set {jntSet} NOT found for auto skin.")
+        JNT_SET = "auto_bind_sk_set"
 
-        jntList = set(mc.sets(jntSet, q=1))
+        if not DagNode(JNT_SET).exists():
+            raise ValueError(f"Set {JNT_SET} NOT found for auto skin.")
+
+        jntList = set(mc.sets(JNT_SET, q=1))
         jntsScap = set([n for n in jntList if "scapula" in DagNode(n).name.lower()])
         jntsNoScap = jntList - jntsScap
 
@@ -489,37 +489,42 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             mc.confirmDialog(t="Info", m="Character path NOT set.     ", b="OK")
             return
 
-        selList = mc.ls(sl=1, tr=1)
-        if not selList:
-            charName = os.path.basename(charPath)
-            mdlGrp = DagNode(charName)
-            if mdlGrp.exists():
-                selList = mc.ls(mdlGrp)
-                tgtMeshes = common.getObjectBelow(selList)
-                if not tgtMeshes:
-                    mc.confirmDialog(
-                        t="Info",
-                        m=f"No mesh found under group '{charName}'.    ",
-                        b="OK",
-                    )
-                    return
-            else:
-                mc.confirmDialog(
-                    t="Info", m=f"Model group '{charName}' not found.    ", b="OK"
-                )
-                return
-        else:
+        # selList = mc.ls(sl=1, tr=1)
+        # if not selList:
+        charName = os.path.basename(charPath)
+        mdlGrp = DagNode(charName)
+        if mdlGrp.exists():
+            selList = mc.ls(mdlGrp)
             tgtMeshes = common.getObjectBelow(selList)
             if not tgtMeshes:
                 mc.confirmDialog(
-                    t="Info", m="No mesh found under selected.    ", b="OK"
+                    t="Info",
+                    m=f"No mesh found under group '{charName}'.    ",
+                    b="OK",
                 )
                 return
+        else:
+            mc.confirmDialog(
+                t="Info", m=f"Model group '{charName}' not found.    ", b="OK"
+            )
+            return
+        # else:
+        #     tgtMeshes = common.getObjectBelow(selList)
+        #     if not tgtMeshes:
+        #         mc.confirmDialog(
+        #             t="Info", m="No mesh found under selected.    ", b="OK"
+        #         )
+        #         return
 
         common.xRayAllGeo(1)
+
+        # Bind meshes to ref joints
         self.autoBind_refJnts(meshes=tgtMeshes, thld=15, uiPB=self.UI.bar_PB)
+        # Bind meshes to rb joints
         skin.skinRbJnts(meshes=tgtMeshes, uiPB=self.UI.bar_PB)
+        # Attach rb joints to surface
         build.autoAttach()
+
         common.xRayAllGeo(0)
         mc.select(cl=1)
 

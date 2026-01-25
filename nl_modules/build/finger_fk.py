@@ -170,12 +170,7 @@ class FingerFk(RigModule):
 
     def setup_vis(self):
         """Setup visibility for the finger rig module."""
-        mc.hide(self.ikhs, self.jnts_fk)  # , self.setting)
-
-        # self.ctl_vis_toggle(
-        #     self.setting.a.add("debugVis", type="bool", dv=0, k=0),
-        #     onList=self.jnts_fk,
-        # )
+        mc.hide(self.ikhs, self.jnts_fk)
 
     def setup_channel(self):
         """Setup channels for the finger rig module."""

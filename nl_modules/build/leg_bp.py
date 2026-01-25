@@ -172,6 +172,7 @@ class LegBp(RigModule):
         #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
         # )
         self.jnts_bind = [self.palm]
+        self.jnts_sk = [self.upr, self.palm, self.ball]
 
         self.scapulaG = self.build_legScapula(
             ikc=self.ikc,
@@ -207,6 +208,11 @@ class LegBp(RigModule):
 
         if self.dualBone:
             self.build_dual_bones()
+        elif not self.ribbon:
+            if self.kneeFix:
+                self.jnts_sk += [self.boneFix]
+            else:
+                self.jnts_sk += [self.lwr]
 
         if self.patellaBone:
             self.patellaJ = self.patella_setup()
@@ -456,6 +462,7 @@ class LegBp(RigModule):
 
             ctlList = []
             self.jnts_bind.extend(toeJs[:-1])
+            self.jnts_sk.extend(toeJs[:-1])
             fkToeList = toeJs[1:-1]
             for jnt in fkToeList:
                 crvName = f"{jnt.name}_ctl_#"
@@ -498,7 +505,7 @@ class LegBp(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=type, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-        # self.jnts_bind += [radius_JC[0], ulna_JC[0]]
+        self.jnts_sk += [radius_JC[0], ulna_JC[0]]
 
     def setup_vis(self):
         """Setup visibility for the leg rig controls."""
@@ -624,6 +631,7 @@ class LegBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
+        self.add_bind_sk_set(self.jnts_sk)
         proxy.add_height_attr([self.palm], self.rigSize * 10)
 
     def build_post(self):

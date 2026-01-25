@@ -81,11 +81,11 @@ class AttributeHolder:
 
         return Attribute(self.node, name)
 
-    def addSep(self, name="_" * 16):
+    def addSep(self, name="_" * 4):
         """Add string attribute as separator"""
-        while self.node.a[name].exists():
-            name += "_"
-        self.add(name, lock=1, type="enum", k=1, en=" ")
+        while not self.node.a[name].exists():
+            # name += "_"
+            self.add(name, lock=1, type="enum", k=1, en=" ")
 
     def reset(self, **kwargs):
         """Reset object's xform

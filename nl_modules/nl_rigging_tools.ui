@@ -865,7 +865,7 @@
          </property>
          <property name="toolTip">
           <string>Auto Bind skeleton meshes
-( If selection is None, the group of name [character] is used )</string>
+( If nothing selected, group [character] is used )</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>

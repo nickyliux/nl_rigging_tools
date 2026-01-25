@@ -115,20 +115,22 @@ def addMasterAttrs():
     OPTIONS = "normal:template:reference"
     grp = DagNode("MDL")
     if grp.exists():
-        ctl.a.add("showMdl", k=0, type="bool", dv=1) >> grp.a.v
+        ctl.a.add("showModel", k=0, type="bool", dv=1) >> grp.a.v
         grp.a.overrideEnabled.set(1)
-        ctl.a.add("dspMdl", k=0, type="enum", en=OPTIONS) >> grp.a.overrideDisplayType
+        ctl.a.add("dspModel", k=0, type="enum", en=OPTIONS) >> grp.a.overrideDisplayType
     grp = DagNode("PRX")
     if grp.exists():
-        ctl.a.add("showPrx", k=0, type="bool", dv=1) >> grp.a.v
+        ctl.a.add("showProxy", k=0, type="bool", dv=1) >> grp.a.v
         grp.a.overrideEnabled.set(1)
-        ctl.a.add("dspPrx", k=0, type="enum", en=OPTIONS) >> grp.a.overrideDisplayType
+        ctl.a.add("dspProxy", k=0, type="enum", en=OPTIONS) >> grp.a.overrideDisplayType
     grp = DagNode("JNT")
     if grp.exists():
-        ctl.a.add("showJnt", k=0, type="bool", dv=1) >> grp.a.v
+        ctl.a.add("showJoint", k=0, type="bool", dv=1) >> grp.a.v
+        grp.a.overrideEnabled.set(1)
+        ctl.a.add("dspJoint", k=0, type="enum", en=OPTIONS) >> grp.a.overrideDisplayType
     grp = DagNode("CTL")
     if grp.exists():
-        ctl.a.add("showCtl", k=0, type="bool", dv=1) >> grp.a.v
+        ctl.a.add("showControl", k=0, type="bool", dv=1) >> grp.a.v
 
 
 def unbuildTgt(rN):

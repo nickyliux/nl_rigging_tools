@@ -92,7 +92,7 @@ class ArmBp(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", scale, 0),
-            ("clavicle_fkc", "cube", "x", scale / 2, 1),
+            ("clavicle_fkc", "cube", "x", scale, 1),
             ("upr_fkc", "circle", "x", scale, 0),
             ("lwr_fkc", "circle", "x", scale, 0),
             ("palm_fkc", "circle", "x", scale, 0),
@@ -112,6 +112,7 @@ class ArmBp(RigModule):
 
         self.pvc.cv_rotate(-90, 0, 0)
         self.setting.cv_move(0, scale * 30, 0)
+        self.clavicle_fkc.cv_scale(1, 0.3, 0.3)
         self.setting.color = Color.PINK
 
     def build(self):
@@ -125,7 +126,8 @@ class ArmBp(RigModule):
         self.build_ik()
         self.blend_fk_ik()
 
-        self.jnts_bind = [self.palm, self.clavicle]
+        self.jnts_bind = [self.clavicle, self.palm]
+        self.jnts_sk = [self.upr, self.palm]
 
         if self.ribbon:
             self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(
@@ -145,6 +147,8 @@ class ArmBp(RigModule):
 
         if self.dualBone:
             self.build_dual_bones()
+        else:
+            self.jnts_sk += [self.lwr]
 
         if self.scapulaBone:
             self.build_armScapula()
@@ -391,7 +395,7 @@ class ArmBp(RigModule):
         )
         self.clavicle.cstPoi(clavJnts[0], mo=1)
 
-        # self.jnts_bind += [clavJnts[0], scapJnts[0]]
+        self.jnts_sk += [clavJnts[0], scapJnts[0]]
 
     def build_dual_bones(self):
         """Build dual bones for the lower arm."""
@@ -419,7 +423,7 @@ class ArmBp(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-        # self.jnts_bind += [radius_JC[0], ulna_JC[0]]
+        self.jnts_sk += [radius_JC[0], ulna_JC[0]]
 
     def palm_rolling(self, ikc, fkc, fkPin, locRoll, locIn, locOut):
         """Setup palm rolling for the arm rig controls."""
@@ -548,6 +552,7 @@ class ArmBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
+        self.add_bind_sk_set(self.jnts_sk)
         proxy.add_radiusScale_attr([self.palm], 0.6)
 
     def setup_ctlSet(self):

@@ -35,7 +35,7 @@ In my last job I encountered a project with characters in need of Ziva muscle. T
 - **Custom Marking Menus :** Handy menus for rig creation.
 - **Custom Framework :** Less redundant code for rig development.
 
-## Marking menus
+## Marking Menus
 
 |nl Rig Tool|General Tasks|
 |:-:|:-:|

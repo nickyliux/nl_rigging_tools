@@ -617,6 +617,7 @@ class LegQd(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the quadruped leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
+        self.add_bind_sk_set(self.jnts_bind)
 
     def setup_scale(self):
         """Setup scale for the quadruped leg rig module."""

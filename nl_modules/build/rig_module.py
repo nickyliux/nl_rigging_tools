@@ -50,6 +50,7 @@ class RigModule(RigBase):
         self.xDir = 1 if rID.startswith("lf") else -1 if rID.startswith("rt") else 0
         self.boneFix = None
         self.jnts_bind = []
+        self.jnts_sk = []
         self.all_bendy = []
 
         if rigNode.a.rootJ.exists():
@@ -426,8 +427,14 @@ class RigModule(RigBase):
             mc.sets(tgtList, add=tgtSet)
         else:
             mc.sets(tgtList, n=tgtSet)
+        # self.jnts_bind.extend(tgtList)
 
-        self.jnts_bind.extend(tgtList)
+    def add_bind_sk_set(self, tgtList, tgtSet="auto_bind_sk_set"):
+        """Add bind joint set for target joints"""
+        if DagNode(tgtSet).exists():
+            mc.sets(tgtList, add=tgtSet)
+        else:
+            mc.sets(tgtList, n=tgtSet)
 
     @staticmethod
     def add_dyn_pivot_extra(tgt, snap=None, scale=1):
@@ -511,7 +518,7 @@ class RigModule(RigBase):
         s = rSz * xDr
         common.sdk(driver, driven, "ry", "tz", 0, 0, tangent=1)
         common.sdk(driver, driven, "ry", "tz", -70, -2 * s, tangent=1)
-        common.sdk(driver, driven, "ry", "tz", -150, -8 * s, tangent=1)
+        common.sdk(driver, driven, "ry", "tz", -180, -8 * s, tangent=1)
 
         common.sdk(driver, driven, "ry", "tx", 0, 0, tangent=1)
         common.sdk(driver, driven, "ry", "tx", -80, s * 2.5, tangent=1)
@@ -523,15 +530,15 @@ class RigModule(RigBase):
         patella_guide = DagNode(rID + "_patella_guide")
 
         def patella_sdk(driver, driven):
-            common.sdk(driver, driven, "ry", "ry", 0, 0)
-            common.sdk(driver, driven, "ry", "ry", -20, -1, tangent=1)
+            common.sdk(driver, driven, "ry", "ry", 0, 0, tangent=1)
+            # common.sdk(driver, driven, "ry", "ry", -20, -1, tangent=1)
             common.sdk(driver, driven, "ry", "ry", -90, -45, tangent=1)
             common.sdk(driver, driven, "ry", "ry", -180, -90)
 
         if patella_guide.exists():
             j = JntNode("patella", pf=rID, align=patella_guide, r=rSz / 2, p=self.upr)
             j.freezeXf()
-            self.jnts_bind.append(j)
+            self.jnts_sk.append(j)
             patella_sdk(self.lwr, j)
             return j
 
@@ -763,7 +770,7 @@ class RigModule(RigBase):
                 aimTgt=hipJ,
             )
             IkNode("scapAim", pf=rID, sj=j0, ee=j1, p=scapCtl, vis=0)
-            self.jnts_bind.append(j0)
+            self.jnts_sk.append(j0)
 
         return mainGrp
 
