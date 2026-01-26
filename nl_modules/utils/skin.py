@@ -139,7 +139,6 @@ def loadWeight(uiPB):
     i = 0
     loadCount = 0
 
-    common.setVP(fit=1)
     mc.select(cl=1)
     common.xRayAllGeo(1)
     control.reset_all_ctl()

@@ -80,9 +80,9 @@ class SpineBp(RigModule):
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         self.setting.cv_move(0, 0, rSz * -110)
-        self.chest_ikc.cv_scale(1, 0.2, 0.8)
-        self.mid_ikc.cv_scale(1, 0.2, 0.8)
-        self.hip_ikc.cv_scale(1, 0.2, 0.8)
+        self.chest_ikc.cv_scale(1, 0.05, 0.8)
+        self.mid_ikc.cv_scale(1, 0.05, 0.8)
+        self.hip_ikc.cv_scale(1, 0.05, 0.8)
         self.setting.color = Color.PINK
 
     def build(self):

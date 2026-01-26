@@ -269,6 +269,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Load selected guide components."""
         items = self.UI.guide_LW.selectedItems()
         allTgtMG = []
+        SIDE_OFFSET = 20
 
         isM = self.UI.guideSide_M_CB.isChecked()
         isL = self.UI.guideSide_L_CB.isChecked()
@@ -284,10 +285,10 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                         mg = guide.loadGuide(names["M"], 0)
                         allTgtMG.append(mg)
                     if isL and "L" in names:
-                        mg = guide.loadGuide(names["L"], 10)
+                        mg = guide.loadGuide(names["L"], SIDE_OFFSET)
                         allTgtMG.append(mg)
                     if isR and "R" in names:
-                        mg = guide.loadGuide(names["R"], -10)
+                        mg = guide.loadGuide(names["R"], -SIDE_OFFSET)
                         allTgtMG.append(mg)
 
                 elif itemText == "biped":

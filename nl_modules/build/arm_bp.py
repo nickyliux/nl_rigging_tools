@@ -393,9 +393,9 @@ class ArmBp(RigModule):
             vis=0,
             p=self.scap_fkc,
         )
-        self.clavicle.cstPoi(clavJnts[0], mo=1)
+        self.clavicle_fkc.offset.cstPar(clavJnts[0], mo=1)
 
-        self.jnts_sk += [clavJnts[0], scapJnts[0]]
+        self.jnts_sk.extend([clavJnts[0], scapJnts[0]])
 
     def build_dual_bones(self):
         """Build dual bones for the lower arm."""
