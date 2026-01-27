@@ -75,9 +75,9 @@ class SpineQd(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2, 0),
             ("cog_ctl", "trapezoid2", None, rSz, 0),
-            ("fore_ctl", "chest_qd", None, rSz * 4, 0),
+            ("fore_ctl", "cube", None, rSz * 6, 0),
             ("mid_ctl", "squareR", "z", rSz * 4, 0),
-            ("base_ctl", "hip_qd", None, rSz * 4, 0),
+            ("base_ctl", "cube", None, rSz * 6, 0),
             ("tangent0_ctl", "diamond_3d", None, rSz * 3, 1),
             ("tangent1_ctl", "diamond_3d", None, rSz * 3, 1),
             ("end_ctl", "rotate2_3d", None, rSz * 2, 0),
@@ -92,6 +92,9 @@ class SpineQd(RigModule):
         self.tangent0_ctl.cv_rotate(0, 90, 0)
         self.tangent1_ctl.cv_rotate(0, 90, 0)
         self.end_ctl.cv_rotate(0, 90, 0)
+
+        self.fore_ctl.cv_scale(1, 1, 0.2)
+        self.base_ctl.cv_scale(1, 1, 0.2)
 
     def create_rbSrf(self):
         """Create the ribbon surface for the spine rig."""

@@ -1,6 +1,7 @@
 import logging
 import re
 import maya.cmds as mc
+from maya import mel
 from collections import OrderedDict
 from nl_modules.nodel.base.dep_node import DepNode
 from nl_modules.utils import common, open_maya_api
@@ -680,3 +681,12 @@ class DagNode(DepNode):
     def setMtx(self, mtx):
         """Set matrix to the node"""
         mc.xform(self, m=mtx, ws=1)
+
+    @property
+    def skinCluster(self):
+        """Return the skinCluster connected to the mesh"""
+        skinCluster = mel.eval(f'findRelatedSkinCluster "{self}"')
+        if mc.objExists(skinCluster):
+            return DepNode(skinCluster)
+        else:
+            return DepNode(None)

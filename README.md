@@ -76,14 +76,14 @@ e.g.
 ## Custom Objects Classes
 ```mermaid
 flowchart
-    DepNode --> DagNode
     DepNode --> Condition
+    DepNode --> DagNode
     DagNode --> GrpNode
     GrpNode --> CrvNode
     GrpNode --> JntNode
     GrpNode --> LocNode
-    GrpNode --> MshNode
     GrpNode --> SrfNode
+    GrpNode --> MshNode
 
     Dimension
     AttributeHolder --> Attribute

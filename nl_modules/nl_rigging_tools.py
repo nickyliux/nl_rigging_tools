@@ -146,9 +146,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
         self.connect(self.UI.boneAutoUnBind_BN, self.boneAutoUnBind, ":unbind.png")
 
-        self.connect(self.UI.mirrorSym_BN, partial(skin.mirrorWeight, 1))
-        self.connect(self.UI.mirrorAsym_BN, partial(skin.mirrorWeight, 0))
-        self.connect(self.UI.prune_BN, skin.pruneWeight)
+        self.connect(self.UI.mirrorSym_BN, partial(skin.mirrorWeightSel, 1))
+        self.connect(self.UI.mirrorAsym_BN, partial(skin.mirrorWeightSel, 0))
+        self.connect(self.UI.prune_BN, skin.pruneWeightSel)
         self.connect(self.UI.copyWeight_BN, skin.copyWeight)
 
         # RigNode
@@ -218,19 +218,19 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.dsp_template_BN, partial(control.dspTypeSel, 1))
         self.connect(self.UI.dsp_reference_BN, partial(control.dspTypeSel, 2))
         self.connect(self.UI.selectTypeBelow_BN, self.getTypeBelowSel)
-        self.connect(self.UI.maxInfl_BN, self.setMaxInfl)
+        self.connect(self.UI.maxInfl_BN, self.setMaxInflSel)
 
         self.rigNode_UI_refresh()
         self.crvShape_refresh()
         self.updateLoadWrapTargetMesh()
         self.updateCharPath()
 
-    def setMaxInfl(self):
+    def setMaxInflSel(self):
         """Set maximum influences for selected skinned meshes."""
         selList = mc.ls(sl=1, tr=1)
         if selList:
             for s in selList:
-                MshNode(s).setMaxInfl()
+                skin.setMaxInfl(DagNode(s))
                 logging.info(f"Set max influences to 8 for {s}")
 
     def getTypeBelowSel(self):
@@ -473,7 +473,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             selList = mc.ls(mdlGrp)
             tgtMeshes = common.getObjectBelow(selList)
             for mesh in tgtMeshes:
-                count += MshNode(mesh).delSkin()
+                count += skin.delSkin(mesh)
 
         mc.confirmDialog(t="Info", m=f"{count} skinCluster deleted.    ", b="OK")
 

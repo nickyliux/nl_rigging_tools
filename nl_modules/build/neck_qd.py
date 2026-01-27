@@ -44,15 +44,3 @@ class NeckQd(SpineQd):
         """Setup control sets for the neck rig."""
         ctls = self.ctls_ik + [self.setting]
         self.add_ctl_set(ctls)
-
-    def build_post(self):
-        """Post-setup for the neck rig."""
-        logging.info(self.rigID)
-        self.setup_bindJnt()
-        self.setup_ctlSet()
-        self.setup_space()
-        self.setup_anchor()
-        self.setup_vis()
-        self.setup_channel()
-        self.setup_rotate_order()
-        self.build_post_module()

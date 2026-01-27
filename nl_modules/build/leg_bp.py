@@ -172,7 +172,7 @@ class LegBp(RigModule):
         #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
         # )
         self.jnts_bind = [self.palm]
-        self.jnts_sk = [self.upr, self.palm, self.ball]
+        self.jnts_sk = [self.hip, self.upr, self.palm, self.ball]
 
         self.scapulaG = self.build_legScapula(
             ikc=self.ikc,

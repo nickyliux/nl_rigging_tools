@@ -361,7 +361,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Mdl</string>
+          <string>Model</string>
          </property>
         </widget>
        </item>
@@ -468,7 +468,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Bld</string>
+          <string>Build</string>
          </property>
         </widget>
        </item>
@@ -597,7 +597,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Tpl</string>
+          <string>Template</string>
          </property>
         </widget>
        </item>
@@ -713,7 +713,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Ctl</string>
+          <string>Control</string>
          </property>
         </widget>
        </item>
@@ -834,7 +834,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Skl</string>
+          <string>Skeleton</string>
          </property>
         </widget>
        </item>
@@ -956,7 +956,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Wgh</string>
+          <string>Weight</string>
          </property>
         </widget>
        </item>
@@ -1078,7 +1078,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Prx</string>
+          <string>Proxy</string>
          </property>
         </widget>
        </item>
@@ -1320,7 +1320,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Hlp</string>
+          <string>Helper</string>
          </property>
         </widget>
        </item>

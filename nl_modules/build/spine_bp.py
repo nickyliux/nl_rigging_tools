@@ -72,16 +72,16 @@ class SpineBp(RigModule):
         ]
         if self.ribbon:
             ctl_defs += [
-                ("chest_ikc", "cube", None, rSz * 7, 0),
+                ("chest_ikc", "cube", None, rSz * 8, 0),
                 ("mid_ikc", "cube", None, rSz * 2, 1),
-                ("hip_ikc", "cube", None, rSz * 7, 0),
+                ("hip_ikc", "cube", None, rSz * 8, 0),
             ]
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         self.setting.cv_move(0, 0, rSz * -110)
         self.chest_ikc.cv_scale(1, 0.05, 0.8)
-        self.mid_ikc.cv_scale(1, 0.05, 0.8)
+        self.mid_ikc.cv_scale(1, 0.2, 0.8)
         self.hip_ikc.cv_scale(1, 0.05, 0.8)
         self.setting.color = Color.PINK
 
@@ -144,8 +144,7 @@ class SpineBp(RigModule):
 
         if self.is_neck():
             self.isolate_align(
-                self.ctls_fk[0],
-                spaces=[self.ctls_fk[0].parent, self.masterC],
+                self.ctls_fk[0], spaces=[self.ctls_fk[0].parent, self.masterC], dv=0
             )
 
     def reverse_fk_hip(self):

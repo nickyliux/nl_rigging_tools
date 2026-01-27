@@ -446,14 +446,12 @@ def autoAttach():
 
         if node.a.nodeState.get() != 2:
             continue
-            # logging.info(f"Skip non-rigged node {node.name}.")
 
         rbJntSetAttr = node.a["rbJntSet"]
         rbSrfAttr = node.a["rbSrf"]
         rbCrvAttr = node.a["rbCrv"]
 
         if not (rbJntSetAttr.exists() or rbSrfAttr.exists() or rbCrvAttr.exists()):
-            # logging.info(f"Skip {node.name}: ribbon attributes NOT found.")
             continue
 
         rbJntSetName = rbJntSetAttr.get()

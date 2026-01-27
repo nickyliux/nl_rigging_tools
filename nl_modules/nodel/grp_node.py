@@ -345,3 +345,68 @@ class GrpNode(DagNode):
                 attrStr = attr.name
                 if not attrStr.startswith("_"):
                     self.a.add(attrStr, proxy=attr)
+
+    def mirrorWeight(self, sym=1):
+        """Mirror skin weights symmetrically"""
+        if self.skinCluster.exists():
+            influenceAssociation = "oneToOne" if sym else "closestJoint"
+            mc.copySkinWeights(
+                ss=self.skinCluster.name,
+                ds=self.skinCluster.name,
+                mirrorMode="YZ",
+                surfaceAssociation="closestPoint",
+                influenceAssociation=influenceAssociation,
+                smooth=1,
+                normalize=1,
+            )
+
+    def weightTo(self, joints, **kwargs):
+        """Apply skin weights to the mesh"""
+        if self.exists():
+            mc.skinCluster(self, joints, **kwargs)
+
+    def softWeightTo(self, joints, rui=0, mi=3, tsb=1, dr=2, **kwargs):
+        """Apply soft skin weights to the mesh"""
+        self.weightTo(joints, rui=rui, mi=mi, tsb=tsb, dr=dr, **kwargs)
+
+    def hardWeightTo(self, joints):
+        """Apply hard skin weights to the mesh"""
+        self.weightTo(joints, rui=0, mi=1, tsb=1, dr=0.1)
+
+    def copyWeightsTo(self, items):
+        """Copy skin weights from this mesh to other meshes"""
+        if self.skinCluster.exists():
+            items = items if isinstance(items, (list, tuple)) else [items]
+            for item in [GrpNode(i) for i in items]:
+                if item.skinCluster:
+                    item.skinCluster.delete()
+
+                item.hardWeightTo(self.joints)
+                mc.copySkinWeights(
+                    ss=self.skinCluster.name,
+                    ds=item.skinCluster.name,
+                    noMirror=1,
+                    surfaceAssociation="closestPoint",
+                    influenceAssociation="oneToOne",
+                )
+
+    def copyWeightsFr(self, item):
+        """Copy skin weights from another mesh to this mesh"""
+        self.__class__(item).copyWeightsTo(self)
+
+    @property
+    def joints(self):
+        """Return the joints connected to the skinCluster of the mesh"""
+        from nl_modules.nodel.jnt_node import JntNode
+
+        if self.skinCluster.exists():
+            return [JntNode(i) for i in mc.skinCluster(self.skinCluster, q=1, inf=1)]
+
+    def deleteTweaks(self):
+        """Delete all tweak nodes connected to the mesh"""
+        if self.exists():
+            tweaks = list(
+                set([i.name for i in self.history if mc.nodeType(i.name) == "tweak"])
+            )
+            if tweaks:
+                mc.delete(tweaks)

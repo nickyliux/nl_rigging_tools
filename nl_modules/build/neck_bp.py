@@ -15,7 +15,15 @@ class NeckBp(SpineBp):
 
     def setup_space(self):
         """Setup the space switching for the neck rig."""
-        # self.rigNode.setMsg({"space_COG": self.cog_ctl})
+        self.chest_ikc.a.add("spaceType", dv=2, k=0, cb=0)
+
+        self.rigNode.a.add("spaceName1", type="string", txt="neckBase, COG, master")
 
         space_neck = self.chest_ikc if self.ribbon else self.ctls_fk[-1]
-        self.rigNode.setMsg({"space_neck": space_neck})
+        self.rigNode.setMsg(
+            {
+                "spaceHolder1": self.chest_ikc,
+                "space_neck": space_neck,
+                "space_neckBase": self.hip_ikc,
+            }
+        )

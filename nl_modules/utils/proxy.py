@@ -249,7 +249,7 @@ def bind_to_proxy():
         mc.confirmDialog(t="Info", m="Target wrap mesh NOT found.     ", b="OK")
         return
 
-    sc = MshNode(tgtMesh).skinCluster
+    sc = tgtMesh.skinCluster
     if sc.exists():
         mc.confirmDialog(t="Info", m="Target wrap mesh already skinned.     ", b="OK")
         return
@@ -288,7 +288,7 @@ def bind_combined(combinedMesh, proxies):
 
 def set_combined_weight(combinedMesh):
     """Set skin weights for the combinedMesh proxy mesh based on the original proxy meshes."""
-    sc = MshNode(combinedMesh).skinCluster
+    sc = DagNode(combinedMesh).skinCluster
     bindJnts = mc.skinCluster(sc, q=1, inf=1)
 
     for j in bindJnts:

@@ -3,7 +3,7 @@ import glob
 import logging
 from maya import cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.msh_node import MshNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.utils import common
 from nl_modules.utils import control
 from nl_modules.utils import file
@@ -96,7 +96,7 @@ def selSkinned(*args):
     else:
         selMeshes = mc.ls(sl=1, tr=1)
         for msh in selMeshes:
-            skinC = MshNode(msh).skinCluster
+            skinC = DagNode(msh).skinCluster
             if skinC:
                 jntList = mc.listConnections(skinC + ".matrix", type="joint")
                 if jntList:
@@ -110,9 +110,21 @@ def delSkinForSel(*args):
     allMeshes = mc.ls(sl=1, tr=1)
     count = 0
     for msh in allMeshes:
-        count += MshNode(msh).delSkin()
+        count += delSkin(DagNode(msh))
 
     logging.info(f"{count} skinClusters deleted.")
+
+
+def delSkin(tgt):
+    """Delete the skinCluster connected to the mesh"""
+    sc = tgt.skinCluster
+    if sc.exists():
+        try:
+            sc.delete()
+            return 1
+        except RuntimeError:
+            mc.warning(f"Failed to delete skinCluster: {sc}")
+    return 0
 
 
 def loadWeight(uiPB):
@@ -139,7 +151,6 @@ def loadWeight(uiPB):
     i = 0
     loadCount = 0
 
-    mc.select(cl=1)
     common.xRayAllGeo(1)
     control.reset_all_ctl()
 
@@ -159,11 +170,12 @@ def loadWeight(uiPB):
 
     logging.info(f"{loadCount} objects weight loaded.")
     common.xRayAllGeo(0)
+    mc.select(cl=1)
 
 
 def skinAndLoadW(mesh=None, bindJnts=None, tgtDir=None):
     """Skin a mesh to joints and load skin weights from XML file."""
-    sc = MshNode(mesh).skinCluster
+    sc = DagNode(mesh).skinCluster
     if sc.exists():
         sc.delete()
 
@@ -209,21 +221,26 @@ def saveWeight():
         return
 
     selList = mc.ls(sl=1, tr=1)
-    if not selList:
-        charName = os.path.basename(charPath)
-        mdlGrp = DagNode(charName)
-        if mdlGrp.exists():
-            selList = mc.ls(mdlGrp)
-        else:
-            return
-    meshesToSave = common.getObjectBelow(selList, tgtType="mesh")
+    # if not selList:
+    #     mc.confirmDialog(t="Info", m="No skinned mesh selected.     ", b="OK")
+    # return
+    # charName = os.path.basename(charPath)
+    # mdlGrp = DagNode(charName)
+    # if mdlGrp.exists():
+    #     selList = mc.ls(mdlGrp)
+    # else:
+    #     return
+    # skinGeoShape = mc.ls(type=["mesh", "nurbsSurface"], ni=1)
+    # selList = mc.listRelatives(skinGeoShape, p=1)
 
-    for mesh in meshesToSave:
-        sc = MshNode(mesh).skinCluster
-        if sc.exists():
-            jntList = mc.listConnections(sc + ".matrix", type="joint")
-            weightJntDict[mesh.name] = jntList
-            skinDict[mesh] = sc
+    for t in ["mesh", "surface"]:
+        meshesToSave = common.getObjectBelow(selList, tgtType=t)
+        for mesh in meshesToSave:
+            sc = mesh.skinCluster
+            if sc.exists():
+                jntList = mc.listConnections(sc + ".matrix", type="joint")
+                weightJntDict[mesh.name] = jntList
+                skinDict[mesh] = sc
 
     if not weightJntDict:
         mc.confirmDialog(
@@ -250,7 +267,7 @@ def copyWeight(*args):
         )
         return
 
-    src = MshNode(sel[-1])
+    src = DagNode(sel[-1])
     tgts = sel[:-1]
 
     if not src.skinCluster.exists():
@@ -265,7 +282,7 @@ def copyWeight(*args):
     logging.info(f"Weight copied from {src.name} to {len(tgts)} meshes.")
 
 
-def mirrorWeight(*args):
+def mirrorWeightSel(*args):
     """Mirror skin weights symmetrically for selected meshes."""
     sel = mc.ls(sl=1, tr=1)
     if not sel:
@@ -273,19 +290,29 @@ def mirrorWeight(*args):
         return
 
     for msh in sel:
-        MshNode(msh).mirrorWeight(sym=args[0])
+        GrpNode(msh).mirrorWeight(sym=args[0])
 
     logging.info(f"Symmetrical skin weights mirrored for {len(sel)} meshes.")
 
 
-def pruneWeight(*args):
+def pruneWeightSel(*args):
     """Prune skin weights below threshold for selected meshes."""
     sel = mc.ls(sl=1, tr=1)
     if not sel:
         mc.confirmDialog(t="Info", m="Select skinned meshes to prune.     ", b="OK")
         return
 
+    threshold = 0.001
     for msh in sel:
-        MshNode(msh).pruneWeight()
+        if msh.skinCluster.exists():
+            mc.skinCluster(
+                msh.skinCluster.name, e=1, pr=threshold, forceNormalizeWeights=1
+            )
 
     logging.info(f"Skin weights pruned for {len(sel)} meshes.")
+
+
+def setMaxInfl(tgt, val=8):
+    """Set maximum influences for the skinCluster of the mesh"""
+    if tgt.skinCluster.exists():
+        mc.skinCluster(tgt, e=1, mi=val)
