@@ -289,18 +289,24 @@ class RigModule(RigBase):
             allSpacesGrp.append(spaceG)
         tgt_ofs = tgt.addOffsetGrp()
 
-        if cstType == "par":
-            tgt.a.add("spaceType", k=0, cb=0)
-        elif cstType == "ori":
-            tgt.a.add("spaceType", dv=1, k=0, cb=0)
+        # spaceType
+        #   0: par
+        #   1: ori
+        #   2: ori + poi
+        spaceType = tgt.a.add("spaceType", k=0, cb=0)
+        if cstType == "ori":
+            spaceType.set(1)
 
         weight = w or tgt.a.add("space", type="enum", dv=dv, enumName=names)
 
-        v = tgt.a["spaceType"].get()
-        tgtCstType = "par" if v == 0 else "ori"
-        common.cstMulti(*allSpacesGrp, tgt_ofs, cstType=tgtCstType, w=weight, **kwargs)
+        spaceType_v = spaceType.get()
+        cstType1 = "par"
+        if spaceType_v > 0:
+            cstType1 = "ori"
+        common.cstMulti(*allSpacesGrp, tgt_ofs, cstType=cstType1, w=weight, **kwargs)
 
-        if v == 2 and w is None:
+        # Add extra attr for area like head
+        if spaceType_v == 2 and w is None:
             weight = tgt.a.add("posSpace", type="enum", dv=dv, enumName=names)
             common.cstMulti(*allSpacesGrp, tgt_ofs, cstType="poi", w=weight, **kwargs)
 

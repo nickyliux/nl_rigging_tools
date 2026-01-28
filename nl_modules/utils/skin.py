@@ -199,6 +199,7 @@ def skinAndLoadW(mesh=None, bindJnts=None, tgtDir=None):
         format="XML",
         path=tgtDir,
     )
+    pruneWeightSel()
     return 1
 
 
@@ -297,7 +298,7 @@ def mirrorWeightSel(*args):
 
 def pruneWeightSel(*args):
     """Prune skin weights below threshold for selected meshes."""
-    sel = mc.ls(sl=1, tr=1)
+    sel = [DagNode(s) for s in mc.ls(sl=1, tr=1)]
     if not sel:
         mc.confirmDialog(t="Info", m="Select skinned meshes to prune.     ", b="OK")
         return
@@ -309,7 +310,7 @@ def pruneWeightSel(*args):
                 msh.skinCluster.name, e=1, pr=threshold, forceNormalizeWeights=1
             )
 
-    logging.info(f"Skin weights pruned for {len(sel)} meshes.")
+    logging.info(f"Skin weights pruned with 0.001 for {len(sel)} meshes.")
 
 
 def setMaxInfl(tgt, val=8):

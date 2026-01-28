@@ -148,4 +148,6 @@ cpn.build() # build rig
 
 
 ##
+
+This is still under active development so please use it as study purpose.  
 Visit my blog at [https://www.nickyliu.com](https://www.nickyliu.com)
