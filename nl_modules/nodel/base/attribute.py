@@ -6,8 +6,9 @@ from nl_modules.utils import path
 class Attribute:
     """Attribute Node Class
     e.g.
-        n = Attribute('obj1', 'tx')
-        n = Attribute('obj1', 't')
+        n = DagNode('obj')
+        n.a.tx
+        # Attribute('obj', 'tx')
     """
 
     def __init__(self, node, attr):
@@ -29,7 +30,10 @@ class Attribute:
         #     raise ValueError('Invalid Attr')
 
     def __repr__(self):
-        """e.g. 'Attribute("obj1.rx")'"""
+        """Return string representation of the Attribute object
+        e.g.
+            print(obj1.a.rx)  # "Attribute('|obj1','rx')"
+        """
         return path.genReprStr(
             self.__class__.__name__,
             self.fullPath,
