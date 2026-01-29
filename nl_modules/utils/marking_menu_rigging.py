@@ -146,7 +146,7 @@ class MarkingMenuRigging:
         mc.menuItem(p=menu, l="Add Last's Shapes", c=add_last_crv_shapes)
         mc.menuItem(p=menu, l="Break Instance", c=crvShape_breakInst)
         mc.menuItem(p=menu, l="-" * 15, en=0)
-        mc.menuItem(p=menu, l="Reload Menu", c=reload_marking_menu)
+        # mc.menuItem(p=menu, l="Reload Menu", c=reload_marking_menu)
 
 
 def addInf(*args):

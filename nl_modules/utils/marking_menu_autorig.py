@@ -95,7 +95,7 @@ class MarkingMenuAutorig:
         mc.menuItem(p=menu, l="    Select All", c=proxy.selectAllProxy)
         # mc.menuItem(p=menu, l="Delete Guide", c=build.deleteSelOrAll)
         mc.menuItem(p=menu, l="-" * 15, en=0)
-        mc.menuItem(p=menu, l="Reload Menu", c=self.reload_marking_menu)
+        # mc.menuItem(p=menu, l="Reload Menu", c=self.reload_marking_menu)
 
     def addAdvancedOptions(self, menu):
         """Add space switch and IK/FK options to the marking menu"""
