@@ -212,7 +212,6 @@
         "lfLegQd0_master_guide":{
             "dualBone":false,
             "kneeFix":false,
-            "limbType":0,
             "mirrorable":true,
             "palmAimRatio":1.0,
             "parentNameMatch":"spine*",
@@ -228,15 +227,15 @@
                 1.4
             ],
             "scapulaAutoAim":0.5,
-            "scapulaExtra":false,
+            "scapulaBone":false,
+            "showRef":false,
             "t":[
                 15.0,
                 0.0,
                 54.0
             ],
             "toeBones":false,
-            "toeNum":5,
-            "toeRefVis":false
+            "toeNum":5
         },
         "lfLegQd0_module_grp":{
             "mirrorCode":"100011",
@@ -1061,7 +1060,6 @@
         "lfLegQd1_master_guide":{
             "dualBone":false,
             "kneeFix":false,
-            "limbType":0,
             "mirrorable":true,
             "palmAimRatio":1.0,
             "parentNameMatch":"spine*",
@@ -1077,15 +1075,15 @@
                 1.4
             ],
             "scapulaAutoAim":0.5,
-            "scapulaExtra":false,
+            "scapulaBone":false,
+            "showRef":false,
             "t":[
                 15.0,
                 0.0,
                 -73.0
             ],
             "toeBones":false,
-            "toeNum":5,
-            "toeRefVis":false
+            "toeNum":5
         },
         "lfLegQd1_module_grp":{
             "mirrorCode":"100011",
@@ -1859,15 +1857,15 @@
         "neckQd0_master_guide":{
             "parentNameMatch":"spine*",
             "r":[
-                0.0,
+                -51.60430135828382,
                 0.0,
                 0.0
             ],
             "rbnJntNum":4,
             "s":[
-                1.0,
-                1.0,
-                1.0
+                1.1803370779917006,
+                1.1803370779917006,
+                1.1803370779917006
             ],
             "t":[
                 0.0,
@@ -1939,8 +1937,8 @@
             ],
             "t":[
                 0.0,
-                93.0,
-                -28.0
+                0.0,
+                0.0
             ]
         }
     },
@@ -2016,7 +2014,6 @@
         "rtLegQd0_master_guide":{
             "dualBone":false,
             "kneeFix":false,
-            "limbType":0,
             "mirrorable":true,
             "palmAimRatio":1.0,
             "parentNameMatch":"spine*",
@@ -2032,15 +2029,15 @@
                 1.4
             ],
             "scapulaAutoAim":0.5,
-            "scapulaExtra":false,
+            "scapulaBone":false,
+            "showRef":false,
             "t":[
                 -15.0,
                 0.0,
                 54.0
             ],
             "toeBones":false,
-            "toeNum":5,
-            "toeRefVis":false
+            "toeNum":5
         },
         "rtLegQd0_module_grp":{
             "mirrorCode":"100011",
@@ -2865,7 +2862,6 @@
         "rtLegQd1_master_guide":{
             "dualBone":false,
             "kneeFix":false,
-            "limbType":0,
             "mirrorable":true,
             "palmAimRatio":1.0,
             "parentNameMatch":"spine*",
@@ -2881,15 +2877,15 @@
                 1.4
             ],
             "scapulaAutoAim":0.5,
-            "scapulaExtra":false,
+            "scapulaBone":false,
+            "showRef":false,
             "t":[
                 -15.0,
                 0.0,
                 -73.0
             ],
             "toeBones":false,
-            "toeNum":5,
-            "toeRefVis":false
+            "toeNum":5
         },
         "rtLegQd1_module_grp":{
             "mirrorCode":"100011",
