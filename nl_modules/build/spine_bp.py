@@ -101,7 +101,6 @@ class SpineBp(RigModule):
         self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
         self.build_ctl()
         self.build_fk()
-
         if self.ribbon:
             self.build_spine_ik()
 
@@ -180,13 +179,13 @@ class SpineBp(RigModule):
 
         mid_parent = self.ctls_fk[len(self.ctls_fk) // 2]
         self.mid_ikc | mid_parent
-        self.base_ikc.addOffsetGrp()
         self.mid_ikc.addOffsetGrp(count=2)
+        self.mid_ikc.addOffsetGrp()
+        self.base_ikc.addOffsetGrp()
         self.fore_ikc.addOffsetGrp()
 
         self.fore_ikc.a.t @ self.base_ikc.a.t >> self.mid_ikc.offset.offset.a.t
-        twistRatio_dv = 0.5 if self.is_neck() else 0.75
-        twistRatio = self.mid_ikc.a.add("twistRatio", min=0, max=1, dv=twistRatio_dv)
+        twistRatio = self.mid_ikc.a.add("twistRatio", min=0, max=1, dv=0.5)
 
         blendRy = ut.blend2_(self.base_ikc.a.ry, self.fore_ikc.a.ry, w=twistRatio)
         blendRy >> self.mid_ikc.offset.a.ry
@@ -202,16 +201,13 @@ class SpineBp(RigModule):
         self.fore_ikc.cstOri(self.jnts_fk[-1], mo=1)
 
         self.build_ribbon()
+        # self.addMiddleBend()
 
-        self.ctls_ik = [self.mid_ikc, self.fore_ikc]
         if not self.is_neck():
-            self.ctls_ik += [self.base_ikc]
+            RigModule.add_dyn_pivot(self.cog_ctl)
+            RigModule.add_dyn_pivot(self.fore_ikc, endTgt=self.mid_ikc, dv=1)
 
-        # if not self.is_neck():
-        RigModule.add_dyn_pivot(self.fore_ikc, endTgt=self.mid_ikc, dv=0.5)
-        RigModule.add_dyn_pivot(self.cog_ctl)
-
-        self.addMiddleBend()
+        self.ctls_ik = [self.mid_ikc, self.fore_ikc, self.base_ikc]
 
     def addMiddleBend(self):
         """Add middle bend control for the spine rig."""

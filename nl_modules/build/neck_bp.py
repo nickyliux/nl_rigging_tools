@@ -31,10 +31,10 @@ class NeckBp(SpineBp):
                     "space_neckBase": self.base_ikc,
                 }
             )
-            for t in ["poi", "ori"]:
-                self.isolate_align(
-                    self.fore_ikc,
-                    spaces=[self.fore_ikc.parent, self.masterC],
-                    dv=0,
-                    cstType=t,
-                )
+            # for t in ["poi", "ori"]:
+            #     self.isolate_align(
+            #         self.fore_ikc,
+            #         spaces=[self.fore_ikc.parent, self.masterC],
+            #         dv=0,
+            #         cstType=t,
+            #     )

@@ -457,7 +457,6 @@ class RigModule(RigBase):
     @staticmethod
     def add_dyn_pivot(tgt, endTgt=None, axis="ty", dv=0):
         """Add movable pivot ctl under tgt"""
-
         # Calculate world space end value in this axis (wsEndValue)
         # Assume ending at origin if endTgt is not given
         wsXformTgt = mc.xform(tgt.name, q=1, ws=1, t=1)
