@@ -138,16 +138,15 @@ class MarkingMenuAutorig:
                 c=partial(self.switch_fk_ik, attr, val, rigNode),
             )
 
-        # --- Local / Global ---
-        attr = firstSelected.a["global"]
-        if attr.exists():
-            val = 1 - attr.get()
-            mc.menuItem(
-                p=menu,
-                l="Local / Global",
-                # rp="S",
-                c=partial(self.switch_local_global, attr, val, rigNode),
-            )
+        # --- Toggle Isolate ---
+        for attr in firstSelected.a.list(ud=1):
+            if attr.name.startswith("isolate"):
+                val = 1 - attr.get()
+                mc.menuItem(
+                    p=menu,
+                    l="Toggle | " + attr.name,
+                    c=partial(self.switch_local_global, attr, val, rigNode),
+                )
 
     def mirrorShapeSelOrAll(*args):
         """Mirror the shape of the selected control or all controls in LF_CTL_SET"""

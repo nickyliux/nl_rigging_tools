@@ -1,4 +1,3 @@
-from weakref import proxy
 from nl_modules.build.spine_bp import SpineBp
 
 
@@ -15,14 +14,27 @@ class NeckBp(SpineBp):
 
     def setup_space(self):
         """Setup the space switching for the neck rig."""
-        self.chest_ikc.a.add("spaceType", dv=2, k=0, cb=0)
-        self.rigNode.a.add("spaceName1", type="string", txt="neckBase, COG, master")
+        # self.fore_ikc.a.add("spaceType", dv=2, k=0, cb=0)
+        # self.rigNode.a.add("spaceName1", type="string", txt="neckBase, COG, master")
 
-        space_neck = self.chest_ikc if self.ribbon else self.ctls_fk[-1]
+        space_neck = self.fore_ikc if self.ribbon else self.ctls_fk[-1]
         self.rigNode.setMsg(
             {
-                "spaceHolder1": self.chest_ikc,
                 "space_neck": space_neck,
-                "space_neckBase": self.hip_ikc,
             }
         )
+
+        if self.ribbon:
+            self.rigNode.setMsg(
+                {
+                    "spaceHolder1": self.fore_ikc,
+                    "space_neckBase": self.base_ikc,
+                }
+            )
+            for t in ["poi", "ori"]:
+                self.isolate_align(
+                    self.fore_ikc,
+                    spaces=[self.fore_ikc.parent, self.masterC],
+                    dv=0,
+                    cstType=t,
+                )

@@ -90,9 +90,6 @@ class Head(RigModule):
         self.rt_eye_fkc.addOffsetGrp()
         self.rt_eye_fkc.cstPar(self.rt_eye, mo=1)
 
-        # self.isolate_align(self.ctls_fk[0], [self.ctls_fk[0].parent, self.masterC])
-        # self.isolate_align(self.head_fkc, spaces=[self.head_fkc.parent, self.masterC])
-
     def setup_vis(self):
         pass
 

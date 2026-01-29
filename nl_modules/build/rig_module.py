@@ -252,7 +252,7 @@ class RigModule(RigBase):
                 i += 1
 
     @staticmethod
-    def isolate_align(tgt, spaces=None, attrName="global", dv=1, cstType="ori"):
+    def isolate_align(tgt, spaces=None, dv=1, cstType="ori"):
         """Add isolate attr to tgt to allow separate cst for the neck"""
         allSpaces = []
         if len(spaces) == 2:
@@ -263,19 +263,15 @@ class RigModule(RigBase):
 
             tgt = DagNode(tgt) if isinstance(tgt, str) else tgt
             tgt_ofs = tgt.addOffsetGrp()
-            attr = tgt.a.add(attrName, min=0, max=1, dv=dv)
+            attr = tgt.a.add(f"isolate_{cstType}", min=0, max=1, dv=dv)
             common.cstMulti(*allSpaces, tgt_ofs, cstType=cstType, w=attr)
             return attr
 
     @classmethod
     def isolate_neck_to_spine(cls, neckCog, spineCtl, wSpaceObj):
         """Isolate neck control to align with spine control and world space object."""
-        cls.isolate_align(
-            neckCog, spaces=[spineCtl, wSpaceObj], attrName="isolateR", cstType="ori"
-        )
-        cls.isolate_align(
-            neckCog, spaces=[spineCtl, wSpaceObj], attrName="isolateT", cstType="parT"
-        )
+        cls.isolate_align(neckCog, spaces=[spineCtl, wSpaceObj], cstType="ori")
+        cls.isolate_align(neckCog, spaces=[spineCtl, wSpaceObj], cstType="parT")
 
     @staticmethod
     def space_align(

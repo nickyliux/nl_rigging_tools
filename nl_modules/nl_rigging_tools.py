@@ -490,8 +490,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             mc.confirmDialog(t="Info", m="Character path NOT set.     ", b="OK")
             return
 
-        # selList = mc.ls(sl=1, tr=1)
-        # if not selList:
         charName = os.path.basename(charPath)
         mdlGrp = DagNode(charName)
         if mdlGrp.exists():
@@ -509,13 +507,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 t="Info", m=f"Model group '{charName}' not found.    ", b="OK"
             )
             return
-        # else:
-        #     tgtMeshes = common.getObjectBelow(selList)
-        #     if not tgtMeshes:
-        #         mc.confirmDialog(
-        #             t="Info", m="No mesh found under selected.    ", b="OK"
-        #         )
-        #         return
 
         common.xRayAllGeo(1)
 

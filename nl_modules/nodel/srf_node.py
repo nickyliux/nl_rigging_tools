@@ -79,7 +79,7 @@ class SrfNode(GrpNode):
         """Weight surface to joints"""
         if self.exists():
 
-            skinClu = mc.skinCluster(self, joints, bindMethod=0, tsb=1, **kwargs)[0]
+            skinClu = mc.skinCluster(self, joints, bindMethod=0, **kwargs)[0]  # tsb=1,
 
             spanV = self.a.spansUV.get()[1]
             degV = self.a.degreeUV.get()[1]

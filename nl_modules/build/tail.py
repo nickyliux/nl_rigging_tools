@@ -152,11 +152,9 @@ class Tail(RigModule):
         self.setting.snapTo(self.ctls_ik[0], p=self.FK_GRP, ofs=(0, rSz * 20, 0))
         self.ctls_ik[0].cstPar(self.setting, mo=1)
 
-        isolateAttr = RigModule.isolate_align(
+        RigModule.isolate_align(
             self.ctls_ik[0], spaces=[self.ctls_ik[0].offset, self.masterC], dv=0
         )
-        if isolateAttr:
-            self.setting.a.add("global", proxy=isolateAttr)
 
     def build_fk(self):
         """Build the FK controls for the tail rig.

@@ -36,10 +36,10 @@ class SpineBp(RigModule):
         # Main settings and controls
         self.setting = None
         self.cog_ctl = None
-        self.hip_ikc = None
+        self.base_ikc = None
         self.mid_ikc = None
         self.cog_gmb = None
-        self.chest_ikc = None
+        self.fore_ikc = None
 
         # Control and joint lists
         self.ctls_ik = []
@@ -72,24 +72,28 @@ class SpineBp(RigModule):
         ]
         if self.ribbon:
             ctl_defs += [
-                ("chest_ikc", "cube", None, rSz * 8, 0),
+                ("fore_ikc", "cube", None, rSz * 8, 0),
                 ("mid_ikc", "cube", None, rSz * 2, 1),
-                ("hip_ikc", "cube", None, rSz * 8, 0),
+                ("base_ikc", "cube", None, rSz * 8, 0),
             ]
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
-        self.setting.cv_move(0, 0, rSz * -110)
+        if self.is_neck():
+            self.setting.cv_scale(2, 2, 2)
+
+        self.setting.cv_move(0, 0, rSz * -130)
         self.setting.color = Color.PINK
 
-        if self.is_neck():
-            self.chest_ikc.cv_scale(2, 0.1, 1.6)
-            self.mid_ikc.cv_scale(2, 0.4, 1.6)
-            self.hip_ikc.cv_scale(2, 0.1, 1.6)
-        else:
-            self.chest_ikc.cv_scale(1, 0.05, 0.8)
-            self.mid_ikc.cv_scale(1, 0.2, 0.8)
-            self.hip_ikc.cv_scale(1, 0.05, 0.8)
+        if self.ribbon:
+            if self.is_neck():
+                self.fore_ikc.cv_scale(2, 0.1, 1.6)
+                self.mid_ikc.cv_scale(2, 0.4, 1.6)
+                self.base_ikc.cv_scale(2, 0.1, 1.6)
+            else:
+                self.fore_ikc.cv_scale(1, 0.05, 0.8)
+                self.mid_ikc.cv_scale(1, 0.2, 0.8)
+                self.base_ikc.cv_scale(1, 0.05, 0.8)
 
     def build(self):
         """Build the spine rig module."""
@@ -148,15 +152,15 @@ class SpineBp(RigModule):
 
         self.jnts_bind = self.jnts_fk[:-1]
 
-        if self.is_neck():
-            self.isolate_align(
-                self.ctls_fk[0], spaces=[self.ctls_fk[0].parent, self.masterC], dv=0
-            )
+        # if self.is_neck():
+        #     self.isolate_align(
+        #         self.ctls_fk[0], spaces=[self.ctls_fk[0].parent, self.masterC], dv=0
+        #     )
 
     def reverse_fk_hip(self):
         """modify first fkc specific for hip rotation."""
         ctl = self.ctls_fk[0]
-        ctl(p=self.CTL_DATA, addOfs=1, color=Color.D_BLUE)
+        ctl(p=self.CTL_DATA, addOfs=1, color=Color.ORANGE)
         ctl.cv_scale(1.2, 1.2, 1.2)
 
         ctl.offset.snapAlignTo(self.BASE_PVT_GUIDE, self.jnts_fk[0])
@@ -167,27 +171,27 @@ class SpineBp(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        self.hip_ikc.snapAlignTo(self.jnts_fk[0], self.master_guide)
+        self.base_ikc.snapAlignTo(self.jnts_fk[0], self.master_guide)
         self.mid_ikc.snapAlignTo(self.MD_GUIDE, self.master_guide)
-        self.chest_ikc.snapAlignTo(self.jnts_fk[-1], self.master_guide)
+        self.fore_ikc.snapAlignTo(self.jnts_fk[-1], self.master_guide)
 
-        self.hip_ikc | self.ctls_fk[0]
-        self.chest_ikc | self.ctls_fk[-1]
+        self.base_ikc | self.ctls_fk[0]
+        self.fore_ikc | self.ctls_fk[-1]
 
         mid_parent = self.ctls_fk[len(self.ctls_fk) // 2]
         self.mid_ikc | mid_parent
-        self.hip_ikc.addOffsetGrp()
+        self.base_ikc.addOffsetGrp()
         self.mid_ikc.addOffsetGrp(count=2)
-        self.chest_ikc.addOffsetGrp()
+        self.fore_ikc.addOffsetGrp()
 
-        self.chest_ikc.a.t @ self.hip_ikc.a.t >> self.mid_ikc.offset.offset.a.t
-        twistRatio_dv = 0.25 if self.is_neck() else 0.75
+        self.fore_ikc.a.t @ self.base_ikc.a.t >> self.mid_ikc.offset.offset.a.t
+        twistRatio_dv = 0.5 if self.is_neck() else 0.75
         twistRatio = self.mid_ikc.a.add("twistRatio", min=0, max=1, dv=twistRatio_dv)
 
-        blendRy = ut.blend2_(self.hip_ikc.a.ry, self.chest_ikc.a.ry, w=twistRatio)
+        blendRy = ut.blend2_(self.base_ikc.a.ry, self.fore_ikc.a.ry, w=twistRatio)
         blendRy >> self.mid_ikc.offset.a.ry
 
-        self.hip_ikc.cstAim(
+        self.base_ikc.cstAim(
             self.mid_ikc.offset.offset,
             worldUpObject=self.cog_ctl,
             worldUpType="objectrotation",
@@ -195,17 +199,17 @@ class SpineBp(RigModule):
             u=(0, 0, 1),
             wu=(0, 0, 1),
         )
-        self.chest_ikc.cstOri(self.jnts_fk[-1], mo=1)
+        self.fore_ikc.cstOri(self.jnts_fk[-1], mo=1)
 
         self.build_ribbon()
 
-        self.ctls_ik = [self.mid_ikc, self.chest_ikc]
+        self.ctls_ik = [self.mid_ikc, self.fore_ikc]
         if not self.is_neck():
-            self.ctls_ik += [self.hip_ikc]
+            self.ctls_ik += [self.base_ikc]
 
-        if not self.is_neck():
-            RigModule.add_dyn_pivot(self.chest_ikc, endTgt=self.mid_ikc, dv=0.5)
-            RigModule.add_dyn_pivot(self.cog_ctl)
+        # if not self.is_neck():
+        RigModule.add_dyn_pivot(self.fore_ikc, endTgt=self.mid_ikc, dv=0.5)
+        RigModule.add_dyn_pivot(self.cog_ctl)
 
         self.addMiddleBend()
 
@@ -216,14 +220,14 @@ class SpineBp(RigModule):
         )
         grp = self.mid_ikc.addOffsetGrp()
         autoMidBend = self.mid_ikc.a.add("autoMidBend", min=0, max=1, dv=0.5)
-        common.cstMulti(self.chest_ikc, self.hip_ikc, loc, cstType="parT", mo=1)
+        common.cstMulti(self.fore_ikc, self.base_ikc, loc, cstType="parT", mo=1)
         loc.a.ty.disconnect()
 
         loc.a.tx * autoMidBend >> grp.a.tx
         loc.a.tz * autoMidBend >> grp.a.tz
 
-        self.chest_ikc.a.add("autoMidBend", proxy=autoMidBend)
-        self.hip_ikc.a.add("autoMidBend", proxy=autoMidBend)
+        self.fore_ikc.a.add("autoMidBend", proxy=autoMidBend)
+        self.base_ikc.a.add("autoMidBend", proxy=autoMidBend)
 
     def build_ribbon(self):
         """Build the ribbon for the spine rig."""
@@ -239,19 +243,20 @@ class SpineBp(RigModule):
             inheritsXf=0,
         )
         self.jnts_five = self.build_fiveJnts(
-            [self.hip_ikc, self.mid_ikc, self.chest_ikc], r=rSz * 5
+            [self.base_ikc, self.mid_ikc, self.fore_ikc], r=rSz * 5
         )
-        self.rbSrf.weightTo(self.jnts_five, chain=0, mi=3, dr=5)
+        # self.rbSrf.weightTo(self.jnts_five, chain=0, mi=3, dr=5)
+        self.rbSrf.hardWeightTo(self.jnts_five)
 
         self.jnts_five[1] | self.jnts_five[0]
         self.jnts_five[-2] | self.jnts_five[-1]
-        self.hip_ikc.a.add("tangent", min=0.001, dv=1) >> self.jnts_five[0].a.sy
+        self.base_ikc.a.add("tangent", min=0.001, dv=1) >> self.jnts_five[0].a.sy
         self.mid_ikc.a.add("tangent", min=0.001, dv=1) >> self.jnts_five[2].a.sy
-        self.chest_ikc.a.add("tangent", min=0.001, dv=1) >> self.jnts_five[-1].a.sy
+        self.fore_ikc.a.add("tangent", min=0.001, dv=1) >> self.jnts_five[-1].a.sy
 
         stretchy = self.setting.a.add("stretchy", min=0, max=1, dv=1)
-        self.hip_ikc.a.add("stretchy", proxy=stretchy)
-        self.chest_ikc.a.add("stretchy", proxy=stretchy)
+        self.base_ikc.a.add("stretchy", proxy=stretchy)
+        self.fore_ikc.a.add("stretchy", proxy=stretchy)
 
         crvLenRatio, self.jnts_rb, crv = common.build_ribbon_rivet(
             rbSrf=self.rbSrf,
@@ -284,8 +289,8 @@ class SpineBp(RigModule):
         D = d.get()
 
         autoVol = self.setting.a.add("autoVol", min=0, dv=0.5)
-        self.chest_ikc.a.add("autoVol", proxy=autoVol)
-        self.hip_ikc.a.add("autoVol", proxy=autoVol)
+        self.fore_ikc.a.add("autoVol", proxy=autoVol)
+        self.base_ikc.a.add("autoVol", proxy=autoVol)
 
         volGraph = common.addKeys(
             self.setting,
@@ -308,7 +313,7 @@ class SpineBp(RigModule):
             )
         if self.is_neck():
             CrvNode(self.ctls_fk[0]).setOnTop(1)
-            mc.hide(self.cog_ctl, self.hip_ikc)
+            mc.hide(self.cog_ctl, self.base_ikc)
 
         if self.masterC2.a.showSetting.exists():
             self.masterC2.a.showSetting >> self.setting.a.v
@@ -322,7 +327,7 @@ class SpineBp(RigModule):
             self.cog_gmb,
         ]
         if self.ribbon:
-            for ctl in [self.hip_ikc, self.mid_ikc, self.chest_ikc]:
+            for ctl in [self.base_ikc, self.mid_ikc, self.fore_ikc]:
                 ctl.a.showAttr(t=1, r=1, s=0)
 
         for ctl in ctls:
@@ -349,14 +354,15 @@ class SpineBp(RigModule):
         if self.ribbon:
             self.rigNode.setMsg(
                 {
-                    "space_lwrBody": self.hip_ikc,
-                    "space_uprBody": self.chest_ikc,
+                    "space_master": self.masterC,
+                    "space_lwrBody": self.base_ikc,
+                    "space_uprBody": self.fore_ikc,
                 }
             )
 
     def setup_anchor(self):
         """Setup anchor module for the spine rig controls."""
-        anchor1 = self.hip_ikc if self.ribbon else self.jnts_fk[0]
+        anchor1 = self.base_ikc if self.ribbon else self.jnts_fk[0]
         anchor2 = self.jnts_rb[-1] if self.ribbon else self.jnts_fk[-1]
         self.setup_anchor_module({"anchorP1": anchor1, "anchorP2": anchor2})
 
@@ -365,14 +371,11 @@ class SpineBp(RigModule):
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set(self.jnts_bind[0])
 
-        neckRadScale = 2
-        if self.is_neck():
-            neckRadScale = 3
+        radScale = 3 if self.is_neck() else 2
+        proxy.add_radiusScale_attr(self.jnts_bind, radScale)
 
-        proxy.add_radiusScale_attr(self.jnts_bind, neckRadScale)
-
-        if not self.ribbon:
-            proxy.add_up_attr(self.jnts_bind, 1)
+        # if not self.ribbon:
+        #     proxy.add_up_attr(self.jnts_bind, 1)
 
     def setup_ctlSet(self):
         """Setup control sets for the spine rig."""
