@@ -36,44 +36,46 @@ class LegQd(RigModule):
         for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
 
-        self.FK_GRP = GrpNode("FK", pf=self.rigID, p=self.CTL_DATA)
-        self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA)
-
         self.setting = None
 
-        self.jnts = []
-        self.jnts_fk = []
-        self.jnts_ik = []
-        self.jntsFix = None
+        self.FK_GRP = GrpNode("FK", pf=self.rigID, p=self.CTL_DATA)
+        self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA)
 
         self.jnt_names = ["hip", "upr", "lwr", "palm", "digit", "ball", "tip"]
         for name in self.jnt_names:
             setattr(self, name, None)
             setattr(self, f"{name}_fkc", None)
 
-        self.ikc = None
-        self.pvc = None
-        self.smart_ctl = None
+        self.jnts = []
+        self.jnts_fk = []
+        self.jnts_ik = []
+
         self.ctls_ik = []
         self.ctls_fk = []
         self.ctls_sub = []
+
+        self.all_ikHs = {}
+        self.toesJntList = []
+        self.toesCtlsList = []
+        self.toeIKHs = []
+
+        self.ikc = None
+        self.pvc = None
+        self.smart_ctl = None
         self.toe_wiggle_grp = None
         self.ikc_gimbal = None
         self.pvc_line = None
         self.pvRota_line = None
         self.ikCstG = None
-        self.ball_ikc = None
         self.extra_ikc = None
-        self.scapulaG = None
-        self.scap_fkc = None
-        self.all_ikH = {}
-        self.all_bendy = []
+        # self.all_bendy = []
 
-        self.toesJntList = None
-        self.toesCtlsList = None
         self.toesRootJ = rigNode.a.toesRootJ.inConnNode
 
         self.ikH1 = None
+        self.ball_ikc = None
+        self.scapulaG = None
+        self.scap_fkc = None
 
     def gen_sk(self):
         """Generate the skeleton for the quadruped leg rig."""
@@ -168,13 +170,15 @@ class LegQd(RigModule):
         self.build_ik()
         self.blend_fk_ik()
 
-        self.jnts_bind = [self.upr, self.palm]
+        self.jnts_bind = self.jnts[:-1]
+        self.jnts_sk = self.jnts[:-1]
 
         self.scapulaG = self.build_legScapula(
             ikc=self.ikc,
             fkc=self.ctls_fk[0],
-            jnts=self.jnts,
-            EXTRA=self.scapulaBone,
+            hipJ=self.hip,
+            uprJ=self.upr,
+            addScap=self.scapulaBone,
             scapCtl=self.scap_fkc,
             autoAim_dv=self.scapulaAutoAim,
         )
@@ -183,30 +187,25 @@ class LegQd(RigModule):
 
         self.singleBallCtl_setup()
 
-        if self.kneeFix:
-            self.kneeFix_setup(self.lwr, self.palm)
-            self.jnts_bind += [self.boneFix]
-        else:
-            self.jnts_bind += [self.lwr]
-
         if self.patellaBone:
             self.patella_setup()
+
+        if self.kneeFix:
+            self.kneeFix_setup(self.lwr, self.palm)
 
         if self.dualBone:
             self.build_dual_bones()
 
         if self.toeBones:
             self.build_toes()
-        else:
-            self.jnts_bind += [self.digit, self.ball]
 
         self.build_post()
 
     def build_toes(self):
         """Build the toe joints and controls for the quadruped leg rig."""
-        self.toesJntList = []
         self.toesRootJ | self.palm
 
+        self.toesJntList = []
         for rJ in self.toesRootJ.childrenJt:
             self.toesJntList.append([fgr for fgr in rJ.allChildrenJt2])
             rJ.a.segmentScaleCompensate.set(0)
@@ -325,7 +324,7 @@ class LegQd(RigModule):
 
         # --- Stretchy IK and parenting ---
         ikH1.stretchyIk(soft=1)
-        self.all_ikH = {"main": ikH1, "ball": ikH2, "toe": ikH3, "else": ikHX}
+        self.all_ikHs = {"main": ikH1, "ball": ikH2, "toe": ikH3, "else": ikHX}
         self.toe_wiggle_grp = toe_wiggle_grp
         self.hip_fkc.cstPar(self.jnts_ik[0], mo=1)
 
@@ -433,34 +432,33 @@ class LegQd(RigModule):
     def build_digits(self):
         """Build the digit controls for the quadruped leg rig."""
         logging.info(self.rigID)
+
         rID, rSz, xDr = self.getMyVar()
         self.toesCtlsList = []
+        scale = xDr * rSz / 8
 
         # --- Build digit IK and FK controls for each toe chain ---
         for toeJs in self.toesJntList:
-            dupTgt = DagNode(toeJs[2])
-            scale = xDr * rSz / 8
+
+            dupTgt = JntNode(toeJs[2])
 
             ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
+            self.toeIKHs.append(ikH)
             ikJ.a.r >> dupTgt.a.r
-            self.jnts_bind.extend(toeJs[:-1])
 
-            # Build FK controls for toe joints (excluding first 3 and last)
+            # Build FK controls for toe joints
             fkToeList = toeJs[3:-1]
             ctlList = []
             for jnt in fkToeList:
-                c = CrvNode(
-                    f"{jnt.name}_ctl_#",
-                    shape="stickC",
-                    up="z",
-                    align=jnt,
-                    scale=-scale,
-                    top=1,
-                    width=2,
-                )
+                crvName = f"{jnt.name}_ctl_#"
+                c = CrvNode(crvName, shape="stickC", up="z", align=jnt, scale=-scale)
                 ctlList.append(c)
+
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
+
             self.toesCtlsList.append(ctlList)
+            self.updateList(self.jnts_bind, add=toeJs[:-1])
+            self.updateList(self.jnts_sk, add=toeJs[:-1])
 
         # --- Add hidden IK handles for toe segments ---
         for toeJs in self.toesJntList:
@@ -513,7 +511,7 @@ class LegQd(RigModule):
         ball_fkc_ofs.removeCstNodes()
 
         # --- Parent toe IK handle to ball control ---
-        self.all_ikH["toe"] | self.ball_fkc
+        self.all_ikHs["toe"] | self.ball_fkc
         ball_fkj = self.jnts_fk[5]
 
         # --- Space align ball control between FK and IK ---
@@ -558,7 +556,8 @@ class LegQd(RigModule):
             self.setting.a.add("showSetup", type="bool", k=0),
             onList=[self.jnts_fk[0], self.jnts_ik[0]],
         )
-        [ikh.hide() for ikh in self.all_ikH.values()]
+        [ikh.hide() for ikh in self.all_ikHs.values()]
+        mc.hide(self.toeIKHs)
 
     def setup_channel(self):
         """Setup channels for the quadruped leg rig controls."""
@@ -569,8 +568,6 @@ class LegQd(RigModule):
             ctl.a.showAttr(t=1, r=1)
 
         self.ball_ikc.a.showAttr(r=1)
-        for ctl in self.all_bendy or []:
-            ctl.a.showAttr(t=1, r=1, s=1)
 
         if self.scapulaBone:
             self.scap_fkc.a.showAttr(t=1, r=1)

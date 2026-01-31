@@ -50,21 +50,21 @@ class LegBp(RigModule):
         self.jnts = []
         self.jnts_fk = []
         self.jnts_ik = []
+
         self.jnts_bf = []
         self.jnts_ro = []
 
         self.ctls_ik = []
         self.ctls_fk = []
         self.ctls_sub = []
-        self.ikhs = []
+
+        self.all_ikHs = {}
         self.rollJnts = []
         self.aimJnts = []
-
         self.toesJntList = []
         self.toesCtlsList = []
         self.toeIKHs = []
 
-        self.jntsFix = None
         self.pvc = None
         self.ikc = None
         self.smart_ctl = None
@@ -80,7 +80,6 @@ class LegBp(RigModule):
         self.ikH1 = None
         self.ikH_PV = None
         self.ball_ikc = None
-        self.patellaJ = None
         self.ribbon_up = None
         self.ribbon_lw = None
         self.scapulaG = None
@@ -171,20 +170,20 @@ class LegBp(RigModule):
         # self.build_nlAutoAim(
         #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
         # )
-        self.jnts_bind = [self.palm]
-        self.jnts_sk = [self.hip, self.upr, self.palm, self.ball]
+        self.jnts_bind = self.jnts[:-1]
+        self.jnts_sk = self.jnts[:-1]
 
         self.scapulaG = self.build_legScapula(
             ikc=self.ikc,
             fkc=self.ctls_fk[0],
-            jnts=self.jnts,
-            EXTRA=self.scapulaBone,
+            hipJ=self.hip,
+            uprJ=self.upr,
+            addScap=self.scapulaBone,
             scapCtl=self.scap_fkc,
             autoAim_dv=self.scapulaAutoAim,
         )
 
-        if self.kneeFix:
-            self.kneeFix_setup(self.lwr, self.palm)
+        self.aimRoll_setup()
 
         if self.ribbon:
             self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(
@@ -197,39 +196,30 @@ class LegBp(RigModule):
                 up1="ty",
                 up2="ty",
             )
-            if self.kneeFix:
+
+        if self.kneeFix:
+            self.kneeFix_setup(self.lwr, self.palm)
+            if self.ribbon:
                 self.boneFix.cstPoi(self.ribbon_lw.stt_loc)
-        else:
-            self.jnts_bind += [self.upr]
-            if self.kneeFix:
-                self.jnts_bind += [self.boneFix]
-            else:
-                self.jnts_bind += [self.lwr]
 
         if self.dualBone:
             self.build_dual_bones()
-        elif not self.ribbon:
-            if self.kneeFix:
-                self.jnts_sk += [self.boneFix]
-            else:
-                self.jnts_sk += [self.lwr]
 
         if self.patellaBone:
-            self.patellaJ = self.patella_setup()
+            self.patella_setup()
 
         if self.toeBones:
             self.build_toes()
-            self.jnts_bind += [self.palm]
-        else:
-            self.jnts_bind += [self.palm, self.ball]
 
+        self.build_post()
+
+    def aimRoll_setup(self):
+        """Setup aim and roll joints for the leg rig."""
         self.aimJnts = self.build_aimHelper([self.lwr, self.palm])
 
         n = self.rollJntNum
         self.rollJnts.append(self.build_uprRollJ(self.upr, self.lwr, num=n, sf="_ro1"))
         self.rollJnts.append(self.build_uprRollJ(self.lwr, self.palm, num=n, sf="_ro2"))
-
-        self.build_post()
 
     def build_fk(self):
         """Build the FK controls for the leg rig."""
@@ -334,7 +324,7 @@ class LegBp(RigModule):
         ikH1.stretchyIk(soft=1)
         self.hip_fkc.cstPar(self.jnts_ik[0], mo=1)
 
-        self.ikhs = [ikH1, ikH2, ikH3]
+        self.all_ikHs = {"main": ikH1, "ball": ikH2, "toe": ikH3}
         self.ctls_ik = [self.ikc, self.pvc, self.ikc_gimbal]
         self.ikH1 = ikH1
         self.toe_wiggle_grp = toe_wiggle_grp
@@ -442,28 +432,34 @@ class LegBp(RigModule):
 
     def build_toes(self):
         """Build the toe controls for the leg rig."""
-        logging.info(self.rigID)
-        rID, rSz, xDr = self.getMyVar()
-
         self.toesRootJ | self.palm
+
         self.toesJntList = []
         for rootJ in self.toesRootJ.childrenJt:
             self.toesJntList.append([fgr for fgr in rootJ.allChildrenJt2])
             rootJ.a.segmentScaleCompensate.set(0)
 
+        self.build_digits()
+
+    def build_digits(self):
+        """Build digit controls for the leg rig."""
+        logging.info(self.rigID)
+
+        rID, rSz, xDr = self.getMyVar()
         self.toesCtlsList = []
         scale = xDr * rSz
 
+        # --- Build digit IK and FK controls for each toe chain ---
         for toeJs in self.toesJntList:
 
-            ikTgt = JntNode(toeJs[1])
-            ikJ, ikH = self.build_digit_ik(ikTgt, scale=scale / 4, p=self.ball_fkc)
+            dupTgt = JntNode(toeJs[1])
+
+            ikJ, ikH = self.build_digit_ik(dupTgt, scale=scale / 4, p=self.ball_fkc)
             self.toeIKHs.append(ikH)
 
-            ctlList = []
-            self.jnts_bind.extend(toeJs[:-1])
-            self.jnts_sk.extend(toeJs[:-1])
+            # Build FK controls for toe joints
             fkToeList = toeJs[1:-1]
+            ctlList = []
             for jnt in fkToeList:
                 crvName = f"{jnt.name}_ctl_#"
                 crv = CrvNode(
@@ -473,10 +469,13 @@ class LegBp(RigModule):
                 ctlList.append(crv)
 
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
-            self.toesCtlsList.append(ctlList)
 
             ikJ.a.r >> ctlList[0].addOffsetGrp().a.r
             ikJ.hide()
+
+            self.toesCtlsList.append(ctlList)
+            self.updateList(self.jnts_bind, add=toeJs[:-1], rm=[self.ball])
+            self.updateList(self.jnts_sk, add=toeJs[:-1], rm=[self.ball])
 
     def build_dual_bones(self):
         """Build dual bones for the lower leg."""
@@ -505,24 +504,18 @@ class LegBp(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=type, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-        self.jnts_sk += [radius_JC[0], ulna_JC[0]]
+
+        self.updateList(self.jnts_sk, add=[radius_JC[0], ulna_JC[0]], rm=[self.lwr])
 
     def setup_vis(self):
         """Setup visibility for the leg rig controls."""
         self.pvc.a["fkPin"] >> self.pin_fkc.a.v
+
         self.ctl_vis_toggle(
             self.setting.a["fkIk"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             offList=self.ctls_fk[1:-1],
         )
-        self.ctl_vis_toggle(
-            self.ikc.a.add("showPvc", type="bool", k=0, dv=1),
-            onList=[self.pvc.offset, self.pvc_line.offset],
-        )
-        setupTgt = [self.jnts_fk[0], self.jnts_ik[0], self.jnts_bf[0]]
-        if self.ribbon:
-            setupTgt.extend([self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP])
-
         self.ctl_vis_toggle(
             self.setting.a.add("showRollJnts", type="bool", k=0),
             onList=self.rollJnts + self.aimJnts,
@@ -532,11 +525,17 @@ class LegBp(RigModule):
                 self.setting.a.add("showBendy", type="bool", k=0),  # , dv=1),
                 onList=self.all_bendy,
             )
+
+        setupTgt = [self.jnts_fk[0], self.jnts_ik[0], self.jnts_bf[0]]
+        if self.ribbon:
+            setupTgt.extend([self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP])
+
         self.ctl_vis_toggle(
             self.setting.a.add("showSetup", type="bool", k=0),
             onList=setupTgt,
         )
-        mc.hide(self.ikhs, self.toeIKHs)
+        [ikh.hide() for ikh in self.all_ikHs.values()]
+        mc.hide(self.toeIKHs)
 
     def setup_channel(self):
         """Setup channels for the leg rig controls."""

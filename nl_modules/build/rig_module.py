@@ -1,5 +1,4 @@
 import logging
-from unittest import result
 import maya.cmds as mc
 from nl_modules.build.rig_base import RigBase
 from nl_modules.nodel.base.dag_node import DagNode
@@ -490,6 +489,17 @@ class RigModule(RigBase):
         ann.parent.snapTo(tgt, p=tgt)
         tgt.a.rotatePivot >> ann.parent.a.t
 
+    def updateList(self, tgtList, add=None, rm=None):
+        """Update list by adding or removing item."""
+        if add:
+            for tgt in add:
+                if tgt not in tgtList:
+                    tgtList.append(tgt)
+        if rm:
+            for tgt in rm:
+                if tgt in tgtList:
+                    tgtList.remove(tgt)
+
     def kneeFix_setup(self, tgt, tgtChild):
         """Setup bone fix for the leg rig."""
         rID, rSz, xDr = self.getMyVar()
@@ -511,6 +521,8 @@ class RigModule(RigBase):
         self.boneFix = tgtDup
         self.boneFix_sdk(tgt, tgtDup)
         upLoc.hide()
+
+        self.updateList(self.jnts_sk, add=[self.boneFix], rm=[self.lwr])
 
     def boneFix_sdk(self, driver, driven):
         """ "Setup SDK for bone fix to drive the leg joint."""
@@ -539,7 +551,8 @@ class RigModule(RigBase):
         if patella_guide.exists():
             j = JntNode("patella", pf=rID, align=patella_guide, r=rSz / 2, p=self.upr)
             j.freezeXf()
-            self.jnts_sk.append(j)
+            self.updateList(self.jnts_bind, add=[j])
+            self.updateList(self.jnts_sk, add=[j])
             patella_sdk(self.lwr, j)
             return j
 
@@ -703,12 +716,17 @@ class RigModule(RigBase):
         # self.jnts_am[0].hide()
 
     def build_legScapula(
-        self, ikc=None, fkc=None, jnts=None, EXTRA=0, scapCtl=None, autoAim_dv=0
+        self,
+        ikc=None,
+        fkc=None,
+        hipJ=None,
+        uprJ=None,
+        addScap=0,
+        scapCtl=None,
+        autoAim_dv=0,
     ):
         """Build scapula joint and auto aim function."""
         rID, rSz, xDr = self.getMyVar()
-        hipJ = jnts[0]
-        uprJ = jnts[1]
 
         # --- Main scapula group setup ---
         mainGrp = GrpNode("quadScap", pf=rID, align=hipJ, p=self.FK_GRP, addOfs=1)
@@ -730,9 +748,7 @@ class RigModule(RigBase):
         common.cstMulti(mainGrp.offset, j0, mainGrp, w=autoAim, cstType="parR", mo=1)
         j0.hide()
 
-        if not EXTRA:
-            self.jnts_bind.append(self.jnts[0])
-        else:
+        if addScap:
             aim = (xDr, 0, 0)
             u = (0, xDr, 0)
             wu = (0, 0, xDr)
@@ -771,7 +787,8 @@ class RigModule(RigBase):
                 aimTgt=hipJ,
             )
             IkNode("scapAim", pf=rID, sj=j0, ee=j1, p=scapCtl, vis=0)
-            self.jnts_sk.append(j0)
+            self.updateList(self.jnts_bind, add=[j0], rm=[hipJ])
+            self.updateList(self.jnts_sk, add=[j0], rm=[hipJ])
 
         return mainGrp
 
@@ -1108,5 +1125,9 @@ class RigModule(RigBase):
         volType >> ribbonUp.volType
         volType >> ribbonLw.volType
 
-        self.jnts_bind += ribbonUp.jnts_rb + ribbonLw.jnts_rb
+        self.updateList(
+            self.jnts_bind,
+            add=ribbonUp.jnts_rb + ribbonLw.jnts_rb,
+            rm=[self.upr, self.lwr],
+        )
         return [ribbonUp, ribbonLw]
