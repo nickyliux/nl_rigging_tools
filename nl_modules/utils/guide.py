@@ -204,37 +204,37 @@ def removeEndDigits(name):
         raise ValueError("Invalid input name")
 
 
-def loadTemplate(removeUnused=1):
+def loadTemplate():
     """Load preset from json file"""
     charPath = mc.optionVar(q="charPath")
 
-    tgtFiles = []
+    tgtPaths = []
     if charPath:
-        tgtFiles = glob.glob(
+        tgtPaths = glob.glob(
             os.path.join(charPath, os.path.basename(charPath) + "_tpl*.json")
         )
-        if not tgtFiles:
-            tgtFiles = mc.fileDialog2(
+        if not tgtPaths:
+            tgtPaths = mc.fileDialog2(
                 fileFilter="*tpl*.json", dialogStyle=2, fileMode=1, dir=charPath
             )
-    if not tgtFiles:
+
+    if not tgtPaths:
         return
 
     common.pauseVP(1)
-    rigID_dict = file.loadJson(tgtFiles[-1])
+    rigID_dict = file.loadJson(tgtPaths[-1])
+    loadGuideFrIdDict(rigID_dict)
+    common.pauseVP(0)
+
+    common.setVP(fit=1)
+    mc.select(cl=1)
+    logging.info(f"Template loaded: {os.path.basename(tgtPaths[-1])}.")
 
     # if removeUnused:
     #     idInPreset = [k + "_RGN" for k in rigID_dict.keys()]
     #     for node in build.getRigNodes_all():
     #         if node not in idInPreset:
     #             build.deleteTgt(node)
-
-    loadGuideFrIdDict(rigID_dict)
-
-    common.pauseVP(0)
-    common.setVP(fit=1)
-    mc.select(cl=1)
-    logging.info(f"Template loaded: {tgtFiles[-1]}.")
 
 
 def loadGuideFrIdDict(rigID_dict):
@@ -308,15 +308,15 @@ def saveTemplate():
         idDict[rigID] = guideDict
 
     charPath = mc.optionVar(q="charPath")
-    tgtFile = mc.fileDialog2(
+    tgtPaths = mc.fileDialog2(
         fileFilter="*_tpl*.json", dialogStyle=2, fileMode=0, dir=charPath
     )
-    if tgtFile is None:
+    if tgtPaths is None:
         return
     else:
-        tgtFile = tgtFile[0]
+        tgtPaths = tgtPaths[0]
 
-    file.saveJson(tgtFile, idDict, force=True)
+    file.saveJson(tgtPaths, idDict, force=True)
     logging.info("Guide template saved.")
 
 

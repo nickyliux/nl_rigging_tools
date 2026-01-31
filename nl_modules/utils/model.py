@@ -18,17 +18,19 @@ def loadModel(self):
 
     charPath = mc.optionVar(q="charPath")
     if charPath:
-        tgtFiles = glob.glob(
+        tgtPaths = glob.glob(
             os.path.join(charPath, os.path.basename(charPath) + "_mdl*.ma")  # "mdl",
         )
-        if tgtFiles:
-            file.importFile(tgtFiles[-1])
+        if tgtPaths:
+            file.importFile(tgtPaths[-1])
             common.setVP(fit=1, wos=1, jx=1)
-            logging.info(f"Model imported: {tgtFiles[-1]}.")
         else:
-            tgtFile = mc.fileDialog2(
+            tgtPaths = mc.fileDialog2(
                 fileFilter="*_mdl*", dialogStyle=2, fileMode=1, dir=charPath
             )
-            if tgtFile:
-                file.importFile(tgtFile)
-                logging.info(f"Model imported: {tgtFile}.")
+            if tgtPaths:
+                file.importFile(tgtPaths[-1])
+            else:
+                return
+
+        logging.info(f"Model imported: {os.path.basename(tgtPaths[-1])}.")

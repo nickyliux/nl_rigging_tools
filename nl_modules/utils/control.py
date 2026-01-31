@@ -107,16 +107,18 @@ def saveCtl():
     allCtls.extend(["master_ctl", "master1_ctl", "master2_ctl"])
     if allCtls:
         charPath = mc.optionVar(q="charPath")
-        tgtFile = mc.fileDialog2(fileFilter="*_ctl*.ma", dialogStyle=2, dir=charPath)
-        if tgtFile:
+        tgtPaths = mc.fileDialog2(fileFilter="*_ctl*.ma", dialogStyle=2, dir=charPath)
+        if tgtPaths:
             try:
                 removeAllCst()
                 mc.select(allCtls)
-                mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
+                mc.file(
+                    tgtPaths, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0
+                )
                 mc.undo()
                 mc.undo()
             except Exception as e:
-                raise SystemError(f"Error saving {tgtFile}: {e}")
+                raise SystemError(f"Error saving {tgtPaths}: {e}")
 
             logging.info("Curve shape exported.")
             mc.select(cl=1)
@@ -126,23 +128,23 @@ def saveCtl():
 def loadCtl():
     """Load control curves from a file and replace existing controls."""
     charPath = mc.optionVar(q="charPath")
-    tgtFiles = []
+    tgtPaths = []
     if charPath:
-        tgtFiles = glob.glob(
+        tgtPaths = glob.glob(
             os.path.join(charPath, os.path.basename(charPath) + "_ctl*.ma")
         )
-        if not tgtFiles:
-            tgtFiles = mc.fileDialog2(
+        if not tgtPaths:
+            tgtPaths = mc.fileDialog2(
                 fileFilter="*_ctl*", dialogStyle=2, fileMode=1, dir=charPath
             )
-    if not tgtFiles:
+    if not tgtPaths:
         return
 
     imported = None
     try:
-        imported = mc.file(tgtFiles[-1], i=1, ns="ctl", returnNewNodes=1)
+        imported = mc.file(tgtPaths[-1], i=1, ns="ctl", returnNewNodes=1)
     except Exception as e:
-        raise SystemError(f"Error loading {tgtFiles}: {e}")
+        raise SystemError(f"Error loading {tgtPaths}: {e}")
 
     ns = ""
     if imported:

@@ -49,7 +49,7 @@ UI_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.ui")
 STYLE_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.qss")
 LIGHTING_FILE = os.path.join(LIGHT_PATH, "lighting4.ma")
 SHADER_FILE = os.path.join(LIGHT_PATH, "bone_SHD.ma")
-AUTO_BIND_JNT_GRP = "auto_bind_jnt_grp"
+SK_AUTO_BIND_GRP = "sk_auto_bind_grp"
 
 
 class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
@@ -425,7 +425,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         meshSel = [DagNode(m).parent for m in mc.ls(sl=1, type="mesh")]
 
         if meshSel:
-            grp = GrpNode(AUTO_BIND_JNT_GRP)
+            grp = GrpNode(SK_AUTO_BIND_GRP)
             for mesh in meshSel:
                 sf = "_rbJnt" if rb else "_refJnt"
                 color = Color.RED if rb else Color.WHITE
@@ -481,8 +481,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def boneAutoBind(self):
         """Bind all meshes in MODEL_GRP to reference joints and ribbon joints."""
 
-        if not mc.objExists(AUTO_BIND_JNT_GRP):
-            mc.confirmDialog(t="Info", m=f"{AUTO_BIND_JNT_GRP} NOT found.    ", b="OK")
+        if not mc.objExists(SK_AUTO_BIND_GRP):
+            mc.confirmDialog(t="Info", m=f"{SK_AUTO_BIND_GRP} NOT found.    ", b="OK")
             return
 
         charPath = mc.optionVar(q="charPath")

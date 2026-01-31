@@ -100,10 +100,10 @@ def saveProxy():
         return
 
     charPath = mc.optionVar(q="charPath")
-    tgtFile = mc.fileDialog2(fileFilter="*prx*.ma", dialogStyle=2, dir=charPath)
-    if tgtFile:
+    tgtPaths = mc.fileDialog2(fileFilter="*prx*.ma", dialogStyle=2, dir=charPath)
+    if tgtPaths:
         mc.select("PRX")
-        mc.file(tgtFile, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
+        mc.file(tgtPaths, type="mayaAscii", f=1, es=1, ch=0, chn=0, exp=0, con=0)
         logging.info("Proxies exported.")
         mc.select(cl=1)
 
@@ -113,19 +113,19 @@ def loadProxy():
     from nl_modules.utils import control
 
     charPath = mc.optionVar(q="charPath")
-    tgtFiles = []
+    tgtPaths = []
     if charPath:
         fileToSearch = os.path.join(charPath, os.path.basename(charPath) + "*_prx*.ma")
-        tgtFiles = glob.glob(fileToSearch)
-        if not tgtFiles:
-            tgtFiles = mc.fileDialog2(
+        tgtPaths = glob.glob(fileToSearch)
+        if not tgtPaths:
+            tgtPaths = mc.fileDialog2(
                 fileFilter="*_prx*", dialogStyle=2, fileMode=1, dir=charPath
             )
-    if not tgtFiles:
+    if not tgtPaths:
         return
 
     genProxyForSet()
-    imported = mc.file(tgtFiles[-1], i=1, ns="proxy", returnNewNodes=1)
+    imported = mc.file(tgtPaths[-1], i=1, ns="proxy", returnNewNodes=1)
     ns = ""
     if imported:
         tempStr = imported[0].replace(":", " ").replace("|", " ")

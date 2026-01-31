@@ -130,21 +130,21 @@ def delSkin(tgt):
 def loadWeight(uiPB):
     """Load skin weight joints from a JSON file."""
     charPath = mc.optionVar(q="charPath")
-    tgtFiles = []
+    tgtPaths = []
     if charPath:
-        tgtFiles = glob.glob(
+        tgtPaths = glob.glob(
             os.path.join(charPath, "weight", os.path.basename(charPath) + "_wgh*.json")
         )
-        if not tgtFiles:
-            tgtFiles = mc.fileDialog2(
+        if not tgtPaths:
+            tgtPaths = mc.fileDialog2(
                 fileFilter="*.json", dialogStyle=2, fileMode=1, dir=charPath
             )
-    if not tgtFiles:
+    if not tgtPaths:
         return
 
-    tgtDir = os.path.dirname(tgtFiles[-1])
-    weightJnt_dict = file.loadJson(tgtFiles[-1])
-    logging.info(f"Weight file {tgtFiles[-1]} loaded.")
+    tgtDir = os.path.dirname(tgtPaths[-1])
+    weightJnt_dict = file.loadJson(tgtPaths[-1])
+    logging.info(f"Weight file {tgtPaths[-1]} loaded.")
 
     if uiPB:
         uiPB.setMaximum(len(weightJnt_dict))
@@ -215,10 +215,10 @@ def saveWeight():
     weightJntDict = {}
     skinDict = {}
 
-    tgtFile = mc.fileDialog2(
+    tgtPaths = mc.fileDialog2(
         fileFilter="*wgh*.json", dialogStyle=2, fileMode=0, dir=charPath
     )
-    if tgtFile is None:
+    if tgtPaths is None:
         return
 
     selList = mc.ls(sl=1, tr=1)
@@ -249,8 +249,8 @@ def saveWeight():
         )
         return
 
-    file.saveJson(tgtFile[0], weightJntDict, force=1)
-    tgtDir = os.path.dirname(tgtFile[0])
+    file.saveJson(tgtPaths[0], weightJntDict, force=1)
+    tgtDir = os.path.dirname(tgtPaths[0])
 
     for mesh, sc in skinDict.items():
         mc.deformerWeights(

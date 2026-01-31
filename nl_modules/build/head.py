@@ -73,7 +73,7 @@ class Head(RigModule):
         self.head_fkc.alignTo(self.head)
         self.head_fkc.addOffsetGrp()
         self.head_fkc.cstPar(self.head, mo=1)
-        self.head_fkc.cv_moveTo(self.headEnd.o.pos)
+        # self.head_fkc.cv_moveTo(self.headEnd.o.pos)
 
         self.jaw_fkc.snapTo(self.jaw, p=self.head_fkc)
         self.jaw_fkc.addOffsetGrp()

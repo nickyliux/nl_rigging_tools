@@ -251,19 +251,19 @@ def loadHlp(uiPB):
         return
 
     charPath = mc.optionVar(q="charPath")
-    tgtFiles = []
+    tgtPaths = []
     if charPath:
-        tgtFiles = glob.glob(
+        tgtPaths = glob.glob(
             os.path.join(charPath, os.path.basename(charPath) + "_hlp*.json")
         )
-        if not tgtFiles:
-            tgtFiles = mc.fileDialog2(
+        if not tgtPaths:
+            tgtPaths = mc.fileDialog2(
                 fileFilter="*.json", dialogStyle=2, fileMode=1, dir=charPath
             )
-    if not tgtFiles:
+    if not tgtPaths:
         return
 
-    fileDataList = file.loadJson(tgtFiles[-1])
+    fileDataList = file.loadJson(tgtPaths[-1])
     if uiPB:
         uiPB.setMaximum(len(fileDataList))
 
@@ -312,10 +312,10 @@ def saveHlp(*args):
         mc.confirmDialog(t="Info", m="Character path NOT set.     ", b="OK")
         return
 
-    tgtFile = mc.fileDialog2(
+    tgtPaths = mc.fileDialog2(
         fileFilter="*hlp*.json", dialogStyle=2, fileMode=0, dir=charPath
     )
-    if tgtFile is None:
+    if tgtPaths is None:
         return
 
     # Get all helper joints in the scene
@@ -349,5 +349,5 @@ def saveHlp(*args):
             }
         )
 
-    file.saveJson(tgtFile[0], tgtList, force=1)
+    file.saveJson(tgtPaths[0], tgtList, force=1)
     logging.info(f"{len(helperJnts)} helper joints saved.")

@@ -1,11 +1,10 @@
 import logging
-import os
-import re
 import maya.cmds as mc
 
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.utils import common
+from nl_modules.utils import control
 from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
 
@@ -95,8 +94,6 @@ def buildSelOrAll(*args, uiPB=None):
 
 def postRig():
     """Post rigging operations"""
-    from nl_modules.utils import control
-
     addMasterAttrs()
     control.reset_all_ctl()
     update_anchor_conn()
@@ -150,6 +147,9 @@ def unbuildTgt(rN):
 def unbuildSelOrAll(*arg):
     """Unbuild rig for selected rigNodes or all if nothing selected"""
     rigNodes = getRigNodes_selOrAll()
+    control.reset_all_ctl()
+    mc.refresh(f=1)
+
     unBuilt = 0
     for rN in rigNodes:
         unBuilt += unbuildTgt(rN)
