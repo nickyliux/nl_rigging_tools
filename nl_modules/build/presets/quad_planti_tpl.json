@@ -193,8 +193,8 @@
             ]
         },
         "lfLegBp0_master_guide":{
+            "dualBone":false,
             "kneeFix":false,
-            "limbType":0,
             "mirrorable":true,
             "parentNameMatch":"spine*",
             "patellaBone":false,
@@ -204,6 +204,7 @@
                 0.0
             ],
             "rbnJntNum":5,
+            "ribbon":false,
             "rollJntNum":2,
             "s":[
                 2.4,
@@ -211,7 +212,8 @@
                 2.4
             ],
             "scapulaAutoAim":0.0,
-            "scapulaExtra":false,
+            "scapulaBone":false,
+            "showRef":false,
             "t":[
                 45.0,
                 0.0,
@@ -938,8 +940,8 @@
             ]
         },
         "lfLegBp1_master_guide":{
+            "dualBone":false,
             "kneeFix":false,
-            "limbType":0,
             "mirrorable":true,
             "parentNameMatch":"spine*",
             "patellaBone":false,
@@ -949,6 +951,7 @@
                 0.0
             ],
             "rbnJntNum":5,
+            "ribbon":false,
             "rollJntNum":2,
             "s":[
                 2.5887027437591166,
@@ -956,7 +959,8 @@
                 2.5887027437591166
             ],
             "scapulaAutoAim":0.3,
-            "scapulaExtra":true,
+            "scapulaBone":true,
+            "showRef":false,
             "t":[
                 45.0,
                 0.0,
@@ -1789,8 +1793,8 @@
             ]
         },
         "rtLegBp0_master_guide":{
+            "dualBone":false,
             "kneeFix":false,
-            "limbType":0,
             "mirrorable":true,
             "parentNameMatch":"spine*",
             "patellaBone":false,
@@ -1800,6 +1804,7 @@
                 -0.0
             ],
             "rbnJntNum":5,
+            "ribbon":false,
             "rollJntNum":2,
             "s":[
                 2.4,
@@ -1807,7 +1812,8 @@
                 2.4
             ],
             "scapulaAutoAim":0.0,
-            "scapulaExtra":false,
+            "scapulaBone":false,
+            "showRef":false,
             "t":[
                 -45.0,
                 0.0,
@@ -2534,8 +2540,8 @@
             ]
         },
         "rtLegBp1_master_guide":{
+            "dualBone":false,
             "kneeFix":false,
-            "limbType":0,
             "mirrorable":true,
             "parentNameMatch":"spine*",
             "patellaBone":false,
@@ -2545,6 +2551,7 @@
                 -0.0
             ],
             "rbnJntNum":5,
+            "ribbon":false,
             "rollJntNum":2,
             "s":[
                 2.5887027437591166,
@@ -2552,7 +2559,8 @@
                 2.5887027437591166
             ],
             "scapulaAutoAim":0.3,
-            "scapulaExtra":true,
+            "scapulaBone":true,
+            "showRef":false,
             "t":[
                 -45.0,
                 0.0,
