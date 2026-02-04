@@ -128,7 +128,7 @@ def addAwesomeIK(
         setting=setting,
         scaleFix=scaleGrp,
     )
-    spIkH.stretchySp(on=1)
+    spIkH.stretchySp()
     spCrv = spIkH.getCrv()
     spCrv.a.inheritsTransform.set(0)
     (spIkH, spCrv) | spIkUpParent

@@ -93,11 +93,11 @@ class SpineQd(RigModule):
         self.end_ctl.cv_rotate(0, 90, 0)
 
         if self.is_neck():
-            self.fore_ikc.cv_scale(2, 2, 0.4)
-            self.base_ikc.cv_scale(2, 2, 0.4)
+            self.fore_ikc.cv_scale(2, 2, 0.1)
+            self.base_ikc.cv_scale(2, 2, 0.1)
         else:
-            self.fore_ikc.cv_scale(1, 1, 0.2)
-            self.base_ikc.cv_scale(1, 1, 0.2)
+            self.fore_ikc.cv_scale(1, 1, 0.05)
+            self.base_ikc.cv_scale(1, 1, 0.05)
 
     def create_rbSrf(self):
         """Create the ribbon surface for the spine rig."""
@@ -135,7 +135,7 @@ class SpineQd(RigModule):
             setting=self.setting,
         )
 
-        self.build_twoJ_ik()
+        self.build_twoJ_ik(crvLenRatio)
         self.build_volume(crvLenRatio)
         self.jnts_bind.extend(self.jnts_rb)
 
@@ -222,14 +222,7 @@ class SpineQd(RigModule):
             scaleFix3=self.masterC2.a.sy,
             p=self.CTL_DATA,
         )
-        ik_handle.stretchySp(axis="tz", axisDir=1)
-
-        # --- Calculate curve length ratio ---
-        crv_info = DagNode("crvInfo#", nodeType="curveInfo")
-        self.rbCrv.shape.a.worldSpace >> crv_info.a.inputCurve
-        crv_len_ratio = (
-            crv_info.a.arcLength / global_scale / scaleAttr / self.rbCrv.length
-        )
+        crv_len_ratio = ik_handle.stretchySp(axis="tz", axisDir=1)
 
         # --- Create joint groups and constraints ---
         loc_grp = GrpNode("loc_grp", pf=rID, p=self.JNT_DATA)
@@ -277,7 +270,7 @@ class SpineQd(RigModule):
         ik_handle.hide()
         return crv_len_ratio, jntsFrCrv, rb_jnts
 
-    def build_twoJ_ik(self):
+    def build_twoJ_ik(self, crvLenRatio):
         """Build a two-joint IK system for the spine rig."""
         rID, rSz, xDr = self.getMyVar()
 
@@ -294,11 +287,11 @@ class SpineQd(RigModule):
 
         # --- Create hidden IK handle and constrain end joint ---
         IkNode("two_ikj", pf=rID, sj=j0, ee=j1, vis=0, p=self.tangent1_ctl)
-        j1.cstPoi(self.jnts_ik[2])
+        # j1.cstPoi(self.jnts_ik[2])
 
         # --- Control two-joint scale with distance and clamp ---
-        d = ut.distDim_(self.tangent0_ctl, self.tangent1_ctl)
-        crvLenRatio = d / d.get() / self.masterC.a.globalScale
+        # d = ut.distDim_(self.tangent0_ctl, self.tangent1_ctl)
+        # crvLenRatio = d / d.get() / self.masterC.a.globalScale
         (
             ut.clp_(
                 crvLenRatio,
