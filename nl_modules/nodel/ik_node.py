@@ -146,7 +146,6 @@ class IkNode(DagNode):
 
     def calcChainLen(self):
         """Calculate the length of the joint chain"""
-
         d = 0
         for i in range(1, len(self.jnt)):
             d += self.jnt[i].o.distanceTo(self.jnt[i - 1])
@@ -154,7 +153,6 @@ class IkNode(DagNode):
 
     def getCrv(self):
         """Get the curve associated with the IK handle"""
-
         if self.solver == Solver.SPLINE:
             crvSh = self.a.inCurve.inConnNode
             return CrvNode(crvSh.parent)
@@ -164,7 +162,6 @@ class IkNode(DagNode):
         cls, ikH=None, ctl=None, axis="tx", axisDir=1, minDv=0.9, maxDv=1.1
     ):
         """Add stretch logic to translate channel of ikHandle with spline solver."""
-
         if ikH is None or ctl is None:
             logging.info("Require ikH and ctl input.")
             return
@@ -199,14 +196,8 @@ class IkNode(DagNode):
             result = ut.clp_(ratio, min=ksMin, max=ksMax) * Di
             result * axisDir >> jl[i].a[axis]
 
-    def stretchySp(self, axis="tx", axisDir=1, minDv=0.9, maxDv=1.1):
-        """Add stretch logic to translate channel of ikHandle with spline solver."""
-
-        if self.solver != Solver.SPLINE:
-            raise ValueError("Incorrect solver.")
-        if not self.setting:
-            raise ValueError("No setting control given.")
-
+    def calc_ratio(self):
+        """Calculate the curve length ratio for the spline IK handle."""
         crv = self.getCrv()
         D = mc.arclen(crv.shape)
         crvInfo = DepNode(mc.arclen(crv.shape, ch=1))
@@ -216,15 +207,27 @@ class IkNode(DagNode):
         if self.scaleFix2:
             d /= self.scaleFix2
 
-        ratio = d / D
+        return d / D
 
-        # ks = self.setting.a.add("stretchy", min=0, max=1, dv=1)
+    def stretchySp(self, ratio=None, axis="tx", axisDir=1, minDv=0.9, maxDv=1.1):
+        """Add stretch logic to translate channel of ikHandle with spline solver."""
+        if self.solver != Solver.SPLINE:
+            raise ValueError("Incorrect solver.")
+        if not self.setting:
+            raise ValueError("No setting control given.")
+
+        if ratio == None:
+            ratio = self.calc_ratio()
+
         ksMin = self.setting.a.add("stretchMin", k=1, min=0, max=1, dv=minDv)
         ksMax = self.setting.a.add("stretchMax", k=1, min=1, dv=maxDv)
+        result0 = ut.clp_(ratio, min=ksMin, max=ksMax)
 
         for i in range(1, len(self.jnt)):
+
             Di = self.jnt[i - 1].o.distanceTo(self.jnt[i])
-            result = ut.clp_(ratio, min=ksMin, max=ksMax) * Di
+            result = result0 * Di
+
             if self.scaleFix2:
                 result *= self.scaleFix2
             if self.scaleFix3:
@@ -234,8 +237,6 @@ class IkNode(DagNode):
                 result >> tAttr
             elif axisDir == -1:
                 result * -1 >> tAttr
-
-        return ratio
 
     def stretchyIk(self, pvLock=1, soft=0):
         """
@@ -313,7 +314,6 @@ class IkNode(DagNode):
 
     def addSoft(self, d=None, ratio=None, softParent=None):
         """Add a soft IK setup to the IK handle."""
-
         from nl_modules.nodel.jnt_node import JntNode
 
         softJ = JntNode.makeTwoJointChain(
@@ -347,7 +347,6 @@ class IkNode(DagNode):
 
     def build_pvfkPinSetup(self, ikTarget=None):
         """Build a pole vector FK pin setup for the IK handle."""
-
         from nl_modules.nodel.jnt_node import JntNode
 
         pvJnt = JntNode.makeTwoJointChain(
@@ -374,7 +373,6 @@ class IkNode(DagNode):
 
     def spline_twist_setup(self, *driver, upAxis="y", twistAxis="x"):
         """Setup twist for spline IK using worldUpMatrix and worldUpVector attributes."""
-
         if self.solver == Solver.SPLINE:
             self.a.dTwistControlEnable.set(1)
             if upAxis == "z":
@@ -407,7 +405,6 @@ class IkNode(DagNode):
 
     def spline_twist_setup2(self, *driver, twistAxis="+x"):
         """Setup twist for spline IK using roll and twist attributes."""
-
         if self.solver == Solver.SPLINE:
             sign = twistAxis[0]
             axis = twistAxis[1]

@@ -222,7 +222,8 @@ class SpineQd(RigModule):
             scaleFix3=self.masterC2.a.sy,
             p=self.CTL_DATA,
         )
-        crv_len_ratio = ik_handle.stretchySp(axis="tz", axisDir=1)
+        crv_len_ratio = ik_handle.calc_ratio()
+        ik_handle.stretchySp(ratio=crv_len_ratio, axis="tz", axisDir=1)
 
         # --- Create joint groups and constraints ---
         loc_grp = GrpNode("loc_grp", pf=rID, p=self.JNT_DATA)
@@ -340,9 +341,9 @@ class SpineQd(RigModule):
 
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""
-        attr = self.base_ikc.a.add("showTangent", type="bool", k=0)
+        attr = self.base_ikc.a.add("showTangent", type="bool", k=0, dv=1)
         attr >> self.tangent0_ctl.a.v
-        attr = self.fore_ikc.a.add("showTangent", type="bool", k=0)
+        attr = self.fore_ikc.a.add("showTangent", type="bool", k=0, dv=1)
         attr >> self.tangent1_ctl.a.v
 
         setupTgt = self.jnts_ik + [self.jnts_spIk[0], self.jnts_twoIk[0]]

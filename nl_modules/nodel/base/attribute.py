@@ -185,6 +185,7 @@ class Attribute:
         if other.__class__ != Attribute:
             raise TypeError(f"Error: {self.name} >> {other.name}")
 
+        print(f"Connecting {self} -> {other} ")
         if mc.isConnected(self, other, iuc=1):
             return self
 

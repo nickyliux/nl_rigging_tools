@@ -227,7 +227,7 @@
                 1.4
             ],
             "scapulaAutoAim":0.5,
-            "scapulaBone":false,
+            "scapulaBone":true,
             "showRef":false,
             "t":[
                 15.0,
@@ -2029,7 +2029,7 @@
                 1.4
             ],
             "scapulaAutoAim":0.5,
-            "scapulaBone":false,
+            "scapulaBone":true,
             "showRef":false,
             "t":[
                 -15.0,
