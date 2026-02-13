@@ -222,7 +222,7 @@ class IkNode(DagNode):
         ks = self.setting.a.add("stretchy", k=1, min=0, max=1, dv=0)
         ksMin = self.setting.a.add("stretchMin", k=1, min=0, max=1, dv=minDv)
         ksMax = self.setting.a.add("stretchMax", k=1, min=1, dv=maxDv)
-        result0 = ut.clp_(ratio, min=ksMin, max=ksMax)
+        result0 = ut.clp_((ratio-1)*ks+1, min=ksMin, max=ksMax)
 
         for i in range(1, len(self.jnt)):
 
