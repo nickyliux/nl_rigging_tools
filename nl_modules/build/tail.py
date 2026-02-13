@@ -242,7 +242,7 @@ class Tail(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the tail rig controls."""
         self.ctl_vis_toggle(
-            self.setting.a.add("showIkCtl", k=0, type="bool", dv=1),
+            self.setting.a.add("showIkCtl", k=0, type="bool"),
             onList=[self.ctls_ik[0]],
         )
         self.ctl_vis_toggle(

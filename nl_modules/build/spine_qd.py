@@ -74,9 +74,9 @@ class SpineQd(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2, 0),
             ("cog_ctl", "trapezoid2", None, rSz, 0),
-            ("fore_ikc", "cube", None, rSz * 7, 0),
-            ("mid_ikc", "squareR", "z", rSz * 3, 0),
-            ("base_ikc", "cube", None, rSz * 7, 0),
+            ("fore_ikc", "octagon_3d", None, Vec((8, 8, 0.5)) * rSz, 0),
+            ("mid_ikc", "squareR", "z", rSz * 4, 0),
+            ("base_ikc", "octagon_3d", None, Vec((8, 8, 0.5)) * rSz, 0),
             ("tangent0_ctl", "arrow", None, rSz, 1),
             ("tangent1_ctl", "arrow", None, rSz, 1),
             ("end_ctl", "rotate2_3d", None, rSz * 2, 0),
@@ -86,18 +86,18 @@ class SpineQd(RigModule):
 
         self.cog_ctl.cv_move(0, rSz * 40, 0)
         self.cog_ctl.cv_scale(1, 1.5, 2)
-        self.setting.cv_move(0, rSz * 50, 0)
+        self.setting.cv_move(0, rSz * 30, 0)
         self.setting.color = Color.PINK
         self.tangent0_ctl.cv_rotate(0, 180, 90)
         self.tangent1_ctl.cv_rotate(0, 0, 90)
         self.end_ctl.cv_rotate(0, 90, 0)
 
-        if self.is_neck():
-            self.fore_ikc.cv_scale(2, 2, 0.1)
-            self.base_ikc.cv_scale(2, 2, 0.1)
-        else:
-            self.fore_ikc.cv_scale(1, 1, 0.05)
-            self.base_ikc.cv_scale(1, 1, 0.05)
+        # if self.is_neck():
+        #     self.fore_ikc.cv_scale(2, 2, 0.1)
+        #     self.base_ikc.cv_scale(2, 2, 0.1)
+        # else:
+        #     self.fore_ikc.cv_scale(1, 1, 0.05)
+        #     self.base_ikc.cv_scale(1, 1, 0.05)
 
     def create_rbSrf(self):
         """Create the ribbon surface for the spine rig."""

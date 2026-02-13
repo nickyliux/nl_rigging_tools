@@ -129,7 +129,7 @@ class LegQd(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
-            ("hip_fkc", "rotate2_3d", "x", -scale, 0),
+            ("hip_fkc", "shoulder", "x", -scale, 0),
             ("upr_fkc", "circle", "x", scale, 0),
             ("lwr_fkc", "circle", "x", scale, 0),
             ("palm_fkc", "circle", "x", scale, 0),
