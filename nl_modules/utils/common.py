@@ -204,7 +204,7 @@ def nlRivet(
     p=None,
     size=1,
 ):
-    """Create Rivets and return uvPin, locators ( better than mc.Rivet as not by selection )
+    """Create Rivets and return uvPin, locators ( Better than mc.Rivet by not using selection )
     e.g.
         nlRivet(geo='surf', coordList=[(0.5,0.5), (0,1)])
     """
@@ -253,8 +253,6 @@ def nlRivet(
 def aimAlongSrfUV(srf=None, loc=None, inPos=None, p=None, setLocPos=0):
     """Make rivet loc's rotation follow UV of surface"""
     from nl_modules.nodel.base.dag_node import DagNode
-    from nl_modules.nodel.grp_node import GrpNode
-    from nl_modules.nodel.loc_node import LocNode
 
     cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
     inPos >> cpos.a.inPosition
@@ -293,7 +291,7 @@ def ribbonAttach_reset(tgt):
 
 
 def attachTgtsToSrf(
-    tgtList=None, srf=None, crv=None, scaleAttr=None, stretchyAttr=1, p=None
+    tgtList=None, srf=None, crv=None, scaleAttr=None, stretchyAttr=None, p=None
 ):
     """Attach target list to srf along crv, using closestPointOnSurface
 
@@ -318,7 +316,7 @@ def attachTgtsToSrf(
     srfType = srf.shape.type
 
     if crv:
-        crv = CrvNode(crv)  # if isinstance(crv, str) else crv
+        crv = CrvNode(crv)
     else:
         crv = CrvNode(mc.duplicateCurve(f"{srf}.u[0.5]", rn=0, local=0)[0])
         crv.a.inheritsTransform.set(0)
@@ -344,7 +342,11 @@ def attachTgtsToSrf(
     crv_info = DagNode("crvInfo#", nodeType="curveInfo")
     crv.shape.a.worldSpace >> crv_info.a.inputCurve
     crv_len_ratio = crv_info.a.arcLength / crv.length
-    ratio_out = ut.blend2_(crv_len_ratio, 1, stretchyAttr)
+
+    if stretchyAttr and stretchyAttr.exists():
+        ratio_out = ut.blend2_(crv_len_ratio, 1, w=stretchyAttr)
+    else:
+        ratio_out = 1
 
     for i, tgt in enumerate(tgtList):
 
@@ -360,6 +362,7 @@ def attachTgtsToSrf(
         )
         if scaleAttr:
             scaleAttr >> loc.a.s
+
         loc.a.inheritsTransform.set(0)
         tgt | loc
 

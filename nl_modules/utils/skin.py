@@ -19,7 +19,7 @@ def skinRefJnts(meshes=None, jnts=None, thld=5, uiPB=None):
 
     for i, mesh in enumerate(meshes):
         mc.select(mesh)
-        mc.refresh(f=1)
+        # mc.refresh(f=1)
         if uiPB:
             uiPB.setValue(i)
 

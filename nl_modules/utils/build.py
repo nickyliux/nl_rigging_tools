@@ -432,8 +432,6 @@ def autoAttach():
     rigNode.a.rbJntSet: target joints
     rigNode.a.rbSrf: target surface
     """
-    from nl_modules.utils import common
-
     masterCtl = DagNode("master_ctl")
     if not masterCtl.exists():
         raise ValueError("master_ctl NOT found.")
@@ -480,18 +478,12 @@ def autoAttach():
             logging.warning("Setting NOT found.")
             continue
 
-        # common.ribbonAttach(
-        #     geo=rbSrf,
-        #     tgtList=rbJnts,
-        #     scaleAttr=globalScale,
-        #     p=DagNode("CTL"),
-        # )
         common.attachTgtsToSrf(
             tgtList=rbJnts,
             srf=rbSrf,
             crv=rbCrv,
-            # stretchyAttr=setting.a.stretchy,
             scaleAttr=globalScale,
+            stretchyAttr=setting.a.stretchy,
             p=DagNode("JNT"),
         )
         # logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")

@@ -131,21 +131,26 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.toggleProxy_BN, proxy.toggleProxy, ":visible.png")
         self.connect(self.UI.loadCtl_BN, control.loadCtl, ":openScript.png")
         self.connect(self.UI.saveCtl_BN, control.saveCtl, ":fileSave.png")
+        self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
+        self.connect(self.UI.boneAutoUnBind_BN, self.boneAutoUnBind, ":unbind.png")
+
+        # Helper
         self.connect(
             self.UI.loadHlp_BN,
             partial(helper.loadHlp, self.UI.bar_PB),
             ":openScript.png",
         )
         self.connect(self.UI.saveHlp_BN, helper.saveHlp, ":fileSave.png")
+
+        # Weight
         self.connect(
             self.UI.loadWeight_BN,
             partial(skin.loadWeight, self.UI.bar_PB),
             ":openScript.png",
         )
         self.connect(self.UI.saveWeight_BN, skin.saveWeight, ":fileSave.png")
-        self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
-        self.connect(self.UI.boneAutoUnBind_BN, self.boneAutoUnBind, ":unbind.png")
 
+        # Weight Edit
         self.connect(self.UI.mirrorSym_BN, partial(skin.mirrorWeightSel, 1))
         self.connect(self.UI.mirrorAsym_BN, partial(skin.mirrorWeightSel, 0))
         self.connect(self.UI.prune_BN, skin.pruneWeightSel)
@@ -508,16 +513,17 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             )
             return
 
-        common.xRayAllGeo(1)
+        # mc.select(cl=1)
+        # common.xRayAllGeo(1)
 
         # Bind meshes to ref joints
         self.autoBind_refJnts(meshes=tgtMeshes, thld=15, uiPB=self.UI.bar_PB)
-        # Bind meshes to rb joints
+
+        # Bind meshes to rb joints & attach rb joints to surface
         skin.skinRbJnts(meshes=tgtMeshes, uiPB=self.UI.bar_PB)
-        # Attach rb joints to surface
         build.autoAttach()
 
-        common.xRayAllGeo(0)
+        # common.xRayAllGeo(0)
         mc.select(cl=1)
 
     def templateTarget(self):

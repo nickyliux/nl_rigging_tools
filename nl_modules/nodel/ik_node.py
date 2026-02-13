@@ -219,6 +219,7 @@ class IkNode(DagNode):
         if ratio == None:
             ratio = self.calc_ratio()
 
+        ks = self.setting.a.add("stretchy", k=1, min=0, max=1, dv=0)
         ksMin = self.setting.a.add("stretchMin", k=1, min=0, max=1, dv=minDv)
         ksMax = self.setting.a.add("stretchMax", k=1, min=1, dv=maxDv)
         result0 = ut.clp_(ratio, min=ksMin, max=ksMax)
@@ -232,11 +233,11 @@ class IkNode(DagNode):
                 result *= self.scaleFix2
             if self.scaleFix3:
                 result *= self.scaleFix3
-            tAttr = self.jnt[i].a[axis]
-            if axisDir == 1:
-                result >> tAttr
-            elif axisDir == -1:
-                result * -1 >> tAttr
+
+            if axisDir == -1:
+                result *= -1
+
+            result >> self.jnt[i].a[axis]
 
     def stretchyIk(self, pvLock=1, soft=0):
         """
