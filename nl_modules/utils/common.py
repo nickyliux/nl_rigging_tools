@@ -291,7 +291,13 @@ def ribbonAttach_reset(tgt):
 
 
 def attachTgtsToSrf(
-    tgtList=None, srf=None, crv=None, scaleAttr=None, stretchyAttr=None, p=None
+    tgtList=None,
+    srf=None,
+    crv=None,
+    scaleAttr=None,
+    stretchyAttr=None,
+    p=None,
+    lastPosi=None,
 ):
     """Attach target list to srf along crv, using closestPointOnSurface
 
@@ -306,8 +312,10 @@ def attachTgtsToSrf(
 
     if not isinstance(tgtList, list):
         raise TypeError("Input objects must be in list.")
-    if not mc.objExists(srf):
-        raise ValueError(f"Missing object: {srf}")
+    if not srf or not mc.objExists(srf):
+        raise ValueError(f"Missing srf to attach")
+    if not lastPosi or not mc.objExists(lastPosi):
+        raise ValueError(f"Missing lastPosi for attachment")
 
     logging.info(f"Attaching jnts to {srf.name}, along {crv.name}.")
 
@@ -344,14 +352,17 @@ def attachTgtsToSrf(
     crv_len_ratio = crv_info.a.arcLength / crv.length
 
     if stretchyAttr and stretchyAttr.exists():
-        ratio_out = ut.blend2_(crv_len_ratio, 1, w=stretchyAttr)
+        stretchyState = 1 / lastPosi.a.parameterV
+        ratio_out = ut.blend2_(crv_len_ratio, stretchyState, w=stretchyAttr)
     else:
-        ratio_out = 1
+        # ratio_out = 1
+        raise TypeError(f"Invalid stretchyAttr for surface follow control")
 
     for i, tgt in enumerate(tgtList):
 
         mp = DagNode("mp_#", nodeType="motionPath")
-        mp.a.fractionMode.set(1)
+        # mp.a.fractionMode.set(1)
+        mp.a.fractionMode.set(0)
         coordList[i] / ratio_out >> mp.a.uValue
 
         crv.shape.a.worldSpace >> mp.a.geometryPath

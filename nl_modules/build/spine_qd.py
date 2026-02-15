@@ -92,12 +92,9 @@ class SpineQd(RigModule):
         self.tangent1_ctl.cv_rotate(0, 0, 90)
         self.end_ctl.cv_rotate(0, 90, 0)
 
-        # if self.is_neck():
-        #     self.fore_ikc.cv_scale(2, 2, 0.1)
-        #     self.base_ikc.cv_scale(2, 2, 0.1)
-        # else:
-        #     self.fore_ikc.cv_scale(1, 1, 0.05)
-        #     self.base_ikc.cv_scale(1, 1, 0.05)
+        if self.is_neck():
+            self.fore_ikc.cv_scale(2, 2, 2)
+            self.base_ikc.cv_scale(2, 2, 2)
 
     def create_rbSrf(self):
         """Create the ribbon surface for the spine rig."""
@@ -268,6 +265,12 @@ class SpineQd(RigModule):
         self.end_ctl.alignTo(self.RT_GUIDE, p=self.base_ikc, addOfs=1)
         self.end_ctl.cstOri(rb_jnts[0], mo=1)
 
+        # ---
+        # When the ribbo is stretchy, and stretchMax is a bit largetr than 1,
+        # vValue from that last posi node is needed to know where the tip of the chain at.
+        # ---
+        self.rigNode.setMsg({"lastPosi": posi})
+
         ik_handle.hide()
         return crv_len_ratio, jntsFrCrv, rb_jnts
 
@@ -288,11 +291,7 @@ class SpineQd(RigModule):
 
         # --- Create hidden IK handle and constrain end joint ---
         IkNode("two_ikj", pf=rID, sj=j0, ee=j1, vis=0, p=self.tangent1_ctl)
-        # j1.cstPoi(self.jnts_ik[2])
 
-        # --- Control two-joint scale with distance and clamp ---
-        # d = ut.distDim_(self.tangent0_ctl, self.tangent1_ctl)
-        # crvLenRatio = d / d.get() / self.masterC.a.globalScale
         (
             ut.clp_(
                 crvLenRatio,

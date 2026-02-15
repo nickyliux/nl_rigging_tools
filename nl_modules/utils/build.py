@@ -448,6 +448,7 @@ def autoAttach():
         rbJntSetAttr = node.a["rbJntSet"]
         rbSrfAttr = node.a["rbSrf"]
         rbCrvAttr = node.a["rbCrv"]
+        lastPosi = node.a["lastPosi"]
 
         if not (rbJntSetAttr.exists() or rbSrfAttr.exists() or rbCrvAttr.exists()):
             continue
@@ -473,6 +474,11 @@ def autoAttach():
             logging.warning(f"{node.name}: Missing ribbon curve.")
             continue
 
+        lastPosi = lastPosi.inConnNode
+        if not lastPosi:
+            logging.warning(f"{node.name}: Missing last position node.")
+            continue
+
         setting = node.a.setting.inConnNode
         if not setting:
             logging.warning("Setting NOT found.")
@@ -485,6 +491,7 @@ def autoAttach():
             scaleAttr=globalScale,
             stretchyAttr=setting.a.stretchy,
             p=DagNode("JNT"),
+            lastPosi=lastPosi,
         )
         # logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")
 
