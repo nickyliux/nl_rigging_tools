@@ -20,6 +20,7 @@ blockquote {
 
 ![nlRT Main](docs/nlRT_UI.png) 
 
+> Note that the project is still under active development so please use it as study purpose. 
 
 ## Background
 
@@ -147,7 +148,6 @@ cpn.build() # build rig
 4. [Rigamajig2](https://github.com/masonSmigel/rigamajig2)
 
 
-##
+<br>
 
-This is still under active development so please use it as study purpose.  
 Visit my blog at [https://www.nickyliu.com](https://www.nickyliu.com)
