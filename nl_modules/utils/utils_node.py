@@ -102,7 +102,7 @@ def distDim2_(obj1, obj2):
     return distDim.a.distance
 
 
-def arcLenDim_(srfOrCrv):
+def arcLenDim_(srfOrCrv, u=1, v=1):
     """Return arcLengthDimension node for srf/crv"""
     from nl_modules.nodel.srf_node import SrfNode
 
@@ -114,8 +114,9 @@ def arcLenDim_(srfOrCrv):
         arcLD.a.uParamValue.set(SrfNode(srfOrCrv).uSeg)
         arcLD.a.vParamValue.set(SrfNode(srfOrCrv).vSeg)
     elif srfOrCrv.type == "nurbsCurve":
-        arcLD.a.uParamValue.set(1)
-        arcLD.a.vParamValue.set(1)
+        arcLD.a.uParamValue.set(u)
+        arcLD.a.vParamValue.set(v)
+
     arcLD.hide()
     return arcLD
 

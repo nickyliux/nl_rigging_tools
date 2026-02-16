@@ -53,7 +53,9 @@ class SpineQd(RigModule):
         self.jnts_twoIk = []
 
         self.rbSrf = None
+        self.rbSrfSk = None
         self.rbCrv = None
+        self.rbCrvSk = None
         self.anchorToRbj = None
 
     def gen_sk(self):
@@ -115,7 +117,13 @@ class SpineQd(RigModule):
         self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
 
         self.rbSrf = self.create_rbSrf()
-        self.rigNode.setMsg({"rbSrf": self.rbSrf})
+        self.rbSrfSk = self.create_rbSrf()
+
+        # Rebuild the ribbon surface to have the correct number of spans for joint attachment.
+        mc.rebuildSurface(
+            self.rbSrfSk, rt=0, end=1, kr=0, kcp=0, kc=0, su=0, sv=self.rbnJntNum - 1
+        )
+        self.rigNode.setMsg({"rbSrf": self.rbSrf, "rbSrfSk": self.rbSrfSk})
 
         self.build_ctl()
         self.build_ik()
@@ -126,14 +134,17 @@ class SpineQd(RigModule):
         """Create the ribbon for the spine rig."""
         self.rbSrf.weightTo(self.jnts_ik, mi=1, chain=0)
 
-        crvLenRatio, self.jnts_spIk, self.jnts_rb = self.build_spik_ribbon(
+        crvLenRatioSk, self.jnts_spIk, self.jnts_rb = self.build_spik_ribbon(
             rbSrf=self.rbSrf,
+            rbSrfSk=self.rbSrfSk,
             jntNum=self.rbnJntNum,
             setting=self.setting,
         )
+        self.rbSrfSk.weightTo(self.jnts_spIk, mi=1, chain=0)
 
-        self.build_twoJ_ik(crvLenRatio)
-        self.build_volume(crvLenRatio)
+        self.build_twoJ_ik(crvLenRatioSk)
+        self.build_volume(crvLenRatioSk)
+
         self.jnts_bind.extend(self.jnts_rb)
 
         self.setting.snapTo(self.jnts_rb[0], p=self.IK_GRP)
@@ -187,7 +198,9 @@ class SpineQd(RigModule):
         RigModule.add_dyn_pivot(self.cog_ctl, axis="ty", dv=0.2)
         RigModule.add_dyn_pivot(self.cog_ctl, endTgt=self.TP_GUIDE, axis="tz", dv=0.5)
 
-    def build_spik_ribbon(self, rbSrf=None, jntNum=5, setting=None, scaleAttr=None):
+    def build_spik_ribbon(
+        self, rbSrf=None, rbSrfSk=None, jntNum=5, setting=None, scaleAttr=None
+    ):
         """Build a spine IK ribbon."""
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
@@ -195,9 +208,11 @@ class SpineQd(RigModule):
         # --- Create ribbon curve and joints ---
         self.rbCrv = CrvNode(mc.duplicateCurve(f"{rbSrf}.u[0.5]", rn=0, local=0)[0])
         self.rbCrv.a.inheritsTransform.set(0)
-        self.rbCrv | self.CTL_DATA
+        self.rbCrvSk = CrvNode(mc.duplicateCurve(f"{rbSrfSk}.u[0.5]", rn=0, local=0)[0])
+        self.rbCrvSk.a.inheritsTransform.set(0)
+        (self.rbCrv, self.rbCrvSk) | self.CTL_DATA
 
-        self.rigNode.setMsg({"rbCrv": self.rbCrv})
+        self.rigNode.setMsg({"rbCrv": self.rbCrv, "rbCrvSk": self.rbCrvSk})
 
         jntsFrCrv = JntNode.createJntsFrCrv(
             self.rbCrv, pf=rID, name="spikj", num=jntNum, size=rSz, p=self.CTL_DATA
@@ -219,7 +234,9 @@ class SpineQd(RigModule):
             scaleFix3=self.masterC2.a.sy,
             p=self.CTL_DATA,
         )
-        crv_len_ratio = ik_handle.calc_ratio()
+        crv_len_ratio = ik_handle.setup_ratio()
+        crv_len_ratio_sk = ik_handle.setup_ratio(crv=self.rbCrvSk)
+
         ik_handle.stretchySp(ratio=crv_len_ratio, axis="tz", axisDir=1)
 
         # --- Create joint groups and constraints ---
@@ -265,14 +282,8 @@ class SpineQd(RigModule):
         self.end_ctl.alignTo(self.RT_GUIDE, p=self.base_ikc, addOfs=1)
         self.end_ctl.cstOri(rb_jnts[0], mo=1)
 
-        # ---
-        # When the ribbo is stretchy, and stretchMax is a bit largetr than 1,
-        # vValue from that last posi node is needed to know where the tip of the chain at.
-        # ---
-        self.rigNode.setMsg({"lastPosi": posi})
-
         ik_handle.hide()
-        return crv_len_ratio, jntsFrCrv, rb_jnts
+        return crv_len_ratio_sk, jntsFrCrv, rb_jnts
 
     def build_twoJ_ik(self, crvLenRatio):
         """Build a two-joint IK system for the spine rig."""
@@ -292,14 +303,15 @@ class SpineQd(RigModule):
         # --- Create hidden IK handle and constrain end joint ---
         IkNode("two_ikj", pf=rID, sj=j0, ee=j1, vis=0, p=self.tangent1_ctl)
 
-        (
-            ut.clp_(
-                crvLenRatio,
-                min=self.setting.a["stretchMin"],
-                max=self.setting.a["stretchMax"],
-            )
-            >> j0.a.sz
-        )
+        # (
+        #     ut.clp_(
+        #         crvLenRatio,
+        #         min=self.setting.a["stretchMin"],
+        #         max=self.setting.a["stretchMax"],
+        #     )
+        #     >> j0.a.sz
+        # )
+        crvLenRatio >> j0.a.sz
 
         self.fore_ikc.a.r >> j1.a.r
         self.mid_ikc.addOffsetGrp()
@@ -347,7 +359,7 @@ class SpineQd(RigModule):
 
         setupTgt = self.jnts_ik + [self.jnts_spIk[0], self.jnts_twoIk[0]]
         self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", type="bool", k=0),
+            self.setting.a.add("showSetup", type="bool", k=0, dv=1),
             onList=setupTgt + [self.rbSrf, self.rbCrv],
         )
 

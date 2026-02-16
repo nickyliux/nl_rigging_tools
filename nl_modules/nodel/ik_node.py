@@ -196,12 +196,16 @@ class IkNode(DagNode):
             result = ut.clp_(ratio, min=ksMin, max=ksMax) * Di
             result * axisDir >> jl[i].a[axis]
 
-    def calc_ratio(self):
+    def setup_ratio(self, crv=None):
         """Calculate the curve length ratio for the spline IK handle."""
-        crv = self.getCrv()
+        if not crv:
+            crv = self.getCrv()
         D = mc.arclen(crv.shape)
         crvInfo = DepNode(mc.arclen(crv.shape, ch=1))
         d = crvInfo.a.arcLength
+
+        arcLD = ut.arcLenDim_(crv, u=1)
+
         if self.scaleFix:
             d /= self.scaleFix
         if self.scaleFix2:
@@ -217,12 +221,12 @@ class IkNode(DagNode):
             raise ValueError("No setting control given.")
 
         if ratio == None:
-            ratio = self.calc_ratio()
+            ratio = self.setup_ratio()
 
         ks = self.setting.a.add("stretchy", k=1, min=0, max=1, dv=0)
         ksMin = self.setting.a.add("stretchMin", k=1, min=0, max=1, dv=minDv)
         ksMax = self.setting.a.add("stretchMax", k=1, min=1, dv=maxDv)
-        result0 = ut.clp_((ratio-1)*ks+1, min=ksMin, max=ksMax)
+        result0 = ut.clp_((ratio - 1) * ks + 1, min=ksMin, max=ksMax)
 
         for i in range(1, len(self.jnt)):
 
