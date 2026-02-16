@@ -94,10 +94,6 @@ class SpineQd(RigModule):
         self.tangent1_ctl.cv_rotate(0, 0, 90)
         self.end_ctl.cv_rotate(0, 90, 0)
 
-        if self.is_neck():
-            self.fore_ikc.cv_scale(2, 2, 2)
-            self.base_ikc.cv_scale(2, 2, 2)
-
     def create_rbSrf(self):
         """Create the ribbon surface for the spine rig."""
         return SrfNode.buildRbSrf(
@@ -360,7 +356,7 @@ class SpineQd(RigModule):
         setupTgt = self.jnts_ik + [self.jnts_spIk[0], self.jnts_twoIk[0]]
         self.ctl_vis_toggle(
             self.setting.a.add("showSetup", type="bool", k=0, dv=1),
-            onList=setupTgt + [self.rbSrf, self.rbCrv],
+            onList=setupTgt + [self.rbSrf, self.rbCrv, self.rbSrfSk, self.rbCrvSk],
         )
 
         if self.is_neck():
