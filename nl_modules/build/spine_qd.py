@@ -138,16 +138,13 @@ class SpineQd(RigModule):
         )
         self.rbSrfSk.weightTo(self.jnts_spIk, mi=1, chain=0)
 
-        self.build_twoJ_ik(crvLenRatioSk)
+        # self.build_twoJ_ik(crvLenRatioSk)
         self.build_volume(crvLenRatioSk)
+        self.setting.snapTo(self.base_ikc, p=self.base_ikc)
 
+        self.fore_ikc.addAttrFrom(self.setting)
+        self.base_ikc.addAttrFrom(self.setting)
         self.jnts_bind.extend(self.jnts_rb)
-
-        self.setting.snapTo(self.jnts_rb[0], p=self.IK_GRP)
-        self.jnts_rb[0].cstPar(self.setting, mo=1)
-
-        self.fore_ikc.add_attr_as_proxy(self.setting)
-        self.base_ikc.add_attr_as_proxy(self.setting)
 
     def build_ik(self):
         """Build the IK controls for the spine rig."""
@@ -210,17 +207,17 @@ class SpineQd(RigModule):
 
         self.rigNode.setMsg({"rbCrv": self.rbCrv, "rbCrvSk": self.rbCrvSk})
 
-        jntsFrCrv = JntNode.createJntsFrCrv(
+        spIkJnts = JntNode.createJntsFrCrv(
             self.rbCrv, pf=rID, name="spikj", num=jntNum, size=rSz, p=self.CTL_DATA
         )
-        jntsFrCrv[0].a.inheritsTransform.set(0)
+        spIkJnts[0].a.inheritsTransform.set(0)
 
         global_scale = self.masterC.a.globalScale
         ik_handle = IkNode(
             "sp",
             pf=rID,
-            sj=jntsFrCrv[0],
-            ee=jntsFrCrv[-1],
+            sj=spIkJnts[0],
+            ee=spIkJnts[-1],
             solver=Solver.SPLINE,
             createCrv=0,
             inputCrv=self.rbCrv,
@@ -239,36 +236,45 @@ class SpineQd(RigModule):
         loc_grp = GrpNode("loc_grp", pf=rID, p=self.JNT_DATA)
         rb_jnts = []
         for i in range(jntNum):
-            # Decompose matrix and get position on surface
-            dcpm = DagNode("dcpm_#", nodeType="decomposeMatrix")
-            cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
-            posi = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
             grp = GrpNode(f"{i}_rbj_grp", pf=rID, p=loc_grp)
+            spIkJnts[i].cstPar(grp)
 
-            jntsFrCrv[i].a.worldMatrix >> dcpm.a.inputMatrix
-            dcpm.a.outputTranslate >> cpos.a.inPosition
-            rbSrf.shape.a.worldSpace >> cpos.a.inputSurface
-            cpos.a.parameterU >> posi.a.parameterU
-            cpos.a.parameterV >> posi.a.parameterV
-
-            # Aim constraint for orientation
-            aim_cst = DagNode("aimCst_#", nodeType="aimConstraint")
-            aim_cst | self.CTL_DATA
-            rbSrf.shape.a.worldSpace >> posi.a.inputSurface
-            mc.connectAttr(f"{posi}.tangentV", f"{aim_cst}.target[0].targetTranslate")
-            posi.a.turnOnPercentage.set(1)
-            posi.a.tangentU >> aim_cst.a.worldUpVector
-            posi.a.position >> grp.a.translate
-
-            aim_cst.a.constraintRotateX >> grp.a.rx
-            aim_cst.a.constraintRotateY >> grp.a.ry
-            aim_cst.a.constraintRotateZ >> grp.a.rz
-
-            # Create joint at group
             rad = rSz / jntNum * 15
             jnt = JntNode(f"{i}_rbj", pf=rID, align=grp, r=rad, p=grp, reset=1)
             rb_jnts.append(jnt)
             self.masterC.a.globalScale >> grp.a.s
+
+        # for i in range(jntNum):
+        #     # Decompose matrix and get position on surface
+        #     dcpm = DagNode("dcpm_#", nodeType="decomposeMatrix")
+        #     cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
+        #     posi = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
+        #     grp = GrpNode(f"{i}_rbj_grp", pf=rID, p=loc_grp)
+
+        #     jntsFrCrv[i].a.worldMatrix >> dcpm.a.inputMatrix
+        #     dcpm.a.outputTranslate >> cpos.a.inPosition
+        #     rbSrf.shape.a.worldSpace >> cpos.a.inputSurface
+        #     cpos.a.parameterU >> posi.a.parameterU
+        #     cpos.a.parameterV >> posi.a.parameterV
+
+        #     # Aim constraint for orientation
+        #     aim_cst = DagNode("aimCst_#", nodeType="aimConstraint")
+        #     aim_cst | self.CTL_DATA
+        #     rbSrf.shape.a.worldSpace >> posi.a.inputSurface
+        #     mc.connectAttr(f"{posi}.tangentV", f"{aim_cst}.target[0].targetTranslate")
+        #     posi.a.turnOnPercentage.set(1)
+        #     posi.a.tangentU >> aim_cst.a.worldUpVector
+        #     posi.a.position >> grp.a.translate
+
+        #     aim_cst.a.constraintRotateX >> grp.a.rx
+        #     aim_cst.a.constraintRotateY >> grp.a.ry
+        #     aim_cst.a.constraintRotateZ >> grp.a.rz
+
+        #     # Create joint at group
+        #     rad = rSz / jntNum * 15
+        #     jnt = JntNode(f"{i}_rbj", pf=rID, align=grp, r=rad, p=grp, reset=1)
+        #     rb_jnts.append(jnt)
+        #     self.masterC.a.globalScale >> grp.a.s
 
         # --- Anchor and end joint setup ---
         self.anchorToRbj = LocNode(
@@ -279,7 +285,7 @@ class SpineQd(RigModule):
         self.end_ctl.cstOri(rb_jnts[0], mo=1)
 
         ik_handle.hide()
-        return crv_len_ratio_sk, jntsFrCrv, rb_jnts
+        return crv_len_ratio_sk, spIkJnts, rb_jnts
 
     def build_twoJ_ik(self, crvLenRatio):
         """Build a two-joint IK system for the spine rig."""
@@ -330,7 +336,7 @@ class SpineQd(RigModule):
     def build_volume(self, crvLenRatio):
         """Build volume control for the spine rig."""
         # add volume graph keys
-        autoVol = self.setting.a.add("autoVol", min=0, dv=0.5)
+        autoVol = self.setting.a.add("autoVol", min=0, dv=1)
         volGraph = self.setting.a.add("volGraph", dv=0)
         mc.setKeyframe(volGraph, t=0, v=0)
         mc.setKeyframe(volGraph, t=(self.rbnJntNum - 1) / 2, v=1)
@@ -353,7 +359,10 @@ class SpineQd(RigModule):
         attr = self.fore_ikc.a.add("showTangent", type="bool", k=0, dv=1)
         attr >> self.tangent1_ctl.a.v
 
-        setupTgt = self.jnts_ik + [self.jnts_spIk[0], self.jnts_twoIk[0]]
+        setupTgt = self.jnts_ik
+        if self.jnts_spIk and self.jnts_twoIk:
+            setupTgt += self.jnts_twoIk[0] + self.jnts_spIk[0]
+
         self.ctl_vis_toggle(
             self.setting.a.add("showSetup", type="bool", k=0, dv=1),
             onList=setupTgt + [self.rbSrf, self.rbCrv, self.rbSrfSk, self.rbCrvSk],
@@ -414,11 +423,14 @@ class SpineQd(RigModule):
 
     def setup_bindJnt(self):
         """Setup bind joints for the spine rig."""
-        self.add_bind_jnt_set(self.jnts_bind)
-        self.add_bind_sk_set(self.jnts_bind[0])
+        if self.jnts_bind:
+            self.add_bind_jnt_set(self.jnts_bind)
+            self.add_bind_sk_set([self.jnts_bind[0]])
 
         if not self.is_neck():
             proxy.add_radiusScale_attr(self.jnts_bind, 2)
+
+        proxy.add_up_attr(self.jnts_bind, 2)
 
     def build_post(self):
         """Post setup for the spine rig."""

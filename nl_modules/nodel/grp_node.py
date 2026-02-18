@@ -337,8 +337,8 @@ class GrpNode(DagNode):
             for s in self.shapes:
                 s.a.lineWidth.set(w)
 
-    def add_attr_as_proxy(self, src=None):
-        """Add proxy attributes from source node"""
+    def addAttrFrom(self, src=None):
+        """Add attributes from source node, the proxy way"""
         if src and src.exists():
             attrs = src.a.list(ud=1, u=1)
             for attr in attrs:
