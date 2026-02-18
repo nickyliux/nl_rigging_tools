@@ -237,11 +237,35 @@ class SpineQd(RigModule):
         rb_jnts = []
         for i in range(jntNum):
             grp = GrpNode(f"{i}_rbj_grp", pf=rID, p=loc_grp)
-            spIkJnts[i].cstPar(grp)
+            spIkJnts[i].cstPoi(grp)
 
+            # For twisting, the following nodes are to get the tangent from the ribbon,
+            # instead of using spline ik advanced twist, for more control in the middle.
+            dcpm = DagNode("dcpm_#", nodeType="decomposeMatrix")
+            cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
+            posi = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
+            grp = GrpNode(f"{i}_rbj_grp", pf=rID, p=loc_grp)
+
+            spIkJnts[i].a.worldMatrix >> dcpm.a.inputMatrix
+            dcpm.a.outputTranslate >> cpos.a.inPosition
+            rbSrf.shape.a.worldSpace >> cpos.a.inputSurface
+            cpos.a.parameterU >> posi.a.parameterU
+            cpos.a.parameterV >> posi.a.parameterV
+
+            # Aim constraint for orientation
+            aim_cst = DagNode("aimCst_#", nodeType="aimConstraint")
+            aim_cst | self.CTL_DATA
+            rbSrf.shape.a.worldSpace >> posi.a.inputSurface
+            mc.connectAttr(f"{posi}.tangentV", f"{aim_cst}.target[0].targetTranslate")
+            posi.a.turnOnPercentage.set(1)
+            posi.a.tangentU >> aim_cst.a.worldUpVector
+            aim_cst.a.constraintRotate >> grp.a.r
+
+            # Add rb joints
             rad = rSz / jntNum * 15
             jnt = JntNode(f"{i}_rbj", pf=rID, align=grp, r=rad, p=grp, reset=1)
             rb_jnts.append(jnt)
+
             self.masterC.a.globalScale >> grp.a.s
 
         # for i in range(jntNum):
@@ -430,7 +454,7 @@ class SpineQd(RigModule):
         if not self.is_neck():
             proxy.add_radiusScale_attr(self.jnts_bind, 2)
 
-        proxy.add_up_attr(self.jnts_bind, 2)
+        # proxy.add_up_attr(self.jnts_bind, 2)
 
     def build_post(self):
         """Post setup for the spine rig."""
