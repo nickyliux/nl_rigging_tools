@@ -139,6 +139,7 @@ class SpineQd(RigModule):
         self.rbSrfSk.weightTo(self.jnts_spIk, mi=1)  # , chain=0)
 
         # self.build_twoJ_ik(crvLenRatioSk)
+        self.setup_midCtl()
         self.build_volume(crvLenRatioSk)
         self.setting.snapTo(self.base_ikc, p=self.base_ikc)
 
@@ -151,30 +152,31 @@ class SpineQd(RigModule):
         logging.info(self.rigID)
 
         rID, rSz, xDr = self.getMyVar()
-        # Build 3 ik joints from crv
+
+        # Build 3 ctl joints from crv
         self.jnts_ik = JntNode.createJntsFrCrv(
             self.LINE_GUIDE, num=3, name="ikj", pf=rID, size=rSz * 10, chain=0
         )
-        ikj0, ikj1, ikj2 = self.jnts_ik
+        ctlJ0, ctlJ1, ctlJ2 = self.jnts_ik
 
         self.cog_ctl.snapTo(self.RT_GUIDE)
         if self.BASE_PVT_GUIDE:
             self.base_ikc.alignTo(self.BASE_PVT_GUIDE)
         else:
-            self.base_ikc.snapTo(ikj0)
+            self.base_ikc.snapTo(ctlJ0)
 
-        self.mid_ikc.alignTo(ikj1)
+        self.mid_ikc.alignTo(ctlJ1)
         if self.CHEST_PVT_GUIDE:
             self.fore_ikc.alignTo(self.CHEST_PVT_GUIDE)
         else:
-            self.fore_ikc.snapTo(ikj2)
+            self.fore_ikc.snapTo(ctlJ2)
 
-        self.tangent0_ctl.alignTo(ikj0)
-        self.tangent1_ctl.alignTo(ikj2)
+        self.tangent0_ctl.alignTo(ctlJ0)
+        self.tangent1_ctl.alignTo(ctlJ2)
 
-        ikj0 | self.tangent0_ctl | self.base_ikc | self.cog_ctl
-        ikj1 | self.mid_ikc | self.cog_ctl
-        ikj2 | self.tangent1_ctl | self.fore_ikc | self.cog_ctl
+        ctlJ0 | self.tangent0_ctl | self.base_ikc | self.cog_ctl
+        ctlJ1 | self.mid_ikc | self.cog_ctl
+        ctlJ2 | self.tangent1_ctl | self.fore_ikc | self.cog_ctl
         self.cog_ctl | self.IK_GRP
 
         self.ctls_ik = [
@@ -236,11 +238,10 @@ class SpineQd(RigModule):
         loc_grp = GrpNode("loc_grp", pf=rID, p=self.JNT_DATA)
         rb_jnts = []
         for i in range(jntNum):
-            grp = GrpNode(f"{i}_rbj_grp", pf=rID, p=loc_grp)
-            spIkJnts[i].cstPoi(grp)
-
-            # For twisting, the following nodes are to get the tangent from the ribbon,
-            # instead of using spline ik advanced twist, for more control in the middle.
+            # -----------------------------------------------------------------------------
+            #  For twisting, the following nodes are to get the tangent from rbSrf,
+            #  instead of using spline ik advanced twist, for better control.
+            # -----------------------------------------------------------------------------
             dcpm = DagNode("dcpm_#", nodeType="decomposeMatrix")
             cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
             posi = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
@@ -260,13 +261,23 @@ class SpineQd(RigModule):
             posi.a.turnOnPercentage.set(1)
             posi.a.tangentU >> aim_cst.a.worldUpVector
             aim_cst.a.constraintRotate >> grp.a.r
+            spIkJnts[i].cstPoi(grp)
 
             # Add rb joints
-            rad = rSz / jntNum * 15
-            jnt = JntNode(f"{i}_rbj", pf=rID, align=grp, r=rad, p=grp, reset=1)
+            jnt = JntNode(
+                f"{i}_rbj", pf=rID, align=grp, r=rSz / jntNum * 15, p=grp, reset=1
+            )
             rb_jnts.append(jnt)
-
             self.masterC.a.globalScale >> grp.a.s
+
+            # Add fixTip, mainly for stable world space positioning of the head
+            if i == jntNum - 1:
+                grp.a.t.disconnect()
+                grp.a.r.disconnect()
+                fixTip = self.fore_ikc.a.add("fixTip", k=1, min=0, max=1)
+                common.cstMulti(
+                    spIkJnts[i], self.fore_ikc, grp, cstType="par", mo=1, w=fixTip
+                )
 
         # for i in range(jntNum):
         #     # Decompose matrix and get position on surface
@@ -311,42 +322,32 @@ class SpineQd(RigModule):
         ik_handle.hide()
         return crv_len_ratio_sk, spIkJnts, rb_jnts
 
-    def build_twoJ_ik(self, crvLenRatio):
-        """Build a two-joint IK system for the spine rig."""
-        rID, rSz, xDr = self.getMyVar()
+    # def build_twoJ_ik(self, crvLenRatio):
+    #     """Build a two-joint IK system for the spine rig."""
+    #     rID, rSz, xDr = self.getMyVar()
 
-        # --- Build two-joint chain from curve ---
-        self.jnts_twoIk = JntNode.makeTwoJointChain(
-            "two_ikj",
-            pf=rID,
-            align=self.RT_GUIDE,
-            align_end=self.TP_GUIDE,
-            rad=rSz * 5,
-            p=self.base_ikc,
-        )
-        j0, j1 = self.jnts_twoIk
+    #     # --- Build two-joint chain from curve ---
+    #     self.jnts_twoIk = JntNode.makeTwoJointChain(
+    #         "two_ikj",
+    #         pf=rID,
+    #         align=self.RT_GUIDE,
+    #         align_end=self.TP_GUIDE,
+    #         rad=rSz * 5,
+    #         p=self.base_ikc,
+    #     )
+    #     j0, j1 = self.jnts_twoIk
 
-        # --- Create hidden IK handle and constrain end joint ---
-        IkNode("two_ikj", pf=rID, sj=j0, ee=j1, vis=0, p=self.tangent1_ctl)
+    #     # --- Create hidden IK handle and constrain end joint ---
+    #     IkNode("two_ikj", pf=rID, sj=j0, ee=j1, vis=0, p=self.tangent1_ctl)
+    #     crvLenRatio >> j0.a.sz
 
-        # (
-        #     ut.clp_(
-        #         crvLenRatio,
-        #         min=self.setting.a["stretchMin"],
-        #         max=self.setting.a["stretchMax"],
-        #     )
-        #     >> j0.a.sz
-        # )
-        crvLenRatio >> j0.a.sz
+    #     self.fore_ikc.a.r >> j1.a.r
 
-        self.fore_ikc.a.r >> j1.a.r
+    def setup_midCtl(self):
+        """Setup the middle control for the spine rig."""
         self.mid_ikc.addOffsetGrp()
 
-        if not self.is_neck():
-            common.cstMulti(
-                self.fore_ikc, self.base_ikc, self.mid_ikc.offset, cstType="par", mo=1
-            )
-        else:
+        if self.is_neck():
             common.cstMulti(
                 self.fore_ikc, self.base_ikc, self.mid_ikc.offset, cstType="poi", mo=1
             )
@@ -355,6 +356,10 @@ class SpineQd(RigModule):
                 aim=(0, 0, 1),
                 worldUpType="objectrotation",
                 worldUpObject=self.cog_ctl,
+            )
+        else:
+            common.cstMulti(
+                self.fore_ikc, self.base_ikc, self.mid_ikc.offset, cstType="par", mo=1
             )
 
     def build_volume(self, crvLenRatio):

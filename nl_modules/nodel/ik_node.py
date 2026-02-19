@@ -213,7 +213,7 @@ class IkNode(DagNode):
 
         return d / D
 
-    def stretchySp(self, ratio=None, axis="tx", axisDir=1, minDv=0.9, maxDv=1.1):
+    def stretchySp(self, ratio=None, axis="tx", axisDir=1):
         """Add stretch logic to translate channel of ikHandle with spline solver."""
         if self.solver != Solver.SPLINE:
             raise ValueError("Incorrect solver.")
@@ -223,10 +223,11 @@ class IkNode(DagNode):
         if ratio == None:
             ratio = self.setup_ratio()
 
-        ks = self.setting.a.add("stretchy", k=1, min=0, max=1, dv=0)
-        ksMin = self.setting.a.add("stretchMin", k=1, min=0, max=1, dv=minDv)
-        ksMax = self.setting.a.add("stretchMax", k=1, min=1, dv=maxDv)
-        result0 = ut.clp_((ratio - 1) * ks + 1, min=ksMin, max=ksMax)
+        ks = self.setting.a.add("stretchy", k=1, min=0, max=1, dv=1)
+        # ksMin = self.setting.a.add("stretchMin", k=1, min=0, max=1, dv=minDv)
+        clamp = self.setting.a.add("clamp", k=1, min=1, dv=1.2)
+        min = ut.clp_(2 - clamp, 0, 1)
+        result0 = ut.clp_((ratio - 1) * ks + 1, min=min, max=clamp)
 
         for i in range(1, len(self.jnt)):
 
