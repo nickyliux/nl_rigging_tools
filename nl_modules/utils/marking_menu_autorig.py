@@ -49,9 +49,14 @@ class MarkingMenuAutorig:
 
     def addBuildOptions(self, menu):
         """Add build options to the marking menu"""
-        mc.menuItem(p=menu, l="Build", rp="N", c=build.buildSelOrAll)
-        mc.menuItem(p=menu, l="Build", rp="N", c=partial(build.buildSelOrAll, 1), ob=1)
-        mc.menuItem(p=menu, l="Unbuild", rp="NE", c=build.unbuildSelOrAll)
+        mc.menuItem(p=menu, l="Build", rp="N", c=partial(build.buildSelOrAll, 1))
+        mc.menuItem(p=menu, l="Unbuild", rp="N", c=build.unbuildSelOrAll, ob=1)
+        mc.menuItem(p=menu, l="Rebuild", rp="NE", c=self.myRebuild)
+
+    def myRebuild(self, args):
+        """Custom rebuild function that unbuilds and then builds the selected rig"""
+        build.unbuildSelOrAll()
+        build.buildSelOrAll(1)
 
     def addHelperOptions(self, menu):
         mi = mc.menuItem(p=menu, l="Helper", rp="E", subMenu=1)

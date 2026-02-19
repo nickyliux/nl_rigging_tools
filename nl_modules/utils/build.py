@@ -153,7 +153,12 @@ def unbuildSelOrAll(*arg):
     unBuilt = 0
     for rN in rigNodes:
         unBuilt += unbuildTgt(rN)
+
     logging.info(f"Unbuilt {unBuilt} rigNodes.")
+
+    allMG = [n.a.master_guide.inConnNode for n in rigNodes]
+    if allMG:
+        mc.select(allMG)
 
 
 def deleteTgt(rN):

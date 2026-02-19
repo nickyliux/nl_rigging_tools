@@ -88,7 +88,7 @@ class SpineQd(RigModule):
 
         self.cog_ctl.cv_move(0, rSz * 40, 0)
         self.cog_ctl.cv_scale(1, 1.5, 2)
-        self.setting.cv_move(0, rSz * 30, 0)
+        self.setting.cv_move(0, rSz * 50, 0)
         self.setting.color = Color.PINK
         self.tangent0_ctl.cv_rotate(0, 180, 90)
         self.tangent1_ctl.cv_rotate(0, 0, 90)
@@ -136,7 +136,7 @@ class SpineQd(RigModule):
             jntNum=self.rbnJntNum,
             setting=self.setting,
         )
-        self.rbSrfSk.weightTo(self.jnts_spIk, mi=1, chain=0)
+        self.rbSrfSk.weightTo(self.jnts_spIk, mi=1)  # , chain=0)
 
         # self.build_twoJ_ik(crvLenRatioSk)
         self.build_volume(crvLenRatioSk)
