@@ -75,7 +75,7 @@ class SpineQd(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2, 0),
-            ("cog_ctl", "trapezoid2", None, rSz, 0),
+            ("cog_ctl", "trapezoid", None, rSz, 0),
             ("fore_ikc", "octagon_3d", None, Vec((8, 8, 0.5)) * rSz, 0),
             ("mid_ikc", "squareR", "z", rSz * 4, 0),
             ("base_ikc", "octagon_3d", None, Vec((8, 8, 0.5)) * rSz, 0),
@@ -88,7 +88,7 @@ class SpineQd(RigModule):
 
         self.cog_ctl.cv_move(0, rSz * 40, 0)
         self.cog_ctl.cv_scale(1, 1.5, 2)
-        self.setting.cv_move(0, rSz * 50, 0)
+        self.setting.cv_move(0, rSz * 40, 0)
         self.setting.color = Color.PINK
         self.tangent0_ctl.cv_rotate(0, 180, 90)
         self.tangent1_ctl.cv_rotate(0, 0, 90)
@@ -270,13 +270,20 @@ class SpineQd(RigModule):
             rb_jnts.append(jnt)
             self.masterC.a.globalScale >> grp.a.s
 
-            # Add fixTip, mainly for stable world space positioning of the head
+            # Add fixPosition, mainly for stable world space positioning of the head
             if i == jntNum - 1:
                 grp.a.t.disconnect()
                 grp.a.r.disconnect()
-                fixTip = self.fore_ikc.a.add("fixTip", k=1, min=0, max=1)
+                fixPosition = self.fore_ikc.a.add("fixPosition", k=1, min=0, max=1)
+
+                self.fore_ikc.cstOri(grp, mo=1)
                 common.cstMulti(
-                    spIkJnts[i], self.fore_ikc, grp, cstType="par", mo=1, w=fixTip
+                    spIkJnts[i],
+                    self.jnts_ik[-1],
+                    grp,
+                    cstType="poi",
+                    mo=1,
+                    w=fixPosition,
                 )
 
         # for i in range(jntNum):
