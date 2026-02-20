@@ -91,7 +91,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def buildAll(self):
         """Build all rig components."""
-        build.buildSelOrAll(uiPB=self.UI.bar_PB)
+        build.buildSelOrAll(1, uiPB=self.UI.bar_PB)
         self.rigNode_UI_refresh()
 
     def unbuildAll(self):
@@ -513,9 +513,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             )
             return
 
-        # mc.select(cl=1)
-        # common.xRayAllGeo(1)
-
         # Bind meshes to ref joints
         self.autoBind_refJnts(meshes=tgtMeshes, thld=15, uiPB=self.UI.bar_PB)
 
@@ -523,7 +520,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         skin.skinRbJnts(meshes=tgtMeshes, uiPB=self.UI.bar_PB)
         build.autoAttach()
 
-        # common.xRayAllGeo(0)
         mc.select(cl=1)
 
     def templateTarget(self):

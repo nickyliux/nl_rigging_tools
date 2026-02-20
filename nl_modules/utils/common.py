@@ -250,7 +250,7 @@ def nlRivet(
     return uvPinN, pinLocs
 
 
-def aimAlongSrfUV(srf=None, loc=None, inPos=None, p=None, setLocPos=0):
+def aimAlongSrfUV(srf=None, loc=None, inPos=None, p=None, setLocPos=False):
     """Make rivet loc's rotation follow UV of surface"""
     from nl_modules.nodel.base.dag_node import DagNode
 
@@ -291,7 +291,13 @@ def ribbonAttach_reset(tgt):
 
 
 def attachTgtsToSrf(
-    tgtList=None, srf=None, crv=None, scaleAttr=None, stretchyAttr=None, p=None
+    tgtList=None,
+    srf=None,
+    crv=None,
+    srfTwist=None,
+    scaleAttr=None,
+    stretchyAttr=None,
+    p=None,
 ):
     """Attach target list to srf along crv, using closestPointOnSurface
 
@@ -308,20 +314,14 @@ def attachTgtsToSrf(
         raise TypeError("Input objects must be in list.")
     if not srf or not mc.objExists(srf):
         raise ValueError(f"Missing srf to attach")
+    if not crv or not mc.objExists(crv):
+        raise ValueError(f"Missing crv to attach")
 
     logging.info(f"Attaching jnts to {srf.name}, along {crv.name}.")
 
     rvtGrp = GrpNode(srf + "_rvtGrp", p=p)
     srf = DagNode(srf) if isinstance(srf, str) else srf
     srfType = srf.shape.type
-
-    if crv:
-        crv = CrvNode(crv)
-    else:
-        crv = CrvNode(mc.duplicateCurve(f"{srf}.u[0.5]", rn=0, local=0)[0])
-        crv.a.inheritsTransform.set(0)
-        if p:
-            crv | p
 
     cpos = None
     if srfType == "nurbsSurface":
@@ -341,12 +341,11 @@ def attachTgtsToSrf(
 
     crv_info = DagNode("crvInfo#", nodeType="curveInfo")
     crv.shape.a.worldSpace >> crv_info.a.inputCurve
-    crv_len_ratio = crv_info.a.arcLength / crv.length
+    crv_len_ratio = crv_info.a.arcLength / CrvNode(crv).length
 
     if stretchyAttr and stretchyAttr.exists():
         ratio_out = ut.blend2_(crv_len_ratio, 1, w=stretchyAttr)
     else:
-        # ratio_out = 1
         raise TypeError(f"Invalid stretchyAttr for surface follow control")
 
     for i, tgt in enumerate(tgtList):
@@ -359,7 +358,7 @@ def attachTgtsToSrf(
         loc = LocNode(f"rivet_loc_{i}_#", p=rvtGrp)
 
         aimAlongSrfUV(
-            srf=srf, loc=loc, inPos=mp.a.allCoordinates, p=rvtGrp, setLocPos=1
+            srf=srfTwist, loc=loc, inPos=mp.a.allCoordinates, p=rvtGrp, setLocPos=1
         )
         if scaleAttr:
             scaleAttr >> loc.a.s

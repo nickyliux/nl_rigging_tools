@@ -66,10 +66,10 @@ def nlShrinkWrap(target=None, meshes=None, keep=0, **kwargs):
 
 def genProxyForSet(*args, tgtSet="auto_bind_jnt_set"):
     """Generate proxy meshes for all bind joints in the scene."""
-    CHR = GrpNode("CHR")
-    MDL = GrpNode("MDL")
-    PRX = GrpNode("PRX", p=CHR)
     bindSet = DagNode(tgtSet)
+    CHR = GrpNode("CHR")
+    PRX = GrpNode("PRX", p=CHR)
+    # MDL = GrpNode("MDL")
 
     if bindSet.exists():
         bindJnts = mc.sets(bindSet, q=1)
@@ -145,14 +145,13 @@ def loadProxy():
             geo.deleteHistory()
             load_count += 1
 
-    mc.refresh(f=1)
     if imported:
         rootGrp = DagNode(ns + ":*")
         if rootGrp.exists():
             rootGrp.delete()
-        mc.refresh(f=1)
         logging.info(f"{load_count} proxy loaded.")
-        # mc.confirmDialog(t="Info", m=f"{load_count} proxy loaded.     ", b="OK")
+
+    mc.refresh(f=1)
 
 
 @common.Undo("resetProxy")

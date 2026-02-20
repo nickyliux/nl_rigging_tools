@@ -49,8 +49,6 @@ def skinRefJnts(meshes=None, jnts=None, thld=5, uiPB=None):
 
 def skinRbJnts(meshes=None, uiPB=None):
     """Skin target meshes to their _rbJnt if found."""
-
-    # found = 0
     ignored = 0
     weighted = 0
 
@@ -65,13 +63,11 @@ def skinRbJnts(meshes=None, uiPB=None):
         if not rbJnt.exists():
             continue
 
-        # found += 1
         if mesh.skinCluster.exists():
             ignored += 1
             continue
 
-        mc.select(mesh)
-        mc.refresh(f=1)
+        # mc.select(mesh)
         mesh.weightTo(rbJnt, mi=1, tsb=1)
         weighted += 1
 
@@ -190,7 +186,6 @@ def skinAndLoadW(mesh=None, bindJnts=None, tgtDir=None):
         return 0
 
     mc.select(mesh)
-    mc.refresh(f=1)
     mc.deformerWeights(
         mesh + ".xml",
         im=1,
@@ -200,6 +195,7 @@ def skinAndLoadW(mesh=None, bindJnts=None, tgtDir=None):
         path=tgtDir,
     )
     pruneWeightSel()
+    mc.refresh(f=1)
     return 1
 
 

@@ -72,7 +72,6 @@ def buildSelOrAll(*args, uiPB=None):
             uiPB.setMaximum(len(rigNodes))
         i = 0
         common.pauseVP(1)
-        # common.setVP(fit=1, jx=1, wos=1)
         for rN in rigNodesToBuild:
             buildTgt(rN)
             mc.refresh(f=1)
@@ -451,11 +450,9 @@ def autoAttach():
             continue
 
         rbJntSetAttr = node.a["rbJntSet"]
-        rbSrfAttr = node.a["rbSrfSk"]
-        rbCrvAttr = node.a["rbCrvSk"]
-
-        if not (rbJntSetAttr.exists() or rbSrfAttr.exists() or rbCrvAttr.exists()):
-            continue
+        rbSrfSkAttr = node.a["rbSrfSk"]
+        rbCrvSkAttr = node.a["rbCrvSk"]
+        rbSrfAttr = node.a["rbSrf"]
 
         rbJntSetName = rbJntSetAttr.get()
         rbJntSet = DagNode(rbJntSetName)
@@ -468,14 +465,19 @@ def autoAttach():
             logging.warning(f"{node.name}: No joints in Set {rbJntSet}.")
             continue
 
+        rbSrfSk = rbSrfSkAttr.inConnNode
+        if not rbSrfSk:
+            logging.warning(f"{node.name}: Missing ribbon sk surface.")
+            continue
+
+        rbCrvSk = rbCrvSkAttr.inConnNode
+        if not rbCrvSk:
+            logging.warning(f"{node.name}: Missing ribbon sk curve.")
+            continue
+
         rbSrf = rbSrfAttr.inConnNode
         if not rbSrf:
             logging.warning(f"{node.name}: Missing ribbon surface.")
-            continue
-
-        rbCrv = rbCrvAttr.inConnNode
-        if not rbCrv:
-            logging.warning(f"{node.name}: Missing ribbon curve.")
             continue
 
         setting = node.a.setting.inConnNode
@@ -485,13 +487,14 @@ def autoAttach():
 
         common.attachTgtsToSrf(
             tgtList=rbJnts,
-            srf=rbSrf,
-            crv=rbCrv,
+            srf=rbSrfSk,
+            crv=rbCrvSk,
+            srfTwist=rbSrf,
             scaleAttr=globalScale,
             stretchyAttr=setting.a.stretchy,
             p=DagNode("JNT"),
         )
-        # logging.info(f"Attach joints in {rbJntSet} to {rbSrf.name}.")
+        # logging.info(f"Attach joints in {rbJntSet} to {rbSrfSk.name}.")
 
 
 def add_noise_logic(ctl=None, targets=None, rot=0):
