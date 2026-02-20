@@ -242,10 +242,11 @@ class SpineQd(RigModule):
             #  For twisting, the following nodes are to get the tangent from rbSrf,
             #  instead of using spline ik advanced twist, for better control.
             # -----------------------------------------------------------------------------
+            grp = GrpNode(f"{i}_rbj_grp", pf=rID, p=loc_grp)
+
             dcpm = DagNode("dcpm_#", nodeType="decomposeMatrix")
             cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
             posi = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
-            grp = GrpNode(f"{i}_rbj_grp", pf=rID, p=loc_grp)
 
             spIkJnts[i].a.worldMatrix >> dcpm.a.inputMatrix
             dcpm.a.outputTranslate >> cpos.a.inPosition
@@ -261,6 +262,7 @@ class SpineQd(RigModule):
             posi.a.turnOnPercentage.set(1)
             posi.a.tangentU >> aim_cst.a.worldUpVector
             aim_cst.a.constraintRotate >> grp.a.r
+
             spIkJnts[i].cstPoi(grp)
 
             # Add rb joints

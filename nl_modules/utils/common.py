@@ -290,81 +290,121 @@ def ribbonAttach_reset(tgt):
             pa.delete()
 
 
-def attachTgtsToSrf(
-    tgtList=None,
-    srf=None,
-    crv=None,
-    srfTwist=None,
-    scaleAttr=None,
-    stretchyAttr=None,
-    p=None,
-):
-    """Attach target list to srf along crv, using closestPointOnSurface
-
-    from nl_modules.utils import common
-    common.ribbonAttach2(srf='srf', tgtList=[jnt1, jnt2])
-    """
+def attachTgtPosToSrf(tgtList=None, srf=None, crv=None, p=None):
+    """Attach target list to srf along crv, only for position"""
     from nl_modules.nodel.base.dag_node import DagNode
     from nl_modules.nodel.grp_node import GrpNode
     from nl_modules.nodel.loc_node import LocNode
-    from nl_modules.nodel.crv_node import CrvNode
-    from nl_modules.utils import utils_node as ut
 
-    if not isinstance(tgtList, list):
-        raise TypeError("Input objects must be in list.")
-    if not srf or not mc.objExists(srf):
-        raise ValueError(f"Missing srf to attach")
-    if not crv or not mc.objExists(crv):
-        raise ValueError(f"Missing crv to attach")
+    rvtGrp = GrpNode(srf + "_rvtGrp", p=p)
+    cpos = DagNode("temp_#", nodeType="closestPointOnSurface")
+    srf.shape.a.worldSpace >> cpos.a.inputSurface
+
+    tgtList = [DagNode(tgt) for tgt in tgtList]
+
+    # Collect closest coords for all targets
+    coordList = []
+    for tgt in tgtList:
+        ribbonAttach_reset(tgt)
+        tgt.a.t >> cpos.a.inPosition
+        coordList.append(cpos.a.parameterV.get())
+    cpos.delete()
+
+    # Use motionPath to attach targets to curve
+    for i, tgt in enumerate(tgtList):
+        mp = DagNode("mp_#", nodeType="motionPath")
+        mp.a.fractionMode.set(1)
+        mp.a.uValue.set(coordList[i])
+        crv.shape.a.worldSpace >> mp.a.geometryPath
+
+        loc = LocNode(f"rivet_loc_{i}_#", p=rvtGrp)
+        loc.a.inheritsTransform.set(0)
+        tgt.alignTo(loc, p=loc)
+
+        mp.a.allCoordinates >> loc.a.t
 
     logging.info(f"Attaching jnts to {srf.name}, along {crv.name}.")
 
-    rvtGrp = GrpNode(srf + "_rvtGrp", p=p)
-    srf = DagNode(srf) if isinstance(srf, str) else srf
-    srfType = srf.shape.type
 
-    cpos = None
-    if srfType == "nurbsSurface":
-        cpos = DagNode("myCPOS_#", nodeType="closestPointOnSurface")
-        srf.shape.a.worldSpace >> cpos.a.inputSurface
-    else:
-        raise TypeError(f"Attachment not working on {srf}")
+def aimTgtOriToSrf(tgtList=None, srf=None):
+    pass
 
-    coordList = []
-    for tgt in tgtList:
-        tgt = DagNode(tgt) if isinstance(tgt, str) else tgt
-        ribbonAttach_reset(tgt)
-        tgt.a.t >> cpos.a.inPosition
-        paramV = cpos.a.parameterV.get()
-        coordList.append(paramV)
-    cpos.delete()
 
-    crv_info = DagNode("crvInfo#", nodeType="curveInfo")
-    crv.shape.a.worldSpace >> crv_info.a.inputCurve
-    crv_len_ratio = crv_info.a.arcLength / CrvNode(crv).length
+# def attachTgtsToSrf(
+#     tgtList=None,
+#     srf=None,
+#     crv=None,
+#     srfTwist=None,
+#     scaleAttr=None,
+#     stretchyAttr=None,
+#     p=None,
+# ):
+#     """Attach target list to srf along crv, using closestPointOnSurface
 
-    if stretchyAttr and stretchyAttr.exists():
-        ratio_out = ut.blend2_(crv_len_ratio, 1, w=stretchyAttr)
-    else:
-        raise TypeError(f"Invalid stretchyAttr for surface follow control")
+#     from nl_modules.utils import common
+#     common.ribbonAttach2(srf='srf', tgtList=[jnt1, jnt2])
+#     """
+#     from nl_modules.nodel.base.dag_node import DagNode
+#     from nl_modules.nodel.grp_node import GrpNode
+#     from nl_modules.nodel.loc_node import LocNode
+#     from nl_modules.nodel.crv_node import CrvNode
+#     from nl_modules.utils import utils_node as ut
 
-    for i, tgt in enumerate(tgtList):
+#     if not isinstance(tgtList, list):
+#         raise TypeError("Input objects must be in list.")
+#     if not srf or not mc.objExists(srf):
+#         raise ValueError(f"Missing srf to attach")
+#     if not crv or not mc.objExists(crv):
+#         raise ValueError(f"Missing crv to attach")
 
-        mp = DagNode("mp_#", nodeType="motionPath")
-        mp.a.fractionMode.set(1)
-        coordList[i] / ratio_out >> mp.a.uValue
+#     logging.info(f"Attaching jnts to {srf.name}, along {crv.name}.")
 
-        crv.shape.a.worldSpace >> mp.a.geometryPath
-        loc = LocNode(f"rivet_loc_{i}_#", p=rvtGrp)
+#     rvtGrp = GrpNode(srf + "_rvtGrp", p=p)
+#     srf = DagNode(srf) if isinstance(srf, str) else srf
+#     srfType = srf.shape.type
 
-        aimAlongSrfUV(
-            srf=srfTwist, loc=loc, inPos=mp.a.allCoordinates, p=rvtGrp, setLocPos=1
-        )
-        if scaleAttr:
-            scaleAttr >> loc.a.s
+#     cpos = None
+#     if srfType == "nurbsSurface":
+#         cpos = DagNode("myCPOS_#", nodeType="closestPointOnSurface")
+#         srf.shape.a.worldSpace >> cpos.a.inputSurface
+#     else:
+#         raise TypeError(f"Attachment not working on {srf}")
 
-        loc.a.inheritsTransform.set(0)
-        tgt | loc
+#     coordList = []
+#     for tgt in tgtList:
+#         tgt = DagNode(tgt) if isinstance(tgt, str) else tgt
+#         ribbonAttach_reset(tgt)
+#         tgt.a.t >> cpos.a.inPosition
+#         paramV = cpos.a.parameterV.get()
+#         coordList.append(paramV)
+#     cpos.delete()
+
+#     crv_info = DagNode("crvInfo#", nodeType="curveInfo")
+#     crv.shape.a.worldSpace >> crv_info.a.inputCurve
+#     crv_len_ratio = crv_info.a.arcLength / CrvNode(crv).length
+
+#     if stretchyAttr and stretchyAttr.exists():
+#         ratio_out = ut.blend2_(crv_len_ratio, 1, w=stretchyAttr)
+#     else:
+#         raise TypeError(f"Invalid stretchyAttr for surface follow control")
+
+#     for i, tgt in enumerate(tgtList):
+
+#         mp = DagNode("mp_#", nodeType="motionPath")
+#         mp.a.fractionMode.set(1)
+#         coordList[i] / ratio_out >> mp.a.uValue
+
+#         crv.shape.a.worldSpace >> mp.a.geometryPath
+#         loc = LocNode(f"rivet_loc_{i}_#", p=rvtGrp)
+
+#         aimAlongSrfUV(
+#             srf=srfTwist, loc=loc, inPos=mp.a.allCoordinates, p=rvtGrp, setLocPos=1
+#         )
+#         if scaleAttr:
+#             scaleAttr >> loc.a.s
+
+#         loc.a.inheritsTransform.set(0)
+#         tgt | loc
 
 
 def ribbonAttach(tgtList=None, geo=None, scaleAttr=None, p=None):

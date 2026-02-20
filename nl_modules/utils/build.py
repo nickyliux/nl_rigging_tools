@@ -485,15 +485,20 @@ def autoAttach():
             logging.warning("Setting NOT found.")
             continue
 
-        common.attachTgtsToSrf(
-            tgtList=rbJnts,
-            srf=rbSrfSk,
-            crv=rbCrvSk,
-            srfTwist=rbSrf,
-            scaleAttr=globalScale,
-            stretchyAttr=setting.a.stretchy,
-            p=DagNode("JNT"),
+        # common.attachTgtsToSrf(
+        #     tgtList=rbJnts,
+        #     srf=rbSrfSk,
+        #     crv=rbCrvSk,
+        #     srfTwist=rbSrf,
+        #     scaleAttr=globalScale,
+        #     stretchyAttr=setting.a.stretchy,
+        #     p=DagNode("JNT"),
+        # )
+        common.attachTgtPosToSrf(
+            tgtList=rbJnts, srf=rbSrfSk, crv=rbCrvSk, p=DagNode("JNT")
         )
+        common.aimTgtOriToSrf(tgtList=rbJnts, srf=rbSrf)
+
         # logging.info(f"Attach joints in {rbJntSet} to {rbSrfSk.name}.")
 
 
