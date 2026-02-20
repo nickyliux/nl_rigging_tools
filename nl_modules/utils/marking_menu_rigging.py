@@ -37,6 +37,8 @@ class MarkingMenuRigging:
     def setupMenu(self, menu, parent):
         """Setup the marking menu"""
         create_MI = mc.menuItem(p=menu, l="Create", rp="S", subMenu=1)
+        mc.menuItem(p=create_MI, l="Curve EP", c="mc.EPCurveTool()")
+        mc.menuItem(p=create_MI, l="Curve CV", c="mc.CVCurveTool()")
         mc.menuItem(p=create_MI, l="Circle", c="mc.circle(normal=(0,1,0))")
         mc.menuItem(p=create_MI, l="Cube", c="mc.polyCube()")
         mc.menuItem(p=create_MI, l="Plane", c="mc.polyPlane()")
