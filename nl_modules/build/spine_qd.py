@@ -11,7 +11,7 @@ from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common
 from nl_modules.utils import proxy
 
-# from nl_modules.utils import utils_node as ut
+from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
 from nl_modules.utils.common import Vec
 
@@ -139,8 +139,8 @@ class SpineQd(RigModule):
         )
         self.rbSrfSk.weightTo(self.jnts_spIk, mi=1)  # , chain=0)
 
-        # self.build_twoJ_ik(crvLenRatioSk)
-        self.setup_midCtl()
+        self.build_twoJ_ik()
+        # self.setup_midCtl()
         self.build_volume(crvLenRatioSk)
         self.setting.snapTo(self.base_ikc, p=self.base_ikc)
 
@@ -191,8 +191,11 @@ class SpineQd(RigModule):
         [ctl.addOffsetGrp() for ctl in self.ctls_ik]
         self.mid_ikc.addOffsetGrp()
 
-        RigModule.add_dyn_pivot(self.cog_ctl, axis="ty", dv=0.2)
-        RigModule.add_dyn_pivot(self.cog_ctl, endTgt=self.TP_GUIDE, axis="tz", dv=0.5)
+        if not self.is_neck:
+            RigModule.add_dyn_pivot(self.cog_ctl, axis="ty", dv=0.2)
+            RigModule.add_dyn_pivot(
+                self.cog_ctl, endTgt=self.TP_GUIDE, axis="tz", dv=0.5
+            )
 
     def build_spik_ribbon(
         self, rbSrf=None, rbSrfSk=None, jntNum=5, setting=None, scaleAttr=None
@@ -310,26 +313,49 @@ class SpineQd(RigModule):
         ik_handle.hide()
         return crv_len_ratio_sk, spIkJnts, rb_jnts
 
-    # def build_twoJ_ik(self, crvLenRatio):
-    #     """Build a two-joint IK system for the spine rig."""
-    #     rID, rSz, xDr = self.getMyVar()
+    def dist_len_ratio(self, jnt0, jnt1):
+        """Calculate the distance length ratio between two joints."""
+        d = ut.distDim_(jnt0, jnt1)
+        D = d.get()
+        return d / D / self.masterC.a.globalScale
 
-    #     # --- Build two-joint chain from curve ---
-    #     self.jnts_twoIk = JntNode.makeTwoJointChain(
-    #         "two_ikj",
-    #         pf=rID,
-    #         align=self.RT_GUIDE,
-    #         align_end=self.TP_GUIDE,
-    #         rad=rSz * 5,
-    #         p=self.base_ikc,
-    #     )
-    #     j0, j1 = self.jnts_twoIk
+    def build_twoJ_ik(self):
+        """Build a two-joint IK system for the spine rig."""
+        rID, rSz, xDr = self.getMyVar()
+        self.jnts_twoIk = JntNode.makeTwoJointChain(
+            "two_ikj",
+            pf=rID,
+            align=self.RT_GUIDE,
+            align_end=self.TP_GUIDE,
+            rad=rSz * 5,
+            p=self.base_ikc,
+        )
+        j0, j1 = self.jnts_twoIk
 
-    #     # --- Create hidden IK handle and constrain end joint ---
-    #     IkNode("two_ikj", pf=rID, sj=j0, ee=j1, vis=0, p=self.tangent1_ctl)
-    #     crvLenRatio >> j0.a.sz
+        IkNode("two_ikj", pf=rID, sj=j0, ee=j1, vis=0, p=self.tangent1_ctl)
 
-    #     self.fore_ikc.a.r >> j1.a.r
+        # Build logic for j0's scaleZ
+        ratio = self.dist_len_ratio(self.jnts_ik[0], self.jnts_ik[2])
+        clamp = self.setting.a.clamp
+
+        ratioClp = ut.clp_(
+            (ratio - 1) * self.setting.a.stretchy + 1,
+            min=ut.clp_(2 - clamp, 0, 1),
+            max=clamp,
+        )
+        ratioClp >> j0.a.sz
+
+        # Let mid_ikc driven by mid point between j0 and j1
+        mid_loc = LocNode("mid_ikc_loc", pf=rID, align=j0, p=j0)
+        mid_loc.a.tz.set(j1.a.tz.get() / 2)
+        mid_loc.cstPoi(self.mid_ikc.offset, mo=1)
+
+        self.jnts_ik[2].cstAim(
+            self.mid_ikc.offset,
+            aim=(0, 0, 1),
+            worldUpType="objectrotation",
+            worldUpObject=self.cog_ctl,
+        )
 
     def setup_midCtl(self):
         """Setup the middle control for the spine rig."""

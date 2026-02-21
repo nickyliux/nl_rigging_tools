@@ -224,10 +224,13 @@ class IkNode(DagNode):
             ratio = self.setup_ratio()
 
         ks = self.setting.a.add("stretchy", k=1, min=0, max=1, dv=1)
-        # ksMin = self.setting.a.add("stretchMin", k=1, min=0, max=1, dv=minDv)
         clamp = self.setting.a.add("clamp", k=1, min=1, dv=1.2)
-        min = ut.clp_(2 - clamp, 0, 1)
-        result0 = ut.clp_((ratio - 1) * ks + 1, min=min, max=clamp)
+
+        result0 = ut.clp_(
+            (ratio - 1) * ks + 1,
+            min=ut.clp_(2 - clamp, 0, 1),
+            max=clamp,
+        )
 
         for i in range(1, len(self.jnt)):
 

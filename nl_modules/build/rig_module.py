@@ -906,9 +906,17 @@ class RigModule(RigBase):
     def ctl_vis_toggle(self, attr, onList=None, offList=None):
         """Toggle visibility of controls based on the given attribute."""
         if onList:
-            [attr >> ctl.a.v for ctl in onList if ctl != None and ctl.exists()]
+            [
+                attr >> DagNode(ctl).a.v
+                for ctl in onList
+                if ctl != None and DagNode(ctl).exists()
+            ]
         if offList:
-            [~attr >> ctl.a.v for ctl in offList if ctl != None and ctl.exists()]
+            [
+                ~attr >> DagNode(ctl).a.v
+                for ctl in offList
+                if ctl != None and DagNode(ctl).exists()
+            ]
 
     def getMyVar(self):
         """Get rig ID, size and x direction for the current rig instance."""
