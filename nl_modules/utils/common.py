@@ -1,9 +1,11 @@
-import os
+# import os
 import re
-import sys
+
+# import sys
 import logging
 import maya.cmds as mc
-from maya import mel
+
+# from maya import mel
 from collections import OrderedDict
 from nl_modules.utils.color import Color
 
@@ -296,7 +298,7 @@ def attachTgtPosToSrf(tgtList=None, srf=None, crv=None, p=None):
     from nl_modules.nodel.grp_node import GrpNode
     from nl_modules.nodel.loc_node import LocNode
 
-    rvtGrp = GrpNode(srf + "_rvtGrp", p=p)
+    rvtGrp = GrpNode(srf + "_grp", p=p)
     cpos = DagNode("temp_#", nodeType="closestPointOnSurface")
     srf.shape.a.worldSpace >> cpos.a.inputSurface
 
@@ -310,6 +312,7 @@ def attachTgtPosToSrf(tgtList=None, srf=None, crv=None, p=None):
         coordList.append(cpos.a.parameterV.get())
     cpos.delete()
 
+    outLocs = []
     # Use motionPath to attach targets to curve
     for i, tgt in enumerate(tgtList):
         mp = DagNode("mp_#", nodeType="motionPath")
@@ -319,15 +322,47 @@ def attachTgtPosToSrf(tgtList=None, srf=None, crv=None, p=None):
 
         loc = LocNode(f"rivet_loc_{i}_#", p=rvtGrp)
         loc.a.inheritsTransform.set(0)
-        tgt.alignTo(loc, p=loc)
+        outLocs.append(loc)
+        # tgt.alignTo(loc, p=loc)
 
         mp.a.allCoordinates >> loc.a.t
 
     logging.info(f"Attaching jnts to {srf.name}, along {crv.name}.")
+    return outLocs
 
 
-def aimTgtOriToSrf(tgtList=None, srf=None):
-    pass
+def aimOutListToSrf(tgtList=None, srf=None, outList=None, p=None):
+    """Make outList's orientation follow surface normal at tgtList's position"""
+    from nl_modules.nodel.base.dag_node import DagNode
+
+    for tgt, out in zip(tgtList, outList):
+        setTwistFromRibbon(tgt=DagNode(tgt), srf=srf, out=DagNode(out), p=p)
+
+
+def setTwistFromRibbon(tgt=None, srf=None, out=None, p=None):
+    """Set out's rotation according to tgt at ribbon surface"""
+    from nl_modules.nodel.base.dag_node import DagNode
+
+    dcpm = DagNode("dcpm_#", nodeType="decomposeMatrix")
+    cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
+    posi = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
+
+    tgt.a.worldMatrix >> dcpm.a.inputMatrix
+    dcpm.a.outputTranslate >> cpos.a.inPosition
+    srf.shape.a.worldSpace >> cpos.a.inputSurface
+    cpos.a.parameterU >> posi.a.parameterU
+    cpos.a.parameterV >> posi.a.parameterV
+
+    # Aim constraint for orientation
+    aim_cst = DagNode("aimCst_#", nodeType="aimConstraint")
+    if p:
+        aim_cst | p
+
+    srf.shape.a.worldSpace >> posi.a.inputSurface
+    mc.connectAttr(f"{posi}.tangentV", f"{aim_cst}.target[0].targetTranslate")
+    posi.a.turnOnPercentage.set(1)
+    posi.a.tangentU >> aim_cst.a.worldUpVector
+    aim_cst.a.constraintRotate >> out.a.r
 
 
 # def attachTgtsToSrf(

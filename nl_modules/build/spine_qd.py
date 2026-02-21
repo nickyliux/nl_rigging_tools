@@ -10,7 +10,8 @@ from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common
 from nl_modules.utils import proxy
-from nl_modules.utils import utils_node as ut
+
+# from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
 from nl_modules.utils.common import Vec
 
@@ -238,37 +239,15 @@ class SpineQd(RigModule):
         loc_grp = GrpNode("loc_grp", pf=rID, p=self.JNT_DATA)
         rb_jnts = []
         for i in range(jntNum):
-            # -----------------------------------------------------------------------------
-            #  For twisting, the following nodes are to get the tangent from rbSrf,
-            #  instead of using spline ik advanced twist, for better control.
-            # -----------------------------------------------------------------------------
             grp = GrpNode(f"{i}_rbj_grp", pf=rID, p=loc_grp)
-
-            dcpm = DagNode("dcpm_#", nodeType="decomposeMatrix")
-            cpos = DagNode("cpos_#", nodeType="closestPointOnSurface")
-            posi = DagNode("posi_#", nodeType="pointOnSurfaceInfo")
-
-            spIkJnts[i].a.worldMatrix >> dcpm.a.inputMatrix
-            dcpm.a.outputTranslate >> cpos.a.inPosition
-            rbSrf.shape.a.worldSpace >> cpos.a.inputSurface
-            cpos.a.parameterU >> posi.a.parameterU
-            cpos.a.parameterV >> posi.a.parameterV
-
-            # Aim constraint for orientation
-            aim_cst = DagNode("aimCst_#", nodeType="aimConstraint")
-            aim_cst | self.CTL_DATA
-            rbSrf.shape.a.worldSpace >> posi.a.inputSurface
-            mc.connectAttr(f"{posi}.tangentV", f"{aim_cst}.target[0].targetTranslate")
-            posi.a.turnOnPercentage.set(1)
-            posi.a.tangentU >> aim_cst.a.worldUpVector
-            aim_cst.a.constraintRotate >> grp.a.r
-
             spIkJnts[i].cstPoi(grp)
 
-            # Add rb joints
-            jnt = JntNode(
-                f"{i}_rbj", pf=rID, align=grp, r=rSz / jntNum * 15, p=grp, reset=1
+            common.setTwistFromRibbon(
+                tgt=spIkJnts[i], srf=rbSrf, out=grp, p=self.CTL_DATA
             )
+
+            # Add rb joints
+            jnt = JntNode(f"{i}_rbj", pf=rID, align=grp, r=rSz * 2, p=grp, reset=1)
             rb_jnts.append(jnt)
             self.masterC.a.globalScale >> grp.a.s
 

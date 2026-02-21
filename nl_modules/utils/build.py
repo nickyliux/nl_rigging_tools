@@ -494,12 +494,17 @@ def autoAttach():
         #     stretchyAttr=setting.a.stretchy,
         #     p=DagNode("JNT"),
         # )
-        common.attachTgtPosToSrf(
+
+        outLocs = common.attachTgtPosToSrf(
             tgtList=rbJnts, srf=rbSrfSk, crv=rbCrvSk, p=DagNode("JNT")
         )
-        common.aimTgtOriToSrf(tgtList=rbJnts, srf=rbSrf)
+        common.aimOutListToSrf(
+            tgtList=rbJnts, srf=rbSrf, outList=outLocs, p=DagNode("JNT")
+        )
 
-        # logging.info(f"Attach joints in {rbJntSet} to {rbSrfSk.name}.")
+        for loc, rbJ in zip(outLocs, rbJnts):
+            rbJ | loc
+            globalScale >> loc.a.s
 
 
 def add_noise_logic(ctl=None, targets=None, rot=0):
