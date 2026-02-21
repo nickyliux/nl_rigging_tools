@@ -457,7 +457,6 @@ def autoAttach():
         rbJntSetName = rbJntSetAttr.get()
         rbJntSet = DagNode(rbJntSetName)
         if not rbJntSet.exists():
-            logging.warning(f"{node.name}: Missing set {rbJntSetName}.")
             continue
 
         rbJnts = mc.sets(rbJntSet, q=1)
