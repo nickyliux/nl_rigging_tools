@@ -307,7 +307,7 @@ def selectAllProxy(*args):
                 mc.select(result)
 
 
-def toggleProxy():
+def toggleVis(*args):
     """Toggle visibility of the proxy meshes under the 'PRX' group."""
     m = DagNode("master2_ctl")
     if m.exists():

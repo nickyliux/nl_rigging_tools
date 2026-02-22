@@ -77,11 +77,11 @@ class SpineQd(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2, 1),
             ("cog_ctl", "trapezoid", None, rSz, 0),
-            ("fore_ikc", "octagon_3d", None, Vec((8, 8, 0.5)) * rSz, 0),
+            ("fore_ikc", "back", None, Vec((10, 10, 1)) * rSz, 0),
             ("mid_ikc", "squareR", "z", rSz * 4, 0),
-            ("base_ikc", "octagon_3d", None, Vec((8, 8, 0.5)) * rSz, 0),
-            ("tangent0_ctl", "arrow", None, rSz, 1),
-            ("tangent1_ctl", "arrow", None, rSz, 1),
+            ("base_ikc", "back", None, Vec((10, 10, 1)) * rSz, 0),
+            ("tangent0_ctl", "squareR", "z", rSz * 3, 1),
+            ("tangent1_ctl", "squareR", "z", rSz * 3, 1),
         ]
         if self.is_spine():
             ctl_defs.append(("end_ctl", "rotate2_3d", None, rSz * 2, 0))
@@ -92,8 +92,8 @@ class SpineQd(RigModule):
         self.cog_ctl.cv_move(0, rSz * 40, 0)
         self.cog_ctl.cv_scale(1, 1.5, 2)
         self.setting.color = Color.PINK
-        self.tangent0_ctl.cv_rotate(0, 180, 90)
-        self.tangent1_ctl.cv_rotate(0, 0, 90)
+        self.tangent0_ctl.color = Color.D_YELLOW
+        self.tangent1_ctl.color = Color.D_YELLOW
 
         if self.is_spine():
             self.end_ctl.cv_rotate(0, 90, 0)
@@ -166,22 +166,27 @@ class SpineQd(RigModule):
         self.cog_ctl.snapTo(self.RT_GUIDE)
         if self.BASE_PVT_GUIDE:
             self.base_ikc.alignTo(self.BASE_PVT_GUIDE)
+            self.tangent0_ctl.alignTo(self.BASE_PVT_GUIDE)
         else:
             self.base_ikc.snapTo(ctlJ0)
+            self.tangent0_ctl.snapTo(ctlJ0)
 
-        self.mid_ikc.alignTo(ctlJ1)
+        self.mid_ikc.snapTo(ctlJ1)
+
         if self.CHEST_PVT_GUIDE:
             self.fore_ikc.alignTo(self.CHEST_PVT_GUIDE)
+            self.tangent1_ctl.alignTo(self.CHEST_PVT_GUIDE)
         else:
             self.fore_ikc.snapTo(ctlJ2)
-
-        self.tangent0_ctl.alignTo(ctlJ0)
-        self.tangent1_ctl.alignTo(ctlJ2)
+            self.tangent1_ctl.snapTo(ctlJ2)
 
         ctlJ0 | self.tangent0_ctl | self.base_ikc | self.cog_ctl
         ctlJ1 | self.mid_ikc | self.cog_ctl
         ctlJ2 | self.tangent1_ctl | self.fore_ikc | self.cog_ctl
         self.cog_ctl | self.IK_GRP
+
+        self.tangent0_ctl.a.add("tangent", k=1, min=0) >> ctlJ0.a.s
+        self.tangent1_ctl.a.add("tangent", k=1, min=0) >> ctlJ2.a.s
 
         self.ctls_ik = [
             self.base_ikc,
@@ -261,17 +266,11 @@ class SpineQd(RigModule):
             if i == jntNum - 1:
                 grp.a.t.disconnect()
                 grp.a.r.disconnect()
-                fixPosition = self.fore_ikc.a.add("fixPosition", k=1, min=0, max=1)
+                fixPos = self.fore_ikc.a.add("fixPos", k=1, min=0, max=1)
 
-                self.fore_ikc.cstOri(grp, mo=1)
-                common.cstMulti(
-                    spIkJnts[i],
-                    self.jnts_ik[-1],
-                    grp,
-                    cstType="poi",
-                    mo=1,
-                    w=fixPosition,
-                )
+                self.tangent1_ctl.cstOri(grp, mo=1)
+                ctlJ2 = self.jnts_ik[2]
+                common.cstMulti(spIkJnts[i], ctlJ2, grp, cstType="poi", mo=1, w=fixPos)
 
         # --- Anchor and end joint setup ---
         self.anchorToRbj = LocNode(
@@ -280,7 +279,8 @@ class SpineQd(RigModule):
         rb_jnts[-1].cstPoi(self.anchorToRbj)
 
         if self.is_spine():
-            self.end_ctl.alignTo(self.RT_GUIDE, p=self.base_ikc, addOfs=1)
+            # self.end_ctl.alignTo(self.RT_GUIDE, p=self.base_ikc, addOfs=1)
+            self.end_ctl.snapTo(self.RT_GUIDE, p=self.tangent0_ctl, addOfs=1)
             self.end_ctl.cstOri(rb_jnts[0], mo=1)
 
         ik_handle.hide()
@@ -307,8 +307,9 @@ class SpineQd(RigModule):
 
         IkNode("two_ikj", pf=rID, sj=j0, ee=j1, vis=0, p=self.tangent1_ctl)
 
+        ctlJ0, ctlJ1, ctlJ2 = self.jnts_ik
         # Build logic for j0's scaleZ
-        ratio = self.dist_len_ratio(self.jnts_ik[0], self.jnts_ik[2])
+        ratio = self.dist_len_ratio(ctlJ0, ctlJ2)
         clamp = self.setting.a.clamp
 
         ratioClp = ut.clp_(
@@ -318,36 +319,42 @@ class SpineQd(RigModule):
         )
         ratioClp >> j0.a.sz
 
-        # Let mid_ikc driven by mid point between j0 and j1
-        mid_loc = LocNode("mid_ikc_loc", pf=rID, align=j0, p=j0)
-        mid_loc.a.tz.set(j1.a.tz.get() / 2)
-        mid_loc.cstPoi(self.mid_ikc.offset, mo=1)
+        if not self.is_spine():
+            # Let mid_ikc driven by mid point between j0 and j1
+            mid_loc = LocNode("mid_ikc_loc", pf=rID, align=j0, p=j0)
+            mid_loc.a.tz.set(j1.a.tz.get() / 2)
+            mid_loc.cstPoi(self.mid_ikc.offset, mo=1)
 
-        self.jnts_ik[2].cstAim(
-            self.mid_ikc.offset,
-            aim=(0, 0, 1),
-            worldUpType="objectrotation",
-            worldUpObject=self.cog_ctl,
-        )
-
-    def setup_midCtl(self):
-        """Setup the middle control for the spine rig."""
-        self.mid_ikc.addOffsetGrp()
-
-        if self.is_spine():
-            common.cstMulti(
-                self.fore_ikc, self.base_ikc, self.mid_ikc.offset, cstType="par", mo=1
-            )
-        else:
-            common.cstMulti(
-                self.fore_ikc, self.base_ikc, self.mid_ikc.offset, cstType="poi", mo=1
-            )
-            self.fore_ikc.cstAim(
+            ctlJ2.cstAim(
                 self.mid_ikc.offset,
                 aim=(0, 0, 1),
                 worldUpType="objectrotation",
                 worldUpObject=self.cog_ctl,
             )
+        else:
+            loc1 = LocNode("midLoc_#", pf=rID, align=self.mid_ikc, p=self.fore_ikc)
+            loc2 = LocNode("midLoc_#", pf=rID, align=self.mid_ikc, p=self.base_ikc)
+            # self.fore_ikc, self.base_ikc, self.mid_ikc.offset, cstType="par", mo=1
+            common.cstMulti(loc1, loc2, self.mid_ikc.offset, cstType="par", mo=1)
+
+    # def setup_midCtl(self):
+    #     """Setup the middle control for the spine rig."""
+    #     self.mid_ikc.addOffsetGrp()
+
+    #     if self.is_spine():
+    #         common.cstMulti(
+    #             self.fore_ikc, self.base_ikc, self.mid_ikc.offset, cstType="par", mo=1
+    #         )
+    #     else:
+    #         common.cstMulti(
+    #             self.fore_ikc, self.base_ikc, self.mid_ikc.offset, cstType="poi", mo=1
+    #         )
+    #         self.fore_ikc.cstAim(
+    #             self.mid_ikc.offset,
+    #             aim=(0, 0, 1),
+    #             worldUpType="objectrotation",
+    #             worldUpObject=self.cog_ctl,
+    #         )
 
     def build_volume(self, crvLenRatio):
         """Build volume control for the spine rig."""
@@ -370,10 +377,10 @@ class SpineQd(RigModule):
 
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""
-        attr = self.base_ikc.a.add("showTangent", type="bool", k=0)
-        attr >> self.tangent0_ctl.a.v
-        attr = self.fore_ikc.a.add("showTangent", type="bool", k=0)
-        attr >> self.tangent1_ctl.a.v
+        # attr = self.base_ikc.a.add("showTangent", type="bool", k=0)
+        # attr >> self.tangent0_ctl.a.v
+        # attr = self.fore_ikc.a.add("showTangent", type="bool", k=0)
+        # attr >> self.tangent1_ctl.a.v
 
         setupTgt = self.jnts_ik
         if self.jnts_spIk and self.jnts_twoIk:
@@ -405,8 +412,8 @@ class SpineQd(RigModule):
 
         self.setting.a.showAttr()
         self.cog_ctl.a.showAttr(t=self.is_spine(), r=1)
-        self.tangent0_ctl.a.showAttr("sz", r=1)
-        self.tangent1_ctl.a.showAttr("sz", r=1)
+        self.tangent0_ctl.a.showAttr(r=1)
+        self.tangent1_ctl.a.showAttr(r=1)
 
         if self.is_spine():
             self.end_ctl.a.showAttr(r=1)
