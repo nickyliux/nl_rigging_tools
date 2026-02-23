@@ -309,7 +309,10 @@ class RigModule(RigBase):
 
     def calc_BB_size(self, tgt):
         """Calculate the rig size based on tgt's BBox."""
-        return tgt.o.diagonal2 / 100 or 1
+        if mc.objExists(tgt):
+            return GrpNode(tgt).o.diagonal2 / 100 or 1
+        else:
+            logging.error(f"No object found to calculate BB size.")
 
     def add_minus_scale_grp(self, tgt):
         """Add a minus scale group to the target control."""
@@ -457,7 +460,7 @@ class RigModule(RigBase):
         return pvt
 
     @staticmethod
-    def add_dyn_pivot(tgt, endTgt=None, axis="ty", dv=0):
+    def dyn_pivot(tgt, endTgt=None, axis="ty", dv=0):
         """Add movable pivot ctl under tgt"""
         # Calculate world space end value in this axis (wsEndValue)
         # Assume ending at origin if endTgt is not given

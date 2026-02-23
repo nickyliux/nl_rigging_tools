@@ -198,6 +198,7 @@ class LegQd(RigModule):
 
         if self.toeBones:
             self.build_toes()
+            self.updateList(self.jnts_sk, rm=[self.ball])
 
         self.build_post()
 

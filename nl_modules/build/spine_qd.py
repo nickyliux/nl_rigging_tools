@@ -80,8 +80,8 @@ class SpineQd(RigModule):
             ("fore_ikc", "back", None, Vec((10, 10, 1)) * rSz, 0),
             ("mid_ikc", "circle", "z", rSz * 4, 0),
             ("base_ikc", "back", None, Vec((10, 10, 1)) * rSz, 0),
-            ("tangent0_ctl", "stick", None, rSz * 1.5, 1),
-            ("tangent1_ctl", "stick", None, rSz * 1.5, 1),
+            ("tangent0_ctl", "stick", None, rSz, 1),
+            ("tangent1_ctl", "stick", None, rSz, 1),
         ]
         if self.is_spine():
             ctl_defs.append(("end_ctl", "rotate2_3d", None, rSz * 1.5, 0))
@@ -89,11 +89,8 @@ class SpineQd(RigModule):
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
-        self.cog_ctl.cv_move(0, rSz * 40, 0)
+        self.cog_ctl.cv_move(0, rSz * 40, rSz * 20)
         self.cog_ctl.cv_scale(1, 1.5, 2)
-        self.setting.color = Color.YELLOW
-        # self.fore_ikc.width = 2
-        # self.base_ikc.width = 2
 
         if self.is_spine():
             self.end_ctl.cv_rotate(-30, 0, 0)
@@ -101,10 +98,8 @@ class SpineQd(RigModule):
         self.tangent0_ctl.cv_rotate(0, 90, 0)
         self.tangent1_ctl.cv_rotate(0, 90, 0)
 
-        VG = Color.VD_GREEN
-        self.tangent0_ctl.color = VG
-        self.tangent1_ctl.color = VG
-        self.mid_ikc.color = VG
+        self.setting.color = Color.YELLOW
+        self.mid_ikc.color = Color.PINK
 
     def create_rbSrf(self):
         """Create the ribbon surface for the spine rig."""
@@ -207,11 +202,9 @@ class SpineQd(RigModule):
         [ctl.addOffsetGrp() for ctl in self.ctls_ik]
         self.mid_ikc.addOffsetGrp()
 
-        # if self.is_spine():
-        #     RigModule.add_dyn_pivot(self.cog_ctl, axis="ty", dv=0.2)
-        #     RigModule.add_dyn_pivot(
-        #         self.cog_ctl, endTgt=self.TP_GUIDE, axis="tz", dv=0.5
-        #     )
+        if self.is_spine():
+            RigModule.dyn_pivot(self.cog_ctl, axis="ty", dv=0.2)
+            RigModule.dyn_pivot(self.cog_ctl, endTgt=self.TP_GUIDE, axis="tz", dv=0.5)
 
     def build_spik_ribbon(
         self, rbSrf=None, rbSrfSk=None, jntNum=5, setting=None, scaleAttr=None
@@ -332,6 +325,7 @@ class SpineQd(RigModule):
             mid_loc = LocNode("mid_ikc_loc", pf=rID, align=j0, p=j0)
             mid_loc.a.tz.set(j1.a.tz.get() / 2)
             mid_loc.cstPoi(self.mid_ikc.offset, mo=1)
+            mid_loc.hide()
 
             ctlJ2.cstAim(
                 self.mid_ikc.offset,
@@ -340,9 +334,8 @@ class SpineQd(RigModule):
                 worldUpObject=self.cog_ctl,
             )
         else:
-            loc1 = LocNode("midLoc_#", pf=rID, align=self.mid_ikc, p=self.fore_ikc)
-            loc2 = LocNode("midLoc_#", pf=rID, align=self.mid_ikc, p=self.base_ikc)
-            # self.fore_ikc, self.base_ikc, self.mid_ikc.offset, cstType="par", mo=1
+            loc1 = LocNode("loc_#", pf=rID, align=self.mid_ikc, p=self.fore_ikc, vis=0)
+            loc2 = LocNode("loc_#", pf=rID, align=self.mid_ikc, p=self.base_ikc, vis=0)
             common.cstMulti(loc1, loc2, self.mid_ikc.offset, cstType="par", mo=1)
 
     # def setup_midCtl(self):

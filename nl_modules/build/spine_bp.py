@@ -204,8 +204,8 @@ class SpineBp(RigModule):
         # self.addMiddleBend()
 
         if not self.is_neck():
-            RigModule.add_dyn_pivot(self.cog_ctl)
-            RigModule.add_dyn_pivot(self.fore_ikc, endTgt=self.mid_ikc, dv=1)
+            RigModule.dyn_pivot(self.cog_ctl)
+            RigModule.dyn_pivot(self.fore_ikc, endTgt=self.mid_ikc, dv=1)
 
         self.ctls_ik = [self.mid_ikc, self.fore_ikc, self.base_ikc]
 
