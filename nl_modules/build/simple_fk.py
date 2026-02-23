@@ -90,7 +90,7 @@ class SimpleFk(RigModule):
             scale3[2] *= 0.5
 
         ctl_defs = [
-            ("setting", "screw_nut", up, scale, 0),
+            ("setting", "screw_nut", up, self.masterRigSize / 3, 0),
             ("simple01_fkc", "cube", up, scale3, 0),
         ]
 
@@ -104,7 +104,7 @@ class SimpleFk(RigModule):
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
         self.setting.alignTo(self.rootJ, p=self.CTL_DATA)
-        self.setting.color = Color.PINK
+        self.setting.color = Color.YELLOW
         self.rootJ.cstPar(self.setting, mo=1)
 
     def build_fk(self):

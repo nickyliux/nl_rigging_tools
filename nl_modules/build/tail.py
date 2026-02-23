@@ -61,13 +61,13 @@ class Tail(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        ctl_defs = [("setting", "screw_nut", "z", rSz * 2, 0)]
+        ctl_defs = [("setting", "screw_nut", "z", self.masterRigSize / 3, 1)]
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
         self.setting.a.add("stretchy", min=0, max=1)
         self.setting.a.add("localScale", min=0.01, dv=1)
-        self.setting.color = Color.PINK
+        self.setting.color = Color.YELLOW
 
     def build(self):
         """Build the tail rig."""
@@ -153,7 +153,7 @@ class Tail(RigModule):
 
         SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6, chain=0)
 
-        self.setting.snapTo(self.ctls_ik[0], p=self.FK_GRP, ofs=(0, rSz * 20, 0))
+        self.setting.snapTo(self.ctls_ik[0], p=self.FK_GRP)  # , ofs=(0, rSz * 20, 0))
         self.ctls_ik[0].cstPar(self.setting, mo=1)
 
         RigModule.isolate_align(

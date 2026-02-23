@@ -75,28 +75,36 @@ class SpineQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", rSz * 2, 1),
+            ("setting", "screw_nut", "z", self.masterRigSize / 3, 1),
             ("cog_ctl", "trapezoid", None, rSz, 0),
             ("fore_ikc", "back", None, Vec((10, 10, 1)) * rSz, 0),
-            ("mid_ikc", "squareR", "z", rSz * 4, 0),
+            ("mid_ikc", "circle", "z", rSz * 4, 0),
             ("base_ikc", "back", None, Vec((10, 10, 1)) * rSz, 0),
-            ("tangent0_ctl", "squareR", "z", rSz * 3, 1),
-            ("tangent1_ctl", "squareR", "z", rSz * 3, 1),
+            ("tangent0_ctl", "stick", None, rSz * 1.5, 1),
+            ("tangent1_ctl", "stick", None, rSz * 1.5, 1),
         ]
         if self.is_spine():
-            ctl_defs.append(("end_ctl", "rotate2_3d", None, rSz * 2, 0))
+            ctl_defs.append(("end_ctl", "rotate2_3d", None, rSz * 1.5, 0))
 
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         self.cog_ctl.cv_move(0, rSz * 40, 0)
         self.cog_ctl.cv_scale(1, 1.5, 2)
-        self.setting.color = Color.PINK
-        self.tangent0_ctl.color = Color.D_YELLOW
-        self.tangent1_ctl.color = Color.D_YELLOW
+        self.setting.color = Color.YELLOW
+        # self.fore_ikc.width = 2
+        # self.base_ikc.width = 2
 
         if self.is_spine():
-            self.end_ctl.cv_rotate(0, 90, 0)
+            self.end_ctl.cv_rotate(-30, 0, 0)
+
+        self.tangent0_ctl.cv_rotate(0, 90, 0)
+        self.tangent1_ctl.cv_rotate(0, 90, 0)
+
+        VG = Color.VD_GREEN
+        self.tangent0_ctl.color = VG
+        self.tangent1_ctl.color = VG
+        self.mid_ikc.color = VG
 
     def create_rbSrf(self):
         """Create the ribbon surface for the spine rig."""
@@ -185,8 +193,8 @@ class SpineQd(RigModule):
         ctlJ2 | self.tangent1_ctl | self.fore_ikc | self.cog_ctl
         self.cog_ctl | self.IK_GRP
 
-        self.tangent0_ctl.a.add("tangent", k=1, min=0) >> ctlJ0.a.s
-        self.tangent1_ctl.a.add("tangent", k=1, min=0) >> ctlJ2.a.s
+        self.tangent0_ctl.a.add("tangent", k=1, min=0.01, dv=1) >> ctlJ0.a.s
+        self.tangent1_ctl.a.add("tangent", k=1, min=0.01, dv=1) >> ctlJ2.a.s
 
         self.ctls_ik = [
             self.base_ikc,
@@ -199,11 +207,11 @@ class SpineQd(RigModule):
         [ctl.addOffsetGrp() for ctl in self.ctls_ik]
         self.mid_ikc.addOffsetGrp()
 
-        if self.is_spine():
-            RigModule.add_dyn_pivot(self.cog_ctl, axis="ty", dv=0.2)
-            RigModule.add_dyn_pivot(
-                self.cog_ctl, endTgt=self.TP_GUIDE, axis="tz", dv=0.5
-            )
+        # if self.is_spine():
+        #     RigModule.add_dyn_pivot(self.cog_ctl, axis="ty", dv=0.2)
+        #     RigModule.add_dyn_pivot(
+        #         self.cog_ctl, endTgt=self.TP_GUIDE, axis="tz", dv=0.5
+        #     )
 
     def build_spik_ribbon(
         self, rbSrf=None, rbSrfSk=None, jntNum=5, setting=None, scaleAttr=None
@@ -387,7 +395,7 @@ class SpineQd(RigModule):
             setupTgt += self.jnts_twoIk[0] + self.jnts_spIk[0]
 
         self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", type="bool", k=0, dv=1),
+            self.setting.a.add("showSetup", type="bool", k=0),  # , dv=1),
             onList=setupTgt + [self.rbSrf, self.rbCrv, self.rbSrfSk, self.rbCrvSk],
         )
         if not self.is_spine():

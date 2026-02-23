@@ -46,6 +46,8 @@ class RigModule(RigBase):
             raise ValueError(f"master_guide not found for {rigNode}")
 
         self.rigSize = 1
+        self.masterRigSize = 1
+
         self.xDir = 1 if rID.startswith("lf") else -1 if rID.startswith("rt") else 0
         self.boneFix = None
         self.jnts_bind = []
@@ -305,7 +307,7 @@ class RigModule(RigBase):
             weight = tgt.a.add("posSpace", type="enum", dv=dv, enumName=names)
             common.cstMulti(*allSpacesGrp, tgt_ofs, cstType="poi", w=weight, **kwargs)
 
-    def calc_rig_size(self, tgt):
+    def calc_BB_size(self, tgt):
         """Calculate the rig size based on tgt's BBox."""
         return tgt.o.diagonal2 / 100 or 1
 
@@ -330,7 +332,8 @@ class RigModule(RigBase):
         if not self.rootJ:
             raise ValueError("rootJ not set for the component")
 
-        self.rigSize = self.calc_rig_size(self.rootJ)
+        self.rigSize = self.calc_BB_size(self.rootJ)
+        self.masterRigSize = self.calc_BB_size(GrpNode("modules_grp"))
 
         children = self.rootJ.childrenJt
         if children:
