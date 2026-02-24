@@ -67,7 +67,7 @@ class Tail(RigModule):
 
         self.setting.a.add("stretchy", min=0, max=1)
         self.setting.a.add("localScale", min=0.01, dv=1)
-        self.setting.color = Color.YELLOW
+        self.setting.color = Color.D_YELLOW
 
     def build(self):
         """Build the tail rig."""

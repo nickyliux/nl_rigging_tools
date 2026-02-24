@@ -126,7 +126,7 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", self.masterRigSize/3, 0),
+            ("setting", "screw_nut", "z", self.masterRigSize / 3, 0),
             ("hip_fkc", "shoulder", "x", -scale / 2, 0),
             ("upr_fkc", "circle", "x", scale, 0),
             ("lwr_fkc", "circle", "x", scale, 0),
@@ -154,7 +154,7 @@ class LegBp(RigModule):
             self.scap_fkc.cv_move(0, scale * 25, 0)
 
         self.setting.cv_move(scale * 20, 0, 0)
-        self.setting.color = Color.YELLOW
+        self.setting.color = Color.D_YELLOW
         self.hip_fkc.cv_move(scale * 5, -scale * 15, 0)
 
     def build(self):

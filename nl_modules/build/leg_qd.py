@@ -129,14 +129,14 @@ class LegQd(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", self.masterRigSize / 3, 0),
-            ("hip_fkc", "shoulder", "x", -scale, 0),
+            ("hip_fkc", "squareR", None, scale / 2, 0),
             ("upr_fkc", "circle", "x", scale, 0),
             ("lwr_fkc", "circle", "x", scale, 0),
             ("palm_fkc", "circle", "x", scale, 0),
             ("digit_fkc", "circle", "x", scale, 0),
             ("ball_fkc", "rotate2_3d", "z", -scale / 2, 0),
             ("ikc", "trapezoid", None, Vec((1.5, 1.5, 2)) * rSz, 0),
-            ("extra_ikc", "rotate2_3d", None, (-scale * 3, -scale, -scale), 0),
+            ("extra_ikc", "rotate2_3d", None, Vec((3, 1, 1)) * -scale, 0),
             ("pvc", "sphere", None, rSz, 0),
             ("smart_ctl", "trapezoid2", None, scale / 3, 0),
         ]
@@ -154,7 +154,7 @@ class LegQd(RigModule):
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
         self.smart_ctl.cv_move(scale * 15, 0, 0)
-        self.setting.color = Color.YELLOW
+        self.setting.color = Color.D_YELLOW
         self.setting.cv_move(scale * 15, 0, 0)
         self.hip_fkc.cv_move(scale * 5, -scale * 15, 0)
 
