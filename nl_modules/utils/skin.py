@@ -15,7 +15,7 @@ def skinRefJnts(meshes=None, jnts=None, thld=5):
     ignored = 0
 
     mc.progressWindow(
-        t="Skinning", pr=0, status="\nRunning ...", ii=0, maxValue=len(meshes)
+        t="Skinning", pr=0, status="\nPreparing ...", ii=0, maxValue=len(meshes)
     )
     for i, mesh in enumerate(meshes):
 

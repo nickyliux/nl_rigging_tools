@@ -72,7 +72,7 @@ def buildSelOrAll(*args):
 
         common.pauseVP(1)
         mc.progressWindow(
-            t="Build", pr=0, status="\nRunning ...", ii=0, maxValue=buildCount
+            t="Build", pr=0, status="\nPreparing ...", ii=0, maxValue=buildCount
         )
 
         for i, rN in enumerate(rigNodesToBuild):

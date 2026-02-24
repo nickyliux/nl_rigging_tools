@@ -99,6 +99,7 @@ class SpineQd(RigModule):
         self.tangent1_ctl.cv_rotate(0, 90, 0)
 
         self.setting.color = Color.D_YELLOW
+        self.setting.cv_move(0, rSz * 60, 0)
         self.mid_ikc.color = Color.PINK
 
     def create_rbSrf(self):
@@ -145,8 +146,7 @@ class SpineQd(RigModule):
         )
         self.rbSrfSk.weightTo(self.jnts_spIk, mi=1)  # , chain=0)
 
-        self.build_twoJ_ik()
-        # self.setup_midCtl()
+        self.midCtl_setup()
         self.build_volume(crvLenRatioSk)
         self.setting.snapTo(self.base_ikc, p=self.base_ikc)
 
@@ -293,69 +293,12 @@ class SpineQd(RigModule):
         D = d.get()
         return d / D / self.masterC.a.globalScale
 
-    def build_twoJ_ik(self):
-        """Build a two-joint IK system for the spine rig."""
+    def midCtl_setup(self):
+        """Setup the mid IK control for the spine rig."""
         rID, rSz, xDr = self.getMyVar()
-        self.jnts_twoIk = JntNode.makeTwoJointChain(
-            "two_ikj",
-            pf=rID,
-            align=self.RT_GUIDE,
-            align_end=self.TP_GUIDE,
-            rad=rSz * 5,
-            p=self.base_ikc,
-        )
-        j0, j1 = self.jnts_twoIk
-
-        IkNode("two_ikj", pf=rID, sj=j0, ee=j1, vis=0, p=self.tangent1_ctl)
-
-        ctlJ0, ctlJ1, ctlJ2 = self.jnts_ik
-        # Build logic for j0's scaleZ
-        ratio = self.dist_len_ratio(ctlJ0, ctlJ2)
-        clamp = self.setting.a.clamp
-
-        ratioClp = ut.clp_(
-            (ratio - 1) * self.setting.a.stretchy + 1,
-            min=ut.clp_(2 - clamp, 0, 1),
-            max=clamp,
-        )
-        ratioClp >> j0.a.sz
-
-        if not self.is_spine():
-            # Let mid_ikc driven by mid point between j0 and j1
-            mid_loc = LocNode("mid_ikc_loc", pf=rID, align=j0, p=j0)
-            mid_loc.a.tz.set(j1.a.tz.get() / 2)
-            mid_loc.cstPoi(self.mid_ikc.offset, mo=1)
-            mid_loc.hide()
-
-            ctlJ2.cstAim(
-                self.mid_ikc.offset,
-                aim=(0, 0, 1),
-                worldUpType="objectrotation",
-                worldUpObject=self.cog_ctl,
-            )
-        else:
-            loc1 = LocNode("loc_#", pf=rID, align=self.mid_ikc, p=self.fore_ikc, vis=0)
-            loc2 = LocNode("loc_#", pf=rID, align=self.mid_ikc, p=self.base_ikc, vis=0)
-            common.cstMulti(loc1, loc2, self.mid_ikc.offset, cstType="par", mo=1)
-
-    # def setup_midCtl(self):
-    #     """Setup the middle control for the spine rig."""
-    #     self.mid_ikc.addOffsetGrp()
-
-    #     if self.is_spine():
-    #         common.cstMulti(
-    #             self.fore_ikc, self.base_ikc, self.mid_ikc.offset, cstType="par", mo=1
-    #         )
-    #     else:
-    #         common.cstMulti(
-    #             self.fore_ikc, self.base_ikc, self.mid_ikc.offset, cstType="poi", mo=1
-    #         )
-    #         self.fore_ikc.cstAim(
-    #             self.mid_ikc.offset,
-    #             aim=(0, 0, 1),
-    #             worldUpType="objectrotation",
-    #             worldUpObject=self.cog_ctl,
-    #         )
+        loc1 = LocNode("loc_#", pf=rID, align=self.mid_ikc, p=self.fore_ikc, vis=0)
+        loc2 = LocNode("loc_#", pf=rID, align=self.mid_ikc, p=self.base_ikc, vis=0)
+        common.cstMulti(loc1, loc2, self.mid_ikc.offset, cstType="par", mo=1)
 
     def build_volume(self, crvLenRatio):
         """Build volume control for the spine rig."""
@@ -378,10 +321,6 @@ class SpineQd(RigModule):
 
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""
-        # attr = self.base_ikc.a.add("showTangent", type="bool", k=0)
-        # attr >> self.tangent0_ctl.a.v
-        # attr = self.fore_ikc.a.add("showTangent", type="bool", k=0)
-        # attr >> self.tangent1_ctl.a.v
 
         setupTgt = self.jnts_ik
         if self.jnts_spIk and self.jnts_twoIk:
