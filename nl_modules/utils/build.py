@@ -56,7 +56,7 @@ def buildTgt(rigN):
 
 
 @common.Undo("buildSelOrAll")
-def buildSelOrAll(*args, uiPB=None):
+def buildSelOrAll(*args):
     """Build rig for selected rigNodes or all if nothing selected"""
 
     rigNodes = getRigNodes_selOrAll()
@@ -68,25 +68,24 @@ def buildSelOrAll(*args, uiPB=None):
             rigNodesToBuild.append(rN)
 
     if rigNodesToBuild:
-        if uiPB:
-            uiPB.setMaximum(len(rigNodes))
-        i = 0
+        buildCount = len(rigNodesToBuild)
+
         common.pauseVP(1)
-        for rN in rigNodesToBuild:
+        mc.progressWindow(
+            t="Build", pr=0, status="\nRunning ...", ii=0, maxValue=buildCount
+        )
+
+        for i, rN in enumerate(rigNodesToBuild):
             buildTgt(rN)
             mc.refresh(f=1)
-            if uiPB:
-                i += 1
-                uiPB.setValue(i)
+            mc.progressWindow(e=1, pr=i, status=f"\nProcessing : {rN}")
         postRig()
-        if uiPB:
-            uiPB.setValue(0)
 
         if args and args[0] == 1:
             proxy.genProxyForSet()
 
-        logging.info(f"{len(rigNodesToBuild)} rigNodes built.")
-        print("")
+        mc.progressWindow(ep=1)
+        logging.info(f"{buildCount} rigNodes built.")
         mc.select(cl=1)
         common.pauseVP(0)
 

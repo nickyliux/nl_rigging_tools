@@ -9,24 +9,20 @@ from nl_modules.utils import control
 from nl_modules.utils import file
 
 
-def skinRefJnts(meshes=None, jnts=None, thld=5, uiPB=None):
+def skinRefJnts(meshes=None, jnts=None, thld=5):
     """Skin meshes to their _refJnt if found and within threshold distance."""
     weighted = 0
     ignored = 0
 
-    if uiPB:
-        uiPB.setMaximum(len(meshes))
-
+    mc.progressWindow(
+        t="Skinning", pr=0, status="\nRunning ...", ii=0, maxValue=len(meshes)
+    )
     for i, mesh in enumerate(meshes):
-        mc.select(mesh)
-        # mc.refresh(f=1)
-        if uiPB:
-            uiPB.setValue(i)
 
+        mc.select(mesh)
         if mesh.skinCluster.exists():
             ignored += 1
             continue
-
         refJ = DagNode(mesh.name + "_refJnt")
         if not refJ.exists():
             ignored += 1
@@ -41,38 +37,29 @@ def skinRefJnts(meshes=None, jnts=None, thld=5, uiPB=None):
                 ignored += 1
         else:
             ignored += 1
+        mc.progressWindow(e=1, pr=i, status=f"\nProcessing : {mesh.name}")
 
-    if uiPB:
-        uiPB.setValue(0)
+    mc.progressWindow(ep=1)
+
     logging.info(f"refJnts : weighted {weighted}, and skipped {ignored}.")
 
 
-def skinRbJnts(meshes=None, uiPB=None):
+def skinRbJnts(meshes=None):
     """Skin target meshes to their _rbJnt if found."""
     ignored = 0
     weighted = 0
 
-    if uiPB:
-        uiPB.setMaximum(len(meshes))
-
     for i, mesh in enumerate(meshes):
-        if uiPB:
-            uiPB.setValue(i)
 
         rbJnt = DagNode(mesh.name + "_rbJnt")
         if not rbJnt.exists():
             continue
-
         if mesh.skinCluster.exists():
             ignored += 1
             continue
 
-        # mc.select(mesh)
         mesh.weightTo(rbJnt, mi=1, tsb=1)
         weighted += 1
-
-    if uiPB:
-        uiPB.setValue(0)
 
     logging.info(f"weighted {weighted}, and skipped {ignored}.")
 
@@ -123,7 +110,7 @@ def delSkin(tgt):
     return 0
 
 
-def loadWeight(uiPB):
+def loadWeight(*args):
     """Load skin weight joints from a JSON file."""
     charPath = mc.optionVar(q="charPath")
     tgtPaths = []
@@ -142,15 +129,16 @@ def loadWeight(uiPB):
     weightJnt_dict = file.loadJson(tgtPaths[-1])
     logging.info(f"Weight file {tgtPaths[-1]} loaded.")
 
-    if uiPB:
-        uiPB.setMaximum(len(weightJnt_dict))
-    i = 0
+    mc.progressWindow(
+        t="Loading", pr=0, status="\nRunning ...", ii=0, maxValue=len(weightJnt_dict)
+    )
     loadCount = 0
 
     common.xRayAllGeo(1)
     control.reset_all_ctl()
 
-    for mesh in weightJnt_dict:
+    for i, mesh in enumerate(weightJnt_dict):
+
         if not mc.objExists(mesh):
             continue
         weightFile = tgtDir + "/" + mesh + ".xml"
@@ -158,11 +146,10 @@ def loadWeight(uiPB):
             logging.warning(f"Weight file NOT found: {weightFile}")
             continue
         loadCount += skinAndLoadW(mesh, weightJnt_dict[mesh], tgtDir)
-        if uiPB:
-            i += 1
-            uiPB.setValue(i)
-    if uiPB:
-        uiPB.setValue(0)
+
+        mc.progressWindow(e=1, pr=i, status=f"\nProcessing : {mesh.name}")
+
+    mc.progressWindow(ep=1)
 
     logging.info(f"{loadCount} objects weight loaded.")
     common.xRayAllGeo(0)

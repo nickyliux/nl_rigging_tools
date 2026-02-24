@@ -91,7 +91,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def buildAll(self):
         """Build all rig components."""
-        build.buildSelOrAll(1, uiPB=self.UI.bar_PB)
+        build.buildSelOrAll(1)
         self.rigNode_UI_refresh()
 
     def unbuildAll(self):
@@ -137,16 +137,16 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Helper
         self.connect(
             self.UI.loadHlp_BN,
-            partial(helper.loadHlp, self.UI.bar_PB),
-            ":openScript.png",
+            helper.loadHlp,
+            ":openScript.png"
         )
         self.connect(self.UI.saveHlp_BN, helper.saveHlp, ":fileSave.png")
 
         # Weight
         self.connect(
             self.UI.loadWeight_BN,
-            partial(skin.loadWeight, self.UI.bar_PB),
-            ":openScript.png",
+            skin.loadWeight,
+            ":openScript.png"
         )
         self.connect(self.UI.saveWeight_BN, skin.saveWeight, ":fileSave.png")
 
@@ -447,7 +447,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         else:
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 
-    def autoBind_refJnts(self, meshes=None, thld=999, uiPB=None):
+    def autoBind_refJnts(self, meshes=None, thld=999):
         """Bind meshes to the closest reference joints."""
         JNT_SET = "auto_bind_sk_set"
 
@@ -461,8 +461,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         meshesScap = [n for n in meshes if "scapula" in DagNode(n).name.lower()]
         meshesNoScap = set(meshes) - set(meshesScap)
 
-        skin.skinRefJnts(meshes=meshesNoScap, jnts=jntsNoScap, thld=thld, uiPB=uiPB)
-        skin.skinRefJnts(meshes=meshesScap, jnts=jntsScap, thld=thld, uiPB=uiPB)
+        skin.skinRefJnts(meshes=meshesNoScap, jnts=jntsNoScap, thld=thld)
+        skin.skinRefJnts(meshes=meshesScap, jnts=jntsScap, thld=thld)
 
     @common.Undo("boneAutoUnBind")
     def boneAutoUnBind(self):
@@ -514,10 +514,10 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             return
 
         # Bind meshes to ref joints
-        self.autoBind_refJnts(meshes=tgtMeshes, thld=15, uiPB=self.UI.bar_PB)
+        self.autoBind_refJnts(meshes=tgtMeshes, thld=15)
 
         # Bind meshes to rb joints & attach rb joints to surface
-        skin.skinRbJnts(meshes=tgtMeshes, uiPB=self.UI.bar_PB)
+        skin.skinRbJnts(meshes=tgtMeshes)
         build.autoAttach()
 
         mc.select(cl=1)

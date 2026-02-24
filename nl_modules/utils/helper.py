@@ -239,7 +239,7 @@ def deleteHelpers(*args):
 
 
 @common.Undo("Load Helper Joints")
-def loadHlp(uiPB):
+def loadHlp(*args):
     """Load helper joint data from a JSON file and recreate the joints in the scene."""
     at_least_one_built = 0
     for node in build.getRigNodes_all():
@@ -264,8 +264,6 @@ def loadHlp(uiPB):
         return
 
     fileDataList = file.loadJson(tgtPaths[-1])
-    if uiPB:
-        uiPB.setMaximum(len(fileDataList))
 
     load_count = 0
     for i, data in enumerate(fileDataList, start=1):
@@ -278,9 +276,6 @@ def loadHlp(uiPB):
         rollTgtJnt = DagNode(data["rollTgt"])
         if not tgtJnt.exists():
             rollTgtJnt = None
-
-        if uiPB:
-            uiPB.setValue(i)
 
         jnt = addOrUpdateHlp(
             tgtJnt=tgtJnt,
@@ -298,8 +293,6 @@ def loadHlp(uiPB):
         if jnt:
             load_count += 1
 
-    if uiPB:
-        uiPB.setValue(0)
     mc.refresh(f=1)
     common.showRO()
     logging.info(f"{load_count} helper joints loaded.")

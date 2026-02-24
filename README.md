@@ -20,11 +20,12 @@ blockquote {
 
 ![nlRT Main](docs/nlRT_UI.png) 
 
+## Declaimer
 > Note that the project is still under active development so please use it as study purpose. 
 
 ## Background
 
-In my last job I encountered a project with characters in need of Ziva muscle. The very first step was to rig the skeleton mesh as the input of simulation. It required unusal skill like creating IK with backward initial knee, bone adjustment to avoid breaking the simulation... These are inspirating to me. It would be great to build an autorig tool for every vetebra on Earth. And I can learn anatomy in a practical way, and apply python along.
+In my last job I encountered a project with characters in need of Ziva muscle. The very first step was to rig the skeleton mesh as the input of simulation. It required unusal skill like creating IK with backward initial knee, bone adjustment to avoid breaking the simulation... These are inspirating to me. Wouldn't it be great to build an autorig tool for every vetebrate ? It seems a great way to learn anatomy, and apply my knowledge in python along.
 
 
 ## Features
@@ -34,7 +35,7 @@ In my last job I encountered a project with characters in need of Ziva muscle. T
 - **Cartoony :** Support bendy limbs.
 - **Data Reuse :** Reuse of templates, controls, proxies, weights.
 - **Custom Marking Menus :** Handy menus for rig creation.
-- **Custom Framework :** Less redundant code for rig development.
+- **Custom Framework :** Much less redundant code during development.
 
 ## Marking Menus
 
