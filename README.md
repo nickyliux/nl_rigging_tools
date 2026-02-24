@@ -25,7 +25,7 @@ blockquote {
 
 ## Background
 
-In my last job I encountered a project with characters in need of Ziva muscle. The very first step was to rig the skeleton mesh as the input of simulation. It required unusal skill like creating IK with backward initial knee, bone adjustment to avoid breaking the simulation... These are inspirating to me. Wouldn't it be great to build an autorig tool for every vetebrate ? It seems a great way to learn anatomy, and apply my knowledge in python along.
+In my last job I encountered a project with characters in need of Ziva muscle. The very first step was to rig the skeleton mesh as the input of simulation. It required unusual skills like creating IK with backward initial knee, bone adjustment to avoid breaking the simulation... Wouldn't it be great to build an autorig tool for every vetebrate on Earth ? It seems a great way to learn anatomy and apply my knowledge in python.
 
 
 ## Features
