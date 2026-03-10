@@ -37,7 +37,7 @@ def skinRefJnts(meshes=None, jnts=None, thld=5):
                 ignored += 1
         else:
             ignored += 1
-        mc.progressWindow(e=1, pr=i, status=f"\n:: {mesh.name}")
+        mc.progressWindow(e=1, pr=i, status=f"\n{mesh.name}")
 
     mc.progressWindow(ep=1)
 
@@ -147,7 +147,7 @@ def loadWeight(*args):
             continue
         loadCount += skinAndLoadW(mesh, weightJnt_dict[mesh], tgtDir)
 
-        mc.progressWindow(e=1, pr=i, status=f"\n:: {mesh.name}")
+        mc.progressWindow(e=1, pr=i, status=f"\n{mesh.name}")
 
     mc.progressWindow(ep=1)
 

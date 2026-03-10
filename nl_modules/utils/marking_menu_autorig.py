@@ -78,10 +78,11 @@ class MarkingMenuAutorig:
 
     def addShapeOptions(self, menu):
         mi = mc.menuItem(p=menu, l="Shape", rp="SW", subMenu=1)
-        mc.menuItem(p=mi, l="Mirror Shape", c=self.mirrorShapeSelOrAll)
+        mc.menuItem(p=mi, l="Mirror Sel / All", c=self.mirrorShapeSelOrAll)
         mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="Use Last's Shapes", c=self.use_last_crv_shapes)
-        mc.menuItem(p=mi, l="Add Last's Shapes", c=self.add_last_crv_shapes)
+        mc.menuItem(p=mi, l="Use Last's", c=self.use_last_crv_shapes)
+        mc.menuItem(p=mi, l="Add Last's", c=self.add_last_crv_shapes)
+        mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Break Instance", c=self.crvShape_breakInst)
 
     def addBuildOptions(self, menu):
@@ -101,7 +102,7 @@ class MarkingMenuAutorig:
 
     def addHelperOptions(self, menu):
         """Add helper options to the marking menu"""
-        mi = mc.menuItem(p=menu, l="Helper", rp="NE", subMenu=1)
+        mi = mc.menuItem(p=menu, l="Helper", rp="SE", subMenu=1)
         # mc.menuItem(p=mi, l="BASIC -------", en=0)
         # mc.menuItem(p=mi, l="    rz ~> ty", c=partial(helper.addHelpers, "rz", "ty"))
         # mc.menuItem(p=mi, l="    ry ~> tz", c=partial(helper.addHelpers, "ry", "tz"))
@@ -129,7 +130,7 @@ class MarkingMenuAutorig:
 
     def addProxyOptions(self, menu):
         """Add proxy options to the marking menu"""
-        mi = mc.menuItem(p=menu, l="Proxy", rp="SE", subMenu=1)
+        mi = mc.menuItem(p=menu, l="Proxy", rp="NE", subMenu=1)
 
         mc.menuItem(p=mi, l="Gen", c=proxy.genProxyForSet)
         mc.menuItem(p=mi, l="-" * 15, en=0)

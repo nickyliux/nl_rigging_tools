@@ -527,14 +527,13 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         selList = mc.ls(sl=1, tr=1)
         targetWrapMesh = mc.optionVar(q="targetWrapMesh")
         tgt = DagNode(targetWrapMesh)
-        if tgt.exists():
-            tgt.dspType = 0
 
         if selList:
             mc.optionVar(sv=("targetWrapMesh", selList[0]))
             mc.savePrefs()
             self.updateLoadWrapTargetMesh()
-        else:
+        elif tgt.exists():
+            tgt.dspType = 0
             mc.select(tgt)
 
     def misc_importEnvAndShd(self):

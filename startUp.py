@@ -51,7 +51,9 @@ def createMenu():
         mc.menuItem(label="Open UI", command=runCmd, parent=nlMenu)
         mc.menuItem(label="Close UI", command=closeCmd, parent=nlMenu)
         mc.menuItem(divider=True, parent=nlMenu)
-        mc.menuItem(label="Add Icon To Shelf", command=addIconCmd, parent=nlMenu)
+        mc.menuItem(
+            label="Add Icon To Current Shelf", command=addIconCmd, parent=nlMenu
+        )
         mc.menuItem(divider=True, parent=nlMenu)
         mc.menuItem(label="About", command=showAbout, parent=nlMenu)
         print(">>>>>>>>> nlRT Menu Loaded >>>>>>>>>")

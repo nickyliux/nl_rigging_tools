@@ -21,11 +21,11 @@ blockquote {
 ![nlRT Main](docs/nlRT_UI.png) 
 
 ## Declaimer
-> Note that the project is still under active development so please use it as study purpose. 
+> Note that the project is still under active development so please use it for study purpose. 
 
 ## Background
 
-In my last job I encountered a project with characters in need of Ziva muscle. The very first step was to rig the skeleton mesh as the input of simulation. It required unusual skills like creating IK with backward initial knee, bone adjustment to avoid breaking the simulation... Wouldn't it be great to build an autorig tool for every vetebrate on Earth ? It seems a great way to learn anatomy and apply my knowledge in python.
+In my last job I encountered a project with characters in need of Ziva muscle. The very first step was to rig the skeleton mesh as the input of simulation. It required unusual skills like creating IK with backward initial knee, bone adjustment to avoid breaking the simulation... Wouldn't it be great to have an autorig tool for every vetebrate on Earth ? It seems a great way to learn anatomy and apply my knowledge in python.
 
 
 ## Features
@@ -39,17 +39,17 @@ In my last job I encountered a project with characters in need of Ziva muscle. T
 
 ## Marking Menus
 
-|nl Rig Tool|General Tasks|
+|nlRT Tasks|General Tasks|
 |:-:|:-:|
 |Ctrl + MMB|Ctrl + Alt + MMB|
-|![nlRT Main](docs/menu_nlRig.png)|![nlRT Main](docs/menu_general.png)|
+|![nlRT Main](docs/markingMenu_nlRT.png)|![nlRT Main](docs/markingMenu_general.png)|
 
 ## Installation
 
 1. Download and extract to somewhere you could keep the files.
 2. Find "install_by_drag_n_drop.py" and drag it onto Maya viewport.
 
-The tool UI will show up and "nlRT" seen in the main menu. You can also add icon to the active shelf by "More > Add Icon to Current Shelf" in the tool.
+The tool UI will show up at the left and "nlRT" appears in the main menu of Maya. You can also add icon to the active shelf by "nlRT > Add Icon to Current Shelf".
 
 ## Usage
 

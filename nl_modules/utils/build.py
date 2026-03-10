@@ -77,7 +77,7 @@ def buildSelOrAll(*args):
 
         for i, rN in enumerate(rigNodesToBuild):
             buildTgt(rN)
-            mc.progressWindow(e=1, pr=i, status=f"\n:: {rN}")
+            mc.progressWindow(e=1, pr=i, status=f"\n{rN}")
         postRig()
 
         if args and args[0] == 1:

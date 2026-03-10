@@ -80,8 +80,8 @@ class SpineQd(RigModule):
             ("fore_ikc", "back", None, Vec((10, 10, 1)) * rSz, 0),
             ("mid_ikc", "circle", "z", rSz * 4, 0),
             ("base_ikc", "back", None, Vec((10, 10, 1)) * rSz, 0),
-            ("tangent0_ctl", "cube", None, Vec((1, 2, 3)) * rSz, 1),
-            ("tangent1_ctl", "cube", None, Vec((1, 2, 3)) * rSz, 1),
+            ("tangent0_ctl", "cube", None, Vec((0.3, 2, 3)) * rSz, 1),
+            ("tangent1_ctl", "cube", None, Vec((0.3, 2, 3)) * rSz, 1),
         ]
         if self.is_spine():
             ctl_defs.append(("end_ctl", "rotate2_3d", None, rSz * 1.5, 0))
@@ -323,8 +323,10 @@ class SpineQd(RigModule):
         """Setup visibility toggles for the spine rig controls."""
 
         setupTgt = self.jnts_ik
-        if self.jnts_spIk and self.jnts_twoIk:
-            setupTgt += self.jnts_twoIk[0] + self.jnts_spIk[0]
+        if self.jnts_twoIk:
+            setupTgt.append(self.jnts_twoIk[0])
+        if self.jnts_spIk:
+            setupTgt.append(self.jnts_spIk[0])
 
         self.ctl_vis_toggle(
             self.setting.a.add("showSetup", type="bool", k=0),  # , dv=1),
