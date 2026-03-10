@@ -50,7 +50,7 @@ def loadGuide(name, offset=0):
     return mg
 
 
-def xferGuideSel(*arg, skipMasterXf=1):
+def xferGuideAtoB(*arg, skipMasterXf=1):
     """Transfer guide settings from 1st to 2nd selected"""
     selList = mc.ls(sl=1, tr=1)
     if len(selList) == 2:
@@ -89,7 +89,7 @@ def duplicateGuideSel(*arg):
 
             # Copy xform & attributes
             mc.select(src_mg, tgt_mg)
-            xferGuideSel(skipMasterXf=0)
+            xferGuideAtoB(skipMasterXf=0)
 
     mc.select(allTgtMG)
     mc.setToolTo("moveSuperContext")

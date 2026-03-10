@@ -1770,7 +1770,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>610</y>
+       <y>630</y>
        <width>225</width>
        <height>101</height>
       </rect>
@@ -2283,7 +2283,7 @@
        <x>0</x>
        <y>520</y>
        <width>225</width>
-       <height>81</height>
+       <height>101</height>
       </rect>
      </property>
      <property name="title">
@@ -2358,7 +2358,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Top</string>
+          <string>Top On</string>
          </property>
         </widget>
        </item>
@@ -2400,7 +2400,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Off</string>
+          <string>Top Off</string>
          </property>
         </widget>
        </item>
@@ -2442,98 +2442,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Drop</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="shapeScaleDn_BN">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>5</width>
-           <height>5</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>999</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Scale 3 / 4</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>&lt; Sze</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="shapeScaleUp_BN">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>5</width>
-           <height>5</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>999</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="baseSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-           <kerning>true</kerning>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Scale 4 / 3</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Sze &gt;</string>
+          <string>Drop It</string>
          </property>
         </widget>
        </item>
@@ -2543,7 +2452,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>50</y>
+        <y>46</y>
         <width>221</width>
         <height>24</height>
        </rect>
@@ -2816,14 +2725,14 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>100</y>
+        <y>70</y>
         <width>221</width>
         <height>25</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_19">
        <property name="spacing">
-        <number>4</number>
+        <number>5</number>
        </property>
        <property name="leftMargin">
         <number>6</number>
@@ -2838,35 +2747,93 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QPushButton" name="crvShape_breakInst_BN">
+        <widget class="QPushButton" name="shapeScaleDn_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
-           <width>0</width>
-           <height>0</height>
+           <width>5</width>
+           <height>5</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>16777215</width>
-           <height>22</height>
+           <width>999</width>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
           <font>
            <family>Segoe UI</family>
-           <pointsize>9</pointsize>
+           <pointsize>8</pointsize>
            <weight>50</weight>
            <bold>false</bold>
           </font>
          </property>
          <property name="toolTip">
-          <string>Break curve instance</string>
+          <string>Scale 3 / 4</string>
          </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
+         <property name="styleSheet">
+          <string notr="true"/>
          </property>
          <property name="text">
-          <string>Break Instance</string>
+          <string>-- Sze</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="shapeScaleUp_BN">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>5</width>
+           <height>5</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>999</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+           <kerning>true</kerning>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Scale 4 / 3</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Sze ++</string>
          </property>
         </widget>
        </item>
@@ -3123,7 +3090,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Assign preset color to selected</string>
+          <string>Assign Color Preset 1 to selected</string>
          </property>
          <property name="text">
           <string>1</string>
@@ -3145,7 +3112,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Assign dark preset color to selected</string>
+          <string>Assign Color Preset 2 to selected</string>
          </property>
          <property name="text">
           <string>2</string>
@@ -4009,6 +3976,45 @@ for Sel</string>
    </property>
    <property name="invertedAppearance">
     <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="crvShape_breakInst_BN">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>440</y>
+     <width>121</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>16777215</width>
+     <height>22</height>
+    </size>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>9</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>Break curve instance</string>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="text">
+    <string>Break Instance</string>
    </property>
   </widget>
  </widget>

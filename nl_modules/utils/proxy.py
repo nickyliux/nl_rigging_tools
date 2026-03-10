@@ -2,7 +2,8 @@ import os
 import glob
 import logging
 import maya.cmds as mc
-import maya.mel as mel
+
+# import maya.mel as mel
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
@@ -89,6 +90,7 @@ def genProxyForSet(*args, tgtSet="auto_bind_jnt_set"):
 
     mc.select(cl=1)
     common.setVP(wos=1)
+    setVis(1)
     logging.info(f"{proxy_count} proxy meshes generated.")
 
 
@@ -305,6 +307,16 @@ def selectAllProxy(*args):
             result = common.getObjectBelow(allBelow, tgtType="mesh")
             if result:
                 mc.select(result)
+
+
+def setVis(*args):
+    """Toggle visibility of the proxy meshes under the 'PRX' group."""
+    m = DagNode("master2_ctl")
+    if m.exists():
+        prxAttr = m.a.showProxy
+        if prxAttr.exists():
+            prxAttr.set(args[0])
+            logging.info(f"Set proxy visibility.")
 
 
 def toggleVis(*args):

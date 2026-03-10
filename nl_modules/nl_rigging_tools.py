@@ -62,26 +62,26 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI = QUiLoader().load(UI_PATH)
         self.setCentralWidget(self.UI)
         self.connect_UI()
-        self.addMenuBar()
+        # self.addMenuBar()
 
     def close_window(self):
         """Close the main window."""
         self.close()
 
-    def addMenuBar(self):
-        """Add menu bar to the main window."""
-        addIcon_QA = QAction(self)
-        addIcon_QA.setText("&Add Icon to Current Shelf")
-        addIcon_QA.triggered.connect(addIcon2CurrShelf)
+    # def addMenuBar(self):
+    #     """Add menu bar to the main window."""
+    #     addIcon_QA = QAction(self)
+    #     addIcon_QA.setText("&Add Icon to Current Shelf")
+    #     addIcon_QA.triggered.connect(addIcon2CurrShelf)
 
-        ver_QM = QMenu("&2026.01.21", self)
-        more_QM = QMenu("&More", self)
-        more_QM.addAction(addIcon_QA)
+    #     ver_QM = QMenu("&2026.01.21", self)
+    #     more_QM = QMenu("&More", self)
+    #     more_QM.addAction(addIcon_QA)
 
-        menuBar = QMenuBar(self)
-        menuBar.addMenu(ver_QM)
-        menuBar.addMenu(more_QM)
-        self.setMenuBar(menuBar)
+    #     menuBar = QMenuBar(self)
+    #     menuBar.addMenu(ver_QM)
+    #     menuBar.addMenu(more_QM)
+    #     self.setMenuBar(menuBar)
 
     def connect(self, btn, func, icon=None):
         """Connect a button to a function with an optional icon."""
@@ -135,19 +135,11 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.boneAutoUnBind_BN, self.boneAutoUnBind, ":unbind.png")
 
         # Helper
-        self.connect(
-            self.UI.loadHlp_BN,
-            helper.loadHlp,
-            ":openScript.png"
-        )
+        self.connect(self.UI.loadHlp_BN, helper.loadHlp, ":openScript.png")
         self.connect(self.UI.saveHlp_BN, helper.saveHlp, ":fileSave.png")
 
         # Weight
-        self.connect(
-            self.UI.loadWeight_BN,
-            skin.loadWeight,
-            ":openScript.png"
-        )
+        self.connect(self.UI.loadWeight_BN, skin.loadWeight, ":openScript.png")
         self.connect(self.UI.saveWeight_BN, skin.saveWeight, ":fileSave.png")
 
         # Weight Edit
@@ -520,6 +512,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         skin.skinRbJnts(meshes=tgtMeshes)
         build.autoAttach()
 
+        mc.hide(SK_AUTO_BIND_GRP)
         mc.select(cl=1)
 
     def templateTarget(self):
@@ -589,16 +582,27 @@ global nlRT_win
 
 def showUI():
     """Main function to initialize and show the rigging tools UI."""
+    closeUI()
+    # try:
+    #     nlRT_win.close_window()
+    # except:
+    #     pass
+    global nlRT_win
+    nlRT_win = MyToolWin()
+    nlRT_win.show(dockable=1, floating=0, area="left")
+    # nlRT_win.show(dockable=0, floating=1, area="left")
+    with open(STYLE_PATH, "r") as f:
+        style = f.read()
+        nlRT_win.setStyleSheet(style)
+
+
+def closeUI():
+    """Close the rigging tools UI."""
     global nlRT_win
     try:
         nlRT_win.close_window()
     except:
         pass
-    nlRT_win = MyToolWin()
-    nlRT_win.show(dockable=1, floating=0, area="left")
-    with open(STYLE_PATH, "r") as f:
-        style = f.read()
-        nlRT_win.setStyleSheet(style)
 
 
 def addIcon2CurrShelf():

@@ -19,7 +19,7 @@ class Tail(RigModule):
     def __init__(self, rigNode):
         super().__init__(rigNode)
         # Guide attributes
-        guide_attrs = ["fkJntNum", "rbnJntNum"]
+        guide_attrs = ["fkJntNum", "rbnJntNum", "ikJntNum"]
         for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
 
@@ -52,7 +52,6 @@ class Tail(RigModule):
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
         self.rootJ = root_list[0]
-        # self.rootJ.color = Color.BLACK
         self.rigNode.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 
@@ -61,14 +60,17 @@ class Tail(RigModule):
         logging.info(self.rigID)
         rID, rSz, xDr = self.getMyVar()
 
-        ctl_defs = [("setting", "screw_nut", "z", self.masterRigSize / 3, 1)]
+        ctl_defs = [
+            ("setting", "screw_nut", "z", self.masterRigSize / 3, 1),
+            ("main", "squareR", "z", rSz * 2, 1),
+        ]
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
         self.setting.a.add("stretchy", min=0, max=1)
         self.setting.a.add("localScale", min=0.01, dv=1)
-        self.setting.color = Color.D_YELLOW
-        self.setting.cv_move(0, rSz * 20, 0)
+        self.setting.color = Color.PINK
+        self.setting.cv_move(0, rSz * 30, 0)
 
     def build(self):
         """Build the tail rig."""
@@ -103,7 +105,7 @@ class Tail(RigModule):
             scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
             pf=self.rigID + "_2",
-            rSz=self.rigSize * 3,
+            rSz=self.rigSize,
             p=self.CTL_DATA,
             JNT_DATA=self.JNT_DATA,
         )
@@ -123,14 +125,16 @@ class Tail(RigModule):
 
         self.jnts_ik = JntNode.createJntsFrCrv(
             self.LINE_GUIDE,
-            num=5,
+            num=self.ikJntNum,
             name="ikj",
             pf=rID,
             aimV=(0, 0, -1),
             size=rSz * 3,
-            color=Color.D_RED,
+            color=Color.D_YELLOW,
         )
-        for i in range(5):
+        self.main.snapTo(self.RT_GUIDE)
+        self.main | self.IK_GRP
+        for i in range(self.ikJntNum):
             ctl = CrvNode(
                 f"{i}_ikc",
                 pf=rID,
@@ -139,17 +143,18 @@ class Tail(RigModule):
                 scale=rSz,
                 align=self.jnts_ik[i],
                 addOfs=1,
-                color=Color.D_BROWN,
-                p=self.IK_GRP,
+                color=Color.PINK,
+                p=self.main,
             )
             ctl.cv_scale(1, 1, 0.5)
             self.jnts_ik[i] | ctl
             self.ctls_ik.append(ctl)
-            if i > 0:
-                ctl.offset | self.ctls_ik[0]
+            # if i > 0:
+            #     ctl.offset | self.ctls_ik[0]
             self.rigNode.setMsg({f"ikc{i}": ctl})
 
-        self.rbSrf1 = self.create_rbSrf((4 + self.fkJntNum) // 2)
+        # self.rbSrf1 = self.create_rbSrf((4 + self.fkJntNum) // 2)
+        self.rbSrf1 = self.create_rbSrf(self.fkJntNum - 1)
         self.rigNode.setMsg({"rbSrf": self.rbSrf1})
 
         SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6, chain=0)
@@ -158,8 +163,11 @@ class Tail(RigModule):
         self.ctls_ik[0].cstPar(self.setting, mo=1)
 
         RigModule.isolate_align(
-            self.ctls_ik[0], spaces=[self.ctls_ik[0].offset, self.masterC], dv=0
+            self.main, spaces=[self.main.addOffsetGrp(), self.masterC], dv=0
         )
+        # RigModule.isolate_align(
+        #     self.ctls_ik[0], spaces=[self.ctls_ik[0].offset, self.masterC], dv=0
+        # )
 
     def build_fk(self):
         """Build the FK controls for the tail rig.
@@ -183,7 +191,7 @@ class Tail(RigModule):
         )
         for i in range(self.fkJntNum):
             ctl = CrvNode(
-                f"{i}_fkc", pf=rID, up="z", scale=rSz * 0.8, align=self.jnts_fk[i]
+                f"{i}_fkc", pf=rID, up="z", scale=rSz / 3, align=self.jnts_fk[i]
             )
             self.rigNode.setMsg({f"fkc{i}": ctl})
             self.ctls_fk.append(ctl)
@@ -229,7 +237,7 @@ class Tail(RigModule):
                 f"{i}_ofs_ctl",
                 pf=rID,
                 shape="cube",
-                scale=rSz / 4,
+                scale=rSz / 8,
                 align=self.ctls_fk[i],
                 p=self.ctls_fk[i],
                 color=Color.L_BLUE,
@@ -239,7 +247,9 @@ class Tail(RigModule):
             self.ctls_ofs.append(ctl)
             self.jnts_ofs.append(jnt)
 
-        self.rbSrf2 = self.create_rbSrf((4 + self.fkJntNum) // 2)
+        # self.rbSrf2 = self.create_rbSrf((4 + self.fkJntNum) // 2)
+        self.rbSrf2 = self.create_rbSrf(self.fkJntNum - 1)
+
         self.rigNode.setMsg({"rbSrfSk": self.rbSrf2})
 
         SrfNode(self.rbSrf2).weightTo(self.jnts_ofs, chain=0, mi=2, dr=6)
@@ -247,20 +257,20 @@ class Tail(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the tail rig controls."""
         self.ctl_vis_toggle(
-            self.setting.a.add("showIkCtl", k=0, type="bool"),
-            onList=[self.ctls_ik[0]],
+            self.setting.a.add("showIkCtl", k=0, type="bool", dv=1),
+            onList=self.ctls_ik,
         )
         self.ctl_vis_toggle(
             self.setting.a.add("showFkCtl", k=0, type="bool", dv=1),
             onList=[self.ctls_fk[0]],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("showSubIkCtl", k=0, type="bool"),
+            self.setting.a.add("showSubIkCtl", k=0, type="bool", dv=0),
             onList=self.ctls_ofs,
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", k=0, type="bool"),
-            onList=[self.rbSrf1, self.rbSrf2, self.rbCrvSk],
+            self.setting.a.add("showSetup", k=0, type="bool", dv=0),
+            onList=[self.rbSrf1, self.rbSrf2, self.rbCrvSk, self.JNT_DATA],
         )
         mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)
 
@@ -282,7 +292,7 @@ class Tail(RigModule):
         """Setup anchor module for the arm rig controls."""
         self.setup_anchor_module(
             {
-                "anchorS1": self.ctls_ik[0].offset.offset,
+                "anchorS1": self.main.offset.offset,
                 "anchorP1": self.jnts_rb[-1],
             }
         )

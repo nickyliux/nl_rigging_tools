@@ -113,7 +113,7 @@ class ArmBp(RigModule):
         self.pvc.cv_rotate(-90, 0, 0)
         self.setting.cv_move(0, scale * 30, 0)
         self.clavicle_fkc.cv_scale(1, 0.3, 0.3)
-        self.setting.color = Color.YELLOW
+        self.setting.color = Color.PINK
 
     def build(self):
         """Build the arm rig module."""

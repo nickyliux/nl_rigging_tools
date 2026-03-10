@@ -80,8 +80,8 @@ class SpineQd(RigModule):
             ("fore_ikc", "back", None, Vec((10, 10, 1)) * rSz, 0),
             ("mid_ikc", "circle", "z", rSz * 4, 0),
             ("base_ikc", "back", None, Vec((10, 10, 1)) * rSz, 0),
-            ("tangent0_ctl", "stick", None, rSz, 1),
-            ("tangent1_ctl", "stick", None, rSz, 1),
+            ("tangent0_ctl", "cube", None, Vec((1, 2, 3)) * rSz, 1),
+            ("tangent1_ctl", "cube", None, Vec((1, 2, 3)) * rSz, 1),
         ]
         if self.is_spine():
             ctl_defs.append(("end_ctl", "rotate2_3d", None, rSz * 1.5, 0))
@@ -98,7 +98,7 @@ class SpineQd(RigModule):
         self.tangent0_ctl.cv_rotate(0, 90, 0)
         self.tangent1_ctl.cv_rotate(0, 90, 0)
 
-        self.setting.color = Color.D_YELLOW
+        self.setting.color = Color.PINK
         self.setting.cv_move(0, rSz * 60, 0)
         self.mid_ikc.color = Color.PINK
 

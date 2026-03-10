@@ -136,7 +136,7 @@ class LegQd(RigModule):
             ("digit_fkc", "circle", "x", scale, 0),
             ("ball_fkc", "rotate2_3d", "z", -scale / 2, 0),
             ("ikc", "trapezoid", None, Vec((1.5, 1.5, 2)) * rSz, 0),
-            ("extra_ikc", "rotate2_3d", None, Vec((3, 1, 1)) * -scale, 0),
+            ("extra_ikc", "rotate2_3d", None, Vec((2, 1, 1)) * -scale, 0),
             ("pvc", "sphere", None, rSz, 0),
             ("smart_ctl", "trapezoid2", None, scale / 3, 0),
         ]
@@ -154,7 +154,7 @@ class LegQd(RigModule):
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
         self.smart_ctl.cv_move(scale * 15, 0, 0)
-        self.setting.color = Color.D_YELLOW
+        self.setting.color = Color.PINK
         self.setting.cv_move(scale * 15, 0, 0)
         self.hip_fkc.cv_rotate(0, -90, 0)
         self.hip_fkc.cv_move(scale * 5, -scale * 15, 0)
@@ -199,6 +199,7 @@ class LegQd(RigModule):
 
         if self.toeBones:
             self.build_toes()
+            self.updateList(self.jnts_bind, rm=[self.ball])
             self.updateList(self.jnts_sk, rm=[self.ball])
 
         self.build_post()

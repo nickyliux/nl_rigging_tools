@@ -77,14 +77,14 @@ def buildSelOrAll(*args):
 
         for i, rN in enumerate(rigNodesToBuild):
             buildTgt(rN)
-            mc.refresh(f=1)
-            mc.progressWindow(e=1, pr=i, status=f"\nProcessing : {rN}")
+            mc.progressWindow(e=1, pr=i, status=f"\n:: {rN}")
         postRig()
 
         if args and args[0] == 1:
             proxy.genProxyForSet()
 
         mc.progressWindow(ep=1)
+
         logging.info(f"{buildCount} rigNodes built.")
         mc.select(cl=1)
         common.pauseVP(0)
