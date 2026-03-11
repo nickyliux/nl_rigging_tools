@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: lfHandBp.ma
-//Last modified: Wed, Mar 11, 2026 12:35:14 PM
+//Last modified: Wed, Mar 11, 2026 01:00:28 PM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -14,7 +14,7 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26200)";
-fileInfo "UUID" "95731818-4D37-CB19-EC60-78B5B1F4467C";
+fileInfo "UUID" "96C778C4-46A2-05FD-CFD7-48B06A11AE05";
 createNode transform -n "module_grp";
 	rename -uid "A08207E3-49BA-E61C-5646-E09F599D0878";
 	addAttr -ci true -sn "mirrorCode" -ln "mirrorCode" -dt "string";
@@ -2519,13 +2519,13 @@ createNode scaleConstraint -n "null5_scaleConstraint1" -p "null5";
 createNode transform -s -n "persp";
 	rename -uid "AB7E52E5-4BC6-549B-1229-4BA904DD5D93";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 27.391893602976296 19.534560666168115 18.491901551166634 ;
-	setAttr ".r" -type "double3" -32.13835233800981 -1029.3999999984048 0 ;
+	setAttr ".t" -type "double3" 24.855899730457018 19.30849359953524 11.256844349948508 ;
+	setAttr ".r" -type "double3" -41.738352338006322 -1022.19999999839 0 ;
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "19F6DB4F-4918-877A-57DD-5EBBE38E71A5";
 	setAttr -k off ".v";
 	setAttr ".fl" 34.999999999999993;
-	setAttr ".coi" 37.786554951251219;
+	setAttr ".coi" 32.594623309496818;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -2616,23 +2616,23 @@ parent -s -nc -r -add "|module_grp|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef
 parent -s -nc -r -add "|module_grp|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef18" ;
 parent -s -nc -r -add "|module_grp|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef19" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "BC2EE3A4-4E2A-FB42-DAAF-5E8E4FF30DF3";
-	setAttr -s 4 ".lnk";
-	setAttr -s 4 ".slnk";
+	rename -uid "2D93EA40-4C27-6D88-2F55-AF89AFF0B1A3";
+	setAttr -s 3 ".lnk";
+	setAttr -s 3 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "10ABDD59-4B9C-82F5-32E2-03A7F6E0DAA8";
+	rename -uid "699EA6DA-446E-70FE-5D70-E68B340CE22D";
 	setAttr ".bsdt[0].bscd" -type "Int32Array" 1 0 ;
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "C48D6CA2-40D4-EE9E-B6A8-D6BAC085D0F9";
+	rename -uid "3485F3EE-4837-9A83-7E55-A1A7C754DF8E";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "8DD6BC94-47B8-E2E6-0E2B-42A99C9FBEF4";
+	rename -uid "4E4D7391-4B45-64F7-4179-B28A791AB6B8";
 	setAttr ".cdl" 3;
 	setAttr -s 4 ".dli[1:3]"  1 2 3;
 createNode displayLayer -n "defaultLayer";
 	rename -uid "4011EB8B-4296-1EB2-2E08-40844F6318E5";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "804AD317-4D39-C647-CFE6-EF8956EBE43E";
+	rename -uid "D05F535D-400A-CE2A-5DEB-2EA702D77206";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "BD18B807-4968-E110-0D94-B9A28F4760A6";
 	setAttr ".g" yes;
@@ -2656,15 +2656,15 @@ createNode script -n "uiConfigurationScriptNode";
 		+ "            -particleInstancers 1\n            -fluids 1\n            -hairSystems 1\n            -follicles 1\n            -nCloths 1\n            -nParticles 1\n            -nRigids 1\n            -dynamicConstraints 1\n            -locators 1\n            -manipulators 1\n            -pluginShapes 1\n            -dimensions 1\n            -handles 1\n            -pivots 1\n            -textures 1\n            -strokes 1\n            -motionTrails 1\n            -clipGhosts 1\n            -bluePencil 1\n            -greasePencils 0\n            -shadows 0\n            -captureSequenceNumber -1\n            -width 433\n            -height 726\n            -sceneRenderFilter 0\n            -activeShadingGraph \"ballora_animatronic_shadow_rig:rsMaterial1SG,ballora_animatronic_shadow_rig:MAT_ballora,ballora_animatronic_shadow_rig:MAT_ballora\" \n            -activeCustomGeometry \"meshShaderball\" \n            -activeCustomLighSet \"defaultAreaLightSet\" \n            $editorName;\n        modelEditor -e -viewSelected 0 $editorName;\n        modelEditor -e \n"
 		+ "            -pluginObjects \"gpuCacheDisplayFilter\" 1 \n            $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextPanel \"outlinerPanel\" (localizedPanelLabel(\"\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\toutlinerPanel -edit -l (localizedPanelLabel(\"\")) -mbv $menusOkayInPanels  $panelName;\n\t\t$editorName = $panelName;\n        outlinerEditor -e \n            -docTag \"isolOutln_fromSeln\" \n            -showShapes 0\n            -showAssignedMaterials 0\n            -showTimeEditor 1\n            -showReferenceNodes 0\n            -showReferenceMembers 0\n            -showAttributes 0\n            -showConnected 0\n            -showAnimCurvesOnly 0\n            -showMuteInfo 0\n            -organizeByLayer 1\n            -organizeByClip 1\n            -showAnimLayerWeight 1\n            -autoExpandLayers 1\n            -autoExpand 1\n            -showDagOnly 1\n            -showAssets 1\n            -showContainedOnly 1\n            -showPublishedAsConnected 0\n"
 		+ "            -showParentContainers 0\n            -showContainerContents 1\n            -ignoreDagHierarchy 0\n            -expandConnections 0\n            -showUpstreamCurves 1\n            -showUnitlessCurves 1\n            -showCompounds 1\n            -showLeafs 1\n            -showNumericAttrsOnly 0\n            -highlightActive 1\n            -autoSelectNewObjects 1\n            -doNotSelectNewObjects 0\n            -dropIsParent 1\n            -transmitFilters 0\n            -setFilter \"defaultSetFilter\" \n            -showSetMembers 1\n            -allowMultiSelection 1\n            -alwaysToggleSelect 0\n            -directSelect 0\n            -isSet 0\n            -isSetMember 0\n            -showUfeItems 1\n            -displayMode \"DAG\" \n            -expandObjects 0\n            -setsIgnoreFilters 1\n            -containersIgnoreFilters 0\n            -editAttrName 0\n            -showAttrValues 0\n            -highlightSecondary 0\n            -showUVAttrsOnly 0\n            -showTextureNodesOnly 0\n            -attrAlphaOrder \"default\" \n"
-		+ "            -animLayerFilterOptions \"allAffecting\" \n            -sortOrder \"none\" \n            -longNames 0\n            -niceNames 1\n            -selectCommand \"print(\\\"\\\")\" \n            -showNamespace 1\n            -showPinIcons 0\n            -mapMotionTrails 0\n            -ignoreHiddenAttribute 0\n            -ignoreOutlinerColor 0\n            -renderFilterVisible 0\n            -renderFilterIndex 0\n            -selectionOrder \"chronological\" \n            -expandAttribute 0\n            -ufeFilter \"USD\" \"InactivePrims\" -ufeFilterValue 1\n            $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextPanel \"outlinerPanel\" (localizedPanelLabel(\"Outliner\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\toutlinerPanel -edit -l (localizedPanelLabel(\"Outliner\")) -mbv $menusOkayInPanels  $panelName;\n\t\t$editorName = $panelName;\n        outlinerEditor -e \n            -docTag \"isolOutln_fromSeln\" \n            -showShapes 0\n            -showAssignedMaterials 0\n"
-		+ "            -showTimeEditor 1\n            -showReferenceNodes 0\n            -showReferenceMembers 0\n            -showAttributes 0\n            -showConnected 0\n            -showAnimCurvesOnly 0\n            -showMuteInfo 0\n            -organizeByLayer 1\n            -organizeByClip 1\n            -showAnimLayerWeight 1\n            -autoExpandLayers 1\n            -autoExpand 0\n            -showDagOnly 1\n            -showAssets 1\n            -showContainedOnly 1\n            -showPublishedAsConnected 0\n            -showParentContainers 0\n            -showContainerContents 1\n            -ignoreDagHierarchy 0\n            -expandConnections 0\n            -showUpstreamCurves 1\n            -showUnitlessCurves 1\n            -showCompounds 1\n            -showLeafs 1\n            -showNumericAttrsOnly 0\n            -highlightActive 1\n            -autoSelectNewObjects 0\n            -doNotSelectNewObjects 0\n            -dropIsParent 1\n            -transmitFilters 0\n            -setFilter \"defaultSetFilter\" \n            -showSetMembers 1\n"
-		+ "            -allowMultiSelection 1\n            -alwaysToggleSelect 0\n            -directSelect 0\n            -showUfeItems 1\n            -displayMode \"DAG\" \n            -expandObjects 0\n            -setsIgnoreFilters 1\n            -containersIgnoreFilters 0\n            -editAttrName 0\n            -showAttrValues 0\n            -highlightSecondary 0\n            -showUVAttrsOnly 0\n            -showTextureNodesOnly 0\n            -attrAlphaOrder \"default\" \n            -animLayerFilterOptions \"allAffecting\" \n            -sortOrder \"none\" \n            -longNames 0\n            -niceNames 1\n            -showNamespace 1\n            -showPinIcons 0\n            -mapMotionTrails 0\n            -ignoreHiddenAttribute 0\n            -ignoreOutlinerColor 0\n            -renderFilterVisible 0\n            -ufeFilter \"USD\" \"InactivePrims\" -ufeFilterValue 1\n            $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"graphEditor\" (localizedPanelLabel(\"Graph Editor\")) `;\n"
-		+ "\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Graph Editor\")) -mbv $menusOkayInPanels  $panelName;\n\n\t\t\t$editorName = ($panelName+\"OutlineEd\");\n            outlinerEditor -e \n                -showShapes 1\n                -showAssignedMaterials 0\n                -showTimeEditor 1\n                -showReferenceNodes 0\n                -showReferenceMembers 0\n                -showAttributes 1\n                -showConnected 1\n                -showAnimCurvesOnly 1\n                -showMuteInfo 0\n                -organizeByLayer 1\n                -organizeByClip 1\n                -showAnimLayerWeight 1\n                -autoExpandLayers 1\n                -autoExpand 1\n                -showDagOnly 0\n                -showAssets 1\n                -showContainedOnly 0\n                -showPublishedAsConnected 0\n                -showParentContainers 1\n                -showContainerContents 0\n                -ignoreDagHierarchy 0\n                -expandConnections 1\n"
-		+ "                -showUpstreamCurves 1\n                -showUnitlessCurves 1\n                -showCompounds 0\n                -showLeafs 1\n                -showNumericAttrsOnly 1\n                -highlightActive 0\n                -autoSelectNewObjects 1\n                -doNotSelectNewObjects 0\n                -dropIsParent 1\n                -transmitFilters 1\n                -setFilter \"0\" \n                -showSetMembers 0\n                -allowMultiSelection 1\n                -alwaysToggleSelect 0\n                -directSelect 0\n                -showUfeItems 1\n                -displayMode \"DAG\" \n                -expandObjects 0\n                -setsIgnoreFilters 1\n                -containersIgnoreFilters 0\n                -editAttrName 0\n                -showAttrValues 0\n                -highlightSecondary 0\n                -showUVAttrsOnly 0\n                -showTextureNodesOnly 0\n                -attrAlphaOrder \"default\" \n                -animLayerFilterOptions \"allAffecting\" \n                -sortOrder \"none\" \n"
-		+ "                -longNames 0\n                -niceNames 1\n                -showNamespace 1\n                -showPinIcons 1\n                -mapMotionTrails 1\n                -ignoreHiddenAttribute 0\n                -ignoreOutlinerColor 0\n                -renderFilterVisible 0\n                $editorName;\n\n\t\t\t$editorName = ($panelName+\"GraphEd\");\n            animCurveEditor -e \n                -displayValues 0\n                -snapTime \"integer\" \n                -snapValue \"none\" \n                -showPlayRangeShades \"on\" \n                -lockPlayRangeShades \"off\" \n                -smoothness \"fine\" \n                -resultSamples 1\n                -resultScreenSamples 0\n                -resultUpdate \"delayed\" \n                -showUpstreamCurves 1\n                -keyMinScale 1\n                -stackedCurvesMin -1\n                -stackedCurvesMax 1\n                -stackedCurvesSpace 0.2\n                -preSelectionHighlight 0\n                -constrainDrag 0\n                -valueLinesToggle 1\n                -outliner \"graphEditor1OutlineEd\" \n"
-		+ "                -highlightAffectedCurves 0\n                $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"dopeSheetPanel\" (localizedPanelLabel(\"Dope Sheet\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Dope Sheet\")) -mbv $menusOkayInPanels  $panelName;\n\n\t\t\t$editorName = ($panelName+\"OutlineEd\");\n            outlinerEditor -e \n                -showShapes 1\n                -showAssignedMaterials 0\n                -showTimeEditor 1\n                -showReferenceNodes 0\n                -showReferenceMembers 0\n                -showAttributes 1\n                -showConnected 1\n                -showAnimCurvesOnly 1\n                -showMuteInfo 0\n                -organizeByLayer 1\n                -organizeByClip 1\n                -showAnimLayerWeight 1\n                -autoExpandLayers 1\n                -autoExpand 0\n                -showDagOnly 0\n                -showAssets 1\n"
-		+ "                -showContainedOnly 0\n                -showPublishedAsConnected 0\n                -showParentContainers 1\n                -showContainerContents 0\n                -ignoreDagHierarchy 0\n                -expandConnections 1\n                -showUpstreamCurves 1\n                -showUnitlessCurves 0\n                -showCompounds 1\n                -showLeafs 1\n                -showNumericAttrsOnly 1\n                -highlightActive 0\n                -autoSelectNewObjects 0\n                -doNotSelectNewObjects 1\n                -dropIsParent 1\n                -transmitFilters 0\n                -setFilter \"0\" \n                -showSetMembers 0\n                -allowMultiSelection 1\n                -alwaysToggleSelect 0\n                -directSelect 0\n                -showUfeItems 1\n                -displayMode \"DAG\" \n                -expandObjects 0\n                -setsIgnoreFilters 1\n                -containersIgnoreFilters 0\n                -editAttrName 0\n                -showAttrValues 0\n                -highlightSecondary 0\n"
-		+ "                -showUVAttrsOnly 0\n                -showTextureNodesOnly 0\n                -attrAlphaOrder \"default\" \n                -animLayerFilterOptions \"allAffecting\" \n                -sortOrder \"none\" \n                -longNames 0\n                -niceNames 1\n                -showNamespace 1\n                -showPinIcons 0\n                -mapMotionTrails 1\n                -ignoreHiddenAttribute 0\n                -ignoreOutlinerColor 0\n                -renderFilterVisible 0\n                $editorName;\n\n\t\t\t$editorName = ($panelName+\"DopeSheetEd\");\n            dopeSheetEditor -e \n                -displayValues 0\n                -snapTime \"integer\" \n                -snapValue \"none\" \n                -outliner \"dopeSheetPanel1OutlineEd\" \n                -showSummary 1\n                -showScene 0\n                -hierarchyBelow 0\n                -showTicks 1\n                -selectionWindow 0 0 0 0 \n                $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"timeEditorPanel\" (localizedPanelLabel(\"Time Editor\")) `;\n"
+		+ "            -animLayerFilterOptions \"allAffecting\" \n            -sortOrder \"none\" \n            -longNames 0\n            -niceNames 1\n            -selectCommand \"print(\\\"\\\")\" \n            -showNamespace 1\n            -showPinIcons 0\n            -mapMotionTrails 0\n            -ignoreHiddenAttribute 0\n            -ignoreOutlinerColor 0\n            -renderFilterVisible 0\n            -renderFilterIndex 0\n            -selectionOrder \"chronological\" \n            -expandAttribute 0\n            $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextPanel \"outlinerPanel\" (localizedPanelLabel(\"Outliner\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\toutlinerPanel -edit -l (localizedPanelLabel(\"Outliner\")) -mbv $menusOkayInPanels  $panelName;\n\t\t$editorName = $panelName;\n        outlinerEditor -e \n            -docTag \"isolOutln_fromSeln\" \n            -showShapes 0\n            -showAssignedMaterials 0\n            -showTimeEditor 1\n"
+		+ "            -showReferenceNodes 0\n            -showReferenceMembers 0\n            -showAttributes 0\n            -showConnected 0\n            -showAnimCurvesOnly 0\n            -showMuteInfo 0\n            -organizeByLayer 1\n            -organizeByClip 1\n            -showAnimLayerWeight 1\n            -autoExpandLayers 1\n            -autoExpand 0\n            -showDagOnly 1\n            -showAssets 1\n            -showContainedOnly 1\n            -showPublishedAsConnected 0\n            -showParentContainers 0\n            -showContainerContents 1\n            -ignoreDagHierarchy 0\n            -expandConnections 0\n            -showUpstreamCurves 1\n            -showUnitlessCurves 1\n            -showCompounds 1\n            -showLeafs 1\n            -showNumericAttrsOnly 0\n            -highlightActive 1\n            -autoSelectNewObjects 0\n            -doNotSelectNewObjects 0\n            -dropIsParent 1\n            -transmitFilters 0\n            -setFilter \"defaultSetFilter\" \n            -showSetMembers 1\n            -allowMultiSelection 1\n"
+		+ "            -alwaysToggleSelect 0\n            -directSelect 0\n            -showUfeItems 1\n            -displayMode \"DAG\" \n            -expandObjects 0\n            -setsIgnoreFilters 1\n            -containersIgnoreFilters 0\n            -editAttrName 0\n            -showAttrValues 0\n            -highlightSecondary 0\n            -showUVAttrsOnly 0\n            -showTextureNodesOnly 0\n            -attrAlphaOrder \"default\" \n            -animLayerFilterOptions \"allAffecting\" \n            -sortOrder \"none\" \n            -longNames 0\n            -niceNames 1\n            -showNamespace 1\n            -showPinIcons 0\n            -mapMotionTrails 0\n            -ignoreHiddenAttribute 0\n            -ignoreOutlinerColor 0\n            -renderFilterVisible 0\n            -ufeFilter \"USD\" \"InactivePrims\" -ufeFilterValue 1\n            $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"graphEditor\" (localizedPanelLabel(\"Graph Editor\")) `;\n\tif (\"\" != $panelName) {\n"
+		+ "\t\t$label = `panel -q -label $panelName`;\n\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Graph Editor\")) -mbv $menusOkayInPanels  $panelName;\n\n\t\t\t$editorName = ($panelName+\"OutlineEd\");\n            outlinerEditor -e \n                -showShapes 1\n                -showAssignedMaterials 0\n                -showTimeEditor 1\n                -showReferenceNodes 0\n                -showReferenceMembers 0\n                -showAttributes 1\n                -showConnected 1\n                -showAnimCurvesOnly 1\n                -showMuteInfo 0\n                -organizeByLayer 1\n                -organizeByClip 1\n                -showAnimLayerWeight 1\n                -autoExpandLayers 1\n                -autoExpand 1\n                -showDagOnly 0\n                -showAssets 1\n                -showContainedOnly 0\n                -showPublishedAsConnected 0\n                -showParentContainers 1\n                -showContainerContents 0\n                -ignoreDagHierarchy 0\n                -expandConnections 1\n                -showUpstreamCurves 1\n"
+		+ "                -showUnitlessCurves 1\n                -showCompounds 0\n                -showLeafs 1\n                -showNumericAttrsOnly 1\n                -highlightActive 0\n                -autoSelectNewObjects 1\n                -doNotSelectNewObjects 0\n                -dropIsParent 1\n                -transmitFilters 1\n                -setFilter \"0\" \n                -showSetMembers 0\n                -allowMultiSelection 1\n                -alwaysToggleSelect 0\n                -directSelect 0\n                -showUfeItems 1\n                -displayMode \"DAG\" \n                -expandObjects 0\n                -setsIgnoreFilters 1\n                -containersIgnoreFilters 0\n                -editAttrName 0\n                -showAttrValues 0\n                -highlightSecondary 0\n                -showUVAttrsOnly 0\n                -showTextureNodesOnly 0\n                -attrAlphaOrder \"default\" \n                -animLayerFilterOptions \"allAffecting\" \n                -sortOrder \"none\" \n                -longNames 0\n                -niceNames 1\n"
+		+ "                -showNamespace 1\n                -showPinIcons 1\n                -mapMotionTrails 1\n                -ignoreHiddenAttribute 0\n                -ignoreOutlinerColor 0\n                -renderFilterVisible 0\n                $editorName;\n\n\t\t\t$editorName = ($panelName+\"GraphEd\");\n            animCurveEditor -e \n                -displayValues 0\n                -snapTime \"integer\" \n                -snapValue \"none\" \n                -showPlayRangeShades \"on\" \n                -lockPlayRangeShades \"off\" \n                -smoothness \"fine\" \n                -resultSamples 1\n                -resultScreenSamples 0\n                -resultUpdate \"delayed\" \n                -showUpstreamCurves 1\n                -keyMinScale 1\n                -stackedCurvesMin -1\n                -stackedCurvesMax 1\n                -stackedCurvesSpace 0.2\n                -preSelectionHighlight 0\n                -constrainDrag 0\n                -valueLinesToggle 1\n                -outliner \"graphEditor1OutlineEd\" \n                -highlightAffectedCurves 0\n"
+		+ "                $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"dopeSheetPanel\" (localizedPanelLabel(\"Dope Sheet\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Dope Sheet\")) -mbv $menusOkayInPanels  $panelName;\n\n\t\t\t$editorName = ($panelName+\"OutlineEd\");\n            outlinerEditor -e \n                -showShapes 1\n                -showAssignedMaterials 0\n                -showTimeEditor 1\n                -showReferenceNodes 0\n                -showReferenceMembers 0\n                -showAttributes 1\n                -showConnected 1\n                -showAnimCurvesOnly 1\n                -showMuteInfo 0\n                -organizeByLayer 1\n                -organizeByClip 1\n                -showAnimLayerWeight 1\n                -autoExpandLayers 1\n                -autoExpand 0\n                -showDagOnly 0\n                -showAssets 1\n                -showContainedOnly 0\n"
+		+ "                -showPublishedAsConnected 0\n                -showParentContainers 1\n                -showContainerContents 0\n                -ignoreDagHierarchy 0\n                -expandConnections 1\n                -showUpstreamCurves 1\n                -showUnitlessCurves 0\n                -showCompounds 1\n                -showLeafs 1\n                -showNumericAttrsOnly 1\n                -highlightActive 0\n                -autoSelectNewObjects 0\n                -doNotSelectNewObjects 1\n                -dropIsParent 1\n                -transmitFilters 0\n                -setFilter \"0\" \n                -showSetMembers 0\n                -allowMultiSelection 1\n                -alwaysToggleSelect 0\n                -directSelect 0\n                -showUfeItems 1\n                -displayMode \"DAG\" \n                -expandObjects 0\n                -setsIgnoreFilters 1\n                -containersIgnoreFilters 0\n                -editAttrName 0\n                -showAttrValues 0\n                -highlightSecondary 0\n                -showUVAttrsOnly 0\n"
+		+ "                -showTextureNodesOnly 0\n                -attrAlphaOrder \"default\" \n                -animLayerFilterOptions \"allAffecting\" \n                -sortOrder \"none\" \n                -longNames 0\n                -niceNames 1\n                -showNamespace 1\n                -showPinIcons 0\n                -mapMotionTrails 1\n                -ignoreHiddenAttribute 0\n                -ignoreOutlinerColor 0\n                -renderFilterVisible 0\n                $editorName;\n\n\t\t\t$editorName = ($panelName+\"DopeSheetEd\");\n            dopeSheetEditor -e \n                -displayValues 0\n                -snapTime \"integer\" \n                -snapValue \"none\" \n                -outliner \"dopeSheetPanel1OutlineEd\" \n                -showSummary 1\n                -showScene 0\n                -hierarchyBelow 0\n                -showTicks 1\n                -selectionWindow 0 0 0 0 \n                $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"timeEditorPanel\" (localizedPanelLabel(\"Time Editor\")) `;\n"
 		+ "\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Time Editor\")) -mbv $menusOkayInPanels  $panelName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"clipEditorPanel\" (localizedPanelLabel(\"Trax Editor\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Trax Editor\")) -mbv $menusOkayInPanels  $panelName;\n\n\t\t\t$editorName = clipEditorNameFromPanel($panelName);\n            clipEditor -e \n                -displayValues 0\n                -snapTime \"none\" \n                -snapValue \"none\" \n                -initialized 0\n                -manageSequencer 0 \n                $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"sequenceEditorPanel\" (localizedPanelLabel(\"Camera Sequencer\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n"
 		+ "\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Camera Sequencer\")) -mbv $menusOkayInPanels  $panelName;\n\n\t\t\t$editorName = sequenceEditorNameFromPanel($panelName);\n            clipEditor -e \n                -displayValues 0\n                -snapTime \"none\" \n                -snapValue \"none\" \n                -initialized 0\n                -manageSequencer 1 \n                $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextScriptedPanel \"hyperGraphPanel\" (localizedPanelLabel(\"Hypergraph Hierarchy\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\tscriptedPanel -edit -l (localizedPanelLabel(\"Hypergraph Hierarchy\")) -mbv $menusOkayInPanels  $panelName;\n\n\t\t\t$editorName = ($panelName+\"HyperGraphEd\");\n            hyperGraph -e \n                -graphLayoutStyle \"hierarchicalLayout\" \n                -orientation \"horiz\" \n                -mergeConnections 1\n                -zoom 1\n                -animateTransition 0\n                -showRelationships 1\n"
 		+ "                -showShapes 0\n                -showDeformers 0\n                -showExpressions 0\n                -showConstraints 0\n                -showConnectionFromSelected 0\n                -showConnectionToSelected 0\n                -showConstraintLabels 0\n                -showUnderworld 0\n                -showInvisible 0\n                -transitionFrames 1\n                -opaqueContainers 0\n                -freeform 0\n                -image \"C:/Documents and Settings/bwilliams/My Documents/maya/projects/Tests/images/Cubes_01_large.tif\" \n                -imagePosition 0 0 \n                -imageScale 1\n                -imageEnabled 0\n                -graphType \"DAG\" \n                -heatMapDisplay 0\n                -updateSelection 1\n                -updateNodeAdded 1\n                -useDrawOverrideColor 0\n                -limitGraphTraversal -1\n                -range 0 0 \n                -iconSize \"smallIcons\" \n                -showCachedConnections 0\n                $editorName;\n\t\tif (!$useSceneConfig) {\n"
@@ -2853,472 +2853,6 @@ createNode ilrUIOptionsNode -s -n "TurtleUIOptions";
 	rename -uid "89C5F28B-44D1-3819-D191-F4A0E2BCB373";
 createNode ilrBakeLayerManager -s -n "TurtleBakeLayerManager";
 	rename -uid "9DB09F2E-48A0-C655-E5D8-48B027D7EFD1";
-createNode shapeEditorManager -n "zivaMax_mdl:shapeEditorManager";
-	rename -uid "9A89284F-480C-9642-0072-D08312BAB8A1";
-	setAttr -s 4 ".bsdt";
-	setAttr ".bsdt[0].bscd" -type "Int32Array" 1 -1 ;
-	setAttr ".bsdt[1].bscd" -type "Int32Array" 1 -2 ;
-	setAttr ".bsdt[1].bsdn" -type "string" "skin";
-	setAttr ".bsdt[2].bscd" -type "Int32Array" 1 -3 ;
-	setAttr ".bsdt[2].bspi" 1;
-	setAttr ".bsdt[2].bsdn" -type "string" "shatner_003";
-	setAttr ".bsdt[3].bspi" 2;
-	setAttr ".bsdt[3].bsdn" -type "string" "james_003";
-createNode poseInterpolatorManager -n "zivaMax_mdl:poseInterpolatorManager";
-	rename -uid "E2C39B20-409F-282D-3C0A-E399275B2329";
-createNode renderLayerManager -n "zivaMax_mdl:renderLayerManager";
-	rename -uid "8E60832C-4134-8DD1-5974-E7AE2431ADE8";
-createNode renderLayer -n "zivaMax_mdl:defaultRenderLayer";
-	rename -uid "D2553673-4CF8-35F6-C758-7BA865A8FC69";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_renderLayerManager";
-	rename -uid "E6A5BDBA-4AF2-E4DB-EBB3-AC9D35475B91";
-createNode renderLayer -n "zivaMax_mdl:skin_defaultRenderLayer";
-	rename -uid "4C34015F-4199-390A-6F33-A3ABED54406C";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_skin_renderLayerManager";
-	rename -uid "602D60D6-4675-2157-3770-2B85648084D8";
-createNode renderLayer -n "zivaMax_mdl:skin_skin_defaultRenderLayer";
-	rename -uid "FD9825B4-4CDD-D64C-4912-F5A7C5610A6B";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_skin_skin_renderLayerManager";
-	rename -uid "C1FADD5B-4B03-E179-8072-E6AA8AC102B5";
-createNode renderLayer -n "zivaMax_mdl:skin_skin_skin_defaultRenderLayer";
-	rename -uid "E89D11D5-462A-74FD-810C-DE9679509603";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_skin_skin_skin_renderLayerManager";
-	rename -uid "40CABD8C-4029-209D-CEC8-9CA22F7DB9A7";
-createNode renderLayer -n "zivaMax_mdl:skin_skin_skin_skin_defaultRenderLayer";
-	rename -uid "7A80153F-4C68-DA84-B1E4-7C985AAAAB42";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:armSwing_renderLayerManager";
-	rename -uid "DE767DCE-4306-5727-6850-5EA8FEDFCEBC";
-createNode renderLayer -n "zivaMax_mdl:armSwing_defaultRenderLayer";
-	rename -uid "6D1E1935-497F-7727-6AA7-C3B9CEC3E4EA";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_0003_renderLayerManager";
-	rename -uid "484B9CA2-497B-794D-5D96-FF828B669627";
-createNode renderLayer -n "zivaMax_mdl:skin_0003_defaultRenderLayer";
-	rename -uid "7670169A-494C-10C7-373F-F3B5595C6DCD";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:shatner_003_renderLayerManager";
-	rename -uid "D1D5695B-4151-8429-293B-4092DEAE22CB";
-createNode renderLayer -n "zivaMax_mdl:shatner_003_defaultRenderLayer";
-	rename -uid "62FBB412-41AD-0C3F-50AC-F8B14BDC563B";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:shatner_003_skin_renderLayerManager";
-	rename -uid "E3CBA334-4271-0A8B-2846-20A4B9EEBD02";
-createNode renderLayer -n "zivaMax_mdl:shatner_003_skin_defaultRenderLayer";
-	rename -uid "219AA55E-45BB-0DE8-A479-1DB4B38C21D5";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:shatner_003_skin_skin_renderLayerManager";
-	rename -uid "7E7A9240-406B-2F13-D1F6-3A9AB9A7BDBC";
-createNode renderLayer -n "zivaMax_mdl:shatner_003_skin_skin_defaultRenderLayer";
-	rename -uid "6393B095-4CE7-6159-A863-C598741A2430";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:shatner_003_armSwing_renderLayerManager";
-	rename -uid "8DAD1EFC-4687-5DB0-1D36-81842128BAA6";
-createNode renderLayer -n "zivaMax_mdl:shatner_003_armSwing_defaultRenderLayer";
-	rename -uid "2ECA06FF-4A62-E1DD-CA10-648DC9513278";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:shatner_003_skin_0003_renderLayerManager";
-	rename -uid "D2180B9A-4AA3-6BAB-CB76-3AACAC012AD3";
-createNode renderLayer -n "zivaMax_mdl:shatner_003_skin_0003_defaultRenderLayer";
-	rename -uid "DC0E6257-41AE-62E1-F2AB-77840891CCE8";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_renderLayerManager1";
-	rename -uid "9BDE51A7-42DD-BE0F-4187-509B18A77E6D";
-createNode renderLayer -n "zivaMax_mdl:skin_defaultRenderLayer1";
-	rename -uid "702952DE-4244-F7D1-4E93-23A5FD1965D0";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:james_003_renderLayerManager";
-	rename -uid "6E9430C2-494C-9B0D-DDCC-3C9DC28B6188";
-createNode renderLayer -n "zivaMax_mdl:james_003_defaultRenderLayer";
-	rename -uid "A1FCF0F9-44C6-C1CC-2553-478B25738D64";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:james_003_skin_renderLayerManager";
-	rename -uid "1897FD2B-48CE-59C1-CC5F-E7B28A6CBD17";
-createNode renderLayer -n "zivaMax_mdl:james_003_skin_defaultRenderLayer";
-	rename -uid "92F6E2F2-43B6-3A7A-82AA-E588900CC73A";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:james_003_skin_skin_renderLayerManager";
-	rename -uid "A9FC26AD-4D91-4B60-840B-2C8C3161BB5A";
-createNode renderLayer -n "zivaMax_mdl:james_003_skin_skin_defaultRenderLayer";
-	rename -uid "2668CC31-4596-1C76-09F6-ACAB1C74F65B";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:shatner_003_skin_skin_skin_renderLayerManager";
-	rename -uid "75E18C1E-40EC-CC52-A34F-C39EAF5BBD9B";
-createNode renderLayer -n "zivaMax_mdl:shatner_003_skin_skin_skin_defaultRenderLayer";
-	rename -uid "42E972D2-436D-5267-AB01-A98D145121AC";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:james_003_armSwing_renderLayerManager";
-	rename -uid "144F4470-4C18-A7FB-BB9D-058B9D5DA2B7";
-createNode renderLayer -n "zivaMax_mdl:james_003_armSwing_defaultRenderLayer";
-	rename -uid "305A4D88-4B6E-3509-7D6B-27B00D864CFD";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:james_003_skin_0003_renderLayerManager";
-	rename -uid "7D487E12-465F-0B56-72CE-25822A4B5FEE";
-createNode renderLayer -n "zivaMax_mdl:james_003_skin_0003_defaultRenderLayer";
-	rename -uid "43E14ACC-4804-4A4A-1A0E-8F8A98F0806D";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_renderLayerManager2";
-	rename -uid "D477A082-4129-3B90-D474-178D7FF09AA9";
-createNode renderLayer -n "zivaMax_mdl:skin_defaultRenderLayer2";
-	rename -uid "F8CC44A9-40A5-A4CB-BDA2-99A9BB8CBDFC";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_skin_renderLayerManager1";
-	rename -uid "E4B60C97-446B-E975-A99E-A38D48E8C252";
-createNode renderLayer -n "zivaMax_mdl:skin_skin_defaultRenderLayer1";
-	rename -uid "A50BB0E0-4AD6-C37B-AE18-32AC02576820";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_skin_skin_renderLayerManager1";
-	rename -uid "8F6559B5-4C21-4127-FF46-52885DDA9F24";
-createNode renderLayer -n "zivaMax_mdl:skin_skin_skin_defaultRenderLayer1";
-	rename -uid "C77C1163-415A-7DAC-E5F9-8AA5FA625D82";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_armSwing_renderLayerManager";
-	rename -uid "5D58098C-4CC6-3A93-B985-44A5ADC11D5E";
-createNode renderLayer -n "zivaMax_mdl:skin_armSwing_defaultRenderLayer";
-	rename -uid "B74469DF-443E-C3C0-A900-E589586BA882";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_skin_0003_renderLayerManager";
-	rename -uid "3E3DE140-4276-B187-FE98-9A82F37AB842";
-createNode renderLayer -n "zivaMax_mdl:skin_skin_0003_defaultRenderLayer";
-	rename -uid "C993B65E-49C2-369D-7BCD-2EA05113B7DF";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_renderLayerManager3";
-	rename -uid "88C71FA4-4C3B-B2BD-13EA-9DBFE28A4D8C";
-createNode renderLayer -n "zivaMax_mdl:skin_defaultRenderLayer3";
-	rename -uid "BB0A6AE6-4B1B-C6AE-BE46-AF9786DE91E7";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_skin_renderLayerManager2";
-	rename -uid "25A3B87F-4322-2351-F0F6-1487327A99AD";
-createNode renderLayer -n "zivaMax_mdl:skin_skin_defaultRenderLayer2";
-	rename -uid "44006C9C-4FD0-BFDE-73A2-39881884D1B2";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_skin_skin_renderLayerManager2";
-	rename -uid "21EEA505-4B96-9874-5E49-BFAF1A27F333";
-createNode renderLayer -n "zivaMax_mdl:skin_skin_skin_defaultRenderLayer2";
-	rename -uid "0FEC4F31-46F9-3FCE-1F08-81926403E7F7";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_armSwing_renderLayerManager1";
-	rename -uid "E4F841A4-448D-2D46-DBC3-E382FC1B24D6";
-createNode renderLayer -n "zivaMax_mdl:skin_armSwing_defaultRenderLayer1";
-	rename -uid "FEE8EF86-418E-6911-0772-2685E0EAB411";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_skin_0003_renderLayerManager1";
-	rename -uid "471B6BA8-42F0-4144-FAA4-E8BC237B6D95";
-createNode renderLayer -n "zivaMax_mdl:skin_skin_0003_defaultRenderLayer1";
-	rename -uid "45038D2D-48DB-D6D4-A897-F591482291E2";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_renderLayerManager4";
-	rename -uid "E86BF8FF-42E5-642B-A7C8-80BB7A9E105C";
-createNode renderLayer -n "zivaMax_mdl:skin_defaultRenderLayer4";
-	rename -uid "788A35FC-4331-5B6B-F5FC-C48C5654E4FE";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_skin_renderLayerManager3";
-	rename -uid "9CFC7BE2-4854-84F2-9CA1-8B8FAF175DF2";
-createNode renderLayer -n "zivaMax_mdl:skin_skin_defaultRenderLayer3";
-	rename -uid "C1D3053F-453D-E147-10D7-899DC00B6F56";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_skin_skin_renderLayerManager3";
-	rename -uid "C1129499-49E2-4499-3896-99AF1AC4EAE9";
-createNode renderLayer -n "zivaMax_mdl:skin_skin_skin_defaultRenderLayer3";
-	rename -uid "28C2F03F-4157-04B0-5145-7580534C08AC";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_armSwing_renderLayerManager2";
-	rename -uid "0F7116F4-44FA-1D72-3B81-579918272539";
-createNode renderLayer -n "zivaMax_mdl:skin_armSwing_defaultRenderLayer2";
-	rename -uid "89BFD238-42BE-F92C-C497-748ED81F42C3";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_skin_0003_renderLayerManager2";
-	rename -uid "9F09ABC2-4F77-FEED-BA2D-D5ADA257ED5B";
-createNode renderLayer -n "zivaMax_mdl:skin_skin_0003_defaultRenderLayer2";
-	rename -uid "1F9BDC32-40CE-0BC0-9DD7-799FF1A7FB96";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_renderLayerManager5";
-	rename -uid "F3CF1ACD-4E06-278F-84A5-D98A3ED828B4";
-createNode renderLayer -n "zivaMax_mdl:skin_defaultRenderLayer5";
-	rename -uid "22F729CC-425C-AD87-B00E-AE8B75D9E6D9";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_skin_renderLayerManager4";
-	rename -uid "A2DC8330-44EE-A656-D8D5-F2840982D5BA";
-createNode renderLayer -n "zivaMax_mdl:skin_skin_defaultRenderLayer4";
-	rename -uid "A9FEB6B4-45D5-7499-3347-069B0B466B32";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_skin_skin_renderLayerManager4";
-	rename -uid "DB37E9FA-4DC6-81A3-9973-1EB0693F8E9E";
-createNode renderLayer -n "zivaMax_mdl:skin_skin_skin_defaultRenderLayer4";
-	rename -uid "2DC313AA-4B6A-C377-2F46-D6BBB1EAFED6";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_armSwing_renderLayerManager3";
-	rename -uid "48CEA2AD-4747-9252-42A4-0B9F1484E08A";
-createNode renderLayer -n "zivaMax_mdl:skin_armSwing_defaultRenderLayer3";
-	rename -uid "21A4C067-48C2-5B41-43A4-5FAE085C16D6";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_skin_0003_renderLayerManager3";
-	rename -uid "36954B22-4EA5-E476-E1CA-80A7B35C30F1";
-createNode renderLayer -n "zivaMax_mdl:skin_skin_0003_defaultRenderLayer3";
-	rename -uid "AD7407A7-4FB8-EBC8-F5CF-F4B41E224446";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_renderLayerManager6";
-	rename -uid "3D137BC8-4682-C9B1-E7F8-9D9A1BE7DA79";
-createNode renderLayer -n "zivaMax_mdl:skin_defaultRenderLayer6";
-	rename -uid "11C7330B-46EE-B220-0331-C5A5EB47E65B";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_skin_renderLayerManager5";
-	rename -uid "9A4E3E8A-4608-50EB-B8ED-EC9B3AEC0B59";
-createNode renderLayer -n "zivaMax_mdl:skin_skin_defaultRenderLayer5";
-	rename -uid "6C29687C-43FD-E5A0-BAEC-EF9709269BF7";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_skin_skin_renderLayerManager5";
-	rename -uid "A38BDD93-46B2-9573-0735-2FA6B1154284";
-createNode renderLayer -n "zivaMax_mdl:skin_skin_skin_defaultRenderLayer5";
-	rename -uid "AA6A011F-45AF-C379-0289-8999C843DA6E";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_armSwing_renderLayerManager4";
-	rename -uid "EB20157E-40F7-3696-1CF1-1D8D7110CFDE";
-createNode renderLayer -n "zivaMax_mdl:skin_armSwing_defaultRenderLayer4";
-	rename -uid "AFE32F0C-4C4E-D2C4-8C13-848463CA5A89";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:skin_skin_0003_renderLayerManager4";
-	rename -uid "80208C06-4404-5B97-E8AD-E082A588705E";
-createNode renderLayer -n "zivaMax_mdl:skin_skin_0003_defaultRenderLayer4";
-	rename -uid "B81ADDFF-4A66-A74D-9199-4191806A64A0";
-	setAttr ".g" yes;
-createNode nodeGraphEditorInfo -n "zivaMax_mdl:hyperShadePrimaryNodeEditorSavedTabsInfo";
-	rename -uid "8DE3941C-401D-5FBB-277C-45ABC05B189A";
-	setAttr ".def" no;
-	setAttr ".tgi[0].tn" -type "string" "Untitled_1";
-	setAttr ".tgi[0].vl" -type "double2" -323.80951094248991 -330.95236780151544 ;
-	setAttr ".tgi[0].vh" -type "double2" 324.99998708566085 330.95236780151544 ;
-	setAttr -s 72 ".tgi[0].ni";
-	setAttr ".tgi[0].ni[0].x" 61.428569793701172;
-	setAttr ".tgi[0].ni[0].y" -631.4285888671875;
-	setAttr ".tgi[0].ni[0].nvs" 1923;
-	setAttr ".tgi[0].ni[1].x" -245.71427917480469;
-	setAttr ".tgi[0].ni[1].y" -631.4285888671875;
-	setAttr ".tgi[0].ni[1].nvs" 1923;
-	setAttr ".tgi[0].ni[2].x" 61.428569793701172;
-	setAttr ".tgi[0].ni[2].y" 478.57144165039062;
-	setAttr ".tgi[0].ni[2].nvs" 1923;
-	setAttr ".tgi[0].ni[3].x" 61.428569793701172;
-	setAttr ".tgi[0].ni[3].y" -291.42855834960938;
-	setAttr ".tgi[0].ni[3].nvs" 1923;
-	setAttr ".tgi[0].ni[4].x" -245.71427917480469;
-	setAttr ".tgi[0].ni[4].y" 48.571430206298828;
-	setAttr ".tgi[0].ni[4].nvs" 1923;
-	setAttr ".tgi[0].ni[5].x" -245.71427917480469;
-	setAttr ".tgi[0].ni[5].y" 478.57144165039062;
-	setAttr ".tgi[0].ni[5].nvs" 1923;
-	setAttr ".tgi[0].ni[6].x" 61.428569793701172;
-	setAttr ".tgi[0].ni[6].y" 908.5714111328125;
-	setAttr ".tgi[0].ni[6].nvs" 1923;
-	setAttr ".tgi[0].ni[7].x" -245.71427917480469;
-	setAttr ".tgi[0].ni[7].y" 908.5714111328125;
-	setAttr ".tgi[0].ni[7].nvs" 1923;
-	setAttr ".tgi[0].ni[8].x" 61.428569793701172;
-	setAttr ".tgi[0].ni[8].y" 48.571430206298828;
-	setAttr ".tgi[0].ni[8].nvs" 1923;
-	setAttr ".tgi[0].ni[9].x" -245.71427917480469;
-	setAttr ".tgi[0].ni[9].y" -291.42855834960938;
-	setAttr ".tgi[0].ni[9].nvs" 1923;
-	setAttr ".tgi[0].ni[10].x" 382.85714721679688;
-	setAttr ".tgi[0].ni[10].y" 2287.142822265625;
-	setAttr ".tgi[0].ni[10].nvs" 1923;
-	setAttr ".tgi[0].ni[11].x" 44.285713195800781;
-	setAttr ".tgi[0].ni[11].y" 541.4285888671875;
-	setAttr ".tgi[0].ni[11].nvs" 1923;
-	setAttr ".tgi[0].ni[12].x" 75.714286804199219;
-	setAttr ".tgi[0].ni[12].y" 2310;
-	setAttr ".tgi[0].ni[12].nvs" 1923;
-	setAttr ".tgi[0].ni[13].x" 351.42855834960938;
-	setAttr ".tgi[0].ni[13].y" 541.4285888671875;
-	setAttr ".tgi[0].ni[13].nvs" 1923;
-	setAttr ".tgi[0].ni[14].x" 382.85714721679688;
-	setAttr ".tgi[0].ni[14].y" -400;
-	setAttr ".tgi[0].ni[14].nvs" 1923;
-	setAttr ".tgi[0].ni[15].x" 75.714286804199219;
-	setAttr ".tgi[0].ni[15].y" -400;
-	setAttr ".tgi[0].ni[15].nvs" 1923;
-	setAttr ".tgi[0].ni[16].x" 75.714286804199219;
-	setAttr ".tgi[0].ni[16].y" -830;
-	setAttr ".tgi[0].ni[16].nvs" 1923;
-	setAttr ".tgi[0].ni[17].x" 382.85714721679688;
-	setAttr ".tgi[0].ni[17].y" -2448.571533203125;
-	setAttr ".tgi[0].ni[17].nvs" 1923;
-	setAttr ".tgi[0].ni[18].x" 75.714286804199219;
-	setAttr ".tgi[0].ni[18].y" 1128.5714111328125;
-	setAttr ".tgi[0].ni[18].nvs" 1922;
-	setAttr ".tgi[0].ni[19].x" 365.71429443359375;
-	setAttr ".tgi[0].ni[19].y" -1870;
-	setAttr ".tgi[0].ni[19].nvs" 1922;
-	setAttr ".tgi[0].ni[20].x" 75.714286804199219;
-	setAttr ".tgi[0].ni[20].y" 1274.2857666015625;
-	setAttr ".tgi[0].ni[20].nvs" 1923;
-	setAttr ".tgi[0].ni[21].x" 382.85714721679688;
-	setAttr ".tgi[0].ni[21].y" -2118.571533203125;
-	setAttr ".tgi[0].ni[21].nvs" 1922;
-	setAttr ".tgi[0].ni[22].x" 382.85714721679688;
-	setAttr ".tgi[0].ni[22].y" -2375.71435546875;
-	setAttr ".tgi[0].ni[22].nvs" 1923;
-	setAttr ".tgi[0].ni[23].x" -231.42857360839844;
-	setAttr ".tgi[0].ni[23].y" 1712.857177734375;
-	setAttr ".tgi[0].ni[23].nvs" 1923;
-	setAttr ".tgi[0].ni[24].x" -538.5714111328125;
-	setAttr ".tgi[0].ni[24].y" 1712.857177734375;
-	setAttr ".tgi[0].ni[24].nvs" 1923;
-	setAttr ".tgi[0].ni[25].x" -552.85711669921875;
-	setAttr ".tgi[0].ni[25].y" 1691.4285888671875;
-	setAttr ".tgi[0].ni[25].nvs" 1923;
-	setAttr ".tgi[0].ni[26].x" 75.714286804199219;
-	setAttr ".tgi[0].ni[26].y" 1712.857177734375;
-	setAttr ".tgi[0].ni[26].nvs" 1923;
-	setAttr ".tgi[0].ni[27].x" 382.85714721679688;
-	setAttr ".tgi[0].ni[27].y" 2100;
-	setAttr ".tgi[0].ni[27].nvs" 1922;
-	setAttr ".tgi[0].ni[28].x" 75.714286804199219;
-	setAttr ".tgi[0].ni[28].y" -885.71429443359375;
-	setAttr ".tgi[0].ni[28].nvs" 1923;
-	setAttr ".tgi[0].ni[29].x" 382.85714721679688;
-	setAttr ".tgi[0].ni[29].y" -885.71429443359375;
-	setAttr ".tgi[0].ni[29].nvs" 1923;
-	setAttr ".tgi[0].ni[30].x" 75.714286804199219;
-	setAttr ".tgi[0].ni[30].y" 844.28570556640625;
-	setAttr ".tgi[0].ni[30].nvs" 1923;
-	setAttr ".tgi[0].ni[31].x" 351.42855834960938;
-	setAttr ".tgi[0].ni[31].y" 494.28570556640625;
-	setAttr ".tgi[0].ni[31].nvs" 1923;
-	setAttr ".tgi[0].ni[32].x" 382.85714721679688;
-	setAttr ".tgi[0].ni[32].y" -447.14285278320312;
-	setAttr ".tgi[0].ni[32].nvs" 1923;
-	setAttr ".tgi[0].ni[33].x" 75.714286804199219;
-	setAttr ".tgi[0].ni[33].y" -447.14285278320312;
-	setAttr ".tgi[0].ni[33].nvs" 1923;
-	setAttr ".tgi[0].ni[34].x" 44.285713195800781;
-	setAttr ".tgi[0].ni[34].y" 494.28570556640625;
-	setAttr ".tgi[0].ni[34].nvs" 1923;
-	setAttr ".tgi[0].ni[35].x" -231.42857360839844;
-	setAttr ".tgi[0].ni[35].y" 1274.2857666015625;
-	setAttr ".tgi[0].ni[35].nvs" 1923;
-	setAttr ".tgi[0].ni[36].x" -231.42857360839844;
-	setAttr ".tgi[0].ni[36].y" 844.28570556640625;
-	setAttr ".tgi[0].ni[36].nvs" 1923;
-	setAttr ".tgi[0].ni[37].x" -538.5714111328125;
-	setAttr ".tgi[0].ni[37].y" 1251.4285888671875;
-	setAttr ".tgi[0].ni[37].nvs" 1923;
-	setAttr ".tgi[0].ni[38].x" 382.85714721679688;
-	setAttr ".tgi[0].ni[38].y" 821.4285888671875;
-	setAttr ".tgi[0].ni[38].nvs" 1923;
-	setAttr ".tgi[0].ni[39].x" 382.85714721679688;
-	setAttr ".tgi[0].ni[39].y" 1251.4285888671875;
-	setAttr ".tgi[0].ni[39].nvs" 1923;
-	setAttr ".tgi[0].ni[40].x" 382.85714721679688;
-	setAttr ".tgi[0].ni[40].y" -2200;
-	setAttr ".tgi[0].ni[40].nvs" 1922;
-	setAttr ".tgi[0].ni[41].x" 75.714286804199219;
-	setAttr ".tgi[0].ni[41].y" 1530;
-	setAttr ".tgi[0].ni[41].nvs" 1923;
-	setAttr ".tgi[0].ni[42].x" 382.85714721679688;
-	setAttr ".tgi[0].ni[42].y" 1135.7142333984375;
-	setAttr ".tgi[0].ni[42].nvs" 1923;
-	setAttr ".tgi[0].ni[43].x" -231.42857360839844;
-	setAttr ".tgi[0].ni[43].y" 1530;
-	setAttr ".tgi[0].ni[43].nvs" 1923;
-	setAttr ".tgi[0].ni[44].x" -245.71427917480469;
-	setAttr ".tgi[0].ni[44].y" 1508.5714111328125;
-	setAttr ".tgi[0].ni[44].nvs" 1923;
-	setAttr ".tgi[0].ni[45].x" 365.71429443359375;
-	setAttr ".tgi[0].ni[45].y" -1951.4285888671875;
-	setAttr ".tgi[0].ni[45].nvs" 1922;
-	setAttr ".tgi[0].ni[46].x" 75.714286804199219;
-	setAttr ".tgi[0].ni[46].y" 1880;
-	setAttr ".tgi[0].ni[46].nvs" 1923;
-	setAttr ".tgi[0].ni[47].x" -538.5714111328125;
-	setAttr ".tgi[0].ni[47].y" 2287.142822265625;
-	setAttr ".tgi[0].ni[47].nvs" 1923;
-	setAttr ".tgi[0].ni[48].x" 324.28570556640625;
-	setAttr ".tgi[0].ni[48].y" -1042.857177734375;
-	setAttr ".tgi[0].ni[48].nvs" 1922;
-	setAttr ".tgi[0].ni[49].x" 331.42855834960938;
-	setAttr ".tgi[0].ni[49].y" -1694.2857666015625;
-	setAttr ".tgi[0].ni[49].nvs" 1922;
-	setAttr ".tgi[0].ni[50].x" 382.85714721679688;
-	setAttr ".tgi[0].ni[50].y" 2725.71435546875;
-	setAttr ".tgi[0].ni[50].nvs" 1923;
-	setAttr ".tgi[0].ni[51].x" -231.42857360839844;
-	setAttr ".tgi[0].ni[51].y" 1880;
-	setAttr ".tgi[0].ni[51].nvs" 1923;
-	setAttr ".tgi[0].ni[52].x" 382.85714721679688;
-	setAttr ".tgi[0].ni[52].y" -830;
-	setAttr ".tgi[0].ni[52].nvs" 1923;
-	setAttr ".tgi[0].ni[53].x" -567.14288330078125;
-	setAttr ".tgi[0].ni[53].y" 2725.71435546875;
-	setAttr ".tgi[0].ni[53].nvs" 1923;
-	setAttr ".tgi[0].ni[54].x" 325.71429443359375;
-	setAttr ".tgi[0].ni[54].y" -1300;
-	setAttr ".tgi[0].ni[54].nvs" 1922;
-	setAttr ".tgi[0].ni[55].x" 75.714286804199219;
-	setAttr ".tgi[0].ni[55].y" 2748.571533203125;
-	setAttr ".tgi[0].ni[55].nvs" 1923;
-	setAttr ".tgi[0].ni[56].x" 382.85714721679688;
-	setAttr ".tgi[0].ni[56].y" 1857.142822265625;
-	setAttr ".tgi[0].ni[56].nvs" 1923;
-	setAttr ".tgi[0].ni[57].x" 75.714286804199219;
-	setAttr ".tgi[0].ni[57].y" 38.571430206298828;
-	setAttr ".tgi[0].ni[57].nvs" 1923;
-	setAttr ".tgi[0].ni[58].x" 382.85714721679688;
-	setAttr ".tgi[0].ni[58].y" 38.571430206298828;
-	setAttr ".tgi[0].ni[58].nvs" 1923;
-	setAttr ".tgi[0].ni[59].x" -538.5714111328125;
-	setAttr ".tgi[0].ni[59].y" 1857.142822265625;
-	setAttr ".tgi[0].ni[59].nvs" 1923;
-	setAttr ".tgi[0].ni[60].x" -231.42857360839844;
-	setAttr ".tgi[0].ni[60].y" 2310;
-	setAttr ".tgi[0].ni[60].nvs" 1923;
-	setAttr ".tgi[0].ni[61].x" -231.42857360839844;
-	setAttr ".tgi[0].ni[61].y" 2748.571533203125;
-	setAttr ".tgi[0].ni[61].nvs" 1923;
-	setAttr ".tgi[0].ni[62].x" 324.28570556640625;
-	setAttr ".tgi[0].ni[62].y" -1098.5714111328125;
-	setAttr ".tgi[0].ni[62].nvs" 1922;
-	setAttr ".tgi[0].ni[63].x" -231.42857360839844;
-	setAttr ".tgi[0].ni[63].y" 2538.571533203125;
-	setAttr ".tgi[0].ni[63].nvs" 1923;
-	setAttr ".tgi[0].ni[64].x" 382.85714721679688;
-	setAttr ".tgi[0].ni[64].y" 2515.71435546875;
-	setAttr ".tgi[0].ni[64].nvs" 1923;
-	setAttr ".tgi[0].ni[65].x" 382.85714721679688;
-	setAttr ".tgi[0].ni[65].y" -8.5714282989501953;
-	setAttr ".tgi[0].ni[65].nvs" 1923;
-	setAttr ".tgi[0].ni[66].x" 325.71429443359375;
-	setAttr ".tgi[0].ni[66].y" -1355.7142333984375;
-	setAttr ".tgi[0].ni[66].nvs" 1922;
-	setAttr ".tgi[0].ni[67].x" -538.5714111328125;
-	setAttr ".tgi[0].ni[67].y" 821.4285888671875;
-	setAttr ".tgi[0].ni[67].nvs" 1923;
-	setAttr ".tgi[0].ni[68].x" 75.714286804199219;
-	setAttr ".tgi[0].ni[68].y" -8.5714282989501953;
-	setAttr ".tgi[0].ni[68].nvs" 1923;
-	setAttr ".tgi[0].ni[69].x" -567.14288330078125;
-	setAttr ".tgi[0].ni[69].y" 2515.71435546875;
-	setAttr ".tgi[0].ni[69].nvs" 1923;
-	setAttr ".tgi[0].ni[70].x" 75.714286804199219;
-	setAttr ".tgi[0].ni[70].y" 2538.571533203125;
-	setAttr ".tgi[0].ni[70].nvs" 1923;
-	setAttr ".tgi[0].ni[71].x" 331.42855834960938;
-	setAttr ".tgi[0].ni[71].y" -1612.857177734375;
-	setAttr ".tgi[0].ni[71].nvs" 1922;
-createNode renderLayerManager -n "zivaMax_mdl:eyelashes_renderLayerManager";
-	rename -uid "862EEB75-4DFF-CCDD-4057-0EBB17AB1132";
-createNode renderLayer -n "zivaMax_mdl:eyelashes_defaultRenderLayer";
-	rename -uid "F434FE71-45FB-1F41-6093-E8AB7F526CEA";
-	setAttr ".g" yes;
-createNode renderLayerManager -n "zivaMax_mdl:joints_renderLayerManager";
-	rename -uid "6AC56273-426E-7AB5-01D5-4E8DF3637CC7";
-createNode renderLayer -n "zivaMax_mdl:joints_defaultRenderLayer";
-	rename -uid "9F122993-490E-752E-5315-4EA05227CC59";
-	setAttr ".g" yes;
 createNode lambert -n "lambert2";
 	rename -uid "E8B48898-4F00-D8B5-0163-8D9DEE1574B6";
 	setAttr ".c" -type "float3" 1 0 0 ;
@@ -3329,11 +2863,16 @@ createNode shadingEngine -n "lambert2SG";
 	setAttr ".ro" yes;
 createNode materialInfo -n "materialInfo1";
 	rename -uid "4824543F-487F-9920-D01A-9A8950A3A787";
-createNode nodeGraphEditorInfo -n "MayaNodeEditorSavedTabsInfo";
-	rename -uid "27BF2E29-4EE1-D4FD-9056-D692B8573FF9";
+createNode nodeGraphEditorInfo -n "hyperShadePrimaryNodeEditorSavedTabsInfo";
+	rename -uid "652EF214-4097-EEB3-57A5-EFA87D7D81A5";
 	setAttr ".tgi[0].tn" -type "string" "Untitled_1";
-	setAttr ".tgi[0].vl" -type "double2" -597.61902387180123 -535.71426442691359 ;
-	setAttr ".tgi[0].vh" -type "double2" 598.80950001497229 534.52378828374265 ;
+	setAttr ".tgi[0].vl" -type "double2" -44.047617297323995 -803.57139664037027 ;
+	setAttr ".tgi[0].vh" -type "double2" 834.52377636281415 44.047617297323995 ;
+createNode nodeGraphEditorInfo -n "MayaNodeEditorSavedTabsInfo";
+	rename -uid "2D59A817-4FBA-F6B2-3773-8EAEC74747F0";
+	setAttr ".tgi[0].tn" -type "string" "Untitled_1";
+	setAttr ".tgi[0].vl" -type "double2" -597.02378580021582 -536.30950249849889 ;
+	setAttr ".tgi[0].vh" -type "double2" 599.40473808655781 533.92855021215712 ;
 select -ne :time1;
 	setAttr -av -k on ".cch";
 	setAttr -av -k on ".fzn";
@@ -3445,7 +2984,6 @@ select -ne :defaultRenderingList1;
 	setAttr -k on ".ihi";
 	setAttr -av -k on ".nds";
 	setAttr -cb on ".bnm";
-	setAttr -s 47 ".r";
 select -ne :standardSurface1;
 	setAttr ".b" 0.80000001192092896;
 	setAttr ".bc" -type "float3" 1 1 1 ;
@@ -4385,120 +3923,6 @@ connectAttr "fgr00_1_guide.wm" "DCM_22.imat";
 connectAttr "fgr00_2_guide.wm" "DCM_23.imat";
 connectAttr "fgr00_3_guide.wm" "DCM_24.imat";
 connectAttr "fgr00_4_guide.wm" "DCM_25.imat";
-connectAttr "shapeEditorManager.obsv[0]" "zivaMax_mdl:shapeEditorManager.bsdt[0].bdpv"
-		;
-connectAttr "zivaMax_mdl:renderLayerManager.rlmi[0]" "zivaMax_mdl:defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_renderLayerManager.rlmi[0]" "zivaMax_mdl:skin_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_skin_renderLayerManager.rlmi[0]" "zivaMax_mdl:skin_skin_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_skin_skin_renderLayerManager.rlmi[0]" "zivaMax_mdl:skin_skin_skin_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_skin_skin_skin_renderLayerManager.rlmi[0]" "zivaMax_mdl:skin_skin_skin_skin_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:armSwing_renderLayerManager.rlmi[0]" "zivaMax_mdl:armSwing_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_0003_renderLayerManager.rlmi[0]" "zivaMax_mdl:skin_0003_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:shatner_003_renderLayerManager.rlmi[0]" "zivaMax_mdl:shatner_003_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:shatner_003_skin_renderLayerManager.rlmi[0]" "zivaMax_mdl:shatner_003_skin_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:shatner_003_skin_skin_renderLayerManager.rlmi[0]" "zivaMax_mdl:shatner_003_skin_skin_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:shatner_003_armSwing_renderLayerManager.rlmi[0]" "zivaMax_mdl:shatner_003_armSwing_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:shatner_003_skin_0003_renderLayerManager.rlmi[0]" "zivaMax_mdl:shatner_003_skin_0003_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_renderLayerManager1.rlmi[0]" "zivaMax_mdl:skin_defaultRenderLayer1.rlid"
-		;
-connectAttr "zivaMax_mdl:james_003_renderLayerManager.rlmi[0]" "zivaMax_mdl:james_003_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:james_003_skin_renderLayerManager.rlmi[0]" "zivaMax_mdl:james_003_skin_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:james_003_skin_skin_renderLayerManager.rlmi[0]" "zivaMax_mdl:james_003_skin_skin_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:shatner_003_skin_skin_skin_renderLayerManager.rlmi[0]" "zivaMax_mdl:shatner_003_skin_skin_skin_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:james_003_armSwing_renderLayerManager.rlmi[0]" "zivaMax_mdl:james_003_armSwing_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:james_003_skin_0003_renderLayerManager.rlmi[0]" "zivaMax_mdl:james_003_skin_0003_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_renderLayerManager2.rlmi[0]" "zivaMax_mdl:skin_defaultRenderLayer2.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_skin_renderLayerManager1.rlmi[0]" "zivaMax_mdl:skin_skin_defaultRenderLayer1.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_skin_skin_renderLayerManager1.rlmi[0]" "zivaMax_mdl:skin_skin_skin_defaultRenderLayer1.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_armSwing_renderLayerManager.rlmi[0]" "zivaMax_mdl:skin_armSwing_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_skin_0003_renderLayerManager.rlmi[0]" "zivaMax_mdl:skin_skin_0003_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_renderLayerManager3.rlmi[0]" "zivaMax_mdl:skin_defaultRenderLayer3.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_skin_renderLayerManager2.rlmi[0]" "zivaMax_mdl:skin_skin_defaultRenderLayer2.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_skin_skin_renderLayerManager2.rlmi[0]" "zivaMax_mdl:skin_skin_skin_defaultRenderLayer2.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_armSwing_renderLayerManager1.rlmi[0]" "zivaMax_mdl:skin_armSwing_defaultRenderLayer1.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_skin_0003_renderLayerManager1.rlmi[0]" "zivaMax_mdl:skin_skin_0003_defaultRenderLayer1.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_renderLayerManager4.rlmi[0]" "zivaMax_mdl:skin_defaultRenderLayer4.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_skin_renderLayerManager3.rlmi[0]" "zivaMax_mdl:skin_skin_defaultRenderLayer3.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_skin_skin_renderLayerManager3.rlmi[0]" "zivaMax_mdl:skin_skin_skin_defaultRenderLayer3.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_armSwing_renderLayerManager2.rlmi[0]" "zivaMax_mdl:skin_armSwing_defaultRenderLayer2.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_skin_0003_renderLayerManager2.rlmi[0]" "zivaMax_mdl:skin_skin_0003_defaultRenderLayer2.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_renderLayerManager5.rlmi[0]" "zivaMax_mdl:skin_defaultRenderLayer5.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_skin_renderLayerManager4.rlmi[0]" "zivaMax_mdl:skin_skin_defaultRenderLayer4.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_skin_skin_renderLayerManager4.rlmi[0]" "zivaMax_mdl:skin_skin_skin_defaultRenderLayer4.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_armSwing_renderLayerManager3.rlmi[0]" "zivaMax_mdl:skin_armSwing_defaultRenderLayer3.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_skin_0003_renderLayerManager3.rlmi[0]" "zivaMax_mdl:skin_skin_0003_defaultRenderLayer3.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_renderLayerManager6.rlmi[0]" "zivaMax_mdl:skin_defaultRenderLayer6.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_skin_renderLayerManager5.rlmi[0]" "zivaMax_mdl:skin_skin_defaultRenderLayer5.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_skin_skin_renderLayerManager5.rlmi[0]" "zivaMax_mdl:skin_skin_skin_defaultRenderLayer5.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_armSwing_renderLayerManager4.rlmi[0]" "zivaMax_mdl:skin_armSwing_defaultRenderLayer4.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_skin_0003_renderLayerManager4.rlmi[0]" "zivaMax_mdl:skin_skin_0003_defaultRenderLayer4.rlid"
-		;
-connectAttr "zivaMax_mdl:skin_skin_defaultRenderLayer4.msg" "zivaMax_mdl:hyperShadePrimaryNodeEditorSavedTabsInfo.tgi[0].ni[19].dn"
-		;
-connectAttr "zivaMax_mdl:skin_defaultRenderLayer5.msg" "zivaMax_mdl:hyperShadePrimaryNodeEditorSavedTabsInfo.tgi[0].ni[21].dn"
-		;
-connectAttr "zivaMax_mdl:skin_defaultRenderLayer4.msg" "zivaMax_mdl:hyperShadePrimaryNodeEditorSavedTabsInfo.tgi[0].ni[40].dn"
-		;
-connectAttr "zivaMax_mdl:skin_skin_defaultRenderLayer3.msg" "zivaMax_mdl:hyperShadePrimaryNodeEditorSavedTabsInfo.tgi[0].ni[45].dn"
-		;
-connectAttr "zivaMax_mdl:skin_armSwing_defaultRenderLayer2.msg" "zivaMax_mdl:hyperShadePrimaryNodeEditorSavedTabsInfo.tgi[0].ni[48].dn"
-		;
-connectAttr "zivaMax_mdl:skin_skin_skin_defaultRenderLayer3.msg" "zivaMax_mdl:hyperShadePrimaryNodeEditorSavedTabsInfo.tgi[0].ni[49].dn"
-		;
-connectAttr "zivaMax_mdl:skin_skin_0003_defaultRenderLayer2.msg" "zivaMax_mdl:hyperShadePrimaryNodeEditorSavedTabsInfo.tgi[0].ni[54].dn"
-		;
-connectAttr "zivaMax_mdl:skin_armSwing_defaultRenderLayer3.msg" "zivaMax_mdl:hyperShadePrimaryNodeEditorSavedTabsInfo.tgi[0].ni[62].dn"
-		;
-connectAttr "zivaMax_mdl:skin_skin_0003_defaultRenderLayer3.msg" "zivaMax_mdl:hyperShadePrimaryNodeEditorSavedTabsInfo.tgi[0].ni[66].dn"
-		;
-connectAttr "zivaMax_mdl:skin_skin_skin_defaultRenderLayer4.msg" "zivaMax_mdl:hyperShadePrimaryNodeEditorSavedTabsInfo.tgi[0].ni[71].dn"
-		;
-connectAttr "zivaMax_mdl:eyelashes_renderLayerManager.rlmi[0]" "zivaMax_mdl:eyelashes_defaultRenderLayer.rlid"
-		;
-connectAttr "zivaMax_mdl:joints_renderLayerManager.rlmi[0]" "zivaMax_mdl:joints_defaultRenderLayer.rlid"
-		;
 connectAttr "lambert2.oc" "lambert2SG.ss";
 connectAttr "|module_grp|fgrRef_grp|null1|fgrRef1|fgrRefShape.iog" "lambert2SG.dsm"
 		 -na;
@@ -4543,95 +3967,4 @@ connectAttr "lambert2.msg" "materialInfo1.m";
 connectAttr "lambert2SG.pa" ":renderPartition.st" -na;
 connectAttr "lambert2.msg" ":defaultShaderList1.s" -na;
 connectAttr "defaultRenderLayer.msg" ":defaultRenderingList1.r" -na;
-connectAttr "zivaMax_mdl:defaultRenderLayer.msg" ":defaultRenderingList1.r" -na;
-connectAttr "zivaMax_mdl:skin_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_skin_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_skin_skin_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_skin_skin_skin_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:armSwing_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_0003_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:shatner_003_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:shatner_003_skin_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:shatner_003_skin_skin_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:shatner_003_armSwing_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:shatner_003_skin_0003_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_defaultRenderLayer1.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:james_003_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:james_003_skin_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:james_003_skin_skin_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:shatner_003_skin_skin_skin_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:james_003_armSwing_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:james_003_skin_0003_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_defaultRenderLayer2.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_skin_defaultRenderLayer1.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_skin_skin_defaultRenderLayer1.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_armSwing_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_skin_0003_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_defaultRenderLayer3.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_skin_defaultRenderLayer2.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_skin_skin_defaultRenderLayer2.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_armSwing_defaultRenderLayer1.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_skin_0003_defaultRenderLayer1.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_defaultRenderLayer4.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_skin_defaultRenderLayer3.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_skin_skin_defaultRenderLayer3.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_armSwing_defaultRenderLayer2.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_skin_0003_defaultRenderLayer2.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_defaultRenderLayer5.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_skin_defaultRenderLayer4.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_skin_skin_defaultRenderLayer4.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_armSwing_defaultRenderLayer3.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_skin_0003_defaultRenderLayer3.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_defaultRenderLayer6.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_skin_defaultRenderLayer5.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_skin_skin_defaultRenderLayer5.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_armSwing_defaultRenderLayer4.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:skin_skin_0003_defaultRenderLayer4.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:eyelashes_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
-connectAttr "zivaMax_mdl:joints_defaultRenderLayer.msg" ":defaultRenderingList1.r"
-		 -na;
 // End of lfHandBp.ma
