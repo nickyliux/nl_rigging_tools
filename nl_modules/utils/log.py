@@ -4,13 +4,6 @@ import logging
 def update_root_logger():
     """Updated root logger to print more info"""
 
-    # logging.basicConfig(
-    #     level=TRACE,
-    #     stream=sys.stdout,
-    #     format="%(levelname)s:%(name)s:%(funcName)s:%(message)s",
-    # )
-    # format="%(levelname)s:%(name)s:%(message)s",
-
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
     logger.handlers.clear()
@@ -19,12 +12,8 @@ def update_root_logger():
     formatter = logging.Formatter(
         "[%(levelname).1s] %(filename)-24s %(funcName)-24s %(message)s"
     )
-    # %(asctime)s "%Y-%m-%d %H:%M:%S",
     stream_hdl.setFormatter(formatter)
     logger.addHandler(stream_hdl)
-
-    # print(f"{'Type':5s} {'File':24s} {'Method':24s} Message")
-    # print(f"{'----':5s} {'----':24s} {'------':24s} -------")
 
 
 # def print_methods(className):
@@ -55,38 +44,38 @@ def update_root_logger():
 #         print(item)
 
 
-def print_all(tgt):
-    """Print all attributes of a class or module in a structured way."""
+# def print_all(tgt):
+#     """Print all attributes of a class or module in a structured way."""
 
-    def print_it(items):
-        if items:
-            print(" ", ", ".join(items))
+#     def print_it(items):
+#         if items:
+#             print(" ", ", ".join(items))
 
-    typeList = ["staticmethod", "classmethod", "function", "property", "str"]
-    classDict = dict.fromkeys(typeList)
+#     typeList = ["staticmethod", "classmethod", "function", "property", "str"]
+#     classDict = dict.fromkeys(typeList)
 
-    for name, item in tgt.__dict__.items():
-        mType = type(item).__name__
-        if mType in typeList:
-            if not name.startswith("_"):
-                if classDict[mType]:
-                    classDict[mType].append(name)
-                else:
-                    classDict[mType] = [name]
-        else:
-            if classDict["str"]:
-                classDict["str"].append(name)
-            else:
-                classDict["str"] = [name]
+#     for name, item in tgt.__dict__.items():
+#         mType = type(item).__name__
+#         if mType in typeList:
+#             if not name.startswith("_"):
+#                 if classDict[mType]:
+#                     classDict[mType].append(name)
+#                 else:
+#                     classDict[mType] = [name]
+#         else:
+#             if classDict["str"]:
+#                 classDict["str"].append(name)
+#             else:
+#                 classDict["str"] = [name]
 
-    print("-" * 79)
-    print("object attr")
-    print_it(classDict["str"])
-    print("property")
-    print_it(classDict["property"])
-    print("function")
-    print_it(classDict["function"])
-    print("staticmethod")
-    print_it(classDict["staticmethod"])
-    print("classmethod")
-    print_it(classDict["classmethod"])
+#     print("-" * 79)
+#     print("object attr")
+#     print_it(classDict["str"])
+#     print("property")
+#     print_it(classDict["property"])
+#     print("function")
+#     print_it(classDict["function"])
+#     print("staticmethod")
+#     print_it(classDict["staticmethod"])
+#     print("classmethod")
+#     print_it(classDict["classmethod"])

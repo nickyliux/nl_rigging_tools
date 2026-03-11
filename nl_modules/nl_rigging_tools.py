@@ -582,14 +582,10 @@ global nlRT_win
 def showUI():
     """Main function to initialize and show the rigging tools UI."""
     closeUI()
-    # try:
-    #     nlRT_win.close_window()
-    # except:
-    #     pass
+
     global nlRT_win
     nlRT_win = MyToolWin()
     nlRT_win.show(dockable=1, floating=0, area="left")
-    # nlRT_win.show(dockable=0, floating=1, area="left")
     with open(STYLE_PATH, "r") as f:
         style = f.read()
         nlRT_win.setStyleSheet(style)
