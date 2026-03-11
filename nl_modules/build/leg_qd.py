@@ -123,7 +123,7 @@ class LegQd(RigModule):
 
     def build_ctl(self):
         """Build control nodes for the quadruped leg rig."""
-        logging.info(self.rigID)
+        logging.info("OK")
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
 
@@ -217,7 +217,7 @@ class LegQd(RigModule):
 
     def build_fk(self):
         """Build the FK controls and joints for the quadruped leg rig."""
-        logging.info(self.rigID)
+        logging.info("OK")
         self.jnts_fk = common.dupSk(
             self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
         )
@@ -234,7 +234,7 @@ class LegQd(RigModule):
 
     def build_ik(self):
         """Build the IK controls for the quadruped leg rig."""
-        logging.info(self.rigID)
+        logging.info("OK")
         rID, rSz, xDr = self.getMyVar()
 
         # --- Guide and alignment setup ---
@@ -339,7 +339,7 @@ class LegQd(RigModule):
 
     def blend_fk_ik(self):
         """Blend FK and IK controls for the quadruped leg rig."""
-        logging.info(self.rigID)
+        logging.info("OK")
         rID, rSz, xDr = self.getMyVar()
 
         self.setting.snapTo(self.palm, p=self.CTL_DATA)
@@ -360,7 +360,7 @@ class LegQd(RigModule):
 
     def extra_roll_logic(self, ballRollG, extraRollG, grp):
         """Setup extra roll logic for the quadruped leg rig."""
-        logging.info(self.rigID)
+        logging.info("OK")
 
         aimGrp = extraRollG.addOffsetGrp(below=1, relink=0)
         aimGrp | extraRollG.offset
@@ -434,7 +434,7 @@ class LegQd(RigModule):
 
     def build_digits(self):
         """Build the digit controls for the quadruped leg rig."""
-        logging.info(self.rigID)
+        logging.info("OK")
 
         rID, rSz, xDr = self.getMyVar()
         self.toesCtlsList = []
@@ -477,7 +477,7 @@ class LegQd(RigModule):
 
     def build_dual_bones(self):
         """Build dual bones for the lower leg."""
-        logging.info(self.rigID)
+        logging.info("OK")
         rID, rSz, xDr = self.getMyVar()
 
         radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.5)
@@ -506,7 +506,7 @@ class LegQd(RigModule):
 
     def singleBallCtl_setup(self):
         """Make ball ctl the single ctl in both FK and IK modes."""
-        logging.info(self.rigID)
+        logging.info("OK")
 
         # --- Prepare blend attribute and offsets ---
         fkIk = self.setting.a["fkIk"]
@@ -625,7 +625,7 @@ class LegQd(RigModule):
 
     def build_post(self):
         """Post setup for the quadruped leg rig module."""
-        logging.info(self.rigID)
+        logging.info("OK")
         common.add_mirror_attr([self.ikc, self.ikc_gimbal, self.pvc, self.smart_ctl])
 
         self.setup_scale()

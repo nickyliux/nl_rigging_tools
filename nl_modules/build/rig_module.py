@@ -360,7 +360,7 @@ class RigModule(RigBase):
 
     def unbuild_pre_module(self):
         """Prepare for unbuilding the rig module, resetting the rigNode state."""
-        logging.info(self.rigID)
+        logging.info("OK")
 
         common.pauseVP(1)
         self.moduleG.show()
@@ -1083,7 +1083,7 @@ class RigModule(RigBase):
         up2="tz",
     ):
         """Build a ribbon rig with upper and lower parts, and setup controls."""
-        logging.info(self.rigID)
+        logging.info("OK")
 
         rID, rSz, xDr = self.getMyVar()
         ribbonUp = self.build_rbn(upr, name="up", rbnJntNum=jntNum, volMode=0, up=up1)

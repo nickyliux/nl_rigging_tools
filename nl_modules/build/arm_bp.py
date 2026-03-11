@@ -86,7 +86,7 @@ class ArmBp(RigModule):
 
     def build_ctl(self):
         """Build control nodes for the arm rig."""
-        logging.info(self.rigID)
+        logging.info("OK")
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
 
@@ -167,7 +167,7 @@ class ArmBp(RigModule):
 
     def build_fk(self):
         """Build the FK controls and joints for the arm rig."""
-        logging.info(self.rigID)
+        logging.info("OK")
 
         self.jnts_fk = common.dupSk(
             self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize / 2, color=Color.BLUE
@@ -182,7 +182,7 @@ class ArmBp(RigModule):
 
     def build_ik(self):
         """Build the IK controls for the arm rig."""
-        logging.info(self.rigID)
+        logging.info("OK")
 
         rID, rSz, xDr = self.getMyVar()
 
@@ -245,7 +245,7 @@ class ArmBp(RigModule):
 
     def fk_pin_local_rot(self):
         """Setup palm IK control constraints."""
-        logging.info(self.rigID)
+        logging.info("OK")
         rID, rSz, xDr = self.getMyVar()
 
         fkPin = self.pvc.a.add("fkPin", min=0, max=1)
@@ -285,7 +285,7 @@ class ArmBp(RigModule):
 
     def blend_fk_ik(self):
         """Blend FK and IK joints for the arm rig."""
-        logging.info(self.rigID)
+        logging.info("OK")
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
 
@@ -399,7 +399,7 @@ class ArmBp(RigModule):
 
     def build_dual_bones(self):
         """Build dual bones for the lower arm."""
-        logging.info(self.rigID)
+        logging.info("OK")
         rID, rSz, xDr = self.getMyVar()
 
         radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.6)
@@ -568,7 +568,7 @@ class ArmBp(RigModule):
 
     def build_post(self):
         """Post setup for the arm rig."""
-        logging.info(self.rigID)
+        logging.info("OK")
 
         common.add_mirror_attr([self.pvc])
 

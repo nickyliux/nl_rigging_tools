@@ -71,7 +71,7 @@
 #
 #     def build_fk(self):
 #         s = self.rigSize
-#         logging.info(self.rigID)
+#         logging.info('')
 #
 #         self.ctlsArr = []
 #         for fgrs in self.fgrsArr:

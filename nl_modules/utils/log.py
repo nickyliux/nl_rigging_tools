@@ -1,5 +1,4 @@
 import logging
-
 import maya.cmds as mc
 
 
@@ -22,14 +21,14 @@ class MayaScrollFieldHandler(logging.Handler):
 
 
 def create_log_window(
-    window_name="nlRT_LogWindow", title="nlRT Log", width=720, height=640
+    window_name="nlRT_LogWindow", title="nlRT Log", x=150, y=150, w=700, h=540
 ):
     """Create a window with a scrollField and return the field control name."""
 
     if mc.window(window_name, exists=True):
-        mc.deleteUI(window_name)
+        mc.deleteUI(window_name, window=True)
 
-    mc.window(window_name, title=title, widthHeight=(width, height))
+    mc.window(window_name, title=title, topLeftCorner=[x, y], widthHeight=(w, h))
     form_layout = mc.formLayout()
     scroll_field = mc.scrollField(editable=False, wordWrap=False, text="")
 
@@ -37,10 +36,10 @@ def create_log_window(
         form_layout,
         edit=1,
         attachForm=[
-            (scroll_field, "top", 5),
-            (scroll_field, "left", 5),
-            (scroll_field, "right", 5),
-            (scroll_field, "bottom", 5),
+            (scroll_field, "top", 10),
+            (scroll_field, "left", 10),
+            (scroll_field, "right", 10),
+            (scroll_field, "bottom", 10),
         ],
     )
 
@@ -59,8 +58,7 @@ def attach_scroll_field_handler(logger, scroll_field, formatter=None):
     handler.setFormatter(
         formatter
         or logging.Formatter(
-            "%(asctime)s %(levelname)-7s %(filename)-24s %(funcName)-24s %(message)s",
-            datefmt="%H:%M:%S",
+            "%(levelname)-7s %(filename)-24s %(lineno)-5d%(funcName)-24s %(message)s",
         )
     )
     logger.addHandler(handler)
@@ -74,8 +72,7 @@ def update_root_logger(use_scroll_field=False, create_window=False, scroll_field
     logger.handlers.clear()
 
     formatter = logging.Formatter(
-        "%(asctime)s %(levelname)-7s %(filename)-24s %(funcName)-24s %(message)s",
-        datefmt="%H:%M:%S",
+        "%(levelname)-7s %(filename)-24s %(lineno)-5d%(funcName)-24s %(message)s",
     )
 
     if use_scroll_field:
@@ -84,7 +81,6 @@ def update_root_logger(use_scroll_field=False, create_window=False, scroll_field
 
         if scroll_field and mc.scrollField(scroll_field, exists=True):
             attach_scroll_field_handler(logger, scroll_field, formatter=formatter)
-            return
 
     stream_hdl = logging.StreamHandler()
     stream_hdl.setFormatter(formatter)

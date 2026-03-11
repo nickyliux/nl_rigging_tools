@@ -89,7 +89,7 @@ class SpinePro(rig_module.RigModule):
         self.build_post()
 
     def build_fk(self):
-        logging.info(self.rigID)
+        logging.info("OK")
 
         D = self.rootJ.childrenJt[0].a.ty.get()
         s = self.rigSize
@@ -132,7 +132,7 @@ class SpinePro(rig_module.RigModule):
     def build_spine(self):
 
         s = self.rigSize
-        logging.info(self.rigID)
+        logging.info("OK")
 
         mg = self.master_guide
         self.lw_ikc.snapAlignTo(self.fkJnt[0], mg)
@@ -168,7 +168,7 @@ class SpinePro(rig_module.RigModule):
         # self.followAlignTwo(self.upr_fkc, [self.upr_fkc.parent, self.masterC], 1)
 
     def build_ribbon(self):
-        logging.info(self.rigID)
+        logging.info("OK")
 
         dummyG1 = GrpNode("g#", snap=self.rootJ)
         dummyG2 = GrpNode("g#", snap=self.rootJ.allChildren[-1])

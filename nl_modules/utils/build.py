@@ -59,10 +59,6 @@ def buildTgt(rigN):
 @common.Undo("buildSelOrAll")
 def buildSelOrAll(*args):
     """Build rig for selected rigNodes or all if nothing selected"""
-
-    # --- Logging ---
-    log.update_root_logger(use_scroll_field=True, create_window=True)
-
     rigNodes = getRigNodes_selOrAll()
     rigNodesToBuild = []
 
@@ -74,12 +70,15 @@ def buildSelOrAll(*args):
     if rigNodesToBuild:
         buildCount = len(rigNodesToBuild)
 
-        # common.pauseVP(1)
+        common.pauseVP(1)
         mc.progressWindow(
             t="Build", pr=0, status="\nPreparing ...", ii=0, maxValue=buildCount
         )
+        # --- Logging ---
+        log.update_root_logger(use_scroll_field=1, create_window=1)
 
         for i, rN in enumerate(rigNodesToBuild):
+            logging.info(f"{i} : {rN.name}")
             buildTgt(rN)
             mc.progressWindow(e=1, pr=i, status=f"\n{rN}")
             mc.refresh(f=1)
@@ -89,20 +88,20 @@ def buildSelOrAll(*args):
             proxy.genProxyForSet()
 
         mc.progressWindow(ep=1)
+        logging.info(f"{buildCount} modules successfully built.")
 
-        logging.info(f"{buildCount} rigNodes built.")
         mc.select(cl=1)
-        # common.pauseVP(0)
+        common.pauseVP(0)
 
 
 def postRig():
     """Post rigging operations"""
+    logging.info("OK")
     addMasterAttrs()
     control.reset_all_ctl()
     update_anchor_conn()
     update_space_switch()
     common.showRO()
-    logging.info("Post rig done.")
 
 
 def addMasterAttrs():

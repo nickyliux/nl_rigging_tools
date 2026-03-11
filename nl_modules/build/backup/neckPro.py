@@ -89,7 +89,7 @@ class NeckPro(rig_module.RigModule):
         self.build_post()
 
     def build_fk(self):
-        logging.info(self.rigID)
+        logging.info("OK")
 
         s = self.rigSize
 
@@ -122,7 +122,7 @@ class NeckPro(rig_module.RigModule):
     def build_spine(self):
 
         s = self.rigSize
-        logging.info(self.rigID)
+        logging.info("OK")
 
         mg = self.master_guide
         self.lw_ikc.snapAlignTo(self.fkJnt[0], mg)

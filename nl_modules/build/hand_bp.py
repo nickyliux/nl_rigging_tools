@@ -108,7 +108,7 @@ class HandBp(RigModule):
 
     def build_fk(self):
         """Build FK controls for the hand rig module."""
-        logging.info(self.rigID)
+        logging.info("OK")
 
         for fgrs in self.jnts_fgr:
 
@@ -122,7 +122,7 @@ class HandBp(RigModule):
 
     def build_ik(self):
         """Build IK controls for the hand rig module."""
-        logging.info(self.rigID)
+        logging.info("OK")
 
         rID, rSz, xDr = self.getMyVar()
         self.hand_grp = GrpNode(rID + "_grp", align=self.rootJ, p=self.CTL_DATA)
@@ -312,7 +312,7 @@ class HandBp(RigModule):
 
     def build_fgrs(self):
         """Build the finger logic for the hand rig module."""
-        logging.info(self.rigID)
+        logging.info("OK")
 
         rID, rSz, xDr = self.getMyVar()
         if len(self.jnts_fgr) != 5:
@@ -410,7 +410,7 @@ class HandBp(RigModule):
 
     def build_post(self):
         """Post setup for the hand rig module."""
-        logging.info(self.rigID)
+        logging.info("OK")
 
         self.setting.alignTo(self.rootJ, p=self.CTL_DATA)
         self.rootJ.cstPar(self.setting, mo=1)
