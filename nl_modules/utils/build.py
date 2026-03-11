@@ -391,6 +391,29 @@ def collect_space_data():
     return ctlList
 
 
+def cleanUpScene():
+    n = mc.ls("*_sceneConfigurationScriptNode", "*_uiConfigurationScriptNode")
+    if n:
+        mc.delete(n)
+
+
+def removeOrphanRigNodes():
+    """Remove rigNodes with no skeleton."""
+
+    import maya.mel as mel
+
+    mel.eval("MLdeleteUnused;")
+
+    rigNodes = getRigNodes_all()
+    removeCount = 0
+    for node in rigNodes:
+        mg = node.a.moduleG.inConnNode
+        if not mg or not mc.objExists(mg):
+            node.delete()
+            removeCount += 1
+    logging.info(f"{removeCount} orphan rigNodes removed.")
+
+
 def getRigNodes_selOrAll():
     """Return rigNodes from selected objects or all rigNodes if nothing selected"""
     rigNodes = []

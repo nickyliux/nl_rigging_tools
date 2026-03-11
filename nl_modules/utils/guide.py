@@ -221,6 +221,8 @@ def loadTemplate():
     if not tgtPaths:
         return
 
+    build.removeOrphanRigNodes()
+
     common.pauseVP(1)
     rigID_dict = file.loadJson(tgtPaths[-1])
     loadGuideFrIdDict(rigID_dict)
@@ -230,6 +232,7 @@ def loadTemplate():
     mc.select(cl=1)
     logging.info(f"Template loaded: {os.path.basename(tgtPaths[-1])}.")
 
+    build.cleanUpScene()
     # if removeUnused:
     #     idInPreset = [k + "_RGN" for k in rigID_dict.keys()]
     #     for node in build.getRigNodes_all():

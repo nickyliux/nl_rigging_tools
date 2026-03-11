@@ -72,9 +72,9 @@ class SpineBp(RigModule):
         ]
         if self.ribbon:
             ctl_defs += [
-                ("fore_ikc", "cube", None, rSz * 8, 0),
-                ("mid_ikc", "cube", None, rSz * 2, 1),
-                ("base_ikc", "cube", None, rSz * 8, 0),
+                ("fore_ikc", "cube", None, Vec((8, 2, 8)) * rSz, 0),
+                ("mid_ikc", "cube", None, Vec((2, 1, 2)) * rSz, 1),
+                ("base_ikc", "cube", None, Vec((8, 2, 8)) * rSz, 0),
             ]
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
@@ -85,15 +85,15 @@ class SpineBp(RigModule):
         self.setting.cv_move(0, 0, rSz * -130)
         self.setting.color = Color.PINK
 
-        if self.ribbon:
-            if self.is_neck():
-                self.fore_ikc.cv_scale(2, 0.1, 1.6)
-                self.mid_ikc.cv_scale(2, 0.4, 1.6)
-                self.base_ikc.cv_scale(2, 0.1, 1.6)
-            else:
-                self.fore_ikc.cv_scale(1, 0.05, 0.8)
-                self.mid_ikc.cv_scale(1, 0.2, 0.8)
-                self.base_ikc.cv_scale(1, 0.05, 0.8)
+        # if self.ribbon:
+        #     if self.is_neck():
+        #         self.fore_ikc.cv_scale(2, 0.1, 1.6)
+        #         self.mid_ikc.cv_scale(2, 0.4, 1.6)
+        #         self.base_ikc.cv_scale(2, 0.1, 1.6)
+        #     else:
+        #         self.fore_ikc.cv_scale(1, 0.05, 0.8)
+        #         self.mid_ikc.cv_scale(1, 0.2, 0.8)
+        #         self.base_ikc.cv_scale(1, 0.05, 0.8)
 
     def build(self):
         """Build the spine rig module."""
@@ -309,7 +309,11 @@ class SpineBp(RigModule):
             )
         if self.is_neck():
             CrvNode(self.ctls_fk[0]).setOnTop(1)
-            mc.hide(self.cog_ctl, self.base_ikc)
+            self.ctl_vis_toggle(
+                self.setting.a.add("showFullCtl", type="bool", k=0),
+                onList=[self.cog_ctl, self.base_ikc],
+            )
+            # mc.hide(self.cog_ctl, self.base_ikc)
 
         if self.masterC2.a.showSetting.exists():
             self.masterC2.a.showSetting >> self.setting.a.v
@@ -372,11 +376,11 @@ class SpineBp(RigModule):
 
     def setup_ctlSet(self):
         """Setup control sets for the spine rig."""
-        ctls = self.ctls_fk + [self.setting]
+        ctls = self.ctls_fk + [self.setting, self.cog_ctl, self.cog_gmb]
         if self.ribbon:
             ctls += self.ctls_ik
-        if not self.is_neck():
-            ctls += [self.cog_ctl, self.cog_gmb]
+        # if not self.is_neck():
+        #     ctls += [self.cog_ctl, self.cog_gmb]
         self.add_ctl_set(ctls)
 
     def setup_scale(self):

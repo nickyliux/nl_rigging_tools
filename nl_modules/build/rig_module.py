@@ -356,7 +356,7 @@ class RigModule(RigBase):
             if setting and setting.exists():
                 showSetting >> setting.a.v
 
-        mc.hide(self.moduleG)
+        # mc.hide(self.moduleG)
 
     def unbuild_pre_module(self):
         """Prepare for unbuilding the rig module, resetting the rigNode state."""

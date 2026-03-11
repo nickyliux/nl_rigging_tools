@@ -77,11 +77,11 @@ class SpineQd(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", self.masterRigSize / 3, 1),
             ("cog_ctl", "trapezoid", None, rSz, 0),
-            ("fore_ikc", "back", None, Vec((10, 10, 1)) * rSz, 0),
+            ("fore_ikc", "back", None, Vec((10, 10, 0.2)) * rSz, 0),
             ("mid_ikc", "circle", "z", rSz * 4, 0),
-            ("base_ikc", "back", None, Vec((10, 10, 1)) * rSz, 0),
-            ("tangent0_ctl", "cube", None, Vec((0.3, 2, 3)) * rSz, 1),
-            ("tangent1_ctl", "cube", None, Vec((0.3, 2, 3)) * rSz, 1),
+            ("base_ikc", "back", None, Vec((10, 10, 0.2)) * rSz, 0),
+            ("tangent0_ctl", "cube", None, Vec((0.3, 0.5, 3)) * rSz, 1),
+            ("tangent1_ctl", "cube", None, Vec((0.3, 0.5, 3)) * rSz, 1),
         ]
         if self.is_spine():
             ctl_defs.append(("end_ctl", "rotate2_3d", None, rSz * 1.5, 0))
