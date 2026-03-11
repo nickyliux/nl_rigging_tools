@@ -50,6 +50,7 @@ In my last job I encountered a project with characters in need of Ziva muscle. T
 2. Find "install_by_drag_n_drop.py" and drag it onto Maya viewport.
 
 The tool UI will show up at the left and "nlRT" appears in the main menu of Maya.
+
 ![mayaMenu](docs/mayaMenu.png)
 
 ## Usage
