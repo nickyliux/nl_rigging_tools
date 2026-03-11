@@ -49,7 +49,8 @@ In my last job I encountered a project with characters in need of Ziva muscle. T
 1. Download and extract to somewhere you could keep the files.
 2. Find "install_by_drag_n_drop.py" and drag it onto Maya viewport.
 
-The tool UI will show up at the left and "nlRT" appears in the main menu of Maya. You can also add icon to the active shelf by "nlRT > Add Icon to Current Shelf".
+The tool UI will show up at the left and "nlRT" appears in the main menu of Maya.
+![mayaMenu](docs/mayaMenu.png)
 
 ## Usage
 

@@ -2,10 +2,34 @@ import maya.cmds as mc
 import maya.mel as mel
 
 
-def showAbout(self):
+def createMenu():
+    """Create the main menu for NL Rigging Tools."""
+    commonCmd = "import nl_modules.nl_rigging_tools as nlRT; from importlib import reload; reload(nlRT);"
+    runCmd = commonCmd + "nlRT.showUI();"
+    closeCmd = commonCmd + "nlRT.closeUI();"
+    addIconCmd = commonCmd + "nlRT.addIcon2CurrShelf();"
+
+    melGlobal = mel.eval("$tmpVar = $gMainWindow")
+
+    if mc.menu("nlRT", exists=1, parent=melGlobal):
+        print(">>>>>>>>> nlRT Menu Already Exists >>>>>>>>>")
+    else:
+        nlMenu = mc.menu("nlRT", parent=melGlobal, to=True)
+        mc.menuItem(label="Open UI", command=runCmd, parent=nlMenu)
+        mc.menuItem(label="Close UI", command=closeCmd, parent=nlMenu)
+        mc.menuItem(divider=True, parent=nlMenu)
+        mc.menuItem(
+            label="Add Icon To Current Shelf", command=addIconCmd, parent=nlMenu
+        )
+        mc.menuItem(divider=True, parent=nlMenu)
+        mc.menuItem(label="About", command=aboutDialog, parent=nlMenu)
+        print(">>>>>>>>> nlRT Menu Loaded >>>>>>>>>")
+
+
+def aboutDialog(self):
     """Show the about dialog."""
 
-    aboutText = """
+    msg = """
 nl Rigging Tools ( nlRT ) version: v2026.03.10
 
 nlRT is under the terms of the MIT License
@@ -32,28 +56,4 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 GitHub: https://github.com/nl/nl_rigging_tools
     """
-    mc.confirmDialog(title="About nlRT", message=aboutText, button=["OK"])
-
-
-def createMenu():
-    """Create the main menu for NL Rigging Tools."""
-    commonCmd = "import nl_modules.nl_rigging_tools as nlRT; from importlib import reload; reload(nlRT);"
-    runCmd = commonCmd + "nlRT.showUI();"
-    closeCmd = commonCmd + "nlRT.closeUI();"
-    addIconCmd = commonCmd + "nlRT.addIcon2CurrShelf();"
-
-    melGlobal = mel.eval("$tmpVar = $gMainWindow")
-
-    if mc.menu("nlRT", exists=1, parent=melGlobal):
-        print(">>>>>>>>> nlRT Menu Already Exists >>>>>>>>>")
-    else:
-        nlMenu = mc.menu("nlRT", parent=melGlobal, to=True)
-        mc.menuItem(label="Open UI", command=runCmd, parent=nlMenu)
-        mc.menuItem(label="Close UI", command=closeCmd, parent=nlMenu)
-        mc.menuItem(divider=True, parent=nlMenu)
-        mc.menuItem(
-            label="Add Icon To Current Shelf", command=addIconCmd, parent=nlMenu
-        )
-        mc.menuItem(divider=True, parent=nlMenu)
-        mc.menuItem(label="About", command=showAbout, parent=nlMenu)
-        print(">>>>>>>>> nlRT Menu Loaded >>>>>>>>>")
+    mc.confirmDialog(title="About nlRT", message=msg, button=["OK"])
