@@ -1,17 +1,92 @@
 import logging
 
+import maya.cmds as mc
 
-def update_root_logger():
-    """Updated root logger to print more info"""
+
+class MayaScrollFieldHandler(logging.Handler):
+    """Logging handler that writes messages to a Maya scrollField."""
+
+    def __init__(self, scroll_field):
+        super().__init__()
+        self.scroll_field = scroll_field
+
+    def emit(self, record):
+        if not mc.scrollField(self.scroll_field, exists=True):
+            return
+
+        msg = self.format(record)
+        old_text = mc.scrollField(self.scroll_field, q=True, text=True) or ""
+        new_text = f"{old_text}{msg}\n"
+        mc.scrollField(self.scroll_field, e=True, text=new_text)
+        mc.scrollField(self.scroll_field, e=True, insertionPosition=len(new_text))
+
+
+def create_log_window(
+    window_name="nlRT_LogWindow", title="nlRT Log", width=720, height=640
+):
+    """Create a window with a scrollField and return the field control name."""
+
+    if mc.window(window_name, exists=True):
+        mc.deleteUI(window_name)
+
+    mc.window(window_name, title=title, widthHeight=(width, height))
+    form_layout = mc.formLayout()
+    scroll_field = mc.scrollField(editable=False, wordWrap=False, text="")
+
+    mc.formLayout(
+        form_layout,
+        edit=1,
+        attachForm=[
+            (scroll_field, "top", 5),
+            (scroll_field, "left", 5),
+            (scroll_field, "right", 5),
+            (scroll_field, "bottom", 5),
+        ],
+    )
+
+    mc.showWindow(window_name)
+    return scroll_field
+
+
+def attach_scroll_field_handler(logger, scroll_field, formatter=None):
+    """Attach a Maya scrollField log handler to the given logger."""
+
+    for handler in list(logger.handlers):
+        if isinstance(handler, MayaScrollFieldHandler):
+            logger.removeHandler(handler)
+
+    handler = MayaScrollFieldHandler(scroll_field)
+    handler.setFormatter(
+        formatter
+        or logging.Formatter(
+            "%(asctime)s %(levelname)-7s %(filename)-24s %(funcName)-24s %(message)s",
+            datefmt="%H:%M:%S",
+        )
+    )
+    logger.addHandler(handler)
+
+
+def update_root_logger(use_scroll_field=False, create_window=False, scroll_field=None):
+    """Update root logger format and optionally route logs to a Maya scrollField."""
 
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
     logger.handlers.clear()
 
-    stream_hdl = logging.StreamHandler()
     formatter = logging.Formatter(
-        "[%(levelname).1s] %(filename)-24s %(funcName)-24s %(message)s"
+        "%(asctime)s %(levelname)-7s %(filename)-24s %(funcName)-24s %(message)s",
+        datefmt="%H:%M:%S",
     )
+
+    if use_scroll_field:
+        if not scroll_field and create_window:
+            scroll_field = create_log_window()
+
+        if scroll_field and mc.scrollField(scroll_field, exists=True):
+            attach_scroll_field_handler(logger, scroll_field, formatter=formatter)
+            return
+
+    stream_hdl = logging.StreamHandler()
     stream_hdl.setFormatter(formatter)
     logger.addHandler(stream_hdl)
 

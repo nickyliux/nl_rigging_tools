@@ -5,6 +5,7 @@ from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.utils import common
 from nl_modules.utils import control
+from nl_modules.utils import log
 from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
 
@@ -59,6 +60,9 @@ def buildTgt(rigN):
 def buildSelOrAll(*args):
     """Build rig for selected rigNodes or all if nothing selected"""
 
+    # --- Logging ---
+    log.update_root_logger(use_scroll_field=True, create_window=True)
+
     rigNodes = getRigNodes_selOrAll()
     rigNodesToBuild = []
 
@@ -70,7 +74,7 @@ def buildSelOrAll(*args):
     if rigNodesToBuild:
         buildCount = len(rigNodesToBuild)
 
-        common.pauseVP(1)
+        # common.pauseVP(1)
         mc.progressWindow(
             t="Build", pr=0, status="\nPreparing ...", ii=0, maxValue=buildCount
         )
@@ -78,6 +82,7 @@ def buildSelOrAll(*args):
         for i, rN in enumerate(rigNodesToBuild):
             buildTgt(rN)
             mc.progressWindow(e=1, pr=i, status=f"\n{rN}")
+            mc.refresh(f=1)
         postRig()
 
         if args and args[0] == 1:
@@ -87,7 +92,7 @@ def buildSelOrAll(*args):
 
         logging.info(f"{buildCount} rigNodes built.")
         mc.select(cl=1)
-        common.pauseVP(0)
+        # common.pauseVP(0)
 
 
 def postRig():

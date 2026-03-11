@@ -37,9 +37,6 @@ from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.msh_node import MshNode
 
-# --- Logging ---
-log.update_root_logger()
-
 # --- Paths ---
 MOD_DIR = os.path.dirname(nl_modules.__file__)
 SHAPE_PATH = os.path.join(MOD_DIR, "build", "shapes")
