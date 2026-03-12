@@ -237,17 +237,17 @@
       </item>
       <item>
        <property name="text">
-        <string>quad / planti</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
         <string>quad / digiti</string>
        </property>
       </item>
       <item>
        <property name="text">
         <string>quad / unguli</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>quad / planti</string>
        </property>
       </item>
      </widget>

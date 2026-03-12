@@ -171,8 +171,10 @@ class SpineQd(RigModule):
             self.base_ikc.alignTo(self.BASE_PVT_GUIDE)
             self.tangent0_ctl.alignTo(self.BASE_PVT_GUIDE)
         else:
-            self.base_ikc.snapTo(ctlJ0)
-            self.tangent0_ctl.snapTo(ctlJ0)
+            # self.base_ikc.snapTo(ctlJ0)
+            # self.tangent0_ctl.snapTo(ctlJ0)
+            self.base_ikc.alignTo(ctlJ0)
+            self.tangent0_ctl.alignTo(ctlJ0)
 
         self.mid_ikc.snapTo(ctlJ1)
 
@@ -180,8 +182,10 @@ class SpineQd(RigModule):
             self.fore_ikc.alignTo(self.CHEST_PVT_GUIDE)
             self.tangent1_ctl.alignTo(self.CHEST_PVT_GUIDE)
         else:
-            self.fore_ikc.snapTo(ctlJ2)
-            self.tangent1_ctl.snapTo(ctlJ2)
+            # self.fore_ikc.snapTo(ctlJ2)
+            # self.tangent1_ctl.snapTo(ctlJ2)
+            self.fore_ikc.alignTo(ctlJ2)
+            self.tangent1_ctl.alignTo(ctlJ2)
 
         ctlJ0 | self.tangent0_ctl | self.base_ikc | self.cog_ctl
         ctlJ1 | self.mid_ikc | self.cog_ctl
