@@ -59,7 +59,7 @@ def skinRbJnts(meshes=None):
         mesh.weightTo(rbJnt, mi=1, tsb=1)
         weighted += 1
 
-    logging.info(f"Rb  Joints: weighted {weighted}, and skipped {ignored}.")
+    logging.info(f"Rbn Joints: weighted {weighted}, and skipped {ignored}.")
 
 
 def selSkinned(*args):

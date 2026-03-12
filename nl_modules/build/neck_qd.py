@@ -78,9 +78,10 @@ class NeckQd(SpineQd):
 
         if not self.is_spine():
             # Let mid_ikc driven by mid point between j0 and j1
-            mid_loc = LocNode("mid_ikc_loc", pf=rID, align=j0, p=j0)
-            mid_loc.a.tz.set(j1.a.tz.get() / 2)
-            mid_loc.cstPoi(self.mid_ikc.offset, mo=1)
+            # mid_loc = LocNode("mid_ikc_loc", pf=rID, align=j0, p=j0)
+            mid_loc = LocNode("mid_ikc_loc", pf=rID, snap=self.mid_ikc.offset, p=j0)
+            # mid_loc.a.tz.set(j1.a.tz.get() / 2)
+            mid_loc.cstPoi(self.mid_ikc.offset)  # , mo=1)
             mid_loc.hide()
 
             ctlJ2.cstAim(

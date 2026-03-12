@@ -518,6 +518,7 @@ def autoAttach():
 
         jntGrp = DagNode("JNT")
 
+        logging.info(f"Attach joints for {node.name}")
         outLocs = common.attachTgtPosToSrf(
             tgtList=rbJnts, srf=rbSrfSk, crv=rbCrvSk, p=jntGrp
         )
