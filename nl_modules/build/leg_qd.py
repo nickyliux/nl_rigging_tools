@@ -390,7 +390,9 @@ class LegQd(RigModule):
         d = ut.distDim_(self.ikc, self.jnts_ik[1])
         D = d.get()
         d /= self.masterC.a["globalScale"]
-        ((d - D) * aimRatio * autoAim) >> extraRollG.a.rx
+        # ((d - D) * aimRatio * autoAim) >> extraRollG.a.rx
+        diff = (d > D).setCdn(ifTrue=D, ifFalse=d) - D
+        diff * aimRatio * autoAim >> extraRollG.a.rx
 
         # --- Align extra IK control ---
         grp_ofs = extraRollG.addOffsetGrp(below=1)
