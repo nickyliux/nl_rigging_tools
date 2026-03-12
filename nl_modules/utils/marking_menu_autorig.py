@@ -4,8 +4,8 @@ from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.utils import anim
 from nl_modules.utils import build
+from nl_modules.utils import control
 
-# from nl_modules.utils import control
 # from nl_modules.utils import helper
 from nl_modules.utils import guide
 from nl_modules.utils import proxy
@@ -79,6 +79,7 @@ class MarkingMenuAutorig:
     def addShapeOptions(self, menu):
         mi = mc.menuItem(p=menu, l="Shape", rp="SW", subMenu=1)
         mc.menuItem(p=mi, l="Mirror Sel / All", c=self.mirrorShapeSelOrAll)
+        mc.menuItem(p=mi, l="Drop It", c=control.dropSel)
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Use Last's", c=self.use_last_crv_shapes)
         mc.menuItem(p=mi, l="Add Last's", c=self.add_last_crv_shapes)

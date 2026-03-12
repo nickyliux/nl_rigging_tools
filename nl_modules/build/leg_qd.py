@@ -129,14 +129,14 @@ class LegQd(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", self.masterRigSize / 3, 0),
-            ("hip_fkc", "arrow", None, scale, 0),
+            ("hip_fkc", "arrow", None, scale / 2, 0),
             ("upr_fkc", "circle", "x", scale, 0),
             ("lwr_fkc", "circle", "x", scale, 0),
             ("palm_fkc", "circle", "x", scale, 0),
             ("digit_fkc", "circle", "x", scale, 0),
             ("ball_fkc", "rotate2_3d", "z", -scale / 2, 0),
             ("ikc", "trapezoid", None, Vec((1.5, 1.5, 2)) * rSz, 0),
-            ("extra_ikc", "rotate2_3d", None, Vec((2, 1, 1)) * -scale, 0),
+            ("extra_ikc", "rotate2_3d", None, -scale, 0),
             ("pvc", "sphere", None, rSz, 0),
             ("smart_ctl", "trapezoid2", None, scale / 3, 0),
         ]
@@ -423,10 +423,10 @@ class LegQd(RigModule):
         self.ctls_ik.append(self.ball_ikc)
 
         # --- Smart control setup ---
-        self.smart_ctl.snapAlignTo(self.digit, self.master_guide)
+        self.smart_ctl.snapAlignTo(self.ikc, self.master_guide)
         self.smart_ctl | self.IK_GRP
         self.smart_ctl.addOffsetGrp()
-        self.palm.cstPar(self.smart_ctl.offset, mo=1)
+        self.ikc.cstPar(self.smart_ctl.offset, mo=1)
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
 
         (-xDr * self.smart_ctl.a.ry) >> toeRollG.a.ry

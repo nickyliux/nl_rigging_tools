@@ -201,7 +201,7 @@ def dspTypeSel(*args):
 
 
 @common.Undo("dropSel")
-def dropSel():
+def dropSel(*args):
     """Drop the selected control curves."""
     for selList in mc.ls(sl=1, tr=1):
         GrpNode(selList).cv_drop()

@@ -72,7 +72,7 @@ def buildSelOrAll(*args):
 
         common.pauseVP(1)
         log.update_root_logger(use_scroll_field=1, create_window=1)
-        
+
         mc.progressWindow(
             t="Build", pr=0, status="\nPreparing ...", ii=0, maxValue=buildCount
         )
@@ -88,7 +88,7 @@ def buildSelOrAll(*args):
             proxy.genProxyForSet()
 
         logging.info(f"{buildCount} modules successfully built.")
-        logging.info('Build completed.')
+        logging.info("Build completed.\n")
 
         mc.select(cl=1)
         common.pauseVP(0)
