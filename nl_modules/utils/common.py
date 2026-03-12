@@ -325,7 +325,7 @@ def attachTgtPosToSrf(tgtList=None, srf=None, crv=None, p=None):
         outLocs.append(loc)
         mp.a.allCoordinates >> loc.a.t
 
-    logging.info(f"Attaching jnts to {srf.name}, along {crv.name}.")
+    logging.info(f"Attaching Joints to {srf.name}, along {crv.name}.")
     return outLocs
 
 

@@ -350,18 +350,16 @@ class RigModule(RigBase):
         """Post build function to finalize the module setup."""
         from nl_modules.utils import build
 
-        showSetting = self.masterC2.a.add("showSetting", k=0, type="bool", dv=1)
+        settingVis = self.masterC2.a.add("settingVis", k=0, type="bool", dv=1)
         for node in build.getRigNodes_all():
             setting = node.a.setting.inConnNode
             if setting and setting.exists():
-                showSetting >> setting.a.v
+                settingVis >> setting.a.v
 
         mc.hide(self.moduleG)
 
     def unbuild_pre_module(self):
         """Prepare for unbuilding the rig module, resetting the rigNode state."""
-        logging.info(".")
-
         common.pauseVP(1)
         self.moduleG.show()
 

@@ -1,4 +1,5 @@
 import logging
+from platform import node
 import maya.cmds as mc
 
 from nl_modules.nodel.base.dag_node import DagNode
@@ -87,8 +88,9 @@ def buildSelOrAll(*args):
         if args and args[0] == 1:
             proxy.genProxyForSet()
 
-        logging.info(f"{buildCount} modules successfully built.")
-        logging.info("Build completed.\n")
+        logging.info(f"{buildCount} modules built.")
+        logging.info("Build completed.")
+        print()
 
         mc.select(cl=1)
         common.pauseVP(0)
@@ -111,25 +113,34 @@ def addMasterAttrs():
         logging.warning("master2_ctl NOT found.")
         return
 
-    OPTIONS = "normal:template:reference"
+    OPTIONS = "normal:reference"  # :template
     grp = DagNode("MDL")
     if grp.exists():
-        ctl.a.add("showModel", k=0, type="bool", dv=1) >> grp.a.v
+        ctl.a.add("modelVis", k=0, type="bool", dv=1) >> grp.a.v
         grp.a.overrideEnabled.set(1)
-        ctl.a.add("dspModel", k=0, type="enum", en=OPTIONS) >> grp.a.overrideDisplayType
+        (
+            ctl.a.add("modelLock", k=0, type="enum", en=OPTIONS)
+            >> grp.a.overrideDisplayType
+        )
     grp = DagNode("PRX")
     if grp.exists():
-        ctl.a.add("showProxy", k=0, type="bool", dv=1) >> grp.a.v
+        ctl.a.add("proxyVis", k=0, type="bool", dv=1) >> grp.a.v
         grp.a.overrideEnabled.set(1)
-        ctl.a.add("dspProxy", k=0, type="enum", en=OPTIONS) >> grp.a.overrideDisplayType
+        (
+            ctl.a.add("proxyLock", k=0, type="enum", en=OPTIONS)
+            >> grp.a.overrideDisplayType
+        )
     grp = DagNode("JNT")
     if grp.exists():
-        ctl.a.add("showJoint", k=0, type="bool", dv=1) >> grp.a.v
+        ctl.a.add("jointVis", k=0, type="bool", dv=1) >> grp.a.v
         grp.a.overrideEnabled.set(1)
-        ctl.a.add("dspJoint", k=0, type="enum", en=OPTIONS) >> grp.a.overrideDisplayType
+        (
+            ctl.a.add("jointLock", k=0, type="enum", en=OPTIONS)
+            >> grp.a.overrideDisplayType
+        )
     grp = DagNode("CTL")
     if grp.exists():
-        ctl.a.add("showControl", k=0, type="bool", dv=1) >> grp.a.v
+        ctl.a.add("controlVis", k=0, type="bool", dv=1) >> grp.a.v
 
 
 def unbuildTgt(rN):
@@ -140,6 +151,7 @@ def unbuildTgt(rN):
         if state == 2:
             rigClass = rN.a.rigClass.get()
             rigObj = eval(rigClass)(rN)
+            logging.info(f"Un-building {rN.name} ...")
             rigObj.unbuild_pre_module()
             return 1
     return 0
@@ -156,7 +168,9 @@ def unbuildSelOrAll(*arg):
     for rN in rigNodes:
         unBuilt += unbuildTgt(rN)
 
-    logging.info(f"Unbuilt {unBuilt} rigNodes.")
+    logging.info(f"{unBuilt} modules un-built.")
+    logging.info("Un-build completed.")
+    print()
 
     allMG = [n.a.master_guide.inConnNode for n in rigNodes]
     if allMG:
@@ -457,11 +471,7 @@ def getRigNode(obj):
 
 
 def autoAttach():
-    """Auto attach joints to surface for all rigNodes.
-
-    rigNode.a.rbJntSet: target joints
-    rigNode.a.rbSrf: target surface
-    """
+    """Auto attach joints to surface for all rigNodes."""
     masterCtl = DagNode("master_ctl")
     if not masterCtl.exists():
         raise ValueError("master_ctl NOT found.")
@@ -476,10 +486,6 @@ def autoAttach():
             continue
 
         rbJntSetAttr = node.a["rbJntSet"]
-        rbSrfSkAttr = node.a["rbSrfSk"]
-        rbCrvSkAttr = node.a["rbCrvSk"]
-        rbSrfAttr = node.a["rbSrf"]
-
         rbJntSetName = rbJntSetAttr.get()
         rbJntSet = DagNode(rbJntSetName)
         if not rbJntSet.exists():
@@ -489,6 +495,10 @@ def autoAttach():
         if not rbJnts:
             logging.warning(f"{node.name}: No joints in Set {rbJntSet}.")
             continue
+
+        rbSrfSkAttr = node.a["rbSrfSk"]
+        rbCrvSkAttr = node.a["rbCrvSk"]
+        rbSrfAttr = node.a["rbSrf"]
 
         rbSrfSk = rbSrfSkAttr.inConnNode
         if not rbSrfSk:
@@ -510,22 +520,14 @@ def autoAttach():
             logging.warning("Setting NOT found.")
             continue
 
-        # common.attachTgtsToSrf(
-        #     tgtList=rbJnts,
-        #     srf=rbSrfSk,
-        #     crv=rbCrvSk,
-        #     srfTwist=rbSrf,
-        #     scaleAttr=globalScale,
-        #     stretchyAttr=setting.a.stretchy,
-        #     p=DagNode("JNT"),
-        # )
+        jntGrp = DagNode("JNT")
 
         outLocs = common.attachTgtPosToSrf(
-            tgtList=rbJnts, srf=rbSrfSk, crv=rbCrvSk, p=DagNode("JNT")
+            tgtList=rbJnts, srf=rbSrfSk, crv=rbCrvSk, p=jntGrp
         )
-        common.aimOutListToSrf(
-            tgtList=rbJnts, srf=rbSrf, outList=outLocs, p=DagNode("JNT")
-        )
+
+        tgtSrf = rbSrfSk if node.a.rigClass.get() == "Tail" else rbSrf
+        common.aimOutListToSrf(tgtList=rbJnts, srf=tgtSrf, outList=outLocs, p=jntGrp)
 
         for loc, rbJ in zip(outLocs, rbJnts):
             rbJ | loc

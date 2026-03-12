@@ -21,7 +21,7 @@ class MayaScrollFieldHandler(logging.Handler):
 
 
 def create_log_window(
-    window_name="nlRT_LogWindow", title="nlRT Log", x=150, y=150, w=720, h=720
+    window_name="nlRT_LogWindow", title="Build Log", x=150, y=150, w=720, h=720
 ):
     """Create a window with a scrollField and return the field control name."""
 
@@ -55,9 +55,7 @@ def attach_scroll_field_handler(logger, scroll_field, formatter=None, formatStr=
             logger.removeHandler(handler)
 
     handler = MayaScrollFieldHandler(scroll_field)
-    handler.setFormatter(
-        formatter or logging.Formatter(formatStr)
-    )
+    handler.setFormatter(formatter or logging.Formatter(formatStr))
     logger.addHandler(handler)
 
 
@@ -68,7 +66,9 @@ def update_root_logger(use_scroll_field=False, create_window=False, scroll_field
     logger.setLevel(logging.DEBUG)
     logger.handlers.clear()
 
-    formatStr = "%(levelname)-7s %(filename)-24s %(lineno)5d %(funcName)-24s %(message)s"
+    formatStr = (
+        "%(levelname)-7s %(filename)-24s %(lineno)5d %(funcName)-24s %(message)s"
+    )
     formatter = logging.Formatter(formatStr)
 
     if use_scroll_field:
@@ -76,7 +76,9 @@ def update_root_logger(use_scroll_field=False, create_window=False, scroll_field
             scroll_field = create_log_window()
 
         if scroll_field and mc.scrollField(scroll_field, exists=1):
-            attach_scroll_field_handler(logger, scroll_field, formatter=formatter, formatStr=formatStr)
+            attach_scroll_field_handler(
+                logger, scroll_field, formatter=formatter, formatStr=formatStr
+            )
 
     stream_hdl = logging.StreamHandler()
     stream_hdl.setFormatter(formatter)

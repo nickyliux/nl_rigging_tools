@@ -100,6 +100,7 @@ class Tail(RigModule):
         """Create the ribbon for the tail rig."""
         logging.info(".")
         crvLenRatio, self.jnts_rb, crv = common.build_ribbon_rivet(
+            # rbSrf=self.rbSrf1,
             rbSrf=self.rbSrf2,
             rivetNum=self.rbnJntNum,
             scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,

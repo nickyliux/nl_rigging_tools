@@ -313,17 +313,16 @@ def setVis(*args):
     """Toggle visibility of the proxy meshes under the 'PRX' group."""
     m = DagNode("master2_ctl")
     if m.exists():
-        prxAttr = m.a.showProxy
+        prxAttr = m.a.proxyVis
         if prxAttr.exists():
             prxAttr.set(args[0])
-            logging.info(f"Set proxy visibility.")
 
 
 def toggleVis(*args):
     """Toggle visibility of the proxy meshes under the 'PRX' group."""
     m = DagNode("master2_ctl")
     if m.exists():
-        prxAttr = m.a.showProxy
+        prxAttr = m.a.proxyVis
         if prxAttr.exists():
             prxAttr.set(not prxAttr.get())
             logging.info(f"Toggle proxy visibility.")

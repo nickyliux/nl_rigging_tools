@@ -121,7 +121,7 @@ class MarkingMenuRigging:
         mc.menuItem(p=mi, l="Create Golden Chain ", c=makeJointChainGold_mm)
 
         mi = mc.menuItem(p=menu, l="Skin", rp="SW", subMenu=1)
-        mc.menuItem(p=mi, l="Sel Skinned Meshes / Joints", c=skin.selSkinned)
+        mc.menuItem(p=mi, l="Select Related Meshes / Joints", c=skin.selSkinned)
         mc.menuItem(p=mi, l="Bind Skin", c=mc.SmoothBindSkin)
         mc.menuItem(p=mi, l="Bind Skin", c=mc.SmoothBindSkinOptions, ob=1)
         mc.menuItem(p=mi, l="Add Influence", c=addInf)

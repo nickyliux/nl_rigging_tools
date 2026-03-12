@@ -40,15 +40,13 @@ def skinRefJnts(meshes=None, jnts=None, thld=5):
         mc.progressWindow(e=1, pr=i, status=f"\n{mesh.name}")
 
     mc.progressWindow(ep=1)
-
-    logging.info(f"refJnts : weighted {weighted}, and skipped {ignored}.")
+    logging.info(f"Ref Joints: weighted {weighted}, and skipped {ignored}.")
 
 
 def skinRbJnts(meshes=None):
     """Skin target meshes to their _rbJnt if found."""
     ignored = 0
     weighted = 0
-
     for i, mesh in enumerate(meshes):
 
         rbJnt = DagNode(mesh.name + "_rbJnt")
@@ -61,7 +59,7 @@ def skinRbJnts(meshes=None):
         mesh.weightTo(rbJnt, mi=1, tsb=1)
         weighted += 1
 
-    logging.info(f"weighted {weighted}, and skipped {ignored}.")
+    logging.info(f"Rb  Joints: weighted {weighted}, and skipped {ignored}.")
 
 
 def selSkinned(*args):
