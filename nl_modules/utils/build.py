@@ -71,24 +71,24 @@ def buildSelOrAll(*args):
         buildCount = len(rigNodesToBuild)
 
         common.pauseVP(1)
+        log.update_root_logger(use_scroll_field=1, create_window=1)
+        
         mc.progressWindow(
             t="Build", pr=0, status="\nPreparing ...", ii=0, maxValue=buildCount
         )
-        # --- Logging ---
-        log.update_root_logger(use_scroll_field=1, create_window=1)
-
         for i, rN in enumerate(rigNodesToBuild):
-            logging.info(f"({i}) {rN.name}")
+            logging.info(f"({i+1}) {rN.name}")
             buildTgt(rN)
             mc.progressWindow(e=1, pr=i, status=f"\n{rN}")
             mc.refresh(f=1)
         postRig()
+        mc.progressWindow(ep=1)
 
         if args and args[0] == 1:
             proxy.genProxyForSet()
 
-        mc.progressWindow(ep=1)
         logging.info(f"{buildCount} modules successfully built.")
+        logging.info('Build completed.')
 
         mc.select(cl=1)
         common.pauseVP(0)

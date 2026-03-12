@@ -21,7 +21,7 @@ class MayaScrollFieldHandler(logging.Handler):
 
 
 def create_log_window(
-    window_name="nlRT_LogWindow", title="nlRT Log", x=150, y=160, w=700, h=700
+    window_name="nlRT_LogWindow", title="nlRT Log", x=150, y=150, w=720, h=720
 ):
     """Create a window with a scrollField and return the field control name."""
 
