@@ -104,38 +104,39 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def connect_UI(self):
         """Connect UI buttons to their respective functions."""
         # Guide
-        self.connect(self.UI.guide_load_BN, self.guide_load) #, ":openScript.png")
+        self.connect(self.UI.guide_load_BN, self.guide_load)  # , ":openScript.png")
         self.connect(self.UI.guide_explore_BN, guide.explore, ":searchEngine.png")
         self.UI.guide_LW.itemDoubleClicked.connect(partial(self.guide_load, 0))
 
         # Char Path
-        self.connect(self.UI.charPath_BN, self.set_char_path) #, ":openScript.png")
+        self.connect(self.UI.charPath_BN, self.set_char_path)  # , ":openScript.png")
         self.connect(self.UI.char_explore_BN, self.explore_char, ":searchEngine.png")
 
         # From MDL to SK
-        self.connect(self.UI.loadModel_BN, model.loadModel) #, ":openScript.png")
-        self.connect(self.UI.loadTemplate_BN, self.loadTpl) #, ":openScript.png")
-        self.connect(self.UI.saveTemplate_BN, guide.saveTemplate) #, ":fileSave.png")
-        self.connect(self.UI.buildAll_BN, self.buildAll) #, ":play_S.png")
-        self.connect(self.UI.unbuildAll_BN, self.unbuildAll) #, ":smallTrash.png")
-        self.connect(self.UI.loadProxy_BN, proxy.loadProxy) #, ":openScript.png")
-        self.connect(self.UI.saveProxy_BN, proxy.saveProxy) #, ":fileSave.png")
-        self.connect(self.UI.genProxy_BN, proxy.genProxyForSet) #, ":play_S.png")
+        self.connect(self.UI.loadModel_BN, model.loadModel)  # , ":openScript.png")
+        self.connect(self.UI.loadTemplate_BN, self.loadTpl)  # , ":openScript.png")
+        self.connect(self.UI.saveTemplate_BN, guide.saveTemplate)  # , ":fileSave.png")
+        self.connect(self.UI.buildAll_BN, self.buildAll)  # , ":play_S.png")
+        self.connect(self.UI.unbuildAll_BN, self.unbuildAll)  # , ":smallTrash.png")
+        self.connect(self.UI.loadProxy_BN, proxy.loadProxy)  # , ":openScript.png")
+        self.connect(self.UI.saveProxy_BN, proxy.saveProxy)  # , ":fileSave.png")
+        self.connect(self.UI.genProxy_BN, proxy.genProxyForSet)  # , ":play_S.png")
         self.connect(self.UI.loadWrapTargetMesh_BN, self.loadWrapTargetMesh)
         self.connect(self.UI.templateTarget_BN, self.templateTarget, ":templated.png")
-        self.connect(self.UI.selAllProxyGrp_BN, proxy.selectAllProxy) #, ":aselect.png")
-        self.connect(self.UI.bindToSelProxy_BN, proxy.bind_to_proxy) #, ":bind.png")
-        self.connect(self.UI.toggleProxy_BN, proxy.toggleVis) #, ":visible.png")
-        self.connect(self.UI.loadCtl_BN, control.loadCtl) #, ":openScript.png")
-        self.connect(self.UI.saveCtl_BN, control.saveCtl) #, ":fileSave.png")
-        self.connect(self.UI.loadHlp_BN, helper.loadHlp) #, ":openScript.png")
-        self.connect(self.UI.saveHlp_BN, helper.saveHlp) #, ":fileSave.png")
-        self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind) #, ":bind.png")
-        self.connect(self.UI.boneAutoUnBind_BN, self.boneAutoUnBind) #, ":unbind.png")
+        self.connect(self.UI.selAllProxyGrp_BN, proxy.selectAllProxy)
+        # , ":aselect.png")
+        self.connect(self.UI.bindToSelProxy_BN, proxy.bind_to_proxy)  # , ":bind.png")
+        self.connect(self.UI.toggleProxy_BN, proxy.toggleVis)  # , ":visible.png")
+        self.connect(self.UI.loadCtl_BN, control.loadCtl)  # , ":openScript.png")
+        self.connect(self.UI.saveCtl_BN, control.saveCtl)  # , ":fileSave.png")
+        self.connect(self.UI.loadHlp_BN, helper.loadHlp)  # , ":openScript.png")
+        self.connect(self.UI.saveHlp_BN, helper.saveHlp)  # , ":fileSave.png")
+        self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind)  # , ":bind.png")
+        self.connect(self.UI.boneAutoUnBind_BN, self.boneAutoUnBind)  # , ":unbind.png")
 
         # Weight
-        self.connect(self.UI.loadWeight_BN, skin.loadWeight) #, ":openScript.png")
-        self.connect(self.UI.saveWeight_BN, skin.saveWeight) #, ":fileSave.png")
+        self.connect(self.UI.loadWeight_BN, skin.loadWeight)  # , ":openScript.png")
+        self.connect(self.UI.saveWeight_BN, skin.saveWeight)  # , ":fileSave.png")
 
         # Weight Edit
         self.connect(self.UI.mirrorSym_BN, partial(skin.mirrorWeightSel, 1))
@@ -152,10 +153,12 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Ctl Tab
         self.UI.crvShape_LW.itemDoubleClicked.connect(self.crvShape_LW_dblClicked)
         # self.connect(self.UI.crvShape_breakInst_BN, self.crvShape_breakInst)
-        self.connect(self.UI.crvShape_new_BN, self.crvShape_new) #, ":fileNew.png")
-        self.connect(self.UI.crvShape_apply_BN, self.crvShape_apply) #, ":openScript.png")
-        self.connect(self.UI.crvShape_save_BN, self.crvShape_save) #, ":fileSave.png")
-        self.connect(self.UI.crvShape_del_BN, self.crvShape_del) #, ":smallTrash.png")
+        self.connect(self.UI.crvShape_new_BN, self.crvShape_new)  # , ":fileNew.png")
+        self.connect(
+            self.UI.crvShape_apply_BN, self.crvShape_apply
+        )  # , ":openScript.png")
+        self.connect(self.UI.crvShape_save_BN, self.crvShape_save)  # , ":fileSave.png")
+        self.connect(self.UI.crvShape_del_BN, self.crvShape_del)  # , ":smallTrash.png")
         icon = ":colorPresetSpectrum.png"
         self.connect(
             self.UI.assignColor_BN, partial(common.assignColor, preset=0), icon
@@ -580,8 +583,8 @@ def showUI():
 
     global nlRT_win
     nlRT_win = MyToolWin()
-    nlRT_win.show(dockable=1, floating=0, area="right")
-    # nlRT_win.show(dockable=1, floating=0, area="left")
+    # nlRT_win.show(dockable=1, floating=0, area="right")
+    nlRT_win.show(dockable=1, floating=0, area="left")
     with open(STYLE_PATH, "r") as f:
         style = f.read()
         nlRT_win.setStyleSheet(style)

@@ -260,6 +260,9 @@
         <height>17</height>
        </rect>
       </property>
+      <property name="toolTip">
+       <string>Left</string>
+      </property>
       <property name="text">
        <string>L</string>
       </property>
@@ -276,6 +279,9 @@
         <height>17</height>
        </rect>
       </property>
+      <property name="toolTip">
+       <string>Middle</string>
+      </property>
       <property name="text">
        <string>M</string>
       </property>
@@ -291,6 +297,9 @@
         <width>31</width>
         <height>17</height>
        </rect>
+      </property>
+      <property name="toolTip">
+       <string>Right</string>
       </property>
       <property name="text">
        <string>R</string>
@@ -864,7 +873,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Auto Bind Skeleton</string>
+          <string>Run Auto Bind Skeleton</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1227,7 +1236,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Run Generation</string>
+          <string>Run Proxy Gen</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1407,7 +1416,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Character Path</string>
+      <string>Character Directory</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1469,7 +1478,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Set character directory</string>
+          <string>Load Directory</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1500,7 +1509,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Character directory</string>
+          <string>Character Directory</string>
          </property>
          <property name="text">
           <string/>
@@ -1537,7 +1546,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Explore character directory</string>
+          <string>Explore Directory</string>
          </property>
          <property name="text">
           <string/>
@@ -1649,7 +1658,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Make wrap target templated</string>
+          <string>Toggle Template</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1715,7 +1724,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Select All Proxies</string>
+          <string/>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1751,7 +1760,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Bind warp target using proxy</string>
+          <string>Bind Warp Target with Proxy</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -1997,6 +2006,9 @@
            <height>20</height>
           </size>
          </property>
+         <property name="toolTip">
+          <string>Obj Type</string>
+         </property>
          <item>
           <property name="text">
            <string>curve</string>
@@ -2052,7 +2064,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Select Objects of Type</string>
+          <string>Select in Hierarchy</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -2269,7 +2281,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Copy Weight using the last selected as source</string>
+          <string>Copy Weight with the Last Sel as Source</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -2441,7 +2453,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Drop onto the floor</string>
+          <string>Drop Shape on the Floor</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -2508,7 +2520,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Rotate X</string>
+          <string>Rotate Shape in X 90</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -2548,7 +2560,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Rotate Y</string>
+          <string>Rotate Shape in Y 90</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -2588,7 +2600,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Rotate Z</string>
+          <string>Rotate Shape in Z 90</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -2783,7 +2795,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Scale 3 / 4</string>
+          <string>Scale Shape 3 / 4</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -2832,7 +2844,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Scale 4 / 3</string>
+          <string>Scale Shape 4 / 3</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -2876,7 +2888,7 @@
       </font>
      </property>
      <property name="toolTip">
-      <string>Explore guide files</string>
+      <string>Explore Guide Directory</string>
      </property>
      <property name="text">
       <string/>
@@ -2913,7 +2925,7 @@
       </font>
      </property>
      <property name="toolTip">
-      <string>Load guide</string>
+      <string>Load Guide Parts</string>
      </property>
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
@@ -2988,7 +3000,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>New Sel</string>
+          <string>Create New Shape from Selected</string>
          </property>
          <property name="text">
           <string>N</string>
@@ -3051,7 +3063,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Save (Overwrite) Sel</string>
+          <string>Save (Overwrite) Selected</string>
          </property>
          <property name="text">
           <string>S</string>
@@ -3095,7 +3107,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Apply Preset 1 to Sel</string>
+          <string>Apply Preset 1 to Selected</string>
          </property>
          <property name="text">
           <string>1</string>
@@ -3117,7 +3129,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Apply Preset 2 to Sel</string>
+          <string>Apply Preset 2 to Selected</string>
          </property>
          <property name="text">
           <string>2</string>
@@ -3341,7 +3353,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Retopo with poly count 50</string>
+          <string>Retopo to 20</string>
          </property>
          <property name="text">
           <string>20</string>
@@ -3369,7 +3381,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Retopo with poly count 50</string>
+          <string>Retopo to 50</string>
          </property>
          <property name="text">
           <string>50</string>
@@ -3397,7 +3409,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Retopo with poly count 150</string>
+          <string>Retopo to 150</string>
          </property>
          <property name="text">
           <string>150</string>
@@ -3425,7 +3437,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Retopo with poly count 500</string>
+          <string>Retopo to 500</string>
          </property>
          <property name="text">
           <string>500</string>
@@ -3474,7 +3486,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Create Reference Up Loc for selected</string>
+          <string>Set Max Infl Number</string>
          </property>
          <property name="text">
           <string>Max Infl = 8</string>
@@ -3502,7 +3514,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Import Env scene for better viewport quality</string>
+          <string>Import Env Scene</string>
          </property>
          <property name="text">
           <string>Load Env</string>
@@ -3554,7 +3566,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Selected objects and create lines between</string>
+          <string>Create Lines betw Selected</string>
          </property>
          <property name="text">
           <string>Build Line
@@ -3784,7 +3796,7 @@ for Sel</string>
           </font>
          </property>
          <property name="toolTip">
-          <string>Add a ref joint for each selected</string>
+          <string>Add Ref Joint for Selected</string>
          </property>
          <property name="statusTip">
           <string/>
@@ -3820,7 +3832,7 @@ for Sel</string>
           </font>
          </property>
          <property name="toolTip">
-          <string>Mirror ref joints, L to R</string>
+          <string>Mirror Ref Joints ( L to R )</string>
          </property>
          <property name="statusTip">
           <string/>
@@ -3880,7 +3892,7 @@ for Sel</string>
           </font>
          </property>
          <property name="toolTip">
-          <string>Add a ribbon joint for each selected</string>
+          <string>Add Ribbon Joint for Selected</string>
          </property>
          <property name="statusTip">
           <string/>
@@ -3916,7 +3928,7 @@ for Sel</string>
           </font>
          </property>
          <property name="toolTip">
-          <string>Add &quot;blade&quot; attribute to selected</string>
+          <string>Add &quot;blade&quot; Attribute to Selected</string>
          </property>
          <property name="statusTip">
           <string/>
