@@ -59,7 +59,7 @@ def attach_scroll_field_handler(logger, scroll_field, formatter=None, formatStr=
     logger.addHandler(handler)
 
 
-def update_root_logger(use_scroll_field=False, create_window=False, scroll_field=None):
+def update_root_logger(create_window=False, scroll_field=None):
     """Update root logger format and optionally route logs to a Maya scrollField."""
 
     logger = logging.getLogger()
@@ -71,8 +71,8 @@ def update_root_logger(use_scroll_field=False, create_window=False, scroll_field
     )
     formatter = logging.Formatter(formatStr)
 
-    if use_scroll_field:
-        if not scroll_field and create_window:
+    if create_window:
+        if not scroll_field:
             scroll_field = create_log_window()
 
         if scroll_field and mc.scrollField(scroll_field, exists=1):

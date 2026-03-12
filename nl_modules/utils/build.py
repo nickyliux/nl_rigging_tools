@@ -72,7 +72,8 @@ def buildSelOrAll(*args):
         buildCount = len(rigNodesToBuild)
 
         common.pauseVP(1)
-        log.update_root_logger(use_scroll_field=1, create_window=1)
+        showLog = args and args[1] == 1
+        log.update_root_logger(create_window=showLog)
 
         mc.progressWindow(
             t="Build", pr=0, status="\nPreparing ...", ii=0, maxValue=buildCount
@@ -113,34 +114,29 @@ def addMasterAttrs():
         logging.warning("master2_ctl NOT found.")
         return
 
-    OPTIONS = "normal:reference"  # :template
-    grp = DagNode("MDL")
+    grp = DagNode("CTL_VIS")
     if grp.exists():
-        ctl.a.add("modelVis", k=0, type="bool", dv=1) >> grp.a.v
-        grp.a.overrideEnabled.set(1)
-        (
-            ctl.a.add("modelLock", k=0, type="enum", en=OPTIONS)
-            >> grp.a.overrideDisplayType
-        )
-    grp = DagNode("PRX")
-    if grp.exists():
-        ctl.a.add("proxyVis", k=0, type="bool", dv=1) >> grp.a.v
-        grp.a.overrideEnabled.set(1)
-        (
-            ctl.a.add("proxyLock", k=0, type="enum", en=OPTIONS)
-            >> grp.a.overrideDisplayType
-        )
+        ctl.a.add("controlVis", k=0, type="bool", dv=1) >> grp.a.v
+
     grp = DagNode("JNT")
     if grp.exists():
         ctl.a.add("jointVis", k=0, type="bool", dv=1) >> grp.a.v
         grp.a.overrideEnabled.set(1)
-        (
-            ctl.a.add("jointLock", k=0, type="enum", en=OPTIONS)
-            >> grp.a.overrideDisplayType
-        )
-    grp = DagNode("CTL")
+        ctl.a.add("jointLock", k=0, type="bool", dv=1) * 2 >> grp.a.overrideDisplayType
+
+    ctl.a.addSep()
+
+    grp = DagNode("MDL")
     if grp.exists():
-        ctl.a.add("controlVis", k=0, type="bool", dv=1) >> grp.a.v
+        ctl.a.add("modelVis", k=0, type="bool", dv=1) >> grp.a.v
+        grp.a.overrideEnabled.set(1)
+        ctl.a.add("modelLock", k=0, type="bool", dv=1) * 2 >> grp.a.overrideDisplayType
+
+    grp = DagNode("PRX")
+    if grp.exists():
+        ctl.a.add("proxyVis", k=0, type="bool", dv=1) >> grp.a.v
+        grp.a.overrideEnabled.set(1)
+        ctl.a.add("proxyLock", k=0, type="bool", dv=1) * 2 >> grp.a.overrideDisplayType
 
 
 def unbuildTgt(rN):

@@ -88,7 +88,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def buildAll(self):
         """Build all rig components."""
-        build.buildSelOrAll(1)
+        showLog = self.UI.showLog_CB.isChecked()
+        print(showLog)
+        build.buildSelOrAll(1, showLog)
         self.rigNode_UI_refresh()
 
     def unbuildAll(self):

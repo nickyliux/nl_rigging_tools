@@ -79,11 +79,11 @@ class MarkingMenuAutorig:
     def addShapeOptions(self, menu):
         mi = mc.menuItem(p=menu, l="Shape", rp="SW", subMenu=1)
         mc.menuItem(p=mi, l="Mirror Sel / All", c=self.mirrorShapeSelOrAll)
+        mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Drop It", c=control.dropSel)
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Use Last's", c=self.use_last_crv_shapes)
         mc.menuItem(p=mi, l="Add Last's", c=self.add_last_crv_shapes)
-        mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Break Instance", c=self.crvShape_breakInst)
 
     def addBuildOptions(self, menu):
@@ -123,10 +123,10 @@ class MarkingMenuAutorig:
         """Add guide options to the marking menu"""
         mi = mc.menuItem(p=menu, l="Guide", rp="E", subMenu=1)
         mc.menuItem(p=mi, l="Mirror Sel", c=guide.mirrorGuideSelOrAll)
+        mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Dup Sel", c=guide.duplicateGuideSel)
         # mc.menuItem(p=mi, l="Mirror", c=guide.mirrorGuideSelOrAll)
         mc.menuItem(p=mi, l="Xfer 1st -> 2nd", c=guide.xferGuideAtoB)
-        mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Del Sel / All", c=build.deleteSelOrAll)
 
     def addProxyOptions(self, menu):

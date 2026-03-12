@@ -94,11 +94,10 @@ class AttributeHolder:
 
         return Attribute(self.node, name)
 
-    def addSep(self, name="_" * 4):
+    def addSep(self, name="_" * 8):
         """Add string attribute as separator
         e.g.
             obj.a.addSep()
-            obj.a.addSep('----')
         """
         while not self.node.a[name].exists():
             self.add(name, lock=1, type="enum", k=1, en=" ")

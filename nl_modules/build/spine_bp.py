@@ -1,5 +1,4 @@
 import logging
-from secrets import choice
 import maya.cmds as mc
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
