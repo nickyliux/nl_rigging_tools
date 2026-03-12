@@ -57,7 +57,7 @@ class Tail(RigModule):
 
     def build_ctl(self):
         """Build control nodes for the tail rig."""
-        logging.info("OK")
+        logging.info(".")
         rID, rSz, xDr = self.getMyVar()
 
         ctl_defs = [
@@ -98,7 +98,7 @@ class Tail(RigModule):
 
     def build_ribbon(self):
         """Create the ribbon for the tail rig."""
-        logging.info("OK")
+        logging.info(".")
         crvLenRatio, self.jnts_rb, crv = common.build_ribbon_rivet(
             rbSrf=self.rbSrf2,
             rivetNum=self.rbnJntNum,
@@ -120,7 +120,7 @@ class Tail(RigModule):
         Build 5 ikcs aligned to ikj, and as parent of ikj
         Parent all ctls under 1st ctl
         """
-        logging.info("OK")
+        logging.info(".")
         rID, rSz, xDr = self.getMyVar()
 
         self.jnts_ik = JntNode.createJntsFrCrv(
@@ -177,7 +177,7 @@ class Tail(RigModule):
         Build rvts
         Build grps aligned to fkc in single hierarchy, cst (mo) by rvts, to drive fkc's offset
         """
-        logging.info("OK")
+        logging.info(".")
 
         rID, rSz, xDr = self.getMyVar()
         self.jnts_fk = JntNode.createJntsFrCrv(
@@ -229,7 +229,7 @@ class Tail(RigModule):
         Build ofj, each parented under ofc
         Bind ofj to rbSrf2
         """
-        logging.info("OK")
+        logging.info(".")
         rID, rSz, xDr = self.getMyVar()
 
         for i in range(self.fkJntNum):
@@ -316,7 +316,7 @@ class Tail(RigModule):
 
     def build_post(self):
         """Post setup for the tail rig."""
-        logging.info("OK")
+        logging.info(".")
         # --- Cleanup and update root joint ---
         mc.delete(self.rootJ)
         self.rootJ = self.jnts_fk[0]

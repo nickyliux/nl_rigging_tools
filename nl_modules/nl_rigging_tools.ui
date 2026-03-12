@@ -90,7 +90,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Components</string>
+      <string>Parts</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -310,7 +310,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Process</string>
+      <string>Func</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -329,7 +329,7 @@
       </property>
       <layout class="QHBoxLayout" name="model_LO">
        <property name="spacing">
-        <number>4</number>
+        <number>6</number>
        </property>
        <property name="sizeConstraint">
         <enum>QLayout::SetDefaultConstraint</enum>
@@ -391,13 +391,13 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Load char_mdl { *last } .ma</string>
+          <string>Load Model</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string/>
+          <string>L</string>
          </property>
         </widget>
        </item>
@@ -436,7 +436,7 @@
       </property>
       <layout class="QHBoxLayout" name="model_LO_3">
        <property name="spacing">
-        <number>4</number>
+        <number>6</number>
        </property>
        <property name="sizeConstraint">
         <enum>QLayout::SetDefaultConstraint</enum>
@@ -496,7 +496,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Build rig</string>
+          <string>Run Rig Build</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -505,7 +505,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string/>
+          <string>R</string>
          </property>
          <property name="flat">
           <bool>false</bool>
@@ -536,7 +536,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Unbuild rig</string>
+          <string>Un-Build Rig</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -545,7 +545,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string/>
+          <string>X</string>
          </property>
          <property name="flat">
           <bool>false</bool>
@@ -565,7 +565,7 @@
       </property>
       <layout class="QHBoxLayout" name="model_LO_2">
        <property name="spacing">
-        <number>4</number>
+        <number>6</number>
        </property>
        <property name="sizeConstraint">
         <enum>QLayout::SetDefaultConstraint</enum>
@@ -597,7 +597,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Template</string>
+          <string>Guide</string>
          </property>
         </widget>
        </item>
@@ -625,13 +625,13 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Load char_tpl {*last} .json</string>
+          <string>Load Guide Template</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string/>
+          <string>L</string>
          </property>
          <property name="flat">
           <bool>false</bool>
@@ -661,10 +661,10 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Save guide template to file</string>
+          <string>Save Guide Template</string>
          </property>
          <property name="text">
-          <string/>
+          <string>S</string>
          </property>
         </widget>
        </item>
@@ -681,7 +681,7 @@
       </property>
       <layout class="QHBoxLayout" name="model_LO_4">
        <property name="spacing">
-        <number>4</number>
+        <number>6</number>
        </property>
        <property name="sizeConstraint">
         <enum>QLayout::SetDefaultConstraint</enum>
@@ -743,13 +743,13 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Load char_ctl {*last} .ma</string>
+          <string>Load Control</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string/>
+          <string>L</string>
          </property>
         </widget>
        </item>
@@ -779,13 +779,13 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Save all ctl shapes to file</string>
+          <string>Save Control</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string/>
+          <string>S</string>
          </property>
         </widget>
        </item>
@@ -802,7 +802,7 @@
       </property>
       <layout class="QHBoxLayout" name="model_LO_11">
        <property name="spacing">
-        <number>4</number>
+        <number>6</number>
        </property>
        <property name="sizeConstraint">
         <enum>QLayout::SetDefaultConstraint</enum>
@@ -864,14 +864,13 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Auto Bind skeleton meshes
-( If nothing selected, group [character] is used )</string>
+          <string>Auto Bind Skeleton</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string/>
+          <string>R</string>
          </property>
         </widget>
        </item>
@@ -901,13 +900,13 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>UnBind skeleton meshes</string>
+          <string>Un-Bind Skeleton</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string/>
+          <string>X</string>
          </property>
         </widget>
        </item>
@@ -924,7 +923,7 @@
       </property>
       <layout class="QHBoxLayout" name="model_LO_9">
        <property name="spacing">
-        <number>4</number>
+        <number>6</number>
        </property>
        <property name="sizeConstraint">
         <enum>QLayout::SetDefaultConstraint</enum>
@@ -986,14 +985,13 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Load /weight/char_weight {*} .json for meshes under selected.
-( If selection is None, the group of name [character] is used )</string>
+          <string>Load Weight</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string/>
+          <string>L</string>
          </property>
         </widget>
        </item>
@@ -1023,13 +1021,13 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Save weight of selected objects</string>
+          <string>Save Weight</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string/>
+          <string>S</string>
          </property>
         </widget>
        </item>
@@ -1046,7 +1044,7 @@
       </property>
       <layout class="QHBoxLayout" name="model_LO_10">
        <property name="spacing">
-        <number>4</number>
+        <number>6</number>
        </property>
        <property name="sizeConstraint">
         <enum>QLayout::SetDefaultConstraint</enum>
@@ -1108,13 +1106,13 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Load char_prx {*last} .ma</string>
+          <string>Load Proxy</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string/>
+          <string>L</string>
          </property>
         </widget>
        </item>
@@ -1144,13 +1142,13 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Save all proxies to file</string>
+          <string>Save Proxy</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string/>
+          <string>S</string>
          </property>
         </widget>
        </item>
@@ -1160,14 +1158,14 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>136</y>
+        <y>140</y>
         <width>101</width>
         <height>26</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="model_LO_14">
        <property name="spacing">
-        <number>4</number>
+        <number>6</number>
        </property>
        <property name="sizeConstraint">
         <enum>QLayout::SetDefaultConstraint</enum>
@@ -1229,13 +1227,13 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Gen proxy</string>
+          <string>Run Generation</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string/>
+          <string>R</string>
          </property>
         </widget>
        </item>
@@ -1265,13 +1263,13 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Show / Hide proxy</string>
+          <string>Toggle Vis</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string/>
+          <string>V</string>
          </property>
         </widget>
        </item>
@@ -1288,7 +1286,7 @@
       </property>
       <layout class="QHBoxLayout" name="model_LO_12">
        <property name="spacing">
-        <number>4</number>
+        <number>6</number>
        </property>
        <property name="sizeConstraint">
         <enum>QLayout::SetDefaultConstraint</enum>
@@ -1350,13 +1348,13 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Load char_hlp {*last} .json</string>
+          <string>Load Helper</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string/>
+          <string>L</string>
          </property>
         </widget>
        </item>
@@ -1386,13 +1384,13 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Save all helpers to file</string>
+          <string>Save Helper</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string/>
+          <string>S</string>
          </property>
         </widget>
        </item>
@@ -1477,7 +1475,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string/>
+          <string>L</string>
          </property>
         </widget>
        </item>
@@ -1772,7 +1770,7 @@
        <x>0</x>
        <y>630</y>
        <width>225</width>
-       <height>101</height>
+       <height>121</height>
       </rect>
      </property>
      <property name="title">
@@ -1866,7 +1864,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Nml</string>
+          <string>[ N ]</string>
          </property>
         </widget>
        </item>
@@ -1908,7 +1906,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Tpl</string>
+          <string>[ T ]</string>
          </property>
         </widget>
        </item>
@@ -1950,7 +1948,126 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Ref</string>
+          <string>[ R ]</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget_6">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>47</y>
+        <width>224</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <property name="spacing">
+        <number>4</number>
+       </property>
+       <property name="leftMargin">
+        <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>4</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Obj Type</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="typeBelow_CB">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>20</height>
+          </size>
+         </property>
+         <item>
+          <property name="text">
+           <string>curve</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>group</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>joint</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>loc</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>mesh</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>surface</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="selectTypeBelow_BN">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <underline>false</underline>
+           <kerning>true</kerning>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Select Objects of Type</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Sel Hierarchy</string>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -1960,7 +2077,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>45</y>
+        <y>90</y>
         <width>221</width>
         <height>24</height>
        </rect>
@@ -2159,118 +2276,6 @@
          </property>
          <property name="text">
           <string>Copy</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget_6">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>70</y>
-        <width>224</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_6">
-       <property name="spacing">
-        <number>4</number>
-       </property>
-       <property name="leftMargin">
-        <number>6</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>4</number>
-       </property>
-       <item>
-        <widget class="QComboBox" name="typeBelow_CB">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>20</height>
-          </size>
-         </property>
-         <item>
-          <property name="text">
-           <string>curve</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>group</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>joint</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>loc</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>mesh</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>surface</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="selectTypeBelow_BN">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <underline>false</underline>
-           <kerning>true</kerning>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Select Objects of Type</string>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="autoFillBackground">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>Select Hierarchy</string>
-         </property>
-         <property name="checkable">
-          <bool>false</bool>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -2914,7 +2919,7 @@
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string/>
+      <string>L</string>
      </property>
      <property name="flat">
       <bool>false</bool>
@@ -2972,7 +2977,7 @@
         <widget class="QPushButton" name="crvShape_new_BN">
          <property name="minimumSize">
           <size>
-           <width>5</width>
+           <width>20</width>
            <height>0</height>
           </size>
          </property>
@@ -2983,10 +2988,10 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>New selected to library</string>
+          <string>New Sel</string>
          </property>
          <property name="text">
-          <string/>
+          <string>N</string>
          </property>
         </widget>
        </item>
@@ -2994,7 +2999,7 @@
         <widget class="QPushButton" name="crvShape_apply_BN">
          <property name="minimumSize">
           <size>
-           <width>5</width>
+           <width>20</width>
            <height>0</height>
           </size>
          </property>
@@ -3013,13 +3018,13 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Load (Replace) shape to selected</string>
+          <string>Load (Replace) Shape</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string/>
+          <string>L</string>
          </property>
         </widget>
        </item>
@@ -3027,7 +3032,7 @@
         <widget class="QPushButton" name="crvShape_save_BN">
          <property name="minimumSize">
           <size>
-           <width>5</width>
+           <width>20</width>
            <height>0</height>
           </size>
          </property>
@@ -3046,10 +3051,10 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Save (Overwrite) selected to library</string>
+          <string>Save (Overwrite) Sel</string>
          </property>
          <property name="text">
-          <string/>
+          <string>S</string>
          </property>
         </widget>
        </item>
@@ -3057,7 +3062,7 @@
         <widget class="QPushButton" name="crvShape_del_BN">
          <property name="minimumSize">
           <size>
-           <width>5</width>
+           <width>20</width>
            <height>0</height>
           </size>
          </property>
@@ -3068,10 +3073,10 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Delete shape in library</string>
+          <string>Delete</string>
          </property>
          <property name="text">
-          <string/>
+          <string>X</string>
          </property>
         </widget>
        </item>
@@ -3079,7 +3084,7 @@
         <widget class="QPushButton" name="assignColor_BN">
          <property name="minimumSize">
           <size>
-           <width>5</width>
+           <width>20</width>
            <height>0</height>
           </size>
          </property>
@@ -3090,7 +3095,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Assign Color Preset 1 to selected</string>
+          <string>Apply Preset 1 to Sel</string>
          </property>
          <property name="text">
           <string>1</string>
@@ -3101,7 +3106,7 @@
         <widget class="QPushButton" name="assignColor2_BN">
          <property name="minimumSize">
           <size>
-           <width>5</width>
+           <width>20</width>
            <height>0</height>
           </size>
          </property>
@@ -3112,7 +3117,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Assign Color Preset 2 to selected</string>
+          <string>Apply Preset 2 to Sel</string>
          </property>
          <property name="text">
           <string>2</string>
@@ -3928,94 +3933,6 @@ for Sel</string>
      </widget>
     </widget>
    </widget>
-  </widget>
-  <widget class="QProgressBar" name="bar_PB">
-   <property name="geometry">
-    <rect>
-     <x>290</x>
-     <y>420</y>
-     <width>100</width>
-     <height>11</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="minimumSize">
-    <size>
-     <width>0</width>
-     <height>0</height>
-    </size>
-   </property>
-   <property name="maximumSize">
-    <size>
-     <width>99999</width>
-     <height>99999</height>
-    </size>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="minimum">
-    <number>0</number>
-   </property>
-   <property name="value">
-    <number>0</number>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-   <property name="textVisible">
-    <bool>false</bool>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="invertedAppearance">
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="crvShape_breakInst_BN">
-   <property name="geometry">
-    <rect>
-     <x>280</x>
-     <y>440</y>
-     <width>121</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="minimumSize">
-    <size>
-     <width>0</width>
-     <height>0</height>
-    </size>
-   </property>
-   <property name="maximumSize">
-    <size>
-     <width>16777215</width>
-     <height>22</height>
-    </size>
-   </property>
-   <property name="font">
-    <font>
-     <family>Segoe UI</family>
-     <pointsize>9</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>Break curve instance</string>
-   </property>
-   <property name="layoutDirection">
-    <enum>Qt::LeftToRight</enum>
-   </property>
-   <property name="text">
-    <string>Break Instance</string>
-   </property>
   </widget>
  </widget>
  <resources/>

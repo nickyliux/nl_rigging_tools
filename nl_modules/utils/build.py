@@ -78,7 +78,7 @@ def buildSelOrAll(*args):
         log.update_root_logger(use_scroll_field=1, create_window=1)
 
         for i, rN in enumerate(rigNodesToBuild):
-            logging.info(f"{i} : {rN.name}")
+            logging.info(f"({i}) {rN.name}")
             buildTgt(rN)
             mc.progressWindow(e=1, pr=i, status=f"\n{rN}")
             mc.refresh(f=1)
@@ -96,7 +96,7 @@ def buildSelOrAll(*args):
 
 def postRig():
     """Post rigging operations"""
-    logging.info("OK")
+    logging.info(".")
     addMasterAttrs()
     control.reset_all_ctl()
     update_anchor_conn()

@@ -121,7 +121,7 @@ class LegBp(RigModule):
 
     def build_ctl(self):
         """Build control nodes for the leg rig."""
-        logging.info("OK")
+        logging.info(".")
         rID, rSz, xDr = self.getMyVar()
         scale = xDr * rSz
 
@@ -225,7 +225,7 @@ class LegBp(RigModule):
 
     def build_fk(self):
         """Build the FK controls for the leg rig."""
-        logging.info("OK")
+        logging.info(".")
 
         self.jnts_fk = common.dupSk(
             self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize / 2, color=Color.BLUE
@@ -242,7 +242,7 @@ class LegBp(RigModule):
 
     def build_ik(self):
         """Build the IK controls for the leg rig."""
-        logging.info("OK")
+        logging.info(".")
         rID, rSz, xDr = self.getMyVar()
 
         mg = self.master_guide
@@ -367,7 +367,7 @@ class LegBp(RigModule):
 
     def blend_fk_ik(self):
         """Blend FK and IK controls for the leg rig."""
-        logging.info("OK")
+        logging.info(".")
         rID, rSz, xDr = self.getMyVar()
 
         self.jnts_bf = common.dupSk(
@@ -412,7 +412,7 @@ class LegBp(RigModule):
 
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
         """Setup sub-controls for the leg rig."""
-        logging.info("OK")
+        logging.info(".")
         rID, rSz, xDr = self.getMyVar()
         scale = rSz * xDr
 
@@ -445,7 +445,7 @@ class LegBp(RigModule):
 
     def build_digits(self):
         """Build digit controls for the leg rig."""
-        logging.info("OK")
+        logging.info(".")
 
         rID, rSz, xDr = self.getMyVar()
         self.toesCtlsList = []
@@ -481,7 +481,7 @@ class LegBp(RigModule):
 
     def build_dual_bones(self):
         """Build dual bones for the lower leg."""
-        logging.info("OK")
+        logging.info(".")
         rID, rSz, xDr = self.getMyVar()
 
         radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.6)
@@ -637,7 +637,7 @@ class LegBp(RigModule):
 
     def build_post(self):
         """Post setup for the leg rig module."""
-        logging.info("OK")
+        logging.info(".")
 
         common.add_mirror_attr(
             [self.ikc, self.ikc_gimbal, self.pvc, self.smart_ctl, self.setting]

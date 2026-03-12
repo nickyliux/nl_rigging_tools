@@ -21,7 +21,7 @@ class MayaScrollFieldHandler(logging.Handler):
 
 
 def create_log_window(
-    window_name="nlRT_LogWindow", title="nlRT Log", x=150, y=150, w=700, h=540
+    window_name="nlRT_LogWindow", title="nlRT Log", x=150, y=160, w=700, h=700
 ):
     """Create a window with a scrollField and return the field control name."""
 
@@ -47,7 +47,7 @@ def create_log_window(
     return scroll_field
 
 
-def attach_scroll_field_handler(logger, scroll_field, formatter=None):
+def attach_scroll_field_handler(logger, scroll_field, formatter=None, formatStr=None):
     """Attach a Maya scrollField log handler to the given logger."""
 
     for handler in list(logger.handlers):
@@ -56,10 +56,7 @@ def attach_scroll_field_handler(logger, scroll_field, formatter=None):
 
     handler = MayaScrollFieldHandler(scroll_field)
     handler.setFormatter(
-        formatter
-        or logging.Formatter(
-            "%(levelname)-7s %(filename)-24s %(lineno)-5d%(funcName)-24s %(message)s",
-        )
+        formatter or logging.Formatter(formatStr)
     )
     logger.addHandler(handler)
 
@@ -71,16 +68,15 @@ def update_root_logger(use_scroll_field=False, create_window=False, scroll_field
     logger.setLevel(logging.DEBUG)
     logger.handlers.clear()
 
-    formatter = logging.Formatter(
-        "%(levelname)-7s %(filename)-24s %(lineno)-5d%(funcName)-24s %(message)s",
-    )
+    formatStr = "%(levelname)-7s %(filename)-24s %(lineno)5d %(funcName)-24s %(message)s"
+    formatter = logging.Formatter(formatStr)
 
     if use_scroll_field:
         if not scroll_field and create_window:
             scroll_field = create_log_window()
 
-        if scroll_field and mc.scrollField(scroll_field, exists=True):
-            attach_scroll_field_handler(logger, scroll_field, formatter=formatter)
+        if scroll_field and mc.scrollField(scroll_field, exists=1):
+            attach_scroll_field_handler(logger, scroll_field, formatter=formatter, formatStr=formatStr)
 
     stream_hdl = logging.StreamHandler()
     stream_hdl.setFormatter(formatter)

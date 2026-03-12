@@ -99,7 +99,7 @@ class SpineQdCrv(rig_module.RigModule):
 
     def tigerSpine(self):
 
-        logging.info("OK")
+        logging.info(".")
 
         crv = DagNode(self.rigID + "_line_guide")
         if crv is None:

@@ -56,7 +56,7 @@ class Belt(RigModule):
 
     def build_ctl(self):
         """Build control nodes for the belt rig."""
-        logging.info("OK")
+        logging.info(".")
 
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [("setting", "screw_nut", "z", rSz * 2, 0)]
@@ -95,7 +95,7 @@ class Belt(RigModule):
 
     def build_ribbon(self):
         """Create the ribbon for the belt rig."""
-        logging.info("OK")
+        logging.info(".")
         crvLenRatio, self.jnts_rb, crv = common.build_ribbon_rivet(
             rbSrf=self.rbSrf1,
             rivetNum=self.rbnJntNum,
@@ -111,7 +111,7 @@ class Belt(RigModule):
 
     def build_ik(self):
         """Build the IK controls for the belt rig."""
-        logging.info("OK")
+        logging.info(".")
         rID, rSz, xDr = self.getMyVar()
 
         # --- Create IK joint chain from guide curve ---
@@ -209,7 +209,7 @@ class Belt(RigModule):
 
     def build_post(self):
         """Post setup for the belt rig."""
-        logging.info("OK")
+        logging.info(".")
 
         self.setup_scale()
         self.setup_bindJnt()

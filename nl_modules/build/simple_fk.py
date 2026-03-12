@@ -74,7 +74,7 @@ class SimpleFk(RigModule):
 
     def build_ctl(self):
         """Build control nodes for the arm rig."""
-        logging.info("OK")
+        logging.info(".")
 
         rID, rSz, xDr = self.getMyVar()
         up = "x"
@@ -109,7 +109,7 @@ class SimpleFk(RigModule):
 
     def build_fk(self):
         """Build the FK controls for the arm rig."""
-        logging.info("OK")
+        logging.info(".")
         rID, rSz, xDr = self.getMyVar()
 
         self.jnts_fk = common.dupSk(
@@ -133,7 +133,7 @@ class SimpleFk(RigModule):
 
     def blend_fk_ik(self):
         """Blend FK and IK joints for the arm rig."""
-        logging.info("OK")
+        logging.info(".")
 
         for i in range(len(self.jnts)):
             fkJ = self.jnts_fk[i]
@@ -183,7 +183,7 @@ class SimpleFk(RigModule):
 
     def build_post(self):
         """Post setup for the leg rig module."""
-        logging.info("OK")
+        logging.info(".")
         self.setup_scale()
         self.setup_ctlSet()
         self.setup_bindJnt()

@@ -47,7 +47,7 @@ class Head(RigModule):
 
     def build_ctl(self):
         """Build the controls for the head rig module."""
-        logging.info("OK")
+        logging.info(".")
 
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
@@ -64,7 +64,7 @@ class Head(RigModule):
 
     def build_fk(self):
         """Build the FK controls for the head rig module."""
-        logging.info("OK")
+        logging.info(".")
 
         self.ctls_fk = [self.head_fkc, self.jaw_fkc, self.lf_eye_fkc, self.rt_eye_fkc]
         for ctl in self.ctls_fk:
@@ -134,7 +134,7 @@ class Head(RigModule):
 
     def build_post(self):
         """Post setup for the head rig module."""
-        logging.info("OK")
+        logging.info(".")
 
         self.setup_scale()
         self.setup_bindJnt()

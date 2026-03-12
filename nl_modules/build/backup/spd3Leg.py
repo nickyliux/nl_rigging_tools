@@ -85,7 +85,7 @@ class Spd3Leg(rig_module.RigModule):
     #     )
 
     def build_fk(self):
-        logging.info("OK")
+        logging.info(".")
 
         self.jnts_fk = common.dupSk(self.jnts, "_fk", p=self.FK_SETUP)
 
@@ -99,7 +99,7 @@ class Spd3Leg(rig_module.RigModule):
         self.isolate_align(self.leg_02_fkc, [self.leg_02_fkc.parent, self.masterC], 1)
 
     def build_ik(self):
-        logging.info("OK")
+        logging.info(".")
 
         rigID = self.rigID
 
@@ -140,7 +140,7 @@ class Spd3Leg(rig_module.RigModule):
         self.leg_01_fkc.cstPar(self.jnts_ik[0], mo=1)
 
     def blend_fk_ik(self):
-        logging.info("OK")
+        logging.info(".")
 
         fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=1)
 
@@ -162,7 +162,7 @@ class Spd3Leg(rig_module.RigModule):
             common.cstMulti(ikJ, fkJ, jnt, w=fkIk, cstType="par")
 
     def postSetup(self):
-        logging.info("OK")
+        logging.info(".")
 
         for jnt in self.jnts:
             jnt.addProxyMesh(p=self.PRX)

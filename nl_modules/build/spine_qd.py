@@ -71,7 +71,7 @@ class SpineQd(RigModule):
 
     def build_ctl(self):
         """Build control nodes for the spine rig."""
-        logging.info("OK")
+        logging.info(".")
         rID, rSz, xDr = self.getMyVar()
 
         ctl_defs = [
@@ -156,7 +156,7 @@ class SpineQd(RigModule):
 
     def build_ik(self):
         """Build the IK controls for the spine rig."""
-        logging.info("OK")
+        logging.info(".")
 
         rID, rSz, xDr = self.getMyVar()
 
@@ -210,7 +210,7 @@ class SpineQd(RigModule):
         self, rbSrf=None, rbSrfSk=None, jntNum=5, setting=None, scaleAttr=None
     ):
         """Build a spine IK ribbon."""
-        logging.info("OK")
+        logging.info(".")
         rID, rSz, xDr = self.getMyVar()
 
         # --- Create ribbon curve and joints ---
@@ -405,7 +405,7 @@ class SpineQd(RigModule):
 
     def build_post(self):
         """Post setup for the spine rig."""
-        logging.info("OK")
+        logging.info(".")
 
         self.setup_bindJnt()
         self.setup_ctlSets()

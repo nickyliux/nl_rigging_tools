@@ -64,7 +64,7 @@ class SpineBp(RigModule):
 
     def build_ctl(self):
         """Build control nodes for the spine rig."""
-        logging.info("OK")
+        logging.info(".")
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 3, 0),
@@ -111,7 +111,7 @@ class SpineBp(RigModule):
 
     def build_fk(self):
         """Build the FK controls and joints for the spine rig."""
-        logging.info("OK")
+        logging.info(".")
         rID, rSz, xDr = self.getMyVar()
 
         self.jnts_fk = JntNode.createJntsFrCrv(
@@ -167,7 +167,7 @@ class SpineBp(RigModule):
 
     def build_spine_ik(self):
         """Build the IK controls for the spine rig."""
-        logging.info("OK")
+        logging.info(".")
         rID, rSz, xDr = self.getMyVar()
 
         self.base_ikc.snapAlignTo(self.jnts_fk[0], self.master_guide)
@@ -395,7 +395,7 @@ class SpineBp(RigModule):
 
     def build_post(self):
         """Post setup for the spine rig."""
-        logging.info("OK")
+        logging.info(".")
 
         self.setup_scale()
         self.setup_bindJnt()
