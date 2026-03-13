@@ -127,7 +127,7 @@ class LegBp(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", self.masterRigSize / 3, 0),
-            ("hip_fkc", "arrow", None, scale, 0),
+            ("hip_fkc", "arrow", None, scale / 2, 0),
             ("upr_fkc", "circle", "x", scale, 0),
             ("lwr_fkc", "circle", "x", scale, 0),
             ("palm_fkc", "circle", "x", scale, 0),

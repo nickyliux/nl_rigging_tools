@@ -84,10 +84,10 @@ def buildSelOrAll(*args):
             mc.progressWindow(e=1, pr=i, status=f"\n{rN}")
             mc.refresh(f=1)
         postRig()
-        mc.progressWindow(ep=1)
-
         if args and args[0] == 1:
             proxy.genProxyForSet()
+
+        mc.progressWindow(ep=1)
 
         logging.info(f"{buildCount} modules built.")
         logging.info("Build completed.")
