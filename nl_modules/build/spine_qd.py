@@ -89,6 +89,8 @@ class SpineQd(RigModule):
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
+        self.fore_ikc.cv_move(0, rSz * 30, 0)
+        self.base_ikc.cv_move(0, rSz * 30, 0)
         self.cog_ctl.cv_move(0, rSz * 40, rSz * 20)
         self.cog_ctl.cv_scale(1, 1.5, 2)
 

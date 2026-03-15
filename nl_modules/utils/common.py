@@ -106,19 +106,18 @@ def assignShd(*args, tgts=None):
         26: [0, 1, 4, 5, 8, 9, 12, 13, 16, 17, 20, 21],
         34: [0, 1, 4, 5, 8, 9, 12, 13, 16, 17, 20, 21, 24, 25, 28, 29],
     }
-    for tgt_name in tgts:
-        tgt = DagNode(tgt_name)
+    for tgt in tgts:
+        tgtN = DagNode(tgt)
+        if tgtN.type == "mesh":
+            shd, sg = addShader("proxy_grey", color=(0.3, 0.3, 0.3))
+            mc.sets(tgtN, forceElement=sg)
 
-        name = "proxy_shd"
-        if tgt.type == "mesh":
-            shd, sg = addShader(name)
-            faceNum = mc.polyEvaluate(tgt, f=1)
-            # mc.sets(tgt, forceElement=sg)
-            for fID in faceDict[faceNum]:
-                mc.sets(f"{tgt}.f[{fID}]", forceElement=sg)
-        # elif tgt.type == "nurbsCurve":
-        #     pass
-        #     tgt.color = color
+            shd, sg = addShader("proxy_orange")
+            faceNum = mc.polyEvaluate(tgtN, f=1)
+            face_ids = faceDict.get(faceNum, [])
+            if face_ids:
+                face_components = [f"{tgtN}.f[{fID}]" for fID in face_ids]
+                mc.sets(face_components, forceElement=sg)
 
     mc.select(cl=1)
 

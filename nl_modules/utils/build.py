@@ -72,7 +72,7 @@ def buildSelOrAll(*args):
         buildCount = len(rigNodesToBuild)
 
         common.pauseVP(1)
-        showLog = args and args[1] == 1
+        showLog = args and len(args) > 1 and args[1] == 1
         log.update_root_logger(create_window=showLog)
 
         mc.progressWindow(
