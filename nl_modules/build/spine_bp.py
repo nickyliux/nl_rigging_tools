@@ -158,8 +158,8 @@ class SpineBp(RigModule):
     def reverse_fk_hip(self):
         """modify first fkc specific for hip rotation."""
         ctl = self.ctls_fk[0]
-        ctl(p=self.CTL_DATA, addOfs=1, color=Color.ORANGE)
-        ctl.cv_scale(1.2, 1.2, 1.2)
+        ctl(p=self.CTL_DATA, addOfs=1, color=Color.YELLOW)
+        ctl.cv_scale(1.3, 1.3, 1.3)
 
         ctl.offset.snapAlignTo(self.BASE_PVT_GUIDE, self.jnts_fk[0])
         ctl.cstPar(self.jnts_fk[0], mo=1)
@@ -205,6 +205,7 @@ class SpineBp(RigModule):
         if not self.is_neck():
             RigModule.dyn_pivot(self.cog_ctl)
             RigModule.dyn_pivot(self.fore_ikc, endTgt=self.mid_ikc, dv=1)
+            RigModule.dyn_pivot(self.base_ikc, endTgt=self.mid_ikc, dv=0.5)
 
         self.ctls_ik = [self.mid_ikc, self.fore_ikc, self.base_ikc]
 

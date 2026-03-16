@@ -479,7 +479,7 @@ class ArmBp(RigModule):
         self.ctl_vis_toggle(
             self.setting.a.add("showSetup", type="bool", k=0), onList=setupTgt
         )
-        self.ikc.a.fkIk * self.ikc.a.localRot >> self.palm_ikc.a.v
+        self.setting.a.fkIk * self.ikc.a.localRot >> self.palm_ikc.a.v
         mc.hide(self.ikhs)
 
     def setup_channel(self):
