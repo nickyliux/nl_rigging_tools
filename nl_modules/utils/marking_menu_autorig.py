@@ -192,16 +192,21 @@ class MarkingMenuAutorig:
                 )
             mc.menuItem(p=menu, l="-" * 15, en=0)
 
-        # --- IK / FK ---
-        attr = firstSelected.a["fkIk"]
+        # --- Show Ik / Fk switch by looking up rigNode settings ---
+        attr = rigNode.a["setting"]
         if attr.exists():
-            val = 0 if attr.get() > 0.5 else 1
-            mc.menuItem(
-                p=menu,
-                l="FK / IK",
-                rp="S",
-                c=partial(self.switch_fk_ik, attr, val, rigNode),
-            )
+            print(attr)
+            setting = attr.inConnNode
+            if setting:
+                attr = setting.a["fkIk"] 
+                if attr.exists():
+                    val = 0 if attr.get() > 0.5 else 1
+                    mc.menuItem(
+                        p=menu,
+                        l="FK / IK",
+                        rp="S",
+                        c=partial(self.switch_fk_ik, attr, val, rigNode),
+                    )
 
         # --- Toggle Isolate ---
         for attr in firstSelected.a.list(ud=1):

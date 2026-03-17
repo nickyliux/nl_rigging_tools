@@ -338,8 +338,8 @@ class ArmBp(RigModule):
             else:
                 self.ballRoll_loc.cstPar(jnt, mo=1)
 
-        for ctl in self.ctls_fk + self.ctls_ik:
-            ctl.a.add("fkIk", proxy=fkIk)
+        # for ctl in self.ctls_fk + self.ctls_ik:
+        #     ctl.a.add("fkIk", proxy=fkIk)
 
         GrpNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
 

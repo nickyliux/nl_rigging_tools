@@ -405,8 +405,8 @@ class LegBp(RigModule):
                 bfj.cstPar(ofg, mo=1)
                 self.ball_fkc.cstPar(jnt)
 
-        for ctl in self.ctls_fk + self.ctls_ik + [self.smart_ctl]:
-            ctl.a.add("fkIk", proxy=fkIk)
+        # for ctl in self.ctls_fk + self.ctls_ik + [self.smart_ctl]:
+        #     ctl.a.add("fkIk", proxy=fkIk)
 
         GrpNode("matcher", pf=self.ikc, align=self.ikc, p=self.palm_fkc)
 
