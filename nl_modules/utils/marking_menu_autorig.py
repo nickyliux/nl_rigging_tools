@@ -89,11 +89,11 @@ class MarkingMenuAutorig:
     def addBuildOptions(self, menu):
         """Add build options to the marking menu"""
         mi = mc.menuItem(p=menu, l="Build", rp="N", subMenu=1)
-        mc.menuItem(p=mi, l="Build", c=partial(build.buildSelOrAll, 1))
-        # mc.menuItem(p=mi, l="Build Op", c=partial(build.buildSelOrAll, 1), ob=1)
+        # mc.menuItem(p=mi, l="Build", c=partial(build.buildSelOrAll, 1))
+        mc.menuItem(p=mi, l="Build / Rebuild", c=self.rebuild)
         mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="Rebuild", c=self.rebuild)
-        # mc.menuItem(p=mi, l="Rebuild Op", c=partial(self.rebuild, 1), ob=1)
+        mc.menuItem(p=mi, l="Toggle Guide", c=build.toggleGuide)
+        # mc.menuItem(p=mi, l="Rebuild", c=self.rebuild)
         mc.menuItem(p=mi, l="Unbuild", c=build.unbuildSelOrAll)
 
     def rebuild(*args):
@@ -122,12 +122,13 @@ class MarkingMenuAutorig:
     def addGuideOptions(self, menu):
         """Add guide options to the marking menu"""
         mi = mc.menuItem(p=menu, l="Guide", rp="E", subMenu=1)
-        mc.menuItem(p=mi, l="Mirror Sel", c=guide.mirrorGuideSelOrAll)
+        mc.menuItem(p=mi, l="Mirror Selected", c=guide.mirrorGuideSelOrAll)
         mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="Dup Sel", c=guide.duplicateGuideSel)
+        mc.menuItem(p=mi, l="Dup Selected", c=guide.duplicateGuideSel)
         # mc.menuItem(p=mi, l="Mirror", c=guide.mirrorGuideSelOrAll)
         mc.menuItem(p=mi, l="Xfer 1st -> 2nd", c=guide.xferGuideAtoB)
-        mc.menuItem(p=mi, l="Del Sel / All", c=build.deleteSelOrAll)
+        mc.menuItem(p=mi, l="-" * 15, en=0)
+        mc.menuItem(p=mi, l="Del Selected / All", c=build.deleteSelOrAll)
 
     def addProxyOptions(self, menu):
         """Add proxy options to the marking menu"""
@@ -135,10 +136,10 @@ class MarkingMenuAutorig:
 
         mc.menuItem(p=mi, l="Gen", c=proxy.genProxyForSet)
         mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="Mirror Sel", c=proxy.mirrorProxy)
-        mc.menuItem(p=mi, l="Warp Sel", c=proxy.wrapProxy)
-        mc.menuItem(p=mi, l="Reset Sel", c=proxy.resetProxy)
+        mc.menuItem(p=mi, l="Mirror Selected", c=proxy.mirrorProxy)
+        mc.menuItem(p=mi, l="Warp Selected", c=proxy.wrapProxy)
         mc.menuItem(p=mi, l="-" * 15, en=0)
+        mc.menuItem(p=mi, l="Reset Selected", c=proxy.resetProxy)
         mc.menuItem(p=mi, l="Select All", c=proxy.selectAllProxy)
         # mc.menuItem(p=mi, l="Show / Hide", c=proxy.toggleVis)
 
@@ -187,7 +188,7 @@ class MarkingMenuAutorig:
                 # label = f"{a}   <" if val == i else a
                 mc.menuItem(
                     p=menu,
-                    l=" " * 4 + str(a) + (f"   <" if val == i else ""),
+                    l=" " * 4 + str(a) + (f"   *" if val == i else ""),
                     c=partial(self.switch_to_space, a),
                 )
             mc.menuItem(p=menu, l="-" * 15, en=0)

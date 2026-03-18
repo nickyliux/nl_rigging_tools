@@ -57,6 +57,26 @@ def buildTgt(rigN):
                     logging.warning(f"Skip building {rigN.name}, no skeleton found.")
 
 
+def toggleGuide(*args):
+    """Show guide and hide rig if state is True, else show rig and hide guide"""
+    chr = DagNode("CHR")
+    g = DagNode('modules_grp')
+    if chr.exists() and g.exists():
+        chrVis = chr.a.v.get()
+        if chrVis:
+            chr.hide()
+            for child in g.getChildren():
+                child.show()
+        else:
+            chr.show()
+            for node in getRigNodes_all():
+                if node.a.nodeState.get() == 2:
+                    grp = node.a.moduleG.inConnNode
+                    if grp and grp.exists():
+                        grp.hide()
+
+
+
 @common.Undo("buildSelOrAll")
 def buildSelOrAll(*args):
     """Build rig for selected rigNodes or all if nothing selected"""
@@ -70,7 +90,6 @@ def buildSelOrAll(*args):
 
     if rigNodesToBuild:
         buildCount = len(rigNodesToBuild)
-
         common.pauseVP(1)
         showLog = args and len(args) > 1 and args[1] == 1
         log.update_root_logger(create_window=showLog)
@@ -406,6 +425,7 @@ def collect_space_data():
 
 
 def cleanUpScene():
+    """Clean up scene by removing configuration script nodes."""
     n = mc.ls("*_sceneConfigurationScriptNode", "*_uiConfigurationScriptNode")
     if n:
         mc.delete(n)

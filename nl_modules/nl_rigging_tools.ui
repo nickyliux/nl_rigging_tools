@@ -1405,25 +1405,6 @@
        </item>
       </layout>
      </widget>
-     <widget class="QCheckBox" name="showLog_CB">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>320</y>
-        <width>71</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string>Right</string>
-      </property>
-      <property name="text">
-       <string>Show Log</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
     </widget>
     <widget class="QGroupBox" name="groupBox_4">
      <property name="geometry">
@@ -3964,6 +3945,25 @@ for Sel</string>
      </widget>
     </widget>
    </widget>
+  </widget>
+  <widget class="QCheckBox" name="showLog_CB">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>390</y>
+     <width>71</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Right</string>
+   </property>
+   <property name="text">
+    <string>Show Log</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
   </widget>
  </widget>
  <resources/>

@@ -33,7 +33,6 @@ COMPONENT_DICT = {
 
 def loadGuide(name, offset=0):
     """Load component(s) for names"""
-
     def genNextRigID(n):
         """Generate next rigID name for newly created component"""
         count = 0
@@ -242,7 +241,6 @@ def loadTemplate():
 
 def loadGuideFrIdDict(rigID_dict):
     """Load guides from rigID_dict"""
-
     # Remove unused
     idInPreset = [k + "_RGN" for k in rigID_dict.keys()]
     for node in build.getRigNodes_all():

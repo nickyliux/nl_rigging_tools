@@ -94,8 +94,8 @@ class SpineQd(RigModule):
         self.cog_ctl.cv_move(0, rSz * 40, rSz * 20)
         self.cog_ctl.cv_scale(1, 1.5, 2)
 
-        if self.is_spine():
-            self.end_ctl.cv_rotate(-30, 0, 0)
+        # if self.is_spine():
+        #     self.end_ctl.cv_rotate(-30, 0, 0)
 
         self.tangent0_ctl.cv_rotate(0, 90, 0)
         self.tangent1_ctl.cv_rotate(0, 90, 0)

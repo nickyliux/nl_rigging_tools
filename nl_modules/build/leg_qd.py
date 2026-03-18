@@ -352,8 +352,8 @@ class LegQd(RigModule):
             jnt = self.jnts[i]
             common.cstMulti(fkJ, ikJ, jnt, w=fkIk)
 
-        for ctl in self.ctls_fk + self.ctls_ik + [self.smart_ctl]:
-            ctl.a.add("fkIk", proxy=fkIk)
+        # for ctl in self.ctls_fk + self.ctls_ik + [self.smart_ctl]:
+        #     ctl.a.add("fkIk", proxy=fkIk)
 
         GrpNode(f"{self.ikc.name}_matcher", align=self.ikc, p=self.digit_fkc)
         GrpNode(f"{self.extra_ikc.name}_matcher", align=self.extra_ikc, p=self.palm_fkc)

@@ -8,7 +8,6 @@ DEFAULT_LINE_WIDTH = -1
 
 class CrvNode(GrpNode):
     """Curve node class"""
-
     def __init__(
         self,
         node,
@@ -102,7 +101,6 @@ class CrvNode(GrpNode):
     @property
     def length(self):
         """Return the length of the curve"""
-
         return mc.arclen(self)
 
     @staticmethod
@@ -121,7 +119,6 @@ class CrvNode(GrpNode):
         p=None,
     ):
         """Build a line between two target objects or positions."""
-
         def getPos(tgt):
             if isinstance(tgt, tuple):
                 return tgt
@@ -172,7 +169,6 @@ class CrvNode(GrpNode):
         tgt1=None, tgt2=None, pf="", width=-1, inheritXf=0, dspType=0, top=0, p=None
     ):
         """Build a line between two target objects or positions."""
-
         tgt1 = DagNode(tgt1) if isinstance(tgt1, str) else tgt1
         tgt2 = DagNode(tgt2) if isinstance(tgt2, str) else tgt2
         line = CrvNode.buildLine(
@@ -214,7 +210,6 @@ class CrvNode(GrpNode):
     @staticmethod
     def buildLineLinkedSel():
         """Build linked lines from selected objects"""
-
         selList = mc.ls(sl=1, tr=1)
         for obj1, obj2 in zip(selList[:-1], selList[1:]):
             CrvNode.buildLineLinked(tgt1=obj1, tgt2=obj2)
@@ -222,7 +217,6 @@ class CrvNode(GrpNode):
 
     def weightTo(self, joints, weightDir=0, **kwargs):
         """Assign weights to the curve's CVs based on the provided joints."""
-
         if self.exists():
             skin_clu = mc.skinCluster(self, joints, **kwargs)[0]
 
@@ -275,7 +269,6 @@ class CrvNode(GrpNode):
         **kwargs,
     ):
         """Call the CrvNode to set its properties and return itself"""
-
         if name:
             if pf:
                 pf += "_"
@@ -312,13 +305,11 @@ class CrvNode(GrpNode):
 
     def reverse(self):
         """Reverse the curve direction"""
-
         mc.reverseCurve(self, ch=0, rpo=1)
         return self
 
     def rebuild(self, spans=3, deg=3):
         """Rebuild the curve with specified spans and degree"""
-
         mc.rebuildCurve(
             self,
             rpo=1,
@@ -334,11 +325,11 @@ class CrvNode(GrpNode):
 
     def lowerCubeFrontCV(self, up="z"):
         """Lower the front CVs of the cube"""
-
         ids = [1, 12, 15, 16]
         cvs = [self.shape + f".cv[{id}]" for id in ids]
         mc.move(0, -self.o.height / 3, 0, cvs, os=1, r=1)
 
     def setOnTop(self, val=1):
+        """Set the curve to always draw on top of other objects in the viewport"""
         for sh in self.shapes:
             sh.a.alwaysDrawOnTop.set(val)

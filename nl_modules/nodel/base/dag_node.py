@@ -553,6 +553,14 @@ class DagNode(DepNode):
         if self.exists():
             mc.hide(self)
 
+    # def toggle(self):
+    #     """Toggle visibility"""
+    #     if self.exists():
+    #         if mc.getAttr(self.a.v):
+    #             self.hide()
+    #         else:
+    #             self.show()
+
     @property
     def color(self):
         """Return color"""
