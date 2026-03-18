@@ -310,6 +310,7 @@ class Tail(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the tail rig controls."""
         self.add_bind_jnt_set(self.jnts_bind)
+        self.add_bind_sk_set(self.jnts_bind)
         proxy.add_radiusScale_attr(self.jnts_bind, 0.4)
 
     def setup_space(self):

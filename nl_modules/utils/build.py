@@ -141,7 +141,7 @@ def addMasterAttrs():
     if grp.exists():
         ctl.a.add("jointVis", k=0, type="bool", dv=1) >> grp.a.v
         grp.a.overrideEnabled.set(1)
-        ctl.a.add("jointLock", k=0, type="bool", dv=1) * 2 >> grp.a.overrideDisplayType
+        ctl.a.add("jointLock", k=0, type="bool", dv=0) * 2 >> grp.a.overrideDisplayType
 
     ctl.a.addSep()
 
@@ -149,13 +149,13 @@ def addMasterAttrs():
     if grp.exists():
         ctl.a.add("modelVis", k=0, type="bool", dv=1) >> grp.a.v
         grp.a.overrideEnabled.set(1)
-        ctl.a.add("modelLock", k=0, type="bool", dv=1) * 2 >> grp.a.overrideDisplayType
+        ctl.a.add("modelLock", k=0, type="bool", dv=0) * 2 >> grp.a.overrideDisplayType
 
     grp = DagNode("PRX")
     if grp.exists():
         ctl.a.add("proxyVis", k=0, type="bool", dv=1) >> grp.a.v
         grp.a.overrideEnabled.set(1)
-        ctl.a.add("proxyLock", k=0, type="bool", dv=1) * 2 >> grp.a.overrideDisplayType
+        ctl.a.add("proxyLock", k=0, type="bool", dv=0) * 2 >> grp.a.overrideDisplayType
 
 
 def unbuildTgt(rN):
@@ -543,8 +543,8 @@ def autoAttach():
             tgtList=rbJnts, srf=rbSrfSk, crv=rbCrvSk, p=jntGrp
         )
 
-        tgtSrf = rbSrfSk if node.a.rigClass.get() == "Tail" else rbSrf
-        common.aimOutListToSrf(tgtList=rbJnts, srf=tgtSrf, outList=outLocs, p=jntGrp)
+        # tgtSrf = rbSrfSk if node.a.rigClass.get() == "Tail" else rbSrf
+        # common.aimOutListToSrf(tgtList=outLocs, srf=tgtSrf, outList=outLocs, p=jntGrp)
 
         for loc, rbJ in zip(outLocs, rbJnts):
             rbJ | loc

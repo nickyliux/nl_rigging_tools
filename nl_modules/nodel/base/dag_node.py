@@ -4,7 +4,6 @@ import maya.cmds as mc
 from maya import mel
 from collections import OrderedDict
 from nl_modules.nodel.base.dep_node import DepNode
-from nl_modules.utils import common, open_maya_api
 from nl_modules.utils.color import Color
 
 
@@ -102,6 +101,25 @@ class DagNode(DepNode):
     def cstPar(self, tgt, keep=True, **kwargs):
         """Parent constraint tgt"""
         return self.cstBase(tgt, cstType="par", keep=keep, **kwargs)
+
+    def cstMtx(self, tgt):
+        """Parent-constraint-like setup using multMatrix + blendMatrix."""
+        grp = tgt.parent
+        if grp.exists():
+            # Store offset into tgt
+            tempMult = DepNode('_#', nodeType='multMatrix')
+            grp.a.worldMatrix >>  tempMult.a.matrixIn
+            self.a.worldInverseMatrix >> tempMult.a.matrixIn
+            myOffset = tgt.a.add('myOffset', type='matrix')
+            myOffset.set(mc.getAttr(tempMult.a.matrixSum), type="matrix")
+            tempMult.delete()
+
+            # Let A -> B offsetParent
+            cstMult = DepNode('cstMult_#', nodeType='multMatrix')
+            myOffset >>  cstMult.a.matrixIn
+            self.a.worldMatrix >>  cstMult.a.matrixIn
+            grp.a.worldInverseMatrix >>  cstMult.a.matrixIn
+            cstMult.a.matrixSum >>  tgt.a.offsetParentMatrix
 
     def cstParR(self, tgt, keep=True, **kwargs):
         """Parent constraint tgt to rotation"""
