@@ -510,7 +510,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         # Bind meshes to rb joints & attach rb joints to surface
         skin.skinRbJnts(meshes=tgtMeshes)
-        build.autoAttach()
+        build.boneAutoAttach()
 
         mc.hide(SK_AUTO_BIND_GRP)
         mc.select(cl=1)

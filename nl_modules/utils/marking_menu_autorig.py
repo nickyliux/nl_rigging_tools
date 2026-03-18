@@ -124,17 +124,17 @@ class MarkingMenuAutorig:
         mi = mc.menuItem(p=menu, l="Guide", rp="E", subMenu=1)
         mc.menuItem(p=mi, l="Mirror Selected", c=guide.mirrorGuideSelOrAll)
         mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="Dup Selected", c=guide.duplicateGuideSel)
+        mc.menuItem(p=mi, l="Duplicate Selected", c=guide.duplicateGuideSel)
         # mc.menuItem(p=mi, l="Mirror", c=guide.mirrorGuideSelOrAll)
-        mc.menuItem(p=mi, l="Xfer 1st -> 2nd", c=guide.xferGuideAtoB)
+        mc.menuItem(p=mi, l="Transfer 1st -> 2nd", c=guide.xferGuideAtoB)
         mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="Del Selected / All", c=build.deleteSelOrAll)
+        mc.menuItem(p=mi, l="Delete Selected / All", c=build.deleteSelOrAll)
 
     def addProxyOptions(self, menu):
         """Add proxy options to the marking menu"""
         mi = mc.menuItem(p=menu, l="Proxy", rp="NE", subMenu=1)
 
-        mc.menuItem(p=mi, l="Gen", c=proxy.genProxyForSet)
+        mc.menuItem(p=mi, l="Generate", c=proxy.genProxyForSet)
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Mirror Selected", c=proxy.mirrorProxy)
         mc.menuItem(p=mi, l="Warp Selected", c=proxy.wrapProxy)

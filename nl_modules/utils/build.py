@@ -492,7 +492,7 @@ def getRigNode(obj):
         logging.info("Get rigNode for non-existing object.")
 
 
-def autoAttach():
+def boneAutoAttach():
     """Auto attach joints to surface for all rigNodes."""
     masterCtl = DagNode("master_ctl")
     if not masterCtl.exists():
