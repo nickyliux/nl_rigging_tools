@@ -89,10 +89,15 @@ def buildSelOrAll(*args):
             rigNodesToBuild.append(rN)
 
     if rigNodesToBuild:
+        
+        chr = DagNode("CHR")
+        if chr.exists():
+            chr.show()
+            
         buildCount = len(rigNodesToBuild)
         common.pauseVP(1)
-        showLog = args and len(args) > 1 and args[1] == 1
-        log.update_root_logger(create_window=showLog)
+        # showLog = args and len(args) > 1 and args[1] == 1
+        log.update_root_logger(create_window=False)
 
         mc.progressWindow(
             t="Build", pr=0, status="\nPreparing ...", ii=0, maxValue=buildCount
@@ -114,6 +119,7 @@ def buildSelOrAll(*args):
 
         mc.select(cl=1)
         common.pauseVP(0)
+        
 
 
 def postRig():
