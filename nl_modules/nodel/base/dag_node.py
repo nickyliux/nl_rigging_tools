@@ -105,8 +105,16 @@ class DagNode(DepNode):
         """Parent constraint tgt"""
         return self.cstBase(tgt, cstType="par", keep=keep, **kwargs)
 
-    def cstMtx(self, tgt):
-        """Parent-constraint-like setup using multMatrix + blendMatrix."""
+    def cstPoiMtx(self, tgt, mo=False):
+        """Point-constraint-like setup using decomposeMatrix"""
+        cstPoiMtx = DepNode('cstPoiMtx_#', nodeType='decomposeMatrix')
+        if mo == 0:
+            self.a.worldMatrix >>  cstPoiMtx.a.inputMatrix
+            cstPoiMtx.a.outputTranslate >> tgt.a.t
+        return cstPoiMtx
+
+    def cstParScaMtx(self, tgt):
+        """Parent Scale -constraint-like setup using multMatrix"""
         grp = tgt.parent
         if grp.exists():
             # Store offset into tgt
@@ -117,12 +125,13 @@ class DagNode(DepNode):
             myOffset.set(mc.getAttr(tempMult.a.matrixSum), type="matrix")
             tempMult.delete()
 
-            # Let A -> B offsetParent
-            cstMult = DepNode('cstMult_#', nodeType='multMatrix')
-            myOffset >>  cstMult.a.matrixIn
-            self.a.worldMatrix >>  cstMult.a.matrixIn
-            grp.a.worldInverseMatrix >>  cstMult.a.matrixIn
-            cstMult.a.matrixSum >>  tgt.a.offsetParentMatrix
+            # A -> B's offsetParent
+            cstMtx = DepNode('cstMtx_#', nodeType='multMatrix')
+            myOffset >>  cstMtx.a.matrixIn
+            self.a.worldMatrix >>  cstMtx.a.matrixIn
+            grp.a.worldInverseMatrix >>  cstMtx.a.matrixIn
+            cstMtx.a.matrixSum >>  tgt.a.offsetParentMatrix
+            return cstMtx
 
     def cstParR(self, tgt, keep=True, **kwargs):
         """Parent constraint tgt to rotation"""
