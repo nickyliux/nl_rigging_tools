@@ -259,7 +259,7 @@ class SpineQd(RigModule):
         for i in range(jntNum):
             grp = GrpNode(f"{i}_rbj_grp", pf=rID, p=loc_grp)
             # spIkJnts[i].cstPoi(grp)
-            spIkJnts[i].cstPoiMtx(grp, mo=1)
+            spIkJnts[i].cstPoiMtx(grp)
 
             common.setTwistFromRibbon(
                 tgt=spIkJnts[i], srf=rbSrf, out=grp, p=self.CTL_DATA
