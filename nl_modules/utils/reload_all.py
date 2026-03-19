@@ -60,6 +60,7 @@ from nl_modules.utils import (
     proxy,
     skin,
     utils_node,
+    matrix,
     marking_menu_autorig,
     marking_menu_rigging,
 )
@@ -80,6 +81,7 @@ reload(path)
 reload(proxy)
 reload(skin)
 reload(utils_node)
+reload(matrix)
 reload(marking_menu_autorig)
 reload(marking_menu_rigging)
 

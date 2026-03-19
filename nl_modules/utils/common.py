@@ -1,11 +1,6 @@
-# import os
-import re
-
-# import sys
 import logging
+import re
 import maya.cmds as mc
-
-# from maya import mel
 from collections import OrderedDict
 from nl_modules.utils.color import Color
 
@@ -194,16 +189,8 @@ def cstMulti(*args, cstType="par", delete=False, w=None, **kwargs):
     else:
         return DagNode(cst)
 
-
 def nlRivet(
-    geo=None,
-    coordList=None,
-    normal=0,  # 0,1,2 => x,y,z
-    tangent=2,  # 0,1,2 => x,y,z
-    normalize=0,
-    scaleAttr=None,
-    p=None,
-    size=1,
+    geo=None, coordList=None, normal=0, tangent=2, normalize=0, scaleAttr=None, p=None, size=1
 ):
     """Create Rivets and return uvPin, locators ( Better than mc.Rivet by not using selection )
     e.g.
@@ -245,6 +232,52 @@ def nlRivet(
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateV", coord[1])
 
         aimAlongSrfUV(srf=geo, loc=loc, inPos=uvPinN.a.outputTranslate, p=p)
+        scaleAttr >> loc.a.s
+        pinLocs.append(loc)
+
+    return uvPinN, pinLocs
+
+
+def nlRivet2(
+    geo=None, coordList=None, normal=0, tangent=2, normalize=0, scaleAttr=None, p=None, size=10
+):
+    """Create Rivets and return uvPin, locators ( Better than mc.Rivet by not using selection )
+    e.g.
+        nlRivet(geo='surf', coordList=[(0.5,0.5), (0,1)])
+    """
+    from nl_modules.nodel.base.dag_node import DagNode
+    from nl_modules.nodel.grp_node import GrpNode
+    from nl_modules.nodel.loc_node import LocNode
+
+    geo = DagNode(geo)
+    origPlug = mc.deformableShape(geo, cog=1)[0]
+    origN = DagNode(origPlug.split(".")[0])
+
+    uvPinN = DagNode("myUvPin_#", nodeType="uvPin")
+    uvPinN.a.normalizedIsoParms.set(normalize)
+    uvPinN.a.normalAxis.set(normal)
+    uvPinN.a.tangentAxis.set(tangent)
+    geoType = geo.shape.type
+
+    if geoType == "mesh":
+        origN.a.outMesh >> uvPinN.a.originalGeometry
+        geo.shape.a.worldMesh >> uvPinN.a.deformedGeometry
+    if geoType == "nurbsSurface":
+        origN.a.local >> uvPinN.a.originalGeometry
+        geo.shape.a.worldSpace >> uvPinN.a.deformedGeometry
+    else:
+        logging.info("Ignore non-nurbsSurface.")
+        return None, None
+
+    pinLocs = []
+
+    for i, coord in enumerate(coordList):
+
+        loc = LocNode(f"rivet_loc_{i}_#", size=size, color=13, p=p)
+        uvPinN.a.outputMatrix >> loc.a.offsetParentMatrix
+
+        mc.setAttr(uvPinN + f".coordinate[{i}].coordinateU", coord[0])
+        mc.setAttr(uvPinN + f".coordinate[{i}].coordinateV", coord[1])
         scaleAttr >> loc.a.s
         pinLocs.append(loc)
 

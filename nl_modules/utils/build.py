@@ -4,10 +4,12 @@ import maya.cmds as mc
 
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
 from nl_modules.utils import control
 from nl_modules.utils import log
 from nl_modules.utils import proxy
+from nl_modules.utils import matrix
 from nl_modules.utils import utils_node as ut
 
 # Import rig components, required for evalation
@@ -543,12 +545,25 @@ def boneAutoAttach():
             continue
 
         jntGrp = DagNode("JNT")
-
         logging.info(f"Attach joints for {node.name}")
-        outLocs = common.attachTgtPosToSrf(
-            tgtList=rbJnts, srf=rbSrfSk, crv=rbCrvSk, p=jntGrp
-        )
 
+        outLocs = []
+        tmpLoc = LocNode('temp_#')
+        for j in rbJnts:
+            tmpLoc.snapTo(j)
+            dcpM_t = matrix.attachMtx(rbSrfSk, refLoc=tmpLoc)
+            dcpM_r = matrix.attachMtx(rbSrf, refLoc=tmpLoc)
+
+            outLoc = LocNode('attach_loc_#', p=jntGrp)
+            dcpM_t.a.outputTranslate >> outLoc.a.translate
+            dcpM_r.a.outputRotate >> outLoc.a.rotate
+            outLocs.append(outLoc)
+
+        tmpLoc.delete()
+
+        # outLocs = common.attachTgtPosToSrf(
+        #     tgtList=rbJnts, srf=rbSrfSk, crv=rbCrvSk, p=jntGrp
+        # )
         # tgtSrf = rbSrfSk if node.a.rigClass.get() == "Tail" else rbSrf
         # common.aimOutListToSrf(tgtList=outLocs, srf=tgtSrf, outList=outLocs, p=jntGrp)
 
