@@ -511,13 +511,9 @@ def boneAutoAttach():
 
         rbJntSetAttr = node.a["rbJntSet"]
         rbJntSetName = rbJntSetAttr.get()
-        rbJntSet = DagNode(rbJntSetName)
-        if not rbJntSet.exists():
-            continue
 
-        rbJnts = mc.sets(rbJntSet, q=1)
+        rbJnts = common.getSetMembersInOrder(rbJntSetName)
         if not rbJnts:
-            logging.warning(f"{node.name}: No joints in Set {rbJntSet}.")
             continue
 
         rbSrfSkAttr = node.a["rbSrfSk"]
@@ -547,30 +543,35 @@ def boneAutoAttach():
         jntGrp = DagNode("JNT")
         logging.info(f"Attach joints for {node.name}")
 
-        outLocs = []
-        tmpLoc = LocNode('temp_#')
-        for j in rbJnts:
-            tmpLoc.snapTo(j)
-            dcpM_t = matrix.attachMtx(rbSrfSk, refLoc=tmpLoc)
-            dcpM_r = matrix.attachMtx(rbSrf, refLoc=tmpLoc)
+        # outLocs = []
 
-            outLoc = LocNode('attach_loc_#', p=jntGrp)
-            dcpM_t.a.outputTranslate >> outLoc.a.translate
-            dcpM_r.a.outputRotate >> outLoc.a.rotate
-            outLocs.append(outLoc)
+        # tmpLoc = LocNode('temp_#')
+        # for j in rbJnts:
+        #     tmpLoc.snapTo(j)
+        #     dcpM_t = matrix.attachMtx(rbSrfSk, refLoc=tmpLoc)
+        #     dcpM_r = matrix.attachMtx(rbSrf, refLoc=tmpLoc)
 
-        tmpLoc.delete()
+        #     outLoc = LocNode('attach_loc_#', p=jntGrp)
+        #     dcpM_t.a.outputTranslate >> outLoc.a.translate
+        #     dcpM_r.a.outputRotate >> outLoc.a.rotate
+        #     outLocs.append(outLoc)
+        # tmpLoc.delete()
 
-        # outLocs = common.attachTgtPosToSrf(
-        #     tgtList=rbJnts, srf=rbSrfSk, crv=rbCrvSk, p=jntGrp
-        # )
-        # tgtSrf = rbSrfSk if node.a.rigClass.get() == "Tail" else rbSrf
-        # common.aimOutListToSrf(tgtList=outLocs, srf=tgtSrf, outList=outLocs, p=jntGrp)
+        # for loc, rbJ in zip(outLocs, rbJnts):
+        #     rbJ | loc
+        #     globalScale >> loc.a.s
 
-        for loc, rbJ in zip(outLocs, rbJnts):
-            rbJ | loc
+        dcpM_ts = common.attachUVPin(tgtList=rbJnts, geo=rbSrfSk)
+        dcpM_rs = common.attachUVPin(tgtList=rbJnts, geo=rbSrf)
+        
+        for i, rbj in enumerate(rbJnts):
+            loc = LocNode('attach_loc_#', p=jntGrp)
+            dcpM_ts[i].a.outputTranslate >> loc.a.translate
+            dcpM_rs[i].a.outputRotate >> loc.a.rotate
+            # outLocs.append(loc)
+            rbj | loc
             globalScale >> loc.a.s
-
+        
 
 def add_noise_logic(ctl=None, targets=None, rot=0):
     """Build the sine wave motion for the tail rig.

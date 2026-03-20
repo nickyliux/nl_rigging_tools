@@ -178,15 +178,21 @@ def mirrorPose(*arg):
     all = []
     if not selList:
         ns = common.getNsFrOptVar()
-        if mc.ls(ns + LF_CTL_SET, type="objectSet"):
-            lf = mc.sets(ns + LF_CTL_SET, q=1)
-        if mc.ls(ns + RT_CTL_SET, type="objectSet"):
-            rt = mc.sets(ns + RT_CTL_SET, q=1)
-        if mc.ls(ns + ALL_CTL_SET, type="objectSet"):
-            all = mc.sets(ns + ALL_CTL_SET, q=1)
+        tgtSet = ns + LF_CTL_SET
+        if mc.ls(tgtSet, type="objectSet"):
+            lf = common.getSetMembersInOrder(tgtSet)
+
+        tgtSet = ns + RT_CTL_SET
+        if mc.ls(tgtSet, type="objectSet"):
+            rt = common.getSetMembersInOrder(tgtSet)
+
+        tgtSet = ns + ALL_CTL_SET
+        if mc.ls(tgtSet, type="objectSet"):
+            all = common.getSetMembersInOrder(tgtSet)
 
         # selList = list(set(all) - set(rt))
-        selList = list(set(lf))
+        if lf:
+            selList = list(set(lf))
 
     if selList:
         mirrorGuide(selList)

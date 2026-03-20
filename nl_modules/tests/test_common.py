@@ -145,7 +145,7 @@ class Test_common_Advanced(Test_common_Base):
 
     def test_ribbonAttach(self):
         ball = mc.polySphere()[0]
-        common.ribbonAttach(tgtList=[self.obj1, self.obj2], geo=ball)
+        common.attachUVPin(tgtList=[self.obj1, self.obj2], geo=ball)
         DagNode(ball).a.ty.set(10)
         self.assertEqual(self.obj1.o.pos[1], 11)
         self.assertEqual(self.obj2.o.pos[1], 12)
@@ -157,7 +157,7 @@ class Test_common_Advanced(Test_common_Base):
 
     def test_nlRivet(self):
         ball = mc.polySphere()[0]
-        result = common.nlRivet(geo=ball, coordList=[(0.5, 0.5), (0.7, 0.7)])
+        result = common.nlRivet2(geo=ball, coordList=[(0.5, 0.5), (0.7, 0.7)])
         self.assertEqual(result[0].type, "uvPin")
         self.assertEqual(len(result[1]), 2)
 

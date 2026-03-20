@@ -67,24 +67,16 @@ def nlShrinkWrap(target=None, meshes=None, keep=0, **kwargs):
 
 def genProxyForSet(*args, tgtSet="auto_bind_jnt_set"):
     """Generate proxy meshes for all bind joints in the scene."""
-    bindSet = DagNode(tgtSet)
     CHR = GrpNode("CHR")
     PRX = GrpNode("PRX", p=CHR)
-    # MDL = GrpNode("MDL")
 
-    if bindSet.exists():
-        bindJnts = mc.sets(bindSet, q=1)
-        if bindJnts == None:
-            logging.warning(f"Joints NOT found in set '{tgtSet}'.")
-            return
-    else:
-        logging.warning(f"Set '{tgtSet}' not found.")
+    bindJnts = common.getSetMembersInOrder(tgtSet)
+    if not bindJnts:
         return
 
     proxy_count = 0
     for j in bindJnts:
-        grpName = str(j).split("_")[0]
-        PRX_GRP = GrpNode(grpName + "_PRX", p=PRX)
+        PRX_GRP = GrpNode(j.name.split('_')[0] + "_PRX", p=PRX) # separate into groups
         JntNode(j).genProxyMesh(p=PRX_GRP)
         proxy_count += 1
 

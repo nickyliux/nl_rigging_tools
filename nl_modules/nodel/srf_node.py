@@ -189,7 +189,7 @@ class SrfNode(GrpNode):
         if num > 1:
             coord = [(0.5, i / (num - 1)) for i in range(num)]
 
-            pin, pinXf = common.nlRivet(
+            pin, pinXf = common.nlRivet2(
                 geo=surf,
                 coordList=coord,
                 normalize=normalize,

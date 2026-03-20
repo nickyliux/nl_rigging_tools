@@ -181,7 +181,7 @@ class MarkingMenuAutorig:
         # --- Space Switch ---
         attr = firstSelected.a.space
         if attr.exists():
-            mc.menuItem(p=menu, l="SPACE -----", en=0)
+            mc.menuItem(p=menu, l="SPACE", en=0)
             val = attr.get()
             allSpaceAttr = attr.query(le=1)[0].split(":")
             for i, a in enumerate(allSpaceAttr):
@@ -225,8 +225,8 @@ class MarkingMenuAutorig:
 
         selList = mc.ls(sl=1, tr=1)
         if not selList:
-            if mc.ls(LF_CTL_SET):
-                selList = mc.sets(LF_CTL_SET, q=1)
+            selList = common.getSetMembersInOrder(LF_CTL_SET)
+
         if selList:
             for sel in selList:
                 control.mirrorCtlShape(sel)
@@ -244,27 +244,29 @@ class MarkingMenuAutorig:
             mc.optionVar(sv=("curr_ns", ""))
 
     def selectCtlSelOrAll(self, *args):
-        """Select all controls in the rig node or all controls in LF_CTL_SET"""
+        """Select the controls of the selected rig or all rigs in the scene"""
         from nl_modules.utils import common
 
-        selList = mc.ls(sl=1, tr=1)
-        rigNodes = []
-        if selList:
-            firstSelected = DagNode(selList[0])
-            nodes = firstSelected.a.message.outConnNode
-            if nodes:
-                filteredNodes = [n for n in nodes if n.type == "script"]
-                node = filteredNodes[0]
-                if node.exists():
-                    rigNodes = [node]
-        else:
-            # curr_ns = mc.optionVar(q="curr_ns")
-            # curr_ns_str = "" if curr_ns == 0 else curr_ns + ":"
-            rigNodes = mc.ls(common.getNsFrOptVar() + "*RGN", type="script") or []
+        # selList = mc.ls(sl=1, tr=1)
+        # rigNodes = []
+        # if selList:
+        #     firstSelected = DagNode(selList[0])
+        #     nodes = firstSelected.a.message.outConnNode
+        #     if nodes:
+        #         filteredNodes = [n for n in nodes if n.type == "script"]
+        #         node = filteredNodes[0]
+        #         if node.exists():
+        #             rigNodes = [node]
+        # else:
+        #     # curr_ns = mc.optionVar(q="curr_ns")
+        #     # curr_ns_str = "" if curr_ns == 0 else curr_ns + ":"
+        #     rigNodes = mc.ls(common.getNsFrOptVar() + "*RGN", type="script") or []
 
-        setList = common.getRigCtls(rigNodes)
-        if setList:
-            mc.select(setList)
+        rigNodes = build.getRigNodes_selOrAll()
+        ctls = common.getRigCtls(rigNodes)
+        print(ctls)
+        if ctls:
+            mc.select(ctls)
 
     def switch_to_space(self, *args):
         """Switch space for all selected controls to the specified space"""

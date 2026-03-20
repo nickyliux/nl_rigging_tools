@@ -677,6 +677,12 @@ class DagNode(DepNode):
         """Return type of shape or itself"""
         if self.exists():
             return mc.nodeType(self.shape or self)
+        
+    @property
+    def nType(self):
+        """Return type of shape or itself"""
+        if self.exists():
+            return mc.nodeType(self)
 
     def scale(self, *args, **kwargs):
         """Scale the node"""

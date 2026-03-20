@@ -46,7 +46,8 @@ UI_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.ui")
 STYLE_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.qss")
 LIGHTING_FILE = os.path.join(LIGHT_PATH, "lighting4.ma")
 SHADER_FILE = os.path.join(LIGHT_PATH, "bone_SHD.ma")
-SK_AUTO_BIND_GRP = "sk_auto_bind_grp"
+AUTO_BIND_SK_GRP = "auto_bind_sk_grp"
+AUTO_BIND_SK_SET = "auto_bind_sk_set"
 
 
 class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
@@ -242,7 +243,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def updateCharPath(self):
         """Update the character path in the UI if it exists."""
-        # Set character path if exists
         charPath = mc.optionVar(q="charPath")
         if charPath:
             if os.path.isdir(charPath):
@@ -422,7 +422,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         meshSel = [DagNode(m).parent for m in mc.ls(sl=1, type="mesh")]
 
         if meshSel:
-            grp = GrpNode(SK_AUTO_BIND_GRP)
+            grp = GrpNode(AUTO_BIND_SK_GRP)
             for mesh in meshSel:
                 sf = "_rbJnt" if rb else "_refJnt"
                 color = Color.RED if rb else Color.WHITE
@@ -440,34 +440,34 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 
     def autoBind_refJnts(self, meshes=None, thld=999):
-        """Bind meshes to the closest reference joints."""
-        JNT_SET = "auto_bind_sk_set"
+        """Bind meshes to reference joints with a specified threshold."""
+        jnts = common.getSetMembersInOrder(AUTO_BIND_SK_SET)
+        if not jnts:
+            logging.info(f"No joints in Set {AUTO_BIND_SK_SET} found for auto skin.")
+            return
 
-        if not DagNode(JNT_SET).exists():
-            raise ValueError(f"Set {JNT_SET} NOT found for auto skin.")
-
-        jntList = set(mc.sets(JNT_SET, q=1))
-        jntsScap = set([n for n in jntList if "scapula" in DagNode(n).name.lower()])
-        jntsNoScap = jntList - jntsScap
+        jntsScap = [n for n in jnts if "scapula" in n.name.lower()]
+        jntsOthers = set(jnts) - set(jntsScap)
 
         meshesScap = [n for n in meshes if "scapula" in DagNode(n).name.lower()]
-        meshesNoScap = set(meshes) - set(meshesScap)
+        meshesOthers = set(meshes) - set(meshesScap)
 
-        skin.skinRefJnts(meshes=meshesNoScap, jnts=jntsNoScap, thld=thld)
         skin.skinRefJnts(meshes=meshesScap, jnts=jntsScap, thld=thld)
+        skin.skinRefJnts(meshes=meshesOthers, jnts=jntsOthers, thld=thld)
 
     @common.Undo("boneAutoUnBind")
     def boneAutoUnBind(self):
+        """Unbind all meshes in MODEL_GRP by deleting skinClusters."""
         charPath = mc.optionVar(q="charPath")
         if charPath == None or charPath == "":
             mc.confirmDialog(t="Info", m="Character path NOT set.     ", b="OK")
             return
 
-        charName = os.path.basename(charPath)
+        charNameGrp = DagNode(os.path.basename(charPath))
         count = 0
-        mdlGrp = DagNode(charName)
-        if mdlGrp.exists():
-            selList = mc.ls(mdlGrp)
+
+        if charNameGrp.exists():
+            selList = mc.ls(charNameGrp)
             tgtMeshes = common.getObjectBelow(selList)
             for mesh in tgtMeshes:
                 count += skin.delSkin(mesh)
@@ -477,9 +477,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     @common.Undo("boneAutoBind")
     def boneAutoBind(self):
         """Bind all meshes in MODEL_GRP to reference joints and ribbon joints."""
-
-        if not mc.objExists(SK_AUTO_BIND_GRP):
-            mc.confirmDialog(t="Info", m=f"{SK_AUTO_BIND_GRP} NOT found.    ", b="OK")
+        if not mc.objExists(AUTO_BIND_SK_GRP):
+            mc.confirmDialog(t="Info", m=f"{AUTO_BIND_SK_GRP} NOT found.    ", b="OK")
             return
 
         charPath = mc.optionVar(q="charPath")
@@ -506,13 +505,13 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             return
 
         # Bind meshes to ref joints
-        self.autoBind_refJnts(meshes=tgtMeshes, thld=15)
+        self.autoBind_refJnts(meshes=tgtMeshes, thld=20)
 
         # Bind meshes to rb joints & attach rb joints to surface
         skin.skinRbJnts(meshes=tgtMeshes)
         build.boneAutoAttach()
 
-        mc.hide(SK_AUTO_BIND_GRP)
+        mc.hide(AUTO_BIND_SK_GRP)
         mc.select(cl=1)
 
     def templateTarget(self):
