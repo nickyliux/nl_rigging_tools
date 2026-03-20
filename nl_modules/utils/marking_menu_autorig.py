@@ -245,26 +245,13 @@ class MarkingMenuAutorig:
 
     def selectCtlSelOrAll(self, *args):
         """Select the controls of the selected rig or all rigs in the scene"""
-        from nl_modules.utils import common
-
-        # selList = mc.ls(sl=1, tr=1)
-        # rigNodes = []
-        # if selList:
-        #     firstSelected = DagNode(selList[0])
-        #     nodes = firstSelected.a.message.outConnNode
-        #     if nodes:
-        #         filteredNodes = [n for n in nodes if n.type == "script"]
-        #         node = filteredNodes[0]
-        #         if node.exists():
-        #             rigNodes = [node]
-        # else:
         #     # curr_ns = mc.optionVar(q="curr_ns")
         #     # curr_ns_str = "" if curr_ns == 0 else curr_ns + ":"
         #     rigNodes = mc.ls(common.getNsFrOptVar() + "*RGN", type="script") or []
+        from nl_modules.utils import common
 
         rigNodes = build.getRigNodes_selOrAll()
         ctls = common.getRigCtls(rigNodes)
-        print(ctls)
         if ctls:
             mc.select(ctls)
 

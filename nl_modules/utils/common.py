@@ -1041,12 +1041,12 @@ def showRO():
             mc.setAttr(nodeN + ".ro", cb=1)
 
 def getSetMembersInOrder(tgt):
-    """Get members of set in order"""
+    """Get members of set in order
+    e.g.
+        getSetMembersInOrder('lf*ctl_set')
+    """
     from nl_modules.nodel.base.dag_node import DagNode
 
-    if isinstance(tgt, str):
-        tgt = DagNode(tgt)
-
-    if tgt and tgt.exists() and tgt.nType == "objectSet":
+    if mc.ls(tgt, type="objectSet"):
         members = mc.listConnections(tgt, s=1, d=0, p=0, c=0) or []
         return [DagNode(n) for n in members]

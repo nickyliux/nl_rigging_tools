@@ -148,8 +148,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.copyWeight_BN, skin.copyWeight)
 
         # RigNode
-        self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_dblClicked)
-        self.UI.rigNode_LW.itemClicked.connect(self.rigNode_LW_clicked)
+        self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_selectMasterGuide)
+        self.UI.rigNode_LW.itemClicked.connect(self.rigNode_LW_selectRigNode)
         self.UI.rigNode_refresh_BN.clicked.connect(self.rigNode_UI_refresh)
         self.UI.rigNode_selectAll_BN.clicked.connect(self.rigNode_selectAll)
 
@@ -308,13 +308,14 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if rigID_dict:
             guide.loadGuideFrIdDict(rigID_dict)
 
-    def rigNode_LW_clicked(self, item):
+    def rigNode_LW_selectRigNode(self, item):
         """Select rigNode in the scene when clicked in the UI."""
         itemSel = mc.ls(item.text())
         if itemSel:
             mc.select(itemSel)
+            mc.AttributeEditor()
 
-    def rigNode_LW_dblClicked(self, item):
+    def rigNode_LW_selectMasterGuide(self, item):
         """Show attribute editor for rigNode"""
         itemSel = mc.ls(item.text())
         if itemSel:
