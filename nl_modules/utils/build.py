@@ -509,71 +509,58 @@ def boneAutoAttach():
         if node.a.nodeState.get() != 2:
             continue
 
-        rbJntSetAttr = node.a["rbJntSet"]
-        rbJntSetName = rbJntSetAttr.get()
-
+        rbJntSetName = node.a["rbJntSet"].get()
         rbJnts = common.getSetMembersInOrder(rbJntSetName)
         if not rbJnts:
             continue
 
-        rbSrfSkAttr = node.a["rbSrfSk"]
-        rbCrvSkAttr = node.a["rbCrvSk"]
-        rbSrfAttr = node.a["rbSrf"]
+        rbSrf = node.a["rbSrf"].inConnNode
+        rbSrfSk = node.a["rbSrfSk"].inConnNode
+        rigID = node.a.rigID.get()
 
-        rbSrfSk = rbSrfSkAttr.inConnNode
-        if not rbSrfSk:
-            logging.warning(f"{node.name}: Missing ribbon sk surface.")
+        if not all([rbSrfSk, rbSrf]):
+            logging.warning(f"{node.name}: Missing srf & srfSk for attachment.")
             continue
 
-        rbCrvSk = rbCrvSkAttr.inConnNode
-        if not rbCrvSk:
-            logging.warning(f"{node.name}: Missing ribbon sk curve.")
-            continue
+        attachToTwoSrfUVPin(rigID, rbJnts, rbSrf, rbSrfSk, globalScale, DagNode("JNT"))
 
-        rbSrf = rbSrfAttr.inConnNode
-        if not rbSrf:
-            logging.warning(f"{node.name}: Missing ribbon surface.")
-            continue
+# def attachToTwoSrfMtx(rigID, tgts, srf, srfSk, globalScale, grp):
+#     """Attach joints with matrix, position from srfSk, orientation from srf """
+#     outLocs = []
+#     tmpLoc = LocNode('temp_#')
 
-        setting = node.a.setting.inConnNode
-        if not setting:
-            logging.warning("Setting NOT found.")
-            continue
+#     attachGrp = GrpNode(f'{rigID}_attachGrp', p=grp)
+#     for j in tgts:
+#         tmpLoc.snapTo(j)
+#         dcpM_t = matrix.attachMtx(srfSk, refLoc=tmpLoc)
+#         dcpM_r = matrix.attachMtx(srf, refLoc=tmpLoc)
 
-        jntGrp = DagNode("JNT")
-        logging.info(f"Attach joints for {node.name}")
+#         outLoc = LocNode('attach_loc_#', p=attachGrp)
+#         dcpM_t.a.outputTranslate >> outLoc.a.translate
+#         dcpM_r.a.outputRotate >> outLoc.a.rotate
+#         outLocs.append(outLoc)
+#     tmpLoc.delete()
 
-        # outLocs = []
+#     for loc, jnt in zip(outLocs, tgts):
+#         jnt | loc
+#         globalScale >> loc.a.s
 
-        # tmpLoc = LocNode('temp_#')
-        # for j in rbJnts:
-        #     tmpLoc.snapTo(j)
-        #     dcpM_t = matrix.attachMtx(rbSrfSk, refLoc=tmpLoc)
-        #     dcpM_r = matrix.attachMtx(rbSrf, refLoc=tmpLoc)
 
-        #     outLoc = LocNode('attach_loc_#', p=jntGrp)
-        #     dcpM_t.a.outputTranslate >> outLoc.a.translate
-        #     dcpM_r.a.outputRotate >> outLoc.a.rotate
-        #     outLocs.append(outLoc)
-        # tmpLoc.delete()
+def attachToTwoSrfUVPin(rigID, tgts, srf, srfSk, globalScale, grp):
+    """Attach joints with uvPin, position from srfSk, orientation from srf """
+    logging.info(f"Attach joints for {rigID}")
+    dcpM_ts = common.attachUVPin(tgtList=tgts, geo=srfSk)
+    dcpM_rs = common.attachUVPin(tgtList=tgts, geo=srf)
 
-        # for loc, rbJ in zip(outLocs, rbJnts):
-        #     rbJ | loc
-        #     globalScale >> loc.a.s
+    attachGrp = GrpNode(f'{rigID}_attachGrp', p=grp)
+    for i, tgt in enumerate(tgts):
+        loc = LocNode('attach_loc_#', p=attachGrp)
+        dcpM_ts[i].a.outputTranslate >> loc.a.translate
+        dcpM_rs[i].a.outputRotate >> loc.a.rotate
+        tgt | loc
+        globalScale >> loc.a.s
 
-        dcpM_ts = common.attachUVPin(tgtList=rbJnts, geo=rbSrfSk)
-        dcpM_rs = common.attachUVPin(tgtList=rbJnts, geo=rbSrf)
-        
-        for i, rbj in enumerate(rbJnts):
-            loc = LocNode('attach_loc_#', p=jntGrp)
-            dcpM_ts[i].a.outputTranslate >> loc.a.translate
-            dcpM_rs[i].a.outputRotate >> loc.a.rotate
-            # outLocs.append(loc)
-            rbj | loc
-            globalScale >> loc.a.s
-        
-
-def add_noise_logic(ctl=None, targets=None, rot=0):
+def addNoiseLogic(ctl=None, targets=None, rot=0):
     """Build the sine wave motion for the tail rig.
     Example use:
         from nl_modules.utils import build

@@ -426,8 +426,10 @@ class Attribute:
             obj.a.rx.atChildren                     # None
         """
         if self.query(multi=1):  # indexMatter=1
+            index = 0
             indexInUsed = mc.getAttr(self, multiIndices=1)
-            index = len(indexInUsed) if indexInUsed else 0
+            if indexInUsed:
+                index = len(indexInUsed)
 
             indexedAttr = f"{self.name}[{index}]"
             childAttr = self.query(listChildren=1)

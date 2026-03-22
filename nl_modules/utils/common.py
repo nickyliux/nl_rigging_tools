@@ -275,14 +275,16 @@ def nlRivet2(
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateV", coord[1])
 
         loc = LocNode(f"rivet_loc_{i}_#", size=size, color=13, p=p)
-        uvPinN.a.outputMatrix >> loc.a.offsetParentMatrix
+        # uvPinN.a.outputMatrix >> loc.a.offsetParentMatrix
+        mc.connectAttr(uvPinN + f".outputMatrix[{i}]", loc + ".offsetParentMatrix")
+
         scaleAttr >> loc.a.s
         pinLocs.append(loc)
 
     return uvPinN, pinLocs
 
 def nlRivet3(
-    geo=None, coordList=None, normal=0, tangent=2, normalize=0, scaleAttr=None, p=None, size=10, createLoc=False
+    geo=None, coordList=None, normal=0, tangent=2, normalize=0, scaleAttr=None, p=None
 ):
     """Create Rivets and return uvPin, locators ( Better than mc.Rivet by not using selection )
     e.g.
@@ -290,47 +292,39 @@ def nlRivet3(
     """
     from nl_modules.nodel.base.dag_node import DagNode
     from nl_modules.nodel.base.dep_node import DepNode
-    from nl_modules.nodel.loc_node import LocNode
 
     geo = DagNode(geo)
     origPlug = mc.deformableShape(geo, cog=1)[0]
     origN = DagNode(origPlug.split(".")[0])
 
-    uvPinN = DagNode("myUvPin_#", nodeType="uvPin")
+    uvPinN = DepNode("uvPin_#", nodeType="uvPin")
     uvPinN.a.normalizedIsoParms.set(normalize)
     uvPinN.a.normalAxis.set(normal)
     uvPinN.a.tangentAxis.set(tangent)
-    geoType = geo.shape.type
 
-    # if geoType == "mesh":
-    #     origN.a.outMesh >> uvPinN.a.originalGeometry
-    #     geo.shape.a.worldMesh >> uvPinN.a.deformedGeometry
-    # if geoType == "nurbsSurface":
     origN.a.local >> uvPinN.a.originalGeometry
     geo.shape.a.worldSpace >> uvPinN.a.deformedGeometry
-    # else:
-    #     logging.info("Ignore non-nurbsSurface.")
-    #     return None, None
 
-    outputs = []
+    outputMtxs = []
     for i, coord in enumerate(coordList):
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateU", coord[0])
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateV", coord[1])
 
         dcpMtx = DepNode(f'dcpMtx_{i}_#', nodeType='decomposeMatrix')
+        # mc.connectAttr(uvPinN + f".outputMatrix[{i}]", dcpMtx + ".inputMatrix")
         uvPinN.a.outputMatrix >> dcpMtx.a.inputMatrix
 
-        if createLoc:
-            loc = LocNode(f"rivetLoc_{i}_#", size=size, p=p)
-            dcpMtx.a.outputTranslate >> loc.a.translate
-            dcpMtx.a.outputRotate >> loc.a.rotate
-            # uvPinN.a.outputMatrix >> loc.a.offsetParentMatrix
-            scaleAttr >> loc.a.s
-            outputs.append(loc)
-        else:
-            outputs.append(dcpMtx)
+        # if createLoc:
+        #     loc = LocNode(f"rivetLoc_{i}_#", size=size, p=p)
+        #     dcpMtx.a.outputTranslate >> loc.a.translate
+        #     dcpMtx.a.outputRotate >> loc.a.rotate
+        #     # uvPinN.a.outputMatrix >> loc.a.offsetParentMatrix
+        #     scaleAttr >> loc.a.s
+        #     outputMtxs.append(loc)
+        # else:
+        outputMtxs.append(dcpMtx)
 
-    return outputs
+    return outputMtxs
 
 def aimAlongSrfUV(srf=None, loc=None, inPos=None, p=None, setLocPos=False):
     """Make rivet loc's rotation follow UV of surface"""
@@ -459,6 +453,7 @@ def attachUVPin(tgtList=None, geo=None, scaleAttr=None, p=None):
     cpos = DepNode("cpos_#", nodeType="closestPointOnSurface")
     geo.shape.a.worldSpace >> cpos.a.inputSurface
     
+    # Collect uv coordinates for all targets
     coordList = []
     for tgt in tgtList:
         if isinstance(tgt, str):
@@ -1047,6 +1042,6 @@ def getSetMembersInOrder(tgt):
     """
     from nl_modules.nodel.base.dag_node import DagNode
 
-    if mc.ls(tgt, type="objectSet"):
+    if tgt and mc.ls(tgt, type="objectSet"):
         members = mc.listConnections(tgt, s=1, d=0, p=0, c=0) or []
         return [DagNode(n) for n in members]
