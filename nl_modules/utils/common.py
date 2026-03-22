@@ -311,8 +311,8 @@ def nlRivet3(
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateV", coord[1])
 
         dcpMtx = DepNode(f'dcpMtx_{i}_#', nodeType='decomposeMatrix')
-        # mc.connectAttr(uvPinN + f".outputMatrix[{i}]", dcpMtx + ".inputMatrix")
-        uvPinN.a.outputMatrix >> dcpMtx.a.inputMatrix
+        mc.connectAttr(uvPinN + f".outputMatrix[{i}]", dcpMtx + ".inputMatrix")
+        # uvPinN.a.outputMatrix >> dcpMtx.a.inputMatrix
 
         # if createLoc:
         #     loc = LocNode(f"rivetLoc_{i}_#", size=size, p=p)

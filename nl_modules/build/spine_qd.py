@@ -12,6 +12,7 @@ from nl_modules.utils import common
 from nl_modules.utils import proxy
 
 from nl_modules.utils import utils_node as ut
+from nl_modules.utils import build
 from nl_modules.utils.color import Color
 from nl_modules.utils.common import Vec
 
@@ -264,6 +265,7 @@ class SpineQd(RigModule):
             common.setTwistFromRibbon(
                 tgt=spIkJnts[i], srf=rbSrf, out=grp, p=self.CTL_DATA
             )
+            # build.attachToTwoSrfUVPin(self.rigID, spIkJnts, self.rbSrf, self.rbSrfSk, global_scale, self.JNT)
 
             # Add rb joints
             jnt = JntNode(f"{i}_rbj", pf=rID, align=grp, r=rSz * 2, p=grp, reset=1)
