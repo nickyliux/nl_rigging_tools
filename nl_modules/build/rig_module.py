@@ -47,7 +47,7 @@ class RigModule(RigBase):
             raise ValueError(f"master_guide not found for {rigNode}")
 
         self.rigSize = 1
-        self.masterRigSize = 1
+        self.staticRigSize = 1
 
         self.xDir = 1 if rID.startswith("lf") else -1 if rID.startswith("rt") else 0
         self.boneFix = None
@@ -311,7 +311,9 @@ class RigModule(RigBase):
     def calc_BB_size(self, tgt):
         """Calculate the rig size based on tgt's BBox."""
         if mc.objExists(tgt):
-            return GrpNode(tgt).o.diagonal2 / 100 or 1
+            # return GrpNode(tgt).o.diagonal2 / 100 or 1
+            grp = GrpNode(tgt)
+            return (grp.o.width + grp.o.height + grp.o.depth)/100
         else:
             logging.error(f"No object found to calculate BB size.")
 
@@ -337,7 +339,7 @@ class RigModule(RigBase):
             raise ValueError("rootJ not set for the component")
 
         self.rigSize = self.calc_BB_size(self.rootJ)
-        self.masterRigSize = self.calc_BB_size(GrpNode("modules_grp"))
+        self.staticRigSize = self.calc_BB_size(GrpNode("modules_grp"))
 
         children = self.rootJ.childrenJt
         if children:

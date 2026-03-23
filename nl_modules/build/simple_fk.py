@@ -90,7 +90,7 @@ class SimpleFk(RigModule):
             scale3[2] *= 0.5
 
         ctl_defs = [
-            ("setting", "screw_nut", up, self.masterRigSize / 3, 0),
+            ("setting", "screw_nut", up, self.staticRigSize / 3, 0),
             ("simple01_fkc", "cube", up, scale3, 0),
         ]
 

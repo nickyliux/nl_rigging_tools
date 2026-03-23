@@ -76,7 +76,7 @@ class SpineQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", self.masterRigSize / 3, 1),
+            ("setting", "screw_nut", "z", self.staticRigSize / 3, 1),
             ("cog_ctl", "trapezoid", None, rSz, 0),
             ("fore_ikc", "back", None, Vec((10, 10, 0.2)) * rSz, 0),
             ("mid_ikc", "circle", "z", rSz * 4, 0),
@@ -275,12 +275,12 @@ class SpineQd(RigModule):
             # Add fixPosition, mainly for stable world space positioning of the head
             if i == jntNum - 1:
                 grp.a.t.disconnect()
-                grp.a.r.disconnect()
+                # grp.a.r.disconnect()
+                # self.tangent1_ctl.cstOri(grp, mo=1)
                 fixPos = self.fore_ikc.a.add("fixPos", k=1, min=0, max=1)
-
-                self.tangent1_ctl.cstOri(grp, mo=1)
-                ctlJ2 = self.jnts_ik[2]
-                common.cstMulti(spIkJnts[i], ctlJ2, grp, cstType="poi", mo=1, w=fixPos)
+                common.cstMulti(
+                    spIkJnts[jntNum - 1], self.jnts_ik[2], grp, cstType="poi", mo=1, w=fixPos
+                )
 
         # --- Anchor and end joint setup ---
         self.anchorToRbj = LocNode(

@@ -61,7 +61,7 @@ class Tail(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", self.masterRigSize / 3, 1),
+            ("setting", "screw_nut", "z", self.staticRigSize / 3, 1),
             ("main", "squareR", "z", rSz * 2, 1),
         ]
         for name, shape, up, sca, top in ctl_defs:
@@ -258,7 +258,7 @@ class Tail(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the tail rig controls."""
         self.ctl_vis_toggle(
-            self.setting.a.add("showIkCtl", k=0, type="bool", dv=1),
+            self.setting.a.add("showIkCtl", k=0, type="bool", dv=0),
             onList=self.ctls_ik,
         )
         self.ctl_vis_toggle(
