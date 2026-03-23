@@ -265,7 +265,6 @@ class SpineQd(RigModule):
             common.setTwistFromRibbon(
                 tgt=spIkJnts[i], srf=rbSrf, out=grp, p=self.CTL_DATA
             )
-            # build.attachToTwoSrfUVPin(self.rigID, spIkJnts, self.rbSrf, self.rbSrfSk, global_scale, self.JNT)
 
             # Add rb joints
             jnt = JntNode(f"{i}_rbj", pf=rID, align=grp, r=rSz * 2, p=grp, reset=1)
@@ -409,7 +408,7 @@ class SpineQd(RigModule):
             self.add_bind_sk_set([self.jnts_bind[0]])
 
         # if self.is_spine():
-        proxy.add_radiusScale_attr(self.jnts_bind, 2)
+        # proxy.add_radiusScale_attr(self.jnts_bind, 2)
         # proxy.add_up_attr(self.jnts_bind, 2)
 
     def build_post(self):

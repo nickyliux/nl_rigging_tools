@@ -99,8 +99,10 @@ class AttributeHolder:
         e.g.
             obj.a.addSep()
         """
-        while not self.node.a[name].exists():
-            self.add(name, lock=1, type="enum", k=1, en=" ")
+        while self.node.a[name].exists():
+            name += "_"
+
+        self.add(name, lock=1, type="enum", k=1, en=" ")
 
     def reset(self, **kwargs):
         """Reset object's xform

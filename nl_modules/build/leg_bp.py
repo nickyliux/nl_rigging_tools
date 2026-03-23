@@ -127,17 +127,17 @@ class LegBp(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", self.staticRigSize / 4, 0),
-            ("hip_fkc", "stick", None, -scale / 2, 0),
+            ("hip_fkc", "stickS", None, -scale / 2, 0),
             ("upr_fkc", "circle", "x", scale, 0),
             ("lwr_fkc", "circle", "x", scale, 0),
             ("palm_fkc", "circle", "x", scale, 0),
-            ("ball_fkc", "circle", "x", scale / 3, 0),
-            ("ikc", "trapezoid", None, Vec((1.5, 0.5, 3)) * rSz, 0),
+            ("ball_fkc", "circle", "x", scale / 4, 0),
+            ("ikc", "trapezoid", None, Vec((0.7, 0.2, 1.5)) * rSz, 0),
             ("pvc", "sphere", None, rSz, 0),
-            ("smart_ctl", "trapezoid2", None, scale / 2, 0),
+            ("smart_ctl", "trapezoid2", None, scale / 3, 0),
         ]
         if self.scapulaBone:
-            ctl_defs.append(("scap_fkc", "shoulder", "z", scale / 2, 0))
+            ctl_defs.append(("scap_fkc", "shoulder", "z", Vec((0.1, 0.3, 0.3)) * scale, 0))
 
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
@@ -148,12 +148,12 @@ class LegBp(RigModule):
 
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
-        self.smart_ctl.cv_move(scale * 20, 0, 0)
+        self.smart_ctl.cv_move(scale * 15, 0, 0)
 
         if self.scapulaBone:
             self.scap_fkc.cv_move(0, scale * 25, 0)
 
-        self.setting.cv_move(scale * 20, 0, 0)
+        self.setting.cv_move(scale * 15, 0, 0)
         self.setting.color = Color.PINK
         # self.hip_fkc.cv_move(scale * 5, -scale * 15, 0)
         # self.hip_fkc.cv_rotate(0, -90, 0)

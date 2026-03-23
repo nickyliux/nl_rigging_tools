@@ -143,7 +143,9 @@ def addMasterAttrs():
 
     grp = DagNode("CTL_VIS")
     if grp.exists():
-        ctl.a.add("controlVis", k=0, type="bool", dv=1) >> grp.a.v
+        ctl.a.add("ctlVis", k=0, type="bool", dv=1) >> grp.a.v
+
+    ctl.a.addSep()
 
     grp = DagNode("JNT")
     if grp.exists():
@@ -153,17 +155,19 @@ def addMasterAttrs():
 
     ctl.a.addSep()
 
-    grp = DagNode("MDL")
-    if grp.exists():
-        ctl.a.add("modelVis", k=0, type="bool", dv=1) >> grp.a.v
-        grp.a.overrideEnabled.set(1)
-        ctl.a.add("modelLock", k=0, type="bool", dv=0) * 2 >> grp.a.overrideDisplayType
-
     grp = DagNode("PRX")
     if grp.exists():
         ctl.a.add("proxyVis", k=0, type="bool", dv=1) >> grp.a.v
         grp.a.overrideEnabled.set(1)
         ctl.a.add("proxyLock", k=0, type="bool", dv=0) * 2 >> grp.a.overrideDisplayType
+
+    ctl.a.addSep()
+
+    grp = DagNode("MDL")
+    if grp.exists():
+        ctl.a.add("modelVis", k=0, type="bool", dv=1) >> grp.a.v
+        grp.a.overrideEnabled.set(1)
+        ctl.a.add("modelLock", k=0, type="bool", dv=0) * 2 >> grp.a.overrideDisplayType
 
 
 def unbuildTgt(rN):

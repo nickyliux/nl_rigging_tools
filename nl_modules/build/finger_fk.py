@@ -181,7 +181,7 @@ class FingerFk(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts[:-1])
-        proxy.add_radiusScale_attr(self.jnts, 0.5)
+        # proxy.add_radiusScale_attr(self.jnts, 0.5)
 
     def build_post(self):
         """Post setup for the leg rig module."""

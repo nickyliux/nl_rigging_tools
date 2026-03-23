@@ -553,7 +553,7 @@ class ArmBp(RigModule):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set(self.jnts_sk)
-        proxy.add_radiusScale_attr([self.palm], 0.6)
+        # proxy.add_radiusScale_attr([self.palm], 0.6)
 
     def setup_ctlSet(self):
         """Setup control sets for the arm rig module."""

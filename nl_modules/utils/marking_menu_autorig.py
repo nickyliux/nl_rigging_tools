@@ -93,6 +93,7 @@ class MarkingMenuAutorig:
         mc.menuItem(p=mi, l="Build / Rebuild", c=self.rebuild)
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Toggle Guide", c=build.toggleGuide)
+        mc.menuItem(p=mi, l="-" * 15, en=0)
         # mc.menuItem(p=mi, l="Rebuild", c=self.rebuild)
         mc.menuItem(p=mi, l="Unbuild", c=build.unbuildSelOrAll)
 

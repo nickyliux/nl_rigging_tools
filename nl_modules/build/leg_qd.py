@@ -129,7 +129,7 @@ class LegQd(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", self.staticRigSize / 3, 0),
-            ("hip_fkc", "stick", None, -scale / 2, 0),
+            ("hip_fkc", "stickS", None, -scale / 2, 0),
             ("upr_fkc", "circle", "x", scale, 0),
             ("lwr_fkc", "circle", "x", scale, 0),
             ("palm_fkc", "circle", "x", scale, 0),
@@ -620,6 +620,8 @@ class LegQd(RigModule):
         """Setup bind joints for the quadruped leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set(self.jnts_bind)
+        proxy.add_radiusScale_attr(self.jnts_bind, 0.5)
+
 
     def setup_scale(self):
         """Setup scale for the quadruped leg rig module."""

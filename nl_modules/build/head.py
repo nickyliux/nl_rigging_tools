@@ -131,7 +131,7 @@ class Head(RigModule):
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set(self.jnts_sk)
 
-        proxy.add_proxyDiv_attr([self.head], 3)
+        # proxy.add_proxyDiv_attr([self.head], 2)
 
     def build_post(self):
         """Post setup for the head rig module."""

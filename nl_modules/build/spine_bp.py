@@ -368,8 +368,8 @@ class SpineBp(RigModule):
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set(self.jnts_bind[0])
 
-        radScale = 3 if self.is_neck() else 2
-        proxy.add_radiusScale_attr(self.jnts_bind, radScale)
+        # radScale = 3 if self.is_neck() else 2
+        # proxy.add_radiusScale_attr(self.jnts_bind, radScale)
 
     def setup_ctlSet(self):
         """Setup control sets for the spine rig."""

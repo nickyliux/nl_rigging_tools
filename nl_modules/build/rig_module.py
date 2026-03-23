@@ -747,7 +747,7 @@ class RigModule(RigBase):
             offset=(xDr, 0, 0),
             u=(0, xDr, 0),
             p=mainGrp.offset,
-            rad=rSz * 2,
+            rad=rSz, # * 2,
             aimTgt=ikc,
         )
         IkNode("autoAimJ", solver=Solver.RP, pf=rID, sj=j0, ee=j1, p=ikc, quat=1, vis=0)
@@ -790,7 +790,7 @@ class RigModule(RigBase):
                 u=u,
                 wu=wu,
                 p=uprJ,
-                rad=rSz,
+                rad=rSz/2,
                 aimTgt=hipJ,
             )
             IkNode("scapAim", pf=rID, sj=j0, ee=j1, p=scapCtl, vis=0)
