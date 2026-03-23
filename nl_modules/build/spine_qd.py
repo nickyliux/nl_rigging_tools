@@ -119,7 +119,6 @@ class SpineQd(RigModule):
     def build(self):
         """Build the spine rig."""
         self.build_pre_module()
-
         mc.delete(self.rootJ)
         self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
 
@@ -265,8 +264,6 @@ class SpineQd(RigModule):
             common.setTwistFromRibbon(
                 tgt=spIkJnts[i], srf=rbSrf, out=grp, p=self.CTL_DATA
             )
-
-            # Add rb joints
             jnt = JntNode(f"{i}_rbj", pf=rID, align=grp, r=rSz * 2, p=grp, reset=1)
             rb_jnts.append(jnt)
             self.masterC.a.globalScale >> grp.a.s
@@ -278,7 +275,12 @@ class SpineQd(RigModule):
                 # self.tangent1_ctl.cstOri(grp, mo=1)
                 fixPos = self.fore_ikc.a.add("fixPos", k=1, min=0, max=1)
                 common.cstMulti(
-                    spIkJnts[jntNum - 1], self.jnts_ik[2], grp, cstType="poi", mo=1, w=fixPos
+                    spIkJnts[jntNum - 1],
+                    self.jnts_ik[2],
+                    grp,
+                    cstType="poi",
+                    mo=1,
+                    w=fixPos,
                 )
 
         # --- Anchor and end joint setup ---

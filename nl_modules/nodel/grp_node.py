@@ -130,7 +130,7 @@ class GrpNode(DagNode):
             shape="locator",
             align=self,
             p=self,
-            scale=self.o.diagonal2 * 1.5,
+            # scale=self.o.diagonal2 * 1.5,
             top=1,
         )
         attrTgt = attrTgt or self

@@ -6,6 +6,7 @@ from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
+from nl_modules.utils import proxy
 from nl_modules.utils.color import Color
 
 
@@ -390,6 +391,7 @@ class HandBp(RigModule):
         """Setup bind joints for the hand rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set(self.jnts_bind)
+        proxy.add_radiusScale_attr(self.jnts_bind, 0.5)
 
     def setup_scale(self):
         """Setup scaling for the hand rig module."""

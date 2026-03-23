@@ -77,21 +77,14 @@ class SimpleFk(RigModule):
         logging.info(".")
 
         rID, rSz, xDr = self.getMyVar()
+        scale = rSz
         up = "x"
-        scale = rSz * 3
-        scale3 = [scale * 3, scale * 3, scale * 3]
-        if rID.startswith("lf"):
-            scale *= -1
-            scale3[0] *= -0.5
-        elif rID.startswith("rt"):
-            scale3[0] *= 0.5
-        else:
+        if not rID.startswith('lf') and not rID.startswith("rt"):
             up = "z"
-            scale3[2] *= 0.5
 
         ctl_defs = [
             ("setting", "screw_nut", up, self.staticRigSize / 3, 0),
-            ("simple01_fkc", "cube", up, scale3, 0),
+            ("simple01_fkc", "cube", up, scale, 0),
         ]
 
         if self.segNum >= 2:
@@ -113,7 +106,7 @@ class SimpleFk(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.jnts_fk = common.dupSk(
-            self.jnts, "_fk", p=self.FK_GRP, r=rSz * 2, color=Color.BLUE
+            self.jnts, "_fk", p=self.FK_GRP, r=rSz, color=Color.BLUE
         )
         self.ctls_fk = [
             self.simple01_fkc,
@@ -178,8 +171,7 @@ class SimpleFk(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts[:-1])
-        if self.xDir == 0:
-            proxy.add_radiusScale_attr(self.jnts_bind, 2)
+        proxy.add_radiusScale_attr(self.jnts_bind, 0.5)
 
     def build_post(self):
         """Post setup for the leg rig module."""

@@ -95,6 +95,7 @@ class SpineBp(RigModule):
         """Build the spine rig module."""
         self.build_pre_module()
         self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
+
         self.build_ctl()
         self.build_fk()
         if self.ribbon:

@@ -96,10 +96,10 @@ class SpineQd(RigModule):
     def build(self):
         """Build the spine rig module."""
         rID, rSz, xDr = self.getMyVar()
-
         self.build_pre_module()
         mc.delete(self.rootJ)
-        self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
+        # rSz = self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
+
         self.rbSrf = SrfNode.buildRbSrf(
             pf=rID,
             crv=self.LINE_GUIDE,

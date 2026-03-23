@@ -87,8 +87,8 @@ class RigModule(RigBase):
             lastJ = jN
             joints.append(jN)
 
-        diagSize = self.master_guide.o.diagonal2 / 100 * scale
-        [j.a.radius.set(diagSize) for j in joints]
+        r = scale * self.rigSize
+        [j.a.radius.set(r) for j in joints]
 
         joints[0].freezeXf()
         return joints
@@ -308,12 +308,11 @@ class RigModule(RigBase):
             weight = tgt.a.add("posSpace", type="enum", dv=dv, enumName=names)
             common.cstMulti(*allSpacesGrp, tgt_ofs, cstType="poi", w=weight, **kwargs)
 
-    def calc_BB_size(self, tgt):
+    def calc_dim_size(self, tgt):
         """Calculate the rig size based on tgt's BBox."""
         if mc.objExists(tgt):
-            # return GrpNode(tgt).o.diagonal2 / 100 or 1
             grp = GrpNode(tgt)
-            return (grp.o.width + grp.o.height + grp.o.depth)/100
+            return (grp.o.width + grp.o.height + grp.o.depth) / 100
         else:
             logging.error(f"No object found to calculate BB size.")
 
@@ -332,14 +331,14 @@ class RigModule(RigBase):
         if self.masterC2.a.sx.get() != 1:
             self.masterC2.freezeXf(t=0, r=0, s=1)
 
+        self.rigSize = self.calc_dim_size(self.master_guide)
+        self.staticRigSize = self.calc_dim_size(GrpNode("modules_grp"))
+
     def build_pre_module(self):
         """Build the rig module, setting up the rigNode and its connections."""
         self.rigNode.a.nodeState.set(2)
         if not self.rootJ:
             raise ValueError("rootJ not set for the component")
-
-        self.rigSize = self.calc_BB_size(self.rootJ)
-        self.staticRigSize = self.calc_BB_size(GrpNode("modules_grp"))
 
         children = self.rootJ.childrenJt
         if children:
@@ -747,7 +746,7 @@ class RigModule(RigBase):
             offset=(xDr, 0, 0),
             u=(0, xDr, 0),
             p=mainGrp.offset,
-            rad=rSz, # * 2,
+            rad=rSz * 2,
             aimTgt=ikc,
         )
         IkNode("autoAimJ", solver=Solver.RP, pf=rID, sj=j0, ee=j1, p=ikc, quat=1, vis=0)
@@ -790,7 +789,7 @@ class RigModule(RigBase):
                 u=u,
                 wu=wu,
                 p=uprJ,
-                rad=rSz/2,
+                rad=rSz / 2,
                 aimTgt=hipJ,
             )
             IkNode("scapAim", pf=rID, sj=j0, ee=j1, p=scapCtl, vis=0)

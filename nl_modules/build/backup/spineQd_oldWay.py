@@ -114,7 +114,7 @@ class SpineQd(RigModule):
 
     def build(self):
         self.build_pre_module()
-        self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
+        # self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
         self.build_ctl()
         self.build_fk()
         self.build_ik(sliding=0)
