@@ -66,7 +66,7 @@ class SpineBp(RigModule):
         logging.info(".")
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
-            ("setting", "screw_nut", "z", rSz * 3, 0),
+            ("setting", "screw_nut", "z", self.staticRigSize / 3, 0),
             ("cog_ctl", "cog", None, rSz * 8, 0),
         ]
         if self.ribbon:
@@ -78,10 +78,7 @@ class SpineBp(RigModule):
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
-        if self.is_neck():
-            self.setting.cv_scale(2, 2, 2)
-
-        self.setting.cv_move(0, 0, rSz * -130)
+        self.setting.cv_move(0, 0, rSz * -100)
         self.setting.color = Color.PINK
 
         # if self.ribbon:

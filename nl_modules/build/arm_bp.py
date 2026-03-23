@@ -91,7 +91,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", scale, 0),
+            ("setting", "screw_nut", "z", self.staticRigSize / 4, 0),
             ("clavicle_fkc", "cube", "x", scale, 1),
             ("upr_fkc", "circle", "x", scale, 0),
             ("lwr_fkc", "circle", "x", scale, 0),

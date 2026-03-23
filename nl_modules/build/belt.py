@@ -59,7 +59,7 @@ class Belt(RigModule):
         logging.info(".")
 
         rID, rSz, xDr = self.getMyVar()
-        ctl_defs = [("setting", "screw_nut", "z", rSz * 2, 0)]
+        ctl_defs = [("setting", "screw_nut", "z", self.staticRigSize / 5, 0)]
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 

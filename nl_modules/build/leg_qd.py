@@ -129,7 +129,7 @@ class LegQd(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", self.staticRigSize / 3, 0),
-            ("hip_fkc", "arrow", None, scale / 3, 0),
+            ("hip_fkc", "stick", None, -scale / 2, 0),
             ("upr_fkc", "circle", "x", scale, 0),
             ("lwr_fkc", "circle", "x", scale, 0),
             ("palm_fkc", "circle", "x", scale, 0),
@@ -156,8 +156,8 @@ class LegQd(RigModule):
         self.smart_ctl.cv_move(scale * 15, 0, 0)
         self.setting.color = Color.PINK
         self.setting.cv_move(scale * 15, 0, 0)
-        self.hip_fkc.cv_rotate(0, -90, 0)
-        self.hip_fkc.cv_move(scale * 5, -scale * 15, 0)
+        # self.hip_fkc.cv_rotate(0, -90, 0)
+        # self.hip_fkc.cv_move(scale * 5, -scale * 15, 0)
 
     def build(self):
         """Build the quadruped leg rig module."""

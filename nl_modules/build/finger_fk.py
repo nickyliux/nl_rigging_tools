@@ -80,15 +80,15 @@ class FingerFk(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "X", "x", scale, 0),
-            ("fgr01_fkc", "squareR", None, -scale, 0),
+            ("setting", "screw_nut", "x", self.staticRigSize / 5, 0),
+            ("fgr01_fkc", "squareR", None, -scale/2, 0),
         ]
         if self.segNum >= 2:
-            ctl_defs.append(("fgr02_fkc", "squareR", None, -scale, 0))
+            ctl_defs.append(("fgr02_fkc", "squareR", None, -scale/2, 0))
         if self.segNum >= 3:
-            ctl_defs.append(("fgr03_fkc", "squareR", None, -scale, 0))
+            ctl_defs.append(("fgr03_fkc", "squareR", None, -scale/2, 0))
         if self.segNum >= 4:
-            ctl_defs.append(("fgr04_fkc", "squareR", None, -scale, 0))
+            ctl_defs.append(("fgr04_fkc", "squareR", None, -scale/2, 0))
 
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)

@@ -58,10 +58,10 @@ class HandBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", scale * 2, 0),
+            ("setting", "screw_nut", "z", self.staticRigSize / 4, 0),
             ("palm_ctl", "rotate2_3d", None, -scale, 0),
             ("thumb_ctl", "rotate2_3d", "z", -scale, 0),
-            ("smart_ctl", "rotate2_3d", "x", scale * 2, 0),
+            ("smart_ctl", "rotate2_3d", "x", scale, 0),
         ]
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
