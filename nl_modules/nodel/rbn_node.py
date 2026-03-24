@@ -11,8 +11,6 @@ from nl_modules.utils import common
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
 
-# from nl_modules.utils.common import Vec
-
 
 class RbnNode:
     """Ribbon node class for creating a ribbon rig for arm or leg.
@@ -31,6 +29,7 @@ class RbnNode:
         forSpine=0,
         p_data=None,
         up="tz",
+        rSz=1,
     ):
         self.tgt = DagNode(tgt) if isinstance(tgt, str) else tgt
         self.tgtChild = self.tgt.children[0] if self.tgt.children else None
@@ -64,7 +63,7 @@ class RbnNode:
         self.scaleFix = scaleFix
         self.volMode = volMode
         self.rbnJntNum = num
-        self.size = self.tgt.o.distanceTo(self.tgtChild) / 100
+        self.size = rSz
         self.ikhs = []
         self.RBN_GRP = None
 
@@ -110,7 +109,7 @@ class RbnNode:
             rivetNum=self.rbnJntNum,
             scaleAttr=self.scaleFix,
             pf=self.pf,
-            rSz=self.size * 3,
+            rSz=self.size,
             p=self.DATA,
             JNT_DATA=self.JNT_GRP,
         )
@@ -149,7 +148,7 @@ class RbnNode:
             pf=self.pf,
             snap=tgt,
             offset=offset,
-            rad=self.size / 2,
+            rad=self.size,
             p=self.AIM_GRP,
             color=color,
         )

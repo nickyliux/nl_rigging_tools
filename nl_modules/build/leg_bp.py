@@ -87,6 +87,8 @@ class LegBp(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the leg rig."""
+        self.calc_rig_size("upr", "palm")
+
         self.genSk_module()
         root_list = self.gen_sk_fr_names(self.jnt_names)
 
@@ -137,7 +139,9 @@ class LegBp(RigModule):
             ("smart_ctl", "trapezoid2", None, scale / 3, 0),
         ]
         if self.scapulaBone:
-            ctl_defs.append(("scap_fkc", "shoulder", "z", Vec((0.1, 0.3, 0.3)) * scale, 0))
+            ctl_defs.append(
+                ("scap_fkc", "shoulder", "z", Vec((0.1, 0.3, 0.3)) * scale, 0)
+            )
 
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
@@ -634,7 +638,7 @@ class LegBp(RigModule):
         """Setup bind joints for the leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set(self.jnts_sk)
-        proxy.add_height_attr([self.palm], self.rigSize * 10)
+        # proxy.add_height_attr([self.palm], self.rigSize * 10)
 
     def build_post(self):
         """Post setup for the leg rig module."""

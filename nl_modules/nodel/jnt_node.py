@@ -114,7 +114,8 @@ class JntNode(GrpNode):
 
         children = self.childrenJt
         base_rad = self.a.radius.get() * 5
-        prx_rad_scale = self.a["proxyRadiusScale"].get() or 1
+        # prx_rad_scale = self.a["proxyRadiusScale"].get() or 1
+        prx_rad_scale = 1
         prx_div = self.a["proxyDiv"].get() or 2
         prx_height = self.a["proxyHeight"].get()
         prx_up = self.a["proxyUp"].get()

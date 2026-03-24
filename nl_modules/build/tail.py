@@ -49,6 +49,7 @@ class Tail(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the tail rig."""
+        self.calc_rig_size("rt", "tp")
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
         self.rootJ = root_list[0]

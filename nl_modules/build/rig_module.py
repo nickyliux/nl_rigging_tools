@@ -58,6 +58,15 @@ class RigModule(RigBase):
         if rigNode.a.rootJ.exists():
             self.rootJ = rigNode.a.rootJ.inConnNode
 
+    def calc_rig_size(self, *args):
+        """Calculate the rig size using distance between guides."""
+        length = 0
+        for i in range(len(args) - 1):
+            guide1 = DagNode(f"{self.rigID}_{args[i]}_guide")
+            guide2 = DagNode(f"{self.rigID}_{args[i + 1]}_guide")
+            length += guide1.o.distanceTo(guide2)
+        self.rigSize = round(length / 100, 2)
+
     def gen_sk_fr_names(self, names, color=None, scale=1):
         """Generate skeleton and control names based on the provided names list."""
         if isinstance(names, str):
@@ -312,7 +321,7 @@ class RigModule(RigBase):
         """Calculate the rig size based on tgt's BBox."""
         if mc.objExists(tgt):
             grp = GrpNode(tgt)
-            return (grp.o.width + grp.o.height + grp.o.depth) / 100
+            return round((grp.o.width + grp.o.height + grp.o.depth) / 100, 2)
         else:
             logging.error(f"No object found to calculate BB size.")
 
@@ -331,7 +340,6 @@ class RigModule(RigBase):
         if self.masterC2.a.sx.get() != 1:
             self.masterC2.freezeXf(t=0, r=0, s=1)
 
-        self.rigSize = self.calc_dim_size(self.master_guide)
         self.staticRigSize = self.calc_dim_size(GrpNode("modules_grp"))
 
     def build_pre_module(self):
@@ -789,7 +797,7 @@ class RigModule(RigBase):
                 u=u,
                 wu=wu,
                 p=uprJ,
-                rad=rSz / 2,
+                rad=rSz,
                 aimTgt=hipJ,
             )
             IkNode("scapAim", pf=rID, sj=j0, ee=j1, p=scapCtl, vis=0)
@@ -1059,7 +1067,7 @@ class RigModule(RigBase):
         # return rollJnts
         return roll_jnt0
 
-    def build_rbn(self, tgt, name="", rbnJntNum=5, volMode=1, up="tz"):
+    def build_rbn(self, tgt, name="", rbnJntNum=5, volMode=1, up="tz", rSz=1):
         """Build a ribbon node for the target with specified parameters."""
         return RbnNode(
             tgt,
@@ -1069,6 +1077,7 @@ class RigModule(RigBase):
             scaleFix=self.masterC.a["globalScale"],
             p_data=self.CTL_DATA,
             up=up,
+            rSz=rSz,
         )
 
     def build_bendy_ribbon(
@@ -1086,8 +1095,12 @@ class RigModule(RigBase):
         logging.info(".")
 
         rID, rSz, xDr = self.getMyVar()
-        ribbonUp = self.build_rbn(upr, name="up", rbnJntNum=jntNum, volMode=0, up=up1)
-        ribbonLw = self.build_rbn(lwr, name="lw", rbnJntNum=jntNum, volMode=1, up=up2)
+        ribbonUp = self.build_rbn(
+            upr, name="up", rbnJntNum=jntNum, volMode=0, up=up1, rSz=rSz
+        )
+        ribbonLw = self.build_rbn(
+            lwr, name="lw", rbnJntNum=jntNum, volMode=1, up=up2, rSz=rSz
+        )
 
         # Upper Ribbon
         upr.cstPoi(ribbonUp.stt_loc)

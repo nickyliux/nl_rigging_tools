@@ -79,6 +79,8 @@ class LegQd(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the quadruped leg rig."""
+        self.calc_rig_size("hip", "palm", "tip")
+
         # --- Generate main skeleton module and root joints ---
         self.genSk_module()
         root_list = self.gen_sk_fr_names(self.jnt_names)

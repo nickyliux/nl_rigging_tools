@@ -189,6 +189,7 @@ def cstMulti(*args, cstType="par", delete=False, w=None, **kwargs):
     else:
         return DagNode(cst)
 
+
 # def nlRivet(
 #     geo=None, coordList=None, normal=0, tangent=2, normalize=0, scaleAttr=None, p=None, size=1
 # ):
@@ -239,7 +240,14 @@ def cstMulti(*args, cstType="par", delete=False, w=None, **kwargs):
 
 
 def nlRivet2(
-    geo=None, coordList=None, normal=0, tangent=2, normalize=0, scaleAttr=None, p=None, size=10
+    geo=None,
+    coordList=None,
+    normal=0,
+    tangent=2,
+    normalize=0,
+    scaleAttr=None,
+    p=None,
+    size=10,
 ):
     """Create Rivets and return uvPin, locators ( Better than mc.Rivet by not using selection )
     e.g.
@@ -283,6 +291,7 @@ def nlRivet2(
 
     return uvPinN, pinLocs
 
+
 def nlRivet3(
     geo=None, coordList=None, normal=0, tangent=2, normalize=0, scaleAttr=None, p=None
 ):
@@ -310,7 +319,7 @@ def nlRivet3(
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateU", coord[0])
         mc.setAttr(uvPinN + f".coordinate[{i}].coordinateV", coord[1])
 
-        dcpMtx = DepNode(f'dcpMtx_{i}_#', nodeType='decomposeMatrix')
+        dcpMtx = DepNode(f"dcpMtx_{i}_#", nodeType="decomposeMatrix")
         mc.connectAttr(uvPinN + f".outputMatrix[{i}]", dcpMtx + ".inputMatrix")
         # uvPinN.a.outputMatrix >> dcpMtx.a.inputMatrix
 
@@ -325,6 +334,7 @@ def nlRivet3(
         outputMtxs.append(dcpMtx)
 
     return outputMtxs
+
 
 def aimAlongSrfUV(srf=None, loc=None, inPos=None, p=None, setLocPos=False):
     """Make rivet loc's rotation follow UV of surface"""
@@ -452,7 +462,7 @@ def attachUVPin(tgtList=None, geo=None, scaleAttr=None, p=None):
 
     cpos = DepNode("cpos_#", nodeType="closestPointOnSurface")
     geo.shape.a.worldSpace >> cpos.a.inputSurface
-    
+
     # Collect uv coordinates for all targets
     coordList = []
     for tgt in tgtList:
@@ -465,7 +475,6 @@ def attachUVPin(tgtList=None, geo=None, scaleAttr=None, p=None):
     cpos.delete()
 
     return nlRivet3(geo=geo, coordList=coordList, scaleAttr=scaleAttr)
-
 
 
 def makeChain(start, end, count=5):
@@ -769,7 +778,7 @@ def getRigCtls(rigNodes):
     from nl_modules.utils import common
 
     ns = getNsFrOptVar()
-    
+
     ctlList = []
     for rigNode in rigNodes:
         ctlSet = ns + DagNode(rigNode).a.rigID.get() + "_ctl_set"
@@ -1034,6 +1043,7 @@ def showRO():
             nodeN.type == "joint" or nodeN.type == "nurbsCurve"
         ) and not nodeN.name.endswith("_guide"):
             mc.setAttr(nodeN + ".ro", cb=1)
+
 
 def getSetMembersInOrder(tgt):
     """Get members of set in order

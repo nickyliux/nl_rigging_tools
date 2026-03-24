@@ -41,6 +41,7 @@ class MarkingMenuAutorig:
     def setupMenu(self, menu, parent):
         """Setup the marking menu with various options"""
         mc.menuItem(p=menu, l="Mirror Pose", rp="NW", c=guide.mirrorPose)
+        # i="kinMirrorJoint_S.png",
         # mc.menuItem(p=menu, l="Mirror Guide", rp="SW", c=guide.mirrorGuideSelOrAll)
 
         self.addBuildOptions(menu)
@@ -77,7 +78,7 @@ class MarkingMenuAutorig:
             mc.select(selList[0])
 
     def addShapeOptions(self, menu):
-        mi = mc.menuItem(p=menu, l="Shape", rp="SW", subMenu=1)
+        mi = mc.menuItem(p=menu, l="Shape", rp="SW", subMenu=1)  # , i="curveEP.png")
         mc.menuItem(p=mi, l="Mirror Sel / All", c=self.mirrorShapeSelOrAll)
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Drop It", c=control.dropSel)
@@ -88,14 +89,9 @@ class MarkingMenuAutorig:
 
     def addBuildOptions(self, menu):
         """Add build options to the marking menu"""
-        mi = mc.menuItem(p=menu, l="Build", rp="N", subMenu=1)
-        # mc.menuItem(p=mi, l="Build", c=partial(build.buildSelOrAll, 1))
-        mc.menuItem(p=mi, l="Build / Rebuild", c=self.rebuild)
-        mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="Toggle Guide", c=build.toggleGuide)
-        mc.menuItem(p=mi, l="-" * 15, en=0)
-        # mc.menuItem(p=mi, l="Rebuild", c=self.rebuild)
-        mc.menuItem(p=mi, l="Unbuild", c=build.unbuildSelOrAll)
+        # mi = mc.menuItem(p=menu, l="Build", rp="N", subMenu=1)  # , i="play_S.png")
+        mi = mc.menuItem(p=menu, l="Build / Rebuild", rp="N", c=self.rebuild)
+        # mc.menuItem(p=mi, l="Build / Rebuild", c=self.rebuild)
 
     def rebuild(*args):
         """Custom rebuild function that unbuilds and then builds the selected rig"""
@@ -123,6 +119,7 @@ class MarkingMenuAutorig:
     def addGuideOptions(self, menu):
         """Add guide options to the marking menu"""
         mi = mc.menuItem(p=menu, l="Guide", rp="E", subMenu=1)
+        # , i="HIKCharacterToolSkeleton.png"
         mc.menuItem(p=mi, l="Mirror Selected", c=guide.mirrorGuideSelOrAll)
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Duplicate Selected", c=guide.duplicateGuideSel)
@@ -134,6 +131,7 @@ class MarkingMenuAutorig:
     def addProxyOptions(self, menu):
         """Add proxy options to the marking menu"""
         mi = mc.menuItem(p=menu, l="Proxy", rp="NE", subMenu=1)
+        # , i='polySmoothProxy.png')
 
         mc.menuItem(p=mi, l="Generate", c=proxy.genProxyForSet)
         mc.menuItem(p=mi, l="-" * 15, en=0)
@@ -146,12 +144,19 @@ class MarkingMenuAutorig:
 
     def addExtraOptions(self, menu):
         """Add extra options to the marking menu"""
-        mc.menuItem(p=menu, l="Select Ctls", rp="W", c=self.selectCtlSelOrAll)
+        mc.menuItem(
+            p=menu, l="Select Ctls", rp="W", c=self.selectCtlSelOrAll
+        )  # , i='aselect.png')
 
         ns = common.getNsFrOptVar()
         curr_ns_str = "None" if ns == "" else ns
 
         # mc.menuItem(p=menu, l="-" * 15, en=0)
+        mc.menuItem(p=menu, l="Toggle Guide", c=build.toggleGuide)
+        # , i='teToggleRipple.png')
+        mc.menuItem(p=menu, l="-" * 15, en=0)
+        mc.menuItem(p=menu, l="Unbuild", c=build.unbuildSelOrAll)
+        mc.menuItem(p=menu, l="-" * 15, en=0)
         mc.menuItem(p=menu, l="ns = " + curr_ns_str, c=self.setNsFrSel)
         # mc.menuItem(p=menu, l="PROXY  -----", en=0)
         # space = "    "
@@ -200,7 +205,7 @@ class MarkingMenuAutorig:
             print(attr)
             setting = attr.inConnNode
             if setting:
-                attr = setting.a["fkIk"] 
+                attr = setting.a["fkIk"]
                 if attr.exists():
                     val = 0 if attr.get() > 0.5 else 1
                     mc.menuItem(

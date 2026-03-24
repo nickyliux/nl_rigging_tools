@@ -21,13 +21,7 @@ class ArmBp(RigModule):
         rigNode = DagNode(rigNode) if isinstance(rigNode, str) else rigNode
         super().__init__(rigNode)
 
-        guide_attrs = [
-            "ribbon",
-            "scapulaBone",
-            "dualBone",
-            "rollJntNum",
-            "rbnJntNum",
-        ]
+        guide_attrs = ["ribbon", "scapulaBone", "dualBone", "rollJntNum", "rbnJntNum"]
         for attr in guide_attrs:
             setattr(self, attr, self.get_guide_attr(attr))
 
@@ -72,8 +66,9 @@ class ArmBp(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the arm rig."""
+        self.calc_rig_size("upr", "palm")
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(self.jnt_names, scale=0.5)
+        root_list = self.gen_sk_fr_names(self.jnt_names)  # , scale=0.5)
 
         for jnt in root_list:
             DagNode(jnt).a.ro.set(5)
@@ -82,6 +77,7 @@ class ArmBp(RigModule):
         self.rootJ = root_list[0]
         self.rootJ | self.JNT_DATA
         self.rigNode.setMsg({"rootJ": self.rootJ})
+
         return self.rootJ
 
     def build_ctl(self):
@@ -125,7 +121,6 @@ class ArmBp(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-
         self.jnts_bind = [self.clavicle, self.palm]
         self.jnts_sk = [self.upr, self.palm]
 

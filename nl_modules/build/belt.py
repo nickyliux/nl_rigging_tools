@@ -47,6 +47,7 @@ class Belt(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the belt rig."""
+        self.calc_rig_size("rt", "tp")
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 

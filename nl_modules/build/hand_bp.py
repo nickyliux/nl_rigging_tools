@@ -30,6 +30,8 @@ class HandBp(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the hand rig."""
+        self.calc_rig_size("handJ", "fgr02_5")
+
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["handJ"])
         ALL_FGR_NAMES = [
@@ -391,7 +393,7 @@ class HandBp(RigModule):
         """Setup bind joints for the hand rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set(self.jnts_bind)
-        proxy.add_radiusScale_attr(self.jnts_bind, 0.5)
+        # proxy.add_radiusScale_attr(self.jnts_bind, 0.5)
 
     def setup_scale(self):
         """Setup scaling for the hand rig module."""

@@ -62,6 +62,7 @@ class SpineQd(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the spine rig."""
+        self.calc_rig_size("rt", "tp")
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
@@ -271,8 +272,8 @@ class SpineQd(RigModule):
             # Add fixPosition, mainly for stable world space positioning of the head
             if i == jntNum - 1:
                 grp.a.t.disconnect()
-                # grp.a.r.disconnect()
-                # self.tangent1_ctl.cstOri(grp, mo=1)
+                grp.a.r.disconnect()
+                self.tangent1_ctl.cstOri(grp, mo=1)
                 fixPos = self.fore_ikc.a.add("fixPos", k=1, min=0, max=1)
                 common.cstMulti(
                     spIkJnts[jntNum - 1],

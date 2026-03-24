@@ -22,9 +22,11 @@ class Head(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the head rig."""
+        self.calc_rig_size("ed", "st", "jawEnd")
+
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(["st", "ed"], scale=0.6)
-        jaw_list = self.gen_sk_fr_names(["jaw", "jawEnd"], scale=0.2)
+        root_list = self.gen_sk_fr_names(["st", "ed"])  # , scale=0.6)
+        jaw_list = self.gen_sk_fr_names(["jaw", "jawEnd"])  # , scale=0.2)
         lf_eye = self.gen_sk_fr_names("lf_eye")[0]
         rt_eye = self.gen_sk_fr_names("rt_eye")[0]
         (jaw_list[0], lf_eye, rt_eye) | root_list[0]

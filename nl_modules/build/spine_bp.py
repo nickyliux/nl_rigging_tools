@@ -53,6 +53,7 @@ class SpineBp(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the spine rig."""
+        self.calc_rig_size("rt", "tp")
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
@@ -258,7 +259,7 @@ class SpineBp(RigModule):
             scaleAttr=self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
             pf=rID,
-            rSz=rSz * 2.5,
+            rSz=rSz * 2,
             atMidOrEnd=1,
             p=self.CTL_DATA,
             JNT_DATA=self.JNT_DATA,

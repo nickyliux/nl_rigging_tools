@@ -62,7 +62,7 @@ def buildTgt(rigN):
 def toggleGuide(*args):
     """Show guide and hide rig if state is True, else show rig and hide guide"""
     chr = DagNode("CHR")
-    g = DagNode('modules_grp')
+    g = DagNode("modules_grp")
     if chr.exists() and g.exists():
         chrVis = chr.a.v.get()
         if chrVis:
@@ -78,7 +78,6 @@ def toggleGuide(*args):
                         grp.hide()
 
 
-
 @common.Undo("buildSelOrAll")
 def buildSelOrAll(*args):
     """Build rig for selected rigNodes or all if nothing selected"""
@@ -91,11 +90,11 @@ def buildSelOrAll(*args):
             rigNodesToBuild.append(rN)
 
     if rigNodesToBuild:
-        
+
         chr = DagNode("CHR")
         if chr.exists():
             chr.show()
-            
+
         buildCount = len(rigNodesToBuild)
         common.pauseVP(1)
         # showLog = args and len(args) > 1 and args[1] == 1
@@ -107,7 +106,7 @@ def buildSelOrAll(*args):
         for i, rN in enumerate(rigNodesToBuild):
             logging.info(f"({i+1}) {rN.name}")
             buildTgt(rN)
-            mc.progressWindow(e=1, pr=i, status=f"\n{rN}")
+            mc.progressWindow(e=1, pr=i, status=f"\n{rN}  [ {i} / {buildCount} ]")
             mc.refresh(f=1)
         postRig()
         if args and args[0] == 1:
@@ -121,7 +120,6 @@ def buildSelOrAll(*args):
 
         mc.select(cl=1)
         common.pauseVP(0)
-        
 
 
 def postRig():
@@ -528,6 +526,7 @@ def boneAutoAttach():
 
         attachToTwoSrfUVPin(rigID, rbJnts, rbSrf, rbSrfSk, globalScale, DagNode("JNT"))
 
+
 # def attachToTwoSrfMtx(rigID, tgts, srf, srfSk, globalScale, grp):
 #     """Attach joints with matrix, position from srfSk, orientation from srf """
 #     outLocs = []
@@ -551,18 +550,19 @@ def boneAutoAttach():
 
 
 def attachToTwoSrfUVPin(rigID, tgts, srf, srfSk, globalScale, grp):
-    """Attach joints with uvPin, position from srfSk, orientation from srf """
+    """Attach joints with uvPin, position from srfSk, orientation from srf"""
     logging.info(f"Attach joints for {rigID}")
     dcpM_ts = common.attachUVPin(tgtList=tgts, geo=srfSk)
     dcpM_rs = common.attachUVPin(tgtList=tgts, geo=srf)
 
-    attachGrp = GrpNode(f'{rigID}_attachGrp', p=grp)
+    attachGrp = GrpNode(f"{rigID}_attachGrp", p=grp)
     for i, tgt in enumerate(tgts):
-        loc = LocNode('attach_loc_#', p=attachGrp)
+        loc = LocNode("attach_loc_#", p=attachGrp)
         dcpM_ts[i].a.outputTranslate >> loc.a.translate
         dcpM_rs[i].a.outputRotate >> loc.a.rotate
         tgt | loc
         globalScale >> loc.a.s
+
 
 def addNoiseLogic(ctl=None, targets=None, rot=0):
     """Build the sine wave motion for the tail rig.
