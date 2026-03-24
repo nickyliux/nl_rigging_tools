@@ -140,7 +140,7 @@ class LegBp(RigModule):
         ]
         if self.scapulaBone:
             ctl_defs.append(
-                ("scap_fkc", "shoulder", "z", Vec((0.1, 0.3, 0.3)) * scale, 0)
+                ("scap_fkc", "shoulder", "z", Vec((0.2, 0.6, 0.6)) * scale, 0)
             )
 
         for name, shape, up, sca, top in ctl_defs:
