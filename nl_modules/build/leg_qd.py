@@ -131,21 +131,21 @@ class LegQd(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", self.staticRigSize / 3, 0),
-            ("hip_fkc", "stickS", None, -scale / 3, 0),
+            ("hip_fkc", "stickS", None, -scale / 2, 0),
             ("upr_fkc", "circle", "x", scale, 0),
             ("lwr_fkc", "circle", "x", scale, 0),
             ("palm_fkc", "circle", "x", scale, 0),
             ("digit_fkc", "circle", "x", scale, 0),
             ("ball_fkc", "rotate2_3d", "z", -scale / 4, 0),
-            ("ikc", "trapezoid", None, Vec((0.7, 0.4, 1)) * rSz, 0),
-            ("extra_ikc", "rotate2_3d", None, Vec((0.4, 0.8, 0.8)) * -scale, 0),
+            ("ikc", "trapezoid", None, Vec((1.5, 0.8, 2)) * rSz, 0),
+            ("extra_ikc", "rotate2_3d", None, Vec((0.5, 1.4, 1.4)) * -scale, 0),
             ("pvc", "sphere", None, rSz / 2, 0),
             ("smart_ctl", "trapezoid2", None, scale / 3, 0),
         ]
 
         if self.scapulaBone:
             ctl_defs.append(
-                ("scap_fkc", "shoulder", "z", Vec((0.8, 0.2, 0.2)) * scale, 0)
+                ("scap_fkc", "shoulder", "z", Vec((0.2, 0.5, 0.5)) * scale, 0)
             )
 
         for name, shape, up, sca, top in ctl_defs:

@@ -48,7 +48,7 @@ class SimpleFk(RigModule):
         self.calc_rig_size("simple01", "simple05")
 
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(self.jnt_names, scale=0.5)
+        root_list = self.gen_sk_fr_names(self.jnt_names)  # , scale=0.5)
 
         for j in root_list:
             JntNode(j).a["preferredAngleZ"].set(-10)
@@ -173,7 +173,7 @@ class SimpleFk(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts[:-1])
-        proxy.add_radiusScale_attr(self.jnts_bind, 0.5)
+        # proxy.add_radiusScale_attr(self.jnts_bind, 0.5)
 
     def build_post(self):
         """Post setup for the leg rig module."""

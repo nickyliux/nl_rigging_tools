@@ -160,7 +160,7 @@ class JntNode(GrpNode):
                 )
 
             # self.cstParSca(proxy_offset, mo=1)
-            self.cstParScaMtx(proxy)
+            self.cstParScaMtx(proxy_offset)
 
             return proxy
         return None

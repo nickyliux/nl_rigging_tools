@@ -104,7 +104,7 @@
         <x>6</x>
         <y>50</y>
         <width>95</width>
-        <height>261</height>
+        <height>265</height>
        </rect>
       </property>
       <property name="font">
@@ -406,7 +406,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>L</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -514,7 +514,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>R</string>
+          <string/>
          </property>
          <property name="flat">
           <bool>false</bool>
@@ -554,7 +554,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>X</string>
+          <string/>
          </property>
          <property name="flat">
           <bool>false</bool>
@@ -640,7 +640,7 @@
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>L</string>
+          <string/>
          </property>
          <property name="flat">
           <bool>false</bool>
@@ -673,7 +673,7 @@
           <string>Save Guide Template</string>
          </property>
          <property name="text">
-          <string>S</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -758,7 +758,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>L</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -794,7 +794,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>S</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -843,7 +843,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Skeleton</string>
+          <string>Skel</string>
          </property>
         </widget>
        </item>
@@ -879,7 +879,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>R</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -915,7 +915,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>X</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -1000,7 +1000,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>L</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -1036,7 +1036,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>S</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -1121,7 +1121,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>L</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -1157,7 +1157,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>S</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -1242,7 +1242,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>R</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -1278,7 +1278,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>V</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -1363,7 +1363,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>L</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -1399,7 +1399,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>S</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -1453,6 +1453,40 @@
         <number>0</number>
        </property>
        <item>
+        <widget class="QLineEdit" name="charPath_LE">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Character Directory</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="charPath_BN">
          <property name="enabled">
           <bool>true</bool>
@@ -1484,41 +1518,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>L</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="charPath_LE">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Character Directory</string>
-         </property>
-         <property name="text">
           <string/>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -2860,10 +2860,10 @@
     <widget class="QPushButton" name="guide_explore_BN">
      <property name="geometry">
       <rect>
-       <x>58</x>
+       <x>86</x>
        <y>398</y>
-       <width>48</width>
-       <height>16</height>
+       <width>20</width>
+       <height>20</height>
       </rect>
      </property>
      <property name="minimumSize">
@@ -2874,8 +2874,8 @@
      </property>
      <property name="maximumSize">
       <size>
-       <width>9999</width>
-       <height>9999</height>
+       <width>20</width>
+       <height>20</height>
       </size>
      </property>
      <property name="font">
@@ -2897,10 +2897,10 @@
     <widget class="QPushButton" name="guide_load_BN">
      <property name="geometry">
       <rect>
-       <x>5</x>
+       <x>60</x>
        <y>398</y>
-       <width>48</width>
-       <height>16</height>
+       <width>20</width>
+       <height>20</height>
       </rect>
      </property>
      <property name="minimumSize">
@@ -2911,8 +2911,8 @@
      </property>
      <property name="maximumSize">
       <size>
-       <width>9999</width>
-       <height>9999</height>
+       <width>20</width>
+       <height>20</height>
       </size>
      </property>
      <property name="font">
@@ -2931,7 +2931,7 @@
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>L</string>
+      <string/>
      </property>
      <property name="flat">
       <bool>false</bool>

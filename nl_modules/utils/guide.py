@@ -33,6 +33,7 @@ COMPONENT_DICT = {
 
 def loadGuide(name, offset=0):
     """Load component(s) for names"""
+
     def genNextRigID(n):
         """Generate next rigID name for newly created component"""
         count = 0
@@ -97,6 +98,7 @@ def duplicateGuideSel(*arg):
 def mirrorGuideSelOrAll(*arg):
     """Mirror guides for selList / all *lf*_guide"""
     selList = mc.ls(sl=1, tr=1) or mc.ls("*lf*_guide", tr=1)
+    selList = [s for s in selList if DagNode(s).type == "nurbsCurve"]
     selList = list(set(selList))
     if selList:
         mirrorGuide(selList)

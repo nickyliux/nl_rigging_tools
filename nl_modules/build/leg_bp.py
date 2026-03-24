@@ -87,7 +87,7 @@ class LegBp(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the leg rig."""
-        self.calc_rig_size("upr", "palm")
+        self.calc_rig_size("hip", "palm")
 
         self.genSk_module()
         root_list = self.gen_sk_fr_names(self.jnt_names)
@@ -108,7 +108,7 @@ class LegBp(RigModule):
                 ["toe04_1", "toe04_2", "toe04_3", "toe04_4", "toe04_5"],
             ]
             for names in TOE_NAMES:
-                fgr_jnts = self.gen_sk_fr_names(names, scale=0.15)
+                fgr_jnts = self.gen_sk_fr_names(names, scale=0.2)
                 fgr_jnts[0].reOrient(
                     upRef=fgr_jnts[1],
                     xDir=self.xDir,
@@ -129,12 +129,12 @@ class LegBp(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", self.staticRigSize / 4, 0),
-            ("hip_fkc", "stickS", None, -scale / 2, 0),
+            ("hip_fkc", "stickS", None, -scale / 1.5, 0),
             ("upr_fkc", "circle", "x", scale, 0),
             ("lwr_fkc", "circle", "x", scale, 0),
             ("palm_fkc", "circle", "x", scale, 0),
-            ("ball_fkc", "circle", "x", scale / 4, 0),
-            ("ikc", "trapezoid", None, Vec((0.7, 0.2, 1.5)) * rSz, 0),
+            ("ball_fkc", "circle", "x", scale / 5, 0),
+            ("ikc", "trapezoid", None, Vec((1.6, 0.5, 3.2)) * rSz, 0),
             ("pvc", "sphere", None, rSz, 0),
             ("smart_ctl", "trapezoid2", None, scale / 3, 0),
         ]
@@ -162,7 +162,7 @@ class LegBp(RigModule):
         # self.hip_fkc.cv_move(scale * 5, -scale * 15, 0)
         # self.hip_fkc.cv_rotate(0, -90, 0)
         # self.hip_fkc.cv_move(scale * 5, -scale * 15, 0)
-        self.ikc.cv_move(0, 0, rSz * 5)
+        self.ikc.cv_move(0, 0, rSz * 8)
 
     def build(self):
         """Build the leg rig module."""
