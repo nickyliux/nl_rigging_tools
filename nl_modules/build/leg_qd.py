@@ -140,7 +140,7 @@ class LegQd(RigModule):
             ("ikc", "trapezoid", None, Vec((1.5, 0.8, 2)) * rSz, 0),
             ("extra_ikc", "rotate2_3d", None, Vec((0.5, 1.4, 1.4)) * -scale, 0),
             ("pvc", "sphere", None, rSz / 2, 0),
-            ("smart_ctl", "trapezoid2", None, scale / 3, 0),
+            ("smart_ctl", "pyramid", None, scale / 2, 0),
         ]
 
         if self.scapulaBone:
@@ -157,11 +157,9 @@ class LegQd(RigModule):
 
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
-        self.smart_ctl.cv_move(scale * 15, 0, 0)
+
         self.setting.color = Color.PINK
         self.setting.cv_move(scale * 15, 0, 0)
-        # self.hip_fkc.cv_rotate(0, -90, 0)
-        # self.hip_fkc.cv_move(scale * 5, -scale * 15, 0)
         self.ikc.cv_move(0, 0, rSz * 5)
 
     def build(self):
@@ -428,14 +426,20 @@ class LegQd(RigModule):
         CrvNode(self.ball_ikc).cv_rotate(0, 90, 0)
         self.rigNode.setMsg({"ball_ikc": self.ball_ikc})
         self.ctls_ik.append(self.ball_ikc)
+        self.smart_ctl_setup(toeRollG)
 
-        # --- Smart control setup ---
-        self.smart_ctl.snapAlignTo(self.ikc, self.master_guide)
-        self.smart_ctl | self.IK_GRP
-        self.smart_ctl.addOffsetGrp()
-        self.ikc.cstPar(self.smart_ctl.offset, mo=1)
+    def smart_ctl_setup(self, toeRollG):
+        """Setup the smart control for foot roll and bank."""
+        rID, rSz, xDr = self.getMyVar()
+
+        self.smart_ctl | self.ikc
+        self.smart_ctl.snapAlignTo(toeRollG, self.master_guide)
+        # self.smart_ctl | self.IK_GRP
+        ofs = self.smart_ctl.addOffsetGrp()
+        ofs.a.tz.set(rSz * 20)
+        # self.ikc.cstPar(ofs, mo=1)
+
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
-
         (-xDr * self.smart_ctl.a.ry) >> toeRollG.a.ry
         (-xDr * self.smart_ctl.a.rz) >> self.smart_ctl.a["footBank"]
 

@@ -136,7 +136,7 @@ class LegBp(RigModule):
             ("ball_fkc", "circle", "x", scale / 5, 0),
             ("ikc", "trapezoid", None, Vec((1.6, 0.5, 3.2)) * rSz, 0),
             ("pvc", "sphere", None, rSz, 0),
-            ("smart_ctl", "trapezoid2", None, scale / 3, 0),
+            ("smart_ctl", "pyramid", None, scale / 3, 0),
         ]
         if self.scapulaBone:
             ctl_defs.append(
@@ -152,17 +152,13 @@ class LegBp(RigModule):
 
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
-        self.smart_ctl.cv_move(scale * 15, 0, 0)
 
         if self.scapulaBone:
             self.scap_fkc.cv_move(0, scale * 25, 0)
 
         self.setting.cv_move(scale * 15, 0, 0)
         self.setting.color = Color.PINK
-        # self.hip_fkc.cv_move(scale * 5, -scale * 15, 0)
-        # self.hip_fkc.cv_rotate(0, -90, 0)
-        # self.hip_fkc.cv_move(scale * 5, -scale * 15, 0)
-        self.ikc.cv_move(0, 0, rSz * 8)
+        self.ikc.cv_move(0, 0, rSz * 12)
 
     def build(self):
         """Build the leg rig module."""
@@ -344,9 +340,9 @@ class LegBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         self.smart_ctl | self.ikc
-        self.smart_ctl.snapAlignTo(self.ball, self.master_guide)
-        self.smart_ctl.addOffsetGrp()
-        self.ball.cstPoi(self.smart_ctl)
+        self.smart_ctl.snapAlignTo(toeRollG, self.master_guide)
+        ofs = self.smart_ctl.addOffsetGrp()
+        ofs.a.tz.set(rSz * 30)
 
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry
