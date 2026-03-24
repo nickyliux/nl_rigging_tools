@@ -187,16 +187,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.lineWidth3_BN, partial(control.setLineWidth, 3))
 
         # Prepare
-        self.connect(
-            self.UI.joint_addRb_BN, partial(self.addJoint, rb=1), ":addClip.png"
-        )
-        self.connect(
-            self.UI.joint_addRef_BN, partial(self.addJoint, rb=0), ":addClip.png"
-        )
-        self.connect(
-            self.UI.mirrorAllRefJnt_BN, self.mirrorAllRefJnt, ":kinMirrorJoint_S.png"
-        )
-        # self.connect(self.UI.addBladeAttr_BN, self.addBladeAttr)
+        self.connect(self.UI.joint_addRb_BN, partial(self.addJoint, rb=1))
+        self.connect(self.UI.joint_addRef_BN, partial(self.addJoint, rb=0))
+        self.connect(self.UI.mirrorAllRefJnt_BN, self.mirrorAllRefJnt)
 
         # Retopo
         self.connect(self.UI.misc_retopo20_BN, partial(model.retopo, faceNum=20))
@@ -425,11 +418,18 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         meshSel = [DagNode(m).parent for m in mc.ls(sl=1, type="mesh")]
 
         if meshSel:
-            grp = GrpNode(AUTO_BIND_SK_GRP)
+            grp_main = GrpNode(AUTO_BIND_SK_GRP)
+            if rb:
+                sf = "_rbJnt"
+                grp = GrpNode("rb_grp", p=grp_main)
+                color = Color.VD_GREEN
+            else:
+                sf = "_refJnt"
+                grp = GrpNode("ref_grp", p=grp_main)
+                color = Color.BLUE
+
             for mesh in meshSel:
-                sf = "_rbJnt" if rb else "_refJnt"
-                color = Color.RED if rb else Color.WHITE
-                jnt = JntNode(mesh + sf, color=color, p=grp, r=0.3)
+                jnt = JntNode(mesh + sf, color=color, p=grp, r=0.8)
                 jnt.a.t.set(*mesh.o.bbCenter)
 
         mc.select(cl=1)

@@ -3810,66 +3810,6 @@ for Sel</string>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="mirrorAllRefJnt_BN">
-         <property name="minimumSize">
-          <size>
-           <width>5</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>9999</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Mirror Ref Joints ( L to R )</string>
-         </property>
-         <property name="statusTip">
-          <string/>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Ref Jnt L to  R</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget_8">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>50</y>
-        <width>221</width>
-        <height>33</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_8">
-       <property name="spacing">
-        <number>5</number>
-       </property>
-       <property name="leftMargin">
-        <number>6</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>2</number>
-       </property>
-       <item>
         <widget class="QPushButton" name="joint_addRb_BN">
          <property name="minimumSize">
           <size>
@@ -3905,8 +3845,32 @@ for Sel</string>
          </property>
         </widget>
        </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget_8">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>50</y>
+        <width>221</width>
+        <height>33</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_8">
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <property name="leftMargin">
+        <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>2</number>
+       </property>
        <item>
-        <widget class="QPushButton" name="addBladeAttr_BN">
+        <widget class="QPushButton" name="mirrorAllRefJnt_BN">
          <property name="minimumSize">
           <size>
            <width>5</width>
@@ -3915,7 +3879,7 @@ for Sel</string>
          </property>
          <property name="maximumSize">
           <size>
-           <width>999</width>
+           <width>9999</width>
            <height>22</height>
           </size>
          </property>
@@ -3928,7 +3892,7 @@ for Sel</string>
           </font>
          </property>
          <property name="toolTip">
-          <string>Add &quot;blade&quot; Attribute to Selected</string>
+          <string>Mirror Ref Joints ( L to R )</string>
          </property>
          <property name="statusTip">
           <string/>
@@ -3937,7 +3901,7 @@ for Sel</string>
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Mark as Blade</string>
+          <string>Ref Jnt L to  R</string>
          </property>
         </widget>
        </item>
