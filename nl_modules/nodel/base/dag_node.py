@@ -107,9 +107,9 @@ class DagNode(DepNode):
 
     def cstPoiMtx(self, tgt, mo=False):
         """Point-constraint-like setup using decomposeMatrix"""
-        cstPoiMtx = DepNode('cstPoiMtx_#', nodeType='decomposeMatrix')
+        cstPoiMtx = DepNode("cstPoiMtx_#", nodeType="decomposeMatrix")
         if mo == 0:
-            self.a.worldMatrix >>  cstPoiMtx.a.inputMatrix
+            self.a.worldMatrix >> cstPoiMtx.a.inputMatrix
             cstPoiMtx.a.outputTranslate >> tgt.a.t
         return cstPoiMtx
 
@@ -118,19 +118,19 @@ class DagNode(DepNode):
         grp = tgt.parent
         if grp.exists():
             # Store offset into tgt
-            tempMult = DepNode('_#', nodeType='multMatrix')
-            grp.a.worldMatrix >>  tempMult.a.matrixIn
+            tempMult = DepNode("_#", nodeType="multMatrix")
+            grp.a.worldMatrix >> tempMult.a.matrixIn
             self.a.worldInverseMatrix >> tempMult.a.matrixIn
-            myOffset = tgt.a.add('myOffset', type='matrix')
+            myOffset = tgt.a.add("myOffset", type="matrix")
             myOffset.set(mc.getAttr(tempMult.a.matrixSum), type="matrix")
             tempMult.delete()
 
             # A -> B's offsetParent
-            cstMtx = DepNode('cstMtx_#', nodeType='multMatrix')
-            myOffset >>  cstMtx.a.matrixIn
-            self.a.worldMatrix >>  cstMtx.a.matrixIn
-            grp.a.worldInverseMatrix >>  cstMtx.a.matrixIn
-            cstMtx.a.matrixSum >>  tgt.a.offsetParentMatrix
+            cstMtx = DepNode("cstMtx_#", nodeType="multMatrix")
+            myOffset >> cstMtx.a.matrixIn
+            self.a.worldMatrix >> cstMtx.a.matrixIn
+            grp.a.worldInverseMatrix >> cstMtx.a.matrixIn
+            cstMtx.a.matrixSum >> tgt.a.offsetParentMatrix
             return cstMtx
 
     def cstParR(self, tgt, keep=True, **kwargs):
@@ -677,7 +677,7 @@ class DagNode(DepNode):
         """Return type of shape or itself"""
         if self.exists():
             return mc.nodeType(self.shape or self)
-        
+
     @property
     def nType(self):
         """Return type of shape or itself"""
@@ -693,30 +693,30 @@ class DagNode(DepNode):
 
     def get_side_color(self, preset=0):
         """Return color depending on side"""
-        preset = DagNode.COLOR_PRESET_0 if preset == 0 else DagNode.COLOR_PRESET_1
+        colorPreset = DagNode.COLOR_PRESET_0 if preset == 0 else DagNode.COLOR_PRESET_1
         n = str(self.node)
 
         if n.startswith("lf"):
-            return preset[1]
+            return colorPreset[1]
         elif n.startswith("rt"):
-            return preset[2]
+            return colorPreset[2]
         else:
-            return preset[0]
+            return colorPreset[0]
 
     def get_opp_side_color(self):
         """Return color depending on side"""
         if self.name.endswith("_setting"):
             return self.color
 
-        preset = DagNode.COLOR_PRESET_0
+        colorPreset = DagNode.COLOR_PRESET_0
         n = str(self.node)
 
         if n.startswith("lf"):
-            return preset[2]
+            return colorPreset[2]
         elif n.startswith("rt"):
-            return preset[1]
+            return colorPreset[1]
         else:
-            return preset[0]
+            return colorPreset[0]
 
     def getMtx(self):
         """Get matrix from the node"""

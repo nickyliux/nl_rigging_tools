@@ -2952,7 +2952,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Shape Store</string>
+      <string>Shape Library</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -2966,7 +2966,7 @@
         <x>2</x>
         <y>20</y>
         <width>221</width>
-        <height>24</height>
+        <height>29</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -2989,7 +2989,7 @@
         <widget class="QPushButton" name="crvShape_new_BN">
          <property name="minimumSize">
           <size>
-           <width>20</width>
+           <width>0</width>
            <height>0</height>
           </size>
          </property>
@@ -3003,7 +3003,7 @@
           <string>Create New Shape from Selected</string>
          </property>
          <property name="text">
-          <string>N</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -3011,7 +3011,7 @@
         <widget class="QPushButton" name="crvShape_apply_BN">
          <property name="minimumSize">
           <size>
-           <width>20</width>
+           <width>0</width>
            <height>0</height>
           </size>
          </property>
@@ -3036,7 +3036,7 @@
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>L</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -3044,7 +3044,7 @@
         <widget class="QPushButton" name="crvShape_save_BN">
          <property name="minimumSize">
           <size>
-           <width>20</width>
+           <width>0</width>
            <height>0</height>
           </size>
          </property>
@@ -3066,7 +3066,7 @@
           <string>Save (Overwrite) Selected</string>
          </property>
          <property name="text">
-          <string>S</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -3074,7 +3074,7 @@
         <widget class="QPushButton" name="crvShape_del_BN">
          <property name="minimumSize">
           <size>
-           <width>20</width>
+           <width>0</width>
            <height>0</height>
           </size>
          </property>
@@ -3088,7 +3088,7 @@
           <string>Delete</string>
          </property>
          <property name="text">
-          <string>X</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -3913,8 +3913,8 @@ for Sel</string>
   <widget class="QCheckBox" name="showLog_CB">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>390</y>
+     <x>240</x>
+     <y>110</y>
      <width>71</width>
      <height>21</height>
     </rect>

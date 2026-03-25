@@ -158,12 +158,12 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Ctl Tab
         self.UI.crvShape_LW.itemDoubleClicked.connect(self.crvShape_LW_dblClicked)
         # self.connect(self.UI.crvShape_breakInst_BN, self.crvShape_breakInst)
-        self.connect(self.UI.crvShape_new_BN, self.crvShape_new)  # , ":fileNew.png")
+        self.connect(self.UI.crvShape_new_BN, self.crvShape_new, ":addClip.png")
         self.connect(
-            self.UI.crvShape_apply_BN, self.crvShape_apply
-        )  # , ":openScript.png")
-        self.connect(self.UI.crvShape_save_BN, self.crvShape_save)  # , ":fileSave.png")
-        self.connect(self.UI.crvShape_del_BN, self.crvShape_del)  # , ":smallTrash.png")
+            self.UI.crvShape_apply_BN, self.crvShape_apply, ":teCreateClip.png"
+        )
+        self.connect(self.UI.crvShape_save_BN, self.crvShape_save, ":fileSave.png")
+        self.connect(self.UI.crvShape_del_BN, self.crvShape_del, ":smallTrash.png")
         icon = ":colorPresetSpectrum.png"
         self.connect(
             self.UI.assignColor_BN, partial(common.assignColor, preset=0), icon

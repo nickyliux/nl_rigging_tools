@@ -104,7 +104,7 @@ class SpineQd(RigModule):
 
         self.setting.color = Color.PINK
         self.setting.cv_move(0, rSz * 60, 0)
-        self.mid_ikc.color = Color.PINK
+        self.mid_ikc.color = Color.D_YELLOW
 
     def create_rbSrf(self):
         """Create the ribbon surface for the spine rig."""
