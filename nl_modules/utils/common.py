@@ -73,7 +73,7 @@ def matchMove(targetList, mode=None):
     mc.matchTransform(*others, last, position=t, rotation=r, scale=s)
 
 
-def assignColor(tgts=None, preset=0):
+def assignColor(preset, tgts=None):
     """Assign preset color to target objects"""
     from nl_modules.nodel.base.dag_node import DagNode
 

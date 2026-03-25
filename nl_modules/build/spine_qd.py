@@ -91,19 +91,11 @@ class SpineQd(RigModule):
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
-        # self.fore_ikc.cv_move(0, rSz * 30, 0)
-        # self.base_ikc.cv_move(0, rSz * 30, 0)
         self.cog_ctl.cv_move(0, rSz * 40, rSz * 20)
         self.cog_ctl.cv_scale(1, 1.5, 2)
-
-        # if self.is_spine():
-        #     self.end_ctl.cv_rotate(-30, 0, 0)
-
         self.tangent0_ctl.cv_rotate(0, 90, 0)
         self.tangent1_ctl.cv_rotate(0, 90, 0)
-
         self.setting.cv_move(0, rSz * 60, 0)
-        self.mid_ikc.color = Color.D_YELLOW
 
     def create_rbSrf(self):
         """Create the ribbon surface for the spine rig."""

@@ -17,11 +17,13 @@ class DagNode(DepNode):
         n = DagNode('new', nodeType='transform')
     """
 
-    # MID, LEFT, RIGHT
+    # color preset in (mid, lf, rt) order
     COLOR_PRESET = {
-        0: [(1.0, 0.8, 0.24), (0.36, 0.66, 1), (0.71, 0.30, 0.30)],
-        1: [25, 6, 13],
+        0: [(0.44, 0.47, 0.1), (0.36, 0.66, 1), (0.71, 0.30, 0.30)],
+        1: [22, 6, 13],
     }
+    # (1.0, 0.8, 0.24)
+    # 25
 
     def __init__(self, n, nodeType=None):
         """Initialize DagNode with node name and type."""

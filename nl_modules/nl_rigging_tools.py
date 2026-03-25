@@ -158,21 +158,15 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Ctl Tab
         self.UI.crvShape_LW.itemDoubleClicked.connect(self.crvShape_LW_dblClicked)
         # self.connect(self.UI.crvShape_breakInst_BN, self.crvShape_breakInst)
-        self.connect(self.UI.crvShape_new_BN, self.crvShape_new, ":addClip.png")
+        self.connect(self.UI.crvShape_new_BN, self.crvShape_new, ":fileSave.png")
         self.connect(
             self.UI.crvShape_apply_BN, self.crvShape_apply, ":teCreateClip.png"
         )
         self.connect(self.UI.crvShape_save_BN, self.crvShape_save, ":fileSave.png")
         self.connect(self.UI.crvShape_del_BN, self.crvShape_del, ":smallTrash.png")
         icon = ":colorPresetSpectrum.png"
-        self.connect(
-            self.UI.assignColor_BN, partial(common.assignColor, preset=0), icon
-        )
-        self.connect(
-            self.UI.assignColor2_BN, partial(common.assignColor, preset=1), icon
-        )
-        # icon = ":colorPresetGrayscale.png"
-        # self.connect(self.UI.assignShd2_BN, partial(common.assignShd, 1), icon)
+        self.connect(self.UI.assignColor_BN, partial(common.assignColor, 0), icon)
+        self.connect(self.UI.assignColor2_BN, partial(common.assignColor, 1), icon)
 
         self.connect(self.UI.shapeRotaX_BN, partial(control.rotaCVForSel, 90, 0, 0))
         self.connect(self.UI.shapeRotaY_BN, partial(control.rotaCVForSel, 0, 90, 0))
