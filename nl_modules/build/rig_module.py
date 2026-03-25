@@ -294,27 +294,31 @@ class RigModule(RigBase):
             spaceG = GrpNode(tgt + "_SPACE_#", align=tgt, p=space)
             spaceG.addOffsetGrp()
             allSpacesGrp.append(spaceG)
+
         tgt_ofs = tgt.addOffsetGrp()
 
         # spaceType
         #   0: par
         #   1: ori
         #   2: ori + poi
+
         spaceType = tgt.a.add("spaceType", k=0, cb=0)
         if cstType == "ori":
             spaceType.set(1)
-
-        weight = w or tgt.a.add("space", type="enum", dv=dv, enumName=names)
-
         spaceType_v = spaceType.get()
-        cstType1 = "par"
-        if spaceType_v > 0:
-            cstType1 = "ori"
-        common.cstMulti(*allSpacesGrp, tgt_ofs, cstType=cstType1, w=weight, **kwargs)
 
-        # Add extra attr for area like head
-        if spaceType_v == 2 and w is None:
-            weight = tgt.a.add("posSpace", type="enum", dv=dv, enumName=names)
+        if spaceType_v == 0:
+            spaceName = "paSpace"
+            thisCstType = "par"
+        else:
+            spaceName = "oriSpace"
+            thisCstType = "ori"
+
+        weight = w or tgt.a.add(spaceName, type="enum", dv=dv, enumName=names)
+        common.cstMulti(*allSpacesGrp, tgt_ofs, cstType=thisCstType, w=weight, **kwargs)
+
+        if spaceType_v == 2:
+            weight = w or tgt.a.add("posSpace", type="enum", dv=dv, enumName=names)
             common.cstMulti(*allSpacesGrp, tgt_ofs, cstType="poi", w=weight, **kwargs)
 
     def calc_dim_size(self, tgt):

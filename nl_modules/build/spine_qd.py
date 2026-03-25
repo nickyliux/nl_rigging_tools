@@ -378,7 +378,7 @@ class SpineQd(RigModule):
                 "space_master": self.masterC,
                 "space_COG": self.cog_ctl,
                 "space_chest": self.fore_ikc,
-                "space_bodyBase": self.base_ikc,
+                # "space_bodyBase": self.base_ikc,
             }
         )
 

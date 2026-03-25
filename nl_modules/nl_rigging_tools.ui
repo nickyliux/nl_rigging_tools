@@ -4052,25 +4052,6 @@
     </widget>
    </widget>
   </widget>
-  <widget class="QCheckBox" name="showLog_CB">
-   <property name="geometry">
-    <rect>
-     <x>240</x>
-     <y>110</y>
-     <width>71</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string>Right</string>
-   </property>
-   <property name="text">
-    <string>Show Log</string>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-  </widget>
   <widget class="QPushButton" name="misc_importEnvAndShd_BN">
    <property name="geometry">
     <rect>

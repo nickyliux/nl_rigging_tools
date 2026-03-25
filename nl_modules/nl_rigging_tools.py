@@ -89,7 +89,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def buildAll(self):
         """Build all rig components."""
-        # showLog = self.UI.showLog_CB.isChecked()
         build.unbuildSelOrAll()
         build.buildSelOrAll(1, 0)
         self.rigNode_UI_refresh()
@@ -291,7 +290,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             self.rigNode_UI_refresh()
             mc.select(allTgtMG)
             mc.setToolTo("moveSuperContext")
-            common.setVP(fit=1)
+            # common.setVP(fit=1)
 
     def loadPresetGuide(self, name):
         tpl = os.path.join(PRESET_GUIDE_PATH, name + ".json")

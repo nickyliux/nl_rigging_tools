@@ -25,7 +25,6 @@ class NeckQd(SpineQd):
     def setup_space(self):
         """Setup the space switching for the neck rig."""
         self.fore_ikc.a.add("spaceType", dv=2, k=0, cb=0)
-        # self.base_ikc.a.add("spaceType", dv=1, k=0, cb=0)
 
         self.rigNode.a.add("spaceName1", type="string", txt="neckBase, COG, master")
         # self.rigNode.a.add("spaceName2", type="string", txt="chest, COG, master")
@@ -33,7 +32,7 @@ class NeckQd(SpineQd):
         self.rigNode.setMsg(
             {
                 "spaceHolder1": self.fore_ikc,
-                "spaceHolder2": self.base_ikc,
+                # "spaceHolder2": self.base_ikc,
                 "space_neck": self.anchorToRbj,
                 "space_neckBase": self.base_ikc,
             }

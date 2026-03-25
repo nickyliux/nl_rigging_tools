@@ -593,7 +593,7 @@ class LegQd(RigModule):
 
     def setup_space(self):
         """Setup space switching for the quadruped leg rig controls."""
-        self.rigNode.a.add("spaceName1", type="string", txt="master, bodyBase, COG")
+        self.rigNode.a.add("spaceName1", type="string", txt="master, chest, COG")
         self.rigNode.a.add("spaceName2", type="string", txt="leg, master, COG")
 
         self.rigNode.setMsg(

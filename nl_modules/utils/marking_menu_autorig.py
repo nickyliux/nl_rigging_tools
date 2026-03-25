@@ -199,18 +199,20 @@ class MarkingMenuAutorig:
                     )
 
         # --- Space Switch ---
-        attr = firstSelected.a.space
-        if attr.exists():
-            mc.menuItem(p=menu, l="SPACE", en=0)
-            val = attr.get()
-            allSpaceAttr = attr.query(le=1)[0].split(":")
-            for i, a in enumerate(allSpaceAttr):
-                # label = f"{a}   <" if val == i else a
-                mc.menuItem(
-                    p=menu,
-                    l=" " * 4 + str(a) + (f"   *" if val == i else ""),
-                    c=partial(self.switch_to_space, a),
-                )
+        # attr = firstSelected.a.paSpace
+        for space in["paSpace", "oriSpace", "posSpace"]:
+            attr = firstSelected.a[space]
+            if attr.exists():
+                mc.menuItem(p=menu, l=space, en=0)
+                val = attr.get()
+                allSpaceAttr = attr.query(le=1)[0].split(":")
+                for i, a in enumerate(allSpaceAttr):
+                    # label = f"{a}   <" if val == i else a
+                    mc.menuItem(
+                        p=menu,
+                        l=" " * 4 + str(a) + (f"   *" if val == i else ""),
+                        c=partial(self.switch_to_space, a),
+                    )
 
         mc.menuItem(p=menu, l="-" * 15, en=0)
 

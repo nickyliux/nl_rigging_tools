@@ -8,20 +8,19 @@ from nl_modules.nodel.loc_node import LocNode
 
 def switchToSpaceTarget(spaceName):
     """Switch space target for selected controls to the specified spaceName."""
-
     for sel in mc.ls(sl=1):
         ctl = DagNode(sel)
+        for space in ["paSpace", "oriSpace", "posSpace"]:
+            if ctl.a[space].exists():
+                # Get the current space option list
+                optionList = ctl.a[space].query(listEnum=1)[0].split(":")
+                optionDict = {n: i for i, n in enumerate(optionList)}
 
-        if ctl.a["space"].exists():
-            # Get the current space option list
-            optionList = ctl.a["space"].query(listEnum=1)[0].split(":")
-            optionDict = {n: i for i, n in enumerate(optionList)}
-
-            if spaceName in optionList:
-                # store xform before and re-apply after space switch
-                mtx = ctl.getMtx()
-                ctl.a["space"].set(optionDict[spaceName])
-                ctl.setMtx(mtx)
+                if spaceName in optionList:
+                    # store xform before and re-apply after space switch
+                    mtx = ctl.getMtx()
+                    ctl.a[space].set(optionDict[spaceName])
+                    ctl.setMtx(mtx)
 
 
 def getJntsCtlsFromRigNode(rootJ, rigNode):

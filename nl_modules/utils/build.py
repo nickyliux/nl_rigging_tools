@@ -298,9 +298,11 @@ def update_space_switch():
     spaceData = collect_space_data()
     update_count = 0
     for ctl, spaceList, rigNode in spaceData:
-        if ctl.a.space.exists():
+        if ctl.a.paSpace.exists():
+
             # delete space and related groups
-            ctl.a.space.delete()
+            ctl.a.paSpace.delete()
+
             cstNode = ctl.parent.getCstNodes(cstType="parentConstraint")
             if cstNode:
                 spaceG = cstNode[0].a.target.inConnNode
@@ -316,6 +318,7 @@ def update_space_switch():
         #       'arm': lf_arm_ikc
         #
         spaceDict = collect_space_obj(rigNode)
+
         #
         #   filter non-existing item
         #       'master': master_ctl,
@@ -327,11 +330,13 @@ def update_space_switch():
                 resultDict[s] = spaceDict[s]
 
         if resultDict:
-            v = ctl.a["spaceType"]
-
             tgtCstType = "par"
-            if v.exists() and v.get() == 1:
-                tgtCstType = "ori"
+            v = ctl.a["spaceType"]
+            if v.exists():
+                if v.get() == 1:
+                    tgtCstType = "ori"
+                elif v.get() == 2:
+                    tgtCstType = "pos"
 
             RigModule.space_align(
                 ctl,
