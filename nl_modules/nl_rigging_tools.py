@@ -181,9 +181,11 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.lineWidth3_BN, partial(control.setLineWidth, 3))
 
         # Prepare
-        self.connect(self.UI.joint_addRb_BN, partial(self.addJoint, rb=1))
-        self.connect(self.UI.joint_addRef_BN, partial(self.addJoint, rb=0))
+        self.connect(self.UI.addRbJnt_BN, partial(self.addJoint, rb=1))
+        self.connect(self.UI.addRefJnt_BN, partial(self.addJoint, rb=0))
+        self.connect(self.UI.addRbJntSet_BN, self.addRbJntSet)
         self.connect(self.UI.mirrorAllRefJnt_BN, self.mirrorAllRefJnt)
+        self.connect(self.UI.toggleClickDrag_BN, self.toggleClickDrag)
 
         # Retopo
         self.connect(self.UI.misc_retopo20_BN, partial(model.retopo, faceNum=20))
@@ -416,17 +418,29 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             if rb:
                 sf = "_rbJnt"
                 grp = GrpNode("rb_grp", p=grp_main)
-                color = Color.VD_GREEN
+                color = Color.RED
             else:
                 sf = "_refJnt"
                 grp = GrpNode("ref_grp", p=grp_main)
-                color = Color.BLUE
+                color = Color.L_BLUE
 
             for mesh in meshSel:
-                jnt = JntNode(mesh + sf, color=color, p=grp, r=0.8)
+                jnt = JntNode(mesh + sf, color=color, p=grp, r=0.5)
                 jnt.a.t.set(*mesh.o.bbCenter)
 
-        mc.select(cl=1)
+            mc.select(grp)
+
+    def addRbJntSet(self):
+        """Add sets for rb joints."""
+        setNames = ["neck_rbj_set", "spine_rbj_set", "tail_rbj_set"]
+        for name in setNames:
+            if not DagNode(name).exists():
+                mc.sets([], n=name)
+
+    def toggleClickDrag(self):
+        """Toggle click and drag selection preference."""
+        state = mc.selectPref(clickDrag=not mc.selectPref(clickDrag=1, q=1))
+        mc.selectPref(clickDrag=state)
 
     def mirrorAllRefJnt(self):
         """Mirror all reference joints in the scene."""

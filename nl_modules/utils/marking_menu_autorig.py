@@ -150,13 +150,11 @@ class MarkingMenuAutorig:
         ns = common.getNsFrOptVar()
         curr_ns_str = "None" if ns == "" else ns
 
-        # mc.menuItem(p=menu, l="-" * 15, en=0)
         mc.menuItem(p=menu, l="Toggle Guide", c=build.toggleGuide)
-        # , i='teToggleRipple.png')
-        mc.menuItem(p=menu, l="-" * 15, en=0)
         mc.menuItem(p=menu, l="Unbuild", c=build.unbuildSelOrAll)
         mc.menuItem(p=menu, l="-" * 15, en=0)
         mc.menuItem(p=menu, l="ns = " + curr_ns_str, c=self.setNsFrSel)
+
         # mc.menuItem(p=menu, l="PROXY  -----", en=0)
         # space = "    "
         # mc.menuItem(p=menu, l=space + "Gen", c=proxy.genProxyForSet)
@@ -183,6 +181,23 @@ class MarkingMenuAutorig:
         if not rigNode.exists():
             return
 
+        # --- Show Ik / Fk switch by looking up rigNode settings ---
+        attr = rigNode.a["setting"]
+        if attr.exists():
+            setting = attr.inConnNode
+            if setting:
+                attr = setting.a["fkIk"]
+                if attr.exists():
+                    val = 0 if attr.get() > 0.5 else 1
+                    # mc.menuItem(p=menu, l="FK / IK", en=0)
+                    # mc.menuItem(p=menu, l="-" * 15, en=0)
+                    mc.menuItem(
+                        p=menu,
+                        l="FK / IK",
+                        rp="S",
+                        c=partial(self.switch_fk_ik, attr, val, rigNode),
+                    )
+
         # --- Space Switch ---
         attr = firstSelected.a.space
         if attr.exists():
@@ -196,23 +211,8 @@ class MarkingMenuAutorig:
                     l=" " * 4 + str(a) + (f"   *" if val == i else ""),
                     c=partial(self.switch_to_space, a),
                 )
-            mc.menuItem(p=menu, l="-" * 15, en=0)
 
-        # --- Show Ik / Fk switch by looking up rigNode settings ---
-        attr = rigNode.a["setting"]
-        if attr.exists():
-            print(attr)
-            setting = attr.inConnNode
-            if setting:
-                attr = setting.a["fkIk"]
-                if attr.exists():
-                    val = 0 if attr.get() > 0.5 else 1
-                    mc.menuItem(
-                        p=menu,
-                        l="FK / IK",
-                        rp="S",
-                        c=partial(self.switch_fk_ik, attr, val, rigNode),
-                    )
+        mc.menuItem(p=menu, l="-" * 15, en=0)
 
         # --- Toggle Isolate ---
         for attr in firstSelected.a.list(ud=1):
