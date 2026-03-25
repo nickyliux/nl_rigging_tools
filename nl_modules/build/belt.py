@@ -65,7 +65,6 @@ class Belt(RigModule):
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
-        self.setting.color = Color.PINK
 
     def build(self):
         """Build the belt rig."""

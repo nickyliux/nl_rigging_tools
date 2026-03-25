@@ -80,7 +80,6 @@ class SpineBp(RigModule):
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         self.setting.cv_move(0, 0, rSz * -100)
-        self.setting.color = Color.PINK
 
         # if self.ribbon:
         #     if self.is_neck():

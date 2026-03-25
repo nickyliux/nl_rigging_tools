@@ -102,7 +102,6 @@ class SpineQd(RigModule):
         self.tangent0_ctl.cv_rotate(0, 90, 0)
         self.tangent1_ctl.cv_rotate(0, 90, 0)
 
-        self.setting.color = Color.PINK
         self.setting.cv_move(0, rSz * 60, 0)
         self.mid_ikc.color = Color.D_YELLOW
 

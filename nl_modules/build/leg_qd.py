@@ -158,7 +158,6 @@ class LegQd(RigModule):
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
 
-        self.setting.color = Color.PINK
         self.setting.cv_move(scale * 15, 0, 0)
         self.ikc.cv_move(0, 0, rSz * 5)
 

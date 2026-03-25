@@ -99,7 +99,7 @@ class SimpleFk(RigModule):
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
         self.setting.alignTo(self.rootJ, p=self.CTL_DATA)
-        self.setting.color = Color.PINK
+
         self.rootJ.cstPar(self.setting, mo=1)
 
     def build_fk(self):

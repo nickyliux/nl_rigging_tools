@@ -17,9 +17,11 @@ class DagNode(DepNode):
         n = DagNode('new', nodeType='transform')
     """
 
-    # COLOR_PRESET_0 = [(1, 1, 0), (0.43, 1, 0.86), (1, 0, 0)]  # MID, LEFT, RIGHT
-    COLOR_PRESET_0 = [(1.0, 0.8, 0.24), (0.36, 0.66, 1), (0.71, 0.30, 0.30)]
-    COLOR_PRESET_1 = [25, 6, 13]
+    # MID, LEFT, RIGHT
+    COLOR_PRESET = {
+        0: [(1.0, 0.8, 0.24), (0.36, 0.66, 1), (0.71, 0.30, 0.30)],
+        1: [25, 6, 13],
+    }
 
     def __init__(self, n, nodeType=None):
         """Initialize DagNode with node name and type."""
@@ -693,30 +695,28 @@ class DagNode(DepNode):
 
     def get_side_color(self, preset=0):
         """Return color depending on side"""
-        colorPreset = DagNode.COLOR_PRESET_0 if preset == 0 else DagNode.COLOR_PRESET_1
         n = str(self.node)
-
+        v = 0
         if n.startswith("lf"):
-            return colorPreset[1]
-        elif n.startswith("rt"):
-            return colorPreset[2]
-        else:
-            return colorPreset[0]
+            v = 1
+        if n.startswith("rt"):
+            v = 2
+
+        return DagNode.COLOR_PRESET[preset][v]
 
     def get_opp_side_color(self):
         """Return color depending on side"""
         if self.name.endswith("_setting"):
             return self.color
 
-        colorPreset = DagNode.COLOR_PRESET_0
         n = str(self.node)
-
+        v = 0
         if n.startswith("lf"):
-            return colorPreset[2]
-        elif n.startswith("rt"):
-            return colorPreset[1]
-        else:
-            return colorPreset[0]
+            v = 2
+        if n.startswith("rt"):
+            v = 1
+
+        return DagNode.COLOR_PRESET[0][v]
 
     def getMtx(self):
         """Get matrix from the node"""

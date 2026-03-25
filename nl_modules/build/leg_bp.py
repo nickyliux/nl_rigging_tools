@@ -157,7 +157,7 @@ class LegBp(RigModule):
             self.scap_fkc.cv_move(0, scale * 25, 0)
 
         self.setting.cv_move(scale * 15, 0, 0)
-        self.setting.color = Color.PINK
+
         self.ikc.cv_move(0, 0, rSz * 12)
 
     def build(self):
