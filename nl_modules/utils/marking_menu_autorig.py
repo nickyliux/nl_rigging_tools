@@ -122,11 +122,13 @@ class MarkingMenuAutorig:
         # , i="HIKCharacterToolSkeleton.png"
         mc.menuItem(p=mi, l="Mirror Selected", c=guide.mirrorGuideSelOrAll)
         mc.menuItem(p=mi, l="-" * 15, en=0)
+        mc.menuItem(p=mi, l="Toggle Guide", c=build.toggleGuide)
+        mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Duplicate Selected", c=guide.duplicateGuideSel)
-        # mc.menuItem(p=mi, l="Mirror", c=guide.mirrorGuideSelOrAll)
         mc.menuItem(p=mi, l="Transfer 1st -> 2nd", c=guide.xferGuideAtoB)
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Delete Selected / All", c=build.deleteSelOrAll)
+        # mc.menuItem(p=mi, l="Mirror", c=guide.mirrorGuideSelOrAll)
 
     def addProxyOptions(self, menu):
         """Add proxy options to the marking menu"""
@@ -150,7 +152,6 @@ class MarkingMenuAutorig:
         ns = common.getNsFrOptVar()
         curr_ns_str = "None" if ns == "" else ns
 
-        mc.menuItem(p=menu, l="Toggle Guide", c=build.toggleGuide)
         mc.menuItem(p=menu, l="Unbuild", c=build.unbuildSelOrAll)
         mc.menuItem(p=menu, l="-" * 15, en=0)
         mc.menuItem(p=menu, l="ns = " + curr_ns_str, c=self.setNsFrSel)
@@ -204,9 +205,10 @@ class MarkingMenuAutorig:
                 val = attr.get()
                 allSpaceAttr = attr.query(le=1)[0].split(":")
                 for i, a in enumerate(allSpaceAttr):
+                    text = f"    {a}" + ("   *" if val == i else "")
                     mc.menuItem(
                         p=menu,
-                        l=" " * 4 + str(a) + (f"   *" if val == i else ""),
+                        l=text,
                         c=partial(self.switch_to_space, a),
                     )
 
@@ -214,11 +216,13 @@ class MarkingMenuAutorig:
         for attr in firstSelected.a.list(ud=1):
             if attr.name.startswith("isolate"):
                 val = 1 - attr.get()
+                mc.menuItem(p=menu, l="Isolate", en=0)
                 mc.menuItem(
                     p=menu,
-                    l="Toggle | " + attr.name,
+                    l="    Toggle",
                     c=partial(self.switch_local_global, attr, val, rigNode),
                 )
+        mc.menuItem(p=menu, l="-" * 15, en=0)
 
     def mirrorShapeSelOrAll(*args):
         """Mirror the shape of the selected control or all controls in LF_CTL_SET"""

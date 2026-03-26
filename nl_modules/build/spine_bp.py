@@ -72,9 +72,9 @@ class SpineBp(RigModule):
         ]
         if self.ribbon:
             ctl_defs += [
-                ("fore_ikc", "cube", None, Vec((8, 2, 8)) * rSz, 0),
-                ("mid_ikc", "cube", None, Vec((2, 1, 2)) * rSz, 1),
-                ("base_ikc", "cube", None, Vec((8, 2, 8)) * rSz, 0),
+                ("fore_ikc", "cube", None, Vec((5, 0.2, 0.5)) * rSz, 1),
+                ("mid_ikc", "cube", None, Vec((3, 0.2, 0.5)) * rSz, 1),
+                ("base_ikc", "cube", None, Vec((7, 0.2, 0.5)) * rSz, 1),
             ]
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
@@ -156,10 +156,11 @@ class SpineBp(RigModule):
     def reverse_fk_hip(self):
         """modify first fkc specific for hip rotation."""
         ctl = self.ctls_fk[0]
-        ctl(p=self.CTL_DATA, addOfs=1, color=Color.YELLOW)
-        ctl.cv_scale(1.3, 1.3, 1.3)
+        ctl(p=self.CTL_DATA, addOfs=1, shape="squareR")
+        ctl.cv_scale(2.8)
 
-        ctl.offset.snapAlignTo(self.BASE_PVT_GUIDE, self.jnts_fk[0])
+        # ctl.offset.snapAlignTo(self.BASE_PVT_GUIDE, self.jnts_fk[0])
+        ctl.offset.snapTo(self.BASE_PVT_GUIDE)
         ctl.cstPar(self.jnts_fk[0], mo=1)
 
     def build_spine_ik(self):

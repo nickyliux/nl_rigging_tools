@@ -505,7 +505,8 @@ def boneAutoAttach():
     """Auto attach joints to surface for all rigNodes."""
     masterCtl = DagNode("master_ctl")
     if not masterCtl.exists():
-        raise ValueError("master_ctl NOT found.")
+        mc.confirmDialog(title="Error", message="master_ctl NOT found.", button=["OK"])
+        return
 
     globalScale = masterCtl.a["globalScale"]
     if not globalScale.exists():
@@ -525,14 +526,18 @@ def boneAutoAttach():
         rbSrfSk = node.a["rbSrfSk"].inConnNode
         rigID = node.a.rigID.get()
 
-        if not all([rbSrfSk, rbSrf]):
-            logging.warning(f"{node.name}: Missing srf & srfSk for attachment.")
-            continue
-
+        # if not all([rbSrfSk, rbSrf]):
+        #     logging.warning(f"{node.name}: Missing srf & srfSk for attachment.")
+        #     continue
         grp = DagNode("JNT")
+
         if rigID.startswith("tail"):
             attachToOneSrfUVPin(rigID, rbJnts, rbSrfSk, globalScale, grp)
-        else:
+
+        elif rigID.startswith("spineBp") or rigID.startswith("neckBp"):
+            attachToOneSrfUVPin(rigID, rbJnts, rbSrf, globalScale, grp)
+
+        elif rigID.startswith("spineQd") or rigID.startswith("neckQd"):
             attachToTwoSrfUVPin(rigID, rbJnts, rbSrf, rbSrfSk, globalScale, grp)
 
 

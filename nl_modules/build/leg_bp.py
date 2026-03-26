@@ -342,7 +342,7 @@ class LegBp(RigModule):
         self.smart_ctl | self.ikc
         self.smart_ctl.snapAlignTo(toeRollG, self.master_guide)
         ofs = self.smart_ctl.addOffsetGrp()
-        ofs.a.tz.set(rSz * 30)
+        ofs.a.tz.set(rSz * 40)
 
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry
