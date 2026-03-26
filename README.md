@@ -18,7 +18,7 @@ blockquote {
 ![License](https://img.shields.io/badge/license-MIT-red.svg?style=plastic)
 [![Blog](https://img.shields.io/badge/blog-nickyliu.com-blue)](http://www.nickyliu.com)
 
-![nlRT Main](docs/nlRT_UI.png) 
+![nlRT Main](docs/nlRT_interface.png) 
 
 ## Declaimer
 > Note that the project is still under active development so please use it for study purpose. 
