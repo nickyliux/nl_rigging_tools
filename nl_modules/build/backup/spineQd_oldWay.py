@@ -226,8 +226,8 @@ class SpineQd(RigModule):
         self.setting.alignTo(self.cog_ctl, ofs=(0, rSz * 70, 0))
         self.cog_ctl.cstPar(self.setting, mo=1)
 
-        chest_gimbal = self.chest_ctl.add_gimbal()
-        base_gimbal = self.base_ctl.add_gimbal()
+        chest_gimbal = self.chest_ctl.addGimbal()
+        base_gimbal = self.base_ctl.addGimbal()
 
         self.jnts_ctl = self.build_ctlJnt(
             [base_gimbal, self.mid_ctl, chest_gimbal],

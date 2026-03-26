@@ -204,7 +204,7 @@ class ArmBp(RigModule):
             p_data=self.CTL_DATA,
         )
         self.ikH1 = ikH1
-        self.ikc_gimbal = CrvNode(self.ikc).add_gimbal()
+        self.ikc_gimbal = CrvNode(self.ikc).addGimbal()
 
         # IK constraint group
         self.ikCstG = GrpNode("ikCstG", pf=rID, align=self.palm, p=self.IK_GRP)

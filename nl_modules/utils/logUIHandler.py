@@ -1,6 +1,10 @@
 import logging
 import maya.cmds as mc
-from PySide2 import QtWidgets
+
+try:
+    from PySide2 import QtWidgets
+except ImportError:
+    from PySide6 import QtWidgets
 
 
 class UIHandler(logging.Handler):

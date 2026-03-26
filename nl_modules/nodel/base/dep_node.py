@@ -42,9 +42,9 @@ class DepNode:
             raise ValueError(f"'{self.fullPath}' already exists.")
 
         if nodeType in mc.ls(nt=1):
-            self.node = mc.createNode(nodeType, n=self.node)
+            self.node = mc.createNode(nodeType, n=str(self.node))
         else:
-            raise ValueError("Unknown nodeType")
+            raise ValueError(f"Unknown nodeType: {nodeType}.")
 
         return self
 

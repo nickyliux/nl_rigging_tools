@@ -583,13 +583,23 @@ class Attribute:
 
         return node.a.output
 
+    def _getAddNodeName(self):
+        """Return add node name according to Maya version"""
+        version = int(mc.about(v=True))
+        return "addDL" if version >= 2026 else "addDoubleLinear"
+
+    def _getMultNodeName(self):
+        """Return multiply node name according to Maya version"""
+        version = int(mc.about(v=True))
+        return "multDL" if version >= 2026 else "multDoubleLinear"
+
     def _MDLnode(self, other, rev=0):
         """Return result of self x other"""
-        return self._DLNode(other, nodeType="multDoubleLinear", rev=rev)
+        return self._DLNode(other, nodeType=self._getMultNodeName(), rev=rev)
 
     def _ADLnode(self, other, rev=0):
         """Return result of self + other"""
-        return self._DLNode(other, nodeType="addDoubleLinear", rev=rev)
+        return self._DLNode(other, nodeType=self._getAddNodeName(), rev=rev)
 
     def __add__(self, other):
         """Return self + other"""

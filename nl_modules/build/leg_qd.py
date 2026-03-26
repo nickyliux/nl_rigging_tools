@@ -310,7 +310,7 @@ class LegQd(RigModule):
         # --- IK control setup ---
         self.ikc.snapTo(self.digit)
         self.ikc.cv_drop()
-        self.ikc_gimbal = CrvNode(self.ikc).add_gimbal()
+        self.ikc_gimbal = CrvNode(self.ikc).addGimbal()
         self.ikc_gimbal.cstParSca(self.ikCstG, mo=1)
 
         # --- Foot roll and bank logic ---

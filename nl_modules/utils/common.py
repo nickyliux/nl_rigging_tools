@@ -117,8 +117,9 @@ def assignShd(*args, tgts=None):
     mc.select(cl=1)
 
 
-def addShader(name, shaderType="lambert", color=(1, 0.52, 0.35)):
+def addShader(name, shaderType="lambert", color=(0.75, 0.39, 0.26)):
     """Create shader and return shader, shading group"""
+    # (1, 0.52, 0.35)
     from nl_modules.nodel.base.dep_node import DepNode
 
     sg = None

@@ -135,7 +135,7 @@ class SpineBp(RigModule):
             self.reverse_fk_hip()
 
         self.cog_ctl.snapAlignTo(self.jnts_fk[0], self.master_guide)
-        self.cog_gmb = CrvNode(self.cog_ctl).add_gimbal()
+        self.cog_gmb = CrvNode(self.cog_ctl).addGimbal()
         self.cog_ctl | self.CTL_DATA
         self.cog_ctl.addOffsetGrp()
 

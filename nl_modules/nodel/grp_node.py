@@ -121,7 +121,7 @@ class GrpNode(DagNode):
             else:
                 mc.scale(*args, self.cvs, **kwargs)
 
-    def add_gimbal(self, attrTgt=None, dv=0):
+    def addGimbal(self, attrTgt=None, dv=0):
         """Add a gimbal control to the curve"""
         from nl_modules.nodel.crv_node import CrvNode
 

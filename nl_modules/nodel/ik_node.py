@@ -250,9 +250,9 @@ class IkNode(DagNode):
     def stretchyIk(self, pvLock=1, soft=0):
         """
                    J0
-            d0 /   |   > Di[0]
-        pv         J1             D = sum(Di[*])
-            d1 \   |   > Di[1]
+            d0     |    Di[0]
+        pv         J1   D = sum(Di[*])
+            d1     |    Di[1]
                    J2
         """
         if not self.ikc:

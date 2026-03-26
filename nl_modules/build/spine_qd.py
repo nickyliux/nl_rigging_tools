@@ -202,9 +202,9 @@ class SpineQd(RigModule):
         [ctl.addOffsetGrp() for ctl in self.ctls_ik]
         self.mid_ikc.addOffsetGrp()
 
-        if self.is_spine():
-            RigModule.dyn_pivot(self.cog_ctl, axis="ty", dv=0.2)
-            RigModule.dyn_pivot(self.cog_ctl, endTgt=self.TP_GUIDE, axis="tz", dv=0.5)
+        # if self.is_spine():
+        #     RigModule.dyn_pivot(self.cog_ctl, axis="ty", dv=0.2)
+        #     RigModule.dyn_pivot(self.cog_ctl, endTgt=self.TP_GUIDE, axis="tz", dv=0.5)
 
     def build_spik_ribbon(
         self, rbSrf=None, rbSrfSk=None, jntNum=5, setting=None, scaleAttr=None

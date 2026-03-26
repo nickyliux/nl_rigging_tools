@@ -307,7 +307,7 @@ class LegBp(RigModule):
         (ikH2, ikH3) | toe_wiggle_grp | inRollG
         inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG | self.IK_GRP
 
-        self.ikc_gimbal = CrvNode(self.ikc).add_gimbal()
+        self.ikc_gimbal = CrvNode(self.ikc).addGimbal()
         self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
 
         self.fk_pin_setup()
