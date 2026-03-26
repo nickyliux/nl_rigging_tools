@@ -106,7 +106,7 @@ class Tail(RigModule):
             rivetNum=self.rbnJntNum,
             scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
-            pf=self.rigID + "_2",
+            pf=self.rigID + "_RB",
             rSz=self.rigSize,
             p=self.CTL_DATA,
             JNT_DATA=self.JNT_DATA,
@@ -156,7 +156,7 @@ class Tail(RigModule):
             self.rigNode.setMsg({f"ikc{i}": ctl})
 
         # self.rbSrf1 = self.create_rbSrf((4 + self.fkJntNum) // 2)
-        self.rbSrf1 = self.create_rbSrf(self.fkJntNum - 1)
+        self.rbSrf1 = self.create_rbSrf(self.fkJntNum)
         self.rigNode.setMsg({"rbSrf": self.rbSrf1})
 
         SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6, chain=0)

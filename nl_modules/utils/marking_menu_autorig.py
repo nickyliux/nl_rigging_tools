@@ -189,8 +189,6 @@ class MarkingMenuAutorig:
                 attr = setting.a["fkIk"]
                 if attr.exists():
                     val = 0 if attr.get() > 0.5 else 1
-                    # mc.menuItem(p=menu, l="FK / IK", en=0)
-                    # mc.menuItem(p=menu, l="-" * 15, en=0)
                     mc.menuItem(
                         p=menu,
                         l="FK / IK",
@@ -199,7 +197,6 @@ class MarkingMenuAutorig:
                     )
 
         # --- Space Switch ---
-        # attr = firstSelected.a.paSpace
         for space in ["paSpace", "oriSpace", "posSpace"]:
             attr = firstSelected.a[space]
             if attr.exists():
@@ -207,14 +204,11 @@ class MarkingMenuAutorig:
                 val = attr.get()
                 allSpaceAttr = attr.query(le=1)[0].split(":")
                 for i, a in enumerate(allSpaceAttr):
-                    # label = f"{a}   <" if val == i else a
                     mc.menuItem(
                         p=menu,
                         l=" " * 4 + str(a) + (f"   *" if val == i else ""),
                         c=partial(self.switch_to_space, a),
                     )
-
-        mc.menuItem(p=menu, l="-" * 15, en=0)
 
         # --- Toggle Isolate ---
         for attr in firstSelected.a.list(ud=1):
@@ -288,4 +282,3 @@ reload(mma)
 
 
 MarkingMenuAutorig()
-# mc.inViewMessage(amg="Marking Menu Reloaded", pos="midCenter", fade=True)

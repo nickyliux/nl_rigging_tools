@@ -101,7 +101,7 @@ class Belt(RigModule):
             rivetNum=self.rbnJntNum,
             scaleAttr=self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
-            pf=self.rigID + "_2",
+            pf=self.rigID + "_RB",
             rSz=self.rigSize * 3,
             p=self.CTL_DATA,
             JNT_DATA=self.JNT_DATA,

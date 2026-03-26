@@ -529,7 +529,11 @@ def boneAutoAttach():
             logging.warning(f"{node.name}: Missing srf & srfSk for attachment.")
             continue
 
-        attachToTwoSrfUVPin(rigID, rbJnts, rbSrf, rbSrfSk, globalScale, DagNode("JNT"))
+        grp = DagNode("JNT")
+        if rigID.startswith("tail"):
+            attachToOneSrfUVPin(rigID, rbJnts, rbSrfSk, globalScale, grp)
+        else:
+            attachToTwoSrfUVPin(rigID, rbJnts, rbSrf, rbSrfSk, globalScale, grp)
 
 
 # def attachToTwoSrfMtx(rigID, tgts, srf, srfSk, globalScale, grp):
@@ -554,17 +558,31 @@ def boneAutoAttach():
 #         globalScale >> loc.a.s
 
 
-def attachToTwoSrfUVPin(rigID, tgts, srf, srfSk, globalScale, grp):
+def attachToOneSrfUVPin(rigID, tgts, srf, globalScale, grp):
     """Attach joints with uvPin, position from srfSk, orientation from srf"""
     logging.info(f"Attach joints for {rigID}")
-    dcpM_ts = common.attachUVPin(tgtList=tgts, geo=srfSk)
-    dcpM_rs = common.attachUVPin(tgtList=tgts, geo=srf)
+    dcpMs = common.attachUVPin(tgtList=tgts, geo=srf)
 
     attachGrp = GrpNode(f"{rigID}_attachGrp", p=grp)
     for i, tgt in enumerate(tgts):
         loc = LocNode("attach_loc_#", p=attachGrp)
-        dcpM_ts[i].a.outputTranslate >> loc.a.translate
+        dcpMs[i].a.outputTranslate >> loc.a.translate
+        dcpMs[i].a.outputRotate >> loc.a.rotate
+        tgt | loc
+        globalScale >> loc.a.s
+
+
+def attachToTwoSrfUVPin(rigID, tgts, srfR, srfT, globalScale, grp):
+    """Attach joints with uvPin, orientation from srfR, position from srfT"""
+    logging.info(f"Attach joints for {rigID}")
+    dcpM_rs = common.attachUVPin(tgtList=tgts, geo=srfR)
+    dcpM_ts = common.attachUVPin(tgtList=tgts, geo=srfT)
+
+    attachGrp = GrpNode(f"{rigID}_attachGrp", p=grp)
+    for i, tgt in enumerate(tgts):
+        loc = LocNode("attach_loc_#", p=attachGrp)
         dcpM_rs[i].a.outputRotate >> loc.a.rotate
+        dcpM_ts[i].a.outputTranslate >> loc.a.translate
         tgt | loc
         globalScale >> loc.a.s
 
