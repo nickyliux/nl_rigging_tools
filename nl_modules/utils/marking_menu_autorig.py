@@ -132,9 +132,9 @@ class MarkingMenuAutorig:
         """Add proxy options to the marking menu"""
         mi = mc.menuItem(p=menu, l="Proxy", rp="NE", subMenu=1)
         # , i='polySmoothProxy.png')
-        mc.menuItem(p=mi, l="Mirror Selected", c=proxy.mirrorProxy)
-        mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Warp Selected", c=proxy.wrapProxy)
+        mc.menuItem(p=mi, l="-" * 15, en=0)
+        mc.menuItem(p=mi, l="Mirror Selected", c=proxy.mirrorProxy)
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Generate", c=proxy.genProxyForSet)
         mc.menuItem(p=mi, l="Reset Selected", c=proxy.resetProxy)
@@ -200,7 +200,7 @@ class MarkingMenuAutorig:
 
         # --- Space Switch ---
         # attr = firstSelected.a.paSpace
-        for space in["paSpace", "oriSpace", "posSpace"]:
+        for space in ["paSpace", "oriSpace", "posSpace"]:
             attr = firstSelected.a[space]
             if attr.exists():
                 mc.menuItem(p=menu, l=space, en=0)

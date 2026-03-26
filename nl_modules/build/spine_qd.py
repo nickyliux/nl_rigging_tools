@@ -86,7 +86,9 @@ class SpineQd(RigModule):
             ("tangent1_ctl", "cube", None, Vec((0.3, 0.5, 3)) * rSz, 1),
         ]
         if self.is_spine():
-            ctl_defs.append(("end_ctl", "rotate2_3d", None, rSz * 1.5, 0))
+            ctl_defs.append(
+                ("end_ctl", "rotate2_3d", None, Vec((1.5, 1.5, 0.7)) * rSz, 0)
+            )
 
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
@@ -378,7 +380,7 @@ class SpineQd(RigModule):
                 "space_master": self.masterC,
                 "space_COG": self.cog_ctl,
                 "space_chest": self.fore_ikc,
-                # "space_bodyBase": self.base_ikc,
+                "space_pelvis": self.base_ikc,
             }
         )
 

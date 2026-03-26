@@ -3827,7 +3827,7 @@
        <x>0</x>
        <y>6</y>
        <width>225</width>
-       <height>701</height>
+       <height>821</height>
       </rect>
      </property>
      <property name="title">
@@ -4025,7 +4025,7 @@
         <x>0</x>
         <y>51</y>
         <width>221</width>
-        <height>641</height>
+        <height>761</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -4055,8 +4055,8 @@
   <widget class="QPushButton" name="misc_importEnvAndShd_BN">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>700</y>
+     <x>230</x>
+     <y>840</y>
      <width>101</width>
      <height>18</height>
     </rect>

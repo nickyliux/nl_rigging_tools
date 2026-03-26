@@ -136,7 +136,7 @@ class LegQd(RigModule):
             ("lwr_fkc", "circle", "x", scale, 0),
             ("palm_fkc", "circle", "x", scale, 0),
             ("digit_fkc", "circle", "x", scale, 0),
-            ("ball_fkc", "rotate2_3d", "z", -scale / 4, 0),
+            ("ball_fkc", "rotate2_3d", "z", -scale / 3, 0),
             ("ikc", "trapezoid", None, Vec((1.5, 0.8, 2)) * rSz, 0),
             ("extra_ikc", "rotate2_3d", None, Vec((0.5, 1.4, 1.4)) * -scale, 0),
             ("pvc", "sphere", None, rSz / 2, 0),
@@ -416,11 +416,7 @@ class LegQd(RigModule):
         # --- Ball group IK control ---
         self.ball_ikc = ballRollG.addOffsetGrp(below=1)
         CrvNode(self.ball_ikc)(
-            name="ball_ikc",
-            pf=rID,
-            shape="stickS",
-            scale=-rSz * xDr / 3,
-            width=2,
+            name="ball_ikc", pf=rID, shape="stickS", scale=-rSz * xDr / 2
         )
         CrvNode(self.ball_ikc).cv_rotate(0, 90, 0)
         self.rigNode.setMsg({"ball_ikc": self.ball_ikc})
@@ -593,15 +589,19 @@ class LegQd(RigModule):
 
     def setup_space(self):
         """Setup space switching for the quadruped leg rig controls."""
-        self.rigNode.a.add("spaceName1", type="string", txt="master, chest, COG")
-        self.rigNode.a.add("spaceName2", type="string", txt="leg, master, COG")
+        self.rigNode.a.add(
+            "spaceName1", type="string", txt="master, chest, pelvis, COG"
+        )
+        self.rigNode.a.add(
+            "spaceName2", type="string", txt="leg, chest, pelvis, master, COG"
+        )
 
         self.rigNode.setMsg(
             {
                 "spaceHolder1": self.ikc,
                 "spaceHolder2": self.pvc,
                 "space_master": self.masterC,
-                "space_hip": self.hip_fkc,
+                # "space_hip": self.hip_fkc,
                 "space_leg": self.ikH1.softJ[0],
             }
         )
