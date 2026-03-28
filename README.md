@@ -139,9 +139,7 @@ cpn.build() # build rig
 ```
 
 ## Dev Environment
-| Maya | Python | OS |
-|:-:|:-:|:-:|
-|2023.3 |3.9.7|Win 11
+Maya 2023.3, Win 11 Pro
 
 ## Reference
 1. [Python for Maya : Beginner to Advanced Rigging Automation by Nick Hughes](https://www.udemy.com/course/python-for-maya-beginner-to-advanced-rigging-automation)

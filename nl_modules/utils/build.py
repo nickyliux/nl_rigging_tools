@@ -525,10 +525,6 @@ def boneAutoAttach():
         rbSrf = node.a["rbSrf"].inConnNode
         rbSrfSk = node.a["rbSrfSk"].inConnNode
         rigID = node.a.rigID.get()
-
-        # if not all([rbSrfSk, rbSrf]):
-        #     logging.warning(f"{node.name}: Missing srf & srfSk for attachment.")
-        #     continue
         grp = DagNode("JNT")
 
         if rigID.startswith("tail"):
