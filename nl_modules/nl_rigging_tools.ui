@@ -110,9 +110,9 @@
       <property name="font">
        <font>
         <family>Segoe UI</family>
-        <pointsize>8</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
+        <pointsize>7</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
         <kerning>true</kerning>
        </font>
       </property>
@@ -2744,7 +2744,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>360</y>
+       <y>330</y>
        <width>225</width>
        <height>61</height>
       </rect>
@@ -2845,7 +2845,7 @@
        <x>0</x>
        <y>6</y>
        <width>225</width>
-       <height>341</height>
+       <height>311</height>
       </rect>
      </property>
      <property name="title">
@@ -2953,7 +2953,7 @@
         <x>3</x>
         <y>50</y>
         <width>218</width>
-        <height>291</height>
+        <height>261</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -2982,7 +2982,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>430</y>
+       <y>400</y>
        <width>225</width>
        <height>81</height>
       </rect>
@@ -3239,7 +3239,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>520</y>
+       <y>490</y>
        <width>225</width>
        <height>51</height>
       </rect>
@@ -3430,7 +3430,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>580</y>
+       <y>550</y>
        <width>225</width>
        <height>61</height>
       </rect>
@@ -3571,7 +3571,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>650</y>
+       <y>620</y>
        <width>225</width>
        <height>61</height>
       </rect>
@@ -3649,7 +3649,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>720</y>
+       <y>690</y>
        <width>225</width>
        <height>61</height>
       </rect>
@@ -3810,6 +3810,77 @@
          </property>
          <property name="text">
           <string>500</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_22">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>760</y>
+       <width>225</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Camera</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="horizontalLayoutWidget_4">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>23</y>
+        <width>221</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <property name="leftMargin">
+        <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>4</number>
+       </property>
+       <property name="rightMargin">
+        <number>2</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="addFollowCam_BN">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>99999</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>+ Follow Cam to Sel</string>
          </property>
         </widget>
        </item>

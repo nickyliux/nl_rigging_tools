@@ -130,7 +130,8 @@ def switchFkIk(attr=None, toIKMode=0, rigNode=None):
 
         if extra_ikc.exists():
             extra_ikc.resetXf()
-            extra_ikc.a["palmAim"].set(0)
+            extra_ikc.a["autoAim"].set(0)
+            extra_ikc.a["aimRatio"].set(0)
             if extra_matcher.exists():
                 extra_ikc.alignTo(extra_matcher)
 

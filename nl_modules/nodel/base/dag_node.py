@@ -181,6 +181,9 @@ class DagNode(DepNode):
             )[0]
         else:
             cst = common.CST_DICT[cstType](self, tgt, **kwargs, n=n)[0]
+            if cstType == "ori":
+                # Set constraint's interpolation to shortest
+                DagNode(cst).a.interpType.set(2)
 
         if keep:
             return DagNode(cst)

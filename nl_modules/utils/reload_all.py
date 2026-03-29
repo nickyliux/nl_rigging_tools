@@ -63,6 +63,7 @@ from nl_modules.utils import (
     matrix,
     marking_menu_autorig,
     marking_menu_rigging,
+    motionMaker,
 )
 
 reload(anim)
@@ -84,6 +85,7 @@ reload(utils_node)
 reload(matrix)
 reload(marking_menu_autorig)
 reload(marking_menu_rigging)
+reload(motionMaker)
 
 from nl_modules.tests import (
     test_attributes,
