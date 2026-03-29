@@ -118,7 +118,7 @@ class MarkingMenuAutorig:
 
     def addGuideOptions(self, menu):
         """Add guide options to the marking menu"""
-        mi = mc.menuItem(p=menu, l="Guide", rp="E", subMenu=1)
+        mi = mc.menuItem(p=menu, l="Guide", rp="NE", subMenu=1)
         # , i="HIKCharacterToolSkeleton.png"
         mc.menuItem(p=mi, l="Mirror Selected", c=guide.mirrorGuideSelOrAll)
         mc.menuItem(p=mi, l="-" * 15, en=0)
@@ -132,7 +132,7 @@ class MarkingMenuAutorig:
 
     def addProxyOptions(self, menu):
         """Add proxy options to the marking menu"""
-        mi = mc.menuItem(p=menu, l="Proxy", rp="NE", subMenu=1)
+        mi = mc.menuItem(p=menu, l="Proxy", rp="E", subMenu=1)
         # , i='polySmoothProxy.png')
         mc.menuItem(p=mi, l="Warp Selected", c=proxy.wrapProxy)
         mc.menuItem(p=mi, l="-" * 15, en=0)

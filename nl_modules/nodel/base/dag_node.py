@@ -167,7 +167,7 @@ class DagNode(DepNode):
         """Create and return constraint based on cstType"""
         if isinstance(tgt, (tuple, list)):
             raise TypeError(f"Invalid input: {tgt}")
-        if not mc.objExists(tgt):
+        if not tgt or not mc.objExists(tgt):
             raise ValueError(f"Missing object: {tgt}")
 
         tgt = DagNode(tgt)

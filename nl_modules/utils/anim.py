@@ -67,7 +67,7 @@ def switchLocalGlobal(attr=None, toGlobal=0, rigNode=None):
 
 
 def switchFkIk(attr=None, toIKMode=0, rigNode=None):
-    # Validate rigNode and its state
+    """Switch between FK and IK modes for the specified rig node."""
     if not rigNode or rigNode.a.nodeState.get() != 2:
         return
 
@@ -99,20 +99,18 @@ def switchFkIk(attr=None, toIKMode=0, rigNode=None):
 
     ikCtls = [ikc, pvc, ikc_matcher]
     if not all(ikCtls):
-        logging.warning(f"Not all IK ctls for {rigID} found. Cannot switch IK/FK.")
+        logging.warning(f"Not all ik ctls for {rigID} found. Ignore fk ik switch.")
         return
 
     # Get ball joint xform before switching
     ball_mtx = jnts[-1].getMtx()
 
-    if toIKMode == 0:
-        # Switch to FK
+    if toIKMode == 0:  # to FK
         for ctl, jnt in zip(fkCtls, jnts):
             if ctl:
                 ctl.alignTo(jnt)
         attr.set(0)
-    else:
-        # Switch to IK
+    else:  # to IK
         root_mtx = jnts[0].getMtx()
 
         autoAim = fkCtls[0].a["autoAim"]
