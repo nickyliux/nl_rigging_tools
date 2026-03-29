@@ -89,22 +89,22 @@ class MarkingMenuRigging:
         mc.menuItem(p=mi, l="V off", c=partial(lockAttr, "v", 0), ob=1)
 
         mi = mc.menuItem(p=menu, l="Constraint", rp="NE", subMenu=1)
-        mc.menuItem(p=mi, l="Point", c=partial(cst, "poi", 0))
-        mc.menuItem(p=mi, l="Point mo", c=partial(cst, "poi", 1), ob=1)
-        mc.menuItem(p=mi, l="Orient", c=partial(cst, "ori", 0))
-        mc.menuItem(p=mi, l="Orient mo", c=partial(cst, "ori", 1), ob=1)
-        mc.menuItem(p=mi, l="Parent", c=partial(cst, "par", 0))
-        mc.menuItem(p=mi, l="Parent  mo", c=partial(cst, "par", 1), ob=1)
-        mc.menuItem(p=mi, l="Parent T", c=partial(cst, "parT", 0))
-        mc.menuItem(p=mi, l="Parent T mo", c=partial(cst, "parT", 1), ob=1)
-        mc.menuItem(p=mi, l="Parent R", c=partial(cst, "parR", 0))
-        mc.menuItem(p=mi, l="Parent R mo", c=partial(cst, "parR", 1), ob=1)
-        mc.menuItem(p=mi, l="Scale", c=partial(cst, "sca", 0))
-        mc.menuItem(p=mi, l="Scale mo", c=partial(cst, "sca", 0), ob=1)
-        mc.menuItem(p=mi, l="Aim", c=partial(cst, "aim", 0))
-        mc.menuItem(p=mi, l="Aim  mo", c=partial(cst, "aim", 1), ob=1)
-        mc.menuItem(p=mi, l="PoleVector", c=partial(cst, "pvt", 0))
-        mc.menuItem(p=mi, l="Geo", c=partial(cst, "geo", 0))
+        mc.menuItem(p=mi, l="Point", c=partial(_cst_sel, "poi", 0))
+        mc.menuItem(p=mi, l="Point mo", c=partial(_cst_sel, "poi", 1), ob=1)
+        mc.menuItem(p=mi, l="Orient", c=partial(_cst_sel, "ori", 0))
+        mc.menuItem(p=mi, l="Orient mo", c=partial(_cst_sel, "ori", 1), ob=1)
+        mc.menuItem(p=mi, l="Parent", c=partial(_cst_sel, "par", 0))
+        mc.menuItem(p=mi, l="Parent  mo", c=partial(_cst_sel, "par", 1), ob=1)
+        mc.menuItem(p=mi, l="Parent T", c=partial(_cst_sel, "parT", 0))
+        mc.menuItem(p=mi, l="Parent T mo", c=partial(_cst_sel, "parT", 1), ob=1)
+        mc.menuItem(p=mi, l="Parent R", c=partial(_cst_sel, "parR", 0))
+        mc.menuItem(p=mi, l="Parent R mo", c=partial(_cst_sel, "parR", 1), ob=1)
+        mc.menuItem(p=mi, l="Scale", c=partial(_cst_sel, "sca", 0))
+        mc.menuItem(p=mi, l="Scale mo", c=partial(_cst_sel, "sca", 0), ob=1)
+        mc.menuItem(p=mi, l="Aim", c=partial(_cst_sel, "aim", 0))
+        mc.menuItem(p=mi, l="Aim  mo", c=partial(_cst_sel, "aim", 1), ob=1)
+        mc.menuItem(p=mi, l="PoleVector", c=partial(_cst_sel, "pvt", 0))
+        mc.menuItem(p=mi, l="Geo", c=partial(_cst_sel, "geo", 0))
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Del All", c=del_cst_mm)
 
@@ -316,20 +316,12 @@ def lockAttr(*args):
     [DagNode(s).lockHideAttrXf(chn=args[0], lock=args[1]) for s in mc.ls(sl=1)]
 
 
-def cst(*args):
-    """Create a constraint of the specified type on the selected objects"""
+def _cst_sel(cstType, mo=0, *_):
+    """Create a constraint from selection using common.cstMulti."""
     selList = mc.ls(sl=1)
     if len(selList) > 1:
-        skipR = ["x", "y", "z"] if args[0] == "parT" else []
-        skipT = ["x", "y", "z"] if args[0] == "parR" else []
-        cstCmd = common.CST_DICT[args[0]]
-
-        if args[0] == "pvt":
-            cstCmd(selList)
-        elif args[0].startswith("par"):
-            cstCmd(selList, mo=args[1], st=skipT, sr=skipR)
-        else:
-            cstCmd(selList, mo=args[1])
+        kw = {} if cstType == "pvt" else {"mo": mo}
+        common.cstMulti(*selList, cstType=cstType, **kw)
 
 
 def del_cst_mm(*args):
