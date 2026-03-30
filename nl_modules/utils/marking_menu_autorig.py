@@ -122,8 +122,6 @@ class MarkingMenuAutorig:
         # , i="HIKCharacterToolSkeleton.png"
         mc.menuItem(p=mi, l="Mirror Selected", c=guide.mirrorGuideSelOrAll)
         mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="Toggle Guide", c=build.toggleGuide)
-        mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Duplicate Selected", c=guide.duplicateGuideSel)
         mc.menuItem(p=mi, l="Transfer 1st -> 2nd", c=guide.xferGuideAtoB)
         mc.menuItem(p=mi, l="-" * 15, en=0)
@@ -145,16 +143,15 @@ class MarkingMenuAutorig:
 
     def addExtraOptions(self, menu):
         """Add extra options to the marking menu"""
-        mc.menuItem(
-            p=menu, l="Select Ctls", rp="W", c=self.selectCtlSelOrAll
-        )  # , i='aselect.png')
+        mc.menuItem(p=menu, l="Select Ctls", rp="W", c=self.selectCtlSelOrAll)
 
         ns = common.getNsFrOptVar()
-        curr_ns_str = "None" if ns == "" else ns
+        curr_ns_str = "" if ns == "" else ns
 
-        mc.menuItem(p=menu, l="Unbuild", c=build.unbuildSelOrAll)
-        mc.menuItem(p=menu, l="-" * 15, en=0)
-        mc.menuItem(p=menu, l="ns = " + curr_ns_str, c=self.setNsFrSel)
+        # mc.menuItem(p=menu, l="Unbuild", c=build.unbuildSelOrAll)
+        mc.menuItem(p=menu, l="Toggle Guide", c=build.toggleGuide)
+        mc.menuItem(p=menu, l="-" * 25, en=0)
+        mc.menuItem(p=menu, l='ns: "' + curr_ns_str + '"', c=common.setNsFrSel)
 
         # mc.menuItem(p=menu, l="PROXY  -----", en=0)
         # space = "    "
@@ -222,7 +219,7 @@ class MarkingMenuAutorig:
                     l="    Toggle",
                     c=partial(self.switch_local_global, attr, val, rigNode),
                 )
-        mc.menuItem(p=menu, l="-" * 15, en=0)
+        mc.menuItem(p=menu, l="-" * 25, en=0)
 
     def mirrorShapeSelOrAll(*args):
         """Mirror the shape of the selected control or all controls in LF_CTL_SET"""
@@ -236,23 +233,8 @@ class MarkingMenuAutorig:
             for sel in selList:
                 control.mirrorCtlShape(sel)
 
-    def setNsFrSel(*args):
-        """Get the namespace from the first selected object"""
-        selected = mc.ls(sl=1, tr=1)
-        if selected:
-            ns = DagNode(selected[0]).namespace
-            if ns:
-                mc.optionVar(sv=("curr_ns", ns))
-            else:
-                mc.optionVar(sv=("curr_ns", ""))
-        else:
-            mc.optionVar(sv=("curr_ns", ""))
-
     def selectCtlSelOrAll(self, *args):
         """Select the controls of the selected rig or all rigs in the scene"""
-        #     # curr_ns = mc.optionVar(q="curr_ns")
-        #     # curr_ns_str = "" if curr_ns == 0 else curr_ns + ":"
-        #     rigNodes = mc.ls(common.getNsFrOptVar() + "*RGN", type="script") or []
         from nl_modules.utils import common
 
         rigNodes = build.getRigNodes_selOrAll()

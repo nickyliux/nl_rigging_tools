@@ -91,3 +91,8 @@ def connectMomaToQd():
     # DagNode("moma:R_carpus").cstPar(DagNode("rtLegQd1_extra_ikc"), mo=1)
     # DagNode("moma:L_tarsus").cstPar(DagNode("lfLegQd0_extra_ikc"), mo=1)
     # DagNode("moma:R_tarsus").cstPar(DagNode("rtLegQd0_extra_ikc"), mo=1)
+
+
+# from nl_modules.utils import motionMaker
+# motionMaker.connectMomaToQd()
+# motionMaker.bakeMomaToIk()

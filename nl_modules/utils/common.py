@@ -2,6 +2,7 @@ import logging
 import re
 import maya.cmds as mc
 from collections import OrderedDict
+
 from nl_modules.utils.color import Color
 
 
@@ -761,6 +762,22 @@ def getNsFrOptVar():
     return curr_ns + ":" if curr_ns else ""
 
 
+def setNsFrSel(*args):
+    """Get the namespace from the first selected object"""
+    from nl_modules.nodel.base.dag_node import DagNode
+
+    selected = mc.ls(sl=1, tr=1)
+    ns = DagNode(selected[0]).namespace if selected else ""
+    mc.optionVar(sv=("curr_ns", ns))
+    logging.info(f"Namespace set to {ns}." if ns else "Namespace cleared.")
+
+
+def clearNs():
+    """Clear current namespace in optionVar"""
+    mc.optionVar(sv=("curr_ns", ""))
+    logging.info("Namespace cleared.")
+
+
 def getRigCtlsAll():
     """Get all rig controls in the scene"""
     return getRigCtls(mc.ls("*RGN", type="script"))
@@ -960,10 +977,10 @@ def getOppositeForSide(tgtN, pfL="lf", pfR="rt"):
         if opp.exists():
             return opp
     else:
-        pattern = re.compile(rf"^(\w*){pfL}(\w+)$")
+        pattern = re.compile(rf"^(\w*):{pfL}(\w+)$")
         match = re.match(pattern, tgtN.name)
         if match:
-            opp = DagNode(f"{match.group(1)}{pfR}{match.group(2)}")
+            opp = DagNode(f"{match.group(1)}:{pfR}{match.group(2)}")
             if opp.exists():
                 return opp
 

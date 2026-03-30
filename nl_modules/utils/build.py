@@ -472,10 +472,13 @@ def getRigNodes_selOrAll():
 
 def getRigNodes_all(match="*"):
     """Return all rigNodes in the scene, optional name match filter"""
+    ns = common.getNsFrOptVar()
     parts = match.split(",")
     returnNodes = []
     for part in parts:
-        returnNodes.extend([DagNode(r) for r in mc.ls(part + "RGN", type="script")])
+        returnNodes.extend(
+            [DagNode(r) for r in mc.ls(ns + part + "RGN", type="script")]
+        )
     return returnNodes
 
 
@@ -487,8 +490,6 @@ def getRigNode(obj):
             for n in nodes:
                 if n.type == "script":
                     return n
-        # else:
-        #     logging.info(f"No connected rigNode found for {obj}")
     else:
         logging.info("Get rigNode for non-existing object.")
 

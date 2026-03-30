@@ -33,6 +33,7 @@ COMPONENT_DICT = {
 
 def loadGuide(name, offset=0):
     """Load component(s) for names"""
+    common.clearNs()
 
     def genNextRigID(n):
         """Generate next rigID name for newly created component"""
@@ -152,7 +153,7 @@ def mirrorGuide(tgtList, wsMirror=0):
             if mg is None or (mg and mg.a.mirrorable.get()):
                 copyGuideAttr(tgt, opp, wsMirror=wsMirror, mirror=1)
         else:
-            logging.warning(f"opposite not found for {tgt.name}")
+            logging.warning(f"No opposite found for {tgt.name}")
 
 
 def mirrorRef(tgtList, wsMirror=0):
@@ -163,7 +164,7 @@ def mirrorRef(tgtList, wsMirror=0):
         if opp:
             copyGuideAttr(tgt, opp, wsMirror=wsMirror, mirror=1)
         else:
-            logging.warning(f"opposite not found for {tgt.name}")
+            logging.warning(f"No opposite found for {tgt.name}")
 
 
 def mirrorPose(*arg):
