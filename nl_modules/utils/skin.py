@@ -1,7 +1,7 @@
 import os
 import glob
 import logging
-from maya import cmds as mc
+import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.utils import common
@@ -203,17 +203,6 @@ def saveWeight():
         return
 
     selList = mc.ls(sl=1, tr=1)
-    # if not selList:
-    #     mc.confirmDialog(t="Info", m="No skinned mesh selected.     ", b="OK")
-    # return
-    # charName = os.path.basename(charPath)
-    # mdlGrp = DagNode(charName)
-    # if mdlGrp.exists():
-    #     selList = mc.ls(mdlGrp)
-    # else:
-    #     return
-    # skinGeoShape = mc.ls(type=["mesh", "nurbsSurface"], ni=1)
-    # selList = mc.listRelatives(skinGeoShape, p=1)
 
     for t in ["mesh", "surface"]:
         meshesToSave = common.getObjectBelow(selList, tgtType=t)

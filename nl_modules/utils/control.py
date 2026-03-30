@@ -20,24 +20,6 @@ def reset_all_ctl():
     logging.info(f"{reset_count} ctls reset.")
 
 
-# def getRigNodes_all():
-#     """Return all rigNodes in the scene"""
-#     return [DagNode(r) for r in mc.ls("*RGN", type="script")]
-
-
-# def reset_all_pv_ctl():
-#     """Reset all poleVector ctl's attr to default"""
-#     logging.info("Reset All pvc's Attr")
-#     for rigNode in getRigNodes_all():
-
-#         rID = rigNode.a.rigID.get()
-#         pvc = rigNode.a.pvc.inConnNode
-#         guide = DagNode(rID + "_pvc_guide")
-
-#         if pvc and guide and pvc.exists() and guide.exists():
-#             pvc.snapTo(guide)
-
-
 def mirrorCtlShape(ctl):
     """Mirror the control shape to its opposite counterpart."""
     ctl = DagNode(ctl)
@@ -45,9 +27,7 @@ def mirrorCtlShape(ctl):
         logging.info(f"Missing shape in {ctl}.")
         return
 
-    pf = ctl.name.split("_")[0]
-    mg = DagNode(pf + "_master_guide")
-
+    mg = DagNode(ctl.name.split("_")[0] + "_master_guide")
     if not mg.exists():
         logging.info(f"Missing master guide for {ctl}.")
         return
@@ -71,9 +51,8 @@ def mirrorCtlShape(ctl):
         tempGrp.a.s.set(-1, -1, -1)
     tempGrp.freezeXf(t=0, r=0, s=1)
 
-    oppShapes = opp.shapes
-    if oppShapes:
-        mc.delete(oppShapes)
+    if opp.shapes:
+        mc.delete(opp.shapes)
     for shape in dup.shapes:
         mc.parent(shape, opp, s=1, r=1)
 
@@ -85,7 +64,7 @@ def mirrorCtlShape(ctl):
     opp.color = ctl.get_opp_side_color()
     opp.deleteHistory()
 
-    mc.delete(dup, tempGrp)
+    mc.delete(tempGrp)
     mc.select(cl=1)
     return opp
 
@@ -140,38 +119,34 @@ def loadCtl():
     if not tgtPaths:
         return
 
-    imported = None
     try:
-        imported = mc.file(tgtPaths[-1], i=1, ns="ctl", returnNewNodes=1)
+        newNodes = mc.file(tgtPaths[-1], i=1, ns="ctl", returnNewNodes=1)
     except Exception as e:
         raise SystemError(f"Error loading {tgtPaths}: {e}")
 
-    ns = ""
-    if imported:
-        tempStr = imported[0].replace(":", " ").replace("|", " ")
-        ns = tempStr.split()[0]
-    else:
+    if not newNodes:
         return
+
+    ns = newNodes[0].replace(":", " ").replace("|", " ").split()[0]
 
     allTgts = common.getRigCtlsAll()
     allTgts.extend(
         [DagNode("master2_ctl"), DagNode("master1_ctl"), DagNode("master_ctl")]
     )
     for tgt in allTgts:
-        imported = DagNode(ns + ":" + tgt)
-        if imported.exists():
+        src = DagNode(ns + ":" + tgt)
+        if src.exists():
             mc.delete(tgt.shapes)
-            mc.parent(imported.shapes, tgt, s=1, r=1)
+            mc.parent(src.shapes, tgt, s=1, r=1)
             for s in tgt.shapes:
                 s.rename(tgt + "Shape#")
 
-    logging.info(f"Control shapes loaded.")
+    rootGrp = DagNode(ns + ":CHR")
+    if rootGrp.exists():
+        rootGrp.delete()
+        mc.select(cl=1)
 
-    if imported:
-        rootGrp = DagNode(ns + ":CHR")
-        if rootGrp.exists():
-            rootGrp.delete()
-            mc.select(cl=1)
+    logging.info("Control shapes loaded.")
 
 
 @common.Undo("setOnTopSel")
