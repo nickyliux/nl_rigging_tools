@@ -23,34 +23,38 @@ def switchToSpaceTarget(spaceName):
                     ctl.setMtx(mtx)
 
 
+_RIG_CLASS_MAP = {
+    "LegBp": (
+        5,
+        ["hip_fkc", "upr_fkc", "lwr_fkc", "palm_fkc", "ball_fkc"],
+    ),
+    "LegQd": (
+        6,
+        ["hip_fkc", "upr_fkc", "lwr_fkc", "palm_fkc", "digit_fkc", "ball_fkc"],
+    ),
+    "ArmBp": (
+        4,
+        ["clavicle_fkc", "upr_fkc", "lwr_fkc", "palm_fkc"],
+    ),
+    "Finger": (
+        None,
+        ["fgr01_fkc", "fgr02_fkc", "fgr03_fkc", "fgr04_fkc"],
+    ),
+}
+
+
 def getJntsCtlsFromRigNode(rootJ, rigNode):
     """Get joint and FK control names based on rig class."""
-    jnts = []
-    fkCtlNames = []
     rigClass = rigNode.a.rigClass.get()
-    rigID = rigNode.a.rigID.get()
+    entry = _RIG_CLASS_MAP.get(rigClass)
+    if not entry:
+        return [], []
 
-    if rigClass == "LegBp":
-        jnts = rootJ.allChildrenJt2[:5]
-        fkCtlNames = ["hip_fkc", "upr_fkc", "lwr_fkc", "palm_fkc", "ball_fkc"]
-    elif rigClass == "LegQd":
-        jnts = rootJ.allChildrenJt2[:6]
-        fkCtlNames = [
-            "hip_fkc",
-            "upr_fkc",
-            "lwr_fkc",
-            "palm_fkc",
-            "digit_fkc",
-            "ball_fkc",
-        ]
-    elif rigClass == "ArmBp":
-        jnts = rootJ.allChildrenJt2[:4]
-        fkCtlNames = ["clavicle_fkc", "upr_fkc", "lwr_fkc", "palm_fkc"]
-    elif rigClass == "Finger":
-        jnts = rootJ.allChildrenJt2
-        fkCtlNames = ["fgr01_fkc", "fgr02_fkc", "fgr03_fkc", "fgr04_fkc"]
+    jntCount, fkCtlNames = entry
+    jnts = rootJ.allChildrenJt2[:jntCount] if jntCount else rootJ.allChildrenJt2
 
     if not all(jnts):
+        rigID = rigNode.a.rigID.get()
         mc.confirmDialog(
             t="Info", m=f"Some joints for {rigID} NOT found. Cannot switch IK/FK."
         )

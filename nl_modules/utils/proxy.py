@@ -76,12 +76,12 @@ def genProxyForSet(*args, tgtSet="auto_bind_jnt_set"):
 
     proxy_count = 0
     for j in bindJnts:
-        PRX_GRP = GrpNode(j.name.split('_')[0] + "_PRX", p=PRX) # separate into groups
+        PRX_GRP = GrpNode(j.name.split("_")[0] + "_PRX", p=PRX)  # separate into groups
         JntNode(j).genProxyMesh(p=PRX_GRP)
         proxy_count += 1
 
     mc.select(cl=1)
-    common.setVP(wos=1)
+    common.setView(wos=1)
     setVis(1)
     logging.info(f"{proxy_count} proxy meshes generated.")
 

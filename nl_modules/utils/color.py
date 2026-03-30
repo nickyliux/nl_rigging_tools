@@ -74,34 +74,24 @@ class Color(Enum):
     @classmethod
     def setColor(cls, objs, val):
         """set color of first expanded from the obj"""
-        colorToSet = val or 0
-        state = colorToSet != 0
+        nodes = cls._getExpanded(objs)
+        if not nodes:
+            return
 
         if isinstance(val, (Enum, int)):
-            if isinstance(val, Enum):
-                if val.name == "OFF":
-                    state = False
-                else:
-                    colorToSet = val.value
-            else:
-                colorToSet = val
+            colorToSet = val.value if isinstance(val, Enum) else val
+            state = val.name != "OFF" if isinstance(val, Enum) else colorToSet != 0
 
-            for node in cls._getExpanded(objs):
-                if cls.objExists(f"{node}.overrideEnabled"):
-                    mc.setAttr(f"{node}.overrideEnabled", state)
-                    if cls.objExists(f"{node}.overrideColor"):
-                        mc.setAttr(f"{node}.overrideRGBColors", 0)
-                        mc.setAttr(f"{node}.overrideColor", colorToSet)
+            for node in nodes:
+                mc.setAttr(f"{node}.overrideEnabled", state)
+                mc.setAttr(f"{node}.overrideRGBColors", 0)
+                mc.setAttr(f"{node}.overrideColor", colorToSet)
 
         elif isinstance(val, (list, tuple)):
-
-            for node in cls._getExpanded(objs):
-                if cls.objExists(f"{node}.overrideEnabled"):
-                    mc.setAttr(f"{node}.overrideEnabled", 1)
-                    if cls.objExists(f"{node}.overrideRGBColors"):
-                        mc.setAttr(f"{node}.overrideRGBColors", 1)
-                        if cls.objExists(f"{node}.overrideColorRGB"):
-                            mc.setAttr(f"{node}.overrideColorRGB", *val, type="double3")
+            for node in nodes:
+                mc.setAttr(f"{node}.overrideEnabled", 1)
+                mc.setAttr(f"{node}.overrideRGBColors", 1)
+                mc.setAttr(f"{node}.overrideColorRGB", *val, type="double3")
 
     @staticmethod
     def objExists(obj):

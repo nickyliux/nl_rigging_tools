@@ -23,7 +23,7 @@ def loadModel(self):
         )
         if tgtPaths:
             file.importFile(tgtPaths[-1])
-            common.setVP(fit=1, wos=1, jx=1)
+            common.setView(fit=1, wos=1, jx=1)
         else:
             tgtPaths = mc.fileDialog2(
                 fileFilter="*_mdl*", dialogStyle=2, fileMode=1, dir=charPath

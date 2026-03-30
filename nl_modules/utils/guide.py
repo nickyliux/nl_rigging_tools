@@ -115,12 +115,10 @@ def copyGuideAttr(A, B, wsMirror=0, mirror=0, skipMasterXf=0):
     """Copy/mirror transform & user defined attribute values"""
     A = DagNode(A) if isinstance(A, str) else A
     B = DagNode(B) if isinstance(B, str) else B
-    if skipMasterXf and A.name.endswith("_master_guide"):
-        pass
-    else:
+
+    if not (skipMasterXf and A.name.endswith("_master_guide")):
         tx, ty, tz = A.a.t.get()
         rx, ry, rz = A.a.r.get()
-        sx, sy, sz = A.a.s.get()
         if mirror:
             tx *= -1
             if wsMirror or A.a["wsMirror"].exists():
@@ -131,13 +129,11 @@ def copyGuideAttr(A, B, wsMirror=0, mirror=0, skipMasterXf=0):
                 tz *= -1
         B.a.t.set(tx, ty, tz)
         B.a.r.set(rx, ry, rz)
-        B.a.s.set(sx, sy, sz)
+        B.a.s.set(*A.a.s.get())
 
-    udAttrs = A.a.list(ud=1, u=1) or []
-    for ud in udAttrs:
+    for ud in A.a.list(ud=1, u=1) or []:
         try:
             val = ud.get()
-
             if isinstance(val, str):
                 B.a[ud.name].set(val, type="string")
             else:
@@ -235,7 +231,7 @@ def loadTemplate():
     loadGuideFrIdDict(rigID_dict)
     common.pauseVP(0)
 
-    common.setVP(fit=1)
+    common.setView(fit=1)
     mc.select(cl=1)
     logging.info(f"Template loaded: {os.path.basename(tgtPaths[-1])}.")
 

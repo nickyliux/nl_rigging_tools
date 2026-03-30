@@ -139,33 +139,25 @@ def addMasterAttrs():
         logging.warning("master2_ctl NOT found.")
         return
 
-    grp = DagNode("CTL_VIS")
-    if grp.exists():
-        ctl.a.add("ctlVis", k=0, type="bool", dv=1) >> grp.a.v
+    # (grpName, visAttr, lockAttr) — lockAttr=None means vis-only (no override)
+    _GROUPS = [
+        ("CTL_VIS", "ctlVis", None),
+        ("JNT", "jointVis", "jointLock"),
+        ("PRX", "proxyVis", "proxyLock"),
+        ("MDL", "modelVis", "modelLock"),
+    ]
 
-    ctl.a.addSep()
-
-    grp = DagNode("JNT")
-    if grp.exists():
-        ctl.a.add("jointVis", k=0, type="bool", dv=1) >> grp.a.v
-        grp.a.overrideEnabled.set(1)
-        ctl.a.add("jointLock", k=0, type="bool", dv=0) * 2 >> grp.a.overrideDisplayType
-
-    ctl.a.addSep()
-
-    grp = DagNode("PRX")
-    if grp.exists():
-        ctl.a.add("proxyVis", k=0, type="bool", dv=1) >> grp.a.v
-        grp.a.overrideEnabled.set(1)
-        ctl.a.add("proxyLock", k=0, type="bool", dv=0) * 2 >> grp.a.overrideDisplayType
-
-    ctl.a.addSep()
-
-    grp = DagNode("MDL")
-    if grp.exists():
-        ctl.a.add("modelVis", k=0, type="bool", dv=1) >> grp.a.v
-        grp.a.overrideEnabled.set(1)
-        ctl.a.add("modelLock", k=0, type="bool", dv=0) * 2 >> grp.a.overrideDisplayType
+    for grpName, visAttr, lockAttr in _GROUPS:
+        grp = DagNode(grpName)
+        if grp.exists():
+            ctl.a.add(visAttr, k=0, type="bool", dv=1) >> grp.a.v
+            if lockAttr:
+                grp.a.overrideEnabled.set(1)
+                (
+                    ctl.a.add(lockAttr, k=0, type="bool", dv=0) * 2
+                    >> grp.a.overrideDisplayType
+                )
+        ctl.a.addSep()
 
 
 def unbuildTgt(rN):

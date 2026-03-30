@@ -736,21 +736,14 @@ def pauseVP(state=1):
     mc.optionVar(iv=("vp2PauseState", state))
 
 
-def setVP(jx=0, xray=0, wos=0, fit=0, ao=0, aa=0):
+def setView(jx=0, xray=0, wos=0, fit=0, ao=0, aa=0):
     """Set viewport options"""
-    for p in mc.getPanel(type="modelPanel"):
-
-        v = mc.modelEditor(p, q=1, jx=1)
-        if v == 0 and jx == 1:
-            mc.modelEditor(p, e=1, jx=1)
-
-        v = mc.modelEditor(p, q=1, xray=1)
-        if v == 0 and xray == 1:
-            mc.modelEditor(p, e=1, xray=1)
-
-        v = mc.modelEditor(p, q=1, wos=1)
-        if v == 0 and wos == 1:
-            mc.modelEditor(p, e=1, wos=1)
+    panel_flags = {k: v for k, v in {"jx": jx, "xray": xray, "wos": wos}.items() if v}
+    if panel_flags:
+        for p in mc.getPanel(type="modelPanel"):
+            for flag, val in panel_flags.items():
+                if not mc.modelEditor(p, q=1, **{flag: 1}):
+                    mc.modelEditor(p, e=1, **{flag: val})
 
     if fit:
         mc.viewFit(all=1)
