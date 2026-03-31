@@ -28,69 +28,63 @@ def bakeMomaToIk():
         common.pauseVP(0)
 
 
+MOMA_QD_MAP = {
+    "cstPar": [
+        # SPINE
+        ("pelvis", "spineQd0_cog_ctl"),
+        ("spine_1", "spineQd0_base_ikc"),
+        ("spine_3", "spineQd0_mid_ikc"),
+        ("spine_5_neck", "spineQd0_fore_ikc"),
+        # NECK
+        ("neck", "neckQd0_base_ikc"),
+        ("neck_3", "neckQd0_mid_ikc"),
+        ("head", "neckQd0_fore_ikc"),
+        # L LEGS
+        ("L_scapula", "lfLegQd1_hip_fkc"),
+        ("L_femur", "lfLegQd0_upr_fkc"),
+        # R LEGS
+        ("R_scapula", "rtLegQd1_hip_fkc"),
+        ("R_femur", "rtLegQd0_upr_fkc"),
+    ],
+    "cstOri": [
+        # SPINE
+        ("pelvis", "spineQd0_end_ctl"),
+        # L LEGS
+        ("L_humerus", "lfLegQd1_upr_fkc"),
+        ("L_radius", "lfLegQd1_lwr_fkc"),
+        ("L_carpus", "lfLegQd1_palm_fkc"),
+        ("L_F_palanx_1", "lfLegQd1_digit_fkc"),
+        ("L_F_palanx_2", "lfLegQd1_ball_fkc"),
+        ("L_tibea", "lfLegQd0_lwr_fkc"),
+        ("L_tarsus", "lfLegQd0_palm_fkc"),
+        ("L_R_palanx_1", "lfLegQd0_ball_fkc"),
+        ("L_R_palanx_2", "lfLegQd0_ball_fkc"),
+        # R LEGS
+        ("R_humerus", "rtLegQd1_upr_fkc"),
+        ("R_radius", "rtLegQd1_lwr_fkc"),
+        ("R_carpus", "rtLegQd1_palm_fkc"),
+        ("R_F_palanx_1", "rtLegQd1_digit_fkc"),
+        ("R_F_palanx_2", "rtLegQd1_ball_fkc"),
+        ("R_tibea", "rtLegQd0_lwr_fkc"),
+        ("R_tarsus", "rtLegQd0_palm_fkc"),
+        ("R_R_palanx_1", "rtLegQd0_ball_fkc"),
+        ("R_R_palanx_2", "rtLegQd0_ball_fkc"),
+    ],
+}
+
+
+def _applyConstraints(mapping):
+    """Apply constraints based on the provided mapping."""
+    ns1 = "moma:"
+    ns2 = common.getNsFrOptVar()
+    for cstMethod, pairs in mapping.items():
+        for src, tgt in pairs:
+            getattr(DagNode(ns1 + src), cstMethod)(DagNode(ns2 + tgt), mo=1)
+
+
 def connectMomaToQd():
     """Connect Moma Sk to Qd rig controls."""
-    # SPINE
-    DagNode("moma:pelvis").cstPar(DagNode("Gala:spineQd0_cog_ctl"), mo=1)
-    DagNode("moma:pelvis").cstOri(DagNode("Gala:spineQd0_end_ctl"), mo=1)
-
-    DagNode("moma:spine_1").cstPar(DagNode("Gala:spineQd0_base_ikc"), mo=1)
-    DagNode("moma:spine_3").cstPar(DagNode("Gala:spineQd0_mid_ikc"), mo=1)
-    DagNode("moma:spine_5_neck").cstPar(DagNode("Gala:spineQd0_fore_ikc"), mo=1)
-
-    # NECK
-    DagNode("moma:neck").cstPar(DagNode("Gala:neckQd0_base_ikc"), mo=1)
-    DagNode("moma:neck_3").cstPar(DagNode("Gala:neckQd0_mid_ikc"), mo=1)
-    DagNode("moma:head").cstPar(DagNode("Gala:neckQd0_fore_ikc"), mo=1)
-
-    # L LEGS
-    DagNode("moma:L_scapula").cstPar(DagNode("Gala:lfLegQd1_hip_fkc"), mo=1)
-    DagNode("moma:L_humerus").cstOri(DagNode("Gala:lfLegQd1_upr_fkc"), mo=1)
-    DagNode("moma:L_radius").cstOri(DagNode("Gala:lfLegQd1_lwr_fkc"), mo=1)
-    DagNode("moma:L_carpus").cstOri(DagNode("Gala:lfLegQd1_palm_fkc"), mo=1)
-    DagNode("moma:L_F_palanx_1").cstOri(DagNode("Gala:lfLegQd1_digit_fkc"), mo=1)
-    DagNode("moma:L_F_palanx_2").cstOri(DagNode("Gala:lfLegQd1_ball_fkc"), mo=1)
-
-    DagNode("moma:L_femur").cstPar(DagNode("Gala:lfLegQd0_upr_fkc"), mo=1)
-    DagNode("moma:L_tibea").cstOri(DagNode("Gala:lfLegQd0_lwr_fkc"), mo=1)
-    DagNode("moma:L_tarsus").cstOri(DagNode("Gala:lfLegQd0_palm_fkc"), mo=1)
-    DagNode("moma:L_R_palanx_1").cstOri(DagNode("Gala:lfLegQd0_ball_fkc"), mo=1)
-    DagNode("moma:L_R_palanx_2").cstOri(DagNode("Gala:lfLegQd0_ball_fkc"), mo=1)
-
-    # R LEGS
-    DagNode("moma:R_scapula").cstPar(DagNode("Gala:rtLegQd1_hip_fkc"), mo=1)
-    DagNode("moma:R_humerus").cstOri(DagNode("Gala:rtLegQd1_upr_fkc"), mo=1)
-    DagNode("moma:R_radius").cstOri(DagNode("Gala:rtLegQd1_lwr_fkc"), mo=1)
-    DagNode("moma:R_carpus").cstOri(DagNode("Gala:rtLegQd1_palm_fkc"), mo=1)
-    DagNode("moma:R_F_palanx_1").cstOri(DagNode("Gala:rtLegQd1_digit_fkc"), mo=1)
-    DagNode("moma:R_F_palanx_2").cstOri(DagNode("Gala:rtLegQd1_ball_fkc"), mo=1)
-
-    DagNode("moma:R_femur").cstPar(DagNode("Gala:rtLegQd0_upr_fkc"), mo=1)
-    DagNode("moma:R_tibea").cstOri(DagNode("Gala:rtLegQd0_lwr_fkc"), mo=1)
-    DagNode("moma:R_tarsus").cstOri(DagNode("Gala:rtLegQd0_palm_fkc"), mo=1)
-    DagNode("moma:R_R_palanx_1").cstOri(DagNode("Gala:rtLegQd0_ball_fkc"), mo=1)
-    DagNode("moma:R_R_palanx_2").cstOri(DagNode("Gala:rtLegQd0_ball_fkc"), mo=1)
-
-    # LEGS
-    # DagNode("moma:L_F_palanx_1").cstPar(DagNode("lfLegQd1_ikc"), mo=1)
-    # DagNode("moma:R_F_palanx_1").cstPar(DagNode("rtLegQd1_ikc"), mo=1)
-    # DagNode("moma:L_R_palanx_1").cstPar(DagNode("lfLegQd0_ikc"), mo=1)
-    # DagNode("moma:R_R_palanx_1").cstPar(DagNode("rtLegQd0_ikc"), mo=1)
-
-    # DagNode("moma:L_scapula").cstPar(DagNode("lfLegQd1_hip_fkc"), mo=1)
-    # DagNode("moma:R_scapula").cstPar(DagNode("rtLegQd1_hip_fkc"), mo=1)
-    # DagNode("moma:L_femur").cstPar(DagNode("lfLegQd0_hip_fkc"), mo=1)
-    # DagNode("moma:R_femur").cstPar(DagNode("rtLegQd0_hip_fkc"), mo=1)
-
-    # DagNode("moma:L_F_palanx_2").cstOri(DagNode("lfLegQd1_ball_fkc"), mo=1)
-    # DagNode("moma:R_F_palanx_2").cstOri(DagNode("rtLegQd1_ball_fkc"), mo=1)
-    # DagNode("moma:L_R_palanx_2").cstOri(DagNode("lfLegQd0_ball_fkc"), mo=1)
-    # DagNode("moma:R_R_palanx_2").cstOri(DagNode("rtLegQd0_ball_fkc"), mo=1)
-
-    # DagNode("moma:L_carpus").cstPar(DagNode("lfLegQd1_extra_ikc"), mo=1)
-    # DagNode("moma:R_carpus").cstPar(DagNode("rtLegQd1_extra_ikc"), mo=1)
-    # DagNode("moma:L_tarsus").cstPar(DagNode("lfLegQd0_extra_ikc"), mo=1)
-    # DagNode("moma:R_tarsus").cstPar(DagNode("rtLegQd0_extra_ikc"), mo=1)
+    _applyConstraints(MOMA_QD_MAP)
 
 
 # from nl_modules.utils import motionMaker
