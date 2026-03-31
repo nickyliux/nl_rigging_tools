@@ -306,8 +306,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
             self.rigNode_UI_refresh()
             mc.select(allTgtMG)
+            common.setView(fit=1)
             mc.setToolTo("moveSuperContext")
-            # common.setVP(fit=1)
 
     def loadPresetGuide(self, name):
         tpl = os.path.join(PRESET_GUIDE_PATH, name + ".json")

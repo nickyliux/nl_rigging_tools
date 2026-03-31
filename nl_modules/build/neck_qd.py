@@ -63,7 +63,7 @@ class NeckQd(SpineQd):
 
         IkNode("two_ikj", pf=rID, sj=j0, ee=j1, vis=0, p=self.tangent1_ctl)
 
-        ctlJ0, ctlJ1, ctlJ2 = self.jnts_ik
+        ctlJ0, ctlJ1, ctlJ2 = self.jnts_ctl
         # Build logic for j0's scaleZ
         ratio = self.dist_len_ratio(ctlJ0, ctlJ2)
         clamp = self.setting.a.clamp

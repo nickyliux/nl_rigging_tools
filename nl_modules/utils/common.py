@@ -745,7 +745,6 @@ def setView(jx=0, xray=0, wos=0, fit=0, ao=0, aa=0):
             for flag, val in panel_flags.items():
                 if not mc.modelEditor(p, q=1, **{flag: 1}):
                     mc.modelEditor(p, e=1, **{flag: val})
-
     if fit:
         mc.viewFit(all=1)
     if ao:

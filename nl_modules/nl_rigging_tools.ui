@@ -166,22 +166,17 @@
       </item>
       <item>
        <property name="text">
-        <string>neck / qd</string>
+        <string>arm / bp</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>spine / qd</string>
+        <string>leg / bp</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>tail</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>belt</string>
+        <string>hand / bp</string>
        </property>
       </item>
       <item>
@@ -194,22 +189,35 @@
       </item>
       <item>
        <property name="text">
-        <string>arm / bp</string>
+        <string>neck / qd</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>hand / bp</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>leg / bp</string>
+        <string>spine / qd</string>
        </property>
       </item>
       <item>
        <property name="text">
         <string>leg / qd</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>tail</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>----------</string>
+       </property>
+       <property name="flags">
+        <set>ItemIsDragEnabled|ItemIsUserCheckable</set>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>belt</string>
        </property>
       </item>
       <item>

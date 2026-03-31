@@ -96,8 +96,8 @@ class IkNode(DagNode):
             numSpans=numSpans,
             p=p,
         )
-        ikJnt = mc.ikHandle(self.node, q=1, jl=1) + [self.ee]
-        self.jnt = [DagNode(j) for j in ikJnt]
+        resultJnts = mc.ikHandle(self.node, q=1, jl=1) + [self.ee]
+        self.ikJnts = [DagNode(j) for j in resultJnts]
         self.chainLen = self.calcChainLen()
         self.localScale = localScale
         self.xDir = 1 if self.ee.a.tx.get() > 0 else -1
@@ -147,8 +147,8 @@ class IkNode(DagNode):
     def calcChainLen(self):
         """Calculate the length of the joint chain"""
         d = 0
-        for i in range(1, len(self.jnt)):
-            d += self.jnt[i].o.distanceTo(self.jnt[i - 1])
+        for i in range(1, len(self.ikJnts)):
+            d += self.ikJnts[i].o.distanceTo(self.ikJnts[i - 1])
         return d
 
     def getCrv(self):
@@ -232,9 +232,9 @@ class IkNode(DagNode):
             max=clamp,
         )
 
-        for i in range(1, len(self.jnt)):
+        for i in range(1, len(self.ikJnts)):
 
-            Di = self.jnt[i - 1].o.distanceTo(self.jnt[i])
+            Di = self.ikJnts[i - 1].o.distanceTo(self.ikJnts[i])
             result = result0 * Di
 
             if self.scaleFix2:
@@ -245,7 +245,7 @@ class IkNode(DagNode):
             if axisDir == -1:
                 result *= -1
 
-            result >> self.jnt[i].a[axis]
+            result >> self.ikJnts[i].a[axis]
 
     def stretchyIk(self, pvLock=1, soft=0):
         """
@@ -263,8 +263,8 @@ class IkNode(DagNode):
         ks = self.ikc.a.add("stretchy", min=0, max=1, dv=0)
         kq = self.ikc.a.add("squashy", min=0, max=1, dv=0)
 
-        for i in range(1, len(self.jnt)):
-            Di.append(self.jnt[i - 1].o.distanceTo(self.jnt[i]))
+        for i in range(1, len(self.ikJnts)):
+            Di.append(self.ikJnts[i - 1].o.distanceTo(self.ikJnts[i]))
             if self.localScale:
                 self.ikc.a.add("length" + str(i), dv=1)
 
@@ -274,7 +274,7 @@ class IkNode(DagNode):
         else:
             dist_loc | self.ikc
 
-        d = ut.distDim_(self.jnt[0], dist_loc) / self.scaleFix
+        d = ut.distDim_(self.ikJnts[0], dist_loc) / self.scaleFix
         if self.scaleFix2:
             d /= self.scaleFix2
 
@@ -283,7 +283,7 @@ class IkNode(DagNode):
                 raise ValueError("pvc undefined.")
             if not self.setting:
                 raise ValueError("setting undefined !")
-            if len(self.jnt) != 3:
+            if len(self.ikJnts) != 3:
                 raise ValueError("pin is for 3-pt joint chain")
 
             kp = self.pvc.a.add("pvLock", min=0, max=1)
@@ -294,30 +294,30 @@ class IkNode(DagNode):
             ratioSoft = (div > 1).setCdn(ifTrue=stretchyOutput, ifFalse=1)
 
             di = [
-                ut.distDim_(self.pvc, self.jnt[0]) / self.scaleFix,
+                ut.distDim_(self.pvc, self.ikJnts[0]) / self.scaleFix,
                 ut.distDim_(self.pvc, dist_loc) / self.scaleFix,
             ]
-            for i in range(1, len(self.jnt)):
+            for i in range(1, len(self.ikJnts)):
                 result = ut.blend2_(ratio * Di[i - 1], di[i - 1], w=kp) * self.xDir
                 if self.localScale:
                     result *= self.ikc.a[f"length{i}"]
-                result >> self.jnt[i].a.tx
+                result >> self.ikJnts[i].a.tx
         else:
             # Without Pv pinning
             ratio = (ut.max_(d / D, 1) - 1) * ks + 1
             ratioSoft = ratio
 
-            for i in range(1, len(self.jnt)):
+            for i in range(1, len(self.ikJnts)):
                 result = ratio * Di[i - 1] * self.xDir
                 if self.localScale:
                     result *= self.ikc.a[f"length{i}"]
-                result >> self.jnt[i].a.tx
+                result >> self.ikJnts[i].a.tx
 
         if soft:
             self.addSoft(
                 d=d,
                 ratio=ratioSoft,
-                softParent=self.jnt[0].parent,
+                softParent=self.ikJnts[0].parent,
             )
         dist_loc.hide()
 

@@ -78,7 +78,7 @@ class MarkingMenuAutorig:
             mc.select(selList[0])
 
     def addShapeOptions(self, menu):
-        mi = mc.menuItem(p=menu, l="Shape", rp="SW", subMenu=1)  # , i="curveEP.png")
+        mi = mc.menuItem(p=menu, l="Shape", rp="SE", subMenu=1)  # , i="curveEP.png")
         mc.menuItem(p=mi, l="Mirror Sel / All", c=self.mirrorShapeSelOrAll)
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Drop It", c=control.dropSel)
@@ -100,7 +100,7 @@ class MarkingMenuAutorig:
 
     def addHelperOptions(self, menu):
         """Add helper options to the marking menu"""
-        mi = mc.menuItem(p=menu, l="Helper", rp="SE", subMenu=1)
+        mi = mc.menuItem(p=menu, l="Helper", rp="SW", subMenu=1)
         # mc.menuItem(p=mi, l="BASIC -------", en=0)
         # mc.menuItem(p=mi, l="    rz ~> ty", c=partial(helper.addHelpers, "rz", "ty"))
         # mc.menuItem(p=mi, l="    ry ~> tz", c=partial(helper.addHelpers, "ry", "tz"))

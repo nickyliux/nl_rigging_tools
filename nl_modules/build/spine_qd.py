@@ -49,7 +49,7 @@ class SpineQd(RigModule):
         self.ctls_fk = []
         self.ctls_ik = []
         self.jnts_fk = []
-        self.jnts_ik = []
+        self.jnts_ctl = []
         self.jnts_rb = []
         self.jnts_spIk = []
         self.jnts_twoIk = []
@@ -132,7 +132,7 @@ class SpineQd(RigModule):
 
     def build_ribbon(self):
         """Create the ribbon for the spine rig."""
-        self.rbSrf.weightTo(self.jnts_ik, mi=1, chain=0)
+        self.rbSrf.weightTo(self.jnts_ctl, mi=1, chain=0)
 
         crvLenRatioSk, self.jnts_spIk, self.jnts_rb = self.build_spik_ribbon(
             rbSrf=self.rbSrf,
@@ -157,10 +157,10 @@ class SpineQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         # Build 3 ctl joints from crv
-        self.jnts_ik = JntNode.createJntsFrCrv(
+        self.jnts_ctl = JntNode.createJntsFrCrv(
             self.LINE_GUIDE, num=3, name="ikj", pf=rID, size=rSz * 10, chain=0
         )
-        ctlJ0, ctlJ1, ctlJ2 = self.jnts_ik
+        ctlJ0, ctlJ1, ctlJ2 = self.jnts_ctl
 
         self.cog_ctl.snapTo(self.RT_GUIDE)
         if self.BASE_PVT_GUIDE:
@@ -270,7 +270,7 @@ class SpineQd(RigModule):
                 fixPos = self.fore_ikc.a.add("fixPos", k=1, min=0, max=1)
                 common.cstMulti(
                     spIkJnts[jntNum - 1],
-                    self.jnts_ik[2],
+                    self.jnts_ctl[2],
                     grp,
                     cstType="poi",
                     mo=1,
@@ -326,7 +326,7 @@ class SpineQd(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""
 
-        setupTgt = self.jnts_ik
+        setupTgt = self.jnts_ctl
         if self.jnts_twoIk:
             setupTgt.append(self.jnts_twoIk[0])
         if self.jnts_spIk:
