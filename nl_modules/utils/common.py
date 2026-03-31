@@ -779,7 +779,12 @@ def clearNs():
 
 def getRigCtlsAll():
     """Get all rig controls in the scene"""
-    return getRigCtls(mc.ls("*RGN", type="script"))
+    from nl_modules.utils import build
+
+    allRigNodes = build.getRigNodes_all()
+    if allRigNodes:
+        return getRigCtls(allRigNodes)
+    # return getRigCtls(mc.ls("*RGN", type="script"))
 
 
 def getRigCtls(rigNodes):

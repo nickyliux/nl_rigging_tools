@@ -2736,7 +2736,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>RigNodes</string>
+      <string>RigNodes in Current Namespace</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
