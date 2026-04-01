@@ -546,16 +546,18 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def loadWrapTargetMesh(self):
         """Load target mesh for wrap deformer."""
         selList = mc.ls(sl=1, tr=1)
-        targetWrapMesh = mc.optionVar(q="targetWrapMesh")
-        tgt = DagNode(targetWrapMesh)
 
-        if selList:
-            mc.optionVar(sv=("targetWrapMesh", selList[0]))
-            mc.savePrefs()
-            self.updateLoadWrapTargetMesh()
-        elif tgt.exists():
-            tgt.dspType = 0
-            mc.select(tgt)
+        if selList and len(selList) > 0:
+            if DagNode(selList[0]).type == "mesh":
+                mc.optionVar(sv=("targetWrapMesh", selList[0]))
+                mc.savePrefs()
+                self.updateLoadWrapTargetMesh()
+        else:
+            targetWrapMesh = mc.optionVar(q="targetWrapMesh")
+            tgt = DagNode(targetWrapMesh)
+            if tgt.exists():
+                tgt.dspType = 0
+                mc.select(tgt)
 
     def misc_importEnvAndShd(self):
         """Import environment and shader files if not already present."""
