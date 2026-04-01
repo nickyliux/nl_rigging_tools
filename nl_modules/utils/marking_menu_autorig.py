@@ -150,8 +150,9 @@ class MarkingMenuAutorig:
 
         # mc.menuItem(p=menu, l="Unbuild", c=build.unbuildSelOrAll)
         mc.menuItem(p=menu, l="Toggle Guide", c=build.toggleGuide)
+        mc.menuItem(p=menu, l="Add Follow Cam", c=common.addFollowCam)
         mc.menuItem(p=menu, l="-" * 25, en=0)
-        mc.menuItem(p=menu, l='ns: "' + curr_ns_str + '"', c=common.setNsFrSel)
+        mc.menuItem(p=menu, l='namespace = "' + curr_ns_str + '"', c=common.setNsFrSel)
 
         # mc.menuItem(p=menu, l="PROXY  -----", en=0)
         # space = "    "

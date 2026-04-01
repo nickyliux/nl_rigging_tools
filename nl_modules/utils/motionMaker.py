@@ -1,9 +1,10 @@
+import logging
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.utils import anim, common
 import maya.cmds as mc
 
 
-def bakeMomaToIk():
+def bakeMotion(*args):
     """Bake Moma Sk to IK rig controls."""
     rigIDs = ["lfLegQd0", "rtLegQd0", "lfLegQd1", "rtLegQd1"]
 
@@ -28,7 +29,53 @@ def bakeMomaToIk():
         common.pauseVP(0)
 
 
-MOMA_QD_MAP = {
+def _applyConstraints(mapping, ns):
+    """Apply constraints based on the provided mapping."""
+    moma_ns = "moma:"
+    count = 0
+    for cstMethod, pairs in mapping.items():
+        for src, tgt in pairs:
+            node1 = DagNode(moma_ns + src)
+            node2 = DagNode(ns + tgt)
+            if node1.exists() and node2.exists():
+                getattr(node1, cstMethod)(node2, mo=1)
+                count += 1
+            else:
+                logging.info(
+                    f"Warning: Node '{moma_ns + src}' or '{ns + tgt}' does not exist."
+                )
+    logging.info(f"Applied {count} constraints for mapping '{mapping}'.")
+
+
+def _setLegsToFk(ns=""):
+    """Set all legs to FK mode."""
+    settings = [
+        f"{ns}lfLegQd1_setting",
+        f"{ns}rtLegQd1_setting",
+        f"{ns}lfLegQd0_setting",
+        f"{ns}rtLegQd0_setting",
+    ]
+    for s in settings:
+        DagNode(s).a.fkIk.set(0)
+
+    logging.info("Set all legs to FK mode.")
+
+
+def connectEquineToQd(*args):
+    """Connect Moma Sk to Qd rig controls."""
+    ns = common.getNsFrOptVar()
+    _applyConstraints(EQUINE_QD_MAP, ns)
+    _setLegsToFk(ns)
+
+
+def connectCanineToQd(*args):
+    """Connect Moma Sk to Qd rig controls."""
+    ns = common.getNsFrOptVar()
+    _applyConstraints(CANINE_QD_MAP, ns)
+    _setLegsToFk(ns)
+
+
+EQUINE_QD_MAP = {
     "cstPar": [
         # SPINE
         ("pelvis", "spineQd0_cog_ctl"),
@@ -72,21 +119,46 @@ MOMA_QD_MAP = {
     ],
 }
 
-
-def _applyConstraints(mapping):
-    """Apply constraints based on the provided mapping."""
-    ns1 = "moma:"
-    ns2 = common.getNsFrOptVar()
-    for cstMethod, pairs in mapping.items():
-        for src, tgt in pairs:
-            getattr(DagNode(ns1 + src), cstMethod)(DagNode(ns2 + tgt), mo=1)
-
-
-def connectMomaToQd():
-    """Connect Moma Sk to Qd rig controls."""
-    _applyConstraints(MOMA_QD_MAP)
-
-
-# from nl_modules.utils import motionMaker
-# motionMaker.connectMomaToQd()
-# motionMaker.bakeMomaToIk()
+CANINE_QD_MAP = {
+    "cstPar": [
+        # SPINE
+        ("c_pelvis", "spineQd0_cog_ctl"),
+        ("c_spine_01", "spineQd0_base_ikc"),
+        ("c_spine_03", "spineQd0_mid_ikc"),
+        ("c_spine_06", "spineQd0_fore_ikc"),
+        # NECK
+        ("c_neck_01", "neckQd0_base_ikc"),
+        ("c_neck_03", "neckQd0_mid_ikc"),
+        ("c_head_01", "neckQd0_fore_ikc"),
+        # L LEGS
+        ("l_scapula", "lfLegQd1_hip_fkc"),
+        ("l_hip", "lfLegQd0_upr_fkc"),
+        # R LEGS
+        ("r_scapula", "rtLegQd1_hip_fkc"),
+        ("r_hip", "rtLegQd0_upr_fkc"),
+    ],
+    "cstOri": [
+        # SPINE
+        ("c_pelvis", "spineQd0_end_ctl"),
+        # L LEGS
+        ("l_shoulder", "lfLegQd1_upr_fkc"),
+        ("l_elbow", "lfLegQd1_lwr_fkc"),
+        ("l_wrist", "lfLegQd1_palm_fkc"),
+        ("l_hand_01", "lfLegQd1_digit_fkc"),
+        ("l_hand_02", "lfLegQd1_ball_fkc"),
+        ("l_knee", "lfLegQd0_lwr_fkc"),
+        ("l_ankle", "lfLegQd0_palm_fkc"),
+        ("l_foot_01", "lfLegQd0_ball_fkc"),
+        ("l_foot_02", "lfLegQd0_ball_fkc"),
+        # R LEGS
+        ("r_shoulder", "rtLegQd1_upr_fkc"),
+        ("r_elbow", "rtLegQd1_lwr_fkc"),
+        ("r_wrist", "rtLegQd1_palm_fkc"),
+        ("r_hand_01", "rtLegQd1_digit_fkc"),
+        ("r_hand_02", "rtLegQd1_ball_fkc"),
+        ("r_knee", "rtLegQd0_lwr_fkc"),
+        ("r_ankle", "rtLegQd0_palm_fkc"),
+        ("r_foot_01", "rtLegQd0_ball_fkc"),
+        ("r_foot_02", "rtLegQd0_ball_fkc"),
+    ],
+}

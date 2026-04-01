@@ -10,13 +10,13 @@ from nl_modules.utils import (
     common,
     file,
     guide,
-    log,
     helper,
     model,
     build,
     proxy,
     control,
     skin,
+    motionMaker,
 )
 from nl_modules.utils.color import Color
 
@@ -215,20 +215,15 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.selectTypeBelow_BN, self.getTypeBelowSel)
         self.connect(self.UI.maxInfl_BN, self.setMaxInflSel)
 
-        # Cam
-        self.connect(self.UI.addFollowCam_BN, self.addFollowCam)
+        # Motion Maker
+        self.connect(self.UI.canineToQuad_BN, motionMaker.connectCanineToQd)
+        self.connect(self.UI.equineToQuad_BN, motionMaker.connectEquineToQd)
+        self.connect(self.UI.bakeMotion_BN, motionMaker.bakeMotion)
 
         self.rigNode_UI_refresh()
         self.crvShape_refresh()
         self.updateLoadWrapTargetMesh()
         self.updateCharPath()
-
-    def addFollowCam(self):
-        """Add a follow camera to the scene."""
-        sel = mc.ls(sl=1)
-        if sel:
-            cam = DagNode(mc.camera()[0])
-            DagNode(sel[0]).cstPoi(cam.addOffsetGrp())
 
     def setMaxInflSel(self):
         """Set maximum influences for selected skinned meshes."""

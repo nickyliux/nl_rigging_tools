@@ -80,10 +80,11 @@ class SpineQd(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", self.staticRigSize / 3, 1),
-            ("cog_ctl", "trapezoid", None, Vec((1, 2, 2)) * rSz, 0),
-            ("fore_ikc", "back", None, Vec((8, 8, 0.2)) * rSz, 0),
-            ("mid_ikc", "circle", "z", rSz * 4, 0),
-            ("base_ikc", "back", None, Vec((8, 8, 0.2)) * rSz, 0),
+            # ("cog_ctl", "trapezoid", None, Vec((1, 2, 2)) * rSz, 0),
+            ("cog_ctl", "cog_qd", None, rSz * 1.5, 0),
+            ("fore_ikc", "back", None, Vec((4, 4, 0.1)) * rSz, 0),
+            ("mid_ikc", "circle", "z", rSz * 2, 0),
+            ("base_ikc", "back", None, Vec((4, 4, 0.1)) * rSz, 0),
             ("tangent0_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
             ("tangent1_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
         ]
@@ -91,8 +92,8 @@ class SpineQd(RigModule):
             ctl_defs.extend(
                 [
                     ("end_ctl", "rotate2_3d", None, Vec((1.5, 1.5, 0.7)) * rSz, 0),
-                    ("cog_upr_ctl", "square", "x", Vec((1, 0.5, 1)) * rSz, 0),
-                    ("cog_lwr_ctl", "square", "x", Vec((1, 0.5, 1)) * rSz, 0),
+                    ("cog_upr_ctl", "cog_qd_upr", None, rSz * 1.5, 0),
+                    ("cog_lwr_ctl", "cog_qd_lwr", None, rSz * 1.5, 0),
                 ]
             )
 

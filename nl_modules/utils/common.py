@@ -1052,12 +1052,14 @@ def showRO():
     """Show rotate order attribute in channelBox"""
     from nl_modules.nodel.base.dag_node import DagNode
 
-    for node in mc.ls(tr=1):
-        nodeN = DagNode(node)
-        if (
-            nodeN.type == "joint" or nodeN.type == "nurbsCurve"
-        ) and not nodeN.name.endswith("_guide"):
-            mc.setAttr(nodeN + ".ro", cb=1)
+    allCtls = getRigCtlsAll()
+    for ctl in allCtls:
+        mc.setAttr(ctl + ".ro", cb=1)
+        # nodeN = DagNode(node)
+        # if (
+        #     nodeN.type == "joint" or nodeN.type == "nurbsCurve"
+        # ) and not nodeN.name.endswith("_guide"):
+        #     mc.setAttr(nodeN + ".ro", cb=1)
 
 
 def getSetMembersInOrder(tgt):
@@ -1070,3 +1072,17 @@ def getSetMembersInOrder(tgt):
     if tgt and mc.ls(tgt, type="objectSet"):
         members = mc.listConnections(tgt, s=1, d=0, p=0, c=0) or []
         return [DagNode(n) for n in members]
+
+
+def addFollowCam(*args):
+    """Add a follow camera to the scene."""
+    from nl_modules.nodel.base.dag_node import DagNode
+
+    sel = mc.ls(sl=1)
+    if sel:
+        cam = DagNode(mc.camera(n="followCam_#")[0])
+        DagNode(sel[0]).cstPoi(cam.addOffsetGrp())
+        cam.offset.a.ty.disconnect()
+        cam.offset.a.ty.set(0)
+    else:
+        mc.confirmDialog(t="Info", m="Please select an object to follow.    ", b=["OK"])

@@ -117,9 +117,8 @@ def switchFkIk(attr=None, toIKMode=0, rigNode=None):
     else:  # to IK
         root_mtx = jnts[0].getMtx()
 
-        autoAim = fkCtls[0].a["autoAim"]
-        if autoAim.exists():
-            autoAim.set(0)
+        if fkCtls[0].a["autoAim"].exists():
+            fkCtls[0].a["autoAim"].set(0)
 
         fkCtls[0].setMtx(root_mtx)
 
@@ -139,8 +138,9 @@ def switchFkIk(attr=None, toIKMode=0, rigNode=None):
             if extra_matcher.exists():
                 extra_ikc.alignTo(extra_matcher)
 
-        # Setup for pvc
-        pvc.a["fkPin"].set(0)
+        if pvc.a.fkPin.exists():
+            pvc.a["fkPin"].set(0)
+
         pvLock = pvc.a["pvLock"].get()
         if pvLock and pvLock > 0.5:
             pvc.alignTo(jnts[2])
