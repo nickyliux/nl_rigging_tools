@@ -81,8 +81,6 @@ class SpineQd(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", self.staticRigSize / 3, 1),
             ("cog_ctl", "trapezoid", None, Vec((1, 2, 2)) * rSz, 0),
-            ("cog_upr_ctl", "square", "x", Vec((1, 0.5, 1)) * rSz, 0),
-            ("cog_lwr_ctl", "square", "x", Vec((1, 0.5, 1)) * rSz, 0),
             ("fore_ikc", "back", None, Vec((8, 8, 0.2)) * rSz, 0),
             ("mid_ikc", "circle", "z", rSz * 4, 0),
             ("base_ikc", "back", None, Vec((8, 8, 0.2)) * rSz, 0),
@@ -90,16 +88,21 @@ class SpineQd(RigModule):
             ("tangent1_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
         ]
         if self.is_spine():
-            ctl_defs.append(
-                ("end_ctl", "rotate2_3d", None, Vec((1.5, 1.5, 0.7)) * rSz, 0)
+            ctl_defs.extend(
+                [
+                    ("end_ctl", "rotate2_3d", None, Vec((1.5, 1.5, 0.7)) * rSz, 0),
+                    ("cog_upr_ctl", "square", "x", Vec((1, 0.5, 1)) * rSz, 0),
+                    ("cog_lwr_ctl", "square", "x", Vec((1, 0.5, 1)) * rSz, 0),
+                ]
             )
 
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         self.cog_ctl.cv_move(0, rSz * 40, 0)
-        self.cog_upr_ctl.cv_move(0, rSz * 40, 0)
-        self.cog_lwr_ctl.cv_move(0, rSz * 40, 0)
+        if self.is_spine():
+            self.cog_upr_ctl.cv_move(0, rSz * 40, 0)
+            self.cog_lwr_ctl.cv_move(0, rSz * 40, 0)
         self.tangent0_ctl.cv_rotate(0, 90, 0)
         self.tangent1_ctl.cv_rotate(0, 90, 0)
         self.setting.cv_move(0, rSz * 60, 0)
@@ -175,35 +178,45 @@ class SpineQd(RigModule):
         if self.BASE_PVT_GUIDE:
             self.base_ikc.alignTo(self.BASE_PVT_GUIDE)
             self.tangent0_ctl.alignTo(self.BASE_PVT_GUIDE)
-            self.cog_lwr_ctl.alignTo(self.BASE_PVT_GUIDE)
+            if self.is_spine():
+                self.cog_lwr_ctl.alignTo(self.BASE_PVT_GUIDE)
         else:
             self.base_ikc.snapTo(ctlJ0)
             self.tangent0_ctl.snapTo(ctlJ0)
             self.base_ikc.alignTo(ctlJ0)
             self.tangent0_ctl.alignTo(ctlJ0)
-            self.cog_lwr_ctl.alignTo(ctlJ0)
+            if self.is_spine():
+                self.cog_lwr_ctl.alignTo(ctlJ0)
 
         self.mid_ikc.snapTo(ctlJ1)
 
         if self.CHEST_PVT_GUIDE:
             self.fore_ikc.alignTo(self.CHEST_PVT_GUIDE)
             self.tangent1_ctl.alignTo(self.CHEST_PVT_GUIDE)
-            self.cog_upr_ctl.alignTo(self.CHEST_PVT_GUIDE)
+            if self.is_spine():
+                self.cog_upr_ctl.alignTo(self.CHEST_PVT_GUIDE)
         else:
             self.fore_ikc.snapTo(ctlJ2)
             self.tangent1_ctl.snapTo(ctlJ2)
             self.fore_ikc.alignTo(ctlJ2)
             self.tangent1_ctl.alignTo(ctlJ2)
-            self.cog_upr_ctl.alignTo(ctlJ2)
+            if self.is_spine():
+                self.cog_upr_ctl.alignTo(ctlJ2)
 
-        self.cog_upr_ctl | self.cog_lwr_ctl | self.cog_ctl | self.IK_GRP
-        ctlJ0 | self.tangent0_ctl | self.base_ikc | self.cog_upr_ctl
-        ctlJ1 | self.mid_ikc | self.cog_upr_ctl
-        ctlJ2 | self.tangent1_ctl | self.fore_ikc | self.cog_upr_ctl
-
+        self.cog_ctl | self.IK_GRP
         self.cog_ctl.addOffsetGrp()
-        self.cog_upr_ctl.addOffsetGrp()
-        self.cog_lwr_ctl.addOffsetGrp()
+
+        ctlJ0 | self.tangent0_ctl | self.base_ikc
+        ctlJ1 | self.mid_ikc
+        ctlJ2 | self.tangent1_ctl | self.fore_ikc
+
+        if self.is_spine():
+            self.cog_upr_ctl | self.cog_lwr_ctl | self.cog_ctl
+            (self.base_ikc, self.mid_ikc, self.fore_ikc) | self.cog_upr_ctl
+            self.cog_upr_ctl.addOffsetGrp()
+            self.cog_lwr_ctl.addOffsetGrp()
+        else:
+            (self.base_ikc, self.mid_ikc, self.fore_ikc) | self.cog_ctl
 
         self.tangent0_ctl.a.add("tangent", k=1, min=0.01, dv=1) >> ctlJ0.a.s
         self.tangent1_ctl.a.add("tangent", k=1, min=0.01, dv=1) >> ctlJ2.a.s
@@ -377,15 +390,10 @@ class SpineQd(RigModule):
         # self.cog_ctl.a.showAttr(t=self.is_spine(), r=1)
         [
             ctl.a.showAttr(t=1, r=1)
-            for ctl in [
-                self.cog_ctl,
-                self.cog_lwr_ctl,
-                self.cog_upr_ctl,
-                self.tangent0_ctl,
-                self.tangent1_ctl,
-            ]
+            for ctl in [self.cog_ctl, self.tangent0_ctl, self.tangent1_ctl]
         ]
         if self.is_spine():
+            [ctl.a.showAttr(t=1, r=1) for ctl in [self.cog_lwr_ctl, self.cog_upr_ctl]]
             self.end_ctl.a.showAttr(r=1)
 
     def setup_anchor(self):
@@ -416,10 +424,10 @@ class SpineQd(RigModule):
         """Setup control sets for the spine rig."""
         ctls = self.ctls_ik + [
             self.cog_ctl,
-            self.cog_lwr_ctl,
-            self.cog_upr_ctl,
             self.setting,
         ]
+        if self.is_spine():
+            ctls += [self.cog_lwr_ctl, self.cog_upr_ctl]
 
         if self.is_spine():
             ctls.append(self.end_ctl)
