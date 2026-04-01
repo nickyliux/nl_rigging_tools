@@ -148,15 +148,15 @@ class Tail(RigModule):
                 color=Color.PINK,
                 p=self.main,
             )
-            ctl.cv_scale(1, 1, 0.5)
             self.jnts_ik[i] | ctl
             self.ctls_ik.append(ctl)
-            # if i > 0:
-            #     ctl.offset | self.ctls_ik[0]
             self.rigNode.setMsg({f"ikc{i}": ctl})
 
-        # self.rbSrf1 = self.create_rbSrf((4 + self.fkJntNum) // 2)
-        self.rbSrf1 = self.create_rbSrf(self.fkJntNum)
+        if self.ikJntNum == 5:
+            self.ctls_ik[1].offset | self.ctls_ik[0]
+            self.ctls_ik[-2].offset | self.ctls_ik[-1]
+
+        self.rbSrf1 = self.create_rbSrf(self.ikJntNum - 1)
         self.rigNode.setMsg({"rbSrf": self.rbSrf1})
 
         SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6, chain=0)
@@ -167,9 +167,6 @@ class Tail(RigModule):
         RigModule.isolate_align(
             self.main, spaces=[self.main.addOffsetGrp(), self.masterC], dv=0
         )
-        # RigModule.isolate_align(
-        #     self.ctls_ik[0], spaces=[self.ctls_ik[0].offset, self.masterC], dv=0
-        # )
 
     def build_fk(self):
         """Build the FK controls for the tail rig.
@@ -247,17 +244,15 @@ class Tail(RigModule):
             self.ctls_ofs.append(ctl)
             self.jnts_ofs.append(jnt)
 
-        # self.rbSrf2 = self.create_rbSrf((4 + self.fkJntNum) // 2)
         self.rbSrf2 = self.create_rbSrf(self.fkJntNum - 1)
 
         self.rigNode.setMsg({"rbSrfSk": self.rbSrf2})
-
         SrfNode(self.rbSrf2).weightTo(self.jnts_ofs, chain=0, mi=2, dr=6)
 
     def setup_vis(self):
         """Setup visibility toggles for the tail rig controls."""
         self.ctl_vis_toggle(
-            self.setting.a.add("showIkCtl", k=0, type="bool", dv=0),
+            self.setting.a.add("showIkCtl", k=0, type="bool", dv=1),
             onList=self.ctls_ik,
         )
         self.ctl_vis_toggle(
@@ -269,7 +264,7 @@ class Tail(RigModule):
             onList=self.ctls_ofs,
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", k=0, type="bool", dv=0),
+            self.setting.a.add("showSetup", k=0, type="bool", dv=1),
             onList=[self.rbSrf1, self.rbSrf2, self.rbCrvSk, self.JNT_DATA],
         )
         mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)
@@ -280,7 +275,6 @@ class Tail(RigModule):
             ctl.a.showAttr(t=1, r=1)
         self.setting.a.showAttr()
 
-        self.ctls_fk[-1].a.add("stretchy", proxy=self.setting.a.stretchy)
         self.ctls_ik[-1].a.add("stretchy", proxy=self.setting.a.stretchy)
 
     def setup_rotate_order(self):
@@ -304,7 +298,9 @@ class Tail(RigModule):
 
     def setup_ctlSet(self):
         """Setup control sets for the tail rig controls."""
-        self.add_ctl_set(self.ctls_ik + self.ctls_fk + self.ctls_ofs + [self.setting])
+        self.add_ctl_set(
+            self.ctls_ik + self.ctls_fk + self.ctls_ofs + [self.setting, self.main],
+        )
 
     def setup_bindJnt(self):
         """Setup bind joints for the tail rig controls."""
@@ -313,12 +309,24 @@ class Tail(RigModule):
         # proxy.add_radiusScale_attr(self.jnts_bind, 0.4)
 
     def setup_space(self):
-        pass
+        """Setup space switching for the tail rig controls."""
+        self.ctls_ik[-1].a.add("spaceType", dv=2, k=0, cb=0)
+
+        self.rigNode.a.add("spaceName1", type="string", txt="tailBase, COG, master")
+        # self.rigNode.a.add("spaceName2", type="string", txt="chest, COG, master")
+
+        self.rigNode.setMsg(
+            {
+                "spaceHolder1": self.ctls_ik[-1],
+                "space_tailBase": self.main,
+                "space_master": self.masterC,
+            }
+        )
 
     def build_post(self):
         """Post setup for the tail rig."""
         logging.info(".")
-        # --- Cleanup and update root joint ---
+
         mc.delete(self.rootJ)
         self.rootJ = self.jnts_fk[0]
         self.rigNode.setMsg({"rootJ": self.rootJ})
