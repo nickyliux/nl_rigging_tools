@@ -82,9 +82,9 @@ class SpineQd(RigModule):
             ("setting", "screw_nut", "z", self.staticRigSize / 3, 1),
             # ("cog_ctl", "trapezoid", None, Vec((1, 2, 2)) * rSz, 0),
             ("cog_ctl", "cog_qd", None, rSz * 1.5, 0),
-            ("fore_ikc", "back", None, Vec((4, 4, 0.1)) * rSz, 0),
+            ("fore_ikc", "back", None, Vec((4, 4, 0.2)) * rSz, 0),
             ("mid_ikc", "circle", "z", rSz * 2, 0),
-            ("base_ikc", "back", None, Vec((4, 4, 0.1)) * rSz, 0),
+            ("base_ikc", "back", None, Vec((4, 4, 0.2)) * rSz, 0),
             ("tangent0_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
             ("tangent1_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
         ]
@@ -92,8 +92,8 @@ class SpineQd(RigModule):
             ctl_defs.extend(
                 [
                     ("end_ctl", "rotate2_3d", None, Vec((1.5, 1.5, 0.7)) * rSz, 0),
-                    ("cog_upr_ctl", "cog_qd_upr", None, rSz * 1.5, 0),
-                    ("cog_lwr_ctl", "cog_qd_lwr", None, rSz * 1.5, 0),
+                    ("cog_upr_ctl", "rotate", None, rSz * 1.5, 0),
+                    ("cog_lwr_ctl", "rotate", None, rSz * 1.5, 0),
                 ]
             )
 
@@ -102,10 +102,12 @@ class SpineQd(RigModule):
 
         self.cog_ctl.cv_move(0, rSz * 40, 0)
         if self.is_spine():
-            self.cog_upr_ctl.cv_move(0, rSz * 40, 0)
-            self.cog_lwr_ctl.cv_move(0, rSz * 40, 0)
+            self.cog_upr_ctl.cv_rotate(180, 0, 0)
+            self.cog_upr_ctl.cv_move(0, rSz * 60, 0)
+            # self.cog_lwr_ctl.cv_move(0, rSz * 40, 0)
         self.tangent0_ctl.cv_rotate(0, 90, 0)
         self.tangent1_ctl.cv_rotate(0, 90, 0)
+        self.end_ctl.cv_move(0, 0, rSz * -10)
         self.setting.cv_move(0, rSz * 60, 0)
 
     def create_rbSrf(self):

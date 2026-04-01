@@ -4120,7 +4120,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>4. Set namespace</string>
+       <string>4. Remember to set namespace</string>
       </property>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_32">
@@ -4190,7 +4190,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>3. Scale and fit closely</string>
+       <string>3. Scale it to fit closely</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_17">
