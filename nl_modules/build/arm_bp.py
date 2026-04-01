@@ -503,7 +503,6 @@ class ArmBp(RigModule):
 
     def setup_space(self):
         """Setup space switching for the arm rig controls."""
-
         self.rigNode.a.add(
             "spaceName1",
             type="string",
@@ -514,7 +513,6 @@ class ArmBp(RigModule):
             type="string",
             txt="arm, master, clavicle, COG, uprBody, lwrBody",
         )
-
         self.ikH1.build_pvfkPinSetup(ikTarget=self.ikc)
 
         PALM_ID = 3

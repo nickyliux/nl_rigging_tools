@@ -32,7 +32,6 @@ class NeckQd(SpineQd):
         self.rigNode.setMsg(
             {
                 "spaceHolder1": self.fore_ikc,
-                # "spaceHolder2": self.base_ikc,
                 "space_neck": self.anchorToRbj,
                 "space_neckBase": self.base_ikc,
             }
