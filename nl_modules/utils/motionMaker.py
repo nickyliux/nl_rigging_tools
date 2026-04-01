@@ -64,15 +64,29 @@ def _setLegsToFk(ns=""):
 def connectEquineToQd(*args):
     """Connect Moma Sk to Qd rig controls."""
     ns = common.getNsFrOptVar()
-    _applyConstraints(EQUINE_QD_MAP, ns)
-    _setLegsToFk(ns)
+    if ns:
+        _applyConstraints(EQUINE_QD_MAP, ns)
+        _setLegsToFk(ns)
+    else:
+        mc.confirmDialog(
+            t="Info",
+            m="Namespace not Set. Cannot connect Moma Sk to Qd rig controls.    ",
+            b=["OK"],
+        )
 
 
 def connectCanineToQd(*args):
     """Connect Moma Sk to Qd rig controls."""
     ns = common.getNsFrOptVar()
-    _applyConstraints(CANINE_QD_MAP, ns)
-    _setLegsToFk(ns)
+    if ns:
+        _applyConstraints(CANINE_QD_MAP, ns)
+        _setLegsToFk(ns)
+    else:
+        mc.confirmDialog(
+            t="Info",
+            m="Namespace not Set. Cannot connect Moma Sk to Qd rig controls.    ",
+            b=["OK"],
+        )
 
 
 EQUINE_QD_MAP = {
