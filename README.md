@@ -112,22 +112,24 @@ jnt.alignTo(grp) # align jnt to grp
 jnt.addOffsetGrp() # add offset group for jnt
 ```
 
-## Custom Component Classes
+## Main Custom Component Classes
 ```mermaid
 flowchart
-    RigBase --> RigModule
     RigModule --> Head
     RigModule --> SpineBp
     SpineBp --> NeckBp
     RigModule --> ArmBp
     RigModule --> HandBp
     RigModule --> LegBp
+```
+```mermaid
+flowchart
+    RigModule --> Head
     RigModule --> SpineQd
-    SpineQd --> NeckQd
+    RigModule --> IkFkSpline
     RigModule --> LegQd
-    RigModule --> Tail
-    RigModule --> SimplyFk
-    RigModule --> FingerFk
+    IkFkSpline --> Tail
+    IkFkSpline --> NeckQd
 ```
 
 ```python
