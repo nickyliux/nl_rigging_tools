@@ -93,6 +93,10 @@ class Head(RigModule):
         self.rt_eye_fkc.addOffsetGrp()
         self.rt_eye_fkc.cstPar(self.rt_eye, mo=1)
 
+        RigModule.isolate_align(
+            self.head_fkc, spaces=[self.head_fkc.addOffsetGrp(), self.masterC], dv=1
+        )
+
     def setup_vis(self):
         pass
 
@@ -140,7 +144,7 @@ class Head(RigModule):
         self.setup_space()
         self.setup_anchor_module(
             {
-                "anchorS1": self.head_fkc.offset,
+                "anchorS1": self.head_fkc.offset.offset,
                 "anchorP1": self.headEnd,
             }
         )

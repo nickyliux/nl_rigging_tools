@@ -128,6 +128,7 @@ from nl_modules.build import (
     belt,
     finger_fk,
     hand_bp,
+    ik_fk_spline,
     leg_bp,
     leg_qd,
     neck_bp,
@@ -137,9 +138,7 @@ from nl_modules.build import (
     spine_bp,
     spine_qd,
     tail,
-    # tail_fk,
     tpl_loader,
-    # ribbon,
     head,
     simple_fk,
 )
@@ -158,10 +157,10 @@ reload(leg_bp)
 reload(leg_qd)
 reload(neck_qd)
 reload(spine_qd)
-# reload(tail_fk)
 reload(tail)
 reload(finger_fk)
 reload(belt)
+reload(ik_fk_spline)
 
 if __name__ == "__main__":
     logging.info("reload modules.")
