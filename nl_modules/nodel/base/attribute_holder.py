@@ -94,7 +94,7 @@ class AttributeHolder:
 
         return Attribute(self.node, name)
 
-    def addSep(self, name="_" * 8):
+    def addSep(self, name="_" * 12):
         """Add string attribute as separator
         e.g.
             obj.a.addSep()
