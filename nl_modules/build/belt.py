@@ -1,16 +1,11 @@
 import logging
 import maya.cmds as mc
 from nl_modules.build.rig_module import RigModule
-from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.srf_node import SrfNode
-from nl_modules.utils import build
 from nl_modules.utils import common
-from nl_modules.utils import proxy
-from nl_modules.utils import utils_node as ut
-from nl_modules.utils.color import Color
 
 
 class Belt(RigModule):
@@ -70,7 +65,9 @@ class Belt(RigModule):
         """Build the belt rig."""
         self.build_pre_module()
 
-        self.rbSrf1 = self.create_rbSrf()
+        self.rbSrf1 = self.create_rbSrf(
+            span=4, normal=-1, crv=self.LINE_GUIDE, snap=self.RT_GUIDE
+        )
         self.rigNode.setMsg({"rbSrf": self.rbSrf1})
 
         self.build_ctl()
@@ -80,18 +77,6 @@ class Belt(RigModule):
         self.build_post()
 
         mc.delete(self.rootJ)
-
-    def create_rbSrf(self):
-        """Create the ribbon surface for the belt rig."""
-        return SrfNode.buildRbSrf(
-            pf=self.rigID,
-            crv=self.LINE_GUIDE,
-            normal=-1,
-            spans=4,
-            p=self.CTL_DATA,
-            snap=self.RT_GUIDE,
-            inheritsXf=0,
-        )
 
     def build_ribbon(self):
         """Create the ribbon for the belt rig."""

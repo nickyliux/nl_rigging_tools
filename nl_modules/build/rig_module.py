@@ -8,11 +8,11 @@ from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.rbn_node import RbnNode
+from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common
 from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
-from nl_modules.utils.common import Vec
 
 DEFAULT_LINE_WIDTH = -1
 
@@ -1162,3 +1162,15 @@ class RigModule(RigBase):
             rm=[self.upr, self.lwr],
         )
         return [ribbonUp, ribbonLw]
+
+    def create_rbSrf(self, span=4, normal=1, crv=None, snap=None):
+        """Create a ribbon surface for the rig using the SrfNode class."""
+        return SrfNode.buildRbSrf(
+            pf=self.rigID,
+            crv=crv,
+            spans=span,
+            normal=normal,
+            p=self.CTL_DATA,
+            snap=snap,
+            inheritsXf=0,
+        )

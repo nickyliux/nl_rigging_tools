@@ -7,13 +7,9 @@ from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common
-from nl_modules.utils import proxy
 
 from nl_modules.utils import utils_node as ut
-from nl_modules.utils import build
-from nl_modules.utils.color import Color
 from nl_modules.utils.common import Vec
 
 
@@ -104,22 +100,11 @@ class SpineQd(RigModule):
         if self.is_spine():
             self.cog_upr_ctl.cv_rotate(180, 0, 0)
             self.cog_upr_ctl.cv_move(0, rSz * 60, 0)
-            # self.cog_lwr_ctl.cv_move(0, rSz * 40, 0)
+            self.end_ctl.cv_move(0, 0, rSz * -10)
+
         self.tangent0_ctl.cv_rotate(0, 90, 0)
         self.tangent1_ctl.cv_rotate(0, 90, 0)
-        self.end_ctl.cv_move(0, 0, rSz * -10)
         self.setting.cv_move(0, rSz * 60, 0)
-
-    def create_rbSrf(self):
-        """Create the ribbon surface for the spine rig."""
-        return SrfNode.buildRbSrf(
-            pf=self.rigID,
-            crv=self.LINE_GUIDE,
-            spans=2,
-            snap=self.RT_GUIDE,
-            p=self.CTL_DATA,
-            inheritsXf=0,
-        )
 
     def build(self):
         """Build the spine rig."""
@@ -127,8 +112,10 @@ class SpineQd(RigModule):
         mc.delete(self.rootJ)
         self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
 
-        self.rbSrf = self.create_rbSrf()
-        self.rbSrfSk = self.create_rbSrf()
+        self.rbSrf = self.create_rbSrf(span=2, crv=self.LINE_GUIDE, snap=self.RT_GUIDE)
+        self.rbSrfSk = self.create_rbSrf(
+            span=2, crv=self.LINE_GUIDE, snap=self.RT_GUIDE
+        )
 
         # Rebuild the ribbon surface to have the correct number of spans for joint attachment.
         mc.rebuildSurface(

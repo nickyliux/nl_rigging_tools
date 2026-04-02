@@ -81,18 +81,6 @@ class Tail(RigModule):
 
         self.build_post()
 
-    def create_rbSrf(self, spans=4):
-        """Create the ribbon surface for the tail rig."""
-        return SrfNode.buildRbSrf(
-            pf=self.rigID,
-            crv=self.LINE_GUIDE,
-            normal=-1,
-            spans=spans,
-            p=self.CTL_DATA,
-            snap=self.RT_GUIDE,
-            inheritsXf=0,
-        )
-
     def build_ribbon(self):
         """Create the ribbon for the tail rig."""
         logging.info(".")
@@ -152,7 +140,9 @@ class Tail(RigModule):
             self.ctls_ik[1].offset | self.ctls_ik[0]
             self.ctls_ik[-2].offset | self.ctls_ik[-1]
 
-        self.rbSrf1 = self.create_rbSrf(self.ikJntNum - 1)
+        self.rbSrf1 = self.create_rbSrf(
+            span=self.ikJntNum - 1, normal=-1, crv=self.LINE_GUIDE, snap=self.RT_GUIDE
+        )
         self.rigNode.setMsg({"rbSrf": self.rbSrf1})
 
         SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6, chain=0)
@@ -240,7 +230,9 @@ class Tail(RigModule):
             self.ctls_ofs.append(ctl)
             self.jnts_ofs.append(jnt)
 
-        self.rbSrf2 = self.create_rbSrf(self.fkJntNum - 1)
+        self.rbSrf2 = self.create_rbSrf(
+            span=self.fkJntNum - 1, normal=-1, crv=self.LINE_GUIDE, snap=self.RT_GUIDE
+        )
 
         self.rigNode.setMsg({"rbSrfSk": self.rbSrf2})
         SrfNode(self.rbSrf2).weightTo(self.jnts_ofs, chain=0, mi=2, dr=6)
