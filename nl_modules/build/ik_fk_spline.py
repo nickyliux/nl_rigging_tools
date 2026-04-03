@@ -238,7 +238,6 @@ class IkFkSpline(RigModule):
             self.setting.a.add("showIkCtl", k=0, type="bool", dv=1),
             onList=self.ctls_ik,
         )
-        self.setting.a.addSep()
         self.ctl_vis_toggle(
             self.setting.a.add("showFkCtl", k=0, type="bool", dv=1),
             onList=[self.ctls_fk[0]],
@@ -255,7 +254,7 @@ class IkFkSpline(RigModule):
 
     def setup_channel(self):
         """Setup channel attributes for the rig controls."""
-        for ctl in self.ctls_fk + self.ctls_ik + self.ctls_ofs:
+        for ctl in self.ctls_fk + self.ctls_ik + self.ctls_ofs + [self.main]:
             ctl.a.showAttr(t=1, r=1)
         self.setting.a.showAttr()
 
