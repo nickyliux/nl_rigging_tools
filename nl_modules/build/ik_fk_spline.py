@@ -5,7 +5,7 @@ from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.srf_node import SrfNode
-from nl_modules.utils import common
+from nl_modules.utils import common, proxy
 from nl_modules.utils.color import Color
 
 
@@ -238,6 +238,7 @@ class IkFkSpline(RigModule):
             self.setting.a.add("showIkCtl", k=0, type="bool", dv=1),
             onList=self.ctls_ik,
         )
+        self.setting.a.addSep()
         self.ctl_vis_toggle(
             self.setting.a.add("showFkCtl", k=0, type="bool", dv=1),
             onList=[self.ctls_fk[0]],
@@ -247,7 +248,7 @@ class IkFkSpline(RigModule):
             onList=self.ctls_ofs,
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", k=0, type="bool", dv=0),
+            self.setting.a.add("showSetup", k=0, type="bool", dv=1),
             onList=[self.rbSrf1, self.rbSrf2, self.rbCrvSk, self.JNT_DATA],
         )
         mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)
@@ -290,7 +291,7 @@ class IkFkSpline(RigModule):
         """Setup bind joints for the rig controls."""
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set(self.jnts_bind)
-        # proxy.add_radiusScale_attr(self.jnts_bind, 0.4)
+        proxy.add_radiusScale_attr(self.jnts_bind, self.rigSizeScale)
 
     def setup_space(self):
         """Setup space switching for the rig controls."""

@@ -131,7 +131,7 @@ class LegQd(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", self.staticRigSize / 3, 0),
-            ("hip_fkc", "stickS", None, -scale / 1.5, 0),
+            ("hip_fkc", "trapezoid2", "x", -scale * 1.5, 0),
             ("upr_fkc", "circle", "x", scale, 0),
             ("lwr_fkc", "circle", "x", scale, 0),
             ("palm_fkc", "circle", "x", scale, 0),
@@ -153,7 +153,7 @@ class LegQd(RigModule):
 
         if self.scapulaBone:
             self.scap_fkc.cv_rotate(-90, 0, 0)
-            self.scap_fkc.cv_move(0, scale * 10, 0)
+            self.scap_fkc.cv_move(0, scale * 15, 0)
 
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
@@ -232,7 +232,6 @@ class LegQd(RigModule):
             self.ball_fkc,
         ]
         self.build_fk_with_ctl2(self.jnts_fk, self.ctls_fk, p=self.FK_GRP)
-        # self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
         """Build the IK controls for the quadruped leg rig."""

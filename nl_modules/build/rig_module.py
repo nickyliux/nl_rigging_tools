@@ -47,6 +47,7 @@ class RigModule(RigBase):
             raise ValueError(f"master_guide not found for {rigNode}")
 
         self.rigSize = 1
+        self.rigSizeScale = 1
         self.staticRigSize = 1
 
         self.xDir = 1 if rID.startswith("lf") else -1 if rID.startswith("rt") else 0
@@ -105,17 +106,13 @@ class RigModule(RigBase):
     @staticmethod
     def build_fk_with_ctl(jntList, ctlList=None, oriOnly=0, count=1, p=None):
         """
-        P
-            c1 ofs  <- j1
-                c1
-            c2 ofs  <- j2
-                c2
-            ...
-            cN ofs
-                cN
-
-        j1 <- c1
-            j2 <- c2
+        p
+        ├── ctl1_ofs        ◀──constrained by── jnt1.parent (if joint)
+        │   └── ctl1        ──constrains──▶ jnt1
+        ├── ctl2_ofs        ◀──constrained by── jnt2.parent (= jnt1, a joint)
+        │   └── ctl2        ──constrains──▶ jnt2
+        ├── ctl3_ofs        ◀──constrained by── jnt3.parent (= jnt2, a joint)
+        │   └── ctl3        ──constrains──▶ jnt3
         """
         ctlList = ctlList or [CrvNode(j + "_fkc") for j in jntList]
 
@@ -138,19 +135,14 @@ class RigModule(RigBase):
 
     @staticmethod
     def build_fk_with_ctl2(jntList, ctlList=None, count=1, p=None):
-        """FK setup with ctls in separate hierarchy
-            The benefit compared to build_fk_with_ctl3 is separate selection highlight
-        P
-            c1 ofs
-                c1
-            c2 ofs <- c1
-                c2
-            ...
-            cN ofs
-                cN
-
-        j1 <- c1
-            j2 <- c2
+        """
+        p
+        ├── ctl1_ofs        (free — no driver)
+        │   └── ctl1        ──constrains──▶ jnt1
+        ├── ctl2_ofs        ◀──constrained by── ctl1
+        │   └── ctl2        ──constrains──▶ jnt2
+        ├── ctl3_ofs        ◀──constrained by── ctl2
+        │   └── ctl3        ──constrains──▶ jnt3
         """
         ctlList = ctlList or [CrvNode(j + "_fkc") for j in jntList]
         last_ctl = None
@@ -174,17 +166,14 @@ class RigModule(RigBase):
 
     @staticmethod
     def build_fk_with_ctl3(jntList, ctlList=None, count=1, p=None):
-        """FK setup with ctls in single hierarchy
-        P
-            c1 ofs
-                c1
-                    c2 ofs
-                        c2
-                        ...
-                        cN ofs
-                            cN
-        j1 <- c2
-            j2 <- c2
+        """
+        p
+        └── ctl1_ofs
+            └── ctl1            ──constrains──▶ jnt1
+                └── ctl2_ofs
+                    └── ctl2    ──constrains──▶ jnt2
+                        └── ctl3_ofs
+                            └── ctl3  ──constrains──▶ jnt3
         """
         ctlList = ctlList or [CrvNode(j + "_fkc") for j in jntList]
         last_ctl = None
@@ -938,7 +927,7 @@ class RigModule(RigBase):
 
     def getMyVar(self):
         """Get rig ID, size and x direction for the current rig instance."""
-        return str(self.rigID), float(self.rigSize), int(self.xDir)
+        return str(self.rigID), self.rigSize * self.rigSizeScale, int(self.xDir)
 
     def get_guide_attr(self, name):
         """Get attribute from master guide"""
