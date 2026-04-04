@@ -79,7 +79,6 @@ class LegQd(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the quadruped leg rig."""
-        self.calc_rig_size("hip", "palm", "tip")
 
         # --- Generate main skeleton module and root joints ---
         self.genSk_module()
@@ -130,7 +129,7 @@ class LegQd(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", self.staticRigSize / 3, 0),
+            ("setting", "screw_nut", "z", rSz, 0),
             ("hip_fkc", "trapezoid2", "x", -scale * 1.5, 0),
             ("upr_fkc", "circle", "x", scale, 0),
             ("lwr_fkc", "circle", "x", scale, 0),

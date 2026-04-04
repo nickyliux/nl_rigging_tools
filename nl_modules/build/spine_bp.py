@@ -53,7 +53,6 @@ class SpineBp(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the spine rig."""
-        self.calc_rig_size("rt", "tp")
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
@@ -67,7 +66,7 @@ class SpineBp(RigModule):
         logging.info(".")
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
-            ("setting", "screw_nut", "z", self.staticRigSize / 3, 0),
+            ("setting", "screw_nut", "z", rSz, 0),
             ("cog_ctl", "cog_bp", None, rSz * 8, 0),
         ]
         if self.ribbon:

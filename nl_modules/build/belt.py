@@ -42,7 +42,7 @@ class Belt(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the belt rig."""
-        self.calc_rig_size("rt", "tp")
+
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
@@ -55,7 +55,7 @@ class Belt(RigModule):
         logging.info(".")
 
         rID, rSz, xDr = self.getMyVar()
-        ctl_defs = [("setting", "screw_nut", "z", self.staticRigSize / 5, 0)]
+        ctl_defs = [("setting", "screw_nut", "z", rSz, 0)]
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 

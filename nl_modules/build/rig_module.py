@@ -48,7 +48,6 @@ class RigModule(RigBase):
 
         self.rigSize = 1
         self.rigSizeScale = 1
-        self.staticRigSize = 1
 
         self.xDir = 1 if rID.startswith("lf") else -1 if rID.startswith("rt") else 0
         self.boneFix = None
@@ -58,15 +57,6 @@ class RigModule(RigBase):
 
         if rigNode.a.rootJ.exists():
             self.rootJ = rigNode.a.rootJ.inConnNode
-
-    def calc_rig_size(self, *args):
-        """Calculate the rig size using distance between guides."""
-        length = 0
-        for i in range(len(args) - 1):
-            guide1 = DagNode(f"{self.rigID}_{args[i]}_guide")
-            guide2 = DagNode(f"{self.rigID}_{args[i + 1]}_guide")
-            length += guide1.o.distanceTo(guide2)
-        self.rigSize = round(length / 100, 2)
 
     def gen_sk_fr_names(self, names, color=None, scale=1):
         """Generate skeleton and control names based on the provided names list."""
@@ -310,13 +300,12 @@ class RigModule(RigBase):
             weight = w or tgt.a.add("posSpace", type="enum", dv=dv, enumName=names)
             common.cstMulti(*allSpacesGrp, tgt_ofs, cstType="poi", w=weight, **kwargs)
 
-    def calc_dim_size(self, tgt):
+    def calc_dim_size(self, tgt=None):
         """Calculate the rig size based on tgt's BBox."""
+        if tgt is None:
+            tgt = GrpNode("modules_grp")
         if mc.objExists(tgt):
-            grp = GrpNode(tgt)
-            return round((grp.o.width + grp.o.height + grp.o.depth) / 100, 2)
-        else:
-            logging.error(f"No object found to calculate BB size.")
+            return round((tgt.o.width + tgt.o.height + tgt.o.depth) / 500, 2)
 
     def add_minus_scale_grp(self, tgt):
         """Add a minus scale group to the target control."""
@@ -333,7 +322,7 @@ class RigModule(RigBase):
         if self.masterC2.a.sx.get() != 1:
             self.masterC2.freezeXf(t=0, r=0, s=1)
 
-        self.staticRigSize = self.calc_dim_size(GrpNode("modules_grp"))
+        self.rigSize = self.calc_dim_size()
 
     def build_pre_module(self):
         """Build the rig module, setting up the rigNode and its connections."""

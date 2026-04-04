@@ -45,8 +45,6 @@ class SimpleFk(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the finger rig."""
-        self.calc_rig_size("simple01", "simple05")
-
         self.genSk_module()
         root_list = self.gen_sk_fr_names(self.jnt_names)  # , scale=0.5)
 
@@ -79,13 +77,13 @@ class SimpleFk(RigModule):
         logging.info(".")
 
         rID, rSz, xDr = self.getMyVar()
-        scale = rSz * 2
+        scale = rSz / 2
         up = "x"
         if not rID.startswith("lf") and not rID.startswith("rt"):
             up = "z"
 
         ctl_defs = [
-            ("setting", "screw_nut", up, self.staticRigSize / 3, 0),
+            ("setting", "screw_nut", up, rSz, 0),
             ("simple01_fkc", "cube", up, scale, 0),
         ]
 

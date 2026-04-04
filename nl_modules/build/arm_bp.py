@@ -66,7 +66,7 @@ class ArmBp(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the arm rig."""
-        self.calc_rig_size("upr", "palm")
+
         self.genSk_module()
         root_list = self.gen_sk_fr_names(self.jnt_names)  # , scale=0.5)
 
@@ -87,7 +87,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", self.staticRigSize / 4, 0),
+            ("setting", "screw_nut", "z", rSz, 0),
             ("clavicle_fkc", "cube", "x", scale, 1),
             ("upr_fkc", "circle", "x", scale, 0),
             ("lwr_fkc", "circle", "x", scale, 0),

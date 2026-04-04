@@ -60,7 +60,6 @@ class SpineQd(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the spine rig."""
-        self.calc_rig_size("rt", "tp")
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
@@ -75,8 +74,7 @@ class SpineQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", self.staticRigSize / 3, 1),
-            # ("cog_ctl", "trapezoid", None, Vec((1, 2, 2)) * rSz, 0),
+            ("setting", "screw_nut", "z", rSz, 1),
             ("cog_ctl", "cog_qd", None, rSz * 1.5, 0),
             ("fore_ikc", "back", None, Vec((5, 5, 0.2)) * rSz, 0),
             ("mid_ikc", "circle", "z", rSz * 2.5, 0),

@@ -22,8 +22,6 @@ class Head(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the head rig."""
-        self.calc_rig_size("ed", "st", "jawEnd")
-
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["st", "ed"])  # , scale=0.6)
         jaw_list = self.gen_sk_fr_names(["jaw", "jawEnd"])  # , scale=0.2)
@@ -63,7 +61,7 @@ class Head(RigModule):
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
         self.jaw_fkc.cv_move(0, -rSz * 10, 0)
-        self.head_fkc.cv_move(0, rSz * 30, 0)
+        self.head_fkc.cv_move(0, rSz * 20, 0)
 
     def build_fk(self):
         """Build the FK controls for the head rig module."""

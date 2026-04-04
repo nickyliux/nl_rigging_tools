@@ -45,7 +45,6 @@ class IkFkSpline(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the rig."""
-        self.calc_rig_size("rt", "tp")
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
         self.rootJ = root_list[0]
@@ -58,8 +57,8 @@ class IkFkSpline(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", self.staticRigSize / 3, 1),
-            ("main", "squareR", "z", rSz * 4, 1),
+            ("setting", "screw_nut", "z", rSz, 1),
+            ("main", "squareR", "z", rSz * 2, 1),
         ]
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
@@ -68,7 +67,7 @@ class IkFkSpline(RigModule):
         self.setting.a.add("localScale", min=0.01, dv=1)
         self.setting.a.addSep()
 
-        self.setting.cv_move(0, rSz * 60, 0)
+        self.setting.cv_move(0, rSz * 40, 0)
 
     def build(self):
         """Build the rig."""
@@ -123,10 +122,10 @@ class IkFkSpline(RigModule):
                 pf=rID,
                 shape="square",
                 up="z",
-                scale=rSz * 3,
+                scale=rSz * 1.2,
                 align=self.jnts_ik[i],
                 addOfs=1,
-                color=Color.PINK,
+                color=Color.YELLOW,
                 p=self.main,
             )
             self.jnts_ik[i] | ctl
@@ -169,9 +168,7 @@ class IkFkSpline(RigModule):
             p=self.FK_GRP,
         )
         for i in range(self.fkJntNum):
-            ctl = CrvNode(
-                f"{i}_fkc", pf=rID, up="z", scale=rSz * 2, align=self.jnts_fk[i]
-            )
+            ctl = CrvNode(f"{i}_fkc", pf=rID, up="z", scale=rSz, align=self.jnts_fk[i])
             self.rigNode.setMsg({f"fkc{i}": ctl})
             self.ctls_fk.append(ctl)
 
@@ -184,7 +181,7 @@ class IkFkSpline(RigModule):
             scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
             pf=rID,
-            rSz=rSz * 3,
+            rSz=rSz * 2,
             outputJnt=0,
             p=self.CTL_DATA,
             JNT_DATA=self.JNT_DATA,

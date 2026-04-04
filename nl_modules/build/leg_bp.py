@@ -87,8 +87,6 @@ class LegBp(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the leg rig."""
-        self.calc_rig_size("hip", "palm")
-
         self.genSk_module()
         root_list = self.gen_sk_fr_names(self.jnt_names)
 
@@ -128,7 +126,7 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", self.staticRigSize / 4, 0),
+            ("setting", "screw_nut", "z", rSz, 0),
             ("hip_fkc", "stickS", None, -scale / 1.5, 0),
             ("upr_fkc", "circle", "x", scale, 0),
             ("lwr_fkc", "circle", "x", scale, 0),

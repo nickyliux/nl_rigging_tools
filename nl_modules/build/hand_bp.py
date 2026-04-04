@@ -30,8 +30,6 @@ class HandBp(RigModule):
 
     def gen_sk(self):
         """Generate the skeleton for the hand rig."""
-        self.calc_rig_size("handJ", "fgr02_5")
-
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["handJ"])
         ALL_FGR_NAMES = [
@@ -61,7 +59,7 @@ class HandBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", self.staticRigSize / 4, 0),
+            ("setting", "screw_nut", "z", rSz, 0),
             ("palm_ctl", "rotate2_3d", None, -scale, 0),
             ("thumb_ctl", "rotate2_3d", "z", -scale, 0),
             ("smart_ctl", "rotate2_3d", "x", scale, 0),
