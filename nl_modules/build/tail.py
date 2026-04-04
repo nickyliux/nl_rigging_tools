@@ -6,4 +6,3 @@ class Tail(IkFkSpline):
 
     def __init__(self, rigNode):
         super().__init__(rigNode)
-        # self.rigSizeScale = 0.5

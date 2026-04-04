@@ -63,7 +63,7 @@ class IkFkSpline(RigModule):
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
-        self.setting.a.add("stretchy", min=0, max=1)
+        self.setting.a.add("stretchy", min=0, max=1, dv=1)
         self.setting.a.add("localScale", min=0.01, dv=1)
         self.setting.a.addSep()
 
@@ -85,7 +85,6 @@ class IkFkSpline(RigModule):
         """Create the ribbon for the rig."""
         logging.info(".")
         crvLenRatio, self.jnts_rb, crv = common.build_ribbon_rivet(
-            # rbSrf=self.rbSrf1,
             rbSrf=self.rbSrf2,
             rivetNum=self.rbnJntNum,
             scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,
@@ -96,6 +95,13 @@ class IkFkSpline(RigModule):
             JNT_DATA=self.JNT_DATA,
             atMidOrEnd=1,
         )
+
+        # Let fk ctl -> rivet's rotation for both ends
+        for i in [0, -1]:
+            rv = self.jnts_rb[i].offset
+            rv.removeCstNodes()
+            self.ctls_fk[i].cstOri(rv, mo=1)
+
         self.rbCrvSk = crv
         self.rigNode.setMsg({"rbCrvSk": self.rbCrvSk})
         self.jnts_bind = self.jnts_rb
@@ -121,11 +127,12 @@ class IkFkSpline(RigModule):
                 f"{i}_ikc",
                 pf=rID,
                 shape="square",
+                # shape="stick",
                 up="z",
-                scale=rSz * 1.2,
+                scale=rSz * 1.4,
                 align=self.jnts_ik[i],
                 addOfs=1,
-                color=Color.YELLOW,
+                # color=Color.YELLOW,
                 p=self.main,
             )
             self.jnts_ik[i] | ctl
@@ -146,7 +153,8 @@ class IkFkSpline(RigModule):
 
         SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6, chain=0)
 
-        self.setting.snapTo(self.ctls_ik[0], p=self.FK_GRP)  # , ofs=(0, rSz * 20, 0))
+        # self.setting.snapTo(self.ctls_ik[0], p=self.FK_GRP)
+        self.setting.snapTo(self.main, p=self.main)
         self.ctls_ik[0].cstPar(self.setting, mo=1)
 
         RigModule.isolate_align(
@@ -168,7 +176,13 @@ class IkFkSpline(RigModule):
             p=self.FK_GRP,
         )
         for i in range(self.fkJntNum):
-            ctl = CrvNode(f"{i}_fkc", pf=rID, up="z", scale=rSz, align=self.jnts_fk[i])
+            ctl = CrvNode(
+                f"{i}_fkc",
+                pf=rID,
+                up="z",
+                scale=rSz,
+                align=self.jnts_fk[i],
+            )
             self.rigNode.setMsg({f"fkc{i}": ctl})
             self.ctls_fk.append(ctl)
 
@@ -232,7 +246,7 @@ class IkFkSpline(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the rig controls."""
         self.ctl_vis_toggle(
-            self.setting.a.add("showIkCtl", k=0, type="bool", dv=1),
+            self.setting.a.add("showIkCtl", k=0, type="bool", dv=0),
             onList=self.ctls_ik,
         )
         self.ctl_vis_toggle(
@@ -243,11 +257,13 @@ class IkFkSpline(RigModule):
             self.setting.a.add("showSubIkCtl", k=0, type="bool", dv=0),
             onList=self.ctls_ofs,
         )
-        self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", k=0, type="bool", dv=1),
-            onList=[self.rbSrf1, self.rbSrf2, self.rbCrvSk, self.JNT_DATA],
-        )
-        mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)
+        # self.ctl_vis_toggle(
+        #     self.setting.a.add("showSetup", k=0, type="bool", dv=1),
+        #     onList=[self.rbSrf1, self.rbSrf2, self.rbCrvSk, self.JNT_DATA],
+        # )
+        # mc.hide(self.rbSrf1, self.rbSrf2, self.rbCrvSk, self.JNT_DATA)
+
+        # mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)
 
     def setup_channel(self):
         """Setup channel attributes for the rig controls."""

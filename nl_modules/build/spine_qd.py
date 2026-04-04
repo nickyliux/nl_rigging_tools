@@ -81,7 +81,7 @@ class SpineQd(RigModule):
             ("base_ikc", "back", None, Vec((5, 5, 0.2)) * rSz, 0),
             ("tangent0_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
             ("tangent1_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
-            ("end_ctl", "rotate2_3d", None, Vec((1.5, 1.5, 0.7)) * rSz, 0),
+            ("end_ctl", "rotate2_3d", None, Vec((1, 1, 0.7)) * rSz, 0),
             ("cog_upr_ctl", "rotate", None, rSz * 1.5, 0),
             ("cog_lwr_ctl", "rotate", None, rSz * 1.5, 0),
         ]
@@ -337,10 +337,11 @@ class SpineQd(RigModule):
         if self.jnts_spIk:
             setupTgt.append(self.jnts_spIk[0])
 
-        self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", type="bool", k=0),  # , dv=1),
-            onList=setupTgt + [self.rbSrf, self.rbCrv, self.rbSrfSk, self.rbCrvSk],
-        )
+        # self.ctl_vis_toggle(
+        #     self.setting.a.add("showSetup", type="bool", k=0),  # , dv=1),
+        #     onList=setupTgt + [self.rbSrf, self.rbCrv, self.rbSrfSk, self.rbCrvSk],
+        # )
+        mc.hide(self.rbSrf, self.rbCrv, self.rbSrfSk, self.rbCrvSk)
 
     def setup_rotate_order(self):
         """Setup rotate order for the spine rig controls."""

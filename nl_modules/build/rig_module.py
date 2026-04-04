@@ -305,7 +305,7 @@ class RigModule(RigBase):
         if tgt is None:
             tgt = GrpNode("modules_grp")
         if mc.objExists(tgt):
-            return round((tgt.o.width + tgt.o.height + tgt.o.depth) / 500, 2)
+            return round((tgt.o.width + tgt.o.height + tgt.o.depth) / 400, 2)
 
     def add_minus_scale_grp(self, tgt):
         """Add a minus scale group to the target control."""
