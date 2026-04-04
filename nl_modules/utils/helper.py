@@ -250,7 +250,7 @@ def loadHlp(*args):
         mc.confirmDialog(t="Info", m="NO built rig found !     ", b="OK")
         return
 
-    charPath = mc.optionVar(q="charPath")
+    charPath = mc.optionVar(q="charFullPath")
     tgtPaths = []
     if charPath:
         tgtPaths = glob.glob(
@@ -300,7 +300,7 @@ def loadHlp(*args):
 
 def saveHlp(*args):
     """Save skin weight joints for selected meshes to a JSON file."""
-    charPath = mc.optionVar(q="charPath")
+    charPath = mc.optionVar(q="charFullPath")
     if charPath == None or charPath == "":
         mc.confirmDialog(t="Info", m="Character path NOT set.     ", b="OK")
         return

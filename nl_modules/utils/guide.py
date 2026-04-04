@@ -210,7 +210,7 @@ def removeEndDigits(name):
 
 def loadTemplate():
     """Load preset from json file"""
-    charPath = mc.optionVar(q="charPath")
+    charPath = mc.optionVar(q="charFullPath")
 
     tgtPaths = []
     if charPath:
@@ -313,7 +313,7 @@ def saveTemplate():
 
         idDict[rigID] = guideDict
 
-    charPath = mc.optionVar(q="charPath")
+    charPath = mc.optionVar(q="charFullPath")
     tgtPaths = mc.fileDialog2(
         fileFilter="*_tpl*.json", dialogStyle=2, fileMode=0, dir=charPath
     )

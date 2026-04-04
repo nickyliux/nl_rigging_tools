@@ -16,7 +16,7 @@ def loadModel(self):
     from nl_modules.utils import file
     from nl_modules.utils import common
 
-    charPath = mc.optionVar(q="charPath")
+    charPath = mc.optionVar(q="charFullPath")
     if charPath:
         tgtPaths = glob.glob(
             os.path.join(charPath, os.path.basename(charPath) + "_mdl*.ma")  # "mdl",

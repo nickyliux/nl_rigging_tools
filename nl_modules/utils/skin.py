@@ -110,7 +110,7 @@ def delSkin(tgt):
 
 def loadWeight(*args):
     """Load skin weight joints from a JSON file."""
-    charPath = mc.optionVar(q="charPath")
+    charPath = mc.optionVar(q="charDir")
     tgtPaths = []
     if charPath:
         tgtPaths = glob.glob(
@@ -188,7 +188,7 @@ def saveWeight():
     """Save skin weight joints for selected meshes to a JSON file.
     If nothing selected, look up at the "character" group.
     """
-    charPath = mc.optionVar(q="charPath")
+    charPath = mc.optionVar(q="charFullPath")
     if charPath == None or charPath == "":
         mc.confirmDialog(t="Info", m="Character path NOT set.     ", b="OK")
         return

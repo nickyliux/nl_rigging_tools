@@ -520,13 +520,13 @@ def boneAutoAttach():
         rigID = node.a.rigID.get()
         grp = DagNode("JNT")
 
-        if rigID.startswith("tail"):
+        if rigID.startswith("tail") or rigID.startswith("neckQd"):
             attachToOneSrfUVPin(rigID, rbJnts, rbSrfSk, globalScale, grp)
 
         elif rigID.startswith("spineBp") or rigID.startswith("neckBp"):
             attachToOneSrfUVPin(rigID, rbJnts, rbSrf, globalScale, grp)
 
-        elif rigID.startswith("spineQd") or rigID.startswith("neckQd"):
+        elif rigID.startswith("spineQd"):
             attachToTwoSrfUVPin(rigID, rbJnts, rbSrf, rbSrfSk, globalScale, grp)
 
 

@@ -77,7 +77,7 @@ class SimpleFk(RigModule):
         logging.info(".")
 
         rID, rSz, xDr = self.getMyVar()
-        scale = rSz / 2
+        scale = rSz / 3
         up = "x"
         if not rID.startswith("lf") and not rID.startswith("rt"):
             up = "z"

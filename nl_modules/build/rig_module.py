@@ -402,13 +402,13 @@ class RigModule(RigBase):
             self.rigNode.setMsg({name: loc})
 
             if name.startswith("anchorP"):  # plug color
-                loc.color = 18
+                loc.color = Color.BLUE
                 tgt.cstPar(loc)
             elif name.startswith("anchorS"):  # socket color
-                loc.color = 13
+                loc.color = Color.RED
                 loc.alignTo(tgt)
                 loc.cstPar(tgt, mo=1)
-            mc.hide(loc)
+            # mc.hide(loc)
 
     def add_ctl_set(self, tgtList):
         """Add control set for target controls"""

@@ -55,6 +55,7 @@ LIGHTING_FILE = os.path.join(LIGHT_PATH, "lighting4.ma")
 SHADER_FILE = os.path.join(LIGHT_PATH, "bone_SHD.ma")
 AUTO_BIND_SK_GRP = "auto_bind_sk_grp"
 AUTO_BIND_SK_SET = "auto_bind_sk_set"
+MODEL_GRP = "model_grp"
 
 
 class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
@@ -120,6 +121,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Char Path
         self.connect(self.UI.charPath_BN, self.set_char_path, ":aselect.png")
         self.connect(self.UI.char_explore_BN, self.explore_char, ":searchEngine.png")
+        self.UI.charFolder_CBB.currentTextChanged.connect(self.update_char_full_path)
 
         # From MDL to SK
         self.connect(self.UI.loadModel_BN, model.loadModel, ":teCreateClip.png")
@@ -245,12 +247,13 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def updateCharPath(self):
         """Update the character path in the UI if it exists."""
-        charPath = mc.optionVar(q="charPath")
+        charPath = mc.optionVar(q="charDir")
         if charPath:
             if os.path.isdir(charPath):
-                self.UI.charPath_LE.setText(charPath)
+                # self.UI.charPath_LE.setText(charPath)
+                self.update_char_folders(charPath)
             else:
-                mc.optionVar(sv=("charPath", ""))
+                mc.optionVar(sv=("charDir", ""))
                 mc.savePrefs()
 
     def updateLoadWrapTargetMesh(self):
@@ -480,7 +483,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     @common.Undo("boneAutoUnBind")
     def boneAutoUnBind(self):
         """Unbind all meshes in MODEL_GRP by deleting skinClusters."""
-        charPath = mc.optionVar(q="charPath")
+        charPath = mc.optionVar(q="charDir")
         if charPath == None or charPath == "":
             mc.confirmDialog(t="Info", m="Character path NOT set.     ", b="OK")
             return
@@ -503,26 +506,26 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             mc.confirmDialog(t="Info", m=f"{AUTO_BIND_SK_GRP} NOT found.    ", b="OK")
             return
 
-        charPath = mc.optionVar(q="charPath")
+        charPath = mc.optionVar(q="charDir")
         if charPath == None or charPath == "":
             mc.confirmDialog(t="Info", m="Character path NOT set.     ", b="OK")
             return
 
-        charName = os.path.basename(charPath)
-        mdlGrp = DagNode(charName)
+        # charName = os.path.basename(charPath)
+        mdlGrp = DagNode(MODEL_GRP)
         if mdlGrp.exists():
             selList = mc.ls(mdlGrp)
             tgtMeshes = common.getObjectBelow(selList)
             if not tgtMeshes:
                 mc.confirmDialog(
                     t="Info",
-                    m=f"No mesh found under group '{charName}'.    ",
+                    m=f"No mesh found under group '{MODEL_GRP}'.    ",
                     b="OK",
                 )
                 return
         else:
             mc.confirmDialog(
-                t="Info", m=f"Model group '{charName}' not found.    ", b="OK"
+                t="Info", m=f"Model group {MODEL_GRP} not found.    ", b="OK"
             )
             return
 
@@ -570,7 +573,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def set_char_path(self):
         """Set character path via file dialog."""
-        charPath = self.UI.charPath_LE.text()
+        # charPath = self.UI.charPath_LE.text()
+        charPath = mc.optionVar(q="charDir")
         new_charPaths = mc.fileDialog2(
             dialogStyle=2,
             fileMode=3,
@@ -580,15 +584,38 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         )
         if new_charPaths:
             charPath = new_charPaths[0]
-            self.UI.charPath_LE.setText(charPath)
-            mc.optionVar(sv=("charPath", charPath))
+            # self.UI.charPath_LE.setText(charPath)
+            mc.optionVar(sv=("charDir", charPath))
             mc.savePrefs()
+            self.update_char_folders(charPath)
+
+    def update_char_full_path(self):
+        """Update charFullPath optionVar from charDir + selected folder."""
+        charDir = mc.optionVar(q="charDir")
+        folder = self.UI.charFolder_CBB.currentText()
+        if charDir and folder:
+            charFullPath = os.path.join(charDir, folder)
+            mc.optionVar(sv=("charFullPath", charFullPath))
+        else:
+            mc.optionVar(sv=("charFullPath", ""))
+
+    def update_char_folders(self, path):
+        """Update charFolder_CBB combo box with folder names at the given path."""
+        self.UI.charFolder_CBB.clear()
+        if path and os.path.isdir(path):
+            folders = sorted(
+                name
+                for name in os.listdir(path)
+                if os.path.isdir(os.path.join(path, name))
+            )
+            self.UI.charFolder_CBB.addItems(folders)
 
     def explore_char(self):
         """Open the character path in the file explorer."""
         import subprocess
 
-        charPath = self.UI.charPath_LE.text()
+        charPath = mc.optionVar(q="charFullPath")
+        # charPath = self.UI.charPath_LE.text()
         if not charPath:
             mc.confirmDialog(t="Info", m="Character path not set.     ", b="OK")
             return
@@ -596,6 +623,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if not os.path.isdir(path):
             mc.confirmDialog(t="Info", m=f"Character path NOT found.     ", b="OK")
             return
+
         subprocess.Popen(f'explorer "{path}"')
 
 

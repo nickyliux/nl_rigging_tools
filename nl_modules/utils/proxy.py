@@ -93,7 +93,7 @@ def saveProxy():
         mc.confirmDialog(t="Info", m="Group PRX not found.     ", b="OK")
         return
 
-    charPath = mc.optionVar(q="charPath")
+    charPath = mc.optionVar(q="charFullPath")
     tgtPaths = mc.fileDialog2(fileFilter="*prx*.ma", dialogStyle=2, dir=charPath)
     if tgtPaths:
         mc.select("PRX")
@@ -106,7 +106,7 @@ def loadProxy():
     """Load proxy meshes from a file and match them to existing bind joints."""
     from nl_modules.utils import control
 
-    charPath = mc.optionVar(q="charPath")
+    charPath = mc.optionVar(q="charFullPath")
     tgtPaths = []
     if charPath:
         fileToSearch = os.path.join(charPath, os.path.basename(charPath) + "*_prx*.ma")

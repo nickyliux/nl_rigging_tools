@@ -85,7 +85,7 @@ def saveCtl():
 
     allCtls.extend(["master_ctl", "master1_ctl", "master2_ctl"])
     if allCtls:
-        charPath = mc.optionVar(q="charPath")
+        charPath = mc.optionVar(q="charFullPath")
         tgtPaths = mc.fileDialog2(fileFilter="*_ctl*.ma", dialogStyle=2, dir=charPath)
         if tgtPaths:
             try:
@@ -106,7 +106,7 @@ def saveCtl():
 @common.Undo("loadCtl")
 def loadCtl():
     """Load control curves from a file and replace existing controls."""
-    charPath = mc.optionVar(q="charPath")
+    charPath = mc.optionVar(q="charFullPath")
     tgtPaths = []
     if charPath:
         tgtPaths = glob.glob(
