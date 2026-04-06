@@ -579,8 +579,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             dialogStyle=2,
             fileMode=3,
             dir=charPath,
-            cap="Select Character Path",
-            okc="Select",
+            cap="Set Character Directory",
+            okc="Set",
         )
         if new_charPaths:
             charPath = new_charPaths[0]
