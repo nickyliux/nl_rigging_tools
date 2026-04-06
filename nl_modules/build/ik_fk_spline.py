@@ -261,7 +261,7 @@ class IkFkSpline(RigModule):
         #     self.setting.a.add("showSetup", k=0, type="bool", dv=1),
         #     onList=[self.rbSrf1, self.rbSrf2, self.rbCrvSk, self.JNT_DATA],
         # )
-        mc.hide(self.rbSrf1, self.rbSrf2, self.rbCrvSk, self.JNT_DATA)
+        mc.hide(self.rbSrf1, self.rbSrf2, self.rbCrvSk)  # , self.JNT_DATA)
 
         mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)
 

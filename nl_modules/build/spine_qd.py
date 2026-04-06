@@ -8,7 +8,6 @@ from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
-
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.common import Vec
 
@@ -50,7 +49,6 @@ class SpineQd(RigModule):
         self.jnts_ctl = []
         self.jnts_rb = []
         self.jnts_spIk = []
-        self.jnts_twoIk = []
 
         self.rbSrf = None
         self.rbSrfSk = None
@@ -332,11 +330,10 @@ class SpineQd(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""
         setupTgt = self.jnts_ctl
-        if self.jnts_twoIk:
-            setupTgt.append(self.jnts_twoIk[0])
         if self.jnts_spIk:
             setupTgt.append(self.jnts_spIk[0])
 
+        mc.hide(setupTgt)
         # self.ctl_vis_toggle(
         #     self.setting.a.add("showSetup", type="bool", k=0),  # , dv=1),
         #     onList=setupTgt + [self.rbSrf, self.rbCrv, self.rbSrfSk, self.rbCrvSk],
@@ -390,10 +387,6 @@ class SpineQd(RigModule):
                 "space_pelvis": self.base_ikc,
             }
         )
-
-    # def is_spine(self):
-    #     """Check if the rig is a spine rig."""
-    #     return self.__class__.__name__ == "SpineQd"
 
     def setup_ctlSets(self):
         """Setup control sets for the spine rig."""
