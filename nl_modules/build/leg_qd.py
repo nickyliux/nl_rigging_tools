@@ -49,6 +49,7 @@ class LegQd(RigModule):
         self.jnts = []
         self.jnts_fk = []
         self.jnts_ik = []
+        self.jnts_toes = []
 
         self.ctls_ik = []
         self.ctls_fk = []
@@ -115,6 +116,7 @@ class LegQd(RigModule):
                     up=(0, 0, -1),
                 )
                 fgr_jnts[0] | self.toesRootJ
+                self.jnts_toes.extend(fgr_jnts)
 
         # --- Finalize root joint setup ---
         self.rootJ = root_list[0]
@@ -219,9 +221,7 @@ class LegQd(RigModule):
     def build_fk(self):
         """Build the FK controls and joints for the quadruped leg rig."""
         logging.info(".")
-        self.jnts_fk = common.dupSk(
-            self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
-        )
+        self.jnts_fk = common.dupSk(self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize * 2)
         self.ctls_fk = [
             self.hip_fkc,
             self.upr_fkc,
@@ -251,7 +251,7 @@ class LegQd(RigModule):
 
         # --- IK joint chain creation ---
         self.jnts_ik = common.dupSk(
-            self.jnts, "_ik", p=self.IK_GRP, r=rSz * 3, color=Color.D_RED
+            self.jnts, "_ik", p=self.IK_GRP, r=rSz * 3
         )
 
         # --- IK handle creation ---
@@ -626,7 +626,8 @@ class LegQd(RigModule):
         """Setup bind joints for the quadruped leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set(self.jnts_bind)
-        # proxy.add_radiusScale_attr(self.jnts_bind, 0.5)
+        proxy.add_proxyRadiusScale_attr(self.jnts_toes, 1)
+        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 5)
 
     def setup_scale(self):
         """Setup scale for the quadruped leg rig module."""

@@ -10,7 +10,6 @@ from nl_modules.utils import common
 from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.common import Vec
-from nl_modules.utils.color import Color
 
 
 class SpineBp(RigModule):
@@ -71,14 +70,15 @@ class SpineBp(RigModule):
         ]
         if self.ribbon:
             ctl_defs += [
-                ("fore_ikc", "cube", None, Vec((5, 0.2, 0.5)) * rSz, 1),
-                ("mid_ikc", "cube", None, Vec((3, 0.2, 0.5)) * rSz, 1),
-                ("base_ikc", "cube", None, Vec((7, 0.2, 0.5)) * rSz, 1),
+                ("fore_ikc", "cube", None, Vec((5, 0.1, 0.1)) * rSz, 1),
+                ("mid_ikc", "cube", None, Vec((3, 0.1, 0.1)) * rSz, 1),
+                ("base_ikc", "cube", None, Vec((7, 0.1, 0.1)) * rSz, 1),
             ]
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         self.setting.cv_move(0, 0, rSz * -100)
+        self.cog_ctl.width = 2
 
         # if self.ribbon:
         #     if self.is_neck():
@@ -368,9 +368,7 @@ class SpineBp(RigModule):
         """Setup bind joints for the spine rig."""
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set(self.jnts_bind[0])
-
-        # radScale = 3 if self.is_neck() else 2
-        # proxy.add_radiusScale_attr(self.jnts_bind, radScale)
+        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 6)
 
     def setup_ctlSet(self):
         """Setup control sets for the spine rig."""

@@ -58,7 +58,7 @@ class IkFkSpline(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 1),
-            ("main", "squareR", "z", rSz * 2, 1),
+            ("main", "squareR", "z", rSz * 2.5, 1),
         ]
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
@@ -127,12 +127,10 @@ class IkFkSpline(RigModule):
                 f"{i}_ikc",
                 pf=rID,
                 shape="square",
-                # shape="stick",
                 up="z",
-                scale=rSz * 1.4,
+                scale=rSz * 2.2,
                 align=self.jnts_ik[i],
                 addOfs=1,
-                # color=Color.YELLOW,
                 p=self.main,
             )
             self.jnts_ik[i] | ctl
@@ -180,7 +178,7 @@ class IkFkSpline(RigModule):
                 f"{i}_fkc",
                 pf=rID,
                 up="z",
-                scale=rSz,
+                scale=rSz * 2,
                 align=self.jnts_fk[i],
             )
             self.rigNode.setMsg({f"fkc{i}": ctl})
@@ -303,7 +301,7 @@ class IkFkSpline(RigModule):
         """Setup bind joints for the rig controls."""
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set(self.jnts_bind)
-        proxy.add_radiusScale_attr(self.jnts_bind, self.rigSizeScale)
+        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 5)
 
     def setup_space(self):
         """Setup space switching for the rig controls."""

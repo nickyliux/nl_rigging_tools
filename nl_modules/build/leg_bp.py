@@ -53,6 +53,7 @@ class LegBp(RigModule):
 
         self.jnts_bf = []
         self.jnts_ro = []
+        self.jnts_toes = []
 
         self.ctls_ik = []
         self.ctls_fk = []
@@ -113,6 +114,7 @@ class LegBp(RigModule):
                     up=(0, 0, -1),
                 )
                 fgr_jnts[0] | self.toesRootJ
+                self.jnts_toes.extend(fgr_jnts)
 
         self.rootJ = root_list[0]
         self.rootJ | self.JNT_DATA
@@ -225,10 +227,9 @@ class LegBp(RigModule):
     def build_fk(self):
         """Build the FK controls for the leg rig."""
         logging.info(".")
+        rID, rSz, xDr = self.getMyVar()
 
-        self.jnts_fk = common.dupSk(
-            self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize / 2, color=Color.BLUE
-        )
+        self.jnts_fk = common.dupSk(self.jnts, "_fk", p=self.FK_GRP, r=rSz / 2)
         self.ctls_fk = [
             self.hip_fkc,
             self.upr_fkc,
@@ -257,9 +258,7 @@ class LegBp(RigModule):
         if xDr == 1:
             self.pvc.a.ry.set2(180, add=1)
 
-        self.jnts_ik = common.dupSk(
-            self.jnts, "_ik", p=self.IK_GRP, r=rSz, color=Color.RED
-        )
+        self.jnts_ik = common.dupSk(self.jnts, "_ik", p=self.IK_GRP, r=rSz)
 
         ikH1 = IkNode(
             "1",
@@ -369,9 +368,7 @@ class LegBp(RigModule):
         logging.info(".")
         rID, rSz, xDr = self.getMyVar()
 
-        self.jnts_bf = common.dupSk(
-            self.jnts, "_bf", p=self.BF_GRP, r=rSz * 3, color=Color.ORANGE
-        )
+        self.jnts_bf = common.dupSk(self.jnts, "_bf", p=self.BF_GRP, r=rSz * 3)
 
         self.setting.snapTo(self.palm, p=self.CTL_DATA)
         self.palm.cstPar(self.setting, mo=1)
@@ -632,7 +629,8 @@ class LegBp(RigModule):
         """Setup bind joints for the leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set(self.jnts_sk)
-        # proxy.add_height_attr([self.palm], self.rigSize * 10)
+        proxy.add_proxyRadiusScale_attr(self.jnts_toes, 1)
+        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 7)
 
     def build_post(self):
         """Post setup for the leg rig module."""

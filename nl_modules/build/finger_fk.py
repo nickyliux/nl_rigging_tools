@@ -110,9 +110,7 @@ class FingerFk(RigModule):
         logging.info(".")
         rID, rSz, xDr = self.getMyVar()
 
-        self.jnts_fk = common.dupSk(
-            self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize * 2, color=Color.BLUE
-        )
+        self.jnts_fk = common.dupSk(self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize * 2)
 
         self.ctls_fk = [self.fgr01_fkc, self.fgr02_fkc, self.fgr03_fkc, self.fgr04_fkc]
         self.ctls_fk = self.ctls_fk[: self.segNum]
@@ -179,7 +177,6 @@ class FingerFk(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts[:-1])
-        # proxy.add_radiusScale_attr(self.jnts, 0.5)
 
     def build_post(self):
         """Post setup for the leg rig module."""

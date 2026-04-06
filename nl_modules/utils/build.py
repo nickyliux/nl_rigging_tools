@@ -9,7 +9,6 @@ from nl_modules.utils import common
 from nl_modules.utils import control
 from nl_modules.utils import log
 from nl_modules.utils import proxy
-from nl_modules.utils import matrix
 from nl_modules.utils import utils_node as ut
 
 # Import rig components, required for evalation
@@ -103,6 +102,8 @@ def buildSelOrAll(*args):
         mc.progressWindow(
             t="Build", pr=0, status="\nPreparing ...", ii=0, maxValue=buildCount
         )
+
+        RigModule.calc_dim_size()
         for i, rN in enumerate(rigNodesToBuild):
             logging.info(f"({i+1}) {rN.name}")
             buildTgt(rN)
@@ -115,7 +116,6 @@ def buildSelOrAll(*args):
         mc.progressWindow(ep=1)
 
         logging.info(f"{buildCount} modules built.")
-        logging.info("Build completed.")
         print()
 
         mc.select(cl=1)
@@ -157,7 +157,7 @@ def addMasterAttrs():
                     ctl.a.add(lockAttr, k=0, type="bool", dv=0) * 2
                     >> grp.a.overrideDisplayType
                 )
-        ctl.a.addSep()
+        # ctl.a.addSep()
 
 
 def unbuildTgt(rN):
@@ -253,7 +253,7 @@ def update_anchor_conn():
                 parentRigNodes.remove(node)
 
             if len(parentRigNodes) == 0:  # No parent rigNode found
-                logging.warning(f"No parent rigNode found for {node.name}.")
+                logging.info(f"No parent rigNode found for {node.name}.")
                 continue
 
             plugAnchors = getAnchors(parentRigNodes, startStr="anchorP")

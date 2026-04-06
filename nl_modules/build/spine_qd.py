@@ -8,6 +8,7 @@ from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
+from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.common import Vec
 
@@ -74,9 +75,9 @@ class SpineQd(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 1),
             ("cog_ctl", "cog_qd", None, rSz * 1.5, 0),
-            ("fore_ikc", "back", None, Vec((5, 5, 0.2)) * rSz, 0),
-            ("mid_ikc", "circle", "z", rSz * 2.5, 0),
-            ("base_ikc", "back", None, Vec((5, 5, 0.2)) * rSz, 0),
+            ("fore_ikc", "back", None, Vec((6, 6, 0.2)) * rSz, 0),
+            ("mid_ikc", "circle", "z", rSz * 3, 0),
+            ("base_ikc", "back", None, Vec((6, 6, 0.2)) * rSz, 0),
             ("tangent0_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
             ("tangent1_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
             ("end_ctl", "rotate2_3d", None, Vec((1, 1, 0.7)) * rSz, 0),
@@ -256,6 +257,7 @@ class SpineQd(RigModule):
         # --- Create joint groups and constraints ---
         loc_grp = GrpNode("loc_grp", pf=rID, p=self.JNT_DATA)
         rb_jnts = []
+
         for i in range(jntNum):
             grp = GrpNode(f"{i}_rbj_grp", pf=rID, p=loc_grp)
             # spIkJnts[i].cstPoi(grp)
@@ -288,6 +290,9 @@ class SpineQd(RigModule):
             "anchorToRbj", pf=rID, snap=rb_jnts[-1], p=self.fore_ikc
         )
         rb_jnts[-1].cstPoi(self.anchorToRbj)
+
+        prx_height = mc.arclen(self.rbCrvSk) / jntNum / 1.5
+        proxy.add_proxyHeight_attr(rb_jnts, prx_height)
 
         self.end_ctl.snapTo(self.RT_GUIDE, p=self.tangent0_ctl, addOfs=1)
         self.end_ctl.cstOri(rb_jnts[0], mo=1)
@@ -401,9 +406,10 @@ class SpineQd(RigModule):
 
     def setup_bindJnt(self):
         """Setup bind joints for the spine rig."""
-        if self.jnts_bind:
-            self.add_bind_jnt_set(self.jnts_bind)
-            self.add_bind_sk_set([self.jnts_bind[0]])
+        # if self.jnts_bind:
+        self.add_bind_jnt_set(self.jnts_bind)
+        self.add_bind_sk_set([self.jnts_bind[0]])
+        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 10)
 
     def build_post(self):
         """Post setup for the spine rig."""

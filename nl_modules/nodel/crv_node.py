@@ -3,11 +3,10 @@ from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.base.dep_node import DepNode
 from nl_modules.nodel.grp_node import GrpNode
 
-DEFAULT_LINE_WIDTH = -1
-
 
 class CrvNode(GrpNode):
     """Curve node class"""
+
     def __init__(
         self,
         node,
@@ -34,7 +33,7 @@ class CrvNode(GrpNode):
         scaleY=1,
         scaleZ=1,
         dspType=0,
-        width=DEFAULT_LINE_WIDTH,
+        width=None,
         up="",
         top=0,
     ):
@@ -94,7 +93,8 @@ class CrvNode(GrpNode):
             if any(vec):
                 self.cv_move(*vec)
 
-        self.width = width
+        if width:
+            self.width = width
         if top:
             self.setOnTop(1)
 
@@ -119,6 +119,7 @@ class CrvNode(GrpNode):
         p=None,
     ):
         """Build a line between two target objects or positions."""
+
         def getPos(tgt):
             if isinstance(tgt, tuple):
                 return tgt
@@ -264,7 +265,7 @@ class CrvNode(GrpNode):
         addOfs=0,
         p=None,
         top=0,
-        width=DEFAULT_LINE_WIDTH,
+        width=None,
         *args,
         **kwargs,
     ):
@@ -300,7 +301,8 @@ class CrvNode(GrpNode):
             self.addOffsetGrp()
         if top:
             CrvNode(self).setOnTop(1)
-        self.width = width
+        if width:
+            self.width = width
         return self
 
     def reverse(self):

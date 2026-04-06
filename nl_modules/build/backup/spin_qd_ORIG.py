@@ -432,7 +432,7 @@ class SpineQd(RigModule):
             self.add_bind_sk_set([self.jnts_bind[0]])
 
         # if self.is_spine():
-        # proxy.add_radiusScale_attr(self.jnts_bind, 2)
+        # proxy.add_proxyRadiusScale_attr(self.jnts_bind, 2)
         # proxy.add_up_attr(self.jnts_bind, 2)
 
     def build_post(self):

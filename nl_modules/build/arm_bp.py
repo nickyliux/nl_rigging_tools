@@ -164,7 +164,7 @@ class ArmBp(RigModule):
         logging.info(".")
 
         self.jnts_fk = common.dupSk(
-            self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize / 2, color=Color.BLUE
+            self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize / 2
         )
         self.ctls_fk = [self.clavicle_fkc, self.upr_fkc, self.lwr_fkc, self.palm_fkc]
 
@@ -186,7 +186,7 @@ class ArmBp(RigModule):
         self.pvc.alignTo(pvc_guide, p=self.IK_GRP)
 
         self.jnts_ik = common.dupSk(
-            self.jnts, "_ik", p=self.IK_GRP, r=rSz, color=Color.RED
+            self.jnts, "_ik", p=self.IK_GRP, r=rSz
         )
         ikH1 = IkNode(
             "1",
@@ -287,7 +287,7 @@ class ArmBp(RigModule):
         self.palm.cstPar(self.setting, mo=1)
 
         self.jnts_bf = common.dupSk(
-            self.jnts, "_bf", p=self.BF_GRP, r=rSz * 3, color=Color.ORANGE
+            self.jnts, "_bf", p=self.BF_GRP, r=rSz * 3
         )
 
         fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=0)
@@ -545,7 +545,7 @@ class ArmBp(RigModule):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set(self.jnts_sk)
-        # proxy.add_radiusScale_attr([self.palm], 0.6)
+        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 4)
 
     def setup_ctlSet(self):
         """Setup control sets for the arm rig module."""

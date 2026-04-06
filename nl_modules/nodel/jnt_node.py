@@ -1,10 +1,11 @@
 import maya.cmds as mc
 import logging
+
+from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.utils.color import Color
 
 REF_UP_LOC = "ref_up_loc"
 
@@ -106,14 +107,16 @@ class JntNode(GrpNode):
 
     def genProxyMesh(self, scaler=None, aimDir=(1, 0, 0), skipEnd=0, p=None):
         """Add a proxy mesh for the joint."""
-        from nl_modules.utils import common
 
+        from nl_modules.utils import common
+        from nl_modules.build.rig_module import RigModule
+
+        rSz = RigModule.calc_dim_size()
         proxy_name = f"{self.name}_pxGeo"
         if DagNode(proxy_name).exists():
             return None
 
         children = self.childrenJt
-        base_rad = self.a.radius.get() * 5
         prx_rad_scale = self.a["proxyRadiusScale"].get() or 1
         prx_div = self.a["proxyDiv"].get() or 2
         prx_height = self.a["proxyHeight"].get()
@@ -121,7 +124,7 @@ class JntNode(GrpNode):
         if prx_up:
             aimDir = (0, 1, 0) if prx_up == 1 else (0, 0, 1)
 
-        height = base_rad
+        height = rSz
         if prx_height is None:
             if children:
                 height = self.o.distanceTo(children[0]) * 0.8
@@ -131,7 +134,7 @@ class JntNode(GrpNode):
         if not skipEnd:
 
             proxy = self.buildCylinder(
-                proxy_name, base_rad * prx_rad_scale, height, aimDir, prx_div, p
+                proxy_name, rSz * prx_rad_scale, height, aimDir, prx_div, p
             )
             # Assign shader before constraints to avoid Maya errors
             common.assignShd(0, tgts=[proxy])

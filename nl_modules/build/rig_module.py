@@ -9,16 +9,17 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.rbn_node import RbnNode
 from nl_modules.nodel.srf_node import SrfNode
+from nl_modules.utils import build
 from nl_modules.utils import common
 from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
 
-DEFAULT_LINE_WIDTH = -1
-
 
 class RigModule(RigBase):
     """Base class for rig modules, providing common functionality for rigging operations."""
+
+    rigSize = 1
 
     def __init__(self, rigNode):
 
@@ -46,9 +47,6 @@ class RigModule(RigBase):
         if not self.master_guide:
             raise ValueError(f"master_guide not found for {rigNode}")
 
-        self.rigSize = 1
-        self.rigSizeScale = 1
-
         self.xDir = 1 if rID.startswith("lf") else -1 if rID.startswith("rt") else 0
         self.boneFix = None
         self.jnts_bind = []
@@ -57,6 +55,19 @@ class RigModule(RigBase):
 
         if rigNode.a.rootJ.exists():
             self.rootJ = rigNode.a.rootJ.inConnNode
+
+    @staticmethod
+    def calc_dim_size(tgt=None):
+        """Calculate the rig size based on tgt's BBox."""
+        if tgt is None:
+            tgt = GrpNode("modules_grp")
+
+        if mc.objExists(tgt):
+            __class__.rigSize = (tgt.o.width + tgt.o.height + tgt.o.depth) / 500
+        else:
+            __class__.rigSize = 1
+
+        return __class__.rigSize
 
     def gen_sk_fr_names(self, names, color=None, scale=1):
         """Generate skeleton and control names based on the provided names list."""
@@ -87,8 +98,8 @@ class RigModule(RigBase):
             lastJ = jN
             joints.append(jN)
 
-        r = scale * self.rigSize
-        [j.a.radius.set(r) for j in joints]
+        # r = scale * __class__.rigSize
+        # [j.a.radius.set(r) for j in joints]
 
         joints[0].freezeXf()
         return joints
@@ -300,13 +311,6 @@ class RigModule(RigBase):
             weight = w or tgt.a.add("posSpace", type="enum", dv=dv, enumName=names)
             common.cstMulti(*allSpacesGrp, tgt_ofs, cstType="poi", w=weight, **kwargs)
 
-    def calc_dim_size(self, tgt=None):
-        """Calculate the rig size based on tgt's BBox."""
-        if tgt is None:
-            tgt = GrpNode("modules_grp")
-        if mc.objExists(tgt):
-            return round((tgt.o.width + tgt.o.height + tgt.o.depth) / 400, 2)
-
     def add_minus_scale_grp(self, tgt):
         """Add a minus scale group to the target control."""
         if self.rigID.startswith("rt_"):
@@ -321,8 +325,6 @@ class RigModule(RigBase):
         self.rigNode.a.nodeState.set(1)
         if self.masterC2.a.sx.get() != 1:
             self.masterC2.freezeXf(t=0, r=0, s=1)
-
-        self.rigSize = self.calc_dim_size()
 
     def build_pre_module(self):
         """Build the rig module, setting up the rigNode and its connections."""
@@ -916,7 +918,7 @@ class RigModule(RigBase):
 
     def getMyVar(self):
         """Get rig ID, size and x direction for the current rig instance."""
-        return str(self.rigID), self.rigSize * self.rigSizeScale, int(self.xDir)
+        return str(self.rigID), __class__.rigSize, int(self.xDir)
 
     def get_guide_attr(self, name):
         """Get attribute from master guide"""
@@ -930,7 +932,7 @@ class RigModule(RigBase):
         up="x",
         scale=1,
         top=0,
-        w=DEFAULT_LINE_WIDTH,
+        w=-1,
     ):
         """Create a control node and register it in the rigNode"""
         ctl = CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, width=w, top=top)
@@ -1035,9 +1037,9 @@ class RigModule(RigBase):
         for i in range(num):
             j = jnt0.duplicate(po=1, p=roll_jnt0)
             j.color = Color.PINK
-            j.a.radius.set(self.rigSize * 3)
+            # j.a.radius.set(__class__.rigSize * 3)
             j.rename(f"{jnt0.name}{sf}_{i}")
-            proxy.add_height_attr([j], self.rigSize / num * 20)
+            proxy.add_proxyHeight_attr([j], __class__.rigSize / num * 20)
 
             ratio = i / num
             common.cstMulti(jnt0, jnt1, j, cstType="poi", w=1 - ratio)

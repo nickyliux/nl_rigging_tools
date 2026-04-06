@@ -526,8 +526,14 @@ def dupSk(jntList, sf="", p=None, color=None, r=1):
         j.setRadius(r)
         newJList.append(j)
 
-    if color:
-        newJList[0].color = color
+    if sf.endswith("_fk"):
+        newJList[0].color = Color.BLUE
+    elif sf.endswith("_ik"):
+        newJList[0].color = Color.RED
+    elif sf.endswith("_bf"):
+        newJList[0].color = Color.ORANGE
+    else:
+        newJList[0].color = color or Color.YELLOW
     if p:
         mc.parent(newJList[0], p)
 
@@ -893,7 +899,7 @@ def build_ribbon_rivet(
         loc.a.inheritsTransform.set(0)
 
     prx_height = mc.arclen(crv) / rivetNum / 1.5
-    proxy.add_height_attr(outputs, prx_height)
+    proxy.add_proxyHeight_attr(outputs, prx_height)
     crv.hide()
 
     return crv_len_ratio, outputs, crv

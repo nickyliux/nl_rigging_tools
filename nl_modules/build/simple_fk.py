@@ -46,7 +46,7 @@ class SimpleFk(RigModule):
     def gen_sk(self):
         """Generate the skeleton for the finger rig."""
         self.genSk_module()
-        root_list = self.gen_sk_fr_names(self.jnt_names)  # , scale=0.5)
+        root_list = self.gen_sk_fr_names(self.jnt_names)
 
         for j in root_list:
             JntNode(j).a["preferredAngleZ"].set(-10)
@@ -77,7 +77,7 @@ class SimpleFk(RigModule):
         logging.info(".")
 
         rID, rSz, xDr = self.getMyVar()
-        scale = rSz / 3
+        scale = rSz / 2
         up = "x"
         if not rID.startswith("lf") and not rID.startswith("rt"):
             up = "z"
@@ -105,9 +105,7 @@ class SimpleFk(RigModule):
         logging.info(".")
         rID, rSz, xDr = self.getMyVar()
 
-        self.jnts_fk = common.dupSk(
-            self.jnts, "_fk", p=self.FK_GRP, r=rSz, color=Color.BLUE
-        )
+        self.jnts_fk = common.dupSk(self.jnts, "_fk", p=self.FK_GRP, r=rSz)
         self.ctls_fk = [
             self.simple01_fkc,
             self.simple02_fkc,
@@ -171,7 +169,7 @@ class SimpleFk(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts[:-1])
-        # proxy.add_radiusScale_attr(self.jnts_bind, 0.5)
+        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 5)
 
     def build_post(self):
         """Post setup for the leg rig module."""

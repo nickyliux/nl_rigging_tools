@@ -56,7 +56,7 @@ class HandBp(RigModule):
     def build_ctl(self):
         """Build the controls for the hand rig module."""
         rID, rSz, xDr = self.getMyVar()
-        scale = xDr * rSz
+        scale = xDr * rSz / 2
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
@@ -92,7 +92,8 @@ class HandBp(RigModule):
 
     def create_finger_ctl(self, fgrs):
         """Create finger controls for the hand rig module."""
-        scale = self.rigSize * self.xDir
+        scale = self.rigSize * self.xDir / 10
+        ofs = self.rigSize * self.xDir / 2
 
         ctlList = []
         for fgr in fgrs[:-1]:
@@ -100,10 +101,10 @@ class HandBp(RigModule):
                 f"{fgr.name}_ctl",
                 up="z",
                 shape="squareR",
-                scale=scale * 0.25,
+                scale=scale,
                 align=fgr,
             )
-            ctl.cv_move(scale * 4, 0, -scale * 8)
+            ctl.cv_move(scale * 4, 0, -ofs * 8)
             ctlList.append(ctl)
         return ctlList
 
@@ -322,7 +323,7 @@ class HandBp(RigModule):
 
         # smart_ctl, with group scaling with rootJ
         scaleGrp = GrpNode("smartScale", pf=rID, align=self.rootJ, p=self.CTL_DATA)
-        offsetX = rSz * xDr * 60
+        offsetX = rSz * xDr * 20
         self.smart_ctl.alignTo(self.rootJ, p=scaleGrp, ofs=(offsetX, 0, 0))
         self.smart_ctl.addOffsetGrp()
 
@@ -391,7 +392,6 @@ class HandBp(RigModule):
         """Setup bind joints for the hand rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set(self.jnts_bind)
-        # proxy.add_radiusScale_attr(self.jnts_bind, 0.5)
 
     def setup_scale(self):
         """Setup scaling for the hand rig module."""

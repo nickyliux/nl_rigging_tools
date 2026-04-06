@@ -320,7 +320,7 @@ def toggleVis(*args):
             logging.info(f"Toggle proxy visibility.")
 
 
-def add_radiusScale_attr(tgtJnts, v):
+def add_proxyRadiusScale_attr(tgtJnts, v):
     """Add proxyRadiusScale attribute to target joints"""
     for jnt in tgtJnts:
         tgt = DagNode(jnt)
@@ -336,7 +336,7 @@ def add_proxyDiv_attr(tgtJnts, div=2):
             tgt.a.add("proxyDiv", k=0, dv=div)
 
 
-def add_height_attr(tgtJnts, v):
+def add_proxyHeight_attr(tgtJnts, v):
     """Add proxyHeight attribute to target joints"""
     for jnt in tgtJnts:
         tgt = DagNode(jnt)
