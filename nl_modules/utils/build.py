@@ -146,7 +146,7 @@ def addMasterAttrs():
         ("PRX", "proxyVis", "proxyLock"),
         ("MDL", "modelVis", "modelLock"),
     ]
-
+    ctl.a.addSep("_" * 12)
     for grpName, visAttr, lockAttr in _GROUPS:
         grp = DagNode(grpName)
         if grp.exists():
@@ -157,7 +157,6 @@ def addMasterAttrs():
                     ctl.a.add(lockAttr, k=0, type="bool", dv=0) * 2
                     >> grp.a.overrideDisplayType
                 )
-        # ctl.a.addSep()
 
 
 def unbuildTgt(rN):

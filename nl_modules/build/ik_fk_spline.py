@@ -128,7 +128,7 @@ class IkFkSpline(RigModule):
                 pf=rID,
                 shape="square",
                 up="z",
-                scale=rSz * 2.2,
+                scale=rSz * 1.3,
                 align=self.jnts_ik[i],
                 addOfs=1,
                 p=self.main,
@@ -178,7 +178,7 @@ class IkFkSpline(RigModule):
                 f"{i}_fkc",
                 pf=rID,
                 up="z",
-                scale=rSz * 2,
+                scale=rSz,
                 align=self.jnts_fk[i],
             )
             self.rigNode.setMsg({f"fkc{i}": ctl})
