@@ -44,7 +44,7 @@ def _applyConstraints(mapping, ns):
                 logging.info(
                     f"Warning: Node '{moma_ns + src}' or '{ns + tgt}' does not exist."
                 )
-    logging.info(f"Applied {count} constraints for mapping '{mapping}'.")
+    logging.info(f"Applied {count} constraints.")
 
 
 def _setLegsToFk(ns=""):
@@ -62,24 +62,18 @@ def _setLegsToFk(ns=""):
 
 
 def connectEquineToQd(*args):
-    """Connect Moma Sk to Qd rig controls."""
-    ns = common.getNsFrOptVar()
-    if ns:
-        _applyConstraints(EQUINE_QD_MAP, ns)
-        _setLegsToFk(ns)
-    else:
-        mc.confirmDialog(
-            t="Info",
-            m="Namespace not Set. Cannot connect Moma Sk to Qd rig controls.    ",
-            b=["OK"],
-        )
+    connectToQd(EQUINE_QD_MAP)
 
 
 def connectCanineToQd(*args):
+    connectToQd(CANINE_QD_MAP)
+
+
+def connectToQd(jntMap):
     """Connect Moma Sk to Qd rig controls."""
     ns = common.getNsFrOptVar()
     if ns:
-        _applyConstraints(CANINE_QD_MAP, ns)
+        _applyConstraints(jntMap, ns)
         _setLegsToFk(ns)
     else:
         mc.confirmDialog(
@@ -130,6 +124,16 @@ EQUINE_QD_MAP = {
         ("R_tarsus", "rtLegQd0_palm_fkc"),
         ("R_R_palanx_1", "rtLegQd0_ball_fkc"),
         ("R_R_palanx_2", "rtLegQd0_ball_fkc"),
+        # TAIL
+        ("c_tail_01", "tail0_1_fkc"),
+        ("c_tail_02", "tail0_2_fkc"),
+        ("c_tail_03", "tail0_3_fkc"),
+        ("c_tail_04", "tail0_4_fkc"),
+        ("c_tail_05", "tail0_5_fkc"),
+        ("c_tail_06", "tail0_6_fkc"),
+        ("c_tail_07", "tail0_7_fkc"),
+        ("c_tail_08", "tail0_8_fkc"),
+        ("c_tail_09", "tail0_9_fkc"),
     ],
 }
 
@@ -174,5 +178,15 @@ CANINE_QD_MAP = {
         ("r_ankle", "rtLegQd0_palm_fkc"),
         ("r_foot_01", "rtLegQd0_ball_fkc"),
         ("r_foot_02", "rtLegQd0_ball_fkc"),
+        # TAIL
+        ("c_tail_01", "tail0_1_fkc"),
+        ("c_tail_02", "tail0_2_fkc"),
+        ("c_tail_03", "tail0_3_fkc"),
+        ("c_tail_04", "tail0_4_fkc"),
+        ("c_tail_05", "tail0_5_fkc"),
+        ("c_tail_06", "tail0_6_fkc"),
+        ("c_tail_07", "tail0_7_fkc"),
+        ("c_tail_08", "tail0_8_fkc"),
+        ("c_tail_09", "tail0_9_fkc"),
     ],
 }
