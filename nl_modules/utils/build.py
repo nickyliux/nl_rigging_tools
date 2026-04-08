@@ -103,7 +103,6 @@ def buildSelOrAll(*args):
             t="Build", pr=0, status="\nPreparing ...", ii=0, maxValue=buildCount
         )
 
-        RigModule.calc_rig_size()
         for i, rN in enumerate(rigNodesToBuild):
             logging.info(f"({i+1}) {rN.name}")
             buildTgt(rN)

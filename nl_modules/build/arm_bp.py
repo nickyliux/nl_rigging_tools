@@ -98,7 +98,7 @@ class ArmBp(RigModule):
         ]
 
         if self.scapulaBone:
-            ctl_defs.append(["scap_fkc", "triangle", "z", scale, 0])
+            ctl_defs.append(["scap_fkc", "diamond", "z", scale, 0])
 
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
@@ -162,10 +162,9 @@ class ArmBp(RigModule):
     def build_fk(self):
         """Build the FK controls and joints for the arm rig."""
         logging.info(".")
+        rID, rSz, xDr = self.getMyVar()
 
-        self.jnts_fk = common.dupSk(
-            self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize / 2
-        )
+        self.jnts_fk = common.dupSk(self.jnts, "_fk", p=self.FK_GRP, r=rSz / 2)
         self.ctls_fk = [self.clavicle_fkc, self.upr_fkc, self.lwr_fkc, self.palm_fkc]
 
         self.build_fk_with_ctl2(self.jnts_fk, self.ctls_fk, p=self.FK_GRP)
@@ -177,7 +176,6 @@ class ArmBp(RigModule):
     def build_ik(self):
         """Build the IK controls for the arm rig."""
         logging.info(".")
-
         rID, rSz, xDr = self.getMyVar()
 
         self.ikc.alignTo(self.palm, p=self.IK_GRP)
@@ -185,9 +183,7 @@ class ArmBp(RigModule):
         pvc_guide = DagNode(f"{rID}_pvc_guide")
         self.pvc.alignTo(pvc_guide, p=self.IK_GRP)
 
-        self.jnts_ik = common.dupSk(
-            self.jnts, "_ik", p=self.IK_GRP, r=rSz
-        )
+        self.jnts_ik = common.dupSk(self.jnts, "_ik", p=self.IK_GRP, r=rSz)
         ikH1 = IkNode(
             "1",
             pf=rID,
@@ -286,9 +282,7 @@ class ArmBp(RigModule):
         self.setting.alignTo(self.palm, p=self.CTL_DATA)
         self.palm.cstPar(self.setting, mo=1)
 
-        self.jnts_bf = common.dupSk(
-            self.jnts, "_bf", p=self.BF_GRP, r=rSz * 3
-        )
+        self.jnts_bf = common.dupSk(self.jnts, "_bf", p=self.BF_GRP, r=rSz * 3)
 
         fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=0)
 

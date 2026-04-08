@@ -253,6 +253,10 @@ def loadGuideFrIdDict(rigID_dict):
             build.deleteTgt(node)
 
     for rID in rigID_dict:
+
+        if rID == "modules_grp":
+            continue
+
         mg = DagNode(rID + "_master_guide")
         if not mg.exists():
             loadGuide(removeEndDigits(rID))
@@ -306,12 +310,13 @@ def saveTemplate():
         rigID = node.a.rigID.get()
         objsToSave = [DagNode(o) for o in mc.ls(rigID + "_*_guide", tr=1)]
         objsToSave.append(node.a.moduleG.inConnNode)
-
         guideDict = {}
         for obj in objsToSave:
             guideDict[obj.name] = genAttrDict(obj)
 
-        idDict[rigID] = guideDict
+        # idDict[rigID] = guideDict
+
+    idDict["modules_grp"] = genAttrDict("modules_grp")
 
     charPath = mc.optionVar(q="charFullPath")
     tgtPaths = mc.fileDialog2(

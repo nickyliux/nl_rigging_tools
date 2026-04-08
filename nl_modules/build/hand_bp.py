@@ -92,8 +92,9 @@ class HandBp(RigModule):
 
     def create_finger_ctl(self, fgrs):
         """Create finger controls for the hand rig module."""
-        scale = self.rigSize * self.xDir / 10
-        ofs = self.rigSize * self.xDir / 2
+        rID, rSz, xDr = self.getMyVar()
+        scale = rSz * xDr / 10
+        ofs = rSz * xDr / 2
 
         ctlList = []
         for fgr in fgrs[:-1]:

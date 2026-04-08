@@ -41,10 +41,14 @@ class TplLoader:
 
         if mod_grp.exists():
             mod_grp | main_mod_grp
+        else:
+            logging.error(f"{mod_grp.name} not found after importing template.")
+            return
 
         rigNode = DagNode(rigNode_name)
         if not rigNode.exists():
-            raise ValueError(f"{rigNode_name} not found")
+            logging.error(f"{rigNode_name} not found after importing template.")
+            return
 
         rigNode.a["rigID"].set(rID, type="string")
         self.rigNode = rigNode

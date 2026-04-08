@@ -125,10 +125,12 @@ class FingerFk(RigModule):
 
     def create_ik(self, name, sj, ee, jsf, p):
         """Create an IK handle for the finger rig."""
+        rID, rSz, xDr = self.getMyVar()
+
         return IkNode(
             name,
             pf=self.rigID,
-            rSz=self.rigSize,
+            rSz=rSz,
             sj=sj,
             ee=ee,
             jsf=jsf,

@@ -19,8 +19,6 @@ from nl_modules.utils.color import Color
 class RigModule(RigBase):
     """Base class for rig modules, providing common functionality for rigging operations."""
 
-    rigSize = 1
-
     def __init__(self, rigNode):
 
         if isinstance(rigNode, str):
@@ -34,19 +32,30 @@ class RigModule(RigBase):
 
         super().__init__(rigNode)
 
-        rID = self.rigID
         self.CTL_VIS = GrpNode("CTL_VIS", p=self.masterC)
+
+        rID = self.rigID
         self.CTL_DATA = GrpNode(rID + "_ctl_data", p=self.CTL_VIS)
         self.JNT_DATA = GrpNode(rID + "_jnt_data", p=self.JNT)
 
         self.moduleG = rigNode.a.moduleG.inConnNode
         if not self.moduleG:
-            raise ValueError(f"moduleG not found at {rigNode}")
+            logging.error(f"{rigNode.name} is missing moduleG connection.")
 
         self.master_guide = rigNode.a.master_guide.inConnNode
         if not self.master_guide:
-            raise ValueError(f"master_guide not found for {rigNode}")
+            logging.error(f"{rigNode.name} is missing master_guide connection.")
 
+        main_mod_grp = GrpNode("modules_grp")
+        if not main_mod_grp.exists():
+            logging.error("modules_grp not found.")
+            return
+
+        self.rigSize = (
+            self.master_guide.a.sy.get()
+            * self.masterC.a.globalScale.get()
+            * main_mod_grp.a.sy.get()
+        )
         self.xDir = 1 if rID.startswith("lf") else -1 if rID.startswith("rt") else 0
         self.boneFix = None
         self.jnts_bind = []
@@ -55,19 +64,6 @@ class RigModule(RigBase):
 
         if rigNode.a.rootJ.exists():
             self.rootJ = rigNode.a.rootJ.inConnNode
-
-    @staticmethod
-    def calc_rig_size(tgt=None):
-        """Calculate the rig size based on tgt's BBox."""
-        if tgt is None:
-            tgt = GrpNode("modules_grp")
-
-        if mc.objExists(tgt):
-            __class__.rigSize = (tgt.o.width + tgt.o.height + tgt.o.depth) / 500
-        else:
-            __class__.rigSize = 1
-
-        return __class__.rigSize
 
     def gen_sk_fr_names(self, names, color=None, scale=1):
         """Generate skeleton and control names based on the provided names list."""
@@ -97,9 +93,6 @@ class RigModule(RigBase):
                 jN | lastJ
             lastJ = jN
             joints.append(jN)
-
-        # r = scale * __class__.rigSize
-        # [j.a.radius.set(r) for j in joints]
 
         joints[0].freezeXf()
         return joints
@@ -918,7 +911,7 @@ class RigModule(RigBase):
 
     def getMyVar(self):
         """Get rig ID, size and x direction for the current rig instance."""
-        return str(self.rigID), __class__.rigSize, int(self.xDir)
+        return str(self.rigID), self.rigSize, int(self.xDir)
 
     def get_guide_attr(self, name):
         """Get attribute from master guide"""
@@ -1031,15 +1024,16 @@ class RigModule(RigBase):
 
     def build_uprRollJ(self, jnt0, jnt1, num=2, sf="_ro"):
         """Build upper roller joints. They are added between jnt0 and jnt1."""
+        rID, rSz, xDr = self.getMyVar()
+
         roll_loc, roll_jnt0 = self.build_rollChain(jnt0, jnt1, num, sf)
         rollJnts = []
 
         for i in range(num):
             j = jnt0.duplicate(po=1, p=roll_jnt0)
             j.color = Color.PINK
-            # j.a.radius.set(__class__.rigSize * 3)
             j.rename(f"{jnt0.name}{sf}_{i}")
-            proxy.add_proxyHeight_attr([j], __class__.rigSize / num * 20)
+            proxy.add_proxyHeight_attr([j], rSz / num * 20)
 
             ratio = i / num
             common.cstMulti(jnt0, jnt1, j, cstType="poi", w=1 - ratio)

@@ -81,13 +81,15 @@ class Belt(RigModule):
     def build_ribbon(self):
         """Create the ribbon for the belt rig."""
         logging.info(".")
+        rID, rSz, xDr = self.getMyVar()
+
         crvLenRatio, self.jnts_rb, crv = common.build_ribbon_rivet(
             rbSrf=self.rbSrf1,
             rivetNum=self.rbnJntNum,
             scaleAttr=self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
             pf=self.rigID + "_RB",
-            rSz=self.rigSize * 3,
+            rSz=rSz * 3,
             p=self.CTL_DATA,
             JNT_DATA=self.JNT_DATA,
             atMidOrEnd=1,
@@ -116,7 +118,7 @@ class Belt(RigModule):
                 pf=rID,
                 shape="square",
                 up="z",
-                scale=rSz/3,
+                scale=rSz / 3,
                 align=self.jnts_ik[i],
                 addOfs=1,
                 p=self.IK_GRP,

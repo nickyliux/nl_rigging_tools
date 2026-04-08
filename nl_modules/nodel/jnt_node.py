@@ -110,7 +110,12 @@ class JntNode(GrpNode):
         from nl_modules.utils import common
         from nl_modules.build.rig_module import RigModule
 
-        rSz = RigModule.calc_rig_size()
+        main_mod_grp = GrpNode("modules_grp")
+        if not main_mod_grp.exists():
+            logging.error("modules_grp not found.")
+            return
+        modScale = main_mod_grp.a.sy.get()
+
         proxy_name = f"{self.name}_pxGeo"
         if DagNode(proxy_name).exists():
             return None
@@ -123,7 +128,7 @@ class JntNode(GrpNode):
         if prx_up:
             aimDir = (0, 1, 0) if prx_up == 1 else (0, 0, 1)
 
-        height = rSz
+        height = modScale
         if prx_height is None:
             if children:
                 height = self.o.distanceTo(children[0]) * 0.8
@@ -133,7 +138,7 @@ class JntNode(GrpNode):
         if not skipEnd:
 
             proxy = self.buildCylinder(
-                proxy_name, rSz * prx_rad_scale, height, aimDir, prx_div, p
+                proxy_name, modScale * prx_rad_scale, height, aimDir, prx_div, p
             )
             # Assign shader before constraints to avoid Maya errors
             common.assignShd(0, tgts=[proxy])

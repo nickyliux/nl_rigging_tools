@@ -102,6 +102,7 @@ class SpineQd(RigModule):
 
     def build(self):
         """Build the spine rig."""
+
         self.build_pre_module()
         mc.delete(self.rootJ)
         self.rigSize = CrvNode(self.LINE_GUIDE).length / 100

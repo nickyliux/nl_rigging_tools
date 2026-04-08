@@ -65,7 +65,7 @@ class SpineBp(RigModule):
         logging.info(".")
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
-            ("setting", "screw_nut", "z", rSz, 0),
+            ("setting", "screw_nut", "z", rSz * 3, 0),
             ("cog_ctl", "cog_bp", None, rSz * 3, 0),
         ]
         if self.ribbon:
@@ -77,8 +77,11 @@ class SpineBp(RigModule):
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
-        self.setting.cv_move(0, 0, rSz * -100)
-        self.cog_ctl.width = 2
+        self.setting.cv_move(0, 0, rSz * -60)
+        # self.cog_ctl.width = 2
+        self.fore_ikc.width = 2
+        self.mid_ikc.width = 2
+        self.base_ikc.width = 2
 
         # if self.ribbon:
         #     if self.is_neck():
