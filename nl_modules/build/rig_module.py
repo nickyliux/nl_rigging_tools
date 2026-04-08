@@ -57,7 +57,7 @@ class RigModule(RigBase):
             self.rootJ = rigNode.a.rootJ.inConnNode
 
     @staticmethod
-    def calc_dim_size(tgt=None):
+    def calc_rig_size(tgt=None):
         """Calculate the rig size based on tgt's BBox."""
         if tgt is None:
             tgt = GrpNode("modules_grp")

@@ -66,13 +66,13 @@ class SpineBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
-            ("cog_ctl", "cog_bp", None, rSz * 8, 0),
+            ("cog_ctl", "cog_bp", None, rSz * 4, 0),
         ]
         if self.ribbon:
             ctl_defs += [
-                ("fore_ikc", "cube", None, Vec((5, 0.1, 0.1)) * rSz, 1),
-                ("mid_ikc", "cube", None, Vec((3, 0.1, 0.1)) * rSz, 1),
-                ("base_ikc", "cube", None, Vec((7, 0.1, 0.1)) * rSz, 1),
+                ("fore_ikc", "cube", None, Vec((4, 0.1, 0.1)) * rSz, 1),
+                ("mid_ikc", "cube", None, Vec((2, 0.1, 0.1)) * rSz, 1),
+                ("base_ikc", "cube", None, Vec((5, 0.1, 0.1)) * rSz, 1),
             ]
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
@@ -124,7 +124,12 @@ class SpineBp(RigModule):
 
         self.ctls_fk = []
         for i, j in enumerate(self.jnts_fk[:-1]):
-            c = CrvNode(f"{i + 1}_fkc", pf=rID, shape="circle", scale=rSz * 5)
+            c = CrvNode(
+                f"{i + 1}_fkc",
+                pf=rID,
+                shape="circle",
+                scale=rSz * 3,
+            )
             self.ctls_fk.append(c)
 
         if self.is_neck():

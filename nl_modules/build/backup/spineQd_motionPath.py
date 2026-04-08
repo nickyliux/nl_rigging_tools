@@ -98,7 +98,6 @@ class SpineQd(RigModule):
         rID, rSz, xDr = self.getMyVar()
         self.build_pre_module()
         mc.delete(self.rootJ)
-        # rSz = self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
 
         self.rbSrf = SrfNode.buildRbSrf(
             pf=rID,

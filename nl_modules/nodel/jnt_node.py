@@ -110,7 +110,7 @@ class JntNode(GrpNode):
         from nl_modules.utils import common
         from nl_modules.build.rig_module import RigModule
 
-        rSz = RigModule.calc_dim_size()
+        rSz = RigModule.calc_rig_size()
         proxy_name = f"{self.name}_pxGeo"
         if DagNode(proxy_name).exists():
             return None

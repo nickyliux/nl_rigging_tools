@@ -103,7 +103,7 @@ def buildSelOrAll(*args):
             t="Build", pr=0, status="\nPreparing ...", ii=0, maxValue=buildCount
         )
 
-        RigModule.calc_dim_size()
+        RigModule.calc_rig_size()
         for i, rN in enumerate(rigNodesToBuild):
             logging.info(f"({i+1}) {rN.name}")
             buildTgt(rN)
@@ -146,10 +146,10 @@ def addMasterAttrs():
         ("PRX", "proxyVis", "proxyLock"),
         ("MDL", "modelVis", "modelLock"),
     ]
-    ctl.a.addSep("_" * 12)
     for grpName, visAttr, lockAttr in _GROUPS:
         grp = DagNode(grpName)
         if grp.exists():
+            ctl.a.addSep("_" * 5 + grpName.upper() + "_" * 5)
             ctl.a.add(visAttr, k=0, type="bool", dv=1) >> grp.a.v
             if lockAttr:
                 grp.a.overrideEnabled.set(1)
