@@ -198,8 +198,9 @@ def mirrorPose(*arg):
 
 
 def removeEndDigits(name):
-    """Remove trailing digits from a name"""
-    # e.g. lfLeg0 => 'lfLeg'
+    """Remove trailing digits from a name
+    e.g. lfLeg0 => 'lfLeg'
+    """
     pattern = re.compile(rf"^([a-zA-Z_]+)")
     result = re.match(pattern, str(name))
     if result:
@@ -227,25 +228,21 @@ def loadTemplate():
 
     build.removeOrphanRigNodes()
 
-    rigID_dict = file.loadJson(tgtPaths[-1])
+    tplPath = tgtPaths[-1]
+    rigID_dict = file.loadJson(tplPath)
     loadGuideFrIdDict(rigID_dict)
 
     common.setView(fit=1)
     mc.select(cl=1)
-    logging.info(f"Template loaded: {os.path.basename(tgtPaths[-1])}.")
+    logging.info(f"Template loaded: {os.path.basename(tplPath)}.")
 
     build.cleanUpScene()
-    # if removeUnused:
-    #     idInPreset = [k + "_RGN" for k in rigID_dict.keys()]
-    #     for node in build.getRigNodes_all():
-    #         if node not in idInPreset:
-    #             build.deleteTgt(node)
 
 
 def loadGuideFrIdDict(rigID_dict):
     """Load guides from rigID_dict"""
     # Remove unused
-    idInPreset = [k + "_RGN" for k in rigID_dict.keys()]
+    idInPreset = {k + "_RGN" for k in rigID_dict}
     for node in build.getRigNodes_all():
         if node not in idInPreset:
             build.deleteTgt(node)
@@ -301,34 +298,30 @@ def genAttrDict(obj):
 
 def saveTemplate():
     """Save preset into json file"""
-    idDict = {}
     rigNodes = build.getRigNodes_all()
 
     if not rigNodes:
         mc.confirmDialog(t="Info", m="RigNode NOT found.     ", b="OK")
         return
 
-    for node in rigNodes:
-        rigID = node.a.rigID.get()
-        objsToSave = [DagNode(o) for o in mc.ls(rigID + "_*_guide", tr=1)]
-        objsToSave.append(node.a.moduleG.inConnNode)
-        guideDict = {}
-        for obj in objsToSave:
-            guideDict[obj.name] = genAttrDict(obj)
-        idDict[rigID] = guideDict
-
-    idDict["modules_grp"] = genAttrDict("modules_grp")  # Add as special object
-
     charPath = mc.optionVar(q="charFullPath")
     tgtPaths = mc.fileDialog2(
         fileFilter="*_tpl*.json", dialogStyle=2, fileMode=0, dir=charPath
     )
-    if tgtPaths is None:
+    if not tgtPaths:
         return
-    else:
-        tgtPaths = tgtPaths[0]
 
-    file.saveJson(tgtPaths, idDict, force=True)
+    idDict = {}
+    for node in rigNodes:
+        rigID = node.a.rigID.get()
+        guideDict = {o: genAttrDict(o) for o in mc.ls(rigID + "_*_guide", tr=1)}
+        moduleG = node.a.moduleG.inConnNode
+        guideDict[moduleG.name] = genAttrDict(moduleG)
+        idDict[rigID] = guideDict
+
+    idDict["modules_grp"] = genAttrDict("modules_grp")
+
+    file.saveJson(tgtPaths[0], idDict, force=True)
     logging.info("Guide template saved.")
 
 

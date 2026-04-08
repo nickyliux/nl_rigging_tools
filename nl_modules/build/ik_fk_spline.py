@@ -57,8 +57,8 @@ class IkFkSpline(RigModule):
         rID, rSz, xDr = self.getMyVar()
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", rSz, 1),
-            ("main", "squareR", "z", rSz * 2.5, 1),
+            ("setting", "screw_nut", "z", rSz * 1.5, 1),
+            ("main", "squareR", "z", rSz * 2.8, 1),
         ]
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
@@ -128,7 +128,7 @@ class IkFkSpline(RigModule):
                 pf=rID,
                 shape="square",
                 up="z",
-                scale=rSz * 1.3,
+                scale=rSz * 2.2,
                 align=self.jnts_ik[i],
                 addOfs=1,
                 p=self.main,

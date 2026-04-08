@@ -98,13 +98,13 @@ class ArmBp(RigModule):
         ]
 
         if self.scapulaBone:
-            ctl_defs.append(["scap_fkc", "diamond", "z", scale, 0])
+            ctl_defs.append(["scap_fkc", "diamond", "z", scale / 1.5, 0])
 
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         if self.scapulaBone:
-            self.scap_fkc.cv_move(0, 0, scale * 20)
+            self.scap_fkc.cv_move(0, 0, scale * 15)
 
         self.pvc.cv_rotate(-90, 0, 0)
         self.setting.cv_move(0, scale * 30, 0)
