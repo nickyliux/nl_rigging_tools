@@ -77,18 +77,18 @@ class FingerFk(RigModule):
         logging.info(".")
 
         rID, rSz, xDr = self.getMyVar()
-        scale = xDr * rSz
+        scale = xDr * rSz / 5
 
         ctl_defs = [
             ("setting", "screw_nut", "x", rSz, 0),
-            ("fgr01_fkc", "squareR", None, -scale / 2, 0),
+            ("fgr01_fkc", "squareR", None, -scale, 0),
         ]
         if self.segNum >= 2:
-            ctl_defs.append(("fgr02_fkc", "squareR", None, -scale / 2, 0))
+            ctl_defs.append(("fgr02_fkc", "squareR", None, -scale, 0))
         if self.segNum >= 3:
-            ctl_defs.append(("fgr03_fkc", "squareR", None, -scale / 2, 0))
+            ctl_defs.append(("fgr03_fkc", "squareR", None, -scale, 0))
         if self.segNum >= 4:
-            ctl_defs.append(("fgr04_fkc", "squareR", None, -scale / 2, 0))
+            ctl_defs.append(("fgr04_fkc", "squareR", None, -scale, 0))
 
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
@@ -110,7 +110,7 @@ class FingerFk(RigModule):
         logging.info(".")
         rID, rSz, xDr = self.getMyVar()
 
-        self.jnts_fk = common.dupSk(self.jnts, "_fk", p=self.FK_GRP, r=self.rigSize * 2)
+        self.jnts_fk = common.dupSk(self.jnts, "_fk", p=self.FK_GRP, r=rSz * 2)
 
         self.ctls_fk = [self.fgr01_fkc, self.fgr02_fkc, self.fgr03_fkc, self.fgr04_fkc]
         self.ctls_fk = self.ctls_fk[: self.segNum]

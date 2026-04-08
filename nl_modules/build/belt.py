@@ -116,7 +116,7 @@ class Belt(RigModule):
                 pf=rID,
                 shape="square",
                 up="z",
-                scale=rSz * 2,
+                scale=rSz/3,
                 align=self.jnts_ik[i],
                 addOfs=1,
                 p=self.IK_GRP,

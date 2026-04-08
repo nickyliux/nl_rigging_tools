@@ -66,13 +66,13 @@ class SpineBp(RigModule):
         rID, rSz, xDr = self.getMyVar()
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
-            ("cog_ctl", "cog_bp", None, rSz * 4, 0),
+            ("cog_ctl", "cog_bp", None, rSz * 3, 0),
         ]
         if self.ribbon:
             ctl_defs += [
-                ("fore_ikc", "cube", None, Vec((4, 0.1, 0.1)) * rSz, 1),
+                ("fore_ikc", "cube", None, Vec((3, 0.1, 0.1)) * rSz, 1),
                 ("mid_ikc", "cube", None, Vec((2, 0.1, 0.1)) * rSz, 1),
-                ("base_ikc", "cube", None, Vec((5, 0.1, 0.1)) * rSz, 1),
+                ("base_ikc", "cube", None, Vec((4, 0.1, 0.1)) * rSz, 1),
             ]
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
@@ -128,7 +128,7 @@ class SpineBp(RigModule):
                 f"{i + 1}_fkc",
                 pf=rID,
                 shape="circle",
-                scale=rSz * 3,
+                scale=rSz * 2,
             )
             self.ctls_fk.append(c)
 
