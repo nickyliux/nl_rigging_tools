@@ -227,10 +227,8 @@ def loadTemplate():
 
     build.removeOrphanRigNodes()
 
-    common.pauseVP(1)
     rigID_dict = file.loadJson(tgtPaths[-1])
     loadGuideFrIdDict(rigID_dict)
-    common.pauseVP(0)
 
     common.setView(fit=1)
     mc.select(cl=1)
@@ -253,34 +251,38 @@ def loadGuideFrIdDict(rigID_dict):
             build.deleteTgt(node)
 
     for rID in rigID_dict:
+        if rID == "modules_grp":  # Special case for modules grp
+            setAttrFrDict("modules_grp", rigID_dict[rID])
+        else:
+            mg = DagNode(rID + "_master_guide")
+            if not mg.exists():
+                loadGuide(removeEndDigits(rID))
 
-        if rID == "modules_grp":
-            continue
+            for guide, attrs in rigID_dict[rID].items():
+                setAttrFrDict(guide, attrs)
 
-        mg = DagNode(rID + "_master_guide")
-        if not mg.exists():
-            loadGuide(removeEndDigits(rID))
 
-        for guideN, attrs in rigID_dict[rID].items():
+def setAttrFrDict(tgt, attrs):
+    """Set attribute values for tgt from attrs dict"""
+    tgtNode = DagNode(tgt) if isinstance(tgt, str) else tgt
 
-            guideN = DagNode(guideN)
-            if guideN.exists():
-                for attr in attrs:
-                    if guideN.a[attr].exists():
-                        if str(attr) in "trs":
-                            v = attrs[attr]
-                            for i, axis in enumerate("xyz"):
-                                if guideN.a[attr + axis].settable():
-                                    guideN.a[attr + axis].set(v[i])
-                        else:
-                            if guideN.a[attr].settable():
-                                v = attrs[attr]
-                                if isinstance(v, (int, float)):
-                                    guideN.a[attr].set(v)
-                                elif isinstance(v, str):
-                                    guideN.a[attr].set(v, type="string")
-                                elif isinstance(v, list):
-                                    guideN.a[attr].set(*v)
+    if tgtNode.exists():
+        for attr in attrs:
+            if tgtNode.a[attr].exists():
+                if str(attr) in "trs":
+                    v = attrs[attr]
+                    for i, axis in enumerate("xyz"):
+                        if tgtNode.a[attr + axis].settable():
+                            tgtNode.a[attr + axis].set(v[i])
+                else:
+                    if tgtNode.a[attr].settable():
+                        v = attrs[attr]
+                        if isinstance(v, (int, float)):
+                            tgtNode.a[attr].set(v)
+                        elif isinstance(v, str):
+                            tgtNode.a[attr].set(v, type="string")
+                        elif isinstance(v, list):
+                            tgtNode.a[attr].set(*v)
 
 
 def genAttrDict(obj):
@@ -314,9 +316,7 @@ def saveTemplate():
         for obj in objsToSave:
             guideDict[obj.name] = genAttrDict(obj)
 
-        # idDict[rigID] = guideDict
-
-    idDict["modules_grp"] = genAttrDict("modules_grp")
+    idDict["modules_grp"] = genAttrDict("modules_grp")  # Add as special object
 
     charPath = mc.optionVar(q="charFullPath")
     tgtPaths = mc.fileDialog2(
