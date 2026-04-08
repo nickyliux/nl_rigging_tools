@@ -315,6 +315,7 @@ def saveTemplate():
         guideDict = {}
         for obj in objsToSave:
             guideDict[obj.name] = genAttrDict(obj)
+        idDict[rigID] = guideDict
 
     idDict["modules_grp"] = genAttrDict("modules_grp")  # Add as special object
 
