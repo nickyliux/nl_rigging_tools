@@ -84,7 +84,6 @@ class IkFkSpline(RigModule):
     def build_ribbon(self):
         """Create the ribbon for the rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
 
         crvLenRatio, self.jnts_rb, crv = common.build_ribbon_rivet(
             rbSrf=self.rbSrf2,
@@ -92,7 +91,6 @@ class IkFkSpline(RigModule):
             scaleAttr=self.setting.a.localScale * self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
             pf=self.rigID + "_RB",
-            rSz=rSz,
             p=self.CTL_DATA,
             JNT_DATA=self.JNT_DATA,
             atMidOrEnd=1,
@@ -180,7 +178,7 @@ class IkFkSpline(RigModule):
                 f"{i}_fkc",
                 pf=rID,
                 up="z",
-                scale=rSz,
+                scale=rSz * 2,
                 align=self.jnts_fk[i],
             )
             self.rigNode.setMsg({f"fkc{i}": ctl})

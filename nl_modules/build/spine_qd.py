@@ -267,7 +267,7 @@ class SpineQd(RigModule):
             common.setTwistFromRibbon(
                 tgt=spIkJnts[i], srf=rbSrf, out=grp, p=self.CTL_DATA
             )
-            jnt = JntNode(f"{i}_rbj", pf=rID, align=grp, r=rSz * 2, p=grp, reset=1)
+            jnt = JntNode(f"{i}_rbj", pf=rID, align=grp, p=grp, reset=1)
             rb_jnts.append(jnt)
             self.masterC.a.globalScale >> grp.a.s
 
@@ -407,7 +407,6 @@ class SpineQd(RigModule):
 
     def setup_bindJnt(self):
         """Setup bind joints for the spine rig."""
-        # if self.jnts_bind:
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set([self.jnts_bind[0]])
         proxy.add_proxyRadiusScale_attr(self.jnts_bind, 10)
