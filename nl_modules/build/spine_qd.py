@@ -408,7 +408,7 @@ class SpineQd(RigModule):
         """Setup bind joints for the spine rig."""
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set([self.jnts_bind[0]])
-        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 8)
+        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 10)
 
     def build_post(self):
         """Post setup for the spine rig."""
