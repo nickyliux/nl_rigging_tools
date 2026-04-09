@@ -1,7 +1,7 @@
 import logging
 from platform import node
 import maya.cmds as mc
-
+import maya.mel as mel
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.loc_node import LocNode
@@ -438,9 +438,6 @@ def cleanUpScene():
 
 def removeOrphanRigNodes():
     """Remove rigNodes with no skeleton."""
-
-    import maya.mel as mel
-
     mel.eval("MLdeleteUnused;")
 
     rigNodes = getRigNodes_all()
@@ -450,7 +447,7 @@ def removeOrphanRigNodes():
         if not mg or not mc.objExists(mg):
             node.delete()
             removeCount += 1
-    logging.info(f"{removeCount} orphan rigNodes removed.")
+    # logging.info(f"{removeCount} orphan rigNodes removed.")
 
 
 def getRigNodes_selOrAll():

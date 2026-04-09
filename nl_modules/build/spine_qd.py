@@ -75,9 +75,9 @@ class SpineQd(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 1),
             ("cog_ctl", "cog_qd", None, rSz * 1.5, 0),
-            ("fore_ikc", "back", None, Vec((6, 6, 0.2)) * rSz, 0),
-            ("mid_ikc", "circle", "z", rSz * 3, 0),
-            ("base_ikc", "back", None, Vec((6, 6, 0.2)) * rSz, 0),
+            ("fore_ikc", "cube", None, Vec((6, 4, 2)) * rSz, 0),
+            ("mid_ikc", "cube", "z", Vec((6, 4, 2)) * rSz, 0),
+            ("base_ikc", "cube", None, Vec((6, 4, 2)) * rSz, 0),
             ("tangent0_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
             ("tangent1_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
             ("end_ctl", "rotate2_3d", None, Vec((1, 1, 0.7)) * rSz, 0),
@@ -98,7 +98,6 @@ class SpineQd(RigModule):
         self.tangent0_ctl.cv_rotate(0, 90, 0)
         self.tangent1_ctl.cv_rotate(0, 90, 0)
         self.setting.cv_move(0, rSz * 70, 0)
-        self.fore_ikc.cv_move(0, rSz * 20, 0)
 
     def build(self):
         """Build the spine rig."""
@@ -409,7 +408,7 @@ class SpineQd(RigModule):
         """Setup bind joints for the spine rig."""
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set([self.jnts_bind[0]])
-        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 10)
+        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 8)
 
     def build_post(self):
         """Post setup for the spine rig."""

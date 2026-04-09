@@ -131,7 +131,7 @@ class SpineBp(RigModule):
                 f"{i + 1}_fkc",
                 pf=rID,
                 shape="circle",
-                scale=rSz * 2,
+                scale=rSz * 3,
             )
             self.ctls_fk.append(c)
 
@@ -376,7 +376,7 @@ class SpineBp(RigModule):
         """Setup bind joints for the spine rig."""
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set(self.jnts_bind[0])
-        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 6)
+        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 8)
 
     def setup_ctlSet(self):
         """Setup control sets for the spine rig."""

@@ -190,7 +190,7 @@ class MarkingMenuAutorig:
                     val = 0 if attr.get() > 0.5 else 1
                     mc.menuItem(
                         p=menu,
-                        l="FK / IK",
+                        l="FK <-> IK",
                         rp="S",
                         c=partial(self.switch_fk_ik, attr, val, rigNode),
                     )
@@ -199,7 +199,7 @@ class MarkingMenuAutorig:
         for space in ["paSpace", "oriSpace", "posSpace"]:
             attr = firstSelected.a[space]
             if attr.exists():
-                mc.menuItem(p=menu, l=space, en=0)
+                mc.menuItem(p=menu, l=space.upper(), en=0)
                 val = attr.get()
                 allSpaceAttr = attr.query(le=1)[0].split(":")
                 for i, a in enumerate(allSpaceAttr):
@@ -214,7 +214,7 @@ class MarkingMenuAutorig:
         for attr in firstSelected.a.list(ud=1):
             if attr.name.startswith("isolate"):
                 val = 1 - attr.get()
-                mc.menuItem(p=menu, l="Isolate", en=0)
+                mc.menuItem(p=menu, l="ISOLATE", en=0)
                 mc.menuItem(
                     p=menu,
                     l="    Toggle",

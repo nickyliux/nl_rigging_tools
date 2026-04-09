@@ -630,7 +630,7 @@ class LegBp(RigModule):
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set(self.jnts_sk)
         proxy.add_proxyRadiusScale_attr(self.jnts_toes, 1)
-        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 7)
+        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 5)
 
     def build_post(self):
         """Post setup for the leg rig module."""
