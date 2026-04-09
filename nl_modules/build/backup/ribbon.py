@@ -170,7 +170,7 @@ class Ribbon(RigModule):
                     rigID_bow_0_ctl
 
         """
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         bow_grp = GrpNode(f"bow_{idx}_grp", pf=rID, p=self.RB_SCALE)
         bow_ctl = CrvNode(

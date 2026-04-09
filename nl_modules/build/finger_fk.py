@@ -76,7 +76,7 @@ class FingerFk(RigModule):
         """Build control nodes for the arm rig."""
         logging.info(".")
 
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         scale = xDr * rSz / 5
 
         ctl_defs = [
@@ -108,7 +108,7 @@ class FingerFk(RigModule):
     def build_fk(self):
         """Build the FK controls for the arm rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         self.jnts_fk = common.dupSk(self.jnts, "_fk", p=self.FK_GRP, r=rSz * 2)
 
@@ -125,7 +125,7 @@ class FingerFk(RigModule):
 
     def create_ik(self, name, sj, ee, jsf, p):
         """Create an IK handle for the finger rig."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         return IkNode(
             name,

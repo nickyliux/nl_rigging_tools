@@ -49,7 +49,7 @@ class NeckQd(SpineQd):
 
     def midCtl_setup(self):
         """Setup the mid control for the neck rig."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         self.jnts_twoIk = JntNode.makeTwoJointChain(
             "two_ikj",
             pf=rID,

@@ -54,7 +54,7 @@ class Belt(RigModule):
         """Build control nodes for the belt rig."""
         logging.info(".")
 
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         ctl_defs = [("setting", "screw_nut", "z", rSz, 0)]
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
@@ -81,7 +81,7 @@ class Belt(RigModule):
     def build_ribbon(self):
         """Create the ribbon for the belt rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         crvLenRatio, self.jnts_rb, crv = common.build_ribbon_rivet(
             rbSrf=self.rbSrf1,
@@ -99,7 +99,7 @@ class Belt(RigModule):
     def build_ik(self):
         """Build the IK controls for the belt rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         # --- Create IK joint chain from guide curve ---
         self.jnts_ik = JntNode.createJntsFrCrv(

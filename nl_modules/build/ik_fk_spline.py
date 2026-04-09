@@ -54,7 +54,7 @@ class IkFkSpline(RigModule):
     def build_ctl(self):
         """Build control nodes for the rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 1.5, 1),
@@ -109,7 +109,7 @@ class IkFkSpline(RigModule):
     def build_ik(self):
         """Build the IK controls for the rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         self.jnts_ik = JntNode.createJntsFrCrv(
             self.LINE_GUIDE,
@@ -163,7 +163,7 @@ class IkFkSpline(RigModule):
         """Build the FK controls for the rig."""
         logging.info(".")
 
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         self.jnts_fk = JntNode.createJntsFrCrv(
             self.LINE_GUIDE,
             num=self.fkJntNum,
@@ -214,7 +214,7 @@ class IkFkSpline(RigModule):
     def build_offset_ik(self):
         """Build offset IK controls for the rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         for i in range(self.fkJntNum):
             ctl = CrvNode(
@@ -255,13 +255,15 @@ class IkFkSpline(RigModule):
             self.setting.a.add("showSubIkCtl", k=0, type="bool", dv=0),
             onList=self.ctls_ofs,
         )
-        # self.ctl_vis_toggle(
-        #     self.setting.a.add("showSetup", k=0, type="bool", dv=1),
-        #     onList=[self.rbSrf1, self.rbSrf2, self.rbCrvSk, self.JNT_DATA],
-        # )
-        mc.hide(self.rbSrf1, self.rbSrf2, self.rbCrvSk)  # , self.JNT_DATA)
-
-        mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)
+        self.ctl_vis_toggle(
+            self.setting.a.add("showSetup", k=0, type="bool", dv=0),
+            onList=[self.rbSrf1, self.rbSrf2, self.rbCrvSk]
+            + self.jnts_fk
+            + self.jnts_ik
+            + self.jnts_ofs,
+        )
+        # mc.hide(self.rbSrf1, self.rbSrf2, self.rbCrvSk)  # , self.JNT_DATA)
+        # mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)
 
     def setup_channel(self):
         """Setup channel attributes for the rig controls."""

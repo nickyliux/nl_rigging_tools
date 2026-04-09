@@ -51,11 +51,7 @@ class RigModule(RigBase):
             logging.error("modules_grp not found.")
             return
 
-        self.rigSize = (
-            self.master_guide.a.sy.get()
-            * self.masterC.a.globalScale.get()
-            * main_mod_grp.a.sy.get()
-        )
+        self.rigSize = main_mod_grp.a.sy.get() * self.master_guide.a.sy.get()
         self.xDir = 1 if rID.startswith("lf") else -1 if rID.startswith("rt") else 0
         self.boneFix = None
         self.jnts_bind = []
@@ -316,8 +312,8 @@ class RigModule(RigBase):
     def genSk_module(self):
         """Generate the skeleton module for the rigNode."""
         self.rigNode.a.nodeState.set(1)
-        if self.masterC2.a.sx.get() != 1:
-            self.masterC2.freezeXf(t=0, r=0, s=1)
+        # if self.masterC2.a.sx.get() != 1:
+        #     self.masterC2.freezeXf(t=0, r=0, s=1)
 
     def build_pre_module(self):
         """Build the rig module, setting up the rigNode and its connections."""
@@ -390,7 +386,7 @@ class RigModule(RigBase):
         P : plug, for driver.
             e.g.  spine has 2 P-anchors, arm has 1 P-anchor
         """
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         for name, tgt in anchorDict.items():
             loc = LocNode(name, pf=rID, size=rSz * 15, p=self.CTL_DATA)
@@ -480,7 +476,7 @@ class RigModule(RigBase):
         ann.parent.snapTo(tgt, p=tgt)
         tgt.a.rotatePivot >> ann.parent.a.t
 
-    def updateList(self, tgtList, add=None, rm=None):
+    def update_list(self, tgtList, add=None, rm=None):
         """Update list by adding or removing item."""
         if add:
             for tgt in add:
@@ -493,7 +489,7 @@ class RigModule(RigBase):
 
     def kneeFix_setup(self, tgt, tgtChild):
         """Setup bone fix for the leg rig."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         upLoc = LocNode("lwrLimb_up", pf=rID, align=tgtChild, addOfs=1, p=tgt, size=rSz)
         tgtChild.cstPoi(upLoc.offset)
@@ -513,11 +509,11 @@ class RigModule(RigBase):
         self.boneFix_sdk(tgt, tgtDup)
         upLoc.hide()
 
-        self.updateList(self.jnts_sk, add=[self.boneFix], rm=[self.lwr])
+        self.update_list(self.jnts_sk, add=[self.boneFix], rm=[self.lwr])
 
     def boneFix_sdk(self, driver, driven):
         """ "Setup SDK for bone fix to drive the leg joint."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         s = rSz * xDr
         common.sdk(driver, driven, "ry", "tz", 0, 0, tangent=1)
@@ -530,7 +526,7 @@ class RigModule(RigBase):
 
     def patella_setup(self):
         """Setup patella guide and joint for the leg rig."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         patella_guide = DagNode(rID + "_patella_guide")
 
         def patella_sdk(driver, driven):
@@ -542,8 +538,8 @@ class RigModule(RigBase):
         if patella_guide.exists():
             j = JntNode("patella", pf=rID, align=patella_guide, r=rSz / 2, p=self.upr)
             j.freezeXf()
-            self.updateList(self.jnts_bind, add=[j])
-            self.updateList(self.jnts_sk, add=[j])
+            self.update_list(self.jnts_bind, add=[j])
+            self.update_list(self.jnts_sk, add=[j])
             patella_sdk(self.lwr, j)
             return j
 
@@ -643,7 +639,7 @@ class RigModule(RigBase):
 
     def build_nlAutoAim(self, startJ, endJ, fkc=None, ikc=None, ikcGim=None):
         """Build auto aim function for the given start and end joints."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         #
         #   create aim chain
         #
@@ -717,7 +713,7 @@ class RigModule(RigBase):
         autoAim_dv=0,
     ):
         """Build scapula joint and auto aim function."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         # --- Main scapula group setup ---
         mainGrp = GrpNode("quadScap", pf=rID, align=hipJ, p=self.FK_GRP, addOfs=1)
@@ -778,8 +774,8 @@ class RigModule(RigBase):
                 aimTgt=hipJ,
             )
             IkNode("scapAim", pf=rID, sj=j0, ee=j1, p=scapCtl, vis=0)
-            self.updateList(self.jnts_bind, add=[j0], rm=[hipJ])
-            self.updateList(self.jnts_sk, add=[j0], rm=[hipJ])
+            self.update_list(self.jnts_bind, add=[j0], rm=[hipJ])
+            self.update_list(self.jnts_sk, add=[j0], rm=[hipJ])
 
         return mainGrp
 
@@ -796,7 +792,7 @@ class RigModule(RigBase):
         if not tgtJ.children:
             return
 
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         #
         #   create group & loc
         #
@@ -909,7 +905,7 @@ class RigModule(RigBase):
                 if ctl != None and DagNode(ctl).exists()
             ]
 
-    def getMyVar(self):
+    def get_short_form(self):
         """Get rig ID, size and x direction for the current rig instance."""
         return str(self.rigID), self.rigSize, int(self.xDir)
 
@@ -934,7 +930,7 @@ class RigModule(RigBase):
 
     def build_aimHelper(self, targets, up="y", addCtl=0):
         """Build roller joints for the specified targets."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         wu = u = (0, 1, 0)
         aim = (xDr * -1, 0, 0)
@@ -992,7 +988,7 @@ class RigModule(RigBase):
 
     def build_rollChain(self, jnt0, jnt1, num=2, sf="_ro"):
         """Build a roll chain between two joints. Add locator for delta roll"""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         tgt_p = jnt0.parent
         if not tgt_p or tgt_p.type != "joint":
             raise ValueError(f"No target parent or it is not a joint")
@@ -1024,7 +1020,7 @@ class RigModule(RigBase):
 
     def build_uprRollJ(self, jnt0, jnt1, num=2, sf="_ro"):
         """Build upper roller joints. They are added between jnt0 and jnt1."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         roll_loc, roll_jnt0 = self.build_rollChain(jnt0, jnt1, num, sf)
         rollJnts = []
@@ -1072,7 +1068,7 @@ class RigModule(RigBase):
         """Build a ribbon rig with upper and lower parts, and setup controls."""
         logging.info(".")
 
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         ribbonUp = self.build_rbn(
             upr, name="up", rbnJntNum=jntNum, volMode=0, up=up1, rSz=rSz
         )
@@ -1130,7 +1126,7 @@ class RigModule(RigBase):
         volType >> ribbonUp.volType
         volType >> ribbonLw.volType
 
-        self.updateList(
+        self.update_list(
             self.jnts_bind,
             add=ribbonUp.jnts_rb + ribbonLw.jnts_rb,
             rm=[self.upr, self.lwr],

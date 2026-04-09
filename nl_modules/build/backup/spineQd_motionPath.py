@@ -18,7 +18,7 @@ class SpineQd(RigModule):
         self.FK_BONE_NUM = self.master_guide.a.fkJntNum.get()
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
 
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         self.LINE_GUIDE = CrvNode(rID + "_line_guide")
         self.TP_GUIDE = DagNode(rID + "_tp_guide")
         self.MD_GUIDE = DagNode(rID + "_md_guide")
@@ -48,7 +48,7 @@ class SpineQd(RigModule):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         self.setting = CrvNode(
             "setting",
@@ -95,7 +95,7 @@ class SpineQd(RigModule):
 
     def build(self):
         """Build the spine rig module."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         self.build_pre_module()
         mc.delete(self.rootJ)
 
@@ -127,7 +127,7 @@ class SpineQd(RigModule):
         self.build_post()
 
     def build_ik(self):
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         #
         #   build chain from crv
         #

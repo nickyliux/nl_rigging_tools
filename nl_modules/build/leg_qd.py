@@ -127,12 +127,12 @@ class LegQd(RigModule):
     def build_ctl(self):
         """Build control nodes for the quadruped leg rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         scale = xDr * rSz
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
-            ("hip_fkc", "trapezoid2", "x", -scale * 1.5, 0),
+            ("hip_fkc", "cube", "x", Vec((2, 1, 1)) * scale, 0),
             ("upr_fkc", "circle", "x", scale, 0),
             ("lwr_fkc", "circle", "x", scale, 0),
             ("palm_fkc", "circle", "x", scale, 0),
@@ -202,8 +202,8 @@ class LegQd(RigModule):
 
         if self.toeBones:
             self.build_toes()
-            self.updateList(self.jnts_bind, rm=[self.ball])
-            self.updateList(self.jnts_sk, rm=[self.ball])
+            self.update_list(self.jnts_bind, rm=[self.ball])
+            self.update_list(self.jnts_sk, rm=[self.ball])
 
         self.build_post()
 
@@ -221,7 +221,7 @@ class LegQd(RigModule):
     def build_fk(self):
         """Build the FK controls and joints for the quadruped leg rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         self.jnts_fk = common.dupSk(self.jnts, "_fk", p=self.FK_GRP, r=rSz * 2)
         self.ctls_fk = [
@@ -237,7 +237,7 @@ class LegQd(RigModule):
     def build_ik(self):
         """Build the IK controls for the quadruped leg rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         # --- Guide and alignment setup ---
         mg = self.master_guide
@@ -340,7 +340,7 @@ class LegQd(RigModule):
     def blend_fk_ik(self):
         """Blend FK and IK controls for the quadruped leg rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         self.setting.snapTo(self.palm, p=self.CTL_DATA)
         self.palm.cstPar(self.setting, mo=1)
@@ -402,7 +402,7 @@ class LegQd(RigModule):
 
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
         """Setup sub-controls for the quadruped leg rig."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         # --- Create and register sub-controls for roll groups ---
         roll_groups = [toeRollG, inRollG, outRollG, heelRollG]
@@ -423,7 +423,7 @@ class LegQd(RigModule):
 
     def smart_ctl_setup(self, toeRollG):
         """Setup the smart control for foot roll and bank."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         self.smart_ctl | self.ikc
         self.smart_ctl.snapAlignTo(toeRollG, self.master_guide)
@@ -440,7 +440,7 @@ class LegQd(RigModule):
         """Build the digit controls for the quadruped leg rig."""
         logging.info(".")
 
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         self.toesCtlsList = []
         scale = xDr * rSz / 8
 
@@ -464,8 +464,8 @@ class LegQd(RigModule):
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
 
             self.toesCtlsList.append(ctlList)
-            self.updateList(self.jnts_bind, add=toeJs[:-1])
-            self.updateList(self.jnts_sk, add=toeJs[:-1])
+            self.update_list(self.jnts_bind, add=toeJs[:-1])
+            self.update_list(self.jnts_sk, add=toeJs[:-1])
 
         # --- Add hidden IK handles for toe segments ---
         for toeJs in self.toesJntList:
@@ -482,7 +482,7 @@ class LegQd(RigModule):
     def build_dual_bones(self):
         """Build dual bones for the lower leg."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.5)
         ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=0.5)

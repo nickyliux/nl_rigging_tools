@@ -124,7 +124,7 @@ class LegBp(RigModule):
     def build_ctl(self):
         """Build control nodes for the leg rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         scale = xDr * rSz
 
         ctl_defs = [
@@ -227,7 +227,7 @@ class LegBp(RigModule):
     def build_fk(self):
         """Build the FK controls for the leg rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         self.jnts_fk = common.dupSk(self.jnts, "_fk", p=self.FK_GRP, r=rSz / 2)
         self.ctls_fk = [
@@ -243,7 +243,7 @@ class LegBp(RigModule):
     def build_ik(self):
         """Build the IK controls for the leg rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         mg = self.master_guide
         inPos_guide = DagNode(rID + "_palm_inPos_guide")
@@ -334,7 +334,7 @@ class LegBp(RigModule):
 
     def smart_ctl_setup(self, toeRollG):
         """Setup the smart control for foot rolling."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         self.smart_ctl | self.ikc
         self.smart_ctl.snapAlignTo(toeRollG, self.master_guide)
@@ -347,7 +347,7 @@ class LegBp(RigModule):
 
     def fk_pin_setup(self):
         """Setup FK pin control for the leg rig."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         fkPin = self.pvc.a.add("fkPin", min=0, max=1)
         self.pin_fkc = CrvNode(
@@ -366,7 +366,7 @@ class LegBp(RigModule):
     def blend_fk_ik(self):
         """Blend FK and IK controls for the leg rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         self.jnts_bf = common.dupSk(self.jnts, "_bf", p=self.BF_GRP, r=rSz * 3)
 
@@ -409,7 +409,7 @@ class LegBp(RigModule):
     def subCtl_setup(self, ballRollG, toeRollG, inRollG, outRollG, heelRollG):
         """Setup sub-controls for the leg rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         scale = rSz * xDr
 
         # Sub-controls for IK
@@ -443,7 +443,7 @@ class LegBp(RigModule):
         """Build digit controls for the leg rig."""
         logging.info(".")
 
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         self.toesCtlsList = []
         scale = xDr * rSz
 
@@ -472,13 +472,13 @@ class LegBp(RigModule):
             ikJ.hide()
 
             self.toesCtlsList.append(ctlList)
-            self.updateList(self.jnts_bind, add=toeJs[:-1], rm=[self.ball])
-            self.updateList(self.jnts_sk, add=toeJs[:-1], rm=[self.ball])
+            self.update_list(self.jnts_bind, add=toeJs[:-1], rm=[self.ball])
+            self.update_list(self.jnts_sk, add=toeJs[:-1], rm=[self.ball])
 
     def build_dual_bones(self):
         """Build dual bones for the lower leg."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.6)
         ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=0.6)
@@ -503,7 +503,7 @@ class LegBp(RigModule):
             ulna_JC[0], worldUpType=type, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
 
-        self.updateList(self.jnts_sk, add=[radius_JC[0], ulna_JC[0]], rm=[self.lwr])
+        self.update_list(self.jnts_sk, add=[radius_JC[0], ulna_JC[0]], rm=[self.lwr])
 
     def setup_vis(self):
         """Setup visibility for the leg rig controls."""

@@ -71,7 +71,7 @@ class SpineQd(RigModule):
     def build_ctl(self):
         """Build control nodes for the spine rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 1),
@@ -111,7 +111,6 @@ class SpineQd(RigModule):
         """Build the spine rig."""
         self.build_pre_module()
         mc.delete(self.rootJ)
-        self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
 
         self.rbSrf = self.create_rbSrf(span=2, crv=self.LINE_GUIDE, snap=self.RT_GUIDE)
         self.rbSrfSk = self.create_rbSrf(
@@ -153,7 +152,7 @@ class SpineQd(RigModule):
         """Build the IK controls for the spine rig."""
         logging.info(".")
 
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         # Build 3 ctl joints from crv
         self.jnts_ctl = JntNode.createJntsFrCrv(
@@ -232,7 +231,7 @@ class SpineQd(RigModule):
     ):
         """Build a spine IK ribbon."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         # --- Create ribbon curve and joints ---
         self.rbCrv = CrvNode(mc.duplicateCurve(f"{rbSrf}.u[0.5]", rn=0, local=0)[0])
@@ -320,7 +319,7 @@ class SpineQd(RigModule):
 
     def midCtl_setup(self):
         """Setup the mid IK control for the spine rig."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         loc1 = LocNode("loc_#", pf=rID, align=self.mid_ikc, p=self.fore_ikc, vis=0)
         loc2 = LocNode("loc_#", pf=rID, align=self.mid_ikc, p=self.base_ikc, vis=0)
         common.cstMulti(loc1, loc2, self.mid_ikc.offset, cstType="par", mo=1)

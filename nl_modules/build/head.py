@@ -49,7 +49,7 @@ class Head(RigModule):
         """Build the controls for the head rig module."""
         logging.info(".")
 
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         ctl_defs = [
             ("head_fkc", "squareR", None, rSz / 2, 0),
             ("jaw_fkc", "jaw", None, rSz / 2, 0),

@@ -63,10 +63,10 @@ class SpineBp(RigModule):
     def build_ctl(self):
         """Build control nodes for the spine rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         ctl_defs = [
-            ("setting", "screw_nut", "z", rSz * 3, 0),
-            ("cog_ctl", "cog_bp", None, rSz * 3, 0),
+            ("setting", "screw_nut", "z", rSz * 2, 0),
+            ("cog_ctl", "cog_bp", None, rSz * 3.5, 0),
         ]
         if self.ribbon:
             ctl_defs += [
@@ -96,7 +96,6 @@ class SpineBp(RigModule):
     def build(self):
         """Build the spine rig module."""
         self.build_pre_module()
-        self.rigSize = CrvNode(self.LINE_GUIDE).length / 100
 
         self.build_ctl()
         self.build_fk()
@@ -111,7 +110,7 @@ class SpineBp(RigModule):
     def build_fk(self):
         """Build the FK controls and joints for the spine rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         self.jnts_fk = JntNode.createJntsFrCrv(
             self.LINE_GUIDE,
@@ -131,7 +130,7 @@ class SpineBp(RigModule):
                 f"{i + 1}_fkc",
                 pf=rID,
                 shape="circle",
-                scale=rSz * 3,
+                scale=rSz * 2,
             )
             self.ctls_fk.append(c)
 
@@ -164,7 +163,7 @@ class SpineBp(RigModule):
         """modify first fkc specific for hip rotation."""
         ctl = self.ctls_fk[0]
         ctl(p=self.CTL_DATA, addOfs=1, shape="squareR")
-        ctl.cv_scale(2.8)
+        ctl.cv_scale(2.5)
 
         # ctl.offset.snapAlignTo(self.BASE_PVT_GUIDE, self.jnts_fk[0])
         ctl.offset.snapTo(self.BASE_PVT_GUIDE)
@@ -173,7 +172,7 @@ class SpineBp(RigModule):
     def build_spine_ik(self):
         """Build the IK controls for the spine rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         self.base_ikc.snapAlignTo(self.jnts_fk[0], self.master_guide)
         self.mid_ikc.snapAlignTo(self.MD_GUIDE, self.master_guide)
@@ -233,7 +232,7 @@ class SpineBp(RigModule):
 
     def build_ribbon(self):
         """Build the ribbon for the spine rig."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         self.rbSrf = SrfNode.buildRbSrf(
             pf=rID,
@@ -376,7 +375,7 @@ class SpineBp(RigModule):
         """Setup bind joints for the spine rig."""
         self.add_bind_jnt_set(self.jnts_bind)
         self.add_bind_sk_set(self.jnts_bind[0])
-        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 10)
+        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 5)
 
     def setup_ctlSet(self):
         """Setup control sets for the spine rig."""

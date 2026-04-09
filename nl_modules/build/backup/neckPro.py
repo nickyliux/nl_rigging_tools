@@ -155,7 +155,7 @@ class NeckPro(rig_module.RigModule):
         # self.followAlignTwo(self.upr_fkc, [self.upr_fkc.parent, self.masterC], 1)
 
     def build_ribbon(self):
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         logging.info(rID)
 
         dummyG1 = GrpNode("g#", snap=self.rootJ)

@@ -18,7 +18,7 @@ class TailFk(RigModule):
         self.RBN_BONES = self.master_guide.a.rbnBones.get()
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
 
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         self.LINE_GUIDE = CrvNode(rID + "_line_guide")
         self.RT_GUIDE = CrvNode(rID + "_rt_guide")
 
@@ -44,7 +44,7 @@ class TailFk(RigModule):
             FK -> rbSrf by skin
             rbSrf -> joints by pin
         """
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         self.build_pre_module()
         self.rbSrf = SrfNode.buildRbSrf(
@@ -77,7 +77,7 @@ class TailFk(RigModule):
         self.build_post()
 
     def build_ctl(self):
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         self.setting = CrvNode(
             "setting",
@@ -96,7 +96,7 @@ class TailFk(RigModule):
         )
 
     def build_fk(self):
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         cluName = rID + "clu_#"
 
         self.fkJnt = JntNode.createJntsFrCrv(

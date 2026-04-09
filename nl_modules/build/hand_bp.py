@@ -55,7 +55,7 @@ class HandBp(RigModule):
 
     def build_ctl(self):
         """Build the controls for the hand rig module."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         scale = xDr * rSz / 2
 
         ctl_defs = [
@@ -71,9 +71,9 @@ class HandBp(RigModule):
         self.smart_ctl.cv_rotate(90, 0, 0)
         self.setting.cv_move(0, 0, -scale * 30)
 
-        self.palm_ctl.color = Color.PINK
-        self.thumb_ctl.color = Color.PINK
-        self.smart_ctl.color = Color.PINK
+        # self.palm_ctl.color = Color.PINK
+        # self.thumb_ctl.color = Color.PINK
+        # self.smart_ctl.color = Color.PINK
 
     def build(self):
         """Build the hand rig module."""
@@ -92,7 +92,7 @@ class HandBp(RigModule):
 
     def create_finger_ctl(self, fgrs):
         """Create finger controls for the hand rig module."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         scale = rSz * xDr / 10
         ofs = rSz * xDr / 2
 
@@ -127,7 +127,7 @@ class HandBp(RigModule):
         """Build IK controls for the hand rig module."""
         logging.info(".")
 
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         self.hand_grp = GrpNode(rID + "_grp", align=self.rootJ, p=self.CTL_DATA)
         for fgrs, ctls in zip(self.jnts_fgr, self.ctls_fgr):
 
@@ -245,7 +245,7 @@ class HandBp(RigModule):
     def setup_updn_sdk(self):
         """Setup SDK for up/down pose on fingers."""
         drv = self.smart_ctl
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         for i in range(1, 5):
             ofs = self.ctls_fgr[i][1].offset
             common.sdk(drv, ofs, "tz", "ry", 10, -90 * xDr, inf=1)
@@ -263,7 +263,7 @@ class HandBp(RigModule):
 
     def setup_thumbCtl(self):
         """Setup thumb control for the hand rig."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         fkc_ofs0 = self.ctls_fgr[0][0].offset.addOffsetGrp()
 
         self.thumb_ctl.alignTo(fkc_ofs0, p=self.CTL_DATA)
@@ -278,7 +278,7 @@ class HandBp(RigModule):
 
     def setup_palmCtl(self):
         """Setup metacarpal controls for the hand rig."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         fkc_ofs2 = self.ctls_fgr[2][0].offset.addOffsetGrp()
         fkc_ofs3 = self.ctls_fgr[3][0].offset.addOffsetGrp()
@@ -317,14 +317,14 @@ class HandBp(RigModule):
         """Build the finger logic for the hand rig module."""
         logging.info(".")
 
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         if len(self.jnts_fgr) != 5:
             logging.info("Smart setup for 5-fgr only.")
             return
 
         # smart_ctl, with group scaling with rootJ
         scaleGrp = GrpNode("smartScale", pf=rID, align=self.rootJ, p=self.CTL_DATA)
-        offsetX = rSz * xDr * 20
+        offsetX = rSz * xDr * 15
         self.smart_ctl.alignTo(self.rootJ, p=scaleGrp, ofs=(offsetX, 0, 0))
         self.smart_ctl.addOffsetGrp()
 

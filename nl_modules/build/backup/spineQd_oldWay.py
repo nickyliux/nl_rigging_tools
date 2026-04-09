@@ -18,7 +18,7 @@ class SpineQd(RigModule):
         self.FK_JNT_NUM = self.master_guide.a.fkJntNum.get()
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
 
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         self.LINE_GUIDE = CrvNode(rID + "_line_guide")
         self.TP_GUIDE = DagNode(rID + "_tp_guide")
         self.MD_GUIDE = DagNode(rID + "_md_guide")
@@ -60,7 +60,7 @@ class SpineQd(RigModule):
         self.rigNode.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         self.setting = CrvNode(
             "setting",
@@ -120,7 +120,7 @@ class SpineQd(RigModule):
         self.build_post()
 
     def build_fk(self):
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         self.fkJnt = JntNode.createJntsFrCrv(
             self.LINE_GUIDE,
             pf=rID,
@@ -151,7 +151,7 @@ class SpineQd(RigModule):
         return ikH
 
     def build_ik(self, sliding=0):
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         self.rbCrv = self.LINE_GUIDE.duplicate(n=rID + "_spCrv_#")
         self.rbCrv | self.RIG_DATA

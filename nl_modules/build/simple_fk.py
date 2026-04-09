@@ -76,7 +76,7 @@ class SimpleFk(RigModule):
         """Build control nodes for the arm rig."""
         logging.info(".")
 
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         scale = rSz / 2
         up = "x"
         if not rID.startswith("lf") and not rID.startswith("rt"):
@@ -103,7 +103,7 @@ class SimpleFk(RigModule):
     def build_fk(self):
         """Build the FK controls for the arm rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         self.jnts_fk = common.dupSk(self.jnts, "_fk", p=self.FK_GRP, r=rSz)
         self.ctls_fk = [

@@ -83,7 +83,7 @@ class ArmBp(RigModule):
     def build_ctl(self):
         """Build control nodes for the arm rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         scale = xDr * rSz
 
         ctl_defs = [
@@ -162,7 +162,7 @@ class ArmBp(RigModule):
     def build_fk(self):
         """Build the FK controls and joints for the arm rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         self.jnts_fk = common.dupSk(self.jnts, "_fk", p=self.FK_GRP, r=rSz / 2)
         self.ctls_fk = [self.clavicle_fkc, self.upr_fkc, self.lwr_fkc, self.palm_fkc]
@@ -176,7 +176,7 @@ class ArmBp(RigModule):
     def build_ik(self):
         """Build the IK controls for the arm rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         self.ikc.alignTo(self.palm, p=self.IK_GRP)
         self.palm_ikc.alignTo(self.palm, p=self.IK_GRP)
@@ -236,7 +236,7 @@ class ArmBp(RigModule):
     def fk_pin_local_rot(self):
         """Setup palm IK control constraints."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         fkPin = self.pvc.a.add("fkPin", min=0, max=1)
         self.pin_fkc = CrvNode(
@@ -276,7 +276,7 @@ class ArmBp(RigModule):
     def blend_fk_ik(self):
         """Blend FK and IK joints for the arm rig."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         scale = xDr * rSz
 
         self.setting.alignTo(self.palm, p=self.CTL_DATA)
@@ -333,7 +333,7 @@ class ArmBp(RigModule):
 
     def build_armScapula(self):
         """Build the scapula setup for the arm rig."""
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
         self.CLV_GRP = GrpNode("CLAVICLE", pf=self.rigID, p=self.CTL_DATA)
 
         clavStart_guide = DagNode(f"{rID}_clavStart_guide")
@@ -388,7 +388,7 @@ class ArmBp(RigModule):
     def build_dual_bones(self):
         """Build dual bones for the lower arm."""
         logging.info(".")
-        rID, rSz, xDr = self.getMyVar()
+        rID, rSz, xDr = self.get_short_form()
 
         radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.6)
         ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=0.6)
