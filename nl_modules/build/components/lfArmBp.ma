@@ -2,14 +2,14 @@
 //Name: lfArmBp.ma
 //Last modified: Thu, Apr 09, 2026 01:08:31 AM
 //Codeset: 1252
-requires maya "2027";
+requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
 requires "stereoCamera" "10.0";
 requires -nodeType "ik2Bsolver" "ik2Bsolver" "2.5";
 currentUnit -l centimeter -a degree -t film;
 fileInfo "application" "maya";
-fileInfo "product" "Maya 2027";
-fileInfo "version" "2027";
+fileInfo "product" "Maya 2023";
+fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202602250909-9f0befdfb8";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26200)";
 fileInfo "UUID" "BA5BA269-4947-8108-EB09-16A1BF388192";

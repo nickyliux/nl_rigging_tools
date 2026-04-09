@@ -780,7 +780,7 @@ def setNsFrSel(*args):
 def clearNs():
     """Clear current namespace in optionVar"""
     mc.optionVar(sv=("curr_ns", ""))
-    logging.info("Namespace cleared.")
+    # logging.info("Namespace cleared.")
 
 
 def getRigCtlsAll():

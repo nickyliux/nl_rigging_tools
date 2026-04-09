@@ -120,7 +120,7 @@ class MarkingMenuAutorig:
         """Add guide options to the marking menu"""
         mi = mc.menuItem(p=menu, l="Guide", rp="NE", subMenu=1)
         # , i="HIKCharacterToolSkeleton.png"
-        mc.menuItem(p=mi, l="Mirror Selected", c=guide.mirrorGuideSelOrAll)
+        mc.menuItem(p=mi, l="Mirror Sel / All", c=guide.mirrorGuideSelOrAll)
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Duplicate Selected", c=guide.duplicateGuideSel)
         mc.menuItem(p=mi, l="Transfer 1st -> 2nd", c=guide.xferGuideAtoB)
@@ -146,13 +146,13 @@ class MarkingMenuAutorig:
         mc.menuItem(p=menu, l="Select Ctls", rp="W", c=self.selectCtlSelOrAll)
 
         ns = common.getNsFrOptVar()
-        curr_ns_str = "" if ns == "" else ns
+        curr_ns_str = "NONE" if ns == "" else f'"{ns}"'
 
         # mc.menuItem(p=menu, l="Unbuild", c=build.unbuildSelOrAll)
         mc.menuItem(p=menu, l="Toggle Guide", c=build.toggleGuide)
         mc.menuItem(p=menu, l="-" * 25, en=0)
         mc.menuItem(p=menu, l="Add Follow Cam", c=common.addFollowCam)
-        mc.menuItem(p=menu, l='namespace = "' + curr_ns_str + '"', c=common.setNsFrSel)
+        mc.menuItem(p=menu, l="namespace = " + curr_ns_str, c=common.setNsFrSel)
 
         # mc.menuItem(p=menu, l="PROXY  -----", en=0)
         # space = "    "

@@ -33,7 +33,7 @@ COMPONENT_DICT = {
 
 def loadGuide(name, offset=0):
     """Load component(s) for names"""
-    common.clearNs()
+    # common.clearNs()
 
     def genNextRigID(n):
         """Generate next rigID name for newly created component"""
