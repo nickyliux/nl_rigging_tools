@@ -150,7 +150,8 @@ def mirrorGuide(tgtList, wsMirror=0):
         opp = common.getOpposite(tgt)
         mg = getMasterGuide(opp)
         if opp:
-            if mg is None or (mg and mg.a.mirrorable.get()):
+            # if mg is None or (mg and mg.a.mirrorable.get()):
+            if mg and mg.exists():
                 copyGuideAttr(tgt, opp, wsMirror=wsMirror, mirror=1)
         else:
             logging.warning(f"No opposite found for {tgt.name}")
