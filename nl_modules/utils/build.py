@@ -140,15 +140,15 @@ def addMasterAttrs():
 
     # (grpName, visAttr, lockAttr) — lockAttr=None means vis-only (no override)
     _GROUPS = [
-        ("CTL_VIS", "ctlVis", None),
-        ("JNT", "jointVis", "jointLock"),
-        ("PRX", "proxyVis", "proxyLock"),
-        ("MDL", "modelVis", "modelLock"),
+        ("_" * 8, "CTL_VIS", "ctlVis", None),
+        ("_" * 9, "JNT", "jointVis", "jointLock"),
+        ("_" * 10, "PRX", "proxyVis", "proxyLock"),
+        ("_" * 11, "MDL", "modelVis", "modelLock"),
     ]
-    ctl.a.addSep("_" * 8)
-    for grpName, visAttr, lockAttr in _GROUPS:
+    for sep, grpName, visAttr, lockAttr in _GROUPS:
         grp = DagNode(grpName)
         if grp.exists():
+            ctl.a.addSep(sep)
             ctl.a.add(visAttr, k=0, type="bool", dv=1) >> grp.a.v
             if lockAttr:
                 grp.a.overrideEnabled.set(1)

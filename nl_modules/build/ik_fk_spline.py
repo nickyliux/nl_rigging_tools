@@ -7,6 +7,7 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common, proxy
 from nl_modules.utils.color import Color
+from nl_modules.utils.common import Vec
 
 
 class IkFkSpline(RigModule):
@@ -123,12 +124,15 @@ class IkFkSpline(RigModule):
         self.main.snapTo(self.RT_GUIDE)
         self.main | self.IK_GRP
         for i in range(self.ikJntNum):
+            shape = "square" if i < (self.ikJntNum - 1) else "back"
+            scale = rSz * 2.5 if i < (self.ikJntNum - 1) else Vec((8, 7, 0.3)) * rSz
+            up = "z" if i < (self.ikJntNum - 1) else None
             ctl = CrvNode(
                 f"{i}_ikc",
                 pf=rID,
-                shape="square",
-                up="z",
-                scale=rSz * 2.2,
+                shape=shape,
+                up=up,
+                scale=scale,
                 align=self.jnts_ik[i],
                 addOfs=1,
                 p=self.main,
@@ -137,9 +141,9 @@ class IkFkSpline(RigModule):
             self.ctls_ik.append(ctl)
             self.rigNode.setMsg({f"ikc{i}": ctl})
 
-        if self.ikJntNum >= 4:
-            self.ctls_ik[1].offset | self.ctls_ik[0]
-            self.ctls_ik[-2].offset | self.ctls_ik[-1]
+        # if self.ikJntNum >= 4:
+        #     self.ctls_ik[1].offset | self.ctls_ik[0]
+        #     self.ctls_ik[-2].offset | self.ctls_ik[-1]
 
         self.rbSrf1 = self.create_rbSrf(
             span=self.ikJntNum - 1,

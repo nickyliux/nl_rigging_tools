@@ -11,7 +11,6 @@ from nl_modules.utils import common
 from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.common import Vec
-from nl_modules.utils.color import Color
 
 
 class LegQd(RigModule):
@@ -146,7 +145,7 @@ class LegQd(RigModule):
 
         if self.scapulaBone:
             ctl_defs.append(
-                ("scap_fkc", "shoulder", "z", Vec((0.2, 0.5, 0.5)) * scale, 0)
+                ("scap_fkc", "shoulder", "z", Vec((0.2, 0.6, 0.6)) * scale, 0)
             )
 
         for name, shape, up, sca, top in ctl_defs:
@@ -154,7 +153,7 @@ class LegQd(RigModule):
 
         if self.scapulaBone:
             self.scap_fkc.cv_rotate(-90, 0, 0)
-            self.scap_fkc.cv_move(0, scale * 15, 0)
+            self.scap_fkc.cv_move(0, scale * 20, 0)
 
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
