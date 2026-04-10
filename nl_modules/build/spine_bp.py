@@ -64,6 +64,10 @@ class SpineBp(RigModule):
         """Build control nodes for the spine rig."""
         logging.info(".")
         rID, rSz, xDr = self.get_short_form()
+
+        if self.is_neck():
+            rSz = self.rigSize = rSz / 2
+
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2, 0),
             ("cog_ctl", "cog_bp", None, rSz * 3.5, 0),

@@ -75,9 +75,9 @@ class SpineQd(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 1),
             ("cog_ctl", "cog_qd", None, rSz * 1.5, 0),
-            ("fore_ikc", "cube", None, Vec((6, 4, 2)) * rSz, 0),
-            ("mid_ikc", "cube", "z", Vec((6, 4, 2)) * rSz, 0),
-            ("base_ikc", "cube", None, Vec((6, 4, 2)) * rSz, 0),
+            ("fore_ikc", "back", None, Vec((6, 5, 0.5)) * rSz, 0),
+            ("mid_ikc", "back", None, Vec((6, 5, 0.5)) * rSz, 0),
+            ("base_ikc", "back", None, Vec((6, 5, 0.5)) * rSz, 0),
             ("tangent0_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
             ("tangent1_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
             ("end_ctl", "rotate2_3d", None, Vec((1, 1, 0.7)) * rSz, 0),
@@ -154,8 +154,10 @@ class SpineQd(RigModule):
 
         if self.COG_PVT_GUIDE:
             self.cog_ctl.alignTo(self.COG_PVT_GUIDE)
+            self.mid_ikc.snapTo(self.COG_PVT_GUIDE)
         else:
             self.cog_ctl.alignTo(ctlJ1)
+            self.mid_ikc.snapTo(ctlJ1)
 
         if self.BASE_PVT_GUIDE:
             self.base_ikc.alignTo(self.BASE_PVT_GUIDE)
@@ -167,8 +169,6 @@ class SpineQd(RigModule):
             self.base_ikc.alignTo(ctlJ0)
             self.tangent0_ctl.alignTo(ctlJ0)
             self.cog_lwr_ctl.alignTo(ctlJ0)
-
-        self.mid_ikc.snapTo(ctlJ1)
 
         if self.CHEST_PVT_GUIDE:
             self.fore_ikc.alignTo(self.CHEST_PVT_GUIDE)

@@ -31,7 +31,7 @@ COMPONENT_DICT = {
 }
 
 
-def loadGuide(name, offset=0):
+def loadGuide(name):
     """Load component(s) for names"""
     # common.clearNs()
 
@@ -46,8 +46,7 @@ def loadGuide(name, offset=0):
     nextRigID = genNextRigID(name)
     TplLoader(name, nextRigID).load_base_tpl()
     mg = DagNode(nextRigID + "_master_guide")
-    if offset != 0:
-        mg.a.tx.set(offset)
+
     return mg
 
 

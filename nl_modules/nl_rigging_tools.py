@@ -187,6 +187,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.lineWidthDefault_BN, partial(control.setLineWidth, -1))
         self.connect(self.UI.lineWidth2_BN, partial(control.setLineWidth, 2))
         self.connect(self.UI.lineWidth3_BN, partial(control.setLineWidth, 3))
+        self.connect(self.UI.lineWidth5_BN, partial(control.setLineWidth, 5))
 
         # Prepare
         self.connect(self.UI.addRbJnt_BN, partial(self.addJoint, rb=1))
@@ -271,7 +272,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Load selected guide components."""
         items = self.UI.guide_LW.selectedItems()
         allTgtMG = []
-        SIDE_OFFSET = 20
 
         isM = self.UI.guideSide_M_CB.isChecked()
         isL = self.UI.guideSide_L_CB.isChecked()
@@ -284,17 +284,19 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                     names = guide.COMPONENT_DICT[item.text()]
 
                     if isM and "M" in names:
-                        mg = guide.loadGuide(names["M"], 0)
+                        mg = guide.loadGuide(names["M"])
                         allTgtMG.append(mg)
                     if isL and "L" in names:
-                        mg = guide.loadGuide(names["L"], SIDE_OFFSET)
+                        mg = guide.loadGuide(names["L"])
                         allTgtMG.append(mg)
                     if isR and "R" in names:
-                        mg = guide.loadGuide(names["R"], -SIDE_OFFSET)
+                        mg = guide.loadGuide(names["R"])
                         allTgtMG.append(mg)
 
                 elif itemText == "biped":
                     self.loadPresetGuide("biped_tpl")
+                elif itemText == "quad":
+                    self.loadPresetGuide("quad_tpl")
                 elif itemText == "quad / planti":
                     self.loadPresetGuide("quad_planti_tpl")
                 elif itemText == "quad / digiti":

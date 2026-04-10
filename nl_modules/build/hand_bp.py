@@ -69,7 +69,7 @@ class HandBp(RigModule):
 
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
         self.smart_ctl.cv_rotate(90, 0, 0)
-        self.setting.cv_move(0, 0, -scale * 30)
+        self.setting.cv_move(0, 0, -scale * 20)
 
         # self.palm_ctl.color = Color.PINK
         # self.thumb_ctl.color = Color.PINK
