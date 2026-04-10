@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: rtFingerFk.ma
-//Last modified: Fri, Apr 10, 2026 11:18:56 AM
+//Last modified: Fri, Apr 10, 2026 03:38:54 PM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,7 +12,7 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26200)";
-fileInfo "UUID" "42D106F4-4350-0B5B-18EE-E7A8F90CA29C";
+fileInfo "UUID" "380F4302-42D2-4E2F-E53C-DEA0CA7C8A49";
 createNode transform -s -n "persp";
 	rename -uid "83BBC351-4169-8A57-6147-3688C3C5E65F";
 	setAttr ".v" no;
@@ -498,7 +498,7 @@ createNode nurbsCurve -n "curveShape1" -p "line_01";
 	setAttr ".ovc" 17;
 	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
 	setAttr -s 2 ".cp";
-	setAttr ".ls" 3;
+	setAttr ".ls" 5;
 	setAttr ".cc" -type "nurbsCurve" 
 		1 1 0 no 3
 		2 0 1
@@ -528,7 +528,7 @@ createNode nurbsCurve -n "curveShape2" -p "line_02";
 	setAttr ".ovc" 17;
 	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
 	setAttr -s 2 ".cp";
-	setAttr ".ls" 3;
+	setAttr ".ls" 5;
 	setAttr ".cc" -type "nurbsCurve" 
 		1 1 0 no 3
 		2 0 1
@@ -558,7 +558,7 @@ createNode nurbsCurve -n "curveShape3" -p "line_03";
 	setAttr ".ovc" 17;
 	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
 	setAttr -s 2 ".cp";
-	setAttr ".ls" 3;
+	setAttr ".ls" 5;
 	setAttr ".cc" -type "nurbsCurve" 
 		1 1 0 no 3
 		2 0 1
@@ -588,7 +588,7 @@ createNode nurbsCurve -n "curveShape4" -p "line_04";
 	setAttr ".ovc" 17;
 	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
 	setAttr -s 2 ".cp";
-	setAttr ".ls" 3;
+	setAttr ".ls" 5;
 	setAttr ".cc" -type "nurbsCurve" 
 		1 1 0 no 3
 		2 0 1
@@ -847,20 +847,20 @@ parent -s -nc -r -add "|module_grp|fgrRef_grp|fgrRef1|fgrRefShape" "fgrRef2" ;
 parent -s -nc -r -add "|module_grp|fgrRef_grp|fgrRef1|fgrRefShape" "fgrRef3" ;
 parent -s -nc -r -add "|module_grp|fgrRef_grp|fgrRef1|fgrRefShape" "fgrRef4" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "EEF10D9F-4A5D-53EE-2710-25B089CB4536";
+	rename -uid "1AA1EEE1-435F-4200-ADCF-13A9CF154B75";
 	setAttr -s 2 ".lnk";
 	setAttr -s 2 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "E9B65C1B-4267-C628-57E0-EB954FF6FEF5";
+	rename -uid "CAD25CD0-46C4-9CB9-6835-079514357D00";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "8A2E5173-4869-4A87-1FC8-BF8D3D36FEBD";
+	rename -uid "5ECF2E01-4B5B-FC00-4AC9-32B9D6CE1CB0";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "FC6A72DB-4480-520E-BD26-E3924675AD98";
+	rename -uid "125562CF-4DF0-FA3D-347B-20BE379D0E85";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "EDE7F8A1-4185-37A4-5FA7-49A7396409D6";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "D3061063-4B05-35D8-3B56-FCA3D4807C46";
+	rename -uid "5A76AA3B-436C-51AD-BFCC-7F8411A03227";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "D70BF562-46C4-2F8D-ABFE-179003332609";
 	setAttr ".g" yes;

@@ -126,13 +126,9 @@ class GrpNode(DagNode):
         from nl_modules.nodel.crv_node import CrvNode
 
         gmb_ctl = CrvNode(
-            self.node + "_gmb",
-            shape="locator",
-            align=self,
-            p=self,
-            # scale=self.o.diagonal2 * 1.5,
-            top=1,
+            self.node + "_gmb", shape="locator", align=self, p=self, top=1
         )
+        gmb_ctl.width = 2
         attrTgt = attrTgt or self
         attr = attrTgt.a.add("showGimbal", type="bool", dv=dv, k=0)
         gmb_ctl.a.add("showGimbal", proxy=attr, k=0)

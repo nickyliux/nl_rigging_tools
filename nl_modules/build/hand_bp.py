@@ -41,7 +41,7 @@ class HandBp(RigModule):
         ]
         fgr_roots = []
         for fgr_names in ALL_FGR_NAMES:
-            jnts = self.gen_sk_fr_names(fgr_names)
+            jnts = self.gen_sk_fr_names(fgr_names, r=0.5)
             jnts[0].reOrient(upRef=jnts[1], xDir=self.xDir)
             jnts[0] | root_list[0]
             fgr_roots.append(jnts[0])
@@ -105,7 +105,7 @@ class HandBp(RigModule):
                 scale=scale,
                 align=fgr,
             )
-            ctl.cv_move(scale * 4, 0, -ofs * 8)
+            ctl.cv_move(scale * 5, 0, -ofs * 5)
             ctlList.append(ctl)
         return ctlList
 

@@ -61,7 +61,7 @@ class RigModule(RigBase):
         if rigNode.a.rootJ.exists():
             self.rootJ = rigNode.a.rootJ.inConnNode
 
-    def gen_sk_fr_names(self, names, color=None, scale=1):
+    def gen_sk_fr_names(self, names, color=None, r=1):
         """Generate skeleton and control names based on the provided names list."""
         if isinstance(names, str):
             names = [names]
@@ -82,7 +82,7 @@ class RigModule(RigBase):
             n = f"{self.rigID}_{name}"
             if mc.objExists(n):
                 n += "#"
-            jN = JntNode(n, align=guideDict[name], color=color)
+            jN = JntNode(n, align=guideDict[name], color=color, r=r)
             if (currClass == "ArmBp" or currClass == "LegBp") and name == "lwr":
                 jN.a.preferredAngleY.set(-45)
             if lastJ:

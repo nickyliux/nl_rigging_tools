@@ -98,7 +98,7 @@ class ArmBp(RigModule):
         ]
 
         if self.scapulaBone:
-            ctl_defs.append(["scap_fkc", "diamond", "z", scale / 1.5, 0])
+            ctl_defs.append(["scap_fkc", "triangle", "z", scale, 0])
 
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
@@ -390,8 +390,8 @@ class ArmBp(RigModule):
         logging.info(".")
         rID, rSz, xDr = self.get_short_form()
 
-        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.6)
-        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=0.6)
+        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], r=0.5)
+        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], r=0.5)
         (radius_JC[0], ulna_JC[0]) | self.lwr
 
         radius_loc = LocNode(

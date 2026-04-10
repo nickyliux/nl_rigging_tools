@@ -145,10 +145,10 @@ def addMasterAttrs():
         ("PRX", "proxyVis", "proxyLock"),
         ("MDL", "modelVis", "modelLock"),
     ]
+    ctl.a.addSep("_" * 8)
     for grpName, visAttr, lockAttr in _GROUPS:
         grp = DagNode(grpName)
         if grp.exists():
-            ctl.a.addSep("_" * 5 + grpName.upper() + "_" * 5)
             ctl.a.add(visAttr, k=0, type="bool", dv=1) >> grp.a.v
             if lockAttr:
                 grp.a.overrideEnabled.set(1)

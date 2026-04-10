@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: belt.ma
-//Last modified: Fri, Apr 10, 2026 11:19:53 AM
+//Last modified: Fri, Apr 10, 2026 02:58:06 PM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,12 +12,12 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26200)";
-fileInfo "UUID" "4272295E-4F93-8D42-F6D3-23912F76FA93";
+fileInfo "UUID" "7D8818AC-4C9F-9758-8AAA-3785E0775084";
 createNode transform -s -n "persp";
 	rename -uid "83BBC351-4169-8A57-6147-3688C3C5E65F";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 88.963675603448138 63.252635797797055 76.846756707101932 ;
-	setAttr ".r" -type "double3" -35.138352729807977 51.39999999998588 2.5490132216521988e-15 ;
+	setAttr ".t" -type "double3" 96.750272991324124 44.749401017714717 84.514441719651117 ;
+	setAttr ".r" -type "double3" -26.138352729808119 50.999999999986038 2.5269757079988566e-15 ;
 	setAttr -cb on ".ro";
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "E4BD1A20-4E99-1123-5E44-089307917010";
@@ -288,7 +288,7 @@ createNode nurbsCurve -n "line_guideShape" -p "line_guide";
 	setAttr ".ovc" 17;
 	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
 	setAttr ".tw" yes;
-	setAttr ".ls" 3;
+	setAttr ".ls" 5;
 	setAttr ".adot" yes;
 createNode nurbsCurve -n "line_guideShapeOrig1" -p "line_guide";
 	rename -uid "A454208E-4108-70FF-E3C0-AD8735AA4A7A";
@@ -387,20 +387,20 @@ createNode nurbsCurve -n "line_guideShapeOrig1" -p "line_guide";
 parent -s -nc -r -add "|module_grp|master_guide|rt_guide_ofs|rt_guide|tp_guideShape" "md_guide" ;
 parent -s -nc -r -add "|module_grp|master_guide|rt_guide_ofs|rt_guide|tp_guideShape" "tp_guide" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "514288DE-4E2A-BABE-02B1-34B243040D14";
+	rename -uid "F9FC1E91-49B1-9B34-FE37-0E92F3794D5E";
 	setAttr -s 2 ".lnk";
 	setAttr -s 2 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "3537D0EA-4BAB-E085-95C1-DB8CD46E8263";
+	rename -uid "A2DA75A7-4499-A48D-AEF6-87B82EC3D121";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "73F00917-4415-B18F-5435-0BB55944C47B";
+	rename -uid "74DAD573-40AA-08C1-D2EC-26BE87F95605";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "DDDE4EBB-4399-E035-75A0-E9847C24EF38";
+	rename -uid "AB278AA8-4635-90D5-3300-03B234293091";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "EDE7F8A1-4185-37A4-5FA7-49A7396409D6";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "C8305059-4F52-B55E-CC06-F1B06FE71FD6";
+	rename -uid "05C767B4-49E3-81AA-1A0B-0C88194EF20E";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "D70BF562-46C4-2F8D-ABFE-179003332609";
 	setAttr ".g" yes;

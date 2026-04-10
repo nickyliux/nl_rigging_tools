@@ -109,7 +109,7 @@ class LegQd(RigModule):
             TOE_NAMES = TOE_DICT.get(self.toeNum, [])
 
             for names in TOE_NAMES:
-                fgr_jnts = self.gen_sk_fr_names(names, scale=0.15)
+                fgr_jnts = self.gen_sk_fr_names(names, r=0.5)
                 fgr_jnts[0].reOrient(
                     upRef=fgr_jnts[1],
                     xDir=self.xDir,
@@ -484,8 +484,8 @@ class LegQd(RigModule):
         logging.info(".")
         rID, rSz, xDr = self.get_short_form()
 
-        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.5)
-        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=0.5)
+        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], r=0.5)
+        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], r=0.5)
 
         parent = self.boneFix if self.kneeFix else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent

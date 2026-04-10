@@ -107,7 +107,7 @@ class LegBp(RigModule):
                 ["toe04_1", "toe04_2", "toe04_3", "toe04_4", "toe04_5"],
             ]
             for names in TOE_NAMES:
-                fgr_jnts = self.gen_sk_fr_names(names, scale=0.2)
+                fgr_jnts = self.gen_sk_fr_names(names, r=0.5)
                 fgr_jnts[0].reOrient(
                     upRef=fgr_jnts[1],
                     xDir=self.xDir,
@@ -423,7 +423,7 @@ class LegBp(RigModule):
         # Ball IK control
         self.ball_ikc = ballRollG.addOffsetGrp(below=1)
         CrvNode(self.ball_ikc)(
-            name="ball_ikc", pf=rID, shape="rotate2_3d", scale=-scale, rotateY=90
+            name="ball_ikc", pf=rID, shape="rotate2_3d", scale=-scale / 1.5, rotateY=90
         )
         self.rigNode.setMsg({"ball_ikc": self.ball_ikc})
         self.ctls_ik.append(self.ball_ikc)
@@ -480,8 +480,8 @@ class LegBp(RigModule):
         logging.info(".")
         rID, rSz, xDr = self.get_short_form()
 
-        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], scale=0.6)
-        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], scale=0.6)
+        radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], r=0.5)
+        ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], r=0.5)
 
         parent = self.boneFix if self.kneeFix else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent

@@ -99,9 +99,10 @@ class AttributeHolder:
         e.g.
             obj.a.addSep()
         """
-        while self.node.a[name].exists():
-            name += "_"
-
+        if self.node.a[name].exists():
+            return
+        # while self.node.a[name].exists():
+        #     name += "_"
         self.add(name, lock=1, type="enum", k=1, en=" ")
 
     def reset(self, **kwargs):

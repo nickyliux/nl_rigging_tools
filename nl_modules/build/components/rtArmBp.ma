@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: rtArmBp.ma
-//Last modified: Fri, Apr 10, 2026 11:17:52 AM
+//Last modified: Fri, Apr 10, 2026 03:42:46 PM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,7 +12,7 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26200)";
-fileInfo "UUID" "6FC1D36C-4E59-C19C-D5AE-808987F0AAE3";
+fileInfo "UUID" "26B07E82-4F0D-9811-EB07-2197ABD4960B";
 createNode transform -n "module_grp";
 	rename -uid "A08207E3-49BA-E61C-5646-E09F599D0878";
 	addAttr -ci true -sn "mirrorCode" -ln "mirrorCode" -dt "string";
@@ -738,7 +738,7 @@ createNode nurbsCurve -n "line_01Shape" -p "line_01";
 	setAttr ".ovc" 17;
 	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
 	setAttr -s 2 ".cp";
-	setAttr ".ls" 3;
+	setAttr ".ls" 5;
 	setAttr ".cc" -type "nurbsCurve" 
 		1 1 0 no 3
 		2 0 1
@@ -769,7 +769,7 @@ createNode nurbsCurve -n "line_02Shape" -p "line_02";
 	setAttr ".ovc" 17;
 	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
 	setAttr -s 2 ".cp";
-	setAttr ".ls" 3;
+	setAttr ".ls" 5;
 	setAttr ".cc" -type "nurbsCurve" 
 		1 1 0 no 3
 		2 0 1
@@ -800,7 +800,7 @@ createNode nurbsCurve -n "line_03Shape" -p "line_03";
 	setAttr ".ovc" 17;
 	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
 	setAttr -s 2 ".cp";
-	setAttr ".ls" 3;
+	setAttr ".ls" 5;
 	setAttr ".cc" -type "nurbsCurve" 
 		1 1 0 no 3
 		2 0 1
@@ -831,7 +831,7 @@ createNode nurbsCurve -n "line_04Shape" -p "line_04";
 	setAttr ".ovc" 17;
 	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
 	setAttr -s 2 ".cp";
-	setAttr ".ls" 3;
+	setAttr ".ls" 5;
 	setAttr ".cc" -type "nurbsCurve" 
 		1 1 0 no 3
 		2 0 1
@@ -1445,13 +1445,13 @@ createNode normalConstraint -n "plane_normal_loc_normalConstraint1" -p "plane_no
 createNode transform -s -n "persp";
 	rename -uid "AB7E52E5-4BC6-549B-1229-4BA904DD5D93";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" -85.129197570630055 240.97494311057704 90.516535800386578 ;
-	setAttr ".r" -type "double3" -41.738352729797207 -24.200000000022449 -1.7434955249158008e-15 ;
+	setAttr ".t" -type "double3" -87.438736802136233 206.24837932287679 75.339221699615308 ;
+	setAttr ".r" -type "double3" -33.938352729797309 -33.000000000022474 0 ;
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "19F6DB4F-4918-877A-57DD-5EBBE38E71A5";
 	setAttr -k off ".v";
 	setAttr ".fl" 34.999999999999993;
-	setAttr ".coi" 151.67552075133;
+	setAttr ".coi" 120.7509883802739;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -1516,20 +1516,20 @@ parent -s -nc -r -add "|module_grp|master_guide_ofs|master_guide|palm_guide_ofs|
 parent -s -nc -r -add "|module_grp|master_guide_ofs|master_guide|palm_guide_ofs|palm_guide|ball_guide_ofs|ball_guide|sphereLShape1" "palm_guide" ;
 parent -s -nc -r -add "|module_grp|master_guide_ofs|master_guide|clavEnd_guide_ofs|clavEnd_guide|scapula_guideShape" "scapula_guide" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "35447B76-4115-CF7C-7915-B992801EBDE0";
+	rename -uid "B12CD0F9-4326-8309-3E77-008A2C74046F";
 	setAttr -s 2 ".lnk";
 	setAttr -s 2 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "CBCC0D75-43DF-19B0-62EA-918DA3095BC0";
+	rename -uid "ADEF5FF1-4E07-F376-3B34-C0AB23704E7B";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "62E6A9F9-442F-F388-4470-F4B42D7F1E01";
+	rename -uid "EBA4634D-4BB1-79AF-60A8-EF9D1446E0E6";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "1EF47C0C-4604-B04A-7ED6-B6BD3963F38C";
+	rename -uid "3DE83B77-4255-E4CF-B421-1C8AB25F49CC";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "4011EB8B-4296-1EB2-2E08-40844F6318E5";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "8DB00C72-49E4-3EAF-BA83-2E9E8179BE0B";
+	rename -uid "CB501CD2-4946-D424-09DA-599FCD14A008";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "BD18B807-4968-E110-0D94-B9A28F4760A6";
 	setAttr ".g" yes;
