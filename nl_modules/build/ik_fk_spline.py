@@ -59,7 +59,7 @@ class IkFkSpline(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 1.5, 1),
-            ("main", "squareR", "z", rSz * 2.8, 1),
+            ("main", "squareR", "z", rSz * 5, 1),
         ]
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
@@ -124,9 +124,10 @@ class IkFkSpline(RigModule):
         self.main.snapTo(self.RT_GUIDE)
         self.main | self.IK_GRP
         for i in range(self.ikJntNum):
-            shape = "sphere" if i < (self.ikJntNum - 1) else "back"
-            scale = rSz * 10 if i < (self.ikJntNum - 1) else Vec((9, 8, 0.4)) * rSz
-            up = "z" if i < (self.ikJntNum - 1) else None
+            isEnds = i == 0 or i == (self.ikJntNum - 1)
+            shape = "back" if isEnds else "sphere"
+            scale = Vec((9, 8, 0.4)) * rSz if isEnds else rSz * 10
+            up = None if isEnds else "z"
             ctl = CrvNode(
                 f"{i}_ikc",
                 pf=rID,

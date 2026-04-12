@@ -32,10 +32,8 @@ class RigModule(RigBase):
 
         super().__init__(rigNode)
 
-        self.CTL_VIS = GrpNode("CTL_VIS", p=self.masterC)
-
         rID = self.rigID
-        self.CTL_DATA = GrpNode(rID + "_ctl_data", p=self.CTL_VIS)
+        self.CTL_DATA = GrpNode(rID + "_ctl_data", p=self.CTL)
         self.JNT_DATA = GrpNode(rID + "_jnt_data", p=self.JNT)
 
         self.moduleG = rigNode.a.moduleG.inConnNode

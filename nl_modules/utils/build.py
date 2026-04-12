@@ -133,17 +133,17 @@ def postRig():
 
 def addMasterAttrs():
     """Add proxy attributes to master2_ctl"""
-    ctl = DagNode("master2_ctl")
+    ctl = DagNode("CHR")
     if not ctl.exists():
-        logging.warning("master2_ctl NOT found.")
+        logging.warning("CHR NOT found.")
         return
 
     # (grpName, visAttr, lockAttr) — lockAttr=None means vis-only (no override)
     _GROUPS = [
-        ("_" * 8, "CTL_VIS", "ctlVis", None),
-        ("_" * 9, "JNT", "jointVis", "jointLock"),
-        ("_" * 10, "PRX", "proxyVis", "proxyLock"),
-        ("_" * 11, "MDL", "modelVis", "modelLock"),
+        ("_" * 8, "CTL", "ctlVis", None),
+        ("_" * 9, "PRX", "proxyVis", "proxyRef"),
+        ("_" * 10, "JNT", "jointVis", "jointRef"),
+        ("_" * 11, "MDL", "modelVis", "modelRef"),
     ]
     for sep, grpName, visAttr, lockAttr in _GROUPS:
         grp = DagNode(grpName)
