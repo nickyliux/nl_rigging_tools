@@ -6,8 +6,6 @@ from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
-from nl_modules.utils import proxy
-from nl_modules.utils.color import Color
 
 
 class HandBp(RigModule):
@@ -47,7 +45,6 @@ class HandBp(RigModule):
             fgr_roots.append(jnts[0])
 
         self.rootJ = root_list[0]
-        # self.rootJ.color = Color.BLACK
         self.rootJ | self.JNT_DATA
         self.rootGrp = self.rootJ.addOffsetGrp()
         self.rigNode.setMsg({"rootJ": self.rootJ})
@@ -70,10 +67,6 @@ class HandBp(RigModule):
         self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
         self.smart_ctl.cv_rotate(90, 0, 0)
         self.setting.cv_move(0, 0, -scale * 20)
-
-        # self.palm_ctl.color = Color.PINK
-        # self.thumb_ctl.color = Color.PINK
-        # self.smart_ctl.color = Color.PINK
 
     def build(self):
         """Build the hand rig module."""

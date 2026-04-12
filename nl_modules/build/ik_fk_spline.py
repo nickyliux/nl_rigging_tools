@@ -124,8 +124,8 @@ class IkFkSpline(RigModule):
         self.main.snapTo(self.RT_GUIDE)
         self.main | self.IK_GRP
         for i in range(self.ikJntNum):
-            shape = "square" if i < (self.ikJntNum - 1) else "back"
-            scale = rSz * 2.5 if i < (self.ikJntNum - 1) else Vec((8, 7, 0.3)) * rSz
+            shape = "sphere" if i < (self.ikJntNum - 1) else "back"
+            scale = rSz * 10 if i < (self.ikJntNum - 1) else Vec((9, 8, 0.4)) * rSz
             up = "z" if i < (self.ikJntNum - 1) else None
             ctl = CrvNode(
                 f"{i}_ikc",
@@ -141,9 +141,9 @@ class IkFkSpline(RigModule):
             self.ctls_ik.append(ctl)
             self.rigNode.setMsg({f"ikc{i}": ctl})
 
-        # if self.ikJntNum >= 4:
-        #     self.ctls_ik[1].offset | self.ctls_ik[0]
-        #     self.ctls_ik[-2].offset | self.ctls_ik[-1]
+        if self.ikJntNum >= 4:
+            self.ctls_ik[1].offset | self.ctls_ik[0]
+            self.ctls_ik[-2].offset | self.ctls_ik[-1]
 
         self.rbSrf1 = self.create_rbSrf(
             span=self.ikJntNum - 1,
@@ -248,7 +248,7 @@ class IkFkSpline(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the rig controls."""
         self.ctl_vis_toggle(
-            self.setting.a.add("showIkCtl", k=0, type="bool", dv=0),
+            self.setting.a.add("showIkCtl", k=0, type="bool", dv=1),
             onList=self.ctls_ik,
         )
         self.ctl_vis_toggle(
