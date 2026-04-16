@@ -76,33 +76,24 @@ def xferGuideAtoB(*arg):
 
 
 def duplicateGuideSel(*arg):
-    """Duplicate selected guide controls"""
+    """Duplicate selected master guides and transfer guide settings"""
     MGs = build.collectMasterGuide(isSel=1, isAll=0)
+    resultMGs = []
     for mg in MGs:
         rigID = mg.a.rigID.get()
         dupMG = loadGuide(removeEndDigits(rigID))
+
         mc.select(mg, dupMG)
         xferGuideAtoB()
+        resultMGs.append(dupMG)
 
-    # selList = mc.ls("*_master_guide", sl=1, tr=1)
-    # allTgtMG = []
-    # for sel in selList:
-    #     mg = DagNode(sel) if isinstance(sel, str) else sel
-    #     if mg and mg.exists():
-    #         rigID = mg.a.rigID.get()
-    #         tgtMG = loadGuide(removeEndDigits(rigID))
-    #         allTgtMG.append(tgtMG)
-
-    #         # Copy xform & attributes
-    #         mc.select(mg, tgtMG)
-    #         xferGuideAtoB()
-
-    # mc.select(allTgtMG)
-    # mc.setToolTo("moveSuperContext")
+    if resultMGs:
+        mc.select(resultMGs)
+        mc.setToolTo("moveSuperContext")
 
 
 def duplicateGuideSymSel(*arg):
-    """Duplicate selected guide controls"""
+    """Duplicate selected master guides symmetrically and transfer guide settings"""
     selList = mc.ls(sl=1, tr=1)
     allTgtMG = []
     for sel in selList:

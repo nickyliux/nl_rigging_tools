@@ -25,6 +25,11 @@ class TplLoader:
         curr_dir = os.path.dirname(os.path.abspath(__file__))
         tplFile = os.path.join(curr_dir, "components", self.fileName + ".ma")
 
+        # clean up any existing nodes with the same rigID prefix
+        prevRubbish = mc.ls(rID + "_*")
+        if prevRubbish:
+            mc.delete(prevRubbish)
+
         if os.path.isfile(tplFile):
             mc.file(tplFile, i=1, mnc=0, renameAll=1, renamingPrefix=rID)
         else:
