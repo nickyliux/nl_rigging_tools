@@ -10,7 +10,6 @@ from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
 from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
-from nl_modules.utils.color import Color
 from nl_modules.utils.common import Vec
 
 
@@ -89,22 +88,22 @@ class ArmBp(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
             ("clavicle_fkc", "cube", "x", scale, 1),
-            ("upr_fkc", "circleThick", "x", scale, 0),
-            ("lwr_fkc", "circleThick", "x", scale, 0),
-            ("palm_fkc", "circleThick", "x", scale, 0),
+            ("upr_fkc", "circle", "x", scale, 0),
+            ("lwr_fkc", "circle", "x", scale, 0),
+            ("palm_fkc", "circle", "x", scale, 0),
             ("ikc", "cube", None, Vec((1, 2, 2)) * scale, 0),
             ("pvc", "sphere", None, rSz * 2, 0),
             ("palm_ikc", "squareR", "x", scale, 0),
         ]
 
         if self.scapulaBone:
-            ctl_defs.append(["scap_fkc", "triangle", "z", scale, 0])
+            ctl_defs.append(["scap_fkc", "stick", "z", scale * 0.7, 0])
 
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
-        if self.scapulaBone:
-            self.scap_fkc.cv_move(0, 0, scale * 15)
+        # if self.scapulaBone:
+        #     self.scap_fkc.cv_move(0, 0, scale * 15)
 
         self.pvc.cv_rotate(-90, 0, 0)
         self.setting.cv_move(0, scale * 20, 0)

@@ -1,14 +1,11 @@
 import logging
 import maya.cmds as mc
 from nl_modules.build.rig_module import RigModule
-from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.grp_node import GrpNode
-from nl_modules.nodel.loc_node import LocNode
-from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.utils import common
 from nl_modules.utils import proxy
-from nl_modules.utils.color import Color
+from nl_modules.utils.common import Vec
 
 
 class SimpleFk(RigModule):
@@ -77,10 +74,11 @@ class SimpleFk(RigModule):
         logging.info(".")
 
         rID, rSz, xDr = self.get_short_form()
-        scale = rSz / 2
         up = "x"
+        scale = Vec((0.5, 1, 1)) * rSz
         if not rID.startswith("lf") and not rID.startswith("rt"):
             up = "z"
+            scale = Vec((1, 1, 0.5)) * rSz
 
         ctl_defs = [
             ("setting", "screw_nut", up, rSz, 0),
@@ -88,16 +86,15 @@ class SimpleFk(RigModule):
         ]
 
         if self.segNum >= 2:
-            ctl_defs.append(("simple02_fkc", "squareR", up, scale, 0))
+            ctl_defs.append(("simple02_fkc", "squareR", up, rSz / 2, 0))
         if self.segNum >= 3:
-            ctl_defs.append(("simple03_fkc", "squareR", up, scale, 0))
+            ctl_defs.append(("simple03_fkc", "squareR", up, rSz / 2, 0))
         if self.segNum >= 4:
-            ctl_defs.append(("simple04_fkc", "squareR", up, scale, 0))
+            ctl_defs.append(("simple04_fkc", "squareR", up, rSz / 2, 0))
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
         self.setting.alignTo(self.rootJ, p=self.CTL_DATA)
-
         self.rootJ.cstPar(self.setting, mo=1)
 
     def build_fk(self):

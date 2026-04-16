@@ -90,7 +90,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Parts</string>
+      <string>Guides</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -340,7 +340,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Func</string>
+      <string>Steps</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1331,7 +1331,7 @@
        <string>Left</string>
       </property>
       <property name="text">
-       <string>Load Latest</string>
+       <string>Load latest</string>
       </property>
       <property name="checked">
        <bool>true</bool>
@@ -1385,13 +1385,6 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QComboBox" name="charFolder_CBB">
-         <property name="maxVisibleItems">
-          <number>20</number>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="charPath_BN">
          <property name="enabled">
           <bool>true</bool>
@@ -1424,6 +1417,13 @@
          </property>
          <property name="text">
           <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="charFolder_CBB">
+         <property name="maxVisibleItems">
+          <number>20</number>
          </property>
         </widget>
        </item>
@@ -1471,7 +1471,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Proxy Warpping</string>
+      <string>Proxy Warp</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1688,7 +1688,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Shape Editing</string>
+      <string>Shapes</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -2502,7 +2502,7 @@
       <string notr="true"/>
      </property>
      <property name="title">
-      <string>Skeleton Preparation</string>
+      <string>SK Prep</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

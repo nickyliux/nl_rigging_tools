@@ -66,7 +66,7 @@ class HandBp(RigModule):
 
         self.masterGuide.setMsg({"smart_ctl": self.smart_ctl})
         self.smart_ctl.cv_rotate(90, 0, 0)
-        self.setting.cv_move(0, 0, -scale * 20)
+        self.setting.cv_move(0, 0, -scale * 15)
 
     def build(self):
         """Build the hand rig module."""
@@ -346,7 +346,7 @@ class HandBp(RigModule):
 
     def setup_channel(self):
         """Setup channels for the hand rig controls."""
-        # self.setting.a.showAttr()
+        self.setting.a.showAttr()
         self.smart_ctl.a.showAttr(t=1, r=1, s=1)
         self.palm_ctl.a.showAttr(r=1)
 
@@ -408,7 +408,9 @@ class HandBp(RigModule):
         """Post setup for the hand rig module."""
         logging.info(".")
 
-        self.setting.alignTo(self.rootJ)  # , p=self.CTL_DATA)
+        # self.setting.alignTo(self.rootJ)  # , p=self.CTL_DATA)
+        # self.rootJ.cstPar(self.setting, mo=1)
+        self.setting.alignTo(self.rootJ, p=self.CTL_DATA)
         self.rootJ.cstPar(self.setting, mo=1)
 
         self.setup_scale()

@@ -9,9 +9,7 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
 from nl_modules.utils import proxy
-from nl_modules.utils import utils_node as ut
 from nl_modules.utils.common import Vec
-from nl_modules.utils.color import Color
 
 
 class LegBp(RigModule):
@@ -131,10 +129,10 @@ class LegBp(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
             ("hip_fkc", "stickS", None, -scale / 1.5, 0),
-            ("upr_fkc", "circleThick", "x", scale, 0),
-            ("lwr_fkc", "circleThick", "x", scale, 0),
-            ("palm_fkc", "circleThick", "x", scale, 0),
-            ("ball_fkc", "circleThick", "x", scale / 5, 0),
+            ("upr_fkc", "circle", "x", scale, 0),
+            ("lwr_fkc", "circle", "x", scale, 0),
+            ("palm_fkc", "circle", "x", scale, 0),
+            ("ball_fkc", "circle", "x", scale / 5, 0),
             ("ikc", "trapezoid", None, Vec((1.6, 0.5, 3.2)) * rSz, 0),
             ("pvc", "sphere", None, rSz, 0),
             ("smart_ctl", "pyramid", None, scale / 3, 0),
