@@ -41,8 +41,6 @@ class MarkingMenuAutorig:
     def setupMenu(self, menu, parent):
         """Setup the marking menu with various options"""
         mc.menuItem(p=menu, l="Mirror Pose", rp="NW", c=guide.mirrorPose)
-        # i="kinMirrorJoint_S.png",
-        # mc.menuItem(p=menu, l="Mirror Guide", rp="SW", c=guide.mirrorGuideSelOrAll)
 
         self.addBuildOptions(menu)
         self.addGuideOptions(menu)
@@ -78,7 +76,7 @@ class MarkingMenuAutorig:
             mc.select(selList[0])
 
     def addShapeOptions(self, menu):
-        mi = mc.menuItem(p=menu, l="Shape", rp="SE", subMenu=1)  # , i="curveEP.png")
+        mi = mc.menuItem(p=menu, l="Shape", rp="SW", subMenu=1)  # , i="curveEP.png")
         mc.menuItem(p=mi, l="Mirror Sel / All", c=self.mirrorShapeSelOrAll)
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Drop It", c=control.dropSel)
@@ -89,18 +87,16 @@ class MarkingMenuAutorig:
 
     def addBuildOptions(self, menu):
         """Add build options to the marking menu"""
-        # mi = mc.menuItem(p=menu, l="Build", rp="N", subMenu=1)  # , i="play_S.png")
         mi = mc.menuItem(p=menu, l="Build / Rebuild", rp="N", c=self.rebuild)
-        # mc.menuItem(p=mi, l="Build / Rebuild", c=self.rebuild)
 
     def rebuild(*args):
         """Custom rebuild function that unbuilds and then builds the selected rig"""
         build.unbuildSelOrAll()
-        build.buildSelOrAll(1)
+        build.buildSelOrAll()
 
     def addHelperOptions(self, menu):
         """Add helper options to the marking menu"""
-        mi = mc.menuItem(p=menu, l="Helper", rp="SW", subMenu=1)
+        mi = mc.menuItem(p=menu, l="Helper", rp="SE", subMenu=1)
         # mc.menuItem(p=mi, l="BASIC -------", en=0)
         # mc.menuItem(p=mi, l="    rz ~> ty", c=partial(helper.addHelpers, "rz", "ty"))
         # mc.menuItem(p=mi, l="    ry ~> tz", c=partial(helper.addHelpers, "ry", "tz"))
@@ -122,11 +118,9 @@ class MarkingMenuAutorig:
         # , i="HIKCharacterToolSkeleton.png"
         mc.menuItem(p=mi, l="Mirror Sel / All", c=guide.mirrorGuideSelOrAll)
         mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="Duplicate Selected", c=guide.duplicateGuideSel)
-        mc.menuItem(p=mi, l="Transfer 1st -> 2nd", c=guide.xferGuideAtoB)
-        mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="Delete Selected / All", c=build.deleteSelOrAll)
-        # mc.menuItem(p=mi, l="Mirror", c=guide.mirrorGuideSelOrAll)
+        mc.menuItem(p=mi, l="Duplicate", c=guide.duplicateGuideSel)
+        # mc.menuItem(p=mi, l="Dupl. Sym.", c=guide.duplicateGuideSymSel)
+        mc.menuItem(p=mi, l="Copy 1 -> 2", c=guide.xferGuideAtoB)
 
     def addProxyOptions(self, menu):
         """Add proxy options to the marking menu"""
@@ -172,16 +166,14 @@ class MarkingMenuAutorig:
             return
 
         firstSelected = DagNode(selList[0])
-        nodes = firstSelected.a.message.outConnNode
-        if not nodes:
+        MGs = firstSelected.a.message.outConnNode
+
+        if not (MGs and MGs[0].exists()):
             return
 
-        rigNode = nodes[0]
-        if not rigNode.exists():
-            return
-
-        # --- Show Ik / Fk switch by looking up rigNode settings ---
-        attr = rigNode.a["setting"]
+        # --- Show Ik / Fk switch by looking up mg settings ---
+        mg = MGs[0]
+        attr = mg.a["setting"]
         if attr.exists():
             setting = attr.inConnNode
             if setting:
@@ -192,7 +184,7 @@ class MarkingMenuAutorig:
                         p=menu,
                         l="FK <-> IK",
                         rp="S",
-                        c=partial(self.switch_fk_ik, attr, val, rigNode),
+                        c=partial(self.switch_fk_ik, attr, val, mg),
                     )
 
         # --- Space Switch ---
@@ -218,7 +210,7 @@ class MarkingMenuAutorig:
                 mc.menuItem(
                     p=menu,
                     l="    Toggle",
-                    c=partial(self.switch_local_global, attr, val, rigNode),
+                    c=partial(self.switch_local_global, attr, val, mg),
                 )
         mc.menuItem(p=menu, l="-" * 25, en=0)
 
@@ -238,8 +230,8 @@ class MarkingMenuAutorig:
         """Select the controls of the selected rig or all rigs in the scene"""
         from nl_modules.utils import common
 
-        rigNodes = build.getRigNodes_selOrAll()
-        ctls = common.getRigCtls(rigNodes)
+        MGs = build.collectMasterGuide_selOrAll()
+        ctls = common.getRigCtls(MGs)
         if ctls:
             mc.select(ctls)
 
@@ -249,12 +241,12 @@ class MarkingMenuAutorig:
 
     def switch_fk_ik(self, *args):
         """Switch FK/IK mode for the specified rig node"""
-        anim.switchFkIk(attr=args[0], toIKMode=args[1], rigNode=args[2])
+        anim.switchFkIk(attr=args[0], toIKMode=args[1], mg=args[2])
         self.reload_marking_menu()
 
     def switch_local_global(self, *args):
         """Switch Local/Global mode for the specified rig node"""
-        anim.switchLocalGlobal(attr=args[0], toGlobal=args[1], rigNode=args[2])
+        anim.switchLocalGlobal(attr=args[0], toGlobal=args[1])
         self.reload_marking_menu()
 
     def reload_marking_menu(*args):

@@ -29,6 +29,7 @@ def loadModel(self):
                 fileFilter="*_mdl*", dialogStyle=2, fileMode=1, dir=charPath
             )
             if tgtPaths:
+                tgtPaths.sort(key=common.sortFile)
                 file.importFile(tgtPaths[-1])
             else:
                 return

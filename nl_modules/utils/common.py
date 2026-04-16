@@ -1,8 +1,8 @@
 import logging
+import os
 import re
 import maya.cmds as mc
 from collections import OrderedDict
-
 from nl_modules.utils.color import Color
 
 
@@ -787,13 +787,12 @@ def getRigCtlsAll():
     """Get all rig controls in the scene"""
     from nl_modules.utils import build
 
-    allRigNodes = build.getRigNodes_all()
-    if allRigNodes:
-        return getRigCtls(allRigNodes)
-    # return getRigCtls(mc.ls("*RGN", type="script"))
+    allMGs = build.getMasterGuide_all()
+    if allMGs:
+        return getRigCtls(allMGs)
 
 
-def getRigCtls(rigNodes):
+def getRigCtls(MGs):
     """Get all rig controls from rig nodes"""
     from nl_modules.nodel.base.dag_node import DagNode
     from nl_modules.utils import common
@@ -801,8 +800,8 @@ def getRigCtls(rigNodes):
     ns = getNsFrOptVar()
 
     ctlList = []
-    for rigNode in rigNodes:
-        ctlSet = ns + DagNode(rigNode).a.rigID.get() + "_ctl_set"
+    for mg in MGs:
+        ctlSet = ns + DagNode(mg).a.rigID.get() + "_ctl_set"
         ctls = common.getSetMembersInOrder(ctlSet)
         if ctls:
             ctlList.extend(ctls)
@@ -810,17 +809,30 @@ def getRigCtls(rigNodes):
     return ctlList
 
 
-def add_mirror_attr(tgts=None):
+def add_wsMirror_attr(tgts=None):
     """Add mirror attribute to targets"""
     from nl_modules.nodel.base.dag_node import DagNode
 
     if not tgts:
-        tgts = mc.ls(sl=1, tr=1)
+        tgts = mc.ls(sl=1, tr=1) or []
 
     for t in tgts:
         t = DagNode(t)
         if t.exists():
             t.a.add("wsMirror", lock=1, k=0, cb=0, dv=1)
+
+
+def add_flipRX_attr(tgts=None):
+    """Add flip X attribute to targets"""
+    from nl_modules.nodel.base.dag_node import DagNode
+
+    if not tgts:
+        tgts = mc.ls(sl=1, tr=1) or []
+
+    for t in tgts:
+        t = DagNode(t)
+        if t.exists():
+            t.a.add("flipRX", lock=1, k=0, cb=0, dv=1)
 
 
 def build_ribbon_rivet(
@@ -975,39 +987,60 @@ def build_ribbon_rivet(
 #     return uvPin, uvPinOut
 
 
-def getOppositeForSide(tgtN, pfL="lf", pfR="rt"):
-    """Return opposite for one side"""
-    from nl_modules.nodel.base.dag_node import DagNode
+def sortFile(n):
+    """Sort file name by number at the end of the name
+    e.g.
+        ['d:/ .../file2.json', 'd:/ .../file10.json', 'd:/ .../file.json']
+        =>
+        ['d:/ .../file.json', 'd:/ .../file2.json', 'd:/ .../file10.json']
+    """
+    import re
 
-    pattern = re.compile(rf"^{pfL}(\w+)$")
-    match = re.match(pattern, tgtN.name)
+    file_name = os.path.basename(n)
+    name_only = os.path.splitext(file_name)[0]
 
+    pattern = re.compile(rf"[A-Za-z_]*([\d]+)$")
+    match = re.match(pattern, name_only)
     if match:
-        opp = DagNode(f"{pfR}{match.group(1)}")
-        if opp.exists():
-            return opp
-    else:
-        pattern = re.compile(rf"^(\w*):{pfL}(\w+)$")
-        match = re.match(pattern, tgtN.name)
-        if match:
-            opp = DagNode(f"{match.group(1)}:{pfR}{match.group(2)}")
-            if opp.exists():
-                return opp
+        return int(match.group(1))
+    return 0
 
 
-def getOpposite(tgtN, pfL="lf", pfR="rt"):
+def getOppositeForSide(text, pfL="lf", pfR="rt"):
     """Return opposite
     e.g.
         lf_leg0_ikc => rt_leg0_ikc
+        aa_lf_leg0_ikc => aa_rt_leg0_ikc
         ns:lf_leg0_ikc => ns:rt_leg0_ikc
+        ns:bb_lf_leg0_ikc => ns:bb_rt_leg0_ikc
     """
-    leftOpposite = getOppositeForSide(tgtN, pfL, pfR)
-    if leftOpposite:
-        return leftOpposite
+    pattern = re.compile(rf"^{pfL}(\w+)$")
+    match = re.match(pattern, text)
 
-    rightOpposite = getOppositeForSide(tgtN, pfR, pfL)
-    if rightOpposite:
-        return rightOpposite
+    result = ""
+    if match:
+        result = f"{pfR}{match.group(1)}"
+    else:
+        pattern = re.compile(rf"^([a-zA-Z0-9_:]*){pfL}(\w+)$")
+        match = re.match(pattern, text)
+        if match:
+            result = f"{match.group(1)}{pfR}{match.group(2)}"
+    return result
+
+
+def getOpposite(tgtN, pfL="lf", pfR="rt"):
+    """Return opposite"""
+    from nl_modules.nodel.base.dag_node import DagNode
+
+    oppName = getOppositeForSide(tgtN.name, pfL, pfR)
+    opp = DagNode(oppName)
+    if opp.exists():
+        return opp
+
+    oppName = getOppositeForSide(tgtN.name, pfR, pfL)
+    opp = DagNode(oppName)
+    if opp.exists():
+        return opp
 
 
 def addKeys(tgt, attrName=None, data=None):

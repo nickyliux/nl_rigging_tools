@@ -16,11 +16,11 @@ from nl_modules.utils.common import Vec
 class SpineQd(RigModule):
     """Quadruped spine rig module."""
 
-    def __init__(self, rigNode):
-        super().__init__(rigNode)
+    def __init__(self, mg):
+        super().__init__(mg)
         guide_attrs = ["rbnJntNum"]
         for attr in guide_attrs:
-            setattr(self, attr, self.get_guide_attr(attr))
+            setattr(self, attr, self.masterGuide.a[attr].get())
 
         self.LINE_GUIDE = CrvNode(f"{self.rigID}_line_guide")
         self.TP_GUIDE = DagNode(f"{self.rigID}_tp_guide")
@@ -64,7 +64,7 @@ class SpineQd(RigModule):
 
         self.rootJ = root_list[0]
         self.rootJ | self.JNT_DATA
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 
     def build_ctl(self):
@@ -81,18 +81,18 @@ class SpineQd(RigModule):
             ("tangent0_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
             ("tangent1_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
             ("end_ctl", "rotate2_3d", None, Vec((1, 1, 0.7)) * rSz, 0),
-            ("cog_upr_ctl", "rotate", None, rSz * 1.5, 0),
-            ("cog_lwr_ctl", "rotate", None, rSz * 1.5, 0),
+            ("cog_upr_ctl", "triangle", "x", rSz, 0),
+            ("cog_lwr_ctl", "triangle", "x", rSz, 0),
         ]
 
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         self.cog_ctl.cv_move(0, rSz * 60, 0)
-        self.cog_upr_ctl.cv_rotate(150, 0, 0)
-        self.cog_upr_ctl.cv_move(0, rSz * 90, 0)
-        self.cog_lwr_ctl.cv_rotate(-30, 0, 0)
-        self.cog_lwr_ctl.cv_move(0, rSz * 30, 0)
+        # self.cog_upr_ctl.cv_rotate(150, 0, 0)
+        self.cog_upr_ctl.cv_move(0, rSz * 60, 0)
+        # self.cog_lwr_ctl.cv_rotate(-30, 0, 0)
+        self.cog_lwr_ctl.cv_move(0, rSz * 60, 0)
         self.end_ctl.cv_move(0, 0, rSz * -10)
 
         self.fore_ikc.cv_move(0, rSz * 20, 0)
@@ -101,7 +101,7 @@ class SpineQd(RigModule):
 
         self.tangent0_ctl.cv_rotate(0, 90, 0)
         self.tangent1_ctl.cv_rotate(0, 90, 0)
-        self.setting.cv_move(0, rSz * 70, 0)
+        self.setting.cv_move(0, rSz * 90, 0)
 
     def build(self):
         """Build the spine rig."""
@@ -118,7 +118,7 @@ class SpineQd(RigModule):
         mc.rebuildSurface(
             self.rbSrfSk, rt=0, end=1, kr=0, kcp=0, kc=0, su=0, sv=self.rbnJntNum - 1
         )
-        self.rigNode.setMsg({"rbSrf": self.rbSrf, "rbSrfSk": self.rbSrfSk})
+        self.masterGuide.setMsg({"rbSrf": self.rbSrf, "rbSrfSk": self.rbSrfSk})
 
         self.build_ctl()
         self.build_ik()
@@ -230,7 +230,7 @@ class SpineQd(RigModule):
         self.rbCrvSk.a.inheritsTransform.set(0)
         (self.rbCrv, self.rbCrvSk) | self.CTL_DATA
 
-        self.rigNode.setMsg({"rbCrv": self.rbCrv, "rbCrvSk": self.rbCrvSk})
+        self.masterGuide.setMsg({"rbCrv": self.rbCrv, "rbCrvSk": self.rbCrvSk})
 
         spIkJnts = JntNode.createJntsFrCrv(
             self.rbCrv, pf=rID, name="spikj", num=jntNum, size=rSz, p=self.CTL_DATA
@@ -387,7 +387,7 @@ class SpineQd(RigModule):
 
     def setup_space(self):
         """Setup space switching for the spine rig controls."""
-        self.rigNode.setMsg(
+        self.masterGuide.setMsg(
             {
                 "space_master": self.masterC,
                 "space_COG": self.cog_ctl,

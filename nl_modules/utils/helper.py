@@ -242,7 +242,7 @@ def deleteHelpers(*args):
 def loadHlp(*args):
     """Load helper joint data from a JSON file and recreate the joints in the scene."""
     at_least_one_built = 0
-    for node in build.getRigNodes_all():
+    for node in build.getMasterGuide_all():
         if node.a.nodeState.get() == 2:
             at_least_one_built = 1
 

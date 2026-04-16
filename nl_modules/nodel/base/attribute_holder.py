@@ -103,7 +103,7 @@ class AttributeHolder:
             return
         # while self.node.a[name].exists():
         #     name += "_"
-        self.add(name, lock=1, type="enum", k=1, en=" ")
+        self.add(name, lock=1, type="enum", k=1, en="_" * 12)
 
     def reset(self, **kwargs):
         """Reset object's xform

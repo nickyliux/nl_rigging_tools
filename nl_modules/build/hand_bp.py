@@ -11,8 +11,8 @@ from nl_modules.utils import common
 class HandBp(RigModule):
     """Hand rig module."""
 
-    def __init__(self, rigNode):
-        super().__init__(rigNode)
+    def __init__(self, mg):
+        super().__init__(mg)
 
         # Finger and control lists
         self.jnts_fgr = []
@@ -47,7 +47,7 @@ class HandBp(RigModule):
         self.rootJ = root_list[0]
         self.rootJ | self.JNT_DATA
         self.rootGrp = self.rootJ.addOffsetGrp()
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 
     def build_ctl(self):
@@ -64,7 +64,7 @@ class HandBp(RigModule):
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
-        self.rigNode.setMsg({"smart_ctl": self.smart_ctl})
+        self.masterGuide.setMsg({"smart_ctl": self.smart_ctl})
         self.smart_ctl.cv_rotate(90, 0, 0)
         self.setting.cv_move(0, 0, -scale * 20)
 
@@ -335,9 +335,9 @@ class HandBp(RigModule):
 
     def setup_space(self):
         """Setup space switching for the hand rig controls."""
-        self.rigNode.a.add("spaceName1", type="string", txt="palm")
-        self.rigNode.a.add("spaceName2", type="string", txt="palmIK")
-        self.rigNode.setMsg(
+        self.masterGuide.a.add("spaceName1", type="string", txt="palm")
+        self.masterGuide.a.add("spaceName2", type="string", txt="palmIK")
+        self.masterGuide.setMsg(
             {
                 "spaceHolder1": self.rootJ,
                 "spaceHolder2": self.hand_grp,
@@ -346,7 +346,7 @@ class HandBp(RigModule):
 
     def setup_channel(self):
         """Setup channels for the hand rig controls."""
-        self.setting.a.showAttr()
+        # self.setting.a.showAttr()
         self.smart_ctl.a.showAttr(t=1, r=1, s=1)
         self.palm_ctl.a.showAttr(r=1)
 
@@ -408,7 +408,7 @@ class HandBp(RigModule):
         """Post setup for the hand rig module."""
         logging.info(".")
 
-        self.setting.alignTo(self.rootJ, p=self.CTL_DATA)
+        self.setting.alignTo(self.rootJ)  # , p=self.CTL_DATA)
         self.rootJ.cstPar(self.setting, mo=1)
 
         self.setup_scale()

@@ -10,7 +10,7 @@ from nl_modules.utils import common
 
 
 class Spd3Leg(rig_module.RigModule):
-    def __init__(self, rigNode):
+    def __init__(self, mg):
         """
         CHR
         |____RIG
@@ -22,23 +22,23 @@ class Spd3Leg(rig_module.RigModule):
         |____SK
 
         """
-        super().__init__(rigNode)
+        super().__init__(mg)
 
-        logging.info("Load rigNode's connected into attr.")
+        logging.info("Load mg's connected into attr.")
 
         self.FK_SETUP = GrpNode("FK_SETUP", pf=self.rigID, p=self.CTL_DATA)
         self.IK_SETUP = GrpNode("IK_SETUP", pf=self.rigID, p=self.CTL_DATA)
 
-        self.leg_01 = rigNode.a.leg_01.inConnNode
-        self.leg_02 = rigNode.a.leg_02.inConnNode
-        self.leg_03 = rigNode.a.leg_03.inConnNode
-        self.leg_04 = rigNode.a.leg_04.inConnNode
-        self.leg_05 = rigNode.a.leg_05.inConnNode
+        self.leg_01 = mg.a.leg_01.inConnNode
+        self.leg_02 = mg.a.leg_02.inConnNode
+        self.leg_03 = mg.a.leg_03.inConnNode
+        self.leg_04 = mg.a.leg_04.inConnNode
+        self.leg_05 = mg.a.leg_05.inConnNode
 
-        self.leg_01_fkc = rigNode.a.leg_01_fkc.inConnNode
-        self.leg_02_fkc = rigNode.a.leg_02_fkc.inConnNode
-        self.leg_03_fkc = rigNode.a.leg_03_fkc.inConnNode
-        self.leg_04_fkc = rigNode.a.leg_04_fkc.inConnNode
+        self.leg_01_fkc = mg.a.leg_01_fkc.inConnNode
+        self.leg_02_fkc = mg.a.leg_02_fkc.inConnNode
+        self.leg_03_fkc = mg.a.leg_03_fkc.inConnNode
+        self.leg_04_fkc = mg.a.leg_04_fkc.inConnNode
         self.ctls_fk = [
             self.leg_01_fkc,
             self.leg_02_fkc,
@@ -46,15 +46,15 @@ class Spd3Leg(rig_module.RigModule):
             self.leg_04_fkc,
         ]
 
-        self.main_ikc = rigNode.a.foot_ikc.inConnNode
-        self.main_pvc = rigNode.a.knee_pvc.inConnNode
+        self.main_ikc = mg.a.foot_ikc.inConnNode
+        self.main_pvc = mg.a.knee_pvc.inConnNode
 
         self.jnts = [self.leg_01, self.leg_02, self.leg_03, self.leg_04, self.leg_05]
         self.jnts_fk = []
         self.jnts_ik = []
 
-        self.anchor = rigNode.a.anchor.inConnNode
-        self.setting = rigNode.a.setting.inConnNode
+        self.anchor = mg.a.anchor.inConnNode
+        self.setting = mg.a.setting.inConnNode
 
     def build(self):
 
@@ -63,7 +63,7 @@ class Spd3Leg(rig_module.RigModule):
         """Build basic groups and custom setup"""
 
         self.leg_01.parentTo(self.JNT)
-        self.moduleG.parentTo(self.masterC)
+        # self.moduleG.parentTo(self.masterC)
         self.anchor.snapTo(self.leg_01, p=self.masterC)
 
         self.build_fk()

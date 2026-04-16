@@ -14,7 +14,7 @@ class TplLoader:
     def __init__(self, fileName, rigID):
         self.fileName = fileName
         self.rigID = rigID
-        self.rigNode = None
+        self.masterGuide = None
         self.masterC = None
 
     def load_base_tpl(self):
@@ -22,11 +22,6 @@ class TplLoader:
         from nl_modules.nodel.grp_node import GrpNode
 
         rID = self.rigID
-        rigNode_name = rID + "_RGN"
-
-        if mc.objExists(rigNode_name):
-            raise ValueError(f"{rigNode_name} already exist")
-
         curr_dir = os.path.dirname(os.path.abspath(__file__))
         tplFile = os.path.join(curr_dir, "components", self.fileName + ".ma")
 
@@ -36,19 +31,14 @@ class TplLoader:
             logging.error(f"Template file not found: {tplFile}")
             return
 
-        main_mod_grp = GrpNode("modules_grp")
-        mod_grp = DagNode(rID + "_module_grp")
+        guide_grp = GrpNode("GUIDES")
+        mg = DagNode(rID + "_master_guide")
 
-        if mod_grp.exists():
-            mod_grp | main_mod_grp
+        if mg.exists():
+            mg | guide_grp
         else:
-            logging.error(f"{mod_grp.name} not found after importing template.")
+            logging.error(f"Master guide not found in imported template.")
             return
 
-        rigNode = DagNode(rigNode_name)
-        if not rigNode.exists():
-            logging.error(f"{rigNode_name} not found after importing template.")
-            return
-
-        rigNode.a["rigID"].set(rID, type="string")
-        self.rigNode = rigNode
+        mg.a["rigID"].set(rID, type="string")
+        # self.masterGuide = mg

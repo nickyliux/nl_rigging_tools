@@ -15,9 +15,9 @@ from nl_modules.utils.color import Color
 
 
 class SpineQdCrv(rig_module.RigModule):
-    def __init__(self, rigNode):
+    def __init__(self, mg):
 
-        super().__init__(rigNode)
+        super().__init__(mg)
 
         self.mg_jntNum = self.master_guide.a.jntNum.get()
 
@@ -36,7 +36,7 @@ class SpineQdCrv(rig_module.RigModule):
         root_list = self.gen_sk_fr_names(["st", "md", "ed"])
 
         self.rootJ = root_list[0]
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
 
     def build(self):
 
@@ -47,26 +47,26 @@ class SpineQdCrv(rig_module.RigModule):
         DY = Color.D_YELLOW
 
         self.setting = CrvNode("setting", pf=self.rigID, shape="sphere", scale=s * 0.3)
-        self.setting.a.message >> self.rigNode.a.setting
+        self.setting.a.message >> self.masterGuide.a.setting
 
         self.cog_ctl = CrvNode(
             "cog_ctl", pf=self.rigID, up="x", shape="cube", scale=s, color=Y
         )
         self.cog_ctl.cv_move(0, self.rigSize * 6, 0)
-        self.cog_ctl.a.message >> self.rigNode.a.cog_ctl
+        self.cog_ctl.a.message >> self.masterGuide.a.cog_ctl
 
         self.st_ctl = CrvNode(
             "st_ctl", pf=self.rigID, up="x", shape="cube", scale=s * 4, color=DY
         )
-        self.st_ctl.a.message >> self.rigNode.a.st_ctl
+        self.st_ctl.a.message >> self.masterGuide.a.st_ctl
 
         self.md_ctl = CrvNode("_md_ctl", pf=self.rigID, up="z", scale=s * 3, color=DY)
-        self.md_ctl.a.message >> self.rigNode.a.md_ctl
+        self.md_ctl.a.message >> self.masterGuide.a.md_ctl
 
         self.ed_ctl = CrvNode(
             "ed_ctl", pf=self.rigID, up="x", shape="cube", scale=s * 4, color=DY
         )
-        self.ed_ctl.a.message >> self.rigNode.a.ed_ctl
+        self.ed_ctl.a.message >> self.masterGuide.a.ed_ctl
 
         self.ctls = [self.cog_ctl, self.st_ctl, self.md_ctl, self.ed_ctl]
 
@@ -113,7 +113,7 @@ class SpineQdCrv(rig_module.RigModule):
 
         mc.delete(self.rootJ)
         self.rootJ = self.jnts[0]
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
 
         # BUILD SPLINE IK
         spIkH = IkNode(
@@ -179,9 +179,9 @@ class SpineQdCrv(rig_module.RigModule):
         s = self.rigSize
         B = Color.L_BLUE
         anchorP1 = LocNode(self.rigID + "_anchorP1", size=s, color=B, p=self.masterC)
-        anchorP1.a.message >> self.rigNode.a.anchorP1
+        anchorP1.a.message >> self.masterGuide.a.anchorP1
         anchorP2 = LocNode(self.rigID + "_anchorP2", size=s, color=B, p=self.masterC)
-        anchorP2.a.message >> self.rigNode.a.anchorP2
+        anchorP2.a.message >> self.masterGuide.a.anchorP2
         self.st_ctl.cstPar(anchorP1)
         self.rootJ.allChildrenJt[-1].cstPar(anchorP2)
         anchorP1.hide()

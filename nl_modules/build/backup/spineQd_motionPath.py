@@ -12,8 +12,8 @@ from nl_modules.utils import common, utils_node as ut
 
 
 class SpineQd(RigModule):
-    def __init__(self, rigNode):
-        super().__init__(rigNode)
+    def __init__(self, mg):
+        super().__init__(mg)
         self.CTL_NUM = 3
         self.FK_BONE_NUM = self.master_guide.a.fkJntNum.get()
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
@@ -45,7 +45,7 @@ class SpineQd(RigModule):
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
         self.rootJ = root_list[0]
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
 
     def build_ctl(self):
         rID, rSz, xDr = self.get_short_form()
@@ -86,7 +86,7 @@ class SpineQd(RigModule):
         self.base_ctl = CrvNode(
             "base_ctl", pf=rID, shape="squareR", up="z", scale=rSz * 3, color=22
         )
-        self.rigNode.setMsg(
+        self.masterGuide.setMsg(
             {
                 "setting": self.setting,
                 "cog_ctl": self.cog_ctl,
@@ -106,7 +106,7 @@ class SpineQd(RigModule):
             p=self.RIG_DATA,
             snap=self.RT_GUIDE,
         )
-        self.rigNode.setMsg({"rbSrf": self.rbSrf})
+        self.masterGuide.setMsg({"rbSrf": self.rbSrf})
 
         self.build_ctl()
         self.build_ik()

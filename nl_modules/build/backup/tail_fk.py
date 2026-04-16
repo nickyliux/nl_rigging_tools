@@ -12,8 +12,8 @@ from nl_modules.utils.color import Color
 
 
 class TailFk(RigModule):
-    def __init__(self, rigNode):
-        super().__init__(rigNode)
+    def __init__(self, mg):
+        super().__init__(mg)
         self.FK_BONE_NUM = self.master_guide.a.fkBoneNum.get()
         self.RBN_BONES = self.master_guide.a.rbnBones.get()
         self.RBN_JNT_NUM = self.master_guide.a.rbnJntNum.get()
@@ -36,7 +36,7 @@ class TailFk(RigModule):
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
         self.rootJ = root_list[0]
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
 
     def build(self):
         """
@@ -55,7 +55,7 @@ class TailFk(RigModule):
             p=self.RIG_DATA,
             snap=self.RT_GUIDE,
         )
-        self.rigNode.setMsg({"rbSrf": self.rbSrf})
+        self.masterGuide.setMsg({"rbSrf": self.rbSrf})
 
         self.build_ctl()
         self.build_fk()
@@ -89,7 +89,7 @@ class TailFk(RigModule):
             top=1,
             width=2,
         )
-        self.rigNode.setMsg(
+        self.masterGuide.setMsg(
             {
                 "setting": self.setting,
             }
@@ -130,7 +130,7 @@ class TailFk(RigModule):
             )
             ctl.cstPar(clu, mo=1)
 
-            self.rigNode.setMsg({f"fkc{i}": ctl})
+            self.masterGuide.setMsg({f"fkc{i}": ctl})
             self.ctls_fk.append(ctl)
             self.allClusters.append(clu)
 
@@ -143,7 +143,7 @@ class TailFk(RigModule):
         self.rootJ = self.fkJnt[0]
         self.rootJ | self.JNT_DATA
 
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
 
         cluGrp1 = GrpNode("cluGrp1", pf=rID, p=self.RIG_DATA)
         [self.masterC.a["globalScale"] >> cluGrp1.a[x] for x in ["sx", "sy", "sz"]]

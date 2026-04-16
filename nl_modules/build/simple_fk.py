@@ -14,13 +14,13 @@ from nl_modules.utils.color import Color
 class SimpleFk(RigModule):
     """Simple fk rig module."""
 
-    def __init__(self, rigNode):
-        rigNode = DagNode(rigNode) if isinstance(rigNode, str) else rigNode
-        super().__init__(rigNode)
+    def __init__(self, mg):
+        # mg = DagNode(mg) if isinstance(mg, str) else mg
+        super().__init__(mg)
 
         guide_attrs = ["segNum"]
         for attr in guide_attrs:
-            setattr(self, attr, self.get_guide_attr(attr))
+            setattr(self, attr, self.masterGuide.a[attr].get())
 
         # Groups
         self.FK_GRP = GrpNode("FK", pf=self.rigID, p=self.CTL_DATA)
@@ -53,7 +53,7 @@ class SimpleFk(RigModule):
 
         self.rootJ = root_list[0]
         self.rootJ | self.JNT_DATA
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 
     def build(self):

@@ -16,10 +16,10 @@ from nl_modules.utils.common import Vec
 class LegQd(RigModule):
     """Quadruped leg rig module."""
 
-    def __init__(self, rigNode):
-        if isinstance(rigNode, str):
-            rigNode = DagNode(rigNode)
-        super().__init__(rigNode)
+    def __init__(self, mg):
+        # if isinstance(mg, str):
+        #     mg = DagNode(mg)
+        super().__init__(mg)
 
         guide_attrs = [
             "ribbon",
@@ -33,7 +33,7 @@ class LegQd(RigModule):
             "palmAimRatio",
         ]
         for attr in guide_attrs:
-            setattr(self, attr, self.get_guide_attr(attr))
+            setattr(self, attr, self.masterGuide.a[attr].get())
 
         self.setting = None
 
@@ -70,7 +70,7 @@ class LegQd(RigModule):
         self.extra_ikc = None
         # self.all_bendy = []
 
-        self.toesRootJ = rigNode.a.toesRootJ.inConnNode
+        self.toesRootJ = DagNode(mg).a.toesRootJ.inConnNode
 
         self.ikH1 = None
         self.ball_ikc = None
@@ -89,7 +89,7 @@ class LegQd(RigModule):
             # Create toes root joint and parent to skeleton data
             self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
             self.toesRootJ | self.JNT_DATA
-            self.rigNode.setMsg({"toesRootJ": self.toesRootJ})
+            self.masterGuide.setMsg({"toesRootJ": self.toesRootJ})
 
             # Define all possible toe joint name lists
             ALL_TOE_NAMES = [
@@ -120,7 +120,7 @@ class LegQd(RigModule):
         # --- Finalize root joint setup ---
         self.rootJ = root_list[0]
         self.rootJ | self.JNT_DATA
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 
     def build_ctl(self):
@@ -239,7 +239,7 @@ class LegQd(RigModule):
         rID, rSz, xDr = self.get_short_form()
 
         # --- Guide and alignment setup ---
-        mg = self.master_guide
+        mg = self.masterGuide
         pvc_guide = DagNode(rID + "_pvc_guide")
         inPos_guide = DagNode(rID + "_palm_inPos_guide")
         outPos_guide = DagNode(rID + "_palm_outPos_guide")
@@ -416,7 +416,7 @@ class LegQd(RigModule):
             name="ball_ikc", pf=rID, shape="stickS", scale=-rSz * xDr / 2
         )
         CrvNode(self.ball_ikc).cv_rotate(0, 90, 0)
-        self.rigNode.setMsg({"ball_ikc": self.ball_ikc})
+        self.masterGuide.setMsg({"ball_ikc": self.ball_ikc})
         self.ctls_ik.append(self.ball_ikc)
         self.smart_ctl_setup(toeRollG)
 
@@ -425,7 +425,7 @@ class LegQd(RigModule):
         rID, rSz, xDr = self.get_short_form()
 
         self.smart_ctl | self.ikc
-        self.smart_ctl.snapAlignTo(toeRollG, self.master_guide)
+        self.smart_ctl.snapAlignTo(toeRollG, self.masterGuide)
         # self.smart_ctl | self.IK_GRP
         ofs = self.smart_ctl.addOffsetGrp()
         ofs.a.tz.set(rSz * 20)
@@ -586,14 +586,14 @@ class LegQd(RigModule):
 
     def setup_space(self):
         """Setup space switching for the quadruped leg rig controls."""
-        self.rigNode.a.add(
+        self.masterGuide.a.add(
             "spaceName1", type="string", txt="master, chest, pelvis, COG"
         )
-        self.rigNode.a.add(
+        self.masterGuide.a.add(
             "spaceName2", type="string", txt="leg, chest, pelvis, master, COG"
         )
 
-        self.rigNode.setMsg(
+        self.masterGuide.setMsg(
             {
                 "spaceHolder1": self.ikc,
                 "spaceHolder2": self.pvc,
@@ -635,7 +635,7 @@ class LegQd(RigModule):
     def build_post(self):
         """Post setup for the quadruped leg rig module."""
         logging.info(".")
-        common.add_mirror_attr([self.ikc, self.ikc_gimbal, self.pvc, self.smart_ctl])
+        common.add_wsMirror_attr([self.ikc, self.ikc_gimbal, self.pvc, self.smart_ctl])
 
         self.setup_scale()
         self.setup_bindJnt()

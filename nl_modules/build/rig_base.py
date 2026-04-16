@@ -7,19 +7,19 @@ from nl_modules.nodel.grp_node import GrpNode
 
 
 class RigBase:
-    """Create grouping structure for given rigNode.
+    """Create grouping structure for given master guide.
     e.g.
         n = RigBase('lfArm0_RGN')
         n.__dict__
     """
 
-    def __init__(self, rigNode):
-        """Create grouping structure for given rigNode."""
+    def __init__(self, mg):
+        """Create grouping structure for given mg."""
 
-        self.rigNode = DagNode(rigNode)
-        if not self.rigNode.exists():
-            logging.error("Missing rigNode")
-            raise RuntimeError("Missing rigNode !")
+        self.masterGuide = DagNode(mg)
+        if not self.masterGuide.exists():
+            logging.error("Missing master guide")
+            raise RuntimeError("Missing master guide !")
 
         if not mc.objExists("master_ctl"):
             self.loadBase()
@@ -28,7 +28,7 @@ class RigBase:
         self.masterC1 = self.masterC.offset
         self.masterC2 = self.masterC1.offset
 
-        self.rigID = self.rigNode.a["rigID"].get()
+        self.rigID = self.masterGuide.a["rigID"].get()
 
         self.CHR = GrpNode("CHR")
         self.MDL = GrpNode("MDL", p=self.CHR)

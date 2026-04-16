@@ -15,14 +15,14 @@ from nl_modules.utils.common import Vec
 class SpineBp(RigModule):
     """Biped spine rig module."""
 
-    def __init__(self, rigNode):
-        super().__init__(rigNode)
+    def __init__(self, mg):
+        super().__init__(mg)
         for attr in (
             "ribbon",
             "fkJntNum",
             "rbnJntNum",
         ):
-            setattr(self, attr, self.get_guide_attr(attr))
+            setattr(self, attr, self.masterGuide.a[attr].get())
 
         # Guide nodes
         self.LINE_GUIDE = DagNode(f"{self.rigID}_line_guide")
@@ -57,7 +57,7 @@ class SpineBp(RigModule):
 
         self.rootJ = root_list[0]
         self.rootJ | self.JNT_DATA
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 
     def build_ctl(self):
@@ -74,9 +74,9 @@ class SpineBp(RigModule):
         ]
         if self.ribbon:
             ctl_defs += [
-                ("fore_ikc", "cube", None, Vec((3, 0.1, 0.1)) * rSz, 1),
-                ("mid_ikc", "cube", None, Vec((2, 0.1, 0.1)) * rSz, 1),
-                ("base_ikc", "cube", None, Vec((4, 0.1, 0.1)) * rSz, 1),
+                ("fore_ikc", "sphere", None, Vec((8, 0, 8)) * rSz, 0),
+                ("mid_ikc", "sphere", None, Vec((4, 0, 4)) * rSz, 1),
+                ("base_ikc", "sphere", None, Vec((9, 0, 9)) * rSz, 0),
             ]
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
@@ -126,15 +126,16 @@ class SpineBp(RigModule):
         )
         mc.delete(self.rootJ)
         self.rootJ = self.jnts_fk[0]
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
 
         self.ctls_fk = []
         for i, j in enumerate(self.jnts_fk[:-1]):
             c = CrvNode(
                 f"{i + 1}_fkc",
                 pf=rID,
-                shape="circle",
-                scale=rSz * 2,
+                shape="circleThick",
+                scale=rSz * 1.5,
+                # scale=Vec((2, 0.5, 2)) * rSz,
             )
             self.ctls_fk.append(c)
 
@@ -144,7 +145,7 @@ class SpineBp(RigModule):
             self.build_fk_with_ctl2(self.jnts_fk[1:], self.ctls_fk[1:], p=self.CTL_DATA)
             self.reverse_fk_hip()
 
-        self.cog_ctl.snapAlignTo(self.jnts_fk[0], self.master_guide)
+        self.cog_ctl.snapAlignTo(self.jnts_fk[0], self.masterGuide)
         self.cog_gmb = CrvNode(self.cog_ctl).addGimbal()
         self.cog_ctl | self.CTL_DATA
         self.cog_ctl.addOffsetGrp()
@@ -166,7 +167,13 @@ class SpineBp(RigModule):
     def reverse_fk_hip(self):
         """modify first fkc specific for hip rotation."""
         ctl = self.ctls_fk[0]
-        ctl(p=self.CTL_DATA, addOfs=1, shape="squareR")
+        ctl(
+            p=self.CTL_DATA,
+            addOfs=1,
+            shape="circle",
+            scale=self.rigSize,
+            # scale=Vec((1.5, 0.05, 1.5)) * self.rigSize,
+        )
         ctl.cv_scale(2.5)
 
         # ctl.offset.snapAlignTo(self.BASE_PVT_GUIDE, self.jnts_fk[0])
@@ -178,9 +185,9 @@ class SpineBp(RigModule):
         logging.info(".")
         rID, rSz, xDr = self.get_short_form()
 
-        self.base_ikc.snapAlignTo(self.jnts_fk[0], self.master_guide)
-        self.mid_ikc.snapAlignTo(self.MD_GUIDE, self.master_guide)
-        self.fore_ikc.snapAlignTo(self.jnts_fk[-1], self.master_guide)
+        self.base_ikc.snapAlignTo(self.jnts_fk[0], self.masterGuide)
+        self.mid_ikc.snapAlignTo(self.MD_GUIDE, self.masterGuide)
+        self.fore_ikc.snapAlignTo(self.jnts_fk[-1], self.masterGuide)
 
         self.base_ikc | self.ctls_fk[0]
         self.fore_ikc | self.ctls_fk[-1]
@@ -275,8 +282,8 @@ class SpineBp(RigModule):
             JNT_DATA=self.JNT_DATA,
         )
         self.jnts_bind = self.jnts_rb
-        self.rigNode.setMsg({"rbCrv": crv})
-        self.rigNode.setMsg({"rbSrf": self.rbSrf})
+        self.masterGuide.setMsg({"rbCrv": crv})
+        self.masterGuide.setMsg({"rbSrf": self.rbSrf})
 
         self.build_volume_setup()
 
@@ -358,10 +365,10 @@ class SpineBp(RigModule):
 
     def setup_space(self):
         """Setup space switching for the spine rig controls."""
-        self.rigNode.setMsg({"space_COG": self.cog_ctl})
+        self.masterGuide.setMsg({"space_COG": self.cog_ctl})
 
         if self.ribbon:
-            self.rigNode.setMsg(
+            self.masterGuide.setMsg(
                 {
                     "space_master": self.masterC,
                     "space_lwrBody": self.base_ikc,

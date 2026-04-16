@@ -38,8 +38,8 @@ def loadGuide(name):
     def genNextRigID(n):
         """Generate next rigID name for newly created component"""
         count = 0
-        for node in build.getRigNodes_all():
-            if node.a.rigID.get().startswith(n):
+        for mg in build.getMasterGuide_all():
+            if mg.a.rigID.get().startswith(n):
                 count += 1
         return f"{n}{count}"
 
@@ -50,46 +50,64 @@ def loadGuide(name):
     return mg
 
 
-def xferGuideAtoB(*arg, skipMasterXf=1):
+def xferGuideAtoB(*arg):
     """Transfer guide settings from 1st to 2nd selected"""
     selList = mc.ls(sl=1, tr=1)
     if len(selList) == 2:
-        rigNode1 = build.getRigNode(selList[0])
-        rigNode2 = build.getRigNode(selList[1])
+        mg1 = DagNode(selList[0])
+        mg2 = DagNode(selList[1])
+        if mg1 and mg2:
+            rigClass1 = mg1.a.rigClass.get()
+            rigClass2 = mg2.a.rigClass.get()
 
-        if rigNode1 and rigNode2:
-            rigClass1 = rigNode1.a.rigClass.get()
-            rigClass2 = rigNode2.a.rigClass.get()
+            if rigClass1 and rigClass2 and rigClass1 == rigClass2:
 
-            if rigClass1 == rigClass2:
-                rigID1 = rigNode1.a.rigID.get()
-                rigID2 = rigNode2.a.rigID.get()
+                rigID1 = mg1.a.rigID.get()
+                rigID2 = mg2.a.rigID.get()
                 guideList1 = mc.ls(rigID1 + "_*_guide")
                 guideList2 = mc.ls(rigID2 + "_*_guide")
+
                 for g1, g2 in zip(guideList1, guideList2):
-                    copyGuideAttr(g1, g2, skipMasterXf=skipMasterXf)
+                    copyCtlAttr(g1, g2)
             else:
                 logging.info("Ignore copy for different rig classes.")
         else:
-            logging.info("Can not find rigNodes to copy.")
+            logging.info("Can not find master guides to copy.")
 
 
 def duplicateGuideSel(*arg):
     """Duplicate selected guide controls"""
+    selList = mc.ls("*_master_guide", sl=1, tr=1)
+    allTgtMG = []
+    for sel in selList:
+        mg = DagNode(sel) if isinstance(sel, str) else sel
+        if mg and mg.exists():
+            rigID = mg.a.rigID.get()
+            tgtMG = loadGuide(removeEndDigits(rigID))
+            allTgtMG.append(tgtMG)
+
+            # Copy xform & attributes
+            mc.select(mg, tgtMG)
+            xferGuideAtoB()
+
+    mc.select(allTgtMG)
+    mc.setToolTo("moveSuperContext")
+
+
+def duplicateGuideSymSel(*arg):
+    """Duplicate selected guide controls"""
     selList = mc.ls(sl=1, tr=1)
     allTgtMG = []
     for sel in selList:
-        rigNode = build.getRigNode(sel)
-        if rigNode:
-            # Duplicate guide
-            rigID = rigNode.a.rigID.get()
-            src_mg = DagNode(rigID + "_master_guide")
-            tgt_mg = loadGuide(removeEndDigits(rigID))
-            allTgtMG.append(tgt_mg)
+        mg = DagNode(sel) if isinstance(sel, str) else sel
+        if mg and mg.exists():
+            rigID = mg.a.rigID.get()
+            tgtMG = loadGuide(removeEndDigits(rigID))
+            allTgtMG.append(tgtMG)
 
             # Copy xform & attributes
-            mc.select(src_mg, tgt_mg)
-            xferGuideAtoB(skipMasterXf=0)
+            mc.select(mg, tgtMG)
+            xferGuideAtoB()
 
     mc.select(allTgtMG)
     mc.setToolTo("moveSuperContext")
@@ -101,37 +119,38 @@ def mirrorGuideSelOrAll(*arg):
     selList = [s for s in selList if DagNode(s).type == "nurbsCurve"]
     selList = list(set(selList))
     if selList:
-        mirrorGuide(selList)
+        mirrorCtl(selList)
 
 
-def getMasterGuide(tgtN):
-    if tgtN:
-        master_guide_name = DagNode(tgtN).name.split("_")[0] + "_master_guide"
-        if mc.objExists(master_guide_name):
-            return DagNode(master_guide_name)
-
-
-def copyGuideAttr(A, B, wsMirror=0, mirror=0, skipMasterXf=0):
+def copyCtlAttr(A, B, wsMirror=0, mirror=0):
     """Copy/mirror transform & user defined attribute values"""
     A = DagNode(A) if isinstance(A, str) else A
     B = DagNode(B) if isinstance(B, str) else B
 
-    if not (skipMasterXf and A.name.endswith("_master_guide")):
-        tx, ty, tz = A.a.t.get()
-        rx, ry, rz = A.a.r.get()
-        if mirror:
-            tx *= -1
-            if wsMirror or A.a["wsMirror"].exists():
-                ry *= -1
-                rz *= -1
-            else:
-                ty *= -1
-                tz *= -1
-        B.a.t.set(tx, ty, tz)
-        B.a.r.set(rx, ry, rz)
-        B.a.s.set(*A.a.s.get())
+    # if not A.name.endswith("_master_guide"):
+    tx, ty, tz = A.a.t.get()
+    rx, ry, rz = A.a.r.get()
+
+    if mirror:
+        tx *= -1
+        if wsMirror or A.a["wsMirror"].exists():
+            ry *= -1
+            rz *= -1
+        else:
+            ty *= -1
+            tz *= -1
+
+        if A.a["flipRX"].exists():
+            rx -= 180
+
+    B.a.t.set(tx, ty, tz)
+    B.a.r.set(rx, ry, rz)
+    B.a.s.set(*A.a.s.get())
 
     for ud in A.a.list(ud=1, u=1) or []:
+
+        if ud.name in ["rigID", "rigClass"]:
+            continue
         try:
             val = ud.get()
             if isinstance(val, str):
@@ -142,29 +161,26 @@ def copyGuideAttr(A, B, wsMirror=0, mirror=0, skipMasterXf=0):
             print(e)
 
 
-def mirrorGuide(tgtList, wsMirror=0):
+def mirrorCtl(tgtList):
     """Mirror xform for tgtList objects"""
     for tgt in tgtList:
         tgt = DagNode(tgt)
         opp = common.getOpposite(tgt)
-        mg = getMasterGuide(opp)
         if opp:
-            # if mg is None or (mg and mg.a.mirrorable.get()):
-            if mg and mg.exists():
-                copyGuideAttr(tgt, opp, wsMirror=wsMirror, mirror=1)
+            copyCtlAttr(tgt, opp, mirror=1)
         else:
-            logging.warning(f"No opposite found for {tgt.name}")
+            logging.info(f"{tgt.name}: No opposite ctl found.")
 
 
 def mirrorRef(tgtList, wsMirror=0):
     """Mirror xform for tgtList objects"""
     for tgt in tgtList:
-        tgt = DagNode(tgt)
+        tgt = DagNode(tgt) if isinstance(tgt, str) else tgt
         opp = common.getOpposite(tgt)
         if opp:
-            copyGuideAttr(tgt, opp, wsMirror=wsMirror, mirror=1)
+            copyCtlAttr(tgt, opp, wsMirror=wsMirror, mirror=1)
         else:
-            logging.warning(f"No opposite found for {tgt.name}")
+            logging.info(f"{tgt.name}: No opposite ref found.")
 
 
 def mirrorPose(*arg):
@@ -194,12 +210,12 @@ def mirrorPose(*arg):
             selList = list(set(lf))
 
     if selList:
-        mirrorGuide(selList)
+        mirrorCtl(selList)
 
 
 def removeEndDigits(name):
     """Remove trailing digits from a name
-    e.g. lfLeg0 => 'lfLeg'
+    e.g. lfLeg10 => 'lfLeg'
     """
     pattern = re.compile(rf"^([a-zA-Z_]+)")
     result = re.match(pattern, str(name))
@@ -209,47 +225,45 @@ def removeEndDigits(name):
         raise ValueError("Invalid input name")
 
 
-def loadTemplate():
+def loadTemplate(loadLatest=1):
     """Load preset from json file"""
     charPath = mc.optionVar(q="charFullPath")
 
     tgtPaths = []
     if charPath:
-        tgtPaths = glob.glob(
-            os.path.join(charPath, os.path.basename(charPath) + "_tpl*.json")
-        )
+        if loadLatest:
+            tgtPaths = glob.glob(
+                os.path.join(charPath, os.path.basename(charPath) + "_tpl*.json")
+            )
         if not tgtPaths:
             tgtPaths = mc.fileDialog2(
                 fileFilter="*tpl*.json", dialogStyle=2, fileMode=1, dir=charPath
             )
-
     if not tgtPaths:
         return
 
-    build.removeOrphanRigNodes()
-
-    tplPath = tgtPaths[-1]
-    rigID_dict = file.loadJson(tplPath)
+    tgtPaths.sort(key=common.sortFile)
+    rigID_dict = file.loadJson(tgtPaths[-1])
     loadGuideFrIdDict(rigID_dict)
 
     common.setView(fit=1)
     mc.select(cl=1)
-    logging.info(f"Template loaded: {os.path.basename(tplPath)}.")
+    logging.info(f"Template loaded: {os.path.basename(tgtPaths[-1])}.")
 
-    build.cleanUpScene()
+    # build.cleanUpScene()
 
 
 def loadGuideFrIdDict(rigID_dict):
     """Load guides from rigID_dict"""
     # Remove unused
-    idInPreset = {k + "_RGN" for k in rigID_dict}
-    for node in build.getRigNodes_all():
-        if node not in idInPreset:
-            build.deleteTgt(node)
+    # idInPreset = {k + "_RGN" for k in rigID_dict}
+    # for mg in build.getMasterGuide_all():
+    #     if mg not in idInPreset:
+    #         build.deleteTgt(mg)
 
     for rID in rigID_dict:
-        if rID == "modules_grp":  # Special case for modules grp
-            setAttrFrDict("modules_grp", rigID_dict[rID])
+        if rID == "GUIDES":  # Special case for modules grp
+            setAttrFrDict("GUIDES", rigID_dict[rID])
         else:
             mg = DagNode(rID + "_master_guide")
             if not mg.exists():
@@ -298,10 +312,14 @@ def genAttrDict(obj):
 
 def saveTemplate():
     """Save preset into json file"""
-    rigNodes = build.getRigNodes_all()
+    allMGs = build.getMasterGuide_all()
+    # for mg in allMGs:
+    #     rigID = mg.a.rigID.get()
+    #     print(mg, rigID)
+    # return
 
-    if not rigNodes:
-        mc.confirmDialog(t="Info", m="RigNode NOT found.     ", b="OK")
+    if not allMGs:
+        mc.confirmDialog(t="Info", m="Master Guides NOT found.     ", b="OK")
         return
 
     charPath = mc.optionVar(q="charFullPath")
@@ -312,17 +330,16 @@ def saveTemplate():
         return
 
     idDict = {}
-    for node in rigNodes:
-        rigID = node.a.rigID.get()
+    for mg in allMGs:
+        rigID = mg.a.rigID.get()
         guideDict = {o: genAttrDict(o) for o in mc.ls(rigID + "_*_guide", tr=1)}
-        moduleG = node.a.moduleG.inConnNode
-        guideDict[moduleG.name] = genAttrDict(moduleG)
+        # guideDict[mg.name] = genAttrDict(mg)
         idDict[rigID] = guideDict
 
-    idDict["modules_grp"] = genAttrDict("modules_grp")
+    idDict["GUIDES"] = genAttrDict("GUIDES")
 
     file.saveJson(tgtPaths[0], idDict, force=True)
-    logging.info("Guide template saved.")
+    logging.info(f"Template saved: {tgtPaths[0]}.")
 
 
 def explore(*args):

@@ -43,9 +43,9 @@ _RIG_CLASS_MAP = {
 }
 
 
-def getJntsCtlsFromRigNode(rootJ, rigNode):
+def getJntsCtlsFromMG(rootJ, mg):
     """Get joint and FK control names based on rig class."""
-    rigClass = rigNode.a.rigClass.get()
+    rigClass = mg.a.rigClass.get()
     entry = _RIG_CLASS_MAP.get(rigClass)
     if not entry:
         return [], []
@@ -54,7 +54,7 @@ def getJntsCtlsFromRigNode(rootJ, rigNode):
     jnts = rootJ.allChildrenJt2[:jntCount] if jntCount else rootJ.allChildrenJt2
 
     if not all(jnts):
-        rigID = rigNode.a.rigID.get()
+        rigID = mg.a.rigID.get()
         mc.confirmDialog(
             t="Info", m=f"Some joints for {rigID} NOT found. Cannot switch IK/FK."
         )
@@ -62,7 +62,7 @@ def getJntsCtlsFromRigNode(rootJ, rigNode):
     return jnts, fkCtlNames
 
 
-def switchLocalGlobal(attr=None, toGlobal=0, rigNode=None):
+def switchLocalGlobal(attr=None, toGlobal=0):
     """Switch Local/Global mode for the specified rig node."""
     ctl = attr.node
     mtx = ctl.getMtx()
@@ -70,33 +70,33 @@ def switchLocalGlobal(attr=None, toGlobal=0, rigNode=None):
     ctl.setMtx(mtx)
 
 
-def switchFkIk(attr=None, toIKMode=0, rigNode=None):
+def switchFkIk(attr=None, toIKMode=0, mg=None):
     """Switch between FK and IK modes for the specified rig node."""
-    if not rigNode or rigNode.a.nodeState.get() != 2:
+    if not mg or mg.a.nodeState.get() != 2:
         return
 
-    rigID = rigNode.a.rigID.get()
-    rootJ = rigNode.a.rootJ.inConnNode
+    rigID = mg.a.rigID.get()
+    rootJ = mg.a.rootJ.inConnNode
     if rootJ is None:
         logging.warning(f"Root joint for {rigID} NOT found. Cannot switch IK/FK.")
         return
 
     jnts = []
     fkCtlNames = []
-    jnts, fkCtlNames = getJntsCtlsFromRigNode(rootJ, rigNode)
+    jnts, fkCtlNames = getJntsCtlsFromMG(rootJ, mg)
 
     # FK Ctls
-    fkCtls = [rigNode.a[name].inConnNode for name in fkCtlNames]
+    fkCtls = [mg.a[name].inConnNode for name in fkCtlNames]
     if not all(fkCtls):
         logging.warning(f"Not all FK ctls for {rigID} found. Cannot switch IK/FK.")
         return
 
     # IK Ctls
-    ikc = rigNode.a.ikc.inConnNode
-    pvc = rigNode.a.pvc.inConnNode
+    ikc = mg.a.ikc.inConnNode
+    pvc = mg.a.pvc.inConnNode
     ikc_matcher = DagNode(f"{ikc.name}_matcher") if ikc else None
 
-    ball_ikc = DagNode(rigNode.a["ball_ikc"].inConnNode)
+    ball_ikc = DagNode(mg.a["ball_ikc"].inConnNode)
     smart_ctl = DagNode(f"{rigID}_smart_ctl")
     extra_ikc = DagNode(f"{rigID}_extra_ikc")
     extra_matcher = DagNode(f"{extra_ikc.name}_matcher") if extra_ikc else None

@@ -123,7 +123,8 @@ def loadWeight(*args):
     if not tgtPaths:
         return
 
-    tgtDir = os.path.dirname(tgtPaths[-1])
+    tgtPaths.sort(key=common.sortFile)
+
     weightJnt_dict = file.loadJson(tgtPaths[-1])
     logging.info(f"Weight file {tgtPaths[-1]} loaded.")
 
@@ -135,6 +136,7 @@ def loadWeight(*args):
     common.xRayAllGeo(1)
     control.reset_all_ctl()
 
+    tgtDir = os.path.dirname(tgtPaths[-1])
     for i, mesh in enumerate(weightJnt_dict):
 
         if not mc.objExists(mesh):

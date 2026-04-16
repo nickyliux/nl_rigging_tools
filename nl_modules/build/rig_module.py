@@ -19,45 +19,25 @@ from nl_modules.utils.color import Color
 class RigModule(RigBase):
     """Base class for rig modules, providing common functionality for rigging operations."""
 
-    def __init__(self, rigNode):
-
-        if isinstance(rigNode, str):
-            rigNode = DagNode(rigNode)
-
-        if not rigNode.exists():
-            mc.confirmDialog(
-                title="Info", message="Missing rigNode !      ", button=["OK"]
-            )
-            raise RuntimeError("Missing rigNode !")
-
-        super().__init__(rigNode)
+    def __init__(self, mg):
+        super().__init__(mg)
 
         rID = self.rigID
         self.CTL_DATA = GrpNode(rID + "_ctl_data", p=self.CTL)
         self.JNT_DATA = GrpNode(rID + "_jnt_data", p=self.JNT)
 
-        self.moduleG = rigNode.a.moduleG.inConnNode
-        if not self.moduleG:
-            logging.error(f"{rigNode.name} is missing moduleG connection.")
+        self.masterGuide = DagNode(rID + "_master_guide")
 
-        self.master_guide = rigNode.a.master_guide.inConnNode
-        if not self.master_guide:
-            logging.error(f"{rigNode.name} is missing master_guide connection.")
-
-        main_mod_grp = GrpNode("modules_grp")
-        if not main_mod_grp.exists():
-            logging.error("modules_grp not found.")
-            return
-
-        self.rigSize = main_mod_grp.a.sy.get() * self.master_guide.a.sy.get()
+        guide_grp = GrpNode("GUIDES")
+        self.rigSize = guide_grp.a.sy.get() * self.masterGuide.a.sy.get()
         self.xDir = 1 if rID.startswith("lf") else -1 if rID.startswith("rt") else 0
         self.boneFix = None
         self.jnts_bind = []
         self.jnts_sk = []
         self.all_bendy = []
 
-        if rigNode.a.rootJ.exists():
-            self.rootJ = rigNode.a.rootJ.inConnNode
+        rootJ = DagNode(mg).a.rootJ
+        self.rootJ = rootJ.inConnNode if rootJ.exists() else None
 
     def gen_sk_fr_names(self, names, color=None, r=1):
         """Generate skeleton and control names based on the provided names list."""
@@ -308,14 +288,14 @@ class RigModule(RigBase):
             tgt.addOffsetGrp()
 
     def genSk_module(self):
-        """Generate the skeleton module for the rigNode."""
-        self.rigNode.a.nodeState.set(1)
+        """Generate the skeleton module."""
+        self.masterGuide.a.nodeState.set(1)
         # if self.masterC2.a.sx.get() != 1:
         #     self.masterC2.freezeXf(t=0, r=0, s=1)
 
     def build_pre_module(self):
-        """Build the rig module, setting up the rigNode and its connections."""
-        self.rigNode.a.nodeState.set(2)
+        """Build the rig module."""
+        self.masterGuide.a.nodeState.set(2)
         if not self.rootJ:
             raise ValueError("rootJ not set for the component")
 
@@ -329,20 +309,19 @@ class RigModule(RigBase):
 
     def build_post_module(self):
         """Post build function to finalize the module setup."""
-        from nl_modules.utils import build
 
         settingVis = self.masterC2.a.add("settingVis", k=0, type="bool", dv=1)
-        for node in build.getRigNodes_all():
+        for node in build.getMasterGuide_all():
             setting = node.a.setting.inConnNode
             if setting and setting.exists():
                 settingVis >> setting.a.v
 
-        mc.hide(self.moduleG)
+        # mc.hide(self.moduleG)
 
     def unbuild_pre_module(self):
-        """Prepare for unbuilding the rig module, resetting the rigNode state."""
+        """Prepare for unbuilding the rig module, resetting the master guide state."""
         common.pauseVP(1)
-        self.moduleG.show()
+        # self.moduleG.show()
 
         prx = mc.ls(self.rigID + "_*_pxGeo*")
         if prx:
@@ -350,7 +329,7 @@ class RigModule(RigBase):
 
         self.JNT_DATA.delete()
 
-        rootJ = self.rigNode.a.rootJ.inConnNode
+        rootJ = self.masterGuide.a.rootJ.inConnNode
         if rootJ:
             rootJ.delete()
 
@@ -359,11 +338,11 @@ class RigModule(RigBase):
                 n.delete()
 
         # for attr in ["anchorS1", "anchorP1", "anchorP2"]:
-        #     anchor = self.rigNode.a[attr]
+        #     anchor = self.masterGuide.a[attr]
         #     if anchor.exists() and anchor.inConnNode:
         #         anchor.inConnNode.delete()
 
-        # setting = self.rigNode.a.setting.inConnNode
+        # setting = self.masterGuide.a.setting.inConnNode
         # if setting:
         #     showSetup = setting.a.showSetup
         #     if showSetup.exists():
@@ -374,7 +353,7 @@ class RigModule(RigBase):
         #             mc.delete(nodes)
 
         self.CTL_DATA.delete()
-        self.rigNode.a.nodeState.set(0)
+        self.masterGuide.a.nodeState.set(0)
         common.pauseVP(0)
 
     def setup_anchor_module(self, anchorDict=None):
@@ -388,7 +367,7 @@ class RigModule(RigBase):
 
         for name, tgt in anchorDict.items():
             loc = LocNode(name, pf=rID, size=rSz * 15, p=self.CTL_DATA)
-            self.rigNode.setMsg({name: loc})
+            self.masterGuide.setMsg({name: loc})
 
             if name.startswith("anchorP"):  # plug color
                 loc.color = Color.BLUE
@@ -618,10 +597,10 @@ class RigModule(RigBase):
 
     def get_autoAim_preset(self):
         """Get preset values for auto aim weights based on the master guide attributes."""
-        upW_attr = self.master_guide.a.autoUpWeight
-        fwW_attr = self.master_guide.a.autoFwWeight
-        dnW_attr = self.master_guide.a.autoDnWeight
-        bkW_attr = self.master_guide.a.autoBkWeight
+        upW_attr = self.masterGuide.a.autoUpWeight
+        fwW_attr = self.masterGuide.a.autoFwWeight
+        dnW_attr = self.masterGuide.a.autoDnWeight
+        bkW_attr = self.masterGuide.a.autoBkWeight
 
         upW = upW_attr.get() if upW_attr.exists() else 1
         fwW = fwW_attr.get() if fwW_attr.exists() else 1
@@ -875,7 +854,7 @@ class RigModule(RigBase):
             common.sdk2(hit, driven, 0.5, 1, tangent=2)
             common.sdk2(hit, driven, 0.9, 22, tangent=2)
 
-        common.add_mirror_attr(allPsdCtl)
+        common.add_wsMirror_attr(allPsdCtl)
         self.add_ctl_set(allPsdCtl + [ctl_main])
 
         aimCtl = self.masterC2.a.add("aimCtl", type="bool", dv=1)
@@ -909,7 +888,7 @@ class RigModule(RigBase):
 
     def get_guide_attr(self, name):
         """Get attribute from master guide"""
-        return self.master_guide.a[name].get()
+        return self.masterGuide.a[name].get()
 
     def create_and_register_ctl(
         self,
@@ -921,10 +900,10 @@ class RigModule(RigBase):
         top=0,
         w=-1,
     ):
-        """Create a control node and register it in the rigNode"""
+        """Create a control node and register it in the master guide"""
         ctl = CrvNode(name, pf=rID, shape=shape, up=up, scale=scale, width=w, top=top)
         setattr(self, name, ctl)
-        self.rigNode.setMsg({name: ctl})
+        self.masterGuide.setMsg({name: ctl})
 
     def build_aimHelper(self, targets, up="y", addCtl=0):
         """Build roller joints for the specified targets."""

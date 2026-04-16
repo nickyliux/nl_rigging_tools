@@ -10,8 +10,8 @@
 #
 #
 # class Toes(rig_module.RigModule):
-#     def __init__(self, rigNode):
-#         super().__init__(rigNode)
+#     def __init__(self, mg):
+#         super().__init__(mg)
 #
 #         # self.smart_ctl = None
 #         self.rootJ = None
@@ -26,7 +26,7 @@
 #         s = self.rigSize
 #         root = self.gen_sk_fr_names(["root"], pf=self.rigID)[0]
 #         root | self.JNT
-#         self.rigNode.setMsg({"rootJ": root})
+#         self.masterGuide.setMsg({"rootJ": root})
 #         all_names = [
 #             ["toe00_1", "toe00_2", "toe00_3", "toe00_4"],
 #             ["toe01_1", "toe01_2", "toe01_3", "toe01_4", "toe01_5"],
@@ -37,7 +37,7 @@
 #         fgr_roots = []
 #         for names in all_names:
 #             fgr_jnts = self.gen_sk_fr_names(names, pf=self.rigID, r=s / 20)
-#             self.rigNode.setMsg({names[0]: fgr_jnts[0]})
+#             self.masterGuide.setMsg({names[0]: fgr_jnts[0]})
 #             fgr_jnts[0].freezeXf()
 #             fgr_jnts[0] | root
 #             fgr_roots.append(fgr_jnts[0])
@@ -54,7 +54,7 @@
 #         s = self.rigSize
 #
 #         # self.setting = CrvNode("setting", pf=self.rigID, shape="sphere", scale=s * 0.3)
-#         # self.setting.a.message >> self.rigNode.a.setting
+#         # self.setting.a.message >> self.masterGuide.a.setting
 #
 #         if not self.rootJ:
 #             logging.error("root not found!")
@@ -91,7 +91,7 @@
 #
 #         s = self.rigSize
 #         # anchorS1 = LocNode("anchorS1", pf=self.rigID, size=s, color=Color.PINK)
-#         # anchorS1.a.message >> self.rigNode.a.anchorS1
+#         # anchorS1.a.message >> self.masterGuide.a.anchorS1
 #         #
 #         # # anchorS1
 #         # anchorS1.snapTo(self.rootJ, p=self.masterC)

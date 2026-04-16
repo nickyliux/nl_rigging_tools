@@ -12,9 +12,9 @@ from nl_modules.utils.color import Color
 
 
 class NeckPro(rig_module.RigModule):
-    def __init__(self, rigNode):
+    def __init__(self, mg):
 
-        super().__init__(rigNode)
+        super().__init__(mg)
 
         self.FK_JNT_NUM = self.master_guide.a.fkJntNum.get()
         self.BIND_JNT_NUM = self.master_guide.a.bindJntNum.get()
@@ -42,7 +42,7 @@ class NeckPro(rig_module.RigModule):
         root_list = self.gen_sk_fr_names(["st", "ed"])
 
         self.rootJ = root_list[0]
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
 
     def build(self):
 
@@ -53,29 +53,29 @@ class NeckPro(rig_module.RigModule):
         DY = Color.D_YELLOW
 
         self.setting = CrvNode("setting", pf=self.rigID, shape="sphere", scale=s * 0.4)
-        self.setting.a.message >> self.rigNode.a.setting
+        self.setting.a.message >> self.masterGuide.a.setting
 
         self.cog_ctl = CrvNode(
             "cog_ctl", pf=self.rigID, shape="cog_bp", scale=s * 8, color=DY
         )
-        self.cog_ctl.a.message >> self.rigNode.a.cog_ctl
+        self.cog_ctl.a.message >> self.masterGuide.a.cog_ctl
 
         self.up_ikc = CrvNode(
             "up_ikc", pf=self.rigID, shape="cube", scale=s * 7, color=DY
         )
         self.up_ikc.cv_scale(1.2, 0.3, 1)
-        self.up_ikc.a.message >> self.rigNode.a.up_ikc
+        self.up_ikc.a.message >> self.masterGuide.a.up_ikc
 
         self.md_ikc = CrvNode(
             "md_ikc", pf=self.rigID, shape="squareR", scale=s * 4, color=DY
         )
-        self.md_ikc.a.message >> self.rigNode.a.md_ikc
+        self.md_ikc.a.message >> self.masterGuide.a.md_ikc
 
         self.lw_ikc = CrvNode(
             "lw_ikc", pf=self.rigID, shape="cube", scale=s * 7, color=DY
         )
         self.lw_ikc.cv_scale(1.2, 0.3, 1)
-        self.lw_ikc.a.message >> self.rigNode.a.lw_ikc
+        self.lw_ikc.a.message >> self.masterGuide.a.lw_ikc
 
         self.ctls_ik = [
             self.lw_ikc,
@@ -117,14 +117,14 @@ class NeckPro(rig_module.RigModule):
 
         self.rootJ.delete()
         self.rootJ = self.fkJnt[0]
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
 
     def build_spine(self):
 
         s = self.rigSize
         logging.info(".")
 
-        mg = self.master_guide
+        mg = self.masterGuide
         self.lw_ikc.snapAlignTo(self.fkJnt[0], mg)
         self.md_ikc.snapAlignTo(self.fkJnt[-1], mg)
         self.up_ikc.snapAlignTo(self.fkJnt[-1], mg)
@@ -209,9 +209,9 @@ class NeckPro(rig_module.RigModule):
         B = Color.L_BLUE
         P = Color.PINK
         anchorS1 = LocNode(self.rigID + "_anchorS1", size=s, color=P, p=self.masterC)
-        anchorS1.a.message >> self.rigNode.a.anchorS1
+        anchorS1.a.message >> self.masterGuide.a.anchorS1
         anchorP1 = LocNode(self.rigID + "_anchorP1", size=s, color=B, p=self.masterC)
-        anchorP1.a.message >> self.rigNode.a.anchorP1
+        anchorP1.a.message >> self.masterGuide.a.anchorP1
         anchorS1.alignTo(self.rootJ)
         anchorS1.cstPar(self.cog_ctl.offset, mo=1)
         # if self.BIND_JNT_NUM > 1:

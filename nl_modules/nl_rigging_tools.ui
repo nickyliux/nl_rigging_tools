@@ -179,12 +179,12 @@
       </item>
       <item>
        <property name="text">
-        <string>leg / bp</string>
+        <string>hand / bp</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>hand / bp</string>
+        <string>leg / bp</string>
        </property>
       </item>
       <item>
@@ -352,7 +352,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>30</y>
+        <y>60</y>
         <width>101</width>
         <height>27</height>
        </rect>
@@ -459,7 +459,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>110</y>
+        <y>140</y>
         <width>101</width>
         <height>26</height>
        </rect>
@@ -588,7 +588,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>80</y>
+        <y>110</y>
         <width>101</width>
         <height>26</height>
        </rect>
@@ -704,7 +704,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>220</y>
+        <y>250</y>
         <width>101</width>
         <height>26</height>
        </rect>
@@ -825,7 +825,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>300</y>
+        <y>330</y>
         <width>101</width>
         <height>26</height>
        </rect>
@@ -946,7 +946,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>190</y>
+        <y>220</y>
         <width>101</width>
         <height>26</height>
        </rect>
@@ -1067,7 +1067,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>160</y>
+        <y>190</y>
         <width>101</width>
         <height>26</height>
        </rect>
@@ -1188,7 +1188,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>250</y>
+        <y>280</y>
         <width>101</width>
         <height>26</height>
        </rect>
@@ -1308,8 +1308,8 @@
      <widget class="Line" name="line">
       <property name="geometry">
        <rect>
-        <x>12</x>
-        <y>67</y>
+        <x>10</x>
+        <y>50</y>
         <width>85</width>
         <height>3</height>
        </rect>
@@ -1318,30 +1318,23 @@
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
-     <widget class="Line" name="line_2">
+     <widget class="QCheckBox" name="loadLatest_CB">
       <property name="geometry">
        <rect>
-        <x>12</x>
-        <y>146</y>
-        <width>85</width>
-        <height>3</height>
+        <x>5</x>
+        <y>27</y>
+        <width>91</width>
+        <height>17</height>
        </rect>
       </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+      <property name="toolTip">
+       <string>Left</string>
       </property>
-     </widget>
-     <widget class="Line" name="line_3">
-      <property name="geometry">
-       <rect>
-        <x>12</x>
-        <y>287</y>
-        <width>85</width>
-        <height>3</height>
-       </rect>
+      <property name="text">
+       <string>Load Latest</string>
       </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+      <property name="checked">
+       <bool>true</bool>
       </property>
      </widget>
     </widget>
@@ -2929,7 +2922,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>RigNodes in Current Namespace</string>
+      <string>Master Guides</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -2960,7 +2953,7 @@
         <number>3</number>
        </property>
        <item>
-        <widget class="QPushButton" name="rigNode_refresh_BN">
+        <widget class="QPushButton" name="refreshMG_BN">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -2993,7 +2986,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="rigNode_selectAll_BN">
+        <widget class="QPushButton" name="selectAllMG_BN">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -3027,7 +3020,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QListWidget" name="rigNode_LW">
+     <widget class="QListWidget" name="masterGuide_LW">
       <property name="geometry">
        <rect>
         <x>3</x>
@@ -3315,64 +3308,11 @@
       </layout>
      </widget>
     </widget>
-    <widget class="QGroupBox" name="groupBox_18">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>490</y>
-       <width>225</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>Env</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="flat">
-      <bool>true</bool>
-     </property>
-     <widget class="QPushButton" name="misc_importEnvAndShd_BN">
-      <property name="geometry">
-       <rect>
-        <x>60</x>
-        <y>25</y>
-        <width>101</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>10</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>18</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Segoe UI</family>
-        <pointsize>8</pointsize>
-       </font>
-      </property>
-      <property name="toolTip">
-       <string>Import Env Scene</string>
-      </property>
-      <property name="text">
-       <string>Load Env</string>
-      </property>
-     </widget>
-    </widget>
     <widget class="QGroupBox" name="groupBox_19">
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>540</y>
+       <y>490</y>
        <width>225</width>
        <height>61</height>
       </rect>
@@ -3513,9 +3453,9 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>610</y>
+       <y>560</y>
        <width>225</width>
-       <height>61</height>
+       <height>91</height>
       </rect>
      </property>
      <property name="title">
@@ -3553,14 +3493,14 @@
         <widget class="QPushButton" name="misc_buildLineSel_BN">
          <property name="minimumSize">
           <size>
-           <width>0</width>
+           <width>10</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>16777215</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -3573,14 +3513,69 @@
           <string>Create Lines betw Selected</string>
          </property>
          <property name="text">
-          <string>Build Line for Sel</string>
+          <string>Gen Line</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget_20">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>50</y>
+        <width>221</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_15">
+       <property name="spacing">
+        <number>4</number>
+       </property>
+       <property name="leftMargin">
+        <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>2</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="addWSMirrorAttr_BN">
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>+ WsMirror Attr</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="addMirrorAttr_BN">
+        <widget class="QPushButton" name="addFlipXAttr_BN">
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>18</height>
+          </size>
+         </property>
          <property name="text">
-          <string>Add Mirror Attr</string>
+          <string>+ FlipX Attr</string>
          </property>
         </widget>
        </item>
@@ -3591,7 +3586,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>680</y>
+       <y>650</y>
        <width>225</width>
        <height>61</height>
       </rect>
@@ -4353,6 +4348,59 @@
    <property name="readOnly">
     <bool>true</bool>
    </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_18">
+   <property name="geometry">
+    <rect>
+     <x>260</x>
+     <y>510</y>
+     <width>225</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Env</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+   <widget class="QPushButton" name="misc_importEnvAndShd_BN">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>25</y>
+      <width>101</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>10</width>
+      <height>0</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>16777215</width>
+      <height>18</height>
+     </size>
+    </property>
+    <property name="font">
+     <font>
+      <family>Segoe UI</family>
+      <pointsize>8</pointsize>
+     </font>
+    </property>
+    <property name="toolTip">
+     <string>Import Env Scene</string>
+    </property>
+    <property name="text">
+     <string>Load Env</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

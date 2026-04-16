@@ -118,6 +118,8 @@ def loadProxy():
     if not tgtPaths:
         return
 
+    tgtPaths.sort(key=common.sortFile)
+
     genProxyForSet()
     imported = mc.file(tgtPaths[-1], i=1, ns="proxy", returnNewNodes=1)
     ns = ""

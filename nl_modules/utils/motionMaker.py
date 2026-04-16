@@ -10,7 +10,7 @@ def bakeMotion(*args):
 
     ns = common.getNsFrOptVar()
     fkIkAttrs = [DagNode(f"{ns}:{rigID}_setting").a.fkIk for rigID in rigIDs]
-    rigNodes = [DagNode(f"{ns}:{rigID}_RGN") for rigID in rigIDs]
+    allMGs = [DagNode(f"{ns}:{rigID}_master_guide") for rigID in rigIDs]
 
     startTime = int(mc.playbackOptions(q=1, min=1))
     endTime = int(mc.playbackOptions(q=1, max=1))
@@ -24,7 +24,7 @@ def bakeMotion(*args):
         for frame in range(startTime, endTime + 1):
             mc.currentTime(frame, e=1)
             for i in range(len(rigIDs)):
-                anim.switchFkIk(fkIkAttrs[i], toIKMode=1, rigNode=rigNodes[i])
+                anim.switchFkIk(fkIkAttrs[i], toIKMode=1, mg=allMGs[i])
 
         common.pauseVP(0)
 

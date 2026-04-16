@@ -3,7 +3,6 @@ import glob
 import logging
 import maya.cmds as mc
 from nl_modules.utils import common
-from nl_modules.utils import guide
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
@@ -34,7 +33,7 @@ def mirrorCtlShape(ctl):
 
     opp = common.getOpposite(ctl)
     if not opp:
-        logging.info(f"No opposite found for {ctl}.")
+        logging.info(f"{ctl}: No opposite shape found.")
         return
 
     dup = ctl.duplicate()
@@ -118,6 +117,8 @@ def loadCtl():
             )
     if not tgtPaths:
         return
+
+    tgtPaths.sort(key=common.sortFile)
 
     try:
         newNodes = mc.file(tgtPaths[-1], i=1, ns="ctl", returnNewNodes=1)

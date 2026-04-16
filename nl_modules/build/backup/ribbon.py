@@ -12,7 +12,7 @@ from nl_modules.utils.color import Color
 
 
 class Ribbon(RigModule):
-    def __init__(self, rigNode):
+    def __init__(self, mg):
         """
         Initialize the Ribbon rig module.
         Structure:
@@ -25,13 +25,13 @@ class Ribbon(RigModule):
             |__MODEL
             |__SK
         """
-        super().__init__(rigNode)
+        super().__init__(mg)
 
         # Joint references
-        logging.info("Load rigNode's connected into attr.")
-        self.startJ: JntNode = rigNode.a.upr.inConnNode
-        self.midJ: JntNode = rigNode.a.lwr.inConnNode
-        self.endJ: JntNode = rigNode.a.foot.inConnNode
+        logging.info("Load mg's connected into attr.")
+        self.startJ: JntNode = mg.a.upr.inConnNode
+        self.midJ: JntNode = mg.a.lwr.inConnNode
+        self.endJ: JntNode = mg.a.foot.inConnNode
 
         # Ribbon group nodes
         self.RB_GRP = GrpNode("RB_GRP", pf=self.rigID, p=self.RIG)

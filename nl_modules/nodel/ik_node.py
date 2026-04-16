@@ -57,15 +57,15 @@ class IkNode(DagNode):
         if pf and pf[-1] != "_":
             pf += "_"
         name = pf + node + sf
+        sj1 = sj + jsf
+        ee1 = ee + jsf
 
         # --- Existence and joint checks ---
         if mc.objExists(name):
-            logging.warning("IK already exist.")
+            logging.error(f"IK already exist: {name}.")
             return
-        sj1 = sj + jsf
-        ee1 = ee + jsf
         if not mc.objExists(sj1) or not mc.objExists(ee1):
-            logging.warning(f"Missing joint {sj1} & {ee1}. Can't create IK")
+            logging.error(f"Missing joint {sj1} & {ee1}. Can't create IK")
             return
 
         # --- Initialize base DagNode ---

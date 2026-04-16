@@ -110,11 +110,11 @@ class JntNode(GrpNode):
         from nl_modules.utils import common
         from nl_modules.build.rig_module import RigModule
 
-        main_mod_grp = GrpNode("modules_grp")
-        if not main_mod_grp.exists():
-            logging.error("modules_grp not found.")
+        guide_grp = GrpNode("GUIDES")
+        if not guide_grp.exists():
+            logging.error("Group 'GUIDES' not found.")
             return
-        modScale = main_mod_grp.a.sy.get()
+        modScale = guide_grp.a.sy.get()
 
         proxy_name = f"{self.name}_pxGeo"
         if DagNode(proxy_name).exists():

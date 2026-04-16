@@ -17,13 +17,13 @@ from nl_modules.utils.common import Vec
 class ArmBp(RigModule):
     """Biped arm rig module."""
 
-    def __init__(self, rigNode):
-        rigNode = DagNode(rigNode) if isinstance(rigNode, str) else rigNode
-        super().__init__(rigNode)
+    def __init__(self, mg):
+        # mg = DagNode(mg) if isinstance(mg, str) else mg
+        super().__init__(mg)
 
         guide_attrs = ["ribbon", "scapulaBone", "dualBone", "rollJntNum", "rbnJntNum"]
         for attr in guide_attrs:
-            setattr(self, attr, self.get_guide_attr(attr))
+            setattr(self, attr, self.masterGuide.a[attr].get())
 
         # Groups
         self.FK_GRP = GrpNode("FK", pf=self.rigID, p=self.CTL_DATA)
@@ -76,7 +76,7 @@ class ArmBp(RigModule):
 
         self.rootJ = root_list[0]
         self.rootJ | self.JNT_DATA
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
 
         return self.rootJ
 
@@ -89,9 +89,9 @@ class ArmBp(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
             ("clavicle_fkc", "cube", "x", scale, 1),
-            ("upr_fkc", "circle", "x", scale, 0),
-            ("lwr_fkc", "circle", "x", scale, 0),
-            ("palm_fkc", "circle", "x", scale, 0),
+            ("upr_fkc", "circleThick", "x", scale, 0),
+            ("lwr_fkc", "circleThick", "x", scale, 0),
+            ("palm_fkc", "circleThick", "x", scale, 0),
             ("ikc", "cube", None, Vec((1, 2, 2)) * scale, 0),
             ("pvc", "sphere", None, rSz * 2, 0),
             ("palm_ikc", "squareR", "x", scale, 0),
@@ -497,12 +497,12 @@ class ArmBp(RigModule):
 
     def setup_space(self):
         """Setup space switching for the arm rig controls."""
-        self.rigNode.a.add(
+        self.masterGuide.a.add(
             "spaceName1",
             type="string",
             txt="master, COG, uprBody, lwrBody, head",
         )
-        self.rigNode.a.add(
+        self.masterGuide.a.add(
             "spaceName2",
             type="string",
             txt="arm, master, clavicle, COG, uprBody, lwrBody",
@@ -510,7 +510,7 @@ class ArmBp(RigModule):
         self.ikH1.build_pvfkPinSetup(ikTarget=self.ikc)
 
         PALM_ID = 3
-        self.rigNode.setMsg(
+        self.masterGuide.setMsg(
             {
                 "spaceHolder1": self.ikc,
                 "spaceHolder2": self.pvc,
@@ -556,7 +556,7 @@ class ArmBp(RigModule):
         """Post setup for the arm rig."""
         logging.info(".")
 
-        common.add_mirror_attr([self.pvc])
+        common.add_wsMirror_attr([self.pvc])
 
         self.setup_scale()
         self.setup_bindJnt()

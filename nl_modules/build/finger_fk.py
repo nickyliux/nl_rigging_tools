@@ -14,14 +14,14 @@ from nl_modules.utils.color import Color
 class FingerFk(RigModule):
     """Finger rig module."""
 
-    def __init__(self, rigNode):
-        rigNode = DagNode(rigNode) if isinstance(rigNode, str) else rigNode
-        super().__init__(rigNode)
+    def __init__(self, mg):
+        # mg = DagNode(mg) if isinstance(mg, str) else mg
+        super().__init__(mg)
 
         # Guide attributes
         guide_attrs = ["segNum"]
         for attr in guide_attrs:
-            setattr(self, attr, self.get_guide_attr(attr))
+            setattr(self, attr, self.masterGuide.a[attr].get())
 
         # Groups
         self.FK_GRP = GrpNode("FK", pf=self.rigID, p=self.CTL_DATA)
@@ -53,7 +53,7 @@ class FingerFk(RigModule):
 
         self.rootJ = root_list[0]
         self.rootJ | self.JNT_DATA
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 
     def build(self):
@@ -81,29 +81,29 @@ class FingerFk(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "x", rSz, 0),
-            ("fgr01_fkc", "squareR", None, -scale, 0),
+            ("fgr01_fkc", "squareR", "x", -scale, 0),
         ]
         if self.segNum >= 2:
-            ctl_defs.append(("fgr02_fkc", "squareR", None, -scale, 0))
+            ctl_defs.append(("fgr02_fkc", "squareR", "x", -scale, 0))
         if self.segNum >= 3:
-            ctl_defs.append(("fgr03_fkc", "squareR", None, -scale, 0))
+            ctl_defs.append(("fgr03_fkc", "squareR", "x", -scale, 0))
         if self.segNum >= 4:
-            ctl_defs.append(("fgr04_fkc", "squareR", None, -scale, 0))
+            ctl_defs.append(("fgr04_fkc", "squareR", "x", -scale, 0))
 
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
-        self.setting.alignTo(self.rootJ, p=self.CTL_DATA)
+        self.setting.alignTo(self.rootJ)  # , p=self.CTL_DATA)
         self.rootJ.cstPar(self.setting, mo=1)
 
-        offset = [scale * 10, scale * -15, 0]
-        self.fgr01_fkc.cv_move(*offset)
-        if self.segNum >= 2:
-            self.fgr02_fkc.cv_move(*offset)
-        if self.segNum >= 3:
-            self.fgr03_fkc.cv_move(*offset)
-        if self.segNum >= 4:
-            self.fgr04_fkc.cv_move(*offset)
+        # offset = [scale * 10, scale * -15, 0]
+        # self.fgr01_fkc.cv_move(*offset)
+        # if self.segNum >= 2:
+        #     self.fgr02_fkc.cv_move(*offset)
+        # if self.segNum >= 3:
+        #     self.fgr03_fkc.cv_move(*offset)
+        # if self.segNum >= 4:
+        #     self.fgr04_fkc.cv_move(*offset)
 
     def build_fk(self):
         """Build the FK controls for the arm rig."""

@@ -17,10 +17,10 @@ from nl_modules.utils.color import Color
 class LegBp(RigModule):
     """Biped leg rig module."""
 
-    def __init__(self, rigNode):
-        if isinstance(rigNode, str):
-            rigNode = DagNode(rigNode)
-        super().__init__(rigNode)
+    def __init__(self, mg):
+        # if isinstance(mg, str):
+        #     mg = DagNode(mg)
+        super().__init__(mg)
 
         guide_attrs = [
             "ribbon",
@@ -34,7 +34,7 @@ class LegBp(RigModule):
             "scapulaAutoAim",
         ]
         for attr in guide_attrs:
-            setattr(self, attr, self.get_guide_attr(attr))
+            setattr(self, attr, self.masterGuide.a[attr].get())
 
         self.setting = None
 
@@ -75,9 +75,10 @@ class LegBp(RigModule):
         self.pvc_line = None
         self.pvRota_line = None
         self.ikCstG = None
-        self.toesRootJ = (
-            rigNode.a["toesRootJ"].inConnNode if rigNode.a["toesRootJ"].exists() else []
-        )
+
+        rootJ = DagNode(mg).a["toesRootJ"]
+        self.toesRootJ = rootJ.inConnNode if rootJ.exists() else []
+
         self.ikH1 = None
         self.ikH_PV = None
         self.ball_ikc = None
@@ -98,7 +99,7 @@ class LegBp(RigModule):
             self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
             self.toesRootJ | self.JNT_DATA
             self.toesRootJ.a.segmentScaleCompensate.set(0)
-            self.rigNode.setMsg({"toesRootJ": self.toesRootJ})
+            self.masterGuide.setMsg({"toesRootJ": self.toesRootJ})
             TOE_NAMES = [
                 ["toe00_1", "toe00_2", "toe00_3", "toe00_4"],
                 ["toe01_1", "toe01_2", "toe01_3", "toe01_4", "toe01_5"],
@@ -118,7 +119,7 @@ class LegBp(RigModule):
 
         self.rootJ = root_list[0]
         self.rootJ | self.JNT_DATA
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 
     def build_ctl(self):
@@ -130,10 +131,10 @@ class LegBp(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
             ("hip_fkc", "stickS", None, -scale / 1.5, 0),
-            ("upr_fkc", "circle", "x", scale, 0),
-            ("lwr_fkc", "circle", "x", scale, 0),
-            ("palm_fkc", "circle", "x", scale, 0),
-            ("ball_fkc", "circle", "x", scale / 5, 0),
+            ("upr_fkc", "circleThick", "x", scale, 0),
+            ("lwr_fkc", "circleThick", "x", scale, 0),
+            ("palm_fkc", "circleThick", "x", scale, 0),
+            ("ball_fkc", "circleThick", "x", scale / 5, 0),
             ("ikc", "trapezoid", None, Vec((1.6, 0.5, 3.2)) * rSz, 0),
             ("pvc", "sphere", None, rSz, 0),
             ("smart_ctl", "pyramid", None, scale / 3, 0),
@@ -245,7 +246,7 @@ class LegBp(RigModule):
         logging.info(".")
         rID, rSz, xDr = self.get_short_form()
 
-        mg = self.master_guide
+        mg = self.masterGuide
         inPos_guide = DagNode(rID + "_palm_inPos_guide")
         outPos_guide = DagNode(rID + "_palm_outPos_guide")
         heelPos_guide = DagNode(rID + "_palm_heelPos_guide")
@@ -337,7 +338,7 @@ class LegBp(RigModule):
         rID, rSz, xDr = self.get_short_form()
 
         self.smart_ctl | self.ikc
-        self.smart_ctl.snapAlignTo(toeRollG, self.master_guide)
+        self.smart_ctl.snapAlignTo(toeRollG, self.masterGuide)
         ofs = self.smart_ctl.addOffsetGrp()
         ofs.a.tz.set(rSz * 40)
 
@@ -425,7 +426,7 @@ class LegBp(RigModule):
         CrvNode(self.ball_ikc)(
             name="ball_ikc", pf=rID, shape="rotate2_3d", scale=-scale / 1.5, rotateY=90
         )
-        self.rigNode.setMsg({"ball_ikc": self.ball_ikc})
+        self.masterGuide.setMsg({"ball_ikc": self.ball_ikc})
         self.ctls_ik.append(self.ball_ikc)
 
     def build_toes(self):
@@ -562,14 +563,14 @@ class LegBp(RigModule):
 
     def setup_space(self):
         """Setup space switching for the leg rig controls."""
-        self.rigNode.a.add("spaceName1", type="string", txt="master, COG, lwrBody")
-        self.rigNode.a.add(
+        self.masterGuide.a.add("spaceName1", type="string", txt="master, COG, lwrBody")
+        self.masterGuide.a.add(
             "spaceName2", type="string", txt="leg, foot, master, hip, COG"
         )
 
         self.ikH1.build_pvfkPinSetup(ikTarget=self.ikc_gimbal)
 
-        self.rigNode.setMsg(
+        self.masterGuide.setMsg(
             {
                 "spaceHolder1": self.ikc,
                 "spaceHolder2": self.pvc,
@@ -636,7 +637,7 @@ class LegBp(RigModule):
         """Post setup for the leg rig module."""
         logging.info(".")
 
-        common.add_mirror_attr(
+        common.add_wsMirror_attr(
             [self.ikc, self.ikc_gimbal, self.pvc, self.smart_ctl, self.setting]
         )
 

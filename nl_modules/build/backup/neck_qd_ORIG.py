@@ -10,8 +10,8 @@ from nl_modules.utils import utils_node as ut
 class NeckQd(SpineQd):
     """Quadruped neck rig module"""
 
-    def __init__(self, rigNode):
-        super().__init__(rigNode)
+    def __init__(self, mg):
+        super().__init__(mg)
 
     def setup_anchor(self):
         """Setup the anchor controls for the neck rig."""
@@ -26,10 +26,10 @@ class NeckQd(SpineQd):
         """Setup the space switching for the neck rig."""
         self.fore_ikc.a.add("spaceType", dv=2, k=0, cb=0)
 
-        self.rigNode.a.add("spaceName1", type="string", txt="neckBase, COG, master")
-        # self.rigNode.a.add("spaceName2", type="string", txt="chest, COG, master")
+        self.masterGuide.a.add("spaceName1", type="string", txt="neckBase, COG, master")
+        # self.masterGuide.a.add("spaceName2", type="string", txt="chest, COG, master")
 
-        self.rigNode.setMsg(
+        self.masterGuide.setMsg(
             {
                 "spaceHolder1": self.fore_ikc,
                 "space_neck": self.anchorToRbj,

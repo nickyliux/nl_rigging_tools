@@ -13,12 +13,12 @@ from nl_modules.utils.common import Vec
 class IkFkSpline(RigModule):
     """rig module."""
 
-    def __init__(self, rigNode):
-        super().__init__(rigNode)
+    def __init__(self, mg):
+        super().__init__(mg)
         # Guide attributes
         guide_attrs = ["fkJntNum", "rbnJntNum", "ikJntNum"]
         for attr in guide_attrs:
-            setattr(self, attr, self.get_guide_attr(attr))
+            setattr(self, attr, self.masterGuide.a[attr].get())
 
         # --- Naming and group setup ---
         self.LINE_GUIDE = CrvNode(f"{self.rigID}_line_guide")
@@ -49,7 +49,7 @@ class IkFkSpline(RigModule):
         self.genSk_module()
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
         self.rootJ = root_list[0]
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 
     def build_ctl(self):
@@ -104,7 +104,7 @@ class IkFkSpline(RigModule):
             self.ctls_fk[i].cstOri(rv, mo=1)
 
         self.rbCrvSk = crv
-        self.rigNode.setMsg({"rbCrvSk": self.rbCrvSk})
+        self.masterGuide.setMsg({"rbCrvSk": self.rbCrvSk})
         self.jnts_bind = self.jnts_rb
 
     def build_ik(self):
@@ -140,7 +140,7 @@ class IkFkSpline(RigModule):
             )
             self.jnts_ik[i] | ctl
             self.ctls_ik.append(ctl)
-            self.rigNode.setMsg({f"ikc{i}": ctl})
+            self.masterGuide.setMsg({f"ikc{i}": ctl})
 
         if self.ikJntNum >= 4:
             self.ctls_ik[1].offset | self.ctls_ik[0]
@@ -152,7 +152,7 @@ class IkFkSpline(RigModule):
             snap=self.RT_GUIDE,
             normal=-1 if self.rigID.startswith("tail") else 1,
         )
-        self.rigNode.setMsg({"rbSrf": self.rbSrf1})
+        self.masterGuide.setMsg({"rbSrf": self.rbSrf1})
 
         SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6, chain=0)
 
@@ -186,7 +186,7 @@ class IkFkSpline(RigModule):
                 scale=rSz * 2,
                 align=self.jnts_fk[i],
             )
-            self.rigNode.setMsg({f"fkc{i}": ctl})
+            self.masterGuide.setMsg({f"fkc{i}": ctl})
             self.ctls_fk.append(ctl)
 
         self.build_fk_with_ctl3(self.jnts_fk, self.ctls_fk, p=self.FK_GRP)
@@ -243,7 +243,7 @@ class IkFkSpline(RigModule):
             normal=-1 if self.rigID.startswith("tail") else 1,
         )
 
-        self.rigNode.setMsg({"rbSrfSk": self.rbSrf2})
+        self.masterGuide.setMsg({"rbSrfSk": self.rbSrf2})
         SrfNode(self.rbSrf2).weightTo(self.jnts_ofs, chain=0, mi=2, dr=6)
 
     def setup_vis(self):
@@ -314,10 +314,12 @@ class IkFkSpline(RigModule):
         """Setup space switching for the rig controls."""
         self.ctls_ik[-1].a.add("spaceType", dv=2, k=0, cb=0)
 
-        self.rigNode.a.add("spaceName1", type="string", txt="localBase, COG, master")
-        # self.rigNode.a.add("spaceName2", type="string", txt="chest, COG, master")
+        self.masterGuide.a.add(
+            "spaceName1", type="string", txt="localBase, COG, master"
+        )
+        # self.masterGuide.a.add("spaceName2", type="string", txt="chest, COG, master")
 
-        self.rigNode.setMsg(
+        self.masterGuide.setMsg(
             {
                 "spaceHolder1": self.ctls_ik[-1],
                 "space_localBase": self.main,
@@ -331,7 +333,7 @@ class IkFkSpline(RigModule):
 
         mc.delete(self.rootJ)
         self.rootJ = self.jnts_fk[0]
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
 
         self.setup_scale()
         self.setup_bindJnt()

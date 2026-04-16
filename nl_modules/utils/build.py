@@ -1,7 +1,6 @@
 import logging
 from platform import node
 import maya.cmds as mc
-import maya.mel as mel
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.loc_node import LocNode
@@ -30,10 +29,10 @@ from nl_modules.build.simple_fk import SimpleFk
 from nl_modules.build.rig_module import RigModule
 
 
-def getAnchors(rigNodes, startStr=""):
-    """Return objects from all rigNodes having attr starts with str"""
+def getAnchors(targets, startStr=""):
+    """Return objects from all targets having attr starts with str"""
     linkedObjs = []
-    for node in [DagNode(r) for r in rigNodes]:
+    for node in [DagNode(r) for r in targets]:
         if node.a.nodeState.get() == 2:
             userAttrs = node.a.list(ud=1, at="message")
             for uAttr in userAttrs:
@@ -43,78 +42,69 @@ def getAnchors(rigNodes, startStr=""):
     return linkedObjs
 
 
-def buildTgt(rigN):
-    """Build target rigNode"""
-    if rigN:
-        rigClass = rigN.a["rigClass"].get()
-        rigObj = eval(rigClass)(rigN)
+def buildTgt(mg):
+    """Build target mgode"""
+    if mg:
+        rigClass = mg.a["rigClass"].get()
+        rigObj = eval(rigClass)(mg)
         if rigObj:
-            state = rigN.a["nodeState"].get()
+            state = mg.a["nodeState"].get()
             if state == 0:
                 sk = rigObj.gen_sk()
                 if sk:
                     rigObj.build()
                 else:
-                    logging.warning(f"Skip building {rigN.name}, no skeleton found.")
+                    logging.warning(f"Skip building {mg.name}, no skeleton found.")
 
 
 def toggleGuide(*args):
-    """Show guide and hide rig if state is True, else show rig and hide guide"""
-    chr = DagNode("CHR")
-    g = DagNode("modules_grp")
-    if chr.exists() and g.exists():
-        chrVis = chr.a.v.get()
-        if chrVis:
-            chr.hide()
-            for child in g.getChildren():
-                child.show()
+    """Show guide and hide rig if state is True, else show rig and hide guide."""
+    chr_grp = DagNode("CHR")
+    guide_grp = DagNode("GUIDES")
+
+    if chr_grp.exists() and guide_grp.exists():
+        if chr_grp.a.v.get():
+            chr_grp.hide()
+            guide_grp.show()
         else:
-            chr.show()
-            for node in getRigNodes_all():
-                if node.a.nodeState.get() == 2:
-                    grp = node.a.moduleG.inConnNode
-                    if grp and grp.exists():
-                        grp.hide()
+            chr_grp.show()
+            guide_grp.hide()
 
 
 @common.Undo("buildSelOrAll")
 def buildSelOrAll(*args):
-    """Build rig for selected rigNodes or all if nothing selected"""
-    rigNodes = getRigNodes_selOrAll()
-    rigNodesToBuild = []
+    """Build rig for selected or all master guides."""
+    MGs = collectMasterGuide_selOrAll()
+    guidesToBuild = []
 
-    for rN in rigNodes:
-        state = rN.a.nodeState.get()
+    for mg in MGs:
+        state = mg.a.nodeState.get()
         if state == 0:
-            rigNodesToBuild.append(rN)
+            guidesToBuild.append(mg)
 
-    if rigNodesToBuild:
-
+    if guidesToBuild:
         chr = DagNode("CHR")
         if chr.exists():
             chr.show()
 
-        buildCount = len(rigNodesToBuild)
+        guideCount = len(guidesToBuild)
         common.pauseVP(1)
-        # showLog = args and len(args) > 1 and args[1] == 1
-        log.update_root_logger(create_window=False)
+        log.update_root_logger(create_window=0)
 
         mc.progressWindow(
-            t="Build", pr=0, status="\nPreparing ...", ii=0, maxValue=buildCount
+            t="Build", pr=0, status="\nPreparing ...", ii=0, maxValue=guideCount
         )
+        for i, mg in enumerate(guidesToBuild):
+            logging.info(f"({i+1}) {mg.name}")
+            buildTgt(mg)
+            mc.progressWindow(e=1, pr=i, status=f"\n{mg.name}  [ {i} / {guideCount} ]")
+            # mc.refresh(f=1)
 
-        for i, rN in enumerate(rigNodesToBuild):
-            logging.info(f"({i+1}) {rN.name}")
-            buildTgt(rN)
-            mc.progressWindow(e=1, pr=i, status=f"\n{rN}  [ {i} / {buildCount} ]")
-            mc.refresh(f=1)
         postRig()
-        if args and args[0] == 1:
-            proxy.genProxyForSet()
 
         mc.progressWindow(ep=1)
 
-        logging.info(f"{buildCount} modules built.")
+        logging.info(f"{guideCount} components built.")
         print()
 
         mc.select(cl=1)
@@ -130,15 +120,20 @@ def postRig():
     update_space_switch()
     common.showRO()
 
+    proxy.genProxyForSet()
+
+    guide_grp = DagNode("GUIDES")
+    if guide_grp.exists():
+        guide_grp.hide()
+
 
 def addMasterAttrs():
     """Add proxy attributes to master2_ctl"""
-    ctl = DagNode("CHR")
+    ctl = DagNode("master2_ctl")
     if not ctl.exists():
-        logging.warning("CHR NOT found.")
+        logging.warning("master2_ctl NOT found.")
         return
 
-    # (grpName, visAttr, lockAttr) — lockAttr=None means vis-only (no override)
     _GROUPS = [
         ("_" * 8, "CTL", "ctlVis", None),
         ("_" * 9, "PRX", "proxyVis", "proxyRef"),
@@ -156,17 +151,18 @@ def addMasterAttrs():
                     ctl.a.add(lockAttr, k=0, type="bool", dv=0) * 2
                     >> grp.a.overrideDisplayType
                 )
+    logging.info(f"Added attrs to {ctl.name}.")
 
 
-def unbuildTgt(rN):
-    """Unbuild target rigNode"""
-    rN = DagNode(rN) if isinstance(rN, str) else rN
-    if rN.exists():
-        state = rN.a.nodeState.get()
+def unbuildTgt(mg):
+    """Unbuild for target master guide"""
+    mg = DagNode(mg) if isinstance(mg, str) else mg
+    if mg.exists():
+        state = mg.a.nodeState.get()
         if state == 2:
-            rigClass = rN.a.rigClass.get()
-            rigObj = eval(rigClass)(rN)
-            logging.info(f"Un-building {rN.name} ...")
+            rigClass = mg.a.rigClass.get()
+            rigObj = eval(rigClass)(mg)
+            logging.info(f"Un-building {mg.name} ...")
             rigObj.unbuild_pre_module()
             return 1
     return 0
@@ -174,52 +170,43 @@ def unbuildTgt(rN):
 
 @common.Undo("unbuildSelOrAll")
 def unbuildSelOrAll(*arg):
-    """Unbuild rig for selected rigNodes or all if nothing selected"""
-    rigNodes = getRigNodes_selOrAll()
+    """Unbuild rig for selected or all master guides"""
+    MGs = collectMasterGuide_selOrAll()
     control.reset_all_ctl()
-    mc.refresh(f=1)
+    # mc.refresh(f=1)
 
     unBuilt = 0
-    for rN in rigNodes:
-        unBuilt += unbuildTgt(rN)
+    for mg in MGs:
+        unBuilt += unbuildTgt(mg)
 
     logging.info(f"{unBuilt} modules un-built.")
     logging.info("Un-build completed.")
-    print()
 
-    allMG = [n.a.master_guide.inConnNode for n in rigNodes]
-    if allMG:
-        mc.select(allMG)
+    if MGs:
+        mc.select(MGs)
 
 
-def deleteTgt(rN):
-    """Delete guide component for input rigNode"""
-    rN = DagNode(rN) if isinstance(rN, str) else rN
-    if rN.exists():
-        rigID = rN.a.rigID.get()
+def deleteTgt(mg):
+    """Delete guide component the master guide"""
+    mg = DagNode(mg) if isinstance(mg, str) else mg
+    if mg.exists():
+        rigID = mg.a.rigID.get()
         obj = mc.ls(rigID + "_*")
         if obj:
             mc.delete(obj)
-            rN.delete()
-
-
-@common.Undo("deleteSelOrAll")
-def deleteSelOrAll(*arg):
-    """Delete rigNodes for selected objects or all if nothing selected"""
-    rigNodes = getRigNodes_selOrAll()
-    for rN in rigNodes:
-        deleteTgt(rN)
-    logging.info(f"Deleted {len(rigNodes)} rigNodes.")
+            mg.delete()
 
 
 def update_anchor_conn():
-    """Update anchor connections for all rigNodes"""
-    rigNodes = getRigNodes_all()
-    if not rigNodes or len(rigNodes) < 2:
-        logging.warning("No anchor connection made for no or single rigNode found.")
+    """Update anchor connections for all master guides"""
+    allMGs = getMasterGuide_all()
+    if not allMGs or len(allMGs) < 2:
+        logging.warning(
+            "No anchor connection made for no or single master guide found."
+        )
         return
 
-    socketAnchors = getAnchors(rigNodes, startStr="anchorS")
+    socketAnchors = getAnchors(allMGs, startStr="anchorS")
     if socketAnchors:
         [anchor.removeCstNodes() for anchor in socketAnchors]
     else:
@@ -227,34 +214,24 @@ def update_anchor_conn():
         return
 
     update_count = 0
-    # Iterate through each rigNode to find and connect the closest plug anchor
-    for node in rigNodes:
+    # Iterate through each master guide to find and connect the closest plug anchor
+    for mg in allMGs:
         for anchor in ["anchorS1", "anchorS2"]:
-            socket = node.a[anchor].inConnNode
+            socket = mg.a[anchor].inConnNode
             if not socket or not socket.exists():
                 continue
 
-            master_guide = node.a.master_guide.inConnNode
-            if not master_guide or not master_guide.exists():
+            parentNameMatch = mg.a.parentNameMatch.get()
+            parentMGs = getMasterGuide_all(match=parentNameMatch)
+
+            if parentMGs and mg in parentMGs:  # Remove self if in parent list
+                parentMGs.remove(mg)
+
+            if len(parentMGs) == 0:  # No parent master guide found
+                logging.info(f"No parent master guide found for {mg.name}.")
                 continue
 
-            parentNameMatch = master_guide.a.parentNameMatch.get()
-            parentRigNodes = getRigNodes_all(match=parentNameMatch)
-
-            # if not parentRigNodes:
-            #     logging.warning(f"No parent rigNode found for {node.name}.")
-            #     continue
-
-            if (
-                parentRigNodes and node in parentRigNodes
-            ):  # Remove self if in parent list
-                parentRigNodes.remove(node)
-
-            if len(parentRigNodes) == 0:  # No parent rigNode found
-                logging.info(f"No parent rigNode found for {node.name}.")
-                continue
-
-            plugAnchors = getAnchors(parentRigNodes, startStr="anchorP")
+            plugAnchors = getAnchors(parentMGs, startStr="anchorP")
             if not plugAnchors or len(plugAnchors) == 0:
                 continue
 
@@ -284,10 +261,10 @@ def update_anchor_conn():
 
 
 def update_space_switch():
-    """Update space switch for all rigNodes"""
+    """Update space switch for all master guides"""
     spaceData = collect_space_data()
     update_count = 0
-    for ctl, spaceList, rigNode in spaceData:
+    for ctl, spaceList, mg in spaceData:
         if ctl.a.paSpace.exists():
 
             # delete space and related groups
@@ -307,7 +284,7 @@ def update_space_switch():
         #       'master': master_ctl,
         #       'arm': lf_arm_ikc
         #
-        spaceDict = collect_space_obj(rigNode)
+        spaceDict = collect_space_obj(mg)
 
         #
         #   filter non-existing item
@@ -339,12 +316,12 @@ def update_space_switch():
     logging.info(f"{update_count} space switches updated.")
 
 
-def get_space_obj(rigNode):
-    """Return space:obj dict for rigNode
+def get_space_obj(mg):
+    """Return space:obj dict for mg
     e.g.
-        rigNode.space_arm -> lfArm0_softJ
-        rigNode.space_clavicle -> lfArm0_clavicle_fkc
-        rigNode.space_master -> master_ctl
+        mg.space_arm -> lfArm0_softJ
+        mg.space_clavicle -> lfArm0_clavicle_fkc
+        mg.space_master -> master_ctl
 
         Return
         {
@@ -354,7 +331,7 @@ def get_space_obj(rigNode):
         }
     """
     spaceDict = {}
-    for udAttr in rigNode.a.list(ud=1):
+    for udAttr in mg.a.list(ud=1):
         if udAttr.name.startswith("space_"):
             obj = udAttr.inConnNode
             if obj and obj.exists():
@@ -363,12 +340,12 @@ def get_space_obj(rigNode):
     return spaceDict
 
 
-def collect_space_obj(rigNode):
+def collect_space_obj(mg):
     """
-    Return space:obj dict for all rigNodes.
+    Return space:obj dict for all master guides.
 
-    For cases like palm roll, driving rigNode updated second last
-    For cases like arm poleVector, its rigNode is updated last
+    For cases like palm roll, driving master guide updated second last
+    For cases like arm poleVector, its master guide is updated last
     e.g.
         {
             'COG':      cog_ikc,
@@ -378,28 +355,28 @@ def collect_space_obj(rigNode):
         }
     """
     spaceDict = {}
-    for node in getRigNodes_all():
-        if node != rigNode:
-            spaceDict.update(get_space_obj(node))
+    for m in getMasterGuide_all():
+        if m != mg:
+            spaceDict.update(get_space_obj(m))
     #
-    #   get all driving rigNodes
+    #   get all driving master guides
     #
-    socketAnchors = getAnchors([rigNode], startStr="anchorS")
+    socketAnchors = getAnchors([mg], startStr="anchorS")
     if socketAnchors:
         drivingAnchors = socketAnchors[0].getCstObjects(cstType="parentConstraint")
         if drivingAnchors:
-            drivingRN = getRigNode(drivingAnchors[0])
-            spaceDict.update(get_space_obj(drivingRN))
+            driverMG = getMasterGuide(drivingAnchors[0])
+            spaceDict.update(get_space_obj(driverMG))
     #
     #   as lf & rt arm ctl can have the same 'arm' space
-    #   so its rigNode will be updated last
+    #   so its master guide will be updated last
     #
-    spaceDict.update(get_space_obj(rigNode))
+    spaceDict.update(get_space_obj(mg))
     return spaceDict
 
 
 def collect_space_data():
-    """Return [ctl, objects, rigNode] from "spaceHolder*" attr from all rigNodes.
+    """Return [ctl, objects, master guide] from "spaceHolder*" attr from all master guides.
     e.g.
         spaceHolder1 -> lfArm0_ikc
         spaceHolder2 -> lfArm0_pvc
@@ -413,7 +390,7 @@ def collect_space_data():
         }
     """
     ctlList = []
-    for node in getRigNodes_all():
+    for node in getMasterGuide_all():
         for udAttr in node.a.list(ud=1):
             if udAttr.name.startswith("spaceHolder"):
                 obj = udAttr.inConnNode
@@ -436,61 +413,42 @@ def cleanUpScene():
         mc.delete(n)
 
 
-def removeOrphanRigNodes():
-    """Remove rigNodes with no skeleton."""
-    mel.eval("MLdeleteUnused;")
-
-    rigNodes = getRigNodes_all()
-    removeCount = 0
-    for node in rigNodes:
-        mg = node.a.moduleG.inConnNode
-        if not mg or not mc.objExists(mg):
-            node.delete()
-            removeCount += 1
-    # logging.info(f"{removeCount} orphan rigNodes removed.")
-
-
-def getRigNodes_selOrAll():
-    """Return rigNodes from selected objects or all rigNodes if nothing selected"""
-    rigNodes = []
+def collectMasterGuide_selOrAll():
+    """Return master guides from selected objects or all master guides if nothing selected"""
+    MGs = []
     selList = mc.ls(sl=1)
     if selList:
-        for obj in selList:
-            n = getRigNode(obj)
-            if n:
-                rigNodes.append(n)
+        for sel in selList:
+            n = getMasterGuide(sel)
+            if n and n not in MGs:
+                MGs.append(n)
     else:
-        rigNodes = getRigNodes_all()
+        MGs = getMasterGuide_all()
 
-    return rigNodes
+    return MGs
 
 
-def getRigNodes_all(match="*"):
-    """Return all rigNodes in the scene, optional name match filter"""
+def getMasterGuide(tgtN):
+    """Return master guide from tgtN, which can be any object under the master guide."""
+    # ns = common.getNsFrOptVar()
+    if tgtN:
+        name = DagNode(tgtN).name.split("_")[0] + "_master_guide"
+        if mc.objExists(name):
+            return DagNode(name)
+
+
+def getMasterGuide_all(match="*"):
+    """Return all master guides in the scene, optional name match filter"""
     ns = common.getNsFrOptVar()
     parts = match.split(",")
     returnNodes = []
     for part in parts:
-        returnNodes.extend(
-            [DagNode(r) for r in mc.ls(ns + part + "RGN", type="script")]
-        )
+        returnNodes.extend([DagNode(r) for r in mc.ls(ns + part + "*_master_guide")])
     return returnNodes
 
 
-def getRigNode(obj):
-    """Return rigNode for input object"""
-    if mc.objExists(obj):
-        nodes = DagNode(obj).a.message.outConnNode
-        if nodes:
-            for n in nodes:
-                if n.type == "script":
-                    return n
-    else:
-        logging.info("Get rigNode for non-existing object.")
-
-
 def boneAutoAttach():
-    """Auto attach joints to surface for all rigNodes."""
+    """Auto attach joints to surface for all master guides."""
     masterCtl = DagNode("master_ctl")
     if not masterCtl.exists():
         mc.confirmDialog(title="Error", message="master_ctl NOT found.", button=["OK"])
@@ -500,7 +458,7 @@ def boneAutoAttach():
     if not globalScale.exists():
         raise ValueError("globalScale attr NOT found")
 
-    for node in getRigNodes_all():
+    for node in getMasterGuide_all():
 
         if node.a.nodeState.get() != 2:
             continue

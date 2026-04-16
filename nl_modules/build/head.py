@@ -8,8 +8,8 @@ from nl_modules.utils import proxy
 class Head(RigModule):
     """Head Rig Module."""
 
-    def __init__(self, rigNode):
-        super().__init__(rigNode)
+    def __init__(self, mg):
+        super().__init__(mg)
 
         self.jnt_names = ["head", "jaw", "lf_eye", "rt_eye"]
         for name in self.jnt_names:
@@ -31,7 +31,7 @@ class Head(RigModule):
 
         self.rootJ = root_list[0]
         self.rootJ | self.JNT_DATA
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 
     def build(self):
@@ -108,7 +108,7 @@ class Head(RigModule):
 
     def setup_space(self):
         """Setup space switching for the head rig controls."""
-        self.rigNode.setMsg(
+        self.masterGuide.setMsg(
             {
                 "space_head": self.head_fkc,
             }

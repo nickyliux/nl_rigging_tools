@@ -4,8 +4,8 @@ from nl_modules.build.spine_bp import SpineBp
 class NeckBp(SpineBp):
     """Biped neck rig module"""
 
-    def __init__(self, rigNode):
-        super().__init__(rigNode)
+    def __init__(self, mg):
+        super().__init__(mg)
 
     def setup_anchor(self):
         """Setup the anchor controls for the neck rig."""
@@ -15,13 +15,13 @@ class NeckBp(SpineBp):
     def setup_space(self):
         """Setup the space switching for the neck rig."""
         space_neck = self.fore_ikc if self.ribbon else self.ctls_fk[-1]
-        self.rigNode.setMsg(
+        self.masterGuide.setMsg(
             {
                 "space_neck": space_neck,
             }
         )
         if self.ribbon:
-            self.rigNode.setMsg(
+            self.masterGuide.setMsg(
                 {
                     "spaceHolder1": self.fore_ikc,
                     "space_neckBase": self.base_ikc,

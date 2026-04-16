@@ -42,7 +42,6 @@ from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
-from nl_modules.nodel.msh_node import MshNode
 
 # --- Paths ---
 MOD_DIR = os.path.dirname(nl_modules.__file__)
@@ -98,18 +97,18 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def buildAll(self):
         """Build all rig components."""
         build.unbuildSelOrAll()
-        build.buildSelOrAll(1, 0)
-        self.rigNode_UI_refresh()
+        build.buildSelOrAll()
+        self.masterGuide_UI_refresh()
 
     def unbuildAll(self):
         """Unbuild all rig components."""
         build.unbuildSelOrAll()
-        self.rigNode_UI_refresh()
+        self.masterGuide_UI_refresh()
 
     def loadTpl(self):
         """Load template for the guide."""
-        guide.loadTemplate()
-        self.rigNode_UI_refresh()
+        guide.loadTemplate(loadLatest=self.UI.loadLatest_CB.isChecked())
+        self.masterGuide_UI_refresh()
 
     def connect_UI(self):
         """Connect UI buttons to their respective functions."""
@@ -157,11 +156,12 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.prune_BN, skin.pruneWeightSel)
         self.connect(self.UI.copyWeight_BN, skin.copyWeight)
 
-        # RigNode
-        self.UI.rigNode_LW.itemDoubleClicked.connect(self.rigNode_LW_selectMasterGuide)
-        self.UI.rigNode_LW.itemClicked.connect(self.rigNode_LW_selectRigNode)
-        self.UI.rigNode_refresh_BN.clicked.connect(self.rigNode_UI_refresh)
-        self.UI.rigNode_selectAll_BN.clicked.connect(self.rigNode_selectAll)
+        # Master Guide
+        # self.UI.masterGuide_LW.itemDoubleClicked.connect(self.UI_selectMasterGuide)
+        # self.UI.masterGuide_LW.itemClicked.connect(self.UI_selectMasterGuide)
+        self.UI.masterGuide_LW.currentItemChanged.connect(self.UI_selectMasterGuide)
+        self.UI.refreshMG_BN.clicked.connect(self.masterGuide_UI_refresh)
+        self.UI.selectAllMG_BN.clicked.connect(self.masterGuide_selectAll)
 
         # Ctl Tab
         self.UI.crvShape_LW.itemDoubleClicked.connect(self.crvShape_LW_dblClicked)
@@ -203,7 +203,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.misc_retopo500_BN, partial(model.retopo, faceNum=500))
 
         # Guide Tool
-        self.connect(self.UI.addMirrorAttr_BN, common.add_mirror_attr)
+        self.connect(self.UI.addWSMirrorAttr_BN, common.add_wsMirror_attr)
+        self.connect(self.UI.addFlipXAttr_BN, common.add_flipRX_attr)
         self.connect(self.UI.misc_buildLineSel_BN, CrvNode.buildLineLinkedSel)
         self.connect(self.UI.misc_importEnvAndShd_BN, self.misc_importEnvAndShd)
 
@@ -223,7 +224,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.equineToQuad_BN, motionMaker.connectEquineToQd)
         self.connect(self.UI.bakeMotion_BN, motionMaker.bakeMotion)
 
-        self.rigNode_UI_refresh()
+        self.masterGuide_UI_refresh()
         self.crvShape_refresh()
         self.updateLoadWrapTargetMesh()
         self.updateCharPath()
@@ -304,7 +305,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 elif itemText == "quad / unguli":
                     self.loadPresetGuide("quad_unguli_tpl")
 
-            self.rigNode_UI_refresh()
+            self.masterGuide_UI_refresh()
             mc.select(allTgtMG)
             common.setView(fit=1)
             mc.setToolTo("moveSuperContext")
@@ -315,34 +316,27 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if rigID_dict:
             guide.loadGuideFrIdDict(rigID_dict)
 
-    def rigNode_LW_selectRigNode(self, item):
-        """Select rigNode in the scene when clicked in the UI."""
-        itemSel = mc.ls(item.text())
-        if itemSel:
-            mc.select(itemSel)
-            mc.AttributeEditor()
+    def UI_selectMasterGuide(self, item):
+        """Select item in the scene when clicked in the UI."""
+        if item:
+            itemSel = mc.ls(item.text())
+            if itemSel:
+                obj = DagNode(itemSel[0])
+                if obj and obj.exists():
+                    mc.select(itemSel)
+                    mc.AttributeEditor()
 
-    def rigNode_LW_selectMasterGuide(self, item):
-        """Show attribute editor for rigNode"""
-        itemSel = mc.ls(item.text())
-        if itemSel:
-            mg = DagNode(itemSel[0]).a.master_guide.inConnNode
-            # mg = DagNode(itemSel[0])
-            if mg and mg.exists():
-                mc.select(mg)
-                mc.AttributeEditor()
+    def masterGuide_UI_refresh(self):
+        """Refresh UI master guide list"""
+        allMGs = build.getMasterGuide_all()
+        self.UI.masterGuide_LW.clear()
+        self.UI.masterGuide_LW.addItems([r.name for r in allMGs])
 
-    def rigNode_UI_refresh(self):
-        """Refresh UI rigNode list"""
-        rigNodes = build.getRigNodes_all()
-        self.UI.rigNode_LW.clear()
-        self.UI.rigNode_LW.addItems([r.name for r in rigNodes])
-
-    def rigNode_selectAll(self):
-        """Select all rig nodes"""
-        rigNodes = build.getRigNodes_all()
-        if rigNodes:
-            mc.select(rigNodes)
+    def masterGuide_selectAll(self):
+        """Select all master guides"""
+        allMGs = build.getMasterGuide_all()
+        if allMGs:
+            mc.select(allMGs)
 
     def crvShape_LW_dblClicked(self, item):
         """Add curve object"""

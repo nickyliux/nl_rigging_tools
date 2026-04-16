@@ -17,7 +17,7 @@ from nl_modules.nodel.ik_node import IkNode, Solver
 
 
 class Spine(rig_module.RigModule):
-    def __init__(self, rigNode):
+    def __init__(self, mg):
         """
         CHR
         |____RIG
@@ -28,32 +28,32 @@ class Spine(rig_module.RigModule):
         |____SK
 
         """
-        super().__init__(rigNode)
+        super().__init__(mg)
 
-        logging.info("Load rigNode's connected into attr.")
+        logging.info("Load mg's connected into attr.")
 
         self.SPINE_SETUP = GrpNode("spine_setup", pf=self.rigID, p=self.CTL_DATA)
 
-        self.rootJ: JntNode = rigNode.a.rootJ.inConnNode
-        self.cog_ctl = rigNode.a.cog_ctl.inConnNode
+        self.rootJ: JntNode = mg.a.rootJ.inConnNode
+        self.cog_ctl = mg.a.cog_ctl.inConnNode
 
-        self.sta_fkc = rigNode.a.sta_fkc.inConnNode
-        self.mid_fkc = rigNode.a.mid_fkc.inConnNode
-        self.end_fkc = rigNode.a.end_fkc.inConnNode
+        self.sta_fkc = mg.a.sta_fkc.inConnNode
+        self.mid_fkc = mg.a.mid_fkc.inConnNode
+        self.end_fkc = mg.a.end_fkc.inConnNode
 
         self.ctls_fk = [self.sta_fkc, self.mid_fkc, self.end_fkc]
 
-        self.sta_ikc = rigNode.a.sta_ikc.inConnNode
-        self.mid_ikc = rigNode.a.mid_ikc.inConnNode
-        self.end_ikc = rigNode.a.end_ikc.inConnNode
+        self.sta_ikc = mg.a.sta_ikc.inConnNode
+        self.mid_ikc = mg.a.mid_ikc.inConnNode
+        self.end_ikc = mg.a.end_ikc.inConnNode
         self.ctls_ik = [self.sta_ikc, self.mid_ikc, self.end_ikc]
 
-        self.anchor1 = rigNode.a.anchor1.inConnNode
-        self.anchor2 = rigNode.a.anchor2.inConnNode
+        self.anchor1 = mg.a.anchor1.inConnNode
+        self.anchor2 = mg.a.anchor2.inConnNode
 
         self.jnts_as = []
         self.jnts_ctl = None
-        self.setting = rigNode.a.setting.inConnNode
+        self.setting = mg.a.setting.inConnNode
 
     def build(self):
 
@@ -246,4 +246,4 @@ class Spine(rig_module.RigModule):
         self.jnts_as[0].hide()
         [j.hide() for j in self.jnts_ctl]
 
-        mc.delete(self.moduleG)
+        # mc.delete(self.moduleG)

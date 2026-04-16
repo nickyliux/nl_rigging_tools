@@ -11,11 +11,11 @@ from nl_modules.utils import common
 class Belt(RigModule):
     """Belt rig module."""
 
-    def __init__(self, rigNode):
-        super().__init__(rigNode)
+    def __init__(self, mg):
+        super().__init__(mg)
         guide_attrs = ["rbnJntNum", "ikCtlNum"]
         for attr in guide_attrs:
-            setattr(self, attr, self.get_guide_attr(attr))
+            setattr(self, attr, self.masterGuide.a[attr].get())
 
         # --- Naming and group setup ---
         self.LINE_GUIDE = CrvNode(f"{self.rigID}_line_guide")
@@ -47,7 +47,7 @@ class Belt(RigModule):
         root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
 
         self.rootJ = root_list[0]
-        self.rigNode.setMsg({"rootJ": self.rootJ})
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
         return self.rootJ
 
     def build_ctl(self):
@@ -68,7 +68,7 @@ class Belt(RigModule):
         self.rbSrf1 = self.create_rbSrf(
             span=4, normal=-1, crv=self.LINE_GUIDE, snap=self.RT_GUIDE
         )
-        self.rigNode.setMsg({"rbSrf": self.rbSrf1})
+        self.masterGuide.setMsg({"rbSrf": self.rbSrf1})
 
         self.build_ctl()
         self.build_ik()
@@ -126,7 +126,7 @@ class Belt(RigModule):
             ctl.cv_scale(1, 1, 0.5)
             self.jnts_ik[i] | ctl
             self.ctls_ik.append(ctl)
-            self.rigNode.setMsg({f"ikc{i}": ctl})
+            self.masterGuide.setMsg({f"ikc{i}": ctl})
 
         if self.ikCtlNum > 2:
             for i in range(self.ikCtlNum - 2):
