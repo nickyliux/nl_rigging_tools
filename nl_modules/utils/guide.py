@@ -38,7 +38,7 @@ def loadGuide(name):
     def genNextRigID(n):
         """Generate next rigID name for newly created component"""
         count = 0
-        for mg in build.getMasterGuide_all():
+        for mg in build.collectMasterGuide():
             if mg.a.rigID.get().startswith(n):
                 count += 1
         return f"{n}{count}"
@@ -77,21 +77,28 @@ def xferGuideAtoB(*arg):
 
 def duplicateGuideSel(*arg):
     """Duplicate selected guide controls"""
-    selList = mc.ls("*_master_guide", sl=1, tr=1)
-    allTgtMG = []
-    for sel in selList:
-        mg = DagNode(sel) if isinstance(sel, str) else sel
-        if mg and mg.exists():
-            rigID = mg.a.rigID.get()
-            tgtMG = loadGuide(removeEndDigits(rigID))
-            allTgtMG.append(tgtMG)
+    MGs = build.collectMasterGuide(isSel=1, isAll=0)
+    for mg in MGs:
+        rigID = mg.a.rigID.get()
+        dupMG = loadGuide(removeEndDigits(rigID))
+        mc.select(mg, dupMG)
+        xferGuideAtoB()
 
-            # Copy xform & attributes
-            mc.select(mg, tgtMG)
-            xferGuideAtoB()
+    # selList = mc.ls("*_master_guide", sl=1, tr=1)
+    # allTgtMG = []
+    # for sel in selList:
+    #     mg = DagNode(sel) if isinstance(sel, str) else sel
+    #     if mg and mg.exists():
+    #         rigID = mg.a.rigID.get()
+    #         tgtMG = loadGuide(removeEndDigits(rigID))
+    #         allTgtMG.append(tgtMG)
 
-    mc.select(allTgtMG)
-    mc.setToolTo("moveSuperContext")
+    #         # Copy xform & attributes
+    #         mc.select(mg, tgtMG)
+    #         xferGuideAtoB()
+
+    # mc.select(allTgtMG)
+    # mc.setToolTo("moveSuperContext")
 
 
 def duplicateGuideSymSel(*arg):
@@ -147,7 +154,7 @@ def copyCtlAttr(A, B, wsMirror=0, mirror=0):
     B.a.r.set(rx, ry, rz)
     B.a.s.set(*A.a.s.get())
 
-    for ud in A.a.list(ud=1, u=1) or []:
+    for ud in A.a.list(ud=1, u=1, hasData=1) or []:
 
         if ud.name in ["rigID", "rigClass"]:
             continue
@@ -304,7 +311,7 @@ def genAttrDict(obj):
         "r": obj.a.r.get(),
         "s": obj.a.s.get(),
     }
-    for ua in obj.a.list(ud=1, u=1) or []:
+    for ua in obj.a.list(ud=1, u=1, hasData=1) or []:
         uaName = ua.name
         attrDict[uaName] = obj.a[uaName].get()
     return attrDict
@@ -312,7 +319,7 @@ def genAttrDict(obj):
 
 def saveTemplate():
     """Save preset into json file"""
-    allMGs = build.getMasterGuide_all()
+    allMGs = build.collectMasterGuide()
     # for mg in allMGs:
     #     rigID = mg.a.rigID.get()
     #     print(mg, rigID)
@@ -348,3 +355,17 @@ def explore(*args):
 
     path = os.path.realpath(COMPONENT_PATH)
     subprocess.Popen(f'explorer "{path}"')
+
+
+def toggleGuide(*args):
+    """Show guide and hide rig if state is True, else show rig and hide guide."""
+    chr_grp = DagNode("CHR")
+    guide_grp = DagNode("GUIDES")
+
+    if chr_grp.exists() and guide_grp.exists():
+        if chr_grp.a.v.get():
+            chr_grp.hide()
+            guide_grp.show()
+        else:
+            chr_grp.show()
+            guide_grp.hide()

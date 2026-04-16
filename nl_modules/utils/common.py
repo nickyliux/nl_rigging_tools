@@ -787,7 +787,7 @@ def getRigCtlsAll():
     """Get all rig controls in the scene"""
     from nl_modules.utils import build
 
-    allMGs = build.getMasterGuide_all()
+    allMGs = build.collectMasterGuide()
     if allMGs:
         return getRigCtls(allMGs)
 

@@ -311,7 +311,7 @@ class RigModule(RigBase):
         """Post build function to finalize the module setup."""
 
         settingVis = self.masterC2.a.add("settingVis", k=0, type="bool", dv=1)
-        for node in build.getMasterGuide_all():
+        for node in build.collectMasterGuide():
             setting = node.a.setting.inConnNode
             if setting and setting.exists():
                 settingVis >> setting.a.v

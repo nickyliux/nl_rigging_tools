@@ -74,24 +74,23 @@ class SpineQd(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 1),
-            ("cog_ctl", "cog_qd", None, rSz * 1.5, 0),
+            ("cog_ctl", "cog_qd", None, rSz * 1.8, 0),
             ("fore_ikc", "back", None, Vec((6, 5, 0.2)) * rSz, 0),
             ("mid_ikc", "back", None, Vec((6, 5, 0.2)) * rSz, 0),
             ("base_ikc", "back", None, Vec((6, 5, 0.2)) * rSz, 0),
             ("tangent0_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
             ("tangent1_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
             ("end_ctl", "rotate2_3d", None, Vec((1, 1, 0.7)) * rSz, 0),
-            ("cog_upr_ctl", "triangle", "x", rSz, 0),
-            ("cog_lwr_ctl", "triangle", "x", rSz, 0),
+            ("cog_upr_ctl", "triangle", "x", Vec((1, 0.5, 1)) * rSz, 0),
+            ("cog_lwr_ctl", "triangle", "x", Vec((1, 0.5, -1)) * rSz, 0),
         ]
 
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         self.cog_ctl.cv_move(0, rSz * 60, 0)
-        # self.cog_upr_ctl.cv_rotate(150, 0, 0)
+
         self.cog_upr_ctl.cv_move(0, rSz * 60, 0)
-        # self.cog_lwr_ctl.cv_rotate(-30, 0, 0)
         self.cog_lwr_ctl.cv_move(0, rSz * 60, 0)
         self.end_ctl.cv_move(0, 0, rSz * -10)
 
@@ -101,7 +100,7 @@ class SpineQd(RigModule):
 
         self.tangent0_ctl.cv_rotate(0, 90, 0)
         self.tangent1_ctl.cv_rotate(0, 90, 0)
-        self.setting.cv_move(0, rSz * 90, 0)
+        self.setting.cv_move(0, rSz * 70, 0)
 
     def build(self):
         """Build the spine rig."""

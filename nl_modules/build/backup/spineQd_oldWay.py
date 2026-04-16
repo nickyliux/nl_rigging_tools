@@ -75,7 +75,7 @@ class SpineQd(RigModule):
         self.cog_ctl = CrvNode(
             "cog_ctl",
             pf=rID,
-            shape="trapezoid",
+            shape="trapezoid2_3d",
             scale=(rSz * 0.8, rSz * 1.5, rSz * 2.5),
             color=22,
         )

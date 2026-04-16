@@ -57,24 +57,10 @@ def buildTgt(mg):
                     logging.warning(f"Skip building {mg.name}, no skeleton found.")
 
 
-def toggleGuide(*args):
-    """Show guide and hide rig if state is True, else show rig and hide guide."""
-    chr_grp = DagNode("CHR")
-    guide_grp = DagNode("GUIDES")
-
-    if chr_grp.exists() and guide_grp.exists():
-        if chr_grp.a.v.get():
-            chr_grp.hide()
-            guide_grp.show()
-        else:
-            chr_grp.show()
-            guide_grp.hide()
-
-
-@common.Undo("buildSelOrAll")
-def buildSelOrAll(*args):
+@common.Undo("buildGuide")
+def buildGuide(*args):
     """Build rig for selected or all master guides."""
-    MGs = collectMasterGuide_selOrAll()
+    MGs = collectMasterGuide(isSel=1)
     guidesToBuild = []
 
     for mg in MGs:
@@ -98,13 +84,10 @@ def buildSelOrAll(*args):
             logging.info(f"({i+1}) {mg.name}")
             buildTgt(mg)
             mc.progressWindow(e=1, pr=i, status=f"\n{mg.name}  [ {i} / {guideCount} ]")
-            # mc.refresh(f=1)
-
         postRig()
 
         mc.progressWindow(ep=1)
-
-        logging.info(f"{guideCount} components built.")
+        logging.info(f"{guideCount} guide(s) built.")
         print()
 
         mc.select(cl=1)
@@ -162,28 +145,29 @@ def unbuildTgt(mg):
         if state == 2:
             rigClass = mg.a.rigClass.get()
             rigObj = eval(rigClass)(mg)
-            logging.info(f"Un-building {mg.name} ...")
+            logging.info(f"Unbuilding {mg.name}")
             rigObj.unbuild_pre_module()
             return 1
     return 0
 
 
-@common.Undo("unbuildSelOrAll")
-def unbuildSelOrAll(*arg):
-    """Unbuild rig for selected or all master guides"""
-    MGs = collectMasterGuide_selOrAll()
-    control.reset_all_ctl()
-    # mc.refresh(f=1)
-
-    unBuilt = 0
-    for mg in MGs:
-        unBuilt += unbuildTgt(mg)
-
-    logging.info(f"{unBuilt} modules un-built.")
-    logging.info("Un-build completed.")
-
+@common.Undo("unbuildGuide")
+def unbuildGuide(*arg):
+    """Unbuild rig for selected or all master guides."""
+    MGs = collectMasterGuide(isSel=1)
     if MGs:
-        mc.select(MGs)
+        control.reset_all_ctl()
+
+        count = 0
+        for mg in MGs:
+            count += unbuildTgt(mg)
+
+        logging.info(f"{count} guide(s) unbuilt.")
+        logging.info("Unbuild done.")
+
+        mc.select(cl=1)
+        if MGs:
+            mc.select(MGs)
 
 
 def deleteTgt(mg):
@@ -199,7 +183,7 @@ def deleteTgt(mg):
 
 def update_anchor_conn():
     """Update anchor connections for all master guides"""
-    allMGs = getMasterGuide_all()
+    allMGs = collectMasterGuide()
     if not allMGs or len(allMGs) < 2:
         logging.warning(
             "No anchor connection made for no or single master guide found."
@@ -222,7 +206,7 @@ def update_anchor_conn():
                 continue
 
             parentNameMatch = mg.a.parentNameMatch.get()
-            parentMGs = getMasterGuide_all(match=parentNameMatch)
+            parentMGs = collectMasterGuide(match=parentNameMatch)
 
             if parentMGs and mg in parentMGs:  # Remove self if in parent list
                 parentMGs.remove(mg)
@@ -331,7 +315,7 @@ def get_space_obj(mg):
         }
     """
     spaceDict = {}
-    for udAttr in mg.a.list(ud=1):
+    for udAttr in mg.a.list(ud=1, hasData=1):
         if udAttr.name.startswith("space_"):
             obj = udAttr.inConnNode
             if obj and obj.exists():
@@ -355,7 +339,7 @@ def collect_space_obj(mg):
         }
     """
     spaceDict = {}
-    for m in getMasterGuide_all():
+    for m in collectMasterGuide():
         if m != mg:
             spaceDict.update(get_space_obj(m))
     #
@@ -365,7 +349,7 @@ def collect_space_obj(mg):
     if socketAnchors:
         drivingAnchors = socketAnchors[0].getCstObjects(cstType="parentConstraint")
         if drivingAnchors:
-            driverMG = getMasterGuide(drivingAnchors[0])
+            driverMG = getMasterGuideFrName(drivingAnchors[0])
             spaceDict.update(get_space_obj(driverMG))
     #
     #   as lf & rt arm ctl can have the same 'arm' space
@@ -390,19 +374,13 @@ def collect_space_data():
         }
     """
     ctlList = []
-    for node in getMasterGuide_all():
-        for udAttr in node.a.list(ud=1):
+    for mg in collectMasterGuide():
+        for udAttr in mg.a.list(ud=1, hasData=1):
             if udAttr.name.startswith("spaceHolder"):
                 obj = udAttr.inConnNode
-                spaceNameAttr = node.a["spaceName" + udAttr.name[-1]]
+                spaceNameAttr = mg.a["spaceName" + udAttr.name[-1]]
                 if obj and obj.exists() and spaceNameAttr.exists():
-                    ctlList.append(
-                        (
-                            obj,
-                            spaceNameAttr.get().split(", "),
-                            node,
-                        )
-                    )
+                    ctlList.append((obj, spaceNameAttr.get().split(", "), mg))
     return ctlList
 
 
@@ -413,38 +391,36 @@ def cleanUpScene():
         mc.delete(n)
 
 
-def collectMasterGuide_selOrAll():
-    """Return master guides from selected objects or all master guides if nothing selected"""
-    MGs = []
-    selList = mc.ls(sl=1)
-    if selList:
-        for sel in selList:
-            n = getMasterGuide(sel)
-            if n and n not in MGs:
-                MGs.append(n)
-    else:
-        MGs = getMasterGuide_all()
+def collectMasterGuide(isSel=0, isAll=1, match="*"):
+    """Collect master guides based on selection or all in the scene, with optional name matching."""
+    if isSel == 1:
+        selList = mc.ls(sl=1, tr=1)
+        if selList:
+            MGs = []
+            for sel in selList:
+                n = getMasterGuideFrName(sel)
+                if n and n not in MGs:
+                    MGs.append(n)
+            return MGs
 
-    return MGs
+    if isAll == 1:
+        ns = common.getNsFrOptVar()
+        parts = match.split(",")
+        MGs = []
+        for part in parts:
+            mgs = mc.ls(ns + part + "*_master_guide")
+            # print(mgs)
+            MGs.extend([DagNode(r) for r in mgs])
+        return MGs
+    return []
 
 
-def getMasterGuide(tgtN):
-    """Return master guide from tgtN, which can be any object under the master guide."""
-    # ns = common.getNsFrOptVar()
+def getMasterGuideFrName(tgtN):
+    """Return master guide from given name, return None if not found."""
     if tgtN:
         name = DagNode(tgtN).name.split("_")[0] + "_master_guide"
         if mc.objExists(name):
             return DagNode(name)
-
-
-def getMasterGuide_all(match="*"):
-    """Return all master guides in the scene, optional name match filter"""
-    ns = common.getNsFrOptVar()
-    parts = match.split(",")
-    returnNodes = []
-    for part in parts:
-        returnNodes.extend([DagNode(r) for r in mc.ls(ns + part + "*_master_guide")])
-    return returnNodes
 
 
 def boneAutoAttach():
@@ -458,19 +434,19 @@ def boneAutoAttach():
     if not globalScale.exists():
         raise ValueError("globalScale attr NOT found")
 
-    for node in getMasterGuide_all():
+    for mg in collectMasterGuide():
 
-        if node.a.nodeState.get() != 2:
+        if mg.a.nodeState.get() != 2:
             continue
 
-        rbJntSetName = node.a["rbJntSet"].get()
+        rbJntSetName = mg.a["rbJntSet"].get()
         rbJnts = common.getSetMembersInOrder(rbJntSetName)
         if not rbJnts:
             continue
 
-        rbSrf = node.a["rbSrf"].inConnNode
-        rbSrfSk = node.a["rbSrfSk"].inConnNode
-        rigID = node.a.rigID.get()
+        rbSrf = mg.a["rbSrf"].inConnNode
+        rbSrfSk = mg.a["rbSrfSk"].inConnNode
+        rigID = mg.a.rigID.get()
         grp = DagNode("JNT")
 
         if rigID.startswith("tail") or rigID.startswith("neckQd"):

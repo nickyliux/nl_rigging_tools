@@ -96,13 +96,13 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def buildAll(self):
         """Build all rig components."""
-        build.unbuildSelOrAll()
-        build.buildSelOrAll()
+        build.unbuildGuide()
+        build.buildGuide()
         self.masterGuide_UI_refresh()
 
     def unbuildAll(self):
         """Unbuild all rig components."""
-        build.unbuildSelOrAll()
+        build.unbuildGuide()
         self.masterGuide_UI_refresh()
 
     def loadTpl(self):
@@ -328,15 +328,16 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def masterGuide_UI_refresh(self):
         """Refresh UI master guide list"""
-        allMGs = build.getMasterGuide_all()
+        allMGs = build.collectMasterGuide()
         self.UI.masterGuide_LW.clear()
         self.UI.masterGuide_LW.addItems([r.name for r in allMGs])
 
     def masterGuide_selectAll(self):
-        """Select all master guides"""
-        allMGs = build.getMasterGuide_all()
-        if allMGs:
-            mc.select(allMGs)
+        pass
+        # """Select all master guides"""
+        # allMGs = build.getMasterGuide_all()
+        # if allMGs:
+        #     mc.select(allMGs)
 
     def crvShape_LW_dblClicked(self, item):
         """Add curve object"""

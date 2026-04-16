@@ -91,8 +91,8 @@ class MarkingMenuAutorig:
 
     def rebuild(*args):
         """Custom rebuild function that unbuilds and then builds the selected rig"""
-        build.unbuildSelOrAll()
-        build.buildSelOrAll()
+        build.unbuildGuide()
+        build.buildGuide()
 
     def addHelperOptions(self, menu):
         """Add helper options to the marking menu"""
@@ -143,7 +143,7 @@ class MarkingMenuAutorig:
         curr_ns_str = "NONE" if ns == "" else f'"{ns}"'
 
         # mc.menuItem(p=menu, l="Unbuild", c=build.unbuildSelOrAll)
-        mc.menuItem(p=menu, l="Toggle Guide", c=build.toggleGuide)
+        mc.menuItem(p=menu, l="Toggle Guide", c=guide.toggleGuide)
         mc.menuItem(p=menu, l="-" * 25, en=0)
         mc.menuItem(p=menu, l="Add Follow Cam", c=common.addFollowCam)
         mc.menuItem(p=menu, l="namespace = " + curr_ns_str, c=common.setNsFrSel)
@@ -203,7 +203,7 @@ class MarkingMenuAutorig:
                     )
 
         # --- Toggle Isolate ---
-        for attr in firstSelected.a.list(ud=1):
+        for attr in firstSelected.a.list(ud=1, hasData=1):
             if attr.name.startswith("isolate"):
                 val = 1 - attr.get()
                 mc.menuItem(p=menu, l="ISOLATE", en=0)
@@ -230,7 +230,7 @@ class MarkingMenuAutorig:
         """Select the controls of the selected rig or all rigs in the scene"""
         from nl_modules.utils import common
 
-        MGs = build.collectMasterGuide_selOrAll()
+        MGs = build.collectMasterGuide(isSel=1)
         ctls = common.getRigCtls(MGs)
         if ctls:
             mc.select(ctls)

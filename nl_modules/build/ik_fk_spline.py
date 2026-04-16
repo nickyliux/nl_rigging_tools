@@ -126,7 +126,7 @@ class IkFkSpline(RigModule):
         for i in range(self.ikJntNum):
             isEnds = i == 0 or i == (self.ikJntNum - 1)
             shape = "back" if isEnds else "sphere"
-            scale = Vec((9, 8, 0.4)) * rSz if isEnds else rSz * 10
+            scale = Vec((7, 6, 0.4)) * rSz if isEnds else rSz * 5
             up = None if isEnds else "z"
             ctl = CrvNode(
                 f"{i}_ikc",
@@ -183,7 +183,7 @@ class IkFkSpline(RigModule):
                 f"{i}_fkc",
                 pf=rID,
                 up="z",
-                scale=rSz * 2,
+                scale=rSz * 1.5,
                 align=self.jnts_fk[i],
             )
             self.masterGuide.setMsg({f"fkc{i}": ctl})

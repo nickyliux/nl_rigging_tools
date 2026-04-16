@@ -336,7 +336,7 @@ class GrpNode(DagNode):
     def addAttrFrom(self, src=None):
         """Add attributes from source node, the proxy way"""
         if src and src.exists():
-            attrs = src.a.list(ud=1, u=1)
+            attrs = src.a.list(ud=1, u=1, hasData=1) or []
             for attr in attrs:
                 attrStr = attr.name
                 if not attrStr.startswith("_"):
