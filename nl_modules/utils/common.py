@@ -1028,19 +1028,27 @@ def getOppositeForSide(text, pfL="lf", pfR="rt"):
     return result
 
 
-def getOpposite(tgtN, pfL="lf", pfR="rt"):
-    """Return opposite"""
+def getOppositeStr(tgtStr, pfL="lf", pfR="rt"):
+    """Return opposite string if the target string contains left or right prefix"""
+    oppStr = None
+    nonFullPathStr = tgtStr.split("|")[-1]
+
+    if nonFullPathStr.startswith(pfL) or f":{pfL}" in nonFullPathStr:
+        oppStr = getOppositeForSide(nonFullPathStr, pfL, pfR)
+    elif nonFullPathStr.startswith(pfR) or f":{pfR}" in nonFullPathStr:
+        oppStr = getOppositeForSide(nonFullPathStr, pfR, pfL)
+    return oppStr
+
+
+def getOpposite(tgt, pfL="lf", pfR="rt"):
+    """Return opposite node if exists, based on the name of the target node"""
     from nl_modules.nodel.base.dag_node import DagNode
 
-    oppName = getOppositeForSide(tgtN.name, pfL, pfR)
-    opp = DagNode(oppName)
-    if opp.exists():
-        return opp
-
-    oppName = getOppositeForSide(tgtN.name, pfR, pfL)
-    opp = DagNode(oppName)
-    if opp.exists():
-        return opp
+    oppStr = getOppositeStr(str(tgt), pfL, pfR)
+    if oppStr:
+        opp = DagNode(oppStr)
+        if opp.exists():
+            return opp
 
 
 def addKeys(tgt, attrName=None, data=None):

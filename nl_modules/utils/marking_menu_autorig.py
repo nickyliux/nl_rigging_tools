@@ -116,11 +116,12 @@ class MarkingMenuAutorig:
         """Add guide options to the marking menu"""
         mi = mc.menuItem(p=menu, l="Guide", rp="NE", subMenu=1)
         # , i="HIKCharacterToolSkeleton.png"
-        mc.menuItem(p=mi, l="Mirror Sel / All", c=guide.mirrorGuideSelOrAll)
+        mc.menuItem(p=mi, l="Mirror Sel / All", c=guide.mirrorGuide)
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Duplicate", c=guide.duplicateGuideSel)
-        # mc.menuItem(p=mi, l="Dupl. Sym.", c=guide.duplicateGuideSymSel)
-        mc.menuItem(p=mi, l="Copy 1 -> 2", c=guide.xferGuideAtoB)
+        mc.menuItem(p=mi, l="Dupl. Sym.", c=partial(guide.duplicateGuideSel, mirror=1))
+        mc.menuItem(p=mi, l="-" * 15, en=0)
+        mc.menuItem(p=mi, l="Copy A To B", c=partial(guide.copyGuideSel, ignoreMG=1))
 
     def addProxyOptions(self, menu):
         """Add proxy options to the marking menu"""

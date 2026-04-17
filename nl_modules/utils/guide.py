@@ -50,41 +50,67 @@ def loadGuide(name):
     return mg
 
 
-def xferGuideAtoB(*arg):
+def mirrorGuide(*arg):
+    """Mirror guides for selList / all *lf*_guide"""
+    MGs = build.collectMasterGuide(isSel=1, isAll=1)
+    for mg in MGs:
+        rigID = mg.a.rigID.get()
+
+        oppRigID = common.getOppositeStr(rigID)
+        if not oppRigID:
+            logging.info(f"{mg.name}: No opposite rigID found. Ignore.")
+            continue
+
+        oppMG = DagNode(oppRigID + "_master_guide")
+        if oppMG.exists():
+            mc.select(mg, oppMG)
+            copyGuideSel(mirror=1)
+    mc.select(cl=1)
+
+
+def copyGuideSel(*arg, mirror=0, ignoreMG=0):
     """Transfer guide settings from 1st to 2nd selected"""
-    selList = mc.ls(sl=1, tr=1)
-    if len(selList) == 2:
-        mg1 = DagNode(selList[0])
-        mg2 = DagNode(selList[1])
-        if mg1 and mg2:
-            rigClass1 = mg1.a.rigClass.get()
-            rigClass2 = mg2.a.rigClass.get()
+    MGs = build.collectMasterGuide(isSel=1, isAll=1)
+    if len(MGs) == 2:
+        rigClass = [
+            MGs[0].a.rigClass.get(),
+            MGs[1].a.rigClass.get(),
+        ]
+        if rigClass[0] and rigClass[1] and rigClass[0] == rigClass[1]:
+            rigID = [
+                MGs[0].a.rigID.get(),
+                MGs[1].a.rigID.get(),
+            ]
+            guideList = [
+                mc.ls(rigID[0] + "_*_guide", tr=1),
+                mc.ls(rigID[1] + "_*_guide", tr=1),
+            ]
+            for g1, g2 in zip(guideList[0], guideList[1]):
 
-            if rigClass1 and rigClass2 and rigClass1 == rigClass2:
-
-                rigID1 = mg1.a.rigID.get()
-                rigID2 = mg2.a.rigID.get()
-                guideList1 = mc.ls(rigID1 + "_*_guide")
-                guideList2 = mc.ls(rigID2 + "_*_guide")
-
-                for g1, g2 in zip(guideList1, guideList2):
-                    copyCtlAttr(g1, g2)
-            else:
-                logging.info("Ignore copy for different rig classes.")
+                copyCtlAttr(g1, g2, mirror=mirror, ignoreMG=ignoreMG)
         else:
-            logging.info("Can not find master guides to copy.")
+            logging.info("Copy guide setting failed.")
+    else:
+        logging.info("Please select 2 master guides.")
 
 
-def duplicateGuideSel(*arg):
+def duplicateGuideSel(*arg, mirror=0):
     """Duplicate selected master guides and transfer guide settings"""
     MGs = build.collectMasterGuide(isSel=1, isAll=0)
     resultMGs = []
     for mg in MGs:
         rigID = mg.a.rigID.get()
-        dupMG = loadGuide(removeEndDigits(rigID))
+        if mirror:
+            oppRigID = common.getOppositeStr(rigID)
+            oppMG = DagNode(oppRigID + "_master_guide")
+            if oppMG.exists():
+                logging.info(f"{mg.name}: Opposite guide already exists. Ignore.")
+                continue
+
+        dupMG = loadGuide(removeEndDigits(oppRigID))
 
         mc.select(mg, dupMG)
-        xferGuideAtoB()
+        copyGuideSel(mirror=mirror)
         resultMGs.append(dupMG)
 
     if resultMGs:
@@ -92,46 +118,21 @@ def duplicateGuideSel(*arg):
         mc.setToolTo("moveSuperContext")
 
 
-def duplicateGuideSymSel(*arg):
-    """Duplicate selected master guides symmetrically and transfer guide settings"""
-    selList = mc.ls(sl=1, tr=1)
-    allTgtMG = []
-    for sel in selList:
-        mg = DagNode(sel) if isinstance(sel, str) else sel
-        if mg and mg.exists():
-            rigID = mg.a.rigID.get()
-            tgtMG = loadGuide(removeEndDigits(rigID))
-            allTgtMG.append(tgtMG)
-
-            # Copy xform & attributes
-            mc.select(mg, tgtMG)
-            xferGuideAtoB()
-
-    mc.select(allTgtMG)
-    mc.setToolTo("moveSuperContext")
-
-
-def mirrorGuideSelOrAll(*arg):
-    """Mirror guides for selList / all *lf*_guide"""
-    selList = mc.ls(sl=1, tr=1) or mc.ls("*lf*_guide", tr=1)
-    selList = [s for s in selList if DagNode(s).type == "nurbsCurve"]
-    selList = list(set(selList))
-    if selList:
-        mirrorCtl(selList)
-
-
-def copyCtlAttr(A, B, wsMirror=0, mirror=0):
+def copyCtlAttr(A, B, wsMirror=0, mirror=0, ignoreMG=0):
     """Copy/mirror transform & user defined attribute values"""
     A = DagNode(A) if isinstance(A, str) else A
     B = DagNode(B) if isinstance(B, str) else B
 
-    # if not A.name.endswith("_master_guide"):
+    if ignoreMG == 1:
+        if A.name.endswith("_master_guide"):
+            return
+
     tx, ty, tz = A.a.t.get()
     rx, ry, rz = A.a.r.get()
 
     if mirror:
         tx *= -1
-        if wsMirror or A.a["wsMirror"].exists():
+        if wsMirror == 1 or A.a["wsMirror"].exists():
             ry *= -1
             rz *= -1
         else:
@@ -159,26 +160,15 @@ def copyCtlAttr(A, B, wsMirror=0, mirror=0):
             print(e)
 
 
-def mirrorCtl(tgtList):
-    """Mirror xform for tgtList objects"""
-    for tgt in tgtList:
-        tgt = DagNode(tgt)
-        opp = common.getOpposite(tgt)
-        if opp:
-            copyCtlAttr(tgt, opp, mirror=1)
-        else:
-            logging.info(f"{tgt.name}: No opposite ctl found.")
-
-
-def mirrorRef(tgtList, wsMirror=0):
-    """Mirror xform for tgtList objects"""
+def mirrorCtl(tgtList, wsMirror=0):
+    """Mirror transform & user defined attribute values for tgtList"""
     for tgt in tgtList:
         tgt = DagNode(tgt) if isinstance(tgt, str) else tgt
         opp = common.getOpposite(tgt)
         if opp:
-            copyCtlAttr(tgt, opp, wsMirror=wsMirror, mirror=1)
+            copyCtlAttr(tgt, opp, mirror=1, wsMirror=wsMirror)
         else:
-            logging.info(f"{tgt.name}: No opposite ref found.")
+            logging.info(f"{tgt.name}: No opposite ctl found.")
 
 
 def mirrorPose(*arg):
