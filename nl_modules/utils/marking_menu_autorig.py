@@ -130,7 +130,6 @@ class MarkingMenuAutorig:
     def addProxyOptions(self, menu):
         """Add proxy options to the marking menu"""
         mi = mc.menuItem(p=menu, l="Proxy", rp="E", subMenu=1)
-        # , i='polySmoothProxy.png')
         mc.menuItem(p=mi, l="Warp Selected", c=proxy.wrapProxy)
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Mirror Selected", c=proxy.mirrorProxy)
@@ -138,31 +137,18 @@ class MarkingMenuAutorig:
         mc.menuItem(p=mi, l="Generate", c=proxy.genProxyForSet)
         mc.menuItem(p=mi, l="Reset Selected", c=proxy.resetProxy)
         mc.menuItem(p=mi, l="Select All", c=proxy.selectAllProxy)
-        # mc.menuItem(p=mi, l="Show / Hide", c=proxy.toggleVis)
 
     def addExtraOptions(self, menu):
         """Add extra options to the marking menu"""
         mc.menuItem(p=menu, l="Select Ctls", rp="W", c=self.selectCtlSelOrAll)
 
         ns = common.getNsFrOptVar()
-        curr_ns_str = "NONE" if ns == "" else f'"{ns}"'
+        curr_ns_str = '""' if ns == "" else f'"{ns}"'
 
-        # mc.menuItem(p=menu, l="Unbuild", c=build.unbuildSelOrAll)
         mc.menuItem(p=menu, l="Toggle Guide", c=guide.toggleGuide)
         mc.menuItem(p=menu, l="-" * 25, en=0)
         mc.menuItem(p=menu, l="Add Follow Cam", c=common.addFollowCam)
         mc.menuItem(p=menu, l="namespace = " + curr_ns_str, c=common.setNsFrSel)
-
-        # mc.menuItem(p=menu, l="PROXY  -----", en=0)
-        # space = "    "
-        # mc.menuItem(p=menu, l=space + "Gen", c=proxy.genProxyForSet)
-        # mc.menuItem(p=menu, l=space + "Mirror", c=proxy.mirrorProxy)
-        # mc.menuItem(p=menu, l=space + "Warp", c=proxy.wrapProxy)
-        # mc.menuItem(p=menu, l=space + "Reset", c=proxy.resetProxy)
-        # mc.menuItem(p=menu, l=space + "Show / Hide", c=proxy.toggleVis)
-        # mc.menuItem(p=menu, l=space + "Select All", c=proxy.selectAllProxy)
-        # mc.menuItem(p=menu, l="Delete Guide", c=build.deleteSelOrAll)
-        # mc.menuItem(p=menu, l="Reload Menu", c=self.reload_marking_menu)
 
     def addAdvancedOptions(self, menu):
         """Add space switch and IK/FK options to the marking menu"""

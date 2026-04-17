@@ -772,15 +772,14 @@ def setNsFrSel(*args):
     from nl_modules.nodel.base.dag_node import DagNode
 
     selected = mc.ls(sl=1, tr=1)
-    ns = DagNode(selected[0]).namespace if selected else ""
+    ns = DagNode(selected[0]).namespace or ""
     mc.optionVar(sv=("curr_ns", ns))
-    logging.info(f"Namespace set to {ns}." if ns else "Namespace cleared.")
+    logging.info(f"Namespace set to {ns}." if ns != "" else "Namespace cleared.")
 
 
 def clearNs():
     """Clear current namespace in optionVar"""
     mc.optionVar(sv=("curr_ns", ""))
-    # logging.info("Namespace cleared.")
 
 
 def getRigCtlsAll():
@@ -790,6 +789,9 @@ def getRigCtlsAll():
     allMGs = build.collectMasterGuide()
     if allMGs:
         return getRigCtls(allMGs)
+    else:
+        logging.info("No master guide found.")
+        return []
 
 
 def getRigCtls(MGs):
@@ -802,9 +804,10 @@ def getRigCtls(MGs):
     ctlList = []
     for mg in MGs:
         ctlSet = ns + DagNode(mg).a.rigID.get() + "_ctl_set"
-        ctls = common.getSetMembersInOrder(ctlSet)
-        if ctls:
-            ctlList.extend(ctls)
+        if ctlSet and mc.objExists(ctlSet):
+            ctls = common.getSetMembersInOrder(ctlSet)
+            if ctls:
+                ctlList.extend(ctls)
 
     return ctlList
 

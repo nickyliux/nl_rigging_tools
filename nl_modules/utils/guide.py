@@ -58,7 +58,6 @@ def mirrorGuide(*arg):
 
         oppRigID = common.getOppositeStr(rigID)
         if not oppRigID:
-            logging.info(f"{mg.name}: No opposite rigID found. Ignore.")
             continue
 
         oppMG = DagNode(oppRigID + "_master_guide")
