@@ -121,7 +121,11 @@ class MarkingMenuAutorig:
         mc.menuItem(p=mi, l="Duplicate", c=guide.duplicateGuideSel)
         mc.menuItem(p=mi, l="Dupl. Sym.", c=partial(guide.duplicateGuideSel, mirror=1))
         mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="Copy A To B", c=partial(guide.copyGuideSel, ignoreMG=1))
+        mc.menuItem(
+            p=mi,
+            l="Copy Setting (Same class)",
+            c=partial(guide.copyGuideSel, ignoreMG=1),
+        )
 
     def addProxyOptions(self, menu):
         """Add proxy options to the marking menu"""

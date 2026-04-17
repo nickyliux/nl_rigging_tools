@@ -74,18 +74,18 @@ class SpineBp(RigModule):
         ]
         if self.ribbon:
             ctl_defs += [
-                ("fore_ikc", "sphere", None, Vec((8, 0, 8)) * rSz, 0),
-                ("mid_ikc", "sphere", None, Vec((4, 0, 4)) * rSz, 1),
-                ("base_ikc", "sphere", None, Vec((9, 0, 9)) * rSz, 0),
+                ("fore_ikc", "cube", None, Vec((3, 1, 2.25)) * rSz, 0),
+                ("mid_ikc", "cube", None, Vec((2, 0.5, 1.5)) * rSz, 1),
+                ("base_ikc", "cube", None, Vec((4, 1, 3)) * rSz, 0),
             ]
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
-        self.setting.cv_move(0, 0, rSz * -60)
+        self.setting.cv_move(0, 0, rSz * -50)
         # self.cog_ctl.width = 2
-        self.fore_ikc.width = 2
-        self.mid_ikc.width = 2
-        self.base_ikc.width = 2
+        # self.fore_ikc.width = 2
+        # self.mid_ikc.width = 2
+        # self.base_ikc.width = 2
 
         # if self.ribbon:
         #     if self.is_neck():
