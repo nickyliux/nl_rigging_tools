@@ -74,7 +74,6 @@ class Head(RigModule):
         self.head_fkc.alignTo(self.head)
         self.head_fkc.addOffsetGrp()
         self.head_fkc.cstPar(self.head, mo=1)
-        # self.head_fkc.cv_moveTo(self.headEnd.o.pos)
 
         self.jaw_fkc.snapTo(self.jaw, p=self.head_fkc)
         self.jaw_fkc.addOffsetGrp()
@@ -92,7 +91,7 @@ class Head(RigModule):
         self.rt_eye_fkc.cstPar(self.rt_eye, mo=1)
 
         RigModule.isolate_align(
-            self.head_fkc, spaces=[self.head_fkc.addOffsetGrp(), self.masterC], dv=1
+            self.head_fkc, spaces=[self.head_fkc.addOffsetGrp(), self.masterC], dv=0
         )
 
     def setup_vis(self):

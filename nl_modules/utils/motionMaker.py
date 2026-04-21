@@ -61,15 +61,15 @@ def _setLegsToFk(ns=""):
     logging.info("Set all legs to FK mode.")
 
 
-def connectEquineToQd(*args):
-    connectToQd(EQUINE_QD_MAP)
+def connectToEquine(*args):
+    connectToMap(EQUINE_MAP)
 
 
-def connectCanineToQd(*args):
-    connectToQd(CANINE_QD_MAP)
+def connectToCanine(*args):
+    connectToMap(CANINE_MAP)
 
 
-def connectToQd(jntMap):
+def connectToMap(jntMap):
     """Connect Moma Sk to Qd rig controls."""
     ns = common.getNsFrOptVar()
     if ns:
@@ -83,61 +83,7 @@ def connectToQd(jntMap):
         )
 
 
-EQUINE_QD_MAP = {
-    "cstPar": [
-        # SPINE
-        ("pelvis", "spineQd0_cog_ctl"),
-        ("spine_1", "spineQd0_base_ikc"),
-        ("spine_3", "spineQd0_mid_ikc"),
-        ("spine_5_neck", "spineQd0_fore_ikc"),
-        # NECK
-        ("neck", "neckQd0_base_ikc"),
-        ("neck_3", "neckQd0_mid_ikc"),
-        ("head", "neckQd0_fore_ikc"),
-        # L LEGS
-        ("L_scapula", "lfLegQd1_hip_fkc"),
-        ("L_femur", "lfLegQd0_upr_fkc"),
-        # R LEGS
-        ("R_scapula", "rtLegQd1_hip_fkc"),
-        ("R_femur", "rtLegQd0_upr_fkc"),
-    ],
-    "cstOri": [
-        # SPINE
-        ("pelvis", "spineQd0_end_ctl"),
-        # L LEGS
-        ("L_humerus", "lfLegQd1_upr_fkc"),
-        ("L_radius", "lfLegQd1_lwr_fkc"),
-        ("L_carpus", "lfLegQd1_palm_fkc"),
-        ("L_F_palanx_1", "lfLegQd1_digit_fkc"),
-        ("L_F_palanx_2", "lfLegQd1_ball_fkc"),
-        ("L_tibea", "lfLegQd0_lwr_fkc"),
-        ("L_tarsus", "lfLegQd0_palm_fkc"),
-        ("L_R_palanx_1", "lfLegQd0_ball_fkc"),
-        ("L_R_palanx_2", "lfLegQd0_ball_fkc"),
-        # R LEGS
-        ("R_humerus", "rtLegQd1_upr_fkc"),
-        ("R_radius", "rtLegQd1_lwr_fkc"),
-        ("R_carpus", "rtLegQd1_palm_fkc"),
-        ("R_F_palanx_1", "rtLegQd1_digit_fkc"),
-        ("R_F_palanx_2", "rtLegQd1_ball_fkc"),
-        ("R_tibea", "rtLegQd0_lwr_fkc"),
-        ("R_tarsus", "rtLegQd0_palm_fkc"),
-        ("R_R_palanx_1", "rtLegQd0_ball_fkc"),
-        ("R_R_palanx_2", "rtLegQd0_ball_fkc"),
-        # TAIL
-        ("c_tail_01", "tail0_1_fkc"),
-        ("c_tail_02", "tail0_2_fkc"),
-        ("c_tail_03", "tail0_3_fkc"),
-        ("c_tail_04", "tail0_4_fkc"),
-        ("c_tail_05", "tail0_5_fkc"),
-        ("c_tail_06", "tail0_6_fkc"),
-        ("c_tail_07", "tail0_7_fkc"),
-        ("c_tail_08", "tail0_8_fkc"),
-        ("c_tail_09", "tail0_9_fkc"),
-    ],
-}
-
-CANINE_QD_MAP = {
+CANINE_MAP = {
     "cstPar": [
         # SPINE
         ("c_pelvis", "spineQd0_cog_ctl"),
@@ -178,6 +124,61 @@ CANINE_QD_MAP = {
         ("r_ankle", "rtLegQd0_palm_fkc"),
         ("r_foot_01", "rtLegQd0_ball_fkc"),
         ("r_foot_02", "rtLegQd0_ball_fkc"),
+        # TAIL
+        ("c_tail_01", "tail0_1_fkc"),
+        ("c_tail_02", "tail0_2_fkc"),
+        ("c_tail_03", "tail0_3_fkc"),
+        ("c_tail_04", "tail0_4_fkc"),
+        ("c_tail_05", "tail0_5_fkc"),
+        ("c_tail_06", "tail0_6_fkc"),
+        ("c_tail_07", "tail0_7_fkc"),
+        ("c_tail_08", "tail0_8_fkc"),
+        ("c_tail_09", "tail0_9_fkc"),
+    ],
+}
+
+
+EQUINE_MAP = {
+    "cstPar": [
+        # SPINE
+        ("pelvis", "spineQd0_cog_ctl"),
+        ("spine_1", "spineQd0_base_ikc"),
+        ("spine_3", "spineQd0_mid_ikc"),
+        ("spine_5_neck", "spineQd0_fore_ikc"),
+        # NECK
+        ("neck", "neckQd0_base_ikc"),
+        ("neck_3", "neckQd0_mid_ikc"),
+        ("head", "neckQd0_fore_ikc"),
+        # L LEGS
+        ("L_scapula", "lfLegQd1_hip_fkc"),
+        ("L_femur", "lfLegQd0_upr_fkc"),
+        # R LEGS
+        ("R_scapula", "rtLegQd1_hip_fkc"),
+        ("R_femur", "rtLegQd0_upr_fkc"),
+    ],
+    "cstOri": [
+        # SPINE
+        ("pelvis", "spineQd0_end_ctl"),
+        # L LEGS
+        ("L_humerus", "lfLegQd1_upr_fkc"),
+        ("L_radius", "lfLegQd1_lwr_fkc"),
+        ("L_carpus", "lfLegQd1_palm_fkc"),
+        ("L_F_palanx_1", "lfLegQd1_digit_fkc"),
+        ("L_F_palanx_2", "lfLegQd1_ball_fkc"),
+        ("L_tibea", "lfLegQd0_lwr_fkc"),
+        ("L_tarsus", "lfLegQd0_palm_fkc"),
+        ("L_R_palanx_1", "lfLegQd0_ball_fkc"),
+        ("L_R_palanx_2", "lfLegQd0_ball_fkc"),
+        # R LEGS
+        ("R_humerus", "rtLegQd1_upr_fkc"),
+        ("R_radius", "rtLegQd1_lwr_fkc"),
+        ("R_carpus", "rtLegQd1_palm_fkc"),
+        ("R_F_palanx_1", "rtLegQd1_digit_fkc"),
+        ("R_F_palanx_2", "rtLegQd1_ball_fkc"),
+        ("R_tibea", "rtLegQd0_lwr_fkc"),
+        ("R_tarsus", "rtLegQd0_palm_fkc"),
+        ("R_R_palanx_1", "rtLegQd0_ball_fkc"),
+        ("R_R_palanx_2", "rtLegQd0_ball_fkc"),
         # TAIL
         ("c_tail_01", "tail0_1_fkc"),
         ("c_tail_02", "tail0_2_fkc"),

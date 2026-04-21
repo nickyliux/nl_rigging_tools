@@ -74,7 +74,7 @@ def buildGuide(*args):
             chr.show()
 
         guideCount = len(guidesToBuild)
-        common.pauseVP(1)
+        # common.pauseVP(1)
         log.update_root_logger(create_window=0)
 
         mc.progressWindow(
@@ -84,6 +84,7 @@ def buildGuide(*args):
             logging.info(f"({i+1}) {mg.name}")
             buildTgt(mg)
             mc.progressWindow(e=1, pr=i, status=f"\n{mg.name}  [ {i} / {guideCount} ]")
+            mc.refresh()
         postRig()
 
         mc.progressWindow(ep=1)
@@ -91,7 +92,7 @@ def buildGuide(*args):
         print()
 
         mc.select(cl=1)
-        common.pauseVP(0)
+        # common.pauseVP(0)
 
 
 def postRig():
@@ -112,13 +113,14 @@ def postRig():
 
 def addMasterAttrs():
     """Add proxy attributes to master2_ctl"""
-    ctl = DagNode("master2_ctl")
-    if not ctl.exists():
+    master2_ctl = DagNode("master2_ctl")
+
+    if not master2_ctl.exists():
         logging.warning("master2_ctl NOT found.")
         return
 
     _GROUPS = [
-        ("_" * 8, "CTL", "ctlVis", None),
+        ("_" * 8, "master1_ctl", "ctlVis", None),
         ("_" * 9, "PRX", "proxyVis", "proxyRef"),
         ("_" * 10, "JNT", "jointVis", "jointRef"),
         ("_" * 11, "MDL", "modelVis", "modelRef"),
@@ -126,15 +128,19 @@ def addMasterAttrs():
     for sep, grpName, visAttr, lockAttr in _GROUPS:
         grp = DagNode(grpName)
         if grp.exists():
-            ctl.a.addSep(sep)
-            ctl.a.add(visAttr, k=0, type="bool", dv=1) >> grp.a.v
+            master2_ctl.a.addSep(sep)
+            master2_ctl.a.add(visAttr, k=0, type="bool", dv=1) >> grp.a.v
             if lockAttr:
                 grp.a.overrideEnabled.set(1)
                 (
-                    ctl.a.add(lockAttr, k=0, type="bool", dv=0) * 2
+                    master2_ctl.a.add(lockAttr, k=0, type="bool", dv=0) * 2
                     >> grp.a.overrideDisplayType
                 )
-    logging.info(f"Added attrs to {ctl.name}.")
+    logging.info(f"Added attrs to {master2_ctl.name}.")
+
+    master1_ctl = DagNode("master_ctl")
+    master1_ctl.a.showAttr(t=1, r=1)
+    master1_ctl.offset.a.showAttr(t=1, r=1)
 
 
 def unbuildTgt(mg):

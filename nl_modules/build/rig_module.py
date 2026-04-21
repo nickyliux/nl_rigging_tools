@@ -23,7 +23,7 @@ class RigModule(RigBase):
         super().__init__(mg)
 
         rID = self.rigID
-        self.CTL_DATA = GrpNode(rID + "_ctl_data", p=self.CTL)
+        self.CTL_DATA = GrpNode(rID + "_ctl_data", p=self.masterC)  # self.CTL
         self.JNT_DATA = GrpNode(rID + "_jnt_data", p=self.JNT)
 
         self.masterGuide = DagNode(rID + "_master_guide")
@@ -358,10 +358,10 @@ class RigModule(RigBase):
 
     def setup_anchor_module(self, anchorDict=None):
         """
-        S : socket, for driven,
-            e.g.  hand has 1 S-anchor, wire has 2 S-anchors
-        P : plug, for driver.
-            e.g.  spine has 2 P-anchors, arm has 1 P-anchor
+        S : Socket
+            e.g.  hand: 1 Socket, wire: 2 Sockets
+        P : Plug
+            e.g.  spine: 2 Plugs, arm: 1 Plug
         """
         rID, rSz, xDr = self.get_short_form()
 
@@ -570,16 +570,17 @@ class RigModule(RigBase):
         (bank < 0).setCdn(ifTrue=bank, ifFalse=0) >> inRollG.a.rz
         (bank > 0).setCdn(ifTrue=bank, ifFalse=0) >> outRollG.a.rz
 
-    def build_digit_ik_chain(self, tgt):
+    def build_digit_ik_chain(self, tgt, color=Color.D_YELLOW):
         """Build an IK chain for a digit (e.g., finger or toe) with two joints."""
         tgt = JntNode(tgt)
         name = f"{tgt.name}_ikj_#"
 
-        j1 = JntNode(tgt.duplicate(po=1, name=name))
-        j2 = JntNode(tgt.allChildrenJt[-1].duplicate(po=1, name=name))
+        j1 = JntNode(tgt.duplicate(po=1, name=name), color=color)
+        j2 = JntNode(tgt.allChildrenJt[-1].duplicate(po=1, name=name), color=color)
         j1.setRadius(2, rel=1)
         j2.setRadius(2, rel=1)
         j2 | j1
+        j1.color = color
         return j1, j2
 
     def build_digit_ik(self, ikTgt, scale=1, p=None):

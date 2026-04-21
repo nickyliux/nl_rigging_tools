@@ -61,7 +61,3 @@ class RigBase:
 
         if not mc.objExists("master_ctl"):
             raise ValueError("master_ctl NOT found.")
-
-        ctl = DagNode("master_ctl")
-        ctl.a.showAttr(t=1, r=1)
-        ctl.offset.a.showAttr(t=1, r=1)

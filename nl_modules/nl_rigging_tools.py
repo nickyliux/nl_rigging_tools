@@ -220,8 +220,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.maxInfl_BN, self.setMaxInflSel)
 
         # Motion Maker
-        self.connect(self.UI.canineToQuad_BN, motionMaker.connectCanineToQd)
-        self.connect(self.UI.equineToQuad_BN, motionMaker.connectEquineToQd)
+        self.connect(self.UI.connectToCanine_BN, motionMaker.connectToCanine)
+        self.connect(self.UI.connectToEquine_BN, motionMaker.connectToEquine)
         self.connect(self.UI.bakeMotion_BN, motionMaker.bakeMotion)
 
         self.masterGuide_UI_refresh()

@@ -66,7 +66,7 @@ class HandBp(RigModule):
 
         self.masterGuide.setMsg({"smart_ctl": self.smart_ctl})
         self.smart_ctl.cv_rotate(90, 0, 0)
-        self.setting.cv_move(0, 0, -scale * 15)
+        self.setting.cv_move(0, 0, -scale * 18)
 
     def build(self):
         """Build the hand rig module."""
@@ -132,6 +132,8 @@ class HandBp(RigModule):
             tgtGrp = ctls[1].parent.parent
             tgtGrp.addOffsetGrp()
             ikJ.a.r >> tgtGrp.a.r
+
+        self.rootJ.cstPar(self.hand_grp, mo=1)
 
     def setSDK(self, drv, data, i=0, attr1="ry", attr2="ry", tgtOfs=0):
         """Setup SDK for finger base controls.
