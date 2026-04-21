@@ -246,31 +246,6 @@
         <set>ItemIsDragEnabled|ItemIsUserCheckable</set>
        </property>
       </item>
-      <item>
-       <property name="text">
-        <string>biped</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>quad</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>quad / digiti</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>quad / unguli</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>quad / planti</string>
-       </property>
-      </item>
      </widget>
      <widget class="QCheckBox" name="guideSide_L_CB">
       <property name="geometry">

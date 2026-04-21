@@ -100,13 +100,13 @@ def duplicateGuideSel(*arg, mirror=0):
     for mg in MGs:
         rigID = mg.a.rigID.get()
         if mirror:
-            oppRigID = common.getOppositeStr(rigID)
-            oppMG = DagNode(oppRigID + "_master_guide")
+            rigID = common.getOppositeStr(rigID)
+            oppMG = DagNode(rigID + "_master_guide")
             if oppMG.exists():
                 logging.info(f"{mg.name}: Opposite guide already exists. Ignore.")
                 continue
 
-        dupMG = loadGuide(removeEndDigits(oppRigID))
+        dupMG = loadGuide(removeEndDigits(rigID))
 
         mc.select(mg, dupMG)
         copyGuideSel(mirror=mirror)
