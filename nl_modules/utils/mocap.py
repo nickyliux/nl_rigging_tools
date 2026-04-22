@@ -2,6 +2,7 @@ import logging
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.utils import anim, common
 import maya.cmds as mc
+import maya.mel as mel
 
 
 def bakeMotion(*args):
@@ -191,3 +192,130 @@ EQUINE_MAP = {
         ("c_tail_09", "tail0_9_fkc"),
     ],
 }
+
+
+# HIK bone name -> slot index (Maya HumanIK definition)
+HIK_SLOTS = {
+    "Reference": 0,
+    "Hips": 1,
+    "LeftUpLeg": 2,
+    "LeftLeg": 3,
+    "LeftFoot": 4,
+    "RightUpLeg": 5,
+    "RightLeg": 6,
+    "RightFoot": 7,
+    "Spine": 8,
+    "LeftArm": 9,
+    "LeftForeArm": 10,
+    "LeftHand": 11,
+    "RightArm": 12,
+    "RightForeArm": 13,
+    "RightHand": 14,
+    "Head": 15,
+    "LeftToeBase": 16,
+    "RightToeBase": 17,
+    "LeftShoulder": 18,
+    "RightShoulder": 19,
+    "Neck": 20,
+    "Neck1": 21,
+    "Spine1": 23,
+    "Spine2": 24,
+    "Spine3": 25,
+    "Spine4": 26,
+    "RightHandThumb1": 50,
+    "RightHandThumb2": 51,
+    "RightHandThumb3": 52,
+    "LeftHandThumb1": 54,
+    "LeftHandThumb2": 55,
+    "LeftHandThumb3": 56,
+    "RightHandIndex1": 58,
+    "RightHandIndex2": 59,
+    "RightHandIndex3": 60,
+    "LeftHandIndex1": 62,
+    "LeftHandIndex2": 63,
+    "LeftHandIndex3": 64,
+    "RightHandMiddle1": 66,
+    "RightHandMiddle2": 67,
+    "RightHandMiddle3": 68,
+    "LeftHandMiddle1": 70,
+    "LeftHandMiddle2": 71,
+    "LeftHandMiddle3": 72,
+    "RightHandRing1": 74,
+    "RightHandRing2": 75,
+    "RightHandRing3": 76,
+    "LeftHandRing1": 78,
+    "LeftHandRing2": 79,
+    "LeftHandRing3": 80,
+    "RightHandPinky1": 82,
+    "RightHandPinky2": 83,
+    "RightHandPinky3": 84,
+    "LeftHandPinky1": 86,
+    "LeftHandPinky2": 87,
+    "LeftHandPinky3": 88,
+}
+
+
+def create_hik_character(char_name, joint_mapping):
+    """Create a HumanIK character definition and assign joints.
+
+    Args:
+        char_name (str): Name for the HIK character node.
+        joint_mapping (dict): Mapping of HIK bone name -> scene joint name.
+            e.g. {"Hips": "spineBp0_0_fkj", "LeftUpLeg": "lfLegBp0_upr", ...}
+
+    Returns:
+        str: The created character node name, or None on failure.
+
+    Example::
+        joint_mapping = {
+            "Hips":          "spineBp0_0_fkj",
+            "LeftUpLeg":     "lfLegBp0_upr",
+            "LeftLeg":       "lfLegBp0_lwr",
+            "LeftFoot":      "lfLegBp0_palm",
+            "LeftToeBase":   "lfLegBp0_ball",
+            "RightUpLeg":    "rtLegBp0_upr",
+            "RightLeg":      "rtLegBp0_lwr",
+            "RightFoot":     "rtLegBp0_palm",
+            "RightToeBase":  "rtLegBp0_ball",
+            "Spine":         "spineBp0_1_fkj",
+            "Spine1":        "spineBp0_2_fkj",
+            "Spine2":        "spineBp0_3_fkj",
+            "LeftShoulder":  "lfArmBp0_clavicle",
+            "LeftArm":       "lfArmBp0_upr",
+            "LeftForeArm":   "lfArmBp0_lwr",
+            "LeftHand":      "lfHandBp0_handJ",
+            "RightShoulder": "rtArmBp0_clavicle",
+            "RightArm":      "rtArmBp0_upr",
+            "RightForeArm":  "rtArmBp0_lwr",
+            "RightHand":     "rtHandBp0_handJ",
+            "Neck":          "neckBp0_0_rbj",
+            "Head":          "head0_st",
+        }
+        create_hik_character("myCharacter", joint_mapping)
+    """
+    # Create the HIK character definition node
+    mel.eval('hikCreateCharacter("{}")'.format(char_name))
+
+    skipped = []
+    for hik_bone, joint_name in joint_mapping.items():
+        slot_idx = HIK_SLOTS.get(hik_bone)
+        if slot_idx is None:
+            skipped.append((hik_bone, "unknown HIK bone name"))
+            continue
+        if not mc.objExists(joint_name):
+            skipped.append((hik_bone, "{} not found in scene".format(joint_name)))
+            continue
+        mel.eval(
+            'setCharacterObject("{}", "{}", {}, 0)'.format(
+                joint_name, char_name, slot_idx
+            )
+        )
+
+    if skipped:
+        for bone, reason in skipped:
+            mc.warning("HIK: skipped '{}' - {}".format(bone, reason))
+
+    # Lock the definition to validate it
+    mel.eval("hikToggleLockDefinition()")
+
+    return char_name

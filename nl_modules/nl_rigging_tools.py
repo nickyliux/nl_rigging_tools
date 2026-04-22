@@ -6,6 +6,7 @@ from importlib import reload
 import maya.cmds as mc
 import nl_modules
 from nl_modules.utils import (
+    mocap,
     reload_all,
     common,
     file,
@@ -16,7 +17,6 @@ from nl_modules.utils import (
     proxy,
     control,
     skin,
-    motionMaker,
 )
 from nl_modules.utils.color import Color
 
@@ -220,9 +220,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.maxInfl_BN, self.setMaxInflSel)
 
         # Motion Maker
-        self.connect(self.UI.connectToCanine_BN, motionMaker.connectToCanine)
-        self.connect(self.UI.connectToEquine_BN, motionMaker.connectToEquine)
-        self.connect(self.UI.bakeMotion_BN, motionMaker.bakeMotion)
+        self.connect(self.UI.connectToCanine_BN, mocap.connectToCanine)
+        self.connect(self.UI.connectToEquine_BN, mocap.connectToEquine)
+        self.connect(self.UI.bakeMotion_BN, mocap.bakeMotion)
 
         self.masterGuide_UI_refresh()
         self.crvShape_refresh()
