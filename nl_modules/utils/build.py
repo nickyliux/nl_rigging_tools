@@ -253,8 +253,10 @@ def update_anchor_conn():
 def update_space_switch():
     """Update space switch for all master guides"""
     spaceData = collect_space_data()
+
     update_count = 0
     for ctl, spaceList, mg in spaceData:
+
         if ctl.a.paSpace.exists():
 
             # delete space and related groups
@@ -275,6 +277,7 @@ def update_space_switch():
         #       'arm': lf_arm_ikc
         #
         spaceDict = collect_space_obj(mg)
+        print(spaceDict)
 
         #
         #   filter non-existing item
@@ -321,7 +324,7 @@ def get_space_obj(mg):
         }
     """
     spaceDict = {}
-    for udAttr in mg.a.list(ud=1, hasData=1):
+    for udAttr in mg.a.list(ud=1):  # , hasData=1):
         if udAttr.name.startswith("space_"):
             obj = udAttr.inConnNode
             if obj and obj.exists():
@@ -380,13 +383,20 @@ def collect_space_data():
         }
     """
     ctlList = []
-    for mg in collectMasterGuide():
-        for udAttr in mg.a.list(ud=1, hasData=1):
+    allMGs = collectMasterGuide()
+    for mg in allMGs:
+        for udAttr in mg.a.list(ud=1):  # , hasData=1):
             if udAttr.name.startswith("spaceHolder"):
                 obj = udAttr.inConnNode
                 spaceNameAttr = mg.a["spaceName" + udAttr.name[-1]]
                 if obj and obj.exists() and spaceNameAttr.exists():
-                    ctlList.append((obj, spaceNameAttr.get().split(", "), mg))
+                    ctlList.append(
+                        (
+                            obj,
+                            spaceNameAttr.get().split(", "),
+                            mg,
+                        )
+                    )
     return ctlList
 
 
