@@ -133,7 +133,7 @@ class SpineBp(RigModule):
             c = CrvNode(
                 f"{i + 1}_fkc",
                 pf=rID,
-                shape="circle",
+                shape="squareR",
                 scale=rSz * 1.5,
                 # scale=Vec((2, 0.5, 2)) * rSz,
             )
@@ -339,7 +339,7 @@ class SpineBp(RigModule):
         self.setting.a.showAttr()
 
         ctls = self.ctls_fk + [
-            self.cog_ctl,
+            # self.cog_ctl,
             self.cog_gmb,
         ]
         if self.ribbon:

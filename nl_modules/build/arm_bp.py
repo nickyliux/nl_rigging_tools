@@ -88,9 +88,9 @@ class ArmBp(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
             ("clavicle_fkc", "cube", "x", scale, 1),
-            ("upr_fkc", "circle", "x", scale, 0),
-            ("lwr_fkc", "circle", "x", scale, 0),
-            ("palm_fkc", "circle", "x", scale, 0),
+            ("upr_fkc", "squareR", "x", scale, 0),
+            ("lwr_fkc", "squareR", "x", scale, 0),
+            ("palm_fkc", "squareR", "x", scale, 0),
             ("ikc", "cube", None, Vec((1, 2, 2)) * scale, 0),
             ("pvc", "sphere", None, rSz * 2, 0),
             ("palm_ikc", "squareR", "x", scale, 0),
