@@ -220,6 +220,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.maxInfl_BN, self.setMaxInflSel)
 
         # Motion Maker
+        self.connect(
+            self.UI.createCharDefForBiped_BN, mocap.create_hik_character_def_biped
+        )
         self.connect(self.UI.connectToCanine_BN, mocap.connectToCanine)
         self.connect(self.UI.connectToEquine_BN, mocap.connectToEquine)
         self.connect(self.UI.bakeMotion_BN, mocap.bakeMotion)
