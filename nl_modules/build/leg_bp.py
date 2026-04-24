@@ -525,7 +525,15 @@ class LegBp(RigModule):
 
         setupTgt = [self.jnts_fk[0], self.jnts_ik[0], self.jnts_bf[0]]
         if self.ribbon:
-            setupTgt.extend([self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP])
+            # setupTgt.extend([self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP])
+            setupTgt.extend(
+                [
+                    self.ribbon_up.SRF_GRP,
+                    self.ribbon_up.AIM_GRP,
+                    self.ribbon_lw.SRF_GRP,
+                    self.ribbon_lw.AIM_GRP,
+                ]
+            )
 
         self.ctl_vis_toggle(
             self.setting.a.add("showSetup", type="bool", k=0),

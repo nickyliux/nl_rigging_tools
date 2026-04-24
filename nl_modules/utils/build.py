@@ -74,25 +74,25 @@ def buildGuide(*args):
             chr.show()
 
         guideCount = len(guidesToBuild)
-        # common.pauseVP(1)
         log.update_root_logger(create_window=0)
 
         mc.progressWindow(
             t="Build", pr=0, status="\nPreparing ...", ii=0, maxValue=guideCount
         )
+        common.pauseVP(1)
         for i, mg in enumerate(guidesToBuild):
             logging.info(f"({i+1}) {mg.name}")
             buildTgt(mg)
             mc.progressWindow(e=1, pr=i, status=f"\n{mg.name}  [ {i} / {guideCount} ]")
             mc.refresh()
         postRig()
+        common.pauseVP(0)
 
         mc.progressWindow(ep=1)
         logging.info(f"{guideCount} guide(s) built.")
         print()
 
         mc.select(cl=1)
-        # common.pauseVP(0)
 
 
 def postRig():
@@ -277,7 +277,7 @@ def update_space_switch():
         #       'arm': lf_arm_ikc
         #
         spaceDict = collect_space_obj(mg)
-        print(spaceDict)
+        # print(spaceDict)
 
         #
         #   filter non-existing item

@@ -1640,13 +1640,13 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Bind Warp Target with Proxy</string>
+          <string>Bind with Sel Proxies</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Bind</string>
+          <string>Bind Sel</string>
          </property>
         </widget>
        </item>

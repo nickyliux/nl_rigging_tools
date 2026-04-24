@@ -4,6 +4,7 @@ import logging
 import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.msh_node import MshNode
 from nl_modules.utils import common
 from nl_modules.utils import control
 from nl_modules.utils import file
@@ -141,6 +142,9 @@ def loadWeight(*args):
 
         if not mc.objExists(mesh):
             continue
+        else:
+            mesh = DagNode(mesh)
+
         weightFile = tgtDir + "/" + mesh + ".xml"
         if not mc.file(weightFile, q=1, ex=1):
             logging.warning(f"Weight file NOT found: {weightFile}")
@@ -240,7 +244,7 @@ def copyWeight(*args):
         )
         return
 
-    src = DagNode(sel[-1])
+    src = MshNode(sel[-1])
     tgts = sel[:-1]
 
     if not src.skinCluster.exists():

@@ -339,13 +339,17 @@ def explore(*args):
 
 def toggleGuide(*args):
     """Show guide and hide rig if state is True, else show rig and hide guide."""
-    chr_grp = DagNode("CHR")
     guide_grp = DagNode("GUIDES")
+    master2_ctl = DagNode("master2_ctl")
 
-    if chr_grp.exists() and guide_grp.exists():
-        if chr_grp.a.v.get():
-            chr_grp.hide()
-            guide_grp.show()
-        else:
-            chr_grp.show()
+    if master2_ctl.exists() and guide_grp.exists():
+        vis = guide_grp.a.v.get()
+
+        master2_ctl.a.ctlVis.set(vis)
+        master2_ctl.a.proxyVis.set(vis)
+        master2_ctl.a.jointVis.set(vis)
+
+        if vis:
             guide_grp.hide()
+        else:
+            guide_grp.show()

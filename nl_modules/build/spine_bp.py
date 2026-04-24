@@ -74,9 +74,9 @@ class SpineBp(RigModule):
         ]
         if self.ribbon:
             ctl_defs += [
-                ("fore_ikc", "cube", None, Vec((3, 1, 2.25)) * rSz, 0),
-                ("mid_ikc", "cube", None, Vec((2, 0.5, 1.5)) * rSz, 1),
-                ("base_ikc", "cube", None, Vec((4, 1, 3)) * rSz, 0),
+                ("fore_ikc", "square", None, Vec((2, 1, 2)) * rSz, 0),
+                ("mid_ikc", "square", None, Vec((1.8, 0.5, 1.8)) * rSz, 1),
+                ("base_ikc", "square", None, Vec((2, 1, 2)) * rSz, 0),
             ]
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
@@ -170,7 +170,7 @@ class SpineBp(RigModule):
         ctl(
             p=self.CTL_DATA,
             addOfs=1,
-            shape="circle",
+            shape="squareR",
             scale=self.rigSize,
             # scale=Vec((1.5, 0.05, 1.5)) * self.rigSize,
         )
@@ -254,17 +254,24 @@ class SpineBp(RigModule):
             p=self.CTL_DATA,
             inheritsXf=0,
         )
-        self.jnts_five = self.build_fiveJnts(
-            [self.base_ikc, self.mid_ikc, self.fore_ikc], r=rSz * 5
-        )
-        # self.rbSrf.weightTo(self.jnts_five, chain=0, mi=3, dr=5)
-        self.rbSrf.hardWeightTo(self.jnts_five)
 
-        self.jnts_five[1] | self.jnts_five[0]
-        self.jnts_five[-2] | self.jnts_five[-1]
-        self.base_ikc.a.add("tangent", min=0.001, dv=1) >> self.jnts_five[0].a.sy
-        self.mid_ikc.a.add("tangent", min=0.001, dv=1) >> self.jnts_five[2].a.sy
-        self.fore_ikc.a.add("tangent", min=0.001, dv=1) >> self.jnts_five[-1].a.sy
+        self.ctlJnts = self.build_threeOrFiveJnts(
+            [self.base_ikc, self.mid_ikc, self.fore_ikc],
+            r=rSz * 3,
+            five=0 if self.is_neck() else 1,
+        )
+        # self.rbSrf.weightTo(self.ctlJnts, chain=0, mi=3, dr=5)
+        self.rbSrf.hardWeightTo(self.ctlJnts)
+
+        mid_id = len(self.ctlJnts) // 2
+
+        if len(self.ctlJnts) == 5:
+            self.ctlJnts[1] | self.ctlJnts[0]
+            self.ctlJnts[-2] | self.ctlJnts[-1]
+
+        self.base_ikc.a.add("tangent", min=0.001, dv=1) >> self.ctlJnts[0].a.sy
+        self.mid_ikc.a.add("tangent", min=0.001, dv=1) >> self.ctlJnts[mid_id].a.sy
+        self.fore_ikc.a.add("tangent", min=0.001, dv=1) >> self.ctlJnts[-1].a.sy
 
         stretchy = self.setting.a.add("stretchy", min=0, max=1, dv=1)
         self.base_ikc.a.add("stretchy", proxy=stretchy)
@@ -276,7 +283,7 @@ class SpineBp(RigModule):
             scaleAttr=self.masterC.a.globalScale,
             stretchyAttr=self.setting.a.stretchy,
             pf=rID,
-            rSz=rSz * 2,
+            rSz=rSz,
             atMidOrEnd=1,
             p=self.CTL_DATA,
             JNT_DATA=self.JNT_DATA,

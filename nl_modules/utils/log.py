@@ -67,7 +67,7 @@ def update_root_logger(create_window=False, scroll_field=None):
     logger.handlers.clear()
 
     # formatStr = "%(levelname)-6s %(filename)-20s %(funcName)-20s %(message)s"
-    formatStr = "nlrt: %(message)s / %(filename)s::%(funcName)s()"
+    formatStr = "nlrt: %(message)s / %(filename)s / f=%(funcName)s()"
     # %(lineno)5d
     formatter = logging.Formatter(formatStr)
 

@@ -530,24 +530,27 @@ class RigModule(RigBase):
             result.append(jnt)
         return result
 
-    def build_fiveJnts(self, ctls, r=1, color=1):
+    def build_threeOrFiveJnts(self, ctls, r=1, color=Color.D_RED, five=1):
         """Create five joint nodes for given controls, with two additional end joints."""
         rbnBindJnts = []
         for ctl in ctls:
-            jnt = JntNode(ctl, sf="_rbBdJ", r=r, color=color, p=ctl)
+            jnt = JntNode(ctl, sf="_rbcJ", r=r, color=color, p=ctl)
             jnt.resetOrient()
             jnt.resetXf()
             rbnBindJnts.append(jnt)
 
-        endJ1 = rbnBindJnts[0].duplicate()
-        common.cstMulti(
-            rbnBindJnts[0], rbnBindJnts[1], endJ1, cstType="poi", w=0.5, delete=1
-        )
-        endJ2 = rbnBindJnts[-1].duplicate()
-        common.cstMulti(
-            rbnBindJnts[-1], rbnBindJnts[-2], endJ2, cstType="poi", w=0.5, delete=1
-        )
-        return [rbnBindJnts[0], endJ1, rbnBindJnts[1], endJ2, rbnBindJnts[2]]
+        if five:
+            endJ1 = rbnBindJnts[0].duplicate()
+            common.cstMulti(
+                rbnBindJnts[0], rbnBindJnts[1], endJ1, cstType="poi", w=0.5, delete=1
+            )
+            endJ2 = rbnBindJnts[-1].duplicate()
+            common.cstMulti(
+                rbnBindJnts[-1], rbnBindJnts[-2], endJ2, cstType="poi", w=0.5, delete=1
+            )
+            return [rbnBindJnts[0], endJ1, rbnBindJnts[1], endJ2, rbnBindJnts[2]]
+        else:
+            return rbnBindJnts
 
     def foot_rolling(
         self, targetCtl, heelRollG, ballRollG, footRollG, toeRollG, inRollG, outRollG

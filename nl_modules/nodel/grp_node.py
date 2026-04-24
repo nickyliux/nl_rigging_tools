@@ -359,15 +359,15 @@ class GrpNode(DagNode):
     def weightTo(self, joints, **kwargs):
         """Apply skin weights to the mesh"""
         if self.exists():
-            mc.skinCluster(self, joints, **kwargs)
+            mc.skinCluster(self, joints, tsb=1, **kwargs)
 
-    def softWeightTo(self, joints, rui=0, mi=3, tsb=1, dr=2, **kwargs):
+    def softWeightTo(self, joints, rui=0, mi=3, dr=2, **kwargs):
         """Apply soft skin weights to the mesh"""
-        self.weightTo(joints, rui=rui, mi=mi, tsb=tsb, dr=dr, **kwargs)
+        self.weightTo(joints, rui=rui, mi=mi, dr=dr, **kwargs)
 
     def hardWeightTo(self, joints):
         """Apply hard skin weights to the mesh"""
-        self.weightTo(joints, rui=0, mi=1, tsb=1, dr=0.1)
+        self.weightTo(joints, rui=0, mi=1, dr=0.1)
 
     def copyWeightsTo(self, items):
         """Copy skin weights from this mesh to other meshes"""

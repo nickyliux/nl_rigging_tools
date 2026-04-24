@@ -57,8 +57,8 @@ class HandBp(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
-            ("palm_ctl", "rotate2_3d", None, -scale, 0),
-            ("thumb_ctl", "rotate2_3d", "z", -scale, 0),
+            ("palm_ctl", "rotate2_3d", None, -scale * 0.8, 0),
+            ("thumb_ctl", "rotate2_3d", "z", -scale * 0.8, 0),
             ("smart_ctl", "rotate2_3d", "x", scale, 0),
         ]
         for name, shape, up, sca, top in ctl_defs:

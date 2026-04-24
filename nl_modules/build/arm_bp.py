@@ -87,7 +87,7 @@ class ArmBp(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
-            ("clavicle_fkc", "cube", "x", scale, 1),
+            ("clavicle_fkc", "squareR", "x", scale / 2, 1),
             ("upr_fkc", "squareR", "x", scale, 0),
             ("lwr_fkc", "squareR", "x", scale, 0),
             ("palm_fkc", "squareR", "x", scale, 0),
@@ -107,7 +107,7 @@ class ArmBp(RigModule):
 
         self.pvc.cv_rotate(-90, 0, 0)
         self.setting.cv_move(0, scale * 20, 0)
-        self.clavicle_fkc.cv_scale(1, 0.3, 0.3)
+        # self.clavicle_fkc.cv_scale(0.5, 1, 1)
 
     def build(self):
         """Build the arm rig module."""
@@ -445,7 +445,15 @@ class ArmBp(RigModule):
 
         setupTgt = [self.jnts_fk[0], self.jnts_ik[0], self.jnts_bf[0]]
         if self.ribbon:
-            setupTgt.extend([self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP])
+            # setupTgt.extend([self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP])
+            setupTgt.extend(
+                [
+                    self.ribbon_up.SRF_GRP,
+                    self.ribbon_up.AIM_GRP,
+                    self.ribbon_lw.SRF_GRP,
+                    self.ribbon_lw.AIM_GRP,
+                ]
+            )
 
         self.ctl_vis_toggle(
             self.setting.a.add("showRollJnts", type="bool", k=0),

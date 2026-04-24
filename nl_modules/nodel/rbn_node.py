@@ -184,7 +184,7 @@ class RbnNode:
 
         for j in sttMidEnd_jnts:
             j.setRadius(self.size * 5)
-            j.color = Color.PINK
+            j.color = Color.D_RED
 
         # if not self.forSpine:
         mid_loc_ofs2 = self.mid_loc.offset.offset
@@ -261,6 +261,7 @@ class RbnNode:
 
     def setup_vis(self):
         """Set up visibility for the ribbon rig."""
+        mc.hide(self.stt_loc, self.mid_loc, self.end_loc)
         mc.hide(self.ikhs)
 
     def build_post(self):

@@ -19,7 +19,7 @@ def loadModel(self):
     charPath = mc.optionVar(q="charFullPath")
     if charPath:
         tgtPaths = glob.glob(
-            os.path.join(charPath, os.path.basename(charPath) + "_mdl*.ma")  # "mdl",
+            os.path.join(charPath, os.path.basename(charPath) + "_mdl*.m*")  # "mdl",
         )
         if tgtPaths:
             file.importFile(tgtPaths[-1])
