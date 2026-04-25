@@ -63,7 +63,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         """Initialize the main window and load the UI."""
         super(self.__class__, self).__init__(parent=parent)
-        self.setWindowTitle("nlRT")
+        self.setWindowTitle("++++++++++  nlRT  ++++++++++")
         self.UI = QUiLoader().load(UI_PATH)
         self.setCentralWidget(self.UI)
         self.connect_UI()

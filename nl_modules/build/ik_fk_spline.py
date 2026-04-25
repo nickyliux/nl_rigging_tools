@@ -183,7 +183,8 @@ class IkFkSpline(RigModule):
                 f"{i}_fkc",
                 pf=rID,
                 up="z",
-                scale=rSz * 1.5,
+                shape="circleV",
+                scale=rSz * 2,
                 align=self.jnts_fk[i],
             )
             self.masterGuide.setMsg({f"fkc{i}": ctl})

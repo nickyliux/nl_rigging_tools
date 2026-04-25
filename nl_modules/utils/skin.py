@@ -32,7 +32,7 @@ def skinRefJnts(meshes=None, jnts=None, thld=5):
         closest = refJ.getClosestInList(jnts)
         if closest:
             if closest.o.distanceTo(refJ) < thld:
-                mesh.weightTo(closest, mi=1, tsb=1)
+                mesh.weightTo(closest, mi=1)  # , tsb=1)
                 weighted += 1
             else:
                 ignored += 1
@@ -57,7 +57,7 @@ def skinRbJnts(meshes=None):
             ignored += 1
             continue
 
-        mesh.weightTo(rbJnt, mi=1, tsb=1)
+        mesh.weightTo(rbJnt, mi=1)  # , tsb=1)
         weighted += 1
 
     logging.info(f"Rbn Joints: weighted {weighted}, and skipped {ignored}.")
