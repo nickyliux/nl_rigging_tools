@@ -19,8 +19,8 @@ class DagNode(DepNode):
 
     # color preset in (mid, lf, rt) order
     COLOR_PRESET = {
-        0: [(0.67, 0.56, 0.12), (0.36, 0.66, 1), (0.71, 0.30, 0.30)],
-        1: [22, 6, 13],
+        0: [22, 25, 6, 13],
+        1: [(0.67, 0.56, 0.12), (0.5, 0.4, 0.03), (0.36, 0.66, 1), (0.71, 0.30, 0.30)],
     }
     # (1.0, 0.8, 0.24)
     # 25
@@ -703,9 +703,11 @@ class DagNode(DepNode):
         n = str(self.node)
         v = 0
         if n.startswith("lf"):
-            v = 1
-        if n.startswith("rt"):
             v = 2
+        elif n.startswith("rt"):
+            v = 3
+        elif n.endswith("fkc"):
+            v = 1
 
         return DagNode.COLOR_PRESET[preset][v]
 
@@ -717,8 +719,10 @@ class DagNode(DepNode):
         n = str(self.node)
         v = 0
         if n.startswith("lf"):
+            v = 3
+        elif n.startswith("rt"):
             v = 2
-        if n.startswith("rt"):
+        elif n.endswith("fkc"):
             v = 1
 
         return DagNode.COLOR_PRESET[0][v]

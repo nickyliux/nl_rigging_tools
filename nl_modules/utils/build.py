@@ -93,6 +93,9 @@ def buildGuide(*args):
         print()
 
         mc.select(cl=1)
+        master2_ctl = DagNode("master2_ctl")
+        if master2_ctl.exists():
+            master2_ctl.a.ctlVis.set(1)
 
 
 def postRig():
@@ -136,11 +139,10 @@ def addMasterAttrs():
                     master2_ctl.a.add(lockAttr, k=0, type="bool", dv=0) * 2
                     >> grp.a.overrideDisplayType
                 )
-    logging.info(f"Added attrs to {master2_ctl.name}.")
+    DagNode("master_ctl").a.showAttr(t=1, r=1)
+    DagNode("master1_ctl").a.showAttr(t=1, r=1)
 
-    master1_ctl = DagNode("master_ctl")
-    master1_ctl.a.showAttr(t=1, r=1)
-    master1_ctl.offset.a.showAttr(t=1, r=1)
+    logging.info(f"Added attrs to {master2_ctl.name}.")
 
 
 def unbuildTgt(mg):

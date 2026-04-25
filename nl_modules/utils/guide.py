@@ -349,7 +349,7 @@ def toggleGuide(*args):
         master2_ctl.a.proxyVis.set(vis)
         master2_ctl.a.jointVis.set(vis)
 
-        if vis:
+        if vis == 1:
             guide_grp.hide()
         else:
             guide_grp.show()

@@ -74,9 +74,9 @@ class SpineBp(RigModule):
         ]
         if self.ribbon:
             ctl_defs += [
-                ("fore_ikc", "square", None, Vec((2, 1, 2)) * rSz, 0),
-                ("mid_ikc", "square", None, Vec((1.8, 0.5, 1.8)) * rSz, 1),
-                ("base_ikc", "square", None, Vec((2, 1, 2)) * rSz, 0),
+                ("fore_ikc", "cube", None, Vec((3.5, 0.3, 3.5)) * rSz, 0),
+                ("mid_ikc", "sphere", None, rSz, 1),
+                ("base_ikc", "cube", None, Vec((3.5, 0.3, 3.5)) * rSz, 0),
             ]
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
@@ -133,8 +133,9 @@ class SpineBp(RigModule):
             c = CrvNode(
                 f"{i + 1}_fkc",
                 pf=rID,
-                shape="squareR",
-                scale=rSz * 1.5,
+                shape="circleV",
+                scale=rSz * 2,
+                top=1,
                 # scale=Vec((2, 0.5, 2)) * rSz,
             )
             self.ctls_fk.append(c)
@@ -171,7 +172,7 @@ class SpineBp(RigModule):
             p=self.CTL_DATA,
             addOfs=1,
             shape="squareR",
-            scale=self.rigSize,
+            scale=self.rigSize * 0.8,
             # scale=Vec((1.5, 0.05, 1.5)) * self.rigSize,
         )
         ctl.cv_scale(2.5)
@@ -220,7 +221,7 @@ class SpineBp(RigModule):
 
         if not self.is_neck():
             RigModule.dyn_pivot(self.cog_ctl)
-            RigModule.dyn_pivot(self.fore_ikc, endTgt=self.mid_ikc, dv=1)
+            RigModule.dyn_pivot(self.fore_ikc, endTgt=self.mid_ikc, dv=0.5)
             RigModule.dyn_pivot(self.base_ikc, endTgt=self.mid_ikc, dv=0.5)
 
         self.ctls_ik = [self.mid_ikc, self.fore_ikc, self.base_ikc]
@@ -257,7 +258,7 @@ class SpineBp(RigModule):
 
         self.ctlJnts = self.build_threeOrFiveJnts(
             [self.base_ikc, self.mid_ikc, self.fore_ikc],
-            r=rSz * 3,
+            r=rSz * 5,
             five=0 if self.is_neck() else 1,
         )
         # self.rbSrf.weightTo(self.ctlJnts, chain=0, mi=3, dr=5)
@@ -340,6 +341,9 @@ class SpineBp(RigModule):
 
         if self.masterC2.a.settingVis.exists():
             self.masterC2.a.settingVis >> self.setting.a.v
+
+        if self.ribbon:
+            mc.hide(self.ctlJnts)
 
     def setup_channel(self):
         """Setup channel attributes for the spine rig controls."""
