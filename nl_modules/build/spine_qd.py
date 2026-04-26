@@ -159,7 +159,7 @@ class SpineQd(RigModule):
         #     self.cog_ctl.alignTo(self.COG_PVT_GUIDE)
         #     self.mid_ikc.snapTo(self.COG_PVT_GUIDE)
         # else:
-        self.cog_ctl.alignTo(ctlJ0)
+        self.cog_ctl.snapTo(ctlJ0)
         self.mid_ikc.snapTo(self.COG_PVT_GUIDE)
 
         if self.BASE_PVT_GUIDE:

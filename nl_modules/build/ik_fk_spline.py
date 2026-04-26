@@ -68,7 +68,7 @@ class IkFkSpline(RigModule):
         self.setting.a.add("localScale", min=0.01, dv=1)
         self.setting.a.addSep()
 
-        self.setting.cv_move(0, rSz * 40, 0)
+        self.setting.cv_move(0, rSz * 60, 0)
 
     def build(self):
         """Build the rig."""
@@ -76,7 +76,7 @@ class IkFkSpline(RigModule):
         self.build_ctl()
         self.build_ik()
         self.build_fk()
-        self.build_offset_ik()
+        self.build_sub_ik()
         self.build_ribbon()
         # build.add_noise_logic(ctl=self.setting, targets=self.jnts_ofs[1:])
 
@@ -126,7 +126,7 @@ class IkFkSpline(RigModule):
         for i in range(self.ikJntNum):
             isEnds = i == 0 or i == (self.ikJntNum - 1)
             shape = "back" if isEnds else "sphere"
-            scale = Vec((7, 6, 0.4)) * rSz if isEnds else rSz * 5
+            scale = Vec((8, 8, 0.4)) * rSz if isEnds else rSz * 10
             up = None if isEnds else "z"
             ctl = CrvNode(
                 f"{i}_ikc",
@@ -184,7 +184,7 @@ class IkFkSpline(RigModule):
                 pf=rID,
                 up="z",
                 shape="circleV",
-                scale=rSz * 2,
+                scale=rSz * 3,
                 align=self.jnts_fk[i],
             )
             self.masterGuide.setMsg({f"fkc{i}": ctl})
@@ -217,7 +217,7 @@ class IkFkSpline(RigModule):
             chainGrps[i].a.t >> self.ctls_fk[i].offset.a.t
             chainGrps[i].a.r >> self.ctls_fk[i].offset.a.r
 
-    def build_offset_ik(self):
+    def build_sub_ik(self):
         """Build offset IK controls for the rig."""
         logging.info(".")
         rID, rSz, xDr = self.get_short_form()
@@ -227,7 +227,7 @@ class IkFkSpline(RigModule):
                 f"{i}_ofs_ctl",
                 pf=rID,
                 shape="cube",
-                scale=rSz / 8,
+                scale=rSz,
                 align=self.ctls_fk[i],
                 p=self.ctls_fk[i],
                 color=Color.L_BLUE,

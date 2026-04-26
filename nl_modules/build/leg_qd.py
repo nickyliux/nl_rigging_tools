@@ -138,7 +138,7 @@ class LegQd(RigModule):
             ("digit_fkc", "circleV", "x", scale, 0),
             ("ball_fkc", "rotate2_3d", "z", -scale / 3, 0),
             ("ikc", "trapezoid_3d", None, Vec((2, 0.8, 2)) * rSz, 0),
-            ("extra_ikc", "rotate2_3d", None, Vec((0.5, 1.4, 1.4)) * -scale, 0),
+            ("extra_ikc", "rotate2_3d", None, Vec((0.5, 1, 1)) * -scale, 0),
             ("pvc", "sphere", None, rSz * 0.7, 0),
             ("smart_ctl", "pyramid", None, scale / 2, 0),
         ]

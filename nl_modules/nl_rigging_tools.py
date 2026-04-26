@@ -98,17 +98,17 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Build all rig components."""
         build.unbuildGuide()
         build.buildGuide()
-        self.masterGuide_UI_refresh()
+        # self.masterGuide_UI_refresh()
 
     def unbuildAll(self):
         """Unbuild all rig components."""
         build.unbuildGuide()
-        self.masterGuide_UI_refresh()
+        # self.masterGuide_UI_refresh()
 
     def loadTpl(self):
         """Load template for the guide."""
         guide.loadTemplate(loadLatest=self.UI.loadLatest_CB.isChecked())
-        self.masterGuide_UI_refresh()
+        # self.masterGuide_UI_refresh()
 
     def connect_UI(self):
         """Connect UI buttons to their respective functions."""
@@ -159,9 +159,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Master Guide
         # self.UI.masterGuide_LW.itemDoubleClicked.connect(self.UI_selectMasterGuide)
         # self.UI.masterGuide_LW.itemClicked.connect(self.UI_selectMasterGuide)
-        self.UI.masterGuide_LW.currentItemChanged.connect(self.UI_selectMasterGuide)
-        self.UI.refreshMG_BN.clicked.connect(self.masterGuide_UI_refresh)
-        self.UI.selectAllMG_BN.clicked.connect(self.masterGuide_selectAll)
+        # self.UI.masterGuide_LW.currentItemChanged.connect(self.UI_selectMasterGuide)
+        # self.UI.refreshMG_BN.clicked.connect(self.masterGuide_UI_refresh)
+        # self.UI.selectAllMG_BN.clicked.connect(self.masterGuide_selectAll)
 
         # Ctl Tab
         self.UI.crvShape_LW.itemDoubleClicked.connect(self.crvShape_LW_dblClicked)
@@ -227,7 +227,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.connectToEquine_BN, mocap.connectToEquine)
         self.connect(self.UI.bakeMotion_BN, mocap.bakeMotion)
 
-        self.masterGuide_UI_refresh()
+        # self.masterGuide_UI_refresh()
         self.crvShape_refresh()
         self.updateLoadWrapTargetMesh()
         self.updateCharPath()
@@ -308,7 +308,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 elif itemText == "quad / unguli":
                     self.loadPresetGuide("quad_unguli_tpl")
 
-            self.masterGuide_UI_refresh()
+            # self.masterGuide_UI_refresh()
             mc.select(allTgtMG)
             common.setView(fit=1)
             mc.setToolTo("moveSuperContext")
@@ -319,28 +319,28 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if rigID_dict:
             guide.loadGuideFrIdDict(rigID_dict)
 
-    def UI_selectMasterGuide(self, item):
-        """Select item in the scene when clicked in the UI."""
-        if item:
-            itemSel = mc.ls(item.text())
-            if itemSel:
-                obj = DagNode(itemSel[0])
-                if obj and obj.exists():
-                    mc.select(itemSel)
-                    mc.AttributeEditor()
+    # def UI_selectMasterGuide(self, item):
+    #     """Select item in the scene when clicked in the UI."""
+    #     if item:
+    #         itemSel = mc.ls(item.text())
+    #         if itemSel:
+    #             obj = DagNode(itemSel[0])
+    #             if obj and obj.exists():
+    #                 mc.select(itemSel)
+    #                 mc.AttributeEditor()
 
-    def masterGuide_UI_refresh(self):
-        """Refresh UI master guide list"""
-        allMGs = build.collectMasterGuide()
-        self.UI.masterGuide_LW.clear()
-        self.UI.masterGuide_LW.addItems([r.name for r in allMGs])
+    # def masterGuide_UI_refresh(self):
+    #     """Refresh UI master guide list"""
+    #     allMGs = build.collectMasterGuide()
+    #     self.UI.masterGuide_LW.clear()
+    #     self.UI.masterGuide_LW.addItems([r.name for r in allMGs])
 
-    def masterGuide_selectAll(self):
-        pass
-        # """Select all master guides"""
-        # allMGs = build.getMasterGuide_all()
-        # if allMGs:
-        #     mc.select(allMGs)
+    # def masterGuide_selectAll(self):
+    #     pass
+    # """Select all master guides"""
+    # allMGs = build.getMasterGuide_all()
+    # if allMGs:
+    #     mc.select(allMGs)
 
     def crvShape_LW_dblClicked(self, item):
         """Add curve object"""
