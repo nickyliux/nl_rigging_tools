@@ -58,8 +58,8 @@ class IkFkSpline(RigModule):
         rID, rSz, xDr = self.get_short_form()
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", rSz * 1.5, 1),
-            ("main", "squareR", "z", rSz * 5, 1),
+            ("setting", "screw_nut", "z", rSz * 2.5, 1),
+            ("main", "cog", "z", rSz * 6, 1),
         ]
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
@@ -68,7 +68,7 @@ class IkFkSpline(RigModule):
         self.setting.a.add("localScale", min=0.01, dv=1)
         self.setting.a.addSep()
 
-        self.setting.cv_move(0, rSz * 60, 0)
+        self.setting.cv_move(0, rSz * 80, 0)
 
     def build(self):
         """Build the rig."""
@@ -121,13 +121,14 @@ class IkFkSpline(RigModule):
             size=rSz * 3,
             color=Color.D_YELLOW,
         )
-        self.main.snapTo(self.RT_GUIDE)
+        self.main.alignTo(self.RT_GUIDE)
         self.main | self.IK_GRP
         for i in range(self.ikJntNum):
             isEnds = i == 0 or i == (self.ikJntNum - 1)
-            shape = "back" if isEnds else "sphere"
-            scale = Vec((8, 8, 0.4)) * rSz if isEnds else rSz * 10
+            shape = "back" if isEnds else "square"
+            scale = Vec((9, 9, 0.4)) * rSz if isEnds else rSz / 2
             up = None if isEnds else "z"
+            top = 0 if isEnds else 1
             ctl = CrvNode(
                 f"{i}_ikc",
                 pf=rID,
@@ -136,6 +137,7 @@ class IkFkSpline(RigModule):
                 scale=scale,
                 align=self.jnts_ik[i],
                 addOfs=1,
+                top=top,
                 p=self.main,
             )
             self.jnts_ik[i] | ctl
@@ -157,7 +159,7 @@ class IkFkSpline(RigModule):
         SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6, chain=0)
 
         # self.setting.snapTo(self.ctls_ik[0], p=self.FK_GRP)
-        self.setting.snapTo(self.main, p=self.main)
+        self.setting.alignTo(self.main, p=self.main)
         self.ctls_ik[0].cstPar(self.setting, mo=1)
 
         RigModule.isolate_align(
@@ -184,7 +186,7 @@ class IkFkSpline(RigModule):
                 pf=rID,
                 up="z",
                 shape="circleV",
-                scale=rSz * 3,
+                scale=rSz * 2,
                 align=self.jnts_fk[i],
             )
             self.masterGuide.setMsg({f"fkc{i}": ctl})
@@ -227,7 +229,7 @@ class IkFkSpline(RigModule):
                 f"{i}_ofs_ctl",
                 pf=rID,
                 shape="cube",
-                scale=rSz,
+                scale=rSz / 2,
                 align=self.ctls_fk[i],
                 p=self.ctls_fk[i],
                 color=Color.L_BLUE,

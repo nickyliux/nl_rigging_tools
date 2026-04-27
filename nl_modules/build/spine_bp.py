@@ -70,7 +70,7 @@ class SpineBp(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2, 0),
-            ("cog_ctl", "cog_bp", None, rSz * 3.5, 0),
+            ("cog_ctl", "cog", None, rSz * 3.5, 0),
         ]
         if self.ribbon:
             ctl_defs += [
@@ -106,7 +106,7 @@ class SpineBp(RigModule):
         if self.ribbon:
             self.build_spine_ik()
 
-        self.setting.snapTo(self.jnts_fk[0], p=self.CTL_DATA)
+        self.setting.alignTo(self.jnts_fk[0], p=self.CTL_DATA)
         self.jnts_fk[0].cstPar(self.setting, mo=1)
 
         self.build_post()
@@ -172,13 +172,13 @@ class SpineBp(RigModule):
             p=self.CTL_DATA,
             addOfs=1,
             shape="squareR",
-            scale=self.rigSize * 0.8,
+            scale=self.rigSize * 1.1,
             # scale=Vec((1.5, 0.05, 1.5)) * self.rigSize,
         )
         ctl.cv_scale(2.5)
 
         # ctl.offset.snapAlignTo(self.BASE_PVT_GUIDE, self.jnts_fk[0])
-        ctl.offset.snapTo(self.BASE_PVT_GUIDE)
+        ctl.offset.alignTo(self.BASE_PVT_GUIDE)
         ctl.cstPar(self.jnts_fk[0], mo=1)
 
     def build_spine_ik(self):
@@ -200,7 +200,10 @@ class SpineBp(RigModule):
         self.base_ikc.addOffsetGrp()
         self.fore_ikc.addOffsetGrp()
 
-        self.fore_ikc.a.t @ self.base_ikc.a.t >> self.mid_ikc.offset.offset.a.t
+        midOfs2 = self.mid_ikc.offset.offset
+        self.fore_ikc.a.t @ self.base_ikc.a.t >> midOfs2.a.t
+        midOfs2.a.ty.disconnect()
+
         twistRatio = self.mid_ikc.a.add("twistRatio", min=0, max=1, dv=0.5)
 
         blendRy = ut.blend2_(self.base_ikc.a.ry, self.fore_ikc.a.ry, w=twistRatio)

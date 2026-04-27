@@ -56,7 +56,7 @@ class SpinePro(rig_module.RigModule):
         self.setting.a.message >> self.masterGuide.a.setting
 
         self.cog_ctl = CrvNode(
-            "cog_ctl", pf=self.rigID, shape="cog_bp", scale=s * 8, color=DY
+            "cog_ctl", pf=self.rigID, shape="cog", scale=s * 8, color=DY
         )
         self.cog_ctl.a.message >> self.masterGuide.a.cog_ctl
 

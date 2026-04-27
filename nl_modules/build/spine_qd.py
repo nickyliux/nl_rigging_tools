@@ -73,13 +73,13 @@ class SpineQd(RigModule):
         rID, rSz, xDr = self.get_short_form()
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", rSz * 1.3, 1),
+            ("setting", "screw_nut", "z", rSz * 1.5, 1),
             ("cog_ctl", "trapezoid_3d", None, Vec((0.8, 1.5, 1.5)) * rSz, 0),
-            ("fore_ikc", "back", None, Vec((6, 5, 0.2)) * rSz, 0),
-            ("mid_ikc", "back", None, Vec((6, 5, 0.2)) * rSz, 0),
-            ("base_ikc", "back", None, Vec((6, 5, 0.2)) * rSz, 0),
-            ("tangent0_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
-            ("tangent1_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
+            ("fore_ikc", "back", None, Vec((6, 6, 0.2)) * rSz, 0),
+            ("mid_ikc", "back", None, Vec((6, 6, 0.2)) * rSz, 0),
+            ("base_ikc", "back", None, Vec((6, 6, 0.2)) * rSz, 0),
+            ("tangent0_ctl", "cube", None, Vec((0.1, 0.1, 3)) * rSz, 1),
+            ("tangent1_ctl", "cube", None, Vec((0.1, 0.1, 3)) * rSz, 1),
             ("end_ctl", "rotate2_3d", None, Vec((1, 1, 0.7)) * rSz, 0),
             # ("cog_upr_ctl", "triangle", "x", Vec((1, 0.5, 1)) * rSz, 0),
             # ("cog_lwr_ctl", "triangle", "x", Vec((1, 0.5, -1)) * rSz, 0),
@@ -138,7 +138,7 @@ class SpineQd(RigModule):
 
         self.midCtl_setup()
         self.build_volume(crvLenRatioSk)
-        self.setting.snapTo(self.base_ikc, p=self.base_ikc)
+        self.setting.alignTo(self.base_ikc, p=self.base_ikc)
 
         self.fore_ikc.addAttrFrom(self.setting)
         self.base_ikc.addAttrFrom(self.setting)
@@ -160,7 +160,7 @@ class SpineQd(RigModule):
         #     self.mid_ikc.snapTo(self.COG_PVT_GUIDE)
         # else:
         self.cog_ctl.snapTo(ctlJ0)
-        self.mid_ikc.snapTo(self.COG_PVT_GUIDE)
+        self.mid_ikc.alignTo(self.COG_PVT_GUIDE)
 
         if self.BASE_PVT_GUIDE:
             self.base_ikc.alignTo(self.BASE_PVT_GUIDE)
@@ -295,7 +295,7 @@ class SpineQd(RigModule):
         prx_height = mc.arclen(self.rbCrvSk) / jntNum / 1.5
         proxy.add_proxyHeight_attr(rb_jnts, prx_height)
 
-        self.end_ctl.snapTo(self.RT_GUIDE, p=self.tangent0_ctl, addOfs=1)
+        self.end_ctl.alignTo(self.RT_GUIDE, p=self.tangent0_ctl, addOfs=1)
         self.end_ctl.cstOri(rb_jnts[0], mo=1)
 
         ik_handle.hide()
