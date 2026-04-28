@@ -156,15 +156,15 @@
       </item>
       <item>
        <property name="text">
-        <string>----------</string>
-       </property>
-       <property name="flags">
-        <set>ItemIsDragEnabled|ItemIsUserCheckable</set>
+        <string>neck</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>neck / bp</string>
+        <string>----------</string>
+       </property>
+       <property name="flags">
+        <set>ItemIsDragEnabled|ItemIsUserCheckable</set>
        </property>
       </item>
       <item>
@@ -193,11 +193,6 @@
        </property>
        <property name="flags">
         <set>ItemIsDragEnabled|ItemIsUserCheckable</set>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>neck / qd</string>
        </property>
       </item>
       <item>
@@ -244,6 +239,21 @@
        </property>
        <property name="flags">
         <set>ItemIsDragEnabled|ItemIsUserCheckable</set>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>biped</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>quad / canine</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>quad / equine</string>
        </property>
       </item>
      </widget>

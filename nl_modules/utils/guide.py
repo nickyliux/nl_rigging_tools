@@ -16,9 +16,8 @@ ALL_CTL_SET = "*_ctl_set"
 
 COMPONENT_DICT = {
     "head": {"M": "head"},
-    "neck / bp": {"M": "neckBp"},
+    "neck": {"M": "neck"},
     "spine / bp": {"M": "spineBp"},
-    "neck / qd": {"M": "neckQd"},
     "spine / qd": {"M": "spineQd"},
     "tail": {"M": "tail"},
     "arm / bp": {"L": "lfArmBp", "R": "rtArmBp"},

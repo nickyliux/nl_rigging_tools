@@ -131,31 +131,29 @@ from nl_modules.build import (
     ik_fk_spline,
     leg_bp,
     leg_qd,
-    neck_bp,
-    neck_qd,
+    head,
+    neck,
     rig_base,
     rig_module,
     spine_bp,
     spine_qd,
     tail,
     tpl_loader,
-    head,
     simple_fk,
 )
 
 reload(rig_base)
 reload(rig_module)
 reload(tpl_loader)
-# reload(ribbon)
 reload(head)
-reload(neck_bp)
+reload(neck)
 reload(spine_bp)
 reload(arm_bp)
 reload(hand_bp)
 reload(simple_fk)
 reload(leg_bp)
 reload(leg_qd)
-reload(neck_qd)
+reload(neck)
 reload(spine_qd)
 reload(tail)
 reload(finger_fk)

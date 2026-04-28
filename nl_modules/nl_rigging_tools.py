@@ -299,14 +299,10 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
                 elif itemText == "biped":
                     self.loadPresetGuide("biped_tpl")
-                elif itemText == "quad":
-                    self.loadPresetGuide("quad_tpl")
-                elif itemText == "quad / planti":
-                    self.loadPresetGuide("quad_planti_tpl")
-                elif itemText == "quad / digiti":
-                    self.loadPresetGuide("quad_digiti_tpl")
-                elif itemText == "quad / unguli":
-                    self.loadPresetGuide("quad_unguli_tpl")
+                elif itemText == "quad / canine":
+                    self.loadPresetGuide("quad_canine_tpl")
+                elif itemText == "quad / equine":
+                    self.loadPresetGuide("quad_equine_tpl")
 
             # self.masterGuide_UI_refresh()
             mc.select(allTgtMG)

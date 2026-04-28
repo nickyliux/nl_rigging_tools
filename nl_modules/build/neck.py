@@ -1,7 +1,7 @@
 from nl_modules.build.ik_fk_spline import IkFkSpline
 
 
-class NeckQd(IkFkSpline):
+class Neck(IkFkSpline):
     """Neck quadruped rig module."""
 
     def __init__(self, mg):

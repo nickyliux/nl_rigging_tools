@@ -890,7 +890,7 @@ class RigModule(RigBase):
                 attr >> tgt.a.v
         if offList:
             for tgt in self.getXformOrShape(offList, shape):
-                attr >> tgt.a.v
+                ~attr >> tgt.a.v
 
     def get_short_form(self):
         """Get rig ID, size and x direction for the current rig instance."""

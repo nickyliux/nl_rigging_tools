@@ -12,14 +12,15 @@ from nl_modules.utils import utils_node as ut
 
 # Import rig components, required for evalation
 from nl_modules.build.head import Head
-from nl_modules.build.neck_bp import NeckBp
+
+# from nl_modules.build.neck_bp import NeckBp
 from nl_modules.build.spine_bp import SpineBp
 from nl_modules.build.arm_bp import ArmBp
 from nl_modules.build.hand_bp import HandBp
 
 from nl_modules.build.leg_bp import LegBp
 from nl_modules.build.leg_qd import LegQd
-from nl_modules.build.neck_qd import NeckQd
+from nl_modules.build.neck import Neck
 from nl_modules.build.spine_qd import SpineQd
 from nl_modules.build.tail import Tail
 from nl_modules.build.belt import Belt
@@ -471,10 +472,10 @@ def boneAutoAttach():
         rigID = mg.a.rigID.get()
         grp = DagNode("JNT")
 
-        if rigID.startswith("tail") or rigID.startswith("neckQd"):
+        if rigID.startswith("tail") or rigID.startswith("neck"):
             attachToOneSrfUVPin(rigID, rbJnts, rbSrfSk, globalScale, grp)
 
-        elif rigID.startswith("spineBp") or rigID.startswith("neckBp"):
+        elif rigID.startswith("spineBp") or rigID.startswith("neck"):
             attachToOneSrfUVPin(rigID, rbJnts, rbSrf, globalScale, grp)
 
         elif rigID.startswith("spineQd"):
