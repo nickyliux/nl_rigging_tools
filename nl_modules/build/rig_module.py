@@ -871,20 +871,26 @@ class RigModule(RigBase):
 
         return autoWeight
 
-    def ctl_vis_toggle(self, attr, onList=None, offList=None):
+    def getXformOrShape(self, tgtList, shape=0):
+        """Get transform or shape nodes from the target list based on the shape flag."""
+        tgts = []
+        for ctl in tgtList:
+            if shape == 0:
+                if ctl != None and DagNode(ctl).exists():
+                    tgts.append(DagNode(ctl))
+            else:
+                if ctl != None and DagNode(ctl).shape.exists():
+                    tgts.append(DagNode(ctl).shape)
+        return tgts
+
+    def ctl_vis_toggle(self, attr, onList=None, offList=None, shape=0):
         """Toggle visibility of controls based on the given attribute."""
         if onList:
-            [
-                attr >> DagNode(ctl).a.v
-                for ctl in onList
-                if ctl != None and DagNode(ctl).exists()
-            ]
+            for tgt in self.getXformOrShape(onList, shape):
+                attr >> tgt.a.v
         if offList:
-            [
-                ~attr >> DagNode(ctl).a.v
-                for ctl in offList
-                if ctl != None and DagNode(ctl).exists()
-            ]
+            for tgt in self.getXformOrShape(offList, shape):
+                attr >> tgt.a.v
 
     def get_short_form(self):
         """Get rig ID, size and x direction for the current rig instance."""

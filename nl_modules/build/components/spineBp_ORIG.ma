@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: spineBp.ma
-//Last modified: Tue, Apr 28, 2026 01:18:20 AM
+//Last modified: Tue, Apr 28, 2026 01:02:53 AM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,17 +12,17 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26200)";
-fileInfo "UUID" "704249A6-4577-FF43-352B-20A7BC949F2E";
+fileInfo "UUID" "C7E3E8F2-4860-64F8-6E64-C8B2492700E5";
 createNode transform -s -n "persp";
 	rename -uid "83BBC351-4169-8A57-6147-3688C3C5E65F";
-	setAttr ".t" -type "double3" 145.13192145723718 201.15204965945216 146.67749292285973 ;
-	setAttr ".r" -type "double3" -23.138352729732755 34.599999999944536 -9.659865615961758e-16 ;
+	setAttr ".t" -type "double3" 165.49925083572722 187.63954899512251 141.78219812121765 ;
+	setAttr ".r" -type "double3" -18.938352729732674 40.999999999944478 -1.053569069748e-15 ;
 	setAttr -cb on ".ro";
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "E4BD1A20-4E99-1123-5E44-089307917010";
 	setAttr -k off ".v";
 	setAttr ".fl" 34.999999999999993;
-	setAttr ".coi" 217.56486124329558;
+	setAttr ".coi" 220.18609311377008;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -81,12 +81,16 @@ createNode transform -n "master_guide";
 	rename -uid "177DBE6B-4E8E-B711-3C19-589C4E949A6A";
 	addAttr -ci true -sn "____________" -ln "____________" -min 0 -max 0 -en "____________" 
 		-at "enum";
+	addAttr -ci true -sn "ribbon" -ln "ribbon" -min 0 -max 1 -at "bool";
+	addAttr -ci true -sn "fkJntNum" -ln "fkJntNum" -dv 4 -min 3 -max 5 -at "long";
 	addAttr -ci true -sn "rbnJntNum" -ln "rbnJntNum" -dv 8 -min 2 -at "long";
 	addAttr -ci true -sn "rigID" -ln "rigID" -dt "string";
 	addAttr -ci true -sn "rigClass" -ln "rigClass" -dt "string";
 	addAttr -ci true -sn "rbJntSet" -ln "rbJntSet" -dt "string";
 	setAttr ".t" -type "double3" 0 100 0 ;
 	setAttr -l on -k on ".____________";
+	setAttr -cb on ".ribbon" yes;
+	setAttr -cb on ".fkJntNum";
 	setAttr -cb on ".rbnJntNum";
 	setAttr ".rigID" -type "string" "";
 	setAttr ".rigClass" -type "string" "SpineBp";
@@ -406,20 +410,20 @@ createNode nurbsCurve -n "master_guideShape" -p "master_guide";
 parent -s -nc -r -add "|master_guide|st_guide_ofs|rt_guide|rt_guideShape" "tp_guide" ;
 parent -s -nc -r -add "|master_guide|st_guide_ofs|rt_guide|rt_guideShape" "md_guide" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "A096DC62-4150-0329-FE61-7B8832781449";
+	rename -uid "CC0EB7BE-4AA6-9A56-25A6-EA8B6208094C";
 	setAttr -s 2 ".lnk";
 	setAttr -s 2 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "5DE5DA57-4260-F398-3E81-EE8827C7BA14";
+	rename -uid "846AB3F8-45B8-491E-CFF4-B8B57C187723";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "D7DCF37C-4448-BD25-266C-8684016D190D";
+	rename -uid "D8D389C1-4FB4-D5AF-3D6E-ACA1459E3946";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "F8B93CA3-4680-EF1A-1112-3A98DF407EAB";
+	rename -uid "60ACAE4C-4E64-F0B1-1C75-F7A58C2BDB82";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "EDE7F8A1-4185-37A4-5FA7-49A7396409D6";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "3AC466EA-4D84-F55C-A30A-C6A1F6B5857A";
+	rename -uid "42704D6D-4724-E6B4-D42A-92BF5404C986";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "D70BF562-46C4-2F8D-ABFE-179003332609";
 	setAttr ".g" yes;

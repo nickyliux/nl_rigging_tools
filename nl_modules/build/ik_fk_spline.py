@@ -144,6 +144,8 @@ class IkFkSpline(RigModule):
             self.ctls_ik.append(ctl)
             self.masterGuide.setMsg({f"ikc{i}": ctl})
 
+        # if self.ikJntNum == 3:
+        #     self.ctls_ik[1].offset | self.ctls_ik[2]
         if self.ikJntNum >= 4:
             self.ctls_ik[1].offset | self.ctls_ik[0]
             self.ctls_ik[-2].offset | self.ctls_ik[-1]
@@ -257,11 +259,16 @@ class IkFkSpline(RigModule):
         )
         self.ctl_vis_toggle(
             self.setting.a.add("showFkCtl", k=0, type="bool", dv=1),
-            onList=[self.ctls_fk[0]],
+            onList=self.ctls_fk,
+            shape=1,
         )
         self.ctl_vis_toggle(
             self.setting.a.add("showSubIkCtl", k=0, type="bool", dv=0),
             onList=self.ctls_ofs,
+        )
+        self.ctl_vis_toggle(
+            self.setting.a.add("showBaseIkCtl", type="bool", k=0, dv=1),
+            onList=[self.ctls_ik[0].shape],
         )
         self.ctl_vis_toggle(
             self.setting.a.add("showSetup", k=0, type="bool", dv=0),
@@ -270,6 +277,7 @@ class IkFkSpline(RigModule):
             + self.jnts_ik
             + self.jnts_ofs,
         )
+
         # mc.hide(self.rbSrf1, self.rbSrf2, self.rbCrvSk)  # , self.JNT_DATA)
         # mc.hide(self.jnts_fk + self.jnts_ik + self.jnts_ofs)
 

@@ -17,9 +17,11 @@ class SpineBp(RigModule):
 
     def __init__(self, mg):
         super().__init__(mg)
+
+        self.fkJntNum = 4
         for attr in (
-            "ribbon",
-            "fkJntNum",
+            # "ribbon",
+            # "fkJntNum",
             "rbnJntNum",
         ):
             setattr(self, attr, self.masterGuide.a[attr].get())
@@ -71,13 +73,13 @@ class SpineBp(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2, 0),
             ("cog_ctl", "cog", None, rSz * 3.5, 0),
+            # ]
+            # if self.ribbon:
+            # ctl_defs += [
+            ("fore_ikc", "cube", None, Vec((3.5, 0.3, 3.5)) * rSz, 0),
+            ("mid_ikc", "sphere", None, rSz, 1),
+            ("base_ikc", "cube", None, Vec((3.5, 0.3, 3.5)) * rSz, 0),
         ]
-        if self.ribbon:
-            ctl_defs += [
-                ("fore_ikc", "cube", None, Vec((3.5, 0.3, 3.5)) * rSz, 0),
-                ("mid_ikc", "sphere", None, rSz, 1),
-                ("base_ikc", "cube", None, Vec((3.5, 0.3, 3.5)) * rSz, 0),
-            ]
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
@@ -103,8 +105,8 @@ class SpineBp(RigModule):
 
         self.build_ctl()
         self.build_fk()
-        if self.ribbon:
-            self.build_spine_ik()
+        # if self.ribbon:
+        self.build_spine_ik()
 
         self.setting.alignTo(self.jnts_fk[0], p=self.CTL_DATA)
         self.jnts_fk[0].cstPar(self.setting, mo=1)
@@ -202,7 +204,7 @@ class SpineBp(RigModule):
 
         midOfs2 = self.mid_ikc.offset.offset
         self.fore_ikc.a.t @ self.base_ikc.a.t >> midOfs2.a.t
-        midOfs2.a.ty.disconnect()
+        # midOfs2.a.ty.disconnect()
 
         twistRatio = self.mid_ikc.a.add("twistRatio", min=0, max=1, dv=0.5)
 
@@ -254,7 +256,8 @@ class SpineBp(RigModule):
             crv=self.LINE_GUIDE,
             normal=-1,
             snap=self.rootJ,
-            spans=self.fkJntNum + 1,
+            # spans=self.fkJntNum + 1,
+            spans=self.fkJntNum,
             p=self.CTL_DATA,
             inheritsXf=0,
         )
@@ -329,11 +332,11 @@ class SpineBp(RigModule):
 
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""
-        if self.ribbon:
-            self.ctl_vis_toggle(
-                self.setting.a.add("showSetup", type="bool", k=0),
-                onList=[self.jnts_fk[0]] + self.jnts_five + [self.rbSrf],
-            )
+        # if self.ribbon:
+        self.ctl_vis_toggle(
+            self.setting.a.add("showSetup", type="bool", k=0),
+            onList=[self.jnts_fk[0]] + self.jnts_five + [self.rbSrf],
+        )
         if self.is_neck():
             CrvNode(self.ctls_fk[0]).setOnTop(1)
             self.ctl_vis_toggle(
@@ -345,8 +348,8 @@ class SpineBp(RigModule):
         if self.masterC2.a.settingVis.exists():
             self.masterC2.a.settingVis >> self.setting.a.v
 
-        if self.ribbon:
-            mc.hide(self.ctlJnts)
+        # if self.ribbon:
+        mc.hide(self.ctlJnts)
 
     def setup_channel(self):
         """Setup channel attributes for the spine rig controls."""
@@ -356,9 +359,9 @@ class SpineBp(RigModule):
             # self.cog_ctl,
             self.cog_gmb,
         ]
-        if self.ribbon:
-            for ctl in [self.base_ikc, self.mid_ikc, self.fore_ikc]:
-                ctl.a.showAttr(t=1, r=1, s=0)
+        # if self.ribbon:
+        for ctl in [self.base_ikc, self.mid_ikc, self.fore_ikc]:
+            ctl.a.showAttr(t=1, r=1, s=0)
 
         for ctl in ctls:
             ctl.a.showAttr(t=1, r=1)
@@ -371,8 +374,8 @@ class SpineBp(RigModule):
             self.cog_ctl,
             self.cog_gmb,
         ]
-        if self.ribbon:
-            ctls += self.ctls_ik
+        # if self.ribbon:
+        ctls += self.ctls_ik
 
         for ctl in ctls:
             ctl.a.ro.set(2)
@@ -381,19 +384,19 @@ class SpineBp(RigModule):
         """Setup space switching for the spine rig controls."""
         self.masterGuide.setMsg({"space_COG": self.cog_ctl})
 
-        if self.ribbon:
-            self.masterGuide.setMsg(
-                {
-                    "space_master": self.masterC,
-                    "space_lwrBody": self.base_ikc,
-                    "space_uprBody": self.fore_ikc,
-                }
-            )
+        # if self.ribbon:
+        self.masterGuide.setMsg(
+            {
+                "space_master": self.masterC,
+                "space_lwrBody": self.base_ikc,
+                "space_uprBody": self.fore_ikc,
+            }
+        )
 
     def setup_anchor(self):
         """Setup anchor module for the spine rig controls."""
-        anchor1 = self.base_ikc if self.ribbon else self.jnts_fk[0]
-        anchor2 = self.jnts_rb[-1] if self.ribbon else self.jnts_fk[-1]
+        anchor1 = self.base_ikc  # if self.ribbon else self.jnts_fk[0]
+        anchor2 = self.jnts_rb[-1]  # if self.ribbon else self.jnts_fk[-1]
         self.setup_anchor_module({"anchorP1": anchor1, "anchorP2": anchor2})
 
     def setup_bindJnt(self):
@@ -405,8 +408,8 @@ class SpineBp(RigModule):
     def setup_ctlSet(self):
         """Setup control sets for the spine rig."""
         ctls = self.ctls_fk + [self.setting, self.cog_ctl, self.cog_gmb]
-        if self.ribbon:
-            ctls += self.ctls_ik
+        # if self.ribbon:
+        ctls += self.ctls_ik
         # if not self.is_neck():
         #     ctls += [self.cog_ctl, self.cog_gmb]
         self.add_ctl_set(ctls)
