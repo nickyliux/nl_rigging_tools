@@ -112,12 +112,13 @@ class IkFkSpline(RigModule):
         logging.info(".")
         rID, rSz, xDr = self.get_short_form()
 
+        aimDir = -1 if (type(self).__name__ == "Tail") else 1
         self.jnts_ik = JntNode.createJntsFrCrv(
             self.LINE_GUIDE,
             num=self.ikJntNum,
             name="ikj",
             pf=rID,
-            aimV=(0, 0, -1),
+            aimV=(0, 0, aimDir),
             size=rSz * 3,
             color=Color.D_YELLOW,
         )
