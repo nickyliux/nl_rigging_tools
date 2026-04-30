@@ -372,7 +372,7 @@ class LegBp(RigModule):
         self.setting.snapTo(self.palm, p=self.CTL_DATA)
         self.palm.cstPar(self.setting, mo=1)
 
-        fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=1)
+        fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=0)
         total = len(self.jnts) - 1
 
         for i in range(total):
@@ -514,29 +514,29 @@ class LegBp(RigModule):
             offList=self.ctls_fk[1:-1],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("showRollJnts", type="bool", k=0),
+            self.setting.a.add("showRollJnts", type="bool", k=0, dv=0),
             onList=self.rollJnts + self.aimJnts,
         )
         if self.ribbon:
             self.ctl_vis_toggle(
-                self.setting.a.add("showBendy", type="bool", k=0),  # , dv=1),
+                self.setting.a.add("showBendy", type="bool", k=0, dv=1),
                 onList=self.all_bendy,
             )
 
         setupTgt = [self.jnts_fk[0], self.jnts_ik[0], self.jnts_bf[0]]
         if self.ribbon:
-            # setupTgt.extend([self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP])
-            setupTgt.extend(
-                [
-                    self.ribbon_up.SRF_GRP,
-                    self.ribbon_up.AIM_GRP,
-                    self.ribbon_lw.SRF_GRP,
-                    self.ribbon_lw.AIM_GRP,
-                ]
-            )
+            setupTgt.extend([self.ribbon_up.RBN_GRP, self.ribbon_lw.RBN_GRP])
+            # setupTgt.extend(
+            #     [
+            #         self.ribbon_up.SRF_GRP,
+            #         self.ribbon_up.AIM_GRP,
+            #         self.ribbon_lw.SRF_GRP,
+            #         self.ribbon_lw.AIM_GRP,
+            #     ]
+            # )
 
         self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", type="bool", k=0),
+            self.setting.a.add("showSetup", type="bool", k=0, dv=0),
             onList=setupTgt,
         )
         [ikh.hide() for ikh in self.all_ikHs.values()]
@@ -557,10 +557,10 @@ class LegBp(RigModule):
         if self.scapulaBone:
             self.scap_fkc.a.showAttr(r=1)
 
-        if self.ribbon:
-            self.all_bendy[0].a.showAttr("sx", t=1, r=1)
-            self.all_bendy[1].a.showAttr(t=1)
-            self.all_bendy[2].a.showAttr("sx", t=1, r=1)
+        # if self.ribbon:
+        #     self.all_bendy[0].a.showAttr("sx", t=1, r=1)
+        #     self.all_bendy[1].a.showAttr(t=1)
+        #     self.all_bendy[2].a.showAttr("sx", t=1, r=1)
 
     def setup_rotate_order(self):
         """Setup rotate order for the leg rig controls."""

@@ -59,7 +59,6 @@ class RbnNode:
         # Volume and control attributes
         self.autoVol = 0
         self.volType = 0
-        self.forSpine = forSpine
         self.scaleFix = scaleFix
         self.volMode = volMode
         self.rbnJntNum = num
@@ -91,10 +90,10 @@ class RbnNode:
     def build_rivets(self):
         """Create the surface for the ribbon rig."""
         logging.info(".")
-        xDr = self.xDir
-        line = CrvNode.buildLine((0, 0, 0), (xDr * self.D, 0, 0), pf=self.pf)
+        pf = self.pf
+        line = CrvNode.buildLine((0, 0, 0), (self.xDir * self.D, 0, 0), pf=pf)
         self.rbSrf = SrfNode.buildRbSrf(
-            pf=self.pf,
+            pf=pf,
             crv=line,
             normal=-1,
             spans=5,
@@ -108,16 +107,16 @@ class RbnNode:
             rbSrf=self.rbSrf,
             rivetNum=self.rbnJntNum,
             scaleAttr=self.scaleFix,
-            pf=self.pf,
+            pf=pf,
             rSz=self.size,
-            p=self.DATA,
+            # p=self.DATA,
+            p=self.RBN_GRP,
             JNT_DATA=self.JNT_GRP,
         )
 
     def build_locs(self):
         """Create locators for the start, middle, and end of the ribbon."""
         logging.info(".")
-
         offset = self.D / 2
         size = self.D / 5
         Dx = self.D * self.xDir
@@ -136,9 +135,9 @@ class RbnNode:
         self.mid_loc.a.tx.set(Dx / 2)
         self.mid_loc.addOffsetGrp(count=2)
 
-    def build_ik(self, name, sj, ee, p):
+    def build_ik(self, name, sj, ee, p, solver=Solver.RP):
         """Create an aim IK handle for the ribbon rig."""
-        return IkNode(name, pf=self.pf, sj=sj, ee=ee, solver=Solver.RP, quat=1, p=p)
+        return IkNode(name, pf=self.pf, sj=sj, ee=ee, solver=solver, quat=1, p=p)
 
     def build_aim_jc(self, name, tgt, offsetX, color=Color.L_BLUE):
         """Create a two-joint chain for aiming with an offset."""
@@ -168,25 +167,19 @@ class RbnNode:
         self.stt_loc.cstPoi(mid_aimJ)
         self.end_loc.cstPoi(end_aimJ)
 
-        self.stt_jnt = JntNode(
-            "stt_jnt", pf=self.pf, p=stt_aimJ, align=self.stt_loc, r=self.size
-        )
-        self.end_jnt = JntNode(
-            "end_jnt", pf=self.pf, p=end_aimJ, align=self.end_loc, r=self.size
-        )
-        self.mid_jnt = JntNode(
-            "mid_jnt", pf=self.pf, p=self.mid_loc, align=self.mid_loc
-        )
+        pf = self.pf
+        self.stt_ctlJ = JntNode("stt_ctlJ", pf=pf, p=stt_aimJ, align=self.stt_loc)
+        self.end_ctlJ = JntNode("end_ctlJ", pf=pf, p=end_aimJ, align=self.end_loc)
+        self.mid_ctlJ = JntNode("mid_ctlJ", pf=pf, p=self.mid_loc, align=self.mid_loc)
 
         # Skin the joints to the surface
-        sttMidEnd_jnts = [self.stt_jnt, self.mid_jnt, self.end_jnt]
-        self.rbSrf.weightTo(sttMidEnd_jnts, chain=0, mi=2, dr=2)
+        ctlJs = [self.stt_ctlJ, self.mid_ctlJ, self.end_ctlJ]
+        self.rbSrf.weightTo(ctlJs, chain=0, mi=2, dr=2)
 
-        for j in sttMidEnd_jnts:
+        for j in ctlJs:
             j.setRadius(self.size * 5)
             j.color = Color.D_RED
 
-        # if not self.forSpine:
         mid_loc_ofs2 = self.mid_loc.offset.offset
         common.cstMulti(self.stt_loc, self.end_loc, mid_loc_ofs2, cstType="poi")
         mid_aimJ.cstOri(mid_loc_ofs2)
@@ -198,31 +191,32 @@ class RbnNode:
 
         self.ikhs.extend([stt_ikh, mid_ikh, end_ikh])
 
-        # if self.forSpine:
-        #     # For spine, use parent constraints to maintain hierarchy
-        #     self.stt_loc.cstPar(stt_ikh, mo=1)
-        #     self.end_loc.cstPoi(mid_ikh)
-        #     self.end_loc.cstPar(end_ikh, mo=1)
-        # else:
-        # For non-spine, use point constraints for aiming
         self.mid_loc.cstPoi(stt_ikh)
         self.end_loc.cstPoi(mid_ikh)
         self.mid_loc.cstPoi(end_ikh)
 
         if self.up != "tz" and self.up != "ty":
-            logging.warning(f"Unsupported up axis '{self.up}'. Defaulting to 'tz'.")
+            logging.warning(f"Unsupported up axis '{self.up}'")
             return
 
         self.mid_loc.cstAim(
-            self.end_jnt,
+            self.end_ctlJ,
             aim=(-self.xDir, 0, 0),
             worldUpType="object",
             worldUpObject=self.endUp_loc,
             u=(0, 0, 1) if self.up == "tz" else (0, 1, 0),
         )
 
+        self.mid_loc.cstAim(
+            self.stt_ctlJ,
+            aim=(self.xDir, 0, 0),
+            worldUpType="object",
+            worldUpObject=self.sttUp_loc,
+            u=(0, 0, 1) if self.up == "tz" else (0, 1, 0),
+        )
+
         # mid_loc's rx is controlled by the start and end joints
-        ut.blend2_(self.stt_jnt.a.rx, self.end_jnt.a.rx) >> self.mid_loc.a.rx
+        ut.blend2_(self.stt_ctlJ.a.rx, self.end_ctlJ.a.rx) >> self.mid_loc.a.rx
 
     def build_volume_setup(self):
         """Set up the volume control for the ribbon rig."""
@@ -261,8 +255,9 @@ class RbnNode:
 
     def setup_vis(self):
         """Set up visibility for the ribbon rig."""
-        mc.hide(self.stt_loc, self.mid_loc, self.end_loc)
-        mc.hide(self.ikhs)
+        # self.RBN_GRP.hide()
+        # mc.hide(self.stt_loc, self.mid_loc, self.end_loc)
+        # mc.hide(self.ikhs)
 
     def build_post(self):
         """Post setup for the ribbon rig."""

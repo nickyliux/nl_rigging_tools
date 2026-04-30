@@ -1063,12 +1063,9 @@ class RigModule(RigBase):
             lwr, name="lw", rbnJntNum=jntNum, volMode=1, up=up2, rSz=rSz
         )
 
-        # Upper Ribbon
-        upr.cstPoi(ribbonUp.stt_loc)
+        # Connect ribbon locs
         root.cstOri(ribbonUp.stt_loc, mo=1)
-
-        # Lower Ribbon
-        ribbonUp.end_jnt.a.rx >> ribbonLw.stt_jnt.a.rx  # twist follow
+        upr.cstPoi(ribbonUp.stt_loc)
         palm.cstPar(ribbonLw.end_loc, mo=1)
 
         # Bend Ctl Setup
