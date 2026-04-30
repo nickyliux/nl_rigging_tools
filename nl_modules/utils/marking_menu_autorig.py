@@ -152,17 +152,10 @@ class MarkingMenuAutorig:
 
     def addAdvancedOptions(self, menu):
         """Add space switch and IK/FK options to the marking menu"""
-        selList = mc.ls(sl=1, tr=1)
-        if not selList:
+        MGs = build.collectMasterGuide(isSel=1, isAll=0)
+        if not MGs:
             return
 
-        firstSelected = DagNode(selList[0])
-        MGs = firstSelected.a.message.outConnNode
-
-        if not (MGs and MGs[0].exists()):
-            return
-
-        # --- Show Ik / Fk switch by looking up mg settings ---
         mg = MGs[0]
         attr = mg.a["setting"]
         if attr.exists():
@@ -180,7 +173,7 @@ class MarkingMenuAutorig:
 
         # --- Space Switch ---
         for space in ["paSpace", "oriSpace", "posSpace"]:
-            attr = firstSelected.a[space]
+            attr = mg.a[space]
             if attr.exists():
                 mc.menuItem(p=menu, l=space.upper(), en=0)
                 val = attr.get()
@@ -194,7 +187,7 @@ class MarkingMenuAutorig:
                     )
 
         # --- Toggle Isolate ---
-        for attr in firstSelected.a.list(ud=1, hasData=1):
+        for attr in mg.a.list(ud=1, hasData=1):
             if attr.name.startswith("isolate"):
                 val = 1 - attr.get()
                 mc.menuItem(p=menu, l="ISOLATE", en=0)
@@ -242,13 +235,11 @@ class MarkingMenuAutorig:
 
     def reload_marking_menu(*args):
         """Reload the marking menu to reflect any changes made"""
-        mc.evalDeferred(
-            """
+        mc.evalDeferred("""
 from importlib import reload
 import nl_modules.utils.marking_menu_autorig as mma
 reload(mma)
-"""
-        )
+""")
 
 
 MarkingMenuAutorig()
