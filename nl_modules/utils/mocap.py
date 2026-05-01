@@ -1,8 +1,70 @@
 import logging
 from nl_modules.nodel.base.dag_node import DagNode
+from nl_modules.nodel.srf_node import SrfNode
+from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.utils import anim, common
 import maya.cmds as mc
 import maya.mel as mel
+
+
+def genJntsForTailRetgt(tailPf="moma:c_tail_0"):
+    """Generate joints for tail retargeting."""
+    from nl_modules.build.rig_module import RigModule
+
+    resampleNum = 4
+    ns = common.getNsFrOptVar()
+    tailMG = DagNode(f"{ns}:tail0_master_guide")
+    if tailMG.exists():
+        resampleNum = tailMG.a.fkJntNum.get()
+    else:
+        logging.info(f"Master guide for the tail not found. Ignore connection.")
+        return
+
+    grp = GrpNode("jntsForTailRetgt_GRP")
+
+    #
+    # Gen crv from tail joints
+    #
+    allPos = []
+    for i in range(1, 10):
+        n = f"{tailPf}{i}"
+        pos = mc.xform(DagNode(n), q=1, t=1, ws=1)
+        allPos.append(pos)
+    crv = mc.curve(p=allPos)
+
+    #
+    # Gen rbSrf and skin to tail joints
+    #
+    firstJ = DagNode(f"{tailPf}1")
+    tailJnts = mc.ls(f"{tailPf}?", type="joint")
+
+    if not tailJnts:
+        logging.info(f"No tail joints found")
+        return
+
+    rbSrf = SrfNode.buildRbSrf(
+        pf="retgt1", crv=crv, normal=-1, snap=firstJ, p=grp, spans=8
+    )
+    SrfNode(rbSrf).weightTo(tailJnts, mi=1)
+
+    #
+    # Gen rbJnts and constraint to tail ctls
+    #
+    rbJnts = SrfNode.buildRbJnt(
+        resampleNum, pf="retgt2", surf=rbSrf, rigData=grp, jntGrp=grp
+    )
+    i = 0
+    for jnt in rbJnts:
+        ctl = f"{ns}:tail0_{i}_fkc"
+        if DagNode(ctl).exists():
+            jnt.cstPar(ctl, mo=1)
+        i += 1
+
+    mc.delete(crv)
+    return rbJnts
+
+
+# genJntsForTailRetgt()
 
 
 def bakeMotion(*args):
@@ -92,10 +154,12 @@ CANINE_MAP = {
         ("c_spine_01", "spineQd0_base_ikc"),
         ("c_spine_03", "spineQd0_mid_ikc"),
         ("c_spine_06", "spineQd0_fore_ikc"),
+        # HEAD
+        ("c_head_01", "neck0_3_ikc"),
         # NECK
-        ("c_neck_01", "neckQd0_base_ikc"),
-        ("c_neck_03", "neckQd0_mid_ikc"),
-        ("c_head_01", "neckQd0_fore_ikc"),
+        # ("c_neck_01", "neckQd0_base_ikc"),
+        # ("c_neck_03", "neckQd0_mid_ikc"),
+        # ("c_head_01", "neckQd0_fore_ikc"),
         # L LEGS
         ("l_scapula", "lfLegQd1_hip_fkc"),
         ("l_hip", "lfLegQd0_upr_fkc"),
@@ -126,16 +190,6 @@ CANINE_MAP = {
         ("r_ankle", "rtLegQd0_palm_fkc"),
         ("r_foot_01", "rtLegQd0_ball_fkc"),
         ("r_foot_02", "rtLegQd0_ball_fkc"),
-        # TAIL
-        ("c_tail_01", "tail0_1_fkc"),
-        ("c_tail_02", "tail0_2_fkc"),
-        ("c_tail_03", "tail0_3_fkc"),
-        ("c_tail_04", "tail0_4_fkc"),
-        ("c_tail_05", "tail0_5_fkc"),
-        ("c_tail_06", "tail0_6_fkc"),
-        ("c_tail_07", "tail0_7_fkc"),
-        ("c_tail_08", "tail0_8_fkc"),
-        ("c_tail_09", "tail0_9_fkc"),
     ],
 }
 
@@ -181,16 +235,6 @@ EQUINE_MAP = {
         ("R_tarsus", "rtLegQd0_palm_fkc"),
         ("R_R_palanx_1", "rtLegQd0_ball_fkc"),
         ("R_R_palanx_2", "rtLegQd0_ball_fkc"),
-        # TAIL
-        ("c_tail_01", "tail0_1_fkc"),
-        ("c_tail_02", "tail0_2_fkc"),
-        ("c_tail_03", "tail0_3_fkc"),
-        ("c_tail_04", "tail0_4_fkc"),
-        ("c_tail_05", "tail0_5_fkc"),
-        ("c_tail_06", "tail0_6_fkc"),
-        ("c_tail_07", "tail0_7_fkc"),
-        ("c_tail_08", "tail0_8_fkc"),
-        ("c_tail_09", "tail0_9_fkc"),
     ],
 }
 
