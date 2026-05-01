@@ -25,7 +25,8 @@ def bakeMotion(*args):
         for frame in range(startTime, endTime + 1):
             mc.currentTime(frame, e=1)
             for i in range(len(rigIDs)):
-                anim.switchFkIk(fkIkAttrs[i], toIKMode=1, mg=allMGs[i])
+                # anim.switch_fk_ik(fkIkAttrs[i], toIKMode=1, mg=allMGs[i])
+                anim.switch_fk_ik(mg=allMGs[i])
 
         common.pauseVP(0)
 

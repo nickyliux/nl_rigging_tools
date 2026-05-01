@@ -78,8 +78,8 @@ class SpineQd(RigModule):
             ("fore_ikc", "back", None, Vec((6, 6, 0.2)) * rSz, 0),
             ("mid_ikc", "back", None, Vec((6, 6, 0.2)) * rSz, 0),
             ("base_ikc", "back", None, Vec((6, 6, 0.2)) * rSz, 0),
-            ("tangent0_ctl", "cube", None, Vec((0.1, 0.1, 3)) * rSz, 1),
-            ("tangent1_ctl", "cube", None, Vec((0.1, 0.1, 3)) * rSz, 1),
+            ("tangent0_ctl", "arrow", "x", rSz, 1),
+            ("tangent1_ctl", "arrow", "x", rSz, 1),
             ("end_ctl", "rotate2_3d", None, Vec((1, 1, 0.7)) * rSz, 0),
             # ("cog_upr_ctl", "triangle", "x", Vec((1, 0.5, 1)) * rSz, 0),
             # ("cog_lwr_ctl", "triangle", "x", Vec((1, 0.5, -1)) * rSz, 0),
@@ -98,8 +98,8 @@ class SpineQd(RigModule):
         self.mid_ikc.cv_move(0, rSz * 20, 0)
         self.base_ikc.cv_move(0, rSz * 20, 0)
 
-        self.tangent0_ctl.cv_rotate(0, 90, 0)
-        self.tangent1_ctl.cv_rotate(0, 90, 0)
+        # self.tangent0_ctl.cv_rotate(0, 90, 0)
+        self.tangent0_ctl.cv_rotate(0, 180, 0)
         self.setting.cv_move(0, rSz * 70, 0)
 
     def build(self):

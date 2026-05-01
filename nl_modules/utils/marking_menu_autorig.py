@@ -145,13 +145,17 @@ class MarkingMenuAutorig:
         ns = common.getNsFrOptVar()
         curr_ns_str = '""' if ns == "" else f'"{ns}"'
 
+        # mc.menuItem(p=menu, l="-" * 25, en=0)
         mc.menuItem(p=menu, l="Toggle Guide", c=guide.toggleGuide)
-        mc.menuItem(p=menu, l="-" * 25, en=0)
         mc.menuItem(p=menu, l="Add Follow Cam", c=common.addFollowCam)
         mc.menuItem(p=menu, l="namespace = " + curr_ns_str, c=common.setNsFrSel)
 
     def addAdvancedOptions(self, menu):
         """Add space switch and IK/FK options to the marking menu"""
+        sel = mc.ls(sl=1, tr=1)
+        if not sel:
+            return
+
         MGs = build.collectMasterGuide(isSel=1, isAll=0)
         if not MGs:
             return
@@ -161,21 +165,20 @@ class MarkingMenuAutorig:
         if attr.exists():
             setting = attr.inConnNode
             if setting:
-                attr = setting.a["fkIk"]
-                if attr.exists():
-                    val = 0 if attr.get() > 0.5 else 1
-                    mc.menuItem(
-                        p=menu,
-                        l="FK <-> IK",
-                        rp="S",
-                        c=partial(self.switch_fk_ik, attr, val, mg),
-                    )
+                mc.menuItem(
+                    p=menu,
+                    l="FK <-> IK",
+                    rp="S",
+                    c=partial(self.multi_switch_fk_ik, MGs),
+                )
 
+        addSep = 0
         # --- Space Switch ---
         for space in ["paSpace", "oriSpace", "posSpace"]:
-            attr = mg.a[space]
+            attr = DagNode(sel[0]).a[space]
             if attr.exists():
-                mc.menuItem(p=menu, l=space.upper(), en=0)
+                addSep = 1
+                mc.menuItem(p=menu, l="|| " + space.upper(), en=0)
                 val = attr.get()
                 allSpaceAttr = attr.query(le=1)[0].split(":")
                 for i, a in enumerate(allSpaceAttr):
@@ -187,16 +190,18 @@ class MarkingMenuAutorig:
                     )
 
         # --- Toggle Isolate ---
-        for attr in mg.a.list(ud=1, hasData=1):
+        for attr in DagNode(sel[0]).a.list(ud=1, hasData=1):
             if attr.name.startswith("isolate"):
+                addSep = 1
                 val = 1 - attr.get()
-                mc.menuItem(p=menu, l="ISOLATE", en=0)
+                # mc.menuItem(p=menu, l="ISOLATE", en=0)
                 mc.menuItem(
                     p=menu,
-                    l="    Toggle",
-                    c=partial(self.switch_local_global, attr, val, mg),
+                    l="Toggle Isolate",
+                    c=partial(self.multi_switch_local_global, attr, val, mg),
                 )
-        mc.menuItem(p=menu, l="-" * 25, en=0)
+        if addSep:
+            mc.menuItem(p=menu, l="-" * 25, en=0)
 
     def mirrorShapeSelOrAll(*args):
         """Mirror the shape of the selected control or all controls in LF_CTL_SET"""
@@ -221,16 +226,17 @@ class MarkingMenuAutorig:
 
     def switch_to_space(self, *args):
         """Switch space for all selected controls to the specified space"""
-        anim.switchToSpaceTarget(args[0])
+        anim.switch_to_space_target(args[0])
 
-    def switch_fk_ik(self, *args):
+    def multi_switch_fk_ik(self, *args):
         """Switch FK/IK mode for the specified rig node"""
-        anim.switchFkIk(attr=args[0], toIKMode=args[1], mg=args[2])
+        for arg in args[0]:
+            anim.switch_fk_ik(mg=arg)
         self.reload_marking_menu()
 
-    def switch_local_global(self, *args):
+    def multi_switch_local_global(self, *args):
         """Switch Local/Global mode for the specified rig node"""
-        anim.switchLocalGlobal(attr=args[0], toGlobal=args[1])
+        anim.switch_local_global(attr=args[0], toGlobal=args[1])
         self.reload_marking_menu()
 
     def reload_marking_menu(*args):

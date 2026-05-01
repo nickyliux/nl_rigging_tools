@@ -6,7 +6,7 @@ from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.loc_node import LocNode
 
 
-def switchToSpaceTarget(spaceName):
+def switch_to_space_target(spaceName):
     """Switch space target for selected controls to the specified spaceName."""
     for sel in mc.ls(sl=1):
         ctl = DagNode(sel)
@@ -43,7 +43,7 @@ _RIG_CLASS_MAP = {
 }
 
 
-def getJntsCtlsFromMG(rootJ, mg):
+def get_jnts_ctls_fr_MG(rootJ, mg):
     """Get joint and FK control names based on rig class."""
     rigClass = mg.a.rigClass.get()
     entry = _RIG_CLASS_MAP.get(rigClass)
@@ -62,7 +62,7 @@ def getJntsCtlsFromMG(rootJ, mg):
     return jnts, fkCtlNames
 
 
-def switchLocalGlobal(attr=None, toGlobal=0):
+def switch_local_global(attr=None, toGlobal=0):
     """Switch Local/Global mode for the specified rig node."""
     ctl = attr.node
     mtx = ctl.getMtx()
@@ -70,9 +70,18 @@ def switchLocalGlobal(attr=None, toGlobal=0):
     ctl.setMtx(mtx)
 
 
-def switchFkIk(attr=None, toIKMode=0, mg=None):
+def switch_fk_ik(mg=None):
     """Switch between FK and IK modes for the specified rig node."""
     if not mg or mg.a.nodeState.get() != 2:
+        return
+
+    attr = None
+    setting = mg.a.setting.inConnNode
+    if setting:
+        attr = setting.a["fkIk"]
+        if not attr.exists():
+            return
+    else:
         return
 
     rigID = mg.a.rigID.get()
@@ -83,7 +92,7 @@ def switchFkIk(attr=None, toIKMode=0, mg=None):
 
     jnts = []
     fkCtlNames = []
-    jnts, fkCtlNames = getJntsCtlsFromMG(rootJ, mg)
+    jnts, fkCtlNames = get_jnts_ctls_fr_MG(rootJ, mg)
 
     # FK Ctls
     fkCtls = [mg.a[name].inConnNode for name in fkCtlNames]
@@ -108,6 +117,8 @@ def switchFkIk(attr=None, toIKMode=0, mg=None):
 
     # Get ball joint xform before switching
     ball_mtx = jnts[-1].getMtx()
+
+    toIKMode = 0 if attr.get() > 0.5 else 1
 
     if toIKMode == 0:  # to FK
         for ctl, jnt in zip(fkCtls, jnts):
@@ -145,11 +156,10 @@ def switchFkIk(attr=None, toIKMode=0, mg=None):
         if pvLock and pvLock > 0.5:
             pvc.alignTo(jnts[2])
         else:
-            pvc_pos = calcPvcPos(jnts[1], jnts[2], jnts[3])
+            pvc_pos = calc_pvc_pos(jnts[1], jnts[2], jnts[3])
             mc.xform(pvc, ws=1, t=pvc_pos)
 
         attr.set(1)
-        mc.select(ikc)
 
     # Apply ball ctl after switching
     fkCtls[-1].setMtx(ball_mtx)
@@ -157,7 +167,7 @@ def switchFkIk(attr=None, toIKMode=0, mg=None):
     logging.info(f"{rigID}: Switched to {'IK' if toIKMode else 'FK'}.")
 
 
-def calcPvcPos(obj1, obj2, obj3):
+def calc_pvc_pos(obj1, obj2, obj3):
     """Calculate the position for the pole vector control based on three objects' positions."""
     from nl_modules.utils import maths
 

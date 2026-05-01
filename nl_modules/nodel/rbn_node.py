@@ -96,7 +96,7 @@ class RbnNode:
             pf=pf,
             crv=line,
             normal=-1,
-            spans=5,
+            spans=4,
             p=self.SRF_GRP,
             alongZ=0,
             inheritsXf=0,
