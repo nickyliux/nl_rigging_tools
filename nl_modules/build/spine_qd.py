@@ -76,7 +76,7 @@ class SpineQd(RigModule):
             ("setting", "screw_nut", "z", rSz * 1.5, 1),
             ("cog_ctl", "trapezoid_3d", None, Vec((0.8, 1.5, 1.5)) * rSz, 0),
             ("fore_ikc", "back", None, Vec((6, 6, 0.2)) * rSz, 0),
-            ("mid_ikc", "back", None, Vec((6, 6, 0.2)) * rSz, 0),
+            ("mid_ikc", "squareR", "z", Vec((4, 4, 0.2)) * rSz, 0),
             ("base_ikc", "back", None, Vec((6, 6, 0.2)) * rSz, 0),
             ("tangent0_ctl", "arrow", "x", rSz, 1),
             ("tangent1_ctl", "arrow", "x", rSz, 1),
@@ -348,7 +348,7 @@ class SpineQd(RigModule):
 
         mc.hide(setupTgt)
         self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", type="bool", k=0, dv=1),
+            self.setting.a.add("showSetup", type="bool", k=0, dv=0),
             onList=setupTgt + [self.rbSrf, self.rbCrv, self.rbSrfSk, self.rbCrvSk],
         )
         # mc.hide(self.rbSrf, self.rbCrv, self.rbSrfSk, self.rbCrvSk)

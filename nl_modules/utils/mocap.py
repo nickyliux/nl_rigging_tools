@@ -7,7 +7,7 @@ import maya.cmds as mc
 import maya.mel as mel
 
 
-def retarget_for_tail(ns, tailPf="moma:c_tail_0"):
+def retarget_for_tail(ns, tailPf=""):
     """Gen resampled joints for tail retargeting."""
     from nl_modules.build.rig_module import RigModule
 
@@ -58,7 +58,10 @@ def retarget_for_tail(ns, tailPf="moma:c_tail_0"):
     for jnt in resampledJnts:
         ctl = f"{ns}tail0_{i}_fkc"
         if DagNode(ctl).exists():
-            jnt.cstPar(ctl, mo=1)
+            if i == 0:
+                jnt.cstOri(ctl, mo=1)
+            else:
+                jnt.cstPar(ctl, mo=1)
         i += 1
 
     mc.delete(crv)
@@ -124,20 +127,26 @@ def set_legs_to_fk(ns):
     logging.info("Set all legs to FK mode.")
 
 
-def link_equine(*args):
-    link_to_map(EQUINE_MAP)
-
-
 def link_canine(*args):
-    link_to_map(CANINE_MAP)
+    link_to_map(0)
 
 
-def link_to_map(jntMap):
+def link_equine(*args):
+    link_to_map(1)
+
+
+def link_to_map(mapId):
     """Connect Moma Sk to Qd rig controls."""
     ns = common.setNsFrSel()
-    cst_mm_to_quad(jntMap, ns)
+    map = CANINE_MAP if mapId == 0 else EQUINE_MAP
+    cst_mm_to_quad(map, ns)
+
     set_legs_to_fk(ns)
-    retarget_for_tail(ns)
+
+    if mapId == 0:
+        retarget_for_tail(ns, tailPf="moma:c_tail_0")
+    elif mapId == 1:
+        retarget_for_tail(ns, tailPf="moma:tail_")
 
 
 CANINE_MAP = {
@@ -186,7 +195,7 @@ CANINE_MAP = {
 EQUINE_MAP = {
     "cstPar": [
         # HEAD
-        ("head", "neckQd0_fore_ikc"),
+        ("head", "neck0_fore_ikc"),
         # SPINE
         ("pelvis", "spineQd0_cog_ctl"),
         ("spine_1", "spineQd0_base_ikc"),

@@ -771,13 +771,15 @@ def setNsFrSel(*args):
     from nl_modules.nodel.base.dag_node import DagNode
 
     selected = mc.ls(sl=1, tr=1)
-    ns = ""
+    ns = None
     if selected:
-        ns = DagNode(selected[0]).namespace or ""
+        ns = DagNode(selected[0]).namespace
+    if ns:
+        ns += ":"
     mc.optionVar(sv=("curr_ns", ns))
-    return ns
-
     # logging.info(f"Namespace set to {ns}." if ns != "" else "Namespace cleared.")
+
+    return ns
 
 
 def clearNs():

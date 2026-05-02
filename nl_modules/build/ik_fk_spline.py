@@ -111,69 +111,56 @@ class IkFkSpline(RigModule):
         """Build the IK controls for the rig."""
         logging.info(".")
         rID, rSz, xDr = self.get_short_form()
+        last = self.ikJntNum - 1
+        normal = -1 if self.rigID.startswith("tail") else 1
 
-        aimDir = -1 if (type(self).__name__ == "Tail") else 1
         self.jnts_ik = JntNode.createJntsFrCrv(
             self.LINE_GUIDE,
             num=self.ikJntNum,
             name="ikj",
             pf=rID,
-            aimV=(0, 0, aimDir),
+            aimV=(0, 0, normal),
             size=rSz * 3,
             color=Color.D_YELLOW,
         )
         self.main.alignTo(self.RT_GUIDE)
         self.main | self.IK_GRP
 
+        msg_batch = {}
         for i in range(self.ikJntNum):
-
-            isBase = i == 0
-            isFore = i == (self.ikJntNum - 1)
-            isEnding = isBase or isFore
-
-            shape = "back" if isEnding else "square"
-            scale = Vec((9, 9, 0.4)) * rSz if isEnding else rSz / 2
-            up = None if isEnding else "z"
-            top = 0 if isEnding else 1
-
-            name = f"{i}_ikc"
-            if isBase:
-                name = "base_ikc"
-            elif isFore:
-                name = "fore_ikc"
-
+            isEnding = i == 0 or i == last
+            name = "base_ikc" if i == 0 else ("fore_ikc" if i == last else f"{i}_ikc")
             ctl = CrvNode(
                 name,
                 pf=rID,
-                shape=shape,
-                up=up,
-                scale=scale,
+                shape="back" if isEnding else "square",
+                up=None if isEnding else "z",
+                scale=Vec((9, 9, 0.4)) * rSz if isEnding else rSz / 2,
                 align=self.jnts_ik[i],
                 addOfs=1,
-                top=top,
+                top=0 if isEnding else 1,
                 p=self.main,
             )
             self.jnts_ik[i] | ctl
             self.ctls_ik.append(ctl)
-            self.masterGuide.setMsg({f"ikc{i}": ctl})
+            msg_batch[f"ikc{i}"] = ctl
 
-        # if self.ikJntNum == 3:
-        #     self.ctls_ik[1].offset | self.ctls_ik[2]
+        self.masterGuide.setMsg(msg_batch)
+
         if self.ikJntNum >= 4:
             self.ctls_ik[1].offset | self.ctls_ik[0]
             self.ctls_ik[-2].offset | self.ctls_ik[-1]
 
         self.rbSrf1 = self.create_rbSrf(
-            span=self.ikJntNum - 1,
+            span=last,
             crv=self.LINE_GUIDE,
             snap=self.RT_GUIDE,
-            normal=-1 if self.rigID.startswith("tail") else 1,
+            normal=normal,
         )
         self.masterGuide.setMsg({"rbSrf": self.rbSrf1})
 
         SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6)
 
-        # self.setting.snapTo(self.ctls_ik[0], p=self.FK_GRP)
         self.setting.alignTo(self.main, p=self.main)
         self.ctls_ik[0].cstPar(self.setting, mo=1)
 
