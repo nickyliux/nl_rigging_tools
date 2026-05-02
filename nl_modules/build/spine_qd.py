@@ -114,8 +114,9 @@ class SpineQd(RigModule):
         )
 
         # Rebuild the ribbon surface to have the correct number of spans for joint attachment.
+        newV = self.rbnJntNum - 1
         mc.rebuildSurface(
-            self.rbSrfSk, rt=0, end=1, kr=0, kcp=0, kc=0, su=0, sv=self.rbnJntNum - 1
+            self.rbSrfSk, rt=0, end=1, kr=0, kcp=0, kc=0, su=0, sv=newV, du=1
         )
         self.masterGuide.setMsg({"rbSrf": self.rbSrf, "rbSrfSk": self.rbSrfSk})
 
@@ -126,7 +127,7 @@ class SpineQd(RigModule):
 
     def build_ribbon(self):
         """Create the ribbon for the spine rig."""
-        self.rbSrf.weightTo(self.jnts_ctl, mi=1, chain=0)
+        self.rbSrf.weightTo(self.jnts_ctl, mi=1)
 
         crvLenRatioSk, self.jnts_spIk, self.jnts_rb = self.build_spik_ribbon(
             rbSrf=self.rbSrf,
@@ -134,7 +135,7 @@ class SpineQd(RigModule):
             jntNum=self.rbnJntNum,
             setting=self.setting,
         )
-        self.rbSrfSk.weightTo(self.jnts_spIk, mi=1)  # , chain=0)
+        self.rbSrfSk.weightTo(self.jnts_spIk, mi=1, cvMatchJnt=1)
 
         self.midCtl_setup()
         self.build_volume(crvLenRatioSk)
@@ -341,7 +342,7 @@ class SpineQd(RigModule):
 
         mc.hide(setupTgt)
         self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", type="bool", k=0),  # , dv=1),
+            self.setting.a.add("showSetup", type="bool", k=0, dv=1),
             onList=setupTgt + [self.rbSrf, self.rbCrv, self.rbSrfSk, self.rbCrvSk],
         )
         # mc.hide(self.rbSrf, self.rbCrv, self.rbSrfSk, self.rbCrvSk)

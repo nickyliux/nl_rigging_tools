@@ -174,7 +174,7 @@ class RbnNode:
 
         # Skin the joints to the surface
         ctlJs = [self.stt_ctlJ, self.mid_ctlJ, self.end_ctlJ]
-        self.rbSrf.weightTo(ctlJs, chain=0, mi=2, dr=2)
+        self.rbSrf.weightTo(ctlJs, mi=2, dr=2)
 
         for j in ctlJs:
             j.setRadius(self.size * 5)

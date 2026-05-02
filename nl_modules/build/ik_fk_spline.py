@@ -159,7 +159,7 @@ class IkFkSpline(RigModule):
         )
         self.masterGuide.setMsg({"rbSrf": self.rbSrf1})
 
-        SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6, chain=0)
+        SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6)
 
         # self.setting.snapTo(self.ctls_ik[0], p=self.FK_GRP)
         self.setting.alignTo(self.main, p=self.main)
@@ -250,7 +250,7 @@ class IkFkSpline(RigModule):
         )
 
         self.masterGuide.setMsg({"rbSrfSk": self.rbSrf2})
-        SrfNode(self.rbSrf2).weightTo(self.jnts_ofs, chain=0, mi=2, dr=6)
+        SrfNode(self.rbSrf2).weightTo(self.jnts_ofs, mi=2, dr=6)
 
     def setup_vis(self):
         """Setup visibility toggles for the rig controls."""

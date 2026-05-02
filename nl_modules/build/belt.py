@@ -138,7 +138,7 @@ class Belt(RigModule):
                     cstType="poi",
                 )
 
-        SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6, chain=0)
+        SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6)
 
         # --- Snap setting control to first IK control and constrain ---
         self.setting.snapTo(self.ctls_ik[0], p=self.FK_GRP, ofs=(0, rSz * 30, 0))
