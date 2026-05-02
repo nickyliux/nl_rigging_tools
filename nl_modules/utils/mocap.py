@@ -2,29 +2,29 @@ import logging
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.nodel.grp_node import GrpNode
-from nl_modules.utils import anim, common
+from nl_modules.utils import anim, common, build
 import maya.cmds as mc
 import maya.mel as mel
 
 
-def genJntsForTailRetgt(tailPf="moma:c_tail_0"):
-    """Generate joints for tail retargeting."""
+def retarget_for_tail(ns, tailPf="moma:c_tail_0"):
+    """Gen resampled joints for tail retargeting."""
     from nl_modules.build.rig_module import RigModule
 
+    # ---------------------------------------------------
+    # Get resample value for tail joints
+    # ---------------------------------------------------
     resampleNum = 4
-    ns = common.getNsFrOptVar()
-    tailMG = DagNode(f"{ns}:tail0_master_guide")
+    tailMG = DagNode(f"{ns}tail0_master_guide")
     if tailMG.exists():
         resampleNum = tailMG.a.fkJntNum.get()
     else:
         logging.info(f"Master guide for the tail not found. Ignore connection.")
         return
 
-    grp = GrpNode("jntsForTailRetgt_GRP")
-
-    #
+    # ---------------------------------------------------
     # Gen crv from tail joints
-    #
+    # ---------------------------------------------------
     allPos = []
     for i in range(1, 10):
         n = f"{tailPf}{i}"
@@ -32,9 +32,9 @@ def genJntsForTailRetgt(tailPf="moma:c_tail_0"):
         allPos.append(pos)
     crv = mc.curve(p=allPos)
 
-    #
+    # ---------------------------------------------------
     # Gen rbSrf and skin to tail joints
-    #
+    # ---------------------------------------------------
     firstJ = DagNode(f"{tailPf}1")
     tailJnts = mc.ls(f"{tailPf}?", type="joint")
 
@@ -42,38 +42,37 @@ def genJntsForTailRetgt(tailPf="moma:c_tail_0"):
         logging.info(f"No tail joints found")
         return
 
+    grp = GrpNode("jntsForTailRetgt_GRP")
     rbSrf = SrfNode.buildRbSrf(
         pf="retgt1", crv=crv, normal=-1, snap=firstJ, p=grp, spans=8
     )
-    SrfNode(rbSrf).weightTo(tailJnts, mi=1)
+    SrfNode(rbSrf).weightTo(tailJnts, mi=1, cvMatchJnt=1)
 
-    #
+    # ---------------------------------------------------
     # Gen rbJnts and constraint to tail ctls
-    #
-    rbJnts = SrfNode.buildRbJnt(
+    # ---------------------------------------------------
+    resampledJnts = SrfNode.buildRbJnt(
         resampleNum, pf="retgt2", surf=rbSrf, rigData=grp, jntGrp=grp
     )
     i = 0
-    for jnt in rbJnts:
-        ctl = f"{ns}:tail0_{i}_fkc"
+    for jnt in resampledJnts:
+        ctl = f"{ns}tail0_{i}_fkc"
         if DagNode(ctl).exists():
             jnt.cstPar(ctl, mo=1)
         i += 1
 
     mc.delete(crv)
-    return rbJnts
+    return resampledJnts
 
 
-# genJntsForTailRetgt()
-
-
-def bakeMotion(*args):
+def bake_motion(*args):
     """Bake Moma Sk to IK rig controls."""
+    # MGs = build.collectMasterGuide(isSel=1)
     rigIDs = ["lfLegQd0", "rtLegQd0", "lfLegQd1", "rtLegQd1"]
-
-    ns = common.getNsFrOptVar()
-    fkIkAttrs = [DagNode(f"{ns}:{rigID}_setting").a.fkIk for rigID in rigIDs]
-    allMGs = [DagNode(f"{ns}:{rigID}_master_guide") for rigID in rigIDs]
+    ns = common.setNsFrSel()
+    # ns = common.getNsFrOptVar()
+    fkIkAttrs = [DagNode(f"{ns}{rigID}_setting").a.fkIk for rigID in rigIDs]
+    allMGs = [DagNode(f"{ns}{rigID}_master_guide") for rigID in rigIDs]
 
     startTime = int(mc.playbackOptions(q=1, min=1))
     endTime = int(mc.playbackOptions(q=1, max=1))
@@ -93,7 +92,7 @@ def bakeMotion(*args):
         common.pauseVP(0)
 
 
-def _applyConstraints(mapping, ns):
+def cst_mm_to_quad(mapping, ns):
     """Apply constraints based on the provided mapping."""
     moma_ns = "moma:"
     count = 0
@@ -108,10 +107,10 @@ def _applyConstraints(mapping, ns):
                 logging.info(
                     f"Warning: Node '{moma_ns + src}' or '{ns + tgt}' does not exist."
                 )
-    logging.info(f"Applied {count} constraints.")
+    logging.info(f"{count} constraints added.")
 
 
-def _setLegsToFk(ns=""):
+def set_legs_to_fk(ns):
     """Set all legs to FK mode."""
     settings = [
         f"{ns}lfLegQd1_setting",
@@ -125,37 +124,31 @@ def _setLegsToFk(ns=""):
     logging.info("Set all legs to FK mode.")
 
 
-def connectToEquine(*args):
-    connectToMap(EQUINE_MAP)
+def link_equine(*args):
+    link_to_map(EQUINE_MAP)
 
 
-def connectToCanine(*args):
-    connectToMap(CANINE_MAP)
+def link_canine(*args):
+    link_to_map(CANINE_MAP)
 
 
-def connectToMap(jntMap):
+def link_to_map(jntMap):
     """Connect Moma Sk to Qd rig controls."""
-    ns = common.getNsFrOptVar()
-    if ns:
-        _applyConstraints(jntMap, ns)
-        _setLegsToFk(ns)
-    else:
-        mc.confirmDialog(t="Info", m="Pls set the namespace first.    ", b=["OK"])
+    ns = common.setNsFrSel()
+    cst_mm_to_quad(jntMap, ns)
+    set_legs_to_fk(ns)
+    retarget_for_tail(ns)
 
 
 CANINE_MAP = {
     "cstPar": [
+        # HEAD
+        ("c_head_01", "neck0_fore_ikc"),
         # SPINE
         ("c_pelvis", "spineQd0_cog_ctl"),
         ("c_spine_01", "spineQd0_base_ikc"),
         ("c_spine_03", "spineQd0_mid_ikc"),
         ("c_spine_06", "spineQd0_fore_ikc"),
-        # HEAD
-        ("c_head_01", "neck0_3_ikc"),
-        # NECK
-        # ("c_neck_01", "neckQd0_base_ikc"),
-        # ("c_neck_03", "neckQd0_mid_ikc"),
-        # ("c_head_01", "neckQd0_fore_ikc"),
         # L LEGS
         ("l_scapula", "lfLegQd1_hip_fkc"),
         ("l_hip", "lfLegQd0_upr_fkc"),
@@ -192,15 +185,13 @@ CANINE_MAP = {
 
 EQUINE_MAP = {
     "cstPar": [
+        # HEAD
+        ("head", "neckQd0_fore_ikc"),
         # SPINE
         ("pelvis", "spineQd0_cog_ctl"),
         ("spine_1", "spineQd0_base_ikc"),
         ("spine_3", "spineQd0_mid_ikc"),
         ("spine_5_neck", "spineQd0_fore_ikc"),
-        # NECK
-        ("neck", "neckQd0_base_ikc"),
-        ("neck_3", "neckQd0_mid_ikc"),
-        ("head", "neckQd0_fore_ikc"),
         # L LEGS
         ("L_scapula", "lfLegQd1_hip_fkc"),
         ("L_femur", "lfLegQd0_upr_fkc"),

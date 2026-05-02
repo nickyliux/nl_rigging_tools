@@ -137,7 +137,10 @@ class SpineQd(RigModule):
         )
         self.rbSrfSk.weightTo(self.jnts_spIk, mi=1, cvMatchJnt=1)
 
-        self.midCtl_setup()
+        # self.midCtl_setup()
+        common.cstMulti(
+            self.fore_ikc, self.base_ikc, self.mid_ikc.offset, cstType="par", mo=1
+        )
         self.build_volume(crvLenRatioSk)
         self.setting.alignTo(self.base_ikc, p=self.base_ikc)
 
@@ -308,12 +311,15 @@ class SpineQd(RigModule):
         D = d.get()
         return d / D / self.masterC.a.globalScale
 
-    def midCtl_setup(self):
-        """Setup the mid IK control for the spine rig."""
-        rID, rSz, xDr = self.get_short_form()
-        loc1 = LocNode("loc_#", pf=rID, align=self.mid_ikc, p=self.fore_ikc, vis=0)
-        loc2 = LocNode("loc_#", pf=rID, align=self.mid_ikc, p=self.base_ikc, vis=0)
-        common.cstMulti(loc1, loc2, self.mid_ikc.offset, cstType="par", mo=1)
+    # def midCtl_setup(self):
+    #     """Setup the mid IK control for the spine rig."""
+    # rID, rSz, xDr = self.get_short_form()
+    # loc1 = LocNode("loc_#", pf=rID, align=self.mid_ikc, p=self.fore_ikc, vis=0)
+    # loc2 = LocNode("loc_#", pf=rID, align=self.mid_ikc, p=self.base_ikc, vis=0)
+    # common.cstMulti(loc1, loc2, self.mid_ikc.offset, cstType="par", mo=1)
+    # common.cstMulti(
+    #     self.fore_ikc, self.base_ikc, self.mid_ikc.offset, cstType="par", mo=1
+    # )
 
     def build_volume(self, crvLenRatio):
         """Build volume control for the spine rig."""

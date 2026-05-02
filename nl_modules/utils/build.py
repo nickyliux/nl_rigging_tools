@@ -440,32 +440,14 @@ def collectMasterGuide(isSel=0, isAll=1, match="*"):
 
 def getMGFrName(tgt):
     """Return master guide from given name, return None if not found."""
-    # if tgt:
-    #     name = DagNode(tgt).name.split("_")[0] + "_master_guide"
-    #     if mc.objExists(name):
-    #         return DagNode(name)
-
     tgtN = DagNode(tgt) if isinstance(tgt, str) else tgt
     mgName = tgtN.noNsName.split("_")[0] + "_master_guide"
-
     ns = tgtN.namespace
     if ns:
         mgName = ns + ":" + mgName
 
     if mc.objExists(mgName):
         return DagNode(mgName)
-
-    # if tgt:
-    #     # ns = common.getNsFrOptVar()
-    #     ns = ""
-    #
-    #     nsSplit = tgtN.name.split(":")
-    #     if len(nsSplit) == 2:
-    #         ns = nsSplit[0] + ":"
-    #     mgName = noNS.split("_")[0] + "_master_guide"
-    #     print(mgName)
-    #     if mc.objExists(mgName):
-    #         return DagNode(mgName)
 
 
 def boneAutoAttach():
@@ -494,6 +476,7 @@ def boneAutoAttach():
         rigID = mg.a.rigID.get()
         grp = DagNode("JNT")
 
+        # Special presets
         if rigID.startswith("tail") or rigID.startswith("neck"):
             attachToOneSrfUVPin(rigID, rbJnts, rbSrfSk, globalScale, grp)
 

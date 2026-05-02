@@ -5,7 +5,6 @@ import maya.cmds as mc
 from collections import OrderedDict
 from nl_modules.utils.color import Color
 
-
 CST_DICT = OrderedDict(
     poi=mc.pointConstraint,
     ori=mc.orientConstraint,
@@ -768,13 +767,17 @@ def getNsFrOptVar():
 
 
 def setNsFrSel(*args):
-    """Get the namespace from the first selected object"""
+    """Set the namespace from the first selected object"""
     from nl_modules.nodel.base.dag_node import DagNode
 
     selected = mc.ls(sl=1, tr=1)
-    ns = DagNode(selected[0]).namespace or ""
+    ns = ""
+    if selected:
+        ns = DagNode(selected[0]).namespace or ""
     mc.optionVar(sv=("curr_ns", ns))
-    logging.info(f"Namespace set to {ns}." if ns != "" else "Namespace cleared.")
+    return ns
+
+    # logging.info(f"Namespace set to {ns}." if ns != "" else "Namespace cleared.")
 
 
 def clearNs():

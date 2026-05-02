@@ -223,9 +223,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(
             self.UI.createCharDefForBiped_BN, mocap.create_hik_character_def_biped
         )
-        self.connect(self.UI.connectToCanine_BN, mocap.connectToCanine)
-        self.connect(self.UI.connectToEquine_BN, mocap.connectToEquine)
-        self.connect(self.UI.bakeMotion_BN, mocap.bakeMotion)
+        self.connect(self.UI.linkCanine_BN, mocap.link_canine)
+        self.connect(self.UI.linkEquine_BN, mocap.link_equine)
+        self.connect(self.UI.bakeMotion_BN, mocap.bake_motion)
 
         # self.masterGuide_UI_refresh()
         self.crvShape_refresh()

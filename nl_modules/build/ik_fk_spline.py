@@ -124,14 +124,26 @@ class IkFkSpline(RigModule):
         )
         self.main.alignTo(self.RT_GUIDE)
         self.main | self.IK_GRP
+
         for i in range(self.ikJntNum):
-            isEnds = i == 0 or i == (self.ikJntNum - 1)
-            shape = "back" if isEnds else "square"
-            scale = Vec((9, 9, 0.4)) * rSz if isEnds else rSz / 2
-            up = None if isEnds else "z"
-            top = 0 if isEnds else 1
+
+            isBase = i == 0
+            isFore = i == (self.ikJntNum - 1)
+            isEnding = isBase or isFore
+
+            shape = "back" if isEnding else "square"
+            scale = Vec((9, 9, 0.4)) * rSz if isEnding else rSz / 2
+            up = None if isEnding else "z"
+            top = 0 if isEnding else 1
+
+            name = f"{i}_ikc"
+            if isBase:
+                name = "base_ikc"
+            elif isFore:
+                name = "fore_ikc"
+
             ctl = CrvNode(
-                f"{i}_ikc",
+                name,
                 pf=rID,
                 shape=shape,
                 up=up,

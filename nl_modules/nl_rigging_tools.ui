@@ -3860,7 +3860,7 @@
         <number>3</number>
        </property>
        <item>
-        <widget class="QPushButton" name="connectToCanine_BN">
+        <widget class="QPushButton" name="linkCanine_BN">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -3893,7 +3893,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="connectToEquine_BN">
+        <widget class="QPushButton" name="linkEquine_BN">
          <property name="minimumSize">
           <size>
            <width>0</width>

@@ -79,18 +79,18 @@ class SrfNode(GrpNode):
         """Weight surface to joints"""
         if self.exists():
 
-            sc = mc.skinCluster(self, joints, bindMethod=0, fnw=1, tsb=1, **kwargs)[0]
-
+            sc = mc.skinCluster(self, joints, bindMethod=0, tsb=1, **kwargs)[0]
+            # nw=1, fnw=1,
             # spanV = self.a.spansUV.get()[1]
             # degV = self.a.degreeUV.get()[1]
             # last = spanV + degV - 1
             # cv = f"{self.shape}.cv[*][{last}]"
-
             # bind last cv to last joint
             # return
             # mc.skinPercent(sc, cv, transformValue=[(joints[-1], 1)])
 
             if cvMatchJnt:
+
                 jntLen = len(joints)
                 for i in range(jntLen):
 
@@ -101,8 +101,7 @@ class SrfNode(GrpNode):
                         id = f"{i+1}:{i+2}"
 
                     cv = f"{self.shape}.cv[*][{id}]"
-                    mc.skinPercent(sc, cv, transformValue=[(joints[i], 1)])
-                    # print(i, cv, joints[i].name)
+                    mc.skinPercent(sc, cv, transformValue=[(joints[i], 1)], normalize=1)
 
             # if len(joints) == 3:
             #     if self.uSeg == 5 and self.degU == 3:
