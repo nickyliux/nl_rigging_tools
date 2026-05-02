@@ -140,11 +140,7 @@ def connectToMap(jntMap):
         _applyConstraints(jntMap, ns)
         _setLegsToFk(ns)
     else:
-        mc.confirmDialog(
-            t="Info",
-            m="Namespace not Set. Cannot connect Moma Sk to Qd rig controls.    ",
-            b=["OK"],
-        )
+        mc.confirmDialog(t="Info", m="Pls set the namespace first.    ", b=["OK"])
 
 
 CANINE_MAP = {

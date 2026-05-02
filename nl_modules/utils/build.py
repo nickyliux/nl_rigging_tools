@@ -361,7 +361,7 @@ def collect_space_obj(mg):
     if socketAnchors:
         drivingAnchors = socketAnchors[0].getCstObjects(cstType="parentConstraint")
         if drivingAnchors:
-            driverMG = getMasterGuideFrName(drivingAnchors[0])
+            driverMG = getMGFrName(drivingAnchors[0])
             spaceDict.update(get_space_obj(driverMG))
     #
     #   as lf & rt arm ctl can have the same 'arm' space
@@ -421,7 +421,7 @@ def collectMasterGuide(isSel=0, isAll=1, match="*"):
         if selList:
             MGs = []
             for sel in selList:
-                n = getMasterGuideFrName(sel)
+                n = getMGFrName(sel)
                 if n and n not in MGs:
                     MGs.append(n)
             return MGs
@@ -438,12 +438,34 @@ def collectMasterGuide(isSel=0, isAll=1, match="*"):
     return []
 
 
-def getMasterGuideFrName(tgtN):
+def getMGFrName(tgt):
     """Return master guide from given name, return None if not found."""
-    if tgtN:
-        name = DagNode(tgtN).name.split("_")[0] + "_master_guide"
-        if mc.objExists(name):
-            return DagNode(name)
+    # if tgt:
+    #     name = DagNode(tgt).name.split("_")[0] + "_master_guide"
+    #     if mc.objExists(name):
+    #         return DagNode(name)
+
+    tgtN = DagNode(tgt) if isinstance(tgt, str) else tgt
+    mgName = tgtN.noNsName.split("_")[0] + "_master_guide"
+
+    ns = tgtN.namespace
+    if ns:
+        mgName = ns + ":" + mgName
+
+    if mc.objExists(mgName):
+        return DagNode(mgName)
+
+    # if tgt:
+    #     # ns = common.getNsFrOptVar()
+    #     ns = ""
+    #
+    #     nsSplit = tgtN.name.split(":")
+    #     if len(nsSplit) == 2:
+    #         ns = nsSplit[0] + ":"
+    #     mgName = noNS.split("_")[0] + "_master_guide"
+    #     print(mgName)
+    #     if mc.objExists(mgName):
+    #         return DagNode(mgName)
 
 
 def boneAutoAttach():

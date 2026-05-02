@@ -19,6 +19,7 @@ def objectName(name):
 def nameSpace(name):
     """Return object namespace
     e.g.
+        'myNS:hello' # 'myNS'
         '|a|b|ns:c'  # 'ns'
     """
     if name:

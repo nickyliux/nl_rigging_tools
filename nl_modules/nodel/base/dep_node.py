@@ -82,8 +82,15 @@ class DepNode:
 
     @property
     def namespace(self):
-        if self.exists():
-            return path.nameSpace(self.fullPath)
+        # if self.exists():
+        return path.nameSpace(self.fullPath)
+
+    @property
+    def noNsName(self):
+        result = self.name
+        if self.namespace:
+            result = result.replace(self.namespace + ":", "")
+        return result
 
     @property
     def name(self):

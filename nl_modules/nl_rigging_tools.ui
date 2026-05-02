@@ -3888,7 +3888,7 @@
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Conn Canine</string>
+          <string>Link Canine</string>
          </property>
         </widget>
        </item>
@@ -3921,7 +3921,7 @@
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Conn Equine</string>
+          <string>Link Equine</string>
          </property>
         </widget>
        </item>

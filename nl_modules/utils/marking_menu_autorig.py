@@ -148,7 +148,7 @@ class MarkingMenuAutorig:
         # mc.menuItem(p=menu, l="-" * 25, en=0)
         mc.menuItem(p=menu, l="Toggle Guide", c=guide.toggleGuide)
         mc.menuItem(p=menu, l="Add Follow Cam", c=common.addFollowCam)
-        mc.menuItem(p=menu, l="namespace = " + curr_ns_str, c=common.setNsFrSel)
+        mc.menuItem(p=menu, l="Namespace = " + curr_ns_str, c=common.setNsFrSel)
 
     def addAdvancedOptions(self, menu):
         """Add space switch and IK/FK options to the marking menu"""
