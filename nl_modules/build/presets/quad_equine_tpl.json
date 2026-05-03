@@ -230,8 +230,6 @@
             "scapulaAutoAim":0.5,
             "scapulaBone":false,
             "showRef":false,
-            "spaceName1":"master, chest, pelvis, COG",
-            "spaceName2":"leg, chest, pelvis, master, COG",
             "t":[
                 16.0,
                 0.0,
@@ -1063,8 +1061,6 @@
             "scapulaAutoAim":0.5,
             "scapulaBone":true,
             "showRef":false,
-            "spaceName1":"master, chest, pelvis, COG",
-            "spaceName2":"leg, chest, pelvis, master, COG",
             "t":[
                 15.0,
                 0.0,
@@ -1825,7 +1821,7 @@
             ]
         },
         "neck0_master_guide":{
-            "fkJntNum":3,
+            "fkJntNum":4,
             "ikJntNum":4,
             "parentNameMatch":"spine*",
             "r":[
@@ -1834,7 +1830,7 @@
                 0.0
             ],
             "rbJntSet":"neck_rbj_set",
-            "rbnJntNum":4,
+            "rbnJntNum":5,
             "rigClass":"Neck",
             "rigID":"neck0",
             "s":[
@@ -1842,7 +1838,6 @@
                 0.6157641161516557,
                 0.6157641161516557
             ],
-            "spaceName1":"localBase, COG, master",
             "t":[
                 0.0,
                 141.64845053235382,
@@ -1991,8 +1986,6 @@
             "scapulaAutoAim":0.5,
             "scapulaBone":false,
             "showRef":false,
-            "spaceName1":"master, chest, pelvis, COG",
-            "spaceName2":"leg, chest, pelvis, master, COG",
             "t":[
                 -16.0,
                 0.0,
@@ -2824,8 +2817,6 @@
             "scapulaAutoAim":0.5,
             "scapulaBone":true,
             "showRef":false,
-            "spaceName1":"master, chest, pelvis, COG",
-            "spaceName2":"leg, chest, pelvis, master, COG",
             "t":[
                 -15.0,
                 0.0,
@@ -3728,7 +3719,7 @@
             ]
         },
         "tail0_master_guide":{
-            "fkJntNum":6,
+            "fkJntNum":4,
             "ikJntNum":4,
             "parentNameMatch":"spine*",
             "r":[
@@ -3745,7 +3736,6 @@
                 0.5,
                 0.5
             ],
-            "spaceName1":"localBase, COG, master",
             "t":[
                 0.0,
                 151.54000723130804,
