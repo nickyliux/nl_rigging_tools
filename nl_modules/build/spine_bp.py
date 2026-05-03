@@ -345,8 +345,8 @@ class SpineBp(RigModule):
             )
             # mc.hide(self.cog_ctl, self.base_ikc)
 
-        if self.masterC2.a.settingVis.exists():
-            self.masterC2.a.settingVis >> self.setting.a.v
+        # if self.masterC2.a.settingVis.exists():
+        #     self.masterC2.a.settingVis >> self.setting.a.v
 
         # if self.ribbon:
         mc.hide(self.ctlJnts)

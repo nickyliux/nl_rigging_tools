@@ -59,7 +59,7 @@ class IkFkSpline(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2.5, 1),
-            ("main", "cog", "z", rSz * 6, 1),
+            ("main", "cog", "z", rSz * 2, 1),
         ]
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
@@ -67,8 +67,7 @@ class IkFkSpline(RigModule):
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
         self.setting.a.add("localScale", min=0.01, dv=1)
         self.setting.a.addSep()
-
-        self.setting.cv_move(0, rSz * 80, 0)
+        # self.setting.cv_move(0, rSz * 80, 0)
 
     def build(self):
         """Build the rig."""
@@ -133,7 +132,7 @@ class IkFkSpline(RigModule):
             ctl = CrvNode(
                 name,
                 pf=rID,
-                shape="back" if isEnding else "square",
+                shape="back" if isEnding else "cube",
                 up=None if isEnding else "z",
                 scale=Vec((9, 9, 0.4)) * rSz if isEnding else rSz / 2,
                 align=self.jnts_ik[i],
@@ -188,7 +187,7 @@ class IkFkSpline(RigModule):
                 pf=rID,
                 up="z",
                 shape="circleV",
-                scale=rSz * 2,
+                scale=rSz * 3,
                 align=self.jnts_fk[i],
             )
             self.masterGuide.setMsg({f"fkc{i}": ctl})
@@ -231,7 +230,7 @@ class IkFkSpline(RigModule):
                 f"{i}_ofs_ctl",
                 pf=rID,
                 shape="cube",
-                scale=rSz / 2,
+                scale=rSz / 3,
                 align=self.ctls_fk[i],
                 p=self.ctls_fk[i],
                 color=Color.L_BLUE,
@@ -267,7 +266,7 @@ class IkFkSpline(RigModule):
             onList=self.ctls_ofs,
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("showBaseIkCtl", type="bool", k=0, dv=1),
+            self.setting.a.add("showBaseIkCtl", type="bool", k=0, dv=0),
             onList=[self.ctls_ik[0].shape],
         )
         self.ctl_vis_toggle(

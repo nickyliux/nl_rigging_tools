@@ -131,7 +131,8 @@ class LegQd(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
-            ("hip_fkc", "cube", "x", Vec((2, 1, 1)) * scale, 0),
+            # ("hip_fkc", "shoulder", "x", Vec((0.5, 0.3, 0.5)) * -scale, 0),
+            ("hip_fkc", "arrow", None, -scale, 1),
             ("upr_fkc", "circleV", "x", scale, 0),
             ("lwr_fkc", "circleV", "x", scale, 0),
             ("palm_fkc", "circleV", "x", scale, 0),
@@ -144,22 +145,23 @@ class LegQd(RigModule):
         ]
 
         if self.scapulaBone:
-            ctl_defs.append(
-                ("scap_fkc", "shoulder", "z", Vec((0.2, 0.6, 0.6)) * scale, 0)
-            )
+            ctl_defs.append(("scap_fkc", "arrow", "z", scale * 0.6, 0))
 
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
         if self.scapulaBone:
-            self.scap_fkc.cv_rotate(-90, 0, 0)
-            self.scap_fkc.cv_move(0, scale * 20, 0)
+            self.scap_fkc.cv_rotate(0, 90, 0)
+            self.scap_fkc.cv_move(0, scale * 12, 0)
+        #     self.scap_fkc.cv_rotate(-90, 0, 0)
 
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
 
         self.setting.cv_move(scale * 15, 0, 0)
         self.ikc.cv_move(0, 0, rSz * 5)
+        self.hip_fkc.cv_rotate(0, 90, 0)
+        # self.hip_fkc.cv_move(0, -scale * 8, 0)
 
     def build(self):
         """Build the quadruped leg rig module."""

@@ -142,7 +142,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.saveCtl_BN, control.saveCtl, ":fileSave.png")
         self.connect(self.UI.loadHlp_BN, helper.loadHlp, ":teCreateClip.png")
         self.connect(self.UI.saveHlp_BN, helper.saveHlp, ":fileSave.png")
-        self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":play_S.png")
+        self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
         # HIKCharacterToolSkeleton
         self.connect(self.UI.boneAutoUnBind_BN, self.boneAutoUnBind, ":smallTrash.png")
 
