@@ -235,7 +235,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # self.masterGuide_UI_refresh()
         self.crvShape_refresh()
         self.updateLoadWrapTargetMesh()
-        self.updateCharPath()
+        self.updateCharPathReloadUI()
 
     def setMaxInflSel(self):
         """Set maximum influences for selected skinned meshes."""
@@ -255,13 +255,12 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 if result:
                     mc.select(result)
 
-    def updateCharPath(self):
+    def updateCharPathReloadUI(self):
         """Update the character path in the UI if it exists."""
         charPath = mc.optionVar(q="charDir")
         if charPath:
             if os.path.isdir(charPath):
-                # self.UI.charPath_LE.setText(charPath)
-                self.update_char_folders(charPath)
+                self.update_char_cbb(charPath)
             else:
                 mc.optionVar(sv=("charDir", ""))
                 mc.savePrefs()
@@ -577,18 +576,13 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # charPath = self.UI.charPath_LE.text()
         charPath = mc.optionVar(q="charDir")
         new_charPaths = mc.fileDialog2(
-            dialogStyle=2,
-            fileMode=3,
-            dir=charPath,
-            cap="Set Character Directory",
-            okc="Set",
+            dialogStyle=2, fileMode=3, dir=charPath, cap="Set Char Directory", okc="Set"
         )
         if new_charPaths:
             charPath = new_charPaths[0]
-            # self.UI.charPath_LE.setText(charPath)
             mc.optionVar(sv=("charDir", charPath))
             mc.savePrefs()
-            self.update_char_folders(charPath)
+            self.update_char_cbb(charPath)
 
     def update_char_full_path(self):
         """Update charFullPath optionVar from charDir + selected folder."""
@@ -600,16 +594,25 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         else:
             mc.optionVar(sv=("charFullPath", ""))
 
-    def update_char_folders(self, path):
+    def update_char_cbb(self, path):
         """Update charFolder_CBB combo box with folder names at the given path."""
         self.UI.charFolder_CBB.clear()
         if path and os.path.isdir(path):
-            folders = sorted(
-                name
-                for name in os.listdir(path)
-                if os.path.isdir(os.path.join(path, name))
-            )
+
+            # Get last Folder from charFullPath
+            charFullPath = mc.optionVar(q="charFullPath")
+            lastFolder = ""
+            if charFullPath:
+                lastFolder = os.path.basename(charFullPath)
+                print(f"{lastFolder=}")
+
+            # Loop get folders in path
+            folders = [
+                n for n in os.listdir(path) if os.path.isdir(os.path.join(path, n))
+            ]
             self.UI.charFolder_CBB.addItems(folders)
+            if lastFolder in folders:
+                self.UI.charFolder_CBB.setCurrentText(lastFolder)
 
     def explore_char(self):
         """Open the character path in the file explorer."""
