@@ -106,6 +106,21 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         build.unbuildGuide()
         # self.masterGuide_UI_refresh()
 
+    def loadWgh(self):
+        skin.loadWeight(loadLatest=self.UI.loadLatest_CB.isChecked())
+
+    def loadHlp(self):
+        helper.loadHelper(loadLatest=self.UI.loadLatest_CB.isChecked())
+
+    def loadPrx(self):
+        proxy.loadProxy(loadLatest=self.UI.loadLatest_CB.isChecked())
+
+    def loadCtl(self):
+        control.loadControl(loadLatest=self.UI.loadLatest_CB.isChecked())
+
+    def loadSkl(self):
+        skeleton.load_skeleton(loadLatest=self.UI.loadLatest_CB.isChecked())
+
     def loadTpl(self):
         """Load template for the guide."""
         guide.loadTemplate(loadLatest=self.UI.loadLatest_CB.isChecked())
@@ -126,15 +141,15 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # From MDL to SK
         self.connect(self.UI.loadModel_BN, model.loadModel, ":teCreateClip.png")
 
-        self.connect(self.UI.loadSkl_BN, skeleton.load_skl, ":teCreateClip.png")
-        self.connect(self.UI.saveSkl_BN, skeleton.save_skl, ":fileSave.png")
+        self.connect(self.UI.loadSkl_BN, self.loadSkl, ":teCreateClip.png")
+        self.connect(self.UI.saveSkl_BN, skeleton.save_skeleton, ":fileSave.png")
         self.connect(self.UI.ribSetup_BN, skeleton.setup_rib)
 
         self.connect(self.UI.loadTemplate_BN, self.loadTpl, ":teCreateClip.png")
         self.connect(self.UI.saveTemplate_BN, guide.saveTemplate, ":fileSave.png")
         self.connect(self.UI.buildAll_BN, self.buildAll, ":play_S.png")
         self.connect(self.UI.unbuildAll_BN, self.unbuildAll, ":smallTrash.png")
-        self.connect(self.UI.loadProxy_BN, proxy.loadProxy, ":teCreateClip.png")
+        self.connect(self.UI.loadProxy_BN, self.loadPrx, ":teCreateClip.png")
         self.connect(self.UI.saveProxy_BN, proxy.saveProxy, ":fileSave.png")
         self.connect(self.UI.genProxy_BN, proxy.genProxyForSet, ":play_S.png")
         self.connect(self.UI.loadWrapTargetMesh_BN, self.loadWrapTargetMesh)
@@ -143,16 +158,16 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # , ":aselect.png")
         self.connect(self.UI.bindToSelProxy_BN, proxy.bind_to_proxy, ":bind.png")
         self.connect(self.UI.toggleProxy_BN, proxy.toggleVis, ":visible.png")
-        self.connect(self.UI.loadCtl_BN, control.loadCtl, ":teCreateClip.png")
-        self.connect(self.UI.saveCtl_BN, control.saveCtl, ":fileSave.png")
-        self.connect(self.UI.loadHlp_BN, helper.loadHlp, ":teCreateClip.png")
-        self.connect(self.UI.saveHlp_BN, helper.saveHlp, ":fileSave.png")
+        self.connect(self.UI.loadCtl_BN, self.loadCtl, ":teCreateClip.png")
+        self.connect(self.UI.saveCtl_BN, control.saveControl, ":fileSave.png")
+        self.connect(self.UI.loadHlp_BN, self.loadHlp, ":teCreateClip.png")
+        self.connect(self.UI.saveHlp_BN, helper.saveHelper, ":fileSave.png")
         self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
         # HIKCharacterToolSkeleton
         self.connect(self.UI.boneAutoUnBind_BN, self.boneAutoUnBind, ":smallTrash.png")
 
         # Weight
-        self.connect(self.UI.loadWeight_BN, skin.loadWeight, ":teCreateClip.png")
+        self.connect(self.UI.loadWeight_BN, self.loadWgh, ":teCreateClip.png")
         self.connect(self.UI.saveWeight_BN, skin.saveWeight, ":fileSave.png")
 
         # Weight Edit

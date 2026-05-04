@@ -109,14 +109,18 @@ def delSkin(tgt):
     return 0
 
 
-def loadWeight(*args):
+def loadWeight(loadLatest=1):
     """Load skin weight joints from a JSON file."""
-    charPath = mc.optionVar(q="charDir")
+    # charPath = mc.optionVar(q="charDir")
+    charPath = mc.optionVar(q="charFullPath")
     tgtPaths = []
     if charPath:
-        tgtPaths = glob.glob(
-            os.path.join(charPath, "weight", os.path.basename(charPath) + "_wgh*.json")
-        )
+        if loadLatest:
+            tgtPaths = glob.glob(
+                os.path.join(
+                    charPath, "weight", os.path.basename(charPath) + "_wgh*.json"
+                )
+            )
         if not tgtPaths:
             tgtPaths = mc.fileDialog2(
                 fileFilter="*.json", dialogStyle=2, fileMode=1, dir=charPath

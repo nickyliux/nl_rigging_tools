@@ -8,10 +8,9 @@ from nl_modules.nodel.grp_node import GrpNode
 AUTO_BIND_SK_GRP = "auto_bind_sk_grp"
 
 
-def save_skl():
+def save_skeleton():
     """Export skeleton group to a file."""
     skl_grp = mc.ls(AUTO_BIND_SK_GRP, tr=1)
-
     if not skl_grp:
         mc.confirmDialog(
             t="Info", m=f"Group {AUTO_BIND_SK_GRP} not found.     ", b="OK"
@@ -39,23 +38,35 @@ def save_skl():
         mc.select(cl=1)
 
 
-def load_skl():
+def load_skeleton(loadLatest=1):
     """Load skeleton group from a file."""
+    from nl_modules.utils import file
+
+    skl_grp = mc.ls(AUTO_BIND_SK_GRP, tr=1)
+    if skl_grp:
+        mc.confirmDialog(
+            t="Info", m=f"{AUTO_BIND_SK_GRP} already exists.     ", b="OK"
+        )
+        return
+
     charPath = mc.optionVar(q="charFullPath")
     tgtPaths = []
     if charPath:
-        fileToSearch = os.path.join(charPath, os.path.basename(charPath) + "*_skl*.ma")
-        tgtPaths = glob.glob(fileToSearch)
+        if loadLatest:
+            tgtPaths = glob.glob(
+                os.path.join(charPath, os.path.basename(charPath) + "_skl*.ma")
+            )
         if not tgtPaths:
             tgtPaths = mc.fileDialog2(
-                fileFilter="*_skl*", dialogStyle=2, fileMode=1, dir=charPath
+                fileFilter="*skl*.ma", dialogStyle=2, fileMode=1, dir=charPath
             )
     if not tgtPaths:
         return
 
     tgtPaths.sort(key=common.sortFile)
+    file.importFile(tgtPaths[-1])
 
-    mc.file(tgtPaths[-1], i=1, usingNamespaces=0)
+    logging.info(f"Skl file imported: {os.path.basename(tgtPaths[-1])}.")
 
 
 def setup_rib(name="rib_grp", div=(2, 2, 9), l_div=(4, 4, 4)):

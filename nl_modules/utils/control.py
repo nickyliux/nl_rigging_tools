@@ -75,7 +75,7 @@ def removeAllCst():
     mc.delete(allCsts)
 
 
-def saveCtl():
+def saveControl():
     """Save control curves to a file."""
     allCtls = common.getRigCtlsAll()
     if len(allCtls) == 0:
@@ -103,14 +103,15 @@ def saveCtl():
 
 
 @common.Undo("loadCtl")
-def loadCtl():
+def loadControl(loadLatest=1):
     """Load control curves from a file and replace existing controls."""
     charPath = mc.optionVar(q="charFullPath")
     tgtPaths = []
     if charPath:
-        tgtPaths = glob.glob(
-            os.path.join(charPath, os.path.basename(charPath) + "_ctl*.ma")
-        )
+        if loadLatest:
+            tgtPaths = glob.glob(
+                os.path.join(charPath, os.path.basename(charPath) + "_ctl*.ma")
+            )
         if not tgtPaths:
             tgtPaths = mc.fileDialog2(
                 fileFilter="*_ctl*", dialogStyle=2, fileMode=1, dir=charPath

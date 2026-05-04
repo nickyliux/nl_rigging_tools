@@ -102,19 +102,27 @@ def saveProxy():
         mc.select(cl=1)
 
 
-def loadProxy():
+def loadProxy(loadLatest=1):
     """Load proxy meshes from a file and match them to existing bind joints."""
     from nl_modules.utils import control
 
     charPath = mc.optionVar(q="charFullPath")
     tgtPaths = []
     if charPath:
-        fileToSearch = os.path.join(charPath, os.path.basename(charPath) + "*_prx*.ma")
-        tgtPaths = glob.glob(fileToSearch)
+        if loadLatest:
+            tgtPaths = glob.glob(
+                os.path.join(charPath, os.path.basename(charPath) + "_prx*.ma")
+            )
         if not tgtPaths:
             tgtPaths = mc.fileDialog2(
-                fileFilter="*_prx*", dialogStyle=2, fileMode=1, dir=charPath
+                fileFilter="*prx*.ma", dialogStyle=2, fileMode=1, dir=charPath
             )
+        # fileToSearch = os.path.join(charPath, os.path.basename(charPath) + "*_prx*.ma")
+        # tgtPaths = glob.glob(fileToSearch)
+        # if not tgtPaths:
+        #     tgtPaths = mc.fileDialog2(
+        #         fileFilter="*_prx*", dialogStyle=2, fileMode=1, dir=charPath
+        #     )
     if not tgtPaths:
         return
 

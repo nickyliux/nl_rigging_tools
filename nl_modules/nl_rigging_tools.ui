@@ -1393,7 +1393,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Load Guide Template</string>
+          <string>Load Skeleton joints</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -1429,7 +1429,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Save Guide Template</string>
+          <string>Save Skeleton joints</string>
          </property>
          <property name="text">
           <string/>
@@ -1535,7 +1535,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Load Guide Template</string>
+          <string>Setup for rib meshes</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>

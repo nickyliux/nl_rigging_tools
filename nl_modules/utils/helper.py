@@ -239,7 +239,7 @@ def deleteHelpers(*args):
 
 
 @common.Undo("Load Helper Joints")
-def loadHlp(*args):
+def loadHelper(loadLatest=1):
     """Load helper joint data from a JSON file and recreate the joints in the scene."""
     at_least_one_built = 0
     for mg in build.collectMasterGuide():
@@ -253,9 +253,10 @@ def loadHlp(*args):
     charPath = mc.optionVar(q="charFullPath")
     tgtPaths = []
     if charPath:
-        tgtPaths = glob.glob(
-            os.path.join(charPath, os.path.basename(charPath) + "_hlp*.json")
-        )
+        if loadLatest:
+            tgtPaths = glob.glob(
+                os.path.join(charPath, os.path.basename(charPath) + "_hlp*.json")
+            )
         if not tgtPaths:
             tgtPaths = mc.fileDialog2(
                 fileFilter="*.json", dialogStyle=2, fileMode=1, dir=charPath
@@ -298,7 +299,7 @@ def loadHlp(*args):
     logging.info(f"{load_count} helper joints loaded.")
 
 
-def saveHlp(*args):
+def saveHelper(*args):
     """Save skin weight joints for selected meshes to a JSON file."""
     charPath = mc.optionVar(q="charFullPath")
     if charPath == None or charPath == "":
