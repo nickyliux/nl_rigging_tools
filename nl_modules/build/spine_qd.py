@@ -324,7 +324,7 @@ class SpineQd(RigModule):
     def build_volume(self, crvLenRatio):
         """Build volume control for the spine rig."""
         # add volume graph keys
-        autoVol = self.setting.a.add("autoVol", min=0, dv=1)
+        autoVol = self.setting.a.add("autoVol", min=0, dv=0.5)
         volGraph = self.setting.a.add("volGraph", dv=0)
         mc.setKeyframe(volGraph, t=0, v=0)
         mc.setKeyframe(volGraph, t=(self.rbnJntNum - 1) / 2, v=1)

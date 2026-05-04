@@ -59,6 +59,7 @@ from nl_modules.utils import (
     open_maya_api,
     path,
     proxy,
+    skeleton,
     skin,
     utils_node,
     matrix,
@@ -81,6 +82,7 @@ reload(open_maya_api)
 reload(path)
 reload(proxy)
 reload(skin)
+reload(skeleton)
 reload(utils_node)
 reload(matrix)
 reload(marking_menu_autorig)

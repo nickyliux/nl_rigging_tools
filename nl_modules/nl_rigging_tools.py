@@ -11,6 +11,7 @@ from nl_modules.utils import (
     common,
     file,
     guide,
+    skeleton,
     helper,
     model,
     build,
@@ -124,7 +125,11 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         # From MDL to SK
         self.connect(self.UI.loadModel_BN, model.loadModel, ":teCreateClip.png")
-        # openScript.png
+
+        self.connect(self.UI.loadSkl_BN, skeleton.load_skl, ":teCreateClip.png")
+        self.connect(self.UI.saveSkl_BN, skeleton.save_skl, ":fileSave.png")
+        self.connect(self.UI.ribSetup_BN, skeleton.setup_rib)
+
         self.connect(self.UI.loadTemplate_BN, self.loadTpl, ":teCreateClip.png")
         self.connect(self.UI.saveTemplate_BN, guide.saveTemplate, ":fileSave.png")
         self.connect(self.UI.buildAll_BN, self.buildAll, ":play_S.png")

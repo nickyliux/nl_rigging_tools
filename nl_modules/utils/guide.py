@@ -299,10 +299,6 @@ def genAttrDict(obj):
 def saveTemplate():
     """Save preset into json file"""
     allMGs = build.collectMasterGuide()
-    # for mg in allMGs:
-    #     rigID = mg.a.rigID.get()
-    #     print(mg, rigID)
-    # return
 
     if not allMGs:
         mc.confirmDialog(t="Info", m="Master Guides NOT found.     ", b="OK")
