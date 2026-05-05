@@ -6,17 +6,18 @@ from importlib import reload
 import maya.cmds as mc
 import nl_modules
 from nl_modules.utils import (
-    mocap,
-    reload_all,
+    build,
     common,
+    control,
     file,
     guide,
-    skeleton,
     helper,
+    log,
+    mocap,
     model,
-    build,
     proxy,
-    control,
+    reload_all,
+    skeleton,
     skin,
 )
 from nl_modules.utils.color import Color
@@ -68,6 +69,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI = QUiLoader().load(UI_PATH)
         self.setCentralWidget(self.UI)
         self.connect_UI()
+        log.update_root_logger(create_window=0)
         # self.addMenuBar()
 
     def close_window(self):

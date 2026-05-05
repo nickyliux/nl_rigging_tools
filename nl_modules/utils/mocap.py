@@ -70,11 +70,8 @@ def retarget_for_tail(ns, tailPf=""):
 
 def bake_motion(*args):
     """Bake Moma Sk to IK rig controls."""
-    # MGs = build.collectMasterGuide(isSel=1)
     rigIDs = ["lfLegQd0", "rtLegQd0", "lfLegQd1", "rtLegQd1"]
     ns = common.setNsFrSel()
-    # ns = common.getNsFrOptVar()
-    fkIkAttrs = [DagNode(f"{ns}{rigID}_setting").a.fkIk for rigID in rigIDs]
     allMGs = [DagNode(f"{ns}{rigID}_master_guide") for rigID in rigIDs]
 
     startTime = int(mc.playbackOptions(q=1, min=1))
@@ -84,15 +81,15 @@ def bake_motion(*args):
     if allCtls:
         mc.select(allCtls)
         mc.bakeResults(simulation=1, t=(startTime, endTime))
-        common.pauseVP(1)
-
+        # common.pauseVP(1)
         for frame in range(startTime, endTime + 1):
             mc.currentTime(frame, e=1)
             for i in range(len(rigIDs)):
-                # anim.switch_fk_ik(fkIkAttrs[i], toIKMode=1, mg=allMGs[i])
                 anim.switch_fk_ik(mg=allMGs[i])
-
-        common.pauseVP(0)
+        # common.pauseVP(0)
+        grp = GrpNode("tail_link_grp")
+        if grp.exists():
+            grp.delete()
 
 
 def unCst_mm_to_quad(mapping, ns):
@@ -165,19 +162,15 @@ def link_to_map(mapId):
 
 
 def unlink_map(mapId):
-    """Remove constraints between Moma Sk and Qd rig controls."""
+    """Remove constraints betw Moma Sk and Qd rig controls."""
     ns = common.setNsFrSel()
     if ns:
         if mapId == 0:
             unCst_mm_to_quad(CANINE_MAP, ns)
-            logging.info(
-                "Remove constraints between Moma Sk and Qd rig controls for Canine."
-            )
+            logging.info("Remove constraints to rig controls for Canine.")
         elif mapId == 1:
             unCst_mm_to_quad(EQUINE_MAP, ns)
-            logging.info(
-                "Remove constraints between Moma Sk and Qd rig controls for Equine."
-            )
+            logging.info("Remove constraints to rig controls for Equine.")
         grp = GrpNode("tail_link_grp")
         if grp.exists():
             grp.delete()

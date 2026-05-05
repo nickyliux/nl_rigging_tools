@@ -4056,7 +4056,7 @@ corresponding set</string>
        <x>0</x>
        <y>90</y>
        <width>225</width>
-       <height>211</height>
+       <height>311</height>
       </rect>
      </property>
      <property name="title">
@@ -4072,7 +4072,7 @@ corresponding set</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>124</y>
+        <y>160</y>
         <width>221</width>
         <height>25</height>
        </rect>
@@ -4090,13 +4090,6 @@ corresponding set</string>
        <property name="rightMargin">
         <number>3</number>
        </property>
-       <item>
-        <widget class="QLabel" name="label_22">
-         <property name="text">
-          <string>Canine</string>
-         </property>
-        </widget>
-       </item>
        <item>
         <widget class="QPushButton" name="linkCanine_BN">
          <property name="minimumSize">
@@ -4195,20 +4188,20 @@ corresponding set</string>
       <property name="geometry">
        <rect>
         <x>6</x>
-        <y>85</y>
+        <y>100</y>
         <width>211</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>4. Select any ctl of the quad rig</string>
+       <string>4. Select any ctl of the rig and link</string>
       </property>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_32">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>186</y>
+        <y>270</y>
         <width>221</width>
         <height>25</height>
        </rect>
@@ -4265,20 +4258,24 @@ corresponding set</string>
       <property name="geometry">
        <rect>
         <x>6</x>
-        <y>65</y>
+        <y>70</y>
         <width>211</width>
-        <height>21</height>
+        <height>31</height>
        </rect>
       </property>
       <property name="text">
-       <string>3. Scale it to fit closely</string>
+       <string>3. Scale it to fit closely. Also move ctl to
+    fit the tail</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_35">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>150</y>
+        <y>210</y>
         <width>221</width>
         <height>25</height>
        </rect>
@@ -4296,13 +4293,6 @@ corresponding set</string>
        <property name="rightMargin">
         <number>3</number>
        </property>
-       <item>
-        <widget class="QLabel" name="label_23">
-         <property name="text">
-          <string>Equine</string>
-         </property>
-        </widget>
-       </item>
        <item>
         <widget class="QPushButton" name="linkEquine_BN">
          <property name="minimumSize">
@@ -4375,7 +4365,7 @@ corresponding set</string>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>114</y>
+        <y>130</y>
         <width>205</width>
         <height>3</height>
        </rect>
@@ -4385,6 +4375,51 @@ corresponding set</string>
       </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_22">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>140</y>
+        <width>50</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Canine</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_23">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>190</y>
+        <width>50</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Equine</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_24">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>250</y>
+        <width>211</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>5. Select any ctl of the rig and bake</string>
       </property>
      </widget>
     </widget>

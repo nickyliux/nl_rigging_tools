@@ -160,6 +160,7 @@ def loadWeight(loadLatest=1):
     mc.progressWindow(ep=1)
 
     logging.info(f"{loadCount} objects weight loaded.")
+    print("")
     common.xRayAllGeo(0)
     mc.select(cl=1)
 

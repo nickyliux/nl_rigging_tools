@@ -28,8 +28,8 @@ class RigModule(RigBase):
 
         self.masterGuide = DagNode(rID + "_master_guide")
 
-        guide_grp = GrpNode("GUIDES")
-        self.rigSize = guide_grp.a.sy.get() * self.masterGuide.a.sy.get()
+        guides_grp = GrpNode("GUIDES")
+        self.rigSize = guides_grp.a.sy.get() * self.masterGuide.a.sy.get()
         self.xDir = 1 if rID.startswith("lf") else -1 if rID.startswith("rt") else 0
         self.boneFix = None
         self.jnts_bind = []

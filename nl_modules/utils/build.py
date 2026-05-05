@@ -73,7 +73,6 @@ def buildGuide(*args):
             chr.show()
 
         guideCount = len(guidesToBuild)
-        log.update_root_logger(create_window=0)
 
         mc.progressWindow(
             t="Build", pr=0, status="\nPreparing ...", ii=0, maxValue=guideCount
@@ -108,9 +107,9 @@ def postRig():
 
     proxy.genProxyForSet()
 
-    guide_grp = DagNode("GUIDES")
-    if guide_grp.exists():
-        guide_grp.hide()
+    guides_grp = DagNode("GUIDES")
+    if guides_grp.exists():
+        guides_grp.hide()
 
 
 def addMasterAttrs():

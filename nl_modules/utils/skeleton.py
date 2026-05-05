@@ -44,9 +44,7 @@ def load_skeleton(loadLatest=1):
 
     skl_grp = mc.ls(AUTO_BIND_SK_GRP, tr=1)
     if skl_grp:
-        mc.confirmDialog(
-            t="Info", m=f"{AUTO_BIND_SK_GRP} already exists.     ", b="OK"
-        )
+        mc.confirmDialog(t="Info", m=f"{AUTO_BIND_SK_GRP} already exists.     ", b="OK")
         return
 
     charPath = mc.optionVar(q="charFullPath")
@@ -69,7 +67,7 @@ def load_skeleton(loadLatest=1):
     logging.info(f"Skl file imported: {os.path.basename(tgtPaths[-1])}.")
 
 
-def setup_rib(name="rib_grp", div=(2, 2, 9), l_div=(4, 4, 4)):
+def setup_rib(*args, name="rib_grp", div=(2, 2, 9), l_div=(4, 4, 4)):
     """Add a lattice deformer to a group of name.
     Args:
         name (list): List of name to deform.
@@ -91,5 +89,5 @@ def setup_rib(name="rib_grp", div=(2, 2, 9), l_div=(4, 4, 4)):
         GrpNode(result[1]).weightTo(spine_rbj_set, mi=5)
         return result
     else:
-        logging.info(f"No group / object found with name '{name}'.")
+        mc.confirmDialog(t="Info", m=f'"{name}" NOT found.     ', b="OK")
         return None

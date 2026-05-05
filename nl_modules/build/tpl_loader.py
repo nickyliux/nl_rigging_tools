@@ -36,11 +36,11 @@ class TplLoader:
             logging.error(f"Template file not found: {tplFile}")
             return
 
-        guide_grp = GrpNode("GUIDES")
+        guides_grp = GrpNode("GUIDES")
         mg = DagNode(rID + "_master_guide")
 
         if mg.exists():
-            mg | guide_grp
+            mg | guides_grp
         else:
             logging.error(f"Master guide not found in imported template.")
             return

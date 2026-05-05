@@ -102,7 +102,7 @@ def saveControl():
             mc.select(cl=1)
 
 
-@common.Undo("loadCtl")
+@common.Undo("loadControl")
 def loadControl(loadLatest=1):
     """Load control curves from a file and replace existing controls."""
     charPath = mc.optionVar(q="charFullPath")
@@ -149,6 +149,7 @@ def loadControl(loadLatest=1):
         mc.select(cl=1)
 
     logging.info("Control shapes loaded.")
+    print("")
 
 
 @common.Undo("setOnTopSel")

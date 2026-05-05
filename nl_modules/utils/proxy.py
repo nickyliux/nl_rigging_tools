@@ -154,6 +154,7 @@ def loadProxy(loadLatest=1):
         if rootGrp.exists():
             rootGrp.delete()
         logging.info(f"{load_count} proxy loaded.")
+        print("")
 
     mc.refresh(f=1)
 
