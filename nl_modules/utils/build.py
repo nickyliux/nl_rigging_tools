@@ -99,6 +99,7 @@ def buildGuide(*args):
 def postRig():
     """Post rigging operations"""
     logging.info(".")
+
     addMasterAttrs()
     control.reset_all_ctl()
     update_anchor_conn()
@@ -108,8 +109,11 @@ def postRig():
     proxy.genProxyForSet()
 
     guides_grp = DagNode("GUIDES")
-    if guides_grp.exists():
-        guides_grp.hide()
+    CHR = DagNode("CHR")
+    if guides_grp.exists() and CHR.exists():
+        if guides_grp.parent != CHR:
+            guides_grp | CHR
+    guides_grp.hide()
 
 
 def addMasterAttrs():

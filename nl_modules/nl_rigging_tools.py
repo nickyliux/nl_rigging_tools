@@ -145,7 +145,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         self.connect(self.UI.loadSkl_BN, self.loadSkl, ":teCreateClip.png")
         self.connect(self.UI.saveSkl_BN, skeleton.save_skeleton, ":fileSave.png")
-        self.connect(self.UI.ribSetup_BN, skeleton.setup_rib)
 
         self.connect(self.UI.loadTemplate_BN, self.loadTpl, ":teCreateClip.png")
         self.connect(self.UI.saveTemplate_BN, guide.saveTemplate, ":fileSave.png")
@@ -447,14 +446,14 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         meshSel = [DagNode(m).parent for m in mc.ls(sl=1, type="mesh")]
 
         if meshSel:
-            grp_main = GrpNode(AUTO_BIND_SK_GRP)
+            sk_grp = DagNode(AUTO_BIND_SK_GRP)
             if rb:
                 sf = "_rbJnt"
-                grp = GrpNode("rb_grp", p=grp_main)
+                grp = GrpNode("rb_grp", p=sk_grp)
                 color = Color.RED
             else:
                 sf = "_refJnt"
-                grp = GrpNode("ref_grp", p=grp_main)
+                grp = GrpNode("ref_grp", p=sk_grp)
                 color = Color.L_BLUE
 
             for mesh in meshSel:
@@ -555,7 +554,13 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         skin.skinRbJnts(meshes=tgtMeshes)
         build.boneAutoAttach()
 
-        mc.hide(AUTO_BIND_SK_GRP)
+        # Rib setup
+        skeleton.add_lattice_to_rib()
+
+        sk_grp = DagNode(AUTO_BIND_SK_GRP)
+        if sk_grp.exists():
+            sk_grp.delete()
+
         mc.select(cl=1)
 
     def templateTarget(self):

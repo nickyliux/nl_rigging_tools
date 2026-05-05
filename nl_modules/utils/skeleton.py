@@ -4,6 +4,7 @@ import os
 from maya import cmds as mc
 from nl_modules.utils import common
 from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.base.dag_node import DagNode
 
 AUTO_BIND_SK_GRP = "auto_bind_sk_grp"
 
@@ -67,15 +68,12 @@ def load_skeleton(loadLatest=1):
     logging.info(f"Skl file imported: {os.path.basename(tgtPaths[-1])}.")
 
 
-def setup_rib(*args, name="rib_grp", div=(2, 2, 9), l_div=(4, 4, 4)):
+def add_lattice_to_rib(*args, name="rib_grp", div=(2, 2, 9), l_div=(4, 4, 4)):
     """Add a lattice deformer to a group of name.
     Args:
         name (list): List of name to deform.
         div (tuple): Lattice divisions (s, t, u). Default is (2, 2, 9).
         l_div (tuple): Local divisions (s, t, u). Default is (4, 4, 4).
-
-    Returns:
-        tuple: (ffd_node, lattice, base_lattice).
     """
     tgts = mc.ls(name)
     if tgts:
@@ -87,7 +85,8 @@ def setup_rib(*args, name="rib_grp", div=(2, 2, 9), l_div=(4, 4, 4)):
             tgts, dv=div, ldv=l_div, outsideLattice=1, objectCentered=1, commonParent=1
         )
         GrpNode(result[1]).weightTo(spine_rbj_set, mi=5)
-        return result
+        # MDL = GrpNode("MDL")
+        # if MDL.exists():
+        #     DagNode(result[0]).parent | MDL
     else:
         mc.confirmDialog(t="Info", m=f'"{name}" NOT found.     ', b="OK")
-        return None
