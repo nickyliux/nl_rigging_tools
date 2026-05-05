@@ -85,6 +85,7 @@ createNode transform -n "master_guide";
 	rename -uid "177DBE6B-4E8E-B711-3C19-589C4E949A6A";
 	addAttr -ci true -sn "____________" -ln "____________" -min 0 -max 0 -en "____________" 
 		-at "enum";
+	addAttr -ci true -sn "built" -ln "built" -min 0 -max 1 -at "bool";
 	addAttr -ci true -sn "segNum" -ln "segNum" -dv 1 -min 1 -max 4 -at "long";
 	addAttr -ci true -sn "parentNameMatch" -ln "parentNameMatch" -dt "string";
 	addAttr -ci true -sn "rigID" -ln "rigID" -dt "string";

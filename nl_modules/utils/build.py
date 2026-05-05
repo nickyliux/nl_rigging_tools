@@ -34,7 +34,7 @@ def getAnchors(targets, startStr=""):
     """Return objects from all targets having attr starts with str"""
     linkedObjs = []
     for node in [DagNode(r) for r in targets]:
-        if node.a.nodeState.get() == 2:
+        if node.a.built.get():
             userAttrs = node.a.list(ud=1, at="message")
             for uAttr in userAttrs:
                 obj = uAttr.inConnNode
@@ -49,8 +49,7 @@ def buildTgt(mg):
         rigClass = mg.a["rigClass"].get()
         rigObj = eval(rigClass)(mg)
         if rigObj:
-            state = mg.a["nodeState"].get()
-            if state == 0:
+            if not mg.a.built.get():
                 sk = rigObj.gen_sk()
                 if sk:
                     rigObj.build()
@@ -65,8 +64,7 @@ def buildGuide(*args):
     guidesToBuild = []
 
     for mg in MGs:
-        state = mg.a.nodeState.get()
-        if state == 0:
+        if not mg.a.built.get():
             guidesToBuild.append(mg)
 
     if guidesToBuild:
@@ -150,8 +148,7 @@ def unbuildTgt(mg):
     """Unbuild for target master guide"""
     mg = DagNode(mg) if isinstance(mg, str) else mg
     if mg.exists():
-        state = mg.a.nodeState.get()
-        if state == 2:
+        if mg.a.built.get():
             rigClass = mg.a.rigClass.get()
             rigObj = eval(rigClass)(mg)
             logging.info(f"Unbuilding {mg.name}")
@@ -463,7 +460,7 @@ def boneAutoAttach():
 
     for mg in collectMasterGuide():
 
-        if mg.a.nodeState.get() != 2:
+        if not mg.a.built.get():
             continue
 
         rbJntSetName = mg.a["rbJntSet"].get()

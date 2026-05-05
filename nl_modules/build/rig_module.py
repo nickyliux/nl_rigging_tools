@@ -289,13 +289,12 @@ class RigModule(RigBase):
 
     def genSk_module(self):
         """Generate the skeleton module."""
-        self.masterGuide.a.nodeState.set(1)
         # if self.masterC2.a.sx.get() != 1:
         #     self.masterC2.freezeXf(t=0, r=0, s=1)
 
     def build_pre_module(self):
         """Build the rig module."""
-        self.masterGuide.a.nodeState.set(2)
+        self.masterGuide.a.built.set(1)
         if not self.rootJ:
             raise ValueError("rootJ not set for the component")
 
@@ -353,7 +352,7 @@ class RigModule(RigBase):
         #             mc.delete(nodes)
 
         self.CTL_DATA.delete()
-        self.masterGuide.a.nodeState.set(0)
+        self.masterGuide.a.built.set(0)
         common.pauseVP(0)
 
     def setup_anchor_module(self, anchorDict=None):

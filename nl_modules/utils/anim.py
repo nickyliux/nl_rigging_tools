@@ -72,7 +72,7 @@ def switch_local_global(attr=None, toGlobal=0):
 
 def switch_fk_ik(mg=None):
     """Switch between FK and IK modes for the specified rig node."""
-    if not mg or mg.a.nodeState.get() != 2:
+    if not mg or not mg.a.built.get():
         return
 
     attr = None

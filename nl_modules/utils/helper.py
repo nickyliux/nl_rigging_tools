@@ -243,7 +243,7 @@ def loadHelper(loadLatest=1):
     """Load helper joint data from a JSON file and recreate the joints in the scene."""
     at_least_one_built = 0
     for mg in build.collectMasterGuide():
-        if mg.a.nodeState.get() == 2:
+        if mg.a.built.get():
             at_least_one_built = 1
 
     if at_least_one_built == 0:

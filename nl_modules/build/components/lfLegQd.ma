@@ -84,6 +84,7 @@ createNode transform -n "master_guide";
 	rename -uid "E66F8CE8-4304-FEB2-4988-D6851FD4AAC0";
 	addAttr -ci true -sn "____________" -ln "____________" -min 0 -max 0 -en "____________" 
 		-at "enum";
+	addAttr -ci true -sn "built" -ln "built" -min 0 -max 1 -at "bool";
 	addAttr -ci true -sn "scapulaBone" -ln "scapulaBone" -min 0 -max 1 -at "bool";
 	addAttr -ci true -sn "patellaBone" -ln "patellaBone" -min 0 -max 1 -at "bool";
 	addAttr -ci true -sn "kneeFix" -ln "kneeFix" -min 0 -max 1 -at "bool";
