@@ -4056,7 +4056,7 @@ corresponding set</string>
        <x>0</x>
        <y>90</y>
        <width>225</width>
-       <height>181</height>
+       <height>211</height>
       </rect>
      </property>
      <property name="title">
@@ -4072,7 +4072,7 @@ corresponding set</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>110</y>
+        <y>124</y>
         <width>221</width>
         <height>25</height>
        </rect>
@@ -4085,11 +4085,18 @@ corresponding set</string>
         <number>6</number>
        </property>
        <property name="topMargin">
-        <number>4</number>
+        <number>0</number>
        </property>
        <property name="rightMargin">
         <number>3</number>
        </property>
+       <item>
+        <widget class="QLabel" name="label_22">
+         <property name="text">
+          <string>Canine</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QPushButton" name="linkCanine_BN">
          <property name="minimumSize">
@@ -4119,12 +4126,12 @@ corresponding set</string>
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Link Canine</string>
+          <string>Link</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="linkEquine_BN">
+        <widget class="QPushButton" name="unlinkCanine_BN">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -4146,13 +4153,13 @@ corresponding set</string>
           </font>
          </property>
          <property name="toolTip">
-          <string>Connect to Equine</string>
+          <string>Connect to Canine</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Link Equine</string>
+          <string>Unlink</string>
          </property>
         </widget>
        </item>
@@ -4201,7 +4208,7 @@ corresponding set</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>140</y>
+        <y>186</y>
         <width>221</width>
         <height>25</height>
        </rect>
@@ -4265,6 +4272,119 @@ corresponding set</string>
       </property>
       <property name="text">
        <string>3. Scale it to fit closely</string>
+      </property>
+     </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget_35">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>150</y>
+        <width>221</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_20">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="leftMargin">
+        <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>3</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_23">
+         <property name="text">
+          <string>Equine</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="linkEquine_BN">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>9</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Connect to Equine</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Link</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="unlinkEquine_BN">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>9</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Connect to Canine</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Unlink</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="Line" name="line_5">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>114</y>
+        <width>205</width>
+        <height>3</height>
+       </rect>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
       </property>
      </widget>
     </widget>

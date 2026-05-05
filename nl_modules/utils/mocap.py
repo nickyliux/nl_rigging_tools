@@ -42,7 +42,7 @@ def retarget_for_tail(ns, tailPf=""):
         logging.info(f"No tail joints found")
         return
 
-    grp = GrpNode("jntsForTailRetgt_GRP")
+    grp = GrpNode("tail_link_grp")
     rbSrf = SrfNode.buildRbSrf(
         pf="retgt1", crv=crv, normal=-1, snap=firstJ, p=grp, spans=8
     )
@@ -95,6 +95,14 @@ def bake_motion(*args):
         common.pauseVP(0)
 
 
+def unCst_mm_to_quad(mapping, ns):
+    for cstMethod, pairs in mapping.items():
+        for src, tgt in pairs:
+            ctl = DagNode(ns + tgt)
+            if ctl.exists():
+                ctl.removeCstNodes()
+
+
 def cst_mm_to_quad(mapping, ns):
     """Apply constraints based on the provided mapping."""
     moma_ns = "moma:"
@@ -131,22 +139,48 @@ def link_canine(*args):
     link_to_map(0)
 
 
+def unlink_canine(*args):
+    unlink_map(0)
+
+
 def link_equine(*args):
     link_to_map(1)
+
+
+def unlink_equine(*args):
+    unlink_map(1)
 
 
 def link_to_map(mapId):
     """Connect Moma Sk to Qd rig controls."""
     ns = common.setNsFrSel()
-    map = CANINE_MAP if mapId == 0 else EQUINE_MAP
-    cst_mm_to_quad(map, ns)
+    if ns:
+        set_legs_to_fk(ns)
+        if mapId == 0:
+            cst_mm_to_quad(CANINE_MAP, ns)
+            retarget_for_tail(ns, tailPf="moma:c_tail_0")
+        elif mapId == 1:
+            cst_mm_to_quad(EQUINE_MAP, ns)
+            retarget_for_tail(ns, tailPf="moma:tail_")
 
-    set_legs_to_fk(ns)
 
-    if mapId == 0:
-        retarget_for_tail(ns, tailPf="moma:c_tail_0")
-    elif mapId == 1:
-        retarget_for_tail(ns, tailPf="moma:tail_")
+def unlink_map(mapId):
+    """Remove constraints between Moma Sk and Qd rig controls."""
+    ns = common.setNsFrSel()
+    if ns:
+        if mapId == 0:
+            unCst_mm_to_quad(CANINE_MAP, ns)
+            logging.info(
+                "Remove constraints between Moma Sk and Qd rig controls for Canine."
+            )
+        elif mapId == 1:
+            unCst_mm_to_quad(EQUINE_MAP, ns)
+            logging.info(
+                "Remove constraints between Moma Sk and Qd rig controls for Equine."
+            )
+        grp = GrpNode("tail_link_grp")
+        if grp.exists():
+            grp.delete()
 
 
 CANINE_MAP = {

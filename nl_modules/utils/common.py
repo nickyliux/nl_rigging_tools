@@ -774,10 +774,13 @@ def setNsFrSel(*args):
     ns = None
     if selected:
         ns = DagNode(selected[0]).namespace
-    if ns:
-        ns += ":"
-    mc.optionVar(sv=("curr_ns", ns))
-    # logging.info(f"Namespace set to {ns}." if ns != "" else "Namespace cleared.")
+        if ns:
+            ns += ":"
+        mc.optionVar(sv=("curr_ns", ns))
+    else:
+        mc.confirmDialog(
+            t="Info", m="Please select an object to get namespace.    ", b=["OK"]
+        )
 
     return ns
 

@@ -244,7 +244,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             self.UI.createCharDefForBiped_BN, mocap.create_hik_character_def_biped
         )
         self.connect(self.UI.linkCanine_BN, mocap.link_canine)
+        self.connect(self.UI.unlinkCanine_BN, mocap.unlink_canine)
         self.connect(self.UI.linkEquine_BN, mocap.link_equine)
+        self.connect(self.UI.unlinkEquine_BN, mocap.unlink_equine)
         self.connect(self.UI.bakeMotion_BN, mocap.bake_motion)
 
         # self.masterGuide_UI_refresh()
@@ -619,7 +621,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             lastFolder = ""
             if charFullPath:
                 lastFolder = os.path.basename(charFullPath)
-                print(f"{lastFolder=}")
 
             # Loop get folders in path
             folders = [
