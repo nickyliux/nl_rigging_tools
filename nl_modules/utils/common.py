@@ -785,7 +785,7 @@ def setNsFrSel(*args):
     return ns
 
 
-def clearNs():
+def clearNs(*arg):
     """Clear current namespace in optionVar"""
     mc.optionVar(sv=("curr_ns", ""))
 
@@ -1017,7 +1017,7 @@ def sortFile(n):
     return 0
 
 
-def getOppositeForSide(text, pfL="lf", pfR="rt"):
+def _getOpposite(text, pfL="lf", pfR="rt"):
     """Return opposite
     e.g.
         lf_leg0_ikc => rt_leg0_ikc
@@ -1040,14 +1040,14 @@ def getOppositeForSide(text, pfL="lf", pfR="rt"):
 
 
 def getOppositeStr(tgtStr, pfL="lf", pfR="rt"):
-    """Return opposite string if the target string contains left or right prefix"""
+    """Return opposite string by checking the left first, then right"""
+    name = tgtStr.split("|")[-1]
     oppStr = None
-    nonFullPathStr = tgtStr.split("|")[-1]
 
-    if nonFullPathStr.startswith(pfL) or f":{pfL}" in nonFullPathStr:
-        oppStr = getOppositeForSide(nonFullPathStr, pfL, pfR)
-    elif nonFullPathStr.startswith(pfR) or f":{pfR}" in nonFullPathStr:
-        oppStr = getOppositeForSide(nonFullPathStr, pfR, pfL)
+    if name.startswith(pfL) or f":{pfL}" in name or f"{pfL}_" in name:
+        oppStr = _getOpposite(name, pfL, pfR)
+    elif name.startswith(pfR) or f":{pfR}" in name or f"{pfR}_" in name:
+        oppStr = _getOpposite(name, pfR, pfL)
     return oppStr
 
 

@@ -66,9 +66,10 @@ def load_skeleton(loadLatest=1):
     file.importFile(tgtPaths[-1])
 
     logging.info(f"Skl file imported: {os.path.basename(tgtPaths[-1])}.")
+    print("")
 
 
-def add_lattice_to_rib(*args, name="rib_grp", div=(2, 2, 9), l_div=(4, 4, 4)):
+def rib_setup(*args, name="rib_grp", div=(2, 2, 9), l_div=(4, 4, 4)):
     """Add a lattice deformer to a group of name.
     Args:
         name (list): List of name to deform.
@@ -84,9 +85,11 @@ def add_lattice_to_rib(*args, name="rib_grp", div=(2, 2, 9), l_div=(4, 4, 4)):
         result = mc.lattice(
             tgts, dv=div, ldv=l_div, outsideLattice=1, objectCentered=1, commonParent=1
         )
-        GrpNode(result[1]).weightTo(spine_rbj_set, mi=5)
-        # MDL = GrpNode("MDL")
-        # if MDL.exists():
-        #     DagNode(result[0]).parent | MDL
+        lattice = GrpNode(result[1])
+        lattice.weightTo(spine_rbj_set, mi=5)
+
+        CHR = GrpNode("CHR")
+        if CHR.exists():
+            lattice.parent | CHR
     else:
         mc.confirmDialog(t="Info", m=f'"{name}" NOT found.     ', b="OK")

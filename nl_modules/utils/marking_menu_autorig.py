@@ -121,11 +121,7 @@ class MarkingMenuAutorig:
         mc.menuItem(p=mi, l="Duplicate", c=guide.duplicateGuideSel)
         mc.menuItem(p=mi, l="Dupl. Sym.", c=partial(guide.duplicateGuideSel, mirror=1))
         mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(
-            p=mi,
-            l="Copy Setting (Same class)",
-            c=partial(guide.copyGuideSel, ignoreMG=1),
-        )
+        mc.menuItem(p=mi, l="Copy Setting (Same class)", c=guide.copyGuideUI)
 
     def addProxyOptions(self, menu):
         """Add proxy options to the marking menu"""
@@ -148,7 +144,8 @@ class MarkingMenuAutorig:
         mc.menuItem(p=menu, l="Toggle Guide", c=guide.toggleGuide)
         mc.menuItem(p=menu, l="-" * 25, en=0)
         mc.menuItem(p=menu, l="Add Follow Cam", c=common.addFollowCam)
-        mc.menuItem(p=menu, l="Namespace = " + curr_ns_str, c=common.setNsFrSel)
+        mc.menuItem(p=menu, l="Clear Namespace", c=common.clearNs)
+        mc.menuItem(p=menu, l="ns : " + curr_ns_str, c=common.setNsFrSel)
 
     def addAdvancedOptions(self, menu):
         """Add space switch and IK/FK options to the marking menu"""

@@ -99,6 +99,7 @@ def buildGuide(*args):
 def postRig():
     """Post rigging operations"""
     logging.info(".")
+    print("")
 
     addMasterAttrs()
     control.reset_all_ctl()

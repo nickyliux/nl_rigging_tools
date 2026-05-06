@@ -131,9 +131,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def connect_UI(self):
         """Connect UI buttons to their respective functions."""
         # Guide
-        self.connect(self.UI.guide_load_BN, self.guide_load, ":addClip.png")
+        self.connect(self.UI.guide_load_BN, self.loadGuide, ":addClip.png")
         self.connect(self.UI.guide_explore_BN, guide.explore, ":searchEngine.png")
-        self.UI.guide_LW.itemDoubleClicked.connect(partial(self.guide_load, 0))
+        self.UI.guide_LW.itemDoubleClicked.connect(partial(self.loadGuide, 0))
 
         # Char Path
         self.connect(self.UI.charPath_BN, self.set_char_path, ":aselect.png")
@@ -156,7 +156,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.loadWrapTargetMesh_BN, self.loadWrapTargetMesh)
         self.connect(self.UI.templateTarget_BN, self.templateTarget, ":templated.png")
         self.connect(self.UI.selAllProxyGrp_BN, proxy.selectAllProxy)
-        # , ":aselect.png")
         self.connect(self.UI.bindToSelProxy_BN, proxy.bind_to_proxy, ":bind.png")
         self.connect(self.UI.toggleProxy_BN, proxy.toggleVis, ":visible.png")
         self.connect(self.UI.loadCtl_BN, self.loadCtl, ":teCreateClip.png")
@@ -164,8 +163,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.loadHlp_BN, self.loadHlp, ":teCreateClip.png")
         self.connect(self.UI.saveHlp_BN, helper.saveHelper, ":fileSave.png")
         self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
-        # HIKCharacterToolSkeleton
         self.connect(self.UI.boneAutoUnBind_BN, self.boneAutoUnBind, ":smallTrash.png")
+        self.connect(self.UI.buildRibLat_BN, skeleton.rib_setup)
 
         # Weight
         self.connect(self.UI.loadWeight_BN, self.loadWgh, ":teCreateClip.png")
@@ -293,8 +292,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             else:
                 self.UI.loadWrapTargetMesh_BN.setText("<< Load Wrap Mesh >>")
 
-    @common.Undo("guide_load")
-    def guide_load(self, *args):
+    @common.Undo("loadGuide")
+    def loadGuide(self, *args):
         """Load selected guide components."""
         items = self.UI.guide_LW.selectedItems()
         allTgtMG = []
@@ -555,11 +554,12 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         build.boneAutoAttach()
 
         # Rib setup
-        skeleton.add_lattice_to_rib()
+        skeleton.rib_setup()
 
         sk_grp = DagNode(AUTO_BIND_SK_GRP)
         if sk_grp.exists():
-            sk_grp.delete()
+            sk_grp | DagNode("CHR")
+            sk_grp.hide()
 
         mc.select(cl=1)
 

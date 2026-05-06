@@ -54,42 +54,56 @@ def mirrorGuide(*arg):
     MGs = build.collectMasterGuide(isSel=1, isAll=1)
     for mg in MGs:
         rigID = mg.a.rigID.get()
-
         oppRigID = common.getOppositeStr(rigID)
+
         if not oppRigID:
+            copyGuideWithinMG(mg)
             continue
 
         oppMG = DagNode(oppRigID + "_master_guide")
         if oppMG.exists():
-            mc.select(mg, oppMG)
-            copyGuideSel(mirror=1)
+            copyGuideBetwMG(mg, oppMG, mirror=1)
+
     mc.select(cl=1)
 
 
-def copyGuideSel(*arg, mirror=0, ignoreMG=0):
-    """Transfer guide settings from 1st to 2nd selected"""
-    MGs = build.collectMasterGuide(isSel=1, isAll=1)
-    if len(MGs) == 2:
-        rigClass = [
-            MGs[0].a.rigClass.get(),
-            MGs[1].a.rigClass.get(),
-        ]
-        if rigClass[0] and rigClass[1] and rigClass[0] == rigClass[1]:
-            rigID = [
-                MGs[0].a.rigID.get(),
-                MGs[1].a.rigID.get(),
-            ]
-            guideList = [
-                mc.ls(rigID[0] + "_*_guide", tr=1),
-                mc.ls(rigID[1] + "_*_guide", tr=1),
-            ]
-            for g1, g2 in zip(guideList[0], guideList[1]):
+def copyGuideWithinMG(mg):
+    """Mirror guides within the same master guide when no opposite rigID is found"""
+    rigID = mg.a.rigID.get()
+    guideList = mc.ls(rigID + "*lf_*guide", tr=1)
+    for g in guideList:
+        oppStr = common.getOppositeStr(g)
+        if oppStr:
+            copyCtlAttr(g, DagNode(oppStr), mirror=1)
 
-                copyCtlAttr(g1, g2, mirror=mirror, ignoreMG=ignoreMG)
-        else:
-            logging.info("Copy guide setting failed.")
+
+def copyGuideUI(*arg):
+    """Copy guide settings from 1st to 2nd selected master guide"""
+    MGs = build.collectMasterGuide(isSel=1, isAll=0)
+    if len(MGs) == 2:
+        copyGuideBetwMG(MGs[0], MGs[1], ignoreMG=1)
+
+
+def copyGuideBetwMG(mg1, mg2, mirror=0, ignoreMG=0):
+    """Transfer guide settings from 1st to 2nd selected"""
+    rigClass = [
+        mg1.a.rigClass.get(),
+        mg2.a.rigClass.get(),
+    ]
+    if rigClass[0] and rigClass[1] and rigClass[0] == rigClass[1]:
+        rigID = [
+            mg1.a.rigID.get(),
+            mg2.a.rigID.get(),
+        ]
+        guideList = [
+            mc.ls(rigID[0] + "_*_guide", tr=1),
+            mc.ls(rigID[1] + "_*_guide", tr=1),
+        ]
+        for g1, g2 in zip(guideList[0], guideList[1]):
+
+            copyCtlAttr(g1, g2, mirror=mirror, ignoreMG=ignoreMG)
     else:
-        logging.info("Please select 2 master guides.")
+        logging.info("Copy guide setting failed.")
 
 
 def duplicateGuideSel(*arg, mirror=0):
@@ -106,9 +120,7 @@ def duplicateGuideSel(*arg, mirror=0):
                 continue
 
         dupMG = loadGuide(removeEndDigits(rigID))
-
-        mc.select(mg, dupMG)
-        copyGuideSel(mirror=mirror)
+        copyGuideBetwMG(mg, dupMG, mirror=mirror)
         resultMGs.append(dupMG)
 
     if resultMGs:

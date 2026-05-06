@@ -372,7 +372,7 @@ class LegBp(RigModule):
         self.setting.snapTo(self.palm, p=self.CTL_DATA)
         self.palm.cstPar(self.setting, mo=1)
 
-        fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=0)
+        fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=1)
         total = len(self.jnts) - 1
 
         for i in range(total):
