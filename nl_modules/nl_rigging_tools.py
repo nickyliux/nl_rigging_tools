@@ -557,7 +557,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         skeleton.rib_setup()
 
         sk_grp = DagNode(AUTO_BIND_SK_GRP)
-        if sk_grp.exists():
+        if sk_grp.exists() and not sk_grp.parent:
             sk_grp | DagNode("CHR")
             sk_grp.hide()
 
