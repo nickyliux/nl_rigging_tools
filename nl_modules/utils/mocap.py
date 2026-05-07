@@ -6,65 +6,155 @@ from nl_modules.utils import anim, common, build
 import maya.cmds as mc
 import maya.mel as mel
 
+LINK_GRP = "moma_link_grp_"
 
-def retarget_for_tail(ns, tailPf=""):
-    """Gen resampled joints for tail retargeting."""
-    from nl_modules.build.rig_module import RigModule
+CANINE_MAP = {
+    "cstPar": [
+        # SPINE
+        ("c_pelvis", "spineQd0_cog_ctl"),
+        ("c_spine_01", "spineQd0_base_ikc"),
+        ("c_spine_03", "spineQd0_mid_ikc"),
+        ("c_spine_06", "spineQd0_fore_ikc"),
+        # L LEGS
+        ("l_scapula", "lfLegQd1_hip_fkc"),
+        ("l_hip", "lfLegQd0_upr_fkc"),
+        # R LEGS
+        ("r_scapula", "rtLegQd1_hip_fkc"),
+        ("r_hip", "rtLegQd0_upr_fkc"),
+    ],
+    "cstOri": [
+        # HEAD
+        ("c_head_01", "neck0_fore_ikc"),
+        # SPINE
+        ("c_pelvis", "spineQd0_end_ctl"),
+        # L LEGS
+        ("l_shoulder", "lfLegQd1_upr_fkc"),
+        ("l_elbow", "lfLegQd1_lwr_fkc"),
+        ("l_wrist", "lfLegQd1_palm_fkc"),
+        ("l_hand_01", "lfLegQd1_digit_fkc"),
+        ("l_hand_02", "lfLegQd1_ball_fkc"),
+        ("l_knee", "lfLegQd0_lwr_fkc"),
+        ("l_ankle", "lfLegQd0_palm_fkc"),
+        ("l_foot_01", "lfLegQd0_ball_fkc"),
+        ("l_foot_02", "lfLegQd0_ball_fkc"),
+        # R LEGS
+        ("r_shoulder", "rtLegQd1_upr_fkc"),
+        ("r_elbow", "rtLegQd1_lwr_fkc"),
+        ("r_wrist", "rtLegQd1_palm_fkc"),
+        ("r_hand_01", "rtLegQd1_digit_fkc"),
+        ("r_hand_02", "rtLegQd1_ball_fkc"),
+        ("r_knee", "rtLegQd0_lwr_fkc"),
+        ("r_ankle", "rtLegQd0_palm_fkc"),
+        ("r_foot_01", "rtLegQd0_ball_fkc"),
+        ("r_foot_02", "rtLegQd0_ball_fkc"),
+    ],
+}
 
+EQUINE_MAP = {
+    "cstPar": [
+        # SPINE
+        ("pelvis", "spineQd0_cog_ctl"),
+        ("spine_1", "spineQd0_base_ikc"),
+        ("spine_3", "spineQd0_mid_ikc"),
+        ("spine_5_neck", "spineQd0_fore_ikc"),
+        # L LEGS
+        ("L_scapula", "lfLegQd1_hip_fkc"),
+        ("L_femur", "lfLegQd0_upr_fkc"),
+        # R LEGS
+        ("R_scapula", "rtLegQd1_hip_fkc"),
+        ("R_femur", "rtLegQd0_upr_fkc"),
+    ],
+    "cstOri": [
+        # HEAD
+        ("head", "neck0_fore_ikc"),
+        # SPINE
+        ("pelvis", "spineQd0_end_ctl"),
+        # L LEGS
+        ("L_humerus", "lfLegQd1_upr_fkc"),
+        ("L_radius", "lfLegQd1_lwr_fkc"),
+        ("L_carpus", "lfLegQd1_palm_fkc"),
+        ("L_F_palanx_1", "lfLegQd1_digit_fkc"),
+        ("L_F_palanx_2", "lfLegQd1_ball_fkc"),
+        ("L_tibea", "lfLegQd0_lwr_fkc"),
+        ("L_tarsus", "lfLegQd0_palm_fkc"),
+        ("L_R_palanx_1", "lfLegQd0_ball_fkc"),
+        ("L_R_palanx_2", "lfLegQd0_ball_fkc"),
+        # R LEGS
+        ("R_humerus", "rtLegQd1_upr_fkc"),
+        ("R_radius", "rtLegQd1_lwr_fkc"),
+        ("R_carpus", "rtLegQd1_palm_fkc"),
+        ("R_F_palanx_1", "rtLegQd1_digit_fkc"),
+        ("R_F_palanx_2", "rtLegQd1_ball_fkc"),
+        ("R_tibea", "rtLegQd0_lwr_fkc"),
+        ("R_tarsus", "rtLegQd0_palm_fkc"),
+        ("R_R_palanx_1", "rtLegQd0_ball_fkc"),
+        ("R_R_palanx_2", "rtLegQd0_ball_fkc"),
+    ],
+}
+
+CANINE_JNTS = {
+	'neck':[f'moma:c_neck_0{i}' for i in range(1,6)],
+	'tail':[f'moma:c_tail_0{i}' for i in range(1,10)]
+}
+
+EQUINE_JNTS = {
+	'neck':['moma:neck'] + [f'moma:neck_{i}' for i in range(1,6)],
+	'tail':[f'moma:tail_{i}' for i in range(1,10)]
+}
+
+def mm_link_setup(ns, jnts=None, rID='tail0'):
+    """Gen resampled joints for retargeting."""
     # ---------------------------------------------------
-    # Get resample value for tail joints
+    # Get resample value from master guide setting
     # ---------------------------------------------------
     resampleNum = 4
-    tailMG = DagNode(f"{ns}tail0_master_guide")
-    if tailMG.exists():
-        resampleNum = tailMG.a.fkJntNum.get()
+    mg = DagNode(f"{ns}{rID}_master_guide")
+    if mg.exists():
+        resampleNum = mg.a.fkJntNum.get()
     else:
-        logging.info(f"Master guide for the tail not found. Ignore connection.")
+        logging.info(f"Master guide for the {rID} not found. Ignore connection.")
         return
 
     # ---------------------------------------------------
-    # Gen crv from tail joints
+    # Gen crv from joints
     # ---------------------------------------------------
+    if not jnts:
+        logging.info(f"No joint found for linking.")
+        return
+    
     allPos = []
-    for i in range(1, 10):
-        n = f"{tailPf}{i}"
-        pos = mc.xform(DagNode(n), q=1, t=1, ws=1)
+    for j in jnts:
+        pos = mc.xform(DagNode(j), q=1, t=1, ws=1)
         allPos.append(pos)
     crv = mc.curve(p=allPos)
 
     # ---------------------------------------------------
-    # Gen rbSrf and skin to tail joints
+    # Gen rbSrf and skin to joints
     # ---------------------------------------------------
-    firstJ = DagNode(f"{tailPf}1")
-    tailJnts = mc.ls(f"{tailPf}?", type="joint")
-
-    if not tailJnts:
-        logging.info(f"No tail joints found")
-        return
-
-    grp = GrpNode("tail_link_grp")
+    link_grp = GrpNode(LINK_GRP + '#')
     rbSrf = SrfNode.buildRbSrf(
-        pf="retgt1", crv=crv, normal=-1, snap=firstJ, p=grp, spans=8
+        pf=f'{rID}_srf1', crv=crv, normal=-1, snap=jnts[0], p=link_grp, spans=8
     )
-    SrfNode(rbSrf).weightTo(tailJnts, mi=1, cvMatchJnt=1)
+    SrfNode(rbSrf).weightTo(jnts, mi=1, cvMatchJnt=1)
+    print('')
 
     # ---------------------------------------------------
-    # Gen rbJnts and constraint to tail ctls
+    # Gen rbJnts and constraint to rig ctls
     # ---------------------------------------------------
     resampledJnts = SrfNode.buildRbJnt(
-        resampleNum, pf="retgt2", surf=rbSrf, rigData=grp, jntGrp=grp
+        resampleNum, pf=f'{rID}_srf2', surf=rbSrf, rigData=link_grp, jntGrp=link_grp
     )
-    i = 0
-    for jnt in resampledJnts:
-        ctl = f"{ns}tail0_{i}_fkc"
+    for i, jnt in enumerate(resampledJnts):
+        ctl = f"{ns}{rID}_{i}_fkc"
         if DagNode(ctl).exists():
-            if i == 0:
-                jnt.cstOri(ctl, mo=1)
-            else:
-                jnt.cstPar(ctl, mo=1)
-        i += 1
+            # if i == 0:
+            #     jnt.cstOri(ctl, mo=1)
+            # else:
+            #     jnt.cstPar(ctl, mo=1)
+            jnt.cstOri(ctl, mo=1)
 
     mc.delete(crv)
+    link_grp.hide()
     return resampledJnts
 
 
@@ -87,9 +177,9 @@ def bake_motion(*args):
             for i in range(len(rigIDs)):
                 anim.switch_fk_ik(mg=allMGs[i])
         # common.pauseVP(0)
-        grp = GrpNode("tail_link_grp")
-        if grp.exists():
-            grp.delete()
+        # grp = GrpNode("tail_link_grp")
+        # if grp.exists():
+        #     grp.delete()
 
 
 def unCst_mm_to_quad(mapping, ns):
@@ -155,10 +245,12 @@ def link_to_map(mapId):
         set_legs_to_fk(ns)
         if mapId == 0:
             cst_mm_to_quad(CANINE_MAP, ns)
-            retarget_for_tail(ns, tailPf="moma:c_tail_0")
+            mm_link_setup(ns, jnts=CANINE_JNTS["neck"], rID='neck0')
+            mm_link_setup(ns, jnts=CANINE_JNTS["tail"], rID='tail0')
         elif mapId == 1:
             cst_mm_to_quad(EQUINE_MAP, ns)
-            retarget_for_tail(ns, tailPf="moma:tail_")
+            mm_link_setup(ns, jnts=EQUINE_JNTS["neck"], rID='neck0')
+            mm_link_setup(ns, jnts=EQUINE_JNTS["tail"], rID='tail0')
 
 
 def unlink_map(mapId):
@@ -171,95 +263,12 @@ def unlink_map(mapId):
         elif mapId == 1:
             unCst_mm_to_quad(EQUINE_MAP, ns)
             logging.info("Remove constraints to rig controls for Equine.")
-        grp = GrpNode("tail_link_grp")
-        if grp.exists():
-            grp.delete()
 
+        # remove resampled joints and rbSrf
+        grp = mc.ls(LINK_GRP + "*")
+        if grp:
+            mc.delete(grp)
 
-CANINE_MAP = {
-    "cstPar": [
-        # HEAD
-        ("c_head_01", "neck0_fore_ikc"),
-        # SPINE
-        ("c_pelvis", "spineQd0_cog_ctl"),
-        ("c_spine_01", "spineQd0_base_ikc"),
-        ("c_spine_03", "spineQd0_mid_ikc"),
-        ("c_spine_06", "spineQd0_fore_ikc"),
-        # L LEGS
-        ("l_scapula", "lfLegQd1_hip_fkc"),
-        ("l_hip", "lfLegQd0_upr_fkc"),
-        # R LEGS
-        ("r_scapula", "rtLegQd1_hip_fkc"),
-        ("r_hip", "rtLegQd0_upr_fkc"),
-    ],
-    "cstOri": [
-        # SPINE
-        ("c_pelvis", "spineQd0_end_ctl"),
-        # L LEGS
-        ("l_shoulder", "lfLegQd1_upr_fkc"),
-        ("l_elbow", "lfLegQd1_lwr_fkc"),
-        ("l_wrist", "lfLegQd1_palm_fkc"),
-        ("l_hand_01", "lfLegQd1_digit_fkc"),
-        ("l_hand_02", "lfLegQd1_ball_fkc"),
-        ("l_knee", "lfLegQd0_lwr_fkc"),
-        ("l_ankle", "lfLegQd0_palm_fkc"),
-        ("l_foot_01", "lfLegQd0_ball_fkc"),
-        ("l_foot_02", "lfLegQd0_ball_fkc"),
-        # R LEGS
-        ("r_shoulder", "rtLegQd1_upr_fkc"),
-        ("r_elbow", "rtLegQd1_lwr_fkc"),
-        ("r_wrist", "rtLegQd1_palm_fkc"),
-        ("r_hand_01", "rtLegQd1_digit_fkc"),
-        ("r_hand_02", "rtLegQd1_ball_fkc"),
-        ("r_knee", "rtLegQd0_lwr_fkc"),
-        ("r_ankle", "rtLegQd0_palm_fkc"),
-        ("r_foot_01", "rtLegQd0_ball_fkc"),
-        ("r_foot_02", "rtLegQd0_ball_fkc"),
-    ],
-}
-
-
-EQUINE_MAP = {
-    "cstPar": [
-        # HEAD
-        ("head", "neck0_fore_ikc"),
-        # SPINE
-        ("pelvis", "spineQd0_cog_ctl"),
-        ("spine_1", "spineQd0_base_ikc"),
-        ("spine_3", "spineQd0_mid_ikc"),
-        ("spine_5_neck", "spineQd0_fore_ikc"),
-        # L LEGS
-        ("L_scapula", "lfLegQd1_hip_fkc"),
-        ("L_femur", "lfLegQd0_upr_fkc"),
-        # R LEGS
-        ("R_scapula", "rtLegQd1_hip_fkc"),
-        ("R_femur", "rtLegQd0_upr_fkc"),
-    ],
-    "cstOri": [
-        # SPINE
-        ("pelvis", "spineQd0_end_ctl"),
-        # L LEGS
-        ("L_humerus", "lfLegQd1_upr_fkc"),
-        ("L_radius", "lfLegQd1_lwr_fkc"),
-        ("L_carpus", "lfLegQd1_palm_fkc"),
-        ("L_F_palanx_1", "lfLegQd1_digit_fkc"),
-        ("L_F_palanx_2", "lfLegQd1_ball_fkc"),
-        ("L_tibea", "lfLegQd0_lwr_fkc"),
-        ("L_tarsus", "lfLegQd0_palm_fkc"),
-        ("L_R_palanx_1", "lfLegQd0_ball_fkc"),
-        ("L_R_palanx_2", "lfLegQd0_ball_fkc"),
-        # R LEGS
-        ("R_humerus", "rtLegQd1_upr_fkc"),
-        ("R_radius", "rtLegQd1_lwr_fkc"),
-        ("R_carpus", "rtLegQd1_palm_fkc"),
-        ("R_F_palanx_1", "rtLegQd1_digit_fkc"),
-        ("R_F_palanx_2", "rtLegQd1_ball_fkc"),
-        ("R_tibea", "rtLegQd0_lwr_fkc"),
-        ("R_tarsus", "rtLegQd0_palm_fkc"),
-        ("R_R_palanx_1", "rtLegQd0_ball_fkc"),
-        ("R_R_palanx_2", "rtLegQd0_ball_fkc"),
-    ],
-}
 
 
 # HIK bone name -> slot index (Maya HumanIK definition)
