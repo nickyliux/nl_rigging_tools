@@ -18,31 +18,31 @@ blockquote {
 ![License](https://img.shields.io/badge/license-MIT-red.svg?style=plastic)
 [![Blog](https://img.shields.io/badge/blog-nickyliu.com-blue)](http://www.nickyliu.com)
 
-![nlRT Main](docs/nlRT_interface.jpg) 
+![nlRT Main](docs/nlRT_UI.jpg) 
 
 ## Declaimer
 > Note that the project is still under active development so please use it for study purpose. 
 
 ## Background
 
-In my last job I encountered a project with characters in need of Ziva muscle. The very first step was to rig the skeleton mesh as the input of simulation. It required unusual skills like creating IK with backward initial knee, bone adjustment to avoid breaking the simulation... Wouldn't it be great to have an autorig tool for every vetebrate on Earth ? It seems a great way to learn anatomy and apply my knowledge in python.
+In my last job I encountered a project involving character setup with Ziva muscle. The very first step was to rig the skeleton mesh as the input of simulation. It required unusual skills like creating IK with backward initial knee, bone adjustment to avoid breaking the simulation... Isn't it great to have an autorig tool suporting skeleton rigging for every vetebrate ? It seems a great way to learn anatomy and apply advanced features of python.
 
 
 ## Features
 
-- **Modular :** Support multiple limbs.
-- **Skeletal :** Support skeleton rigging.
-- **Cartoony :** Support bendy limbs.
-- **Data Reuse :** Reuse of templates, controls, proxies, weights.
+- **Modular :** multiple limbs.
+- **Skeletal :** skeleton meshes for simulation.
+- **Cartoony :** bendy limbs.
+- **Data Reuse :** Reuse of presets, controls, proxies, weights and more
 - **Custom Marking Menus :** Handy menus for rig creation.
-- **Custom Framework :** Much less redundant code during development.
+- **Custom Framework :** Less redundant code.
 
 ## Marking Menus
 
 |nlRT Tasks|General Tasks|
 |:-:|:-:|
 |Ctrl + MMB|Ctrl + Alt + MMB|
-|![nlRT Main](docs/markingMenu_nlRT.png)|![nlRT Main](docs/markingMenu_general.png)|
+|![nlRT Main](docs/markingMenu_tool.png)|![nlRT Main](docs/markingMenu_general.png)|
 
 ## Installation
 
@@ -69,9 +69,10 @@ e.g.
 
 `horse`  
 &emsp;`  horse_mdl*.ma`  
+&emsp;`  horse_skl*.ma`  
 &emsp;`  horse_tpl*.json`  
-&emsp;`  horse_ctl*.ma`  
 &emsp;`  horse_prx*.ma`  
+&emsp;`  horse_ctl*.ma`  
 &emsp;`  weight`  
 &emsp;&emsp;&emsp;`  horse_wgh*.json`  
 
@@ -99,10 +100,10 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.srf_node import SrfNode
 
-grp = GrpNode('newGrp') # create group 'newGrp'
-jnt = JntNode('newJnt') # create joint 'newJnt'
-crv = CrvNode('newCrv') # create nurbs curve 'newCrv'
-srf = SrfNode('newSrf') # create nurbs surface 'newSrf'
+grp = GrpNode('newGrp') # new group 'newGrp'
+jnt = JntNode('newJnt') # new joint 'newJnt'
+crv = CrvNode('newCrv') # new nurbs curve 'newCrv'
+srf = SrfNode('newSrf') # new nurbs surface 'newSrf'
 
 crv.weightTo([jnt]) # bind jnt to crv
 srf.weightTo([jnt]) # bind jnt to srf
@@ -112,36 +113,31 @@ jnt.alignTo(grp) # align jnt to grp
 jnt.addOffsetGrp() # add offset group for jnt
 ```
 
-## Main Custom Component Classes
+## Custom Component Classes
 ```mermaid
 flowchart
     RigModule --> Head
     RigModule --> SpineBp
-    SpineBp --> NeckBp
+    RigModule --> SpineQd
     RigModule --> ArmBp
-    RigModule --> HandBp
     RigModule --> LegBp
+    RigModule --> LegQd
+    
 ```
 ```mermaid
 flowchart
-    RigModule --> Head
-    RigModule --> SpineQd
     RigModule --> IkFkSpline
-    RigModule --> LegQd
+    IkFkSpline --> Neck
     IkFkSpline --> Tail
-    IkFkSpline --> NeckQd
+    RigModule --> HandBp
+    RigModule --> FingerFk
+    RigModule --> SimpleFk
+    RigModule --> belt
 ```
 
-```python
-from nl_modules.build.leg_bp import LegBp
-
-cpn = LegBp('lfLegBp0_RGN') # create legBp object given rigNode in scene
-cpn.gen_sk() # generate skeleton
-cpn.build() # build rig
-```
 
 ## Dev Environment
-Maya 2023.3, Win 11 Pro
+Maya 2023.3 / Maya 2027,  Win 11 Pro
 
 ## Reference
 1. [Python for Maya : Beginner to Advanced Rigging Automation by Nick Hughes](https://www.udemy.com/course/python-for-maya-beginner-to-advanced-rigging-automation)
