@@ -55,28 +55,20 @@ The tool UI will show up at the left and "nlRT" appears in the main menu of Maya
 
 ## Usage
 
-Typical Workflow
-1. Set the character directory.
-2. Load the model.
-3. Create guides and fit into the model.
-4. Build rig.
-5. Gen proxy (For preview or skinning).
-6. Skin using proxy.
-7. Edit control shapes.
+Typical Workflow :
+1. Set Character Directory.
+2. Load character model. (`*_mdl#.ma`)
+3. For character with skeletal meshes, create rb joints bones in the middle and ref joints for limb bones. (`*_skl#.ma`) 
+4. Add guides or presets. Fit the guide points to the model. (`*_tpl#.json`)
+5. Build the rig.
+6. If you want to bind using proxies, fit the proxy to wrap mesh. (`*_prx#.ma`)
+7. Smooth and fix skin weight. (`weight/*_wgh#.json`)
+8. Fix controls shape and size. (`*_ctl#.ma`)
+9. Run "Bind Sk" ot attach and bind the skeletal meshes 
 
-If you follow the naming convention below, file can be read with less browsing.
-e.g.
+> Note that " # " is any number where the largest will be loaded
 
-`horse`  
-&emsp;`  horse_mdl*.ma`  
-&emsp;`  horse_skl*.ma`  
-&emsp;`  horse_tpl*.json`  
-&emsp;`  horse_prx*.ma`  
-&emsp;`  horse_ctl*.ma`  
-&emsp;`  weight`  
-&emsp;&emsp;&emsp;`  horse_wgh*.json`  
 
-> Note that * is any number where the largest will be loaded
 
 ## Custom Objects Classes
 ```mermaid
