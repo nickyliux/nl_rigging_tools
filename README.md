@@ -25,7 +25,7 @@ blockquote {
 
 ## Background
 
-In my last job I encountered a project involving character setup with Ziva muscle. The very first step was to rig the skeleton mesh as the input of simulation. It required unusual skills like creating IK with backward initial knee, bone adjustment to avoid breaking the simulation... Isn't it great to have an autorig tool suporting skeleton rigging for every vetebrate ? It seems a great way to learn anatomy and apply advanced features of python.
+In my last job I encountered a project involving character setup with Ziva muscle. The very first step was to rig the skeleton mesh as the input of simulation. It required unusual skills like creating IK with backward initial knee, bone adjustment to make it anatomically correct... Isn't it cool to have an autorig tool supporting skeletal rigging for every vetebrate ? It seems a great way to learn anatomy and apply python fully.
 
 
 ## Features
@@ -39,7 +39,7 @@ In my last job I encountered a project involving character setup with Ziva muscl
 
 ## Marking Menus
 
-|nlRT Tasks|General Tasks|
+|Rig Build|General|
 |:-:|:-:|
 |Ctrl + MMB|Ctrl + Alt + MMB|
 |![nlRT Main](docs/markingMenu_tool.png)|![nlRT Main](docs/markingMenu_general.png)|
@@ -61,12 +61,12 @@ Typical Workflow :
 3. For character with skeletal meshes, create rb joints bones in the middle and ref joints for limb bones. (`*_skl#.ma`) 
 4. Add guides or presets. Fit the guide points to the model. (`*_tpl#.json`)
 5. Build the rig.
-6. If you want to bind using proxies, fit the proxy to wrap mesh. (`*_prx#.ma`)
+6. If you want to bind using proxies, fit the proxy to warp mesh. (`*_prx#.ma`)
 7. Smooth and fix skin weight. (`weight/*_wgh#.json`)
 8. Fix controls shape and size. (`*_ctl#.ma`)
-9. Run "Bind Sk" ot attach and bind the skeletal meshes 
+9. Run "Bind Sk" to attach and bind the skeletal meshes.
 
-> Note that " # " is any number where the largest will be loaded
+> Note that # is any number and the largest will be loaded
 
 
 
@@ -129,7 +129,7 @@ flowchart
 
 
 ## Dev Environment
-Maya 2023.3 / Maya 2027,  Win 11 Pro
+Maya 2023.3 / 2027, Win 11 Pro
 
 ## Reference
 1. [Python for Maya : Beginner to Advanced Rigging Automation by Nick Hughes](https://www.udemy.com/course/python-for-maya-beginner-to-advanced-rigging-automation)
