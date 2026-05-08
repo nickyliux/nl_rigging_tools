@@ -82,6 +82,10 @@ def rib_setup(*args, name="rib_grp", div=(2, 2, 9), l_div=(4, 4, 4)):
         if not spine_rbj_set:
             logging.info(f"No spine_rbj_set found.")
             return
+        
+        if DagNode('spineBp0_master_guide').exists():
+            div = (2,9,2)
+
         result = mc.lattice(
             tgts, dv=div, ldv=l_div, outsideLattice=1, objectCentered=1, commonParent=1
         )

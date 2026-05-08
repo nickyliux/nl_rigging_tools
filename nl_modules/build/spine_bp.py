@@ -108,7 +108,7 @@ class SpineBp(RigModule):
         # if self.ribbon:
         self.build_spine_ik()
 
-        self.setting.alignTo(self.jnts_fk[0], p=self.CTL_DATA)
+        self.setting.alignTo(self.masterGuide, p=self.CTL_DATA)
         self.jnts_fk[0].cstPar(self.setting, mo=1)
 
         self.build_post()

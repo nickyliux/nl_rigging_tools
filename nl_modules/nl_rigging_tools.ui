@@ -1351,12 +1351,12 @@
           </size>
          </property>
          <property name="text">
-          <string>Skl</string>
+          <string>Sk Ref</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="loadSkl_BN">
+        <widget class="QPushButton" name="loadRef_BN">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -1393,7 +1393,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="saveSkl_BN">
+        <widget class="QPushButton" name="saveRef_BN">
          <property name="minimumSize">
           <size>
            <width>0</width>

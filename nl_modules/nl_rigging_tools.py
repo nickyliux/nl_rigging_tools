@@ -164,7 +164,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.saveHlp_BN, helper.saveHelper, ":fileSave.png")
         self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
         self.connect(self.UI.boneAutoUnBind_BN, self.boneAutoUnBind, ":smallTrash.png")
-        self.connect(self.UI.buildRibLat_BN, skeleton.rib_setup)
 
         # Weight
         self.connect(self.UI.loadWeight_BN, self.loadWgh, ":teCreateClip.png")
