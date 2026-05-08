@@ -1379,7 +1379,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Load Skeleton joints</string>
+          <string>Load skeleton reference</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -1415,7 +1415,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Save Skeleton joints</string>
+          <string>Save skeleton reference</string>
          </property>
          <property name="text">
           <string/>
@@ -1428,7 +1428,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>122</y>
+        <y>123</y>
         <width>88</width>
         <height>3</height>
        </rect>
@@ -1441,7 +1441,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>312</y>
+        <y>313</y>
         <width>88</width>
         <height>3</height>
        </rect>

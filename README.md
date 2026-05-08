@@ -57,18 +57,27 @@ The tool UI will show up at the left and "nlRT" appears in the main menu of Maya
 
 Typical Workflow :
 1. Set Character Directory.
-2. Load character model. (`*_mdl#.ma`)
-3. For character with skeletal meshes, create rb joints bones in the middle and ref joints for limb bones. (`*_skl#.ma`) 
-4. Add guides or presets. Fit the guide points to the model. (`*_tpl#.json`)
+2. Load character model.
+3. For character with skeletal meshes, create rb joint for axial bones and ref joints for limb bones. Move rb joints to rotation point. Ref joints can be placed roughly as the closest bind joint will be used.
+4. Add guides or presets. Fit the guide points to the model. 
 5. Build the rig.
-6. If you want to bind using proxies, fit the proxy to warp mesh. (`*_prx#.ma`)
-7. Smooth and fix skin weight. (`weight/*_wgh#.json`)
-8. Fix controls shape and size. (`*_ctl#.ma`)
+6. If you want to bind using proxies, fit the proxy to warp mesh. 
+7. Edit skin weight. 
+8. Edit controls shape and size.
 9. Run "Bind Sk" to attach and bind the skeletal meshes.
 
-> Note that # is any number and the largest will be loaded
 
 
+The files can be loaded without browwsing if you follow the name like below:
+
+    horse_mdl#.ma
+    horse_ref#.ma
+    horse__tpl#.json
+    weight/horse_wgh#.json
+    horse_prx#.ma
+    horse_ctl#.ma
+
+`# can be any number and the largest will be loaded`
 
 ## Custom Objects Classes
 ```mermaid

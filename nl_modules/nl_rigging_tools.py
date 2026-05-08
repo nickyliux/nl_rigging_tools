@@ -120,8 +120,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def loadCtl(self):
         control.loadControl(loadLatest=self.UI.loadLatest_CB.isChecked())
 
-    def loadSkl(self):
-        skeleton.load_skeleton(loadLatest=self.UI.loadLatest_CB.isChecked())
+    def loadRef(self):
+        skeleton.load_reference(loadLatest=self.UI.loadLatest_CB.isChecked())
 
     def loadTpl(self):
         """Load template for the guide."""
@@ -143,8 +143,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # From MDL to SK
         self.connect(self.UI.loadModel_BN, model.loadModel, ":teCreateClip.png")
 
-        self.connect(self.UI.loadSkl_BN, self.loadSkl, ":teCreateClip.png")
-        self.connect(self.UI.saveSkl_BN, skeleton.save_skeleton, ":fileSave.png")
+        self.connect(self.UI.loadRef_BN, self.loadRef, ":teCreateClip.png")
+        self.connect(self.UI.saveRef_BN, skeleton.save_reference, ":fileSave.png")
 
         self.connect(self.UI.loadTemplate_BN, self.loadTpl, ":teCreateClip.png")
         self.connect(self.UI.saveTemplate_BN, guide.saveTemplate, ":fileSave.png")
