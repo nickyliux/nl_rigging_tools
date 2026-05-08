@@ -86,6 +86,7 @@
             ]
         },
         "head0_master_guide":{
+            "built":false,
             "parentNameMatch":"neck*",
             "r":[
                 0.0,
@@ -210,6 +211,7 @@
             ]
         },
         "lfLegQd0_master_guide":{
+            "built":false,
             "dualBone":false,
             "kneeFix":false,
             "palmAimRatio":1.0,
@@ -1041,6 +1043,7 @@
             ]
         },
         "lfLegQd1_master_guide":{
+            "built":false,
             "dualBone":false,
             "kneeFix":false,
             "palmAimRatio":-1.0,
@@ -1821,6 +1824,7 @@
             ]
         },
         "neck0_master_guide":{
+            "built":false,
             "fkJntNum":4,
             "ikJntNum":4,
             "parentNameMatch":"spine*",
@@ -1966,6 +1970,7 @@
             ]
         },
         "rtLegQd0_master_guide":{
+            "built":false,
             "dualBone":false,
             "kneeFix":false,
             "palmAimRatio":1.0,
@@ -2797,6 +2802,7 @@
             ]
         },
         "rtLegQd1_master_guide":{
+            "built":false,
             "dualBone":false,
             "kneeFix":false,
             "palmAimRatio":-1.0,
@@ -3572,7 +3578,7 @@
             ],
             "t":[
                 0.0,
-                -5.0,
+                8.0,
                 -30.0
             ]
         },
@@ -3589,8 +3595,8 @@
             ],
             "t":[
                 0.0,
-                -5.0,
-                30.0
+                -20.0,
+                40.0
             ]
         },
         "spineQd0_cog_pivot_guide":{
@@ -3628,6 +3634,7 @@
             ]
         },
         "spineQd0_master_guide":{
+            "built":false,
             "r":[
                 0.0,
                 0.0,
@@ -3667,7 +3674,7 @@
         },
         "spineQd0_rt_guide":{
             "r":[
-                10.0,
+                0.0,
                 0.0,
                 0.0
             ],
@@ -3719,6 +3726,7 @@
             ]
         },
         "tail0_master_guide":{
+            "built":false,
             "fkJntNum":4,
             "ikJntNum":4,
             "parentNameMatch":"spine*",
@@ -3738,7 +3746,7 @@
             ],
             "t":[
                 0.0,
-                151.54000723130804,
+                149.7,
                 -56.80672724828419
             ]
         },

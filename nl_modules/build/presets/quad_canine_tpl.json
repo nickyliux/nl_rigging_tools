@@ -86,6 +86,7 @@
             ]
         },
         "head0_master_guide":{
+            "built":false,
             "parentNameMatch":"neck*",
             "r":[
                 0.0,
@@ -210,6 +211,7 @@
             ]
         },
         "lfLegQd0_master_guide":{
+            "built":false,
             "dualBone":false,
             "kneeFix":false,
             "palmAimRatio":1.0,
@@ -230,8 +232,6 @@
             "scapulaAutoAim":0.5,
             "scapulaBone":false,
             "showRef":false,
-            "spaceName1":"master, chest, pelvis, COG",
-            "spaceName2":"leg, chest, pelvis, master, COG",
             "t":[
                 7.490238258133734,
                 0.0,
@@ -1043,6 +1043,7 @@
             ]
         },
         "lfLegQd1_master_guide":{
+            "built":false,
             "dualBone":false,
             "kneeFix":false,
             "palmAimRatio":-1.0,
@@ -1063,8 +1064,6 @@
             "scapulaAutoAim":0.5,
             "scapulaBone":true,
             "showRef":false,
-            "spaceName1":"master, chest, pelvis, COG",
-            "spaceName2":"leg, chest, pelvis, master, COG",
             "t":[
                 7.011369415868259,
                 0.0,
@@ -1825,6 +1824,7 @@
             ]
         },
         "neck0_master_guide":{
+            "built":false,
             "fkJntNum":3,
             "ikJntNum":4,
             "parentNameMatch":"spine*",
@@ -1842,7 +1842,6 @@
                 0.26,
                 0.26
             ],
-            "spaceName1":"localBase, COG, master",
             "t":[
                 0.0,
                 68.07641185216465,
@@ -1971,6 +1970,7 @@
             ]
         },
         "rtLegQd0_master_guide":{
+            "built":false,
             "dualBone":false,
             "kneeFix":false,
             "palmAimRatio":1.0,
@@ -1991,8 +1991,6 @@
             "scapulaAutoAim":0.5,
             "scapulaBone":false,
             "showRef":false,
-            "spaceName1":"master, chest, pelvis, COG",
-            "spaceName2":"leg, chest, pelvis, master, COG",
             "t":[
                 -7.490238258133734,
                 0.0,
@@ -2804,6 +2802,7 @@
             ]
         },
         "rtLegQd1_master_guide":{
+            "built":false,
             "dualBone":false,
             "kneeFix":false,
             "palmAimRatio":-1.0,
@@ -2824,8 +2823,6 @@
             "scapulaAutoAim":0.5,
             "scapulaBone":true,
             "showRef":false,
-            "spaceName1":"master, chest, pelvis, COG",
-            "spaceName2":"leg, chest, pelvis, master, COG",
             "t":[
                 -7.011369415868259,
                 0.0,
@@ -3581,7 +3578,7 @@
             ],
             "t":[
                 0.0,
-                -5.0,
+                -2.0,
                 -30.0
             ]
         },
@@ -3598,8 +3595,8 @@
             ],
             "t":[
                 0.0,
-                -5.0,
-                30.0
+                -20.0,
+                35.0
             ]
         },
         "spineQd0_cog_pivot_guide":{
@@ -3615,7 +3612,7 @@
             ],
             "t":[
                 0.0,
-                -5.0,
+                -8.0,
                 0.0
             ]
         },
@@ -3637,6 +3634,7 @@
             ]
         },
         "spineQd0_master_guide":{
+            "built":false,
             "r":[
                 0.0,
                 0.0,
@@ -3728,6 +3726,7 @@
             ]
         },
         "tail0_master_guide":{
+            "built":false,
             "fkJntNum":6,
             "ikJntNum":4,
             "parentNameMatch":"spine*",
@@ -3745,7 +3744,6 @@
                 0.38,
                 0.38
             ],
-            "spaceName1":"localBase, COG, master",
             "t":[
                 0.0,
                 64.18913242674496,

@@ -519,7 +519,7 @@ class LegBp(RigModule):
         )
         if self.ribbon:
             self.ctl_vis_toggle(
-                self.setting.a.add("showBendy", type="bool", k=0, dv=1),
+                self.setting.a.add("showBendy", type="bool", k=0, dv=0),
                 onList=self.all_bendy,
             )
 
