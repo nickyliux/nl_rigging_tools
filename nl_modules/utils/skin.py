@@ -302,7 +302,7 @@ def setMaxInfl(tgt, val=8):
         mc.skinCluster(tgt, e=1, mi=val)
 
 
-def createLocalSecSetup(srf, tgts=None):
+def createLocalSecSetup(srf, tgts=None, pf='tmp_'):
     """Create local secondary deformation setup on a surface.
     
     Inputs:
@@ -324,23 +324,26 @@ def createLocalSecSetup(srf, tgts=None):
     if isinstance(tgts, list):
         tgts = [DagNode(j) for j in tgts]
 
-    grp = GrpNode(srf.name + "_localSec_GRP_#")
+    grp = GrpNode(pf + "localSec_grp_#")
+    localSecJnt_grp = GrpNode(pf + "localSecJnt_grp_#", p=grp)
+    localSecCtl_grp = GrpNode(pf + "localSecCtl_grp_#", p=grp)
     allCtls = []
-    baseJ = JntNode(srf.name + "_baseJ_#", r=0.05, p=grp)
+    baseJ = JntNode(pf + "baseJ_#", p=grp)
     localSkinJnts = [baseJ]
 
     for tgt in tgts:
 
         # Create follicle
         folXf = utils_node.follicle2_(srf, tgt)
-        ctl = CrvNode(tgt.name + "_ctl_#", align=tgt, up='x', scale=0.05, p=grp)
+        ctl = CrvNode(pf + "secCtl_#", shape='squareR', align=tgt, up='x', p=localSecCtl_grp)
         ofs1 = ctl.addOffsetGrp()
         ofs2 = ctl.addOffsetGrp()
         folXf.cstPar(ofs1, mo=1)
+        folXf | grp
         ctl.a.t * (-1,-1,-1) >> ofs2.a.t
 
         # Create local joint
-        jnt = JntNode(tgt.name + "_localJ_#", align=ctl, r=0.05, p=grp)
+        jnt = JntNode(pf + "localJnt_#", align=ctl, p=localSecJnt_grp)
         jnt.addOffsetGrp()
         ctl.a.t >> jnt.a.t
         ctl.a.r >> jnt.a.r
@@ -348,11 +351,12 @@ def createLocalSecSetup(srf, tgts=None):
 
         allCtls.append(ctl)
         localSkinJnts.append(jnt)
-        folXf | grp
+        folXf.hide()
 
     # Create local srf and setup skin & bs
-    local_srf = srf.duplicate(n=srf.name + "_localSrf")
+    local_srf = srf.duplicate(n=pf + "local_#")
     MshNode(local_srf).weightTo(localSkinJnts)
-    mc.blendShape(local_srf, srf, n=srf.name + "_localBS#", weight=(0, 1))
+    mc.blendShape(local_srf, srf, n=pf + "localBS_#", weight=(0, 1))
     local_srf | grp
-    local_srf.hide()
+
+    mc.hide(local_srf, baseJ, localSecJnt_grp)
