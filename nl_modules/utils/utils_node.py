@@ -3,6 +3,7 @@ from nl_modules.nodel.base.dep_node import DepNode
 from nl_modules.nodel.base.dag_node import DagNode
 
 
+
 def blendC_(attr1, attr2, w=0.5):
     """Blend inputs with blendColors node"""
     n = DepNode("blC__#", "blendColors")
@@ -73,7 +74,22 @@ def setRange_(attr, minOld, maxOld, minNew, maxNew):
 
 
 def distDim_(obj1, obj2):
-    """Return distanceDimension node between two objects"""
+    """Create distanceDimension node between two objects
+    
+    Inputs:
+        obj1: First object to measure from
+        obj2: Second object to measure to
+    
+    Process:
+        Creates a group for the distance dimension setup
+        Creates two locators parented to the group
+        Creates distanceDimension node connected between locators
+        Constrains locators to input objects with point constraints
+        Parents dimension to group
+    
+    Output:
+        distance: Distance value from distanceDimension node
+    """
     from nl_modules.nodel.grp_node import GrpNode
     from nl_modules.nodel.loc_node import LocNode
 
@@ -89,7 +105,21 @@ def distDim_(obj1, obj2):
 
 
 def distDim2_(obj1, obj2):
-    """Return distanceDimension node between two objects"""
+    """Create distanceDimension node between two objects with alignment
+    
+    Inputs:
+        obj1: First object to measure from
+        obj2: Second object to measure to
+    
+    Process:
+        Creates a group for the distance dimension setup
+        Creates two locators aligned to the input objects
+        Creates distanceDimension node connected between locators
+        Parents dimension to group
+    
+    Output:
+        distance: Distance value from distanceDimension node
+    """
     from nl_modules.nodel.grp_node import GrpNode
     from nl_modules.nodel.loc_node import LocNode
 
@@ -103,7 +133,21 @@ def distDim2_(obj1, obj2):
 
 
 def arcLenDim_(srfOrCrv, u=1, v=1):
-    """Return arcLengthDimension node for srf/crv"""
+    """Create arcLengthDimension node for surface or curve
+    
+    Inputs:
+        srfOrCrv: Surface or curve object to measure
+        u: U parameter value (default 1)
+        v: V parameter value (default 1)
+    
+    Process:
+        Creates arcLengthDimension node connected to input geometry
+        Sets U and V parameter values based on geometry type
+        Hides the dimension node
+    
+    Output:
+        arcLD: arcLengthDimension node
+    """
     from nl_modules.nodel.srf_node import SrfNode
 
     arcLD = DagNode(srfOrCrv + "_arcLD__#", nodeType="arcLengthDimension")
@@ -132,9 +176,31 @@ def motionPath_(
     frontAxis=0,
     inverseFront=0,
     upAxis=1,
-    driven=None,
+    driven=None
 ):
-    """Create motionPath node for curve with uValue and options"""
+    """Create motionPath node along curve
+    
+    Inputs:
+        crv: Curve object to follow
+        uValue: U parameter value on curve (default 0)
+        fractionMode: Use fraction mode if 1 (default 1)
+        follow: Follow curve direction if 1 (default 1)
+        worldUpType: World up vector type (default 2)
+        worldUpVector: World up vector (0, 1, 0) (default)
+        worldUpObject: Object to use as world up (default None)
+        frontAxis: Front axis orientation (default 0)
+        inverseFront: Inverse front axis if 1 (default 0)
+        upAxis: Up axis orientation (default 1)
+        driven: Target transform to drive with motion path (default None)
+    
+    Process:
+        Creates motionPath node connected to input curve
+        Sets all parameters for path following behavior
+        Optionally drives target transform with output
+    
+    Output:
+        n: motionPath node
+    """
     n = DepNode("mpt__#", "motionPath")
     if crv:
         crv.shape.a.worldSpace >> n.a.geometryPath
@@ -160,13 +226,37 @@ def motionPath_(
 
 
 def nonlinear_(targets, nodeType="twist"):
-    """Create twist nonlinear node for multiple targets"""
+    """Create nonlinear deformer on targets
+    
+    Inputs:
+        targets: Target object(s) to deform
+        nodeType: Type of nonlinear deformer (default "twist")
+    
+    Process:
+        Creates nonlinear deformer node connected to targets
+        Returns both deformer and handle transform nodes
+    
+    Output:
+        [deformerNode, handleTransform]: Deformer and its handle
+    """
     dfm = mc.nonLinear(targets, n="dfm__#", type=nodeType)
     return [DepNode(dfm[0]), DagNode(dfm[1])]
 
 
 def choice_(attrTargets, selector):
-    """Create choice node for multiple attributes and selector"""
+    """Create choice node to select between multiple inputs
+    
+    Inputs:
+        attrTargets: List of attributes to choose from
+        selector: Attribute controlling which input to output
+    
+    Process:
+        Creates choice node connected to input attributes
+        Selector controls which input is passed through
+    
+    Output:
+        output: Selected attribute based on selector value
+    """
     n = DepNode("cho__#", "choice")
     for t in attrTargets:
         t >> n.a.input
@@ -174,18 +264,103 @@ def choice_(attrTargets, selector):
 
     return n.a.output
 
+def cpos_(srf, obj, dynamic=0):
+    """Create closestPointOnSurface node
+    
+    Inputs:
+        srf: Surface or mesh object
+        obj: Object to find closest point on surface
+    
+    Process:
+        Creates closestPointOnSurface / closestPointOnMesh node
+        Connected to input surface/mesh and object position
+    
+    Output:
+        The closestPointOnSurface / closestPointOnMesh node
+    """
+    from nl_modules.nodel.loc_node import LocNode
 
-def follicle_(inSurf, u=0, v=0):
-    """Create follicle node for input surface with u, v parameters"""
-    n = DepNode(n="flc__#", nodeType="follicle")
-    folXf = DagNode(mc.listRelatives(n.fullPath, path=1, p=1)[0])
+    if isinstance(srf, str):
+        srf = DagNode(srf)
+    if isinstance(obj, str):
+        obj = DagNode(obj)
 
-    inSurf.shape.a.local >> n.a.inputSurface
-    inSurf.shape.a.worldMatrix >> n.a.inputWorldMatrix
+    if srf.type == 'nurbsSurface':
+        n = DagNode("cpos__#", nodeType="closestPointOnSurface")
+        srf.shape.a.worldSpace >> n.a.inputSurface
+    elif srf.type == 'mesh':
+        n = DagNode("cpom__#", nodeType="closestPointOnMesh")
+        srf.shape.a.outMesh >> n.a.inMesh
+
+    if dynamic:
+        loc = LocNode('tmpLoc', p=obj, align=obj)
+        loc.shape.a.worldPosition >> n.a.inPosition
+        loc.hide()
+    else:
+        worldPos = mc.xform(obj, q=1, ws=1, t=1)    
+        n.a.inPosition.set(*worldPos)
+
+    return n
+
+def follicle2_(srf, obj, u=0.5, v=0.5, dynamic=0):
+    """Create follicle node at closest point on surface
+    
+    Inputs:
+        srf: Surface or mesh object
+        obj: Object to find closest point on surface
+        u: U parameter value (default 0.5)
+        v: V parameter value (default 0.5)
+        dynamic: Use dynamic locator if 1, else static position (default 0)
+    
+    Process:
+        Creates closestPointOnSurface/Mesh node to find closest point
+        Creates follicle node at that position
+        Connects u,v parameters from closest point to follicle
+    
+    Output:
+        folXf: Transform node of follicle
+    """
+    cpos = cpos_(srf, obj, dynamic=dynamic)
+    v = cpos.a.parameterV
+    u = cpos.a.parameterU
+    if dynamic:
+        return follicle_(srf, u, v)
+    else:
+        return follicle_(srf, u.get(), v.get())
+
+def follicle_(srf, u=0.5, v=0.5):
+    """Create follicle node on surface
+    
+    Inputs:
+        srf: Surface or mesh object
+        u: U parameter value (default 0)
+        v: V parameter value (default 0)
+        nurbs: Use NURBS surface if 1, else mesh (default 1)
+    
+    Process:
+        Creates follicle node connected to input surface
+        Sets u,v parameters and connects transforms
+    
+    Output:
+        folXf: Transform node of follicle
+    """
+    n = DagNode(n="flc__#", nodeType="follicle")
+
+    if isinstance(srf, str):
+        srf = DagNode(srf)
+    
+    if srf.type == 'nurbsSurface':
+        srf.shape.a.local >> n.a.inputSurface
+    elif srf.type == 'mesh':
+        srf.shape.a.outMesh >> n.a.inputMesh
+        
+    srf.shape.a.worldMatrix >> n.a.inputWorldMatrix
+    folXf = n.parent
     n.a.outTranslate >> folXf.a.t
     n.a.outRotate >> folXf.a.r
-    n.a.parameterU.set(u)
-    n.a.parameterV.set(v)
+    u >> n.a.parameterU
+    v >> n.a.parameterV
+    n.a.simulationMethod.set(0)
     return folXf
 
 
@@ -197,11 +372,24 @@ def sin_(input):
 
 
 def noise_(input, noiseShake=2):
-    """Create noise node for input with specified noise type"""
+    """Create noise node for input
+    
+    Inputs:
+        input: Attribute to drive noise time
+        noiseShake: Frequency ratio for noise (default 2)
+    
+    Process:
+        Creates noise node connected to input attribute
+        Sets frequency ratio and noise type to perlin
+        Scales output to [-1, 1] range
+    
+    Output:
+        Scaled noise output in range [-1, 1]
+    """
     n = DepNode("noise__#", "noise")
     input >> n.a.time
     noiseShake >> n.a.frequencyRatio
     n.a.noiseType.set(4)
     n.a.alphaOffset.set(-0.5)
 
-    return 2 * n.a.outAlpha  # output range: [-1, 1]
+    return 2 * n.a.outAlpha
