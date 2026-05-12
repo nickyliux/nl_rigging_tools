@@ -3,11 +3,8 @@ import glob
 import logging
 import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
-from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.msh_node import MshNode
-from nl_modules.utils import common, utils_node
 from nl_modules.utils import control
 from nl_modules.utils import file
 
@@ -302,61 +299,3 @@ def setMaxInfl(tgt, val=8):
         mc.skinCluster(tgt, e=1, mi=val)
 
 
-def createLocalSecSetup(srf, tgts=None, pf='tmp_'):
-    """Create local secondary deformation setup on a surface.
-    
-    Inputs:
-        srf (str or DagNode): Target surface to create local secondary setup on.
-        tgts (list): List of target transforms to create local joints for.
-    
-    Process:
-        1. Create a group and base joint for the secondary system.
-        2. For each target, create a follicle on the surface, control curve, and local joint.
-        3. Duplicate the surface and skin it to the local joints.
-        4. Create a blend shape to drive the original surface with the local deformed surface.
-    
-    Output:
-        None. Creates and parents nodes to a group.
-    """
-
-    if isinstance(srf, str):
-        srf = DagNode(srf)
-    if isinstance(tgts, list):
-        tgts = [DagNode(j) for j in tgts]
-
-    grp = GrpNode(pf + "localSec_grp_#")
-    localSecJnt_grp = GrpNode(pf + "localSecJnt_grp_#", p=grp)
-    localSecCtl_grp = GrpNode(pf + "localSecCtl_grp_#", p=grp)
-    allCtls = []
-    baseJ = JntNode(pf + "baseJ_#", p=grp)
-    localSkinJnts = [baseJ]
-
-    for tgt in tgts:
-
-        # Create follicle
-        folXf = utils_node.follicle2_(srf, tgt)
-        ctl = CrvNode(pf + "secCtl_#", shape='squareR', align=tgt, up='x', p=localSecCtl_grp)
-        ofs1 = ctl.addOffsetGrp()
-        ofs2 = ctl.addOffsetGrp()
-        folXf.cstPar(ofs1, mo=1)
-        folXf | grp
-        ctl.a.t * (-1,-1,-1) >> ofs2.a.t
-
-        # Create local joint
-        jnt = JntNode(pf + "localJnt_#", align=ctl, p=localSecJnt_grp)
-        jnt.addOffsetGrp()
-        ctl.a.t >> jnt.a.t
-        ctl.a.r >> jnt.a.r
-        ctl.a.s >> jnt.a.s
-
-        allCtls.append(ctl)
-        localSkinJnts.append(jnt)
-        folXf.hide()
-
-    # Create local srf and setup skin & bs
-    local_srf = srf.duplicate(n=pf + "local_#")
-    MshNode(local_srf).weightTo(localSkinJnts)
-    mc.blendShape(local_srf, srf, n=pf + "localBS_#", weight=(0, 1))
-    local_srf | grp
-
-    mc.hide(local_srf, baseJ, localSecJnt_grp)

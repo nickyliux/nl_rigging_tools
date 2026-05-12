@@ -52,6 +52,7 @@ from nl_modules.utils import (
     file,
     guide,
     helper,
+    jiggle,
     log,
     maths,
     mocap,
@@ -75,6 +76,7 @@ reload(control)
 reload(file)
 reload(guide)
 reload(helper)
+reload(jiggle)
 reload(log)
 reload(maths)
 reload(model)
