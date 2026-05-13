@@ -1493,12 +1493,12 @@
           </size>
          </property>
          <property name="text">
-          <string>Jiggle</string>
+          <string>Tweak</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="loadJgl_BN">
+        <widget class="QPushButton" name="loadTwk_BN">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -1534,7 +1534,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="saveJgl_BN">
+        <widget class="QPushButton" name="saveTwk_BN">
          <property name="enabled">
           <bool>true</bool>
          </property>

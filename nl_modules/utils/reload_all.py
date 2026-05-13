@@ -52,7 +52,6 @@ from nl_modules.utils import (
     file,
     guide,
     helper,
-    jiggle,
     log,
     maths,
     mocap,
@@ -62,6 +61,7 @@ from nl_modules.utils import (
     proxy,
     skeleton,
     skin,
+    tweak,
     utils_node,
     matrix,
     marking_menu_autorig,
@@ -76,7 +76,7 @@ reload(control)
 reload(file)
 reload(guide)
 reload(helper)
-reload(jiggle)
+reload(tweak)
 reload(log)
 reload(maths)
 reload(model)

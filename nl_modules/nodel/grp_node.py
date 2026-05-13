@@ -359,7 +359,9 @@ class GrpNode(DagNode):
     def weightTo(self, joints, **kwargs):
         """Apply skin weights to the mesh"""
         if self.exists():
-            mc.skinCluster(self, joints, tsb=1, **kwargs)
+            sc = mc.skinCluster(self, joints, tsb=1, **kwargs)
+            return sc[0] if sc else None
+
 
     def softWeightTo(self, joints, rui=0, mi=3, dr=2, **kwargs):
         """Apply soft skin weights to the mesh"""

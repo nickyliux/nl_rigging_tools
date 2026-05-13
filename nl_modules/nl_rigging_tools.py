@@ -12,7 +12,6 @@ from nl_modules.utils import (
     file,
     guide,
     helper,
-    jiggle,
     log,
     mocap,
     model,
@@ -20,6 +19,7 @@ from nl_modules.utils import (
     reload_all,
     skeleton,
     skin,
+    tweak,
 )
 from nl_modules.utils.color import Color
 
@@ -58,7 +58,8 @@ SHADER_FILE = os.path.join(LIGHT_PATH, "bone_SHD.ma")
 AUTO_BIND_SK_GRP = "auto_bind_sk_grp"
 AUTO_BIND_SK_SET = "auto_bind_sk_set"
 MODEL_GRP = "model_grp"
-JIGGLE_GRP = "jiggle_setup_grp"
+TWEAK_GRP = "tweak_guide_grp"
+
 
 
 class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
@@ -113,8 +114,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def loadWgh(self):
         skin.loadWeight(loadLatest=self.UI.loadLatest_CB.isChecked())
 
-    def loadJgl(self):
-        jiggle.load_jiggle(loadLatest=self.UI.loadLatest_CB.isChecked())
+    def loadTwk(self):
+        tweak.load_tweak(loadLatest=self.UI.loadLatest_CB.isChecked())
 
     def loadHlp(self):
         helper.loadHelper(loadLatest=self.UI.loadLatest_CB.isChecked())
@@ -165,8 +166,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.saveCtl_BN, control.saveControl, ":fileSave.png")
         self.connect(self.UI.loadHlp_BN, self.loadHlp, ":teCreateClip.png")
         self.connect(self.UI.saveHlp_BN, helper.saveHelper, ":fileSave.png")
-        self.connect(self.UI.loadJgl_BN, self.loadJgl, ":teCreateClip.png")
-        self.connect(self.UI.saveJgl_BN, jiggle.save_jiggle, ":fileSave.png")
+        self.connect(self.UI.loadTwk_BN, self.loadTwk, ":teCreateClip.png")
+        self.connect(self.UI.saveTwk_BN, tweak.save_tweak, ":fileSave.png")
 
         self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
         # self.connect(self.UI.boneAutoUnBind_BN, self.boneAutoUnBind, ":smallTrash.png")
@@ -221,8 +222,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.mirrorAllRefJnt_BN, self.mirrorAllRefJnt)
         self.connect(self.UI.toggleClickDrag_BN, self.toggleClickDrag)
 
-        self.connect(self.UI.addJiggleJnt_BN, self.addJiggleJnt)
-        self.connect(self.UI.mirrorJiggleJnt_BN, self.mirrorAllJglJnt)
+        self.connect(self.UI.addJiggleJnt_BN, tweak.addTweakJnt)
+        self.connect(self.UI.mirrorJiggleJnt_BN, tweak.mirrorAllTwkJnt)
 
         # Retopo
         self.connect(self.UI.misc_retopo20_BN, partial(model.retopo, faceNum=20))
@@ -447,12 +448,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         ]
         self.UI.crvShape_LW.addItems(items)
 
-    def addJiggleJnt(self):
-        j = JntNode('md_x_jgl', p=JIGGLE_GRP, color=Color.D_RED, r=2)
-        j = JntNode('lf_x_jgl', p=JIGGLE_GRP, color=Color.D_RED, r=2)
-        j.a.t.set(10, 0, 0)
-        j = JntNode('rt_x_jgl', p=JIGGLE_GRP, color=Color.D_RED, r=2)
-        j.a.t.set(-10, 0, 0)
 
     def addRbRefJoint(self, rb=0):
         """Add reference joint or rb joint for selected mesh."""
@@ -487,14 +482,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Toggle click and drag selection preference."""
         state = mc.selectPref(clickDrag=not mc.selectPref(clickDrag=1, q=1))
         mc.selectPref(clickDrag=state)
-
-    def mirrorAllJglJnt(self):
-        """Mirror all jiggle joints in the scene."""
-        selectedJnt = mc.ls("lf_*_jgl", type="joint")
-        if selectedJnt:
-            guide.mirrorCtl(selectedJnt, wsMirror=1)
-        else:
-            mc.confirmDialog(t="Info", m="No jglJnt found.    ", b="OK")
 
     def mirrorAllRefJnt(self):
         """Mirror all reference joints in the scene."""

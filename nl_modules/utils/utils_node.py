@@ -302,7 +302,7 @@ def cpos_(srf, obj, dynamic=0):
 
     return n
 
-def follicle2_(srf, obj, u=0.5, v=0.5, dynamic=0):
+def follicle2_(srf, obj, u=0.5, v=0.5, dynamic=0, p=None):
     """Create follicle node at closest point on surface
     
     Inputs:
@@ -324,11 +324,11 @@ def follicle2_(srf, obj, u=0.5, v=0.5, dynamic=0):
     v = cpos.a.parameterV
     u = cpos.a.parameterU
     if dynamic:
-        return follicle_(srf, u, v)
+        return follicle_(srf, u, v, p=p)
     else:
-        return follicle_(srf, u.get(), v.get())
+        return follicle_(srf, u.get(), v.get(), p=p)
 
-def follicle_(srf, u=0.5, v=0.5):
+def follicle_(srf, u=0.5, v=0.5, p=None):
     """Create follicle node on surface
     
     Inputs:
@@ -361,6 +361,8 @@ def follicle_(srf, u=0.5, v=0.5):
     u >> n.a.parameterU
     v >> n.a.parameterV
     n.a.simulationMethod.set(0)
+    if p:
+        folXf | p
     return folXf
 
 
