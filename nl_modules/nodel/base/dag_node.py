@@ -350,7 +350,7 @@ class DagNode(DepNode):
             reset:  reset xform
             offset: set offset
         """
-        if mc.objExists(target):
+        if target and mc.objExists(target):
             mc.parent(self, target)
             if reset:
                 mc.makeIdentity(self)
