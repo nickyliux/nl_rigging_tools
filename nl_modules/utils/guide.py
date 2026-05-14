@@ -244,7 +244,7 @@ def loadTemplate(loadLatest=1):
     rigID_dict = file.loadJson(tgtPaths[-1])
     loadGuideFrIdDict(rigID_dict)
 
-    common.setView(fit=1)
+    # common.setView(fit=1)
     mc.select(cl=1)
     logging.info(f"Template loaded: {os.path.basename(tgtPaths[-1])}.")
 

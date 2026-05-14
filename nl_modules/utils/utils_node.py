@@ -204,10 +204,12 @@ def follicle2_(srf, obj, u=0.5, v=0.5, dynamic=0, p=None):
     cpos = cpos_(srf, obj, dynamic=dynamic)
     v = cpos.a.parameterV
     u = cpos.a.parameterU
-    if dynamic:
-        return follicle_(srf, u, v, p=p)
-    else:
-        return follicle_(srf, u.get(), v.get(), p=p)
+    if not dynamic:
+        u = u.get()
+        v = v.get()
+        cpos.delete()
+
+    return follicle_(srf, u, v, p=p)
 
 def follicle_(srf, u=0.5, v=0.5, p=None):
     """Create follicle node on surface at given UV coordinates"""

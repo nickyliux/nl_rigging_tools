@@ -247,8 +247,8 @@ def build_sets_for_binding(combinedMesh, proxies):
 def bind_to_proxy():
     """Combine all proxy meshes into a single one and create vertex sets for each original proxy mesh."""
 
-    targetWrapMesh = mc.optionVar(q="targetWrapMesh")
-    tgtMesh = DagNode(targetWrapMesh)
+    targetWarpMesh = mc.optionVar(q="targetWarpMesh")
+    tgtMesh = DagNode(targetWarpMesh)
     if not tgtMesh.exists():
         mc.confirmDialog(t="Info", m="Target wrap mesh NOT found.     ", b="OK")
         return

@@ -58,7 +58,7 @@ SHADER_FILE = os.path.join(LIGHT_PATH, "bone_SHD.ma")
 AUTO_BIND_SK_GRP = "auto_bind_sk_grp"
 AUTO_BIND_SK_SET = "auto_bind_sk_set"
 MODEL_GRP = "model_grp"
-TWEAK_GRP = "tweak_guide_grp"
+TWEAK_GRP = "tweak_reference_grp"
 
 
 
@@ -111,25 +111,25 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         build.unbuildGuide()
         # self.masterGuide_UI_refresh()
 
-    def loadWgh(self):
+    def loadWeightUI(self):
         skin.loadWeight(loadLatest=self.UI.loadLatest_CB.isChecked())
 
-    def loadTwk(self):
+    def loadTweakUI(self):
         tweak.load_tweak(loadLatest=self.UI.loadLatest_CB.isChecked())
 
-    def loadHlp(self):
+    def loadHelperUI(self):
         helper.loadHelper(loadLatest=self.UI.loadLatest_CB.isChecked())
 
-    def loadPrx(self):
+    def loadProxyUI(self):
         proxy.loadProxy(loadLatest=self.UI.loadLatest_CB.isChecked())
 
-    def loadCtl(self):
+    def loadControlUI(self):
         control.loadControl(loadLatest=self.UI.loadLatest_CB.isChecked())
 
-    def loadRef(self):
+    def loadReferenceUI(self):
         skeleton.load_reference(loadLatest=self.UI.loadLatest_CB.isChecked())
 
-    def loadTpl(self):
+    def loadTemplateUI(self):
         """Load template for the guide."""
         guide.loadTemplate(loadLatest=self.UI.loadLatest_CB.isChecked())
         # self.masterGuide_UI_refresh()
@@ -149,31 +149,29 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # From MDL to SK
         self.connect(self.UI.loadModel_BN, model.loadModel, ":teCreateClip.png")
 
-        self.connect(self.UI.loadRef_BN, self.loadRef, ":teCreateClip.png")
+        self.connect(self.UI.loadRef_BN, self.loadReferenceUI, ":teCreateClip.png")
         self.connect(self.UI.saveRef_BN, skeleton.save_reference, ":fileSave.png")
 
-        self.connect(self.UI.loadTemplate_BN, self.loadTpl, ":teCreateClip.png")
+        self.connect(self.UI.loadTemplate_BN, self.loadTemplateUI, ":teCreateClip.png")
         self.connect(self.UI.saveTemplate_BN, guide.saveTemplate, ":fileSave.png")
         self.connect(self.UI.buildAll_BN, self.buildAll, ":play_S.png")
         self.connect(self.UI.unbuildAll_BN, self.unbuildAll, ":smallTrash.png")
-        self.connect(self.UI.loadProxy_BN, self.loadPrx, ":teCreateClip.png")
+        self.connect(self.UI.loadProxy_BN, self.loadProxyUI, ":teCreateClip.png")
         self.connect(self.UI.saveProxy_BN, proxy.saveProxy, ":fileSave.png")
-        self.connect(self.UI.loadWrapTargetMesh_BN, self.loadWrapTargetMesh)
-        self.connect(self.UI.templateTarget_BN, self.templateTarget, ":templated.png")
-        self.connect(self.UI.selAllProxyGrp_BN, proxy.selectAllProxy)
-        self.connect(self.UI.bindToSelProxy_BN, proxy.bind_to_proxy, ":bind.png")
-        self.connect(self.UI.loadCtl_BN, self.loadCtl, ":teCreateClip.png")
+
+        self.connect(self.UI.loadCtl_BN, self.loadControlUI, ":teCreateClip.png")
         self.connect(self.UI.saveCtl_BN, control.saveControl, ":fileSave.png")
-        self.connect(self.UI.loadHlp_BN, self.loadHlp, ":teCreateClip.png")
+        self.connect(self.UI.loadHlp_BN, self.loadHelperUI, ":teCreateClip.png")
         self.connect(self.UI.saveHlp_BN, helper.saveHelper, ":fileSave.png")
-        self.connect(self.UI.loadTwk_BN, self.loadTwk, ":teCreateClip.png")
+
+        self.connect(self.UI.loadTwk_BN, self.loadTweakUI, ":teCreateClip.png")
         self.connect(self.UI.saveTwk_BN, tweak.save_tweak, ":fileSave.png")
 
         self.connect(self.UI.boneAutoBind_BN, self.boneAutoBind, ":bind.png")
         # self.connect(self.UI.boneAutoUnBind_BN, self.boneAutoUnBind, ":smallTrash.png")
 
         # Weight
-        self.connect(self.UI.loadWeight_BN, self.loadWgh, ":teCreateClip.png")
+        self.connect(self.UI.loadWeight_BN, self.loadWeightUI, ":teCreateClip.png")
         self.connect(self.UI.saveWeight_BN, skin.saveWeight, ":fileSave.png")
 
         # Weight Edit
@@ -181,6 +179,31 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.mirrorAsym_BN, partial(skin.mirrorWeightSel, 0))
         self.connect(self.UI.prune_BN, skin.pruneWeightSel)
         self.connect(self.UI.copyWeight_BN, skin.copyWeight)
+
+        # Prepare
+        self.connect(self.UI.addRbJnt_BN, partial(self.addRbRefJoint, rb=1))
+        self.connect(self.UI.addRefJnt_BN, partial(self.addRbRefJoint, rb=0))
+        self.connect(self.UI.addRbJntSet_BN, self.addRbJntSet)
+        self.connect(self.UI.mirrorAllRefJnt_BN, self.mirrorAllRefJnt)
+        self.connect(self.UI.toggleClickDrag_BN, self.toggleClickDrag)
+
+        # Skin
+        self.connect(self.UI.loadWarpMesh_BN, self.loadWarpMesh)
+        self.connect(self.UI.templateWarpMesh_BN, self.templateWarpMesh, ":templated.png")
+        self.connect(self.UI.isolateProxy_BN, self.isolateProxy)
+        self.connect(self.UI.selAllProxy_BN, proxy.selectAllProxy)
+        self.connect(self.UI.bindToSelProxy_BN, proxy.bind_to_proxy, ":bind.png")
+
+        # Tweak Ctl
+        self.connect(self.UI.loadTweakMesh_BN, self.loadTweakMesh)
+        self.connect(self.UI.templateTweakMesh_BN, self.templateTweakMesh, ":templated.png")
+        self.connect(self.UI.createTweak_BN, self.createTweakUI)
+        self.connect(self.UI.addTweakJnt_BN, tweak.addTweakJnt)
+        self.connect(self.UI.mirrorTweakJnt_BN, tweak.mirrorTweakJnt)
+        self.connect(self.UI.isolateTweak_BN, tweak.isolateTweak)
+        self.connect(self.UI.toggleTweak_BN, tweak.toggleTweak)
+        self.connect(self.UI.deleteTweakCtl_BN, tweak.deleteTweakCtl)
+        
 
         # Master Guide
         # self.UI.masterGuide_LW.itemDoubleClicked.connect(self.UI_selectMasterGuide)
@@ -214,16 +237,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.lineWidth2_BN, partial(control.setLineWidth, 2))
         self.connect(self.UI.lineWidth3_BN, partial(control.setLineWidth, 3))
         self.connect(self.UI.lineWidth5_BN, partial(control.setLineWidth, 5))
-
-        # Prepare
-        self.connect(self.UI.addRbJnt_BN, partial(self.addRbRefJoint, rb=1))
-        self.connect(self.UI.addRefJnt_BN, partial(self.addRbRefJoint, rb=0))
-        self.connect(self.UI.addRbJntSet_BN, self.addRbJntSet)
-        self.connect(self.UI.mirrorAllRefJnt_BN, self.mirrorAllRefJnt)
-        self.connect(self.UI.toggleClickDrag_BN, self.toggleClickDrag)
-
-        self.connect(self.UI.addTweakJnt_BN, tweak.addTweakJnt)
-        self.connect(self.UI.mirrorTweakJnt_BN, tweak.mirrorTweakJnt)
 
         # Retopo
         self.connect(self.UI.misc_retopo20_BN, partial(model.retopo, faceNum=20))
@@ -260,7 +273,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         # self.masterGuide_UI_refresh()
         self.crvShape_refresh()
-        self.updateLoadWrapTargetMesh()
+        self.updateWarpTargetMesh()
+        self.updateTweakTargetMesh()
         self.updateCharPathReloadUI()
 
     def setMaxInflSel(self):
@@ -291,15 +305,40 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 mc.optionVar(sv=("charDir", ""))
                 mc.savePrefs()
 
-    def updateLoadWrapTargetMesh(self):
+    def updateWarpTargetMesh(self):
         """Update the button text for loading wrap target mesh."""
-        targetWrapMesh = mc.optionVar(q="targetWrapMesh")
-        if targetWrapMesh:
-            tgt = DagNode(targetWrapMesh)
+        targetWarpMesh = mc.optionVar(q="targetWarpMesh")
+        if targetWarpMesh:
+            tgt = DagNode(targetWarpMesh)
+
+            text = tgt.name if tgt.exists() and tgt.type == "mesh" else ''
+            self.UI.warpMesh_LE.setText(text)
+
+    def updateTweakTargetMesh(self):
+        """Update the button text for loading tweak target mesh."""
+        targetTweakMesh = mc.optionVar(q="targetTweakMesh")
+        if targetTweakMesh:
+            tgt = DagNode(targetTweakMesh)
+
+            text = tgt.name if tgt.exists() and tgt.type == "mesh" else ''
+            self.UI.tweakMesh_LE.setText(text)
+
+
+    def isolateProxy(self):
+        """Isolate selected proxy mesh in the viewport."""
+        targetWarpMesh = mc.optionVar(q="targetWarpMesh")
+        if targetWarpMesh:
+            tgt = DagNode(targetWarpMesh)
             if tgt.exists() and tgt.type == "mesh":
-                self.UI.loadWrapTargetMesh_BN.setText(f"[ {tgt.name} ]")
-            else:
-                self.UI.loadWrapTargetMesh_BN.setText("<< Load Wrap Mesh >>")
+                proxy.selectAllProxy()
+                mc.select(tgt, add=1)
+                s = mc.isolateSelect('modelPanel4', q=1, state=1)
+                for p in mc.getPanel(type="modelPanel"):
+                    mc.isolateSelect(p, state=1-s)
+                    mc.isolateSelect(p, addSelected=1)
+                    mc.isolateSelect(p, update=1)
+                mc.select(cl=1)
+
 
     @common.Undo("loadGuide")
     def loadGuide(self, *args):
@@ -573,28 +612,61 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         mc.select(cl=1)
 
-    def templateTarget(self):
+    def templateWarpMesh(self):
         """Toggle display type of the target wrap mesh."""
-        targetWrapMesh = mc.optionVar(q="targetWrapMesh")
-        tgt = DagNode(targetWrapMesh)
+        targetWarpMesh = mc.optionVar(q="targetWarpMesh")
+        tgt = DagNode(targetWarpMesh)
         if tgt.exists():
             tgt.dspType = 1 - tgt.dspType
 
-    def loadWrapTargetMesh(self):
-        """Load target mesh for wrap deformer."""
-        selList = mc.ls(sl=1, tr=1)
+    def templateTweakMesh(self):
+        """Toggle display type of the target tweak mesh."""
+        targetTweakMesh = mc.optionVar(q="targetTweakMesh")
+        tgt = DagNode(targetTweakMesh)
+        if tgt.exists():
+            tgt.dspType = 1 - tgt.dspType
 
-        if selList and len(selList) > 0:
-            if DagNode(selList[0]).type == "mesh":
-                mc.optionVar(sv=("targetWrapMesh", selList[0]))
+    def loadWarpMesh(self):
+        """Set the selected mesh as the target wrap mesh."""
+        selList = mc.ls(sl=1, tr=1)
+        if selList:
+            tgt = DagNode(selList[0])
+            if tgt.type == "mesh":
+                mc.optionVar(sv=("targetWarpMesh", tgt.name))
                 mc.savePrefs()
-                self.updateLoadWrapTargetMesh()
+                self.updateWarpTargetMesh()
+
+    
+    def createTweakUI(self):
+        """Create tweak setup for the target tweak mesh using selected joints as reference."""
+        targetTweakMesh = mc.optionVar(q="targetTweakMesh")
+        if not targetTweakMesh:
+            mc.confirmDialog(t="Info", m="Target tweak mesh NOT found.    ", b="OK")
+            return
+        
+        targetTweakMesh = DagNode(targetTweakMesh)
+        if not targetTweakMesh.exists():
+            mc.confirmDialog(t="Info", m="Target tweak mesh NOT found.    ", b="OK")
+            return
+
+        sel = mc.ls(sl=1, tr=1)
+        refJnts = common.getObjectBelow(sel, tgtType="joint")
+        if refJnts:
+            tweak.createTweak(targetTweakMesh, refJnts=refJnts)
+            logging.info(f"Tweak created for {targetTweakMesh.name} with {len(refJnts)} reference joints.")
         else:
-            targetWrapMesh = mc.optionVar(q="targetWrapMesh")
-            tgt = DagNode(targetWrapMesh)
-            if tgt.exists():
-                tgt.dspType = 0
-                mc.select(tgt)
+            mc.confirmDialog(t="Info", m="Select tweak reference joints.    ", b="OK")
+            
+
+    def loadTweakMesh(self):
+        """Set the selected mesh as the target tweak mesh."""
+        selList = mc.ls(sl=1, tr=1)
+        if selList:
+            tgt = DagNode(selList[0])
+            if tgt.type == "mesh":
+                mc.optionVar(sv=("targetTweakMesh", tgt.name))
+                mc.savePrefs()
+                self.updateTweakTargetMesh()
 
     def misc_importEnvAndShd(self):
         """Import environment and shader files if not already present."""
@@ -607,7 +679,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def set_char_path(self):
         """Set character path via file dialog."""
-        # charPath = self.UI.charPath_LE.text()
         charPath = mc.optionVar(q="charDir")
         new_charPaths = mc.fileDialog2(
             dialogStyle=2, fileMode=3, dir=charPath, cap="Set Char Directory", okc="Set"
@@ -652,7 +723,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         import subprocess
 
         charPath = mc.optionVar(q="charFullPath")
-        # charPath = self.UI.charPath_LE.text()
         if not charPath:
             mc.confirmDialog(t="Info", m="Character path not set.     ", b="OK")
             return

@@ -19,7 +19,22 @@ QProgressBar {
     border-radius: 1px;
     background-color: rgba(20, 20, 20, 1);
 }
-
-# width: 20px;
-# border: 1px solid #f95;  
-# padding: 1px;
+/* Style for individual tabs */
+QTabBar::tab {
+    background: #333;
+    border: 2px solid rgba(51, 120, 204, 1);
+    border-bottom-color: #666; 
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    min-width: 45px;
+    padding: 3px;
+}
+/* Style for the currently selected tab */
+QTabBar::tab:selected {
+    background: #000;
+    border-bottom-color: rgba(51, 120, 204, 1)
+}
+/* Style for tabs when they are NOT selected */
+QTabBar::tab:!selected {
+    margin-top: 3px; /* Makes them look slightly smaller/behind */
+}
