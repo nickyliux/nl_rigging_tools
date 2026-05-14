@@ -222,8 +222,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.mirrorAllRefJnt_BN, self.mirrorAllRefJnt)
         self.connect(self.UI.toggleClickDrag_BN, self.toggleClickDrag)
 
-        self.connect(self.UI.addJiggleJnt_BN, tweak.addTweakJnt)
-        self.connect(self.UI.mirrorJiggleJnt_BN, tweak.mirrorAllTwkJnt)
+        self.connect(self.UI.addTweakJnt_BN, tweak.addTweakJnt)
+        self.connect(self.UI.mirrorTweakJnt_BN, tweak.mirrorTweakJnt)
 
         # Retopo
         self.connect(self.UI.misc_retopo20_BN, partial(model.retopo, faceNum=20))
@@ -455,7 +455,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         meshSel = [DagNode(m).parent for m in mc.ls(sl=1, type="mesh")]
 
         if meshSel:
-            sk_grp = DagNode(AUTO_BIND_SK_GRP)
+            sk_grp = GrpNode(AUTO_BIND_SK_GRP)
             if rb:
                 sf = "_rbJnt"
                 grp = GrpNode("rb_grp", p=sk_grp)

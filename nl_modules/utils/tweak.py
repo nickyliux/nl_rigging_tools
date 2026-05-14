@@ -8,13 +8,14 @@ from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.msh_node import MshNode
-from nl_modules.utils import utils_node, common
+from nl_modules.utils import utils_node, common, skin
 from nl_modules.utils.color import Color
 
 
 TWEAK_GRP = "tweak_guide_grp"
 
 def addTweakJnt(*args):
+    """Add tweak joints to the scene."""
     j = JntNode('tweak_md_1', p=TWEAK_GRP, color=Color.BLACK, r=2)
     j = JntNode('tweak_lf_1', p=TWEAK_GRP, color=Color.BLACK, r=2)
     j.a.t.set(10, 0, 0)
@@ -22,7 +23,7 @@ def addTweakJnt(*args):
     j.a.t.set(-10, 0, 0)
 
 
-def mirrorAllTwkJnt(*args):
+def mirrorTweakJnt(*args):
     """Mirror all tweak joints in the scene."""
     from nl_modules.utils import guide
 
@@ -83,25 +84,7 @@ def load_tweak(loadLatest=1):
 
 
 def createTweakCtl(srf, tgts=None, pf='tweak_'):
-    """Create tweak control rig on surface with target joints.
-    
-    Inputs:
-        srf (str or DagNode): Surface to create follicles on
-        tgts (list): List of target nodes to attach controls to
-        pf (str): Prefix for naming all created nodes (default: 'tweak_')
-    
-    Process:
-        1. Create main and local group hierarchy
-        2. For each target, create follicle on surface
-        3. Create control curve at target position
-        4. Create local joint chain for deformation
-        5. Connect controls to joints with translate/rotate/scale
-        6. Duplicate surface and skin to local joints
-        7. Connect local surface to original via blend shape
-    
-    Output:
-        None - Creates rig in scene with controls, joints, and deformation setup
-    """
+    """Create tweak control rig on surface with target joints."""
     if isinstance(srf, str):
         srf = DagNode(srf)
     if isinstance(tgts, list):
@@ -135,12 +118,16 @@ def createTweakCtl(srf, tgts=None, pf='tweak_'):
         localJnts.append(jnt)
         folXf.shape.hide()
 
-    # Create local srf and setup skin & bs
-    local_srf = srf.duplicate(n=pf + "srf")
-    MshNode(local_srf).weightTo(baseJ) # localJnts
-    # Add infl to local_srf
-    mc.blendShape(local_srf, srf, n=pf + "BS_#", weight=(0, 1))
+    # Create local srf and setup skin
+    local_geo = DagNode(srf.name + "_tweak")
+    if not local_geo.exists():
+        local_geo = srf.duplicate(n=srf.name + "_tweak")
 
-    (baseJ, local_srf) | local_grp | main_grp
+    MshNode(local_geo).weightTo(baseJ)
+    skin.addInfl(local_geo, localJnts)
+
+    mc.blendShape(local_geo, srf, n=pf + "BS_#", weight=(0, 1))
+
+    (baseJ, local_geo) | local_grp | main_grp
     local_grp.hide()
 
