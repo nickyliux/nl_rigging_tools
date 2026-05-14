@@ -5,6 +5,7 @@ import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.msh_node import MshNode
+from nl_modules.utils import common
 from nl_modules.utils import control
 from nl_modules.utils import file
 
@@ -295,7 +296,19 @@ def pruneWeightSel(*args):
 
 def setMaxInfl(tgt, val=8):
     """Set maximum influences for the skinCluster of the mesh"""
+    if isinstance(tgt, str):
+        tgt = DagNode(tgt)
     if tgt.skinCluster.exists():
         mc.skinCluster(tgt, e=1, mi=val)
 
+def addInfl(tgt, infl=None):
+    """Add an influence joint to the skinCluster of the mesh"""
+    if isinstance(tgt, str):
+        tgt = DagNode(tgt)
 
+    if tgt.skinCluster.exists() and infl:
+        for jnt in infl:
+            try:
+                mc.skinCluster(tgt, e=1, ai=jnt, lw=1, wt=0)
+            except Exception:
+                pass
