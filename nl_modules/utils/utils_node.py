@@ -1,3 +1,5 @@
+import logging
+
 import maya.cmds as mc
 from nl_modules.nodel.base.dep_node import DepNode
 from nl_modules.nodel.base.dag_node import DagNode
@@ -182,14 +184,18 @@ def cpos_(srf, obj, dynamic=0):
     if isinstance(obj, str):
         obj = DagNode(obj)
 
+    n = None
     if srf.type == 'nurbsSurface':
         n = DagNode("cpos__#", nodeType="closestPointOnSurface")
         srf.shape.a.worldSpace >> n.a.inputSurface
     elif srf.type == 'mesh':
         n = DagNode("cpom__#", nodeType="closestPointOnMesh")
         srf.shape.a.outMesh >> n.a.inMesh
+    else:
+        logging.warning(f"Unsupported surface type: {srf.type}")
+        return None
 
-    if dynamic:
+    if dynamic == 1:
         loc = LocNode('tmpLoc', p=obj, align=obj)
         loc.shape.a.worldPosition >> n.a.inPosition
         loc.hide()
@@ -207,7 +213,8 @@ def follicle2_(srf, obj, u=0.5, v=0.5, dynamic=0, p=None):
     if not dynamic:
         u = u.get()
         v = v.get()
-        cpos.delete()
+        # cpos.delete()
+    print(u,v)
 
     return follicle_(srf, u, v, p=p)
 

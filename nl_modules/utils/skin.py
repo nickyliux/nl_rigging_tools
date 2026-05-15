@@ -277,21 +277,21 @@ def mirrorWeightSel(*args):
     logging.info(f"Symmetrical skin weights mirrored for {len(sel)} meshes.")
 
 
-def pruneWeightSel(*args):
+def pruneWeightSel(*args, thres = 0.001):
     """Prune skin weights below threshold for selected meshes."""
     sel = [DagNode(s) for s in mc.ls(sl=1, tr=1)]
     if not sel:
         mc.confirmDialog(t="Info", m="Select skinned meshes to prune.     ", b="OK")
         return
 
-    threshold = 0.001
+    threshold = thres
     for msh in sel:
         if msh.skinCluster.exists():
             mc.skinCluster(
                 msh.skinCluster.name, e=1, pr=threshold, forceNormalizeWeights=1
             )
 
-    logging.info(f"Skin weights pruned with 0.001 for {len(sel)} meshes.")
+    logging.info(f"Skin weights pruned with {threshold} for {len(sel)} meshes.")
 
 
 def setMaxInfl(tgt, val=8):

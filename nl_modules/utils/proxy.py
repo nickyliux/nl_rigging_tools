@@ -207,9 +207,9 @@ def wrapProxy(*args):
     """Wrap selected meshes to the target wrap mesh using a shrinkWrap deformer."""
     selList = mc.ls(sl=1, tr=1)
     if selList:
-        targetWrapMesh = mc.optionVar(q="targetWrapMesh")
+        targetWarpMesh = mc.optionVar(q="targetWarpMesh")
 
-        tgt = DagNode(targetWrapMesh)
+        tgt = DagNode(targetWarpMesh)
         if not tgt.exists():
             raise ValueError(f"Missing object: {tgt}")
 
@@ -274,6 +274,10 @@ def bind_to_proxy():
     MshNode(combinedMesh).copyWeightsTo(tgtMesh)
     combinedMesh.delete()
     mc.select(cl=1)
+
+    master2_ctl = DagNode("master2_ctl")
+    if master2_ctl.exists():
+        master2_ctl.a.proxyVis.set(0)
 
     logging.info("Bind to selected proxy OK.")
 

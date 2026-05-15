@@ -1619,6 +1619,13 @@
         <number>0</number>
        </property>
        <item>
+        <widget class="QComboBox" name="charFolder_CBB">
+         <property name="maxVisibleItems">
+          <number>20</number>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="charPath_BN">
          <property name="enabled">
           <bool>true</bool>
@@ -1650,14 +1657,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="charFolder_CBB">
-         <property name="maxVisibleItems">
-          <number>20</number>
+          <string>...</string>
          </property>
         </widget>
        </item>
@@ -1781,7 +1781,7 @@
        <x>0</x>
        <y>460</y>
        <width>221</width>
-       <height>311</height>
+       <height>321</height>
       </rect>
      </property>
      <property name="currentIndex">
@@ -2080,7 +2080,7 @@
      </widget>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
-       <string>Skin</string>
+       <string>Proxy</string>
       </attribute>
       <widget class="QWidget" name="horizontalLayoutWidget_26">
        <property name="geometry">
@@ -2245,7 +2245,7 @@
            <string notr="true"/>
           </property>
           <property name="text">
-           <string>Sel All Proxy</string>
+           <string>Sel All</string>
           </property>
          </widget>
         </item>
@@ -2380,7 +2380,7 @@
      </widget>
      <widget class="QWidget" name="tab_4">
       <attribute name="title">
-       <string>Tweak Ctl</string>
+       <string>Tweak</string>
       </attribute>
       <widget class="QLabel" name="label_25">
        <property name="geometry">
@@ -2518,13 +2518,14 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>120</y>
+         <y>130</y>
          <width>211</width>
-         <height>16</height>
+         <height>31</height>
         </rect>
        </property>
        <property name="text">
-        <string>3. Select tweak jnts to create / add</string>
+        <string>3. Select tweak jnts, or group to 
+    create / add</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -2630,8 +2631,8 @@
        <property name="geometry">
         <rect>
          <x>6</x>
-         <y>140</y>
-         <width>200</width>
+         <y>160</y>
+         <width>101</width>
          <height>18</height>
         </rect>
        </property>
@@ -2668,155 +2669,14 @@
         <string>Create / Add</string>
        </property>
       </widget>
-      <widget class="Line" name="line_4">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>170</y>
-         <width>190</width>
-         <height>3</height>
-        </rect>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_33">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>190</y>
-         <width>211</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Tweak Local Group</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-       </property>
-      </widget>
-      <widget class="QWidget" name="horizontalLayoutWidget_27">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>210</y>
-         <width>211</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_23">
-        <property name="spacing">
-         <number>4</number>
-        </property>
-        <property name="leftMargin">
-         <number>6</number>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>3</number>
-        </property>
-        <item>
-         <widget class="QPushButton" name="isolateTweak_BN">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>9999</width>
-            <height>18</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Segoe UI</family>
-            <pointsize>8</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="styleSheet">
-           <string notr="true"/>
-          </property>
-          <property name="text">
-           <string>Isolate</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="toggleTweak_BN">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>9999</width>
-            <height>18</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Segoe UI</family>
-            <pointsize>8</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="styleSheet">
-           <string notr="true"/>
-          </property>
-          <property name="text">
-           <string>Toggle Vis</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QLabel" name="label_34">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>230</y>
-         <width>99</width>
-         <height>19</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Tweak Ctl</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="deleteTweakCtl_BN">
+      <widget class="QPushButton" name="isolateTweak_BN">
        <property name="enabled">
         <bool>true</bool>
        </property>
        <property name="geometry">
         <rect>
          <x>6</x>
-         <y>250</y>
+         <y>210</y>
          <width>101</width>
          <height>18</height>
         </rect>
@@ -2848,8 +2708,311 @@
         <string notr="true"/>
        </property>
        <property name="text">
-        <string>Del Sel</string>
+        <string>Toggle Isolate</string>
        </property>
+      </widget>
+      <widget class="QLabel" name="label_35">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>190</y>
+         <width>215</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>4. Paint weight on local Tweak Mesh</string>
+       </property>
+      </widget>
+      <widget class="Line" name="line_4">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>250</y>
+         <width>190</width>
+         <height>3</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QWidget" name="horizontalLayoutWidget_27">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>260</y>
+         <width>211</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_23">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <property name="leftMargin">
+         <number>6</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>3</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_34">
+          <property name="text">
+           <string>Select Tweak Ctl</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="deleteTweakCtl_BN">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>9999</width>
+            <height>18</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>8</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="text">
+           <string>Delete</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_5">
+      <attribute name="title">
+       <string>Weight</string>
+      </attribute>
+      <widget class="QWidget" name="verticalLayoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>20</y>
+         <width>211</width>
+         <height>151</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QPushButton" name="mirrorSym_BN">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>5</width>
+            <height>18</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>999</width>
+            <height>18</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>8</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>Mirror Weight ( Symmetric )</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="text">
+           <string>Mirror</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mirrorAsym_BN">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>5</width>
+            <height>18</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>999</width>
+            <height>18</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>8</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>Mirror Weight ( ASymmetric )</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="text">
+           <string>Mirror ( Asym )</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="prune_BN">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>5</width>
+            <height>18</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>999</width>
+            <height>18</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>8</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>Prune Weight</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="text">
+           <string>Prune = 0.001</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="copyWeight_BN">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>5</width>
+            <height>18</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>9999</width>
+            <height>18</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>8</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>Copy Weight with the Last Sel as Source</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="text">
+           <string>Copy ( Last as Source )</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="maxInfl_BN">
+          <property name="minimumSize">
+           <size>
+            <width>10</width>
+            <height>18</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>18</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>8</pointsize>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>Set Max Infl Number</string>
+          </property>
+          <property name="text">
+           <string>Max Infl = 8</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
     </widget>
@@ -2862,7 +3025,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>350</y>
+       <y>200</y>
        <width>225</width>
        <height>61</height>
       </rect>
@@ -2961,7 +3124,7 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>280</y>
+       <y>130</y>
        <width>225</width>
        <height>61</height>
       </rect>
@@ -3085,7 +3248,7 @@
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>Sel Hierarchy</string>
+          <string>Select Hi</string>
          </property>
          <property name="checkable">
           <bool>false</bool>
@@ -3104,7 +3267,7 @@
        <x>0</x>
        <y>6</y>
        <width>225</width>
-       <height>61</height>
+       <height>51</height>
       </rect>
      </property>
      <property name="title">
@@ -3273,9 +3436,9 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>80</y>
+       <y>70</y>
        <width>225</width>
-       <height>91</height>
+       <height>161</height>
       </rect>
      </property>
      <property name="title">
@@ -3339,325 +3502,6 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget_20">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>50</y>
-        <width>221</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_15">
-       <property name="spacing">
-        <number>4</number>
-       </property>
-       <property name="leftMargin">
-        <number>6</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>2</number>
-       </property>
-       <item>
-        <widget class="QPushButton" name="addWSMirrorAttr_BN">
-         <property name="minimumSize">
-          <size>
-           <width>10</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>+ WsMirror Attr</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="addFlipXAttr_BN">
-         <property name="minimumSize">
-          <size>
-           <width>10</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>+ FlipX Attr</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-    <widget class="QGroupBox" name="groupBox_17">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>180</y>
-       <width>225</width>
-       <height>91</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>Weight</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="flat">
-      <bool>true</bool>
-     </property>
-     <widget class="QWidget" name="horizontalLayoutWidget_9">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>20</y>
-        <width>221</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_9">
-       <property name="spacing">
-        <number>5</number>
-       </property>
-       <property name="leftMargin">
-        <number>6</number>
-       </property>
-       <property name="topMargin">
-        <number>4</number>
-       </property>
-       <property name="rightMargin">
-        <number>2</number>
-       </property>
-       <item>
-        <widget class="QPushButton" name="mirrorSym_BN">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>5</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>999</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Mirror Weight ( Symmetric )</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Mirror</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="mirrorAsym_BN">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>5</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>999</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Mirror Weight ( ASymmetric )</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Mirror ( Asym )</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget_12">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>50</y>
-        <width>221</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_12">
-       <property name="spacing">
-        <number>5</number>
-       </property>
-       <property name="leftMargin">
-        <number>6</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>2</number>
-       </property>
-       <item>
-        <widget class="QPushButton" name="prune_BN">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>5</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>999</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Prune Weight</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Prune</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="copyWeight_BN">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>5</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>9999</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Copy Weight with the Last Sel as Source</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Copy</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="maxInfl_BN">
-         <property name="minimumSize">
-          <size>
-           <width>10</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Set Max Infl Number</string>
-         </property>
-         <property name="text">
-          <string>Max Infl</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
     </widget>
    </widget>
    <widget class="QWidget" name="ctl_TB">
@@ -3670,7 +3514,7 @@
        <x>0</x>
        <y>6</y>
        <width>225</width>
-       <height>831</height>
+       <height>841</height>
       </rect>
      </property>
      <property name="title">
@@ -3866,9 +3710,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>136</y>
+        <y>158</y>
         <width>221</width>
-        <height>693</height>
+        <height>681</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -3896,7 +3740,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>52</y>
+        <y>49</y>
         <width>221</width>
         <height>24</height>
        </rect>
@@ -4211,7 +4055,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>80</y>
+        <y>74</y>
         <width>221</width>
         <height>25</height>
        </rect>
@@ -4361,7 +4205,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Nml</string>
+          <string>N</string>
          </property>
         </widget>
        </item>
@@ -4403,7 +4247,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Tpl</string>
+          <string>T</string>
          </property>
         </widget>
        </item>
@@ -4445,7 +4289,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Ref</string>
+          <string>R</string>
          </property>
         </widget>
        </item>
@@ -4455,7 +4299,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>108</y>
+        <y>103</y>
         <width>221</width>
         <height>21</height>
        </rect>
@@ -4514,7 +4358,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Top ON</string>
+          <string>Top On</string>
          </property>
         </widget>
        </item>
@@ -4556,7 +4400,7 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>Top OFF</string>
+          <string>Top Off</string>
          </property>
         </widget>
        </item>
@@ -4598,7 +4442,82 @@
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>DROP</string>
+          <string>Drop</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget_37">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>126</y>
+        <width>221</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_25">
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <property name="leftMargin">
+        <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>3</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Extra Attr</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="addWSMirrorAttr_BN">
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>WsMirror</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="addFlipXAttr_BN">
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>FlipX</string>
          </property>
         </widget>
        </item>
@@ -5229,6 +5148,48 @@
      <number>0</number>
     </property>
    </widget>
+  </widget>
+  <widget class="QPushButton" name="toggleTweak_BN">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>720</y>
+     <width>99</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>9999</width>
+     <height>18</height>
+    </size>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>8</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string/>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string>Toggle Vis</string>
+   </property>
   </widget>
  </widget>
  <resources/>

@@ -142,7 +142,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.guide_LW.itemDoubleClicked.connect(partial(self.loadGuide, 0))
 
         # Char Path
-        self.connect(self.UI.charPath_BN, self.set_char_path, ":aselect.png")
+        self.connect(self.UI.charPath_BN, self.set_char_path) #, ":aselect.png")
         self.connect(self.UI.char_explore_BN, self.explore_char, ":searchEngine.png")
         self.UI.charFolder_CBB.currentTextChanged.connect(self.update_char_full_path)
 
@@ -192,7 +192,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.templateWarpMesh_BN, self.templateWarpMesh, ":templated.png")
         self.connect(self.UI.isolateProxy_BN, self.isolateProxy)
         self.connect(self.UI.selAllProxy_BN, proxy.selectAllProxy)
-        self.connect(self.UI.bindToSelProxy_BN, proxy.bind_to_proxy, ":bind.png")
+        self.connect(self.UI.bindToSelProxy_BN, proxy.bind_to_proxy)
 
         # Tweak Ctl
         self.connect(self.UI.loadTweakMesh_BN, self.loadTweakMesh)
@@ -610,6 +610,10 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             sk_grp | DagNode("CHR")
             sk_grp.hide()
 
+        master2_ctl = DagNode("master2_ctl")
+        if master2_ctl.exists():
+            master2_ctl.a.jointVis.set(0)
+
         mc.select(cl=1)
 
     def templateWarpMesh(self):
@@ -653,6 +657,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         refJnts = common.getObjectBelow(sel, tgtType="joint")
         if refJnts:
             tweak.createTweak(targetTweakMesh, refJnts=refJnts)
+            local_grp = DagNode('tweak_local_grp')
+            if local_grp.exists():
+                local_grp.hide()
             logging.info(f"Tweak created for {targetTweakMesh.name} with {len(refJnts)} reference joints.")
         else:
             mc.confirmDialog(t="Info", m="Select tweak reference joints.    ", b="OK")

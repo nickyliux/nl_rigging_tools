@@ -523,7 +523,7 @@ class DagNode(DepNode):
             self.a.s.set(1, 1, 1)
         # mc.makeIdentity(self, t=t, r=r, s=s)
 
-    def duplicate(self, name=None, p=None, **kwargs):
+    def duplicate(self, n=None, p=None, **kwargs):
         """Duplicate itself"""
         from nl_modules.nodel.base.dag_node import DagNode
         from nl_modules.nodel.jnt_node import JntNode
@@ -541,8 +541,8 @@ class DagNode(DepNode):
             node = classObj(mc.duplicate(self, **kwargs)[0])
             if p:
                 mc.parent(node, p)
-            if name:
-                node.rename(name)
+            if n:
+                node.rename(n)
             return node
         else:
             logging.info("Unknown object type to duplicate !")

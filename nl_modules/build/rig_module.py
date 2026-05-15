@@ -577,7 +577,7 @@ class RigModule(RigBase):
         tgt = JntNode(tgt)
         name = f"{tgt.name}_ikj_#"
 
-        j1 = JntNode(tgt.duplicate(po=1, name=name), color=color)
+        j1 = JntNode(tgt.duplicate(po=1, n=name), color=color)
         j2 = JntNode(tgt.allChildrenJt[-1].duplicate(po=1, name=name), color=color)
         j1.setRadius(2, rel=1)
         j2.setRadius(2, rel=1)

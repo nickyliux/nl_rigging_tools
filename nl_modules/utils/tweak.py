@@ -17,9 +17,9 @@ TWEAK_GRP = "tweak_reference_grp"
 def addTweakJnt(*args):
     """Add tweak joints to the scene."""
     grp = GrpNode(TWEAK_GRP)
-    j1 = JntNode('tweak_md_1', p=grp, color=Color.D_BLUE, r=2)
-    j2 = JntNode('tweak_lf_1', p=grp, color=Color.D_BLUE, r=2)
-    j3 = JntNode('tweak_rt_1', p=grp, color=Color.D_BLUE, r=2)
+    j1 = JntNode('tweak_md_1', p=grp, color=Color.L_GREY, r=1)
+    j2 = JntNode('tweak_lf_1', p=grp, color=Color.L_GREY, r=1)
+    j3 = JntNode('tweak_rt_1', p=grp, color=Color.L_GREY, r=1)
     j2.a.t.set(20, 0, 0)
     j3.a.t.set(-20, 0, 0)
     mc.select(j1, j2, j3)
@@ -111,9 +111,13 @@ def isolateTweak(*args):
     """Isolate local tweak group in all model panels."""
     grp = DagNode('tweak_local_grp')
     if grp.exists():
-        grp.show()
         mc.select(grp)
         s = mc.isolateSelect('modelPanel4', q=1, state=1)
+        if s == 1:
+            grp.hide()
+        else:
+            grp.show()
+
         for p in mc.getPanel(type="modelPanel"):
             mc.isolateSelect(p, state=1-s)
             mc.isolateSelect(p, addSelected=1)
@@ -122,10 +126,12 @@ def isolateTweak(*args):
     else:
         mc.confirmDialog(t="Info", m=f"Local tweak group NOT found.    ", b="OK")
 
-def createTweak(srf, refJnts=None):
-    """Create tweak control rig on surface with target joints."""
-    if isinstance(srf, str):
-        srf = DagNode(srf)
+def createTweak(geo, refJnts=None):
+    """Create tweak control rig on surface with target joints.
+    Note: Make sure the srf has proper UVs.
+    """
+    if isinstance(geo, str):
+        geo = DagNode(geo)
     if isinstance(refJnts, list):
         refJnts = [DagNode(j) for j in refJnts]
 
@@ -135,40 +141,42 @@ def createTweak(srf, refJnts=None):
 
     localJnts = []
     allCtls = []
-    for tgt in refJnts:
+    for refJ in refJnts:
 
         # Create follicle
-        folXf = utils_node.follicle2_(srf, tgt, p=main_grp)
+        folXf = utils_node.follicle2_(geo, refJ, p=main_grp)
         folXf.rename("tweak_flc_#")
-        ctl = CrvNode(tgt + "_ctl", shape='sphere', align=tgt, up='x', color=Color.ORANGE, p=folXf)
+        ctl = CrvNode(refJ + "_ctl", shape='sphere', align=refJ, up='x', color=Color.ORANGE, p=folXf)
         ofs = ctl.addOffsetGrp(count=2)
         ctl.a.t * (-1,-1,-1) >> ofs[0].a.t
 
         # Create local joint
-        zro = GrpNode(tgt + "_zro", p=local_grp)
-        jnt = JntNode(tgt + "_jnt", p=zro, color=Color.BLUE)
-        zro.alignTo(tgt)
+        zro = GrpNode(refJ + "_zro", p=local_grp)
+        jnt = JntNode(refJ + "_jnt", p=zro, color=Color.BLUE)
+        zro.alignTo(refJ)
         [ctl.a[c] >> jnt.a[c] for c in "trs"]
 
         allCtls.append(ctl)
         localJnts.append(jnt)
         folXf.shape.hide()
-        tgt.hide()
+        # refJ.hide()
 
     # Create local srf and setup skin
-    tweak_mesh_name = srf.name + "_tweak"
+    tweak_mesh_name = geo.name + "_tweak"
     local_geo = DagNode(tweak_mesh_name)
     if not local_geo.exists():
-        local_geo = srf.duplicate(n=tweak_mesh_name)
-        (baseJ, local_geo) | local_grp | main_grp | DagNode("CHR")
+        local_geo = geo.duplicate(n=tweak_mesh_name)
+        (baseJ, local_geo) | local_grp | main_grp
+        CHR = DagNode("CHR")
+        if CHR.exists():
+            main_grp | CHR
 
     if not local_geo.skinCluster.exists():
         MshNode(local_geo).weightTo(baseJ)
     skin.addInfl(local_geo, localJnts)
 
-    tweak_bs_name = srf.name + "_tweak_BS"
+    tweak_bs_name = geo.name + "_tweak_BS"
     if not mc.objExists(tweak_bs_name):
-        mc.blendShape(local_geo, srf, n=tweak_bs_name, weight=(0, 1))
+        mc.blendShape(local_geo, geo, n=tweak_bs_name, frontOfChain=1, weight=(0, 1))
 
     mc.select(cl=1)
-
