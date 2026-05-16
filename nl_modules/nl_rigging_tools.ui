@@ -3072,7 +3072,7 @@
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>20</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -3100,7 +3100,7 @@
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>20</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -3143,7 +3143,7 @@
        <rect>
         <x>0</x>
         <y>20</y>
-        <width>224</width>
+        <width>221</width>
         <height>31</height>
        </rect>
       </property>
@@ -3163,7 +3163,7 @@
        <item>
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>Obj Type</string>
+          <string>Type</string>
          </property>
         </widget>
        </item>
@@ -3220,14 +3220,14 @@
         <widget class="QPushButton" name="selectTypeBelow_BN">
          <property name="minimumSize">
           <size>
-           <width>0</width>
+           <width>100</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>20</height>
+           <height>18</height>
           </size>
          </property>
          <property name="font">
@@ -3454,9 +3454,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>20</y>
+        <y>30</y>
         <width>221</width>
-        <height>31</height>
+        <height>21</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_11">
@@ -3467,11 +3467,21 @@
         <number>6</number>
        </property>
        <property name="topMargin">
-        <number>4</number>
+        <number>0</number>
        </property>
        <property name="rightMargin">
         <number>2</number>
        </property>
+       <item>
+        <widget class="QLabel" name="label_33">
+         <property name="text">
+          <string>Select targets in order</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QPushButton" name="misc_buildLineSel_BN">
          <property name="minimumSize">
@@ -3496,7 +3506,7 @@
           <string>Create Lines betw Selected</string>
          </property>
          <property name="text">
-          <string>Gen Line</string>
+          <string>Create Line</string>
          </property>
         </widget>
        </item>
@@ -3709,9 +3719,9 @@
      <widget class="QListWidget" name="crvShape_LW">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>158</y>
-        <width>221</width>
+        <x>3</x>
+        <y>154</y>
+        <width>216</width>
         <height>681</height>
        </rect>
       </property>
@@ -4299,7 +4309,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>103</y>
+        <y>100</y>
         <width>221</width>
         <height>21</height>
        </rect>
@@ -4452,7 +4462,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>126</y>
+        <y>123</y>
         <width>221</width>
         <height>21</height>
        </rect>
@@ -4539,7 +4549,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>Using Generated Motion ( 2027 )</string>
+      <string>Generated Motion ( 2027 )</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -4926,7 +4936,7 @@
         <x>10</x>
         <y>34</y>
         <width>201</width>
-        <height>21</height>
+        <height>18</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -4938,7 +4948,7 @@
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>9999</height>
+        <height>18</height>
        </size>
       </property>
       <property name="font">
