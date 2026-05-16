@@ -213,9 +213,7 @@ def follicle2_(srf, obj, u=0.5, v=0.5, dynamic=0, p=None):
     if not dynamic:
         u = u.get()
         v = v.get()
-        # cpos.delete()
-    print(u,v)
-
+        cpos.delete()
     return follicle_(srf, u, v, p=p)
 
 def follicle_(srf, u=0.5, v=0.5, p=None):

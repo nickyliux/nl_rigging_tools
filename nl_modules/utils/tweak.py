@@ -12,28 +12,32 @@ from nl_modules.utils import utils_node, common, skin
 from nl_modules.utils.color import Color
 
 
-TWEAK_GRP = "tweak_reference_grp"
+TWEAK_GRP = "tweak_guide_grp"
 
-def addTweakJnt(*args):
-    """Add tweak joints to the scene."""
+@common.Undo('add tweak guide')
+def addTweakGuide(*args):
+    """Add tweak guide to the scene."""
     grp = GrpNode(TWEAK_GRP)
-    j1 = JntNode('tweak_md_1', p=grp, color=Color.L_GREY, r=1)
-    j2 = JntNode('tweak_lf_1', p=grp, color=Color.L_GREY, r=1)
-    j3 = JntNode('tweak_rt_1', p=grp, color=Color.L_GREY, r=1)
-    j2.a.t.set(20, 0, 0)
-    j3.a.t.set(-20, 0, 0)
-    mc.select(j1, j2, j3)
+    ctl1 = CrvNode('tweak_md_1', shape='cube', scale = 0.4, p=grp, color=Color.BLACK, width=3)
+    ctl2 = CrvNode('tweak_lf_1', shape='cube', scale = 0.4, p=grp, color=Color.BLACK, width=3)
+    ctl3 = CrvNode('tweak_rt_1', shape='cube', scale = 0.4, p=grp, color=Color.BLACK, width=3)
+    ctl1.a.r.set(90, 0, 90)
+    ctl2.a.t.set(20, 0, 0)
+    ctl3.a.t.set(-20, 0, 0)
+    common.add_wsMirror_attr([ctl1, ctl2, ctl3])
+    # mc.select(ctl1, ctl2, ctl3)
 
 
-def mirrorTweakJnt(*args):
-    """Mirror all tweak joints in the scene."""
+@common.Undo('mirror tweak guides')
+def mirrorTweakGuide(*args):
+    """Mirror all tweak guides in the scene."""
     from nl_modules.utils import guide
 
-    selectedJnt = mc.ls("tweak_lf_*", type="joint")
-    if selectedJnt:
-        guide.mirrorCtl(selectedJnt, wsMirror=1)
+    sel = mc.ls("tweak_lf_*", tr=1)
+    if sel:
+        guide.mirrorCtl(sel, wsMirror=1)
     else:
-        mc.confirmDialog(t="Info", m="No twkJnt found.    ", b="OK")
+        mc.confirmDialog(t="Info", m="No tweak guides found.    ", b="OK")
 
 
 def save_tweak():
@@ -85,8 +89,24 @@ def load_tweak(loadLatest=1):
     logging.info(f"Tweak file imported: {os.path.basename(tgtPaths[-1])}.")
     print("")
 
-@common.Undo('delete tweak controls')
-def deleteTweakCtl(*args):
+@common.Undo('delete all tweak controls')
+def delAllTweakCtl(*args):
+    
+    grp = DagNode('tweak_local_grp')
+    if grp.exists():
+        tweak_meshs = common.getObjectBelow(grp, tgtType='mesh')
+        if tweak_meshs:
+            history = tweak_meshs[0].futureHistory
+            for h in history:
+                if h.type == 'blendShape':
+                    h.delete()
+    grp = DagNode('TWEAK')
+    if grp.exists():
+        grp.delete()
+    
+
+@common.Undo('delete selected tweak controls')
+def delSelTweakCtl(*args):
     """Delete all tweak control objects."""
     ctls = mc.ls("tweak_*_*_ctl", tr=1, sl=1)
     for ctl in ctls:
@@ -126,14 +146,14 @@ def isolateTweak(*args):
     else:
         mc.confirmDialog(t="Info", m=f"Local tweak group NOT found.    ", b="OK")
 
-def createTweak(geo, refJnts=None):
+def createTweak(geo, tgts=None):
     """Create tweak control rig on surface with target joints.
     Note: Make sure the srf has proper UVs.
     """
     if isinstance(geo, str):
         geo = DagNode(geo)
-    if isinstance(refJnts, list):
-        refJnts = [DagNode(j) for j in refJnts]
+    if isinstance(tgts, list):
+        tgts = [DagNode(j) for j in tgts]
 
     main_grp = GrpNode("TWEAK")
     local_grp = GrpNode("tweak_local_grp")
@@ -141,25 +161,24 @@ def createTweak(geo, refJnts=None):
 
     localJnts = []
     allCtls = []
-    for refJ in refJnts:
+    for tgt in tgts:
 
         # Create follicle
-        folXf = utils_node.follicle2_(geo, refJ, p=main_grp)
+        folXf = utils_node.follicle2_(geo, tgt, p=main_grp)
         folXf.rename("tweak_flc_#")
-        ctl = CrvNode(refJ + "_ctl", shape='sphere', align=refJ, up='x', color=Color.ORANGE, p=folXf)
+        ctl = CrvNode(tgt + "_ctl", shape='sphere', align=tgt, up='x', color=Color.ORANGE, p=folXf)
         ofs = ctl.addOffsetGrp(count=2)
         ctl.a.t * (-1,-1,-1) >> ofs[0].a.t
 
         # Create local joint
-        zro = GrpNode(refJ + "_zro", p=local_grp)
-        jnt = JntNode(refJ + "_jnt", p=zro, color=Color.BLUE)
-        zro.alignTo(refJ)
+        zro = GrpNode(tgt + "_zro", p=local_grp)
+        jnt = JntNode(tgt + "_jnt", p=zro, color=Color.BLUE)
+        zro.alignTo(tgt)
         [ctl.a[c] >> jnt.a[c] for c in "trs"]
 
         allCtls.append(ctl)
         localJnts.append(jnt)
         folXf.shape.hide()
-        # refJ.hide()
 
     # Create local srf and setup skin
     tweak_mesh_name = geo.name + "_tweak"
@@ -179,4 +198,5 @@ def createTweak(geo, refJnts=None):
     if not mc.objExists(tweak_bs_name):
         mc.blendShape(local_geo, geo, n=tweak_bs_name, frontOfChain=1, weight=(0, 1))
 
+    logging.info(f"{len(tgts)} tweak ctls added.")
     mc.select(cl=1)

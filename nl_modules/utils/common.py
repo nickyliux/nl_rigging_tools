@@ -833,17 +833,16 @@ def add_wsMirror_attr(tgts=None):
             t.a.add("wsMirror", lock=1, k=0, cb=0, dv=1)
 
 
-def add_flipRX_attr(tgts=None):
-    """Add flip X attribute to targets"""
+def add_flipR_attr(tgts=None, axis='X'):
+    """Add flip attribute to targets"""
     from nl_modules.nodel.base.dag_node import DagNode
 
     if not tgts:
         tgts = mc.ls(sl=1, tr=1) or []
-
     for t in tgts:
         t = DagNode(t)
         if t.exists():
-            t.a.add("flipRX", lock=1, k=0, cb=0, dv=1)
+            t.a.add(f"flipR{axis}", lock=1, k=0, cb=0, dv=1)
 
 
 def build_ribbon_rivet(

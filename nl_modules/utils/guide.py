@@ -151,6 +151,10 @@ def copyCtlAttr(A, B, wsMirror=0, mirror=0, ignoreMG=0):
 
         if A.a["flipRX"].exists():
             rx -= 180
+        if A.a["flipRY"].exists():
+            ry -= 180
+        if A.a["flipRZ"].exists():
+            rz -= 180
 
     B.a.t.set(tx, ty, tz)
     B.a.r.set(rx, ry, rz)

@@ -629,7 +629,14 @@ class DagNode(DepNode):
             tgt.a.overrideDisplayType.set(state)
 
     @property
-    def history(self):
+    def futureHistory(self):
+        """Return future history"""
+        if self.exists():
+            return [DagNode(obj) for obj in mc.listHistory(self, future=1, leaf=1, pdo=1)]
+        return []
+    
+    @property
+    def history(self): #, output=0, lv=0):
         """Return history"""
         if self.exists():
             return [DagNode(obj) for obj in mc.listHistory(self)]

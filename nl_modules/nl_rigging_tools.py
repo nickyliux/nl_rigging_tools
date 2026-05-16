@@ -58,7 +58,7 @@ SHADER_FILE = os.path.join(LIGHT_PATH, "bone_SHD.ma")
 AUTO_BIND_SK_GRP = "auto_bind_sk_grp"
 AUTO_BIND_SK_SET = "auto_bind_sk_set"
 MODEL_GRP = "model_grp"
-TWEAK_GRP = "tweak_reference_grp"
+TWEAK_GRP = "tweak_guide_grp"
 
 
 
@@ -198,11 +198,12 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.loadTweakMesh_BN, self.loadTweakMesh)
         self.connect(self.UI.templateTweakMesh_BN, self.templateTweakMesh, ":templated.png")
         self.connect(self.UI.createTweak_BN, self.createTweakUI)
-        self.connect(self.UI.addTweakJnt_BN, tweak.addTweakJnt)
-        self.connect(self.UI.mirrorTweakJnt_BN, tweak.mirrorTweakJnt)
+        self.connect(self.UI.addTweakJnt_BN, tweak.addTweakGuide)
+        self.connect(self.UI.mirrorTweakJnt_BN, tweak.mirrorTweakGuide)
         self.connect(self.UI.isolateTweak_BN, tweak.isolateTweak)
         self.connect(self.UI.toggleTweak_BN, tweak.toggleTweak)
-        self.connect(self.UI.deleteTweakCtl_BN, tweak.deleteTweakCtl)
+        self.connect(self.UI.delSelTweakCtl_BN, tweak.delSelTweakCtl)
+        self.connect(self.UI.delAllTweakCtl_BN, tweak.delAllTweakCtl)
         
 
         # Master Guide
@@ -246,7 +247,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         # Guide Tool
         self.connect(self.UI.addWSMirrorAttr_BN, common.add_wsMirror_attr)
-        self.connect(self.UI.addFlipXAttr_BN, common.add_flipRX_attr)
+        self.connect(self.UI.addFlipRXAttr_BN, partial(common.add_flipR_attr, axis='X'))
+        self.connect(self.UI.addFlipRYAttr_BN, partial(common.add_flipR_attr, axis='Y'))
+        self.connect(self.UI.addFlipRZAttr_BN, partial(common.add_flipR_attr, axis='Z'))
         self.connect(self.UI.misc_buildLineSel_BN, CrvNode.buildLineLinkedSel)
         self.connect(self.UI.misc_importEnvAndShd_BN, self.misc_importEnvAndShd)
 
@@ -654,15 +657,15 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             return
 
         sel = mc.ls(sl=1, tr=1)
-        refJnts = common.getObjectBelow(sel, tgtType="joint")
-        if refJnts:
-            tweak.createTweak(targetTweakMesh, refJnts=refJnts)
+        guides = common.getObjectBelow(sel, tgtType="curve")
+        if guides:
+            tweak.createTweak(targetTweakMesh, tgts=guides)
             local_grp = DagNode('tweak_local_grp')
             if local_grp.exists():
                 local_grp.hide()
-            logging.info(f"Tweak created for {targetTweakMesh.name} with {len(refJnts)} reference joints.")
+            logging.info(f"Tweak created for {targetTweakMesh.name} with {len(guides)} reference joints.")
         else:
-            mc.confirmDialog(t="Info", m="Select tweak reference joints.    ", b="OK")
+            mc.confirmDialog(t="Info", m="Select tweak guides.    ", b="OK")
             
 
     def loadTweakMesh(self):
