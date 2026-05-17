@@ -18,9 +18,9 @@ TWEAK_GRP = "tweak_guide_grp"
 def addTweakGuide(*args):
     """Add tweak guide to the scene."""
     grp = GrpNode(TWEAK_GRP)
-    ctl1 = CrvNode('tweak_md_1', shape='cube', scale = 0.4, p=grp, color=Color.BLACK, width=3)
-    ctl2 = CrvNode('tweak_lf_1', shape='cube', scale = 0.4, p=grp, color=Color.BLACK, width=3)
-    ctl3 = CrvNode('tweak_rt_1', shape='cube', scale = 0.4, p=grp, color=Color.BLACK, width=3)
+    ctl1 = CrvNode('tweak_md_1', shape='house', scale = 0.4, p=grp, color=Color.BLACK, width=2)
+    ctl2 = CrvNode('tweak_lf_1', shape='house', scale = 0.4, p=grp, color=Color.BLACK, width=2)
+    ctl3 = CrvNode('tweak_rt_1', shape='house', scale = 0.4, p=grp, color=Color.BLACK, width=2)
     ctl1.a.r.set(90, 0, 90)
     ctl2.a.t.set(20, 0, 0)
     ctl3.a.t.set(-20, 0, 0)
