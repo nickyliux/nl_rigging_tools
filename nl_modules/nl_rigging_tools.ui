@@ -2405,7 +2405,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>1. Add tweak jnts ( duplicate for more )</string>
+        <string>1. Create tweak refs ( duplicate for more )</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -2576,7 +2576,7 @@
            </font>
           </property>
           <property name="toolTip">
-           <string>Add Rb Jnt for Selected</string>
+           <string>Create Tweak Ref. Duplicate for more</string>
           </property>
           <property name="statusTip">
            <string/>
@@ -2585,7 +2585,7 @@
            <string notr="true"/>
           </property>
           <property name="text">
-           <string>Add Tweak Jnts</string>
+           <string>Create Tweak Ref</string>
           </property>
          </widget>
         </item>
@@ -2863,7 +2863,7 @@ Setup</string>
          <rect>
           <x>0</x>
           <y>60</y>
-          <width>201</width>
+          <width>205</width>
           <height>31</height>
          </rect>
         </property>
