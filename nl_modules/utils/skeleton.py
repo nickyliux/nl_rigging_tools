@@ -95,5 +95,6 @@ def rib_setup(*args, name="rib_grp", div=(2, 2, 9), l_div=(4, 4, 4)):
         CHR = GrpNode("CHR")
         if CHR.exists():
             lattice.parent | CHR
+            lattice.parent.hide()
     else:
         mc.confirmDialog(t="Info", m=f'"{name}" NOT found.     ', b="OK")
