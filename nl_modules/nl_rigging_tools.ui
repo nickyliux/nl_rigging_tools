@@ -1785,7 +1785,7 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
@@ -1836,7 +1836,7 @@
       <widget class="QLabel" name="label_6">
        <property name="geometry">
         <rect>
-         <x>0</x>
+         <x>3</x>
          <y>120</y>
          <width>211</width>
          <height>16</height>
@@ -1894,7 +1894,7 @@
       <widget class="QLabel" name="label_5">
        <property name="geometry">
         <rect>
-         <x>0</x>
+         <x>3</x>
          <y>70</y>
          <width>211</width>
          <height>16</height>
@@ -1910,7 +1910,7 @@
       <widget class="QLabel" name="label_4">
        <property name="geometry">
         <rect>
-         <x>0</x>
+         <x>3</x>
          <y>20</y>
          <width>211</width>
          <height>16</height>
@@ -2064,7 +2064,7 @@
       <widget class="QLabel" name="label_30">
        <property name="geometry">
         <rect>
-         <x>0</x>
+         <x>3</x>
          <y>170</y>
          <width>211</width>
          <height>21</height>
@@ -2290,7 +2290,7 @@
       <widget class="QLabel" name="label_27">
        <property name="geometry">
         <rect>
-         <x>0</x>
+         <x>3</x>
          <y>20</y>
          <width>211</width>
          <height>16</height>
@@ -2306,7 +2306,7 @@
       <widget class="QLabel" name="label_29">
        <property name="geometry">
         <rect>
-         <x>0</x>
+         <x>3</x>
          <y>70</y>
          <width>211</width>
          <height>16</height>
@@ -2322,7 +2322,7 @@
       <widget class="QLabel" name="label_31">
        <property name="geometry">
         <rect>
-         <x>0</x>
+         <x>3</x>
          <y>120</y>
          <width>211</width>
          <height>16</height>
@@ -2385,7 +2385,7 @@
       <widget class="QLabel" name="label_25">
        <property name="geometry">
         <rect>
-         <x>0</x>
+         <x>3</x>
          <y>70</y>
          <width>215</width>
          <height>16</height>
@@ -2398,7 +2398,7 @@
       <widget class="QLabel" name="label_28">
        <property name="geometry">
         <rect>
-         <x>0</x>
+         <x>3</x>
          <y>20</y>
          <width>211</width>
          <height>16</height>
@@ -2409,6 +2409,12 @@
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+       </property>
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <property name="indent">
+        <number>-1</number>
        </property>
       </widget>
       <widget class="QWidget" name="horizontalLayoutWidget_36">
@@ -2517,15 +2523,15 @@
       <widget class="QLabel" name="label_32">
        <property name="geometry">
         <rect>
-         <x>0</x>
+         <x>3</x>
          <y>130</y>
          <width>211</width>
          <height>31</height>
         </rect>
        </property>
        <property name="text">
-        <string>3. Select tweak jnts, or group to 
-    create / add</string>
+        <string>3. Select tweak jnts, or group
+    contraining them</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -2585,7 +2591,7 @@
            <string notr="true"/>
           </property>
           <property name="text">
-           <string>Create Tweak Ref</string>
+           <string>Create</string>
           </property>
          </widget>
         </item>
@@ -2632,7 +2638,7 @@
         <rect>
          <x>6</x>
          <y>164</y>
-         <width>102</width>
+         <width>201</width>
          <height>18</height>
         </rect>
        </property>
@@ -2666,7 +2672,7 @@
         <string notr="true"/>
        </property>
        <property name="text">
-        <string>Create / Add</string>
+        <string>Setup Tweak</string>
        </property>
       </widget>
       <widget class="QPushButton" name="isolateTweak_BN">
@@ -2677,7 +2683,7 @@
         <rect>
          <x>6</x>
          <y>220</y>
-         <width>102</width>
+         <width>201</width>
          <height>18</height>
         </rect>
        </property>
@@ -2714,14 +2720,14 @@
       <widget class="QLabel" name="label_35">
        <property name="geometry">
         <rect>
-         <x>0</x>
+         <x>3</x>
          <y>197</y>
          <width>215</width>
          <height>16</height>
         </rect>
        </property>
        <property name="text">
-        <string>4. Paint weight on local Tweak Mesh</string>
+        <string>4. Edit weight for local Tweak Mesh</string>
        </property>
       </widget>
       <widget class="Line" name="line_4">
