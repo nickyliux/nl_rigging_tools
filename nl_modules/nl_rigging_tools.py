@@ -57,7 +57,7 @@ LIGHTING_FILE = os.path.join(LIGHT_PATH, "lighting4.ma")
 SHADER_FILE = os.path.join(LIGHT_PATH, "bone_SHD.ma")
 AUTO_BIND_SK_GRP = "auto_bind_sk_grp"
 AUTO_BIND_SK_SET = "auto_bind_sk_set"
-MODEL_GRP = "model_grp"
+MODEL_GRP = "geo_grp"
 TWEAK_GRP = "tweak_guide_grp"
 
 
@@ -511,7 +511,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 jnt = JntNode(mesh + sf, color=color, p=grp, r=0.5)
                 jnt.a.t.set(*mesh.o.bbCenter)
 
-            mc.select(grp)
+            # mc.select(grp)
 
     def addRbJntSet(self):
         """Add sets for rb joints."""
