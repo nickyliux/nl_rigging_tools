@@ -74,7 +74,7 @@ class SpineQd(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 1.5, 1),
-            ("cog_ctl", "trapezoid_3d", None, Vec((0.8, 1.5, 1.5)) * rSz, 0),
+            ("cog_ctl", "trapezoid_3d", None, Vec((0.8, 1, 1.5)) * rSz, 0),
             ("fore_ikc", "back", None, Vec((6, 6, 0.2)) * rSz, 0),
             ("mid_ikc", "squareR", "z", Vec((4, 4, 0.2)) * rSz, 0),
             ("base_ikc", "back", None, Vec((6, 6, 0.2)) * rSz, 0),
@@ -88,7 +88,7 @@ class SpineQd(RigModule):
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
-        self.cog_ctl.cv_move(0, rSz * 60, 0)
+        self.cog_ctl.cv_move(0, rSz * 50, 0)
 
         # self.cog_upr_ctl.cv_move(0, rSz * 60, 0)
         # self.cog_lwr_ctl.cv_move(0, rSz * 60, 0)
