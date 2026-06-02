@@ -580,7 +580,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             mc.confirmDialog(t="Info", m="Character path NOT set.     ", b="OK")
             return
 
-        # charName = os.path.basename(charPath)
+        # Get all meshes under MODEL_GRP
         mdlGrp = DagNode(MODEL_GRP)
         if mdlGrp.exists():
             selList = mc.ls(mdlGrp)
@@ -588,13 +588,13 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             if not tgtMeshes:
                 mc.confirmDialog(
                     t="Info",
-                    m=f"No mesh found under group '{MODEL_GRP}'.    ",
+                    m=f"No mesh found in the group '{MODEL_GRP}'.    ",
                     b="OK",
                 )
                 return
         else:
             mc.confirmDialog(
-                t="Info", m=f"Model group {MODEL_GRP} not found.    ", b="OK"
+                t="Info", m=f'You need to have the group "{MODEL_GRP}" containing bone meshes.    ', b="OK"
             )
             return
 
