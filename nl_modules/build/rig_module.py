@@ -391,7 +391,6 @@ class RigModule(RigBase):
             mc.sets(tgtList, add=tgtSet)
         else:
             mc.sets(tgtList, n=tgtSet)
-        # self.jnts_bind.extend(tgtList)
 
     def add_bind_sk_set(self, tgtList, tgtSet="auto_bind_sk_set"):
         """Add bind joint set for target joints"""
@@ -498,7 +497,7 @@ class RigModule(RigBase):
 
         common.sdk(driver, driven, "ry", "tx", 0, 0, tangent=1)
         common.sdk(driver, driven, "ry", "tx", -80, s * 2.5, tangent=1)
-        common.sdk(driver, driven, "ry", "tx", -180, -1, tangent=1)
+        common.sdk(driver, driven, "ry", "tx", -180, 0, tangent=1)
 
     def patella_setup(self):
         """Setup patella guide and joint for the leg rig."""
