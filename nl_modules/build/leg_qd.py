@@ -17,8 +17,6 @@ class LegQd(RigModule):
     """Quadruped leg rig module."""
 
     def __init__(self, mg):
-        # if isinstance(mg, str):
-        #     mg = DagNode(mg)
         super().__init__(mg)
 
         guide_attrs = [
@@ -353,9 +351,6 @@ class LegQd(RigModule):
             jnt = self.jnts[i]
             common.cstMulti(fkJ, ikJ, jnt, w=fkIk)
 
-        # for ctl in self.ctls_fk + self.ctls_ik + [self.smart_ctl]:
-        #     ctl.a.add("fkIk", proxy=fkIk)
-
         GrpNode(f"{self.ikc.name}_matcher", align=self.ikc, p=self.digit_fkc)
         GrpNode(f"{self.extra_ikc.name}_matcher", align=self.extra_ikc, p=self.palm_fkc)
 
@@ -428,10 +423,8 @@ class LegQd(RigModule):
 
         self.smart_ctl | self.ikc
         self.smart_ctl.snapAlignTo(toeRollG, self.masterGuide)
-        # self.smart_ctl | self.IK_GRP
         ofs = self.smart_ctl.addOffsetGrp()
         ofs.a.tz.set(rSz * 20)
-        # self.ikc.cstPar(ofs, mo=1)
 
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         (-xDr * self.smart_ctl.a.ry) >> toeRollG.a.ry
@@ -507,7 +500,6 @@ class LegQd(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-        # self.jnts_bind += [radius_JC[0], ulna_JC[0]]
 
     def singleBallCtl_setup(self):
         """Make ball ctl the single ctl in both FK and IK modes."""
@@ -600,7 +592,6 @@ class LegQd(RigModule):
                 "spaceHolder1": self.ikc,
                 "spaceHolder2": self.pvc,
                 "space_master": self.masterC,
-                # "space_hip": self.hip_fkc,
                 "space_leg": self.ikH1.softJ[0],
             }
         )
