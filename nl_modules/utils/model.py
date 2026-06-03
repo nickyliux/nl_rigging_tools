@@ -2,7 +2,9 @@ import os
 import glob
 import logging
 import maya.cmds as mc
+from nl_modules.nodel.base.dag_node import DagNode
 
+MODEL_GRP = "geo_grp"
 
 def retopo(faceNum=200):
     """Apply retopo to selList objects"""
@@ -15,6 +17,11 @@ def loadModel(self):
     """Import model file into the scene."""
     from nl_modules.utils import file
     from nl_modules.utils import common
+
+    mdlGrp = DagNode(MODEL_GRP)
+    if mdlGrp.exists():
+        mc.confirmDialog(t="Info", m=f'Group "{MODEL_GRP}" already exists.    ', b="OK")
+        return
 
     charPath = mc.optionVar(q="charFullPath")
     if charPath:
