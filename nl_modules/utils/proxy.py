@@ -10,6 +10,8 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.msh_node import MshNode
 from nl_modules.utils import common
 
+AUTO_BIND_JNT_SET = "auto_bind_jnt_set"
+
 
 def nlShrinkWrap(target=None, meshes=None, keep=0, **kwargs):
     """Create a shrinkWrap deformer on the given meshes, projecting them onto the target mesh."""
@@ -65,7 +67,7 @@ def nlShrinkWrap(target=None, meshes=None, keep=0, **kwargs):
         [DagNode(m).deleteHistory() for m in meshes]
 
 
-def genProxyForSet(*args, tgtSet="auto_bind_jnt_set"):
+def genProxyForSet(*args, tgtSet=AUTO_BIND_JNT_SET):
     """Generate proxy meshes for all bind joints in the scene."""
     CHR = GrpNode("CHR")
     PRX = GrpNode("PRX", p=CHR)

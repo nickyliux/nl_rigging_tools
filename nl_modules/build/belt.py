@@ -94,7 +94,7 @@ class Belt(RigModule):
             JNT_DATA=self.JNT_DATA,
             atMidOrEnd=1,
         )
-        self.jnts_bind = self.jnts_rb
+        self.update_list(self.jnts_bind, add=self.jnts_rb)
 
     def build_ik(self):
         """Build the IK controls for the belt rig."""

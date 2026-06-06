@@ -15,6 +15,7 @@ from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
 
+AUTO_BIND_JNT_SET = "auto_bind_jnt_set"
 
 class RigModule(RigBase):
     """Base class for rig modules, providing common functionality for rigging operations."""
@@ -33,7 +34,6 @@ class RigModule(RigBase):
         self.xDir = 1 if rID.startswith("lf") else -1 if rID.startswith("rt") else 0
         self.boneFix = None
         self.jnts_bind = []
-        self.jnts_sk = []
         self.all_bendy = []
 
         rootJ = DagNode(mg).a.rootJ
@@ -385,14 +385,7 @@ class RigModule(RigBase):
         else:
             mc.sets(tgtList, n=setName)
 
-    def add_bind_jnt_set(self, tgtList, tgtSet="auto_bind_jnt_set"):
-        """Add bind joint set for target joints"""
-        if DagNode(tgtSet).exists():
-            mc.sets(tgtList, add=tgtSet)
-        else:
-            mc.sets(tgtList, n=tgtSet)
-
-    def add_bind_sk_set(self, tgtList, tgtSet="auto_bind_sk_set"):
+    def add_bind_jnt_set(self, tgtList, tgtSet=AUTO_BIND_JNT_SET):
         """Add bind joint set for target joints"""
         if DagNode(tgtSet).exists():
             mc.sets(tgtList, add=tgtSet)
@@ -473,8 +466,11 @@ class RigModule(RigBase):
         tgtDup = tgt.duplicate(po=1)
         childDup = tgtChild.duplicate(po=1)
         tgtDup.rename(tgt + "Fix")
+        JntNode(tgtDup).setRadius(2, rel=1)
+        
         childDup.rename(tgtChild + "Fix")
         childDup | tgtDup | tgt
+        tgtDup.color = Color.PINK
 
         # reset, especially for digit joint
         childDup.a.jointOrient.reset()
@@ -489,8 +485,6 @@ class RigModule(RigBase):
         self.boneFix_sdk(tgt, tgtDup, tz=tz, tx=tx)
         upLoc.hide()
 
-        # self.update_list(self.jnts_sk, add=[self.boneFix], rm=[self.lwr])
-        self.update_list(self.jnts_sk, add=[self.boneFix], rm=[tgt])
         self.update_list(self.jnts_bind, add=[self.boneFix], rm=[tgt])
 
     def boneFix_sdk(self, driver, driven, tz=(-2,-8), tx=(2.5,0)):
@@ -522,7 +516,6 @@ class RigModule(RigBase):
             j = JntNode("patella", pf=rID, align=patella_guide, r=rSz / 2, p=self.upr)
             j.freezeXf()
             self.update_list(self.jnts_bind, add=[j])
-            self.update_list(self.jnts_sk, add=[j])
             patella_sdk(self.lwr, j)
             return j
 
@@ -762,7 +755,6 @@ class RigModule(RigBase):
             )
             IkNode("scapAim", pf=rID, sj=j0, ee=j1, p=scapCtl, vis=0)
             self.update_list(self.jnts_bind, add=[j0], rm=[hipJ])
-            self.update_list(self.jnts_sk, add=[j0], rm=[hipJ])
 
         return mainGrp
 

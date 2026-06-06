@@ -75,7 +75,7 @@ class HandBp(RigModule):
         for root in self.rootJ.childrenJt:
             digit_jnts = [jnt for jnt in root.allChildrenJt2]
             self.jnts_fgr.append(digit_jnts)
-            self.jnts_bind.extend(digit_jnts[:-1])
+            self.update_list(self.jnts_bind, add=digit_jnts[:-1])
 
         self.build_ctl()
         self.build_fk()
@@ -387,7 +387,6 @@ class HandBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the hand rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_bind_sk_set(self.jnts_bind)
 
     def setup_scale(self):
         """Setup scaling for the hand rig module."""

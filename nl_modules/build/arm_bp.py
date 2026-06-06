@@ -119,8 +119,7 @@ class ArmBp(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        self.jnts_bind = [self.clavicle, self.palm]
-        self.jnts_sk = [self.upr, self.palm]
+        self.update_list(self.jnts_bind, add=[self.clavicle, self.palm])
 
         if self.ribbon:
             self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(
@@ -136,12 +135,12 @@ class ArmBp(RigModule):
             self.ikc.a.add("autoVol", proxy=self.setting.a.autoVol)
             self.ikc.a.add("volType", proxy=self.setting.a.volType)
         else:
-            self.jnts_bind += [self.upr, self.lwr]
+            self.update_list(self.jnts_bind, add=[self.upr, self.lwr])
 
         if self.dualBone:
             self.build_dual_bones()
         else:
-            self.jnts_sk += [self.lwr]
+            self.update_list(self.jnts_bind, add=[self.lwr])
 
         if self.scapulaBone:
             self.build_armScapula()
@@ -382,7 +381,7 @@ class ArmBp(RigModule):
         )
         self.clavicle_fkc.offset.cstPar(clavJnts[0], mo=1)
 
-        self.jnts_sk.extend([clavJnts[0], scapJnts[0]])
+        self.update_list(self.jnts_bind, add=[clavJnts[0], scapJnts[0]])
 
     def build_dual_bones(self):
         """Build dual bones for the lower arm."""
@@ -410,7 +409,7 @@ class ArmBp(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-        self.jnts_sk += [radius_JC[0], ulna_JC[0]]
+        self.update_list(self.jnts_bind, add=[radius_JC[0], ulna_JC[0]])
 
     def palm_rolling(self, ikc, fkc, fkPin, locRoll, locIn, locOut):
         """Setup palm rolling for the arm rig controls."""
@@ -545,7 +544,6 @@ class ArmBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_bind_sk_set(self.jnts_sk)
         proxy.add_proxyRadiusScale_attr(self.jnts_bind, 5)
 
     def setup_ctlSet(self):

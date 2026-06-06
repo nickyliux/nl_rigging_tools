@@ -55,8 +55,8 @@ UI_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.ui")
 STYLE_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.qss")
 LIGHTING_FILE = os.path.join(LIGHT_PATH, "lighting4.ma")
 SHADER_FILE = os.path.join(LIGHT_PATH, "bone_SHD.ma")
-AUTO_BIND_SK_GRP = "auto_bind_sk_grp"
-AUTO_BIND_SK_SET = "auto_bind_sk_set"
+AUTO_BIND_JNT_GRP = "auto_bind_jnt_grp"
+AUTO_BIND_JNT_SET = "auto_bind_jnt_set"
 MODEL_GRP = "geo_grp"
 TWEAK_GRP = "tweak_guide_grp"
 
@@ -497,7 +497,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         meshSel = [DagNode(m).parent for m in mc.ls(sl=1, type="mesh")]
 
         if meshSel:
-            sk_grp = GrpNode(AUTO_BIND_SK_GRP)
+            sk_grp = GrpNode(AUTO_BIND_JNT_GRP)
             if rb:
                 sf = "_rbJnt"
                 grp = GrpNode("rb_grp", p=sk_grp)
@@ -535,9 +535,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def autoBind_refJnts(self, meshes=None, thld=999):
         """Bind meshes to reference joints with a specified threshold."""
-        jnts = common.getSetMembersInOrder(AUTO_BIND_SK_SET)
+        jnts = common.getSetMembersInOrder(AUTO_BIND_JNT_SET)
         if not jnts:
-            logging.info(f"No joints in Set {AUTO_BIND_SK_SET} found for auto skin.")
+            logging.info(f"No joints in Set {AUTO_BIND_JNT_SET} found for auto skin.")
             return
 
         jntsScap = [n for n in jnts if "scapula" in n.name.lower()]
@@ -571,8 +571,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     @common.Undo("boneAutoBind")
     def boneAutoBind(self):
         """Bind all meshes in MODEL_GRP to reference joints and ribbon joints."""
-        if not mc.objExists(AUTO_BIND_SK_GRP):
-            mc.confirmDialog(t="Info", m=f"{AUTO_BIND_SK_GRP} NOT found.    ", b="OK")
+        if not mc.objExists(AUTO_BIND_JNT_GRP):
+            mc.confirmDialog(t="Info", m=f"{AUTO_BIND_JNT_GRP} NOT found.    ", b="OK")
             return
 
         charPath = mc.optionVar(q="charDir")
@@ -608,7 +608,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Rib setup
         skeleton.rib_setup()
 
-        sk_grp = DagNode(AUTO_BIND_SK_GRP)
+        sk_grp = DagNode(AUTO_BIND_JNT_GRP)
         if sk_grp.exists() and not sk_grp.parent:
             sk_grp | DagNode("CHR")
             sk_grp.hide()

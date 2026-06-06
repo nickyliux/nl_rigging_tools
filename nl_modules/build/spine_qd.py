@@ -73,7 +73,7 @@ class SpineQd(RigModule):
         rID, rSz, xDr = self.get_short_form()
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", rSz * 2, 1),
+            ("setting", "screw_nut", "z", rSz * 3, 1),
             ("cog_ctl", "trapezoid_3d", None, Vec((0.8, 1, 1.5)) * rSz, 0),
             ("fore_ikc", "back", None, Vec((6, 6, 0.2)) * rSz, 0),
             ("mid_ikc", "squareR", "z", Vec((4, 4, 0.2)) * rSz, 0),
@@ -415,7 +415,6 @@ class SpineQd(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the spine rig."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_bind_sk_set([self.jnts_bind[0]])
         proxy.add_proxyRadiusScale_attr(self.jnts_bind, 10)
 
     def build_post(self):

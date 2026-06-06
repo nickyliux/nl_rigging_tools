@@ -104,7 +104,7 @@ class IkFkSpline(RigModule):
 
         self.rbCrvSk = crv
         self.masterGuide.setMsg({"rbCrvSk": self.rbCrvSk})
-        self.jnts_bind = self.jnts_rb
+        self.update_list(self.jnts_bind, add=self.jnts_rb)
 
     def build_ik(self):
         """Build the IK controls for the rig."""
@@ -317,7 +317,6 @@ class IkFkSpline(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the rig controls."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_bind_sk_set(self.jnts_bind)
         proxy.add_proxyRadiusScale_attr(self.jnts_bind, 5)
 
     def setup_space(self):

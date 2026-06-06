@@ -172,8 +172,7 @@ class LegBp(RigModule):
         # self.build_nlAutoAim(
         #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
         # )
-        self.jnts_bind = self.jnts[:-1]
-        self.jnts_sk = self.jnts[:-1]
+        self.update_list(self.jnts_bind, add=[self.jnts[:-1]])
 
         self.scapulaG = self.build_legScapula(
             ikc=self.ikc,
@@ -472,7 +471,6 @@ class LegBp(RigModule):
 
             self.toesCtlsList.append(ctlList)
             self.update_list(self.jnts_bind, add=toeJs[:-1], rm=[self.ball])
-            self.update_list(self.jnts_sk, add=toeJs[:-1], rm=[self.ball])
 
     def build_dual_bones(self):
         """Build dual bones for the lower leg."""
@@ -502,7 +500,7 @@ class LegBp(RigModule):
             ulna_JC[0], worldUpType=type, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
 
-        self.update_list(self.jnts_sk, add=[radius_JC[0], ulna_JC[0]], rm=[self.lwr])
+        self.update_list(self.jnts_bind, add=[radius_JC[0], ulna_JC[0]], rm=[self.lwr])
 
     def setup_vis(self):
         """Setup visibility for the leg rig controls."""
@@ -630,7 +628,6 @@ class LegBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_bind_sk_set(self.jnts_sk)
         proxy.add_proxyRadiusScale_attr(self.jnts_toes, 1)
         proxy.add_proxyRadiusScale_attr(self.jnts_bind, 5)
 

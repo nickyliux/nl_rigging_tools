@@ -174,8 +174,7 @@ class LegQd(RigModule):
         self.build_ik()
         self.blend_fk_ik()
 
-        self.jnts_bind = self.jnts[:-1]
-        self.jnts_sk = self.jnts[:-1]
+        self.update_list(self.jnts_bind, add=self.jnts[:-1])
 
         self.scapulaG = self.build_legScapula(
             ikc=self.ikc,
@@ -198,7 +197,7 @@ class LegQd(RigModule):
         #     self.boneFix_setup(self.lwr, self.palm)
 
         if self.carpalFix:
-            self.boneFix_setup(self.palm, self.digit, tz=(0,-3), tx=(0,0))
+            self.boneFix_setup(self.palm, self.digit, tz=(-0.5,-3), tx=(0,0))
 
         if self.dualBone:
             self.build_dual_bones()
@@ -206,7 +205,6 @@ class LegQd(RigModule):
         if self.toeBones:
             self.build_toes()
             self.update_list(self.jnts_bind, rm=[self.ball])
-            self.update_list(self.jnts_sk, rm=[self.ball])
 
         self.build_post()
 
@@ -463,7 +461,6 @@ class LegQd(RigModule):
 
             self.toesCtlsList.append(ctlList)
             self.update_list(self.jnts_bind, add=toeJs[:-1])
-            self.update_list(self.jnts_sk, add=toeJs[:-1])
 
         # --- Add hidden IK handles for toe segments ---
         for toeJs in self.toesJntList:
@@ -504,6 +501,8 @@ class LegQd(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
+        self.update_list(self.jnts_bind, add=[radius_JC[0], ulna_JC[0]], rm=[self.lwr])
+
 
     def singleBallCtl_setup(self):
         """Make ball ctl the single ctl in both FK and IK modes."""
@@ -623,7 +622,6 @@ class LegQd(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the quadruped leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        self.add_bind_sk_set(self.jnts_sk)
         proxy.add_proxyRadiusScale_attr(self.jnts_toes, 1)
         proxy.add_proxyRadiusScale_attr(self.jnts_bind, 5)
 
