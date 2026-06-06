@@ -11,7 +11,7 @@
     <x>0</x>
     <y>0</y>
     <width>745</width>
-    <height>901</height>
+    <height>862</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -1804,117 +1804,17 @@
       <attribute name="title">
        <string>Skl Prep</string>
       </attribute>
-      <widget class="QPushButton" name="addRbJntSet_BN">
-       <property name="geometry">
-        <rect>
-         <x>6</x>
-         <y>140</y>
-         <width>102</width>
-         <height>18</height>
-        </rect>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>5</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>999</width>
-         <height>18</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Segoe UI</family>
-         <pointsize>8</pointsize>
-         <weight>50</weight>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>Add Default Joint Set for Neck, Spine, Tail</string>
-       </property>
-       <property name="statusTip">
-        <string/>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string>Add Rb Set</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_6">
-       <property name="geometry">
-        <rect>
-         <x>3</x>
-         <y>120</y>
-         <width>211</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>3. Create Rb Sets and put RefJ into sets</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="addRbJnt_BN">
-       <property name="geometry">
-        <rect>
-         <x>6</x>
-         <y>40</y>
-         <width>102</width>
-         <height>18</height>
-        </rect>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>5</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>999</width>
-         <height>18</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Segoe UI</family>
-         <pointsize>8</pointsize>
-         <weight>50</weight>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>Add Rb Jnt for Selected</string>
-       </property>
-       <property name="statusTip">
-        <string/>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string>Add Rb Jnt</string>
-       </property>
-      </widget>
       <widget class="QLabel" name="label_5">
        <property name="geometry">
         <rect>
          <x>3</x>
-         <y>70</y>
+         <y>110</y>
          <width>211</width>
          <height>16</height>
         </rect>
        </property>
        <property name="text">
-        <string>2. Select other bones, add RefJ</string>
+        <string>2. Select other bones.</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -1926,11 +1826,12 @@
          <x>3</x>
          <y>20</y>
          <width>211</width>
-         <height>16</height>
+         <height>31</height>
         </rect>
        </property>
        <property name="text">
-        <string>1. Select neck, spine, tail bones, add RbJ</string>
+        <string>1. Select neck / spine / tail bones or
+    group.</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -1940,8 +1841,8 @@
        <property name="geometry">
         <rect>
          <x>6</x>
-         <y>90</y>
-         <width>102</width>
+         <y>130</y>
+         <width>66</width>
          <height>18</height>
         </rect>
        </property>
@@ -1975,14 +1876,14 @@
         <string notr="true"/>
        </property>
        <property name="text">
-        <string>Add Ref Jnt</string>
+        <string>+ Ref Jnts</string>
        </property>
       </widget>
       <widget class="QWidget" name="horizontalLayoutWidget_14">
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>190</y>
+         <y>180</y>
          <width>211</width>
          <height>21</height>
         </rect>
@@ -2078,17 +1979,152 @@
        <property name="geometry">
         <rect>
          <x>3</x>
-         <y>170</y>
+         <y>160</y>
          <width>211</width>
          <height>21</height>
         </rect>
        </property>
        <property name="text">
-        <string>4. Fix Rb &amp; Ref Jnts position</string>
+        <string>3. Adjust Rb &amp; Ref Jnts position.</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
        </property>
+      </widget>
+      <widget class="QWidget" name="horizontalLayoutWidget_20">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>60</y>
+         <width>211</width>
+         <height>36</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_14">
+        <property name="spacing">
+         <number>5</number>
+        </property>
+        <property name="leftMargin">
+         <number>6</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <item>
+         <widget class="QPushButton" name="addRbJnt_neck_BN">
+          <property name="minimumSize">
+           <size>
+            <width>5</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>999</width>
+            <height>999</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>8</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>Add Rb Jnt for Selected</string>
+          </property>
+          <property name="statusTip">
+           <string/>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="text">
+           <string>+ Rb Jnts
+to Neck set</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="addRbJnt_spine_BN">
+          <property name="minimumSize">
+           <size>
+            <width>5</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>999</width>
+            <height>999</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>8</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>Add Rb Jnt for Selected</string>
+          </property>
+          <property name="statusTip">
+           <string/>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="text">
+           <string>+ Rb Jnts
+to Spine set</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="addRbJnt_tail_BN">
+          <property name="minimumSize">
+           <size>
+            <width>5</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>999</width>
+            <height>999</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>8</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>Add Rb Jnt for Selected</string>
+          </property>
+          <property name="statusTip">
+           <string/>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="text">
+           <string>+ Rb Jnts
+to Tail set</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
      <widget class="QWidget" name="tab_3">
@@ -5096,7 +5132,7 @@ Setup</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>270</x>
+     <x>240</x>
      <y>700</y>
      <width>99</width>
      <height>18</height>
@@ -5130,6 +5166,64 @@ Setup</string>
    </property>
    <property name="text">
     <string>Toggle Vis</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="addRbJntSet_BN">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>660</y>
+     <width>102</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>5</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>999</width>
+     <height>18</height>
+    </size>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>8</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>Add Default Joint Set for Neck, Spine, Tail</string>
+   </property>
+   <property name="statusTip">
+    <string/>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string>Add Rb Set</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>237</x>
+     <y>640</y>
+     <width>211</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>3. Create Rb Sets and put RefJ into sets</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
    </property>
   </widget>
  </widget>
