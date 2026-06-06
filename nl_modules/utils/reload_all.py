@@ -135,6 +135,7 @@ from nl_modules.build import (
     ik_fk_spline,
     leg_bp,
     leg_qd,
+    leg_bird,
     head,
     neck,
     rig_base,
@@ -157,6 +158,7 @@ reload(hand_bp)
 reload(simple_fk)
 reload(leg_bp)
 reload(leg_qd)
+reload(leg_bird)
 reload(neck)
 reload(spine_qd)
 reload(tail)

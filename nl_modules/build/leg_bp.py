@@ -200,7 +200,7 @@ class LegBp(RigModule):
             )
 
         if self.kneeFix:
-            self.kneeFix_setup(self.lwr, self.palm)
+            self.boneFix_setup(self.lwr, self.palm)
             if self.ribbon:
                 self.boneFix.cstPoi(self.ribbon_lw.stt_loc)
 
@@ -557,15 +557,10 @@ class LegBp(RigModule):
         if self.scapulaBone:
             self.scap_fkc.a.showAttr(r=1)
 
-        # if self.ribbon:
-        #     self.all_bendy[0].a.showAttr("sx", t=1, r=1)
-        #     self.all_bendy[1].a.showAttr(t=1)
-        #     self.all_bendy[2].a.showAttr("sx", t=1, r=1)
-
     def setup_rotate_order(self):
         """Setup rotate order for the leg rig controls."""
         for ctl in self.ctls_fk + self.ctls_ik + self.ctls_sub + [self.smart_ctl]:
-            ctl.a.ro.set(5)
+            ctl.a.ro.set(3)
 
     def setup_space(self):
         """Setup space switching for the leg rig controls."""

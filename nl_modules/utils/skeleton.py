@@ -96,6 +96,6 @@ def rib_setup(*args, div=(2, 2, 9), l_div=(4, 4, 4)):
         CHR = GrpNode("CHR")
         if CHR.exists():
             lattice.parent | CHR
-            lattice.parent.hide()
+            # lattice.parent.hide()
     else:
         mc.confirmDialog(t="Info", m=f'You need to have the group "{RIB_GRP}" containing rib meshes.     ', b="OK")

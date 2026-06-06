@@ -462,11 +462,11 @@ class RigModule(RigBase):
                 if tgt in tgtList:
                     tgtList.remove(tgt)
 
-    def kneeFix_setup(self, tgt, tgtChild):
+    def boneFix_setup(self, tgt, tgtChild, tz=(-2,-8), tx=(2.5,0)):
         """Setup bone fix for the leg rig."""
         rID, rSz, xDr = self.get_short_form()
 
-        upLoc = LocNode("lwrLimb_up", pf=rID, align=tgtChild, addOfs=1, p=tgt, size=rSz)
+        upLoc = LocNode("lwrLimb_up_#", pf=rID, align=tgtChild, addOfs=1, p=tgt, size=rSz)
         tgtChild.cstPoi(upLoc.offset)
         upLoc.a.ty.set(rSz * 10 * xDr)
 
@@ -476,28 +476,36 @@ class RigModule(RigBase):
         childDup.rename(tgtChild + "Fix")
         childDup | tgtDup | tgt
 
+        # reset, especially for digit joint
+        childDup.a.jointOrient.reset()
+        childDup.a.ty.set(0)
+        childDup.a.tz.set(0)
+
         tgtChild.cstAim(
             tgtDup, worldUpType="object", worldUpObject=upLoc, aim=(xDr, 0, 0)
         )
 
         self.boneFix = tgtDup
-        self.boneFix_sdk(tgt, tgtDup)
+        self.boneFix_sdk(tgt, tgtDup, tz=tz, tx=tx)
         upLoc.hide()
 
-        self.update_list(self.jnts_sk, add=[self.boneFix], rm=[self.lwr])
+        # self.update_list(self.jnts_sk, add=[self.boneFix], rm=[self.lwr])
+        self.update_list(self.jnts_sk, add=[self.boneFix], rm=[tgt])
+        self.update_list(self.jnts_bind, add=[self.boneFix], rm=[tgt])
 
-    def boneFix_sdk(self, driver, driven):
+    def boneFix_sdk(self, driver, driven, tz=(-2,-8), tx=(2.5,0)):
         """ "Setup SDK for bone fix to drive the leg joint."""
-        rID, rSz, xDr = self.get_short_form()
+        s = self.xDir
 
-        s = rSz * xDr
-        common.sdk(driver, driven, "ry", "tz", 0, 0, tangent=1)
-        common.sdk(driver, driven, "ry", "tz", -70, -2 * s, tangent=1)
-        common.sdk(driver, driven, "ry", "tz", -180, -8 * s, tangent=1)
+        if tz != (0,0):
+            common.sdk(driver, driven, "ry", "tz", 0, 0, tangent=1)
+            common.sdk(driver, driven, "ry", "tz", -70, tz[0] * s, tangent=1)
+            common.sdk(driver, driven, "ry", "tz", -180, tz[1] * s, tangent=1)
 
-        common.sdk(driver, driven, "ry", "tx", 0, 0, tangent=1)
-        common.sdk(driver, driven, "ry", "tx", -80, s * 2.5, tangent=1)
-        common.sdk(driver, driven, "ry", "tx", -180, 0, tangent=1)
+        if tx != (0,0):
+            common.sdk(driver, driven, "ry", "tx", 0, 0, tangent=1)
+            common.sdk(driver, driven, "ry", "tx", -80, tx[0] * s, tangent=1)
+            common.sdk(driver, driven, "ry", "tx", -180, tx[1] * s, tangent=1)
 
     def patella_setup(self):
         """Setup patella guide and joint for the leg rig."""
@@ -1049,6 +1057,8 @@ class RigModule(RigBase):
         kneeFix=0,
         up1="tz",
         up2="tz",
+        tz=(-2,-8),
+        tx=(2.5,0),
     ):
         """Build a ribbon rig with upper and lower parts, and setup controls."""
         logging.info(".")
@@ -1095,7 +1105,7 @@ class RigModule(RigBase):
         mid_bend.cstParSca(stt_ofs[0], mo=1)
 
         if kneeFix:
-            self.boneFix_sdk(lwr, stt_ofs[1])
+            self.boneFix_sdk(lwr, stt_ofs[1], tz=tz, tx=tx)
 
         # Add volume attributes to setting
         autoVol = self.setting.a.add("autoVol", min=0, dv=0.5)

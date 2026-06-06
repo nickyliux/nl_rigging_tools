@@ -20,6 +20,7 @@ from nl_modules.build.hand_bp import HandBp
 
 from nl_modules.build.leg_bp import LegBp
 from nl_modules.build.leg_qd import LegQd
+from nl_modules.build.leg_bird import LegBird
 from nl_modules.build.neck import Neck
 from nl_modules.build.spine_qd import SpineQd
 from nl_modules.build.tail import Tail

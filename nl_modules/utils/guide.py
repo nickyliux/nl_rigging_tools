@@ -24,6 +24,7 @@ COMPONENT_DICT = {
     "hand / bp": {"L": "lfHandBp", "R": "rtHandBp"},
     "leg / bp": {"L": "lfLegBp", "R": "rtLegBp"},
     "leg / qd": {"L": "lfLegQd", "R": "rtLegQd"},
+    "leg / bird": {"L": "lfLegBird", "R": "rtLegBird"},
     "finger fk": {"L": "lfFingerFk", "R": "rtFingerFk"},
     "simple fk": {"M": "mdSimpleFk", "L": "lfSimpleFk", "R": "rtSimpleFk"},
     "belt": {"M": "belt"},
@@ -357,7 +358,7 @@ def toggleGuide(*args):
         vis = guides_grp.a.v.get()
 
         master2_ctl.a.ctlVis.set(vis)
-        master2_ctl.a.proxyVis.set(vis)
+        # master2_ctl.a.proxyVis.set(vis)
         master2_ctl.a.jointVis.set(vis)
 
         if vis == 1:
