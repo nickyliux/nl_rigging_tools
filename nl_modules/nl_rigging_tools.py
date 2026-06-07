@@ -185,7 +185,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.addRbJnt_spine_BN, partial(self.addRbRefJoint, rb=1, type=1))
         self.connect(self.UI.addRbJnt_tail_BN, partial(self.addRbRefJoint, rb=1, type=2))
         self.connect(self.UI.addRefJnt_BN, partial(self.addRbRefJoint, rb=0))
-        # self.connect(self.UI.addRbJntSet_BN, self.addRbJntSet)
         self.connect(self.UI.mirrorAllRefJnt_BN, self.mirrorAllRefJnt)
         self.connect(self.UI.toggleClickDrag_BN, self.toggleClickDrag)
 
@@ -499,34 +498,35 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         meshSel = [DagNode(m).parent for m in mc.ls(sl=1, type="mesh")]
 
         if meshSel:
-            sk_grp = GrpNode(AUTO_BIND_JNT_GRP)
-            if rb:
-                sf = "_rbJnt"
-                grp = GrpNode("rb_grp", p=sk_grp)
-                color = Color.RED
-            else:
-                sf = "_refJnt"
-                grp = GrpNode("ref_grp", p=sk_grp)
-                color = Color.L_BLUE
 
-            createdJnts = []
+            jntDict = {
+                'sf': ['_refJnt', "_rbJnt"],
+                'grpName': ["ref_grp", "rb_grp"],
+                'color': [Color.L_BLUE, Color.RED],
+            }
+            grp = GrpNode(
+                jntDict['grpName'][rb],
+                p=GrpNode(AUTO_BIND_JNT_GRP),
+            )
+
+            addedJnts = []
             for mesh in meshSel:
-                jnt = JntNode(mesh + sf, color=color, p=grp, r=0.5)
+                jnt = JntNode(
+                    mesh + jntDict['sf'][rb],
+                    color=jntDict['color'][rb],
+                    p=grp,
+                    r=0.5,
+                )
                 jnt.a.t.set(*mesh.o.bbCenter)
-                createdJnts.append(jnt)
-            mc.group(createdJnts, n=grp.name + "_#")
+                addedJnts.append(jnt)
+            
+            # Add extra group to created joints
+            mc.group(addedJnts, n=grp.name + "_#")
 
-            if rb == 1 and len(createdJnts) > 0:            
+            # Add set
+            if rb == 1 and len(addedJnts) > 0:            
                 setNames = ["neck_rbj_set", "spine_rbj_set", "tail_rbj_set"]
-                mc.sets(createdJnts, n=setNames[type])
-
-
-    # def addRbJntSet(self):
-    #     """Add sets for rb joints."""
-    #     setNames = ["neck_rbj_set", "spine_rbj_set", "tail_rbj_set"]
-    #     for name in setNames:
-    #         if not DagNode(name).exists():
-    #             mc.sets([], n=name)
+                mc.sets(addedJnts, n=setNames[type])
 
     def toggleClickDrag(self):
         """Toggle click and drag selection preference."""
