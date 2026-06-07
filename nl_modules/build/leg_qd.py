@@ -25,7 +25,6 @@ class LegQd(RigModule):
             "toeBones",
             "patellaBone",
             "scapulaBone",
-            # "kneeFix",
             "carpalFix",
             "toeNum",
             "scapulaAutoAim",
@@ -193,11 +192,8 @@ class LegQd(RigModule):
         if self.patellaBone:
             self.patella_setup()
 
-        # if self.kneeFix:
-        #     self.boneFix_setup(self.lwr, self.palm)
-
         if self.carpalFix:
-            self.boneFix_setup(self.palm, self.digit, tz=(-0.5,-3), tx=(0,0))
+            self.carpalFixJ = self.carpalFix_setup(self.palm, self.digit, tz=(-1,-5), tx=(0.5,1))
 
         if self.dualBone:
             self.build_dual_bones()
@@ -482,8 +478,7 @@ class LegQd(RigModule):
         radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], r=0.5)
         ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], r=0.5)
 
-        # parent = self.boneFix if self.kneeFix else self.lwr
-        (radius_JC[0], ulna_JC[0]) | self.lwr # parent
+        (radius_JC[0], ulna_JC[0]) | self.lwr
 
         radius_loc = LocNode(
             "radius_loc", pf=rID, align=radius_JC[1], p=self.palm, size=rSz
@@ -577,11 +572,14 @@ class LegQd(RigModule):
 
     def setup_rotate_order(self):
         """Setup rotate order for the quadruped leg rig controls."""
-        for c in self.ctls_fk + self.ctls_ik + self.ctls_sub + [self.lwr]:
-            c.a.ro.set(5)
+        for c in self.ctls_fk + self.ctls_ik + self.ctls_sub:
+            c.a.ro.set(2)
         for c in self.jnts_fk + self.jnts_ik + self.jnts:
-            c.a.ro.set(5)
-        self.smart_ctl.a.ro.set(5)
+            c.a.ro.set(2)
+        self.smart_ctl.a.ro.set(2)
+        
+        if self.carpalFix:
+            self.carpalFixJ.a.ro.set(2)
 
     def setup_space(self):
         """Setup space switching for the quadruped leg rig controls."""

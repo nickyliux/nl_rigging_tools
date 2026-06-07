@@ -199,7 +199,7 @@ class LegBp(RigModule):
             )
 
         if self.kneeFix:
-            self.boneFix_setup(self.lwr, self.palm)
+            self.boneOfsFix_setup(self.lwr, self.palm)
             if self.ribbon:
                 self.boneFix.cstPoi(self.ribbon_lw.stt_loc)
 

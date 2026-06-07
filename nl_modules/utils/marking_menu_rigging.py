@@ -127,7 +127,7 @@ class MarkingMenuRigging:
         mc.menuItem(p=mi, l="Add Influence", c=addInf)
         mc.menuItem(p=mi, l="Add Influence", c=addInfOpt, ob=1)
         mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="Del Skin", c=skin.delSkinForSel)
+        mc.menuItem(p=mi, l="Delete Skin", c=skin.delSkinForSel)
         # mc.menuItem(p=skin_MI, l="Detach Skin", c=mc.DetachSkin)
         # mc.menuItem(p=freeze_MI, l="All", c=frz_xform_mm)
         # mc.menuItem(p=freeze_MI, l="T", c=partial(frz_xform, "t"))

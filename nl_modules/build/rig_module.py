@@ -455,7 +455,7 @@ class RigModule(RigBase):
                 if tgt in tgtList:
                     tgtList.remove(tgt)
 
-    def boneFix_setup(self, tgt, tgtChild, tz=(-2,-8), tx=(2.5,0)):
+    def boneOfsFix_setup(self, tgt, tgtChild, tz=(-2,-8), tx=(2.5,0)):
         """Setup bone fix for the leg rig."""
         rID, rSz, xDr = self.get_short_form()
 
@@ -487,18 +487,39 @@ class RigModule(RigBase):
 
         self.update_list(self.jnts_bind, add=[self.boneFix], rm=[tgt])
 
+    def carpalFix_setup(self, palm, digit, tz=(-2,-8), tx=(2.5,0)):
+        """Setup carpal fix for the leg rig."""
+        self.boneOfsFix_setup(palm, digit, tz=tz, tx=tx)
+
+        rID, rSz, xDr = self.get_short_form()
+
+        carpal_guide = DagNode(rID + "_carpal_guide")
+        if carpal_guide.exists():
+
+            lwr = palm.parent
+
+            carpalFixJ = palm.duplicate(po=1, n=self.rigID + "_carpalFix")
+            carpalFixJ.snapTo(carpal_guide)
+            
+            palm.a.r * (.5,.5,.5) >> carpalFixJ.a.r
+
+            self.update_list(self.jnts_bind, add=[carpalFixJ])
+            return carpalFixJ
+        else:
+            logging.info(f"Carpal guide not found: '{rID}_carpal_guide'")
+
     def boneFix_sdk(self, driver, driven, tz=(-2,-8), tx=(2.5,0)):
         """ "Setup SDK for bone fix to drive the leg joint."""
         s = self.xDir
 
         if tz != (0,0):
             common.sdk(driver, driven, "ry", "tz", 0, 0, tangent=1)
-            common.sdk(driver, driven, "ry", "tz", -70, tz[0] * s, tangent=1)
+            common.sdk(driver, driven, "ry", "tz", -90, tz[0] * s, tangent=1)
             common.sdk(driver, driven, "ry", "tz", -180, tz[1] * s, tangent=1)
 
         if tx != (0,0):
             common.sdk(driver, driven, "ry", "tx", 0, 0, tangent=1)
-            common.sdk(driver, driven, "ry", "tx", -80, tx[0] * s, tangent=1)
+            common.sdk(driver, driven, "ry", "tx", -90, tx[0] * s, tangent=1)
             common.sdk(driver, driven, "ry", "tx", -180, tx[1] * s, tangent=1)
 
     def patella_setup(self):
