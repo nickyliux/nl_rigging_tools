@@ -25,17 +25,17 @@ blockquote {
 
 ## Background
 
-In my last job I encountered a project involving character setup with Ziva muscle. The very first step was to rig the skeleton mesh as the input of simulation. It required unusual skills like creating IK with backward initial knee, bone adjustment to make it anatomically correct... Isn't it cool to have an autorig tool supporting skeletal rigging for every vetebrate ? It seems a great way to learn anatomy and apply python fully.
+In my last job I encountered a project involving character setup with Ziva muscle. The very first step was to rig the skeleton mesh as the input of simulation. It required unusual skills like building IK with backward initial knee, bone offset for correct anatomy ... Isn't it cool if my rigging tool could support skeleton for every vetebrate ? Look like a great way to learn anatomy and apply python fully.
 
 
 ## Features
 
-- **Modular :** multiple limbs.
-- **Skeletal :** skeleton meshes for simulation.
-- **Cartoony :** bendy limbs.
-- **Data Reuse :** Reuse of presets, controls, proxies, weights and more
-- **Custom Marking Menus :** Handy menus for rig creation.
-- **Custom Framework :** Less redundant code.
+- **Modular :** support multiple limbs.
+- **Skeletal :** support skeleton meshes for simulation.
+- **Cartoony :** option for bendy limbs.
+- **Data Reuse :** reuse of presets, controls, proxies, weights and more
+- **Custom Marking Menus :** popup menus for rig creation.
+- **Custom Framework :** reuse of codes and functions.
 
 ## Marking Menus
 
@@ -52,11 +52,9 @@ In my last job I encountered a project involving character setup with Ziva muscl
 The tool UI will show up at the left and "nlRT" appears in the main menu of Maya.
 
 ![mayaMenu](docs/mayaMenu.png)
-
 ## Usage
-
 Typical Workflow :
-1. Set Character Directory.
+1. Set Character Library Directory.
 2. Load character model.
 3. For character with skeletal meshes, create rb joint for axial bones and ref joints for limb bones. Move rb joints to rotation point. Ref joints can be placed roughly as the closest bind joint will be used.
 4. Add guides or presets. Fit the guide points to the model. 
@@ -68,15 +66,22 @@ Typical Workflow :
 
 
 
-The files can be loaded without browwsing if you follow the name like below:
 
-    horse_mdl#.ma
-    horse_ref#.ma
-    horse__tpl#.json
-    weight/horse_wgh#.json
-    horse_prx#.ma
-    horse_ctl#.ma
+```python
+The files can be loaded without browwsing if you follow the naming rule
 
+    {folder_name}_{typ}{'#'}.{ext}
+
+e.g.
+horse_mdl.ma    # model
+horse_ref.ma    # bone ref 
+horse_tpl.json  # guide template
+horse_prx.ma    # proxy
+horse_ctl.ma    # control
+horse_hlp.ma    # helper
+horse_twk.ma    # tweak
+weight/horse_wgh.json   # skin weight
+```
 `# can be any number and the largest will be loaded`
 
 ## Custom Objects Classes
@@ -143,9 +148,10 @@ Maya 2023.3 / 2027, Win 11 Pro
 ## Reference
 1. [Python for Maya : Beginner to Advanced Rigging Automation by Nick Hughes](https://www.udemy.com/course/python-for-maya-beginner-to-advanced-rigging-automation)
 2. [Ramon Arango's rigs](https://ramonarango.gumroad.com/)
-2. [BoneClones](https://boneclones.com/category/all-zoology-skeletons/fields-of-study)
-3. [Ivlpaleontology](https://sketchfab.com/ivlpaleontology)
-4. [Rigamajig2](https://github.com/masonSmigel/rigamajig2)
+3. [BoneClones](https://boneclones.com/category/all-zoology-skeletons/fields-of-study)
+4. [Ivlpaleontology](https://sketchfab.com/ivlpaleontology)
+5. [Osteology](https://en.wikipedia.org/wiki/Osteology)
+6. [Rigamajig2](https://github.com/masonSmigel/rigamajig2)
 
 
 <br>
