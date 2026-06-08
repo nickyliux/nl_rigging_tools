@@ -126,8 +126,8 @@ class Head(RigModule):
         self.update_list(self.jnts_bind, add=[self.head, self.jaw])
 
         self.add_bind_jnt_set(self.jnts_bind)
-        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 5)
-        proxy.add_proxyDiv_attr([self.head], 3)
+        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 3)
+        proxy.add_proxyDiv_attr([self.head, self.jaw], 3)
 
     def build_post(self):
         """Post setup for the head rig module."""
