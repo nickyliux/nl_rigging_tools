@@ -307,7 +307,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 self.update_char_cbb(charPath)
             else:
                 mc.optionVar(sv=("charDir", ""))
-                mc.savePrefs()
+                # mc.savePrefs()
 
     def updateWarpTargetMesh(self):
         """Update the button text for loading wrap target mesh."""
@@ -649,7 +649,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             tgt = DagNode(selList[0])
             if tgt.type == "mesh":
                 mc.optionVar(sv=("targetWarpMesh", tgt.name))
-                mc.savePrefs()
+                # mc.savePrefs()
                 self.updateWarpTargetMesh()
 
     
@@ -684,7 +684,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             tgt = DagNode(selList[0])
             if tgt.type == "mesh":
                 mc.optionVar(sv=("targetTweakMesh", tgt.name))
-                mc.savePrefs()
+                # mc.savePrefs()
                 self.updateTweakTargetMesh()
 
     def misc_importEnvAndShd(self):
@@ -700,13 +700,13 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Set character path via file dialog."""
         charPath = mc.optionVar(q="charDir")
         new_charPaths = mc.fileDialog2(
-            dialogStyle=2, fileMode=3, dir=charPath, cap="Set Char Directory", okc="Set"
+            dialogStyle=2, fileMode=3, dir=charPath, cap="Set Character Library Directory", okc="Set"
         )
         if new_charPaths:
             charPath = new_charPaths[0]
             mc.optionVar(sv=("charDir", charPath))
-            mc.savePrefs()
             self.update_char_cbb(charPath)
+            mc.savePrefs()
 
     def update_char_full_path(self):
         """Update charFullPath optionVar from charDir + selected folder."""
