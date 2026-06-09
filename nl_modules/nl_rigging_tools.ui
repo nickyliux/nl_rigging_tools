@@ -625,7 +625,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Guide</string>
+          <string>Tpl</string>
          </property>
         </widget>
        </item>
@@ -862,7 +862,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Bind Sk</string>
+          <string>Sk Bind</string>
          </property>
         </widget>
        </item>
@@ -1364,7 +1364,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Skl Ref</string>
+          <string>Sk Ref</string>
          </property>
         </widget>
        </item>

@@ -10,6 +10,7 @@ from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
 from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
+from nl_modules.utils.color import Color
 from nl_modules.utils.common import Vec
 
 
@@ -192,21 +193,21 @@ class LegQd(RigModule):
         if self.patellaBone:
             self.patella_setup()
 
-        if self.carpalFix:
-            self.carpalFixJ = self.carpalFix_setup(self.palm, self.digit, tz=(-1,-5), tx=(0.5,1))
-
         if self.dualBone:
             self.build_dual_bones()
+
+        if self.carpalFix:
+            self.carpalFix_setup(self.palm, self.digit, tz=(-1,-5), tx=(0.5,1))
 
         if self.toeBones:
             self.build_toes()
             self.update_list(self.jnts_bind, rm=[self.ball])
-
+        
         self.build_post()
 
     def build_toes(self):
         """Build the toe joints and controls for the quadruped leg rig."""
-        self.toesRootJ | self.palm
+        # self.toesRootJ | self.palm
 
         self.toesJntList = []
         for rJ in self.toesRootJ.childrenJt:
@@ -214,6 +215,12 @@ class LegQd(RigModule):
             rJ.a.segmentScaleCompensate.set(0)
 
         self.build_digits()
+
+        if self.carpalFix:
+            self.toesRootJ | self.ofsFixJ
+        else:
+            self.toesRootJ | self.palm
+        self.toesRootJ.color = Color.D_RED
 
     def build_fk(self):
         """Build the FK controls and joints for the quadruped leg rig."""
@@ -579,6 +586,7 @@ class LegQd(RigModule):
         self.smart_ctl.a.ro.set(2)
         
         if self.carpalFix:
+            self.ofsFixJ.a.ro.set(2)
             self.carpalFixJ.a.ro.set(2)
 
     def setup_space(self):

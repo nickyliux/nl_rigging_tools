@@ -201,7 +201,7 @@ class LegBp(RigModule):
         if self.kneeFix:
             self.boneOfsFix_setup(self.lwr, self.palm)
             if self.ribbon:
-                self.boneFix.cstPoi(self.ribbon_lw.stt_loc)
+                self.ofsFixJ.cstPoi(self.ribbon_lw.stt_loc)
 
         if self.dualBone:
             self.build_dual_bones()
@@ -480,7 +480,7 @@ class LegBp(RigModule):
         radius_JC = self.gen_sk_fr_names(["radius", "radiusEnd"], r=0.5)
         ulna_JC = self.gen_sk_fr_names(["ulna", "ulnaEnd"], r=0.5)
 
-        parent = self.boneFix if self.kneeFix else self.lwr
+        parent = self.ofsFixJ if self.kneeFix else self.lwr
         (radius_JC[0], ulna_JC[0]) | parent
 
         radius_loc = LocNode("radius_loc", pf=rID, align=radius_JC[1], p=self.palm)
@@ -559,6 +559,8 @@ class LegBp(RigModule):
         """Setup rotate order for the leg rig controls."""
         for ctl in self.ctls_fk + self.ctls_ik + self.ctls_sub + [self.smart_ctl]:
             ctl.a.ro.set(3)
+        if self.kneeFix:
+            self.ofsFixJ.a.ro.set(3)
 
     def setup_space(self):
         """Setup space switching for the leg rig controls."""
@@ -627,7 +629,8 @@ class LegBp(RigModule):
 
     def setup_bindJnt(self):
         """Setup bind joints for the leg rig module."""
-        self.add_bind_jnt_set(self.jnts_bind)
+        print(self.jnts_bind)
+        # self.add_bind_jnt_set(self.jnts_bind)
         proxy.add_proxyRadiusScale_attr(self.jnts_toes, 1)
         proxy.add_proxyRadiusScale_attr(self.jnts_bind, 5)
 

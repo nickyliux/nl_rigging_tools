@@ -24,7 +24,7 @@ class RigModule(RigBase):
         super().__init__(mg)
 
         rID = self.rigID
-        self.CTL_DATA = GrpNode(rID + "_ctl_data", p=self.masterC)  # self.CTL
+        self.CTL_DATA = GrpNode(rID + "_ctl_data", p=self.masterC)
         self.JNT_DATA = GrpNode(rID + "_jnt_data", p=self.JNT)
 
         self.masterGuide = DagNode(rID + "_master_guide")
@@ -32,7 +32,10 @@ class RigModule(RigBase):
         guides_grp = GrpNode("GUIDES")
         self.rigSize = guides_grp.a.sy.get() * self.masterGuide.a.sy.get()
         self.xDir = 1 if rID.startswith("lf") else -1 if rID.startswith("rt") else 0
-        self.boneFix = None
+
+        self.ofsFixJ = None     # joint used for limb bone offset, e.g. knee of biped leg
+        self.carpalFixJ = None      # joint used for carpal bone offset, e.g. carpal of quad leg
+
         self.jnts_bind = []
         self.all_bendy = []
 
@@ -470,7 +473,7 @@ class RigModule(RigBase):
         
         childDup.rename(tgtChild + "Fix")
         childDup | tgtDup | tgt
-        tgtDup.color = Color.PINK
+        # tgtDup.color = Color.PINK
 
         # reset, especially for digit joint
         childDup.a.jointOrient.reset()
@@ -481,11 +484,11 @@ class RigModule(RigBase):
             tgtDup, worldUpType="object", worldUpObject=upLoc, aim=(xDr, 0, 0)
         )
 
-        self.boneFix = tgtDup
-        self.boneFix_sdk(tgt, tgtDup, tz=tz, tx=tx)
+        self.ofsBoneFix_sdk(tgt, tgtDup, tz=tz, tx=tx)
         upLoc.hide()
+        self.update_list(self.jnts_bind, add=[tgtDup], rm=[tgt])
 
-        self.update_list(self.jnts_bind, add=[self.boneFix], rm=[tgt])
+        self.ofsFixJ = tgtDup
 
     def carpalFix_setup(self, palm, digit, tz=(-2,-8), tx=(2.5,0)):
         """Setup carpal fix for the leg rig."""
@@ -498,17 +501,18 @@ class RigModule(RigBase):
 
             lwr = palm.parent
 
-            carpalFixJ = palm.duplicate(po=1, n=self.rigID + "_carpalFix")
-            carpalFixJ.snapTo(carpal_guide)
+            fixJ = palm.duplicate(po=1, n=self.rigID + "_carpalFix")
+            fixJ.snapTo(carpal_guide)
             
-            palm.a.r * (.5,.5,.5) >> carpalFixJ.a.r
+            palm.a.r * (.5,.5,.5) >> fixJ.a.r
 
-            self.update_list(self.jnts_bind, add=[carpalFixJ])
-            return carpalFixJ
+            self.update_list(self.jnts_bind, add=[fixJ])
+            self.carpalFixJ = fixJ
+            
         else:
             logging.info(f"Carpal guide not found: '{rID}_carpal_guide'")
 
-    def boneFix_sdk(self, driver, driven, tz=(-2,-8), tx=(2.5,0)):
+    def ofsBoneFix_sdk(self, driver, driven, tz=(-2,-8), tx=(2.5,0)):
         """ "Setup SDK for bone fix to drive the leg joint."""
         s = self.xDir
 
@@ -1118,7 +1122,7 @@ class RigModule(RigBase):
         mid_bend.cstParSca(stt_ofs[0], mo=1)
 
         if kneeFix:
-            self.boneFix_sdk(lwr, stt_ofs[1], tz=tz, tx=tx)
+            self.ofsBoneFix_sdk(lwr, stt_ofs[1], tz=tz, tx=tx)
 
         # Add volume attributes to setting
         autoVol = self.setting.a.add("autoVol", min=0, dv=0.5)
