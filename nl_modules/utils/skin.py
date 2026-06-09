@@ -9,6 +9,24 @@ from nl_modules.utils import common
 from nl_modules.utils import control
 from nl_modules.utils import file
 
+AUTO_BIND_JNT_SET = "auto_bind_jnt_set"
+
+def autoBind_refJnts(meshes=None, thld=999):
+    """Bind meshes to reference joints with a specified threshold."""
+    jnts = common.getSetMembersInOrder(AUTO_BIND_JNT_SET)
+    if not jnts:
+        logging.info(f"No joints in Set {AUTO_BIND_JNT_SET} found for auto skin.")
+        return
+
+    jntsScap = [n for n in jnts if "scapula" in n.name.lower()]
+    jntsOthers = set(jnts) - set(jntsScap)
+
+    meshesScap = [n for n in meshes if "scapula" in DagNode(n).name.lower()]
+    meshesOthers = set(meshes) - set(meshesScap)
+
+    skinRefJnts(meshes=meshesScap, jnts=jntsScap, thld=thld)
+    skinRefJnts(meshes=meshesOthers, jnts=jntsOthers, thld=thld)
+
 
 def skinRefJnts(meshes=None, jnts=None, thld=5):
     """Skin meshes to their _refJnt if found and within threshold distance."""
@@ -43,24 +61,42 @@ def skinRefJnts(meshes=None, jnts=None, thld=5):
     mc.progressWindow(ep=1)
     logging.info(f"Ref Joints: weighted {weighted}, and skipped {ignored}.")
 
-
-def skinRbJnts(meshes=None):
+def autoBind_rbJnts(meshes=None):
     """Skin target meshes to their _rbJnt if found."""
+    missed = 0
     ignored = 0
     weighted = 0
+
+    for typ in ['neck', 'spine', 'tail']:
+
+        grp = GrpNode(f"auto_bind_{typ}_grp")
+        setName = f"{typ}_rbj_set"
+
+        if grp.exists():                
+            if not mc.ls(setName, type="objectSet"):
+                # ele = mc.sets(setName, q=1)
+                # mc.delete(ele)
+                # Create set for duplicated
+                rbJnts = [j.duplicate(n=j + '_bind') for j in grp.allChildrenJt]
+                mc.sets(rbJnts, n=setName)
+        else:
+            logging.info(f"Grp {grp} NOT found for auto skin.")
+            continue
+
     for i, mesh in enumerate(meshes):
 
-        rbJnt = DagNode(mesh.name + "_rbJnt")
-        if not rbJnt.exists():
+        bindJnt = DagNode(mesh.name + "_rbJnt_bind")
+        if not bindJnt.exists():
+            missed += 1
             continue
         if mesh.skinCluster.exists():
             ignored += 1
             continue
 
-        mesh.weightTo(rbJnt, mi=1)  # , tsb=1)
+        mesh.weightTo(bindJnt, mi=1)  # , tsb=1)
         weighted += 1
 
-    logging.info(f"Rbn Joints: weighted {weighted}, and skipped {ignored}.")
+    logging.info(f"Rbn Joints: missed {missed}, weighted {weighted}, and skipped {ignored}.")
 
 
 def selSkinned(*args):

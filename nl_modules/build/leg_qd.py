@@ -75,6 +75,7 @@ class LegQd(RigModule):
         self.ball_ikc = None
         self.scapulaG = None
         self.scap_fkc = None
+        self.patellaJ = None
 
     def gen_sk(self):
         """Generate the skeleton for the quadruped leg rig."""
@@ -82,6 +83,9 @@ class LegQd(RigModule):
         # --- Generate main skeleton module and root joints ---
         self.genSk_module()
         root_list = self.gen_sk_fr_names(self.jnt_names)
+
+        for jnt in root_list:
+            DagNode(jnt).a.ro.set(2)
 
         # --- Toes setup (if enabled) ---
         if self.toeBones:
@@ -191,7 +195,7 @@ class LegQd(RigModule):
         self.singleBallCtl_setup()
 
         if self.patellaBone:
-            self.patella_setup()
+            self.patellaJ = self.patella_setup()
 
         if self.dualBone:
             self.build_dual_bones()
@@ -581,13 +585,17 @@ class LegQd(RigModule):
         """Setup rotate order for the quadruped leg rig controls."""
         for c in self.ctls_fk + self.ctls_ik + self.ctls_sub:
             c.a.ro.set(2)
-        for c in self.jnts_fk + self.jnts_ik + self.jnts:
-            c.a.ro.set(2)
+        # for c in self.jnts_fk + self.jnts_ik + self.jnts:
+        #     c.a.ro.set(2)
+
         self.smart_ctl.a.ro.set(2)
         
         if self.carpalFix:
             self.ofsFixJ.a.ro.set(2)
             self.carpalFixJ.a.ro.set(2)
+
+        if self.patellaBone:
+            self.patellaJ.a.ro.set(2)
 
     def setup_space(self):
         """Setup space switching for the quadruped leg rig controls."""

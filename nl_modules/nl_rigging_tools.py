@@ -56,7 +56,6 @@ STYLE_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.qss")
 LIGHTING_FILE = os.path.join(LIGHT_PATH, "lighting4.ma")
 SHADER_FILE = os.path.join(LIGHT_PATH, "bone_SHD.ma")
 AUTO_BIND_JNT_GRP = "auto_bind_jnt_grp"
-AUTO_BIND_JNT_SET = "auto_bind_jnt_set"
 MODEL_GRP = "geo_grp"
 TWEAK_GRP = "tweak_guide_grp"
 
@@ -181,10 +180,10 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.copyWeight_BN, skin.copyWeight)
 
         # Prepare
-        self.connect(self.UI.addRbJnt_neck_BN, partial(self.addRbRefJoint, rb=1, type=0))
-        self.connect(self.UI.addRbJnt_spine_BN, partial(self.addRbRefJoint, rb=1, type=1))
-        self.connect(self.UI.addRbJnt_tail_BN, partial(self.addRbRefJoint, rb=1, type=2))
-        self.connect(self.UI.addRefJnt_BN, partial(self.addRbRefJoint, rb=0))
+        self.connect(self.UI.addRbJnt_neck_BN, partial(self.addSkRefJoint, type=0))
+        self.connect(self.UI.addRbJnt_spine_BN, partial(self.addSkRefJoint, type=1))
+        self.connect(self.UI.addRbJnt_tail_BN, partial(self.addSkRefJoint, type=2))
+        self.connect(self.UI.addRefJnt_BN, partial(self.addSkRefJoint, type=3))
         self.connect(self.UI.mirrorAllRefJnt_BN, self.mirrorAllRefJnt)
         self.connect(self.UI.toggleClickDrag_BN, self.toggleClickDrag)
 
@@ -492,28 +491,27 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.UI.crvShape_LW.addItems(items)
 
 
-    def addRbRefJoint(self, rb=0, type=0):
+    def addSkRefJoint(self, type=0):
         """Add reference joint or rb joint for selected mesh."""
         mc.select(hi=1)
         meshSel = [DagNode(m).parent for m in mc.ls(sl=1, type="mesh")]
 
         if meshSel:
 
-            jntDict = {
-                'sf': ['_refJnt', "_rbJnt"],
-                'grpName': ["ref_grp", "rb_grp"],
-                'color': [Color.L_BLUE, Color.RED],
+            jDict = {
+                'sf': ["_rbJnt", '_rbJnt','_rbJnt','_refJnt'],
+                'name': ["auto_bind_neck_grp", "auto_bind_spine_grp", "auto_bind_tail_grp", "auto_bind_ref_grp"],
+                'color': [Color.D_RED, Color.RED, Color.D_RED, Color.L_BLUE],
             }
             grp = GrpNode(
-                jntDict['grpName'][rb],
+                jDict['name'][type],
                 p=GrpNode(AUTO_BIND_JNT_GRP),
             )
-
             addedJnts = []
             for mesh in meshSel:
                 jnt = JntNode(
-                    mesh + jntDict['sf'][rb],
-                    color=jntDict['color'][rb],
+                    mesh + jDict['sf'][type],
+                    color=jDict['color'][type],
                     p=grp,
                     r=0.5,
                 )
@@ -521,12 +519,12 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 addedJnts.append(jnt)
             
             # Add extra group to created joints
-            mc.group(addedJnts, n=grp.name + "_#")
+            # mc.group(addedJnts, n=grp.name + "_#")
 
             # Add set
-            if rb == 1 and len(addedJnts) > 0:            
-                setNames = ["neck_rbj_set", "spine_rbj_set", "tail_rbj_set"]
-                mc.sets(addedJnts, n=setNames[type])
+            # if rb == 1 and len(addedJnts) > 0:            
+            #     setNames = ["neck_rbj_set", "spine_rbj_set", "tail_rbj_set"]
+            #     mc.sets(addedJnts, n=setNames[type])
 
     def toggleClickDrag(self):
         """Toggle click and drag selection preference."""
@@ -541,21 +539,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         else:
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
 
-    def autoBind_refJnts(self, meshes=None, thld=999):
-        """Bind meshes to reference joints with a specified threshold."""
-        jnts = common.getSetMembersInOrder(AUTO_BIND_JNT_SET)
-        if not jnts:
-            logging.info(f"No joints in Set {AUTO_BIND_JNT_SET} found for auto skin.")
-            return
-
-        jntsScap = [n for n in jnts if "scapula" in n.name.lower()]
-        jntsOthers = set(jnts) - set(jntsScap)
-
-        meshesScap = [n for n in meshes if "scapula" in DagNode(n).name.lower()]
-        meshesOthers = set(meshes) - set(meshesScap)
-
-        skin.skinRefJnts(meshes=meshesScap, jnts=jntsScap, thld=thld)
-        skin.skinRefJnts(meshes=meshesOthers, jnts=jntsOthers, thld=thld)
 
     @common.Undo("boneAutoUnBind")
     def boneAutoUnBind(self):
@@ -607,18 +590,17 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             return
 
         # Bind meshes to ref joints
-        self.autoBind_refJnts(meshes=tgtMeshes, thld=20)
+        skin.autoBind_refJnts(meshes=tgtMeshes, thld=20)
 
         # Bind meshes to rb joints & attach rb joints to surface
-        skin.skinRbJnts(meshes=tgtMeshes)
+        skin.autoBind_rbJnts(meshes=tgtMeshes)
         build.boneAutoAttach()
-
-        # Rib setup
         skeleton.rib_setup()
 
         sk_grp = DagNode(AUTO_BIND_JNT_GRP)
-        if sk_grp.exists() and not sk_grp.parent:
-            sk_grp | DagNode("CHR")
+        if sk_grp.exists():
+            if not sk_grp.parent:
+                sk_grp | DagNode("CHR")
             sk_grp.hide()
 
         master2_ctl = DagNode("master2_ctl")

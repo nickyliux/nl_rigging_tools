@@ -20,17 +20,6 @@ def save_reference():
         )
         return
 
-    neck_rbj_set = mc.ls("neck_rbj_set", type="objectSet")
-    spine_rbj_set = mc.ls("spine_rbj_set", type="objectSet")
-    tail_rbj_set = mc.ls("tail_rbj_set", type="objectSet")
-
-    if neck_rbj_set:
-        sk_grp.append(neck_rbj_set[0])
-    if spine_rbj_set:
-        sk_grp.append(spine_rbj_set[0])
-    if tail_rbj_set:
-        sk_grp.append(tail_rbj_set[0])
-
     charPath = mc.optionVar(q="charFullPath")
     tgtPaths = mc.fileDialog2(fileFilter="*ref*.ma", dialogStyle=2, dir=charPath)
     if tgtPaths:
@@ -67,6 +56,12 @@ def load_reference(loadLatest=1):
     tgtPaths.sort(key=common.sortFile)
     file.importFile(tgtPaths[-1])
 
+    sk_grp = mc.ls(AUTO_BIND_JNT_GRP, tr=1)
+    if sk_grp:
+        DagNode(sk_grp[0]).show()
+    else:
+        mc.confirmDialog(t="Info", m=f"Grp {AUTO_BIND_JNT_GRP} is missing in the file.     ", b="OK")
+
     logging.info(f"Ref file imported: {os.path.basename(tgtPaths[-1])}.")
     print("")
 
@@ -75,8 +70,8 @@ def rib_setup(*args):
     """Add a lattice deformer to a group containing rib meshes."""
     tgts = mc.ls(RIB_GRP)
     if tgts:
-        spine_rbj_set = mc.ls("spine_rbj_set", type="objectSet")
-        if not spine_rbj_set:
+        bind_set = mc.ls("spine_rbj_set", type="objectSet")
+        if not bind_set:
             logging.info(f"No spine_rbj_set found.")
             return
         
@@ -92,7 +87,7 @@ def rib_setup(*args):
         )
 
         lattice = GrpNode(result[1])
-        lattice.weightTo(spine_rbj_set, mi=5)
+        lattice.weightTo(bind_set, mi=5)
         lattice_grp = lattice.parent
         lattice_grp.rename(RIB_LATTICE_GRP)
 

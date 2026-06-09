@@ -488,33 +488,16 @@ def boneAutoAttach():
         elif rigID.startswith("spineQd"):
             attachToTwoSrfUVPin(rigID, rbJnts, rbSrf, rbSrfSk, globalScale, grp)
 
-
 # def attachToTwoSrfMtx(rigID, tgts, srf, srfSk, globalScale, grp):
-#     """Attach joints with matrix, position from srfSk, orientation from srf """
-#     outLocs = []
-#     tmpLoc = LocNode('temp_#')
-
-#     attachGrp = GrpNode(f'{rigID}_attachGrp', p=grp)
-#     for j in tgts:
-#         tmpLoc.snapTo(j)
-#         dcpM_t = matrix.attachMtx(srfSk, refLoc=tmpLoc)
-#         dcpM_r = matrix.attachMtx(srf, refLoc=tmpLoc)
-
-#         outLoc = LocNode('attach_loc_#', p=attachGrp)
-#         dcpM_t.a.outputTranslate >> outLoc.a.translate
-#         dcpM_r.a.outputRotate >> outLoc.a.rotate
-#         outLocs.append(outLoc)
-#     tmpLoc.delete()
-
-#     for loc, jnt in zip(outLocs, tgts):
-#         jnt | loc
-#         globalScale >> loc.a.s
-
 
 def attachToOneSrfUVPin(rigID, tgts, srf, globalScale, grp):
     """Attach joints with uvPin, position from srfSk, orientation from srf"""
     logging.info(f"Attach joints for {rigID}")
     dcpMs = common.attachUVPin(tgtList=tgts, geo=srf)
+
+    attachGrpName = f"{rigID}_attachGrp"
+    if DagNode(attachGrpName).exists():
+        mc.delete(attachGrpName)
 
     attachGrp = GrpNode(f"{rigID}_attachGrp", p=grp)
     for i, tgt in enumerate(tgts):
@@ -530,6 +513,10 @@ def attachToTwoSrfUVPin(rigID, tgts, srfR, srfT, globalScale, grp):
     logging.info(f"Attach joints for {rigID}")
     dcpM_rs = common.attachUVPin(tgtList=tgts, geo=srfR)
     dcpM_ts = common.attachUVPin(tgtList=tgts, geo=srfT)
+
+    attachGrpName = f"{rigID}_attachGrp"
+    if DagNode(attachGrpName).exists():
+        mc.delete(attachGrpName)
 
     attachGrp = GrpNode(f"{rigID}_attachGrp", p=grp)
     for i, tgt in enumerate(tgts):

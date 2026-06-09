@@ -84,6 +84,7 @@ class LegBp(RigModule):
         self.ribbon_lw = None
         self.scapulaG = None
         self.scap_fkc = None
+        self.patellaJ = None
 
     def gen_sk(self):
         """Generate the skeleton for the leg rig."""
@@ -91,7 +92,7 @@ class LegBp(RigModule):
         root_list = self.gen_sk_fr_names(self.jnt_names)
 
         for jnt in root_list:
-            DagNode(jnt).a.ro.set(5)
+            DagNode(jnt).a.ro.set(2)
 
         if self.toeBones:
             self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
@@ -172,7 +173,7 @@ class LegBp(RigModule):
         # self.build_nlAutoAim(
         #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
         # )
-        self.update_list(self.jnts_bind, add=[self.jnts[:-1]])
+        self.update_list(self.jnts_bind, add=self.jnts[:-1])
 
         self.scapulaG = self.build_legScapula(
             ikc=self.ikc,
@@ -207,7 +208,7 @@ class LegBp(RigModule):
             self.build_dual_bones()
 
         if self.patellaBone:
-            self.patella_setup()
+            self.patellaJ = self.patella_setup()
 
         if self.toeBones:
             self.build_toes()
@@ -557,10 +558,15 @@ class LegBp(RigModule):
 
     def setup_rotate_order(self):
         """Setup rotate order for the leg rig controls."""
-        for ctl in self.ctls_fk + self.ctls_ik + self.ctls_sub + [self.smart_ctl]:
-            ctl.a.ro.set(3)
+        for ctl in self.ctls_fk + self.ctls_ik + self.ctls_sub:
+            ctl.a.ro.set(2)
+            
+        self.smart_ctl.a.ro.set(2)
+
         if self.kneeFix:
-            self.ofsFixJ.a.ro.set(3)
+            self.ofsFixJ.a.ro.set(2)
+        if self.patellaBone:
+            self.patellaJ.a.ro.set(2)
 
     def setup_space(self):
         """Setup space switching for the leg rig controls."""
@@ -629,8 +635,7 @@ class LegBp(RigModule):
 
     def setup_bindJnt(self):
         """Setup bind joints for the leg rig module."""
-        print(self.jnts_bind)
-        # self.add_bind_jnt_set(self.jnts_bind)
+        self.add_bind_jnt_set(self.jnts_bind)
         proxy.add_proxyRadiusScale_attr(self.jnts_toes, 1)
         proxy.add_proxyRadiusScale_attr(self.jnts_bind, 5)
 

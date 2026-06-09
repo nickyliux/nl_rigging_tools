@@ -1830,7 +1830,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>1. Select neck / spine / tail bones or
+        <string>1. Select neck / spine / tail meshes or
     group.</string>
        </property>
        <property name="alignment">
