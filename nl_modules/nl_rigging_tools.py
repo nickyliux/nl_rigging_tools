@@ -513,7 +513,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                     mesh + jDict['sf'][type],
                     color=jDict['color'][type],
                     p=grp,
-                    r=0.5,
+                    # r=0.5,
                 )
                 jnt.a.t.set(*mesh.o.bbCenter)
                 addedJnts.append(jnt)

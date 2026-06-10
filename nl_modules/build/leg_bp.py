@@ -128,7 +128,7 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", rSz, 0),
+            ("setting", "screw_nut", "x", rSz, 1),
             ("hip_fkc", "stickS", None, -scale / 1.5, 0),
             ("upr_fkc", "circleV", "x", scale, 0),
             ("lwr_fkc", "circleV", "x", scale, 0),
@@ -156,7 +156,7 @@ class LegBp(RigModule):
         if self.scapulaBone:
             self.scap_fkc.cv_move(0, scale * 25, 0)
 
-        self.setting.cv_move(scale * 15, 0, 0)
+        # self.setting.cv_move(scale * 15, 0, 0)
 
         self.ikc.cv_move(0, 0, rSz * 12)
 
@@ -173,7 +173,9 @@ class LegBp(RigModule):
         # self.build_nlAutoAim(
         #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
         # )
-        self.update_list(self.jnts_bind, add=self.jnts[:-1])
+        # self.update_list(self.jnts_bind, add=self.jnts[:-1])
+        self.update_list(self.jnts_bind, add=[self.hip, self.palm])
+
 
         self.scapulaG = self.build_legScapula(
             ikc=self.ikc,
@@ -198,6 +200,8 @@ class LegBp(RigModule):
                 up1="ty",
                 up2="ty",
             )
+        else:
+            self.update_list(self.jnts_bind, add=[self.upr, self.lwr])
 
         if self.kneeFix:
             self.boneOfsFix_setup(self.lwr, self.palm)
@@ -206,6 +210,7 @@ class LegBp(RigModule):
 
         if self.dualBone:
             self.build_dual_bones()
+            self.update_list(self.jnts_bind, rm=[self.ofsFixJ, self.lwr])
 
         if self.patellaBone:
             self.patellaJ = self.patella_setup()
@@ -369,8 +374,10 @@ class LegBp(RigModule):
 
         self.jnts_bf = common.dupSk(self.jnts, "_bf", p=self.BF_GRP, r=rSz * 3)
 
-        self.setting.snapTo(self.palm, p=self.CTL_DATA)
-        self.palm.cstPar(self.setting, mo=1)
+        # self.setting.snapTo(self.palm, p=self.CTL_DATA)
+        # self.palm.cstPar(self.setting, mo=1)
+        self.setting.snapTo(self.upr, p=self.CTL_DATA)
+        self.upr.cstPar(self.setting, mo=1)
 
         fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=1)
         total = len(self.jnts) - 1
@@ -501,7 +508,7 @@ class LegBp(RigModule):
             ulna_JC[0], worldUpType=type, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
 
-        self.update_list(self.jnts_bind, add=[radius_JC[0], ulna_JC[0]], rm=[self.lwr])
+        self.update_list(self.jnts_bind, add=[radius_JC[0], ulna_JC[0]])
 
     def setup_vis(self):
         """Setup visibility for the leg rig controls."""
