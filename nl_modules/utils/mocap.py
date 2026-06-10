@@ -223,44 +223,44 @@ def set_legs_to_fk(ns):
 
 
 def link_canine(*args):
-    link_to_map(0)
+    link_to_map(quadType=0)
 
 
 def unlink_canine(*args):
-    unlink_map(0)
+    unlink_map(quadType=0)
 
 
 def link_equine(*args):
-    link_to_map(1)
+    link_to_map(quadType=1)
 
 
 def unlink_equine(*args):
-    unlink_map(1)
+    unlink_map(quadType=1)
 
 
-def link_to_map(mapId):
+def link_to_map(quadType=0):
     """Connect Moma Sk to Qd rig controls."""
     ns = common.setNsFrSel()
     if ns:
         set_legs_to_fk(ns)
-        if mapId == 0:
+        if quadType == 0:
             cst_mm_to_quad(CANINE_MAP, ns)
             mm_link_setup(ns, jnts=CANINE_JNTS["neck"], rID='neck0')
             mm_link_setup(ns, jnts=CANINE_JNTS["tail"], rID='tail0')
-        elif mapId == 1:
+        elif quadType == 1:
             cst_mm_to_quad(EQUINE_MAP, ns)
             mm_link_setup(ns, jnts=EQUINE_JNTS["neck"], rID='neck0')
             mm_link_setup(ns, jnts=EQUINE_JNTS["tail"], rID='tail0')
 
 
-def unlink_map(mapId):
+def unlink_map(quadType=0):
     """Remove constraints betw Moma Sk and Qd rig controls."""
     ns = common.setNsFrSel()
     if ns:
-        if mapId == 0:
+        if quadType == 0:
             unCst_mm_to_quad(CANINE_MAP, ns)
             logging.info("Remove constraints to rig controls for Canine.")
-        elif mapId == 1:
+        elif quadType == 1:
             unCst_mm_to_quad(EQUINE_MAP, ns)
             logging.info("Remove constraints to rig controls for Equine.")
 

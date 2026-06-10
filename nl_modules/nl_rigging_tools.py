@@ -686,7 +686,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             charPath = new_charPaths[0]
             mc.optionVar(sv=("charDir", charPath))
             self.update_char_cbb(charPath)
-            mc.savePrefs()
+            # mc.savePrefs() # check if causing slowness in maya opening
 
     def update_char_full_path(self):
         """Update charFullPath optionVar from charDir + selected folder."""

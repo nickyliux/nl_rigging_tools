@@ -2046,7 +2046,7 @@
           </property>
           <property name="text">
            <string>+ Rb Jnts
-to Neck set</string>
+for Neck</string>
           </property>
          </widget>
         </item>
@@ -2083,7 +2083,7 @@ to Neck set</string>
           </property>
           <property name="text">
            <string>+ Rb Jnts
-to Spine set</string>
+for Spine</string>
           </property>
          </widget>
         </item>
@@ -2120,7 +2120,7 @@ to Spine set</string>
           </property>
           <property name="text">
            <string>+ Rb Jnts
-to Tail set</string>
+for Tail</string>
           </property>
          </widget>
         </item>
@@ -4666,9 +4666,9 @@ Setup</string>
      <widget class="QWidget" name="horizontalLayoutWidget_29">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>160</y>
-        <width>221</width>
+        <x>10</x>
+        <y>140</y>
+        <width>201</width>
         <height>25</height>
        </rect>
       </property>
@@ -4696,7 +4696,7 @@ Setup</string>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>18</height>
+           <height>999</height>
           </size>
          </property>
          <property name="font">
@@ -4714,7 +4714,7 @@ Setup</string>
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Link</string>
+          <string>Link for Canine</string>
          </property>
         </widget>
        </item>
@@ -4728,8 +4728,8 @@ Setup</string>
          </property>
          <property name="maximumSize">
           <size>
-           <width>16777215</width>
-           <height>18</height>
+           <width>50</width>
+           <height>999</height>
           </size>
          </property>
          <property name="font">
@@ -4763,7 +4763,7 @@ Setup</string>
        </rect>
       </property>
       <property name="text">
-       <string>1. Reference the quad rig </string>
+       <string>1. Reference the quad rig.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_8">
@@ -4776,28 +4776,28 @@ Setup</string>
        </rect>
       </property>
       <property name="text">
-       <string>2. Add Canine / Equine in MotionMaker</string>
+       <string>2. Add Canine / Equine in MotionMaker.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_9">
       <property name="geometry">
        <rect>
         <x>6</x>
-        <y>100</y>
+        <y>110</y>
         <width>211</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>4. Select any ctl of the rig and link</string>
+       <string>4. Select any ctl of the rig.</string>
       </property>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_32">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>270</y>
-        <width>221</width>
+        <x>10</x>
+        <y>230</y>
+        <width>201</width>
         <height>25</height>
        </rect>
       </property>
@@ -4858,20 +4858,29 @@ Setup</string>
         <height>31</height>
        </rect>
       </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="midLineWidth">
+       <number>0</number>
+      </property>
       <property name="text">
-       <string>3. Scale it to fit closely. Also move ctl to
-    fit the tail</string>
+       <string>3. Scale it and try to fit to the spine.
+    For the tail, align with the angle.</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+      <property name="margin">
+       <number>0</number>
       </property>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_35">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>210</y>
-        <width>221</width>
+        <x>10</x>
+        <y>170</y>
+        <width>201</width>
         <height>25</height>
        </rect>
       </property>
@@ -4899,7 +4908,7 @@ Setup</string>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>18</height>
+           <height>999</height>
           </size>
          </property>
          <property name="font">
@@ -4917,7 +4926,7 @@ Setup</string>
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Link</string>
+          <string>Link for Equine</string>
          </property>
         </widget>
        </item>
@@ -4931,8 +4940,8 @@ Setup</string>
          </property>
          <property name="maximumSize">
           <size>
-           <width>16777215</width>
-           <height>18</height>
+           <width>50</width>
+           <height>999</height>
           </size>
          </property>
          <property name="font">
@@ -4956,65 +4965,17 @@ Setup</string>
        </item>
       </layout>
      </widget>
-     <widget class="Line" name="line_5">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>130</y>
-        <width>205</width>
-        <height>3</height>
-       </rect>
-      </property>
-      <property name="lineWidth">
-       <number>1</number>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_22">
-      <property name="geometry">
-       <rect>
-        <x>90</x>
-        <y>140</y>
-        <width>50</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Canine</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_23">
-      <property name="geometry">
-       <rect>
-        <x>90</x>
-        <y>190</y>
-        <width>50</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Equine</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
      <widget class="QLabel" name="label_24">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>250</y>
+        <y>210</y>
         <width>211</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>5. Select any ctl of the rig and bake</string>
+       <string>5. Select any ctl of the rig.</string>
       </property>
      </widget>
     </widget>
