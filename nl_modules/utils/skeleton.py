@@ -16,7 +16,7 @@ def save_reference():
     sk_grp = mc.ls(AUTO_BIND_JNT_GRP, tr=1)
     if not sk_grp:
         mc.confirmDialog(
-            t="Info", m=f"Group {AUTO_BIND_JNT_GRP} not found.     ", b="OK"
+            t="Info", m=f"Group '{AUTO_BIND_JNT_GRP}' not found.     ", b="OK"
         )
         return
 
@@ -26,7 +26,7 @@ def save_reference():
 
         mc.select(sk_grp, noExpand=1)
         mc.file(tgtPaths, type="mayaAscii", f=1, es=1)  # , ch=0, chn=0, exp=0, con=0)
-        logging.info(f"Skeleton group '{AUTO_BIND_JNT_GRP}' and related sets exported.")
+        logging.info(f"Group '{AUTO_BIND_JNT_GRP}' exported.")
         mc.select(cl=1)
 
 

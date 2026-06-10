@@ -42,7 +42,9 @@ def skinRefJnts(meshes=None, jnts=None, thld=5):
         if mesh.skinCluster.exists():
             ignored += 1
             continue
+
         refJ = DagNode(mesh.name + "_refJnt")
+        
         if not refJ.exists():
             ignored += 1
             continue
@@ -50,7 +52,7 @@ def skinRefJnts(meshes=None, jnts=None, thld=5):
         closest = refJ.getClosestInList(jnts)
         if closest:
             if closest.o.distanceTo(refJ) < thld:
-                mesh.weightTo(closest, mi=1)  # , tsb=1)
+                mesh.weightTo(closest, mi=1)
                 weighted += 1
             else:
                 ignored += 1

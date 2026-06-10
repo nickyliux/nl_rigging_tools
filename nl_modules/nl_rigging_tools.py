@@ -585,7 +585,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 return
         else:
             mc.confirmDialog(
-                t="Info", m=f'You need to have the group "{MODEL_GRP}" containing bone meshes.    ', b="OK"
+                t="Info", m=f'Group "{MODEL_GRP}" containing bone meshes NOT found.    ', b="OK"
             )
             return
 
@@ -599,8 +599,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         sk_grp = DagNode(AUTO_BIND_JNT_GRP)
         if sk_grp.exists():
-            if not sk_grp.parent:
-                sk_grp | DagNode("CHR")
             sk_grp.hide()
 
         master2_ctl = DagNode("master2_ctl")
