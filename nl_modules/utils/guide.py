@@ -318,7 +318,7 @@ def saveTemplate():
     allMGs = build.collectMasterGuide()
 
     if not allMGs:
-        mc.confirmDialog(t="Info", m="Master Guides NOT found.     ", b="OK")
+        mc.confirmDialog(t="Info", m="Master Guides not found.     ", b="OK")
         return
 
     charPath = mc.optionVar(q="charFullPath")

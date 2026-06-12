@@ -56,7 +56,7 @@ def get_jnts_ctls_fr_MG(rootJ, mg):
     if not all(jnts):
         rigID = mg.a.rigID.get()
         mc.confirmDialog(
-            t="Info", m=f"Some joints for {rigID} NOT found. Cannot switch IK/FK."
+            t="Info", m=f"Some joints for {rigID} not found. Cannot switch IK/FK."
         )
 
     return jnts, fkCtlNames
@@ -87,7 +87,7 @@ def switch_fk_ik(mg=None):
     rigID = mg.a.rigID.get()
     rootJ = mg.a.rootJ.inConnNode
     if rootJ is None:
-        logging.warning(f"Root joint for {rigID} NOT found. Cannot switch IK/FK.")
+        logging.warning(f"Root joint for {rigID} not found. Cannot switch IK/FK.")
         return
 
     jnts = []

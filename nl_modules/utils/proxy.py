@@ -247,7 +247,7 @@ def bind_to_proxy():
     targetWarpMesh = mc.optionVar(q="targetWarpMesh")
     tgtMesh = DagNode(targetWarpMesh)
     if not tgtMesh.exists():
-        mc.confirmDialog(t="Info", m="Target wrap mesh NOT found.     ", b="OK")
+        mc.confirmDialog(t="Info", m="Target wrap mesh not found.     ", b="OK")
         return
 
     sc = tgtMesh.skinCluster

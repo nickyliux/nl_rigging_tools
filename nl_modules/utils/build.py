@@ -123,7 +123,7 @@ def addMasterAttrs():
     master2_ctl = DagNode("master2_ctl")
 
     if not master2_ctl.exists():
-        logging.warning("master2_ctl NOT found.")
+        logging.warning("master2_ctl not found.")
         return
 
     _GROUPS = [
@@ -456,12 +456,12 @@ def boneAutoAttach():
     """Auto attach joints to surface for all master guides."""
     masterCtl = DagNode("master_ctl")
     if not masterCtl.exists():
-        mc.confirmDialog(title="Error", message="master_ctl NOT found.", button=["OK"])
+        mc.confirmDialog(title="Error", message="master_ctl not found.", button=["OK"])
         return
 
     globalScale = masterCtl.a["globalScale"]
     if not globalScale.exists():
-        raise ValueError("globalScale attr NOT found")
+        raise ValueError("globalScale attr not found")
 
     for mg in collectMasterGuide():
 
@@ -535,7 +535,7 @@ def addNoiseLogic(ctl=None, targets=None, rot=0):
     """
     ctl = DagNode(ctl)
     if not ctl.exists():
-        raise ValueError(f"Control NOT found.")
+        raise ValueError(f"Control not found.")
     if not isinstance(targets, list):
         raise ValueError(f"Targets must be a list.")
 

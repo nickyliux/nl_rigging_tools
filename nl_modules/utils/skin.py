@@ -82,7 +82,7 @@ def autoBind_rbJnts(meshes=None):
                 rbJnts = [j.duplicate(n=j + '_bind') for j in grp.allChildrenJt]
                 mc.sets(rbJnts, n=setName)
         else:
-            logging.info(f"Grp {grp} NOT found for auto skin.")
+            logging.info(f"Grp {grp} not found for auto skin.")
             continue
 
     for i, mesh in enumerate(meshes):
@@ -189,7 +189,7 @@ def loadWeight(loadLatest=1):
 
         weightFile = tgtDir + "/" + mesh + ".xml"
         if not mc.file(weightFile, q=1, ex=1):
-            logging.warning(f"Weight file NOT found: {weightFile}")
+            logging.warning(f"Weight file not found: {weightFile}")
             continue
         loadCount += skinAndLoadW(mesh, weightJnt_dict[mesh], tgtDir)
 

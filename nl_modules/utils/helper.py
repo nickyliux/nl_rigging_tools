@@ -67,7 +67,7 @@ def addOrUpdateHlp(
     # Cache commonly accessed values to avoid repeated attribute lookups
     tgtJnt = DagNode(tgtJnt)
     if not tgtJnt.exists():
-        logging.warning(f"Target joint {tgtJnt} NOT found.")
+        logging.warning(f"Target joint {tgtJnt} not found.")
         return
 
     rollJnt = DagNode(rollJnt) if isinstance(rollJnt, str) else rollJnt
@@ -75,7 +75,7 @@ def addOrUpdateHlp(
 
     parentJnt = DagNode(tgtJnt.parent) if not isRoll else rollJnt
     if not parentJnt.exists():
-        logging.warning("Target joint's parent NOT found.")
+        logging.warning("Target joint's parent not found.")
         return
 
     tx = tgtJnt.a.tx.get()
@@ -189,11 +189,11 @@ def mirrorHelpers(*args):
     for sel in selList:
         tgt = sel.a.helperTgt.inConnNode
         if not tgt:
-            logging.warning(f"Target joint for {sel.name} NOT found.")
+            logging.warning(f"Target joint for {sel.name} not found.")
             continue
         tgtOpp = common.getOpposite(tgt)
         if not tgtOpp:
-            logging.warning(f"Opposite joint for {tgt.name} NOT found.")
+            logging.warning(f"Opposite joint for {tgt.name} not found.")
             continue
 
         rollTgt = sel.a.rollTgt.inConnNode
@@ -272,7 +272,7 @@ def loadHelper(loadLatest=1):
 
         tgtJnt = DagNode(data["tgt"])
         if not tgtJnt.exists():
-            logging.warning(f"Target joint {data['tgt']} NOT found.")
+            logging.warning(f"Target joint {data['tgt']} not found.")
             continue
 
         rollTgtJnt = DagNode(data["rollTgt"])

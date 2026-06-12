@@ -11,7 +11,7 @@ def loadJson(path):
         f.close()
         return data
     else:
-        raise FileNotFoundError("Json file NOT found.\n" + path)
+        raise FileNotFoundError("Json file not found.\n" + path)
 
 
 def saveJson(path, data, force=False):

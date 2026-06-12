@@ -79,7 +79,7 @@ def saveControl():
     """Save control curves to a file."""
     allCtls = common.getRigCtlsAll()
     if len(allCtls) == 0:
-        mc.confirmDialog(t="Info", m="Control curves NOT found.     ", b="OK")
+        mc.confirmDialog(t="Info", m="Control curves not found.     ", b="OK")
         return
 
     allCtls.extend(["master_ctl", "master1_ctl", "master2_ctl"])

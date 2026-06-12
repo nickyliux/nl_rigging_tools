@@ -9,6 +9,7 @@ from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import common
 from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
+from nl_modules.utils.color import Color
 from nl_modules.utils.common import Vec
 
 
@@ -135,7 +136,7 @@ class SpineBp(RigModule):
             c = CrvNode(
                 f"{i + 1}_fkc",
                 pf=rID,
-                shape="circleV",
+                shape="octagon_3d",
                 scale=rSz * 2,
                 top=1,
                 # scale=Vec((2, 0.5, 2)) * rSz,
@@ -173,9 +174,9 @@ class SpineBp(RigModule):
         ctl(
             p=self.CTL_DATA,
             addOfs=1,
-            shape="squareR",
+            shape="octagon_3d",
             scale=self.rigSize * 1.1,
-            # scale=Vec((1.5, 0.05, 1.5)) * self.rigSize,
+            color=Color.YELLOW
         )
         ctl.cv_scale(2.5)
 

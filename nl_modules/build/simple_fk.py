@@ -75,7 +75,7 @@ class SimpleFk(RigModule):
 
         rID, rSz, xDr = self.get_short_form()
         up = "x"
-        scale = Vec((0.5, 1, 1)) * rSz
+        scale = Vec((0.2, 1, 1)) * rSz
         if not rID.startswith("lf") and not rID.startswith("rt"):
             up = "z"
             scale = Vec((1, 1, 0.5)) * rSz
@@ -86,11 +86,11 @@ class SimpleFk(RigModule):
         ]
 
         if self.segNum >= 2:
-            ctl_defs.append(("simple02_fkc", "squareR", up, rSz / 2, 0))
+            ctl_defs.append(("simple02_fkc", "octagon_3d", up, rSz / 2, 0))
         if self.segNum >= 3:
-            ctl_defs.append(("simple03_fkc", "squareR", up, rSz / 2, 0))
+            ctl_defs.append(("simple03_fkc", "octagon_3d", up, rSz / 2, 0))
         if self.segNum >= 4:
-            ctl_defs.append(("simple04_fkc", "squareR", up, rSz / 2, 0))
+            ctl_defs.append(("simple04_fkc", "octagon_3d", up, rSz / 2, 0))
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 

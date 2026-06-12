@@ -51,16 +51,16 @@ class Head(RigModule):
 
         rID, rSz, xDr = self.get_short_form()
         ctl_defs = [
-            ("head_fkc", "circleV", None, rSz / 2, 0),
-            ("jaw_fkc", "jaw", None, rSz / 3, 0),
-            ("lf_eye_fkc", "circleV", "z", rSz / 3, 0),
-            ("rt_eye_fkc", "circleV", "z", rSz / 3, 0),
+            ("head_fkc", "octagon_3d", None, rSz / 2, 0),
+            ("jaw_fkc", "circle", None, rSz / 3, 0),
+            ("lf_eye_fkc", "octagon_3d", "z", rSz / 4, 0),
+            ("rt_eye_fkc", "octagon_3d", "z", rSz / 4, 0),
         ]
 
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
-        self.jaw_fkc.cv_move(0, -rSz * 6, 0)
+        self.jaw_fkc.cv_move(0, -rSz * 5, 0)
         self.head_fkc.cv_move(0, rSz * 15, 0)
 
     def build_fk(self):

@@ -95,7 +95,8 @@ class HandBp(RigModule):
             ctl = CrvNode(
                 f"{fgr.name}_ctl",
                 up="x",
-                shape="squareR",
+                # shape="squareR",
+                shape="octagon_3d",
                 scale=scale * 1.5,
                 align=fgr,
             )

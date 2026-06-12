@@ -60,4 +60,4 @@ class RigBase:
             raise ValueError(f"Error loading {base_file}: {e}")
 
         if not mc.objExists("master_ctl"):
-            raise ValueError("master_ctl NOT found.")
+            raise ValueError("master_ctl not found.")

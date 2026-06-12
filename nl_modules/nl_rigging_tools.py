@@ -563,7 +563,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def boneAutoBind(self):
         """Bind all meshes in MODEL_GRP to reference joints and ribbon joints."""
         if not mc.objExists(AUTO_BIND_JNT_GRP):
-            mc.confirmDialog(t="Info", m=f"{AUTO_BIND_JNT_GRP} NOT found.    ", b="OK")
+            mc.confirmDialog(t="Info", m=f"{AUTO_BIND_JNT_GRP} not found.    ", b="OK")
             return
 
         charPath = mc.optionVar(q="charDir")
@@ -585,7 +585,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 return
         else:
             mc.confirmDialog(
-                t="Info", m=f'Group "{MODEL_GRP}" containing bone meshes NOT found.    ', b="OK"
+                t="Info", m=f'Group "{MODEL_GRP}" containing bone meshes not found.    ', b="OK"
             )
             return
 
@@ -637,12 +637,12 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Create tweak setup for the target tweak mesh using selected joints as reference."""
         targetTweakMesh = mc.optionVar(q="targetTweakMesh")
         if not targetTweakMesh:
-            mc.confirmDialog(t="Info", m="Target tweak mesh NOT found.    ", b="OK")
+            mc.confirmDialog(t="Info", m="Target tweak mesh not found.    ", b="OK")
             return
         
         targetTweakMesh = DagNode(targetTweakMesh)
         if not targetTweakMesh.exists():
-            mc.confirmDialog(t="Info", m="Target tweak mesh NOT found.    ", b="OK")
+            mc.confirmDialog(t="Info", m="Target tweak mesh not found.    ", b="OK")
             return
 
         sel = mc.ls(sl=1, tr=1)
@@ -727,7 +727,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             return
         path = os.path.realpath(charPath)
         if not os.path.isdir(path):
-            mc.confirmDialog(t="Info", m=f"Character path NOT found.     ", b="OK")
+            mc.confirmDialog(t="Info", m=f"Character path not found.     ", b="OK")
             return
 
         subprocess.Popen(f'explorer "{path}"')

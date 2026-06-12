@@ -125,7 +125,7 @@ def toggleTweak(*args):
         v = grp.a.v.get()
         grp.a.v.set(1 - v)
     else:
-        mc.confirmDialog(t="Info", m=f"Local tweak group NOT found.    ", b="OK")
+        mc.confirmDialog(t="Info", m=f"Local tweak group not found.    ", b="OK")
 
 def isolateTweak(*args):
     """Isolate local tweak group in all model panels."""
@@ -144,7 +144,7 @@ def isolateTweak(*args):
             mc.isolateSelect(p, update=1)
         mc.select(cl=1)
     else:
-        mc.confirmDialog(t="Info", m=f"Local tweak group NOT found.    ", b="OK")
+        mc.confirmDialog(t="Info", m=f"Local tweak group not found.    ", b="OK")
 
 def createTweak(geo, tgts=None):
     """Create tweak control rig on surface with target joints.
