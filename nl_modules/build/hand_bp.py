@@ -66,6 +66,7 @@ class HandBp(RigModule):
 
         self.masterGuide.setMsg({"smart_ctl": self.smart_ctl})
         self.smart_ctl.cv_rotate(90, 0, 0)
+        self.smart_ctl.cv_move(scale * -20, 0, 0)
         self.setting.cv_move(0, 0, -scale * 18)
 
     def build(self):
@@ -319,7 +320,7 @@ class HandBp(RigModule):
 
         # smart_ctl, with group scaling with rootJ
         scaleGrp = GrpNode("smartScale", pf=rID, align=self.rootJ, p=self.CTL_DATA)
-        offsetX = rSz * xDr * 15
+        offsetX = rSz * xDr * 25 # 15
         self.smart_ctl.alignTo(self.rootJ, p=scaleGrp, ofs=(offsetX, 0, 0))
         self.smart_ctl.addOffsetGrp()
 

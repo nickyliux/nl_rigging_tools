@@ -119,12 +119,7 @@ def loadProxy(loadLatest=1):
             tgtPaths = mc.fileDialog2(
                 fileFilter="*prx*.ma", dialogStyle=2, fileMode=1, dir=charPath
             )
-        # fileToSearch = os.path.join(charPath, os.path.basename(charPath) + "*_prx*.ma")
-        # tgtPaths = glob.glob(fileToSearch)
-        # if not tgtPaths:
-        #     tgtPaths = mc.fileDialog2(
-        #         fileFilter="*_prx*", dialogStyle=2, fileMode=1, dir=charPath
-        #     )
+
     if not tgtPaths:
         return
 

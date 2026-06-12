@@ -241,14 +241,15 @@ def deleteHelpers(*args):
 @common.Undo("Load Helper Joints")
 def loadHelper(loadLatest=1):
     """Load helper joint data from a JSON file and recreate the joints in the scene."""
-    at_least_one_built = 0
-    for mg in build.collectMasterGuide():
-        if mg.a.built.get():
-            at_least_one_built = 1
+    # at_least_one_built = 0
+    # for mg in build.collectMasterGuide():
+    #     if mg.a.built.get():
+    #         at_least_one_built = 1
 
-    if at_least_one_built == 0:
-        mc.confirmDialog(t="Info", m="NO built rig found !     ", b="OK")
-        return
+    # if at_least_one_built == 0:
+    #     # mc.confirmDialog(t="Info", m="No rig part is built.     ", b="OK")
+    #     logging.info("No rig part is built. Load helper joints ignored.")
+    #     return
 
     charPath = mc.optionVar(q="charFullPath")
     tgtPaths = []
