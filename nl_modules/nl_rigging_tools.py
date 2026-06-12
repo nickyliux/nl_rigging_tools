@@ -585,7 +585,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 return
         else:
             mc.confirmDialog(
-                t="Info", m=f'Group "{MODEL_GRP}" containing bone meshes not found.    ', b="OK"
+                t="Info", m=f'"{MODEL_GRP}" containing bone meshes not found.    ', b="OK"
             )
             return
 

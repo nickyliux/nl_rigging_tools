@@ -140,7 +140,7 @@ class LegQd(RigModule):
             ("lwr_fkc", "octagon_3d", "x", scale, 0),
             ("palm_fkc", "octagon_3d", "x", scale, 0),
             ("digit_fkc", "octagon_3d", "x", scale, 0),
-            ("ball_fkc", "rotate2_3d", "z", -scale / 3, 0),
+            ("ball_fkc", "octagon_3d", "x", scale/2, 0),
             ("ikc", "trapezoid_3d", None, Vec((2, 0.8, 2)) * rSz, 0),
             ("extra_ikc", "rotate2_3d", None, Vec((0.5, 1, 1)) * -scale, 0),
             ("pvc", "sphere", None, rSz * 0.7, 0),
@@ -422,7 +422,7 @@ class LegQd(RigModule):
         # --- Ball group IK control ---
         self.ball_ikc = ballRollG.addOffsetGrp(below=1)
         CrvNode(self.ball_ikc)(
-            name="ball_ikc", pf=rID, shape="stickS", scale=-rSz * xDr / 2
+            name="ball_ikc", pf=rID, shape="rotate2_3d", scale=-rSz * xDr / 2
         )
         CrvNode(self.ball_ikc).cv_rotate(0, 90, 0)
         self.masterGuide.setMsg({"ball_ikc": self.ball_ikc})

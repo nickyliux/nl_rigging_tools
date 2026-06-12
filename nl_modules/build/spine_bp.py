@@ -137,9 +137,7 @@ class SpineBp(RigModule):
                 f"{i + 1}_fkc",
                 pf=rID,
                 shape="octagon_3d",
-                scale=rSz * 2,
-                top=1,
-                # scale=Vec((2, 0.5, 2)) * rSz,
+                scale=Vec((2, 1, 2)) * rSz,
             )
             self.ctls_fk.append(c)
 
@@ -175,10 +173,10 @@ class SpineBp(RigModule):
             p=self.CTL_DATA,
             addOfs=1,
             shape="octagon_3d",
-            scale=self.rigSize * 1.1,
-            color=Color.YELLOW
+            scale=self.rigSize,
+            color=Color.PINK
         )
-        ctl.cv_scale(2.5)
+        ctl.cv_scale(2.2)
 
         # ctl.offset.snapAlignTo(self.BASE_PVT_GUIDE, self.jnts_fk[0])
         ctl.offset.alignTo(self.BASE_PVT_GUIDE)
