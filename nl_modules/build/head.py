@@ -51,8 +51,8 @@ class Head(RigModule):
 
         rID, rSz, xDr = self.get_short_form()
         ctl_defs = [
-            ("head_fkc", "octagon_3d", None, rSz / 2, 0),
-            ("jaw_fkc", "circle", None, rSz / 3, 0),
+            ("head_fkc", "circle", None, rSz / 3, 0),
+            ("jaw_fkc", "back", None, rSz / 2, 0),
             ("lf_eye_fkc", "octagon_3d", "z", rSz / 4, 0),
             ("rt_eye_fkc", "octagon_3d", "z", rSz / 4, 0),
         ]

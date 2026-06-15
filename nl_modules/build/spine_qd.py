@@ -75,14 +75,12 @@ class SpineQd(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2, 1),
             ("cog_ctl", "trapezoid_3d", None, Vec((0.8, 1, 1.5)) * rSz, 0),
-            ("fore_ikc", "back", None, Vec((6, 6, 0.3)) * rSz, 0),
-            ("mid_ikc", "octagon_3d", "z", Vec((4, 4, 4)) * rSz, 0),
-            ("base_ikc", "back", None, Vec((6, 6, 0.3)) * rSz, 0),
+            ("fore_ikc", "octagon_3d", 'z', rSz*3, 0),
+            ("mid_ikc", "octagon_3d", 'z', rSz*3, 0),
+            ("base_ikc", "octagon_3d", 'z', rSz*3, 0),
             ("tangent0_ctl", "arrow", "x", rSz * 1.5, 1),
             ("tangent1_ctl", "arrow", "x", rSz * 1.5, 1),
-            ("end_ctl", "rotate2_3d", None, Vec((1, 1, 0.7)) * rSz, 0),
-            # ("cog_upr_ctl", "triangle", "x", Vec((1, 0.5, 1)) * rSz, 0),
-            # ("cog_lwr_ctl", "triangle", "x", Vec((1, 0.5, -1)) * rSz, 0),
+            ("end_ctl", "rotate4_3d", None, rSz, 0),
         ]
 
         for name, shape, up, scale, top in ctl_defs:
@@ -94,9 +92,9 @@ class SpineQd(RigModule):
         # self.cog_lwr_ctl.cv_move(0, rSz * 60, 0)
         self.end_ctl.cv_move(0, 0, rSz * -10)
 
-        self.fore_ikc.cv_move(0, rSz * 20, 0)
-        self.mid_ikc.cv_move(0, rSz * 20, 0)
-        self.base_ikc.cv_move(0, rSz * 20, 0)
+        # self.fore_ikc.cv_move(0, rSz * 20, 0)
+        # self.mid_ikc.cv_move(0, rSz * 20, 0)
+        # self.base_ikc.cv_move(0, rSz * 20, 0)
 
         # self.tangent0_ctl.cv_rotate(0, 90, 0)
         self.tangent0_ctl.cv_rotate(0, 180, 0)

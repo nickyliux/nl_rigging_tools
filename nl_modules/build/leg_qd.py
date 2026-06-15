@@ -133,7 +133,7 @@ class LegQd(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "screw_nut", "x", rSz, 1),
+            ("setting", "screw_nut", "z", rSz, 1),
             # ("hip_fkc", "shoulder", "x", Vec((0.5, 0.3, 0.5)) * -scale, 0),
             ("hip_fkc", "arrow", None, -scale, 1),
             ("upr_fkc", "octagon_3d", "x", scale, 0),
@@ -161,7 +161,7 @@ class LegQd(RigModule):
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
 
-        # self.setting.cv_move(scale * 15, 0, 0)
+        self.setting.cv_move(scale * 20, 0, 0)
         self.ikc.cv_move(0, 0, rSz * 5)
         self.hip_fkc.cv_rotate(0, 90, 0)
         self.hip_fkc.cv_move(scale * 5, 0, 0)

@@ -59,7 +59,7 @@ class IkFkSpline(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2.5, 1),
-            ("main", "cog", "z", rSz * 4, 1),
+            ("main", "rotate4_3d", None, rSz * 2, 1),
         ]
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
@@ -132,9 +132,9 @@ class IkFkSpline(RigModule):
             ctl = CrvNode(
                 name,
                 pf=rID,
-                shape="back" if isEnding else "cube",
+                shape="rotate4_3d" if isEnding else "cube",
                 up=None if isEnding else "z",
-                scale=Vec((9, 9, 0.4)) * rSz if isEnding else rSz / 2,
+                scale=Vec((2, 2, 2)) * rSz if isEnding else rSz / 2,
                 align=self.jnts_ik[i],
                 addOfs=1,
                 top=0 if isEnding else 1,
