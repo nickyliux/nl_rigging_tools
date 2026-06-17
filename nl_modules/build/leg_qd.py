@@ -24,6 +24,7 @@ class LegQd(RigModule):
             "ribbon",
             "dualBone",
             "toeBones",
+            "includeMeta",
             "patellaBone",
             "scapulaBone",
             "carpalFix",
@@ -102,6 +103,9 @@ class LegQd(RigModule):
                 ["toe03_1", "toe03_2", "toe03_3", "toe03_4", "toe03_5"],
                 ["toe04_1", "toe04_2", "toe04_3", "toe04_4", "toe04_5"],
             ]
+            if self.includeMeta == 0:
+                 ALL_TOE_NAMES = [names[1:] for names in ALL_TOE_NAMES]
+
             TOE_DICT = {
                 2: ALL_TOE_NAMES[2:4],
                 3: ALL_TOE_NAMES[2:5],
@@ -135,20 +139,20 @@ class LegQd(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 1),
             # ("hip_fkc", "shoulder", "x", Vec((0.5, 0.3, 0.5)) * -scale, 0),
-            ("hip_fkc", "arrow", None, -scale, 1),
-            ("upr_fkc", "octagon_3d", "x", scale, 0),
-            ("lwr_fkc", "octagon_3d", "x", scale, 0),
-            ("palm_fkc", "octagon_3d", "x", scale, 0),
-            ("digit_fkc", "octagon_3d", "x", scale, 0),
-            ("ball_fkc", "octagon_3d", "x", scale/2, 0),
-            ("ikc", "trapezoid_3d", None, Vec((2, 0.8, 2)) * rSz, 0),
+            ("hip_fkc", "arrow2", None, -scale, 1),
+            ("upr_fkc", "hexagon_3d", "x", scale, 0),
+            ("lwr_fkc", "hexagon_3d", "x", scale, 0),
+            ("palm_fkc", "hexagon_3d", "x", scale, 0),
+            ("digit_fkc", "hexagon_3d", "x", scale, 0),
+            ("ball_fkc", "hexagon_3d", "x", scale/2, 0),
+            ("ikc", "foot", None, rSz, 0),
             ("extra_ikc", "rotate2_3d", None, Vec((0.5, 1, 1)) * -scale, 0),
             ("pvc", "sphere", None, rSz * 0.7, 0),
-            ("smart_ctl", "pyramid", None, scale / 2, 0),
+            ("smart_ctl", "pyramid", None, scale / 3, 0),
         ]
 
         if self.scapulaBone:
-            ctl_defs.append(("scap_fkc", "arrow", "z", scale * 0.6, 0))
+            ctl_defs.append(("scap_fkc", "arrow2", "z", scale * 0.6, 0))
 
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
@@ -164,7 +168,7 @@ class LegQd(RigModule):
         self.setting.cv_move(scale * 20, 0, 0)
         self.ikc.cv_move(0, 0, rSz * 5)
         self.hip_fkc.cv_rotate(0, 90, 0)
-        self.hip_fkc.cv_move(scale * 5, 0, 0)
+        self.hip_fkc.cv_move(scale * 5, -scale*10, 0)
         # self.hip_fkc.cv_move(0, -scale * 8, 0)
 
     def build(self):
@@ -206,7 +210,7 @@ class LegQd(RigModule):
 
         if self.toeBones:
             self.build_toes()
-            self.update_list(self.jnts_bind, rm=[self.ball])
+            self.update_list(self.jnts_bind, rm=[self.ball, self.digit])
         
         self.build_post()
 
@@ -448,23 +452,23 @@ class LegQd(RigModule):
 
         rID, rSz, xDr = self.get_short_form()
         self.toesCtlsList = []
-        scale = xDr * rSz / 8
+        scale = xDr * rSz / 6
 
         # --- Build digit IK and FK controls for each toe chain ---
+        dupId = 2 if self.includeMeta == 1 else 1
         for toeJs in self.toesJntList:
-
-            dupTgt = JntNode(toeJs[2])
+            dupTgt = JntNode(toeJs[dupId])
 
             ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
             self.toeIKHs.append(ikH)
             ikJ.a.r >> dupTgt.a.r
 
             # Build FK controls for toe joints
-            fkToeList = toeJs[3:-1]
+            fkToeList = toeJs[(dupId+1):-1]
             ctlList = []
             for jnt in fkToeList:
                 crvName = f"{jnt.name}_ctl_#"
-                c = CrvNode(crvName, shape="stickC", up="z", align=jnt, scale=-scale)
+                c = CrvNode(crvName, shape="hexagon_3d", up="x", align=jnt, scale=-scale)
                 ctlList.append(c)
 
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
@@ -474,14 +478,16 @@ class LegQd(RigModule):
 
         # --- Add hidden IK handles for toe segments ---
         for toeJs in self.toesJntList:
+
             IkNode(
-                toeJs[1],
-                sj=toeJs[1],
-                ee=toeJs[2],
+                toeJs[dupId-1],
+                sj=toeJs[dupId-1],
+                ee=toeJs[dupId],
                 scaleFix=self.masterC.a["globalScale"],
                 p_data=self.CTL_DATA,
                 vis=0,
                 p=self.ball_fkc,
+                # p=self.ikc_gimbal,
             )
 
     def build_dual_bones(self):

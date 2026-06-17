@@ -86,7 +86,7 @@ class ArmBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "screw_nut", "x", rSz/2, 0),
+            ("setting", "screw_nut", "z", rSz, 0),
             ("clavicle_fkc", "cube", "z", Vec((0.6, 0.25, 0.4)) * scale, 1),
             ("upr_fkc", "octagon_3d", "x", scale, 0),
             ("lwr_fkc", "octagon_3d", "x", scale, 0),
@@ -106,7 +106,7 @@ class ArmBp(RigModule):
         #     self.scap_fkc.cv_move(0, 0, scale * 15)
 
         self.pvc.cv_rotate(-90, 0, 0)
-        # self.setting.cv_move(0, scale * 20, 0)
+        self.setting.cv_move(0, scale * 20, 0)
         # self.clavicle_fkc.cv_scale(0.5, 1, 1)
 
     def build(self):
@@ -276,8 +276,8 @@ class ArmBp(RigModule):
         rID, rSz, xDr = self.get_short_form()
         scale = xDr * rSz
 
-        self.setting.alignTo(self.palm, p=self.CTL_DATA)
-        self.palm.cstPar(self.setting, mo=1)
+        self.setting.alignTo(self.upr, p=self.CTL_DATA)
+        self.upr.cstPar(self.setting, mo=1)
 
         self.jnts_bf = common.dupSk(self.jnts, "_bf", p=self.BF_GRP, r=rSz * 3)
 

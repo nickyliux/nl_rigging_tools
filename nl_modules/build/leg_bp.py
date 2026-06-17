@@ -128,7 +128,7 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "screw_nut", "x", rSz, 1),
+            ("setting", "screw_nut", 'z', rSz, 1),
             ("hip_fkc", "stickS", None, -scale / 1.5, 0),
             ("upr_fkc", "octagon_3d", "x", scale, 0),
             ("lwr_fkc", "octagon_3d", "x", scale, 0),
@@ -156,7 +156,7 @@ class LegBp(RigModule):
         if self.scapulaBone:
             self.scap_fkc.cv_move(0, scale * 25, 0)
 
-        # self.setting.cv_move(scale * 15, 0, 0)
+        self.setting.cv_move(scale * 15, 0, 0)
 
         self.ikc.cv_move(0, 0, rSz * 12)
 
@@ -467,9 +467,9 @@ class LegBp(RigModule):
             for jnt in fkToeList:
                 crvName = f"{jnt.name}_ctl_#"
                 crv = CrvNode(
-                    crvName, shape="squareR", up="z", scale=scale * 0.03, align=jnt
+                    crvName, shape="octagon_3d", up="x", scale=scale / 10, align=jnt
                 )
-                crv.cv_move(scale * 0.5, 0, -scale * 2)
+                # crv.cv_move(scale * 0.5, 0, -scale * 2)
                 ctlList.append(crv)
 
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)

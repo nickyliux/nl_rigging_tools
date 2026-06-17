@@ -24,7 +24,7 @@ COMPONENT_DICT = {
     "hand / bp": {"L": "lfHandBp", "R": "rtHandBp"},
     "leg / bp": {"L": "lfLegBp", "R": "rtLegBp"},
     "leg / qd": {"L": "lfLegQd", "R": "rtLegQd"},
-    "leg / bird": {"L": "lfLegBird", "R": "rtLegBird"},
+    # "leg / bird": {"L": "lfLegBird", "R": "rtLegBird"},
     "finger fk": {"L": "lfFingerFk", "R": "rtFingerFk"},
     "simple fk": {"M": "mdSimpleFk", "L": "lfSimpleFk", "R": "rtSimpleFk"},
     "belt": {"M": "belt"},

@@ -56,7 +56,7 @@ class HandBp(RigModule):
         scale = xDr * rSz / 2
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", rSz, 0),
+            ("setting", "screw_nut", None, rSz/2, 0),
             ("palm_ctl", "rotate2_3d", None, -scale / 2, 0),
             ("thumb_ctl", "rotate2_3d", "z", -scale / 2, 0),
             ("smart_ctl", "rotate2_3d", "x", scale, 0),
@@ -67,7 +67,7 @@ class HandBp(RigModule):
         self.masterGuide.setMsg({"smart_ctl": self.smart_ctl})
         self.smart_ctl.cv_rotate(90, 0, 0)
         self.smart_ctl.cv_move(scale * -20, 0, 0)
-        self.setting.cv_move(0, 0, -scale * 18)
+        self.setting.cv_move(scale * 12, 0, -scale * 12)
 
     def build(self):
         """Build the hand rig module."""
@@ -402,6 +402,8 @@ class HandBp(RigModule):
         ]:
             handScale >> tgt.a.scale
 
+        handScale >> self.setting.a.scale
+        
         for root in self.rootJ.childrenJt:
             root.a.segmentScaleCompensate.set(0)
 

@@ -33,6 +33,10 @@ def skinRefJnts(meshes=None, jnts=None, thld=5):
     weighted = 0
     ignored = 0
 
+    if not meshes or not jnts:
+        logging.info(f"Skinning skipped for no meshes or joints read.")
+        return
+
     mc.progressWindow(
         t="Auto Bind Sk", pr=0, status="\nPreparing ...", ii=0, maxValue=len(meshes)
     )
