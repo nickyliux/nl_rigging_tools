@@ -186,7 +186,7 @@ class IkFkSpline(RigModule):
                 f"{i}_fkc",
                 pf=rID,
                 up="z",
-                shape="octagon_3d",
+                shape="hexagon_3d",
                 scale=rSz * 2,
                 align=self.jnts_fk[i],
             )

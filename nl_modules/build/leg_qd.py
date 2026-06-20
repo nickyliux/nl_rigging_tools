@@ -23,7 +23,7 @@ class LegQd(RigModule):
         guide_attrs = [
             "ribbon",
             "dualBone",
-            "toeBones",
+            "toeType",
             "includeMeta",
             "patellaBone",
             "scapulaBone",
@@ -88,14 +88,16 @@ class LegQd(RigModule):
         for jnt in root_list:
             DagNode(jnt).a.ro.set(2)
 
-        # --- Toes setup (if enabled) ---
-        if self.toeBones:
-            # Create toes root joint and parent to skeleton data
-            self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
-            self.toesRootJ | self.JNT_DATA
-            self.masterGuide.setMsg({"toesRootJ": self.toesRootJ})
+        self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
+        self.toesRootJ | self.JNT_DATA
+        self.masterGuide.setMsg({"toesRootJ": self.toesRootJ})
 
-            # Define all possible toe joint name lists
+        ALL_TOE_NAMES = []
+        TOE_DICT = {}
+        TOE_NAMES = []
+
+        if self.toeType == 1: # Mammal's toes
+            
             ALL_TOE_NAMES = [
                 ["toe00_1", "toe00_2", "toe00_3", "toe00_4"],
                 ["toe01_1", "toe01_2", "toe01_3", "toe01_4", "toe01_5"],
@@ -107,11 +109,29 @@ class LegQd(RigModule):
                  ALL_TOE_NAMES = [names[1:] for names in ALL_TOE_NAMES]
 
             TOE_DICT = {
-                2: ALL_TOE_NAMES[2:4],
-                3: ALL_TOE_NAMES[2:5],
-                4: ALL_TOE_NAMES[1:5],
-                5: ALL_TOE_NAMES,
+                2: ALL_TOE_NAMES[2:4],  # hide 0, 1, 4
+                3: ALL_TOE_NAMES[2:5],  # hide 0, 1
+                4: ALL_TOE_NAMES[1:5],  # hide 0
+                5: ALL_TOE_NAMES,       # hide none
             }
+
+        elif self.toeType == 2: # Bird's toes
+
+            ALL_TOE_NAMES = [
+                ["toeBird00_1", "toeBird00_2", "toeBird00_3"],
+                ["toeBird01_1", "toeBird01_2", "toeBird01_3", "toeBird01_4"],
+                ["toeBird02_1", "toeBird02_2", "toeBird02_3", "toeBird02_4", "toeBird02_5"],
+                ["toeBird03_1", "toeBird03_2", "toeBird03_3", "toeBird03_4", "toeBird03_5", "toeBird03_6"],
+            ]
+            TOE_DICT = {
+                2: ALL_TOE_NAMES[2:4],  # hide 0, 1
+                3: ALL_TOE_NAMES[1:4],  # hide 0
+                4: ALL_TOE_NAMES,       # hide none
+                5: ALL_TOE_NAMES,       # hide none
+            }
+
+        if self.toeType == 1 or self.toeType == 2:
+
             TOE_NAMES = TOE_DICT.get(self.toeNum, [])
 
             for names in TOE_NAMES:
@@ -123,6 +143,7 @@ class LegQd(RigModule):
                 )
                 fgr_jnts[0] | self.toesRootJ
                 self.jnts_toes.extend(fgr_jnts)
+
 
         # --- Finalize root joint setup ---
         self.rootJ = root_list[0]
@@ -207,29 +228,40 @@ class LegQd(RigModule):
 
         if self.carpalFix:
             self.carpalFix_setup(self.palm, self.digit, tz=(-1,-5), tx=(0.5,1))
-
-        if self.toeBones:
-            self.build_toes()
-            self.update_list(self.jnts_bind, rm=[self.ball, self.digit])
+        
+        self.build_toes(self.toeType)
         
         self.build_post()
 
-    def build_toes(self):
+    def build_toes(self, type=1):
         """Build the toe joints and controls for the quadruped leg rig."""
-        # self.toesRootJ | self.palm
+        logging.info(".")
 
-        self.toesJntList = []
-        for rJ in self.toesRootJ.childrenJt:
-            self.toesJntList.append([fgr for fgr in rJ.allChildrenJt2])
-            rJ.a.segmentScaleCompensate.set(0)
+        if self.toeType == 1 or self.toeType == 2:
+            self.toesJntList = []
 
-        self.build_digits()
+            for rJ in self.toesRootJ.childrenJt:
+                self.toesJntList.append([fgr for fgr in rJ.allChildrenJt2])
+                rJ.a.segmentScaleCompensate.set(0)
 
-        if self.carpalFix:
-            self.toesRootJ | self.ofsFixJ
-        else:
-            self.toesRootJ | self.palm
-        self.toesRootJ.color = Color.D_RED
+        if type == 1:
+            self.build_digits_mammal()
+
+            if self.carpalFix:
+                self.toesRootJ | self.ofsFixJ
+            else:
+                self.toesRootJ | self.palm
+
+            self.update_list(self.jnts_bind, rm=[self.ball, self.digit])
+
+        elif type == 2:
+            self.build_digits_bird()
+            self.toesRootJ | self.digit
+
+            self.update_list(self.jnts_bind, rm=[self.ball])
+
+        self.toesRootJ.color = Color.BLUE
+
 
     def build_fk(self):
         """Build the FK controls and joints for the quadruped leg rig."""
@@ -446,7 +478,38 @@ class LegQd(RigModule):
         (-xDr * self.smart_ctl.a.ry) >> toeRollG.a.ry
         (-xDr * self.smart_ctl.a.rz) >> self.smart_ctl.a["footBank"]
 
-    def build_digits(self):
+    def build_digits_bird(self):
+        """Build the digit controls for the quadruped leg rig."""
+        logging.info(".")
+
+        rID, rSz, xDr = self.get_short_form()
+        self.toesCtlsList = []
+        scale = xDr * rSz / 6
+
+        # --- Build digit IK and FK controls for each toe chain ---
+        # dupId = 2 if self.includeMeta == 1 else 1
+        dupId = 0
+        for toeJs in self.toesJntList:
+            dupTgt = JntNode(toeJs[dupId])
+
+            ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
+            self.toeIKHs.append(ikH)
+            ikJ.a.r >> dupTgt.a.r
+
+            # Build FK controls for toe joints
+            fkToeList = toeJs[(dupId+1):-1]
+            ctlList = []
+            for jnt in fkToeList:
+                crvName = f"{jnt.name}_ctl_#"
+                c = CrvNode(crvName, shape="hexagon_3d", up="x", align=jnt, scale=-scale)
+                ctlList.append(c)
+
+            self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
+
+            self.toesCtlsList.append(ctlList)
+            self.update_list(self.jnts_bind, add=toeJs[:-1])
+
+    def build_digits_mammal(self):
         """Build the digit controls for the quadruped leg rig."""
         logging.info(".")
 
@@ -638,7 +701,7 @@ class LegQd(RigModule):
         )
         if self.scapulaBone:
             ctlSet.append(self.scap_fkc)
-        if self.toeBones:
+        if self.toeType == 1:
             [ctlSet.extend(s) for s in self.toesCtlsList or []]
         self.add_ctl_set(ctlSet)
 
