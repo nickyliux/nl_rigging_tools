@@ -128,13 +128,13 @@ class LegBp(RigModule):
         scale = xDr * rSz
 
         ctl_defs = [
-            ("setting", "screw_nut", 'z', rSz, 1),
+            ("setting", "screw_nut", "z", rSz, 1),
             ("hip_fkc", "stickS", None, -scale / 1.5, 0),
             ("upr_fkc", "octagon_3d", "x", scale, 0),
             ("lwr_fkc", "octagon_3d", "x", scale, 0),
             ("palm_fkc", "octagon_3d", "x", scale, 0),
             ("ball_fkc", "octagon_3d", "x", scale / 2, 0),
-            ("ikc", "trapezoid_3d", None, Vec((1.6, 0.5, 3.2)) * rSz, 0),
+            ("ikc", "foot2", None, rSz, 0),  # Vec((1.6, 0.5, 3.2))
             ("pvc", "sphere", None, rSz, 0),
             ("smart_ctl", "pyramid", None, scale / 3, 0),
         ]
@@ -175,7 +175,6 @@ class LegBp(RigModule):
         # )
         # self.update_list(self.jnts_bind, add=self.jnts[:-1])
         self.update_list(self.jnts_bind, add=[self.hip, self.palm])
-
 
         self.scapulaG = self.build_legScapula(
             ikc=self.ikc,
@@ -306,7 +305,15 @@ class LegBp(RigModule):
 
         ikH1 | ballRollG | inRollG
         (ikH2, ikH3) | toe_wiggle_grp | inRollG
-        inRollG | outRollG | footRollG | toeRollG | heelRollG | self.ikCstG | self.IK_GRP
+        (
+            inRollG
+            | outRollG
+            | footRollG
+            | toeRollG
+            | heelRollG
+            | self.ikCstG
+            | self.IK_GRP
+        )
 
         self.ikc_gimbal = CrvNode(self.ikc).addGimbal()
         self.ikc_gimbal.cstSca(self.ikCstG, mo=1)
@@ -343,7 +350,8 @@ class LegBp(RigModule):
         self.smart_ctl | self.ikc
         self.smart_ctl.snapAlignTo(toeRollG, self.masterGuide)
         ofs = self.smart_ctl.addOffsetGrp()
-        ofs.a.tz.set(rSz * 40)
+
+        self.smart_ctl.a.add("posOffset", k=0, dv=30 * rSz) >> ofs.a.tz
 
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry
@@ -455,7 +463,6 @@ class LegBp(RigModule):
 
         # --- Build digit IK and FK controls for each toe chain ---
         for toeJs in self.toesJntList:
-
             dupTgt = JntNode(toeJs[1])
 
             ikJ, ikH = self.build_digit_ik(dupTgt, scale=scale / 4, p=self.ball_fkc)
@@ -567,7 +574,7 @@ class LegBp(RigModule):
         """Setup rotate order for the leg rig controls."""
         for ctl in self.ctls_fk + self.ctls_ik + self.ctls_sub:
             ctl.a.ro.set(2)
-            
+
         self.smart_ctl.a.ro.set(2)
 
         if self.kneeFix:

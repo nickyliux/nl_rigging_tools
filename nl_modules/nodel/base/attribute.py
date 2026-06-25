@@ -185,6 +185,9 @@ class Attribute:
         if other.__class__ != Attribute:
             raise TypeError(f"Error: {self.name} >> {other.name}")
 
+        if not self.exists():
+            raise AttributeError(f"Attr {self.name} does not exist on {self.node.name}")
+
         if mc.isConnected(self, other, iuc=1):
             return self
 

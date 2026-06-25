@@ -645,19 +645,18 @@ def addVisOption(ctl, attrName):
     return [v0, v1]
 
 
-def sdk(dvr, dvn, attr1, attr2, v1, v2, tangent=0, inf=0):
+def sdk(dvr, dvn, attr1, attr2, key, value, tangent=0, inf=0):
     """Create set driven key, using object, attr
     e.g.
         sdk2(obj1, obj2, 'ty', 'ty', 0, 0)
         sdk2(obj1, obj2, 'ty', 'ty', 1, 2)
     """
     opt = ["clamped", "auto", "stepnext", "spline"]  # 'linear'
-    # opt = ["linear", "auto", "stepnext", "spline"]  # 'clampled'
     mc.setDrivenKeyframe(
         f"{dvn}.{attr2}",
         cd=f"{dvr}.{attr1}",
-        dv=v1,
-        v=v2,
+        dv=key,
+        v=value,
         itt=opt[tangent],
         ott=opt[tangent],
     )
@@ -665,18 +664,36 @@ def sdk(dvr, dvn, attr1, attr2, v1, v2, tangent=0, inf=0):
         mc.setInfinity(dvn, pri="linear", poi="linear", attribute=attr2)
 
 
-def sdk2(attr1, attr2, v1, v2, tangent=0):
+def sdk2(attr1, attr2, key, value, tangent=0):
     """Create set driven key, using full attr
     e.g.
         sdk2(obj1.a.ty, obj2.a.ty, 0, 0)
         sdk2(obj1.a.ty, obj2.a.ty, 1, 2)
     """
     opt = ["linear", "auto", "stepnext"]
-    # itt = "linear" if auto == 0 else "auto"
-    # ott = "linear" if auto == 0 else "auto"
     mc.setDrivenKeyframe(
-        attr2, cd=attr1, dv=v1, v=v2, itt=opt[tangent], ott=opt[tangent]
+        attr2, cd=attr1, dv=key, v=value, itt=opt[tangent], ott=opt[tangent]
     )
+
+
+def sdk3(dvr, dvn, attr1, attr2, key, value3, tangent1=0, tangent2=0, inf=0):
+    """Create set driven key, using object, attr
+    e.g.
+        sdk3(obj1, obj2, 'ty', 'ty', 0, (0,0,0))
+        sdk3(obj1, obj2, 'ty', 'ty', 1, (1,2,3))
+    """
+    opt = ["clamped", "auto", "stepnext", "spline", "linear"]
+    for i, axis in enumerate("XYZ"):
+        mc.setDrivenKeyframe(
+            f"{dvn}.{attr2}{axis}",
+            cd=f"{dvr}.{attr1}",
+            dv=key,
+            v=value3[i],
+            itt=opt[tangent1],
+            ott=opt[tangent2],
+        )
+        if inf:
+            mc.setInfinity(dvn, pri="linear", poi="linear", attribute=attr2)
 
 
 def addTwistReader(target, pf="", p=None):
@@ -833,7 +850,7 @@ def add_wsMirror_attr(tgts=None):
             t.a.add("wsMirror", lock=1, k=0, cb=0, dv=1)
 
 
-def add_flipR_attr(tgts=None, axis='X'):
+def add_flipR_attr(tgts=None, axis="X"):
     """Add flip attribute to targets"""
     from nl_modules.nodel.base.dag_node import DagNode
 
@@ -897,7 +914,6 @@ def build_ribbon_rivet(
     # Create rivets along the curve
     # ---
     for i in range(rivetNum):
-
         mp = DagNode("mp_#", nodeType="motionPath")
         mp.a.fractionMode.set(1)
 

@@ -20,6 +20,7 @@ from nl_modules.build.hand_bp import HandBp
 
 from nl_modules.build.leg_bp import LegBp
 from nl_modules.build.leg_qd import LegQd
+
 # from nl_modules.build.leg_bird import LegBird
 from nl_modules.build.neck import Neck
 from nl_modules.build.spine_qd import SpineQd
@@ -80,7 +81,7 @@ def buildGuide(*args):
         )
         common.pauseVP(1)
         for i, mg in enumerate(guidesToBuild):
-            logging.info(f"({i+1}) {mg.name}")
+            logging.info(f"({i + 1}) {mg.name}")
             buildTgt(mg)
             mc.progressWindow(e=1, pr=i, status=f"\n{mg.name}  [ {i} / {guideCount} ]")
             mc.refresh()
@@ -261,9 +262,7 @@ def update_space_switch():
 
     update_count = 0
     for ctl, spaceList, mg in spaceData:
-
         if ctl.a.paSpace.exists():
-
             # delete space and related groups
             ctl.a.paSpace.delete()
 
@@ -464,7 +463,6 @@ def boneAutoAttach():
         raise ValueError("globalScale attr not found")
 
     for mg in collectMasterGuide():
-
         if not mg.a.built.get():
             continue
 
@@ -488,7 +486,9 @@ def boneAutoAttach():
         elif rigID.startswith("spineQd"):
             attachToTwoSrfUVPin(rigID, rbJnts, rbSrf, rbSrfSk, globalScale, grp)
 
+
 # def attachToTwoSrfMtx(rigID, tgts, srf, srfSk, globalScale, grp):
+
 
 def attachToOneSrfUVPin(rigID, tgts, srf, globalScale, grp):
     """Attach joints with uvPin, position from srfSk, orientation from srf"""
@@ -559,7 +559,6 @@ def addNoiseLogic(ctl=None, targets=None, rot=0):
 
     total = len(targets)
     for i, tgt in enumerate(targets):
-
         frame_delayed = freq * frame - i * drag
 
         xTime = (frame_delayed - xOffset) / fps

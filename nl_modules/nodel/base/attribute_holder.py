@@ -82,6 +82,10 @@ class AttributeHolder:
             mc.addAttr(self.node, ln=name, sn=name, dt=type, **kwargs)
             if txt:
                 mc.setAttr(attrStr, txt, type="string")
+        elif type == "vector":
+            mc.addAttr(self.node, ln=name, sn=name, at='compound', numberOfChildren=3, **kwargs)
+            for a in ["X", "Y", "Z"]:
+                mc.addAttr(self.node, ln=f"{name}{a}", k=k, parent=name)
         else:
             mc.addAttr(self.node, ln=name, sn=name, at=type, **kwargs)
 

@@ -329,7 +329,7 @@ def toggleVis(*args):
         prxAttr = m.a.proxyVis
         if prxAttr.exists():
             prxAttr.set(not prxAttr.get())
-            logging.info(f"Toggle proxy visibility.")
+            logging.info("Toggle proxy visibility.")
 
 
 def add_proxyRadiusScale_attr(tgtJnts, v):

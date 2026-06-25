@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: rtLegQd.ma
-//Last modified: Sat, Jun 20, 2026 10:33:03 AM
+//Last modified: Wed, Jun 24, 2026 02:53:25 PM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,21 +12,21 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26200)";
-fileInfo "UUID" "5899ECDE-480B-8CCB-9B20-54A8CB9B534C";
+fileInfo "UUID" "0F2C4322-4B2F-7D39-C9DA-59AA1226BC0F";
 createNode transform -s -n "persp";
 	rename -uid "2CFF45DD-487A-9CD1-767B-A089B899D93C";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 39.993717724368274 30.770452113135189 43.897846975865967 ;
-	setAttr ".r" -type "double3" -19.538352728986769 47.800000000011018 0 ;
+	setAttr ".t" -type "double3" 3.7368485479859328 17.389037775669223 27.202642499408253 ;
+	setAttr ".r" -type "double3" -30.938352729005143 29.400000000016579 1.8253582765030672e-15 ;
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "82C3F9B2-4980-6719-29B8-159665D78FA8";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999993;
-	setAttr ".coi" 57.239013206270329;
+	setAttr ".coi" 29.622708075171282;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
-	setAttr ".tp" -type "double3" -9.9999999999999982 47.111944361380559 20.279851247201488 ;
+	setAttr ".tp" -type "double3" -9.9999999999999982 0 8.75 ;
 	setAttr ".hc" -type "string" "viewSet -p %camera";
 createNode transform -s -n "top";
 	rename -uid "C26C709E-427B-9FAF-006E-479957AA5F62";
@@ -105,7 +105,7 @@ createNode transform -n "master_guide";
 	setAttr -cb on ".patellaBone";
 	setAttr -cb on ".carpalFix";
 	setAttr -cb on ".dualBone";
-	setAttr -cb on ".toeType";
+	setAttr -cb on ".toeType" 2;
 	setAttr -cb on ".includeMeta" yes;
 	setAttr -cb on ".showRef";
 	setAttr -cb on ".toeNum";
@@ -1020,32 +1020,32 @@ createNode transform -n "toe_main_2_guide_ofs" -p "toe_guide_grp";
 createNode transform -n "toeMain_guide" -p "toe_main_2_guide_ofs";
 	rename -uid "96B82D0D-4224-6AE2-F9A9-4CBC6A3181BE";
 	setAttr ".t" -type "double3" 0 -5 0 ;
-createNode transform -n "toe02_2_guide_ofs" -p "toeMain_guide";
+createNode transform -n "toe2_2_guide_ofs" -p "toeMain_guide";
 	rename -uid "1DAFA6CF-44F5-0333-2806-7CBEB14C1480";
-createNode transform -n "toe02_2_guide" -p "toe02_2_guide_ofs";
+createNode transform -n "toe2_2_guide" -p "toe2_2_guide_ofs";
 	rename -uid "C6E5F714-4695-EF41-D9B5-7DA9AF9A1D94";
-createNode transform -n "toe02_3_guide_ofs" -p "toe02_2_guide";
+createNode transform -n "toe2_3_guide_ofs" -p "toe2_2_guide";
 	rename -uid "3565BBD0-42DB-CB02-FEF7-5A83EFFD3A21";
 	setAttr ".t" -type "double3" 1.7763568394002505e-15 5.3290705182007514e-15 -7 ;
-createNode transform -n "toe02_3_guide" -p "toe02_3_guide_ofs";
+createNode transform -n "toe2_3_guide" -p "toe2_3_guide_ofs";
 	rename -uid "2DC645B9-45F7-EDFD-0F74-BA8147295724";
 	setAttr ".s" -type "double3" 0.99999999999999978 0.99999999999999989 1 ;
-createNode transform -n "toe02_4_guide_ofs" -p "toe02_3_guide";
+createNode transform -n "toe2_4_guide_ofs" -p "toe2_3_guide";
 	rename -uid "80CA17D6-4C30-31AF-1299-7EA298364194";
 	setAttr ".t" -type "double3" -2.6112445539183682e-13 0 -2 ;
 	setAttr ".s" -type "double3" 1.0000000000000002 1.0000000000000002 1 ;
-createNode transform -n "toe02_4_guide" -p "toe02_4_guide_ofs";
+createNode transform -n "toe2_4_guide" -p "toe2_4_guide_ofs";
 	rename -uid "D98A424E-4BDB-3933-95A5-62B67DF1CF7E";
 	setAttr ".t" -type "double3" 0 5 0 ;
 	setAttr ".s" -type "double3" 1 0.99999999999999989 1.0000000000000002 ;
-createNode transform -n "toe02_5_guide_ofs" -p "toe02_4_guide";
+createNode transform -n "toe2_5_guide_ofs" -p "toe2_4_guide";
 	rename -uid "8EC1B4D3-4C7F-0526-ADD3-E78900402A12";
 	setAttr ".t" -type "double3" 0 4.4408920985006281e-16 -2 ;
 	setAttr ".s" -type "double3" 1 1.0000000000000002 0.99999999999999989 ;
-createNode transform -n "toe02_5_guide" -p "toe02_5_guide_ofs";
+createNode transform -n "toe2_5_guide" -p "toe2_5_guide_ofs";
 	rename -uid "6A902F4F-4B58-F837-F9C9-988005CF7EC3";
 	setAttr ".s" -type "double3" 0.99999999999999989 0.99999999999999978 1.0000000000000007 ;
-createNode nurbsCurve -n "toe03_1_guideShape" -p "toe02_5_guide";
+createNode nurbsCurve -n "toe3_1_guideShape" -p "toe2_5_guide";
 	rename -uid "153988A0-4EA1-F83E-2059-D480198988EA";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
@@ -1111,10 +1111,10 @@ createNode nurbsCurve -n "toe03_1_guideShape" -p "toe02_5_guide";
 		4.4703453438746098e-09 0.00076120499238794995 -0.11194064888059352
 		;
 	setAttr ".adot" yes;
-createNode transform -n "toe02_1_guide_ofs" -p "toe02_2_guide";
+createNode transform -n "toe2_1_guide_ofs" -p "toe2_2_guide";
 	rename -uid "C3D000AF-4F98-C2E9-DCC6-16824B85B020";
 	setAttr ".t" -type "double3" 0 0 10 ;
-createNode transform -n "toe02_1_guide" -p "toe02_1_guide_ofs";
+createNode transform -n "toe2_1_guide" -p "toe2_1_guide_ofs";
 	rename -uid "056D85F9-4CBA-09C0-EB4E-53ACEDCC5B88";
 	setAttr ".t" -type "double3" 0 -10 -6 ;
 	setAttr -l on ".rx";
@@ -1123,55 +1123,109 @@ createNode transform -n "toe02_1_guide" -p "toe02_1_guide_ofs";
 	setAttr -l on ".sx";
 	setAttr -l on ".sy";
 	setAttr -l on ".sz";
-createNode nurbsCurve -n "toe00_2_guideShape" -p "toe02_2_guide";
-	rename -uid "D8D2E084-477C-8B18-AF1E-7BA242616B54";
+createNode nurbsCurve -n "toe0_2_guideShape" -p "toe2_2_guide";
+	rename -uid "7565DC3D-4651-69E6-F7E3-EC8F767DCA8F";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
 	setAttr ".ovc" 20;
 	setAttr ".ovrgb" -type "float3" 1 0.94999999 0 ;
-	setAttr ".ls" 2;
+	setAttr ".ls" 3;
 	setAttr ".cc" -type "nurbsCurve" 
-		1 5 0 no 3
-		6 0 1 3 4 6 7
-		6
-		0 0 -1.5025369993456317
-		-0.66375763817796019 0 -0.96860145247063123
-		-0.66375763817796019 0 0
-		0.66375763817796019 0 0
-		0.66375763817796019 0 -0.96860145247063123
-		0 0 -1.5025369993456317
+		1 57 0 no 3
+		58 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
+		 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 52.37464662
+		 52.597181769999999 52.692305070000003 53 56
+		58
+		0.15741653748833465 -0.0010704445205455542 -6.2864225933857744e-09
+		0.14584355713531444 0.059251710344982889 -6.2864225933857744e-09
+		0.1120671902855781 0.11055329186321704 -6.2864225933857744e-09
+		0.061229776731452218 0.14502406495600936 -6.2864225933857744e-09
+		0.0010704023330459769 0.1574163265508367 -6.2864225933857744e-09
+		-0.059251499407484996 0.14584334619781653 -6.2864225933857744e-09
+		-0.11055318639446814 0.11206708481682913 -6.2864225933857744e-09
+		-0.14502395948726038 0.061229565793954346 -6.2864225933857744e-09
+		-0.1574163265508367 0.0010704550674204495 -6.2864225933857744e-09
+		-0.14584334619781653 -0.059251710344982889 -6.2864225933857744e-09
+		-0.11206697934808019 -0.11055329186321704 -6.2864225933857744e-09
+		-0.061229565793954346 -0.14502406495600936 -6.2864225933857744e-09
+		0 -0.1574163265508367 0
+		0.059251710344982889 -0.14584334619781653 -6.2864225933857744e-09
+		0.11055339733196602 -0.11206708481682913 -6.2864225933857744e-09
+		0.14502417042475824 -0.061229565793954346 -6.2864225933857744e-09
+		0.15741653748833465 -0.0010704445205455542 -6.2864225933857744e-09
+		0.14543391651441084 -0.00098895936511040629 -0.060242061897579365
+		0.11131034654314653 -0.0007569154611808454 -0.11131277232437226
+		0.060240690803843089 -0.00040963640215363603 -0.14543708057687912
+		0 0 -0.15742001795704977
+		-0.060240479866345203 0.00040965116777848829 -0.14543708057687912
+		-0.11131024107439758 0.00075693022680569776 -0.11131277232437226
+		-0.14543370557691293 0.00098897413073525888 -0.060242061897579365
+		-0.1574163265508367 0.0010704550674204495 -6.2864225933857744e-09
+		-0.14543370557691293 0.00098897413073525888 0.060242061897579365
+		-0.11131024107439758 0.00075693022680569776 0.11131277232437226
+		-0.060240479866345203 0.00040965116777848829 0.14543708057687912
+		0 7.4584440660405588e-09 0.15742001795704977
+		0.060240690803843089 -0.00040963640215363603 0.14543708057687912
+		0.11131034654314653 -0.0007569154611808454 0.11131277232437226
+		0.14543391651441084 -0.00098895936511040629 0.060242061897579365
+		0.15741653748833465 -0.0010704445205455542 -6.2864225933857744e-09
+		0.14543391651441084 -0.00098895936511040629 -0.060242061897579365
+		0.11131034654314653 -0.0007569154611808454 -0.11131277232437226
+		0.060240690803843089 -0.00040963640215363603 -0.14543708057687912
+		0 0 -0.15742001795704977
+		0 0.06054169861333298 -0.146160596194644
+		0 0.11186648325633515 -0.11186648325633515
+		0 0.146160596194644 -0.06054169861333298
+		0.0010704023330459769 0.1574163265508367 -6.2864225933857744e-09
+		0 0.146160596194644 0.06054169861333298
+		0 0.11186648325633515 0.11186648325633515
+		0 0.06054169861333298 0.146160596194644
+		0 7.4584440660405588e-09 0.15742001795704977
+		0 -0.06054169861333298 0.146160596194644
+		0 -0.11186648325633515 0.11186648325633515
+		0 -0.146160596194644 0.06054169861333298
+		0 -0.1574163265508367 0
+		0 -0.146160596194644 -0.06054169861333298
+		0 -0.11186648325633515 -0.11186648325633515
+		0 -0.06054169861333298 -0.146160596194644
+		0 0 -0.15742001795704977
+		0 0 -1.265625
+		0 0 -1.1711366400095347e-08
+		0 -0.6328125 0
+		0 0 1.1711366400095347e-08
+		0 0 1.1711366400095347e-08
 		;
 	setAttr ".adot" yes;
-createNode transform -n "toe01_2_guide_ofs" -p "toeMain_guide";
+createNode transform -n "toe1_2_guide_ofs" -p "toeMain_guide";
 	rename -uid "35B74CF6-4E45-E65E-EE66-1EB785CAF57A";
 	setAttr ".t" -type "double3" 2 0 0 ;
-createNode transform -n "toe01_2_guide" -p "toe01_2_guide_ofs";
+createNode transform -n "toe1_2_guide" -p "toe1_2_guide_ofs";
 	rename -uid "B44BCC66-44DC-A18B-BC4A-6D95B915679D";
-createNode transform -n "toe01_3_guide_ofs" -p "toe01_2_guide";
+createNode transform -n "toe1_3_guide_ofs" -p "toe1_2_guide";
 	rename -uid "0F30D4E6-4AD8-BBEA-518A-33B04FB4F37A";
 	setAttr ".t" -type "double3" 1.7763568394002505e-15 1.7763568394002505e-15 -7 ;
-createNode transform -n "toe01_3_guide" -p "toe01_3_guide_ofs";
+createNode transform -n "toe1_3_guide" -p "toe1_3_guide_ofs";
 	rename -uid "80BE644F-4F74-9BCD-95CC-629718039753";
 	setAttr ".s" -type "double3" 0.99999999999999978 0.99999999999999989 1 ;
-createNode transform -n "toe01_4_guide_ofs" -p "toe01_3_guide";
+createNode transform -n "toe1_4_guide_ofs" -p "toe1_3_guide";
 	rename -uid "DC1740B0-45B8-502D-0F84-DFA69FE72D0D";
 	setAttr ".t" -type "double3" -2.6112445539183682e-13 0 -2 ;
 	setAttr ".s" -type "double3" 1.0000000000000002 1.0000000000000002 1 ;
-createNode transform -n "toe01_4_guide" -p "toe01_4_guide_ofs";
+createNode transform -n "toe1_4_guide" -p "toe1_4_guide_ofs";
 	rename -uid "CEDE5B7B-4527-589C-1FB6-A78C19C4F73F";
 	setAttr ".t" -type "double3" 0 5 0 ;
 	setAttr ".s" -type "double3" 1 0.99999999999999989 1.0000000000000002 ;
-createNode transform -n "toe01_5_guide_ofs" -p "toe01_4_guide";
+createNode transform -n "toe1_5_guide_ofs" -p "toe1_4_guide";
 	rename -uid "19ECCA67-4904-3B43-1169-E9A00480058F";
 	setAttr ".t" -type "double3" 0 4.4408920984955893e-16 -2 ;
 	setAttr ".s" -type "double3" 1 1.0000000000000002 0.99999999999999989 ;
-createNode transform -n "toe01_5_guide" -p "toe01_5_guide_ofs";
+createNode transform -n "toe1_5_guide" -p "toe1_5_guide_ofs";
 	rename -uid "32C59068-451C-A451-EC8D-74A2606D426C";
 	setAttr ".s" -type "double3" 0.99999999999999989 0.99999999999999978 1.0000000000000007 ;
-createNode transform -n "toe01_1_guide_ofs" -p "toe01_2_guide";
+createNode transform -n "toe1_1_guide_ofs" -p "toe1_2_guide";
 	rename -uid "5A42BBB6-4322-A87E-BD70-DA88F521B273";
 	setAttr ".t" -type "double3" 0 0 10 ;
-createNode transform -n "toe01_1_guide" -p "toe01_1_guide_ofs";
+createNode transform -n "toe1_1_guide" -p "toe1_1_guide_ofs";
 	rename -uid "C6F4C7F5-4CFC-229B-537F-C685DFAE0E36";
 	setAttr ".t" -type "double3" 0 -10 -6 ;
 	setAttr -l on ".rx";
@@ -1180,29 +1234,29 @@ createNode transform -n "toe01_1_guide" -p "toe01_1_guide_ofs";
 	setAttr -l on ".sx";
 	setAttr -l on ".sy";
 	setAttr -l on ".sz";
-createNode transform -n "toe00_2_guide_ofs" -p "toeMain_guide";
+createNode transform -n "toe0_2_guide_ofs" -p "toeMain_guide";
 	rename -uid "DFED9676-4592-9226-C962-26A60285B81B";
 	setAttr ".t" -type "double3" 4 0 0 ;
-createNode transform -n "toe00_2_guide" -p "toe00_2_guide_ofs";
+createNode transform -n "toe0_2_guide" -p "toe0_2_guide_ofs";
 	rename -uid "633EB8DB-4DA2-0178-1F7C-B9A4E3B2D110";
-createNode transform -n "toe00_3_guide_ofs" -p "toe00_2_guide";
+createNode transform -n "toe0_3_guide_ofs" -p "toe0_2_guide";
 	rename -uid "3026E826-431F-B38F-6FEC-4B8D0A25F466";
 	setAttr ".t" -type "double3" 1.7763568394002505e-15 6.2172489379008766e-15 -7 ;
-createNode transform -n "toe00_3_guide" -p "toe00_3_guide_ofs";
+createNode transform -n "toe0_3_guide" -p "toe0_3_guide_ofs";
 	rename -uid "CF2A0C17-4CB3-8169-6131-9B9986FE0F37";
 	setAttr ".s" -type "double3" 0.99999999999999978 0.99999999999999989 1 ;
-createNode transform -n "toe00_4_guide_ofs" -p "toe00_3_guide";
+createNode transform -n "toe0_4_guide_ofs" -p "toe0_3_guide";
 	rename -uid "EF5FD2BC-4116-AB6C-DE99-9BB894F616C0";
 	setAttr ".t" -type "double3" -2.6112445539183682e-13 0 -1.9999999999999858 ;
 	setAttr ".s" -type "double3" 1.0000000000000002 1.0000000000000002 1 ;
-createNode transform -n "toe00_4_guide" -p "toe00_4_guide_ofs";
+createNode transform -n "toe0_4_guide" -p "toe0_4_guide_ofs";
 	rename -uid "09EDCF41-45E8-2DF6-9823-33A0FD11B96F";
 	setAttr ".t" -type "double3" 0 5 0 ;
 	setAttr ".s" -type "double3" 1 0.99999999999999989 1 ;
-createNode transform -n "toe00_1_guide_ofs" -p "toe00_2_guide";
+createNode transform -n "toe0_1_guide_ofs" -p "toe0_2_guide";
 	rename -uid "86E8AD69-4B8D-030D-D371-0AB94C8DCB18";
 	setAttr ".t" -type "double3" 0 0 10 ;
-createNode transform -n "toe00_1_guide" -p "toe00_1_guide_ofs";
+createNode transform -n "toe0_1_guide" -p "toe0_1_guide_ofs";
 	rename -uid "41B3B581-4AE8-FCCB-E9C3-B59FCFEB63A4";
 	setAttr ".t" -type "double3" 0 -10 -6 ;
 	setAttr -l on ".rx";
@@ -1211,7 +1265,7 @@ createNode transform -n "toe00_1_guide" -p "toe00_1_guide_ofs";
 	setAttr -l on ".sx";
 	setAttr -l on ".sy";
 	setAttr -l on ".sz";
-createNode nurbsCurve -n "toe00_1_guideShape" -p "toe00_1_guide";
+createNode nurbsCurve -n "toe0_1_guideShape" -p "toe0_1_guide";
 	rename -uid "E8477B09-4DC5-00BD-8246-C2AD000F68C8";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
@@ -1277,36 +1331,36 @@ createNode nurbsCurve -n "toe00_1_guideShape" -p "toe00_1_guide";
 		4.4703449552965512e-09 0.00076120499238794984 -0.11194064888059349
 		;
 	setAttr ".adot" yes;
-createNode transform -n "toe03_2_guide_ofs" -p "toeMain_guide";
+createNode transform -n "toe3_2_guide_ofs" -p "toeMain_guide";
 	rename -uid "0AE88825-47D9-D980-88E0-DD84487F4B09";
 	setAttr ".t" -type "double3" -2 0 0 ;
-createNode transform -n "toe03_2_guide" -p "toe03_2_guide_ofs";
+createNode transform -n "toe3_2_guide" -p "toe3_2_guide_ofs";
 	rename -uid "F9FB549A-4D84-019D-AFA1-6F909611F039";
-createNode transform -n "toe03_3_guide_ofs" -p "toe03_2_guide";
+createNode transform -n "toe3_3_guide_ofs" -p "toe3_2_guide";
 	rename -uid "ECDE5891-4D91-6FB3-836A-62914CA4222C";
 	setAttr ".t" -type "double3" 1.7763568394002505e-15 7.9936057773011271e-15 -7 ;
-createNode transform -n "toe03_3_guide" -p "toe03_3_guide_ofs";
+createNode transform -n "toe3_3_guide" -p "toe3_3_guide_ofs";
 	rename -uid "DB1D0C19-46B5-F47A-2E19-61939818CC67";
 	setAttr ".s" -type "double3" 0.99999999999999978 0.99999999999999989 1 ;
-createNode transform -n "toe03_4_guide_ofs" -p "toe03_3_guide";
+createNode transform -n "toe3_4_guide_ofs" -p "toe3_3_guide";
 	rename -uid "AFE8BF1F-46AD-48CA-4616-66834C7E7A52";
 	setAttr ".t" -type "double3" -2.6112445539183682e-13 0 -2 ;
 	setAttr ".s" -type "double3" 1.0000000000000002 1.0000000000000002 1 ;
-createNode transform -n "toe03_4_guide" -p "toe03_4_guide_ofs";
+createNode transform -n "toe3_4_guide" -p "toe3_4_guide_ofs";
 	rename -uid "86409C3C-4C54-8B63-951B-3FB081F22523";
 	setAttr ".t" -type "double3" 0 5 0 ;
 	setAttr ".s" -type "double3" 1 0.99999999999999989 1.0000000000000002 ;
-createNode transform -n "toe03_5_guide_ofs" -p "toe03_4_guide";
+createNode transform -n "toe3_5_guide_ofs" -p "toe3_4_guide";
 	rename -uid "A5752EA4-46D0-F5CF-94E0-B985E9B7AA09";
 	setAttr ".t" -type "double3" -1.7763568394002505e-15 4.4408920985056709e-16 -2 ;
 	setAttr ".s" -type "double3" 1 1.0000000000000002 0.99999999999999989 ;
-createNode transform -n "toe03_5_guide" -p "toe03_5_guide_ofs";
+createNode transform -n "toe3_5_guide" -p "toe3_5_guide_ofs";
 	rename -uid "9714F74C-4B01-D587-A82D-E1AD3EDDE2CF";
 	setAttr ".s" -type "double3" 0.99999999999999989 0.99999999999999978 1.0000000000000007 ;
-createNode transform -n "toe03_1_guide_ofs" -p "toe03_2_guide";
+createNode transform -n "toe3_1_guide_ofs" -p "toe3_2_guide";
 	rename -uid "6DEA2C3A-4105-7F88-5FCB-74A5A45F4C17";
 	setAttr ".t" -type "double3" 0 0 10 ;
-createNode transform -n "toe03_1_guide" -p "toe03_1_guide_ofs";
+createNode transform -n "toe3_1_guide" -p "toe3_1_guide_ofs";
 	rename -uid "F8DF52AF-4E09-6C70-8674-25B610DF9D1B";
 	setAttr ".t" -type "double3" 0 -10 -6 ;
 	setAttr -l on ".rx";
@@ -1315,36 +1369,36 @@ createNode transform -n "toe03_1_guide" -p "toe03_1_guide_ofs";
 	setAttr -l on ".sx";
 	setAttr -l on ".sy";
 	setAttr -l on ".sz";
-createNode transform -n "toe04_2_guide_ofs" -p "toeMain_guide";
+createNode transform -n "toe4_2_guide_ofs" -p "toeMain_guide";
 	rename -uid "8E7AB8BF-48FA-A5FB-DCEE-179B8163E2C2";
 	setAttr ".t" -type "double3" -4 0 0 ;
-createNode transform -n "toe04_2_guide" -p "toe04_2_guide_ofs";
+createNode transform -n "toe4_2_guide" -p "toe4_2_guide_ofs";
 	rename -uid "F1D80380-48D8-61E1-2D4C-EB8CE9298368";
-createNode transform -n "toe04_3_guide_ofs" -p "toe04_2_guide";
+createNode transform -n "toe4_3_guide_ofs" -p "toe4_2_guide";
 	rename -uid "889A5B0D-44F8-B530-89FF-8798D081EC89";
 	setAttr ".t" -type "double3" 1.7763568394002505e-15 7.1054273576010019e-15 -7 ;
-createNode transform -n "toe04_3_guide" -p "toe04_3_guide_ofs";
+createNode transform -n "toe4_3_guide" -p "toe4_3_guide_ofs";
 	rename -uid "DDDABA38-4401-ACF2-1656-E1AC49828C43";
 	setAttr ".s" -type "double3" 0.99999999999999978 0.99999999999999989 1 ;
-createNode transform -n "toe04_4_guide_ofs" -p "toe04_3_guide";
+createNode transform -n "toe4_4_guide_ofs" -p "toe4_3_guide";
 	rename -uid "49CF788C-4894-4014-8075-26A908BC4782";
 	setAttr ".t" -type "double3" -2.6112445539183682e-13 0 -2 ;
 	setAttr ".s" -type "double3" 1.0000000000000002 1.0000000000000002 1 ;
-createNode transform -n "toe04_4_guide" -p "toe04_4_guide_ofs";
+createNode transform -n "toe4_4_guide" -p "toe4_4_guide_ofs";
 	rename -uid "C7ECA8F6-4E6A-ACFA-AA84-95A06BBCF75F";
 	setAttr ".t" -type "double3" 0 5 0 ;
 	setAttr ".s" -type "double3" 1 0.99999999999999989 1.0000000000000002 ;
-createNode transform -n "toe04_5_guide_ofs" -p "toe04_4_guide";
+createNode transform -n "toe4_5_guide_ofs" -p "toe4_4_guide";
 	rename -uid "DFFA1631-400F-8738-796A-049AF6FA5BA1";
 	setAttr ".t" -type "double3" -5.3290705182007514e-15 4.440892098505667e-16 -2 ;
 	setAttr ".s" -type "double3" 1 1.0000000000000002 0.99999999999999989 ;
-createNode transform -n "toe04_5_guide" -p "toe04_5_guide_ofs";
+createNode transform -n "toe4_5_guide" -p "toe4_5_guide_ofs";
 	rename -uid "8D26FCAB-4396-2817-6BE9-E59B14CE4F33";
 	setAttr ".s" -type "double3" 0.99999999999999989 0.99999999999999978 1.0000000000000007 ;
-createNode transform -n "toe04_1_guide_ofs" -p "toe04_2_guide";
+createNode transform -n "toe4_1_guide_ofs" -p "toe4_2_guide";
 	rename -uid "F26453EC-4213-1379-8352-4D9FE7181963";
 	setAttr ".t" -type "double3" 0 0 10 ;
-createNode transform -n "toe04_1_guide" -p "toe04_1_guide_ofs";
+createNode transform -n "toe4_1_guide" -p "toe4_1_guide_ofs";
 	rename -uid "CFA1EC55-4E1A-103F-97C4-DF8320B64E6F";
 	setAttr ".t" -type "double3" 0 -10 -6 ;
 	setAttr -l on ".rx";
@@ -1353,7 +1407,7 @@ createNode transform -n "toe04_1_guide" -p "toe04_1_guide_ofs";
 	setAttr -l on ".sx";
 	setAttr -l on ".sy";
 	setAttr -l on ".sz";
-createNode nurbsCurve -n "toe04_1_guideShape" -p "toe04_1_guide";
+createNode nurbsCurve -n "toe4_1_guideShape" -p "toe4_1_guide";
 	rename -uid "19AC264D-4AC0-AAA0-0C78-20B98F50BF3D";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
@@ -3314,7 +3368,7 @@ createNode nurbsCurve -n "curveShape70" -p "|master_guide|line_grp_birdFoot|grou
 		2 0 1
 		2
 		-10 4.8985871965894128e-16 4
-		-10 1.2246467991473549e-16 1.0000000000000004
+		-10 3.0616169978683846e-16 2.5
 		;
 createNode transform -n "line_43" -p "group_toe_0";
 	rename -uid "5A295FD3-403B-2027-8A1F-4B92CEEE3B94";
@@ -3329,8 +3383,24 @@ createNode nurbsCurve -n "curveShape71" -p "|master_guide|line_grp_birdFoot|grou
 		1 1 0 no 3
 		2 0 1
 		2
-		-10 1.2246467991473549e-16 1.0000000000000004
-		-10 -2.4492935982947035e-16 -1.9999999999999982
+		-10 3.0616169978683846e-16 2.5
+		-10 -6.1232339957367377e-17 -0.49999999999999867
+		;
+createNode transform -n "line_53" -p "group_toe_0";
+	rename -uid "3F349D0D-4588-8BA5-D802-0AA8E331FD25";
+	setAttr ".it" no;
+createNode nurbsCurve -n "curveShape72" -p "line_53";
+	rename -uid "EB3BD0CB-466F-278D-8AB8-FC91342B55AB";
+	setAttr -k off ".v";
+	setAttr ".ovdt" 1;
+	setAttr ".ove" yes;
+	setAttr -s 2 ".cp";
+	setAttr ".cc" -type "nurbsCurve" 
+		1 1 0 no 3
+		2 0 1
+		2
+		-10 -6.1232339957367377e-17 -0.49999999999999867
+		-10 -4.2862637970157346e-16 -3.4999999999999982
 		;
 createNode transform -n "group_toe_1" -p "line_grp_birdFoot";
 	rename -uid "76A65A0D-4F62-00B7-A858-2FAC065EAF76";
@@ -3546,40 +3616,21 @@ createNode transform -n "toeBird00_1_guide_ofs" -p "toeBird_guide";
 	setAttr ".t" -type "double3" 0 0 1 ;
 	setAttr ".r" -type "double3" 0 180 0 ;
 	setAttr ".s" -type "double3" 0.99999999999999989 1 1 ;
-createNode transform -n "toeBird00_1_guide" -p "toeBird00_1_guide_ofs";
+createNode transform -n "toe0_up_guide" -p "toeBird00_1_guide_ofs";
 	rename -uid "3A517205-49EA-87B1-EFFF-6AAA3472C194";
 	setAttr ".t" -type "double3" 0 -2.4651903288156619e-32 0 ;
 	setAttr ".s" -type "double3" 1 1 0.99999999999999989 ;
-createNode nurbsCurve -n "toeBird00_1_guideShape" -p "toeBird00_1_guide";
-	rename -uid "1A222F7F-447E-7FA6-9380-02BAFFC7FB13";
-	setAttr -k off ".v";
-	setAttr ".ove" yes;
-	setAttr ".ovc" 20;
-	setAttr ".ovrgb" -type "float3" 1 0.94999999 0 ;
-	setAttr ".ls" 2;
-	setAttr ".cc" -type "nurbsCurve" 
-		1 5 0 no 3
-		6 0 1 3 4 6 7
-		6
-		0 0 -1.1269027495092248
-		-0.49781822863347014 0 -0.72645108935297431
-		-0.49781822863347014 0 -8.8817841970012523e-16
-		0.49781822863347014 0 -8.8817841970012523e-16
-		0.49781822863347014 0 -0.72645108935297431
-		0 0 -1.1269027495092248
-		;
-	setAttr ".adot" yes;
-createNode transform -n "toeBird00_2_guide" -p "toeBird00_1_guide";
+createNode transform -n "toe0_mid_guide" -p "toe0_up_guide";
 	rename -uid "91932A03-4B60-162C-9C6A-F183C8395EDD";
 	setAttr -l on ".v";
-	setAttr ".t" -type "double3" 0 -9.8607613152626476e-32 -3 ;
+	setAttr ".t" -type "double3" 0 -9.8607613152626476e-32 -1.5 ;
 	setAttr -l on ".rx";
 	setAttr -l on ".ry";
 	setAttr -l on ".rz";
 	setAttr -l on ".sx";
 	setAttr -l on ".sy";
 	setAttr -l on ".sz";
-createNode nurbsCurve -n "toeBird00_2_guideShape" -p "toeBird00_2_guide";
+createNode nurbsCurve -n "toe0_mid_guideShape" -p "toe0_mid_guide";
 	rename -uid "ADC9C589-4716-B226-21FB-2C9641AC2212";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
@@ -3646,7 +3697,7 @@ createNode nurbsCurve -n "toeBird00_2_guideShape" -p "toeBird00_2_guide";
 		6.2864225933857744e-09 0.0010704445205455544 -0.15741653748833465
 		;
 	setAttr ".adot" yes;
-createNode transform -n "toeBird00_3_guide" -p "toeBird00_2_guide";
+createNode transform -n "toe0_low_guide" -p "toe0_mid_guide";
 	rename -uid "163EE73E-4D73-80A4-B1C3-C8A0FF6F9A9D";
 	setAttr -l on ".v";
 	setAttr ".t" -type "double3" 0 2.4651903288156619e-32 -2.9999999999999991 ;
@@ -3656,7 +3707,7 @@ createNode transform -n "toeBird00_3_guide" -p "toeBird00_2_guide";
 	setAttr -l on ".sx";
 	setAttr -l on ".sy";
 	setAttr -l on ".sz";
-createNode nurbsCurve -n "toeBird00_3_guideShape" -p "toeBird00_3_guide";
+createNode nurbsCurve -n "toe0_low_guideShape" -p "toe0_low_guide";
 	rename -uid "2BF238B8-4E86-DD4D-01BB-31869E03DD59";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
@@ -3723,34 +3774,165 @@ createNode nurbsCurve -n "toeBird00_3_guideShape" -p "toeBird00_3_guide";
 		6.2864225933857744e-09 0.0010704445205455544 -0.15741653748833465
 		;
 	setAttr ".adot" yes;
-createNode transform -n "toeBird01_1_guide_ofs" -p "toeBird_guide";
-	rename -uid "0F48E1B4-4C68-0734-E7E5-ACAEF3FE2CF6";
-	setAttr ".t" -type "double3" 1 -9.8607613152626476e-32 -1 ;
-	setAttr ".r" -type "double3" 0 -29.999999999999996 0 ;
-createNode transform -n "toeBird01_1_guide" -p "toeBird01_1_guide_ofs";
-	rename -uid "83BFA0A1-4F43-39F1-3BC8-62B1BD8B280D";
-	setAttr ".t" -type "double3" 0 9.8607613152626476e-32 0 ;
-	setAttr ".s" -type "double3" 1.0000000000000002 1 1.0000000000000002 ;
-createNode nurbsCurve -n "toeBird01_1_guideShape" -p "toeBird01_1_guide";
-	rename -uid "5F434B4E-4810-AD3D-5B11-2DAAA3350354";
+createNode transform -n "toe0_end_guide" -p "toe0_low_guide";
+	rename -uid "640EE492-44E6-E2D5-CF95-328F59C22379";
+	setAttr -l on ".v";
+	setAttr ".t" -type "double3" 0 1.9721522630525295e-31 -3 ;
+	setAttr -l on ".rx";
+	setAttr -l on ".ry";
+	setAttr -l on ".rz";
+	setAttr -l on ".sx";
+	setAttr -l on ".sy";
+	setAttr -l on ".sz";
+createNode nurbsCurve -n "toe0_end_guideShape" -p "toe0_end_guide";
+	rename -uid "174177CF-409D-160C-43A6-A2B41C7B0321";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
 	setAttr ".ovc" 20;
 	setAttr ".ovrgb" -type "float3" 1 0.94999999 0 ;
 	setAttr ".ls" 2;
 	setAttr ".cc" -type "nurbsCurve" 
-		1 5 0 no 3
-		6 0 1 3 4 6 7
-		6
-		0 0 -1.1269027495092248
-		-0.49781822863347014 0 -0.72645108935297409
-		-0.49781822863347014 0 -6.6613381477509392e-16
-		0.49781822863347014 0 -6.6613381477509392e-16
-		0.49781822863347014 0 -0.72645108935297409
-		0 0 -1.1269027495092248
+		1 52 0 no 3
+		53 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
+		 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52
+		53
+		0.15742001795704977 0 0
+		0.146160596194644 0.060541698613333 0
+		0.11186648325633515 0.11186648325633515 0
+		0.060541698613333 0.146160596194644 0
+		0 0.1574163265508367 0
+		-0.060541698613333 0.146160596194644 0
+		-0.11186648325633515 0.11186648325633515 0
+		-0.146160596194644 0.060541698613333 0
+		-0.15742001795704977 -7.4584440660405588e-09 0
+		-0.146160596194644 -0.060541698613333 0
+		-0.11186648325633515 -0.11186648325633515 0
+		-0.060541698613333 -0.146160596194644 0
+		6.2864225933857744e-09 -0.1574163265508367 -0.0010704023330459769
+		0.060541698613333 -0.146160596194644 0
+		0.11186648325633515 -0.11186648325633515 0
+		0.146160596194644 -0.060541698613333 0
+		0.15742001795704977 0 0
+		0.14543708057687915 0.00040963640215363603 -0.060240690803843089
+		0.11131277232437228 0.0007569154611808454 -0.11131034654314653
+		0.060242061897579371 0.00098895936511040629 -0.14543391651441084
+		6.2864225933857744e-09 0.0010704445205455544 -0.15741653748833465
+		-0.060242061897579371 0.00098895936511040629 -0.14543391651441084
+		-0.11131277232437228 0.0007569154611808454 -0.11131034654314653
+		-0.14543708057687915 0.00040963640215363603 -0.060240690803843089
+		-0.15742001795704977 -7.4584440660405588e-09 0
+		-0.14543708057687915 -0.00040965116777848829 0.060240479866345203
+		-0.11131277232437228 -0.00075693022680569776 0.11131024107439758
+		-0.060242061897579371 -0.00098897413073525888 0.14543370557691293
+		6.2864225933857744e-09 -0.0010704550674204495 0.1574163265508367
+		0.060242061897579371 -0.00098897413073525888 0.14543370557691293
+		0.11131277232437228 -0.00075693022680569776 0.11131024107439758
+		0.14543708057687915 -0.00040965116777848829 0.060240479866345203
+		0.15742001795704977 0 0
+		0.14543708057687915 0.00040963640215363603 -0.060240690803843089
+		0.11131277232437228 0.0007569154611808454 -0.11131034654314653
+		0.060242061897579371 0.00098895936511040629 -0.14543391651441084
+		6.2864225933857744e-09 0.0010704445205455544 -0.15741653748833465
+		6.2864225933857744e-09 0.061229565793954346 -0.14502417042475826
+		6.2864225933857744e-09 0.11206708481682913 -0.11055339733196602
+		6.2864225933857744e-09 0.14584334619781653 -0.059251710344982889
+		0 0.1574163265508367 0
+		6.2864225933857744e-09 0.14502406495600936 0.061229565793954346
+		6.2864225933857744e-09 0.11055329186321704 0.11206697934808023
+		6.2864225933857744e-09 0.059251710344982889 0.14584334619781653
+		6.2864225933857744e-09 -0.0010704550674204495 0.1574163265508367
+		6.2864225933857744e-09 -0.061229565793954346 0.14502395948726038
+		6.2864225933857744e-09 -0.11206708481682913 0.11055318639446814
+		6.2864225933857744e-09 -0.14584334619781653 0.059251499407484996
+		6.2864225933857744e-09 -0.1574163265508367 -0.0010704023330459769
+		6.2864225933857744e-09 -0.14502406495600936 -0.061229776731452218
+		6.2864225933857744e-09 -0.11055329186321704 -0.1120671902855781
+		6.2864225933857744e-09 -0.059251710344982889 -0.14584355713531444
+		6.2864225933857744e-09 0.0010704445205455544 -0.15741653748833465
 		;
 	setAttr ".adot" yes;
-createNode transform -n "toeBird01_2_guide" -p "toeBird01_1_guide";
+createNode nurbsCurve -n "toe1_up_guideShape" -p "toe0_up_guide";
+	rename -uid "3FD70598-498C-0A7A-DF3A-4C9BF3ACF13A";
+	setAttr -k off ".v";
+	setAttr ".ove" yes;
+	setAttr ".ovc" 20;
+	setAttr ".ovrgb" -type "float3" 1 0.94999999 0 ;
+	setAttr ".ls" 3;
+	setAttr ".cc" -type "nurbsCurve" 
+		1 57 0 no 3
+		58 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
+		 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 52.37464662
+		 52.597181769999999 52.692305070000003 53 56
+		58
+		0.15741653748833465 -0.0010704445205455542 -6.2864231779875858e-09
+		0.14584355713531444 0.059251710344982889 -6.2864231779875858e-09
+		0.1120671902855781 0.11055329186321704 -6.2864231779875858e-09
+		0.061229776731452218 0.14502406495600936 -6.2864231779875858e-09
+		0.0010704023330459769 0.1574163265508367 -6.2864231779875858e-09
+		-0.059251499407484996 0.14584334619781653 -6.2864231779875858e-09
+		-0.11055318639446814 0.11206708481682913 -6.2864231779875858e-09
+		-0.14502395948726038 0.061229565793954346 -6.2864231779875858e-09
+		-0.1574163265508367 0.0010704550674204495 -6.2864231779875858e-09
+		-0.14584334619781653 -0.059251710344982889 -6.2864231779875858e-09
+		-0.11206697934808019 -0.11055329186321704 -6.2864231779875858e-09
+		-0.061229565793954346 -0.14502406495600936 -6.2864231779875858e-09
+		0 -0.1574163265508367 -5.8460181140418399e-16
+		0.059251710344982889 -0.14584334619781653 -6.2864231779875858e-09
+		0.11055339733196602 -0.11206708481682913 -6.2864231779875858e-09
+		0.14502417042475824 -0.061229565793954346 -6.2864231779875858e-09
+		0.15741653748833465 -0.0010704445205455542 -6.2864231779875858e-09
+		0.14543391651441084 -0.00098895936511040629 -0.060242061897579954
+		0.11131034654314653 -0.0007569154611808454 -0.11131277232437285
+		0.060240690803843089 -0.00040963640215363603 -0.14543708057687971
+		0 -1.298076782516997e-31 -0.15742001795705035
+		-0.060240479866345203 0.00040965116777848829 -0.14543708057687971
+		-0.11131024107439758 0.00075693022680569776 -0.11131277232437285
+		-0.14543370557691293 0.00098897413073525888 -0.060242061897579954
+		-0.1574163265508367 0.0010704550674204495 -6.2864231779875858e-09
+		-0.14543370557691293 0.00098897413073525888 0.060242061897578789
+		-0.11131024107439758 0.00075693022680569776 0.11131277232437167
+		-0.060240479866345203 0.00040965116777848829 0.14543708057687854
+		0 7.4584440660405588e-09 0.15742001795704919
+		0.060240690803843089 -0.00040963640215363603 0.14543708057687854
+		0.11131034654314653 -0.0007569154611808454 0.11131277232437167
+		0.14543391651441084 -0.00098895936511040629 0.060242061897578789
+		0.15741653748833465 -0.0010704445205455542 -6.2864231779875858e-09
+		0.14543391651441084 -0.00098895936511040629 -0.060242061897579954
+		0.11131034654314653 -0.0007569154611808454 -0.11131277232437285
+		0.060240690803843089 -0.00040963640215363603 -0.14543708057687971
+		0 -1.298076782516997e-31 -0.15742001795705035
+		0 0.06054169861333298 -0.14616059619464458
+		0 0.11186648325633515 -0.11186648325633572
+		0 0.146160596194644 -0.060541698613333569
+		0.0010704023330459769 0.1574163265508367 -6.2864231779875858e-09
+		0 0.146160596194644 0.06054169861333239
+		0 0.11186648325633515 0.11186648325633455
+		0 0.06054169861333298 0.14616059619464339
+		0 7.4584440660405588e-09 0.15742001795704919
+		0 -0.06054169861333298 0.14616059619464339
+		0 -0.11186648325633515 0.11186648325633455
+		0 -0.146160596194644 0.06054169861333239
+		0 -0.1574163265508367 -5.8460181140418399e-16
+		0 -0.146160596194644 -0.060541698613333569
+		0 -0.11186648325633515 -0.11186648325633572
+		0 -0.06054169861333298 -0.14616059619464458
+		0 -1.298076782516997e-31 -0.15742001795705035
+		0 -1.298076782516997e-31 -1.2656250000000009
+		0 -1.298076782516997e-31 -1.1711366984697158e-08
+		0 -0.6328125 -5.8460181140418399e-16
+		0 -1.298076782516997e-31 1.1711365815493535e-08
+		0 -1.298076782516997e-31 1.1711365815493535e-08
+		;
+	setAttr ".adot" yes;
+createNode transform -n "toeBird01_1_guide_ofs" -p "toeBird_guide";
+	rename -uid "0F48E1B4-4C68-0734-E7E5-ACAEF3FE2CF6";
+	setAttr ".t" -type "double3" 1 -9.8607613152626476e-32 -1 ;
+	setAttr ".r" -type "double3" 0 -29.999999999999996 0 ;
+createNode transform -n "toe1_up_guide" -p "toeBird01_1_guide_ofs";
+	rename -uid "83BFA0A1-4F43-39F1-3BC8-62B1BD8B280D";
+	setAttr ".t" -type "double3" 0 9.8607613152626476e-32 0 ;
+	setAttr ".s" -type "double3" 1.0000000000000002 1 1.0000000000000002 ;
+createNode transform -n "toe1_mid_guide" -p "toe1_up_guide";
 	rename -uid "1302C267-4C36-A0A6-EE47-DE94CDBD6A4A";
 	setAttr -l on ".v";
 	setAttr ".t" -type "double3" 1.7763568394002505e-15 -1.9721522630525295e-31 -3.3000000000000012 ;
@@ -3760,7 +3942,7 @@ createNode transform -n "toeBird01_2_guide" -p "toeBird01_1_guide";
 	setAttr -l on ".sx";
 	setAttr -l on ".sy";
 	setAttr -l on ".sz";
-createNode nurbsCurve -n "toeBird01_2_guideShape" -p "toeBird01_2_guide";
+createNode nurbsCurve -n "toe1_mid_guideShape" -p "toe1_mid_guide";
 	rename -uid "ABE33A60-4636-742A-6479-5882318BE696";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
@@ -3827,7 +4009,7 @@ createNode nurbsCurve -n "toeBird01_2_guideShape" -p "toeBird01_2_guide";
 		6.2864225933857744e-09 0.0010704445205455544 -0.15741653748833465
 		;
 	setAttr ".adot" yes;
-createNode transform -n "toeBird01_3_guide" -p "toeBird01_2_guide";
+createNode transform -n "toe1_low_guide" -p "toe1_mid_guide";
 	rename -uid "C5181D02-4C6A-BBCF-D402-B89BEB7519D3";
 	setAttr -l on ".v";
 	setAttr ".t" -type "double3" 1.7763568394002505e-15 -1.9721522630525304e-31 -3.3000000000000007 ;
@@ -3837,7 +4019,7 @@ createNode transform -n "toeBird01_3_guide" -p "toeBird01_2_guide";
 	setAttr -l on ".sx";
 	setAttr -l on ".sy";
 	setAttr -l on ".sz";
-createNode nurbsCurve -n "toeBird01_3_guideShape" -p "toeBird01_3_guide";
+createNode nurbsCurve -n "toe1_low_guideShape" -p "toe1_low_guide";
 	rename -uid "3361DA26-4B21-33F4-0B72-E3ABFF44E198";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
@@ -3904,7 +4086,7 @@ createNode nurbsCurve -n "toeBird01_3_guideShape" -p "toeBird01_3_guide";
 		6.2864225933857744e-09 0.0010704445205455544 -0.15741653748833465
 		;
 	setAttr ".adot" yes;
-createNode transform -n "toeBird01_4_guide" -p "toeBird01_3_guide";
+createNode transform -n "toe1_end_guide" -p "toe1_low_guide";
 	rename -uid "5E590886-4707-6528-845C-C58BF40B45F3";
 	setAttr -l on ".v";
 	setAttr ".t" -type "double3" 0 0 -3.3000000000000007 ;
@@ -3914,7 +4096,7 @@ createNode transform -n "toeBird01_4_guide" -p "toeBird01_3_guide";
 	setAttr -l on ".sx";
 	setAttr -l on ".sy";
 	setAttr -l on ".sz";
-createNode nurbsCurve -n "toeBird01_4_guideShape" -p "toeBird01_4_guide";
+createNode nurbsCurve -n "toe1_end_guideShape" -p "toe1_end_guide";
 	rename -uid "109B990B-496F-1C05-601E-C9B85F6972C8";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
@@ -3984,31 +4166,9 @@ createNode nurbsCurve -n "toeBird01_4_guideShape" -p "toeBird01_4_guide";
 createNode transform -n "toeBird02_1_guide_ofs" -p "toeBird_guide";
 	rename -uid "912A7F48-47CC-BAEE-F13C-298C1960AB1F";
 	setAttr ".t" -type "double3" 0 0 -2 ;
-createNode transform -n "toeBird02_1_guide" -p "toeBird02_1_guide_ofs";
+createNode transform -n "toe2_up_guide" -p "toeBird02_1_guide_ofs";
 	rename -uid "72ABB071-4031-06BA-3D38-EF96E1532163";
-createNode nurbsCurve -n "toeBird02_1_guideShape" -p "toeBird02_1_guide";
-	rename -uid "240FF55F-4BEB-9CA9-2EA7-5ABBEB3437E7";
-	setAttr -k off ".v";
-	setAttr ".ove" yes;
-	setAttr ".ovc" 20;
-	setAttr ".ovrgb" -type "float3" 1 0.94999999 0 ;
-	setAttr ".ls" 2;
-	setAttr ".cc" -type "nurbsCurve" 
-		1 5 0 no 3
-		6 0 1 3 4 6 7
-		6
-		0 0 -1.1269027495092239
-		-0.49781822863347014 0 -0.72645108935297342
-		-0.49781822863347014 0 0
-		0.49781822863347014 0 0
-		0.49781822863347014 0 -0.72645108935297342
-		0 0 -1.1269027495092239
-		;
-	setAttr ".adot" yes;
-createNode transform -n "toeBird02_2_guide_ofs" -p "toeBird02_1_guide";
-	rename -uid "1A5C624A-4F58-B89F-B6D1-5C95333DC99E";
-	setAttr ".t" -type "double3" 0 1.9721522630525295e-31 -3 ;
-createNode transform -n "toeBird02_2_guide" -p "toeBird02_1_guide";
+createNode transform -n "toe2_mid_guide" -p "toe2_up_guide";
 	rename -uid "61F19984-4C22-D6CA-C92C-8C85D5C7E83C";
 	setAttr -l on ".v";
 	setAttr ".t" -type "double3" 0 1.9721522630525295e-31 -3 ;
@@ -4018,7 +4178,7 @@ createNode transform -n "toeBird02_2_guide" -p "toeBird02_1_guide";
 	setAttr -l on ".sx";
 	setAttr -l on ".sy";
 	setAttr -l on ".sz";
-createNode nurbsCurve -n "toeBird02_2_guideShape" -p "toeBird02_2_guide";
+createNode nurbsCurve -n "toe2_mid_guideShape" -p "toe2_mid_guide";
 	rename -uid "1E4E8BAA-4185-A9F5-BD8F-D2B7310E1C80";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
@@ -4085,7 +4245,7 @@ createNode nurbsCurve -n "toeBird02_2_guideShape" -p "toeBird02_2_guide";
 		6.2864225933857744e-09 0.0010704445205455544 -0.15741653748833465
 		;
 	setAttr ".adot" yes;
-createNode transform -n "toeBird02_3_guide" -p "toeBird02_2_guide";
+createNode transform -n "toe2_mid2_guide" -p "toe2_mid_guide";
 	rename -uid "AE95A352-4341-8539-3536-9C8908863E2E";
 	setAttr -l on ".v";
 	setAttr ".t" -type "double3" 0 0 -3 ;
@@ -4095,7 +4255,7 @@ createNode transform -n "toeBird02_3_guide" -p "toeBird02_2_guide";
 	setAttr -l on ".sx";
 	setAttr -l on ".sy";
 	setAttr -l on ".sz";
-createNode nurbsCurve -n "toeBird02_3_guideShape" -p "toeBird02_3_guide";
+createNode nurbsCurve -n "toe2_mid2_guideShape" -p "toe2_mid2_guide";
 	rename -uid "86DF45AE-4D3B-B2CF-903D-C4BEDBAB8AAB";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
@@ -4162,7 +4322,7 @@ createNode nurbsCurve -n "toeBird02_3_guideShape" -p "toeBird02_3_guide";
 		6.2864225933857744e-09 0.0010704445205455544 -0.15741653748833465
 		;
 	setAttr ".adot" yes;
-createNode transform -n "toeBird02_4_guide" -p "toeBird02_3_guide";
+createNode transform -n "toe2_low_guide" -p "toe2_mid2_guide";
 	rename -uid "663ED026-4A54-E56D-0728-20A67F96F598";
 	setAttr -l on ".v";
 	setAttr ".t" -type "double3" 0 1.9721522630525295e-31 -3 ;
@@ -4172,7 +4332,7 @@ createNode transform -n "toeBird02_4_guide" -p "toeBird02_3_guide";
 	setAttr -l on ".sx";
 	setAttr -l on ".sy";
 	setAttr -l on ".sz";
-createNode nurbsCurve -n "toeBird02_4_guideShape" -p "toeBird02_4_guide";
+createNode nurbsCurve -n "toe2_low_guideShape" -p "toe2_low_guide";
 	rename -uid "C1E7166B-4400-8140-F088-05B2FE239706";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
@@ -4239,7 +4399,7 @@ createNode nurbsCurve -n "toeBird02_4_guideShape" -p "toeBird02_4_guide";
 		6.2864225933857744e-09 0.0010704445205455544 -0.15741653748833465
 		;
 	setAttr ".adot" yes;
-createNode transform -n "toeBird02_5_guide" -p "toeBird02_4_guide";
+createNode transform -n "toe2_end_guide" -p "toe2_low_guide";
 	rename -uid "DAD8AEF7-4655-0991-3E42-49AFCAA6CE90";
 	setAttr -l on ".v";
 	setAttr ".t" -type "double3" 0 0 -3 ;
@@ -4249,7 +4409,7 @@ createNode transform -n "toeBird02_5_guide" -p "toeBird02_4_guide";
 	setAttr -l on ".sx";
 	setAttr -l on ".sy";
 	setAttr -l on ".sz";
-createNode nurbsCurve -n "toeBird02_5_guideShape" -p "toeBird02_5_guide";
+createNode nurbsCurve -n "toe2_end_guideShape" -p "toe2_end_guide";
 	rename -uid "F40DFCFE-4CD3-0BBF-BA84-80B06D14EFE7";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
@@ -4320,29 +4480,10 @@ createNode transform -n "toeBird03_1_guide_ofs" -p "toeBird_guide";
 	rename -uid "D1D699C2-48DF-4A3C-ACD5-D096D547FFB1";
 	setAttr ".t" -type "double3" -1 -9.8607613152626476e-32 -1 ;
 	setAttr ".r" -type "double3" 0 29.999999999999996 0 ;
-createNode transform -n "toeBird03_1_guide" -p "toeBird03_1_guide_ofs";
+createNode transform -n "toe3_up_guide" -p "toeBird03_1_guide_ofs";
 	rename -uid "38D3E6A3-4FBC-CEFA-AD38-2D9993A8E204";
 	setAttr ".s" -type "double3" 1.0000000000000002 1 1.0000000000000002 ;
-createNode nurbsCurve -n "toeBird03_1_guideShape" -p "toeBird03_1_guide";
-	rename -uid "0569427F-4B36-B48F-AD69-B1B994C481AF";
-	setAttr -k off ".v";
-	setAttr ".ove" yes;
-	setAttr ".ovc" 20;
-	setAttr ".ovrgb" -type "float3" 1 0.94999999 0 ;
-	setAttr ".ls" 2;
-	setAttr ".cc" -type "nurbsCurve" 
-		1 5 0 no 3
-		6 0 1 3 4 6 7
-		6
-		-1.7763568394002505e-15 0 -1.1269027495092239
-		-0.49781822863347192 0 -0.72645108935297342
-		-0.49781822863347192 0 0
-		0.49781822863346836 0 0
-		0.49781822863346836 0 -0.72645108935297342
-		-1.7763568394002505e-15 0 -1.1269027495092239
-		;
-	setAttr ".adot" yes;
-createNode transform -n "toeBird03_2_guide" -p "toeBird03_1_guide";
+createNode transform -n "toe3_mid_guide" -p "toe3_up_guide";
 	rename -uid "BCC1AE0D-4130-4287-60D8-03B2E2C991FC";
 	setAttr -l on ".v";
 	setAttr ".t" -type "double3" -8.8817841970012523e-16 1.9721522630525286e-31 -2 ;
@@ -4352,7 +4493,7 @@ createNode transform -n "toeBird03_2_guide" -p "toeBird03_1_guide";
 	setAttr -l on ".sx";
 	setAttr -l on ".sy";
 	setAttr -l on ".sz";
-createNode nurbsCurve -n "toeBird03_2_guideShape" -p "toeBird03_2_guide";
+createNode nurbsCurve -n "toe3_mid_guideShape" -p "toe3_mid_guide";
 	rename -uid "ED6C687B-46BE-5B43-D3E5-478FA89194A8";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
@@ -4419,7 +4560,7 @@ createNode nurbsCurve -n "toeBird03_2_guideShape" -p "toeBird03_2_guide";
 		6.2864225933857744e-09 0.0010704445205455544 -0.15741653748833465
 		;
 	setAttr ".adot" yes;
-createNode transform -n "toeBird03_3_guide" -p "toeBird03_2_guide";
+createNode transform -n "toe3_mid2_guide" -p "toe3_mid_guide";
 	rename -uid "2C8B7081-4CCE-8352-6263-9DB661C47C28";
 	setAttr -l on ".v";
 	setAttr ".t" -type "double3" 0 5.4234187233944562e-31 -2 ;
@@ -4429,7 +4570,7 @@ createNode transform -n "toeBird03_3_guide" -p "toeBird03_2_guide";
 	setAttr -l on ".sx";
 	setAttr -l on ".sy";
 	setAttr -l on ".sz";
-createNode nurbsCurve -n "toeBird03_3_guideShape" -p "toeBird03_3_guide";
+createNode nurbsCurve -n "toe3_mid2_guideShape" -p "toe3_mid2_guide";
 	rename -uid "EE4A3BB7-4457-B4D0-5698-81999674A6B4";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
@@ -4496,7 +4637,7 @@ createNode nurbsCurve -n "toeBird03_3_guideShape" -p "toeBird03_3_guide";
 		6.2864225933857744e-09 0.0010704445205455544 -0.15741653748833465
 		;
 	setAttr ".adot" yes;
-createNode transform -n "toeBird03_4_guide" -p "toeBird03_3_guide";
+createNode transform -n "toe3_mid3_guide" -p "toe3_mid2_guide";
 	rename -uid "6A73D484-4DD3-304A-D1A4-59AD8CAE8D1C";
 	setAttr -l on ".v";
 	setAttr ".t" -type "double3" -8.8817841970012523e-16 5.9164567891575885e-31 -2 ;
@@ -4506,7 +4647,7 @@ createNode transform -n "toeBird03_4_guide" -p "toeBird03_3_guide";
 	setAttr -l on ".sx";
 	setAttr -l on ".sy";
 	setAttr -l on ".sz";
-createNode nurbsCurve -n "toeBird03_4_guideShape" -p "toeBird03_4_guide";
+createNode nurbsCurve -n "toe3_mid3_guideShape" -p "toe3_mid3_guide";
 	rename -uid "BCE35AB3-460F-E8AB-B848-C6BBFE65269F";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
@@ -4573,7 +4714,7 @@ createNode nurbsCurve -n "toeBird03_4_guideShape" -p "toeBird03_4_guide";
 		6.2864225933857744e-09 0.0010704445205455544 -0.15741653748833465
 		;
 	setAttr ".adot" yes;
-createNode transform -n "toeBird03_5_guide" -p "toeBird03_4_guide";
+createNode transform -n "toe3_low_guide" -p "toe3_mid3_guide";
 	rename -uid "CB5CEDF9-4E77-49EF-042B-94BE49FE5953";
 	setAttr -l on ".v";
 	setAttr ".t" -type "double3" 0 3.4512664603419266e-31 -2 ;
@@ -4583,7 +4724,7 @@ createNode transform -n "toeBird03_5_guide" -p "toeBird03_4_guide";
 	setAttr -l on ".sx";
 	setAttr -l on ".sy";
 	setAttr -l on ".sz";
-createNode nurbsCurve -n "toeBird03_5_guideShape" -p "toeBird03_5_guide";
+createNode nurbsCurve -n "toe3_low_guideShape" -p "toe3_low_guide";
 	rename -uid "4328F107-40EA-E850-3D07-80A94A987914";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
@@ -4650,7 +4791,7 @@ createNode nurbsCurve -n "toeBird03_5_guideShape" -p "toeBird03_5_guide";
 		6.2864225933857744e-09 0.0010704445205455544 -0.15741653748833465
 		;
 	setAttr ".adot" yes;
-createNode transform -n "toeBird03_6_guide" -p "toeBird03_5_guide";
+createNode transform -n "toe3_end_guide" -p "toe3_low_guide";
 	rename -uid "ADB1E449-47D1-0C4D-0EC5-C7BB90677EBD";
 	setAttr -l on ".v";
 	setAttr ".t" -type "double3" 1.7763568394002505e-15 4.9303806576313238e-31 -2 ;
@@ -4660,7 +4801,7 @@ createNode transform -n "toeBird03_6_guide" -p "toeBird03_5_guide";
 	setAttr -l on ".sx";
 	setAttr -l on ".sy";
 	setAttr -l on ".sz";
-createNode nurbsCurve -n "toeBird03_6_guideShape" -p "toeBird03_6_guide";
+createNode nurbsCurve -n "toe3_end_guideShape" -p "toe3_end_guide";
 	rename -uid "D6DB8BDA-408B-BB2E-76C9-15B3A99FC849";
 	setAttr -k off ".v";
 	setAttr ".ove" yes;
@@ -4746,7 +4887,6 @@ createNode nurbsCurve -n "toeBird_guideShape" -p "toeBird_guide";
 createNode transform -n "toesRoot_guide" -p "master_guide";
 	rename -uid "62EF956C-4BC5-4324-3BC6-5CA5D5BFF1A0";
 	addAttr -ci true -sn "wsMirror" -ln "wsMirror" -dv 1 -at "double";
-	setAttr ".t" -type "double3" 0 13 2 ;
 	setAttr -l on ".rx";
 	setAttr -l on ".ry";
 	setAttr -l on ".rz";
@@ -4757,9 +4897,10 @@ createNode transform -n "toesRoot_guide" -p "master_guide";
 createNode locator -n "toesRoot_guideShape" -p "toesRoot_guide";
 	rename -uid "FBADE16D-4701-19ED-E38A-8BBF8EFFD454";
 	setAttr -k off ".v";
+	setAttr ".ovdt" 1;
 	setAttr ".ove" yes;
 	setAttr ".ovc" 20;
-	setAttr ".los" -type "double3" 5 5 5 ;
+	setAttr ".los" -type "double3" 0 0 0 ;
 parent -s -nc -r -add "|master_guide|hip_guide_ofs|hip_guide|hip_guideShape" "pvc_guide" ;
 parent -s -nc -r -add "|master_guide|hip_guide_ofs|hip_guide|hip_guideShape" "upr_guide" ;
 parent -s -nc -r -add "|master_guide|hip_guide_ofs|hip_guide|hip_guideShape" "lwr_guide" ;
@@ -4773,26 +4914,26 @@ parent -s -nc -r -add "|master_guide|lwr_guide_ofs|lwr_guide|radius_guide_ZRO|ra
 parent -s -nc -r -add "|master_guide|palm_inPos_ofs|palm_inPos_guide|palm_toePos_guideShape" "palm_toePos_guide" ;
 parent -s -nc -r -add "|master_guide|palm_inPos_ofs|palm_inPos_guide|palm_toePos_guideShape" "palm_heelPos_guide" ;
 parent -s -nc -r -add "|master_guide|palm_inPos_ofs|palm_inPos_guide|palm_toePos_guideShape" "palm_outPos_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe03_1_guideShape" "toe03_1_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe03_1_guideShape" "toe03_5_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe03_1_guideShape" "toe00_4_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe03_1_guideShape" "toe01_4_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe03_1_guideShape" "toe01_3_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe03_1_guideShape" "toe02_3_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe03_1_guideShape" "toe00_3_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe03_1_guideShape" "toe03_4_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe03_1_guideShape" "toe01_5_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe03_1_guideShape" "toe04_3_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe03_1_guideShape" "toe03_3_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe03_1_guideShape" "toe04_5_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe03_1_guideShape" "toe02_4_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe03_1_guideShape" "toe04_4_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe03_1_guideShape" "toe02_1_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe02_3_guide_ofs|toe02_3_guide|toe02_4_guide_ofs|toe02_4_guide|toe02_5_guide_ofs|toe02_5_guide|toe03_1_guideShape" "toe01_1_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe00_2_guideShape" "toe04_2_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe00_2_guideShape" "toe03_2_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe00_2_guideShape" "toe01_2_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe02_2_guide_ofs|toe02_2_guide|toe00_2_guideShape" "toe00_2_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe2_3_guide_ofs|toe2_3_guide|toe2_4_guide_ofs|toe2_4_guide|toe2_5_guide_ofs|toe2_5_guide|toe3_1_guideShape" "toe3_1_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe2_3_guide_ofs|toe2_3_guide|toe2_4_guide_ofs|toe2_4_guide|toe2_5_guide_ofs|toe2_5_guide|toe3_1_guideShape" "toe3_5_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe2_3_guide_ofs|toe2_3_guide|toe2_4_guide_ofs|toe2_4_guide|toe2_5_guide_ofs|toe2_5_guide|toe3_1_guideShape" "toe0_4_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe2_3_guide_ofs|toe2_3_guide|toe2_4_guide_ofs|toe2_4_guide|toe2_5_guide_ofs|toe2_5_guide|toe3_1_guideShape" "toe1_4_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe2_3_guide_ofs|toe2_3_guide|toe2_4_guide_ofs|toe2_4_guide|toe2_5_guide_ofs|toe2_5_guide|toe3_1_guideShape" "toe1_3_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe2_3_guide_ofs|toe2_3_guide|toe2_4_guide_ofs|toe2_4_guide|toe2_5_guide_ofs|toe2_5_guide|toe3_1_guideShape" "toe2_3_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe2_3_guide_ofs|toe2_3_guide|toe2_4_guide_ofs|toe2_4_guide|toe2_5_guide_ofs|toe2_5_guide|toe3_1_guideShape" "toe0_3_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe2_3_guide_ofs|toe2_3_guide|toe2_4_guide_ofs|toe2_4_guide|toe2_5_guide_ofs|toe2_5_guide|toe3_1_guideShape" "toe3_4_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe2_3_guide_ofs|toe2_3_guide|toe2_4_guide_ofs|toe2_4_guide|toe2_5_guide_ofs|toe2_5_guide|toe3_1_guideShape" "toe1_5_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe2_3_guide_ofs|toe2_3_guide|toe2_4_guide_ofs|toe2_4_guide|toe2_5_guide_ofs|toe2_5_guide|toe3_1_guideShape" "toe4_3_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe2_3_guide_ofs|toe2_3_guide|toe2_4_guide_ofs|toe2_4_guide|toe2_5_guide_ofs|toe2_5_guide|toe3_1_guideShape" "toe3_3_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe2_3_guide_ofs|toe2_3_guide|toe2_4_guide_ofs|toe2_4_guide|toe2_5_guide_ofs|toe2_5_guide|toe3_1_guideShape" "toe4_5_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe2_3_guide_ofs|toe2_3_guide|toe2_4_guide_ofs|toe2_4_guide|toe2_5_guide_ofs|toe2_5_guide|toe3_1_guideShape" "toe2_4_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe2_3_guide_ofs|toe2_3_guide|toe2_4_guide_ofs|toe2_4_guide|toe2_5_guide_ofs|toe2_5_guide|toe3_1_guideShape" "toe4_4_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe2_3_guide_ofs|toe2_3_guide|toe2_4_guide_ofs|toe2_4_guide|toe2_5_guide_ofs|toe2_5_guide|toe3_1_guideShape" "toe2_1_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe2_3_guide_ofs|toe2_3_guide|toe2_4_guide_ofs|toe2_4_guide|toe2_5_guide_ofs|toe2_5_guide|toe3_1_guideShape" "toe1_1_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe0_2_guideShape" "toe3_2_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe0_2_guideShape" "toe1_2_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe0_2_guideShape" "toe4_2_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toe_main_2_guide_ofs|toeMain_guide|toe2_2_guide_ofs|toe2_2_guide|toe0_2_guideShape" "toe0_2_guide" ;
 parent -s -nc -r -add "|master_guide|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef2" ;
 parent -s -nc -r -add "|master_guide|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef3" ;
 parent -s -nc -r -add "|master_guide|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef4" ;
@@ -4811,23 +4952,26 @@ parent -s -nc -r -add "|master_guide|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrR
 parent -s -nc -r -add "|master_guide|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef17" ;
 parent -s -nc -r -add "|master_guide|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef18" ;
 parent -s -nc -r -add "|master_guide|fgrRef_grp|null1|fgrRef1|fgrRefShape" "fgrRef19" ;
+parent -s -nc -r -add "|master_guide|toeBird_guide_grp_ofs|toeBird_guide_grp|toeBird_guide|toeBird00_1_guide_ofs|toe0_up_guide|toe1_up_guideShape" "toe2_up_guide" ;
+parent -s -nc -r -add "|master_guide|toeBird_guide_grp_ofs|toeBird_guide_grp|toeBird_guide|toeBird00_1_guide_ofs|toe0_up_guide|toe1_up_guideShape" "toe3_up_guide" ;
+parent -s -nc -r -add "|master_guide|toeBird_guide_grp_ofs|toeBird_guide_grp|toeBird_guide|toeBird00_1_guide_ofs|toe0_up_guide|toe1_up_guideShape" "toe1_up_guide" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "13B71A92-49B3-7707-37BD-E7AD0C84A070";
+	rename -uid "433B3E96-41CE-96ED-63DD-D6959052B7E7";
 	setAttr -s 3 ".lnk";
 	setAttr -s 3 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "D171FD26-4776-0B3B-F522-AD818354981C";
+	rename -uid "0D6C5508-4DCF-94C8-11A3-339E18C4D095";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "A7443991-4D3D-71DB-DDAC-3D9FAC1D57D4";
+	rename -uid "07BE9E37-47E7-C1EC-A44C-7E9B73E40A99";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "487DC810-4A26-258C-E977-F0B071E05DA0";
+	rename -uid "748E90CC-4A96-2BAF-8778-509CE46BF604";
 	setAttr ".cdl" 1;
 	setAttr -s 2 ".dli[1]"  1;
 createNode displayLayer -n "defaultLayer";
 	rename -uid "BC19330E-4E8B-4910-BB8A-238FB66CBBA1";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "76E828B7-4BB8-C47B-2089-068C2CDC15C4";
+	rename -uid "1BBDFE98-49FD-FF8D-E2D5-61AA4D7F6C5E";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "47ABDCF5-4400-C307-437A-E4AF35DAB19B";
 	setAttr ".g" yes;
@@ -4946,7 +5090,7 @@ createNode script -n "uiConfigurationScriptNode";
 		+ "            -sceneRenderFilter 0\n            -activeShadingGraph \"ballora_animatronic_shadow_rig:rsMaterial1SG,ballora_animatronic_shadow_rig:MAT_ballora,ballora_animatronic_shadow_rig:MAT_ballora\" \n            -activeCustomGeometry \"meshShaderball\" \n            -activeCustomLighSet \"defaultAreaLightSet\" \n            $editorName;\n        modelEditor -e -viewSelected 0 $editorName;\n        modelEditor -e \n            -pluginObjects \"gpuCacheDisplayFilter\" 1 \n            $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextPanel \"modelPanel\" (localizedPanelLabel(\"ModelPanel\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\tmodelPanel -edit -l (localizedPanelLabel(\"ModelPanel\")) -mbv $menusOkayInPanels  $panelName;\n\t\t$editorName = $panelName;\n        modelEditor -e \n            -docTag \"RADRENDER\" \n            -editorChanged \"updateModelPanelBar\" \n            -camera \"|persp\" \n            -useInteractiveMode 0\n            -displayLights \"default\" \n"
 		+ "            -displayAppearance \"smoothShaded\" \n            -activeOnly 0\n            -ignorePanZoom 0\n            -wireframeOnShaded 1\n            -headsUpDisplay 1\n            -holdOuts 1\n            -selectionHiliteDisplay 1\n            -useDefaultMaterial 0\n            -bufferMode \"double\" \n            -twoSidedLighting 1\n            -backfaceCulling 0\n            -xray 0\n            -jointXray 1\n            -activeComponentsXray 0\n            -displayTextures 1\n            -smoothWireframe 0\n            -lineWidth 1\n            -textureAnisotropic 0\n            -textureHilight 1\n            -textureSampling 2\n            -textureDisplay \"modulate\" \n            -textureMaxSize 32768\n            -fogging 0\n            -fogSource \"fragment\" \n            -fogMode \"linear\" \n            -fogStart 0\n            -fogEnd 100\n            -fogDensity 0.1\n            -fogColor 0.5 0.5 0.5 1 \n            -depthOfFieldPreview 1\n            -maxConstantTransparency 1\n            -rendererName \"vp2Renderer\" \n            -objectFilterShowInHUD 1\n"
 		+ "            -isFiltered 0\n            -colorResolution 256 256 \n            -bumpResolution 512 512 \n            -textureCompression 0\n            -transparencyAlgorithm \"frontAndBackCull\" \n            -transpInShadows 0\n            -cullingOverride \"none\" \n            -lowQualityLighting 0\n            -maximumNumHardwareLights 0\n            -occlusionCulling 0\n            -shadingModel 0\n            -useBaseRenderer 0\n            -useReducedRenderer 0\n            -smallObjectCulling 0\n            -smallObjectThreshold -1 \n            -interactiveDisableShadows 0\n            -interactiveBackFaceCull 0\n            -sortTransparent 1\n            -controllers 1\n            -nurbsCurves 1\n            -nurbsSurfaces 1\n            -polymeshes 1\n            -subdivSurfaces 1\n            -planes 1\n            -lights 1\n            -cameras 1\n            -controlVertices 1\n            -hulls 1\n            -grid 1\n            -imagePlane 1\n            -joints 1\n            -ikHandles 1\n            -deformers 1\n            -dynamics 1\n"
-		+ "            -particleInstancers 1\n            -fluids 1\n            -hairSystems 1\n            -follicles 1\n            -nCloths 1\n            -nParticles 1\n            -nRigids 1\n            -dynamicConstraints 1\n            -locators 1\n            -manipulators 1\n            -pluginShapes 1\n            -dimensions 1\n            -handles 1\n            -pivots 1\n            -textures 1\n            -strokes 1\n            -motionTrails 1\n            -clipGhosts 1\n            -bluePencil 1\n            -greasePencils 0\n            -shadows 0\n            -captureSequenceNumber -1\n            -width 529\n            -height 717\n            -sceneRenderFilter 0\n            -activeShadingGraph \"ballora_animatronic_shadow_rig:rsMaterial1SG,ballora_animatronic_shadow_rig:MAT_ballora,ballora_animatronic_shadow_rig:MAT_ballora\" \n            -activeCustomGeometry \"meshShaderball\" \n            -activeCustomLighSet \"defaultAreaLightSet\" \n            $editorName;\n        modelEditor -e -viewSelected 0 $editorName;\n        modelEditor -e \n"
+		+ "            -particleInstancers 1\n            -fluids 1\n            -hairSystems 1\n            -follicles 1\n            -nCloths 1\n            -nParticles 1\n            -nRigids 1\n            -dynamicConstraints 1\n            -locators 1\n            -manipulators 1\n            -pluginShapes 1\n            -dimensions 1\n            -handles 1\n            -pivots 1\n            -textures 1\n            -strokes 1\n            -motionTrails 1\n            -clipGhosts 1\n            -bluePencil 1\n            -greasePencils 0\n            -shadows 0\n            -captureSequenceNumber -1\n            -width 632\n            -height 726\n            -sceneRenderFilter 0\n            -activeShadingGraph \"ballora_animatronic_shadow_rig:rsMaterial1SG,ballora_animatronic_shadow_rig:MAT_ballora,ballora_animatronic_shadow_rig:MAT_ballora\" \n            -activeCustomGeometry \"meshShaderball\" \n            -activeCustomLighSet \"defaultAreaLightSet\" \n            $editorName;\n        modelEditor -e -viewSelected 0 $editorName;\n        modelEditor -e \n"
 		+ "            -pluginObjects \"gpuCacheDisplayFilter\" 1 \n            $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextPanel \"outlinerPanel\" (localizedPanelLabel(\"\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\toutlinerPanel -edit -l (localizedPanelLabel(\"\")) -mbv $menusOkayInPanels  $panelName;\n\t\t$editorName = $panelName;\n        outlinerEditor -e \n            -docTag \"isolOutln_fromSeln\" \n            -showShapes 0\n            -showAssignedMaterials 0\n            -showTimeEditor 1\n            -showReferenceNodes 0\n            -showReferenceMembers 0\n            -showAttributes 0\n            -showConnected 0\n            -showAnimCurvesOnly 0\n            -showMuteInfo 0\n            -organizeByLayer 1\n            -organizeByClip 1\n            -showAnimLayerWeight 1\n            -autoExpandLayers 1\n            -autoExpand 1\n            -showDagOnly 1\n            -showAssets 1\n            -showContainedOnly 1\n            -showPublishedAsConnected 0\n"
 		+ "            -showParentContainers 0\n            -showContainerContents 1\n            -ignoreDagHierarchy 0\n            -expandConnections 0\n            -showUpstreamCurves 1\n            -showUnitlessCurves 1\n            -showCompounds 1\n            -showLeafs 1\n            -showNumericAttrsOnly 0\n            -highlightActive 1\n            -autoSelectNewObjects 1\n            -doNotSelectNewObjects 0\n            -dropIsParent 1\n            -transmitFilters 0\n            -setFilter \"defaultSetFilter\" \n            -showSetMembers 1\n            -allowMultiSelection 1\n            -alwaysToggleSelect 0\n            -directSelect 0\n            -isSet 0\n            -isSetMember 0\n            -showUfeItems 1\n            -displayMode \"DAG\" \n            -expandObjects 0\n            -setsIgnoreFilters 1\n            -containersIgnoreFilters 0\n            -editAttrName 0\n            -showAttrValues 0\n            -highlightSecondary 0\n            -showUVAttrsOnly 0\n            -showTextureNodesOnly 0\n            -attrAlphaOrder \"default\" \n"
 		+ "            -animLayerFilterOptions \"allAffecting\" \n            -sortOrder \"none\" \n            -longNames 0\n            -niceNames 1\n            -selectCommand \"print(\\\"\\\")\" \n            -showNamespace 1\n            -showPinIcons 0\n            -mapMotionTrails 0\n            -ignoreHiddenAttribute 0\n            -ignoreOutlinerColor 0\n            -renderFilterVisible 0\n            -renderFilterIndex 0\n            -selectionOrder \"chronological\" \n            -expandAttribute 0\n            -ufeFilter \"USD\" \"InactivePrims\" -ufeFilterValue 1\n            $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextPanel \"outlinerPanel\" (localizedPanelLabel(\"Outliner\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\toutlinerPanel -edit -l (localizedPanelLabel(\"Outliner\")) -mbv $menusOkayInPanels  $panelName;\n\t\t$editorName = $panelName;\n        outlinerEditor -e \n            -docTag \"isolOutln_fromSeln\" \n            -showShapes 0\n            -showAssignedMaterials 0\n"
@@ -4975,13 +5119,13 @@ createNode script -n "uiConfigurationScriptNode";
 		+ "                -clipGhosts 1\n                -bluePencil 1\n                -greasePencils 0\n                -shadows 0\n                -captureSequenceNumber -1\n                -width 0\n                -height 0\n                -sceneRenderFilter 0\n                -displayMode \"centerEye\" \n                -viewColor 0 0 0 1 \n                -useCustomBackground 1\n                $editorName;\n            stereoCameraView -e -viewSelected 0 $editorName;\n            stereoCameraView -e \n                -pluginObjects \"gpuCacheDisplayFilter\" 1 \n                $editorName; };\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextPanel \"modelPanel\" (localizedPanelLabel(\"Persp View\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\tmodelPanel -edit -l (localizedPanelLabel(\"Persp View\")) -mbv $menusOkayInPanels  $panelName;\n\t\t$editorName = $panelName;\n        modelEditor -e \n            -docTag \"RADRENDER\" \n            -editorChanged \"updateModelPanelBar\" \n"
 		+ "            -camera \"|persp\" \n            -useInteractiveMode 0\n            -displayLights \"default\" \n            -displayAppearance \"smoothShaded\" \n            -activeOnly 0\n            -ignorePanZoom 0\n            -wireframeOnShaded 0\n            -headsUpDisplay 1\n            -holdOuts 1\n            -selectionHiliteDisplay 1\n            -useDefaultMaterial 0\n            -bufferMode \"double\" \n            -twoSidedLighting 0\n            -backfaceCulling 0\n            -xray 0\n            -jointXray 0\n            -activeComponentsXray 0\n            -displayTextures 0\n            -smoothWireframe 0\n            -lineWidth 1\n            -textureAnisotropic 0\n            -textureHilight 1\n            -textureSampling 2\n            -textureDisplay \"modulate\" \n            -textureMaxSize 32768\n            -fogging 0\n            -fogSource \"fragment\" \n            -fogMode \"linear\" \n            -fogStart 0\n            -fogEnd 100\n            -fogDensity 0.1\n            -fogColor 0.5 0.5 0.5 1 \n            -depthOfFieldPreview 1\n"
 		+ "            -maxConstantTransparency 1\n            -rendererName \"vp2Renderer\" \n            -objectFilterShowInHUD 1\n            -isFiltered 0\n            -colorResolution 256 256 \n            -bumpResolution 512 512 \n            -textureCompression 0\n            -transparencyAlgorithm \"frontAndBackCull\" \n            -transpInShadows 0\n            -cullingOverride \"none\" \n            -lowQualityLighting 0\n            -maximumNumHardwareLights 1\n            -occlusionCulling 0\n            -shadingModel 0\n            -useBaseRenderer 0\n            -useReducedRenderer 0\n            -smallObjectCulling 0\n            -smallObjectThreshold -1 \n            -interactiveDisableShadows 0\n            -interactiveBackFaceCull 0\n            -sortTransparent 1\n            -controllers 1\n            -nurbsCurves 1\n            -nurbsSurfaces 1\n            -polymeshes 1\n            -subdivSurfaces 1\n            -planes 1\n            -lights 1\n            -cameras 1\n            -controlVertices 1\n            -hulls 1\n            -grid 1\n"
-		+ "            -imagePlane 1\n            -joints 1\n            -ikHandles 1\n            -deformers 1\n            -dynamics 1\n            -particleInstancers 1\n            -fluids 1\n            -hairSystems 1\n            -follicles 1\n            -nCloths 1\n            -nParticles 1\n            -nRigids 1\n            -dynamicConstraints 1\n            -locators 1\n            -manipulators 1\n            -pluginShapes 1\n            -dimensions 1\n            -handles 1\n            -pivots 1\n            -textures 1\n            -strokes 1\n            -motionTrails 1\n            -clipGhosts 1\n            -bluePencil 1\n            -greasePencils 0\n            -shadows 0\n            -captureSequenceNumber -1\n            -width 529\n            -height 717\n            -sceneRenderFilter 0\n            -activeShadingGraph \"ballora_animatronic_shadow_rig:rsMaterial1SG,ballora_animatronic_shadow_rig:MAT_ballora,ballora_animatronic_shadow_rig:MAT_ballora\" \n            -activeCustomGeometry \"meshShaderball\" \n            -activeCustomLighSet \"defaultAreaLightSet\" \n"
+		+ "            -imagePlane 1\n            -joints 1\n            -ikHandles 1\n            -deformers 1\n            -dynamics 1\n            -particleInstancers 1\n            -fluids 1\n            -hairSystems 1\n            -follicles 1\n            -nCloths 1\n            -nParticles 1\n            -nRigids 1\n            -dynamicConstraints 1\n            -locators 1\n            -manipulators 1\n            -pluginShapes 1\n            -dimensions 1\n            -handles 1\n            -pivots 1\n            -textures 1\n            -strokes 1\n            -motionTrails 1\n            -clipGhosts 1\n            -bluePencil 1\n            -greasePencils 0\n            -shadows 0\n            -captureSequenceNumber -1\n            -width 632\n            -height 726\n            -sceneRenderFilter 0\n            -activeShadingGraph \"ballora_animatronic_shadow_rig:rsMaterial1SG,ballora_animatronic_shadow_rig:MAT_ballora,ballora_animatronic_shadow_rig:MAT_ballora\" \n            -activeCustomGeometry \"meshShaderball\" \n            -activeCustomLighSet \"defaultAreaLightSet\" \n"
 		+ "            $editorName;\n        modelEditor -e -viewSelected 0 $editorName;\n        modelEditor -e \n            -pluginObjects \"gpuCacheDisplayFilter\" 1 \n            $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextPanel \"outlinerPanel\" (localizedPanelLabel(\"ToggledOutliner\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\toutlinerPanel -edit -l (localizedPanelLabel(\"ToggledOutliner\")) -mbv $menusOkayInPanels  $panelName;\n\t\t$editorName = $panelName;\n        outlinerEditor -e \n            -docTag \"isolOutln_fromSeln\" \n            -showShapes 0\n            -showAssignedMaterials 0\n            -showTimeEditor 1\n            -showReferenceNodes 1\n            -showReferenceMembers 1\n            -showAttributes 0\n            -showConnected 0\n            -showAnimCurvesOnly 0\n            -showMuteInfo 0\n            -organizeByLayer 1\n            -organizeByClip 1\n            -showAnimLayerWeight 1\n            -autoExpandLayers 1\n"
 		+ "            -autoExpand 0\n            -showDagOnly 1\n            -showAssets 1\n            -showContainedOnly 1\n            -showPublishedAsConnected 0\n            -showParentContainers 0\n            -showContainerContents 1\n            -ignoreDagHierarchy 0\n            -expandConnections 0\n            -showUpstreamCurves 1\n            -showUnitlessCurves 1\n            -showCompounds 1\n            -showLeafs 1\n            -showNumericAttrsOnly 0\n            -highlightActive 1\n            -autoSelectNewObjects 0\n            -doNotSelectNewObjects 0\n            -dropIsParent 1\n            -transmitFilters 0\n            -setFilter \"defaultSetFilter\" \n            -showSetMembers 1\n            -allowMultiSelection 1\n            -alwaysToggleSelect 0\n            -directSelect 0\n            -isSet 0\n            -isSetMember 0\n            -showUfeItems 1\n            -displayMode \"DAG\" \n            -expandObjects 0\n            -setsIgnoreFilters 1\n            -containersIgnoreFilters 0\n            -editAttrName 0\n            -showAttrValues 0\n"
 		+ "            -highlightSecondary 0\n            -showUVAttrsOnly 0\n            -showTextureNodesOnly 0\n            -attrAlphaOrder \"default\" \n            -animLayerFilterOptions \"allAffecting\" \n            -sortOrder \"none\" \n            -longNames 0\n            -niceNames 1\n            -selectCommand \"{}\" \n            -showNamespace 1\n            -showPinIcons 0\n            -mapMotionTrails 0\n            -ignoreHiddenAttribute 0\n            -ignoreOutlinerColor 0\n            -renderFilterVisible 0\n            -renderFilterIndex 0\n            -selectionOrder \"chronological\" \n            -expandAttribute 0\n            $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\tif ($useSceneConfig) {\n        string $configName = `getPanel -cwl (localizedPanelLabel(\"Current Layout\"))`;\n        if (\"\" != $configName) {\n\t\t\tpanelConfiguration -edit -label (localizedPanelLabel(\"Current Layout\")) \n\t\t\t\t-userCreated false\n\t\t\t\t-defaultImage \"vacantCell.xP:/\"\n\t\t\t\t-image \"\"\n\t\t\t\t-sc false\n\t\t\t\t-configString \"global string $gMainPane; paneLayout -e -cn \\\"single\\\" -ps 1 100 100 $gMainPane;\"\n"
 		+ "\t\t\t\t-removeAllPanels\n\t\t\t\t-ap false\n\t\t\t\t\t(localizedPanelLabel(\"Persp View\")) \n\t\t\t\t\t\"modelPanel\"\n"
-		+ "\t\t\t\t\t\"$panelName = `modelPanel -unParent -l (localizedPanelLabel(\\\"Persp View\\\")) -mbv $menusOkayInPanels `;\\n$editorName = $panelName;\\nmodelEditor -e \\n    -docTag \\\"RADRENDER\\\" \\n    -editorChanged \\\"updateModelPanelBar\\\" \\n    -cam `findStartUpCamera persp` \\n    -useInteractiveMode 0\\n    -displayLights \\\"default\\\" \\n    -displayAppearance \\\"smoothShaded\\\" \\n    -activeOnly 0\\n    -ignorePanZoom 0\\n    -wireframeOnShaded 0\\n    -headsUpDisplay 1\\n    -holdOuts 1\\n    -selectionHiliteDisplay 1\\n    -useDefaultMaterial 0\\n    -bufferMode \\\"double\\\" \\n    -twoSidedLighting 0\\n    -backfaceCulling 0\\n    -xray 0\\n    -jointXray 0\\n    -activeComponentsXray 0\\n    -displayTextures 0\\n    -smoothWireframe 0\\n    -lineWidth 1\\n    -textureAnisotropic 0\\n    -textureHilight 1\\n    -textureSampling 2\\n    -textureDisplay \\\"modulate\\\" \\n    -textureMaxSize 32768\\n    -fogging 0\\n    -fogSource \\\"fragment\\\" \\n    -fogMode \\\"linear\\\" \\n    -fogStart 0\\n    -fogEnd 100\\n    -fogDensity 0.1\\n    -fogColor 0.5 0.5 0.5 1 \\n    -depthOfFieldPreview 1\\n    -maxConstantTransparency 1\\n    -rendererName \\\"vp2Renderer\\\" \\n    -objectFilterShowInHUD 1\\n    -isFiltered 0\\n    -colorResolution 256 256 \\n    -bumpResolution 512 512 \\n    -textureCompression 0\\n    -transparencyAlgorithm \\\"frontAndBackCull\\\" \\n    -transpInShadows 0\\n    -cullingOverride \\\"none\\\" \\n    -lowQualityLighting 0\\n    -maximumNumHardwareLights 1\\n    -occlusionCulling 0\\n    -shadingModel 0\\n    -useBaseRenderer 0\\n    -useReducedRenderer 0\\n    -smallObjectCulling 0\\n    -smallObjectThreshold -1 \\n    -interactiveDisableShadows 0\\n    -interactiveBackFaceCull 0\\n    -sortTransparent 1\\n    -controllers 1\\n    -nurbsCurves 1\\n    -nurbsSurfaces 1\\n    -polymeshes 1\\n    -subdivSurfaces 1\\n    -planes 1\\n    -lights 1\\n    -cameras 1\\n    -controlVertices 1\\n    -hulls 1\\n    -grid 1\\n    -imagePlane 1\\n    -joints 1\\n    -ikHandles 1\\n    -deformers 1\\n    -dynamics 1\\n    -particleInstancers 1\\n    -fluids 1\\n    -hairSystems 1\\n    -follicles 1\\n    -nCloths 1\\n    -nParticles 1\\n    -nRigids 1\\n    -dynamicConstraints 1\\n    -locators 1\\n    -manipulators 1\\n    -pluginShapes 1\\n    -dimensions 1\\n    -handles 1\\n    -pivots 1\\n    -textures 1\\n    -strokes 1\\n    -motionTrails 1\\n    -clipGhosts 1\\n    -bluePencil 1\\n    -greasePencils 0\\n    -shadows 0\\n    -captureSequenceNumber -1\\n    -width 529\\n    -height 717\\n    -sceneRenderFilter 0\\n    -activeShadingGraph \\\"ballora_animatronic_shadow_rig:rsMaterial1SG,ballora_animatronic_shadow_rig:MAT_ballora,ballora_animatronic_shadow_rig:MAT_ballora\\\" \\n    -activeCustomGeometry \\\"meshShaderball\\\" \\n    -activeCustomLighSet \\\"defaultAreaLightSet\\\" \\n    $editorName;\\nmodelEditor -e -viewSelected 0 $editorName;\\nmodelEditor -e \\n    -pluginObjects \\\"gpuCacheDisplayFilter\\\" 1 \\n    $editorName\"\n"
-		+ "\t\t\t\t\t\"modelPanel -edit -l (localizedPanelLabel(\\\"Persp View\\\")) -mbv $menusOkayInPanels  $panelName;\\n$editorName = $panelName;\\nmodelEditor -e \\n    -docTag \\\"RADRENDER\\\" \\n    -editorChanged \\\"updateModelPanelBar\\\" \\n    -cam `findStartUpCamera persp` \\n    -useInteractiveMode 0\\n    -displayLights \\\"default\\\" \\n    -displayAppearance \\\"smoothShaded\\\" \\n    -activeOnly 0\\n    -ignorePanZoom 0\\n    -wireframeOnShaded 0\\n    -headsUpDisplay 1\\n    -holdOuts 1\\n    -selectionHiliteDisplay 1\\n    -useDefaultMaterial 0\\n    -bufferMode \\\"double\\\" \\n    -twoSidedLighting 0\\n    -backfaceCulling 0\\n    -xray 0\\n    -jointXray 0\\n    -activeComponentsXray 0\\n    -displayTextures 0\\n    -smoothWireframe 0\\n    -lineWidth 1\\n    -textureAnisotropic 0\\n    -textureHilight 1\\n    -textureSampling 2\\n    -textureDisplay \\\"modulate\\\" \\n    -textureMaxSize 32768\\n    -fogging 0\\n    -fogSource \\\"fragment\\\" \\n    -fogMode \\\"linear\\\" \\n    -fogStart 0\\n    -fogEnd 100\\n    -fogDensity 0.1\\n    -fogColor 0.5 0.5 0.5 1 \\n    -depthOfFieldPreview 1\\n    -maxConstantTransparency 1\\n    -rendererName \\\"vp2Renderer\\\" \\n    -objectFilterShowInHUD 1\\n    -isFiltered 0\\n    -colorResolution 256 256 \\n    -bumpResolution 512 512 \\n    -textureCompression 0\\n    -transparencyAlgorithm \\\"frontAndBackCull\\\" \\n    -transpInShadows 0\\n    -cullingOverride \\\"none\\\" \\n    -lowQualityLighting 0\\n    -maximumNumHardwareLights 1\\n    -occlusionCulling 0\\n    -shadingModel 0\\n    -useBaseRenderer 0\\n    -useReducedRenderer 0\\n    -smallObjectCulling 0\\n    -smallObjectThreshold -1 \\n    -interactiveDisableShadows 0\\n    -interactiveBackFaceCull 0\\n    -sortTransparent 1\\n    -controllers 1\\n    -nurbsCurves 1\\n    -nurbsSurfaces 1\\n    -polymeshes 1\\n    -subdivSurfaces 1\\n    -planes 1\\n    -lights 1\\n    -cameras 1\\n    -controlVertices 1\\n    -hulls 1\\n    -grid 1\\n    -imagePlane 1\\n    -joints 1\\n    -ikHandles 1\\n    -deformers 1\\n    -dynamics 1\\n    -particleInstancers 1\\n    -fluids 1\\n    -hairSystems 1\\n    -follicles 1\\n    -nCloths 1\\n    -nParticles 1\\n    -nRigids 1\\n    -dynamicConstraints 1\\n    -locators 1\\n    -manipulators 1\\n    -pluginShapes 1\\n    -dimensions 1\\n    -handles 1\\n    -pivots 1\\n    -textures 1\\n    -strokes 1\\n    -motionTrails 1\\n    -clipGhosts 1\\n    -bluePencil 1\\n    -greasePencils 0\\n    -shadows 0\\n    -captureSequenceNumber -1\\n    -width 529\\n    -height 717\\n    -sceneRenderFilter 0\\n    -activeShadingGraph \\\"ballora_animatronic_shadow_rig:rsMaterial1SG,ballora_animatronic_shadow_rig:MAT_ballora,ballora_animatronic_shadow_rig:MAT_ballora\\\" \\n    -activeCustomGeometry \\\"meshShaderball\\\" \\n    -activeCustomLighSet \\\"defaultAreaLightSet\\\" \\n    $editorName;\\nmodelEditor -e -viewSelected 0 $editorName;\\nmodelEditor -e \\n    -pluginObjects \\\"gpuCacheDisplayFilter\\\" 1 \\n    $editorName\"\n"
+		+ "\t\t\t\t\t\"$panelName = `modelPanel -unParent -l (localizedPanelLabel(\\\"Persp View\\\")) -mbv $menusOkayInPanels `;\\n$editorName = $panelName;\\nmodelEditor -e \\n    -docTag \\\"RADRENDER\\\" \\n    -editorChanged \\\"updateModelPanelBar\\\" \\n    -cam `findStartUpCamera persp` \\n    -useInteractiveMode 0\\n    -displayLights \\\"default\\\" \\n    -displayAppearance \\\"smoothShaded\\\" \\n    -activeOnly 0\\n    -ignorePanZoom 0\\n    -wireframeOnShaded 0\\n    -headsUpDisplay 1\\n    -holdOuts 1\\n    -selectionHiliteDisplay 1\\n    -useDefaultMaterial 0\\n    -bufferMode \\\"double\\\" \\n    -twoSidedLighting 0\\n    -backfaceCulling 0\\n    -xray 0\\n    -jointXray 0\\n    -activeComponentsXray 0\\n    -displayTextures 0\\n    -smoothWireframe 0\\n    -lineWidth 1\\n    -textureAnisotropic 0\\n    -textureHilight 1\\n    -textureSampling 2\\n    -textureDisplay \\\"modulate\\\" \\n    -textureMaxSize 32768\\n    -fogging 0\\n    -fogSource \\\"fragment\\\" \\n    -fogMode \\\"linear\\\" \\n    -fogStart 0\\n    -fogEnd 100\\n    -fogDensity 0.1\\n    -fogColor 0.5 0.5 0.5 1 \\n    -depthOfFieldPreview 1\\n    -maxConstantTransparency 1\\n    -rendererName \\\"vp2Renderer\\\" \\n    -objectFilterShowInHUD 1\\n    -isFiltered 0\\n    -colorResolution 256 256 \\n    -bumpResolution 512 512 \\n    -textureCompression 0\\n    -transparencyAlgorithm \\\"frontAndBackCull\\\" \\n    -transpInShadows 0\\n    -cullingOverride \\\"none\\\" \\n    -lowQualityLighting 0\\n    -maximumNumHardwareLights 1\\n    -occlusionCulling 0\\n    -shadingModel 0\\n    -useBaseRenderer 0\\n    -useReducedRenderer 0\\n    -smallObjectCulling 0\\n    -smallObjectThreshold -1 \\n    -interactiveDisableShadows 0\\n    -interactiveBackFaceCull 0\\n    -sortTransparent 1\\n    -controllers 1\\n    -nurbsCurves 1\\n    -nurbsSurfaces 1\\n    -polymeshes 1\\n    -subdivSurfaces 1\\n    -planes 1\\n    -lights 1\\n    -cameras 1\\n    -controlVertices 1\\n    -hulls 1\\n    -grid 1\\n    -imagePlane 1\\n    -joints 1\\n    -ikHandles 1\\n    -deformers 1\\n    -dynamics 1\\n    -particleInstancers 1\\n    -fluids 1\\n    -hairSystems 1\\n    -follicles 1\\n    -nCloths 1\\n    -nParticles 1\\n    -nRigids 1\\n    -dynamicConstraints 1\\n    -locators 1\\n    -manipulators 1\\n    -pluginShapes 1\\n    -dimensions 1\\n    -handles 1\\n    -pivots 1\\n    -textures 1\\n    -strokes 1\\n    -motionTrails 1\\n    -clipGhosts 1\\n    -bluePencil 1\\n    -greasePencils 0\\n    -shadows 0\\n    -captureSequenceNumber -1\\n    -width 632\\n    -height 726\\n    -sceneRenderFilter 0\\n    -activeShadingGraph \\\"ballora_animatronic_shadow_rig:rsMaterial1SG,ballora_animatronic_shadow_rig:MAT_ballora,ballora_animatronic_shadow_rig:MAT_ballora\\\" \\n    -activeCustomGeometry \\\"meshShaderball\\\" \\n    -activeCustomLighSet \\\"defaultAreaLightSet\\\" \\n    $editorName;\\nmodelEditor -e -viewSelected 0 $editorName;\\nmodelEditor -e \\n    -pluginObjects \\\"gpuCacheDisplayFilter\\\" 1 \\n    $editorName\"\n"
+		+ "\t\t\t\t\t\"modelPanel -edit -l (localizedPanelLabel(\\\"Persp View\\\")) -mbv $menusOkayInPanels  $panelName;\\n$editorName = $panelName;\\nmodelEditor -e \\n    -docTag \\\"RADRENDER\\\" \\n    -editorChanged \\\"updateModelPanelBar\\\" \\n    -cam `findStartUpCamera persp` \\n    -useInteractiveMode 0\\n    -displayLights \\\"default\\\" \\n    -displayAppearance \\\"smoothShaded\\\" \\n    -activeOnly 0\\n    -ignorePanZoom 0\\n    -wireframeOnShaded 0\\n    -headsUpDisplay 1\\n    -holdOuts 1\\n    -selectionHiliteDisplay 1\\n    -useDefaultMaterial 0\\n    -bufferMode \\\"double\\\" \\n    -twoSidedLighting 0\\n    -backfaceCulling 0\\n    -xray 0\\n    -jointXray 0\\n    -activeComponentsXray 0\\n    -displayTextures 0\\n    -smoothWireframe 0\\n    -lineWidth 1\\n    -textureAnisotropic 0\\n    -textureHilight 1\\n    -textureSampling 2\\n    -textureDisplay \\\"modulate\\\" \\n    -textureMaxSize 32768\\n    -fogging 0\\n    -fogSource \\\"fragment\\\" \\n    -fogMode \\\"linear\\\" \\n    -fogStart 0\\n    -fogEnd 100\\n    -fogDensity 0.1\\n    -fogColor 0.5 0.5 0.5 1 \\n    -depthOfFieldPreview 1\\n    -maxConstantTransparency 1\\n    -rendererName \\\"vp2Renderer\\\" \\n    -objectFilterShowInHUD 1\\n    -isFiltered 0\\n    -colorResolution 256 256 \\n    -bumpResolution 512 512 \\n    -textureCompression 0\\n    -transparencyAlgorithm \\\"frontAndBackCull\\\" \\n    -transpInShadows 0\\n    -cullingOverride \\\"none\\\" \\n    -lowQualityLighting 0\\n    -maximumNumHardwareLights 1\\n    -occlusionCulling 0\\n    -shadingModel 0\\n    -useBaseRenderer 0\\n    -useReducedRenderer 0\\n    -smallObjectCulling 0\\n    -smallObjectThreshold -1 \\n    -interactiveDisableShadows 0\\n    -interactiveBackFaceCull 0\\n    -sortTransparent 1\\n    -controllers 1\\n    -nurbsCurves 1\\n    -nurbsSurfaces 1\\n    -polymeshes 1\\n    -subdivSurfaces 1\\n    -planes 1\\n    -lights 1\\n    -cameras 1\\n    -controlVertices 1\\n    -hulls 1\\n    -grid 1\\n    -imagePlane 1\\n    -joints 1\\n    -ikHandles 1\\n    -deformers 1\\n    -dynamics 1\\n    -particleInstancers 1\\n    -fluids 1\\n    -hairSystems 1\\n    -follicles 1\\n    -nCloths 1\\n    -nParticles 1\\n    -nRigids 1\\n    -dynamicConstraints 1\\n    -locators 1\\n    -manipulators 1\\n    -pluginShapes 1\\n    -dimensions 1\\n    -handles 1\\n    -pivots 1\\n    -textures 1\\n    -strokes 1\\n    -motionTrails 1\\n    -clipGhosts 1\\n    -bluePencil 1\\n    -greasePencils 0\\n    -shadows 0\\n    -captureSequenceNumber -1\\n    -width 632\\n    -height 726\\n    -sceneRenderFilter 0\\n    -activeShadingGraph \\\"ballora_animatronic_shadow_rig:rsMaterial1SG,ballora_animatronic_shadow_rig:MAT_ballora,ballora_animatronic_shadow_rig:MAT_ballora\\\" \\n    -activeCustomGeometry \\\"meshShaderball\\\" \\n    -activeCustomLighSet \\\"defaultAreaLightSet\\\" \\n    $editorName;\\nmodelEditor -e -viewSelected 0 $editorName;\\nmodelEditor -e \\n    -pluginObjects \\\"gpuCacheDisplayFilter\\\" 1 \\n    $editorName\"\n"
 		+ "\t\t\t\t$configName;\n\n            setNamedPanelLayout (localizedPanelLabel(\"Current Layout\"));\n        }\n\n        panelHistory -e -clear mainPanelHistory;\n        sceneUIReplacement -clear;\n\t}\n\n\ngrid -spacing 30 -size 300 -divisions 1 -displayAxes yes -displayGridLines yes -displayDivisionLines yes -displayPerspectiveLabels no -displayOrthographicLabels no -displayAxesBold yes -perspectiveLabelPosition axis -orthographicLabelPosition edge;\nviewManip -drawCompass 0 -compassAngle 0 -frontParameters \"1 0.000000 0.000000 -1.000000 -0.000016 1.000000 0.000000\" -homeParameters \"\" -selectionLockParameters \"\";\n}\n");
 	setAttr ".st" 3;
 createNode script -n "sceneConfigurationScriptNode";
@@ -5240,6 +5384,8 @@ createNode nodeGraphEditorInfo -n "MayaNodeEditorSavedTabsInfo";
 	setAttr ".tgi[1].ni[9].x" -91.428573608398438;
 	setAttr ".tgi[1].ni[9].y" -32.857143402099609;
 	setAttr ".tgi[1].ni[9].nvs" 18304;
+createNode decomposeMatrix -n "DCM_118";
+	rename -uid "CCCD0410-47CF-E7AD-727E-01878DED85ED";
 select -ne :time1;
 	setAttr -av -k on ".cch";
 	setAttr -av -k on ".fzn";
@@ -5798,14 +5944,14 @@ connectAttr "ball_guide.pm" "digit_guide_aimConstraint1.tg[0].tpm";
 connectAttr "digit_guide_aimConstraint1.w0" "digit_guide_aimConstraint1.tg[0].tw"
 		;
 connectAttr "condition1.ocr" "toeMain_guide.v";
-connectAttr "master_guide.includeMeta" "toe02_1_guide.v";
-connectAttr "le_cdn_3.ocr" "toe01_2_guide.v";
-connectAttr "master_guide.includeMeta" "toe01_1_guide.v";
-connectAttr "le_cdn_1.ocr" "toe00_2_guide.v";
-connectAttr "master_guide.includeMeta" "toe00_1_guide.v";
-connectAttr "master_guide.includeMeta" "toe03_1_guide.v";
-connectAttr "le_cdn_2.ocr" "toe04_2_guide.v";
-connectAttr "master_guide.includeMeta" "toe04_1_guide.v";
+connectAttr "master_guide.includeMeta" "toe2_1_guide.v";
+connectAttr "le_cdn_3.ocr" "toe1_2_guide.v";
+connectAttr "master_guide.includeMeta" "toe1_1_guide.v";
+connectAttr "le_cdn_1.ocr" "toe0_2_guide.v";
+connectAttr "master_guide.includeMeta" "toe0_1_guide.v";
+connectAttr "master_guide.includeMeta" "toe3_1_guide.v";
+connectAttr "le_cdn_2.ocr" "toe4_2_guide.v";
+connectAttr "master_guide.includeMeta" "toe4_1_guide.v";
 connectAttr "DCM_1.ot" "line_01Shape.cp[0]";
 connectAttr "DCM_2.ot" "line_01Shape.cp[1]";
 connectAttr "DCM_2.ot" "line_02Shape.cp[0]";
@@ -5890,22 +6036,22 @@ connectAttr "master_guide.includeMeta" "fgrRef1.v";
 connectAttr "fgrRef1.pim" "fgrRef1_poiCst.cpim";
 connectAttr "fgrRef1.rp" "fgrRef1_poiCst.crp";
 connectAttr "fgrRef1.rpt" "fgrRef1_poiCst.crt";
-connectAttr "toe00_1_guide.t" "fgrRef1_poiCst.tg[0].tt";
-connectAttr "toe00_1_guide.rp" "fgrRef1_poiCst.tg[0].trp";
-connectAttr "toe00_1_guide.rpt" "fgrRef1_poiCst.tg[0].trt";
-connectAttr "toe00_1_guide.pm" "fgrRef1_poiCst.tg[0].tpm";
+connectAttr "toe0_1_guide.t" "fgrRef1_poiCst.tg[0].tt";
+connectAttr "toe0_1_guide.rp" "fgrRef1_poiCst.tg[0].trp";
+connectAttr "toe0_1_guide.rpt" "fgrRef1_poiCst.tg[0].trt";
+connectAttr "toe0_1_guide.pm" "fgrRef1_poiCst.tg[0].tpm";
 connectAttr "fgrRef1_poiCst.w0" "fgrRef1_poiCst.tg[0].tw";
 connectAttr "fgrRef1.pim" "fgrRef1_aimCst.cpim";
 connectAttr "fgrRef1.t" "fgrRef1_aimCst.ct";
 connectAttr "fgrRef1.rp" "fgrRef1_aimCst.crp";
 connectAttr "fgrRef1.rpt" "fgrRef1_aimCst.crt";
 connectAttr "fgrRef1.ro" "fgrRef1_aimCst.cro";
-connectAttr "toe00_2_guide.t" "fgrRef1_aimCst.tg[0].tt";
-connectAttr "toe00_2_guide.rp" "fgrRef1_aimCst.tg[0].trp";
-connectAttr "toe00_2_guide.rpt" "fgrRef1_aimCst.tg[0].trt";
-connectAttr "toe00_2_guide.pm" "fgrRef1_aimCst.tg[0].tpm";
+connectAttr "toe0_2_guide.t" "fgrRef1_aimCst.tg[0].tt";
+connectAttr "toe0_2_guide.rp" "fgrRef1_aimCst.tg[0].trp";
+connectAttr "toe0_2_guide.rpt" "fgrRef1_aimCst.tg[0].trt";
+connectAttr "toe0_2_guide.pm" "fgrRef1_aimCst.tg[0].tpm";
 connectAttr "fgrRef1_aimCst.w0" "fgrRef1_aimCst.tg[0].tw";
-connectAttr "toe00_1_guide.wm" "fgrRef1_aimCst.wum";
+connectAttr "toe0_1_guide.wm" "fgrRef1_aimCst.wum";
 connectAttr "fgrRef2_poiCst.ctx" "fgrRef2.tx";
 connectAttr "fgrRef2_poiCst.cty" "fgrRef2.ty";
 connectAttr "fgrRef2_poiCst.ctz" "fgrRef2.tz";
@@ -5915,22 +6061,22 @@ connectAttr "fgrRef2_aimCst.crz" "fgrRef2.rz";
 connectAttr "fgrRef2.pim" "fgrRef2_poiCst.cpim";
 connectAttr "fgrRef2.rp" "fgrRef2_poiCst.crp";
 connectAttr "fgrRef2.rpt" "fgrRef2_poiCst.crt";
-connectAttr "toe00_2_guide.t" "fgrRef2_poiCst.tg[0].tt";
-connectAttr "toe00_2_guide.rp" "fgrRef2_poiCst.tg[0].trp";
-connectAttr "toe00_2_guide.rpt" "fgrRef2_poiCst.tg[0].trt";
-connectAttr "toe00_2_guide.pm" "fgrRef2_poiCst.tg[0].tpm";
+connectAttr "toe0_2_guide.t" "fgrRef2_poiCst.tg[0].tt";
+connectAttr "toe0_2_guide.rp" "fgrRef2_poiCst.tg[0].trp";
+connectAttr "toe0_2_guide.rpt" "fgrRef2_poiCst.tg[0].trt";
+connectAttr "toe0_2_guide.pm" "fgrRef2_poiCst.tg[0].tpm";
 connectAttr "fgrRef2_poiCst.w0" "fgrRef2_poiCst.tg[0].tw";
 connectAttr "fgrRef2.pim" "fgrRef2_aimCst.cpim";
 connectAttr "fgrRef2.t" "fgrRef2_aimCst.ct";
 connectAttr "fgrRef2.rp" "fgrRef2_aimCst.crp";
 connectAttr "fgrRef2.rpt" "fgrRef2_aimCst.crt";
 connectAttr "fgrRef2.ro" "fgrRef2_aimCst.cro";
-connectAttr "toe00_3_guide.t" "fgrRef2_aimCst.tg[0].tt";
-connectAttr "toe00_3_guide.rp" "fgrRef2_aimCst.tg[0].trp";
-connectAttr "toe00_3_guide.rpt" "fgrRef2_aimCst.tg[0].trt";
-connectAttr "toe00_3_guide.pm" "fgrRef2_aimCst.tg[0].tpm";
+connectAttr "toe0_3_guide.t" "fgrRef2_aimCst.tg[0].tt";
+connectAttr "toe0_3_guide.rp" "fgrRef2_aimCst.tg[0].trp";
+connectAttr "toe0_3_guide.rpt" "fgrRef2_aimCst.tg[0].trt";
+connectAttr "toe0_3_guide.pm" "fgrRef2_aimCst.tg[0].tpm";
 connectAttr "fgrRef2_aimCst.w0" "fgrRef2_aimCst.tg[0].tw";
-connectAttr "toe00_2_guide.wm" "fgrRef2_aimCst.wum";
+connectAttr "toe0_2_guide.wm" "fgrRef2_aimCst.wum";
 connectAttr "fgrRef3_poiCst.ctx" "fgrRef3.tx";
 connectAttr "fgrRef3_poiCst.cty" "fgrRef3.ty";
 connectAttr "fgrRef3_poiCst.ctz" "fgrRef3.tz";
@@ -5940,25 +6086,25 @@ connectAttr "fgrRef3_aimCst.crz" "fgrRef3.rz";
 connectAttr "fgrRef3.pim" "fgrRef3_poiCst.cpim";
 connectAttr "fgrRef3.rp" "fgrRef3_poiCst.crp";
 connectAttr "fgrRef3.rpt" "fgrRef3_poiCst.crt";
-connectAttr "toe00_3_guide.t" "fgrRef3_poiCst.tg[0].tt";
-connectAttr "toe00_3_guide.rp" "fgrRef3_poiCst.tg[0].trp";
-connectAttr "toe00_3_guide.rpt" "fgrRef3_poiCst.tg[0].trt";
-connectAttr "toe00_3_guide.pm" "fgrRef3_poiCst.tg[0].tpm";
+connectAttr "toe0_3_guide.t" "fgrRef3_poiCst.tg[0].tt";
+connectAttr "toe0_3_guide.rp" "fgrRef3_poiCst.tg[0].trp";
+connectAttr "toe0_3_guide.rpt" "fgrRef3_poiCst.tg[0].trt";
+connectAttr "toe0_3_guide.pm" "fgrRef3_poiCst.tg[0].tpm";
 connectAttr "fgrRef3_poiCst.w0" "fgrRef3_poiCst.tg[0].tw";
 connectAttr "fgrRef3.pim" "fgrRef3_aimCst.cpim";
 connectAttr "fgrRef3.t" "fgrRef3_aimCst.ct";
 connectAttr "fgrRef3.rp" "fgrRef3_aimCst.crp";
 connectAttr "fgrRef3.rpt" "fgrRef3_aimCst.crt";
 connectAttr "fgrRef3.ro" "fgrRef3_aimCst.cro";
-connectAttr "toe00_4_guide.t" "fgrRef3_aimCst.tg[0].tt";
-connectAttr "toe00_4_guide.rp" "fgrRef3_aimCst.tg[0].trp";
-connectAttr "toe00_4_guide.rpt" "fgrRef3_aimCst.tg[0].trt";
-connectAttr "toe00_4_guide.pm" "fgrRef3_aimCst.tg[0].tpm";
+connectAttr "toe0_4_guide.t" "fgrRef3_aimCst.tg[0].tt";
+connectAttr "toe0_4_guide.rp" "fgrRef3_aimCst.tg[0].trp";
+connectAttr "toe0_4_guide.rpt" "fgrRef3_aimCst.tg[0].trt";
+connectAttr "toe0_4_guide.pm" "fgrRef3_aimCst.tg[0].tpm";
 connectAttr "fgrRef3_aimCst.w0" "fgrRef3_aimCst.tg[0].tw";
-connectAttr "toe00_3_guide.wm" "fgrRef3_aimCst.wum";
+connectAttr "toe0_3_guide.wm" "fgrRef3_aimCst.wum";
 connectAttr "null1.pim" "null1_scaleConstraint1.cpim";
-connectAttr "toe00_2_guide.s" "null1_scaleConstraint1.tg[0].ts";
-connectAttr "toe00_2_guide.pm" "null1_scaleConstraint1.tg[0].tpm";
+connectAttr "toe0_2_guide.s" "null1_scaleConstraint1.tg[0].ts";
+connectAttr "toe0_2_guide.pm" "null1_scaleConstraint1.tg[0].tpm";
 connectAttr "null1_scaleConstraint1.w0" "null1_scaleConstraint1.tg[0].tw";
 connectAttr "le_cdn_3.ocr" "null2.v";
 connectAttr "null2_scaleConstraint1.csx" "null2.sx";
@@ -5974,22 +6120,22 @@ connectAttr "master_guide.includeMeta" "fgrRef4.v";
 connectAttr "fgrRef4.pim" "fgrRef4_poiCst.cpim";
 connectAttr "fgrRef4.rp" "fgrRef4_poiCst.crp";
 connectAttr "fgrRef4.rpt" "fgrRef4_poiCst.crt";
-connectAttr "toe01_1_guide.t" "fgrRef4_poiCst.tg[0].tt";
-connectAttr "toe01_1_guide.rp" "fgrRef4_poiCst.tg[0].trp";
-connectAttr "toe01_1_guide.rpt" "fgrRef4_poiCst.tg[0].trt";
-connectAttr "toe01_1_guide.pm" "fgrRef4_poiCst.tg[0].tpm";
+connectAttr "toe1_1_guide.t" "fgrRef4_poiCst.tg[0].tt";
+connectAttr "toe1_1_guide.rp" "fgrRef4_poiCst.tg[0].trp";
+connectAttr "toe1_1_guide.rpt" "fgrRef4_poiCst.tg[0].trt";
+connectAttr "toe1_1_guide.pm" "fgrRef4_poiCst.tg[0].tpm";
 connectAttr "fgrRef4_poiCst.w0" "fgrRef4_poiCst.tg[0].tw";
 connectAttr "fgrRef4.pim" "fgrRef4_aimCst.cpim";
 connectAttr "fgrRef4.t" "fgrRef4_aimCst.ct";
 connectAttr "fgrRef4.rp" "fgrRef4_aimCst.crp";
 connectAttr "fgrRef4.rpt" "fgrRef4_aimCst.crt";
 connectAttr "fgrRef4.ro" "fgrRef4_aimCst.cro";
-connectAttr "toe01_2_guide.t" "fgrRef4_aimCst.tg[0].tt";
-connectAttr "toe01_2_guide.rp" "fgrRef4_aimCst.tg[0].trp";
-connectAttr "toe01_2_guide.rpt" "fgrRef4_aimCst.tg[0].trt";
-connectAttr "toe01_2_guide.pm" "fgrRef4_aimCst.tg[0].tpm";
+connectAttr "toe1_2_guide.t" "fgrRef4_aimCst.tg[0].tt";
+connectAttr "toe1_2_guide.rp" "fgrRef4_aimCst.tg[0].trp";
+connectAttr "toe1_2_guide.rpt" "fgrRef4_aimCst.tg[0].trt";
+connectAttr "toe1_2_guide.pm" "fgrRef4_aimCst.tg[0].tpm";
 connectAttr "fgrRef4_aimCst.w0" "fgrRef4_aimCst.tg[0].tw";
-connectAttr "toe01_1_guide.wm" "fgrRef4_aimCst.wum";
+connectAttr "toe1_1_guide.wm" "fgrRef4_aimCst.wum";
 connectAttr "fgrRef5_poiCst.ctx" "fgrRef5.tx";
 connectAttr "fgrRef5_poiCst.cty" "fgrRef5.ty";
 connectAttr "fgrRef5_poiCst.ctz" "fgrRef5.tz";
@@ -5999,22 +6145,22 @@ connectAttr "fgrRef5_aimCst.crz" "fgrRef5.rz";
 connectAttr "fgrRef5.pim" "fgrRef5_poiCst.cpim";
 connectAttr "fgrRef5.rp" "fgrRef5_poiCst.crp";
 connectAttr "fgrRef5.rpt" "fgrRef5_poiCst.crt";
-connectAttr "toe01_2_guide.t" "fgrRef5_poiCst.tg[0].tt";
-connectAttr "toe01_2_guide.rp" "fgrRef5_poiCst.tg[0].trp";
-connectAttr "toe01_2_guide.rpt" "fgrRef5_poiCst.tg[0].trt";
-connectAttr "toe01_2_guide.pm" "fgrRef5_poiCst.tg[0].tpm";
+connectAttr "toe1_2_guide.t" "fgrRef5_poiCst.tg[0].tt";
+connectAttr "toe1_2_guide.rp" "fgrRef5_poiCst.tg[0].trp";
+connectAttr "toe1_2_guide.rpt" "fgrRef5_poiCst.tg[0].trt";
+connectAttr "toe1_2_guide.pm" "fgrRef5_poiCst.tg[0].tpm";
 connectAttr "fgrRef5_poiCst.w0" "fgrRef5_poiCst.tg[0].tw";
 connectAttr "fgrRef5.pim" "fgrRef5_aimCst.cpim";
 connectAttr "fgrRef5.t" "fgrRef5_aimCst.ct";
 connectAttr "fgrRef5.rp" "fgrRef5_aimCst.crp";
 connectAttr "fgrRef5.rpt" "fgrRef5_aimCst.crt";
 connectAttr "fgrRef5.ro" "fgrRef5_aimCst.cro";
-connectAttr "toe01_3_guide.t" "fgrRef5_aimCst.tg[0].tt";
-connectAttr "toe01_3_guide.rp" "fgrRef5_aimCst.tg[0].trp";
-connectAttr "toe01_3_guide.rpt" "fgrRef5_aimCst.tg[0].trt";
-connectAttr "toe01_3_guide.pm" "fgrRef5_aimCst.tg[0].tpm";
+connectAttr "toe1_3_guide.t" "fgrRef5_aimCst.tg[0].tt";
+connectAttr "toe1_3_guide.rp" "fgrRef5_aimCst.tg[0].trp";
+connectAttr "toe1_3_guide.rpt" "fgrRef5_aimCst.tg[0].trt";
+connectAttr "toe1_3_guide.pm" "fgrRef5_aimCst.tg[0].tpm";
 connectAttr "fgrRef5_aimCst.w0" "fgrRef5_aimCst.tg[0].tw";
-connectAttr "toe01_2_guide.wm" "fgrRef5_aimCst.wum";
+connectAttr "toe1_2_guide.wm" "fgrRef5_aimCst.wum";
 connectAttr "fgrRef6_poiCst.ctx" "fgrRef6.tx";
 connectAttr "fgrRef6_poiCst.cty" "fgrRef6.ty";
 connectAttr "fgrRef6_poiCst.ctz" "fgrRef6.tz";
@@ -6024,22 +6170,22 @@ connectAttr "fgrRef6_aimCst.crz" "fgrRef6.rz";
 connectAttr "fgrRef6.pim" "fgrRef6_poiCst.cpim";
 connectAttr "fgrRef6.rp" "fgrRef6_poiCst.crp";
 connectAttr "fgrRef6.rpt" "fgrRef6_poiCst.crt";
-connectAttr "toe01_3_guide.t" "fgrRef6_poiCst.tg[0].tt";
-connectAttr "toe01_3_guide.rp" "fgrRef6_poiCst.tg[0].trp";
-connectAttr "toe01_3_guide.rpt" "fgrRef6_poiCst.tg[0].trt";
-connectAttr "toe01_3_guide.pm" "fgrRef6_poiCst.tg[0].tpm";
+connectAttr "toe1_3_guide.t" "fgrRef6_poiCst.tg[0].tt";
+connectAttr "toe1_3_guide.rp" "fgrRef6_poiCst.tg[0].trp";
+connectAttr "toe1_3_guide.rpt" "fgrRef6_poiCst.tg[0].trt";
+connectAttr "toe1_3_guide.pm" "fgrRef6_poiCst.tg[0].tpm";
 connectAttr "fgrRef6_poiCst.w0" "fgrRef6_poiCst.tg[0].tw";
 connectAttr "fgrRef6.pim" "fgrRef6_aimCst.cpim";
 connectAttr "fgrRef6.t" "fgrRef6_aimCst.ct";
 connectAttr "fgrRef6.rp" "fgrRef6_aimCst.crp";
 connectAttr "fgrRef6.rpt" "fgrRef6_aimCst.crt";
 connectAttr "fgrRef6.ro" "fgrRef6_aimCst.cro";
-connectAttr "toe01_4_guide.t" "fgrRef6_aimCst.tg[0].tt";
-connectAttr "toe01_4_guide.rp" "fgrRef6_aimCst.tg[0].trp";
-connectAttr "toe01_4_guide.rpt" "fgrRef6_aimCst.tg[0].trt";
-connectAttr "toe01_4_guide.pm" "fgrRef6_aimCst.tg[0].tpm";
+connectAttr "toe1_4_guide.t" "fgrRef6_aimCst.tg[0].tt";
+connectAttr "toe1_4_guide.rp" "fgrRef6_aimCst.tg[0].trp";
+connectAttr "toe1_4_guide.rpt" "fgrRef6_aimCst.tg[0].trt";
+connectAttr "toe1_4_guide.pm" "fgrRef6_aimCst.tg[0].tpm";
 connectAttr "fgrRef6_aimCst.w0" "fgrRef6_aimCst.tg[0].tw";
-connectAttr "toe01_3_guide.wm" "fgrRef6_aimCst.wum";
+connectAttr "toe1_3_guide.wm" "fgrRef6_aimCst.wum";
 connectAttr "fgrRef7_poiCst.ctx" "fgrRef7.tx";
 connectAttr "fgrRef7_poiCst.cty" "fgrRef7.ty";
 connectAttr "fgrRef7_poiCst.ctz" "fgrRef7.tz";
@@ -6049,25 +6195,25 @@ connectAttr "fgrRef7_aimCst.crz" "fgrRef7.rz";
 connectAttr "fgrRef7.pim" "fgrRef7_poiCst.cpim";
 connectAttr "fgrRef7.rp" "fgrRef7_poiCst.crp";
 connectAttr "fgrRef7.rpt" "fgrRef7_poiCst.crt";
-connectAttr "toe01_4_guide.t" "fgrRef7_poiCst.tg[0].tt";
-connectAttr "toe01_4_guide.rp" "fgrRef7_poiCst.tg[0].trp";
-connectAttr "toe01_4_guide.rpt" "fgrRef7_poiCst.tg[0].trt";
-connectAttr "toe01_4_guide.pm" "fgrRef7_poiCst.tg[0].tpm";
+connectAttr "toe1_4_guide.t" "fgrRef7_poiCst.tg[0].tt";
+connectAttr "toe1_4_guide.rp" "fgrRef7_poiCst.tg[0].trp";
+connectAttr "toe1_4_guide.rpt" "fgrRef7_poiCst.tg[0].trt";
+connectAttr "toe1_4_guide.pm" "fgrRef7_poiCst.tg[0].tpm";
 connectAttr "fgrRef7_poiCst.w0" "fgrRef7_poiCst.tg[0].tw";
 connectAttr "fgrRef7.pim" "fgrRef7_aimCst.cpim";
 connectAttr "fgrRef7.t" "fgrRef7_aimCst.ct";
 connectAttr "fgrRef7.rp" "fgrRef7_aimCst.crp";
 connectAttr "fgrRef7.rpt" "fgrRef7_aimCst.crt";
 connectAttr "fgrRef7.ro" "fgrRef7_aimCst.cro";
-connectAttr "toe01_5_guide.t" "fgrRef7_aimCst.tg[0].tt";
-connectAttr "toe01_5_guide.rp" "fgrRef7_aimCst.tg[0].trp";
-connectAttr "toe01_5_guide.rpt" "fgrRef7_aimCst.tg[0].trt";
-connectAttr "toe01_5_guide.pm" "fgrRef7_aimCst.tg[0].tpm";
+connectAttr "toe1_5_guide.t" "fgrRef7_aimCst.tg[0].tt";
+connectAttr "toe1_5_guide.rp" "fgrRef7_aimCst.tg[0].trp";
+connectAttr "toe1_5_guide.rpt" "fgrRef7_aimCst.tg[0].trt";
+connectAttr "toe1_5_guide.pm" "fgrRef7_aimCst.tg[0].tpm";
 connectAttr "fgrRef7_aimCst.w0" "fgrRef7_aimCst.tg[0].tw";
-connectAttr "toe01_4_guide.wm" "fgrRef7_aimCst.wum";
+connectAttr "toe1_4_guide.wm" "fgrRef7_aimCst.wum";
 connectAttr "null2.pim" "null2_scaleConstraint1.cpim";
-connectAttr "toe01_2_guide.s" "null2_scaleConstraint1.tg[0].ts";
-connectAttr "toe01_2_guide.pm" "null2_scaleConstraint1.tg[0].tpm";
+connectAttr "toe1_2_guide.s" "null2_scaleConstraint1.tg[0].ts";
+connectAttr "toe1_2_guide.pm" "null2_scaleConstraint1.tg[0].tpm";
 connectAttr "null2_scaleConstraint1.w0" "null2_scaleConstraint1.tg[0].tw";
 connectAttr "null3_scaleConstraint1.csx" "null3.sx";
 connectAttr "null3_scaleConstraint1.csy" "null3.sy";
@@ -6082,22 +6228,22 @@ connectAttr "master_guide.includeMeta" "fgrRef8.v";
 connectAttr "fgrRef8.pim" "fgrRef8_poiCst.cpim";
 connectAttr "fgrRef8.rp" "fgrRef8_poiCst.crp";
 connectAttr "fgrRef8.rpt" "fgrRef8_poiCst.crt";
-connectAttr "toe02_1_guide.t" "fgrRef8_poiCst.tg[0].tt";
-connectAttr "toe02_1_guide.rp" "fgrRef8_poiCst.tg[0].trp";
-connectAttr "toe02_1_guide.rpt" "fgrRef8_poiCst.tg[0].trt";
-connectAttr "toe02_1_guide.pm" "fgrRef8_poiCst.tg[0].tpm";
+connectAttr "toe2_1_guide.t" "fgrRef8_poiCst.tg[0].tt";
+connectAttr "toe2_1_guide.rp" "fgrRef8_poiCst.tg[0].trp";
+connectAttr "toe2_1_guide.rpt" "fgrRef8_poiCst.tg[0].trt";
+connectAttr "toe2_1_guide.pm" "fgrRef8_poiCst.tg[0].tpm";
 connectAttr "fgrRef8_poiCst.w0" "fgrRef8_poiCst.tg[0].tw";
 connectAttr "fgrRef8.pim" "fgrRef8_aimCst.cpim";
 connectAttr "fgrRef8.t" "fgrRef8_aimCst.ct";
 connectAttr "fgrRef8.rp" "fgrRef8_aimCst.crp";
 connectAttr "fgrRef8.rpt" "fgrRef8_aimCst.crt";
 connectAttr "fgrRef8.ro" "fgrRef8_aimCst.cro";
-connectAttr "toe02_2_guide.t" "fgrRef8_aimCst.tg[0].tt";
-connectAttr "toe02_2_guide.rp" "fgrRef8_aimCst.tg[0].trp";
-connectAttr "toe02_2_guide.rpt" "fgrRef8_aimCst.tg[0].trt";
-connectAttr "toe02_2_guide.pm" "fgrRef8_aimCst.tg[0].tpm";
+connectAttr "toe2_2_guide.t" "fgrRef8_aimCst.tg[0].tt";
+connectAttr "toe2_2_guide.rp" "fgrRef8_aimCst.tg[0].trp";
+connectAttr "toe2_2_guide.rpt" "fgrRef8_aimCst.tg[0].trt";
+connectAttr "toe2_2_guide.pm" "fgrRef8_aimCst.tg[0].tpm";
 connectAttr "fgrRef8_aimCst.w0" "fgrRef8_aimCst.tg[0].tw";
-connectAttr "toe02_1_guide.wm" "fgrRef8_aimCst.wum";
+connectAttr "toe2_1_guide.wm" "fgrRef8_aimCst.wum";
 connectAttr "fgrRef9_poiCst.ctx" "fgrRef9.tx";
 connectAttr "fgrRef9_poiCst.cty" "fgrRef9.ty";
 connectAttr "fgrRef9_poiCst.ctz" "fgrRef9.tz";
@@ -6107,22 +6253,22 @@ connectAttr "fgrRef9_aimCst.crz" "fgrRef9.rz";
 connectAttr "fgrRef9.pim" "fgrRef9_poiCst.cpim";
 connectAttr "fgrRef9.rp" "fgrRef9_poiCst.crp";
 connectAttr "fgrRef9.rpt" "fgrRef9_poiCst.crt";
-connectAttr "toe02_2_guide.t" "fgrRef9_poiCst.tg[0].tt";
-connectAttr "toe02_2_guide.rp" "fgrRef9_poiCst.tg[0].trp";
-connectAttr "toe02_2_guide.rpt" "fgrRef9_poiCst.tg[0].trt";
-connectAttr "toe02_2_guide.pm" "fgrRef9_poiCst.tg[0].tpm";
+connectAttr "toe2_2_guide.t" "fgrRef9_poiCst.tg[0].tt";
+connectAttr "toe2_2_guide.rp" "fgrRef9_poiCst.tg[0].trp";
+connectAttr "toe2_2_guide.rpt" "fgrRef9_poiCst.tg[0].trt";
+connectAttr "toe2_2_guide.pm" "fgrRef9_poiCst.tg[0].tpm";
 connectAttr "fgrRef9_poiCst.w0" "fgrRef9_poiCst.tg[0].tw";
 connectAttr "fgrRef9.pim" "fgrRef9_aimCst.cpim";
 connectAttr "fgrRef9.t" "fgrRef9_aimCst.ct";
 connectAttr "fgrRef9.rp" "fgrRef9_aimCst.crp";
 connectAttr "fgrRef9.rpt" "fgrRef9_aimCst.crt";
 connectAttr "fgrRef9.ro" "fgrRef9_aimCst.cro";
-connectAttr "toe02_3_guide.t" "fgrRef9_aimCst.tg[0].tt";
-connectAttr "toe02_3_guide.rp" "fgrRef9_aimCst.tg[0].trp";
-connectAttr "toe02_3_guide.rpt" "fgrRef9_aimCst.tg[0].trt";
-connectAttr "toe02_3_guide.pm" "fgrRef9_aimCst.tg[0].tpm";
+connectAttr "toe2_3_guide.t" "fgrRef9_aimCst.tg[0].tt";
+connectAttr "toe2_3_guide.rp" "fgrRef9_aimCst.tg[0].trp";
+connectAttr "toe2_3_guide.rpt" "fgrRef9_aimCst.tg[0].trt";
+connectAttr "toe2_3_guide.pm" "fgrRef9_aimCst.tg[0].tpm";
 connectAttr "fgrRef9_aimCst.w0" "fgrRef9_aimCst.tg[0].tw";
-connectAttr "toe02_2_guide.wm" "fgrRef9_aimCst.wum";
+connectAttr "toe2_2_guide.wm" "fgrRef9_aimCst.wum";
 connectAttr "fgrRef10_poiCst.ctx" "fgrRef10.tx";
 connectAttr "fgrRef10_poiCst.cty" "fgrRef10.ty";
 connectAttr "fgrRef10_poiCst.ctz" "fgrRef10.tz";
@@ -6132,22 +6278,22 @@ connectAttr "fgrRef10_aimCst.crz" "fgrRef10.rz";
 connectAttr "fgrRef10.pim" "fgrRef10_poiCst.cpim";
 connectAttr "fgrRef10.rp" "fgrRef10_poiCst.crp";
 connectAttr "fgrRef10.rpt" "fgrRef10_poiCst.crt";
-connectAttr "toe02_3_guide.t" "fgrRef10_poiCst.tg[0].tt";
-connectAttr "toe02_3_guide.rp" "fgrRef10_poiCst.tg[0].trp";
-connectAttr "toe02_3_guide.rpt" "fgrRef10_poiCst.tg[0].trt";
-connectAttr "toe02_3_guide.pm" "fgrRef10_poiCst.tg[0].tpm";
+connectAttr "toe2_3_guide.t" "fgrRef10_poiCst.tg[0].tt";
+connectAttr "toe2_3_guide.rp" "fgrRef10_poiCst.tg[0].trp";
+connectAttr "toe2_3_guide.rpt" "fgrRef10_poiCst.tg[0].trt";
+connectAttr "toe2_3_guide.pm" "fgrRef10_poiCst.tg[0].tpm";
 connectAttr "fgrRef10_poiCst.w0" "fgrRef10_poiCst.tg[0].tw";
 connectAttr "fgrRef10.pim" "fgrRef10_aimCst.cpim";
 connectAttr "fgrRef10.t" "fgrRef10_aimCst.ct";
 connectAttr "fgrRef10.rp" "fgrRef10_aimCst.crp";
 connectAttr "fgrRef10.rpt" "fgrRef10_aimCst.crt";
 connectAttr "fgrRef10.ro" "fgrRef10_aimCst.cro";
-connectAttr "toe02_4_guide.t" "fgrRef10_aimCst.tg[0].tt";
-connectAttr "toe02_4_guide.rp" "fgrRef10_aimCst.tg[0].trp";
-connectAttr "toe02_4_guide.rpt" "fgrRef10_aimCst.tg[0].trt";
-connectAttr "toe02_4_guide.pm" "fgrRef10_aimCst.tg[0].tpm";
+connectAttr "toe2_4_guide.t" "fgrRef10_aimCst.tg[0].tt";
+connectAttr "toe2_4_guide.rp" "fgrRef10_aimCst.tg[0].trp";
+connectAttr "toe2_4_guide.rpt" "fgrRef10_aimCst.tg[0].trt";
+connectAttr "toe2_4_guide.pm" "fgrRef10_aimCst.tg[0].tpm";
 connectAttr "fgrRef10_aimCst.w0" "fgrRef10_aimCst.tg[0].tw";
-connectAttr "toe02_3_guide.wm" "fgrRef10_aimCst.wum";
+connectAttr "toe2_3_guide.wm" "fgrRef10_aimCst.wum";
 connectAttr "fgrRef11_poiCst.ctx" "fgrRef11.tx";
 connectAttr "fgrRef11_poiCst.cty" "fgrRef11.ty";
 connectAttr "fgrRef11_poiCst.ctz" "fgrRef11.tz";
@@ -6157,25 +6303,25 @@ connectAttr "fgrRef11_aimCst.crz" "fgrRef11.rz";
 connectAttr "fgrRef11.pim" "fgrRef11_poiCst.cpim";
 connectAttr "fgrRef11.rp" "fgrRef11_poiCst.crp";
 connectAttr "fgrRef11.rpt" "fgrRef11_poiCst.crt";
-connectAttr "toe02_4_guide.t" "fgrRef11_poiCst.tg[0].tt";
-connectAttr "toe02_4_guide.rp" "fgrRef11_poiCst.tg[0].trp";
-connectAttr "toe02_4_guide.rpt" "fgrRef11_poiCst.tg[0].trt";
-connectAttr "toe02_4_guide.pm" "fgrRef11_poiCst.tg[0].tpm";
+connectAttr "toe2_4_guide.t" "fgrRef11_poiCst.tg[0].tt";
+connectAttr "toe2_4_guide.rp" "fgrRef11_poiCst.tg[0].trp";
+connectAttr "toe2_4_guide.rpt" "fgrRef11_poiCst.tg[0].trt";
+connectAttr "toe2_4_guide.pm" "fgrRef11_poiCst.tg[0].tpm";
 connectAttr "fgrRef11_poiCst.w0" "fgrRef11_poiCst.tg[0].tw";
 connectAttr "fgrRef11.pim" "fgrRef11_aimCst.cpim";
 connectAttr "fgrRef11.t" "fgrRef11_aimCst.ct";
 connectAttr "fgrRef11.rp" "fgrRef11_aimCst.crp";
 connectAttr "fgrRef11.rpt" "fgrRef11_aimCst.crt";
 connectAttr "fgrRef11.ro" "fgrRef11_aimCst.cro";
-connectAttr "toe02_5_guide.t" "fgrRef11_aimCst.tg[0].tt";
-connectAttr "toe02_5_guide.rp" "fgrRef11_aimCst.tg[0].trp";
-connectAttr "toe02_5_guide.rpt" "fgrRef11_aimCst.tg[0].trt";
-connectAttr "toe02_5_guide.pm" "fgrRef11_aimCst.tg[0].tpm";
+connectAttr "toe2_5_guide.t" "fgrRef11_aimCst.tg[0].tt";
+connectAttr "toe2_5_guide.rp" "fgrRef11_aimCst.tg[0].trp";
+connectAttr "toe2_5_guide.rpt" "fgrRef11_aimCst.tg[0].trt";
+connectAttr "toe2_5_guide.pm" "fgrRef11_aimCst.tg[0].tpm";
 connectAttr "fgrRef11_aimCst.w0" "fgrRef11_aimCst.tg[0].tw";
-connectAttr "toe02_4_guide.wm" "fgrRef11_aimCst.wum";
+connectAttr "toe2_4_guide.wm" "fgrRef11_aimCst.wum";
 connectAttr "null3.pim" "null3_scaleConstraint1.cpim";
-connectAttr "toe02_2_guide.s" "null3_scaleConstraint1.tg[0].ts";
-connectAttr "toe02_2_guide.pm" "null3_scaleConstraint1.tg[0].tpm";
+connectAttr "toe2_2_guide.s" "null3_scaleConstraint1.tg[0].ts";
+connectAttr "toe2_2_guide.pm" "null3_scaleConstraint1.tg[0].tpm";
 connectAttr "null3_scaleConstraint1.w0" "null3_scaleConstraint1.tg[0].tw";
 connectAttr "null4_scaleConstraint1.csx" "null4.sx";
 connectAttr "null4_scaleConstraint1.csy" "null4.sy";
@@ -6190,22 +6336,22 @@ connectAttr "master_guide.includeMeta" "fgrRef12.v";
 connectAttr "fgrRef12.pim" "fgrRef12_poiCst.cpim";
 connectAttr "fgrRef12.rp" "fgrRef12_poiCst.crp";
 connectAttr "fgrRef12.rpt" "fgrRef12_poiCst.crt";
-connectAttr "toe03_1_guide.t" "fgrRef12_poiCst.tg[0].tt";
-connectAttr "toe03_1_guide.rp" "fgrRef12_poiCst.tg[0].trp";
-connectAttr "toe03_1_guide.rpt" "fgrRef12_poiCst.tg[0].trt";
-connectAttr "toe03_1_guide.pm" "fgrRef12_poiCst.tg[0].tpm";
+connectAttr "toe3_1_guide.t" "fgrRef12_poiCst.tg[0].tt";
+connectAttr "toe3_1_guide.rp" "fgrRef12_poiCst.tg[0].trp";
+connectAttr "toe3_1_guide.rpt" "fgrRef12_poiCst.tg[0].trt";
+connectAttr "toe3_1_guide.pm" "fgrRef12_poiCst.tg[0].tpm";
 connectAttr "fgrRef12_poiCst.w0" "fgrRef12_poiCst.tg[0].tw";
 connectAttr "fgrRef12.pim" "fgrRef12_aimCst.cpim";
 connectAttr "fgrRef12.t" "fgrRef12_aimCst.ct";
 connectAttr "fgrRef12.rp" "fgrRef12_aimCst.crp";
 connectAttr "fgrRef12.rpt" "fgrRef12_aimCst.crt";
 connectAttr "fgrRef12.ro" "fgrRef12_aimCst.cro";
-connectAttr "toe03_2_guide.t" "fgrRef12_aimCst.tg[0].tt";
-connectAttr "toe03_2_guide.rp" "fgrRef12_aimCst.tg[0].trp";
-connectAttr "toe03_2_guide.rpt" "fgrRef12_aimCst.tg[0].trt";
-connectAttr "toe03_2_guide.pm" "fgrRef12_aimCst.tg[0].tpm";
+connectAttr "toe3_2_guide.t" "fgrRef12_aimCst.tg[0].tt";
+connectAttr "toe3_2_guide.rp" "fgrRef12_aimCst.tg[0].trp";
+connectAttr "toe3_2_guide.rpt" "fgrRef12_aimCst.tg[0].trt";
+connectAttr "toe3_2_guide.pm" "fgrRef12_aimCst.tg[0].tpm";
 connectAttr "fgrRef12_aimCst.w0" "fgrRef12_aimCst.tg[0].tw";
-connectAttr "toe03_1_guide.wm" "fgrRef12_aimCst.wum";
+connectAttr "toe3_1_guide.wm" "fgrRef12_aimCst.wum";
 connectAttr "fgrRef13_poiCst.ctx" "fgrRef13.tx";
 connectAttr "fgrRef13_poiCst.cty" "fgrRef13.ty";
 connectAttr "fgrRef13_poiCst.ctz" "fgrRef13.tz";
@@ -6215,22 +6361,22 @@ connectAttr "fgrRef13_aimCst.crz" "fgrRef13.rz";
 connectAttr "fgrRef13.pim" "fgrRef13_poiCst.cpim";
 connectAttr "fgrRef13.rp" "fgrRef13_poiCst.crp";
 connectAttr "fgrRef13.rpt" "fgrRef13_poiCst.crt";
-connectAttr "toe03_2_guide.t" "fgrRef13_poiCst.tg[0].tt";
-connectAttr "toe03_2_guide.rp" "fgrRef13_poiCst.tg[0].trp";
-connectAttr "toe03_2_guide.rpt" "fgrRef13_poiCst.tg[0].trt";
-connectAttr "toe03_2_guide.pm" "fgrRef13_poiCst.tg[0].tpm";
+connectAttr "toe3_2_guide.t" "fgrRef13_poiCst.tg[0].tt";
+connectAttr "toe3_2_guide.rp" "fgrRef13_poiCst.tg[0].trp";
+connectAttr "toe3_2_guide.rpt" "fgrRef13_poiCst.tg[0].trt";
+connectAttr "toe3_2_guide.pm" "fgrRef13_poiCst.tg[0].tpm";
 connectAttr "fgrRef13_poiCst.w0" "fgrRef13_poiCst.tg[0].tw";
 connectAttr "fgrRef13.pim" "fgrRef13_aimCst.cpim";
 connectAttr "fgrRef13.t" "fgrRef13_aimCst.ct";
 connectAttr "fgrRef13.rp" "fgrRef13_aimCst.crp";
 connectAttr "fgrRef13.rpt" "fgrRef13_aimCst.crt";
 connectAttr "fgrRef13.ro" "fgrRef13_aimCst.cro";
-connectAttr "toe03_3_guide.t" "fgrRef13_aimCst.tg[0].tt";
-connectAttr "toe03_3_guide.rp" "fgrRef13_aimCst.tg[0].trp";
-connectAttr "toe03_3_guide.rpt" "fgrRef13_aimCst.tg[0].trt";
-connectAttr "toe03_3_guide.pm" "fgrRef13_aimCst.tg[0].tpm";
+connectAttr "toe3_3_guide.t" "fgrRef13_aimCst.tg[0].tt";
+connectAttr "toe3_3_guide.rp" "fgrRef13_aimCst.tg[0].trp";
+connectAttr "toe3_3_guide.rpt" "fgrRef13_aimCst.tg[0].trt";
+connectAttr "toe3_3_guide.pm" "fgrRef13_aimCst.tg[0].tpm";
 connectAttr "fgrRef13_aimCst.w0" "fgrRef13_aimCst.tg[0].tw";
-connectAttr "toe03_2_guide.wm" "fgrRef13_aimCst.wum";
+connectAttr "toe3_2_guide.wm" "fgrRef13_aimCst.wum";
 connectAttr "fgrRef14_poiCst.ctx" "fgrRef14.tx";
 connectAttr "fgrRef14_poiCst.cty" "fgrRef14.ty";
 connectAttr "fgrRef14_poiCst.ctz" "fgrRef14.tz";
@@ -6240,22 +6386,22 @@ connectAttr "fgrRef14_aimCst.crz" "fgrRef14.rz";
 connectAttr "fgrRef14.pim" "fgrRef14_poiCst.cpim";
 connectAttr "fgrRef14.rp" "fgrRef14_poiCst.crp";
 connectAttr "fgrRef14.rpt" "fgrRef14_poiCst.crt";
-connectAttr "toe03_3_guide.t" "fgrRef14_poiCst.tg[0].tt";
-connectAttr "toe03_3_guide.rp" "fgrRef14_poiCst.tg[0].trp";
-connectAttr "toe03_3_guide.rpt" "fgrRef14_poiCst.tg[0].trt";
-connectAttr "toe03_3_guide.pm" "fgrRef14_poiCst.tg[0].tpm";
+connectAttr "toe3_3_guide.t" "fgrRef14_poiCst.tg[0].tt";
+connectAttr "toe3_3_guide.rp" "fgrRef14_poiCst.tg[0].trp";
+connectAttr "toe3_3_guide.rpt" "fgrRef14_poiCst.tg[0].trt";
+connectAttr "toe3_3_guide.pm" "fgrRef14_poiCst.tg[0].tpm";
 connectAttr "fgrRef14_poiCst.w0" "fgrRef14_poiCst.tg[0].tw";
 connectAttr "fgrRef14.pim" "fgrRef14_aimCst.cpim";
 connectAttr "fgrRef14.t" "fgrRef14_aimCst.ct";
 connectAttr "fgrRef14.rp" "fgrRef14_aimCst.crp";
 connectAttr "fgrRef14.rpt" "fgrRef14_aimCst.crt";
 connectAttr "fgrRef14.ro" "fgrRef14_aimCst.cro";
-connectAttr "toe03_4_guide.t" "fgrRef14_aimCst.tg[0].tt";
-connectAttr "toe03_4_guide.rp" "fgrRef14_aimCst.tg[0].trp";
-connectAttr "toe03_4_guide.rpt" "fgrRef14_aimCst.tg[0].trt";
-connectAttr "toe03_4_guide.pm" "fgrRef14_aimCst.tg[0].tpm";
+connectAttr "toe3_4_guide.t" "fgrRef14_aimCst.tg[0].tt";
+connectAttr "toe3_4_guide.rp" "fgrRef14_aimCst.tg[0].trp";
+connectAttr "toe3_4_guide.rpt" "fgrRef14_aimCst.tg[0].trt";
+connectAttr "toe3_4_guide.pm" "fgrRef14_aimCst.tg[0].tpm";
 connectAttr "fgrRef14_aimCst.w0" "fgrRef14_aimCst.tg[0].tw";
-connectAttr "toe03_3_guide.wm" "fgrRef14_aimCst.wum";
+connectAttr "toe3_3_guide.wm" "fgrRef14_aimCst.wum";
 connectAttr "fgrRef15_poiCst.ctx" "fgrRef15.tx";
 connectAttr "fgrRef15_poiCst.cty" "fgrRef15.ty";
 connectAttr "fgrRef15_poiCst.ctz" "fgrRef15.tz";
@@ -6265,25 +6411,25 @@ connectAttr "fgrRef15_aimCst.crz" "fgrRef15.rz";
 connectAttr "fgrRef15.pim" "fgrRef15_poiCst.cpim";
 connectAttr "fgrRef15.rp" "fgrRef15_poiCst.crp";
 connectAttr "fgrRef15.rpt" "fgrRef15_poiCst.crt";
-connectAttr "toe03_4_guide.t" "fgrRef15_poiCst.tg[0].tt";
-connectAttr "toe03_4_guide.rp" "fgrRef15_poiCst.tg[0].trp";
-connectAttr "toe03_4_guide.rpt" "fgrRef15_poiCst.tg[0].trt";
-connectAttr "toe03_4_guide.pm" "fgrRef15_poiCst.tg[0].tpm";
+connectAttr "toe3_4_guide.t" "fgrRef15_poiCst.tg[0].tt";
+connectAttr "toe3_4_guide.rp" "fgrRef15_poiCst.tg[0].trp";
+connectAttr "toe3_4_guide.rpt" "fgrRef15_poiCst.tg[0].trt";
+connectAttr "toe3_4_guide.pm" "fgrRef15_poiCst.tg[0].tpm";
 connectAttr "fgrRef15_poiCst.w0" "fgrRef15_poiCst.tg[0].tw";
 connectAttr "fgrRef15.pim" "fgrRef15_aimCst.cpim";
 connectAttr "fgrRef15.t" "fgrRef15_aimCst.ct";
 connectAttr "fgrRef15.rp" "fgrRef15_aimCst.crp";
 connectAttr "fgrRef15.rpt" "fgrRef15_aimCst.crt";
 connectAttr "fgrRef15.ro" "fgrRef15_aimCst.cro";
-connectAttr "toe03_5_guide.t" "fgrRef15_aimCst.tg[0].tt";
-connectAttr "toe03_5_guide.rp" "fgrRef15_aimCst.tg[0].trp";
-connectAttr "toe03_5_guide.rpt" "fgrRef15_aimCst.tg[0].trt";
-connectAttr "toe03_5_guide.pm" "fgrRef15_aimCst.tg[0].tpm";
+connectAttr "toe3_5_guide.t" "fgrRef15_aimCst.tg[0].tt";
+connectAttr "toe3_5_guide.rp" "fgrRef15_aimCst.tg[0].trp";
+connectAttr "toe3_5_guide.rpt" "fgrRef15_aimCst.tg[0].trt";
+connectAttr "toe3_5_guide.pm" "fgrRef15_aimCst.tg[0].tpm";
 connectAttr "fgrRef15_aimCst.w0" "fgrRef15_aimCst.tg[0].tw";
-connectAttr "toe03_4_guide.wm" "fgrRef15_aimCst.wum";
+connectAttr "toe3_4_guide.wm" "fgrRef15_aimCst.wum";
 connectAttr "null4.pim" "null4_scaleConstraint1.cpim";
-connectAttr "toe03_2_guide.s" "null4_scaleConstraint1.tg[0].ts";
-connectAttr "toe03_2_guide.pm" "null4_scaleConstraint1.tg[0].tpm";
+connectAttr "toe3_2_guide.s" "null4_scaleConstraint1.tg[0].ts";
+connectAttr "toe3_2_guide.pm" "null4_scaleConstraint1.tg[0].tpm";
 connectAttr "null4_scaleConstraint1.w0" "null4_scaleConstraint1.tg[0].tw";
 connectAttr "le_cdn_2.ocr" "null5.v";
 connectAttr "null5_scaleConstraint1.csx" "null5.sx";
@@ -6299,22 +6445,22 @@ connectAttr "master_guide.includeMeta" "fgrRef16.v";
 connectAttr "fgrRef16.pim" "fgrRef16_poiCst.cpim";
 connectAttr "fgrRef16.rp" "fgrRef16_poiCst.crp";
 connectAttr "fgrRef16.rpt" "fgrRef16_poiCst.crt";
-connectAttr "toe04_1_guide.t" "fgrRef16_poiCst.tg[0].tt";
-connectAttr "toe04_1_guide.rp" "fgrRef16_poiCst.tg[0].trp";
-connectAttr "toe04_1_guide.rpt" "fgrRef16_poiCst.tg[0].trt";
-connectAttr "toe04_1_guide.pm" "fgrRef16_poiCst.tg[0].tpm";
+connectAttr "toe4_1_guide.t" "fgrRef16_poiCst.tg[0].tt";
+connectAttr "toe4_1_guide.rp" "fgrRef16_poiCst.tg[0].trp";
+connectAttr "toe4_1_guide.rpt" "fgrRef16_poiCst.tg[0].trt";
+connectAttr "toe4_1_guide.pm" "fgrRef16_poiCst.tg[0].tpm";
 connectAttr "fgrRef16_poiCst.w0" "fgrRef16_poiCst.tg[0].tw";
 connectAttr "fgrRef16.pim" "fgrRef16_aimCst.cpim";
 connectAttr "fgrRef16.t" "fgrRef16_aimCst.ct";
 connectAttr "fgrRef16.rp" "fgrRef16_aimCst.crp";
 connectAttr "fgrRef16.rpt" "fgrRef16_aimCst.crt";
 connectAttr "fgrRef16.ro" "fgrRef16_aimCst.cro";
-connectAttr "toe04_2_guide.t" "fgrRef16_aimCst.tg[0].tt";
-connectAttr "toe04_2_guide.rp" "fgrRef16_aimCst.tg[0].trp";
-connectAttr "toe04_2_guide.rpt" "fgrRef16_aimCst.tg[0].trt";
-connectAttr "toe04_2_guide.pm" "fgrRef16_aimCst.tg[0].tpm";
+connectAttr "toe4_2_guide.t" "fgrRef16_aimCst.tg[0].tt";
+connectAttr "toe4_2_guide.rp" "fgrRef16_aimCst.tg[0].trp";
+connectAttr "toe4_2_guide.rpt" "fgrRef16_aimCst.tg[0].trt";
+connectAttr "toe4_2_guide.pm" "fgrRef16_aimCst.tg[0].tpm";
 connectAttr "fgrRef16_aimCst.w0" "fgrRef16_aimCst.tg[0].tw";
-connectAttr "toe04_1_guide.wm" "fgrRef16_aimCst.wum";
+connectAttr "toe4_1_guide.wm" "fgrRef16_aimCst.wum";
 connectAttr "fgrRef17_poiCst.ctx" "fgrRef17.tx";
 connectAttr "fgrRef17_poiCst.cty" "fgrRef17.ty";
 connectAttr "fgrRef17_poiCst.ctz" "fgrRef17.tz";
@@ -6324,22 +6470,22 @@ connectAttr "fgrRef17_aimCst.crz" "fgrRef17.rz";
 connectAttr "fgrRef17.pim" "fgrRef17_poiCst.cpim";
 connectAttr "fgrRef17.rp" "fgrRef17_poiCst.crp";
 connectAttr "fgrRef17.rpt" "fgrRef17_poiCst.crt";
-connectAttr "toe04_2_guide.t" "fgrRef17_poiCst.tg[0].tt";
-connectAttr "toe04_2_guide.rp" "fgrRef17_poiCst.tg[0].trp";
-connectAttr "toe04_2_guide.rpt" "fgrRef17_poiCst.tg[0].trt";
-connectAttr "toe04_2_guide.pm" "fgrRef17_poiCst.tg[0].tpm";
+connectAttr "toe4_2_guide.t" "fgrRef17_poiCst.tg[0].tt";
+connectAttr "toe4_2_guide.rp" "fgrRef17_poiCst.tg[0].trp";
+connectAttr "toe4_2_guide.rpt" "fgrRef17_poiCst.tg[0].trt";
+connectAttr "toe4_2_guide.pm" "fgrRef17_poiCst.tg[0].tpm";
 connectAttr "fgrRef17_poiCst.w0" "fgrRef17_poiCst.tg[0].tw";
 connectAttr "fgrRef17.pim" "fgrRef17_aimCst.cpim";
 connectAttr "fgrRef17.t" "fgrRef17_aimCst.ct";
 connectAttr "fgrRef17.rp" "fgrRef17_aimCst.crp";
 connectAttr "fgrRef17.rpt" "fgrRef17_aimCst.crt";
 connectAttr "fgrRef17.ro" "fgrRef17_aimCst.cro";
-connectAttr "toe04_3_guide.t" "fgrRef17_aimCst.tg[0].tt";
-connectAttr "toe04_3_guide.rp" "fgrRef17_aimCst.tg[0].trp";
-connectAttr "toe04_3_guide.rpt" "fgrRef17_aimCst.tg[0].trt";
-connectAttr "toe04_3_guide.pm" "fgrRef17_aimCst.tg[0].tpm";
+connectAttr "toe4_3_guide.t" "fgrRef17_aimCst.tg[0].tt";
+connectAttr "toe4_3_guide.rp" "fgrRef17_aimCst.tg[0].trp";
+connectAttr "toe4_3_guide.rpt" "fgrRef17_aimCst.tg[0].trt";
+connectAttr "toe4_3_guide.pm" "fgrRef17_aimCst.tg[0].tpm";
 connectAttr "fgrRef17_aimCst.w0" "fgrRef17_aimCst.tg[0].tw";
-connectAttr "toe04_2_guide.wm" "fgrRef17_aimCst.wum";
+connectAttr "toe4_2_guide.wm" "fgrRef17_aimCst.wum";
 connectAttr "fgrRef18_poiCst.ctx" "fgrRef18.tx";
 connectAttr "fgrRef18_poiCst.cty" "fgrRef18.ty";
 connectAttr "fgrRef18_poiCst.ctz" "fgrRef18.tz";
@@ -6349,22 +6495,22 @@ connectAttr "fgrRef18_aimCst.crz" "fgrRef18.rz";
 connectAttr "fgrRef18.pim" "fgrRef18_poiCst.cpim";
 connectAttr "fgrRef18.rp" "fgrRef18_poiCst.crp";
 connectAttr "fgrRef18.rpt" "fgrRef18_poiCst.crt";
-connectAttr "toe04_3_guide.t" "fgrRef18_poiCst.tg[0].tt";
-connectAttr "toe04_3_guide.rp" "fgrRef18_poiCst.tg[0].trp";
-connectAttr "toe04_3_guide.rpt" "fgrRef18_poiCst.tg[0].trt";
-connectAttr "toe04_3_guide.pm" "fgrRef18_poiCst.tg[0].tpm";
+connectAttr "toe4_3_guide.t" "fgrRef18_poiCst.tg[0].tt";
+connectAttr "toe4_3_guide.rp" "fgrRef18_poiCst.tg[0].trp";
+connectAttr "toe4_3_guide.rpt" "fgrRef18_poiCst.tg[0].trt";
+connectAttr "toe4_3_guide.pm" "fgrRef18_poiCst.tg[0].tpm";
 connectAttr "fgrRef18_poiCst.w0" "fgrRef18_poiCst.tg[0].tw";
 connectAttr "fgrRef18.pim" "fgrRef18_aimCst.cpim";
 connectAttr "fgrRef18.t" "fgrRef18_aimCst.ct";
 connectAttr "fgrRef18.rp" "fgrRef18_aimCst.crp";
 connectAttr "fgrRef18.rpt" "fgrRef18_aimCst.crt";
 connectAttr "fgrRef18.ro" "fgrRef18_aimCst.cro";
-connectAttr "toe04_4_guide.t" "fgrRef18_aimCst.tg[0].tt";
-connectAttr "toe04_4_guide.rp" "fgrRef18_aimCst.tg[0].trp";
-connectAttr "toe04_4_guide.rpt" "fgrRef18_aimCst.tg[0].trt";
-connectAttr "toe04_4_guide.pm" "fgrRef18_aimCst.tg[0].tpm";
+connectAttr "toe4_4_guide.t" "fgrRef18_aimCst.tg[0].tt";
+connectAttr "toe4_4_guide.rp" "fgrRef18_aimCst.tg[0].trp";
+connectAttr "toe4_4_guide.rpt" "fgrRef18_aimCst.tg[0].trt";
+connectAttr "toe4_4_guide.pm" "fgrRef18_aimCst.tg[0].tpm";
 connectAttr "fgrRef18_aimCst.w0" "fgrRef18_aimCst.tg[0].tw";
-connectAttr "toe04_3_guide.wm" "fgrRef18_aimCst.wum";
+connectAttr "toe4_3_guide.wm" "fgrRef18_aimCst.wum";
 connectAttr "fgrRef19_poiCst.ctx" "fgrRef19.tx";
 connectAttr "fgrRef19_poiCst.cty" "fgrRef19.ty";
 connectAttr "fgrRef19_poiCst.ctz" "fgrRef19.tz";
@@ -6374,25 +6520,25 @@ connectAttr "fgrRef19_aimCst.crz" "fgrRef19.rz";
 connectAttr "fgrRef19.pim" "fgrRef19_poiCst.cpim";
 connectAttr "fgrRef19.rp" "fgrRef19_poiCst.crp";
 connectAttr "fgrRef19.rpt" "fgrRef19_poiCst.crt";
-connectAttr "toe04_4_guide.t" "fgrRef19_poiCst.tg[0].tt";
-connectAttr "toe04_4_guide.rp" "fgrRef19_poiCst.tg[0].trp";
-connectAttr "toe04_4_guide.rpt" "fgrRef19_poiCst.tg[0].trt";
-connectAttr "toe04_4_guide.pm" "fgrRef19_poiCst.tg[0].tpm";
+connectAttr "toe4_4_guide.t" "fgrRef19_poiCst.tg[0].tt";
+connectAttr "toe4_4_guide.rp" "fgrRef19_poiCst.tg[0].trp";
+connectAttr "toe4_4_guide.rpt" "fgrRef19_poiCst.tg[0].trt";
+connectAttr "toe4_4_guide.pm" "fgrRef19_poiCst.tg[0].tpm";
 connectAttr "fgrRef19_poiCst.w0" "fgrRef19_poiCst.tg[0].tw";
 connectAttr "fgrRef19.pim" "fgrRef19_aimCst.cpim";
 connectAttr "fgrRef19.t" "fgrRef19_aimCst.ct";
 connectAttr "fgrRef19.rp" "fgrRef19_aimCst.crp";
 connectAttr "fgrRef19.rpt" "fgrRef19_aimCst.crt";
 connectAttr "fgrRef19.ro" "fgrRef19_aimCst.cro";
-connectAttr "toe04_5_guide.t" "fgrRef19_aimCst.tg[0].tt";
-connectAttr "toe04_5_guide.rp" "fgrRef19_aimCst.tg[0].trp";
-connectAttr "toe04_5_guide.rpt" "fgrRef19_aimCst.tg[0].trt";
-connectAttr "toe04_5_guide.pm" "fgrRef19_aimCst.tg[0].tpm";
+connectAttr "toe4_5_guide.t" "fgrRef19_aimCst.tg[0].tt";
+connectAttr "toe4_5_guide.rp" "fgrRef19_aimCst.tg[0].trp";
+connectAttr "toe4_5_guide.rpt" "fgrRef19_aimCst.tg[0].trt";
+connectAttr "toe4_5_guide.pm" "fgrRef19_aimCst.tg[0].tpm";
 connectAttr "fgrRef19_aimCst.w0" "fgrRef19_aimCst.tg[0].tw";
-connectAttr "toe04_4_guide.wm" "fgrRef19_aimCst.wum";
+connectAttr "toe4_4_guide.wm" "fgrRef19_aimCst.wum";
 connectAttr "null5.pim" "null5_scaleConstraint1.cpim";
-connectAttr "toe04_2_guide.s" "null5_scaleConstraint1.tg[0].ts";
-connectAttr "toe04_2_guide.pm" "null5_scaleConstraint1.tg[0].tpm";
+connectAttr "toe4_2_guide.s" "null5_scaleConstraint1.tg[0].ts";
+connectAttr "toe4_2_guide.pm" "null5_scaleConstraint1.tg[0].tpm";
 connectAttr "null5_scaleConstraint1.w0" "null5_scaleConstraint1.tg[0].tw";
 connectAttr "condition2.ocr" "line_grp_birdFoot.v";
 connectAttr "condition3.ocr" "group_toe_0.v";
@@ -6400,6 +6546,8 @@ connectAttr "DCM_115.ot" "curveShape70.cp[0]";
 connectAttr "DCM_116.ot" "curveShape70.cp[1]";
 connectAttr "DCM_116.ot" "curveShape71.cp[0]";
 connectAttr "DCM_117.ot" "curveShape71.cp[1]";
+connectAttr "DCM_117.ot" "curveShape72.cp[0]";
+connectAttr "DCM_118.ot" "curveShape72.cp[1]";
 connectAttr "condition4.ocr" "group_toe_1.v";
 connectAttr "DCM_100.ot" "curveShape58.cp[0]";
 connectAttr "DCM_101.ot" "curveShape58.cp[1]";
@@ -6448,30 +6596,30 @@ connectAttr "radiusEnd_guide.wm" "DCM_9.imat";
 connectAttr "ulna_guide.wm" "DCM_10.imat";
 connectAttr "ulnaEnd_guide.wm" "DCM_11.imat";
 connectAttr "digit_guide.wm" "DCM_36.imat";
-connectAttr "toe00_1_guide.wm" "DCM_37.imat";
-connectAttr "toe00_2_guide.wm" "DCM_38.imat";
-connectAttr "toe00_3_guide.wm" "DCM_39.imat";
-connectAttr "toe00_4_guide.wm" "DCM_40.imat";
-connectAttr "toe01_1_guide.wm" "DCM_41.imat";
-connectAttr "toe01_2_guide.wm" "DCM_42.imat";
-connectAttr "toe01_3_guide.wm" "DCM_43.imat";
-connectAttr "toe01_4_guide.wm" "DCM_44.imat";
-connectAttr "toe01_5_guide.wm" "DCM_45.imat";
-connectAttr "toe02_1_guide.wm" "DCM_46.imat";
-connectAttr "toe02_2_guide.wm" "DCM_47.imat";
-connectAttr "toe02_3_guide.wm" "DCM_48.imat";
-connectAttr "toe02_4_guide.wm" "DCM_49.imat";
-connectAttr "toe02_5_guide.wm" "DCM_50.imat";
-connectAttr "toe03_1_guide.wm" "DCM_51.imat";
-connectAttr "toe03_2_guide.wm" "DCM_52.imat";
-connectAttr "toe03_3_guide.wm" "DCM_53.imat";
-connectAttr "toe03_4_guide.wm" "DCM_54.imat";
-connectAttr "toe03_5_guide.wm" "DCM_55.imat";
-connectAttr "toe04_1_guide.wm" "DCM_56.imat";
-connectAttr "toe04_2_guide.wm" "DCM_57.imat";
-connectAttr "toe04_3_guide.wm" "DCM_58.imat";
-connectAttr "toe04_4_guide.wm" "DCM_59.imat";
-connectAttr "toe04_5_guide.wm" "DCM_60.imat";
+connectAttr "toe0_1_guide.wm" "DCM_37.imat";
+connectAttr "toe0_2_guide.wm" "DCM_38.imat";
+connectAttr "toe0_3_guide.wm" "DCM_39.imat";
+connectAttr "toe0_4_guide.wm" "DCM_40.imat";
+connectAttr "toe1_1_guide.wm" "DCM_41.imat";
+connectAttr "toe1_2_guide.wm" "DCM_42.imat";
+connectAttr "toe1_3_guide.wm" "DCM_43.imat";
+connectAttr "toe1_4_guide.wm" "DCM_44.imat";
+connectAttr "toe1_5_guide.wm" "DCM_45.imat";
+connectAttr "toe2_1_guide.wm" "DCM_46.imat";
+connectAttr "toe2_2_guide.wm" "DCM_47.imat";
+connectAttr "toe2_3_guide.wm" "DCM_48.imat";
+connectAttr "toe2_4_guide.wm" "DCM_49.imat";
+connectAttr "toe2_5_guide.wm" "DCM_50.imat";
+connectAttr "toe3_1_guide.wm" "DCM_51.imat";
+connectAttr "toe3_2_guide.wm" "DCM_52.imat";
+connectAttr "toe3_3_guide.wm" "DCM_53.imat";
+connectAttr "toe3_4_guide.wm" "DCM_54.imat";
+connectAttr "toe3_5_guide.wm" "DCM_55.imat";
+connectAttr "toe4_1_guide.wm" "DCM_56.imat";
+connectAttr "toe4_2_guide.wm" "DCM_57.imat";
+connectAttr "toe4_3_guide.wm" "DCM_58.imat";
+connectAttr "toe4_4_guide.wm" "DCM_59.imat";
+connectAttr "toe4_5_guide.wm" "DCM_60.imat";
 connectAttr "master_guide.toeNum" "le_cdn_1.ft";
 connectAttr "master_guide.toeNum" "le_cdn_2.ft";
 connectAttr "master_guide.toeNum" "le_cdn_3.ft";
@@ -6516,24 +6664,24 @@ connectAttr "|master_guide|fgrRef_grp|null5|fgrRef19|fgrRefShape.iog" "lambert2S
 		 -na;
 connectAttr "lambert2SG.msg" "materialInfo1.sg";
 connectAttr "lambert2.msg" "materialInfo1.m";
-connectAttr "toeBird01_4_guide.wm" "DCM_100.imat";
-connectAttr "toeBird01_3_guide.wm" "DCM_101.imat";
-connectAttr "toeBird01_2_guide.wm" "DCM_102.imat";
-connectAttr "toeBird01_1_guide.wm" "DCM_103.imat";
-connectAttr "toeBird02_1_guide.wm" "DCM_104.imat";
-connectAttr "toeBird02_2_guide.wm" "DCM_105.imat";
-connectAttr "toeBird02_3_guide.wm" "DCM_106.imat";
-connectAttr "toeBird02_4_guide.wm" "DCM_107.imat";
-connectAttr "toeBird02_5_guide.wm" "DCM_108.imat";
-connectAttr "toeBird03_1_guide.wm" "DCM_109.imat";
-connectAttr "toeBird03_2_guide.wm" "DCM_110.imat";
-connectAttr "toeBird03_3_guide.wm" "DCM_111.imat";
-connectAttr "toeBird03_4_guide.wm" "DCM_112.imat";
-connectAttr "toeBird03_5_guide.wm" "DCM_113.imat";
-connectAttr "toeBird03_6_guide.wm" "DCM_114.imat";
-connectAttr "toeBird00_1_guide.wm" "DCM_115.imat";
-connectAttr "toeBird00_2_guide.wm" "DCM_116.imat";
-connectAttr "toeBird00_3_guide.wm" "DCM_117.imat";
+connectAttr "toe1_end_guide.wm" "DCM_100.imat";
+connectAttr "toe1_low_guide.wm" "DCM_101.imat";
+connectAttr "toe1_mid_guide.wm" "DCM_102.imat";
+connectAttr "toe1_up_guide.wm" "DCM_103.imat";
+connectAttr "toe2_up_guide.wm" "DCM_104.imat";
+connectAttr "toe2_mid_guide.wm" "DCM_105.imat";
+connectAttr "toe2_mid2_guide.wm" "DCM_106.imat";
+connectAttr "toe2_low_guide.wm" "DCM_107.imat";
+connectAttr "toe2_end_guide.wm" "DCM_108.imat";
+connectAttr "toe3_up_guide.wm" "DCM_109.imat";
+connectAttr "toe3_mid_guide.wm" "DCM_110.imat";
+connectAttr "toe3_mid2_guide.wm" "DCM_111.imat";
+connectAttr "toe3_mid3_guide.wm" "DCM_112.imat";
+connectAttr "toe3_low_guide.wm" "DCM_113.imat";
+connectAttr "toe3_end_guide.wm" "DCM_114.imat";
+connectAttr "toe0_up_guide.wm" "DCM_115.imat";
+connectAttr "toe0_mid_guide.wm" "DCM_116.imat";
+connectAttr "toe0_low_guide.wm" "DCM_117.imat";
 connectAttr "master_guide.toeType" "condition1.ft";
 connectAttr "master_guide.toeType" "condition2.ft";
 connectAttr "master_guide.toeNum" "condition3.ft";
@@ -6556,7 +6704,7 @@ connectAttr "ulnaEnd_guide_ZRO.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[9].dn
 		;
 connectAttr "null1.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[10].dn";
 connectAttr "fgrRef1.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[11].dn";
-connectAttr "toe04_1_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[12].dn";
+connectAttr "toe4_1_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[12].dn";
 connectAttr "fgrRef16.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[13].dn";
 connectAttr "le_cdn_2.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[14].dn";
 connectAttr "toeMain_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[16].dn";
@@ -6572,10 +6720,10 @@ connectAttr "ulnaEnd_guide_aimConstraint1.msg" "MayaNodeEditorSavedTabsInfo.tgi[
 connectAttr "fgrRef_grp.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[23].dn";
 connectAttr "fgrRef12.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[24].dn";
 connectAttr "master_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[25].dn";
-connectAttr "toe04_2_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[26].dn";
+connectAttr "toe4_2_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[26].dn";
 connectAttr "|master_guide|line_grp_mammalFoot|toe_line_grp2|line_37.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[27].dn"
 		;
-connectAttr "toe00_2_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[28].dn";
+connectAttr "toe0_2_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[28].dn";
 connectAttr "patella_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[29].dn";
 connectAttr "toeBird_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[30].dn";
 connectAttr "toe_line_grp2.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[31].dn";
@@ -6589,14 +6737,14 @@ connectAttr "line_grp_dual.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[36].dn";
 connectAttr "radius_guide_aimConstraint1.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[37].dn"
 		;
 connectAttr "condition1.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[38].dn";
-connectAttr "toe03_1_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[39].dn";
-connectAttr "toe01_2_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[40].dn";
-connectAttr "toe02_1_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[41].dn";
+connectAttr "toe3_1_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[39].dn";
+connectAttr "toe1_2_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[40].dn";
+connectAttr "toe2_1_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[41].dn";
 connectAttr "line_45.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[42].dn";
-connectAttr "toe01_1_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[43].dn";
+connectAttr "toe1_1_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[43].dn";
 connectAttr "ulnaEnd_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[44].dn";
 connectAttr "null5.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[46].dn";
-connectAttr "toe00_1_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[47].dn";
+connectAttr "toe0_1_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[47].dn";
 connectAttr "ulna_guide.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[48].dn";
 connectAttr "condition2.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[49].dn";
 connectAttr "radiusEnd_guide_aimConstraint1.msg" "MayaNodeEditorSavedTabsInfo.tgi[0].ni[50].dn"
@@ -6616,6 +6764,7 @@ connectAttr "condition3.msg" "MayaNodeEditorSavedTabsInfo.tgi[1].ni[7].dn";
 connectAttr "group_toe_3.msg" "MayaNodeEditorSavedTabsInfo.tgi[1].ni[8].dn";
 connectAttr "master_guideShape.msg" "MayaNodeEditorSavedTabsInfo.tgi[1].ni[9].dn"
 		;
+connectAttr "toe0_end_guide.wm" "DCM_118.imat";
 connectAttr "lambert2SG.pa" ":renderPartition.st" -na;
 connectAttr "lambert2.msg" ":defaultShaderList1.s" -na;
 connectAttr "condition1.msg" ":defaultRenderUtilityList1.u" -na;
@@ -6640,22 +6789,22 @@ connectAttr "lwr_guide_ofs.msg" ":hyperGraphLayout.hyp[83169].dn";
 connectAttr "palm_heelPos_ofs.msg" ":hyperGraphLayout.hyp[84921].dn";
 connectAttr "palm_toePos_guide_ofs.msg" ":hyperGraphLayout.hyp[84922].dn";
 connectAttr "line_grp_mammalFoot.msg" ":hyperGraphLayout.hyp[84975].dn";
-connectAttr "toe02_2_guide.msg" ":hyperGraphLayout.hyp[85140].dn";
-connectAttr "toe02_3_guide.msg" ":hyperGraphLayout.hyp[85141].dn";
-connectAttr "toe02_1_guide.msg" ":hyperGraphLayout.hyp[85142].dn";
-connectAttr "toe02_4_guide.msg" ":hyperGraphLayout.hyp[85143].dn";
-connectAttr "toe03_1_guide.msg" ":hyperGraphLayout.hyp[85148].dn";
-connectAttr "toe04_1_guide.msg" ":hyperGraphLayout.hyp[85149].dn";
-connectAttr "toe01_1_guide.msg" ":hyperGraphLayout.hyp[85150].dn";
-connectAttr "toe00_1_guide.msg" ":hyperGraphLayout.hyp[85151].dn";
-connectAttr "toe01_2_guide.msg" ":hyperGraphLayout.hyp[85152].dn";
-connectAttr "toe00_2_guide.msg" ":hyperGraphLayout.hyp[85153].dn";
-connectAttr "toe03_2_guide.msg" ":hyperGraphLayout.hyp[85154].dn";
-connectAttr "toe04_2_guide.msg" ":hyperGraphLayout.hyp[85155].dn";
-connectAttr "toe00_4_guide.msg" ":hyperGraphLayout.hyp[85156].dn";
-connectAttr "toe01_4_guide.msg" ":hyperGraphLayout.hyp[85157].dn";
-connectAttr "toe03_4_guide.msg" ":hyperGraphLayout.hyp[85158].dn";
-connectAttr "toe04_4_guide.msg" ":hyperGraphLayout.hyp[85159].dn";
+connectAttr "toe2_2_guide.msg" ":hyperGraphLayout.hyp[85140].dn";
+connectAttr "toe2_3_guide.msg" ":hyperGraphLayout.hyp[85141].dn";
+connectAttr "toe2_1_guide.msg" ":hyperGraphLayout.hyp[85142].dn";
+connectAttr "toe2_4_guide.msg" ":hyperGraphLayout.hyp[85143].dn";
+connectAttr "toe3_1_guide.msg" ":hyperGraphLayout.hyp[85148].dn";
+connectAttr "toe4_1_guide.msg" ":hyperGraphLayout.hyp[85149].dn";
+connectAttr "toe1_1_guide.msg" ":hyperGraphLayout.hyp[85150].dn";
+connectAttr "toe0_1_guide.msg" ":hyperGraphLayout.hyp[85151].dn";
+connectAttr "toe1_2_guide.msg" ":hyperGraphLayout.hyp[85152].dn";
+connectAttr "toe0_2_guide.msg" ":hyperGraphLayout.hyp[85153].dn";
+connectAttr "toe3_2_guide.msg" ":hyperGraphLayout.hyp[85154].dn";
+connectAttr "toe4_2_guide.msg" ":hyperGraphLayout.hyp[85155].dn";
+connectAttr "toe0_4_guide.msg" ":hyperGraphLayout.hyp[85156].dn";
+connectAttr "toe1_4_guide.msg" ":hyperGraphLayout.hyp[85157].dn";
+connectAttr "toe3_4_guide.msg" ":hyperGraphLayout.hyp[85158].dn";
+connectAttr "toe4_4_guide.msg" ":hyperGraphLayout.hyp[85159].dn";
 connectAttr "toeMain_guide.msg" ":hyperGraphLayout.hyp[85163].dn";
 connectAttr "group_toe_1.msg" ":hyperGraphLayout.hyp[85184].dn";
 connectAttr "group_toe_2.msg" ":hyperGraphLayout.hyp[85185].dn";

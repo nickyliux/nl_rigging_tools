@@ -17,6 +17,7 @@ from nl_modules.utils.color import Color
 
 AUTO_BIND_JNT_SET = "auto_bind_jnt_set"
 
+
 class RigModule(RigBase):
     """Base class for rig modules, providing common functionality for rigging operations."""
 
@@ -33,8 +34,10 @@ class RigModule(RigBase):
         self.rigSize = guides_grp.a.sy.get() * self.masterGuide.a.sy.get()
         self.xDir = 1 if rID.startswith("lf") else -1 if rID.startswith("rt") else 0
 
-        self.ofsFixJ = None     # joint used for limb bone offset, e.g. knee of biped leg
-        self.carpalFixJ = None      # joint used for carpal bone offset, e.g. carpal of quad leg
+        self.ofsFixJ = None  # joint used for limb bone offset, e.g. knee of biped leg
+        self.carpalFixJ = (
+            None  # joint used for carpal bone offset, e.g. carpal of quad leg
+        )
 
         self.jnts_bind = []
         self.all_bendy = []
@@ -88,7 +91,6 @@ class RigModule(RigBase):
         ctlList = ctlList or [CrvNode(j + "_fkc") for j in jntList]
 
         for jnt, ctl in zip(jntList, ctlList):
-
             ctl.alignTo(jnt)
             if oriOnly:
                 ctl.cstOri(jnt, mo=1)
@@ -306,7 +308,9 @@ class RigModule(RigBase):
             self.xDir = (
                 1
                 if children[0].a.tx.get() > 0
-                else -1 if children[0].a.tx.get() < 0 else 0
+                else -1
+                if children[0].a.tx.get() < 0
+                else 0
             )
 
     def build_post_module(self):
@@ -458,11 +462,13 @@ class RigModule(RigBase):
                 if tgt in tgtList:
                     tgtList.remove(tgt)
 
-    def boneOfsFix_setup(self, tgt, tgtChild, tz=(-2,-8), tx=(2.5,0)):
+    def boneOfsFix_setup(self, tgt, tgtChild, tz=(-2, -8), tx=(2.5, 0)):
         """Setup bone fix for the leg rig."""
         rID, rSz, xDr = self.get_short_form()
 
-        upLoc = LocNode("lwrLimb_up_#", pf=rID, align=tgtChild, addOfs=1, p=tgt, size=rSz)
+        upLoc = LocNode(
+            "lwrLimb_up_#", pf=rID, align=tgtChild, addOfs=1, p=tgt, size=rSz
+        )
         tgtChild.cstPoi(upLoc.offset)
         upLoc.a.ty.set(rSz * 10 * xDr)
 
@@ -470,7 +476,7 @@ class RigModule(RigBase):
         childDup = tgtChild.duplicate(po=1)
         tgtDup.rename(tgt + "Fix")
         JntNode(tgtDup).setRadius(2, rel=1)
-        
+
         childDup.rename(tgtChild + "Fix")
         childDup | tgtDup | tgt
         # tgtDup.color = Color.PINK
@@ -490,7 +496,7 @@ class RigModule(RigBase):
 
         self.ofsFixJ = tgtDup
 
-    def carpalFix_setup(self, palm, digit, tz=(-2,-8), tx=(2.5,0)):
+    def carpalFix_setup(self, palm, digit, tz=(-2, -8), tx=(2.5, 0)):
         """Setup carpal fix for the leg rig."""
         self.boneOfsFix_setup(palm, digit, tz=tz, tx=tx)
 
@@ -498,30 +504,29 @@ class RigModule(RigBase):
 
         carpal_guide = DagNode(rID + "_carpal_guide")
         if carpal_guide.exists():
-
             lwr = palm.parent
 
             fixJ = palm.duplicate(po=1, n=self.rigID + "_carpalFix")
             fixJ.snapTo(carpal_guide)
-            
-            palm.a.r * (.5,.5,.5) >> fixJ.a.r
+
+            palm.a.r * (0.5, 0.5, 0.5) >> fixJ.a.r
 
             self.update_list(self.jnts_bind, add=[fixJ])
             self.carpalFixJ = fixJ
-            
+
         else:
             logging.info(f"Carpal guide not found: '{rID}_carpal_guide'")
 
-    def ofsBoneFix_sdk(self, driver, driven, tz=(-2,-8), tx=(2.5,0)):
+    def ofsBoneFix_sdk(self, driver, driven, tz=(-2, -8), tx=(2.5, 0)):
         """ "Setup SDK for bone fix to drive the leg joint."""
         s = self.xDir
 
-        if tz != (0,0):
+        if tz != (0, 0):
             common.sdk(driver, driven, "ry", "tz", 0, 0, tangent=1)
             common.sdk(driver, driven, "ry", "tz", -90, tz[0] * s, tangent=1)
             common.sdk(driver, driven, "ry", "tz", -180, tz[1] * s, tangent=1)
 
-        if tx != (0,0):
+        if tx != (0, 0):
             common.sdk(driver, driven, "ry", "tx", 0, 0, tangent=1)
             common.sdk(driver, driven, "ry", "tx", -90, tx[0] * s, tangent=1)
             common.sdk(driver, driven, "ry", "tx", -180, tx[1] * s, tangent=1)
@@ -583,10 +588,11 @@ class RigModule(RigBase):
         from nl_modules.utils import utils_node as ut
 
         footRoll = targetCtl.a.add("footRoll")
-        footBreak = targetCtl.a.add("footBreak", min=0, dv=50, k=0)
+        # footBreak = targetCtl.a.add("footBreak", min=0, dv=50)
         ut.min_(0, footRoll) >> heelRollG.a.rx
-        ut.clp_(footRoll, min=0, max=footBreak) >> ballRollG.a.rx
-        ut.max_(0, (footRoll - footBreak)) >> footRollG.a.rx
+        # ut.clp_(footRoll, min=0, max=footBreak) >> ballRollG.a.rx
+        # ut.max_(0, (footRoll - footBreak)) >> footRollG.a.rx
+        ut.max_(0, footRoll) >> footRollG.a.rx
 
         # self.ikc.a.add("heelTwist") >> heelRollG.a.ry
         # self.ikc.a.add("ballTwist") >> ballRollG.a.ry
@@ -1074,8 +1080,8 @@ class RigModule(RigBase):
         kneeFix=0,
         up1="tz",
         up2="tz",
-        tz=(-2,-8),
-        tx=(2.5,0),
+        tz=(-2, -8),
+        tx=(2.5, 0),
     ):
         """Build a ribbon rig with upper and lower parts, and setup controls."""
         logging.info(".")

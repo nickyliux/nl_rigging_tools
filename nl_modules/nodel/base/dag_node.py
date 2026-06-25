@@ -19,8 +19,8 @@ class DagNode(DepNode):
 
     COLOR_PRESET = {
         # 0: [22, 25, 18, 13],  # 6 is blue, 18 is light blue
-        0: [(1, .95, 0), (.6, .5, 0), 18, 13],
-        1: [(1, .95, 0), (.5, .4, 0), (0.36, 0.66, 1), (0.71, 0.30, 0.30)],
+        0: [(1, 0.95, 0), (0.6, 0.5, 0), 18, 13],
+        1: [(1, 0.95, 0), (0.5, 0.4, 0), (0.36, 0.66, 1), (0.71, 0.30, 0.30)],
     }
 
     def __init__(self, n, nodeType=None):
@@ -237,7 +237,6 @@ class DagNode(DepNode):
         result = []
         cstNodes = self.getCstNodes(cstType=cstType, isSrc=isSrc)
         if cstNodes:
-
             CST_TYPE_LIST = common.getUniqueCstDictNames()
             for cstNode in cstNodes:
                 cstObjs = mc.listConnections(cstNode, s=isSrc, d=not isSrc) or []
@@ -469,6 +468,10 @@ class DagNode(DepNode):
     def alignTo(self, obj, ofs=None, ofsR=None, rotateOnly=0, p=None, addOfs=0):
         """Align to obj"""
         obj = DagNode(obj) if isinstance(obj, str) else obj
+        if not obj.exists():
+            logging.error("Can't align to None.")
+            return
+
         if rotateOnly:
             common.matchMove([self, obj], mode="r")
         else:
@@ -485,6 +488,10 @@ class DagNode(DepNode):
     def snapTo(self, obj, ofs=None, p=None, addOfs=0):
         """Snap to obj"""
         obj = DagNode(obj) if isinstance(obj, str) else obj
+        if not obj.exists():
+            logging.error("Can't snap to None.")
+            return
+
         common.matchMove([self, obj], mode="t")
         if p:
             mc.parent(self, p)
@@ -496,6 +503,11 @@ class DagNode(DepNode):
     def alignHere(self, objs):
         """Align objects to itself"""
         objsList = objs if type(objs) == "list" else [objs]
+        for obj in objsList:
+            if not DagNode(obj).exists():
+                logging.error("Can't alignHere to None.")
+                return
+
         common.matchMove([DagNode(obj) for obj in objsList] + [self])
 
     def snapAlignTo(self, obj1, obj2, ofs=None, p=None):
@@ -632,11 +644,13 @@ class DagNode(DepNode):
     def futureHistory(self):
         """Return future history"""
         if self.exists():
-            return [DagNode(obj) for obj in mc.listHistory(self, future=1, leaf=1, pdo=1)]
+            return [
+                DagNode(obj) for obj in mc.listHistory(self, future=1, leaf=1, pdo=1)
+            ]
         return []
-    
+
     @property
-    def history(self): #, output=0, lv=0):
+    def history(self):  # , output=0, lv=0):
         """Return history"""
         if self.exists():
             return [DagNode(obj) for obj in mc.listHistory(self)]

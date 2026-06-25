@@ -2,6 +2,7 @@ import logging
 import maya.cmds as mc
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
+from nl_modules.nodel.base.dep_node import DepNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode, Solver
@@ -78,6 +79,11 @@ class LegQd(RigModule):
         self.scap_fkc = None
         self.patellaJ = None
 
+        self.TOE_NAMES = []
+        self.TOE_NAMES_FLAT = []
+        self.TOE_ATTRS = []
+        self.toeMasterGrp = None
+
     def gen_sk(self):
         """Generate the skeleton for the quadruped leg rig."""
 
@@ -85,53 +91,58 @@ class LegQd(RigModule):
         self.genSk_module()
         root_list = self.gen_sk_fr_names(self.jnt_names)
 
-        for jnt in root_list:
-            DagNode(jnt).a.ro.set(2)
+        # for jnt in root_list:
+        #     DagNode(jnt).a.ro.set(2)
 
         self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
         self.toesRootJ | self.JNT_DATA
         self.masterGuide.setMsg({"toesRootJ": self.toesRootJ})
 
-        ALL_TOE_NAMES = []
         TOE_DICT = {}
         TOE_NAMES = []
 
-        if self.toeType == 1: # Mammal's toes
-            
-            ALL_TOE_NAMES = [
-                ["toe00_1", "toe00_2", "toe00_3", "toe00_4"],
-                ["toe01_1", "toe01_2", "toe01_3", "toe01_4", "toe01_5"],
-                ["toe02_1", "toe02_2", "toe02_3", "toe02_4", "toe02_5"],
-                ["toe03_1", "toe03_2", "toe03_3", "toe03_4", "toe03_5"],
-                ["toe04_1", "toe04_2", "toe04_3", "toe04_4", "toe04_5"],
+        if self.toeType == 1:  # Mammal's toes
+            self.TOE_NAMES = [
+                ["toe0_1", "toe0_2", "toe0_3", "toe0_4"],
+                ["toe1_1", "toe1_2", "toe1_3", "toe1_4", "toe1_5"],
+                ["toe2_1", "toe2_2", "toe2_3", "toe2_4", "toe2_5"],
+                ["toe3_1", "toe3_2", "toe3_3", "toe3_4", "toe3_5"],
+                ["toe4_1", "toe4_2", "toe4_3", "toe4_4", "toe4_5"],
             ]
             if self.includeMeta == 0:
-                 ALL_TOE_NAMES = [names[1:] for names in ALL_TOE_NAMES]
+                self.TOE_NAMES = [names[1:] for names in self.TOE_NAMES]
 
             TOE_DICT = {
-                2: ALL_TOE_NAMES[2:4],  # hide 0, 1, 4
-                3: ALL_TOE_NAMES[2:5],  # hide 0, 1
-                4: ALL_TOE_NAMES[1:5],  # hide 0
-                5: ALL_TOE_NAMES,       # hide none
+                2: self.TOE_NAMES[2:4],  # hide 0, 1, 4
+                3: self.TOE_NAMES[2:5],  # hide 0, 1
+                4: self.TOE_NAMES[1:5],  # hide 0
+                5: self.TOE_NAMES,  # hide none
             }
+            self.toesRootJ.snapTo(root_list[3])  # snap to palm
 
-        elif self.toeType == 2: # Bird's toes
-
-            ALL_TOE_NAMES = [
-                ["toeBird00_1", "toeBird00_2", "toeBird00_3"],
-                ["toeBird01_1", "toeBird01_2", "toeBird01_3", "toeBird01_4"],
-                ["toeBird02_1", "toeBird02_2", "toeBird02_3", "toeBird02_4", "toeBird02_5"],
-                ["toeBird03_1", "toeBird03_2", "toeBird03_3", "toeBird03_4", "toeBird03_5", "toeBird03_6"],
+        elif self.toeType == 2:  # Bird's toes
+            self.TOE_NAMES = [
+                ["toe0_up", "toe0_mid", "toe0_low", "toe0_end"],
+                ["toe1_up", "toe1_mid", "toe1_low", "toe1_end"],
+                ["toe2_up", "toe2_mid", "toe2_mid2", "toe2_low", "toe2_end"],
+                [
+                    "toe3_up",
+                    "toe3_mid",
+                    "toe3_mid2",
+                    "toe3_mid3",
+                    "toe3_low",
+                    "toe3_end",
+                ],
             ]
             TOE_DICT = {
-                2: ALL_TOE_NAMES[2:4],  # hide 0, 1
-                3: ALL_TOE_NAMES[1:4],  # hide 0
-                4: ALL_TOE_NAMES,       # hide none
-                5: ALL_TOE_NAMES,       # hide none
+                2: self.TOE_NAMES[2:4],  # hide 0, 1
+                3: self.TOE_NAMES[1:4],  # hide 0
+                4: self.TOE_NAMES,  # hide none
+                5: self.TOE_NAMES,  # hide none
             }
+            self.toesRootJ.snapTo(root_list[4])  # snap to digit
 
         if self.toeType == 1 or self.toeType == 2:
-
             TOE_NAMES = TOE_DICT.get(self.toeNum, [])
 
             for names in TOE_NAMES:
@@ -143,7 +154,6 @@ class LegQd(RigModule):
                 )
                 fgr_jnts[0] | self.toesRootJ
                 self.jnts_toes.extend(fgr_jnts)
-
 
         # --- Finalize root joint setup ---
         self.rootJ = root_list[0]
@@ -165,8 +175,8 @@ class LegQd(RigModule):
             ("lwr_fkc", "hexagon_3d", "x", scale, 0),
             ("palm_fkc", "hexagon_3d", "x", scale, 0),
             ("digit_fkc", "hexagon_3d", "x", scale, 0),
-            ("ball_fkc", "hexagon_3d", "x", scale/2, 0),
-            ("ikc", "foot", None, rSz, 0),
+            ("ball_fkc", "hexagon_3d", "x", scale / 2, 0),
+            ("ikc", "foot2", None, rSz, 0),
             ("extra_ikc", "rotate2_3d", None, Vec((0.5, 1, 1)) * -scale, 0),
             ("pvc", "sphere", None, rSz * 0.7, 0),
             ("smart_ctl", "pyramid", None, scale / 3, 0),
@@ -189,12 +199,13 @@ class LegQd(RigModule):
         self.setting.cv_move(scale * 20, 0, 0)
         self.ikc.cv_move(0, 0, rSz * 5)
         self.hip_fkc.cv_rotate(0, 90, 0)
-        self.hip_fkc.cv_move(scale * 5, -scale*10, 0)
+        self.hip_fkc.cv_move(scale * 5, -scale * 10, 0)
         # self.hip_fkc.cv_move(0, -scale * 8, 0)
 
     def build(self):
         """Build the quadruped leg rig module."""
         self.build_pre_module()
+
         self.jnts = self.rootJ.allChildrenJt2
         self.hip, self.upr, self.lwr, self.palm, self.digit, self.ball, self.tip = (
             self.jnts
@@ -227,10 +238,10 @@ class LegQd(RigModule):
             self.build_dual_bones()
 
         if self.carpalFix:
-            self.carpalFix_setup(self.palm, self.digit, tz=(-1,-5), tx=(0.5,1))
-        
+            self.carpalFix_setup(self.palm, self.digit, tz=(-1, -5), tx=(0.5, 1))
+
         self.build_toes(self.toeType)
-        
+
         self.build_post()
 
     def build_toes(self, type=1):
@@ -244,8 +255,11 @@ class LegQd(RigModule):
                 self.toesJntList.append([fgr for fgr in rJ.allChildrenJt2])
                 rJ.a.segmentScaleCompensate.set(0)
 
+            for toeJs in self.toesJntList:
+                self.update_list(self.jnts_bind, add=toeJs[:-1])
+
         if type == 1:
-            self.build_digits_mammal()
+            self.build_toes_mammal()
 
             if self.carpalFix:
                 self.toesRootJ | self.ofsFixJ
@@ -255,13 +269,13 @@ class LegQd(RigModule):
             self.update_list(self.jnts_bind, rm=[self.ball, self.digit])
 
         elif type == 2:
-            self.build_digits_bird()
-            self.toesRootJ | self.digit
+            # self.build_toes_bird()
+            self.build_toes_bird_logic()
 
-            self.update_list(self.jnts_bind, rm=[self.ball])
+            self.toesRootJ | self.digit
+            self.update_list(self.jnts_bind, rm=[self.ball, self.digit])
 
         self.toesRootJ.color = Color.BLUE
-
 
     def build_fk(self):
         """Build the FK controls and joints for the quadruped leg rig."""
@@ -472,13 +486,14 @@ class LegQd(RigModule):
         self.smart_ctl | self.ikc
         self.smart_ctl.snapAlignTo(toeRollG, self.masterGuide)
         ofs = self.smart_ctl.addOffsetGrp()
-        ofs.a.tz.set(rSz * 20)
+
+        self.smart_ctl.a.add("posOffset", k=0, dv=20 * rSz) >> ofs.a.tz
 
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         (-xDr * self.smart_ctl.a.ry) >> toeRollG.a.ry
         (-xDr * self.smart_ctl.a.rz) >> self.smart_ctl.a["footBank"]
 
-    def build_digits_bird(self):
+    def build_toes_bird(self):
         """Build the digit controls for the quadruped leg rig."""
         logging.info(".")
 
@@ -497,19 +512,19 @@ class LegQd(RigModule):
             ikJ.a.r >> dupTgt.a.r
 
             # Build FK controls for toe joints
-            fkToeList = toeJs[(dupId+1):-1]
+            fkToeList = toeJs[(dupId + 1) : -1]
             ctlList = []
             for jnt in fkToeList:
                 crvName = f"{jnt.name}_ctl_#"
-                c = CrvNode(crvName, shape="hexagon_3d", up="x", align=jnt, scale=-scale)
+                c = CrvNode(
+                    crvName, shape="hexagon_3d", up="x", align=jnt, scale=-scale
+                )
                 ctlList.append(c)
 
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
-
             self.toesCtlsList.append(ctlList)
-            self.update_list(self.jnts_bind, add=toeJs[:-1])
 
-    def build_digits_mammal(self):
+    def build_toes_mammal(self):
         """Build the digit controls for the quadruped leg rig."""
         logging.info(".")
 
@@ -527,24 +542,25 @@ class LegQd(RigModule):
             ikJ.a.r >> dupTgt.a.r
 
             # Build FK controls for toe joints
-            fkToeList = toeJs[(dupId+1):-1]
+            fkToeList = toeJs[(dupId + 1) : -1]
             ctlList = []
             for jnt in fkToeList:
                 crvName = f"{jnt.name}_ctl_#"
-                c = CrvNode(crvName, shape="hexagon_3d", up="x", align=jnt, scale=-scale)
+                c = CrvNode(
+                    crvName, shape="hexagon_3d", up="x", align=jnt, scale=-scale
+                )
                 ctlList.append(c)
 
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
 
             self.toesCtlsList.append(ctlList)
-            self.update_list(self.jnts_bind, add=toeJs[:-1])
+            # self.update_list(self.jnts_bind, add=toeJs[:-1])
 
         # --- Add hidden IK handles for toe segments ---
         for toeJs in self.toesJntList:
-
             IkNode(
-                toeJs[dupId-1],
-                sj=toeJs[dupId-1],
+                toeJs[dupId - 1],
+                sj=toeJs[dupId - 1],
                 ee=toeJs[dupId],
                 scaleFix=self.masterC.a["globalScale"],
                 p_data=self.CTL_DATA,
@@ -552,6 +568,188 @@ class LegQd(RigModule):
                 p=self.ball_fkc,
                 # p=self.ikc_gimbal,
             )
+
+    def build_toe_sdk(self):
+        """Build SDK connections for toe groups and joints."""
+
+        toeSdkDict = {
+            "heel_lift": (
+                [(0, 0), [0, 90], [(0, 0, 0), (0, 45, 0)]],
+                [(0, 1), [0, 90], [(0, 0, 0), (0, 45, 0)]],
+                [(0, 2), [0, 90], [(0, 0, 0), (0, 2, 0)]],
+            ),
+            "ball_lift": (
+                [(0, 1), [0, 90], [(0, 0, 0), (0, -60, 0)]],
+                [(0, 2), [0, 90], [(0, 0, 0), (0, -16, 0)]],
+                [(1, 1), [0, 90], [(0, 0, 0), (0, 28, 0)]],
+                [(1, 2), [0, 90], [(0, 0, 0), (0, 50, 0)]],
+                [(2, 0), [0, 90], [(0, 0, 0), (0, 2, 0)]],
+                [(2, 1), [0, 90], [(0, 0, 0), (0, 75, 0)]],
+                [(2, 2), [0, 90], [(0, 0, 0), (0, 30, 0)]],
+                [(2, 3), [0, 90], [(0, 0, 0), (0, -16, 0)]],
+                [(3, 1), [0, 90], [(0, 0, 0), (0, 4, 0)]],
+                [(3, 2), [0, 90], [(0, 0, 0), (0, 5, 0)]],
+                [(3, 3), [0, 90], [(0, 0, 0), (0, 50, 0)]],
+                [(3, 4), [0, 90], [(0, 0, 0), (0, -3, 0)]],
+            ),
+            "toe_lift": (
+                [(0, 0), [0, 90], [(0, 0, 0), (0, -10, 0)]],
+                [(0, 1), [0, 90], [(0, 0, 0), (0, -60, 0)]],
+                # [(1, 0), [0, 90], [(0, 0, 0), (0, 4, 0)]],
+                [(1, 2), [0, 90], [(0, 0, 0), (0, -6, 0)]],
+                [(2, 0), [0, 90], [(0, 0, 0), (0, 6, 0)]],
+                [(2, 1), [0, 90], [(0, 0, 0), (0, 20, 0)]],
+                # [(3, 4), [0, 90], [(0, 0, 0), (0, -30, 0)]],
+            ),
+            "toe_squash": (
+                [(0, 1), [-10, 0, 10], [(0, 7, 0), (0, 0, 0), (0, -11, 0)]],
+                [(0, 2), [-10, 0, 10], [(0, 5, 0), (0, 0, 0), (0, 0, 0)]],
+                [(1, 0), [-10, 0, 10], [(0, -13, 0), (0, 0, 0), (0, 7, 0)]],
+                [(1, 1), [-10, 0, 10], [(0, 3, 0), (0, 0, 0), (0, 3, 0)]],
+                [(2, 0), [-10, 0, 10], [(0, -12, 0), (0, 0, 0), (0, 7, 0)]],
+                [(2, 1), [-10, 0, 10], [(0, 2, 0), (0, 0, 0), (0, 7, 0)]],
+                [(3, 0), [-10, 0, 10], [(0, -13, 0), (0, 0, 0), (0, 7, 0)]],
+                [(3, 1), [-10, 0, 10], [(0, 4, 0), (0, 0, 0), (0, 3, 0)]],
+                [(3, 2), [-10, 0, 10], [(0, 0, 0), (0, 0, 0), (0, -3, 0)]],
+            ),
+            "heel_squash": (
+                [(0, 0), [0, 10], [(0, 0, 0), (0, 54, 0)]],
+                [(0, 1), [0, 10], [(0, 0, 0), (0, -6, 0)]],
+                [(0, 2), [0, 10], [(0, 0, 0), (0, -28, 0)]],
+                [(1, 0), [0, 10], [(0, 0, 0), (0, 16, 0)]],
+                [(1, 1), [0, 10], [(0, 0, 0), (0, -6, 0)]],
+                [(1, 2), [0, 10], [(0, 0, 0), (0, -26, 0)]],
+                [(2, 0), [0, 10], [(0, 0, 0), (0, 13, 0)]],
+                [(2, 1), [0, 10], [(0, 0, 0), (0, -19, 0)]],
+                [(2, 2), [0, 10], [(0, 0, 0), (0, -5, 0)]],
+                [(2, 3), [0, 10], [(0, 0, 0), (0, -4, 0)]],
+                [(3, 0), [0, 10], [(0, 0, 0), (0, 16, 0)]],
+                [(3, 1), [0, 10], [(0, 0, 0), (0, -1, 0)]],
+                [(3, 2), [0, 10], [(0, 0, 0), (0, -14, 0)]],
+                [(3, 3), [0, 10], [(0, 0, 0), (0, -14, 0)]],
+                [(3, 4), [0, 10], [(0, 0, 0), (0, -4, 0)]],
+            ),
+            # "foot_bank": (
+            #     [(0, 1), [-90, 0, 90], [(-0.6, -1.4, 4), (0, 0, 0), (0.6, 1.4, -4)]],
+            #     [(1, 0), [-90, 0, 90], [(0.6, -28, -2.6), (0, 0, 0), (-0.6, 28, 2.6)]],
+            #     [(1, 1), [-90, 0, 90], [(-0.6, 4, -5.2), (0, 0, 0), (0.6, -4, 5.2)]],
+            #     [(1, 2), [-90, 0, 90], [(0, 18, 0), (0, 0, 0), (0, -18, 0)]],
+            #     [(2, 0), [-90, 0, 90], [(-0.4, 0.4, -4), (0, 0, 0), (0.4, -0.4, 4)]],
+            #     [(2, 1), [-90, 0, 90], [(0, -2, 0), (0, 0, 0), (0, 2, 0)]],
+            #     [(3, 0), [-90, 0, 90], [(0, 14, -0.6), (0, 0, 0), (0, -24, 0.6)]],
+            #     [(3, 1), [-90, 0, 90], [(0, -5.4, -1.2), (0, 0, 0), (0, 5.4, 1.2)]],
+            #     [(3, 2), [-90, 0, 90], [(0, -3, 0), (0, 0, 0), (0, 3, 0)]],
+            #     [(3, 3), [-90, 0, 90], [(0, -3, 0), (0, 0, 0), (0, 3, 0)]],
+            #     [(3, 4), [-90, 0, 90], [(0, -3.6, 0), (0, 0, 0), (0, 3.6, 0)]],
+            # ),
+            "spread": (
+                [(1, 0), [-10, 0, 10], [(-8, -4, -36), (0, 0, 0), (8, 4, 54)]],
+                [(3, 0), [-10, 0, 10], [(6, -2, 36), (0, 0, 0), (-6, 2, -54)]],
+            ),
+            "curl": (
+                [(0, 1), [-10, 0, 10], [(0, 24, 0), (0, 0, 0), (0, -60, 0)]],
+                [(0, 2), [-10, 0, 10], [(0, 24, 0), (0, 0, 0), (0, -100, 0)]],
+                [(1, 0), [-10, 0, 10], [(0, 26, 0), (0, 0, 0), (0, -64, 0)]],
+                [(1, 1), [-10, 0, 10], [(0, 26, 0), (0, 0, 0), (0, -85, 0)]],
+                [(1, 2), [-10, 0, 10], [(0, 26, 0), (0, 0, 0), (0, -186, 0)]],
+                [(2, 0), [-10, 0, 10], [(0, 26, 0), (0, 0, 0), (0, -52, 0)]],
+                [(2, 1), [-10, 0, 10], [(0, 26, 0), (0, 0, 0), (0, -80, 0)]],
+                [(2, 2), [-10, 0, 10], [(0, 26, 0), (0, 0, 0), (0, -54, 0)]],
+                [(2, 3), [-10, 0, 10], [(0, 26, 0), (0, 0, 0), (0, -190, 0)]],
+                [(3, 0), [-10, 0, 10], [(0, 18, 0), (0, 0, 0), (0, -28, 0)]],
+                [(3, 1), [-10, 0, 10], [(0, 18, 0), (0, 0, 0), (0, -80, 0)]],
+                [(3, 2), [-10, 0, 10], [(0, 18, 0), (0, 0, 0), (0, -40, 0)]],
+                [(3, 3), [-10, 0, 10], [(0, 18, 0), (0, 0, 0), (0, -40, 0)]],
+                [(3, 4), [-10, 0, 10], [(0, 18, 0), (0, 0, 0), (0, -180, 0)]],
+            ),
+        }
+        pf = self.rigID + "_"
+
+        for attr, sdkData in toeSdkDict.items():
+            for id, drivers, drivens in sdkData:
+                attr_name = f"{pf}{self.TOE_NAMES[id[0]][id[1]]}"
+                for i, dv in enumerate(drivers):
+                    common.sdk3(
+                        self.toeMasterGrp,
+                        DagNode(f"{pf}{attr}"),
+                        attr,
+                        attr_name,
+                        dv,
+                        drivens[i],
+                        inf=1,
+                        tangent1=0,
+                        tangent2=0,
+                    )
+
+        # Connect controls to toe master group attributes
+        ut.max_(0, self.smart_ctl.a.rx) >> self.toeMasterGrp.a.toe_lift
+        ut.min_(0, self.smart_ctl.a.rx) * -1 >> self.toeMasterGrp.a.heel_lift
+        ut.max_(0, self.ball_ikc.a.rx) >> self.toeMasterGrp.a.ball_lift
+
+        toe_squash = self.smart_ctl.a.add("toe_squash", min=-10, max=10)
+        toe_squash >> self.toeMasterGrp.a.toe_squash
+        heelRollG_ofs = self.ctls_sub[-1].addOffsetGrp()
+        toe_squash >> heelRollG_ofs.a.rx
+        # common.sdk2(toe_squash, heelRollG_ofs.a.rx, -10[-10, 0, 10], [-10, 0, 10])
+
+        heel_squash = self.smart_ctl.a.add("heel_squash", min=0, max=10)
+        heel_squash >> self.toeMasterGrp.a.heel_squash
+        toeRollG_ofs = self.ctls_sub[0].addOffsetGrp()
+        heel_squash * -1 >> toeRollG_ofs.a.rx
+
+        self.smart_ctl.a.add("spread", min=-10, max=10) >> self.toeMasterGrp.a.spread
+        self.smart_ctl.a.add("curl", min=-10, max=10) >> self.toeMasterGrp.a.curl
+
+    def build_toes_bird_logic(self):
+        """Build the logic for toe controls and attributes for the quadruped leg rig."""
+
+        self.TOE_NAMES_FLAT = [n for names in self.TOE_NAMES for n in names]
+        pf = self.rigID + "_"
+
+        # Create toe main group and attrs
+        toeMasterGrp_name = f"{pf}toeMaster"
+        if mc.objExists(toeMasterGrp_name):
+            mc.delete(toeMasterGrp_name)
+        self.toeMasterGrp = GrpNode(toeMasterGrp_name)
+
+        self.TOE_ATTRS = [
+            "heel_lift",
+            "ball_lift",
+            "toe_lift",
+            "heel_squash",
+            "toe_squash",
+            # "foot_bank",
+            "spread",
+            "curl",
+        ]
+        for attr in self.TOE_ATTRS:
+            self.toeMasterGrp.a.add(attr)
+
+        # Create pose groups thru duplicate
+        srcGrp = GrpNode(f"{pf}{self.TOE_ATTRS[0]}", p=self.toeMasterGrp)
+        for n in self.TOE_NAMES_FLAT:
+            srcGrp.a.add(f"{pf}{n}", type="vector")
+
+        self.toeMasterGrp.a.showAttr()
+        srcGrp.a.showAttr()
+
+        toePoseGrps = [srcGrp]
+        for attr in self.TOE_ATTRS[1:]:
+            toePoseGrps.append(srcGrp.duplicate(n=f"{pf}{attr}"))
+
+        # Create pose sums nodes and connect the joints
+        toePoseAdds = []
+        for name in self.TOE_NAMES_FLAT:
+            pma = DepNode(f"{pf}{name}_sum", nodeType="plusMinusAverage")
+            toePoseAdds.append(pma)
+            for grp in toePoseGrps:
+                grp.a[f"{pf}{name}"] >> pma.a.input3D
+
+            tgt_jnt = DagNode(f"{pf}{name}")
+            if tgt_jnt.exists():
+                pma.a.output3D >> tgt_jnt.a.r
+
+        self.build_toe_sdk()
 
     def build_dual_bones(self):
         """Build dual bones for the lower leg."""
@@ -580,7 +778,6 @@ class LegQd(RigModule):
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
         self.update_list(self.jnts_bind, add=[radius_JC[0], ulna_JC[0]], rm=[self.lwr])
-
 
     def singleBallCtl_setup(self):
         """Make ball ctl the single ctl in both FK and IK modes."""
@@ -661,7 +858,7 @@ class LegQd(RigModule):
         #     c.a.ro.set(2)
 
         self.smart_ctl.a.ro.set(2)
-        
+
         if self.carpalFix:
             self.ofsFixJ.a.ro.set(2)
             self.carpalFixJ.a.ro.set(2)
