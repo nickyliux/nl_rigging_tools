@@ -56,8 +56,8 @@ class LegQd(RigModule):
         self.ctls_sub = []
 
         self.all_ikHs = {}
-        self.toesJntList = []
-        self.toesCtlsList = []
+        self.toeJntsArray = []
+        self.toeCtlsArray = []
         self.toeIKHs = []
 
         self.ikc = None
@@ -196,7 +196,7 @@ class LegQd(RigModule):
         if xDr == -1:
             self.smart_ctl.cv_rotate(180, 0, 0)
 
-        self.setting.cv_move(scale * 20, 0, 0)
+        self.setting.cv_move(scale * 15, 0, 0)
         self.ikc.cv_move(0, 0, rSz * 5)
         self.hip_fkc.cv_rotate(0, 90, 0)
         self.hip_fkc.cv_move(scale * 5, -scale * 10, 0)
@@ -241,7 +241,6 @@ class LegQd(RigModule):
             self.carpalFix_setup(self.palm, self.digit, tz=(-1, -5), tx=(0.5, 1))
 
         self.build_toes(self.toeType)
-
         self.build_post()
 
     def build_toes(self, type=1):
@@ -249,13 +248,13 @@ class LegQd(RigModule):
         logging.info(".")
 
         if self.toeType == 1 or self.toeType == 2:
-            self.toesJntList = []
+            self.toeJntsArray = []
 
             for rJ in self.toesRootJ.childrenJt:
-                self.toesJntList.append([fgr for fgr in rJ.allChildrenJt2])
+                self.toeJntsArray.append([fgr for fgr in rJ.allChildrenJt2])
                 rJ.a.segmentScaleCompensate.set(0)
 
-            for toeJs in self.toesJntList:
+            for toeJs in self.toeJntsArray:
                 self.update_list(self.jnts_bind, add=toeJs[:-1])
 
         if type == 1:
@@ -269,7 +268,7 @@ class LegQd(RigModule):
             self.update_list(self.jnts_bind, rm=[self.ball, self.digit])
 
         elif type == 2:
-            # self.build_toes_bird()
+            self.build_toes_bird()
             self.build_toes_bird_logic()
 
             self.toesRootJ | self.digit
@@ -291,6 +290,7 @@ class LegQd(RigModule):
             self.digit_fkc,
             self.ball_fkc,
         ]
+
         self.build_fk_with_ctl2(self.jnts_fk, self.ctls_fk, p=self.FK_GRP)
 
     def build_ik(self):
@@ -401,10 +401,10 @@ class LegQd(RigModule):
         logging.info(".")
         rID, rSz, xDr = self.get_short_form()
 
-        # self.setting.snapTo(self.palm, p=self.CTL_DATA)
-        # self.palm.cstPar(self.setting, mo=1)
-        self.setting.snapTo(self.hip, p=self.CTL_DATA)
-        self.hip.cstPar(self.setting, mo=1)
+        self.setting.snapTo(self.palm, p=self.CTL_DATA)
+        self.palm.cstPar(self.setting, mo=1)
+        # self.setting.snapTo(self.hip, p=self.CTL_DATA)
+        # self.hip.cstPar(self.setting, mo=1)
 
         fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=1)
         for i in range(len(self.jnts) - 1):
@@ -482,12 +482,10 @@ class LegQd(RigModule):
     def smart_ctl_setup(self, toeRollG):
         """Setup the smart control for foot roll and bank."""
         rID, rSz, xDr = self.get_short_form()
+        self.smart_ctl.snapAlignTo(toeRollG, self.masterGuide, p=self.ikc)
 
-        self.smart_ctl | self.ikc
-        self.smart_ctl.snapAlignTo(toeRollG, self.masterGuide)
-        ofs = self.smart_ctl.addOffsetGrp()
-
-        self.smart_ctl.a.add("posOffset", k=0, dv=20 * rSz) >> ofs.a.tz
+        twoOfs = self.smart_ctl.addOffsetGrp(count=2)
+        self.smart_ctl.a.add("posOffset", k=0, dv=10 * rSz) >> twoOfs[0].a.tz
 
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         (-xDr * self.smart_ctl.a.ry) >> toeRollG.a.ry
@@ -498,43 +496,34 @@ class LegQd(RigModule):
         logging.info(".")
 
         rID, rSz, xDr = self.get_short_form()
-        self.toesCtlsList = []
-        scale = xDr * rSz / 6
+        self.toeCtlsArray = []
+        scale = xDr * rSz / 20
 
         # --- Build digit IK and FK controls for each toe chain ---
         # dupId = 2 if self.includeMeta == 1 else 1
-        dupId = 0
-        for toeJs in self.toesJntList:
-            dupTgt = JntNode(toeJs[dupId])
-
-            ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
-            self.toeIKHs.append(ikH)
-            ikJ.a.r >> dupTgt.a.r
-
-            # Build FK controls for toe joints
-            fkToeList = toeJs[(dupId + 1) : -1]
+        for toeJs in self.toeJntsArray:
+            # # Build FK controls for toe joints
+            fkToeList = toeJs[:-1]
             ctlList = []
             for jnt in fkToeList:
-                crvName = f"{jnt.name}_ctl_#"
-                c = CrvNode(
-                    crvName, shape="hexagon_3d", up="x", align=jnt, scale=-scale
-                )
+                crvName = f"{jnt.name}_fkc"
+                c = CrvNode(crvName, shape="locator", align=jnt, scale=scale, top=1)
                 ctlList.append(c)
 
-            self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
-            self.toesCtlsList.append(ctlList)
+            self.build_fk_with_ctl3(fkToeList, ctlList, p=self.CTL_DATA, noCst=1)
+            self.toeCtlsArray.append(ctlList)
 
     def build_toes_mammal(self):
         """Build the digit controls for the quadruped leg rig."""
         logging.info(".")
 
         rID, rSz, xDr = self.get_short_form()
-        self.toesCtlsList = []
+        self.toeCtlsArray = []
         scale = xDr * rSz / 6
 
         # --- Build digit IK and FK controls for each toe chain ---
         dupId = 2 if self.includeMeta == 1 else 1
-        for toeJs in self.toesJntList:
+        for toeJs in self.toeJntsArray:
             dupTgt = JntNode(toeJs[dupId])
 
             ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
@@ -553,11 +542,11 @@ class LegQd(RigModule):
 
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
 
-            self.toesCtlsList.append(ctlList)
+            self.toeCtlsArray.append(ctlList)
             # self.update_list(self.jnts_bind, add=toeJs[:-1])
 
         # --- Add hidden IK handles for toe segments ---
-        for toeJs in self.toesJntList:
+        for toeJs in self.toeJntsArray:
             IkNode(
                 toeJs[dupId - 1],
                 sj=toeJs[dupId - 1],
@@ -573,94 +562,92 @@ class LegQd(RigModule):
         """Build SDK connections for toe groups and joints."""
 
         toeSdkDict = {
-            "heel_lift": (
-                [(0, 0), [0, 90], [(0, 0, 0), (0, 45, 0)]],
-                [(0, 1), [0, 90], [(0, 0, 0), (0, 45, 0)]],
-                [(0, 2), [0, 90], [(0, 0, 0), (0, 2, 0)]],
-            ),
-            "ball_lift": (
-                [(0, 1), [0, 90], [(0, 0, 0), (0, -60, 0)]],
-                [(0, 2), [0, 90], [(0, 0, 0), (0, -16, 0)]],
-                [(1, 1), [0, 90], [(0, 0, 0), (0, 28, 0)]],
-                [(1, 2), [0, 90], [(0, 0, 0), (0, 50, 0)]],
-                [(2, 0), [0, 90], [(0, 0, 0), (0, 2, 0)]],
-                [(2, 1), [0, 90], [(0, 0, 0), (0, 75, 0)]],
-                [(2, 2), [0, 90], [(0, 0, 0), (0, 30, 0)]],
-                [(2, 3), [0, 90], [(0, 0, 0), (0, -16, 0)]],
-                [(3, 1), [0, 90], [(0, 0, 0), (0, 4, 0)]],
-                [(3, 2), [0, 90], [(0, 0, 0), (0, 5, 0)]],
-                [(3, 3), [0, 90], [(0, 0, 0), (0, 50, 0)]],
-                [(3, 4), [0, 90], [(0, 0, 0), (0, -3, 0)]],
-            ),
             "toe_lift": (
-                [(0, 0), [0, 90], [(0, 0, 0), (0, -10, 0)]],
+                [(0, 0), [0, 90], [(0, 0, 0), (0, -120, 0)]],
                 [(0, 1), [0, 90], [(0, 0, 0), (0, -60, 0)]],
-                # [(1, 0), [0, 90], [(0, 0, 0), (0, 4, 0)]],
-                # [(1, 2), [0, 90], [(0, 0, 0), (0, -6, 0)]],
-                # [(2, 0), [0, 90], [(0, 0, 0), (0, 6, 0)]],
-                # [(2, 1), [0, 90], [(0, 0, 0), (0, 20, 0)]],
-                # [(3, 4), [0, 90], [(0, 0, 0), (0, -30, 0)]],
+            ),
+            "ball_lift1": (  # index toe
+                [(1, 1), [0, 30], [(0, 0, 0), (0, 14, 0)]],
+                [(1, 2), [0, 30], [(0, 0, 0), (-1.6, 16, 0)]],
+            ),
+            "ball_lift2": (  # Mid & Thumb
+                [(0, 1), [0, 30], [(0, 0, 0), (0, -46.1, 0)]],
+                [(0, 2), [0, 30], [(0, 0, 0), (0, 8.2, 0)]],
+                [(2, 0), [0, 30], [(0, 0, 0), (0, 6.17, 0)]],
+                [(2, 1), [0, 30], [(0, 0, 0), (0, 9.8, 0)]],
+                [(2, 2), [0, 30], [(0, 0, 0), (0, 19.33, 0)]],
+                [(2, 3), [0, 30], [(0, 0, 0), (0, -4.47, 0)]],
+            ),
+            "ball_lift3": (  # ring toe
+                [(3, 1), [0, 30], [(0, 0, 0), (0, -2.07, 0)]],
+                [(3, 2), [0, 30], [(0, 0, 0), (1.6, 10.76, 0)]],
+                [(3, 3), [0, 30], [(0, 0, 0), (0, 25.4, 0)]],
+                [(3, 4), [0, 30], [(0, 0, 0), (0, -3.57, 0)]],
+            ),
+            "heel_lift": (
+                [(0, 0), [0, 90], [(0, 0, 0), (0, 50, 0)]],
+                [(0, 1), [0, 90], [(0, 0, 0), (0, 40, 0)]],
             ),
             "toe_squash": (
-                [(0, 1), [-10, 0, 10], [(0, 7, 0), (0, 0, 0), (0, -11, 0)]],
-                [(0, 2), [-10, 0, 10], [(0, 5, 0), (0, 0, 0), (0, 0, 0)]],
-                [(1, 0), [-10, 0, 10], [(0, -13, 0), (0, 0, 0), (0, 7, 0)]],
-                [(1, 1), [-10, 0, 10], [(0, 3, 0), (0, 0, 0), (0, 3, 0)]],
-                [(2, 0), [-10, 0, 10], [(0, -12, 0), (0, 0, 0), (0, 7, 0)]],
-                [(2, 1), [-10, 0, 10], [(0, 2, 0), (0, 0, 0), (0, 7, 0)]],
-                [(3, 0), [-10, 0, 10], [(0, -13, 0), (0, 0, 0), (0, 7, 0)]],
-                [(3, 1), [-10, 0, 10], [(0, 4, 0), (0, 0, 0), (0, 3, 0)]],
-                [(3, 2), [-10, 0, 10], [(0, 0, 0), (0, 0, 0), (0, -3, 0)]],
+                [(0, 1), [-10, 0, 10], [(0, 7.12, 0), (0, 0, 0), (0, -11.1, 0)]],
+                [(0, 2), [-10, 0, 10], [(0, 5.39, 0), (0, 0, 0), (0, 0, 0)]],
+                [(1, 0), [-10, 0, 10], [(0, -13.77, 0), (0, 0, 0), (0, 7.74, 0)]],
+                [(1, 1), [-10, 0, 10], [(0, 3.05, 0), (0, 0, 0), (0, 3.41, 0)]],
+                [(2, 0), [-10, 0, 10], [(0, -13.7, 0), (0, 0, 0), (0, 7.74, 0)]],
+                [(2, 1), [-10, 0, 10], [(0, 1.87, 0), (0, 0, 0), (0, 4.62, 0)]],
+                [(3, 0), [-10, 0, 10], [(0, -13.77, 0), (0, 0, 0), (0, 7.74, 0)]],
+                [(3, 1), [-10, 0, 10], [(0, 3.41, 0), (0, 0, 0), (0, 3.39, 0)]],
+                [(3, 2), [-10, 0, 10], [(0, 0, 0), (0, 0, 0), (0, -3.14, 0)]],
             ),
             "heel_squash": (
-                [(0, 0), [0, 10], [(0, 0, 0), (0, 54, 0)]],
-                [(0, 1), [0, 10], [(0, 0, 0), (0, -6, 0)]],
-                [(0, 2), [0, 10], [(0, 0, 0), (0, -28, 0)]],
-                [(1, 0), [0, 10], [(0, 0, 0), (0, 16, 0)]],
-                [(1, 1), [0, 10], [(0, 0, 0), (0, -6, 0)]],
-                [(1, 2), [0, 10], [(0, 0, 0), (0, -26, 0)]],
-                [(2, 0), [0, 10], [(0, 0, 0), (0, 13, 0)]],
-                [(2, 1), [0, 10], [(0, 0, 0), (0, -19, 0)]],
-                [(2, 2), [0, 10], [(0, 0, 0), (0, -5, 0)]],
-                [(2, 3), [0, 10], [(0, 0, 0), (0, 5, 0)]],
-                [(3, 0), [0, 10], [(0, 0, 0), (0, 16, 0)]],
-                [(3, 1), [0, 10], [(0, 0, 0), (0, -1, 0)]],
-                [(3, 2), [0, 10], [(0, 0, 0), (0, -14, 0)]],
-                [(3, 3), [0, 10], [(0, 0, 0), (0, -14, 0)]],
-                [(3, 4), [0, 10], [(0, 0, 0), (0, -4, 0)]],
+                [(0, 0), [0, 10], [(0, 0, 0), (0, 27.86, 0)]],
+                [(0, 1), [0, 10], [(0, 0, 0), (0, -3.79, 0)]],
+                [(0, 2), [0, 10], [(0, 0, 0), (0, -14.47, 0)]],
+                [(1, 0), [0, 10], [(0, 0, 0), (0, 8.51, 0)]],
+                [(1, 1), [0, 10], [(0, 0, 0), (0, -3.78, 0)]],
+                [(1, 2), [0, 10], [(0, 0, 0), (0, -13.85, 0)]],
+                [(2, 0), [0, 10], [(0, 0, 0), (0, 8.5, 0)]],
+                [(2, 1), [0, 10], [(0, 0, 0), (0, -3.5, 0)]],
+                [(2, 2), [0, 10], [(0, 0, 0), (0, -10.75, 0)]],
+                [(2, 3), [0, 10], [(0, 0, 0), (0, -1.53, 0)]],
+                [(3, 0), [0, 10], [(0, 0, 0), (0, 8.51, 0)]],
+                [(3, 1), [0, 10], [(0, 0, 0), (0, -0.16, 0)]],
+                [(3, 2), [0, 10], [(0, 0, 0), (0, -7.04, 0)]],
+                [(3, 3), [0, 10], [(0, 0, 0), (0, -6.88, 0)]],
+                [(3, 4), [0, 10], [(0, 0, 0), (0, -1.83, 0)]],
             ),
             # "foot_bank": (
-            #     [(0, 1), [-90, 0, 90], [(-0.6, -1.4, 4), (0, 0, 0), (0.6, 1.4, -4)]],
-            #     [(1, 0), [-90, 0, 90], [(0.6, -28, -2.6), (0, 0, 0), (-0.6, 28, 2.6)]],
-            #     [(1, 1), [-90, 0, 90], [(-0.6, 4, -5.2), (0, 0, 0), (0.6, -4, 5.2)]],
-            #     [(1, 2), [-90, 0, 90], [(0, 18, 0), (0, 0, 0), (0, -18, 0)]],
-            #     [(2, 0), [-90, 0, 90], [(-0.4, 0.4, -4), (0, 0, 0), (0.4, -0.4, 4)]],
-            #     [(2, 1), [-90, 0, 90], [(0, -2, 0), (0, 0, 0), (0, 2, 0)]],
-            #     [(3, 0), [-90, 0, 90], [(0, 14, -0.6), (0, 0, 0), (0, -24, 0.6)]],
-            #     [(3, 1), [-90, 0, 90], [(0, -5.4, -1.2), (0, 0, 0), (0, 5.4, 1.2)]],
-            #     [(3, 2), [-90, 0, 90], [(0, -3, 0), (0, 0, 0), (0, 3, 0)]],
-            #     [(3, 3), [-90, 0, 90], [(0, -3, 0), (0, 0, 0), (0, 3, 0)]],
-            #     [(3, 4), [-90, 0, 90], [(0, -3.6, 0), (0, 0, 0), (0, 3.6, 0)]],
+            #     [(0, 1), [-10, 0, 10], [(0, 0, 0), (0, 0, 0), (0, 0, 0)]],
+            #     [(1, 0), [-10, 0, 10], [(0, 0, 0), (0, 0, 0), (0, 0, 0)]],
+            #     [(1, 1), [-10, 0, 10], [(0, 0, 0), (0, 0, 0), (0, 0, 0)]],
+            #     [(1, 2), [-10, 0, 10], [(0, 0, 0), (0, 0, 0), (0, 0, 0)]],
+            #     [(2, 0), [-10, 0, 10], [(0, 0, 0), (0, 0, 0), (0, 0, 0)]],
+            #     [(2, 1), [-10, 0, 10], [(0, 0, 0), (0, 0, 0), (0, 0, 0)]],
+            #     [(3, 0), [-10, 0, 10], [(0, 0, 0), (0, 0, 0), (0, 0, 0)]],
+            #     [(3, 1), [-10, 0, 10], [(0, 0, 0), (0, 0, 0), (0, 0, 0)]],
+            #     [(3, 2), [-10, 0, 10], [(0, 0, 0), (0, 0, 0), (0, 0, 0)]],
+            #     [(3, 3), [-10, 0, 10], [(0, 0, 0), (0, 0, 0), (0, 0, 0)]],
+            #     [(3, 4), [-10, 0, 10], [(0, 0, 0), (0, 0, 0), (0, 0, 0)]],
             # ),
             "spread": (
-                [(1, 0), [-10, 0, 10], [(-8, -4, -48), (0, 0, 0), (8, 4, 48)]],
-                [(3, 0), [-10, 0, 10], [(6, -2, 48), (0, 0, 0), (-6, 2, -48)]],
+                [(1, 0), [-10, 0, 10], [(-8, -4, -36), (0, 0, 0), (8, 4, 36)]],
+                [(3, 0), [-10, 0, 10], [(6, -2, 36), (0, 0, 0), (-6, 2, -36)]],
             ),
             "curl": (
-                [(0, 1), [-10, 0, 10], [(0, 24, 0), (0, 0, 0), (0, -30, 0)]],
-                [(0, 2), [-10, 0, 10], [(0, 24, 0), (0, 0, 0), (0, -50, 0)]],
-                [(1, 0), [-10, 0, 10], [(0, 26, 0), (0, 0, 0), (0, -32, 0)]],
-                [(1, 1), [-10, 0, 10], [(0, 26, 0), (0, 0, 0), (0, -43, 0)]],
-                [(1, 2), [-10, 0, 10], [(0, 26, 0), (0, 0, 0), (0, -73, 0)]],
-                [(2, 0), [-10, 0, 10], [(0, 26, 0), (0, 0, 0), (0, -26, 0)]],
-                [(2, 1), [-10, 0, 10], [(0, 26, 0), (0, 0, 0), (0, -40, 0)]],
-                [(2, 2), [-10, 0, 10], [(0, 26, 0), (0, 0, 0), (0, -27, 0)]],
-                [(2, 3), [-10, 0, 10], [(0, 26, 0), (0, 0, 0), (0, -75, 0)]],
-                [(3, 0), [-10, 0, 10], [(0, 18, 0), (0, 0, 0), (0, -14, 0)]],
-                [(3, 1), [-10, 0, 10], [(0, 18, 0), (0, 0, 0), (0, -40, 0)]],
-                [(3, 2), [-10, 0, 10], [(0, 18, 0), (0, 0, 0), (0, -20, 0)]],
-                [(3, 3), [-10, 0, 10], [(0, 18, 0), (0, 0, 0), (0, -20, 0)]],
-                [(3, 4), [-10, 0, 10], [(0, 18, 0), (0, 0, 0), (0, -70, 0)]],
+                [(0, 1), [-10, 0, 10], [(0, 11.4, 0), (0, 0, 0), (0, -53.5, 0)]],
+                [(0, 2), [-10, 0, 10], [(0, 11.4, 0), (0, 0, 0), (0, -105.38, 0)]],
+                [(1, 0), [-10, 0, 10], [(0, 13.43, 0), (0, 0, 0), (0, -32.2, 0)]],
+                [(1, 1), [-10, 0, 10], [(0, 13.43, 0), (0, 0, 0), (0, -40.89, 0)]],
+                [(1, 2), [-10, 0, 10], [(0, 13.43, 0), (0, 0, 0), (0, -93.17, 0)]],
+                [(2, 0), [-10, 0, 10], [(0, 13.43, 0), (0, 0, 0), (0, -26.68, 0)]],
+                [(2, 1), [-10, 0, 10], [(0, 13.43, 0), (0, 0, 0), (0, -37.44, 0)]],
+                [(2, 2), [-10, 0, 10], [(0, 13.43, 0), (0, 0, 0), (0, -26.68, 0)]],
+                [(2, 3), [-10, 0, 10], [(0, 13.43, 0), (0, 0, 0), (0, -94.44, 0)]],
+                [(3, 0), [-10, 0, 10], [(0, 9.58, 0), (0, 0, 0), (0, -14.35, 0)]],
+                [(3, 1), [-10, 0, 10], [(0, 9.58, 0), (0, 0, 0), (0, -35.96, 0)]],
+                [(3, 2), [-10, 0, 10], [(0, 9.58, 0), (0, 0, 0), (0, -20.91, 0)]],
+                [(3, 3), [-10, 0, 10], [(0, 9.58, 0), (0, 0, 0), (0, -20.91, 0)]],
+                [(3, 4), [-10, 0, 10], [(0, 9.58, 0), (0, 0, 0), (0, -100.53, 0)]],
             ),
         }
         pf = self.rigID + "_"
@@ -687,9 +674,22 @@ class LegQd(RigModule):
                         )
 
         # Connect controls to toe master group attributes
-        ut.max_(0, self.ball_ikc.a.rx) >> self.toeMasterGrp.a.ball_lift
-        ut.max_(0, self.smart_ctl.a.rx) >> self.toeMasterGrp.a.toe_lift
-        ut.min_(0, self.smart_ctl.a.rx) * -1 >> self.toeMasterGrp.a.heel_lift
+        attr = self.smart_ctl.a.add("toe_lift_scale", dv=1)  # , k=0)
+        ut.max_(0, self.smart_ctl.a.rx) * attr >> self.toeMasterGrp.a.toe_lift
+
+        attr = self.ball_ikc.a.add("ball_lift1_scale", dv=1)  # , k=0)
+        ut.max_(0, self.ball_ikc.a.rx) * attr >> self.toeMasterGrp.a.ball_lift1
+
+        attr = self.ball_ikc.a.add("ball_lift2_scale", dv=1)  # , k=0)
+        ut.max_(0, self.ball_ikc.a.rx) * attr >> self.toeMasterGrp.a.ball_lift2
+
+        attr = self.ball_ikc.a.add("ball_lift3_scale", dv=1)  # , k=0)
+        ut.max_(0, self.ball_ikc.a.rx) * attr >> self.toeMasterGrp.a.ball_lift3
+
+        attr = self.smart_ctl.a.add("heel_lift_scale", dv=1)  # , k=0)
+        ut.min_(0, self.smart_ctl.a.rx) * -attr >> self.toeMasterGrp.a.heel_lift
+
+        self.smart_ctl.a.addSep()
 
         toe_squash = self.smart_ctl.a.add("toe_squash", min=-10, max=10)
         toe_squash >> self.toeMasterGrp.a.toe_squash
@@ -701,6 +701,7 @@ class LegQd(RigModule):
         toeRollG_ofs = self.ctls_sub[0].addOffsetGrp()
         heel_squash * -1 >> toeRollG_ofs.a.rx
 
+        # self.smart_ctl.a.add("bank", min=-10, max=10) >> self.toeMasterGrp.a.foot_bank
         self.smart_ctl.a.add("spread", min=-10, max=10) >> self.toeMasterGrp.a.spread
         self.smart_ctl.a.add("curl", min=-10, max=10) >> self.toeMasterGrp.a.curl
 
@@ -718,7 +719,9 @@ class LegQd(RigModule):
 
         self.TOE_ATTRS = [
             "heel_lift",
-            "ball_lift",
+            "ball_lift1",
+            "ball_lift2",
+            "ball_lift3",
             "toe_lift",
             "heel_squash",
             "toe_squash",
@@ -750,8 +753,15 @@ class LegQd(RigModule):
                 grp.a[f"{pf}{name}"] >> pma.a.input3D
 
             tgt_jnt = DagNode(f"{pf}{name}")
-            if tgt_jnt.exists():
-                pma.a.output3D >> tgt_jnt.a.r
+            tgt_fkc = DagNode(f"{pf}{name}_fkc")
+            if tgt_jnt.exists() and tgt_fkc.exists():
+                pma_fkc = DepNode("addFkc_#", nodeType="plusMinusAverage")
+                pma.a.output3D >> pma_fkc.a.input3D
+                tgt_fkc.a.r >> pma_fkc.a.input3D
+                pma_fkc.a.output3D >> tgt_jnt.a.r
+
+                tgt_jnt.parent.cstPar(tgt_fkc.parent, mo=1)
+                # pma.a.output3D >> tgt_jnt.a.r
 
         self.build_toe_sdk()
 
@@ -830,6 +840,9 @@ class LegQd(RigModule):
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             offList=self.ctls_fk[1:-1],
         )
+        if self.toeType == 2:
+            self.ctls_fk[-1].hide()
+
         self.ctl_vis_toggle(
             self.ikc.a.add("extraCtl", dv=1, type="bool", k=0),
             onList=self.ctls_sub,
@@ -840,6 +853,12 @@ class LegQd(RigModule):
         )
         [ikh.hide() for ikh in self.all_ikHs.values()]
         mc.hide(self.toeIKHs)
+
+        for toesCtls in self.toeCtlsArray:
+            self.ctl_vis_toggle(
+                self.setting.a.add("toeCtlFkVis", dv=1, type="bool", k=0),
+                onList=toesCtls,
+            )
 
     def setup_channel(self):
         """Setup channels for the quadruped leg rig controls."""
@@ -853,6 +872,10 @@ class LegQd(RigModule):
 
         if self.scapulaBone:
             self.scap_fkc.a.showAttr(t=1, r=1)
+
+        if self.toeType == 2:
+            for ctls in self.toeCtlsArray:
+                [ctl.a.showAttr(r=1) for ctl in ctls]
 
     def setup_rotate_order(self):
         """Setup rotate order for the quadruped leg rig controls."""
@@ -895,22 +918,27 @@ class LegQd(RigModule):
     def setup_ctlSet(self):
         """Setup control sets for the quadruped leg rig module."""
         ctlSet = (
-            self.ctls_fk
+            self.ctls_fk[:-1]
             + self.ctls_ik
             + self.ctls_sub
             + [self.smart_ctl, self.setting, self.extra_ikc]
         )
+        if self.toeType != 2:
+            ctlSet.append(self.ctls_fk[-1])
+
         if self.scapulaBone:
             ctlSet.append(self.scap_fkc)
-        if self.toeType == 1:
-            [ctlSet.extend(s) for s in self.toesCtlsList or []]
+        if self.toeType > 0:
+            [ctlSet.extend(s) for s in self.toeCtlsArray or []]
+
         self.add_ctl_set(ctlSet)
 
     def setup_bindJnt(self):
         """Setup bind joints for the quadruped leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
         proxy.add_proxyRadiusScale_attr(self.jnts_toes, 1)
-        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 5)
+        if self.toeType != 2:
+            proxy.add_proxyRadiusScale_attr(self.jnts_bind, 5)
 
     def setup_scale(self):
         """Setup scale for the quadruped leg rig module."""

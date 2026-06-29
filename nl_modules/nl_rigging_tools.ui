@@ -1302,7 +1302,7 @@
        <string>Left</string>
       </property>
       <property name="text">
-       <string>Load latest</string>
+       <string>Auto Load</string>
       </property>
       <property name="checked">
        <bool>true</bool>

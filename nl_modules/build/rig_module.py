@@ -138,7 +138,7 @@ class RigModule(RigBase):
                 last_ctl = ctl
 
     @staticmethod
-    def build_fk_with_ctl3(jntList, ctlList=None, count=1, p=None):
+    def build_fk_with_ctl3(jntList, ctlList=None, count=1, p=None, noCst=0):
         """
         p
         └── ctl1_ofs
@@ -159,7 +159,8 @@ class RigModule(RigBase):
 
             ctl.alignTo(jnt)
             ofs = ctl.addOffsetGrp(count=count)
-            ctl.cstPar(jnt, mo=1)
+            if not noCst:
+                ctl.cstPar(jnt, mo=1)
 
             if last_ctl:
                 ofsToParent = ofs[-1] if count > 1 else ofs
@@ -167,8 +168,10 @@ class RigModule(RigBase):
             last_ctl = ctl
 
     @staticmethod
-    def build_fk_with_ctl_dbl(jntList, ctlList=None, drvList=None, count=1, p=None):
-        """FK setup for toe
+    def build_fk_with_ctl_dbl(
+        jntList, ctlList=None, drvList=None, count=1, p=None, noCst=0
+    ):
+        """
         P
             Ctl 1 offset        << t & r connected by the ctl from DBL
                 Ctl 1
@@ -177,7 +180,6 @@ class RigModule(RigBase):
                         ...
                         Ctl N offset
                             Ctl N
-        Structure without Controls
         P
             Ctl 1 offset DBL        << cst by foot joint
                 Ctl 2 offset DBL        << cst by ball joint
@@ -197,7 +199,8 @@ class RigModule(RigBase):
                 ctl | p
             ctl.alignTo(jnt)
             ctl_ofs = ctl.addOffsetGrp(count=count)
-            ctl.cstPar(jnt, mo=1)
+            if not noCst:
+                ctl.cstPar(jnt, mo=1)
 
             if last_ctl:
                 if count > 1:
@@ -214,11 +217,18 @@ class RigModule(RigBase):
             dbl_ctl_ofs = ghost.addOffsetGrp(count=count)
             ghost.delete()
 
-            if last_dbl:
-                dbl_ctl_ofs[0] | last_dbl
-            last_dbl = dbl_ctl_ofs[-1]
-            last_dbl.a.t >> ctl_ofs[-1].a.t
-            last_dbl.a.r >> ctl_ofs[-1].a.r
+            if count > 1:
+                if last_dbl:
+                    dbl_ctl_ofs[0] | last_dbl
+                last_dbl = dbl_ctl_ofs[-1]
+                last_dbl.a.t >> ctl_ofs[-1].a.t
+                last_dbl.a.r >> ctl_ofs[-1].a.r
+            else:
+                if last_dbl:
+                    dbl_ctl_ofs | last_dbl
+                last_dbl = dbl_ctl_ofs
+                last_dbl.a.t >> ctl_ofs.a.t
+                last_dbl.a.r >> ctl_ofs.a.r
 
             if drvList and len(drvList) > i:
                 drvList[i].cstPar(last_dbl, mo=1)
