@@ -269,7 +269,6 @@ class LegQd(RigModule):
 
         elif type == 2:
             self.build_toes_bird()
-            self.build_toes_bird_logic()
 
             self.toesRootJ | self.digit
             self.update_list(self.jnts_bind, rm=[self.ball, self.digit])
@@ -507,11 +506,13 @@ class LegQd(RigModule):
             ctlList = []
             for jnt in fkToeList:
                 crvName = f"{jnt.name}_fkc"
-                c = CrvNode(crvName, shape="locator", align=jnt, scale=scale, top=1)
+                c = CrvNode(crvName, shape="stickC", up="-z", align=jnt, scale=scale)
                 ctlList.append(c)
 
             self.build_fk_with_ctl3(fkToeList, ctlList, p=self.CTL_DATA, noCst=1)
             self.toeCtlsArray.append(ctlList)
+
+        self.build_toes_bird_logic()
 
     def build_toes_mammal(self):
         """Build the digit controls for the quadruped leg rig."""
@@ -535,9 +536,7 @@ class LegQd(RigModule):
             ctlList = []
             for jnt in fkToeList:
                 crvName = f"{jnt.name}_ctl_#"
-                c = CrvNode(
-                    crvName, shape="hexagon_3d", up="x", align=jnt, scale=-scale
-                )
+                c = CrvNode(crvName, shape="stickC", up="-z", align=jnt, scale=scale)
                 ctlList.append(c)
 
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
