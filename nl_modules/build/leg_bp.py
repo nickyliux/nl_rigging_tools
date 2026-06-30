@@ -29,7 +29,7 @@ class LegBp(RigModule):
             "kneeFix",
             "rollJntNum",
             "rbnJntNum",
-            "scapulaAutoAim",
+            "hipAutoAim",
         ]
         for attr in guide_attrs:
             setattr(self, attr, self.masterGuide.a[attr].get())
@@ -134,7 +134,7 @@ class LegBp(RigModule):
             ("lwr_fkc", "octagon_3d", "x", scale, 0),
             ("palm_fkc", "octagon_3d", "x", scale, 0),
             ("ball_fkc", "octagon_3d", "x", scale / 2, 0),
-            ("ikc", "foot2", None, rSz, 0),  # Vec((1.6, 0.5, 3.2))
+            ("ikc", "foot3", None, rSz, 0),  # Vec((1.6, 0.5, 3.2))
             ("pvc", "sphere", None, rSz, 0),
             ("smart_ctl", "pyramid", None, scale / 3, 0),
         ]
@@ -173,7 +173,6 @@ class LegBp(RigModule):
         # self.build_nlAutoAim(
         #     self.hip, self.upr, fkc=self.hip_fkc, ikc=self.ikc, ikcGim=self.ikc_gimbal
         # )
-        # self.update_list(self.jnts_bind, add=self.jnts[:-1])
         self.update_list(self.jnts_bind, add=[self.hip, self.palm])
 
         self.scapulaG = self.build_legScapula(
@@ -183,7 +182,7 @@ class LegBp(RigModule):
             uprJ=self.upr,
             addScap=self.scapulaBone,
             scapCtl=self.scap_fkc,
-            autoAim_dv=self.scapulaAutoAim,
+            autoAim_dv=self.hipAutoAim,
         )
 
         self.aimRoll_setup()
@@ -216,6 +215,8 @@ class LegBp(RigModule):
 
         if self.toeBones:
             self.build_toes()
+        else:
+            self.update_list(self.jnts_bind, add=[self.ball])
 
         self.build_post()
 
@@ -347,15 +348,13 @@ class LegBp(RigModule):
         """Setup the smart control for foot rolling."""
         rID, rSz, xDr = self.get_short_form()
 
-        self.smart_ctl | self.ikc
-        self.smart_ctl.snapAlignTo(toeRollG, self.masterGuide)
-        ofs = self.smart_ctl.addOffsetGrp()
-
-        self.smart_ctl.a.add("posOffset", k=0, dv=30 * rSz) >> ofs.a.tz
+        self.smart_ctl.snapAlignTo(toeRollG, self.masterGuide, p=self.ikc)
+        twoOfs = self.smart_ctl.addOffsetGrp(count=2)
+        self.smart_ctl.a.add("posOffset", k=0, dv=10 * rSz) >> twoOfs[0].a.tz
 
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
-        -xDr * self.smart_ctl.a.ry >> toeRollG.a.ry
-        -xDr * self.smart_ctl.a.rz >> self.smart_ctl.a["footBank"]
+        (-xDr * self.smart_ctl.a.ry) >> toeRollG.a.ry
+        (-xDr * self.smart_ctl.a.rz) >> self.smart_ctl.a["footBank"]
 
     def fk_pin_setup(self):
         """Setup FK pin control for the leg rig."""
@@ -572,6 +571,8 @@ class LegBp(RigModule):
 
     def setup_rotate_order(self):
         """Setup rotate order for the leg rig controls."""
+        for j in self.jnts + self.jnts_fk + self.jnts_ik + self.jnts_bf:
+            j.a.ro.set(2)
         for ctl in self.ctls_fk + self.ctls_ik + self.ctls_sub:
             ctl.a.ro.set(2)
 

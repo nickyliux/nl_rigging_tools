@@ -22,8 +22,8 @@ COMPONENT_DICT = {
     "tail": {"M": "tail"},
     "arm / bp": {"L": "lfArmBp", "R": "rtArmBp"},
     "hand / bp": {"L": "lfHandBp", "R": "rtHandBp"},
-    "leg / bp": {"L": "lfLegBp", "R": "rtLegBp"},
-    "leg / qd": {"L": "lfLegQd", "R": "rtLegQd"},
+    "leg / planti": {"L": "lfLegBp", "R": "rtLegBp"},
+    "leg / digiti unguli": {"L": "lfLegQd", "R": "rtLegQd"},
     # "leg / bird": {"L": "lfLegBird", "R": "rtLegBird"},
     "finger fk": {"L": "lfFingerFk", "R": "rtFingerFk"},
     "simple fk": {"M": "mdSimpleFk", "L": "lfSimpleFk", "R": "rtSimpleFk"},
@@ -101,7 +101,6 @@ def copyGuideBetwMG(mg1, mg2, mirror=0, ignoreMG=0):
             mc.ls(rigID[1] + "_*_guide", tr=1),
         ]
         for g1, g2 in zip(guideList[0], guideList[1]):
-
             copyCtlAttr(g1, g2, mirror=mirror, ignoreMG=ignoreMG)
     else:
         logging.info("Copy guide setting failed.")
@@ -162,7 +161,6 @@ def copyCtlAttr(A, B, wsMirror=0, mirror=0, ignoreMG=0):
     B.a.s.set(*A.a.s.get())
 
     for ud in A.a.list(ud=1, u=1, hasData=1) or []:
-
         if ud.name in ["rigID", "rigClass"]:
             continue
         try:

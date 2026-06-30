@@ -30,7 +30,7 @@ class LegQd(RigModule):
             "scapulaBone",
             "carpalFix",
             "toeNum",
-            "scapulaAutoAim",
+            "hipAutoAim",
             "palmAimRatio",
         ]
         for attr in guide_attrs:
@@ -224,7 +224,7 @@ class LegQd(RigModule):
             uprJ=self.upr,
             addScap=self.scapulaBone,
             scapCtl=self.scap_fkc,
-            autoAim_dv=self.scapulaAutoAim,
+            autoAim_dv=self.hipAutoAim,
         )
         if self.scapulaBone:
             self.scap_fkc.cv_moveTo(self.hip.o.pos)
@@ -481,8 +481,8 @@ class LegQd(RigModule):
     def smart_ctl_setup(self, toeRollG):
         """Setup the smart control for foot roll and bank."""
         rID, rSz, xDr = self.get_short_form()
-        self.smart_ctl.snapAlignTo(toeRollG, self.masterGuide, p=self.ikc)
 
+        self.smart_ctl.snapAlignTo(toeRollG, self.masterGuide, p=self.ikc)
         twoOfs = self.smart_ctl.addOffsetGrp(count=2)
         self.smart_ctl.a.add("posOffset", k=0, dv=10 * rSz) >> twoOfs[0].a.tz
 
@@ -878,10 +878,10 @@ class LegQd(RigModule):
 
     def setup_rotate_order(self):
         """Setup rotate order for the quadruped leg rig controls."""
+        for j in self.jnts + self.jnts_fk + self.jnts_ik:
+            j.a.ro.set(2)
         for c in self.ctls_fk + self.ctls_ik + self.ctls_sub:
             c.a.ro.set(2)
-        # for c in self.jnts_fk + self.jnts_ik + self.jnts:
-        #     c.a.ro.set(2)
 
         self.smart_ctl.a.ro.set(2)
 

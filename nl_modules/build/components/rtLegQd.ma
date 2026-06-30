@@ -92,7 +92,7 @@ createNode transform -n "master_guide";
 	addAttr -ci true -sn "toeNum" -ln "toeNum" -dv 5 -min 2 -max 5 -at "long";
 	addAttr -ci true -sn "parentNameMatch" -ln "parentNameMatch" -dt "string";
 	addAttr -ci true -sn "wsMirror" -ln "wsMirror" -at "float";
-	addAttr -ci true -sn "scapulaAutoAim" -ln "scapulaAutoAim" -dv 0.5 -min 0 -max 1 
+	addAttr -ci true -sn "hipAutoAim" -ln "hipAutoAim" -dv 0.5 -min 0 -max 1 
 		-at "double";
 	addAttr -ci true -sn "palmAimRatio" -ln "palmAimRatio" -min -2 -max 2 -at "double";
 	addAttr -ci true -sn "rigID" -ln "rigID" -dt "string";
@@ -109,7 +109,7 @@ createNode transform -n "master_guide";
 	setAttr -cb on ".toeNum";
 	setAttr -k on ".parentNameMatch" -type "string" "spine*";
 	setAttr -l on ".wsMirror";
-	setAttr -cb on ".scapulaAutoAim";
+	setAttr -cb on ".hipAutoAim";
 	setAttr -cb on ".palmAimRatio" 1;
 	setAttr ".rigID" -type "string" "";
 	setAttr ".rigClass" -type "string" "LegQd";
