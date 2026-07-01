@@ -628,6 +628,7 @@ class RigModule(RigBase):
 
     def build_digit_ik(self, ikTgt, scale=1, p=None):
         """Build an IK setup for a digit (e.g., finger or toe) with a control and joints."""
+
         ikJ, ikJ_end = self.build_digit_ik_chain(ikTgt)
         ikH = IkNode(
             ikJ,

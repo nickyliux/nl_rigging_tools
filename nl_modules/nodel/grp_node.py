@@ -128,7 +128,7 @@ class GrpNode(DagNode):
         gmb_ctl = CrvNode(
             self.node + "_gmb", shape="circleV", align=self, p=self, top=1
         )
-        gmb_ctl.width = 2
+        # gmb_ctl.width = 2
         attrTgt = attrTgt or self
         attr = attrTgt.a.add("showGimbal", type="bool", dv=dv, k=0)
         gmb_ctl.a.add("showGimbal", proxy=attr, k=0)
@@ -361,7 +361,6 @@ class GrpNode(DagNode):
         if self.exists():
             sc = mc.skinCluster(self, joints, tsb=1, **kwargs)
             return sc[0] if sc else None
-
 
     def softWeightTo(self, joints, rui=0, mi=3, dr=2, **kwargs):
         """Apply soft skin weights to the mesh"""

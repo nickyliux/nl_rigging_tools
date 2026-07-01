@@ -490,6 +490,104 @@ class LegQd(RigModule):
         (-xDr * self.smart_ctl.a.ry) >> toeRollG.a.ry
         (-xDr * self.smart_ctl.a.rz) >> self.smart_ctl.a["footBank"]
 
+    def build_toes_mammal(self):
+        """Build the digit controls for the quadruped leg rig."""
+        logging.info(".")
+
+        rID, rSz, xDr = self.get_short_form()
+        self.toeCtlsArray = []
+        scale = xDr * rSz / 6
+
+        # --- Build digit IK and FK controls for each toe chain ---
+        dupId = 2 if self.includeMeta == 1 else 1
+        for toeJs in self.toeJntsArray:
+            dupTgt = JntNode(toeJs[dupId])
+
+            if dupTgt.allChildrenJt:
+                ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
+                self.toeIKHs.append(ikH)
+                # ikJ.a.r >> dupTgt.a.r
+
+                # Build FK controls for toe joints
+                fkToeList = toeJs[dupId:-1]
+                ctlList = []
+                for jnt in fkToeList:
+                    crvName = f"{jnt.name}_ctl_#"
+                    c = CrvNode(
+                        crvName, shape="hexagon_3d", up="x", align=jnt, scale=scale
+                    )
+                    ctlList.append(c)
+
+                self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
+                ikJ.a.r >> ctlList[0].addOffsetGrp().a.r
+
+                self.toeCtlsArray.append(ctlList)
+                # self.update_list(self.jnts_bind, add=toeJs[:-1])
+
+        # --- Add IK for toe segments ---
+        topIks = []
+        for toeJs in self.toeJntsArray:
+            topIks.append(
+                IkNode(
+                    toeJs[dupId - 1],
+                    sj=toeJs[dupId - 1],
+                    ee=toeJs[dupId],
+                    scaleFix=self.masterC.a["globalScale"],
+                    p_data=self.CTL_DATA,
+                    vis=0,
+                    p=self.ball_fkc,
+                )
+            )
+
+        self.build_toes_mammal_sdk(topIks)
+
+    def build_toes_mammal_sdk(self, topIks):
+
+        spread = self.smart_ctl.a.add("spread", min=-10, max=10, dv=0)
+
+        start_id = 0
+        if self.toeNum == 2:
+            start_id = 2
+        elif self.toeNum == 3:
+            start_id = 1
+        elif self.toeNum == 4:
+            start_id = 1
+
+        data_fk_rz = [
+            [(-10, -10), (0, 0), (10, 10)],
+            [(-10, -6), (0, 0), (10, 6)],
+            [(-10, -2), (0, 0), (10, 2)],
+            [(-10, 2), (0, 0), (10, -2)],
+            [(-10, 6), (0, 0), (10, -6)],
+        ]
+        data_ik_ty = [
+            [(-10, -1.5), (0, 0), (10, 1.5)],
+            [(-10, -0.9), (0, 0), (10, 0.9)],
+            [(-10, -0.3), (0, 0), (10, 0.3)],
+            [(-10, 0.3), (0, 0), (10, -0.3)],
+            [(-10, 0.9), (0, 0), (10, -0.9)],
+        ]
+        for i, toeCtls in enumerate(self.toeCtlsArray):
+            fkOfs0 = toeCtls[0].addOffsetGrp()
+            topIks[i].addOffsetGrp()
+            for j in range(3):
+                common.sdk2(spread, fkOfs0.a.rz, *data_fk_rz[start_id + i][j])
+                common.sdk2(spread, topIks[i].a.ty, *data_ik_ty[start_id + i][j])
+                # inf=1,
+                # tangent1=0,
+                # tangent2=0,
+
+            curl = self.smart_ctl.a.add(f"curl{start_id + i}", min=-10, max=10, dv=0)
+            common.sdk2(curl, fkOfs0.a.ry, -10, -40)
+            common.sdk2(curl, fkOfs0.a.ry, 0, 0)
+            common.sdk2(curl, fkOfs0.a.ry, 10, 40)
+
+            if len(toeCtls) > 1:
+                fkOfs1 = toeCtls[1].addOffsetGrp()
+                common.sdk2(curl, fkOfs1.a.ry, -10, -40)
+                common.sdk2(curl, fkOfs1.a.ry, 0, 0)
+                common.sdk2(curl, fkOfs1.a.ry, 10, 40)
+
     def build_toes_bird(self):
         """Build the digit controls for the quadruped leg rig."""
         logging.info(".")
@@ -514,50 +612,7 @@ class LegQd(RigModule):
 
         self.build_toes_bird_logic()
 
-    def build_toes_mammal(self):
-        """Build the digit controls for the quadruped leg rig."""
-        logging.info(".")
-
-        rID, rSz, xDr = self.get_short_form()
-        self.toeCtlsArray = []
-        scale = xDr * rSz / 6
-
-        # --- Build digit IK and FK controls for each toe chain ---
-        dupId = 2 if self.includeMeta == 1 else 1
-        for toeJs in self.toeJntsArray:
-            dupTgt = JntNode(toeJs[dupId])
-
-            ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
-            self.toeIKHs.append(ikH)
-            ikJ.a.r >> dupTgt.a.r
-
-            # Build FK controls for toe joints
-            fkToeList = toeJs[(dupId + 1) : -1]
-            ctlList = []
-            for jnt in fkToeList:
-                crvName = f"{jnt.name}_ctl_#"
-                c = CrvNode(crvName, shape="stickC", up="-z", align=jnt, scale=scale)
-                ctlList.append(c)
-
-            self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
-
-            self.toeCtlsArray.append(ctlList)
-            # self.update_list(self.jnts_bind, add=toeJs[:-1])
-
-        # --- Add hidden IK handles for toe segments ---
-        for toeJs in self.toeJntsArray:
-            IkNode(
-                toeJs[dupId - 1],
-                sj=toeJs[dupId - 1],
-                ee=toeJs[dupId],
-                scaleFix=self.masterC.a["globalScale"],
-                p_data=self.CTL_DATA,
-                vis=0,
-                p=self.ball_fkc,
-                # p=self.ikc_gimbal,
-            )
-
-    def build_toe_sdk(self):
+    def build_toes_bird_sdk(self):
         """Build SDK connections for toe groups and joints."""
 
         toeSdkDict = {
@@ -761,7 +816,7 @@ class LegQd(RigModule):
                 pma.a.output3D >> tgt_jnt.a.r
                 tgt_jnt.parent.cstPar(tgt_fkc.parent, mo=1)
 
-        self.build_toe_sdk()
+        self.build_toes_bird_sdk()
 
     def build_dual_bones(self):
         """Build dual bones for the lower leg."""
@@ -838,7 +893,7 @@ class LegQd(RigModule):
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             offList=self.ctls_fk[1:-1],
         )
-        if self.toeType == 2:
+        if self.toeType > 0:
             self.ctls_fk[-1].hide()
 
         self.ctl_vis_toggle(
@@ -921,7 +976,7 @@ class LegQd(RigModule):
             + self.ctls_sub
             + [self.smart_ctl, self.setting, self.extra_ikc]
         )
-        if self.toeType != 2:
+        if self.toeType == 0:
             ctlSet.append(self.ctls_fk[-1])
 
         if self.scapulaBone:
