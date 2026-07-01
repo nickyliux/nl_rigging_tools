@@ -753,14 +753,13 @@ class LegQd(RigModule):
 
             tgt_jnt = DagNode(f"{pf}{name}")
             tgt_fkc = DagNode(f"{pf}{name}_fkc")
-            if tgt_jnt.exists() and tgt_fkc.exists():
-                pma_fkc = DepNode("addFkc_#", nodeType="plusMinusAverage")
-                pma.a.output3D >> pma_fkc.a.input3D
-                tgt_fkc.a.r >> pma_fkc.a.input3D
-                pma_fkc.a.output3D >> tgt_jnt.a.r
 
+            if tgt_jnt.exists() and tgt_fkc.exists():
+                # Add fk ctl rotation to the sum
+                tgt_fkc.a.r >> pma.a.input3D
+
+                pma.a.output3D >> tgt_jnt.a.r
                 tgt_jnt.parent.cstPar(tgt_fkc.parent, mo=1)
-                # pma.a.output3D >> tgt_jnt.a.r
 
         self.build_toe_sdk()
 

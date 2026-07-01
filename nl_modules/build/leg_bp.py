@@ -450,21 +450,21 @@ class LegBp(RigModule):
             self.toesJntList.append([fgr for fgr in rootJ.allChildrenJt2])
             rootJ.a.segmentScaleCompensate.set(0)
 
-        self.build_digits()
+        self.build_toes_biped()
 
-    def build_digits(self):
+    def build_toes_biped(self):
         """Build digit controls for the leg rig."""
         logging.info(".")
 
         rID, rSz, xDr = self.get_short_form()
         self.toesCtlsList = []
-        scale = xDr * rSz
+        scale = xDr * rSz / 6
 
         # --- Build digit IK and FK controls for each toe chain ---
         for toeJs in self.toesJntList:
             dupTgt = JntNode(toeJs[1])
 
-            ikJ, ikH = self.build_digit_ik(dupTgt, scale=scale / 4, p=self.ball_fkc)
+            ikJ, ikH = self.build_digit_ik(dupTgt, scale=scale, p=self.ball_fkc)
             self.toeIKHs.append(ikH)
 
             # Build FK controls for toe joints
@@ -473,9 +473,8 @@ class LegBp(RigModule):
             for jnt in fkToeList:
                 crvName = f"{jnt.name}_ctl_#"
                 crv = CrvNode(
-                    crvName, shape="octagon_3d", up="x", scale=scale / 10, align=jnt
+                    crvName, shape="hexagon_3d", up="x", scale=scale, align=jnt
                 )
-                # crv.cv_move(scale * 0.5, 0, -scale * 2)
                 ctlList.append(crv)
 
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
