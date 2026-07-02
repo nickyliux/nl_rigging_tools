@@ -514,8 +514,6 @@ class RigModule(RigBase):
 
         carpal_guide = DagNode(rID + "_carpal_guide")
         if carpal_guide.exists():
-            lwr = palm.parent
-
             fixJ = palm.duplicate(po=1, n=self.rigID + "_carpalFix")
             fixJ.snapTo(carpal_guide)
 
@@ -527,19 +525,37 @@ class RigModule(RigBase):
         else:
             logging.info(f"Carpal guide not found: '{rID}_carpal_guide'")
 
-    def ofsBoneFix_sdk(self, driver, driven, tz=(-2, -8), tx=(2.5, 0)):
+    def ofsBoneFix_sdk(self, driver, driven, tx=(2.5, 0), tz=(-2, -8)):
         """ "Setup SDK for bone fix to drive the leg joint."""
-        s = self.xDir
+        # s = self.xDir
 
-        if tz != (0, 0):
-            common.sdk(driver, driven, "ry", "tz", 0, 0, tangent=1)
-            common.sdk(driver, driven, "ry", "tz", -90, tz[0] * s, tangent=1)
-            common.sdk(driver, driven, "ry", "tz", -180, tz[1] * s, tangent=1)
+        # if tx != (0, 0):
+        #     common.sdk(driver, driven, "ry", "tx", 0, 0, tangent=1)
+        #     common.sdk(driver, driven, "ry", "tx", -90, tx[0] * s, tangent=1)
+        #     common.sdk(driver, driven, "ry", "tx", -180, tx[1] * s, tangent=1)
+
+        # if tz != (0, 0):
+        #     common.sdk(driver, driven, "ry", "tz", 0, 0, tangent=1)
+        #     common.sdk(driver, driven, "ry", "tz", -90, tz[0] * s, tangent=1)
+        #     common.sdk(driver, driven, "ry", "tz", -180, tz[1] * s, tangent=1)
+
+        s = self.xDir
+        fixTX = self.setting.a.add("fixTX", k=0)
+        fixTX_scale = self.setting.a.add("fixTX_scale", k=0, dv=1)
+        fixTZ = self.setting.a.add("fixTZ", k=0)
+        fixTZ_scale = self.setting.a.add("fixTZ_scale", k=0, dv=1)
 
         if tx != (0, 0):
-            common.sdk(driver, driven, "ry", "tx", 0, 0, tangent=1)
-            common.sdk(driver, driven, "ry", "tx", -90, tx[0] * s, tangent=1)
-            common.sdk(driver, driven, "ry", "tx", -180, tx[1] * s, tangent=1)
+            common.sdk2(driver.a.ry, fixTX, 0, 0, tangent=1)
+            common.sdk2(driver.a.ry, fixTX, -90, tx[0] * s, tangent=1)
+            common.sdk2(driver.a.ry, fixTX, -180, tx[1] * s, tangent=1)
+            fixTX * fixTX_scale >> driven.a.tx
+
+        if tz != (0, 0):
+            common.sdk2(driver.a.ry, fixTZ, 0, 0, tangent=1)
+            common.sdk2(driver.a.ry, fixTZ, -90, tz[0] * s, tangent=1)
+            common.sdk2(driver.a.ry, fixTZ, -180, tz[1] * s, tangent=1)
+            fixTZ * fixTZ_scale >> driven.a.tz
 
     def patella_setup(self):
         """Setup patella guide and joint for the leg rig."""
