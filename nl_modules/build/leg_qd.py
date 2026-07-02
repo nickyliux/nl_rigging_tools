@@ -496,7 +496,7 @@ class LegQd(RigModule):
 
         rID, rSz, xDr = self.get_short_form()
         self.toeCtlsArray = []
-        scale = xDr * rSz / 6
+        scale = xDr * rSz / 4
 
         # --- Build digit IK and FK controls for each toe chain ---
         dupId = 2 if self.includeMeta == 1 else 1
@@ -577,16 +577,24 @@ class LegQd(RigModule):
                 # tangent1=0,
                 # tangent2=0,
 
-            curl = self.smart_ctl.a.add(f"curl{start_id + i}", min=-10, max=10, dv=0)
-            common.sdk2(curl, fkOfs0.a.ry, -10, -40)
-            common.sdk2(curl, fkOfs0.a.ry, 0, 0)
-            common.sdk2(curl, fkOfs0.a.ry, 10, 40)
+        for i, toeCtls in enumerate(self.toeCtlsArray):
+            fkOfs0 = toeCtls[0].offset
+            curlA = self.smart_ctl.a.add(
+                f"curlMid{start_id + i}", min=-10, max=10, dv=0
+            )
+            common.sdk2(curlA, fkOfs0.a.ry, -10, 50)
+            common.sdk2(curlA, fkOfs0.a.ry, 0, 0)
+            common.sdk2(curlA, fkOfs0.a.ry, 10, -50)
 
+        for i, toeCtls in enumerate(self.toeCtlsArray):
+            curlB = self.smart_ctl.a.add(
+                f"curlEnd{start_id + i}", min=-10, max=10, dv=0
+            )
             if len(toeCtls) > 1:
                 fkOfs1 = toeCtls[1].addOffsetGrp()
-                common.sdk2(curl, fkOfs1.a.ry, -10, -40)
-                common.sdk2(curl, fkOfs1.a.ry, 0, 0)
-                common.sdk2(curl, fkOfs1.a.ry, 10, 40)
+                common.sdk2(curlB, fkOfs1.a.ry, -10, 90)
+                common.sdk2(curlB, fkOfs1.a.ry, 0, 0)
+                common.sdk2(curlB, fkOfs1.a.ry, 10, -90)
 
     def build_toes_bird(self):
         """Build the digit controls for the quadruped leg rig."""
