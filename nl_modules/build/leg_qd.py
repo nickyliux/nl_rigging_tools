@@ -496,7 +496,7 @@ class LegQd(RigModule):
 
         rID, rSz, xDr = self.get_short_form()
         self.toeCtlsArray = []
-        scale = xDr * rSz / 4
+        scale = xDr * rSz / 15
 
         # --- Build digit IK and FK controls for each toe chain ---
         dupId = 2 if self.includeMeta == 1 else 1
@@ -514,8 +514,9 @@ class LegQd(RigModule):
                 for jnt in fkToeList:
                     crvName = f"{jnt.name}_ctl_#"
                     c = CrvNode(
-                        crvName, shape="hexagon_3d", up="x", align=jnt, scale=scale
+                        crvName, shape="locator", align=jnt, scale=scale, top=1, width=2
                     )
+                    # up="x",
                     ctlList.append(c)
 
                 self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
