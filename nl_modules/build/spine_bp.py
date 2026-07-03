@@ -126,6 +126,7 @@ class SpineBp(RigModule):
             aimV=(0, 1, 0),
             size=rSz * 2,
             p=self.JNT_DATA,
+            wldUpObj=self.masterGuide,
         )
         mc.delete(self.rootJ)
         self.rootJ = self.jnts_fk[0]
@@ -174,7 +175,7 @@ class SpineBp(RigModule):
             addOfs=1,
             shape="octagon_3d",
             scale=self.rigSize,
-            color=Color.PINK
+            color=Color.PINK,
         )
         ctl.cv_scale(2.2)
 

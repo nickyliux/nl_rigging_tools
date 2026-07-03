@@ -109,6 +109,7 @@ class Belt(RigModule):
             pf=rID,
             aimV=(0, 0, -1),
             size=rSz * 2,
+            wldUpObj=self.masterGuide,
         )
         # --- Attach ribbon surface weights to IK joints ---
         # --- Create and parent IK controls ---

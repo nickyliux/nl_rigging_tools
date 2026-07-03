@@ -58,7 +58,6 @@ class JntNode(GrpNode):
 
     def setRadius(self, v, rel=0):
         """Set the radius of the joint"""
-
         if rel:
             self.a.radius.set2(v, mul=1)
         else:
@@ -66,24 +65,20 @@ class JntNode(GrpNode):
 
     def orientJoint(self, ro="xyz"):
         """Orient joint to the current rotation order"""
-
         mc.joint(self.name, e=1, orientJoint=ro, zso=1)
 
     def resetOrient(self):
         """Reset joint orient"""
-
         self.a.jointOrient.reset()
 
     def resetXf(self):
         """Reset joint transform"""
-
         self.a.t.set(0, 0, 0)
         self.a.r.set(0, 0, 0)
         self.a.s.set(1, 1, 1)
 
     def orientJnt(self, aim=(1, 0, 0), u=(0, 1, 0), **kwargs):
         """Orient joint to aim direction"""
-
         for jnt in self.allChildrenJt2:
             child = jnt.children
             if len(child) > 0:
@@ -106,7 +101,6 @@ class JntNode(GrpNode):
 
     def genProxyMesh(self, scaler=None, aimDir=(1, 0, 0), skipEnd=0, p=None):
         """Add a proxy mesh for the joint."""
-
         from nl_modules.utils import common
         from nl_modules.build.rig_module import RigModule
 
@@ -136,7 +130,6 @@ class JntNode(GrpNode):
             height = prx_height
 
         if not skipEnd:
-
             proxy = self.buildCylinder(
                 proxy_name, modScale * prx_rad_scale, height, aimDir, prx_div, p
             )
@@ -187,7 +180,6 @@ class JntNode(GrpNode):
         color=None,  # Color.L_BLUE,
     ):
         """Create a two-joint chain with optional alignment and constraints."""
-
         j0 = JntNode(n, pf=pf, r=rad, p=p, color=color)
         j1 = JntNode(n + "_end", pf=pf, r=rad, p=j0, color=color)
 
@@ -216,8 +208,9 @@ class JntNode(GrpNode):
         num=2,
         rev=0,
         aimV=(0, 0, 1),
-        upV=(0, 1, 0),
-        wuV=(0, 1, 0),
+        wldUpObj=None,
+        # upV=(0, 1, 0),
+        # wuV=(0, 1, 0),
         size=1,
         color=None,
         addEndJ=0,
@@ -251,6 +244,9 @@ class JntNode(GrpNode):
             aimCst.a.constraintRotateX >> grp.a.rx
             aimCst.a.constraintRotateY >> grp.a.ry
             aimCst.a.constraintRotateZ >> grp.a.rz
+            if wldUpObj:
+                aimCst.a.worldUpType.set(2)
+                wldUpObj.a.worldMatrix >> aimCst.a.worldUpMatrix
 
             j = JntNode(f"{i}_{name}", pf=pf, align=grp, r=size, color=color)
             joints.append(j)
@@ -267,6 +263,9 @@ class JntNode(GrpNode):
             else:
                 if chain:
                     joints[i] | joints[i + 1]
+
+        joints[-1].resetOrient()
+        joints[-1].a.r.set(0, 0, 0)
 
         if addEndJ:
             endJ = last.duplicate(n=last + "_end")
@@ -286,7 +285,6 @@ class JntNode(GrpNode):
     @staticmethod
     def buildJntLineSel():
         """Build a joint line from selected objects."""
-
         parentJ = None
         for s in mc.ls(sl=1):
             j = JntNode(s + "_lineJnt", r=0, snap=s, p=parentJ)

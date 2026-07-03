@@ -75,9 +75,9 @@ class SpineQd(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2, 1),
             ("cog_ctl", "trapezoid_3d", None, Vec((1, 1.2, 1.8)) * rSz, 0),
-            ("fore_ikc", "hexagon_3d", 'z', rSz*3, 0),
-            ("mid_ikc", "hexagon_3d", 'z', rSz*2.5, 0),
-            ("base_ikc", "hexagon_3d", 'z', rSz*3, 0),
+            ("fore_ikc", "hexagon_3d", "z", rSz * 3, 0),
+            ("mid_ikc", "hexagon_3d", "z", rSz * 2.5, 0),
+            ("base_ikc", "hexagon_3d", "z", rSz * 3, 0),
             ("tangent0_ctl", "arrow2", "x", rSz * 1.5, 1),
             ("tangent1_ctl", "arrow2", "x", rSz * 1.5, 1),
             ("end_ctl", "rotate4_3d", None, rSz, 0),
@@ -153,7 +153,13 @@ class SpineQd(RigModule):
 
         # Build 3 ctl joints from crv
         self.jnts_ctl = JntNode.createJntsFrCrv(
-            self.LINE_GUIDE, num=3, name="ikj", pf=rID, size=rSz * 10, chain=0
+            self.LINE_GUIDE,
+            num=3,
+            name="ikj",
+            pf=rID,
+            size=rSz * 10,
+            chain=0,
+            wldUpObj=self.masterGuide,
         )
         ctlJ0, ctlJ1, ctlJ2 = self.jnts_ctl
 
@@ -233,7 +239,13 @@ class SpineQd(RigModule):
         self.masterGuide.setMsg({"rbCrv": self.rbCrv, "rbCrvSk": self.rbCrvSk})
 
         spIkJnts = JntNode.createJntsFrCrv(
-            self.rbCrv, pf=rID, name="spikj", num=jntNum, size=rSz, p=self.CTL_DATA
+            self.rbCrv,
+            pf=rID,
+            name="spikj",
+            num=jntNum,
+            size=rSz,
+            p=self.CTL_DATA,
+            wldUpObj=self.masterGuide,
         )
         spIkJnts[0].a.inheritsTransform.set(0)
 

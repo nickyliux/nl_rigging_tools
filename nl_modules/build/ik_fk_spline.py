@@ -121,10 +121,10 @@ class IkFkSpline(RigModule):
             aimV=(0, 0, normal),
             size=rSz * 3,
             color=Color.D_YELLOW,
+            wldUpObj=self.masterGuide,
         )
         self.main.alignTo(self.RT_GUIDE)
         self.main | self.IK_GRP
-
         msg_batch = {}
         for i in range(self.ikJntNum):
             isEnding = i == 0 or i == last
@@ -180,6 +180,7 @@ class IkFkSpline(RigModule):
             size=rSz * 2,
             color=Color.BLUE,
             p=self.FK_GRP,
+            wldUpObj=self.masterGuide,
         )
         for i in range(self.fkJntNum):
             ctl = CrvNode(
