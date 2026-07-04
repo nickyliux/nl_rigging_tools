@@ -243,6 +243,13 @@ def loadTemplate(loadLatest=1):
     if not tgtPaths:
         return
 
+    # Remove existing guides
+    allMGs = build.collectMasterGuide()
+    for mg in allMGs:
+        guideObjects = mc.ls(f"{mg.a.rigID.get()}_*")
+        if guideObjects:
+            mc.delete(guideObjects)
+
     tgtPaths.sort(key=common.sortFile)
     rigID_dict = file.loadJson(tgtPaths[-1])
     loadGuideFrIdDict(rigID_dict)
@@ -256,12 +263,6 @@ def loadTemplate(loadLatest=1):
 
 def loadGuideFrIdDict(rigID_dict):
     """Load guides from rigID_dict"""
-    # Remove unused
-    # idInPreset = {k + "_RGN" for k in rigID_dict}
-    # for mg in build.getMasterGuide_all():
-    #     if mg not in idInPreset:
-    #         build.deleteTgt(mg)
-
     for rID in rigID_dict:
         if rID == "GUIDES":  # Special case for modules grp
             setAttrFrDict("GUIDES", rigID_dict[rID])

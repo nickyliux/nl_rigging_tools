@@ -137,7 +137,7 @@ class SpineBp(RigModule):
             c = CrvNode(
                 f"{i + 1}_fkc",
                 pf=rID,
-                shape="octagon_3d",
+                shape="hexagon_3d",
                 scale=Vec((2, 1, 2)) * rSz,
             )
             self.ctls_fk.append(c)
@@ -173,7 +173,7 @@ class SpineBp(RigModule):
         ctl(
             p=self.CTL_DATA,
             addOfs=1,
-            shape="octagon_3d",
+            shape="hexagon_3d",
             scale=self.rigSize,
             color=Color.PINK,
         )
@@ -234,7 +234,7 @@ class SpineBp(RigModule):
     def addMiddleBend(self):
         """Add middle bend control for the spine rig."""
         loc = LocNode(
-            f"midBend_loc", pf=self.rigID, align=self.mid_ikc, p=self.mid_ikc.parent
+            "midBend_loc", pf=self.rigID, align=self.mid_ikc, p=self.mid_ikc.parent
         )
         grp = self.mid_ikc.addOffsetGrp()
         autoMidBend = self.mid_ikc.a.add("autoMidBend", min=0, max=1, dv=0.5)

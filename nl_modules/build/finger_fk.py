@@ -77,24 +77,23 @@ class FingerFk(RigModule):
         logging.info(".")
 
         rID, rSz, xDr = self.get_short_form()
-        scale = xDr * rSz / 5
+        scale = xDr * rSz / 2
 
         ctl_defs = [
             ("setting", "screw_nut", "x", rSz, 0),
-            ("fgr01_fkc", "squareR", "x", -scale, 0),
+            ("fgr01_fkc", "hexagon_3d", "x", -scale, 0),
         ]
         if self.segNum >= 2:
-            ctl_defs.append(("fgr02_fkc", "squareR", "x", -scale, 0))
+            ctl_defs.append(("fgr02_fkc", "hexagon_3d", "x", -scale, 0))
         if self.segNum >= 3:
-            ctl_defs.append(("fgr03_fkc", "squareR", "x", -scale, 0))
+            ctl_defs.append(("fgr03_fkc", "hexagon_3d", "x", -scale, 0))
         if self.segNum >= 4:
-            ctl_defs.append(("fgr04_fkc", "squareR", "x", -scale, 0))
+            ctl_defs.append(("fgr04_fkc", "hexagon_3d", "x", -scale, 0))
 
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
-        self.setting.alignTo(self.rootJ)  # , p=self.CTL_DATA)
-        self.rootJ.cstPar(self.setting, mo=1)
+        self.setting.alignTo(self.fgr01_fkc, p=self.fgr01_fkc)
 
         # offset = [scale * 10, scale * -15, 0]
         # self.fgr01_fkc.cv_move(*offset)
@@ -172,7 +171,7 @@ class FingerFk(RigModule):
 
     def setup_channel(self):
         """Setup channels for the finger rig module."""
-        self.setting.a.showAttr()
+        # .a.showAttr()
         for ctl in self.ctls_fk:
             ctl.a.showAttr(t=1, r=1)
 

@@ -86,16 +86,16 @@ class SimpleFk(RigModule):
         ]
 
         if self.segNum >= 2:
-            ctl_defs.append(("simple02_fkc", "octagon_3d", up, rSz / 2, 0))
+            ctl_defs.append(("simple02_fkc", "hexagon_3d", up, rSz / 2, 0))
         if self.segNum >= 3:
-            ctl_defs.append(("simple03_fkc", "octagon_3d", up, rSz / 2, 0))
+            ctl_defs.append(("simple03_fkc", "hexagon_3d", up, rSz / 2, 0))
         if self.segNum >= 4:
-            ctl_defs.append(("simple04_fkc", "octagon_3d", up, rSz / 2, 0))
+            ctl_defs.append(("simple04_fkc", "hexagon_3d", up, rSz / 2, 0))
+
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
-        self.setting.alignTo(self.rootJ, p=self.CTL_DATA)
-        self.rootJ.cstPar(self.setting, mo=1)
+        self.setting.alignTo(self.simple01_fkc, p=self.simple01_fkc)
 
     def build_fk(self):
         """Build the FK controls for the arm rig."""

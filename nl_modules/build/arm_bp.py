@@ -88,12 +88,12 @@ class ArmBp(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
             ("clavicle_fkc", "cube", "z", Vec((0.6, 0.25, 0.4)) * scale, 1),
-            ("upr_fkc", "octagon_3d", "x", scale, 0),
-            ("lwr_fkc", "octagon_3d", "x", scale, 0),
-            ("palm_fkc", "octagon_3d", "x", scale, 0),
+            ("upr_fkc", "hexagon_3d", "x", scale, 0),
+            ("lwr_fkc", "hexagon_3d", "x", scale, 0),
+            ("palm_fkc", "hexagon_3d", "x", scale, 0),
             ("ikc", "cube", None, Vec((1, 2, 2)) * scale, 0),
             ("pvc", "sphere", None, rSz * 2, 0),
-            ("palm_ikc", "octagon_3d", "x", scale, 0),
+            ("palm_ikc", "hexagon_3d", "x", scale, 0),
         ]
 
         if self.scapulaBone:

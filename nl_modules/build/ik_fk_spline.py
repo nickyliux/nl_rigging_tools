@@ -58,7 +58,7 @@ class IkFkSpline(RigModule):
         rID, rSz, xDr = self.get_short_form()
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", rSz * 2.5, 1),
+            ("setting", "screw_nut", "z", rSz * 2, 1),
             ("main", "stick", None, rSz * 2, 1),
         ]
         for name, shape, up, sca, top in ctl_defs:
@@ -67,7 +67,6 @@ class IkFkSpline(RigModule):
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
         self.setting.a.add("localScale", min=0.01, dv=1)
         self.setting.a.addSep()
-        # self.setting.cv_move(0, rSz * 80, 0)
 
     def build(self):
         """Build the rig."""
@@ -113,6 +112,8 @@ class IkFkSpline(RigModule):
         last = self.ikJntNum - 1
         normal = -1 if self.rigID.startswith("tail") else 1
 
+        resetEnd = self.__class__.__name__ == "Tail"
+
         self.jnts_ik = JntNode.createJntsFrCrv(
             self.LINE_GUIDE,
             num=self.ikJntNum,
@@ -122,6 +123,7 @@ class IkFkSpline(RigModule):
             size=rSz * 3,
             color=Color.D_YELLOW,
             wldUpObj=self.masterGuide,
+            resetEnd=resetEnd,
         )
         self.main.alignTo(self.RT_GUIDE)
         self.main | self.IK_GRP
@@ -160,8 +162,8 @@ class IkFkSpline(RigModule):
 
         SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6)
 
-        self.setting.alignTo(self.main, p=self.main)
-        self.ctls_ik[0].cstPar(self.setting, mo=1)
+        self.setting.snapTo(self.ctls_ik[0], p=self.ctls_ik[0])
+        # self.ctls_ik[0].cstPar(self.setting, mo=1)
 
         RigModule.isolate_align(
             self.main, spaces=[self.main.addOffsetGrp(), self.masterC], dv=0

@@ -1,5 +1,5 @@
-import logging
 import os
+import logging
 import maya.cmds as mc
 
 
@@ -18,17 +18,13 @@ class TplLoader:
         self.masterC = None
 
     def load_base_tpl(self):
+        """Load base template for the component"""
         from nl_modules.nodel.base.dag_node import DagNode
         from nl_modules.nodel.grp_node import GrpNode
 
         rID = self.rigID
         curr_dir = os.path.dirname(os.path.abspath(__file__))
         tplFile = os.path.join(curr_dir, "components", self.fileName + ".ma")
-
-        # clean up any existing nodes with the same rigID prefix
-        prevRubbish = mc.ls(rID + "_*")
-        if prevRubbish:
-            mc.delete(prevRubbish)
 
         if os.path.isfile(tplFile):
             mc.file(tplFile, i=1, mnc=0, renameAll=1, renamingPrefix=rID)
@@ -42,8 +38,7 @@ class TplLoader:
         if mg.exists():
             mg | guides_grp
         else:
-            logging.error(f"Master guide not found in imported template.")
+            logging.error("Master guide not found in imported template.")
             return
 
         mg.a["rigID"].set(rID, type="string")
-        # self.masterGuide = mg

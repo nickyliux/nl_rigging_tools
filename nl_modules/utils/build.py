@@ -413,9 +413,9 @@ def cleanUpScene():
 
 def collectMasterGuide(isSel=0, isAll=1, match="*"):
     """Collect master guides based on selection or all in the scene, with optional name matching.
-    By default, it collects all master guides in the scene
-    For isSel: 1, isAll: 0 it collects selected only
-    For isSel: 1, isAll: 1 it collects selected, or all if nothing selected
+    By default, it collects all master guides in scene
+    isSel=1 & isAll=0 => collect selected only
+    isSel=1 & isAll=1 => collect selected, or all if nothing selected
     """
     if isSel == 1:
         selList = mc.ls(sl=1, tr=1)
@@ -433,7 +433,6 @@ def collectMasterGuide(isSel=0, isAll=1, match="*"):
         MGs = []
         for part in parts:
             mgs = mc.ls(ns + part + "*_master_guide")
-            # print(mgs)
             MGs.extend([DagNode(r) for r in mgs])
         return MGs
     return []

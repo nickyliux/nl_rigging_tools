@@ -56,7 +56,7 @@ class HandBp(RigModule):
         scale = xDr * rSz / 2
 
         ctl_defs = [
-            ("setting", "screw_nut", None, rSz/2, 0),
+            ("setting", "screw_nut", None, rSz / 2, 0),
             ("palm_ctl", "rotate2_3d", None, -scale / 2, 0),
             ("thumb_ctl", "rotate2_3d", "z", -scale / 2, 0),
             ("smart_ctl", "rotate2_3d", "x", scale, 0),
@@ -96,7 +96,7 @@ class HandBp(RigModule):
                 f"{fgr.name}_ctl",
                 up="x",
                 # shape="squareR",
-                shape="octagon_3d",
+                shape="hexagon_3d",
                 scale=scale * 1.5,
                 align=fgr,
             )
@@ -109,7 +109,6 @@ class HandBp(RigModule):
         logging.info(".")
 
         for fgrs in self.jnts_fgr:
-
             ctlList = self.create_finger_ctl(fgrs)
             self.build_fk_with_ctl3(fgrs, ctlList, count=2, p=self.CTL_DATA)
             self.ctls_fgr.append(ctlList)
@@ -125,7 +124,6 @@ class HandBp(RigModule):
         rID, rSz, xDr = self.get_short_form()
         self.hand_grp = GrpNode(rID + "_grp", align=self.rootJ, p=self.CTL_DATA)
         for fgrs, ctls in zip(self.jnts_fgr, self.ctls_fgr):
-
             scale = xDr * rSz / 2
             ikJ, ikH = self.build_digit_ik(fgrs[1], scale=scale, p=self.hand_grp)
             self.jnts_ik.append(ikJ)
@@ -321,7 +319,7 @@ class HandBp(RigModule):
 
         # smart_ctl, with group scaling with rootJ
         scaleGrp = GrpNode("smartScale", pf=rID, align=self.rootJ, p=self.CTL_DATA)
-        offsetX = rSz * xDr * 25 # 15
+        offsetX = rSz * xDr * 25  # 15
         self.smart_ctl.alignTo(self.rootJ, p=scaleGrp, ofs=(offsetX, 0, 0))
         self.smart_ctl.addOffsetGrp()
 
@@ -403,7 +401,7 @@ class HandBp(RigModule):
             handScale >> tgt.a.scale
 
         handScale >> self.setting.a.scale
-        
+
         for root in self.rootJ.childrenJt:
             root.a.segmentScaleCompensate.set(0)
 

@@ -209,12 +209,11 @@ class JntNode(GrpNode):
         rev=0,
         aimV=(0, 0, 1),
         wldUpObj=None,
-        # upV=(0, 1, 0),
-        # wuV=(0, 1, 0),
         size=1,
         color=None,
         addEndJ=0,
         p=None,
+        resetEnd=0,
     ):
         """Create a joint chain from a curve."""
         joints = []
@@ -264,8 +263,9 @@ class JntNode(GrpNode):
                 if chain:
                     joints[i] | joints[i + 1]
 
-        joints[-1].resetOrient()
-        joints[-1].a.r.set(0, 0, 0)
+        if resetEnd:
+            joints[-1].resetOrient()
+            joints[-1].a.r.set(0, 0, 0)
 
         if addEndJ:
             endJ = last.duplicate(n=last + "_end")

@@ -130,10 +130,10 @@ class LegBp(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 1),
             ("hip_fkc", "stickS", None, -scale / 1.5, 0),
-            ("upr_fkc", "octagon_3d", "x", scale, 0),
-            ("lwr_fkc", "octagon_3d", "x", scale, 0),
-            ("palm_fkc", "octagon_3d", "x", scale, 0),
-            ("ball_fkc", "octagon_3d", "x", scale / 2, 0),
+            ("upr_fkc", "hexagon_3d", "x", scale, 0),
+            ("lwr_fkc", "hexagon_3d", "x", scale, 0),
+            ("palm_fkc", "hexagon_3d", "x", scale, 0),
+            ("ball_fkc", "hexagon_3d", "x", scale / 2, 0),
             ("ikc", "foot3", None, rSz, 0),  # Vec((1.6, 0.5, 3.2))
             ("pvc", "sphere", None, rSz, 0),
             ("smart_ctl", "pyramid", None, scale / 3, 0),
