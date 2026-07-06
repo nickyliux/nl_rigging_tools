@@ -52,6 +52,8 @@ class LegBp(RigModule):
         self.jnts_bf = []
         self.jnts_ro = []
         self.jnts_toes = []
+        self.radiusJnt = None
+        self.ulnaJnt = None
 
         self.ctls_ik = []
         self.ctls_fk = []
@@ -512,8 +514,10 @@ class LegBp(RigModule):
         ulna_loc.cstAim(
             ulna_JC[0], worldUpType=type, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
-
         self.update_list(self.jnts_bind, add=[radius_JC[0], ulna_JC[0]])
+
+        self.radiusJnt = radius_JC[0]
+        self.ulnaJnt = ulna_JC[0]
 
     def setup_vis(self):
         """Setup visibility for the leg rig controls."""
@@ -547,7 +551,7 @@ class LegBp(RigModule):
             # )
 
         self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", type="bool", k=0, dv=0),
+            self.setting.a.add("debug", type="bool", k=0, dv=0),
             onList=setupTgt,
         )
         [ikh.hide() for ikh in self.all_ikHs.values()]
@@ -650,8 +654,15 @@ class LegBp(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        proxy.add_proxyRadiusScale_attr(self.jnts_toes, 1)
         proxy.add_proxyRadiusScale_attr(self.jnts_bind, 5)
+        proxy.add_proxyRadiusScale_attr(self.jnts_toes, 1)
+        proxy.add_proxyRadiusScale_attr([self.palm], 2.5)
+
+        if self.dualBone:
+            proxy.add_proxyRadiusScale_attr([self.radiusJnt, self.ulnaJnt], 3)
+
+        if self.patellaBone:
+            proxy.add_proxyRadiusScale_attr([self.patellaJ], 2)
 
     def build_post(self):
         """Post setup for the leg rig module."""

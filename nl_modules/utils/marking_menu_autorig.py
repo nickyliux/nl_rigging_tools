@@ -126,9 +126,9 @@ class MarkingMenuAutorig:
     def addProxyOptions(self, menu):
         """Add proxy options to the marking menu"""
         mi = mc.menuItem(p=menu, l="Proxy", rp="E", subMenu=1)
-        mc.menuItem(p=mi, l="Warp Sel", c=proxy.wrapProxy)
-        mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Mirror Sel", c=proxy.mirrorProxy)
+        mc.menuItem(p=mi, l="-" * 15, en=0)
+        mc.menuItem(p=mi, l="Warp Sel", c=proxy.wrapProxy)
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Reset Sel", c=proxy.resetProxy)
         mc.menuItem(p=mi, l="Gen", c=proxy.genProxyForSet)

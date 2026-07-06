@@ -153,7 +153,7 @@ class SimpleFk(RigModule):
     def setup_vis(self):
         """Setup visibility for the finger rig module."""
         self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", k=0, type="bool"),
+            self.setting.a.add("debug", k=0, type="bool"),
             onList=[self.jnts_fk[0]] + self.ikhs,
         )
 

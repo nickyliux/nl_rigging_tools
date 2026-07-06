@@ -174,6 +174,10 @@ class GrpNode(DagNode):
 
     def shape_buildFrDictList(self, dictList, name, xf=None):
         """Build curves from a list of dictionaries and return a group node"""
+        if dictList is None:
+            logging.info("Empty dictionary list")
+            return None
+
         xf = xf or mc.createNode("transform", n=name)
 
         for i, crvShapeDict in enumerate(dictList):

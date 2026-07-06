@@ -59,7 +59,7 @@ class IkFkSpline(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2, 1),
-            ("main", "stick", None, rSz * 2, 1),
+            ("main", "arrow2", "z", rSz * 8, 1),
         ]
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
@@ -67,6 +67,7 @@ class IkFkSpline(RigModule):
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
         self.setting.a.add("localScale", min=0.01, dv=1)
         self.setting.a.addSep()
+        # self.setting.cv_move(0, rSz * 30, 0)
 
     def build(self):
         """Build the rig."""
@@ -162,7 +163,7 @@ class IkFkSpline(RigModule):
 
         SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6)
 
-        self.setting.snapTo(self.ctls_ik[0], p=self.ctls_ik[0])
+        self.setting.snapTo(self.ctls_ik[-1], p=self.ctls_ik[-1])
         # self.ctls_ik[0].cstPar(self.setting, mo=1)
 
         RigModule.isolate_align(
@@ -273,7 +274,7 @@ class IkFkSpline(RigModule):
             onList=[self.ctls_ik[0].shape],
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", k=0, type="bool", dv=0),
+            self.setting.a.add("debug", k=0, type="bool", dv=0),
             onList=[self.rbSrf1, self.rbSrf2, self.rbCrvSk]
             + self.jnts_fk
             + self.jnts_ik

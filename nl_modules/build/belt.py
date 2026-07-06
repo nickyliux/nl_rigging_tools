@@ -153,7 +153,7 @@ class Belt(RigModule):
     def setup_vis(self):
         """Setup visibility toggles for the belt rig controls."""
         self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", k=0, type="bool"),
+            self.setting.a.add("debug", k=0, type="bool"),
             onList=self.jnts_ik + [self.rbSrf1],
         )
 

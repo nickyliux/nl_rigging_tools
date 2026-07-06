@@ -912,7 +912,7 @@ class LegQd(RigModule):
             onList=self.ctls_sub,
         )
         self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", type="bool", k=0),
+            self.setting.a.add("debug", type="bool", k=0),
             onList=[self.jnts_fk[0], self.jnts_ik[0]],
         )
         [ikh.hide() for ikh in self.all_ikHs.values()]

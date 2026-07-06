@@ -337,7 +337,11 @@ def add_proxyRadiusScale_attr(tgtJnts, v):
     for jnt in tgtJnts:
         tgt = DagNode(jnt)
         if tgt.exists():
-            tgt.a.add("proxyRadiusScale", k=0, dv=v)
+            attr = tgt.a["proxyRadiusScale"]
+            if not attr.exists():
+                tgt.a.add("proxyRadiusScale", k=0, dv=v)
+            else:
+                tgt.a["proxyRadiusScale"].set(v)
 
 
 def add_proxyDiv_attr(tgtJnts, div=2):
@@ -345,7 +349,11 @@ def add_proxyDiv_attr(tgtJnts, div=2):
     for jnt in tgtJnts:
         tgt = DagNode(jnt)
         if tgt.exists():
-            tgt.a.add("proxyDiv", k=0, dv=div)
+            attr = tgt.a["proxyDiv"]
+            if not attr.exists():
+                tgt.a.add("proxyDiv", k=0, dv=div)
+            else:
+                tgt.a["proxyDiv"].set(div)
 
 
 def add_proxyHeight_attr(tgtJnts, v):

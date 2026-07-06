@@ -1,6 +1,9 @@
 import os
 import logging
 import maya.cmds as mc
+from nl_modules.utils.color import Color
+from nl_modules.nodel.base.dag_node import DagNode
+from nl_modules.nodel.crv_node import CrvNode
 
 
 class TplLoader:
@@ -19,8 +22,6 @@ class TplLoader:
 
     def load_base_tpl(self):
         """Load base template for the component"""
-        from nl_modules.nodel.base.dag_node import DagNode
-        from nl_modules.nodel.grp_node import GrpNode
 
         rID = self.rigID
         curr_dir = os.path.dirname(os.path.abspath(__file__))
@@ -32,7 +33,12 @@ class TplLoader:
             logging.error(f"Template file not found: {tplFile}")
             return
 
-        guides_grp = GrpNode("GUIDES")
+        guides_grp = DagNode("GUIDES")
+        if not guides_grp.exists():
+            guides_grp = CrvNode(
+                "GUIDES", shape="hexagon", color=Color.BLACK, width=2, scale=12
+            )
+
         mg = DagNode(rID + "_master_guide")
 
         if mg.exists():

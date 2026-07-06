@@ -43,6 +43,10 @@ class ArmBp(RigModule):
         self.jnts_ik = []
         self.jnts_bf = []
         self.jnts_roll = []
+        self.radiusJnt = None
+        self.ulnaJnt = None
+        self.scapJnt = None
+        self.clavJnts = None
         self.ctls_ik = []
         self.ctls_fk = []
         self.ikhs = []
@@ -87,7 +91,7 @@ class ArmBp(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
-            ("clavicle_fkc", "cube", "z", Vec((0.6, 0.25, 0.4)) * scale, 1),
+            ("clavicle_fkc", "square", "x", scale / 2.5, 1),  # Vec((0.6, 0.25, 0.4))
             ("upr_fkc", "hexagon_3d", "x", scale, 0),
             ("lwr_fkc", "hexagon_3d", "x", scale, 0),
             ("palm_fkc", "hexagon_3d", "x", scale, 0),
@@ -97,13 +101,10 @@ class ArmBp(RigModule):
         ]
 
         if self.scapulaBone:
-            ctl_defs.append(["scap_fkc", "stick", "z", scale * 0.7, 0])
+            ctl_defs.append(["scap_fkc", "stickS", "z", scale * 0.7, 0])
 
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
-
-        # if self.scapulaBone:
-        #     self.scap_fkc.cv_move(0, 0, scale * 15)
 
         self.pvc.cv_rotate(-90, 0, 0)
         self.setting.cv_move(0, scale * 20, 0)
@@ -348,6 +349,7 @@ class ArmBp(RigModule):
             rad=rSz / 2,
             p=self.JNT_DATA,
         )
+        self.scapJnt = scapJnts[0]
 
         self.scap_fkc.snapAlignTo(self.upr, scapJnts[0], p=self.CLV_GRP)
         ofsGrps = self.scap_fkc.addOffsetGrp(count=3)
@@ -369,7 +371,9 @@ class ArmBp(RigModule):
             rad=rSz / 2,
             p=self.JNT_DATA,
         )
-        clav_ikh = IkNode(
+        self.clavJnt = clavJnts[0]
+
+        IkNode(
             "clav",
             solver=Solver.RP,
             pf=rID,
@@ -409,6 +413,9 @@ class ArmBp(RigModule):
             ulna_JC[0], worldUpType=uType, worldUpObject=self.lwr, aim=aim, u=z, wu=z
         )
         self.update_list(self.jnts_bind, add=[radius_JC[0], ulna_JC[0]])
+
+        self.radiusJnt = radius_JC[0]
+        self.ulnaJnt = ulna_JC[0]
 
     def palm_rolling(self, ikc, fkc, fkPin, locRoll, locIn, locOut):
         """Setup palm rolling for the arm rig controls."""
@@ -470,7 +477,7 @@ class ArmBp(RigModule):
             )
 
         self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", type="bool", k=0), onList=setupTgt
+            self.setting.a.add("debug", type="bool", k=0), onList=setupTgt
         )
         self.setting.a.fkIk * self.ikc.a.localRot >> self.palm_ikc.a.v
         mc.hide(self.ikhs)
@@ -544,6 +551,12 @@ class ArmBp(RigModule):
         """Setup bind joints for the arm rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
         proxy.add_proxyRadiusScale_attr(self.jnts_bind, 5)
+        proxy.add_proxyRadiusScale_attr([self.palm], 2.5)
+        if self.scapulaBone:
+            proxy.add_proxyRadiusScale_attr([self.clavJnt, self.scapJnt], 2)
+
+        if self.dualBone:
+            proxy.add_proxyRadiusScale_attr([self.radiusJnt, self.ulnaJnt], 3)
 
     def setup_ctlSet(self):
         """Setup control sets for the arm rig module."""

@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import maya.cmds as mc
 
@@ -11,7 +12,8 @@ def loadJson(path):
         f.close()
         return data
     else:
-        raise FileNotFoundError("Json file not found.\n" + path)
+        logging.error("Json file not found.\n" + path)
+        return None
 
 
 def saveJson(path, data, force=False):

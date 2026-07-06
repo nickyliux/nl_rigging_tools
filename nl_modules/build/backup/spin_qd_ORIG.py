@@ -353,7 +353,7 @@ class SpineQd(RigModule):
             setupTgt.append(self.jnts_spIk[0])
 
         self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", type="bool", k=0),  # , dv=1),
+            self.setting.a.add("debug", type="bool", k=0),
             onList=setupTgt + [self.rbSrf, self.rbCrv, self.rbSrfSk, self.rbCrvSk],
         )
         if not self.is_spine():

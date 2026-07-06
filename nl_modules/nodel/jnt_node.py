@@ -102,7 +102,6 @@ class JntNode(GrpNode):
     def genProxyMesh(self, scaler=None, aimDir=(1, 0, 0), skipEnd=0, p=None):
         """Add a proxy mesh for the joint."""
         from nl_modules.utils import common
-        from nl_modules.build.rig_module import RigModule
 
         guides_grp = GrpNode("GUIDES")
         if not guides_grp.exists():

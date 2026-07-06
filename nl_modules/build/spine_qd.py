@@ -80,7 +80,7 @@ class SpineQd(RigModule):
             ("base_ikc", "hexagon_3d", "z", rSz * 3, 0),
             ("tangent0_ctl", "arrow2", "x", rSz * 1.5, 1),
             ("tangent1_ctl", "arrow2", "x", rSz * 1.5, 1),
-            ("end_ctl", "rotate4_3d", None, rSz, 0),
+            ("end_ctl", "rotate2_3d", None, rSz * 1.5, 0),
         ]
 
         for name, shape, up, scale, top in ctl_defs:
@@ -90,6 +90,7 @@ class SpineQd(RigModule):
 
         # self.cog_upr_ctl.cv_move(0, rSz * 60, 0)
         # self.cog_lwr_ctl.cv_move(0, rSz * 60, 0)
+        self.end_ctl.cv_rotate(0, 90, 0)
         self.end_ctl.cv_move(0, 0, rSz * -10)
 
         # self.fore_ikc.cv_move(0, rSz * 20, 0)
@@ -98,7 +99,7 @@ class SpineQd(RigModule):
 
         # self.tangent0_ctl.cv_rotate(0, 90, 0)
         self.tangent0_ctl.cv_rotate(0, 180, 0)
-        # self.setting.cv_move(0, rSz * 70, 0)
+        self.setting.cv_move(0, rSz * 60, 0)
 
     def build(self):
         """Build the spine rig."""
@@ -358,7 +359,7 @@ class SpineQd(RigModule):
 
         mc.hide(setupTgt)
         self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", type="bool", k=0, dv=0),
+            self.setting.a.add("debug", type="bool", k=0, dv=0),
             onList=setupTgt + [self.rbSrf, self.rbCrv, self.rbSrfSk, self.rbCrvSk],
         )
         # mc.hide(self.rbSrf, self.rbCrv, self.rbSrfSk, self.rbCrvSk)

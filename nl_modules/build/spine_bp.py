@@ -73,7 +73,7 @@ class SpineBp(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2, 0),
-            ("cog_ctl", "cog", None, rSz * 3.5, 0),
+            ("cog_ctl", "hexagon", None, rSz * 4, 0),
             # ]
             # if self.ribbon:
             # ctl_defs += [
@@ -334,7 +334,7 @@ class SpineBp(RigModule):
         """Setup visibility toggles for the spine rig controls."""
         # if self.ribbon:
         self.ctl_vis_toggle(
-            self.setting.a.add("showSetup", type="bool", k=0),
+            self.setting.a.add("debug", type="bool", k=0),
             onList=[self.jnts_fk[0]] + self.jnts_five + [self.rbSrf],
         )
         if self.is_neck():

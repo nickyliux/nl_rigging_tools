@@ -1,11 +1,10 @@
 import logging
 import maya.cmds as mc
 from nl_modules.build.rig_module import RigModule
-from nl_modules.nodel.base.dep_node import DepNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
-from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
+from nl_modules.utils import proxy
 
 
 class HandBp(RigModule):
