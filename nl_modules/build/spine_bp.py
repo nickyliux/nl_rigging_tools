@@ -226,7 +226,7 @@ class SpineBp(RigModule):
 
         if not self.is_neck():
             RigModule.dyn_pivot(self.cog_ctl)
-            RigModule.dyn_pivot(self.fore_ikc, endTgt=self.mid_ikc, dv=0.5)
+            RigModule.dyn_pivot(self.fore_ikc, endTgt=self.mid_ikc, dv=1)
             RigModule.dyn_pivot(self.base_ikc, endTgt=self.mid_ikc, dv=0.5)
 
         self.ctls_ik = [self.mid_ikc, self.fore_ikc, self.base_ikc]

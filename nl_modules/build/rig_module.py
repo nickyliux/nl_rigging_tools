@@ -439,7 +439,6 @@ class RigModule(RigBase):
                 endValue = mc.xform(endTgt, q=1, ws=1, t=1)[1]
             wsEndValue = endValue - wsXformTgt[1]
         else:
-            zeroValue = wsXformTgt[2]
             if DagNode(endTgt).exists():
                 endValue = mc.xform(endTgt, q=1, ws=1, t=1)[2]
             wsEndValue = endValue - wsXformTgt[2]
