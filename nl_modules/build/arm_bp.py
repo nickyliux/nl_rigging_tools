@@ -95,7 +95,7 @@ class ArmBp(RigModule):
             ("upr_fkc", "hexagon_3d", "x", scale, 0),
             ("lwr_fkc", "hexagon_3d", "x", scale, 0),
             ("palm_fkc", "hexagon_3d", "x", scale, 0),
-            ("ikc", "cube", None, Vec((1, 2, 2)) * scale, 0),
+            ("ikc", "trapezoid_3d", None, scale, 0),
             ("pvc", "sphere", None, rSz * 2, 0),
             ("palm_ikc", "hexagon_3d", "x", scale, 0),
         ]
@@ -108,7 +108,7 @@ class ArmBp(RigModule):
 
         self.pvc.cv_rotate(-90, 0, 0)
         self.setting.cv_move(0, scale * 20, 0)
-        # self.clavicle_fkc.cv_scale(0.5, 1, 1)
+        self.ikc.cv_rotate(0, 90, 0)
 
     def build(self):
         """Build the arm rig module."""
