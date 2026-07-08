@@ -166,10 +166,7 @@ class ArmBp(RigModule):
         self.ctls_fk = [self.clavicle_fkc, self.upr_fkc, self.lwr_fkc, self.palm_fkc]
 
         self.build_fk_with_ctl2(self.jnts_fk, self.ctls_fk, p=self.FK_GRP)
-        self.isolate_align(
-            self.upr_fkc,
-            spaces=[self.upr_fkc.parent, self.masterC],
-        )
+        self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
         """Build the IK controls for the arm rig."""

@@ -62,7 +62,7 @@ class LegBp(RigModule):
         self.rollJnts = []
         self.aimJnts = []
         self.toesJntList = []
-        self.toesCtlsList = []
+        self.toesCtlsArray = []
         self.toeIKHs = []
 
         self.pvc = None
@@ -243,7 +243,7 @@ class LegBp(RigModule):
             self.ball_fkc,
         ]
         self.build_fk_with_ctl2(self.jnts_fk[:-1], self.ctls_fk[:-1], p=self.FK_GRP)
-        # self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
+        self.isolate_align(self.upr_fkc, spaces=[self.upr_fkc.parent, self.masterC])
 
     def build_ik(self):
         """Build the IK controls for the leg rig."""
@@ -351,7 +351,7 @@ class LegBp(RigModule):
 
         self.smart_ctl.snapAlignTo(toeRollG, self.masterGuide, p=self.ikc)
         twoOfs = self.smart_ctl.addOffsetGrp(count=2)
-        self.smart_ctl.a.add("posOffset", k=0, dv=10 * rSz) >> twoOfs[0].a.tz
+        self.smart_ctl.a.add("posOffset", k=0, dv=5 * rSz) >> twoOfs[0].a.tz
 
         self.smart_ctl.a.rx >> self.smart_ctl.a["footRoll"]
         (-xDr * self.smart_ctl.a.ry) >> toeRollG.a.ry
@@ -458,7 +458,7 @@ class LegBp(RigModule):
         logging.info(".")
 
         rID, rSz, xDr = self.get_short_form()
-        self.toesCtlsList = []
+        self.toesCtlsArray = []
         scale = xDr * rSz / 6
 
         # --- Build digit IK and FK controls for each toe chain ---
@@ -474,8 +474,9 @@ class LegBp(RigModule):
             for jnt in fkToeList:
                 crvName = f"{jnt.name}_ctl_#"
                 crv = CrvNode(
-                    crvName, shape="hexagon_3d", up="x", scale=scale, align=jnt
+                    crvName, shape="locator", scale=scale / 5, align=jnt, top=1, width=2
                 )
+                # up="x",
                 ctlList.append(crv)
 
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
@@ -483,7 +484,7 @@ class LegBp(RigModule):
             ikJ.a.r >> ctlList[0].addOffsetGrp().a.r
             ikJ.hide()
 
-            self.toesCtlsList.append(ctlList)
+            self.toesCtlsArray.append(ctlList)
             self.update_list(self.jnts_bind, add=toeJs[:-1], rm=[self.ball])
 
     def build_dual_bones(self):
@@ -555,6 +556,12 @@ class LegBp(RigModule):
         )
         [ikh.hide() for ikh in self.all_ikHs.values()]
         mc.hide(self.toeIKHs)
+
+        for toesCtls in self.toesCtlsArray:
+            self.ctl_vis_toggle(
+                self.smart_ctl.a.add("toeCtlFkVis", dv=1, type="bool", k=0),
+                onList=toesCtls,
+            )
 
     def setup_channel(self):
         """Setup channels for the leg rig controls."""
@@ -643,7 +650,7 @@ class LegBp(RigModule):
             ctlSet.extend(self.all_bendy)
 
         if self.toeBones:
-            [ctlSet.extend(s) for s in self.toesCtlsList]
+            [ctlSet.extend(s) for s in self.toesCtlsArray]
 
         if self.scapulaBone:
             ctlSet.append(self.scap_fkc)

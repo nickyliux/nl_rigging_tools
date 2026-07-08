@@ -925,7 +925,7 @@ class LegQd(RigModule):
 
         for toesCtls in self.toeCtlsArray:
             self.ctl_vis_toggle(
-                self.setting.a.add("toeCtlFkVis", dv=1, type="bool", k=0),
+                self.smart_ctl.a.add("toeCtlFkVis", dv=1, type="bool", k=0),
                 onList=toesCtls,
             )
 
