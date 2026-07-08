@@ -1,27 +1,21 @@
 import logging
-from platform import node
 import maya.cmds as mc
+
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
 from nl_modules.utils import control
-from nl_modules.utils import log
 from nl_modules.utils import proxy
 from nl_modules.utils import utils_node as ut
 
 # Import rig components, required for evalation
 from nl_modules.build.head import Head
-
-# from nl_modules.build.neck_bp import NeckBp
 from nl_modules.build.spine_bp import SpineBp
 from nl_modules.build.arm_bp import ArmBp
 from nl_modules.build.hand_bp import HandBp
-
 from nl_modules.build.leg_bp import LegBp
 from nl_modules.build.leg_qd import LegQd
-
-# from nl_modules.build.leg_bird import LegBird
 from nl_modules.build.neck import Neck
 from nl_modules.build.spine_qd import SpineQd
 from nl_modules.build.tail import Tail
@@ -62,7 +56,7 @@ def buildTgt(mg):
 @common.Undo("buildGuide")
 def buildGuide(*args):
     """Build rig for selected or all master guides."""
-    MGs = collectMasterGuide(isSel=1)
+    MGs = collectMasterGuide(isSel=1, build=1)
     guidesToBuild = []
 
     for mg in MGs:
@@ -92,11 +86,6 @@ def buildGuide(*args):
         logging.info(f"{guideCount} guide(s) built.")
         print()
 
-        mc.select(cl=1)
-        master2_ctl = DagNode("master2_ctl")
-        if master2_ctl.exists():
-            master2_ctl.a.ctlVis.set(1)
-
 
 def postRig():
     """Post rigging operations"""
@@ -111,12 +100,20 @@ def postRig():
 
     proxy.genProxyForSet()
 
-    guides_grp = DagNode("GUIDES")
+    guides = DagNode("GUIDES")
     CHR = DagNode("CHR")
-    if guides_grp.exists() and CHR.exists():
-        if guides_grp.parent != CHR:
-            guides_grp | CHR
-    guides_grp.hide()
+    if guides.exists() and CHR.exists():
+        if guides.parent != CHR:
+            guides | CHR
+    guides.hide()
+
+    master2_ctl = DagNode("master2_ctl")
+    if master2_ctl.exists():
+        master2_ctl.a.v.set(1)
+        master2_ctl.a.proxyVis.set(1)
+        master2_ctl.a.jointVis.set(1)
+
+    mc.select(cl=1)
 
 
 def addMasterAttrs():
@@ -166,7 +163,7 @@ def unbuildTgt(mg):
 @common.Undo("unbuildGuide")
 def unbuildGuide(*arg):
     """Unbuild rig for selected or all master guides."""
-    MGs = collectMasterGuide(isSel=1)
+    MGs = collectMasterGuide(isSel=1, build=1)
     if MGs:
         control.reset_all_ctl()
 
@@ -411,7 +408,18 @@ def cleanUpScene():
         mc.delete(n)
 
 
-def collectMasterGuide(isSel=0, isAll=1, match="*"):
+def validateMGs(selList):
+    """Filter selected master guides based on rigID and namespace."""
+    results = []
+    for sel in selList:
+        s = DagNode(sel) if isinstance(sel, str) else sel
+        rID = s.a.rigID.get()
+        if rID and s.name.startswith(rID):
+            results.append(s)
+    return results
+
+
+def collectMasterGuide(isSel=0, isAll=1, match="*", build=0):
     """Collect master guides based on selection or all in the scene, with optional name matching.
     By default, it collects all master guides in scene
     isSel=1 & isAll=0 => collect selected only
@@ -423,8 +431,14 @@ def collectMasterGuide(isSel=0, isAll=1, match="*"):
             MGs = []
             for sel in selList:
                 n = getMGFrName(sel)
+
                 if n and n not in MGs:
-                    MGs.append(n)
+                    if build:
+                        validated = validateMGs([n])
+                        if validated:
+                            MGs.append(validated[0])
+                    else:
+                        MGs.append(n)
             return MGs
 
     if isAll == 1:
@@ -432,8 +446,14 @@ def collectMasterGuide(isSel=0, isAll=1, match="*"):
         parts = match.split(",")
         MGs = []
         for part in parts:
-            mgs = mc.ls(ns + part + "*_master_guide")
-            MGs.extend([DagNode(r) for r in mgs])
+            if build:
+                mgs = mc.ls(part + "*_master_guide")
+                mgs = validateMGs(mgs)
+            else:
+                mgs = mc.ls(ns + part + "*_master_guide")
+
+            if mgs:
+                MGs.extend([DagNode(m) for m in mgs])
         return MGs
     return []
 
@@ -534,9 +554,9 @@ def addNoiseLogic(ctl=None, targets=None, rot=0):
     """
     ctl = DagNode(ctl)
     if not ctl.exists():
-        raise ValueError(f"Control not found.")
+        raise ValueError("Control not found.")
     if not isinstance(targets, list):
-        raise ValueError(f"Targets must be a list.")
+        raise ValueError("Targets must be a list.")
 
     frame = DagNode("time1").a.outTime
     # Control attributes for sine wave motion

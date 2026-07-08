@@ -50,6 +50,8 @@ class LegQd(RigModule):
         self.jnts_fk = []
         self.jnts_ik = []
         self.jnts_toes = []
+        self.radiusJnt = None
+        self.ulnaJnt = None
 
         self.ctls_ik = []
         self.ctls_fk = []
@@ -857,6 +859,9 @@ class LegQd(RigModule):
         )
         self.update_list(self.jnts_bind, add=[radius_JC[0], ulna_JC[0]], rm=[self.lwr])
 
+        self.radiusJnt = radius_JC[0]
+        self.ulnaJnt = ulna_JC[0]
+
     def singleBallCtl_setup(self):
         """Make ball ctl the single ctl in both FK and IK modes."""
         logging.info(".")
@@ -1000,9 +1005,19 @@ class LegQd(RigModule):
     def setup_bindJnt(self):
         """Setup bind joints for the quadruped leg rig module."""
         self.add_bind_jnt_set(self.jnts_bind)
-        proxy.add_proxyRadiusScale_attr(self.jnts_toes, 1)
-        if self.toeType != 2:
+        if self.toeType < 2:
             proxy.add_proxyRadiusScale_attr(self.jnts_bind, 5)
+        proxy.add_proxyRadiusScale_attr(self.jnts_toes, 1)
+
+        if self.dualBone:
+            proxy.add_proxyRadiusScale_attr([self.radiusJnt, self.ulnaJnt], 3)
+
+        newSize = self.rigSize * 3
+        if self.carpalFix:
+            if self.toeType == 1:
+                proxy.add_proxyHeight_attr([self.ofsFixJ], newSize)
+            if self.includeMeta == 1:
+                proxy.add_proxyHeight_attr([self.carpalFixJ], newSize)
 
     def setup_scale(self):
         """Setup scale for the quadruped leg rig module."""

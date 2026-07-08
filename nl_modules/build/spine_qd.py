@@ -87,19 +87,20 @@ class SpineQd(RigModule):
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         self.cog_ctl.cv_move(0, rSz * 50, 0)
+        self.cog_ctl.cv_scale(0.5, 1, 1)
 
         # self.cog_upr_ctl.cv_move(0, rSz * 60, 0)
         # self.cog_lwr_ctl.cv_move(0, rSz * 60, 0)
         self.end_ctl.cv_rotate(0, 90, 0)
-        self.end_ctl.cv_move(0, 0, rSz * -10)
+        self.end_ctl.cv_move(0, 0, rSz * -15)
 
-        # self.fore_ikc.cv_move(0, rSz * 20, 0)
+        self.fore_ikc.cv_move(0, rSz * 20, 0)
         # self.mid_ikc.cv_move(0, rSz * 20, 0)
         # self.base_ikc.cv_move(0, rSz * 20, 0)
 
         # self.tangent0_ctl.cv_rotate(0, 90, 0)
         self.tangent0_ctl.cv_rotate(0, 180, 0)
-        self.setting.cv_move(0, rSz * 60, 0)
+        self.setting.cv_move(0, rSz * 30, 0)
 
     def build(self):
         """Build the spine rig."""

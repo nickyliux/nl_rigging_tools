@@ -155,37 +155,48 @@ class HandBp(RigModule):
         drv = self.smart_ctl
 
         for i in range(5):
-            self.smart_ctl.a.add(f"claw{str(i)}", type="float", dv=0, k=1)
-
+            self.smart_ctl.a.add(
+                f"curlMid{str(i)}", type="float", dv=0, k=1, min=-10, max=10
+            )
+        for i in range(5):
+            self.smart_ctl.a.add(
+                f"curlEnd{str(i)}", type="float", dv=0, k=1, min=-10, max=10
+            )
         # Fgr 1, 2, 3, 4
         data = [
-            [(-90, -90), (0, 0), (90, 55)],  # id = 2
-            [(-90, -70), (0, 0), (90, 35)],  # id = 3
+            [(-10, 120), (0, 0), (10, -120)],
         ]
         for i in range(1, 5):
-            self.setSDK(drv, data, i=i, tgtOfs=2, attr1=f"claw{str(i)}")
+            self.setSDK(drv, data, i=i, tgtOfs=2, attr1=f"curlMid{str(i)}")
+
+        data = [
+            [(-10, 90), (0, 0), (10, -90)],
+        ]
+        for i in range(1, 5):
+            self.setSDK(drv, data, i=i, tgtOfs=3, attr1=f"curlEnd{str(i)}")
 
         # Fgr 0
         data = [
-            [(-90, -75), (0, 0), (90, 60)],  # id = 2
+            [(-10, 100), (0, 0), (10, -100)],
         ]
-        self.setSDK(drv, data, i=0, tgtOfs=2, attr1="claw0")
+        self.setSDK(drv, data, i=0, tgtOfs=1, attr1="curlMid0")
+        self.setSDK(drv, data, i=0, tgtOfs=2, attr1="curlEnd0")
 
     def setup_close_sdk(self):
         """Setup SDK for finger close controls."""
         drv = self.smart_ctl
         # Fgr 1, 2, 3, 4
         data = [
-            [(-90, -90), (0, 0), (90, 60)],  # id = 1
-            [(-90, -100), (0, 0), (90, 50)],  # id = 2
-            [(-90, -90), (-45, -25), (0, 0), (90, 35)],  # id = 3
+            [(-90, -90), (0, 0), (90, 60)],
+            [(-90, -100), (0, 0), (90, 50)],
+            [(-90, -90), (-45, -25), (0, 0), (90, 35)],
         ]
         for i in range(1, 5):
             self.setSDK(drv, data, i=i, tgtOfs=1)
         # Fgr 0
         data = [
-            [(-90, -30), (0, 0), (90, 40)],  # id = 1
-            [(-90, -75), (0, 0), (90, 60)],  # id = 2
+            [(-90, -30), (0, 0), (90, 40)],
+            [(-90, -75), (0, 0), (90, 60)],
         ]
         self.setSDK(drv, data, i=0, tgtOfs=1)
 
@@ -326,13 +337,13 @@ class HandBp(RigModule):
         self.rootJ.a.s >> scaleGrp.a.s
 
         self.setup_close_sdk()
-        self.setup_claw_sdk()
         self.setup_flap_sdk()
         self.setup_spread_sdk()
         self.setup_updn_sdk()
         self.set_pre_post_infinity()
         self.setup_palmCtl()
         self.setup_thumbCtl()
+        self.setup_claw_sdk()
 
     def setup_space(self):
         """Setup space switching for the hand rig controls."""
@@ -348,7 +359,7 @@ class HandBp(RigModule):
     def setup_channel(self):
         """Setup channels for the hand rig controls."""
         self.setting.a.showAttr()
-        self.smart_ctl.a.showAttr(t=1, r=1, s=1)
+        self.smart_ctl.a.showAttr("sy", t=1, r=1)  # , s=1)
         self.palm_ctl.a.showAttr(r=1)
 
         for ctls in self.ctls_fgr:
@@ -390,7 +401,7 @@ class HandBp(RigModule):
     def setup_scale(self):
         """Setup scaling for the hand rig module."""
         handScale = self.setting.a.add("handScale", min=0, dv=1)
-        self.smart_ctl.a.add("handScale", proxy=handScale)
+        # self.smart_ctl.a.add("handScale", proxy=handScale)
         for tgt in [
             self.rootJ,
             self.thumb_ctl.offset,

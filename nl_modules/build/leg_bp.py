@@ -48,7 +48,6 @@ class LegBp(RigModule):
         self.jnts = []
         self.jnts_fk = []
         self.jnts_ik = []
-
         self.jnts_bf = []
         self.jnts_ro = []
         self.jnts_toes = []
@@ -663,6 +662,8 @@ class LegBp(RigModule):
 
         if self.patellaBone:
             proxy.add_proxyRadiusScale_attr([self.patellaJ], 2)
+
+        proxy.add_proxyHeight_attr([self.palm], self.rigSize * 4)
 
     def build_post(self):
         """Post setup for the leg rig module."""

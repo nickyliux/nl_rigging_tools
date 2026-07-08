@@ -558,6 +558,8 @@ class ArmBp(RigModule):
         if self.dualBone:
             proxy.add_proxyRadiusScale_attr([self.radiusJnt, self.ulnaJnt], 3)
 
+        proxy.add_proxyHeight_attr([self.palm], self.rigSize * 4)
+
     def setup_ctlSet(self):
         """Setup control sets for the arm rig module."""
         ctlSet = self.ctls_fk + self.ctls_ik + [self.setting, self.pin_fkc]

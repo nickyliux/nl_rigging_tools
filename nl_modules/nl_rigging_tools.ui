@@ -4383,7 +4383,7 @@ Setup</string>
           </font>
          </property>
          <property name="toolTip">
-          <string>Save Selected (Overwrite)</string>
+          <string>Overwrite Selected</string>
          </property>
          <property name="text">
           <string>*</string>

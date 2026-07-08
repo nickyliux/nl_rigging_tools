@@ -356,7 +356,6 @@ def toggleGuide(*args):
     if master2_ctl.exists() and guides_grp.exists():
         vis = guides_grp.a.v.get()
 
-        # master2_ctl.a.ctlVis.set(vis)
         master2_ctl.a.v.set(vis)
         master2_ctl.a.proxyVis.set(vis)
         master2_ctl.a.jointVis.set(vis)
