@@ -172,20 +172,20 @@ class LegQd(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 1),
             # ("hip_fkc", "shoulder", "x", Vec((0.5, 0.3, 0.5)) * -scale, 0),
-            ("hip_fkc", "arrow2", None, -scale, 1),
+            ("hip_fkc", "arrow2", None, scale / 2, 1),
             ("upr_fkc", "hexagon_3d", "x", scale, 0),
             ("lwr_fkc", "hexagon_3d", "x", scale, 0),
             ("palm_fkc", "hexagon_3d", "x", scale, 0),
             ("digit_fkc", "hexagon_3d", "x", scale, 0),
             ("ball_fkc", "hexagon_3d", "x", scale / 2, 0),
-            ("ikc", "foot3", None, rSz, 0),
+            ("ikc", "foot2", None, rSz, 0),
             ("extra_ikc", "rotate2_3d", None, Vec((0.5, 1, 1)) * -scale, 0),
             ("pvc", "sphere", None, rSz * 0.7, 0),
             ("smart_ctl", "pyramid", None, scale / 3, 0),
         ]
 
         if self.scapulaBone:
-            ctl_defs.append(("scap_fkc", "arrow2", "z", scale * 0.6, 0))
+            ctl_defs.append(("scap_fkc", "arrow2", "-z", scale / 4, 0))
 
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
@@ -556,31 +556,29 @@ class LegQd(RigModule):
         elif self.toeNum == 4:
             start_id = 1
 
-        s = self.rigSize
+        rSzD = self.rigSize * self.xDir
 
         data_fk_rz = [
-            [(-10, -10), (0, 0), (10, 10)],
+            [(-10, -20), (0, 0), (10, 20)],
+            [(-10, -15), (0, 0), (10, 15)],
             [(-10, -6), (0, 0), (10, 6)],
-            [(-10, -2), (0, 0), (10, 2)],
-            [(-10, 2), (0, 0), (10, -2)],
             [(-10, 6), (0, 0), (10, -6)],
+            [(-10, 15), (0, 0), (10, -15)],
         ]
         data_ik_ty = [
-            [(-10 * s, -1.5 * s), (0, 0), (10 * s, 1.5 * s)],
-            [(-10 * s, -0.9 * s), (0, 0), (10 * s, 0.9 * s)],
-            [(-10 * s, -0.3 * s), (0, 0), (10 * s, 0.3 * s)],
-            [(-10 * s, 0.3 * s), (0, 0), (10 * s, -0.3 * s)],
-            [(-10 * s, 0.9 * s), (0, 0), (10 * s, -0.9 * s)],
+            [(-10, -1.5 * rSzD), (0, 0), (10, 1.5 * rSzD)],
+            [(-10, -0.5 * rSzD), (0, 0), (10, 0.5 * rSzD)],
+            [(-10, -0.25 * rSzD), (0, 0), (10, 0.25 * rSzD)],
+            [(-10, 0.25 * rSzD), (0, 0), (10, -0.25 * rSzD)],
+            [(-10, 0.5 * rSzD), (0, 0), (10, -0.5 * rSzD)],
         ]
         for i, toeCtls in enumerate(self.toeCtlsArray):
-            fkOfs0 = toeCtls[0].addOffsetGrp()
-            topIks[i].addOffsetGrp()
-            for j in range(3):
-                common.sdk2(spread, fkOfs0.a.rz, *data_fk_rz[start_id + i][j])
-                common.sdk2(spread, topIks[i].a.ty, *data_ik_ty[start_id + i][j])
-                # inf=1,
-                # tangent1=0,
-                # tangent2=0,
+            if i > 0:  # skip thumb
+                fkOfs0 = toeCtls[0].addOffsetGrp()
+                topIks[i].addOffsetGrp()
+                for j in range(3):
+                    common.sdk2(spread, fkOfs0.a.rz, *data_fk_rz[start_id + i][j])
+                    common.sdk2(spread, topIks[i].a.ty, *data_ik_ty[start_id + i][j])
 
         for i, toeCtls in enumerate(self.toeCtlsArray):
             fkOfs0 = toeCtls[0].offset
@@ -1018,6 +1016,9 @@ class LegQd(RigModule):
                 proxy.add_proxyHeight_attr([self.ofsFixJ], newSize)
             if self.includeMeta == 1:
                 proxy.add_proxyHeight_attr([self.carpalFixJ], newSize)
+
+        if self.toeType > 0 and self.includeMeta == 1:
+            proxy.add_proxyHeight_attr([self.palm], newSize)
 
     def setup_scale(self):
         """Setup scale for the quadruped leg rig module."""

@@ -59,7 +59,7 @@ class IkFkSpline(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2, 1),
-            ("main", "arrow2", "z", rSz * 8, 1),
+            ("main", "arrow2", "z", rSz * 3, 1),
         ]
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
@@ -67,6 +67,7 @@ class IkFkSpline(RigModule):
         self.setting.a.add("stretchy", min=0, max=1, dv=1)
         self.setting.a.add("localScale", min=0.01, dv=1)
         self.setting.a.addSep()
+        self.main.cv_rotate(0, 0, 180)
         # self.setting.cv_move(0, rSz * 30, 0)
 
     def build(self):

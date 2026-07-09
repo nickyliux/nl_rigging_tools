@@ -1,6 +1,6 @@
 //Maya ASCII 2023 scene
 //Name: rtLegBp.ma
-//Last modified: Wed, Jul 08, 2026 11:59:14 PM
+//Last modified: Thu, Jul 09, 2026 11:37:48 AM
 //Codeset: 1252
 requires maya "2023";
 requires -nodeType "ikSpringSolver" "ikSpringSolver" "1.0";
@@ -12,23 +12,23 @@ fileInfo "product" "Maya 2023";
 fileInfo "version" "2023";
 fileInfo "cutIdentifier" "202211021031-847a9f9623";
 fileInfo "osv" "Windows 11 Pro v2009 (Build: 26200)";
-fileInfo "UUID" "0ABB6027-4E53-A13C-3A79-C59D6FB90C5B";
+fileInfo "UUID" "4DCFD502-4C26-6CE0-1B0E-0385482C6690";
 createNode transform -s -n "persp";
 	rename -uid "2CFF45DD-487A-9CD1-767B-A089B899D93C";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 94.150816762661677 140.65066673194528 153.87312876842628 ;
-	setAttr ".r" -type "double3" -26.738352729056164 39.400000000020881 0 ;
+	setAttr ".t" -type "double3" 20.806481136113565 37.093896743417659 52.412014851074986 ;
+	setAttr ".r" -type "double3" -23.73835272905804 32.600000000021467 0 ;
 	setAttr ".rp" -type "double3" -4.4728665216098307e-12 3.694822225952521e-12 0 ;
 	setAttr ".rpt" -type "double3" 2.9844577327446428e-13 -2.972164209873133e-13 2.1653481039926788e-12 ;
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "82C3F9B2-4980-6719-29B8-159665D78FA8";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999979;
-	setAttr ".coi" 192.55371724995868;
+	setAttr ".coi" 71.628335408229034;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
-	setAttr ".tp" -type "double3" -15 54.017494394356305 20.990749659884173 ;
+	setAttr ".tp" -type "double3" -15 0 3.2720197337413115 ;
 	setAttr ".hc" -type "string" "viewSet -p %camera";
 createNode transform -s -n "top";
 	rename -uid "C26C709E-427B-9FAF-006E-479957AA5F62";
@@ -904,7 +904,26 @@ createNode aimConstraint -n "pv_loc_ofs_aimConstraint1" -p "pv_loc_ofs";
 createNode transform -n "toe_guide_grp" -p "master_guide";
 	rename -uid "E669C658-4F4A-B12C-D97E-1DA743412B3C";
 	setAttr ".r" -type "double3" 180 0 0 ;
-createNode transform -n "toe00_2_guide_ofs" -p "toe_guide_grp";
+createNode transform -n "toeBiped_guide" -p "toe_guide_grp";
+	rename -uid "FD855D63-4699-5D94-5E9C-AD977BD2E3DF";
+createNode nurbsCurve -n "toeBiped_guideShape" -p "toeBiped_guide";
+	rename -uid "F37129EC-433B-3599-1DA2-A9AD7721FFA4";
+	setAttr -k off ".v";
+	setAttr ".ove" yes;
+	setAttr ".ovc" 1;
+	setAttr ".ovrgb" -type "float3" 1 0.94999999 0 ;
+	setAttr ".ls" 2;
+	setAttr ".cc" -type "nurbsCurve" 
+		1 4 0 no 3
+		5 0 1 2 3 4
+		5
+		7.5 0 7.5
+		7.5 0 -7.5
+		-7.5 0 -7.5
+		-7.5 0 7.5
+		7.5 0 7.5
+		;
+createNode transform -n "toe00_2_guide_ofs" -p "toeBiped_guide";
 	rename -uid "19F60782-415D-D397-872C-46A3DE60216E";
 	setAttr ".t" -type "double3" 4 1.5920408388915591e-15 -13 ;
 createNode transform -n "toe00_2_guide" -p "toe00_2_guide_ofs";
@@ -1127,7 +1146,7 @@ createNode nurbsCurve -n "toe00_1_guideShape" -p "toe00_1_guide";
 		0 1.7763568394002505e-15 -0.12438125019467736
 		;
 	setAttr ".adot" yes;
-createNode transform -n "toe01_2_guide_ofs" -p "toe_guide_grp";
+createNode transform -n "toe01_2_guide_ofs" -p "toeBiped_guide";
 	rename -uid "89DD842D-4AEE-A2AE-2185-B385964C9CD2";
 	setAttr ".t" -type "double3" 1.9999999999999964 0 -13 ;
 createNode transform -n "toe01_2_guide" -p "toe01_2_guide_ofs";
@@ -1148,7 +1167,7 @@ createNode transform -n "toe01_1_guide" -p "toe01_2_guide";
 	rename -uid "E1B3661B-45BA-935C-437A-0D8CC2F8F0E8";
 	setAttr ".t" -type "double3" 1.2434497875801753e-14 1.7763568394002505e-15 8.0000000000000018 ;
 	setAttr ".s" -type "double3" 1 1.0000000000000002 1.0000000000000002 ;
-createNode transform -n "toe02_2_guide_ofs" -p "toe_guide_grp";
+createNode transform -n "toe02_2_guide_ofs" -p "toeBiped_guide";
 	rename -uid "E1AFB79E-4248-1D89-7F39-B1A4F6D9723E";
 	setAttr ".t" -type "double3" -3.5527136788005009e-15 0 -13 ;
 createNode transform -n "toe02_2_guide" -p "toe02_2_guide_ofs";
@@ -1169,7 +1188,7 @@ createNode transform -n "toe02_1_guide" -p "toe02_2_guide";
 	rename -uid "80653EC0-4CC0-E840-CEAA-09BE43EDB6D9";
 	setAttr ".t" -type "double3" 1.0658141036401503e-14 1.7763568394002505e-15 8.0000000000000018 ;
 	setAttr ".s" -type "double3" 1 1.0000000000000002 1.0000000000000002 ;
-createNode transform -n "toe03_2_guide_ofs" -p "toe_guide_grp";
+createNode transform -n "toe03_2_guide_ofs" -p "toeBiped_guide";
 	rename -uid "9590D2E5-4894-4B18-920C-B0BB715FC7C3";
 	setAttr ".t" -type "double3" -2.0000000000000036 0 -13 ;
 createNode transform -n "toe03_2_guide" -p "toe03_2_guide_ofs";
@@ -1190,7 +1209,7 @@ createNode transform -n "toe03_1_guide" -p "toe03_2_guide";
 	rename -uid "EF932725-41D4-253F-442C-168DA0CA0C36";
 	setAttr ".t" -type "double3" 1.4210854715202004e-14 1.7763568394002505e-15 8.0000000000000018 ;
 	setAttr ".s" -type "double3" 1 1.0000000000000002 1.0000000000000002 ;
-createNode transform -n "toe04_2_guide_ofs" -p "toe_guide_grp";
+createNode transform -n "toe04_2_guide_ofs" -p "toeBiped_guide";
 	rename -uid "3C0801A5-40AC-7834-1601-7BAC953544E9";
 	setAttr ".t" -type "double3" -4 1.5920408388915591e-15 -13 ;
 createNode transform -n "toe04_2_guide" -p "toe04_2_guide_ofs";
@@ -1277,205 +1296,14 @@ createNode nurbsCurve -n "toe04_1_guideShape" -p "toe04_1_guide";
 		0 1.7763568394002505e-15 -0.12438125019467736
 		;
 	setAttr ".adot" yes;
-createNode transform -n "line_grp" -p "master_guide";
-	rename -uid "387C8921-4CD0-9D0D-ECBC-3E8A3C48EB6E";
-	setAttr ".ove" yes;
-	setAttr ".ovrgbf" yes;
-	setAttr ".ovc" 18;
-	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
-	setAttr ".it" no;
-createNode transform -n "line_01" -p "line_grp";
-	rename -uid "AC1A4514-4993-6855-9329-4B8C7607E399";
-	setAttr -l on ".v";
-	setAttr -l on ".tx";
-	setAttr -l on ".ty";
-	setAttr -l on ".tz";
-	setAttr -l on ".rx";
-	setAttr -l on ".ry";
-	setAttr -l on ".rz";
-	setAttr -l on ".sx";
-	setAttr -l on ".sy";
-	setAttr -l on ".sz";
-	setAttr ".it" no;
-createNode nurbsCurve -n "line_01Shape" -p "line_01";
-	rename -uid "D86C0DA4-4EB3-4431-17CC-9EB165A4FAEF";
-	setAttr -k off ".v";
-	setAttr ".ovdt" 2;
-	setAttr ".ove" yes;
-	setAttr ".ovrgbf" yes;
-	setAttr ".ovc" 17;
-	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
-	setAttr -s 2 ".cp";
-	setAttr ".ls" 5;
-	setAttr ".cc" -type "nurbsCurve" 
-		1 1 0 no 3
-		2 0 1
-		2
-		-15 108 0
-		-15 91.900001525878906 1.9721522630525295e-31
-		;
-	setAttr ".adot" yes;
-createNode transform -n "line_02" -p "line_grp";
-	rename -uid "15754EEC-4A53-1FE8-7670-13BB320727F7";
-	setAttr -l on ".v";
-	setAttr -l on ".tx";
-	setAttr -l on ".ty";
-	setAttr -l on ".tz";
-	setAttr -l on ".rx";
-	setAttr -l on ".ry";
-	setAttr -l on ".rz";
-	setAttr -l on ".sx";
-	setAttr -l on ".sy";
-	setAttr -l on ".sz";
-	setAttr ".it" no;
-createNode nurbsCurve -n "line_02Shape" -p "line_02";
-	rename -uid "67168DC9-40B7-2108-AAE3-D9BC2E069150";
-	setAttr -k off ".v";
-	setAttr ".ovdt" 2;
-	setAttr ".ove" yes;
-	setAttr ".ovrgbf" yes;
-	setAttr ".ovc" 17;
-	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
-	setAttr -s 2 ".cp";
-	setAttr ".ls" 5;
-	setAttr ".cc" -type "nurbsCurve" 
-		1 1 0 no 3
-		2 0 1
-		2
-		-15 91.900001525878906 1.9721522630525295e-31
-		-15.000000000000002 49.800000667572021 -3.944304526105059e-31
-		;
-	setAttr ".adot" yes;
-createNode transform -n "line_03" -p "line_grp";
-	rename -uid "A1C4D8D6-43EC-B69C-A8EB-F5ADDAEC8FC5";
-	setAttr -l on ".v";
-	setAttr -l on ".tx";
-	setAttr -l on ".ty";
-	setAttr -l on ".tz";
-	setAttr -l on ".rx";
-	setAttr -l on ".ry";
-	setAttr -l on ".rz";
-	setAttr -l on ".sx";
-	setAttr -l on ".sy";
-	setAttr -l on ".sz";
-	setAttr ".it" no;
-createNode nurbsCurve -n "line_03Shape" -p "line_03";
-	rename -uid "9C1B39E1-4654-706E-F6A7-6BB064FBD417";
-	setAttr -k off ".v";
-	setAttr ".ovdt" 2;
-	setAttr ".ove" yes;
-	setAttr ".ovrgbf" yes;
-	setAttr ".ovc" 17;
-	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
-	setAttr -s 2 ".cp";
-	setAttr ".ls" 5;
-	setAttr ".cc" -type "nurbsCurve" 
-		1 1 0 no 3
-		2 0 1
-		2
-		-15.000000000000002 49.800000667572021 -3.944304526105059e-31
-		-15 7.6999998092651367 -1.9721522630525295e-31
-		;
-	setAttr ".adot" yes;
-createNode transform -n "line_04" -p "line_grp";
-	rename -uid "41B828D1-4BFD-995D-22EF-22836551D852";
-	setAttr -l on ".v";
-	setAttr -l on ".tx";
-	setAttr -l on ".ty";
-	setAttr -l on ".tz";
-	setAttr -l on ".rx";
-	setAttr -l on ".ry";
-	setAttr -l on ".rz";
-	setAttr -l on ".sx";
-	setAttr -l on ".sy";
-	setAttr -l on ".sz";
-	setAttr ".it" no;
-createNode nurbsCurve -n "line_04Shape" -p "line_04";
-	rename -uid "A00A7E26-4133-4A8F-7C03-0BAF590570FB";
-	setAttr -k off ".v";
-	setAttr ".ovdt" 2;
-	setAttr ".ove" yes;
-	setAttr ".ovrgbf" yes;
-	setAttr ".ovc" 17;
-	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
-	setAttr -s 2 ".cp";
-	setAttr ".ls" 5;
-	setAttr ".cc" -type "nurbsCurve" 
-		1 1 0 no 3
-		2 0 1
-		2
-		-15 7.6999998092651367 -1.9721522630525295e-31
-		-15 3.8999999364217146 12.666667143503823
-		;
-	setAttr ".adot" yes;
-createNode transform -n "line_05" -p "line_grp";
-	rename -uid "67CAC1B9-4B7A-6DC7-09F4-689609131847";
-	setAttr -l on ".v";
-	setAttr -l on ".tx";
-	setAttr -l on ".ty";
-	setAttr -l on ".tz";
-	setAttr -l on ".rx";
-	setAttr -l on ".ry";
-	setAttr -l on ".rz";
-	setAttr -l on ".sx";
-	setAttr -l on ".sy";
-	setAttr -l on ".sz";
-	setAttr ".it" no;
-createNode nurbsCurve -n "line_05Shape" -p "line_05";
-	rename -uid "B45D5E36-4230-4388-49C7-91B0E3A6BFCB";
-	setAttr -k off ".v";
-	setAttr ".ovdt" 2;
-	setAttr ".ove" yes;
-	setAttr ".ovrgbf" yes;
-	setAttr ".ovc" 17;
-	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
-	setAttr -s 2 ".cp";
-	setAttr ".ls" 5;
-	setAttr ".cc" -type "nurbsCurve" 
-		1 1 0 no 3
-		2 0 1
-		2
-		-15 3.8999999364217146 12.666667143503823
-		-15 2 19.000000715255737
-		;
-	setAttr ".adot" yes;
-createNode transform -n "line_06" -p "line_grp";
-	rename -uid "4E4281A0-47B9-356E-C9D9-2186948922AE";
-	setAttr -l on ".v";
-	setAttr -l on ".tx";
-	setAttr -l on ".ty";
-	setAttr -l on ".tz";
-	setAttr -l on ".rx";
-	setAttr -l on ".ry";
-	setAttr -l on ".rz";
-	setAttr -l on ".sx";
-	setAttr -l on ".sy";
-	setAttr -l on ".sz";
-	setAttr ".it" no;
-createNode nurbsCurve -n "line_06Shape" -p "line_06";
-	rename -uid "2DB9E9E3-4AC0-C613-CEEF-C1AC709762D8";
-	setAttr -k off ".v";
-	setAttr ".ovdt" 1;
-	setAttr ".ove" yes;
-	setAttr ".ovrgbf" yes;
-	setAttr ".ovc" 1;
-	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
-	setAttr -s 2 ".cp";
-	setAttr ".cc" -type "nurbsCurve" 
-		1 1 0 no 3
-		2 0 1
-		2
-		-15.000000000000368 49.800000667572014 55
-		-15.000000000000002 49.800000667572021 -3.944304526105059e-31
-		;
-	setAttr ".adot" yes;
-createNode transform -n "line_grp2" -p "master_guide";
+createNode transform -n "line_grp2" -p "toeBiped_guide";
 	rename -uid "ABBAED65-4150-D22E-E71F-E6A17D275792";
 	setAttr ".ove" yes;
 	setAttr ".ovrgbf" yes;
 	setAttr ".ovc" 20;
 	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
 	setAttr ".t" -type "double3" 15 0 0 ;
+	setAttr ".r" -type "double3" -180 0 0 ;
 createNode transform -n "line_09" -p "line_grp2";
 	rename -uid "235BEFAF-4F72-D4CF-6560-9F9E5F75C2B8";
 	setAttr -l on ".v";
@@ -2046,6 +1874,198 @@ createNode nurbsCurve -n "curveShape19" -p "line_27";
 		-18.999999999999996 6.2055701450727145 5.0094291135614828
 		;
 	setAttr ".adot" yes;
+createNode transform -n "line_grp" -p "master_guide";
+	rename -uid "387C8921-4CD0-9D0D-ECBC-3E8A3C48EB6E";
+	setAttr ".ove" yes;
+	setAttr ".ovrgbf" yes;
+	setAttr ".ovc" 18;
+	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
+	setAttr ".it" no;
+createNode transform -n "line_01" -p "line_grp";
+	rename -uid "AC1A4514-4993-6855-9329-4B8C7607E399";
+	setAttr -l on ".v";
+	setAttr -l on ".tx";
+	setAttr -l on ".ty";
+	setAttr -l on ".tz";
+	setAttr -l on ".rx";
+	setAttr -l on ".ry";
+	setAttr -l on ".rz";
+	setAttr -l on ".sx";
+	setAttr -l on ".sy";
+	setAttr -l on ".sz";
+	setAttr ".it" no;
+createNode nurbsCurve -n "line_01Shape" -p "line_01";
+	rename -uid "D86C0DA4-4EB3-4431-17CC-9EB165A4FAEF";
+	setAttr -k off ".v";
+	setAttr ".ovdt" 2;
+	setAttr ".ove" yes;
+	setAttr ".ovrgbf" yes;
+	setAttr ".ovc" 17;
+	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
+	setAttr -s 2 ".cp";
+	setAttr ".ls" 5;
+	setAttr ".cc" -type "nurbsCurve" 
+		1 1 0 no 3
+		2 0 1
+		2
+		-15 108 0
+		-15 91.900001525878906 1.9721522630525295e-31
+		;
+	setAttr ".adot" yes;
+createNode transform -n "line_02" -p "line_grp";
+	rename -uid "15754EEC-4A53-1FE8-7670-13BB320727F7";
+	setAttr -l on ".v";
+	setAttr -l on ".tx";
+	setAttr -l on ".ty";
+	setAttr -l on ".tz";
+	setAttr -l on ".rx";
+	setAttr -l on ".ry";
+	setAttr -l on ".rz";
+	setAttr -l on ".sx";
+	setAttr -l on ".sy";
+	setAttr -l on ".sz";
+	setAttr ".it" no;
+createNode nurbsCurve -n "line_02Shape" -p "line_02";
+	rename -uid "67168DC9-40B7-2108-AAE3-D9BC2E069150";
+	setAttr -k off ".v";
+	setAttr ".ovdt" 2;
+	setAttr ".ove" yes;
+	setAttr ".ovrgbf" yes;
+	setAttr ".ovc" 17;
+	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
+	setAttr -s 2 ".cp";
+	setAttr ".ls" 5;
+	setAttr ".cc" -type "nurbsCurve" 
+		1 1 0 no 3
+		2 0 1
+		2
+		-15 91.900001525878906 1.9721522630525295e-31
+		-15.000000000000002 49.800000667572021 -3.944304526105059e-31
+		;
+	setAttr ".adot" yes;
+createNode transform -n "line_03" -p "line_grp";
+	rename -uid "A1C4D8D6-43EC-B69C-A8EB-F5ADDAEC8FC5";
+	setAttr -l on ".v";
+	setAttr -l on ".tx";
+	setAttr -l on ".ty";
+	setAttr -l on ".tz";
+	setAttr -l on ".rx";
+	setAttr -l on ".ry";
+	setAttr -l on ".rz";
+	setAttr -l on ".sx";
+	setAttr -l on ".sy";
+	setAttr -l on ".sz";
+	setAttr ".it" no;
+createNode nurbsCurve -n "line_03Shape" -p "line_03";
+	rename -uid "9C1B39E1-4654-706E-F6A7-6BB064FBD417";
+	setAttr -k off ".v";
+	setAttr ".ovdt" 2;
+	setAttr ".ove" yes;
+	setAttr ".ovrgbf" yes;
+	setAttr ".ovc" 17;
+	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
+	setAttr -s 2 ".cp";
+	setAttr ".ls" 5;
+	setAttr ".cc" -type "nurbsCurve" 
+		1 1 0 no 3
+		2 0 1
+		2
+		-15.000000000000002 49.800000667572021 -3.944304526105059e-31
+		-15 7.6999998092651367 -1.9721522630525295e-31
+		;
+	setAttr ".adot" yes;
+createNode transform -n "line_04" -p "line_grp";
+	rename -uid "41B828D1-4BFD-995D-22EF-22836551D852";
+	setAttr -l on ".v";
+	setAttr -l on ".tx";
+	setAttr -l on ".ty";
+	setAttr -l on ".tz";
+	setAttr -l on ".rx";
+	setAttr -l on ".ry";
+	setAttr -l on ".rz";
+	setAttr -l on ".sx";
+	setAttr -l on ".sy";
+	setAttr -l on ".sz";
+	setAttr ".it" no;
+createNode nurbsCurve -n "line_04Shape" -p "line_04";
+	rename -uid "A00A7E26-4133-4A8F-7C03-0BAF590570FB";
+	setAttr -k off ".v";
+	setAttr ".ovdt" 2;
+	setAttr ".ove" yes;
+	setAttr ".ovrgbf" yes;
+	setAttr ".ovc" 17;
+	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
+	setAttr -s 2 ".cp";
+	setAttr ".ls" 5;
+	setAttr ".cc" -type "nurbsCurve" 
+		1 1 0 no 3
+		2 0 1
+		2
+		-15 7.6999998092651367 -1.9721522630525295e-31
+		-15 3.8999999364217146 12.666667143503823
+		;
+	setAttr ".adot" yes;
+createNode transform -n "line_05" -p "line_grp";
+	rename -uid "67CAC1B9-4B7A-6DC7-09F4-689609131847";
+	setAttr -l on ".v";
+	setAttr -l on ".tx";
+	setAttr -l on ".ty";
+	setAttr -l on ".tz";
+	setAttr -l on ".rx";
+	setAttr -l on ".ry";
+	setAttr -l on ".rz";
+	setAttr -l on ".sx";
+	setAttr -l on ".sy";
+	setAttr -l on ".sz";
+	setAttr ".it" no;
+createNode nurbsCurve -n "line_05Shape" -p "line_05";
+	rename -uid "B45D5E36-4230-4388-49C7-91B0E3A6BFCB";
+	setAttr -k off ".v";
+	setAttr ".ovdt" 2;
+	setAttr ".ove" yes;
+	setAttr ".ovrgbf" yes;
+	setAttr ".ovc" 17;
+	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
+	setAttr -s 2 ".cp";
+	setAttr ".ls" 5;
+	setAttr ".cc" -type "nurbsCurve" 
+		1 1 0 no 3
+		2 0 1
+		2
+		-15 3.8999999364217146 12.666667143503823
+		-15 2 19.000000715255737
+		;
+	setAttr ".adot" yes;
+createNode transform -n "line_06" -p "line_grp";
+	rename -uid "4E4281A0-47B9-356E-C9D9-2186948922AE";
+	setAttr -l on ".v";
+	setAttr -l on ".tx";
+	setAttr -l on ".ty";
+	setAttr -l on ".tz";
+	setAttr -l on ".rx";
+	setAttr -l on ".ry";
+	setAttr -l on ".rz";
+	setAttr -l on ".sx";
+	setAttr -l on ".sy";
+	setAttr -l on ".sz";
+	setAttr ".it" no;
+createNode nurbsCurve -n "line_06Shape" -p "line_06";
+	rename -uid "2DB9E9E3-4AC0-C613-CEEF-C1AC709762D8";
+	setAttr -k off ".v";
+	setAttr ".ovdt" 1;
+	setAttr ".ove" yes;
+	setAttr ".ovrgbf" yes;
+	setAttr ".ovc" 1;
+	setAttr ".ovrgb" -type "float3" 0.69440001 0.55390006 0.25750002 ;
+	setAttr -s 2 ".cp";
+	setAttr ".cc" -type "nurbsCurve" 
+		1 1 0 no 3
+		2 0 1
+		2
+		-15.000000000000368 49.800000667572014 55
+		-15.000000000000002 49.800000667572021 -3.944304526105059e-31
+		;
+	setAttr ".adot" yes;
 createNode transform -n "line_grp3" -p "master_guide";
 	rename -uid "E4B6023D-490E-8702-026B-989F568BA5AC";
 	setAttr ".ove" yes;
@@ -2283,41 +2303,41 @@ parent -s -nc -r -add "|master_guide|lwr_guide_ofs|lwr_guide|patella_guide|radiu
 parent -s -nc -r -add "|master_guide|palm_inPos_ofs|palm_inPos_guide|palm_toePos_guideShape" "palm_toePos_guide" ;
 parent -s -nc -r -add "|master_guide|palm_inPos_ofs|palm_inPos_guide|palm_toePos_guideShape" "palm_outPos_guide" ;
 parent -s -nc -r -add "|master_guide|palm_inPos_ofs|palm_inPos_guide|palm_toePos_guideShape" "palm_heelPos_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe02_2_guideShape" "toe04_2_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe02_2_guideShape" "toe01_2_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe02_2_guideShape" "toe03_2_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe02_2_guideShape" "toe02_2_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe03_1_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe01_5_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe04_5_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe03_4_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe02_3_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe03_5_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe03_3_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe04_4_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe00_4_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe01_3_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe02_4_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe01_4_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe02_5_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe04_3_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe01_1_guide" ;
-parent -s -nc -r -add "|master_guide|toe_guide_grp|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe02_1_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe02_2_guideShape" "toe04_2_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe02_2_guideShape" "toe01_2_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe02_2_guideShape" "toe03_2_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe02_2_guideShape" "toe02_2_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe03_1_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe01_5_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe04_5_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe03_4_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe02_3_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe03_5_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe03_3_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe04_4_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe00_4_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe01_3_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe02_4_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe01_4_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe02_5_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe04_3_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe01_1_guide" ;
+parent -s -nc -r -add "|master_guide|toe_guide_grp|toeBiped_guide|toe00_2_guide_ofs|toe00_2_guide|toe00_3_guide|toe03_1_guideShape" "toe02_1_guide" ;
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "A88AE317-4D36-3883-637B-26A405830DE2";
+	rename -uid "2D6E736C-40B2-FAA8-8E3A-55BF782E40D2";
 	setAttr -s 2 ".lnk";
 	setAttr -s 2 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "272C7AFD-48BD-1DFF-AD1A-F7A960A329EF";
+	rename -uid "D73632AA-408A-0DDC-5C61-7E8D8C38B2A0";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "5B3B4331-4CE6-3F0F-F994-618040B3D847";
+	rename -uid "D0EC1D82-4009-420D-93B8-88BE10B99493";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "7E827136-4486-6CDC-8A55-9B8973FBA632";
+	rename -uid "EC2DD254-4FE2-9533-0740-49946A8D53DD";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "BC19330E-4E8B-4910-BB8A-238FB66CBBA1";
 	setAttr ".ufem" -type "stringArray" 0  ;
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "F6A0CF26-429C-EEF3-8ABC-E28DD249CA4A";
+	rename -uid "DFB1B9C3-4FE7-0CEC-F0CF-39A01300EF4B";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "47ABDCF5-4400-C307-437A-E4AF35DAB19B";
 	setAttr ".g" yes;
@@ -3072,18 +3092,6 @@ connectAttr "upr_guide.pm" "pv_loc_ofs_aimConstraint1.tg[0].tpm";
 connectAttr "pv_loc_ofs_aimConstraint1.w0" "pv_loc_ofs_aimConstraint1.tg[0].tw";
 connectAttr "pole_normal_loc.wm" "pv_loc_ofs_aimConstraint1.wum";
 connectAttr "master_guide.toeBones" "toe_guide_grp.v";
-connectAttr "DCM_1.ot" "line_01Shape.cp[0]";
-connectAttr "DCM_2.ot" "line_01Shape.cp[1]";
-connectAttr "DCM_2.ot" "line_02Shape.cp[0]";
-connectAttr "DCM_3.ot" "line_02Shape.cp[1]";
-connectAttr "DCM_3.ot" "line_03Shape.cp[0]";
-connectAttr "DCM_4.ot" "line_03Shape.cp[1]";
-connectAttr "DCM_4.ot" "line_04Shape.cp[0]";
-connectAttr "DCM_5.ot" "line_04Shape.cp[1]";
-connectAttr "DCM_5.ot" "line_05Shape.cp[0]";
-connectAttr "DCM_6.ot" "line_05Shape.cp[1]";
-connectAttr "DCM_7.ot" "line_06Shape.cp[0]";
-connectAttr "DCM_3.ot" "line_06Shape.cp[1]";
 connectAttr "master_guide.toeBones" "line_grp2.v";
 connectAttr "DCM_12.ot" "curveShape1.cp[0]";
 connectAttr "DCM_13.ot" "curveShape1.cp[1]";
@@ -3123,6 +3131,18 @@ connectAttr "DCM_33.ot" "curveShape18.cp[0]";
 connectAttr "DCM_34.ot" "curveShape18.cp[1]";
 connectAttr "DCM_34.ot" "curveShape19.cp[0]";
 connectAttr "DCM_35.ot" "curveShape19.cp[1]";
+connectAttr "DCM_1.ot" "line_01Shape.cp[0]";
+connectAttr "DCM_2.ot" "line_01Shape.cp[1]";
+connectAttr "DCM_2.ot" "line_02Shape.cp[0]";
+connectAttr "DCM_3.ot" "line_02Shape.cp[1]";
+connectAttr "DCM_3.ot" "line_03Shape.cp[0]";
+connectAttr "DCM_4.ot" "line_03Shape.cp[1]";
+connectAttr "DCM_4.ot" "line_04Shape.cp[0]";
+connectAttr "DCM_5.ot" "line_04Shape.cp[1]";
+connectAttr "DCM_5.ot" "line_05Shape.cp[0]";
+connectAttr "DCM_6.ot" "line_05Shape.cp[1]";
+connectAttr "DCM_7.ot" "line_06Shape.cp[0]";
+connectAttr "DCM_3.ot" "line_06Shape.cp[1]";
 connectAttr "master_guide.dualBone" "line_grp3.v";
 connectAttr "DCM_8.ot" "line_07Shape.cp[0]";
 connectAttr "DCM_9.ot" "line_07Shape.cp[1]";

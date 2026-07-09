@@ -126,7 +126,7 @@ class GrpNode(DagNode):
         from nl_modules.nodel.crv_node import CrvNode
 
         gmb_ctl = CrvNode(
-            self.node + "_gmb", shape="circleV", align=self, p=self, top=1
+            self.node + "_gmb", shape="squareR", align=self, p=self, top=1
         )
         # gmb_ctl.width = 2
         attrTgt = attrTgt or self
