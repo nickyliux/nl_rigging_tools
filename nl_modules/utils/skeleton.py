@@ -23,7 +23,6 @@ def save_reference():
     charPath = mc.optionVar(q="charFullPath")
     tgtPaths = mc.fileDialog2(fileFilter="*ref*.ma", dialogStyle=2, dir=charPath)
     if tgtPaths:
-
         mc.select(sk_grp, noExpand=1)
         mc.file(tgtPaths, type="mayaAscii", f=1, es=1)  # , ch=0, chn=0, exp=0, con=0)
         logging.info(f"Group '{AUTO_BIND_JNT_GRP}' exported.")
@@ -36,7 +35,10 @@ def load_reference(loadLatest=1):
 
     sk_grp = mc.ls(AUTO_BIND_JNT_GRP, tr=1)
     if sk_grp:
-        mc.confirmDialog(t="Info", m=f"{AUTO_BIND_JNT_GRP} already exists.     ", b="OK")
+        mc.confirmDialog(
+            t="Info", m=f"'{AUTO_BIND_JNT_GRP}' already exists.     ", b="OK"
+        )
+        mc.select(sk_grp)
         return
 
     charPath = mc.optionVar(q="charFullPath")
@@ -59,8 +61,9 @@ def load_reference(loadLatest=1):
     sk_grp = mc.ls(AUTO_BIND_JNT_GRP, tr=1)
     if sk_grp:
         DagNode(sk_grp[0]).show()
+        mc.select(sk_grp)
     else:
-        mc.confirmDialog(t="Info", m=f"Grp {AUTO_BIND_JNT_GRP} is missing in the file.     ", b="OK")
+        mc.confirmDialog(t="Info", m=f"'{AUTO_BIND_JNT_GRP}' is missing.     ", b="OK")
 
     logging.info(f"Ref file imported: {os.path.basename(tgtPaths[-1])}.")
     print("")
@@ -74,13 +77,13 @@ def rib_setup(*args):
         if not bind_set:
             logging.info(f"No spine_rbj_set found.")
             return
-        
+
         if DagNode(RIB_LATTICE_GRP).exists():
             logging.info(f"{RIB_LATTICE_GRP} already exists.")
             return
-        
-        div = (2,9,2) if DagNode('spineBp0_master_guide').exists() else (2,2,9)
-        l_div=(4, 4, 4)
+
+        div = (2, 9, 2) if DagNode("spineBp0_master_guide").exists() else (2, 2, 9)
+        l_div = (4, 4, 4)
 
         result = mc.lattice(
             tgts, dv=div, ldv=l_div, outsideLattice=1, objectCentered=1, commonParent=1
@@ -96,4 +99,8 @@ def rib_setup(*args):
             lattice_grp | CHR
             lattice_grp.hide()
     else:
-        mc.confirmDialog(t="Info", m=f'You need to have the group "{RIB_GRP}" containing rib meshes.     ', b="OK")
+        mc.confirmDialog(
+            t="Info",
+            m=f'You need to have the group "{RIB_GRP}" containing rib meshes.     ',
+            b="OK",
+        )

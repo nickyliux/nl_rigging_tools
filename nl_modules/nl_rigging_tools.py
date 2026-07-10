@@ -101,7 +101,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             btn.setIcon(QIcon(icon))
             if isinstance(icon, QtGui.QPixmap):
                 # btn.setIconSize(icon.size())
-                btn.setIconSize(QtCore.QSize(28, 28))
+                btn.setIconSize(QtCore.QSize(24, 24))
 
     def buildAll(self):
         """Build all rig components."""
