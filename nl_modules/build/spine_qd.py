@@ -94,7 +94,7 @@ class SpineQd(RigModule):
         self.end_ctl.cv_rotate(0, 90, 0)
         self.end_ctl.cv_move(0, 0, rSz * -15)
 
-        self.fore_ikc.cv_move(0, rSz * 20, 0)
+        # self.fore_ikc.cv_move(0, rSz * 20, 0)
         # self.mid_ikc.cv_move(0, rSz * 20, 0)
         # self.base_ikc.cv_move(0, rSz * 20, 0)
 

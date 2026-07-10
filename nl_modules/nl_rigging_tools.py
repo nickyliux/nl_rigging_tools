@@ -26,12 +26,12 @@ from nl_modules.utils.color import Color
 reload(reload_all)
 
 try:
-    from PySide2 import QtWidgets
+    from PySide2 import QtWidgets, QtGui, QtCore
     from PySide2.QtGui import QIcon
     from PySide2.QtUiTools import QUiLoader
     from PySide2.QtWidgets import QMenuBar, QMenu, QAction
 except ImportError:
-    from PySide6 import QtWidgets
+    from PySide6 import QtWidgets, QtGui, QtCore
     from PySide6.QtGui import QIcon
     from PySide6.QtUiTools import QUiLoader
     from PySide6.QtWidgets import QMenuBar, QMenu
@@ -53,12 +53,13 @@ LIGHT_PATH = os.path.join(MOD_DIR, "build", "others")
 PRESET_GUIDE_PATH = os.path.join(MOD_DIR, "build", "presets")
 UI_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.ui")
 STYLE_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.qss")
+IMAGE_PATH = os.path.join(MOD_DIR, "build", "images")
+
 LIGHTING_FILE = os.path.join(LIGHT_PATH, "lighting4.ma")
 SHADER_FILE = os.path.join(LIGHT_PATH, "bone_SHD.ma")
 AUTO_BIND_JNT_GRP = "auto_bind_jnt_grp"
 MODEL_GRP = "geo_grp"
 TWEAK_GRP = "tweak_guide_grp"
-
 
 
 class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
@@ -98,6 +99,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         btn.clicked.connect(func)
         if icon:
             btn.setIcon(QIcon(icon))
+            if isinstance(icon, QtGui.QPixmap):
+                # btn.setIconSize(icon.size())
+                btn.setIconSize(QtCore.QSize(28, 28))
 
     def buildAll(self):
         """Build all rig components."""
@@ -135,13 +139,75 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def connect_UI(self):
         """Connect UI buttons to their respective functions."""
+
+        self.connect(
+            self.UI.head_BN,
+            partial(self.loadGuide, "head"),
+            QtGui.QPixmap(IMAGE_PATH + "/head.png"),
+        )
+        self.connect(
+            self.UI.neck_BN,
+            partial(self.loadGuide, "neck"),
+            QtGui.QPixmap(IMAGE_PATH + "/neck.png"),
+        )
+        self.connect(
+            self.UI.spineBp_BN,
+            partial(self.loadGuide, "spineBp"),
+            QtGui.QPixmap(IMAGE_PATH + "/spineBp.png"),
+        )
+        self.connect(
+            self.UI.spineQd_BN,
+            partial(self.loadGuide, "spineQd"),
+            QtGui.QPixmap(IMAGE_PATH + "/spineQd.png"),
+        )
+        self.connect(
+            self.UI.arm_BN,
+            partial(self.loadGuide, "arm"),
+            QtGui.QPixmap(IMAGE_PATH + "/arm.png"),
+        )
+        self.connect(
+            self.UI.legPlanti_BN,
+            partial(self.loadGuide, "legPlanti"),
+            QtGui.QPixmap(IMAGE_PATH + "/legPlanti.png"),
+        )
+        self.connect(
+            self.UI.legDigitiUnguli_BN,
+            partial(self.loadGuide, "legDigitiUnguli"),
+            QtGui.QPixmap(IMAGE_PATH + "/legDigitiUnguli.png"),
+        )
+        self.connect(
+            self.UI.hand_BN,
+            partial(self.loadGuide, "hand"),
+            QtGui.QPixmap(IMAGE_PATH + "/hand.png"),
+        )
+        self.connect(
+            self.UI.tail_BN,
+            partial(self.loadGuide, "tail"),
+            QtGui.QPixmap(IMAGE_PATH + "/tail.png"),
+        )
+        self.connect(
+            self.UI.belt_BN,
+            partial(self.loadGuide, "belt"),
+            QtGui.QPixmap(IMAGE_PATH + "/belt.png"),
+        )
+        self.connect(
+            self.UI.finger_BN,
+            partial(self.loadGuide, "finger"),
+            QtGui.QPixmap(IMAGE_PATH + "/finger.png"),
+        )
+        self.connect(
+            self.UI.simple_BN,
+            partial(self.loadGuide, "simpleFk"),
+            QtGui.QPixmap(IMAGE_PATH + "/simpleFk.png"),
+        )
+
         # Guide
         self.connect(self.UI.guide_load_BN, self.loadGuide, ":addClip.png")
         self.connect(self.UI.guide_explore_BN, guide.explore, ":searchEngine.png")
         self.UI.guide_LW.itemDoubleClicked.connect(partial(self.loadGuide, 0))
 
         # Char Path
-        self.connect(self.UI.charPath_BN, self.set_char_path) #, ":aselect.png")
+        self.connect(self.UI.charPath_BN, self.set_char_path)  # , ":aselect.png")
         self.connect(self.UI.char_explore_BN, self.explore_char, ":searchEngine.png")
         self.UI.charFolder_CBB.currentTextChanged.connect(self.update_char_full_path)
 
@@ -189,14 +255,18 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         # Skin
         self.connect(self.UI.loadWarpMesh_BN, self.loadWarpMesh)
-        self.connect(self.UI.templateWarpMesh_BN, self.templateWarpMesh, ":templated.png")
+        self.connect(
+            self.UI.templateWarpMesh_BN, self.templateWarpMesh, ":templated.png"
+        )
         self.connect(self.UI.isolateProxy_BN, self.isolateProxy)
         self.connect(self.UI.selAllProxy_BN, proxy.selectAllProxy)
         self.connect(self.UI.bindToSelProxy_BN, proxy.bind_to_proxy)
 
         # Tweak Ctl
         self.connect(self.UI.loadTweakMesh_BN, self.loadTweakMesh)
-        self.connect(self.UI.templateTweakMesh_BN, self.templateTweakMesh, ":templated.png")
+        self.connect(
+            self.UI.templateTweakMesh_BN, self.templateTweakMesh, ":templated.png"
+        )
         self.connect(self.UI.createTweak_BN, self.createTweakUI)
         self.connect(self.UI.addTweakJnt_BN, tweak.addTweakGuide)
         self.connect(self.UI.mirrorTweakJnt_BN, tweak.mirrorTweakGuide)
@@ -204,7 +274,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.toggleTweak_BN, tweak.toggleTweak)
         self.connect(self.UI.delSelTweakCtl_BN, tweak.delSelTweakCtl)
         self.connect(self.UI.delAllTweakCtl_BN, tweak.delAllTweakCtl)
-        
 
         # Master Guide
         # self.UI.masterGuide_LW.itemDoubleClicked.connect(self.UI_selectMasterGuide)
@@ -247,9 +316,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         # Guide Tool
         self.connect(self.UI.addWSMirrorAttr_BN, common.add_wsMirror_attr)
-        self.connect(self.UI.addFlipRXAttr_BN, partial(common.add_flipR_attr, axis='X'))
-        self.connect(self.UI.addFlipRYAttr_BN, partial(common.add_flipR_attr, axis='Y'))
-        self.connect(self.UI.addFlipRZAttr_BN, partial(common.add_flipR_attr, axis='Z'))
+        self.connect(self.UI.addFlipRXAttr_BN, partial(common.add_flipR_attr, axis="X"))
+        self.connect(self.UI.addFlipRYAttr_BN, partial(common.add_flipR_attr, axis="Y"))
+        self.connect(self.UI.addFlipRZAttr_BN, partial(common.add_flipR_attr, axis="Z"))
         self.connect(self.UI.misc_buildLineSel_BN, CrvNode.buildLineLinkedSel)
         self.connect(self.UI.misc_importEnvAndShd_BN, self.misc_importEnvAndShd)
 
@@ -314,7 +383,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if targetWarpMesh:
             tgt = DagNode(targetWarpMesh)
 
-            text = tgt.name if tgt.exists() and tgt.type == "mesh" else ''
+            text = tgt.name if tgt.exists() and tgt.type == "mesh" else ""
             self.UI.warpMesh_LE.setText(text)
 
     def updateTweakTargetMesh(self):
@@ -323,9 +392,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if targetTweakMesh:
             tgt = DagNode(targetTweakMesh)
 
-            text = tgt.name if tgt.exists() and tgt.type == "mesh" else ''
+            text = tgt.name if tgt.exists() and tgt.type == "mesh" else ""
             self.UI.tweakMesh_LE.setText(text)
-
 
     def isolateProxy(self):
         """Isolate selected proxy mesh in the viewport."""
@@ -335,51 +403,48 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             if tgt.exists() and tgt.type == "mesh":
                 proxy.selectAllProxy()
                 mc.select(tgt, add=1)
-                s = mc.isolateSelect('modelPanel4', q=1, state=1)
+                s = mc.isolateSelect("modelPanel4", q=1, state=1)
                 for p in mc.getPanel(type="modelPanel"):
-                    mc.isolateSelect(p, state=1-s)
+                    mc.isolateSelect(p, state=1 - s)
                     mc.isolateSelect(p, addSelected=1)
                     mc.isolateSelect(p, update=1)
                 mc.select(cl=1)
 
-
     @common.Undo("loadGuide")
     def loadGuide(self, *args):
         """Load selected guide components."""
-        items = self.UI.guide_LW.selectedItems()
         allTgtMG = []
 
         isM = self.UI.guideSide_M_CB.isChecked()
         isL = self.UI.guideSide_L_CB.isChecked()
         isR = self.UI.guideSide_R_CB.isChecked()
 
-        if items:
-            for item in items:
-                itemText = item.text()
-                if itemText in guide.COMPONENT_DICT:
-                    names = guide.COMPONENT_DICT[item.text()]
+        # items = self.UI.guide_LW.selectedItems()
+        # item.text()
+        itemText = args[0] if args else None
+        if itemText in guide.COMPONENT_DICT:
+            names = guide.COMPONENT_DICT[itemText]
 
-                    if isM and "M" in names:
-                        mg = guide.loadGuide(names["M"])
-                        allTgtMG.append(mg)
-                    if isL and "L" in names:
-                        mg = guide.loadGuide(names["L"])
-                        allTgtMG.append(mg)
-                    if isR and "R" in names:
-                        mg = guide.loadGuide(names["R"])
-                        allTgtMG.append(mg)
+            if isM and "M" in names:
+                mg = guide.loadGuide(names["M"])
+                allTgtMG.append(mg)
+            if isL and "L" in names:
+                mg = guide.loadGuide(names["L"])
+                allTgtMG.append(mg)
+            if isR and "R" in names:
+                mg = guide.loadGuide(names["R"])
+                allTgtMG.append(mg)
 
-                elif itemText == "biped":
-                    self.loadPresetGuide("biped_tpl")
-                elif itemText == "quad / canine":
-                    self.loadPresetGuide("quad_canine_tpl")
-                elif itemText == "quad / equine":
-                    self.loadPresetGuide("quad_equine_tpl")
+        elif itemText == "biped":
+            self.loadPresetGuide("biped_tpl")
+        elif itemText == "quad / canine":
+            self.loadPresetGuide("quad_canine_tpl")
+        elif itemText == "quad / equine":
+            self.loadPresetGuide("quad_equine_tpl")
 
-            # self.masterGuide_UI_refresh()
-            mc.select(allTgtMG)
-            common.setView(fit=1)
-            mc.setToolTo("moveSuperContext")
+        mc.select(allTgtMG)
+        common.setView(fit=1)
+        mc.setToolTo("moveSuperContext")
 
     def loadPresetGuide(self, name):
         tpl = os.path.join(PRESET_GUIDE_PATH, name + ".json")
@@ -402,13 +467,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     #     allMGs = build.collectMasterGuide()
     #     self.UI.masterGuide_LW.clear()
     #     self.UI.masterGuide_LW.addItems([r.name for r in allMGs])
-
-    # def masterGuide_selectAll(self):
-    #     pass
-    # """Select all master guides"""
-    # allMGs = build.getMasterGuide_all()
-    # if allMGs:
-    #     mc.select(allMGs)
 
     def crvShape_LW_dblClicked(self, item):
         """Add curve object"""
@@ -490,39 +548,42 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         ]
         self.UI.crvShape_LW.addItems(items)
 
-
     def addSkRefJoint(self, type=0):
         """Add reference joint or rb joint for selected mesh."""
         mc.select(hi=1)
         meshSel = [DagNode(m).parent for m in mc.ls(sl=1, type="mesh")]
 
         if meshSel:
-
             jDict = {
-                'sf': ["_rbJnt", '_rbJnt','_rbJnt','_refJnt'],
-                'name': ["auto_bind_neck_grp", "auto_bind_spine_grp", "auto_bind_tail_grp", "auto_bind_ref_grp"],
-                'color': [Color.D_RED, Color.RED, Color.D_RED, Color.L_BLUE],
+                "sf": ["_rbJnt", "_rbJnt", "_rbJnt", "_refJnt"],
+                "name": [
+                    "auto_bind_neck_grp",
+                    "auto_bind_spine_grp",
+                    "auto_bind_tail_grp",
+                    "auto_bind_ref_grp",
+                ],
+                "color": [Color.D_RED, Color.RED, Color.D_RED, Color.L_BLUE],
             }
             grp = GrpNode(
-                jDict['name'][type],
+                jDict["name"][type],
                 p=GrpNode(AUTO_BIND_JNT_GRP),
             )
             addedJnts = []
             for mesh in meshSel:
                 jnt = JntNode(
-                    mesh + jDict['sf'][type],
-                    color=jDict['color'][type],
+                    mesh + jDict["sf"][type],
+                    color=jDict["color"][type],
                     p=grp,
                     # r=0.5,
                 )
                 jnt.a.t.set(*mesh.o.bbCenter)
                 addedJnts.append(jnt)
-            
+
             # Add extra group to created joints
             # mc.group(addedJnts, n=grp.name + "_#")
 
             # Add set
-            # if rb == 1 and len(addedJnts) > 0:            
+            # if rb == 1 and len(addedJnts) > 0:
             #     setNames = ["neck_rbj_set", "spine_rbj_set", "tail_rbj_set"]
             #     mc.sets(addedJnts, n=setNames[type])
 
@@ -538,7 +599,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             guide.mirrorCtl(selectedJnt, wsMirror=1)
         else:
             mc.confirmDialog(t="Info", m="No refJnt found.    ", b="OK")
-
 
     @common.Undo("boneAutoUnBind")
     def boneAutoUnBind(self):
@@ -585,7 +645,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 return
         else:
             mc.confirmDialog(
-                t="Info", m=f'"{MODEL_GRP}" containing bone meshes not found.    ', b="OK"
+                t="Info",
+                m=f'"{MODEL_GRP}" containing bone meshes not found.    ',
+                b="OK",
             )
             return
 
@@ -632,14 +694,13 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 # mc.savePrefs()
                 self.updateWarpTargetMesh()
 
-    
     def createTweakUI(self):
         """Create tweak setup for the target tweak mesh using selected joints as reference."""
         targetTweakMesh = mc.optionVar(q="targetTweakMesh")
         if not targetTweakMesh:
             mc.confirmDialog(t="Info", m="Target tweak mesh not found.    ", b="OK")
             return
-        
+
         targetTweakMesh = DagNode(targetTweakMesh)
         if not targetTweakMesh.exists():
             mc.confirmDialog(t="Info", m="Target tweak mesh not found.    ", b="OK")
@@ -649,13 +710,14 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         guides = common.getObjectBelow(sel, tgtType="curve")
         if guides:
             tweak.createTweak(targetTweakMesh, tgts=guides)
-            local_grp = DagNode('tweak_local_grp')
+            local_grp = DagNode("tweak_local_grp")
             if local_grp.exists():
                 local_grp.hide()
-            logging.info(f"Tweak created for {targetTweakMesh.name} with {len(guides)} reference joints.")
+            logging.info(
+                f"Tweak created for {targetTweakMesh.name} with {len(guides)} reference joints."
+            )
         else:
             mc.confirmDialog(t="Info", m="Select tweak guides.    ", b="OK")
-            
 
     def loadTweakMesh(self):
         """Set the selected mesh as the target tweak mesh."""
@@ -680,7 +742,11 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Set character path via file dialog."""
         charPath = mc.optionVar(q="charDir")
         new_charPaths = mc.fileDialog2(
-            dialogStyle=2, fileMode=3, dir=charPath, cap="Set Character Library Directory", okc="Set"
+            dialogStyle=2,
+            fileMode=3,
+            dir=charPath,
+            cap="Set Character Library Directory",
+            okc="Set",
         )
         if new_charPaths:
             charPath = new_charPaths[0]
@@ -702,7 +768,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Update charFolder_CBB combo box with folder names at the given path."""
         self.UI.charFolder_CBB.clear()
         if path and os.path.isdir(path):
-
             # Get last Folder from charFullPath
             charFullPath = mc.optionVar(q="charFullPath")
             lastFolder = ""

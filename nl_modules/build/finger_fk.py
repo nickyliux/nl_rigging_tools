@@ -118,9 +118,15 @@ class FingerFk(RigModule):
 
         rot_axis = "rx" if xDr == 0 else "rz"
         if self.segNum >= 3:
-            self.ctls_fk[1].a.add("rot1") >> self.ctls_fk[2].addOffsetGrp().a[rot_axis]
+            (
+                self.ctls_fk[1].a.add("rot1") * 9
+                >> self.ctls_fk[2].addOffsetGrp().a[rot_axis]
+            )
         if self.segNum >= 4:
-            self.ctls_fk[1].a.add("rot2") >> self.ctls_fk[3].addOffsetGrp().a[rot_axis]
+            (
+                self.ctls_fk[1].a.add("rot2") * 9
+                >> self.ctls_fk[3].addOffsetGrp().a[rot_axis]
+            )
 
     def create_ik(self, name, sj, ee, jsf, p):
         """Create an IK handle for the finger rig."""
