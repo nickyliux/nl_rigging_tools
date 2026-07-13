@@ -200,6 +200,26 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             partial(self.loadGuide, "simpleFk"),
             QtGui.QPixmap(IMAGE_PATH + "/simpleFk.png"),
         )
+        self.connect(
+            self.UI.biped_BN,
+            partial(self.loadGuide, "biped"),
+            QtGui.QPixmap(IMAGE_PATH + "/biped.png"),
+        )
+        self.connect(
+            self.UI.equine_BN,
+            partial(self.loadGuide, "equine"),
+            QtGui.QPixmap(IMAGE_PATH + "/equine.png"),
+        )
+        self.connect(
+            self.UI.canine_BN,
+            partial(self.loadGuide, "canine"),
+            QtGui.QPixmap(IMAGE_PATH + "/canine.png"),
+        )
+        self.connect(
+            self.UI.avian_BN,
+            partial(self.loadGuide, "avian"),
+            QtGui.QPixmap(IMAGE_PATH + "/avian.png"),
+        )
 
         # Guide
         self.connect(self.UI.guide_load_BN, self.loadGuide, ":addClip.png")
@@ -437,10 +457,12 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         elif itemText == "biped":
             self.loadPresetGuide("biped_tpl")
-        elif itemText == "quad / canine":
-            self.loadPresetGuide("quad_canine_tpl")
-        elif itemText == "quad / equine":
-            self.loadPresetGuide("quad_equine_tpl")
+        elif itemText == "canine":
+            self.loadPresetGuide("canine_tpl")
+        elif itemText == "equine":
+            self.loadPresetGuide("equine_tpl")
+        elif itemText == "avian":
+            self.loadPresetGuide("avian_tpl")
 
         mc.select(allTgtMG)
         common.setView(fit=1)
