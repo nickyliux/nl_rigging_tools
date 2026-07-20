@@ -50,7 +50,7 @@ from nl_modules.nodel.jnt_node import JntNode
 MOD_DIR = os.path.dirname(nl_modules.__file__)
 SHAPE_PATH = os.path.join(MOD_DIR, "build", "shapes")
 LIGHT_PATH = os.path.join(MOD_DIR, "build", "others")
-PRESET_GUIDE_PATH = os.path.join(MOD_DIR, "build", "presets")
+PRESET_GUIDE_PATH = os.path.join(MOD_DIR, "build", "components", "presets")
 UI_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.ui")
 STYLE_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.qss")
 IMAGE_PATH = os.path.join(MOD_DIR, "build", "images")
@@ -201,9 +201,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             QtGui.QPixmap(IMAGE_PATH + "/simpleFk.png"),
         )
         self.connect(
-            self.UI.biped_BN,
-            partial(self.loadGuide, "biped"),
-            QtGui.QPixmap(IMAGE_PATH + "/biped.png"),
+            self.UI.human_BN,
+            partial(self.loadGuide, "human"),
+            QtGui.QPixmap(IMAGE_PATH + "/human.png"),
         )
         self.connect(
             self.UI.equine_BN,
@@ -455,8 +455,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 mg = guide.loadGuide(names["R"])
                 allTgtMG.append(mg)
 
-        elif itemText == "biped":
-            self.loadPresetGuide("biped_tpl")
+        elif itemText == "human":
+            self.loadPresetGuide("human_tpl")
         elif itemText == "canine":
             self.loadPresetGuide("canine_tpl")
         elif itemText == "equine":
