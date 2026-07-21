@@ -220,9 +220,29 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             partial(self.loadGuide, "avian"),
             QtGui.QPixmap(IMAGE_PATH + "/avian.png"),
         )
+        self.connect(
+            self.UI.snake_BN,
+            partial(self.loadGuide, "snake"),
+            QtGui.QPixmap(IMAGE_PATH + "/snake.png"),
+        )
+        self.connect(
+            self.UI.spider_BN,
+            partial(self.loadGuide, "spider"),
+            QtGui.QPixmap(IMAGE_PATH + "/spider.png"),
+        )
+        self.connect(
+            self.UI.fish_BN,
+            partial(self.loadGuide, "fish"),
+            QtGui.QPixmap(IMAGE_PATH + "/fish.png"),
+        )
+        self.connect(
+            self.UI.elephant_BN,
+            partial(self.loadGuide, "elephant"),
+            QtGui.QPixmap(IMAGE_PATH + "/elephant.png"),
+        )
 
         # Guide
-        self.connect(self.UI.guide_load_BN, self.loadGuide, ":addClip.png")
+        # self.connect(self.UI.guide_load_BN, self.loadGuide, ":addClip.png")
         self.connect(self.UI.guide_explore_BN, guide.explore, ":searchEngine.png")
         self.UI.guide_LW.itemDoubleClicked.connect(partial(self.loadGuide, 0))
 

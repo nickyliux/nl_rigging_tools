@@ -231,7 +231,7 @@
             "built":true,
             "carpalFix":false,
             "dualBone":false,
-            "hipAutoAim":0.5,
+            "hipAutoAim":0.0,
             "includeMeta":false,
             "palmAimRatio":1.5,
             "parentNameMatch":"spine*",
@@ -249,6 +249,8 @@
                 1.0
             ],
             "scapulaBone":false,
+            "spaceName1":"master, chest, pelvis, COG",
+            "spaceName2":"leg, chest, pelvis, master, COG",
             "t":[
                 7.283540862453998,
                 0.0,
@@ -1299,6 +1301,7 @@
                 0.4,
                 0.4
             ],
+            "spaceName1":"localBase, COG, master",
             "t":[
                 0.0,
                 96.56060543938746,
@@ -1465,6 +1468,8 @@
                 1.0
             ],
             "scapulaBone":false,
+            "spaceName1":"master, chest, pelvis, COG",
+            "spaceName2":"leg, chest, pelvis, master, COG",
             "t":[
                 -7.283540862453998,
                 0.0,
@@ -2658,6 +2663,7 @@
                 0.04,
                 0.04
             ],
+            "spaceName1":"localBase, COG, master",
             "t":[
                 0.0,
                 85.40581888157531,
