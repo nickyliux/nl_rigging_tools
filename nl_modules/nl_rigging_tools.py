@@ -201,6 +201,17 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             QtGui.QPixmap(IMAGE_PATH + "/simpleFk.png"),
         )
         self.connect(
+            self.UI.bTail_BN,
+            partial(self.loadGuide, "bTail"),
+            QtGui.QPixmap(IMAGE_PATH + "/bTail.png"),
+        )
+        self.connect(
+            self.UI.wing_BN,
+            partial(self.loadGuide, "wing"),
+            QtGui.QPixmap(IMAGE_PATH + "/wing.png"),
+        )
+
+        self.connect(
             self.UI.human_BN,
             partial(self.loadGuide, "human"),
             QtGui.QPixmap(IMAGE_PATH + "/human.png"),

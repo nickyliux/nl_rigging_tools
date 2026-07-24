@@ -161,7 +161,7 @@
         <x>9</x>
         <y>54</y>
         <width>96</width>
-        <height>321</height>
+        <height>324</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -190,13 +190,13 @@
            <property name="minimumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="font">
@@ -229,13 +229,13 @@
            <property name="minimumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="font">
@@ -265,13 +265,13 @@
            <property name="minimumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="font">
@@ -301,13 +301,13 @@
            <property name="minimumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="font">
@@ -337,13 +337,13 @@
            <property name="minimumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="font">
@@ -373,13 +373,13 @@
            <property name="minimumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="font">
@@ -409,13 +409,13 @@
            <property name="minimumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="font">
@@ -445,13 +445,13 @@
            <property name="minimumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="font">
@@ -481,13 +481,13 @@
            <property name="minimumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="font">
@@ -517,13 +517,13 @@
            <property name="minimumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="font">
@@ -553,13 +553,13 @@
            <property name="minimumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="font">
@@ -589,13 +589,13 @@
            <property name="minimumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
              <width>82</width>
-             <height>20</height>
+             <height>18</height>
             </size>
            </property>
            <property name="font">
@@ -614,6 +614,78 @@
            </property>
            <property name="text">
             <string> Belt   </string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="wing_BN">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>82</width>
+             <height>18</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>82</width>
+             <height>18</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>8</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>Load Model</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string> Wing</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="bTail_BN">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>82</width>
+             <height>18</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>82</width>
+             <height>18</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>8</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>Load Model</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string> B Tail</string>
            </property>
           </widget>
          </item>
