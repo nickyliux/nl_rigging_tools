@@ -74,9 +74,6 @@ class SpineBp(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2, 0),
             ("cog_ctl", "hexagon", None, rSz * 4, 0),
-            # ]
-            # if self.ribbon:
-            # ctl_defs += [
             ("fore_ikc", "cube", None, Vec((3.5, 0.3, 3.5)) * rSz, 0),
             ("mid_ikc", "sphere", None, rSz, 1),
             ("base_ikc", "cube", None, Vec((3.5, 0.3, 3.5)) * rSz, 0),
@@ -85,20 +82,6 @@ class SpineBp(RigModule):
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         self.setting.cv_move(0, 0, rSz * -50)
-        # self.cog_ctl.width = 2
-        # self.fore_ikc.width = 2
-        # self.mid_ikc.width = 2
-        # self.base_ikc.width = 2
-
-        # if self.ribbon:
-        #     if self.is_neck():
-        #         self.fore_ikc.cv_scale(2, 0.1, 1.6)
-        #         self.mid_ikc.cv_scale(2, 0.4, 1.6)
-        #         self.base_ikc.cv_scale(2, 0.1, 1.6)
-        #     else:
-        #         self.fore_ikc.cv_scale(1, 0.05, 0.8)
-        #         self.mid_ikc.cv_scale(1, 0.2, 0.8)
-        #         self.base_ikc.cv_scale(1, 0.05, 0.8)
 
     def build(self):
         """Build the spine rig module."""
@@ -109,8 +92,7 @@ class SpineBp(RigModule):
         # if self.ribbon:
         self.build_spine_ik()
 
-        self.setting.alignTo(self.masterGuide, p=self.CTL_DATA)
-        self.jnts_fk[0].cstPar(self.setting, mo=1)
+        self.setting.alignTo(self.masterGuide, p=self.cog_gmb)
 
         self.build_post()
 
@@ -149,7 +131,7 @@ class SpineBp(RigModule):
             self.reverse_fk_hip()
 
         self.cog_ctl.snapAlignTo(self.jnts_fk[0], self.masterGuide)
-        self.cog_gmb = CrvNode(self.cog_ctl).addGimbal()
+        self.cog_gmb = CrvNode(self.cog_ctl).addGimbal(dv=1)
         self.cog_ctl | self.CTL_DATA
         self.cog_ctl.addOffsetGrp()
 
@@ -161,11 +143,6 @@ class SpineBp(RigModule):
         self.jnts_fk[0].childrenJt[0].a.segmentScaleCompensate.set(0)
 
         self.jnts_bind = self.jnts_fk[:-1]
-
-        # if self.is_neck():
-        #     self.isolate_align(
-        #         self.ctls_fk[0], spaces=[self.ctls_fk[0].parent, self.masterC], dv=0
-        #     )
 
     def reverse_fk_hip(self):
         """modify first fkc specific for hip rotation."""
@@ -287,7 +264,7 @@ class SpineBp(RigModule):
         crvLenRatio, self.jnts_rb, crv = common.build_ribbon_rivet(
             rbSrf=self.rbSrf,
             rivetNum=self.rbnJntNum,
-            scaleAttr=self.masterC.a.globalScale,
+            scaleAttr=self.masterC.a.globalScale * self.cog_ctl.a.sy,
             stretchyAttr=self.setting.a.stretchy,
             pf=rID,
             rSz=rSz,
@@ -332,7 +309,6 @@ class SpineBp(RigModule):
 
     def setup_vis(self):
         """Setup visibility toggles for the spine rig controls."""
-        # if self.ribbon:
         self.ctl_vis_toggle(
             self.setting.a.add("debug", type="bool", k=0),
             onList=[self.jnts_fk[0]] + self.jnts_five + [self.rbSrf],
@@ -343,12 +319,7 @@ class SpineBp(RigModule):
                 self.setting.a.add("showFullCtl", type="bool", k=0),
                 onList=[self.cog_ctl, self.base_ikc],
             )
-            # mc.hide(self.cog_ctl, self.base_ikc)
 
-        # if self.masterC2.a.settingVis.exists():
-        #     self.masterC2.a.settingVis >> self.setting.a.v
-
-        # if self.ribbon:
         mc.hide(self.ctlJnts)
 
     def setup_channel(self):
@@ -356,10 +327,8 @@ class SpineBp(RigModule):
         self.setting.a.showAttr()
 
         ctls = self.ctls_fk + [
-            # self.cog_ctl,
             self.cog_gmb,
         ]
-        # if self.ribbon:
         for ctl in [self.base_ikc, self.mid_ikc, self.fore_ikc]:
             ctl.a.showAttr(t=1, r=1, s=0)
 
@@ -384,7 +353,6 @@ class SpineBp(RigModule):
         """Setup space switching for the spine rig controls."""
         self.masterGuide.setMsg({"space_COG": self.cog_ctl})
 
-        # if self.ribbon:
         self.masterGuide.setMsg(
             {
                 "space_master": self.masterC,
@@ -395,8 +363,8 @@ class SpineBp(RigModule):
 
     def setup_anchor(self):
         """Setup anchor module for the spine rig controls."""
-        anchor1 = self.base_ikc  # if self.ribbon else self.jnts_fk[0]
-        anchor2 = self.jnts_rb[-1]  # if self.ribbon else self.jnts_fk[-1]
+        anchor1 = self.base_ikc
+        anchor2 = self.jnts_rb[-1]
         self.setup_anchor_module({"anchorP1": anchor1, "anchorP2": anchor2})
 
     def setup_bindJnt(self):
@@ -407,10 +375,7 @@ class SpineBp(RigModule):
     def setup_ctlSet(self):
         """Setup control sets for the spine rig."""
         ctls = self.ctls_fk + [self.setting, self.cog_ctl, self.cog_gmb]
-        # if self.ribbon:
         ctls += self.ctls_ik
-        # if not self.is_neck():
-        #     ctls += [self.cog_ctl, self.cog_gmb]
         self.add_ctl_set(ctls)
 
     def setup_scale(self):
