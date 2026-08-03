@@ -106,17 +106,17 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.srf_node import SrfNode
 
-grp = GrpNode('newGrp') # new group 'newGrp'
-jnt = JntNode('newJnt') # new joint 'newJnt'
-crv = CrvNode('newCrv') # new nurbs curve 'newCrv'
-srf = SrfNode('newSrf') # new nurbs surface 'newSrf'
+grp = GrpNode("newGrp")  # new group 'newGrp'
+jnt = JntNode("newJnt")  # new joint 'newJnt'
+crv = CrvNode("newCrv")  # new nurbs curve 'newCrv'
+srf = SrfNode("newSrf")  # new nurbs surface 'newSrf'
 
-crv.weightTo([jnt]) # bind jnt to crv
-srf.weightTo([jnt]) # bind jnt to srf
+crv.weightTo([jnt])  # bind jnt to crv
+srf.weightTo([jnt])  # bind jnt to srf
 
-grp.a.t.set(0,10,0) # set position
-jnt.alignTo(grp) # align jnt to grp
-jnt.addOffsetGrp() # add offset group for jnt
+grp.a.t.set(0, 10, 0)  # set position
+jnt.alignTo(grp)  # align jnt to grp
+jnt.addOffsetGrp()  # add offset group for jnt
 ```
 
 ## Custom Component Classes
