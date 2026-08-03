@@ -99,9 +99,17 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         btn.clicked.connect(func)
         if icon:
             btn.setIcon(QIcon(icon))
-            if isinstance(icon, QtGui.QPixmap):
-                # btn.setIconSize(icon.size())
-                btn.setIconSize(QtCore.QSize(24, 24))
+            # if isinstance(icon, QtGui.QPixmap):
+            # btn.setIconSize(icon.size())
+            # btn.setIconSize(QtCore.QSize(24, 24))
+
+    def connect2(self, btn, func, icon=None):
+        """Connect a button to a function with an optional icon."""
+        btn.clicked.connect(func)
+        if icon:
+            iconQP = QtGui.QPixmap(IMAGE_PATH + f"/{icon}.png")
+            btn.setIcon(QIcon(iconQP))
+            btn.setIconSize(QtCore.QSize(24, 24))
 
     def buildAll(self):
         """Build all rig components."""
@@ -140,116 +148,34 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def connect_UI(self):
         """Connect UI buttons to their respective functions."""
 
-        self.connect(
-            self.UI.head_BN,
-            partial(self.loadGuide, "head"),
-            QtGui.QPixmap(IMAGE_PATH + "/head.png"),
+        self.connect2(self.UI.head_BN, partial(self.loadGuide, "head"), "head")
+        self.connect2(self.UI.neck_BN, partial(self.loadGuide, "neck"), "neck")
+        self.connect2(self.UI.spineBp_BN, partial(self.loadGuide, "spineBp"), "spineBp")
+        self.connect2(self.UI.spineQd_BN, partial(self.loadGuide, "spineQd"), "spineQd")
+        self.connect2(self.UI.arm_BN, partial(self.loadGuide, "arm"), "arm")
+        self.connect2(self.UI.legPLT_BN, partial(self.loadGuide, "legPLT"), "legPLT")
+        self.connect2(
+            self.UI.legDGT_UGL_BN, partial(self.loadGuide, "legDGT_UGL"), "legDGT_UGL"
         )
-        self.connect(
-            self.UI.neck_BN,
-            partial(self.loadGuide, "neck"),
-            QtGui.QPixmap(IMAGE_PATH + "/neck.png"),
+        self.connect2(self.UI.hand_BN, partial(self.loadGuide, "hand"), "hand")
+        self.connect2(self.UI.tail_BN, partial(self.loadGuide, "tail"), "tail")
+        self.connect2(self.UI.belt_BN, partial(self.loadGuide, "belt"), "belt")
+        self.connect2(self.UI.finger_BN, partial(self.loadGuide, "finger"), "finger")
+        self.connect2(
+            self.UI.simple_BN, partial(self.loadGuide, "simpleFk"), "simpleFk"
         )
-        self.connect(
-            self.UI.spineBp_BN,
-            partial(self.loadGuide, "spineBp"),
-            QtGui.QPixmap(IMAGE_PATH + "/spineBp.png"),
-        )
-        self.connect(
-            self.UI.spineQd_BN,
-            partial(self.loadGuide, "spineQd"),
-            QtGui.QPixmap(IMAGE_PATH + "/spineQd.png"),
-        )
-        self.connect(
-            self.UI.arm_BN,
-            partial(self.loadGuide, "arm"),
-            QtGui.QPixmap(IMAGE_PATH + "/arm.png"),
-        )
-        self.connect(
-            self.UI.legPlanti_BN,
-            partial(self.loadGuide, "legPlanti"),
-            QtGui.QPixmap(IMAGE_PATH + "/legPlanti.png"),
-        )
-        self.connect(
-            self.UI.legDigitiUnguli_BN,
-            partial(self.loadGuide, "legDigitiUnguli"),
-            QtGui.QPixmap(IMAGE_PATH + "/legDigitiUnguli.png"),
-        )
-        self.connect(
-            self.UI.hand_BN,
-            partial(self.loadGuide, "hand"),
-            QtGui.QPixmap(IMAGE_PATH + "/hand.png"),
-        )
-        self.connect(
-            self.UI.tail_BN,
-            partial(self.loadGuide, "tail"),
-            QtGui.QPixmap(IMAGE_PATH + "/tail.png"),
-        )
-        self.connect(
-            self.UI.belt_BN,
-            partial(self.loadGuide, "belt"),
-            QtGui.QPixmap(IMAGE_PATH + "/belt.png"),
-        )
-        self.connect(
-            self.UI.finger_BN,
-            partial(self.loadGuide, "finger"),
-            QtGui.QPixmap(IMAGE_PATH + "/finger.png"),
-        )
-        self.connect(
-            self.UI.simple_BN,
-            partial(self.loadGuide, "simpleFk"),
-            QtGui.QPixmap(IMAGE_PATH + "/simpleFk.png"),
-        )
-        self.connect(
-            self.UI.bTail_BN,
-            partial(self.loadGuide, "bTail"),
-            QtGui.QPixmap(IMAGE_PATH + "/bTail.png"),
-        )
-        self.connect(
-            self.UI.wing_BN,
-            partial(self.loadGuide, "wing"),
-            QtGui.QPixmap(IMAGE_PATH + "/wing.png"),
-        )
+        self.connect2(self.UI.bTail_BN, partial(self.loadGuide, "bTail"), "bTail")
+        self.connect2(self.UI.wing_BN, partial(self.loadGuide, "wing"), "wing")
 
-        self.connect(
-            self.UI.human_BN,
-            partial(self.loadGuide, "human"),
-            QtGui.QPixmap(IMAGE_PATH + "/human.png"),
-        )
-        self.connect(
-            self.UI.equine_BN,
-            partial(self.loadGuide, "equine"),
-            QtGui.QPixmap(IMAGE_PATH + "/equine.png"),
-        )
-        self.connect(
-            self.UI.canine_BN,
-            partial(self.loadGuide, "canine"),
-            QtGui.QPixmap(IMAGE_PATH + "/canine.png"),
-        )
-        self.connect(
-            self.UI.avian_BN,
-            partial(self.loadGuide, "avian"),
-            QtGui.QPixmap(IMAGE_PATH + "/avian.png"),
-        )
-        self.connect(
-            self.UI.snake_BN,
-            partial(self.loadGuide, "snake"),
-            QtGui.QPixmap(IMAGE_PATH + "/snake.png"),
-        )
-        self.connect(
-            self.UI.spider_BN,
-            partial(self.loadGuide, "spider"),
-            QtGui.QPixmap(IMAGE_PATH + "/spider.png"),
-        )
-        self.connect(
-            self.UI.fish_BN,
-            partial(self.loadGuide, "fish"),
-            QtGui.QPixmap(IMAGE_PATH + "/fish.png"),
-        )
-        self.connect(
-            self.UI.elephant_BN,
-            partial(self.loadGuide, "elephant"),
-            QtGui.QPixmap(IMAGE_PATH + "/elephant.png"),
+        self.connect2(self.UI.human_BN, partial(self.loadGuide, "human"), "human")
+        self.connect2(self.UI.equine_BN, partial(self.loadGuide, "equine"), "equine")
+        self.connect2(self.UI.canine_BN, partial(self.loadGuide, "canine"), "canine")
+        self.connect2(self.UI.avian_BN, partial(self.loadGuide, "avian"), "avian")
+        self.connect2(self.UI.snake_BN, partial(self.loadGuide, "snake"), "snake")
+        self.connect2(self.UI.spider_BN, partial(self.loadGuide, "spider"), "spider")
+        self.connect2(self.UI.fish_BN, partial(self.loadGuide, "fish"), "fish")
+        self.connect2(
+            self.UI.elephant_BN, partial(self.loadGuide, "elephant"), "elephant"
         )
 
         # Guide

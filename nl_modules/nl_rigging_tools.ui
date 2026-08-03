@@ -438,7 +438,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="legPlanti_BN">
+          <widget class="QPushButton" name="legPLT_BN">
            <property name="enabled">
             <bool>true</bool>
            </property>
@@ -474,7 +474,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="legDigitiUnguli_BN">
+          <widget class="QPushButton" name="legDGT_UGL_BN">
            <property name="enabled">
             <bool>true</bool>
            </property>
