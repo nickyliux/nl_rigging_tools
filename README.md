@@ -140,15 +140,14 @@ flowchart
 
 
 ## Dev Environment
-Maya 2023.3 / 2027, Win 11 Pro
+Maya 2023.3 / 2027.2, Win 11 Pro
 
 ## Reference
 1. [Python for Maya : Beginner to Advanced Rigging Automation by Nick Hughes](https://www.udemy.com/course/python-for-maya-beginner-to-advanced-rigging-automation)
 2. [Ramon Arango's rigs](https://ramonarango.gumroad.com/)
-3. [Rigamajig2](https://github.com/masonSmigel/rigamajig2)
-4. [BoneClones](https://boneclones.com/category/all-zoology-skeletons/fields-of-study)
-5. [Ivlpaleontology](https://sketchfab.com/ivlpaleontology)
-6. [Vertebres3d](https://www.vertebres3d.fr)
+3. [BoneClones](https://boneclones.com/category/all-zoology-skeletons/fields-of-study)
+4. [Ivlpaleontology](https://sketchfab.com/ivlpaleontology)
+5. [Vertebres3d](https://www.vertebres3d.fr)
 
 
 <br>
