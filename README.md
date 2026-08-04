@@ -64,25 +64,22 @@ Typical Workflow :
 8. Edit controls shape and size.
 9. Run "Bind Sk" to attach and bind the skeletal meshes.
 
+<br>
 
+The files can be loaded without browwsing if you follow the naming rule. ( The number is for versioning. The largest will be loaded if found. )
 
-
-```python
-The files can be loaded without browwsing if you follow the naming rule
-
+```
 e.g. For folder "horse",
 
-horse_mdl2.ma    # model
-horse_ref5.ma    # bone ref 
-horse_tpl2.json  # guide template
-horse_prx3.ma    # proxy
-horse_ctl2.ma    # control
-horse_hlp3.ma    # helper
-horse_twk.ma    # tweak
+horse_mdl2.ma           # model
+horse_ref5.ma           # bone ref 
+horse_tpl2.json         # guide template
+horse_prx3.ma           # proxy
+horse_ctl2.ma           # control
+horse_hlp3.ma           # helper
+horse_twk.ma            # tweak
 weight/horse_wgh.json   # skin weight
 ```
-
-`Note : The number is for versioning. The largest will be loaded if found. `
 
 ## Custom Objects Classes
 ```mermaid
