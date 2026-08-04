@@ -70,19 +70,19 @@ Typical Workflow :
 ```python
 The files can be loaded without browwsing if you follow the naming rule
 
-    {folder_name}_{typ}{'#'}.{ext}
+e.g. For folder "horse",
 
-e.g.
-horse_mdl.ma    # model
-horse_ref.ma    # bone ref 
-horse_tpl.json  # guide template
-horse_prx.ma    # proxy
-horse_ctl.ma    # control
-horse_hlp.ma    # helper
+horse_mdl2.ma    # model
+horse_ref5.ma    # bone ref 
+horse_tpl2.json  # guide template
+horse_prx3.ma    # proxy
+horse_ctl2.ma    # control
+horse_hlp3.ma    # helper
 horse_twk.ma    # tweak
 weight/horse_wgh.json   # skin weight
 ```
-`# can be any number and the largest will be loaded`
+
+`Note : The number is for versioning. The largest will be loaded if found. `
 
 ## Custom Objects Classes
 ```mermaid
@@ -148,10 +148,10 @@ Maya 2023.3 / 2027, Win 11 Pro
 ## Reference
 1. [Python for Maya : Beginner to Advanced Rigging Automation by Nick Hughes](https://www.udemy.com/course/python-for-maya-beginner-to-advanced-rigging-automation)
 2. [Ramon Arango's rigs](https://ramonarango.gumroad.com/)
-3. [BoneClones](https://boneclones.com/category/all-zoology-skeletons/fields-of-study)
-4. [Ivlpaleontology](https://sketchfab.com/ivlpaleontology)
-5. [Osteology](https://en.wikipedia.org/wiki/Osteology)
-6. [Rigamajig2](https://github.com/masonSmigel/rigamajig2)
+3. [Rigamajig2](https://github.com/masonSmigel/rigamajig2)
+4. [BoneClones](https://boneclones.com/category/all-zoology-skeletons/fields-of-study)
+5. [Ivlpaleontology](https://sketchfab.com/ivlpaleontology)
+6. [Vertebres3d](https://www.vertebres3d.fr)
 
 
 <br>
