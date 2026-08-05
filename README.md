@@ -33,7 +33,7 @@ In my last job I encountered a project involving character setup with Ziva muscl
 - **Modular :** support multiple limbs.
 - **Skeletal :** support skeleton meshes for simulation.
 - **Cartoony :** option for bendy limbs.
-- **Data Reuse :** reuse of presets, controls, proxies, weights and more
+- **Data Reuse :** reuse of presets, controls, proxies, weights and more.
 - **Custom Marking Menus :** popup menus for rig creation.
 - **Custom Framework :** reuse of codes and functions.
 

@@ -819,7 +819,7 @@
         <x>0</x>
         <y>50</y>
         <width>101</width>
-        <height>281</height>
+        <height>331</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -931,6 +931,114 @@
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="model_LO_6">
+         <property name="spacing">
+          <number>6</number>
+         </property>
+         <property name="sizeConstraint">
+          <enum>QLayout::SetDefaultConstraint</enum>
+         </property>
+         <property name="leftMargin">
+          <number>8</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_17">
+           <property name="minimumSize">
+            <size>
+             <width>30</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>9999</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>sk ref</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="loadRef_BN">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>8</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+             <kerning>true</kerning>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>Load skeleton reference</string>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="flat">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="saveRef_BN">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>8</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>Save skeleton reference</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <layout class="QHBoxLayout" name="model_LO_2">
@@ -1160,6 +1268,112 @@
           </widget>
          </item>
         </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="model_LO_11">
+         <property name="spacing">
+          <number>6</number>
+         </property>
+         <property name="sizeConstraint">
+          <enum>QLayout::SetDefaultConstraint</enum>
+         </property>
+         <property name="leftMargin">
+          <number>8</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_19">
+           <property name="minimumSize">
+            <size>
+             <width>30</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>9999</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>sk bind</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="boneAutoBind_BN">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>8</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>Run Auto Bind Skeleton</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_26">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="Line" name="line_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="model_LO_10">
@@ -1726,220 +1940,6 @@
          </item>
         </layout>
        </item>
-       <item>
-        <widget class="Line" name="line_3">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="model_LO_6">
-         <property name="spacing">
-          <number>6</number>
-         </property>
-         <property name="sizeConstraint">
-          <enum>QLayout::SetDefaultConstraint</enum>
-         </property>
-         <property name="leftMargin">
-          <number>8</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QLabel" name="label_17">
-           <property name="minimumSize">
-            <size>
-             <width>30</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>9999</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>sk Ref</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="loadRef_BN">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>20</width>
-             <height>20</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Segoe UI</family>
-             <pointsize>8</pointsize>
-             <weight>50</weight>
-             <bold>false</bold>
-             <kerning>true</kerning>
-            </font>
-           </property>
-           <property name="toolTip">
-            <string>Load skeleton reference</string>
-           </property>
-           <property name="layoutDirection">
-            <enum>Qt::LeftToRight</enum>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="flat">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="saveRef_BN">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>20</width>
-             <height>20</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Segoe UI</family>
-             <pointsize>8</pointsize>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="toolTip">
-            <string>Save skeleton reference</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="model_LO_11">
-         <property name="spacing">
-          <number>6</number>
-         </property>
-         <property name="sizeConstraint">
-          <enum>QLayout::SetDefaultConstraint</enum>
-         </property>
-         <property name="leftMargin">
-          <number>8</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QLabel" name="label_19">
-           <property name="minimumSize">
-            <size>
-             <width>30</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>9999</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>sk Bind</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="boneAutoBind_BN">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>20</width>
-             <height>20</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Segoe UI</family>
-             <pointsize>8</pointsize>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="toolTip">
-            <string>Run Auto Bind Skeleton</string>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_26">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>20</width>
-             <height>20</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
       </layout>
      </widget>
     </widget>
@@ -2086,13 +2086,13 @@
        <property name="geometry">
         <rect>
          <x>3</x>
-         <y>110</y>
+         <y>130</y>
          <width>211</width>
          <height>16</height>
         </rect>
        </property>
        <property name="text">
-        <string>2. Select other bones.</string>
+        <string>Side Reference :</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -2104,64 +2104,21 @@
          <x>3</x>
          <y>20</y>
          <width>211</width>
-         <height>31</height>
+         <height>16</height>
         </rect>
        </property>
        <property name="text">
-        <string>1. Select neck / spine / tail meshes or
-    group.</string>
+        <string>Ribbon Reference :</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="addRefJnt_BN">
-       <property name="geometry">
-        <rect>
-         <x>6</x>
-         <y>130</y>
-         <width>66</width>
-         <height>18</height>
-        </rect>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>5</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>999</width>
-         <height>18</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Segoe UI</family>
-         <pointsize>8</pointsize>
-         <weight>50</weight>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>Add Ref Jnt for Selected</string>
-       </property>
-       <property name="statusTip">
-        <string/>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string>+ Ref Jnts</string>
        </property>
       </widget>
       <widget class="QWidget" name="horizontalLayoutWidget_14">
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>180</y>
+         <y>190</y>
          <width>211</width>
          <height>21</height>
         </rect>
@@ -2211,7 +2168,7 @@
            <string notr="true"/>
           </property>
           <property name="text">
-           <string>Click Drag</string>
+           <string>Click-drag: Toggle</string>
           </property>
          </widget>
         </item>
@@ -2247,38 +2204,223 @@
            <string notr="true"/>
           </property>
           <property name="text">
-           <string>Mirror</string>
+           <string>Mirror Joints</string>
           </property>
          </widget>
         </item>
        </layout>
       </widget>
-      <widget class="QLabel" name="label_30">
+      <widget class="QWidget" name="verticalLayoutWidget_4">
        <property name="geometry">
         <rect>
-         <x>3</x>
-         <y>160</y>
-         <width>211</width>
-         <height>21</height>
+         <x>10</x>
+         <y>40</y>
+         <width>186</width>
+         <height>83</height>
         </rect>
        </property>
-       <property name="text">
-        <string>3. Adjust Rb &amp; Ref Jnts position.</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <property name="spacing">
+         <number>1</number>
+        </property>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_15">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <property name="leftMargin">
+           <number>6</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>2</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Select Neck Mesh / Grp</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="addRbJnt_neck_BN">
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>40</width>
+              <height>18</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Add Rb Jnt for Selected</string>
+            </property>
+            <property name="statusTip">
+             <string/>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>Add</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_27">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <property name="leftMargin">
+           <number>6</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>2</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="label_22">
+            <property name="text">
+             <string>Select Spine Mesh / Grp</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="addRbJnt_spine_BN">
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>40</width>
+              <height>18</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Add Rb Jnt for Selected</string>
+            </property>
+            <property name="statusTip">
+             <string/>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>Add</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_28">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <property name="leftMargin">
+           <number>6</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>2</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="label_23">
+            <property name="text">
+             <string>Select Tail Mesh / Grp</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="addRbJnt_tail_BN">
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>40</width>
+              <height>18</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Segoe UI</family>
+              <pointsize>8</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Add Rb Jnt for Selected</string>
+            </property>
+            <property name="statusTip">
+             <string/>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>Add</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="horizontalLayoutWidget_20">
        <property name="geometry">
         <rect>
-         <x>0</x>
-         <y>60</y>
-         <width>211</width>
-         <height>36</height>
+         <x>10</x>
+         <y>150</y>
+         <width>184</width>
+         <height>25</height>
         </rect>
        </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_14">
+       <layout class="QHBoxLayout" name="horizontalLayout_29">
         <property name="spacing">
          <number>5</number>
         </property>
@@ -2292,54 +2434,27 @@
          <number>2</number>
         </property>
         <item>
-         <widget class="QPushButton" name="addRbJnt_neck_BN">
-          <property name="minimumSize">
-           <size>
-            <width>5</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>999</width>
-            <height>999</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Segoe UI</family>
-            <pointsize>8</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="toolTip">
-           <string>Add Rb Jnt for Selected</string>
-          </property>
-          <property name="statusTip">
-           <string/>
-          </property>
-          <property name="styleSheet">
-           <string notr="true"/>
-          </property>
+         <widget class="QLabel" name="label_36">
           <property name="text">
-           <string>+ Rb Jnts
-for Neck</string>
+           <string>Select Side Mesh / Grp</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="addRbJnt_spine_BN">
+         <widget class="QPushButton" name="addRefJnt_BN">
           <property name="minimumSize">
            <size>
-            <width>5</width>
+            <width>40</width>
             <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>999</width>
-            <height>999</height>
+            <width>40</width>
+            <height>18</height>
            </size>
           </property>
           <property name="font">
@@ -2351,7 +2466,7 @@ for Neck</string>
            </font>
           </property>
           <property name="toolTip">
-           <string>Add Rb Jnt for Selected</string>
+           <string>Add Ref Jnt for Selected</string>
           </property>
           <property name="statusTip">
            <string/>
@@ -2360,49 +2475,51 @@ for Neck</string>
            <string notr="true"/>
           </property>
           <property name="text">
-           <string>+ Rb Jnts
-for Spine</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="addRbJnt_tail_BN">
-          <property name="minimumSize">
-           <size>
-            <width>5</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>999</width>
-            <height>999</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <family>Segoe UI</family>
-            <pointsize>8</pointsize>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="toolTip">
-           <string>Add Rb Jnt for Selected</string>
-          </property>
-          <property name="statusTip">
-           <string/>
-          </property>
-          <property name="styleSheet">
-           <string notr="true"/>
-          </property>
-          <property name="text">
-           <string>+ Rb Jnts
-for Tail</string>
+           <string>Add</string>
           </property>
          </widget>
         </item>
        </layout>
+      </widget>
+      <widget class="QLabel" name="label_30">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>220</y>
+         <width>171</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="text">
+        <string>[ Naming Requirement ]
+   &quot;geo_grp&quot; for main group
+   &quot;rib_grp&quot; for rib group</string>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="Line" name="line">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>180</y>
+         <width>212</width>
+         <height>3</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
       </widget>
      </widget>
      <widget class="QWidget" name="tab_3">
@@ -4629,7 +4746,7 @@ Setup</string>
         <x>10</x>
         <y>140</y>
         <width>201</width>
-        <height>25</height>
+        <height>21</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_16">
@@ -4646,6 +4763,13 @@ Setup</string>
         <number>3</number>
        </property>
        <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Canine</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="linkCanine_BN">
          <property name="minimumSize">
           <size>
@@ -4655,8 +4779,8 @@ Setup</string>
          </property>
          <property name="maximumSize">
           <size>
-           <width>16777215</width>
-           <height>999</height>
+           <width>60</width>
+           <height>16</height>
           </size>
          </property>
          <property name="font">
@@ -4674,7 +4798,7 @@ Setup</string>
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Link for Canine</string>
+          <string>Link</string>
          </property>
         </widget>
        </item>
@@ -4688,8 +4812,8 @@ Setup</string>
          </property>
          <property name="maximumSize">
           <size>
-           <width>50</width>
-           <height>999</height>
+           <width>60</width>
+           <height>16</height>
           </size>
          </property>
          <property name="font">
@@ -4723,7 +4847,7 @@ Setup</string>
        </rect>
       </property>
       <property name="text">
-       <string>1. Reference the quad rig.</string>
+       <string>1. Reference our rig.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_8">
@@ -4736,7 +4860,7 @@ Setup</string>
        </rect>
       </property>
       <property name="text">
-       <string>2. Add Canine / Equine in MotionMaker.</string>
+       <string>2. Add quadruped in MotionMaker.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_9">
@@ -4749,14 +4873,14 @@ Setup</string>
        </rect>
       </property>
       <property name="text">
-       <string>4. Select any ctl of the rig.</string>
+       <string>4. Select any ctl in the rig.</string>
       </property>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_32">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>230</y>
+        <y>220</y>
         <width>201</width>
         <height>25</height>
        </rect>
@@ -4825,8 +4949,8 @@ Setup</string>
        <number>0</number>
       </property>
       <property name="text">
-       <string>3. Scale it and try to fit to the spine.
-    For the tail, align with the angle.</string>
+       <string>3. Scale it and try to fit the spine.
+    Align the tail in parallel.</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -4839,9 +4963,9 @@ Setup</string>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>170</y>
+        <y>160</y>
         <width>201</width>
-        <height>25</height>
+        <height>21</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_20">
@@ -4858,6 +4982,13 @@ Setup</string>
         <number>3</number>
        </property>
        <item>
+        <widget class="QLabel" name="label_37">
+         <property name="text">
+          <string>Equine</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="linkEquine_BN">
          <property name="minimumSize">
           <size>
@@ -4867,8 +4998,8 @@ Setup</string>
          </property>
          <property name="maximumSize">
           <size>
-           <width>16777215</width>
-           <height>999</height>
+           <width>60</width>
+           <height>16</height>
           </size>
          </property>
          <property name="font">
@@ -4886,7 +5017,7 @@ Setup</string>
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Link for Equine</string>
+          <string>Link</string>
          </property>
         </widget>
        </item>
@@ -4900,8 +5031,8 @@ Setup</string>
          </property>
          <property name="maximumSize">
           <size>
-           <width>50</width>
-           <height>999</height>
+           <width>60</width>
+           <height>16</height>
           </size>
          </property>
          <property name="font">
@@ -4929,13 +5060,13 @@ Setup</string>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>210</y>
+        <y>200</y>
         <width>211</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>5. Select any ctl of the rig.</string>
+       <string>5. Select any ctl in the rig.</string>
       </property>
      </widget>
     </widget>
