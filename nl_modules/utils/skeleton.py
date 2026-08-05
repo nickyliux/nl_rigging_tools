@@ -6,17 +6,17 @@ from nl_modules.utils import common
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.base.dag_node import DagNode
 
-AUTO_BIND_JNT_GRP = "auto_bind_jnt_grp"
+AUTO_BIND_REF_GRP = "auto_bind_ref_grp"
 RIB_GRP = "rib_grp"
 RIB_LATTICE_GRP = "rib_lattice_grp"
 
 
 def save_reference():
     """Export skeleton group to a file."""
-    sk_grp = mc.ls(AUTO_BIND_JNT_GRP, tr=1)
+    sk_grp = mc.ls(AUTO_BIND_REF_GRP, tr=1)
     if not sk_grp:
         mc.confirmDialog(
-            t="Info", m=f"Group '{AUTO_BIND_JNT_GRP}' not found.     ", b="OK"
+            t="Info", m=f"Group '{AUTO_BIND_REF_GRP}' not found.     ", b="OK"
         )
         return
 
@@ -25,7 +25,7 @@ def save_reference():
     if tgtPaths:
         mc.select(sk_grp, noExpand=1)
         mc.file(tgtPaths, type="mayaAscii", f=1, es=1)  # , ch=0, chn=0, exp=0, con=0)
-        logging.info(f"Group '{AUTO_BIND_JNT_GRP}' exported.")
+        logging.info(f"Group '{AUTO_BIND_REF_GRP}' exported.")
         mc.select(cl=1)
 
 
@@ -33,10 +33,10 @@ def load_reference(loadLatest=1):
     """Load skeleton group from a file."""
     from nl_modules.utils import file
 
-    sk_grp = mc.ls(AUTO_BIND_JNT_GRP, tr=1)
+    sk_grp = mc.ls(AUTO_BIND_REF_GRP, tr=1)
     if sk_grp:
         mc.confirmDialog(
-            t="Info", m=f"'{AUTO_BIND_JNT_GRP}' already exists.     ", b="OK"
+            t="Info", m=f"'{AUTO_BIND_REF_GRP}' already exists.     ", b="OK"
         )
         mc.select(sk_grp)
         return
@@ -58,12 +58,12 @@ def load_reference(loadLatest=1):
     tgtPaths.sort(key=common.sortFile)
     file.importFile(tgtPaths[-1])
 
-    sk_grp = mc.ls(AUTO_BIND_JNT_GRP, tr=1)
+    sk_grp = mc.ls(AUTO_BIND_REF_GRP, tr=1)
     if sk_grp:
         DagNode(sk_grp[0]).show()
         mc.select(sk_grp)
     else:
-        mc.confirmDialog(t="Info", m=f"'{AUTO_BIND_JNT_GRP}' is missing.     ", b="OK")
+        mc.confirmDialog(t="Info", m=f"'{AUTO_BIND_REF_GRP}' is missing.     ", b="OK")
 
     logging.info(f"Ref file imported: {os.path.basename(tgtPaths[-1])}.")
     print("")

@@ -57,7 +57,7 @@ IMAGE_PATH = os.path.join(MOD_DIR, "build", "images")
 
 LIGHTING_FILE = os.path.join(LIGHT_PATH, "lighting4.ma")
 SHADER_FILE = os.path.join(LIGHT_PATH, "bone_SHD.ma")
-AUTO_BIND_JNT_GRP = "auto_bind_jnt_grp"
+AUTO_BIND_REF_GRP = "auto_bind_ref_grp"
 MODEL_GRP = "geo_grp"
 TWEAK_GRP = "tweak_guide_grp"
 
@@ -85,7 +85,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     #     addIcon_QA.setText("&Add Icon to Current Shelf")
     #     addIcon_QA.triggered.connect(addIcon2CurrShelf)
 
-    #     ver_QM = QMenu("&2026.01.21", self)
+    #     ver_QM = QMenu("&2026.01.01", self)
     #     more_QM = QMenu("&More", self)
     #     more_QM.addAction(addIcon_QA)
 
@@ -539,21 +539,18 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                     "auto_bind_neck_grp",
                     "auto_bind_spine_grp",
                     "auto_bind_tail_grp",
-                    "auto_bind_ref_grp",
+                    "auto_bind_side_grp",
                 ],
-                "color": [Color.D_RED, Color.RED, Color.D_RED, Color.L_BLUE],
+                "color": [Color.PINK, Color.RED, Color.PINK, Color.L_BLUE],
             }
             grp = GrpNode(
                 jDict["name"][type],
-                p=GrpNode(AUTO_BIND_JNT_GRP),
+                p=GrpNode(AUTO_BIND_REF_GRP),
             )
             addedJnts = []
             for mesh in meshSel:
                 jnt = JntNode(
-                    mesh + jDict["sf"][type],
-                    color=jDict["color"][type],
-                    p=grp,
-                    # r=0.5,
+                    mesh + jDict["sf"][type], color=jDict["color"][type], p=grp, r=2
                 )
                 jnt.a.t.set(*mesh.o.bbCenter)
                 addedJnts.append(jnt)
@@ -601,8 +598,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     @common.Undo("boneAutoBind")
     def boneAutoBind(self):
         """Bind all meshes in MODEL_GRP to reference joints and ribbon joints."""
-        if not mc.objExists(AUTO_BIND_JNT_GRP):
-            mc.confirmDialog(t="Info", m=f"{AUTO_BIND_JNT_GRP} not found.    ", b="OK")
+        if not mc.objExists(AUTO_BIND_REF_GRP):
+            mc.confirmDialog(t="Info", m=f"{AUTO_BIND_REF_GRP} not found.    ", b="OK")
             return
 
         charPath = mc.optionVar(q="charDir")
@@ -638,7 +635,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         build.boneAutoAttach()
         skeleton.rib_setup()
 
-        sk_grp = DagNode(AUTO_BIND_JNT_GRP)
+        sk_grp = DagNode(AUTO_BIND_REF_GRP)
         if sk_grp.exists():
             sk_grp.hide()
 
