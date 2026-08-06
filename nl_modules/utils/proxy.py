@@ -3,7 +3,6 @@ import glob
 import logging
 import maya.cmds as mc
 
-# import maya.mel as mel
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode

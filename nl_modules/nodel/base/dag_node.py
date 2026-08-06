@@ -17,8 +17,8 @@ class DagNode(DepNode):
         n = DagNode('new', nodeType='transform')
     """
 
+    # 0: [22, 25, 18, 13],  # 6 is blue, 18 is light blue
     COLOR_PRESET = {
-        # 0: [22, 25, 18, 13],  # 6 is blue, 18 is light blue
         0: [(1, 0.95, 0), (0.6, 0.5, 0), 18, 13],
         1: [(1, 0.95, 0), (0.5, 0.4, 0), (0.36, 0.66, 1), (0.71, 0.30, 0.30)],
     }

@@ -635,14 +635,15 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         build.boneAutoAttach()
         skeleton.rib_setup()
 
-        sk_grp = DagNode(AUTO_BIND_REF_GRP)
-        if sk_grp.exists():
-            sk_grp.hide()
+        mc.hide(AUTO_BIND_REF_GRP)
+        # sk_grp = DagNode(AUTO_BIND_REF_GRP)
+        # if sk_grp.exists():
+        #     sk_grp.hide()
 
-        master2_ctl = DagNode("master2_ctl")
-        if master2_ctl.exists():
-            # master2_ctl.a.jointVis.set(0)
-            master2_ctl.a.proxyVis.set(0)
+        # master2_ctl = DagNode("master2_ctl")
+        # if master2_ctl.exists():
+        # master2_ctl.a.jointVis.set(0)
+        # master2_ctl.a.proxyVis.set(0)
 
         mc.select(cl=1)
 
