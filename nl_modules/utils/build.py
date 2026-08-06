@@ -111,7 +111,7 @@ def postRig():
     if master2_ctl.exists():
         master2_ctl.a.v.set(1)
         master2_ctl.a.proxyVis.set(0)
-        master2_ctl.a.jointVis.set(1)
+        master2_ctl.a.jointVis.set(0)
 
     mc.select(cl=1)
 

@@ -636,9 +636,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         skeleton.rib_setup()
 
         mc.hide(AUTO_BIND_REF_GRP)
-        # sk_grp = DagNode(AUTO_BIND_REF_GRP)
-        # if sk_grp.exists():
-        #     sk_grp.hide()
 
         # master2_ctl = DagNode("master2_ctl")
         # if master2_ctl.exists():
@@ -769,7 +766,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             return
         path = os.path.realpath(charPath)
         if not os.path.isdir(path):
-            mc.confirmDialog(t="Info", m=f"Character path not found.     ", b="OK")
+            mc.confirmDialog(t="Info", m="Character path not found.     ", b="OK")
             return
 
         subprocess.Popen(f'explorer "{path}"')

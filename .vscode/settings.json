@@ -1,6 +1,18 @@
 {
-    "python-envs.defaultEnvManager": "ms-python.python:system",
-    "python-envs.pythonProjects": [],
-    "python.analysis.typeCheckingMode": "off",
-    "python.analysis.autoImportCompletions": false
+    "python.defaultInterpreterPath": "C:/Program Files/Autodesk/Maya2023/bin/mayapy.exe",
+    "ruff.interpreter": [
+        "C:/Program Files/Autodesk/Maya2023/bin/mayapy.exe"
+    ],
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit"
+        }
+    },
+    "ruff.lint.ignore": [
+        "F401",
+        "F821"
+    ],
+    "python.analysis.typeCheckingMode": "off"
 }
