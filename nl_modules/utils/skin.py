@@ -1,15 +1,16 @@
-import os
 import glob
 import logging
+import os
+
 import maya.cmds as mc
+
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.msh_node import MshNode
-from nl_modules.utils import common
-from nl_modules.utils import control
-from nl_modules.utils import file
+from nl_modules.utils import common, control, file
 
 AUTO_BIND_JNT_SET = "auto_bind_jnt_set"
+
 
 def autoBind_refJnts(meshes=None, thld=999):
     """Bind meshes to reference joints with a specified threshold."""
@@ -34,21 +35,20 @@ def skinRefJnts(meshes=None, jnts=None, thld=5):
     ignored = 0
 
     if not meshes or not jnts:
-        logging.info(f"Skinning skipped for no meshes or joints read.")
+        logging.info("Skinning skipped for no meshes or joints read.")
         return
 
     mc.progressWindow(
-        t="Auto Bind Sk", pr=0, status="\nPreparing ...", ii=0, maxValue=len(meshes)
+        t="Sk Bind", pr=0, status="\nPreparing ...", ii=0, maxValue=len(meshes)
     )
     for i, mesh in enumerate(meshes):
-
         mc.select(mesh)
         if mesh.skinCluster.exists():
             ignored += 1
             continue
 
         refJ = DagNode(mesh.name + "_refJnt")
-        
+
         if not refJ.exists():
             ignored += 1
             continue
@@ -67,30 +67,29 @@ def skinRefJnts(meshes=None, jnts=None, thld=5):
     mc.progressWindow(ep=1)
     logging.info(f"Ref Joints: weighted {weighted}, and skipped {ignored}.")
 
+
 def autoBind_rbJnts(meshes=None):
     """Skin target meshes to their _rbJnt if found."""
     missed = 0
     ignored = 0
     weighted = 0
 
-    for typ in ['neck', 'spine', 'tail']:
-
+    for typ in ["neck", "spine", "tail"]:
         grp = GrpNode(f"auto_bind_{typ}_grp")
         setName = f"{typ}_rbj_set"
 
-        if grp.exists():                
+        if grp.exists():
             if not mc.ls(setName, type="objectSet"):
                 # ele = mc.sets(setName, q=1)
                 # mc.delete(ele)
                 # Create set for duplicated
-                rbJnts = [j.duplicate(n=j + '_bind') for j in grp.allChildrenJt]
+                rbJnts = [j.duplicate(n=j + "_bind") for j in grp.allChildrenJt]
                 mc.sets(rbJnts, n=setName)
         else:
             logging.info(f"Grp {grp} not found for auto skin.")
             continue
 
     for i, mesh in enumerate(meshes):
-
         bindJnt = DagNode(mesh.name + "_rbJnt_bind")
         if not bindJnt.exists():
             missed += 1
@@ -102,7 +101,9 @@ def autoBind_rbJnts(meshes=None):
         mesh.weightTo(bindJnt, mi=1)  # , tsb=1)
         weighted += 1
 
-    logging.info(f"Rbn Joints: missed {missed}, weighted {weighted}, and skipped {ignored}.")
+    logging.info(
+        f"Rbn Joints: missed {missed}, weighted {weighted}, and skipped {ignored}."
+    )
 
 
 def selSkinned(*args):
@@ -185,7 +186,6 @@ def loadWeight(loadLatest=1):
 
     tgtDir = os.path.dirname(tgtPaths[-1])
     for i, mesh in enumerate(weightJnt_dict):
-
         if not mc.objExists(mesh):
             continue
         else:
@@ -202,7 +202,7 @@ def loadWeight(loadLatest=1):
     mc.progressWindow(ep=1)
 
     logging.info(f"{loadCount} objects weight loaded.")
-    print("")
+    print()
     common.xRayAllGeo(0)
     mc.select(cl=1)
 
@@ -319,7 +319,7 @@ def mirrorWeightSel(*args):
     logging.info(f"Symmetrical skin weights mirrored for {len(sel)} meshes.")
 
 
-def pruneWeightSel(*args, thres = 0.001):
+def pruneWeightSel(*args, thres=0.001):
     """Prune skin weights below threshold for selected meshes."""
     sel = [DagNode(s) for s in mc.ls(sl=1, tr=1)]
     if not sel:
@@ -342,6 +342,7 @@ def setMaxInfl(tgt, val=8):
         tgt = DagNode(tgt)
     if tgt.skinCluster.exists():
         mc.skinCluster(tgt, e=1, mi=val)
+
 
 def addInfl(tgt, infl=None):
     """Add an influence joint to the skinCluster of the mesh"""

@@ -35,11 +35,7 @@ def load_reference(loadLatest=1):
 
     sk_grp = mc.ls(AUTO_BIND_REF_GRP, tr=1)
     if sk_grp:
-        mc.confirmDialog(
-            t="Info", m=f"'{AUTO_BIND_REF_GRP}' already exists.     ", b="OK"
-        )
-        mc.select(sk_grp)
-        return
+        mc.delete(AUTO_BIND_REF_GRP)
 
     charPath = mc.optionVar(q="charFullPath")
     tgtPaths = []
@@ -61,7 +57,7 @@ def load_reference(loadLatest=1):
     sk_grp = mc.ls(AUTO_BIND_REF_GRP, tr=1)
     if sk_grp:
         DagNode(sk_grp[0]).show()
-        mc.select(sk_grp)
+        mc.select(cl=1)
     else:
         mc.confirmDialog(t="Info", m=f"'{AUTO_BIND_REF_GRP}' is missing.     ", b="OK")
 
