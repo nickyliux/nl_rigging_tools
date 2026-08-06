@@ -1,5 +1,7 @@
 import logging
+
 import maya.cmds as mc
+
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.base.dep_node import DepNode
@@ -8,8 +10,7 @@ from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.utils import common
-from nl_modules.utils import proxy
+from nl_modules.utils import common, proxy
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
 from nl_modules.utils.common import Vec
@@ -551,9 +552,7 @@ class LegQd(RigModule):
         start_id = 0
         if self.toeNum == 2:
             start_id = 2
-        elif self.toeNum == 3:
-            start_id = 1
-        elif self.toeNum == 4:
+        elif self.toeNum == 3 or self.toeNum == 4:
             start_id = 1
 
         rSzD = self.rigSize * self.xDir
@@ -581,7 +580,7 @@ class LegQd(RigModule):
                     common.sdk2(spread, topIks[i].a.ty, *data_ik_ty[start_id + i][j])
 
         for i, toeCtls in enumerate(self.toeCtlsArray):
-            fkOfs0 = toeCtls[0].offset
+            fkOfs0 = toeCtls[0].addOffsetGrp()
             curlA = self.smart_ctl.a.add(
                 f"curlMid{start_id + i}", min=-10, max=10, dv=0
             )
@@ -943,6 +942,8 @@ class LegQd(RigModule):
         if self.toeType == 2:
             for ctls in self.toeCtlsArray:
                 [ctl.a.showAttr(r=1) for ctl in ctls]
+
+        self.extra_ikc.a.showAttr("rx", "rz", t=1)
 
     def setup_rotate_order(self):
         """Setup rotate order for the quadruped leg rig controls."""
