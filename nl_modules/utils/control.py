@@ -1,11 +1,13 @@
-import os
 import glob
 import logging
+import os
+
 import maya.cmds as mc
-from nl_modules.utils import common
+
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.utils import common
 
 
 def reset_all_ctl():
@@ -118,23 +120,31 @@ def loadControl(loadLatest=1):
             )
     if not tgtPaths:
         return
-
     tgtPaths.sort(key=common.sortFile)
 
-    try:
-        newNodes = mc.file(tgtPaths[-1], i=1, ns="ctl", returnNewNodes=1)
-    except Exception as e:
-        raise SystemError(f"Error loading {tgtPaths}: {e}")
-
-    if not newNodes:
-        return
-
-    ns = newNodes[0].replace(":", " ").replace("|", " ").split()[0]
-
+    # Set targets
     allTgts = common.getRigCtlsAll()
     allTgts.extend(
         [DagNode("master2_ctl"), DagNode("master1_ctl"), DagNode("master_ctl")]
     )
+    loadFileReplaceShapes(tgtPaths[-1], allTgts)
+
+
+def loadFileReplaceShapes(tgtPath, allTgts):
+    """Load a file and replace existing shapes with the new shapes."""
+
+    # Import with temp ns
+    try:
+        newNodes = mc.file(tgtPath, i=1, ns="ctl", returnNewNodes=1)
+    except Exception as e:
+        raise SystemError(f"Error loading {tgtPath}: {e}")
+
+    if not newNodes:
+        return
+
+    # Replace existing shapes with new shapes
+    # ns = newNodes[0].replace(":", " ").replace("|", " ").split()[0]
+    ns = DagNode(newNodes[0]).namespace
     for tgt in allTgts:
         src = DagNode(ns + ":" + tgt)
         if src.exists():
@@ -143,13 +153,11 @@ def loadControl(loadLatest=1):
             for s in tgt.shapes:
                 s.rename(tgt + "Shape#")
 
-    rootGrp = DagNode(ns + ":CHR")
-    if rootGrp.exists():
-        rootGrp.delete()
-        mc.select(cl=1)
+    mc.delete(ns + ":*")
+    mc.select(cl=1)
 
     logging.info("Control shapes loaded.")
-    print("")
+    print()
 
 
 @common.Undo("setOnTopSel")

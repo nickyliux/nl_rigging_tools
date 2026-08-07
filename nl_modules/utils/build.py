@@ -1,29 +1,28 @@
 import logging
+import os
+
 import maya.cmds as mc
 
-from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.grp_node import GrpNode
-from nl_modules.nodel.loc_node import LocNode
-from nl_modules.utils import common
-from nl_modules.utils import control
-from nl_modules.utils import proxy
-from nl_modules.utils import utils_node as ut
+from nl_modules.build.arm_bp import ArmBp
+from nl_modules.build.belt import Belt
+from nl_modules.build.finger_fk import FingerFk
+from nl_modules.build.hand_bp import HandBp
 
 # Import rig components, required for evalation
 from nl_modules.build.head import Head
-from nl_modules.build.spine_bp import SpineBp
-from nl_modules.build.arm_bp import ArmBp
-from nl_modules.build.hand_bp import HandBp
 from nl_modules.build.leg_bp import LegBp
 from nl_modules.build.leg_qd import LegQd
 from nl_modules.build.neck import Neck
+from nl_modules.build.rig_module import RigModule
+from nl_modules.build.simple_fk import SimpleFk
+from nl_modules.build.spine_bp import SpineBp
 from nl_modules.build.spine_qd import SpineQd
 from nl_modules.build.tail import Tail
-from nl_modules.build.belt import Belt
-from nl_modules.build.finger_fk import FingerFk
-from nl_modules.build.simple_fk import SimpleFk
-
-from nl_modules.build.rig_module import RigModule
+from nl_modules.nodel.base.dag_node import DagNode
+from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.loc_node import LocNode
+from nl_modules.utils import common, control, proxy
+from nl_modules.utils import utils_node as ut
 
 
 def getAnchors(targets, startStr=""):
@@ -56,6 +55,7 @@ def buildTgt(mg):
 @common.Undo("buildGuide")
 def buildGuide(*args):
     """Build rig for selected or all master guides."""
+
     MGs = collectMasterGuide(isSel=1, build=1)
     guidesToBuild = []
 
@@ -87,10 +87,25 @@ def buildGuide(*args):
         print()
 
 
+def resetMasterCtlShapes():
+    """Reset master control shapes to default."""
+    util_dir = os.path.dirname(os.path.abspath(__file__))
+    MAYA_TPL_DIR = os.path.join(util_dir, "..", "build", "components")
+    base_file = f"{MAYA_TPL_DIR}/base.ma"
+    control.loadFileReplaceShapes(
+        base_file,
+        [
+            DagNode("master2_ctl"),
+            DagNode("master1_ctl"),
+            DagNode("master_ctl"),
+        ],
+    )
+
+
 def postRig():
     """Post rigging operations"""
     logging.info(".")
-    print("")
+    print()
 
     addMasterAttrs()
     control.reset_all_ctl()
@@ -287,7 +302,7 @@ def update_space_switch():
         #
         resultDict = {}
         for s in spaceList:
-            if s in spaceDict and spaceDict[s]:
+            if spaceDict.get(s):
                 resultDict[s] = spaceDict[s]
 
         if resultDict:
@@ -653,12 +668,8 @@ def quickSnapMidFgr(pf=""):
         guides_01[1], guides_04[1], guides_03[1], cstType="ori", w=1 / 3, delete=1
     )
     for i, g in enumerate(guides_01):
-        common.cstMulti(
-            guides_01[i], guides_04[i], guides_02[i], cstType="poi", w=2 / 3, delete=1
-        )
-        common.cstMulti(
-            guides_01[i], guides_04[i], guides_03[i], cstType="poi", w=1 / 3, delete=1
-        )
+        common.cstMulti(g, guides_04[i], guides_02[i], cstType="poi", w=2 / 3, delete=1)
+        common.cstMulti(g, guides_04[i], guides_03[i], cstType="poi", w=1 / 3, delete=1)
 
 
 #

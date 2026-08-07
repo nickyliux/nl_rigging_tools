@@ -1,4 +1,5 @@
 import logging
+import os
 import maya.cmds as mc
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
@@ -91,6 +92,9 @@ class MarkingMenuAutorig:
 
     def rebuild(*args):
         """Custom rebuild function that unbuilds and then builds the selected rig"""
+        if not mc.ls(sl=1, tr=1):
+            build.resetMasterCtlShapes()
+
         build.unbuildGuide()
         build.buildGuide()
 
