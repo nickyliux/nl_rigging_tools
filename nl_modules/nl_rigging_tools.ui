@@ -289,43 +289,7 @@
             <string notr="true"/>
            </property>
            <property name="text">
-            <string> Spine</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="spineQd_BN">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>82</width>
-             <height>18</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>82</width>
-             <height>18</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Segoe UI</family>
-             <pointsize>8</pointsize>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="toolTip">
-            <string>Load Model</string>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="text">
-            <string> Spine</string>
+            <string> Spi B </string>
            </property>
           </widget>
          </item>
@@ -433,7 +397,7 @@
             <string notr="true"/>
            </property>
            <property name="text">
-            <string>Finger</string>
+            <string> Fgr    </string>
            </property>
           </widget>
          </item>
@@ -469,7 +433,56 @@
             <string notr="true"/>
            </property>
            <property name="text">
-            <string> Leg    </string>
+            <string> Leg B </string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="spineQd_BN">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>82</width>
+             <height>18</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>82</width>
+             <height>18</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>8</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>Load Model</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string> Spi Q </string>
            </property>
           </widget>
          </item>
@@ -505,7 +518,7 @@
             <string notr="true"/>
            </property>
            <property name="text">
-            <string> Leg    </string>
+            <string> Leg Q</string>
            </property>
           </widget>
          </item>
@@ -541,7 +554,7 @@
             <string notr="true"/>
            </property>
            <property name="text">
-            <string> Tail    </string>
+            <string> Tail     </string>
            </property>
           </widget>
          </item>
@@ -577,7 +590,7 @@
             <string notr="true"/>
            </property>
            <property name="text">
-            <string>Simple</string>
+            <string> FK      </string>
            </property>
           </widget>
          </item>
@@ -690,19 +703,6 @@
           </widget>
          </item>
         </layout>
-       </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -1090,7 +1090,7 @@
             </size>
            </property>
            <property name="text">
-            <string>tpl</string>
+            <string>guide</string>
            </property>
           </widget>
          </item>
@@ -1425,7 +1425,7 @@
             </size>
            </property>
            <property name="text">
-            <string>ctl</string>
+            <string>control</string>
            </property>
           </widget>
          </item>
@@ -2087,7 +2087,7 @@
        <x>0</x>
        <y>539</y>
        <width>221</width>
-       <height>311</height>
+       <height>321</height>
       </rect>
      </property>
      <property name="currentIndex">
@@ -2101,13 +2101,13 @@
        <property name="geometry">
         <rect>
          <x>3</x>
-         <y>193</y>
+         <y>187</y>
          <width>211</width>
          <height>16</height>
         </rect>
        </property>
        <property name="text">
-        <string>Side Reference :</string>
+        <string>Other Reference :</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -2123,7 +2123,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>Axial Reference :</string>
+        <string>Ribbon Reference :</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -2133,7 +2133,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>250</y>
+         <y>260</y>
          <width>211</width>
          <height>21</height>
         </rect>
@@ -2230,8 +2230,8 @@
         <rect>
          <x>10</x>
          <y>104</y>
-         <width>201</width>
-         <height>83</height>
+         <width>191</width>
+         <height>71</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2430,8 +2430,8 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>212</y>
-         <width>201</width>
+         <y>209</y>
+         <width>191</width>
          <height>25</height>
         </rect>
        </property>
@@ -2451,7 +2451,7 @@
         <item>
          <widget class="QLabel" name="label_36">
           <property name="text">
-           <string>Select Side Mesh / Grp</string>
+           <string>Select Mesh / Grp</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -2500,7 +2500,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>240</y>
+         <y>250</y>
          <width>212</width>
          <height>3</height>
         </rect>
@@ -2568,7 +2568,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>186</y>
+         <y>180</y>
          <width>212</width>
          <height>3</height>
         </rect>
