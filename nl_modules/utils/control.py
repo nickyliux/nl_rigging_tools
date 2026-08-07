@@ -145,6 +145,7 @@ def loadFileReplaceShapes(tgtPath, allTgts):
     # Replace existing shapes with new shapes
     # ns = newNodes[0].replace(":", " ").replace("|", " ").split()[0]
     ns = DagNode(newNodes[0]).namespace
+    
     for tgt in allTgts:
         src = DagNode(ns + ":" + tgt)
         if src.exists():

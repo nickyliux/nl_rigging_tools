@@ -113,11 +113,11 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def buildAll(self):
         """Build all rig components."""
-        if not mc.ls(sl=1, tr=1):
-            build.resetMasterCtlShapes()
-
         build.unbuildGuide()
         build.buildGuide()
+
+        if not mc.ls(sl=1, tr=1):
+            build.resetMasterCtlShapes()
 
     def unbuildAll(self):
         """Unbuild all rig components."""

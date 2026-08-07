@@ -92,11 +92,11 @@ class MarkingMenuAutorig:
 
     def rebuild(*args):
         """Custom rebuild function that unbuilds and then builds the selected rig"""
-        if not mc.ls(sl=1, tr=1):
-            build.resetMasterCtlShapes()
-
         build.unbuildGuide()
         build.buildGuide()
+
+        if not mc.ls(sl=1, tr=1):
+            build.resetMasterCtlShapes()
 
     def addHelperOptions(self, menu):
         """Add helper options to the marking menu"""
