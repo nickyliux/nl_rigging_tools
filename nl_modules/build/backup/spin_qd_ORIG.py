@@ -1,5 +1,7 @@
 import logging
+
 import maya.cmds as mc
+
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
@@ -8,7 +10,6 @@ from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.utils import common
-
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.common import Vec
 
@@ -76,9 +77,9 @@ class SpineQd(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 1),
             ("cog_ctl", "cog_qd", None, rSz * 1.5, 0),
-            ("fore_ikc", "back", None, Vec((5, 5, 0.2)) * rSz, 0),
+            ("fore_ikc", "U_3d", None, Vec((5, 5, 0.2)) * rSz, 0),
             ("mid_ikc", "circle", "z", rSz * 2.5, 0),
-            ("base_ikc", "back", None, Vec((5, 5, 0.2)) * rSz, 0),
+            ("base_ikc", "U_3d", None, Vec((5, 5, 0.2)) * rSz, 0),
             ("tangent0_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
             ("tangent1_ctl", "cube", None, Vec((0.3, 0.3, 3)) * rSz, 1),
         ]

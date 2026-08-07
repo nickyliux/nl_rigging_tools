@@ -1,4 +1,5 @@
 import logging
+
 from nl_modules.build.rig_module import RigModule
 from nl_modules.utils import proxy
 
@@ -52,7 +53,7 @@ class Head(RigModule):
         rID, rSz, xDr = self.get_short_form()
         ctl_defs = [
             ("head_fkc", "hexagon_3d", None, rSz / 2, 0),
-            ("jaw_fkc", "back", None, rSz / 2, 0),
+            ("jaw_fkc", "U_3d", None, rSz / 2, 0),
             ("lf_eye_fkc", "hexagon_3d", "z", rSz / 4, 0),
             ("rt_eye_fkc", "hexagon_3d", "z", rSz / 4, 0),
         ]
