@@ -2,14 +2,13 @@ import glob
 import logging
 import os
 import maya.cmds as mc
-from nl_modules.utils import build
-from nl_modules.utils import common
-from nl_modules.utils import file
+
+from nl_modules.utils import build, common, file
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
-from nl_modules.utils.color import Color
+# from nl_modules.utils.color import Color
 
 
 @common.Undo("addHlpJnt_sel")
@@ -269,7 +268,6 @@ def loadHelper(loadLatest=1):
 
     load_count = 0
     for i, data in enumerate(fileDataList, start=1):
-
         tgtJnt = DagNode(data["tgt"])
         if not tgtJnt.exists():
             logging.warning(f"Target joint {data['tgt']} not found.")

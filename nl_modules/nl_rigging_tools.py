@@ -1,9 +1,11 @@
 import logging
 import os
-import maya.mel as mel
 from functools import partial
 from importlib import reload
+
 import maya.cmds as mc
+from maya import mel
+
 import nl_modules
 from nl_modules.utils import (
     build,
@@ -26,16 +28,16 @@ from nl_modules.utils.color import Color
 reload(reload_all)
 
 try:
-    from PySide2 import QtWidgets, QtGui, QtCore
+    from PySide2 import QtCore, QtGui, QtWidgets
     from PySide2.QtGui import QIcon
     from PySide2.QtUiTools import QUiLoader
-    from PySide2.QtWidgets import QMenuBar, QMenu, QAction
+    # from PySide2.QtWidgets import QMenuBar, QMenu, QAction
 except ImportError:
-    from PySide6 import QtWidgets, QtGui, QtCore
+    from PySide6 import QtCore, QtGui, QtWidgets
     from PySide6.QtGui import QIcon
     from PySide6.QtUiTools import QUiLoader
-    from PySide6.QtWidgets import QMenuBar, QMenu
-    from PySide6.QtGui import QAction
+    # from PySide6.QtWidgets import QMenuBar, QMenu
+    # from PySide6.QtGui import QAction
 
 # --- Maya UI ---
 from maya.app.general.mayaMixin import MayaQWidgetDockableMixin

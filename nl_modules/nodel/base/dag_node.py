@@ -735,14 +735,14 @@ class DagNode(DepNode):
         if self.name.endswith("_setting"):
             return self.color
 
-        n = str(self.node)
+        n = self.node.name
         v = 0
         if n.startswith("lf"):
             v = 3
         elif n.startswith("rt"):
             v = 2
-        elif n.endswith("fkc"):
-            v = 1
+        # elif n.endswith("fkc"):
+        #     v = 1
 
         return DagNode.COLOR_PRESET[0][v]
 
