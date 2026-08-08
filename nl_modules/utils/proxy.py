@@ -271,9 +271,9 @@ def bind_to_proxy():
     combinedMesh.delete()
     mc.select(cl=1)
 
-    master2_ctl = DagNode("master2_ctl")
-    if master2_ctl.exists():
-        master2_ctl.a.proxyVis.set(0)
+    # master2_ctl = DagNode("master2_ctl")
+    # if master2_ctl.exists():
+    #     master2_ctl.a.proxyVis.set(0)
 
     logging.info("Bind to selected proxy OK.")
 

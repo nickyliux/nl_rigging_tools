@@ -124,9 +124,9 @@ def postRig():
 
     master2_ctl = DagNode("master2_ctl")
     if master2_ctl.exists():
-        master2_ctl.a.v.set(1)
+        # master2_ctl.a.v.set(1)
         master2_ctl.a.proxyVis.set(0)
-        master2_ctl.a.jointVis.set(0)
+        # master2_ctl.a.jointVis.set(0)
 
     mc.select(cl=1)
 
@@ -140,16 +140,16 @@ def addMasterAttrs():
         return
 
     _GROUPS = [
-        ("_" * 8, "master1_ctl", "ctlVis", None),
-        ("_" * 9, "PRX", "proxyVis", "proxyRef"),
-        ("_" * 10, "JNT", "jointVis", "jointRef"),
-        ("_" * 11, "MDL", "modelVis", "modelRef"),
+        ("_" * 8, "master1_ctl", "ctlVis", None, 1),
+        ("_" * 9, "PRX", "proxyVis", "proxyRef", 0),
+        ("_" * 10, "JNT", "jointVis", "jointRef", 1),
+        ("_" * 11, "MDL", "modelVis", "modelRef", 1),
     ]
-    for sep, grpName, visAttr, lockAttr in _GROUPS:
+    for sep, grpName, visAttr, lockAttr, dv in _GROUPS:
         grp = DagNode(grpName)
         if grp.exists():
             master2_ctl.a.addSep(sep)
-            master2_ctl.a.add(visAttr, k=0, type="bool", dv=1) >> grp.a.v
+            master2_ctl.a.add(visAttr, k=0, type="bool", dv=dv) >> grp.a.v
             if lockAttr:
                 grp.a.overrideEnabled.set(1)
                 (
