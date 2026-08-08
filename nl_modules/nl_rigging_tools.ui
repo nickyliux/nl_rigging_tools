@@ -271,42 +271,6 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="spineBp_BN">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>82</width>
-             <height>18</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>82</width>
-             <height>18</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Segoe UI</family>
-             <pointsize>8</pointsize>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="toolTip">
-            <string>Load Spine Guide (Biped)</string>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="text">
-            <string> Spi    </string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QPushButton" name="arm_BN">
            <property name="enabled">
             <bool>true</bool>
@@ -415,6 +379,42 @@
           </widget>
          </item>
          <item>
+          <widget class="QPushButton" name="spineBp_BN">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>82</width>
+             <height>18</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>82</width>
+             <height>18</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>8</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>Load Spine Guide (Biped)</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string> Spine</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="legPLT_BN">
            <property name="enabled">
             <bool>true</bool>
@@ -495,7 +495,7 @@
             <string notr="true"/>
            </property>
            <property name="text">
-            <string> Spi q </string>
+            <string> Spine</string>
            </property>
           </widget>
          </item>
