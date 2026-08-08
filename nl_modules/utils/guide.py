@@ -1,8 +1,10 @@
-import os
 import glob
 import logging
+import os
 import re
+
 import maya.cmds as mc
+
 import nl_modules
 from nl_modules.build.tpl_loader import TplLoader
 from nl_modules.nodel.base.dag_node import DagNode
@@ -31,22 +33,38 @@ COMPONENT_DICT = {
 }
 
 
-def loadGuide(name):
+def removeEndDigits(name):
+    """Remove trailing digits from a name
+    e.g.
+        lfLeg10 => 'lfLeg'
+        lfLeg => 'lfLeg'
+    """
+    pattern = re.compile(r"^([a-zA-Z_]+)")
+    result = re.match(pattern, str(name))
+    if result:
+        return result.group(1)
+    else:
+        raise ValueError("Invalid input name")
+
+
+def genNextRigID(rigId):
+    """Generate next rigID name for newly created component"""
+    count = 0
+    for mg in build.collectMasterGuide():
+        if mg.a.rigID.get().startswith(rigId):
+            count += 1
+    return f"{rigId}{count}"
+
+
+def loadGuide(name, autoNext=1):
     """Load component(s) for names"""
     common.clearNs()
 
-    def genNextRigID(n):
-        """Generate next rigID name for newly created component"""
-        count = 0
-        for mg in build.collectMasterGuide():
-            if mg.a.rigID.get().startswith(n):
-                count += 1
-        return f"{n}{count}"
+    tplName = removeEndDigits(name)
+    nextRigID = genNextRigID(tplName) if autoNext else name
 
-    nextRigID = genNextRigID(name)
-    TplLoader(name, nextRigID).load_base_tpl()
+    TplLoader(tplName, nextRigID).load_base_tpl()
     mg = DagNode(nextRigID + "_master_guide")
-
     return mg
 
 
@@ -106,22 +124,26 @@ def copyGuideBetwMG(mg1, mg2, mirror=0, ignoreMG=0):
         logging.info("Copy guide setting failed.")
 
 
-def duplicateGuideSel(*arg, mirror=0):
+def dupGuideSel(*arg, mirror=0):
     """Duplicate selected master guides and transfer guide settings"""
     MGs = build.collectMasterGuide(isSel=1, isAll=0)
     resultMGs = []
     for mg in MGs:
         rigID = mg.a.rigID.get()
         if mirror:
-            rigID = common.getOppositeStr(rigID)
-            oppMG = DagNode(rigID + "_master_guide")
-            if oppMG.exists():
-                logging.info(f"{mg.name}: Opposite guide already exists. Ignore.")
-                continue
+            oppRigID = common.getOppositeStr(rigID)
+            oppMG = DagNode(oppRigID + "_master_guide")
 
-        dupMG = loadGuide(removeEndDigits(rigID))
-        copyGuideBetwMG(mg, dupMG, mirror=mirror)
-        resultMGs.append(dupMG)
+            if not oppMG.exists():
+                dupMG = loadGuide(oppRigID, autoNext=0)
+                copyGuideBetwMG(mg, dupMG, mirror=1)
+                resultMGs.append(dupMG)
+            else:
+                logging.info(f"{mg.name}: Opposite guide already exists. Ignore.")
+        else:
+            dupMG = loadGuide(rigID)
+            copyGuideBetwMG(mg, dupMG)
+            resultMGs.append(dupMG)
 
     if resultMGs:
         mc.select(resultMGs)
@@ -214,18 +236,6 @@ def mirrorPose(*arg):
         mirrorCtl(selList)
 
 
-def removeEndDigits(name):
-    """Remove trailing digits from a name
-    e.g. lfLeg10 => 'lfLeg'
-    """
-    pattern = re.compile(rf"^([a-zA-Z_]+)")
-    result = re.match(pattern, str(name))
-    if result:
-        return result.group(1)
-    else:
-        raise ValueError("Invalid input name")
-
-
 def loadTemplate(loadLatest=1):
     """Load preset from json file"""
     charPath = mc.optionVar(q="charFullPath")
@@ -269,7 +279,7 @@ def loadGuideFrIdDict(rigID_dict):
         else:
             mg = DagNode(rID + "_master_guide")
             if not mg.exists():
-                loadGuide(removeEndDigits(rID))
+                loadGuide(rID)
 
             for guide, attrs in rigID_dict[rID].items():
                 setAttrFrDict(guide, attrs)

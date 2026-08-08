@@ -1,18 +1,13 @@
 import logging
-import os
+from functools import partial
+
 import maya.cmds as mc
+
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
-from nl_modules.utils import anim
-from nl_modules.utils import build
-from nl_modules.utils import control
 
 # from nl_modules.utils import helper
-from nl_modules.utils import guide
-from nl_modules.utils import proxy
-from nl_modules.utils import common
-
-from functools import partial
+from nl_modules.utils import anim, build, common, control, guide, proxy
 
 MENU_NAME = "marking_menu_autorig"
 LF_CTL_SET = "lf*_ctl_set"
@@ -122,10 +117,10 @@ class MarkingMenuAutorig:
         # , i="HIKCharacterToolSkeleton.png"
         mc.menuItem(p=mi, l="Mirror Sel / All", c=guide.mirrorGuide)
         mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="Duplicate", c=guide.duplicateGuideSel)
-        mc.menuItem(p=mi, l="Dupl. Sym.", c=partial(guide.duplicateGuideSel, mirror=1))
+        mc.menuItem(p=mi, l="Duplicate", c=guide.dupGuideSel)
+        mc.menuItem(p=mi, l="Duplicate (Sym)", c=partial(guide.dupGuideSel, mirror=1))
         mc.menuItem(p=mi, l="-" * 15, en=0)
-        mc.menuItem(p=mi, l="Copy Setting (Same class)", c=guide.copyGuideUI)
+        mc.menuItem(p=mi, l="Copy Setting", c=guide.copyGuideUI)
 
     def addProxyOptions(self, menu):
         """Add proxy options to the marking menu"""
