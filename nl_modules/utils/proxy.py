@@ -83,7 +83,7 @@ def genProxyForSet(*args, tgtSet=AUTO_BIND_JNT_SET):
 
     mc.select(cl=1)
     common.setView(wos=1, jx=1)
-    setVis(1)
+    # setVis(1)
     logging.info(f"{proxy_count} proxy meshes generated.")
 
 

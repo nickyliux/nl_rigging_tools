@@ -203,7 +203,7 @@ class MarkingMenuAutorig:
         """Mirror the shape of the selected control or all controls in LF_CTL_SET"""
         from nl_modules.utils import control
 
-        selList = mc.ls(sl=1, tr=1)
+        selList = [DagNode(n) for n in mc.ls(sl=1, tr=1)]
         if not selList:
             selList = common.getSetMembersInOrder(LF_CTL_SET)
 
