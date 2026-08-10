@@ -61,8 +61,8 @@ class Head(RigModule):
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
+        self.head_fkc.cv_move(0, rSz * 8, 0)
         self.jaw_fkc.cv_move(0, -rSz * 5, 0)
-        self.head_fkc.cv_move(0, rSz * 10, 0)
 
     def build_fk(self):
         """Build the FK controls for the head rig module."""
