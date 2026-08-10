@@ -231,6 +231,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.addRbJnt_spine_BN, partial(self.addSkRefJoint, type=1))
         self.connect(self.UI.addRbJnt_tail_BN, partial(self.addSkRefJoint, type=2))
         self.connect(self.UI.addRefJnt_BN, partial(self.addSkRefJoint, type=3))
+
+        self.connect(self.UI.scapulaTag_BN, self.scapulaTag)
         self.connect(self.UI.mirrorAllRefJnt_BN, self.mirrorAllRefJnt)
         self.connect(self.UI.toggleClickDrag_BN, self.toggleClickDrag)
 
@@ -571,6 +573,10 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Toggle click and drag selection preference."""
         state = mc.selectPref(clickDrag=not mc.selectPref(clickDrag=1, q=1))
         mc.selectPref(clickDrag=state)
+
+    def scapulaTag(self):
+        for sel in mc.ls(sl=1, tr=1):
+            DagNode(sel).a.add("scapula", k=0, dv=1, lock=1)
 
     def mirrorAllRefJnt(self):
         """Mirror all reference joints in the scene."""
