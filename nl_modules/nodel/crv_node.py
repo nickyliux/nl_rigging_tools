@@ -181,6 +181,7 @@ class CrvNode(GrpNode):
             dspType=dspType,
             top=top,
         )
+
         if line:
             CrvNode.linkLineCV(crv=line, tgt=tgt1, cvId=0)
             CrvNode.linkLineCV(crv=line, tgt=tgt2, cvId=1)

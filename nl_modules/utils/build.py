@@ -125,7 +125,8 @@ def postRig():
     master2_ctl = DagNode("master2_ctl")
     if master2_ctl.exists():
         master2_ctl.a.v.set(1)
-        # master2_ctl.a.proxyVis.set(0)
+        if not DagNode("geo_grp").exists():
+            master2_ctl.a.proxyVis.set(1)
         # master2_ctl.a.jointVis.set(0)
 
     mc.select(cl=1)

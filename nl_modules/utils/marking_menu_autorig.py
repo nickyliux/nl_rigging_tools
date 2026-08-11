@@ -160,7 +160,7 @@ class MarkingMenuAutorig:
         attr = mg.a["setting"]
         if attr.exists():
             setting = attr.inConnNode
-            if setting:
+            if setting and setting.a["fkIk"].exists():
                 mc.menuItem(
                     p=menu,
                     l="FK <-> IK",
@@ -170,20 +170,22 @@ class MarkingMenuAutorig:
 
         addSep = 0
         # --- Space Switch ---
-        for space in ["paSpace", "oriSpace", "posSpace"]:
+        for space in ["pa_space", "ori_space", "pos_space"]:
             attr = DagNode(sel[0]).a[space]
             if attr.exists():
                 addSep = 1
-                mc.menuItem(p=menu, l="|| " + space.upper(), en=0)
+                mc.menuItem(p=menu, l=f"< {space.upper()} >", en=0)
                 val = attr.get()
                 allSpaceAttr = attr.query(le=1)[0].split(":")
-                for i, a in enumerate(allSpaceAttr):
-                    text = f"    {a}" + ("   *" if val == i else "")
+                for i, spaceAttr in enumerate(allSpaceAttr):
+                    text = f"    {spaceAttr}" + ("   *" if val == i else "")
                     mc.menuItem(
                         p=menu,
                         l=text,
-                        c=partial(self.switch_to_space, a),
+                        # c=partial(self.switch_to_space, spaceAttr),
+                        c=partial(self.switch_to_space, attr, spaceAttr),
                     )
+                    print(spaceAttr)
 
         # --- Toggle Isolate ---
         for attr in DagNode(sel[0]).a.list(ud=1, hasData=1):
@@ -222,7 +224,10 @@ class MarkingMenuAutorig:
 
     def switch_to_space(self, *args):
         """Switch space for all selected controls to the specified space"""
-        anim.switch_to_space_target(args[0])
+        attr = args[0]
+        spaceName = args[1]
+
+        anim.switch_to_space_target(attr, spaceName)
 
     def multi_switch_fk_ik(self, *args):
         """Switch FK/IK mode for the specified rig node"""

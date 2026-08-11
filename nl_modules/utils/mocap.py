@@ -1,10 +1,12 @@
 import logging
-from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.srf_node import SrfNode
-from nl_modules.nodel.grp_node import GrpNode
-from nl_modules.utils import anim, common, build
+
 import maya.cmds as mc
-import maya.mel as mel
+from maya import mel
+
+from nl_modules.nodel.base.dag_node import DagNode
+from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.nodel.srf_node import SrfNode
+from nl_modules.utils import anim, build, common
 
 LINK_GRP = "moma_link_grp_"
 
@@ -93,16 +95,17 @@ EQUINE_MAP = {
 }
 
 CANINE_JNTS = {
-	'neck':[f'moma:c_neck_0{i}' for i in range(1,6)],
-	'tail':[f'moma:c_tail_0{i}' for i in range(1,10)]
+    "neck": [f"moma:c_neck_0{i}" for i in range(1, 6)],
+    "tail": [f"moma:c_tail_0{i}" for i in range(1, 10)],
 }
 
 EQUINE_JNTS = {
-	'neck':['moma:neck'] + [f'moma:neck_{i}' for i in range(1,6)],
-	'tail':[f'moma:tail_{i}' for i in range(1,10)]
+    "neck": ["moma:neck"] + [f"moma:neck_{i}" for i in range(1, 6)],
+    "tail": [f"moma:tail_{i}" for i in range(1, 10)],
 }
 
-def mm_link_setup(ns, jnts=None, rID='tail0'):
+
+def mm_link_setup(ns, jnts=None, rID="tail0"):
     """Gen resampled joints for retargeting."""
     # ---------------------------------------------------
     # Get resample value from master guide setting
@@ -119,9 +122,9 @@ def mm_link_setup(ns, jnts=None, rID='tail0'):
     # Gen crv from joints
     # ---------------------------------------------------
     if not jnts:
-        logging.info(f"No joint found for linking.")
+        logging.info("No joint found for linking.")
         return
-    
+
     allPos = []
     for j in jnts:
         pos = mc.xform(DagNode(j), q=1, t=1, ws=1)
@@ -131,18 +134,18 @@ def mm_link_setup(ns, jnts=None, rID='tail0'):
     # ---------------------------------------------------
     # Gen rbSrf and skin to joints
     # ---------------------------------------------------
-    link_grp = GrpNode(LINK_GRP + '#')
+    link_grp = GrpNode(LINK_GRP + "#")
     rbSrf = SrfNode.buildRbSrf(
-        pf=f'{rID}_srf1', crv=crv, normal=-1, snap=jnts[0], p=link_grp, spans=8
+        pf=f"{rID}_srf1", crv=crv, normal=-1, snap=jnts[0], p=link_grp, spans=8
     )
     SrfNode(rbSrf).weightTo(jnts, mi=1, cvMatchJnt=1)
-    print('')
+    print()
 
     # ---------------------------------------------------
     # Gen rbJnts and constraint to rig ctls
     # ---------------------------------------------------
     resampledJnts = SrfNode.buildRbJnt(
-        resampleNum, pf=f'{rID}_srf2', surf=rbSrf, rigData=link_grp, jntGrp=link_grp
+        resampleNum, pf=f"{rID}_srf2", surf=rbSrf, rigData=link_grp, jntGrp=link_grp
     )
     for i, jnt in enumerate(resampledJnts):
         ctl = f"{ns}{rID}_{i}_fkc"
@@ -158,8 +161,8 @@ def mm_link_setup(ns, jnts=None, rID='tail0'):
     return resampledJnts
 
 
-def bake_motion(*args):
-    """Bake Moma Sk to IK rig controls."""
+def bake_motion_to_ik(*args):
+    """Bake Moma Sk to IK ctls."""
     rigIDs = ["lfLegQd0", "rtLegQd0", "lfLegQd1", "rtLegQd1"]
     ns = common.setNsFrSel()
     allMGs = [DagNode(f"{ns}{rigID}_master_guide") for rigID in rigIDs]
@@ -171,15 +174,15 @@ def bake_motion(*args):
     if allCtls:
         mc.select(allCtls)
         mc.bakeResults(simulation=1, t=(startTime, endTime))
-        # common.pauseVP(1)
+
         for frame in range(startTime, endTime + 1):
             mc.currentTime(frame, e=1)
+            # common.pauseVP(1)
             for i in range(len(rigIDs)):
                 anim.switch_fk_ik(mg=allMGs[i])
-        # common.pauseVP(0)
-        # grp = GrpNode("tail_link_grp")
-        # if grp.exists():
-        #     grp.delete()
+            # common.pauseVP(0)
+
+        delete_link_grps()
 
 
 def unCst_mm_to_quad(mapping, ns):
@@ -245,12 +248,18 @@ def link_to_map(quadType=0):
         set_legs_to_fk(ns)
         if quadType == 0:
             cst_mm_to_quad(CANINE_MAP, ns)
-            mm_link_setup(ns, jnts=CANINE_JNTS["neck"], rID='neck0')
-            mm_link_setup(ns, jnts=CANINE_JNTS["tail"], rID='tail0')
+            mm_link_setup(ns, jnts=CANINE_JNTS["neck"], rID="neck0")
+            mm_link_setup(ns, jnts=CANINE_JNTS["tail"], rID="tail0")
         elif quadType == 1:
             cst_mm_to_quad(EQUINE_MAP, ns)
-            mm_link_setup(ns, jnts=EQUINE_JNTS["neck"], rID='neck0')
-            mm_link_setup(ns, jnts=EQUINE_JNTS["tail"], rID='tail0')
+            mm_link_setup(ns, jnts=EQUINE_JNTS["neck"], rID="neck0")
+            mm_link_setup(ns, jnts=EQUINE_JNTS["tail"], rID="tail0")
+
+
+def delete_link_grps():
+    grp = mc.ls(LINK_GRP + "*")
+    if grp:
+        mc.delete(grp)
 
 
 def unlink_map(quadType=0):
@@ -265,10 +274,7 @@ def unlink_map(quadType=0):
             logging.info("Remove constraints to rig controls for Equine.")
 
         # remove resampled joints and rbSrf
-        grp = mc.ls(LINK_GRP + "*")
-        if grp:
-            mc.delete(grp)
-
+        delete_link_grps()
 
 
 # HIK bone name -> slot index (Maya HumanIK definition)
@@ -413,7 +419,7 @@ def create_hik_character(char_name, joint_mapping):
     # Create the HIK character definition node
     mc.HIKCharacterControlsTool()
     # mel.eval("hikCreateDefinition;")
-    mel.eval('hikCreateCharacter("{}")'.format(char_name))
+    mel.eval(f'hikCreateCharacter("{char_name}")')
 
     skipped = []
     for hik_bone, joint_name in joint_mapping.items():
@@ -422,17 +428,13 @@ def create_hik_character(char_name, joint_mapping):
             skipped.append((hik_bone, "unknown HIK bone name"))
             continue
         if not mc.objExists(joint_name):
-            skipped.append((hik_bone, "{} not found in scene".format(joint_name)))
+            skipped.append((hik_bone, f"{joint_name} not found in scene"))
             continue
-        mel.eval(
-            'setCharacterObject("{}", "{}", {}, 0)'.format(
-                joint_name, char_name, slot_idx
-            )
-        )
+        mel.eval(f'setCharacterObject("{joint_name}", "{char_name}", {slot_idx}, 0)')
 
     if skipped:
         for bone, reason in skipped:
-            mc.warning("HIK: skipped '{}' - {}".format(bone, reason))
+            mc.warning(f"HIK: skipped '{bone}' - {reason}")
 
     # Lock the definition to validate it
     mel.eval("hikToggleLockDefinition()")
@@ -479,8 +481,8 @@ def create_hik_custom_rig(char_name, ctrl_mapping):
     """
     _ensure_hik_loaded()
 
-    mel.eval('hikSetCurrentCharacter("{}")'.format(char_name))
-    mel.eval('hikCreateCustomRig("{}")'.format(char_name))
+    mel.eval(f'hikSetCurrentCharacter("{char_name}")')
+    mel.eval(f'hikCreateCustomRig("{char_name}")')
 
     skipped = []
     for hik_bone, ctrl_name in ctrl_mapping.items():
@@ -489,13 +491,13 @@ def create_hik_custom_rig(char_name, ctrl_mapping):
             skipped.append((hik_bone, "unknown HIK bone name"))
             continue
         if not mc.objExists(ctrl_name):
-            skipped.append((hik_bone, "{} not found in scene".format(ctrl_name)))
+            skipped.append((hik_bone, f"{ctrl_name} not found in scene"))
             continue
-        mel.eval('hikCustomRigSetNodeForEffector {} "{}";'.format(slot_idx, ctrl_name))
+        mel.eval(f'hikCustomRigSetNodeForEffector {slot_idx} "{ctrl_name}";')
 
     if skipped:
         for bone, reason in skipped:
-            mc.warning("HIK: skipped '{}' - {}".format(bone, reason))
+            mc.warning(f"HIK: skipped '{bone}' - {reason}")
 
     mel.eval("hikUpdateDefinitionUI()")
 

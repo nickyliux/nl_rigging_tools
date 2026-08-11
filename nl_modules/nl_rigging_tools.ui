@@ -4967,7 +4967,7 @@ Setup</string>
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Bake Motion</string>
+          <string>Bake to IK</string>
          </property>
         </widget>
        </item>
@@ -5003,7 +5003,7 @@ Setup</string>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>160</y>
+        <y>165</y>
         <width>201</width>
         <height>21</height>
        </rect>
@@ -5399,7 +5399,7 @@ Setup</string>
        <x>0</x>
        <y>550</y>
        <width>225</width>
-       <height>191</height>
+       <height>251</height>
       </rect>
      </property>
      <property name="title">
@@ -5415,9 +5415,9 @@ Setup</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>60</y>
+        <y>110</y>
         <width>211</width>
-        <height>31</height>
+        <height>21</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -5434,9 +5434,44 @@ Setup</string>
         <number>2</number>
        </property>
        <item>
-        <widget class="QLabel" name="label_2">
+        <widget class="QPushButton" name="selectTypeBelow_BN">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+           <underline>false</underline>
+           <kerning>true</kerning>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Select in Hierarchy</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
          <property name="text">
-          <string>Type</string>
+          <string>Select</string>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -5489,57 +5524,15 @@ Setup</string>
          </item>
         </widget>
        </item>
-       <item>
-        <widget class="QPushButton" name="selectTypeBelow_BN">
-         <property name="minimumSize">
-          <size>
-           <width>80</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-           <underline>false</underline>
-           <kerning>true</kerning>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Select in Hierarchy</string>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="autoFillBackground">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>Select Hi</string>
-         </property>
-         <property name="checkable">
-          <bool>false</bool>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_3">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>90</y>
+        <y>160</y>
         <width>211</width>
-        <height>31</height>
+        <height>21</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -5556,26 +5549,10 @@ Setup</string>
         <number>2</number>
        </property>
        <item>
-        <widget class="QLabel" name="label">
-         <property name="minimumSize">
-          <size>
-           <width>60</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Retopo</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="misc_retopo20_BN">
          <property name="minimumSize">
           <size>
-           <width>20</width>
+           <width>25</width>
            <height>0</height>
           </size>
          </property>
@@ -5603,7 +5580,7 @@ Setup</string>
         <widget class="QPushButton" name="misc_retopo50_BN">
          <property name="minimumSize">
           <size>
-           <width>20</width>
+           <width>25</width>
            <height>0</height>
           </size>
          </property>
@@ -5631,7 +5608,7 @@ Setup</string>
         <widget class="QPushButton" name="misc_retopo150_BN">
          <property name="minimumSize">
           <size>
-           <width>20</width>
+           <width>25</width>
            <height>0</height>
           </size>
          </property>
@@ -5659,7 +5636,7 @@ Setup</string>
         <widget class="QPushButton" name="misc_retopo500_BN">
          <property name="minimumSize">
           <size>
-           <width>20</width>
+           <width>25</width>
            <height>0</height>
           </size>
          </property>
@@ -5685,75 +5662,13 @@ Setup</string>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget_11">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>30</y>
-        <width>211</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_11">
-       <property name="spacing">
-        <number>5</number>
-       </property>
-       <property name="leftMargin">
-        <number>8</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>2</number>
-       </property>
-       <item>
-        <widget class="QLabel" name="label_33">
-         <property name="text">
-          <string>Select targets in order</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="misc_buildLineSel_BN">
-         <property name="minimumSize">
-          <size>
-           <width>10</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>18</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>8</pointsize>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Create Lines betw Selected</string>
-         </property>
-         <property name="text">
-          <string>Create Line</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_5">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>120</y>
+        <y>210</y>
         <width>211</width>
-        <height>31</height>
+        <height>21</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -5827,6 +5742,113 @@ Setup</string>
        </item>
       </layout>
      </widget>
+     <widget class="QLabel" name="label_4">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>90</y>
+        <width>201</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Select Objects Below</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_5">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>140</y>
+        <width>201</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Retopo Selected ( face count )</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_6">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>190</y>
+        <width>201</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Joint Re-Orient</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="misc_buildLineSel_BN">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>201</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>10</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>999</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>Create Lines betw Selected</string>
+      </property>
+      <property name="text">
+       <string>Create Line ( select tgts in order )</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="openEnvSet_BN">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>201</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>10</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>999</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>Import Env Scene</string>
+      </property>
+      <property name="text">
+       <string>Open Env Set</string>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>
@@ -5836,8 +5858,8 @@ Setup</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>260</x>
-     <y>630</y>
+     <x>250</x>
+     <y>490</y>
      <width>99</width>
      <height>18</height>
     </rect>
@@ -6072,40 +6094,6 @@ Setup</string>
    </property>
    <property name="flat">
     <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="misc_importEnvAndShd_BN">
-   <property name="geometry">
-    <rect>
-     <x>250</x>
-     <y>110</y>
-     <width>101</width>
-     <height>18</height>
-    </rect>
-   </property>
-   <property name="minimumSize">
-    <size>
-     <width>10</width>
-     <height>0</height>
-    </size>
-   </property>
-   <property name="maximumSize">
-    <size>
-     <width>16777215</width>
-     <height>18</height>
-    </size>
-   </property>
-   <property name="font">
-    <font>
-     <family>Segoe UI</family>
-     <pointsize>8</pointsize>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>Import Env Scene</string>
-   </property>
-   <property name="text">
-    <string>Load Env</string>
    </property>
   </widget>
  </widget>

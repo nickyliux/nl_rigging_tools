@@ -279,17 +279,17 @@ class RigModule(RigBase):
         spaceType_v = spaceType.get()
 
         if spaceType_v == 0:
-            spaceName = "paSpace"
+            spaceName = "pa_space"
             thisCstType = "par"
         else:
-            spaceName = "oriSpace"
+            spaceName = "ori_space"
             thisCstType = "ori"
 
         weight = w or tgt.a.add(spaceName, type="enum", dv=dv, enumName=names)
         common.cstMulti(*allSpacesGrp, tgt_ofs, cstType=thisCstType, w=weight, **kwargs)
 
         if spaceType_v == 2:
-            weight = w or tgt.a.add("posSpace", type="enum", dv=dv, enumName=names)
+            weight = w or tgt.a.add("pos_space", type="enum", dv=dv, enumName=names)
             common.cstMulti(*allSpacesGrp, tgt_ofs, cstType="poi", w=weight, **kwargs)
 
     def add_minus_scale_grp(self, tgt):

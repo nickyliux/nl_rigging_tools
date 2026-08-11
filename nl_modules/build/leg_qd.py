@@ -383,6 +383,13 @@ class LegQd(RigModule):
         self.pvc_line = CrvNode.buildLineLinked(
             tgt1=self.jnts_ik[2], tgt2=self.pvc, pf=rID, dspType=2, p=self.IK_GRP
         )
+
+        # --- Hide playback attribute for PVC line ---
+        (
+            self.pvc.a.add("PlaybackHide", type='bool', dv=0, k=0)
+            >> self.pvc_line.shape.a["hideOnPlayback"]
+        )
+        
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
 
@@ -509,7 +516,6 @@ class LegQd(RigModule):
             if dupTgt.allChildrenJt:
                 ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
                 self.toeIKHs.append(ikH)
-                # ikJ.a.r >> dupTgt.a.r
 
                 # Build FK controls for toe joints
                 fkToeList = toeJs[dupId:-1]

@@ -57,8 +57,7 @@ UI_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.ui")
 STYLE_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.qss")
 IMAGE_PATH = os.path.join(MOD_DIR, "build", "images")
 
-LIGHTING_FILE = os.path.join(LIGHT_PATH, "lighting4.ma")
-SHADER_FILE = os.path.join(LIGHT_PATH, "bone_SHD.ma")
+LIGHTING_FILE = os.path.join(LIGHT_PATH, "lighting_set.ma")
 AUTO_BIND_REF_GRP = "auto_bind_ref_grp"
 MODEL_GRP = "geo_grp"
 TWEAK_GRP = "tweak_guide_grp"
@@ -303,7 +302,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.addFlipRYAttr_BN, partial(common.add_flipR_attr, axis="Y"))
         self.connect(self.UI.addFlipRZAttr_BN, partial(common.add_flipR_attr, axis="Z"))
         self.connect(self.UI.misc_buildLineSel_BN, CrvNode.buildLineLinkedSel)
-        self.connect(self.UI.misc_importEnvAndShd_BN, self.misc_importEnvAndShd)
+        self.connect(self.UI.openEnvSet_BN, self.open_env_set)
 
         # Joint Orientation
         self.connect(self.UI.createRefUpLoc_BN, JntNode.createRefUpLoc)
@@ -324,7 +323,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.unlinkCanine_BN, mocap.unlink_canine)
         self.connect(self.UI.linkEquine_BN, mocap.link_equine)
         self.connect(self.UI.unlinkEquine_BN, mocap.unlink_equine)
-        self.connect(self.UI.bakeMotion_BN, mocap.bake_motion)
+        self.connect(self.UI.bakeMotion_BN, mocap.bake_motion_to_ik)
 
         # self.masterGuide_UI_refresh()
         self.crvShape_refresh()
@@ -713,14 +712,13 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 # mc.savePrefs()
                 self.updateTweakTargetMesh()
 
-    def misc_importEnvAndShd(self):
-        """Import environment and shader files if not already present."""
+    def open_env_set(self):
+        """Import env set if not already present."""
         if not mc.objExists("env_grp"):
             if os.path.isfile(LIGHTING_FILE):
-                file.importFile(LIGHTING_FILE)
-        if not mc.objExists("bone_SHD"):
-            if os.path.isfile(SHADER_FILE):
-                file.importFile(SHADER_FILE)
+                # file.importFile(LIGHTING_FILE)
+                file.openFile(str(LIGHTING_FILE))
+                print('Env set loaded.')
 
     def set_char_path(self):
         """Set character path via file dialog."""

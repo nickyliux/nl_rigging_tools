@@ -1,26 +1,38 @@
 import logging
+
 import maya.cmds as mc
+
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.nodel.crv_node import CrvNode
-from nl_modules.nodel.grp_node import GrpNode
-from nl_modules.nodel.loc_node import LocNode
+
+# def switch_to_space_target(spaceName):
+#     """Switch space target for selected controls to the specified spaceName."""
+#     for sel in mc.ls(sl=1):
+#         ctl = DagNode(sel)
+#         for space in ["pa_space", "ori_space", "pos_space"]:
+#             if ctl.a[space].exists():
+#                 # Get the current space option list
+#                 optionList = ctl.a[space].query(listEnum=1)[0].split(":")
+#                 optionDict = {n: i for i, n in enumerate(optionList)}
+
+#                 if spaceName in optionList:
+#                     # store xform before and re-apply after space switch
+#                     mtx = ctl.getMtx()
+#                     ctl.a[space].set(optionDict[spaceName])
+#                     ctl.setMtx(mtx)
 
 
-def switch_to_space_target(spaceName):
+def switch_to_space_target(attr, spaceName):
     """Switch space target for selected controls to the specified spaceName."""
+    optionList = attr.query(listEnum=1)[0].split(":")
+    optionDict = {n: i for i, n in enumerate(optionList)}
+
     for sel in mc.ls(sl=1):
         ctl = DagNode(sel)
-        for space in ["paSpace", "oriSpace", "posSpace"]:
-            if ctl.a[space].exists():
-                # Get the current space option list
-                optionList = ctl.a[space].query(listEnum=1)[0].split(":")
-                optionDict = {n: i for i, n in enumerate(optionList)}
 
-                if spaceName in optionList:
-                    # store xform before and re-apply after space switch
-                    mtx = ctl.getMtx()
-                    ctl.a[space].set(optionDict[spaceName])
-                    ctl.setMtx(mtx)
+        if spaceName in optionList:
+            mtx = ctl.getMtx()
+            attr.set(optionDict[spaceName])
+            ctl.setMtx(mtx)
 
 
 _RIG_CLASS_MAP = {
