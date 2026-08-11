@@ -381,15 +381,14 @@ class LegQd(RigModule):
         self.ikc.a.add("kneeTwist") * xDr >> ikH1.a.twist
         (self.ikc, self.pvc, self.ikCstG) | self.IK_GRP
         self.pvc_line = CrvNode.buildLineLinked(
-            tgt1=self.jnts_ik[2], tgt2=self.pvc, pf=rID, dspType=2, p=self.IK_GRP
+            tgt1=self.jnts_ik[2],
+            tgt2=self.pvc,
+            pf=rID,
+            dspType=2,
+            p=self.IK_GRP,
+            attrHolder=self.pvc,
         )
 
-        # --- Hide playback attribute for PVC line ---
-        (
-            self.pvc.a.add("PlaybackHide", type='bool', dv=0, k=0)
-            >> self.pvc_line.shape.a["hideOnPlayback"]
-        )
-        
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
 
@@ -408,7 +407,7 @@ class LegQd(RigModule):
     def blend_fk_ik(self):
         """Blend FK and IK controls for the quadruped leg rig."""
         logging.info(".")
-        rID, rSz, xDr = self.get_short_form()
+        # rID, rSz, xDr = self.get_short_form()
 
         self.setting.snapTo(self.palm, p=self.CTL_DATA)
         self.palm.cstPar(self.setting, mo=1)

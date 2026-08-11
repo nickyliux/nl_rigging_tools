@@ -1,5 +1,7 @@
 import logging
+
 import maya.cmds as mc
+
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
@@ -7,8 +9,7 @@ from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.utils import common
-from nl_modules.utils import proxy
+from nl_modules.utils import common, proxy
 from nl_modules.utils.common import Vec
 
 
@@ -328,8 +329,14 @@ class LegBp(RigModule):
 
         self.ikc.a.add("kneeTwist") * xDr >> ikH1.a.twist
         self.pvc_line = CrvNode.buildLineLinked(
-            tgt1=self.jnts_ik[2], tgt2=self.pvc, pf=rID, dspType=2, p=self.IK_GRP
+            tgt1=self.jnts_ik[2],
+            tgt2=self.pvc,
+            pf=rID,
+            dspType=2,
+            p=self.IK_GRP,
+            attrHolder=self.pvc,
         )
+
         self.ikc.addOffsetGrp()
         self.pvc.addOffsetGrp()
         self.pvc_line.addOffsetGrp()

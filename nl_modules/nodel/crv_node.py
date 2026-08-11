@@ -1,4 +1,5 @@
 import maya.cmds as mc
+
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.base.dep_node import DepNode
 from nl_modules.nodel.grp_node import GrpNode
@@ -127,7 +128,7 @@ class CrvNode(GrpNode):
                 return mc.xform(tgt, q=1, ws=1, t=1)
 
         if tgt1 is None or tgt2 is None:
-            raise ValueError(f"buildLine failed. tgt1 or tgt2 is None")
+            raise ValueError("buildLine failed. tgt1 or tgt2 is None")
 
         pos1 = getPos(tgt1)
         pos2 = getPos(tgt2)
@@ -167,7 +168,15 @@ class CrvNode(GrpNode):
 
     @staticmethod
     def buildLineLinked(
-        tgt1=None, tgt2=None, pf="", width=-1, inheritXf=0, dspType=0, top=0, p=None
+        tgt1=None,
+        tgt2=None,
+        pf="",
+        width=-1,
+        inheritXf=0,
+        dspType=0,
+        top=0,
+        p=None,
+        attrHolder=None,
     ):
         """Build a line between two target objects or positions."""
         tgt1 = DagNode(tgt1) if isinstance(tgt1, str) else tgt1
@@ -181,6 +190,12 @@ class CrvNode(GrpNode):
             dspType=dspType,
             top=top,
         )
+
+        if attrHolder:
+            (
+                attrHolder.a.add("PlaybackHide", type="bool", dv=0, k=0)
+                >> line.shape.a["hideOnPlayback"]
+            )
 
         if line:
             CrvNode.linkLineCV(crv=line, tgt=tgt1, cvId=0)

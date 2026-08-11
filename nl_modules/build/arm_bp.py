@@ -213,6 +213,7 @@ class ArmBp(RigModule):
             pf=rID,
             dspType=2,
             p=self.IK_GRP,
+            attrHolder=self.pvc,
         )
 
         self.ikc.addOffsetGrp()
