@@ -74,7 +74,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="main_TB">
     <attribute name="title">
@@ -4772,7 +4772,7 @@ Setup</string>
       </rect>
      </property>
      <property name="title">
-      <string>Apply Generated Motion ( 2027 )</string>
+      <string>Anim by MotionMaker ( Maya 2027 )</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -4784,7 +4784,7 @@ Setup</string>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>140</y>
+        <y>159</y>
         <width>201</width>
         <height>21</height>
        </rect>
@@ -4803,13 +4803,6 @@ Setup</string>
         <number>3</number>
        </property>
        <item>
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Canine</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="linkCanine_BN">
          <property name="minimumSize">
           <size>
@@ -4819,7 +4812,7 @@ Setup</string>
          </property>
          <property name="maximumSize">
           <size>
-           <width>60</width>
+           <width>80</width>
            <height>16</height>
           </size>
          </property>
@@ -4838,12 +4831,12 @@ Setup</string>
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Link</string>
+          <string>Connect</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="unlinkCanine_BN">
+        <widget class="QPushButton" name="linkEquine_BN">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -4852,7 +4845,7 @@ Setup</string>
          </property>
          <property name="maximumSize">
           <size>
-           <width>60</width>
+           <width>80</width>
            <height>16</height>
           </size>
          </property>
@@ -4865,13 +4858,13 @@ Setup</string>
           </font>
          </property>
          <property name="toolTip">
-          <string>Connect to Canine</string>
+          <string>Connect to Equine</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Unlink</string>
+          <string>Connect</string>
          </property>
         </widget>
        </item>
@@ -4887,7 +4880,7 @@ Setup</string>
        </rect>
       </property>
       <property name="text">
-       <string>1. Reference our rig.</string>
+       <string>1. Reference quad rig.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_8">
@@ -4900,7 +4893,7 @@ Setup</string>
        </rect>
       </property>
       <property name="text">
-       <string>2. Add quadruped in MotionMaker.</string>
+       <string>2. Add Canine / Equine.</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_9">
@@ -4913,14 +4906,14 @@ Setup</string>
        </rect>
       </property>
       <property name="text">
-       <string>4. Select any ctl in the rig.</string>
+       <string>4. Select any ctl.</string>
       </property>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_32">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>220</y>
+        <y>230</y>
         <width>201</width>
         <height>25</height>
        </rect>
@@ -5003,7 +4996,7 @@ Setup</string>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>165</y>
+        <y>180</y>
         <width>201</width>
         <height>21</height>
        </rect>
@@ -5022,14 +5015,7 @@ Setup</string>
         <number>3</number>
        </property>
        <item>
-        <widget class="QLabel" name="label_37">
-         <property name="text">
-          <string>Equine</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="linkEquine_BN">
+        <widget class="QPushButton" name="unlinkCanine_BN">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -5038,40 +5024,7 @@ Setup</string>
          </property>
          <property name="maximumSize">
           <size>
-           <width>60</width>
-           <height>16</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>9</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string>Connect to Equine</string>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="text">
-          <string>Link</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="unlinkEquine_BN">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>60</width>
+           <width>80</width>
            <height>16</height>
           </size>
          </property>
@@ -5090,7 +5043,40 @@ Setup</string>
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Unlink</string>
+          <string>Disconnect</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="unlinkEquine_BN">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>16</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>9</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Connect to Canine</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Disconnect</string>
          </property>
         </widget>
        </item>
@@ -5100,14 +5086,61 @@ Setup</string>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>200</y>
+        <y>210</y>
         <width>211</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>5. Select any ctl in the rig.</string>
+       <string>5. Select any ctl.</string>
       </property>
+     </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget_30">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>137</y>
+        <width>201</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_27">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="leftMargin">
+        <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>3</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_22">
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Canine</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_37">
+         <property name="text">
+          <string>Equine</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
     <widget class="QGroupBox" name="groupBox_22">

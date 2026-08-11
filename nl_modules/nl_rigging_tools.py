@@ -51,7 +51,7 @@ from nl_modules.nodel.jnt_node import JntNode
 # --- Paths ---
 MOD_DIR = os.path.dirname(nl_modules.__file__)
 SHAPE_PATH = os.path.join(MOD_DIR, "build", "shapes")
-LIGHT_PATH = os.path.join(MOD_DIR, "build", "others")
+LIGHT_PATH = os.path.join(MOD_DIR, "misc")
 PRESET_GUIDE_PATH = os.path.join(MOD_DIR, "build", "components", "presets")
 UI_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.ui")
 STYLE_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.qss")
@@ -718,7 +718,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             if os.path.isfile(LIGHTING_FILE):
                 # file.importFile(LIGHTING_FILE)
                 file.openFile(str(LIGHTING_FILE))
-                print('Env set loaded.')
+                print("Env set loaded.")
 
     def set_char_path(self):
         """Set character path via file dialog."""

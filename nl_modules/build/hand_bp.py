@@ -390,7 +390,7 @@ class HandBp(RigModule):
 
     def setup_ctlSet(self):
         """Setup control sets for the hand rig module."""
-        ctlSet = [self.smart_ctl, self.palm_ctl, self.thumb_ctl]
+        ctlSet = [self.setting, self.smart_ctl, self.palm_ctl, self.thumb_ctl]
         [ctlSet.extend(x[1:]) for x in self.ctls_fgr]
         self.add_ctl_set(ctlSet)
 

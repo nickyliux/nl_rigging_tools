@@ -172,17 +172,20 @@ def bake_motion_to_ik(*args):
 
     allCtls = common.getRigCtlsAll()
     if allCtls:
+        common.pauseVP(1)
+
         mc.select(allCtls)
         mc.bakeResults(simulation=1, t=(startTime, endTime))
 
         for frame in range(startTime, endTime + 1):
             mc.currentTime(frame, e=1)
-            # common.pauseVP(1)
             for i in range(len(rigIDs)):
                 anim.switch_fk_ik(mg=allMGs[i])
-            # common.pauseVP(0)
 
+        mc.currentTime(startTime, e=1)
         delete_link_grps()
+
+        common.pauseVP(0)
 
 
 def unCst_mm_to_quad(mapping, ns):

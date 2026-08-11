@@ -756,7 +756,8 @@ def getObjectBelow(tgt, tgtType="mesh"):
 
 
 def pauseVP(state=1):
-    mc.optionVar(iv=("vp2PauseState", state))
+    # mc.optionVar(iv=("vp2PauseState", state))
+    mc.refresh(suspend=state)
 
 
 def setView(jx=0, xray=0, wos=0, fit=0, ao=0, aa=0):
