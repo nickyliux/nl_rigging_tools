@@ -809,7 +809,7 @@ class RigModule(RigBase):
                 rad=rSz,
                 aimTgt=hipJ,
             )
-            j0.a.add("scapula", dv=1, lock=1, k=0)
+            j0.a.add("scapulaTag", dv=1, lock=1, k=0)
             IkNode("scapAim", pf=rID, sj=j0, ee=j1, p=scapCtl, vis=0)
             self.update_list(self.jnts_bind, add=[j0], rm=[hipJ])
 

@@ -316,9 +316,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.maxInfl_BN, self.setMaxInflSel)
 
         # Motion Maker
-        self.connect(
-            self.UI.createCharDefForBiped_BN, mocap.create_hik_character_def_biped
-        )
+        self.connect(self.UI.addCharDef_BN, mocap.add_char_def_UI)
+        self.connect(self.UI.addCustRigMap_BN, mocap.add_cust_rig_map_UI)
         self.connect(self.UI.linkCanine_BN, mocap.link_canine)
         self.connect(self.UI.unlinkCanine_BN, mocap.unlink_canine)
         self.connect(self.UI.linkEquine_BN, mocap.link_equine)
@@ -575,7 +574,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def scapulaTag(self):
         for sel in mc.ls(sl=1, tr=1):
-            DagNode(sel).a.add("scapula", k=0, dv=1, lock=1)
+            DagNode(sel).a.add("scapulaTag", k=0, dv=1, lock=1)
 
     def mirrorAllRefJnt(self):
         """Mirror all reference joints in the scene."""

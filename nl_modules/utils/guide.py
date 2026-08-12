@@ -150,7 +150,7 @@ def dupGuideSel(*arg, mirror=0):
         mc.setToolTo("moveSuperContext")
 
 
-def copyCtlAttr(A, B, wsMirror=0, mirror=0, ignoreMG=0):
+def copyCtlAttr(A, B, mirror=0, wsMirror=0, ignoreMG=0):
     """Copy/mirror transform & user defined attribute values"""
     A = DagNode(A) if isinstance(A, str) else A
     B = DagNode(B) if isinstance(B, str) else B
@@ -212,21 +212,21 @@ def mirrorPose(*arg):
     selList = list(set(selList))
 
     lf = []
-    rt = []
-    all = []
+    # rt = []
+    # all = []
     if not selList:
         ns = common.getNsFrOptVar()
         tgtSet = ns + LF_CTL_SET
         if mc.ls(tgtSet, type="objectSet"):
             lf = common.getSetMembersInOrder(tgtSet)
 
-        tgtSet = ns + RT_CTL_SET
-        if mc.ls(tgtSet, type="objectSet"):
-            rt = common.getSetMembersInOrder(tgtSet)
+        # tgtSet = ns + RT_CTL_SET
+        # if mc.ls(tgtSet, type="objectSet"):
+        #     rt = common.getSetMembersInOrder(tgtSet)
 
-        tgtSet = ns + ALL_CTL_SET
-        if mc.ls(tgtSet, type="objectSet"):
-            all = common.getSetMembersInOrder(tgtSet)
+        # tgtSet = ns + ALL_CTL_SET
+        # if mc.ls(tgtSet, type="objectSet"):
+        #     all = common.getSetMembersInOrder(tgtSet)
 
         # selList = list(set(all) - set(rt))
         if lf:

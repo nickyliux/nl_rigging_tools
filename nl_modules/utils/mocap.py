@@ -1,4 +1,5 @@
 import logging
+import os
 
 import maya.cmds as mc
 from maya import mel
@@ -350,158 +351,162 @@ def _ensure_hik_loaded():
     mel.eval('source "hikDefinitionOperations";')
 
 
-def create_hik_character_def_biped():
-    joint_mapping = {
-        # "Hips": "spineBp0_0_fkj",
-        "Hips": "spineBp0_cog_ctl",
-        "LeftUpLeg": "lfLegBp0_upr",
-        "LeftLeg": "lfLegBp0_lwr",
-        "LeftFoot": "lfLegBp0_palm",
-        "LeftToeBase": "lfLegBp0_ball",
-        "RightUpLeg": "rtLegBp0_upr",
-        "RightLeg": "rtLegBp0_lwr",
-        "RightFoot": "rtLegBp0_palm",
-        "RightToeBase": "rtLegBp0_ball",
-        "Spine": "spineBp0_1_fkj",
-        "Spine1": "spineBp0_2_fkj",
-        "Spine2": "spineBp0_3_fkj",
-        "LeftShoulder": "lfArmBp0_clavicle",
-        "LeftArm": "lfArmBp0_upr",
-        "LeftForeArm": "lfArmBp0_lwr",
-        "LeftHand": "lfArmBp0_palm",
-        "RightShoulder": "rtArmBp0_clavicle",
-        "RightArm": "rtArmBp0_upr",
-        "RightForeArm": "rtArmBp0_lwr",
-        "RightHand": "rtArmBp0_palm",
-        "Neck": "neckBp0_0_rbj",
-        "Head": "head0_st",
-    }
-    create_hik_character("nlCharacter", joint_mapping)
+HUMAN_IK_MAP = {
+    # "Hips": "spineBp0_0_fkj",
+    "Hips": "spineBp0_cog_ctl",
+    "LeftUpLeg": "lfLegBp0_upr",
+    "LeftLeg": "lfLegBp0_lwr",
+    "LeftFoot": "lfLegBp0_palm",
+    "LeftToeBase": "lfLegBp0_ball",
+    "RightUpLeg": "rtLegBp0_upr",
+    "RightLeg": "rtLegBp0_lwr",
+    "RightFoot": "rtLegBp0_palm",
+    "RightToeBase": "rtLegBp0_ball",
+    "Spine": "spineBp0_1_fkj",
+    "Spine1": "spineBp0_2_fkj",
+    "Spine2": "spineBp0_3_fkj",
+    "LeftShoulder": "lfArmBp0_clavicle",
+    "LeftArm": "lfArmBp0_upr",
+    "LeftForeArm": "lfArmBp0_lwr",
+    "LeftHand": "lfArmBp0_palm",
+    "RightShoulder": "rtArmBp0_clavicle",
+    "RightArm": "rtArmBp0_upr",
+    "RightForeArm": "rtArmBp0_lwr",
+    "RightHand": "rtArmBp0_palm",
+    # "Neck": "neck0_main",
+    "Neck": "neck0_0_fkj",
+    "Head": "head0_st",
+}
 
 
-def create_hik_character(char_name, joint_mapping):
-    """Create a HumanIK character definition and assign joints.
+def add_char_def_UI():
+    """Create a HumanIK character definition for a biped rig based on the selected object."""
+    sel = mc.ls(sl=1, tr=1)
+    if sel:
+        ns = DagNode(sel[0]).namespace
+        if ns:
+            add_char_def("nlRigChar", HUMAN_IK_MAP, ns)
+        else:
+            logging.info("No namespace found for the selected object.")
+    else:
+        logging.info("Please select a joint or control to determine the namespace.")
 
-    Args:
-        char_name (str): Name for the HIK character node.
-        joint_mapping (dict): Mapping of HIK bone name -> scene joint name.
-            e.g. {"Hips": "spineBp0_0_fkj", "LeftUpLeg": "lfLegBp0_upr", ...}
 
-    Returns:
-        str: The created character node name, or None on failure.
-
-    Example::
-        joint_mapping = {
-            "Hips":          "spineBp0_0_fkj",
-            "LeftUpLeg":     "lfLegBp0_upr",
-            "LeftLeg":       "lfLegBp0_lwr",
-            "LeftFoot":      "lfLegBp0_palm",
-            "LeftToeBase":   "lfLegBp0_ball",
-            "RightUpLeg":    "rtLegBp0_upr",
-            "RightLeg":      "rtLegBp0_lwr",
-            "RightFoot":     "rtLegBp0_palm",
-            "RightToeBase":  "rtLegBp0_ball",
-            "Spine":         "spineBp0_1_fkj",
-            "Spine1":        "spineBp0_2_fkj",
-            "Spine2":        "spineBp0_3_fkj",
-            "LeftShoulder":  "lfArmBp0_clavicle",
-            "LeftArm":       "lfArmBp0_upr",
-            "LeftForeArm":   "lfArmBp0_lwr",
-            "LeftHand":      "lfHandBp0_handJ",
-            "RightShoulder": "rtArmBp0_clavicle",
-            "RightArm":      "rtArmBp0_upr",
-            "RightForeArm":  "rtArmBp0_lwr",
-            "RightHand":     "rtHandBp0_handJ",
-            "Neck":          "neckBp0_0_rbj",
-            "Head":          "head0_st",
-        }
-        create_hik_character("myCharacter", joint_mapping)
-    """
+def add_char_def(char_name, mapping, ns):
+    """Create a HumanIK character definition and assign joints."""
     _ensure_hik_loaded()
+    maya_loc = os.environ.get("MAYA_LOCATION", "")
+    mel.eval(f'source "{maya_loc}/scripts/others/hikGlobalUtils.mel"')
+    mel.eval(f'source "{maya_loc}/scripts/others/hikDefinitionOperations.mel"')
+    mel.eval(f'source "{maya_loc}/scripts/others/hikCharacterControlsUI.mel"')
 
-    # Create the HIK character definition node
+    if not ns:
+        logging.info("Namespace is required to create a character definition.")
+        return None
+
+    # char_name = "nlRigChar"
     mc.HIKCharacterControlsTool()
-    # mel.eval("hikCreateDefinition;")
-    mel.eval(f'hikCreateCharacter("{char_name}")')
+    try:
+        if char_name in mc.ls(type="HIKCharacterNode"):
+            mel.eval(f'hikSetCurrentCharacter("{char_name}");')
+        else:
+            # mel.eval("hikCreateDefinition;")
+            mel.eval(f'hikCreateCharacter("{char_name}");')
+    except Exception:
+        pass
 
-    skipped = []
-    for hik_bone, joint_name in joint_mapping.items():
+    mc.HIKCharacterControlsTool()
+
+    for hik_bone, joint_name in mapping.items():
         slot_idx = HIK_SLOTS.get(hik_bone)
         if slot_idx is None:
-            skipped.append((hik_bone, "unknown HIK bone name"))
+            # skipped_bones.append((hik_bone, "unknown HIK bone name"))
+            logging.warning(f"Skipped '{hik_bone}': unknown HIK bone name")
             continue
-        if not mc.objExists(joint_name):
-            skipped.append((hik_bone, f"{joint_name} not found in scene"))
+
+        ns_joint = f"{ns}:{joint_name}"
+        if not mc.objExists(ns_joint):
+            # skipped_bones.append((hik_bone, f"{ns_joint} not found in scene"))
+            logging.warning(f"Skipped '{hik_bone}': {ns_joint} not found")
             continue
-        mel.eval(f'setCharacterObject("{joint_name}", "{char_name}", {slot_idx}, 0)')
 
-    if skipped:
-        for bone, reason in skipped:
-            mc.warning(f"HIK: skipped '{bone}' - {reason}")
+        mel.eval(f'setCharacterObject("{ns_joint}", "{char_name}", {slot_idx}, 0)')
+        logging.info(f"Assigned '{ns_joint}' to HIK '{hik_bone}' (slot {slot_idx})")
 
-    # Lock the definition to validate it
-    mel.eval("hikToggleLockDefinition()")
-    mel.eval("hikUpdateDefinitionUI();")
+    # mel.eval("hikToggleLockDefinition()")
+    # mel.eval("hikUpdateDefinitionUI();")
 
     return char_name
 
 
-def create_hik_custom_rig(char_name, ctrl_mapping):
-    """Create a HumanIK custom rig mapping for an existing HIK character.
+HUMAN_IK_CTL_MAP = {
+    "Hips": "spineBp0_cog_ctl",
+    "Spine": "spineBp0_base_ikc",
+    "Spine1": "spineBp0_mid_ikc",
+    "Spine2": "spineBp0_fore_ikc",
+    "LeftShoulder": "lfArmBp0_clavicle_fkc",
+    "LeftArm": "lfArmBp0_upr_fkc",
+    "LeftForeArm": "lfArmBp0_lwr_fkc",
+    "LeftHand": "lfHandBp0_hand_fkc",
+    "RightShoulder": "rtArmBp0_clavicle_fkc",
+    "RightArm": "rtArmBp0_upr_fkc",
+    "RightForeArm": "rtArmBp0_lwr_fkc",
+    "RightHand": "rtHandBp0_hand_fkc",
+    "LeftUpLeg": "lfLegBp0_upr_fkc",
+    "LeftLeg": "lfLegBp0_lwr_fkc",
+    "LeftFoot": "lfLegBp0_palm_fkc",
+    "RightUpLeg": "rtLegBp0_upr_fkc",
+    "RightLeg": "rtLegBp0_lwr_fkc",
+    "RightFoot": "rtLegBp0_palm_fkc",
+    "Neck": "neckBp0_0_fkc",
+    "Head": "head0_fkc",
+}
 
-    Args:
-        char_name (str): Name of the existing HIK character node.
-        ctrl_mapping (dict): Mapping of HIK bone name -> rig control name.
-            e.g. {"Hips": "cog_ctl", "LeftArm": "lf_arm_fkc", ...}
 
-    Returns:
-        str: The character name.
+def add_cust_rig_map_UI(self):
+    """Create a HumanIK custom rig mapping for an existing HIK character."""
+    sel = mc.ls(sl=1, tr=1)
+    if sel:
+        ns = DagNode(sel[0]).namespace
+        if ns:
+            add_cust_rig_map("nlRigChar", HUMAN_IK_CTL_MAP, ns)
+        else:
+            logging.info("No namespace found for the selected object.")
+    else:
+        logging.info("Please select a joint or control to determine the namespace.")
 
-    Example::
-        ctrl_mapping = {
-            "Hips":          "spineQd0_cog_ctl",
-            "Spine":         "spineQd0_base_ikc",
-            "Spine1":        "spineQd0_mid_ikc",
-            "Spine2":        "spineQd0_fore_ikc",
-            "LeftShoulder":  "lfArmBp0_clavicle_fkc",
-            "LeftArm":       "lfArmBp0_upr_fkc",
-            "LeftForeArm":   "lfArmBp0_lwr_fkc",
-            "LeftHand":      "lfHandBp0_hand_fkc",
-            "RightShoulder": "rtArmBp0_clavicle_fkc",
-            "RightArm":      "rtArmBp0_upr_fkc",
-            "RightForeArm":  "rtArmBp0_lwr_fkc",
-            "RightHand":     "rtHandBp0_hand_fkc",
-            "LeftUpLeg":     "lfLegBp0_upr_fkc",
-            "LeftLeg":       "lfLegBp0_lwr_fkc",
-            "LeftFoot":      "lfLegBp0_palm_fkc",
-            "RightUpLeg":    "rtLegBp0_upr_fkc",
-            "RightLeg":      "rtLegBp0_lwr_fkc",
-            "RightFoot":     "rtLegBp0_palm_fkc",
-            "Neck":          "neckBp0_0_fkc",
-            "Head":          "head0_fkc",
-        }
-        create_hik_custom_rig("myCharacter", ctrl_mapping)
-    """
+
+def add_cust_rig_map(char_name, ctrl_mapping, ns):
+    """Create a HumanIK custom rig mapping for an existing HIK character."""
     _ensure_hik_loaded()
 
-    mel.eval(f'hikSetCurrentCharacter("{char_name}")')
-    mel.eval(f'hikCreateCustomRig("{char_name}")')
+    maya_loc = os.environ.get("MAYA_LOCATION", "")
+    mel.eval(f'source "{maya_loc}/scripts/others/hikGlobalUtils.mel"')
+    mel.eval(f'source "{maya_loc}/scripts/others/hikDefinitionOperations.mel"')
+    mel.eval(f'source "{maya_loc}/scripts/others/hikCharacterControlsUI.mel"')
 
-    skipped = []
+    if char_name not in mc.ls(type="HIKCharacterNode"):
+        logging.info(f"Character '{char_name}' does not exist. Creating a new one.")
+        return
+
+    mel.eval(f'hikSetCurrentCharacter("{char_name}");')
+    mel.eval(f'hikCreateCustomRig("{char_name}");')
+
     for hik_bone, ctrl_name in ctrl_mapping.items():
         slot_idx = HIK_SLOTS.get(hik_bone)
+
         if slot_idx is None:
-            skipped.append((hik_bone, "unknown HIK bone name"))
+            logging.warning(f"Skipped '{hik_bone}': unknown HIK bone name")
             continue
-        if not mc.objExists(ctrl_name):
-            skipped.append((hik_bone, f"{ctrl_name} not found in scene"))
+
+        ns_ctl = f"{ns}:{ctrl_name}"
+        if not mc.objExists(ns_ctl):
+            logging.warning(f"Skipped '{hik_bone}': {ns_ctl} not found")
             continue
-        mel.eval(f'hikCustomRigSetNodeForEffector {slot_idx} "{ctrl_name}";')
 
-    if skipped:
-        for bone, reason in skipped:
-            mc.warning(f"HIK: skipped '{bone}' - {reason}")
+        # mel.eval(f'hikCustomRigSetNodeForEffector({slot_idx},"{ns_ctl}");')
+        mel.eval(f'setCharacterObject("{hik_bone}", "{char_name}", {slot_idx}, 0);')
+        logging.info(f"Assigned '{ns_ctl}' to HIK '{hik_bone}' (slot {slot_idx})")
 
-    mel.eval("hikUpdateDefinitionUI()")
-
+    mel.eval("hikUpdateDefinitionUI();")
     return char_name

@@ -74,7 +74,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="main_TB">
     <attribute name="title">
@@ -4766,13 +4766,13 @@ Setup</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>90</y>
+       <y>130</y>
        <width>225</width>
        <height>271</height>
       </rect>
      </property>
      <property name="title">
-      <string>Anim by MotionMaker ( Maya 2027 )</string>
+      <string>MotionMaker ( For Maya 2027 )</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -4880,7 +4880,7 @@ Setup</string>
        </rect>
       </property>
       <property name="text">
-       <string>1. Reference quad rig.</string>
+       <string>1. Reference quad rig</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_8">
@@ -4893,7 +4893,7 @@ Setup</string>
        </rect>
       </property>
       <property name="text">
-       <string>2. Add Canine / Equine.</string>
+       <string>2. Add Canine / Equine</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_9">
@@ -4906,7 +4906,7 @@ Setup</string>
        </rect>
       </property>
       <property name="text">
-       <string>4. Select any ctl.</string>
+       <string>4. Select any ctl</string>
       </property>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_32">
@@ -4982,8 +4982,8 @@ Setup</string>
        <number>0</number>
       </property>
       <property name="text">
-       <string>3. Scale it and try to fit the spine.
-    Align the tail in parallel.</string>
+       <string>3. Scale it and try to fit the spine
+    Align the tail in parallel</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -5092,7 +5092,7 @@ Setup</string>
        </rect>
       </property>
       <property name="text">
-       <string>5. Select any ctl.</string>
+       <string>5. Select any ctl</string>
       </property>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_30">
@@ -5149,7 +5149,7 @@ Setup</string>
        <x>0</x>
        <y>6</y>
        <width>225</width>
-       <height>71</height>
+       <height>111</height>
       </rect>
      </property>
      <property name="title">
@@ -5161,11 +5161,11 @@ Setup</string>
      <property name="flat">
       <bool>true</bool>
      </property>
-     <widget class="QPushButton" name="createCharDefForBiped_BN">
+     <widget class="QPushButton" name="addCharDef_BN">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>34</y>
+        <y>47</y>
         <width>201</width>
         <height>18</height>
        </rect>
@@ -5192,7 +5192,54 @@ Setup</string>
        <string>Import Env Scene</string>
       </property>
       <property name="text">
-       <string>Add Character Definition for Human</string>
+       <string>Add Character Definition</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_23">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>25</y>
+        <width>211</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Select any ctl.</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="addCustRigMap_BN">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>80</y>
+        <width>201</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>10</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>18</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>Import Env Scene</string>
+      </property>
+      <property name="text">
+       <string>Add Custom Rig Mapping</string>
       </property>
      </widget>
     </widget>
@@ -5200,7 +5247,7 @@ Setup</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>370</y>
+       <y>410</y>
        <width>225</width>
        <height>171</height>
       </rect>
@@ -5430,7 +5477,7 @@ Setup</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>550</y>
+       <y>590</y>
        <width>225</width>
        <height>251</height>
       </rect>

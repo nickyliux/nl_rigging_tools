@@ -101,7 +101,7 @@ class ArmBp(RigModule):
         ]
 
         if self.scapulaBone:
-            ctl_defs.append(["scap_fkc", "stickS", "z", scale * 0.7, 0])
+            ctl_defs.append(["scap_fkc", "rotate2_3d", "z", scale * 0.7, 0])
 
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
@@ -348,6 +348,7 @@ class ArmBp(RigModule):
             p=self.JNT_DATA,
         )
         self.scapJnt = scapJnts[0]
+        self.scapJnt.a.add("scapulaTag", dv=1, lock=1, k=0)
 
         self.scap_fkc.snapAlignTo(self.upr, scapJnts[0], p=self.CLV_GRP)
         ofsGrps = self.scap_fkc.addOffsetGrp(count=3)

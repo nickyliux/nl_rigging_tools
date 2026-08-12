@@ -180,12 +180,8 @@ class MarkingMenuAutorig:
                 for i, spaceAttr in enumerate(allSpaceAttr):
                     text = f"    {spaceAttr}" + ("   *" if val == i else "")
                     mc.menuItem(
-                        p=menu,
-                        l=text,
-                        # c=partial(self.switch_to_space, spaceAttr),
-                        c=partial(self.switch_to_space, attr, spaceAttr),
+                        p=menu, l=text, c=partial(self.switch_to_space, attr, spaceAttr)
                     )
-                    print(spaceAttr)
 
         # --- Toggle Isolate ---
         for attr in DagNode(sel[0]).a.list(ud=1, hasData=1):

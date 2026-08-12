@@ -73,7 +73,7 @@ class SpineBp(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2, 0),
-            ("cog_ctl", "hexagon", None, rSz * 4, 0),
+            ("cog_ctl", "hexagon_3d", None, rSz * 4, 0),
             ("fore_ikc", "cube", None, Vec((3.5, 0.3, 3.5)) * rSz, 0),
             ("mid_ikc", "sphere", None, rSz, 1),
             ("base_ikc", "cube", None, Vec((3.5, 0.3, 3.5)) * rSz, 0),

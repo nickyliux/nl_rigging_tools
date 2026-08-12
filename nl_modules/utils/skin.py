@@ -19,10 +19,10 @@ def autoBind_refJnts(meshes=None, thld=999):
         logging.info(f"No joints in Set {AUTO_BIND_JNT_SET} found for auto skin.")
         return
 
-    jntsScap = [n for n in jnts if n.a["scapula"].exists()]
+    jntsScap = [n for n in jnts if n.a["scapulaTag"].exists()]
     jntsOthers = set(jnts) - set(jntsScap)
 
-    meshesScap = [n for n in meshes if n.a["scapula"].exists()]
+    meshesScap = [n for n in meshes if n.a["scapulaTag"].exists()]
     meshesOthers = set(meshes) - set(meshesScap)
 
     skinRefJnts(meshes=meshesScap, jnts=jntsScap, thld=thld)
