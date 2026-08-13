@@ -138,13 +138,14 @@ class MarkingMenuAutorig:
         mc.menuItem(p=menu, l="Select Ctls", rp="W", c=self.selectCtlSelOrAll)
 
         ns = common.getNsFrOptVar()
-        curr_ns_str = '""' if ns == "" else f'"{ns}"'
+        curr_ns_str = "<< Load Namespace >>" if ns == "" else f"<< {ns} >>"
 
         mc.menuItem(p=menu, l="Toggle Guide", c=guide.toggleGuide)
         mc.menuItem(p=menu, l="-" * 25, en=0)
         mc.menuItem(p=menu, l="Add Follow Cam", c=common.addFollowCam)
+        mc.menuItem(p=menu, l="-" * 25, en=0)
         mc.menuItem(p=menu, l="Clear Namespace", c=common.clearNs)
-        mc.menuItem(p=menu, l="ns : " + curr_ns_str, c=common.setNsFrSel)
+        mc.menuItem(p=menu, l=curr_ns_str, c=common.setNsFrSel)
 
     def addAdvancedOptions(self, menu):
         """Add space switch and IK/FK options to the marking menu"""
@@ -229,12 +230,12 @@ class MarkingMenuAutorig:
         """Switch FK/IK mode for the specified rig node"""
         for arg in args[0]:
             anim.switch_fk_ik(mg=arg)
-        self.reload_marking_menu()
+        # self.reload_marking_menu()
 
     def multi_switch_local_global(self, *args):
         """Switch Local/Global mode for the specified rig node"""
         anim.switch_local_global(attr=args[0], toGlobal=args[1])
-        self.reload_marking_menu()
+        # self.reload_marking_menu()
 
     def reload_marking_menu(*args):
         """Reload the marking menu to reflect any changes made"""

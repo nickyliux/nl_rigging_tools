@@ -790,6 +790,8 @@ def showUI():
     nlRT_win = MyToolWin()
     # nlRT_win.show(dockable=1, floating=0, area="right")
     nlRT_win.show(dockable=1, floating=0, area="left")
+    addScriptJob()
+
     with open(STYLE_PATH, "r") as f:
         style = f.read()
         nlRT_win.setStyleSheet(style)
@@ -833,7 +835,32 @@ def addIcon2CurrShelf():
     logging.info("Shelve icon added at the current shelf.")
 
 
-mc.scriptJob(permanent=1, runOnce=1, event=["SelectionChanged", "reloadMenusAutorig"])
+def addScriptJob():
+    """Add a scriptJob to reload menus when something is selected."""
+    job_event = "SomethingSelected"
+    job_desc = "addScriptJob"
+
+    def reloadMenusAutorig():
+
+        import nl_modules.utils.marking_menu_autorig as mma
+
+        reload(mma)
+
+    # Check existing jobs
+    exists = 0
+    for job in mc.scriptJob(listJobs=1) or []:
+        if job_event in job and job_desc in job:
+            exists = 1
+            break
+
+    if not exists:
+        job_num = mc.scriptJob(ct=[job_event, reloadMenusAutorig], kws=1)
+        logging.info(f"Created new scriptJob with ID: {job_num}")
+
+    # else:
+    #     logging.info("scriptJob already exists. Skipping creation.")
+
 
 if __name__ == "__main__":
+    # permanent=0, runOnce=1, event=["SelectionChanged", "reloadMenusAutorig"]
     showUI()
