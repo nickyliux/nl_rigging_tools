@@ -857,10 +857,6 @@ def addScriptJob():
         job_num = mc.scriptJob(ct=[job_event, reloadMenusAutorig], kws=1)
         logging.info(f"Created new scriptJob with ID: {job_num}")
 
-    # else:
-    #     logging.info("scriptJob already exists. Skipping creation.")
-
 
 if __name__ == "__main__":
-    # permanent=0, runOnce=1, event=["SelectionChanged", "reloadMenusAutorig"]
     showUI()

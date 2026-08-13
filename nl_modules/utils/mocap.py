@@ -435,6 +435,7 @@ def add_char_def(char_name, mapping, ns):
 
     # mel.eval("hikToggleLockDefinition()")
     # mel.eval("hikUpdateDefinitionUI();")
+    mel.eval("hikSelectDefinitionTab();")
 
     return char_name
 
