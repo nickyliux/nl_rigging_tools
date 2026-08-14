@@ -391,8 +391,8 @@ class LegBp(RigModule):
 
         # self.setting.snapTo(self.palm, p=self.CTL_DATA)
         # self.palm.cstPar(self.setting, mo=1)
-        self.setting.snapTo(self.hip, p=self.CTL_DATA)
-        self.hip.cstPar(self.setting, mo=1)
+        self.setting.snapTo(self.palm, p=self.CTL_DATA)
+        self.palm.cstPar(self.setting, mo=1)
 
         fkIk = self.setting.a.add("fkIk", min=0, max=1, dv=1)
         total = len(self.jnts) - 1
@@ -481,9 +481,8 @@ class LegBp(RigModule):
             for jnt in fkToeList:
                 crvName = f"{jnt.name}_ctl_#"
                 crv = CrvNode(
-                    crvName, shape="locator", scale=scale / 5, align=jnt, top=1, width=2
+                    crvName, shape="hexagon", up="x", scale=scale / 2, align=jnt
                 )
-                # up="x",
                 ctlList.append(crv)
 
             self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)

@@ -1,5 +1,7 @@
 import logging
+
 import maya.cmds as mc
+
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
@@ -7,8 +9,7 @@ from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.ik_node import IkNode, Solver
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
-from nl_modules.utils import common
-from nl_modules.utils import proxy
+from nl_modules.utils import common, proxy
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.common import Vec
 
@@ -91,7 +92,7 @@ class ArmBp(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
-            ("clavicle_fkc", "square", "x", scale / 2.5, 1),  # Vec((0.6, 0.25, 0.4))
+            ("clavicle_fkc", "cube", None, scale / 2, 1),
             ("upr_fkc", "hexagon_3d", "x", scale, 0),
             ("lwr_fkc", "hexagon_3d", "x", scale, 0),
             ("palm_fkc", "hexagon_3d", "x", scale, 0),

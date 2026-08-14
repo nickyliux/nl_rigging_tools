@@ -57,6 +57,7 @@ UI_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.ui")
 STYLE_PATH = os.path.join(MOD_DIR, "nl_rigging_tools.qss")
 IMAGE_PATH = os.path.join(MOD_DIR, "build", "images")
 
+
 LIGHTING_FILE = os.path.join(LIGHT_PATH, "lighting_set.ma")
 AUTO_BIND_REF_GRP = "auto_bind_ref_grp"
 MODEL_GRP = "geo_grp"
@@ -317,7 +318,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         # Motion Maker
         self.connect(self.UI.addCharDef_BN, mocap.add_char_def_UI)
-        self.connect(self.UI.addCustRigMap_BN, mocap.add_cust_rig_map_UI)
+        self.connect(self.UI.addCustRigMap_BN, mocap.load_custom_rig_mapping)
         self.connect(self.UI.linkCanine_BN, mocap.link_canine)
         self.connect(self.UI.unlinkCanine_BN, mocap.unlink_canine)
         self.connect(self.UI.linkEquine_BN, mocap.link_equine)
@@ -715,8 +716,8 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """Import env set if not already present."""
         if not mc.objExists("env_grp"):
             if os.path.isfile(LIGHTING_FILE):
-                # file.importFile(LIGHTING_FILE)
-                file.openFile(str(LIGHTING_FILE))
+                file.importFile(LIGHTING_FILE)
+                # file.openFile(str(LIGHTING_FILE))
                 print("Env set loaded.")
 
     def set_char_path(self):

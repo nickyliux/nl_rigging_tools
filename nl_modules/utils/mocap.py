@@ -4,12 +4,17 @@ import os
 import maya.cmds as mc
 from maya import mel
 
+import nl_modules
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.srf_node import SrfNode
 from nl_modules.utils import anim, build, common
 
+MOD_DIR = os.path.dirname(nl_modules.__file__)
+HIK_MAP_FILE = os.path.join(MOD_DIR, "misc", "hik_custom_rig_map.xml")
+
 LINK_GRP = "moma_link_grp_"
+HIK_CHAR = "nlRigChar"
 
 CANINE_MAP = {
     "cstPar": [
@@ -106,7 +111,7 @@ EQUINE_JNTS = {
 }
 
 
-def mm_link_setup(ns, jnts=None, rID="tail0"):
+def mm_connect_setup(ns, jnts=None, rID="tail0"):
     """Gen resampled joints for retargeting."""
     # ---------------------------------------------------
     # Get resample value from master guide setting
@@ -230,34 +235,34 @@ def set_legs_to_fk(ns):
 
 
 def link_canine(*args):
-    link_to_map(quadType=0)
+    connect_to_map(quadType=0)
 
 
 def unlink_canine(*args):
-    unlink_map(quadType=0)
+    unconnect_map(quadType=0)
 
 
 def link_equine(*args):
-    link_to_map(quadType=1)
+    connect_to_map(quadType=1)
 
 
 def unlink_equine(*args):
-    unlink_map(quadType=1)
+    unconnect_map(quadType=1)
 
 
-def link_to_map(quadType=0):
+def connect_to_map(quadType=0):
     """Connect Moma Sk to Qd rig controls."""
     ns = common.setNsFrSel()
     if ns:
         set_legs_to_fk(ns)
         if quadType == 0:
             cst_mm_to_quad(CANINE_MAP, ns)
-            mm_link_setup(ns, jnts=CANINE_JNTS["neck"], rID="neck0")
-            mm_link_setup(ns, jnts=CANINE_JNTS["tail"], rID="tail0")
+            mm_connect_setup(ns, jnts=CANINE_JNTS["neck"], rID="neck0")
+            mm_connect_setup(ns, jnts=CANINE_JNTS["tail"], rID="tail0")
         elif quadType == 1:
             cst_mm_to_quad(EQUINE_MAP, ns)
-            mm_link_setup(ns, jnts=EQUINE_JNTS["neck"], rID="neck0")
-            mm_link_setup(ns, jnts=EQUINE_JNTS["tail"], rID="tail0")
+            mm_connect_setup(ns, jnts=EQUINE_JNTS["neck"], rID="neck0")
+            mm_connect_setup(ns, jnts=EQUINE_JNTS["tail"], rID="tail0")
 
 
 def delete_link_grps():
@@ -266,7 +271,7 @@ def delete_link_grps():
         mc.delete(grp)
 
 
-def unlink_map(quadType=0):
+def unconnect_map(quadType=0):
     """Remove constraints betw Moma Sk and Qd rig controls."""
     ns = common.setNsFrSel()
     if ns:
@@ -283,6 +288,7 @@ def unlink_map(quadType=0):
 
 # HIK bone name -> slot index (Maya HumanIK definition)
 HIK_SLOTS = {
+    # Core skeleton
     "Reference": 0,
     "Hips": 1,
     "LeftUpLeg": 2,
@@ -305,40 +311,79 @@ HIK_SLOTS = {
     "RightShoulder": 19,
     "Neck": 20,
     "Neck1": 21,
+    "Neck2": 22,
     "Spine1": 23,
     "Spine2": 24,
     "Spine3": 25,
     "Spine4": 26,
-    "RightHandThumb1": 50,
-    "RightHandThumb2": 51,
-    "RightHandThumb3": 52,
-    "LeftHandThumb1": 54,
-    "LeftHandThumb2": 55,
-    "LeftHandThumb3": 56,
-    "RightHandIndex1": 58,
-    "RightHandIndex2": 59,
-    "RightHandIndex3": 60,
-    "LeftHandIndex1": 62,
-    "LeftHandIndex2": 63,
-    "LeftHandIndex3": 64,
-    "RightHandMiddle1": 66,
-    "RightHandMiddle2": 67,
-    "RightHandMiddle3": 68,
-    "LeftHandMiddle1": 70,
-    "LeftHandMiddle2": 71,
-    "LeftHandMiddle3": 72,
-    "RightHandRing1": 74,
-    "RightHandRing2": 75,
-    "RightHandRing3": 76,
-    "LeftHandRing1": 78,
-    "LeftHandRing2": 79,
-    "LeftHandRing3": 80,
-    "RightHandPinky1": 82,
-    "RightHandPinky2": 83,
-    "RightHandPinky3": 84,
-    "LeftHandPinky1": 86,
-    "LeftHandPinky2": 87,
-    "LeftHandPinky3": 88,
+    # Optional roll / auxiliary joints
+    "LeftUpLegRoll": 27,
+    "LeftLegRoll": 28,
+    "RightUpLegRoll": 29,
+    "RightLegRoll": 30,
+    "LeftArmRoll": 31,
+    "LeftForeArmRoll": 32,
+    "RightArmRoll": 33,
+    "RightForeArmRoll": 34,
+    "LeftUpLegRoll1": 35,
+    "LeftLegRoll1": 36,
+    "RightUpLegRoll1": 37,
+    "RightLegRoll1": 38,
+    "LeftArmRoll1": 39,
+    "LeftForeArmRoll1": 40,
+    "RightArmRoll1": 41,
+    "RightForeArmRoll1": 42,
+    "LeftUpLegRoll2": 43,
+    "LeftLegRoll2": 44,
+    "RightUpLegRoll2": 45,
+    "RightLegRoll2": 46,
+    "LeftArmRoll2": 47,
+    "LeftForeArmRoll2": 48,
+    "RightArmRoll2": 49,
+    # Fingers: right then left, four joints per finger
+    "LeftHandThumb1": 50,
+    "LeftHandThumb2": 51,
+    "LeftHandThumb3": 52,
+    "LeftHandThumb4": 53,
+    "LeftHandIndex1": 54,
+    "LeftHandIndex2": 55,
+    "LeftHandIndex3": 56,
+    "LeftHandIndex4": 57,
+    "LeftHandMiddle1": 58,
+    "LeftHandMiddle2": 59,
+    "LeftHandMiddle3": 60,
+    "LeftHandMiddle4": 61,
+    "LeftHandRing1": 62,
+    "LeftHandRing2": 63,
+    "LeftHandRing3": 64,
+    "LeftHandRing4": 65,
+    "LeftHandPinky1": 66,
+    "LeftHandPinky2": 67,
+    "LeftHandPinky3": 68,
+    "LeftHandPinky4": 69,
+    # extra finger 70-73
+    "RightHandThumb1": 74,
+    "RightHandThumb2": 75,
+    "RightHandThumb3": 76,
+    "RightHandThumb4": 77,
+    "RightHandIndex1": 78,
+    "RightHandIndex2": 79,
+    "RightHandIndex3": 80,
+    "RightHandIndex4": 81,
+    "RightHandMiddle1": 82,
+    "RightHandMiddle2": 83,
+    "RightHandMiddle3": 84,
+    "RightHandMiddle4": 85,
+    "RightHandRing1": 86,
+    "RightHandRing2": 87,
+    "RightHandRing3": 88,
+    "RightHandRing4": 89,
+    "RightHandPinky1": 90,
+    "RightHandPinky2": 91,
+    "RightHandPinky3": 92,
+    "RightHandPinky4": 93,
+    # extra finger 94-97
+    # toe 98- ...
 }
 
 
@@ -352,6 +397,7 @@ def _ensure_hik_loaded():
 
 
 HUMAN_IK_MAP = {
+    "Reference": "master2_ctl",
     # "Hips": "spineBp0_0_fkj",
     "Hips": "spineBp0_cog_ctl",
     "LeftUpLeg": "lfLegBp0_upr",
@@ -373,9 +419,50 @@ HUMAN_IK_MAP = {
     "RightArm": "rtArmBp0_upr",
     "RightForeArm": "rtArmBp0_lwr",
     "RightHand": "rtArmBp0_palm",
-    # "Neck": "neck0_main",
     "Neck": "neck0_0_fkj",
     "Head": "head0_st",
+    # LEFT FINGERS
+    "LeftHandThumb1": "lfHandBp0_fgr00_1",
+    "LeftHandThumb2": "lfHandBp0_fgr00_2",
+    "LeftHandThumb3": "lfHandBp0_fgr00_3",
+    "LeftHandThumb4": "lfHandBp0_fgr00_4",
+    "LeftHandIndex1": "lfHandBp0_fgr01_2",
+    "LeftHandIndex2": "lfHandBp0_fgr01_3",
+    "LeftHandIndex3": "lfHandBp0_fgr01_4",
+    "LeftHandIndex4": "lfHandBp0_fgr01_5",
+    "LeftHandMiddle1": "lfHandBp0_fgr02_2",
+    "LeftHandMiddle2": "lfHandBp0_fgr02_3",
+    "LeftHandMiddle3": "lfHandBp0_fgr02_4",
+    "LeftHandMiddle4": "lfHandBp0_fgr02_5",
+    "LeftHandRing1": "lfHandBp0_fgr03_2",
+    "LeftHandRing2": "lfHandBp0_fgr03_3",
+    "LeftHandRing3": "lfHandBp0_fgr03_4",
+    "LeftHandRing4": "lfHandBp0_fgr03_5",
+    "LeftHandPinky1": "lfHandBp0_fgr04_2",
+    "LeftHandPinky2": "lfHandBp0_fgr04_3",
+    "LeftHandPinky3": "lfHandBp0_fgr04_4",
+    "LeftHandPinky4": "lfHandBp0_fgr04_5",
+    # # RIGHT FINGERS
+    "RightHandThumb1": "rtHandBp0_fgr00_1",
+    "RightHandThumb2": "rtHandBp0_fgr00_2",
+    "RightHandThumb3": "rtHandBp0_fgr00_3",
+    "RightHandThumb4": "rtHandBp0_fgr00_4",
+    "RightHandIndex1": "rtHandBp0_fgr01_2",
+    "RightHandIndex2": "rtHandBp0_fgr01_3",
+    "RightHandIndex3": "rtHandBp0_fgr01_4",
+    "RightHandIndex4": "rtHandBp0_fgr01_5",
+    "RightHandMiddle1": "rtHandBp0_fgr02_2",
+    "RightHandMiddle2": "rtHandBp0_fgr02_3",
+    "RightHandMiddle3": "rtHandBp0_fgr02_4",
+    "RightHandMiddle4": "rtHandBp0_fgr02_5",
+    "RightHandRing1": "rtHandBp0_fgr03_2",
+    "RightHandRing2": "rtHandBp0_fgr03_3",
+    "RightHandRing3": "rtHandBp0_fgr03_4",
+    "RightHandRing4": "rtHandBp0_fgr03_5",
+    "RightHandPinky1": "rtHandBp0_fgr04_2",
+    "RightHandPinky2": "rtHandBp0_fgr04_3",
+    "RightHandPinky3": "rtHandBp0_fgr04_4",
+    "RightHandPinky4": "rtHandBp0_fgr04_5",
 }
 
 
@@ -385,7 +472,7 @@ def add_char_def_UI():
     if sel:
         ns = DagNode(sel[0]).namespace
         if ns:
-            add_char_def("nlRigChar", HUMAN_IK_MAP, ns)
+            add_char_def(HIK_CHAR, HUMAN_IK_MAP, ns)
         else:
             logging.info("No namespace found for the selected object.")
     else:
@@ -395,16 +482,15 @@ def add_char_def_UI():
 def add_char_def(char_name, mapping, ns):
     """Create a HumanIK character definition and assign joints."""
     _ensure_hik_loaded()
-    maya_loc = os.environ.get("MAYA_LOCATION", "")
-    mel.eval(f'source "{maya_loc}/scripts/others/hikGlobalUtils.mel"')
-    mel.eval(f'source "{maya_loc}/scripts/others/hikDefinitionOperations.mel"')
-    mel.eval(f'source "{maya_loc}/scripts/others/hikCharacterControlsUI.mel"')
+    # maya_loc = os.environ.get("MAYA_LOCATION", "")
+    # mel.eval(f'source "{maya_loc}/scripts/others/hikGlobalUtils.mel"')
+    # mel.eval(f'source "{maya_loc}/scripts/others/hikDefinitionOperations.mel"')
+    # mel.eval(f'source "{maya_loc}/scripts/others/hikCharacterControlsUI.mel"')
 
     if not ns:
         logging.info("Namespace is required to create a character definition.")
         return None
 
-    # char_name = "nlRigChar"
     mc.HIKCharacterControlsTool()
     try:
         if char_name in mc.ls(type="HIKCharacterNode"):
@@ -420,13 +506,11 @@ def add_char_def(char_name, mapping, ns):
     for hik_bone, joint_name in mapping.items():
         slot_idx = HIK_SLOTS.get(hik_bone)
         if slot_idx is None:
-            # skipped_bones.append((hik_bone, "unknown HIK bone name"))
             logging.warning(f"Skipped '{hik_bone}': unknown HIK bone name")
             continue
 
         ns_joint = f"{ns}:{joint_name}"
         if not mc.objExists(ns_joint):
-            # skipped_bones.append((hik_bone, f"{ns_joint} not found in scene"))
             logging.warning(f"Skipped '{hik_bone}': {ns_joint} not found")
             continue
 
@@ -464,50 +548,79 @@ HUMAN_IK_CTL_MAP = {
 }
 
 
-def add_cust_rig_map_UI(self):
-    """Create a HumanIK custom rig mapping for an existing HIK character."""
-    sel = mc.ls(sl=1, tr=1)
-    if sel:
-        ns = DagNode(sel[0]).namespace
-        if ns:
-            add_cust_rig_map("nlRigChar", HUMAN_IK_CTL_MAP, ns)
-        else:
-            logging.info("No namespace found for the selected object.")
-    else:
-        logging.info("Please select a joint or control to determine the namespace.")
+# def add_cust_rig_map_UI(self):
+#     """Create a HumanIK custom rig mapping for an existing HIK character."""
+#     sel = mc.ls(sl=1, tr=1)
+#     if sel:
+#         ns = DagNode(sel[0]).namespace
+#         if ns:
+#             add_cust_rig_map("nlRigChar", HUMAN_IK_CTL_MAP, ns)
+#         else:
+#             logging.info("No namespace found for the selected object.")
+#     else:
+#         logging.info("Please select a joint or control to determine the namespace.")
 
 
-def add_cust_rig_map(char_name, ctrl_mapping, ns):
-    """Create a HumanIK custom rig mapping for an existing HIK character."""
+# def add_cust_rig_map(char_name, ctrl_mapping, ns):
+#     """Create a HumanIK custom rig mapping for an existing HIK character."""
+#     _ensure_hik_loaded()
+
+#     maya_loc = os.environ.get("MAYA_LOCATION", "")
+#     mel.eval(f'source "{maya_loc}/scripts/others/hikGlobalUtils.mel"')
+#     mel.eval(f'source "{maya_loc}/scripts/others/hikDefinitionOperations.mel"')
+#     mel.eval(f'source "{maya_loc}/scripts/others/hikCharacterControlsUI.mel"')
+
+#     if char_name not in mc.ls(type="HIKCharacterNode"):
+#         logging.info(f"Character '{char_name}' does not exist. Creating a new one.")
+#         return
+
+#     mel.eval(f'hikSetCurrentCharacter("{char_name}");')
+#     mel.eval(f'hikCreateCustomRig("{char_name}");')
+
+#     for hik_bone, ctrl_name in ctrl_mapping.items():
+#         slot_idx = HIK_SLOTS.get(hik_bone)
+
+#         if slot_idx is None:
+#             logging.warning(f"Skipped '{hik_bone}': unknown HIK bone name")
+#             continue
+
+#         ns_ctl = f"{ns}:{ctrl_name}"
+#         if not mc.objExists(ns_ctl):
+#             logging.warning(f"Skipped '{hik_bone}': {ns_ctl} not found")
+#             continue
+
+#         # mel.eval(f'hikCustomRigSetNodeForEffector({slot_idx},"{ns_ctl}");')
+#         mel.eval(f'setCharacterObject("{hik_bone}", "{char_name}", {slot_idx}, 0);')
+#         logging.info(f"Assigned '{ns_ctl}' to HIK '{hik_bone}' (slot {slot_idx})")
+
+#     mel.eval("hikUpdateDefinitionUI();")
+#     return char_name
+
+
+def load_custom_rig_mapping(self):
+    """Load HIK custom-rig mapping file."""
     _ensure_hik_loaded()
 
-    maya_loc = os.environ.get("MAYA_LOCATION", "")
-    mel.eval(f'source "{maya_loc}/scripts/others/hikGlobalUtils.mel"')
-    mel.eval(f'source "{maya_loc}/scripts/others/hikDefinitionOperations.mel"')
-    mel.eval(f'source "{maya_loc}/scripts/others/hikCharacterControlsUI.mel"')
-
-    if char_name not in mc.ls(type="HIKCharacterNode"):
-        logging.info(f"Character '{char_name}' does not exist. Creating a new one.")
+    if HIK_CHAR not in mc.ls(type="HIKCharacterNode"):
+        logging.info(f"Character '{HIK_CHAR}' does not exist. Creating a new one.")
         return
 
-    mel.eval(f'hikSetCurrentCharacter("{char_name}");')
-    mel.eval(f'hikCreateCustomRig("{char_name}");')
+    mel.eval(f'hikSetCurrentCharacter("{HIK_CHAR}");')
+    mel.eval(f'hikCreateCustomRig("{HIK_CHAR}");')
+    mel.eval("hikSelectCustomRigTab();")
 
-    for hik_bone, ctrl_name in ctrl_mapping.items():
-        slot_idx = HIK_SLOTS.get(hik_bone)
+    retargeter = mel.eval(f'RetargeterGetName("{HIK_CHAR}")')
 
-        if slot_idx is None:
-            logging.warning(f"Skipped '{hik_bone}': unknown HIK bone name")
-            continue
+    file = HIK_MAP_FILE.replace("\\", "/")
+    if mel.eval(f'RetargeterReadFromFile("{retargeter}", "{file}")') != 1:
+        logging.warning(f"Could not load custom rig mapping: {file}")
+        return
 
-        ns_ctl = f"{ns}:{ctrl_name}"
-        if not mc.objExists(ns_ctl):
-            logging.warning(f"Skipped '{hik_bone}': {ns_ctl} not found")
-            continue
+    mel.eval("hikUpdateCustomRigUI;")
 
-        # mel.eval(f'hikCustomRigSetNodeForEffector({slot_idx},"{ns_ctl}");')
-        mel.eval(f'setCharacterObject("{hik_bone}", "{char_name}", {slot_idx}, 0);')
-        logging.info(f"Assigned '{ns_ctl}' to HIK '{hik_bone}' (slot {slot_idx})")
-
-    mel.eval("hikUpdateDefinitionUI();")
-    return char_name
+    # indices = mel.eval(f'RetargeterAssignedElementIndices("{retargeter}")') or []
+    # bodies = [
+    #     mel.eval(f'hikCustomRigElementNameFromId("{HIK_CHAR}", {index})')
+    #     for index in indices
+    # ]
+    # mel.eval(f'RetargeterRemoveInvalidMappings("{retargeter}", {bodies});')
