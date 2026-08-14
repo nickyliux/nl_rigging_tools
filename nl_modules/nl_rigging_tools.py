@@ -303,7 +303,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.addFlipRYAttr_BN, partial(common.add_flipR_attr, axis="Y"))
         self.connect(self.UI.addFlipRZAttr_BN, partial(common.add_flipR_attr, axis="Z"))
         self.connect(self.UI.misc_buildLineSel_BN, CrvNode.buildLineLinkedSel)
-        self.connect(self.UI.openEnvSet_BN, self.open_env_set)
+        self.connect(self.UI.importEnvSet_BN, self.import_env_set)
 
         # Joint Orientation
         self.connect(self.UI.createRefUpLoc_BN, JntNode.createRefUpLoc)
@@ -712,7 +712,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 # mc.savePrefs()
                 self.updateTweakTargetMesh()
 
-    def open_env_set(self):
+    def import_env_set(self):
         """Import env set if not already present."""
         if not mc.objExists("env_grp"):
             if os.path.isfile(LIGHTING_FILE):

@@ -79,7 +79,7 @@ def rib_setup(*args):
             return
 
         div = (2, 9, 2) if DagNode("spineBp0_master_guide").exists() else (2, 2, 9)
-        l_div = (4, 4, 4)
+        l_div = (10, 10, 10)
 
         result = mc.lattice(
             tgts, dv=div, ldv=l_div, outsideLattice=1, objectCentered=1, commonParent=1

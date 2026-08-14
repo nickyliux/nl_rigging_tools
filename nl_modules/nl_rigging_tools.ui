@@ -856,7 +856,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>50</y>
+        <y>42</y>
         <width>101</width>
         <height>331</height>
        </rect>
@@ -2006,7 +2006,7 @@
        <x>0</x>
        <y>6</y>
        <width>225</width>
-       <height>51</height>
+       <height>52</height>
       </rect>
      </property>
      <property name="title">
@@ -2024,7 +2024,7 @@
         <x>0</x>
         <y>20</y>
         <width>221</width>
-        <height>27</height>
+        <height>31</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="model_LO_8">
@@ -2038,7 +2038,7 @@
         <number>3</number>
        </property>
        <property name="topMargin">
-        <number>3</number>
+        <number>4</number>
        </property>
        <property name="rightMargin">
         <number>3</number>
@@ -4906,7 +4906,7 @@ Setup</string>
        </rect>
       </property>
       <property name="text">
-       <string>4. Select any ctl</string>
+       <string>4. Select any rig ctl</string>
       </property>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_32">
@@ -5092,7 +5092,7 @@ Setup</string>
        </rect>
       </property>
       <property name="text">
-       <string>5. Select any ctl</string>
+       <string>5. Select any rig ctl</string>
       </property>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_30">
@@ -5192,7 +5192,7 @@ Setup</string>
        <string>Import Env Scene</string>
       </property>
       <property name="text">
-       <string>Add Character Definition</string>
+       <string>Create Character Definition</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_23">
@@ -5205,7 +5205,7 @@ Setup</string>
        </rect>
       </property>
       <property name="text">
-       <string>Select any ctl.</string>
+       <string>Select any rig ctl.</string>
       </property>
      </widget>
      <widget class="QPushButton" name="addCustRigMap_BN">
@@ -5239,7 +5239,7 @@ Setup</string>
        <string>Import Env Scene</string>
       </property>
       <property name="text">
-       <string>Add Custom Rig Mapping</string>
+       <string>Create Custom Rig Mapping</string>
       </property>
      </widget>
     </widget>
@@ -5895,7 +5895,7 @@ Setup</string>
        <string>Create Line ( select tgts in order )</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="openEnvSet_BN">
+     <widget class="QPushButton" name="importEnvSet_BN">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -5926,7 +5926,7 @@ Setup</string>
        <string>Import Env Scene</string>
       </property>
       <property name="text">
-       <string>Open Env Set</string>
+       <string>Import Env Set</string>
       </property>
      </widget>
     </widget>

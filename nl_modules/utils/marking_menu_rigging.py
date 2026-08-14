@@ -1,11 +1,11 @@
 import logging
-import maya.cmds as mc
-import maya.mel as mel
-from nl_modules.nodel.base.dag_node import DagNode
-
-from nl_modules.nodel.ik_node import Solver
 from functools import partial
 
+import maya.cmds as mc
+from maya import mel
+
+from nl_modules.nodel.base.dag_node import DagNode
+from nl_modules.nodel.ik_node import Solver
 from nl_modules.utils import common, skin
 
 mel.eval("ikSpringSolver")
@@ -37,14 +37,14 @@ class MarkingMenuRigging:
     def setupMenu(self, menu, parent):
         """Setup the marking menu"""
         mi = mc.menuItem(p=menu, l="Create", rp="S", subMenu=1)
-        mc.menuItem(p=mi, l="Circle", c="mc.circle(normal=(0,1,0))")
-        mc.menuItem(p=mi, l="Curve EP", c="mc.EPCurveTool()")
-        mc.menuItem(p=mi, l="Curve CV", c="mc.CVCurveTool()")
-        mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Cube", c="mc.polyCube()")
         mc.menuItem(p=mi, l="Sphere", c="mc.polySphere()")
         mc.menuItem(p=mi, l="Cylinder", c="mc.polyCylinder()")
         mc.menuItem(p=mi, l="Plane", c="mc.polyPlane()")
+        mc.menuItem(p=mi, l="-" * 15, en=0)
+        mc.menuItem(p=mi, l="Circle", c="mc.circle(normal=(0,1,0))")
+        mc.menuItem(p=mi, l="Curve EP", c="mc.EPCurveTool()")
+        mc.menuItem(p=mi, l="Curve CV", c="mc.CVCurveTool()")
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Loc", c="mc.spaceLocator()")
         mc.menuItem(p=mi, l="Joint Tool", c="mc.JointTool()")
