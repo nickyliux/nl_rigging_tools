@@ -4772,7 +4772,7 @@ Setup</string>
       </rect>
      </property>
      <property name="title">
-      <string>MotionMaker ( For Maya 2027 )</string>
+      <string>MotionMaker ( Maya 2027 )</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -4960,7 +4960,7 @@ Setup</string>
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Bake to IK</string>
+          <string>Bake Motion</string>
          </property>
         </widget>
        </item>

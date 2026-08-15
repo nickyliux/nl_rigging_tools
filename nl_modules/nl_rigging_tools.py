@@ -555,7 +555,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             addedJnts = []
             for mesh in meshSel:
                 jnt = JntNode(
-                    mesh + jDict["sf"][type], color=jDict["color"][type], p=grp, r=2
+                    mesh + jDict["sf"][type], color=jDict["color"][type], p=grp, r=0.5
                 )
                 jnt.a.t.set(*mesh.o.bbCenter)
                 addedJnts.append(jnt)

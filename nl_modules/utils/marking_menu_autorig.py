@@ -142,7 +142,7 @@ class MarkingMenuAutorig:
 
         mc.menuItem(p=menu, l="Toggle Guide", c=guide.toggleGuide)
         mc.menuItem(p=menu, l="-" * 25, en=0)
-        mc.menuItem(p=menu, l="Add Follow Cam", c=common.addFollowCam)
+        mc.menuItem(p=menu, l="Create Follow Cam", c=common.createFollowCam)
         mc.menuItem(p=menu, l="-" * 25, en=0)
         mc.menuItem(p=menu, l="Clear Namespace", c=common.clearNs)
         mc.menuItem(p=menu, l=curr_ns_str, c=common.setNsFrSel)

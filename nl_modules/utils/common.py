@@ -1,8 +1,10 @@
 import logging
 import os
 import re
-import maya.cmds as mc
 from collections import OrderedDict
+
+import maya.cmds as mc
+
 from nl_modules.utils.color import Color
 
 CST_DICT = OrderedDict(
@@ -509,8 +511,8 @@ def dupSk(jntList, sf="", p=None, color=None, r=1):
         fkJList = extractSk(jointList, sf='_fk)
         ikJList = extractSk(jointList, sf='_ik)
     """
-    from nl_modules.nodel.jnt_node import JntNode
     from nl_modules.nodel.base.dag_node import DagNode
+    from nl_modules.nodel.jnt_node import JntNode
 
     dupJList = mc.duplicate(jntList, po=1, rc=1)
 
@@ -547,7 +549,7 @@ def showAllRO(state):
 
 def shelfSep():
     """Add separator to shelf"""
-    import maya.mel as mel
+    from maya import mel
 
     mc.separator(
         width=12,
@@ -884,8 +886,8 @@ def build_ribbon_rivet(
     from nl_modules.nodel.grp_node import GrpNode
     from nl_modules.nodel.jnt_node import JntNode
     from nl_modules.nodel.loc_node import LocNode
-    from nl_modules.utils import utils_node as ut
     from nl_modules.utils import proxy
+    from nl_modules.utils import utils_node as ut
 
     # ---
     # Create a curve on the surface and calculate curve length ratio
@@ -1025,7 +1027,7 @@ def sortFile(n):
     file_name = os.path.basename(n)
     name_only = os.path.splitext(file_name)[0]
 
-    pattern = re.compile(rf"[A-Za-z_]*([\d]+)$")
+    pattern = re.compile(r"[A-Za-z_]*([\d]+)$")
     match = re.match(pattern, name_only)
     if match:
         return int(match.group(1))
@@ -1147,8 +1149,8 @@ def getSetMembersInOrder(tgt):
         return [DagNode(n) for n in members]
 
 
-def addFollowCam(*args):
-    """Add a follow camera to the scene."""
+def createFollowCam(*args):
+    """Create a follow camera and set viewport for it."""
     from nl_modules.nodel.base.dag_node import DagNode
 
     sel = mc.ls(sl=1)
@@ -1157,5 +1159,12 @@ def addFollowCam(*args):
         DagNode(sel[0]).cstPoi(cam.addOffsetGrp())
         cam.offset.a.ty.disconnect()
         cam.offset.a.ty.set(0)
+
+        current_panel = mc.getPanel(withFocus=True)
+        if mc.getPanel(typeOf=current_panel) == "modelPanel":
+            mc.lookThru(current_panel, cam)
+            mc.select(sel)
+            mc.viewFit()
+
     else:
         mc.confirmDialog(t="Info", m="Please select an object to follow.    ", b=["OK"])

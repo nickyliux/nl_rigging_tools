@@ -141,7 +141,7 @@ def addMasterAttrs():
         return
 
     _GROUPS = [
-        ("_" * 8, "master1_ctl", "ctlVis", None, 1),
+        ("_" * 8, "master_ctl", "ctlVis", None, 1),
         ("_" * 9, "PRX", "proxyVis", "proxyRef", 0),
         ("_" * 10, "JNT", "jointVis", "jointRef", 1),
         ("_" * 11, "MDL", "modelVis", "modelRef", 1),

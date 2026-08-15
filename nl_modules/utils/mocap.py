@@ -170,7 +170,17 @@ def mm_connect_setup(ns, jnts=None, rID="tail0"):
 def bake_motion_to_ik(*args):
     """Bake Moma Sk to IK ctls."""
     rigIDs = ["lfLegQd0", "rtLegQd0", "lfLegQd1", "rtLegQd1"]
+
+    sel = mc.ls(sl=1, tr=1)
+    if not sel:
+        logging.info("Please select a control to determine the namespace.")
+        return
+
     ns = common.setNsFrSel()
+    if not ns:
+        logging.info("No namespace found for the selected object.")
+        return
+
     allMGs = [DagNode(f"{ns}{rigID}_master_guide") for rigID in rigIDs]
 
     startTime = int(mc.playbackOptions(q=1, min=1))
@@ -179,9 +189,9 @@ def bake_motion_to_ik(*args):
     allCtls = common.getRigCtlsAll()
     if allCtls:
         common.pauseVP(1)
-
         mc.select(allCtls)
         mc.bakeResults(simulation=1, t=(startTime, endTime))
+        common.pauseVP(0)
 
         for frame in range(startTime, endTime + 1):
             mc.currentTime(frame, e=1)
@@ -190,8 +200,6 @@ def bake_motion_to_ik(*args):
 
         mc.currentTime(startTime, e=1)
         delete_link_grps()
-
-        common.pauseVP(0)
 
 
 def unCst_mm_to_quad(mapping, ns):
