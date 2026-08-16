@@ -319,6 +319,10 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Motion Maker
         self.connect(self.UI.addCharDef_BN, mocap.add_char_def_UI)
         self.connect(self.UI.addCustRigMap_BN, mocap.load_custom_rig_mapping)
+
+        self.connect(self.UI.addBiped_BN, partial(mocap.add_mmChar, 0))
+        self.connect(self.UI.addCanine_BN, partial(mocap.add_mmChar, 1))
+        self.connect(self.UI.addEquine_BN, partial(mocap.add_mmChar, 2))
         self.connect(self.UI.linkCanine_BN, mocap.link_canine)
         self.connect(self.UI.unlinkCanine_BN, mocap.unlink_canine)
         self.connect(self.UI.linkEquine_BN, mocap.link_equine)

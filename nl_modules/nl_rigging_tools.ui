@@ -4784,7 +4784,7 @@ Setup</string>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>159</y>
+        <y>160</y>
         <width>201</width>
         <height>21</height>
        </rect>
@@ -4812,7 +4812,7 @@ Setup</string>
          </property>
          <property name="maximumSize">
           <size>
-           <width>80</width>
+           <width>70</width>
            <height>16</height>
           </size>
          </property>
@@ -4831,7 +4831,7 @@ Setup</string>
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Connect</string>
+          <string>Link</string>
          </property>
         </widget>
        </item>
@@ -4845,7 +4845,7 @@ Setup</string>
          </property>
          <property name="maximumSize">
           <size>
-           <width>80</width>
+           <width>70</width>
            <height>16</height>
           </size>
          </property>
@@ -4864,7 +4864,7 @@ Setup</string>
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Connect</string>
+          <string>Link</string>
          </property>
         </widget>
        </item>
@@ -4880,20 +4880,7 @@ Setup</string>
        </rect>
       </property>
       <property name="text">
-       <string>1. Reference quad rig</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_8">
-      <property name="geometry">
-       <rect>
-        <x>6</x>
-        <y>45</y>
-        <width>211</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>2. Add Canine / Equine</string>
+       <string>1. Reference your rig</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_9">
@@ -4970,7 +4957,7 @@ Setup</string>
       <property name="geometry">
        <rect>
         <x>6</x>
-        <y>70</y>
+        <y>75</y>
         <width>211</width>
         <height>31</height>
        </rect>
@@ -4996,7 +4983,7 @@ Setup</string>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>180</y>
+        <y>183</y>
         <width>201</width>
         <height>21</height>
        </rect>
@@ -5024,7 +5011,7 @@ Setup</string>
          </property>
          <property name="maximumSize">
           <size>
-           <width>80</width>
+           <width>70</width>
            <height>16</height>
           </size>
          </property>
@@ -5043,7 +5030,7 @@ Setup</string>
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Disconnect</string>
+          <string>Un-Link</string>
          </property>
         </widget>
        </item>
@@ -5057,7 +5044,7 @@ Setup</string>
          </property>
          <property name="maximumSize">
           <size>
-           <width>80</width>
+           <width>70</width>
            <height>16</height>
           </size>
          </property>
@@ -5076,7 +5063,7 @@ Setup</string>
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Disconnect</string>
+          <string>Un-Link</string>
          </property>
         </widget>
        </item>
@@ -5142,6 +5129,142 @@ Setup</string>
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget_34">
+      <property name="geometry">
+       <rect>
+        <x>49</x>
+        <y>50</y>
+        <width>161</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_29">
+       <property name="spacing">
+        <number>1</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="addBiped_BN">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>46</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>9</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Connect to Canine</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Biped</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="addCanine_BN">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>46</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>9</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Connect to Canine</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Canine</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="addEquine_BN">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>46</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>9</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Connect to Canine</string>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Equine</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QLabel" name="label_8">
+      <property name="geometry">
+       <rect>
+        <x>6</x>
+        <y>49</y>
+        <width>41</width>
+        <height>19</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>2. Add</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QGroupBox" name="groupBox_22">
      <property name="geometry">
@@ -5205,7 +5328,7 @@ Setup</string>
        </rect>
       </property>
       <property name="text">
-       <string>Select any rig ctl.</string>
+       <string>Select any rig ctl</string>
       </property>
      </widget>
      <widget class="QPushButton" name="addCustRigMap_BN">

@@ -242,6 +242,35 @@ def set_legs_to_fk(ns):
     logging.info("Set all legs to FK mode.")
 
 
+def add_mmChar(*args):
+    """Add a Moma character with a specific style."""
+    version = int(mc.about(v=1))
+    id = args[0] if args else 0
+    names = ["adsk_biped", "adsk_canine", "adsk_equine"]
+    geo = ["mesh_geo_bbox", "c_canine_geo_bbox", "c_equine_geo_bbox"]
+    bboxId = [2, 2, 4]
+    styles = ["basic_male", "basic_wolf", "western_horse"]
+
+    if version >= 2027:
+        chNode = mc.motionMaker(addCharacter=names[id], namespace="moma")[0]
+        gnNode = mc.motionMaker(chNode, addGenerator=1)[0]
+        mc.motionMaker(gnNode, addPathLocator=1)[0]  # plNode =
+        mc.motionMaker(gnNode, addActionStyle=styles[id])[0]  # acNode =
+        # vsNode = mc.motionMaker(gnNode, addVisualization=1)[0]n
+
+        char = DagNode(chNode)
+        char.a.CharacterResolution.set(bboxId[id])
+        char.a.CharacterSkeleton.set(0)
+        mc.select("moma:" + geo[id])
+        # mc.polySoftEdge()
+        mc.polySetToFaceNormal()
+        mc.select(char)
+    else:
+        mc.confirmDialog(
+            title="Info", message="This feature requires Maya 2027 or later.", b="OK"
+        )
+
+
 def link_canine(*args):
     connect_to_map(quadType=0)
 
