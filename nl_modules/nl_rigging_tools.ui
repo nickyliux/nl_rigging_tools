@@ -5254,7 +5254,7 @@ Setup</string>
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="text">
-            <string>Un-Link</string>
+            <string>Unlink</string>
            </property>
           </widget>
          </item>
@@ -5287,7 +5287,7 @@ Setup</string>
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="text">
-            <string>Un-Link</string>
+            <string>Unlink</string>
            </property>
           </widget>
          </item>

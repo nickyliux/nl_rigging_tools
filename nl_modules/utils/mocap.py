@@ -254,17 +254,23 @@ def add_mmChar(*args):
     if version >= 2027:
         chNode = mc.motionMaker(addCharacter=names[id], namespace="moma")[0]
         gnNode = mc.motionMaker(chNode, addGenerator=1)[0]
-        mc.motionMaker(gnNode, addPathLocator=1)[0]  # plNode =
+        plNode = mc.motionMaker(gnNode, addPathLocator=1)[0]
         mc.motionMaker(gnNode, addActionStyle=styles[id])[0]  # acNode =
         # vsNode = mc.motionMaker(gnNode, addVisualization=1)[0]n
+
+        mc.select(plNode)
+        mc.CreateMotionTrail()
+        trail = mc.ls(sl=1)[0]
+        DagNode(trail).shape.a.trailThickness.set(1)
+        logging.info("Motion trail added for the locator.")
 
         char = DagNode(chNode)
         char.a.CharacterResolution.set(bboxId[id])
         char.a.CharacterSkeleton.set(0)
         mc.select("moma:" + geo[id])
-        # mc.polySoftEdge()
         mc.polySetToFaceNormal()
         mc.select(char)
+        logging.info(f"Character '{names[id]}' added.")
     else:
         mc.confirmDialog(
             title="Info", message="This feature requires Maya 2027 or later.", b="OK"
@@ -296,10 +302,13 @@ def connect_to_map(quadType=0):
             cst_mm_to_quad(CANINE_MAP, ns)
             mm_connect_setup(ns, jnts=CANINE_JNTS["neck"], rID="neck0")
             mm_connect_setup(ns, jnts=CANINE_JNTS["tail"], rID="tail0")
+            logging.info("Controls linked to Canine.")
+
         elif quadType == 1:
             cst_mm_to_quad(EQUINE_MAP, ns)
             mm_connect_setup(ns, jnts=EQUINE_JNTS["neck"], rID="neck0")
             mm_connect_setup(ns, jnts=EQUINE_JNTS["tail"], rID="tail0")
+            logging.info("Controls linked to Equine.")
 
 
 def delete_link_grps():
@@ -314,10 +323,10 @@ def unconnect_map(quadType=0):
     if ns:
         if quadType == 0:
             unCst_mm_to_quad(CANINE_MAP, ns)
-            logging.info("Remove constraints to rig controls for Canine.")
+            logging.info("Unlink controls to Canine.")
         elif quadType == 1:
             unCst_mm_to_quad(EQUINE_MAP, ns)
-            logging.info("Remove constraints to rig controls for Equine.")
+            logging.info("Unlink controls to Equine.")
 
         # remove resampled joints and rbSrf
         delete_link_grps()
