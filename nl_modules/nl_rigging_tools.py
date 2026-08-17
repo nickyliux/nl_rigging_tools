@@ -313,7 +313,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.connect(self.UI.dsp_normal_BN, partial(control.dspTypeSel, 0))
         self.connect(self.UI.dsp_template_BN, partial(control.dspTypeSel, 1))
         self.connect(self.UI.dsp_reference_BN, partial(control.dspTypeSel, 2))
-        self.connect(self.UI.selectTypeBelow_BN, self.getTypeBelowSel)
+        self.connect(self.UI.selectTypeBelow_BN, self.getTypeBelowSel, ":aselect.png")
         self.connect(self.UI.maxInfl_BN, self.setMaxInflSel)
 
         # Motion Maker
