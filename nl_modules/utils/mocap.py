@@ -273,7 +273,9 @@ def add_mmChar(*args):
         logging.info(f"Character '{names[id]}' added.")
     else:
         mc.confirmDialog(
-            title="Info", message="This feature requires Maya 2027 or later.", b="OK"
+            title="Info",
+            message="This feature requires Maya 2027 or later.     ",
+            b="OK",
         )
 
 

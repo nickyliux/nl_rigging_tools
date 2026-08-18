@@ -1,10 +1,12 @@
 import glob
 import logging
 import os
+
 from maya import cmds as mc
-from nl_modules.utils import common
-from nl_modules.nodel.grp_node import GrpNode
+
 from nl_modules.nodel.base.dag_node import DagNode
+from nl_modules.nodel.grp_node import GrpNode
+from nl_modules.utils import common
 
 AUTO_BIND_REF_GRP = "auto_bind_ref_grp"
 RIB_GRP = "rib_grp"
@@ -62,7 +64,7 @@ def load_reference(loadLatest=1):
         mc.confirmDialog(t="Info", m=f"'{AUTO_BIND_REF_GRP}' is missing.     ", b="OK")
 
     logging.info(f"Ref file imported: {os.path.basename(tgtPaths[-1])}.")
-    print("")
+    print()
 
 
 def rib_setup(*args):
@@ -71,14 +73,27 @@ def rib_setup(*args):
     if tgts:
         bind_set = mc.ls("spine_rbj_set", type="objectSet")
         if not bind_set:
-            logging.info(f"No spine_rbj_set found.")
+            logging.info("No spine_rbj_set found.")
             return
 
         if DagNode(RIB_LATTICE_GRP).exists():
             logging.info(f"{RIB_LATTICE_GRP} already exists.")
             return
 
-        div = (2, 9, 2) if DagNode("spineBp0_master_guide").exists() else (2, 2, 9)
+        div = (1, 1, 1)
+        # Note that the div may be wrong if the model group has non-zero rotation values
+        latPair = [
+            ("spineQd0_master_guide", (2, 2, 9)),
+            ("spineBp0_master_guide", (2, 9, 2)),
+        ]
+        if DagNode(latPair[0][0]).exists():
+            div = latPair[0][1]
+        elif DagNode(latPair[1][0]).exists():
+            div = latPair[1][1]
+        else:
+            logging.warning("No valid spine guide found for lattice creation.")
+            return
+
         l_div = (10, 10, 10)
 
         result = mc.lattice(
