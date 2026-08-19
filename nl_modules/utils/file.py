@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+
 import maya.cmds as mc
 
 
@@ -34,9 +35,9 @@ def importFile(path):
 
 def openFile(path):
     """Open file in Maya"""
-    mc.file(new=1, force=1)
+    mc.file(new=1, f=1)
     mc.file(path, o=1)
-    mc.viewFit(all=1)
+    # mc.viewFit(all=1)
 
 
 def deleteFile(path):

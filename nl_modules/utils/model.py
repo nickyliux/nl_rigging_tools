@@ -1,10 +1,13 @@
-import os
 import glob
 import logging
+import os
+
 import maya.cmds as mc
+
 from nl_modules.nodel.base.dag_node import DagNode
 
 MODEL_GRP = "geo_grp"
+
 
 def retopo(faceNum=200):
     """Apply retopo to selList objects"""
@@ -15,8 +18,7 @@ def retopo(faceNum=200):
 
 def loadModel(self):
     """Import model file into the scene."""
-    from nl_modules.utils import file
-    from nl_modules.utils import common
+    from nl_modules.utils import common, file
 
     mdlGrp = DagNode(MODEL_GRP)
     if mdlGrp.exists():
@@ -30,7 +32,7 @@ def loadModel(self):
         )
         if tgtPaths:
             file.importFile(tgtPaths[-1])
-            common.setView(fit=1, wos=1, jx=1)
+            # common.setView(fit=1, wos=1, jx=1)
         else:
             tgtPaths = mc.fileDialog2(
                 fileFilter="*_mdl*", dialogStyle=2, fileMode=1, dir=charPath
@@ -42,6 +44,6 @@ def loadModel(self):
                 return
 
         logging.info(f"Model imported: {os.path.basename(tgtPaths[-1])}.")
-        print("")
-        common.setView(jx=0)
+        print()
+        common.setView(wos=1, jx=0)
         common.setView(jx=1)

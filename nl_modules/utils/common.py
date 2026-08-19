@@ -1159,6 +1159,7 @@ def createFollowCam(*args):
         DagNode(sel[0]).cstPoi(cam.addOffsetGrp())
         cam.offset.a.ty.disconnect()
         cam.offset.a.ty.set(0)
+        cam.shape.a.focalLength.set(50)
 
         current_panel = mc.getPanel(withFocus=True)
         if mc.getPanel(typeOf=current_panel) == "modelPanel":
