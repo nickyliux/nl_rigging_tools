@@ -15,7 +15,7 @@ blockquote {
 
 # nl-rigging-tools ( nlRT )
 
-![License](https://img.shields.io/badge/license-MIT-red.svg?style=plastic)
+[![License: AGPL v3](https://img.shields.io/badge/license-AGPL%20v3-red.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Blog](https://img.shields.io/badge/blog-nickyliu.com-blue)](http://www.nickyliu.com)
 
 ![nlRT Main](docs/nlRT_UI.jpg) 
