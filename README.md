@@ -27,15 +27,14 @@ blockquote {
 
 In my last job I encountered a project involving character setup with Ziva muscle. The very first step was to rig the skeleton mesh as the input of simulation. It required unusual skills like building IK with backward initial knee, bone offset for correct anatomy ... Isn't it cool if my rigging tool could support skeleton for every vetebrate ? Look like a great way to learn anatomy and apply python fully.
 
+Here are some features 
 
-## Features
-
-- **Modular :** support multiple limbs.
-- **Skeletal :** support skeleton meshes for simulation.
-- **Cartoony :** option for bendy limbs.
-- **Data Reuse :** reuse of presets, controls, proxies, weights and more.
-- **Custom Marking Menus :** popup menus for rig creation.
-- **Custom Framework :** reuse of codes and functions.
+- **Modular :** Only rig the part you need.
+- **Skeleton :** Support skeleton (and then simulation).
+- **Cartoony :** Controls for bendy limbs.
+- **Data Reuse :** Avoid redudunt work of editing presets, controls, proxies, weights.
+- **Custom Marking Menus :** Popup menus for repetitive tasks.
+- **Custom Framework :** Cleaner system design.
 
 ## Marking Menus
 
@@ -46,27 +45,29 @@ In my last job I encountered a project involving character setup with Ziva muscl
 
 ## Installation
 
-1. Download and extract to somewhere you could keep the files.
+1. Download and extract to a dedicated location.
 2. Find "install_by_drag_n_drop.py" and drag it onto Maya viewport.
 
-The tool UI will show up at the left and "nlRT" appears in the main menu of Maya.
-
+The tool UI will show up and "nlRT" appears in the Maya main menu.
 ![mayaMenu](docs/mayaMenu.png)
-## Usage
-Typical Workflow :
-1. Set Character Library Directory.
+
+## Typical Workflow
+1. Set character directory.
 2. Load character model.
-3. For character with skeletal meshes, create rb joint for axial bones and ref joints for limb bones. Move rb joints to rotation point. Ref joints can be placed roughly as the closest bind joint will be used.
-4. Add guides or presets. Fit the guide points to the model. 
-5. Build the rig.
-6. If you want to bind using proxies, fit the proxy to warp mesh. 
-7. Edit skin weight. 
-8. Edit controls shape and size.
-9. Run "Bind Sk" to attach and bind the skeletal meshes.
+3. For skeleton character, select bones / groups to create reference points.
+
+        For side reference points (light blue) place them roughly where the closest bind joint will be used. For axial bones, move the point to exact rotation pivot. 
+
+4. Load guides or preset. Fit the guide points to the character.
+5. Build the rig. "Toggle guide" and rebuild until the joint position is satisfactory.
+6. For skeleton character, click "sk bind" to bind
+7. For usual character, show proxy and fit them to warp mesh for binding with proxy.
+8. Fix skin weight.
+9. Fit controls shape.
 
 <br>
 
-The files can be loaded without browwsing if you follow the naming rule. ( The number is for versioning. The largest will be loaded if found. )
+Default files are loaded if the naming rule is followed. ( The number is for versioning. The largest will be loaded if found. )
 
 ```
 e.g. For folder "horse",
@@ -98,6 +99,7 @@ flowchart
 ```
 
 ```python
+# EXAMPLE USE
 from nl_modules.nodel.grp_node import GrpNode
 from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.crv_node import CrvNode
@@ -144,6 +146,9 @@ Maya 2023.3 / 2027.2, Win 11 Pro
 
 ## Reference
 1. [Python for Maya : Beginner to Advanced Rigging Automation by Nick Hughes](https://www.udemy.com/course/python-for-maya-beginner-to-advanced-rigging-automation)
+
+    I really recommend this tutorials. He shows how a framework can be built to make development efficient and professional. I find it important but rarely taught in many other courses.
+
 2. [Ramon Arango's rigs](https://ramonarango.gumroad.com/)
 3. [BoneClones](https://boneclones.com/category/all-zoology-skeletons/fields-of-study)
 4. [Ivlpaleontology](https://sketchfab.com/ivlpaleontology)
