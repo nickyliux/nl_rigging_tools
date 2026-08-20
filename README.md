@@ -21,18 +21,18 @@ blockquote {
 ![nlRT Main](docs/nlRT_UI.jpg) 
 
 ## Declaimer
-> Note that the project is still under active development so please use it for study purpose. 
+> Note that the project is still under active development so please do not use it in production. 
 
 ## Background
 
 In my last job I encountered a project involving character setup with Ziva muscle. The very first step was to rig the skeleton mesh as the input of simulation. It required unusual skills like building IK with backward initial knee, bone offset for correct anatomy ... Isn't it cool if my rigging tool could support skeleton for every vetebrate ? Look like a great way to learn anatomy and apply python fully.
 
-Here are some features 
+Here are some features I am trying to include: 
 
-- **Modular :** Only rig the part you need.
-- **Skeleton :** Support skeleton (and then simulation).
-- **Cartoony :** Controls for bendy limbs.
-- **Data Reuse :** Avoid redudunt work of editing presets, controls, proxies, weights.
+- **Modular :** No more silly building the whole and deleting unwanted.
+- **Skeleton :** Support skeleton meshes (and then simulation).
+- **Cartoony :** Setup of bendy limbs.
+- **Data Reuse :** Avoid redundant work of editing presets, controls, proxies, weights.
 - **Custom Marking Menus :** Popup menus for repetitive tasks.
 - **Custom Framework :** Cleaner system design.
 
@@ -46,7 +46,7 @@ Here are some features
 ## Installation
 
 1. Download and extract to a dedicated location.
-2. Find "install_by_drag_n_drop.py" and drag it onto Maya viewport.
+2. Find "install_by_drag_n_drop.py". Drag and drop it onto Maya viewport.
 
 The tool UI will show up and "nlRT" appears in the Maya main menu.
 ![mayaMenu](docs/mayaMenu.png)
