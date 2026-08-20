@@ -34,7 +34,7 @@ Here are some features I am trying to include:
 - **Cartoony :** Setup of bendy limbs.
 - **Data Reuse :** Avoid redundant work of editing presets, controls, proxies, weights.
 - **Custom Marking Menus :** Popup menus for repetitive tasks.
-- **Custom Framework :** Cleaner system design.
+- **Custom Framework :** Clearer system design.
 
 ## Marking Menus
 
@@ -143,7 +143,7 @@ flowchart
 
 
 ## Dev Environment
-- Maya 2023.3 & 2027.2, 
+- Maya 2023.3 & 2027.2 
 - Windows 11 Pro
 - VsCode
 
