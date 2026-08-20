@@ -49,6 +49,7 @@ Here are some features I am trying to include:
 2. Find "install_by_drag_n_drop.py". Drag and drop it onto Maya viewport.
 
 The tool UI will show up and "nlRT" appears in the Maya main menu.
+
 ![mayaMenu](docs/mayaMenu.png)
 
 ## Typical Workflow
