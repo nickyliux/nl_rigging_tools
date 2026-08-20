@@ -15,8 +15,8 @@ blockquote {
 
 # nl-rigging-tools ( nlRT )
 
-[![License: AGPL v3](https://img.shields.io/badge/license-AGPL%20v3-red.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![Blog](https://img.shields.io/badge/blog-nickyliu.com-blue)](http://www.nickyliu.com)
+[![License: AGPL v3](https://img.shields.io/badge/license-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![Blog](https://img.shields.io/badge/blog-nickyliu.com-red)](http://www.nickyliu.com)
 
 ![nlRT Main](docs/nlRT_UI.jpg) 
 
@@ -143,7 +143,9 @@ flowchart
 
 
 ## Dev Environment
-Maya 2023.3 / 2027.2, Win 11 Pro
+- Maya 2023.3 & 2027.2, 
+- Windows 11 Pro
+- VsCode
 
 ## Reference
 1. [Python for Maya : Beginner to Advanced Rigging Automation by Nick Hughes](https://www.udemy.com/course/python-for-maya-beginner-to-advanced-rigging-automation)
