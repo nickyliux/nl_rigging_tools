@@ -57,7 +57,7 @@ The tool UI will show up and "nlRT" appears in the Maya main menu.
 2. Load character model.
 3. For skeleton character, select bones / groups to create reference points.
 
-        For side reference points (light blue) place them roughly where the closest bind joint will be used. For axial bones, move the point to exact rotation pivot. 
+    > For side reference points (light blue) place them roughly where the closest bind joint will be used. For axial bones, move the point to exact rotation pivot. 
 
 4. Load guides or preset. Fit the guide points to the character.
 5. Build the rig. "Toggle guide" and rebuild until the joint position is satisfactory.
