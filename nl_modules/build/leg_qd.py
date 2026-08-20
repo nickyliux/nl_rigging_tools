@@ -947,7 +947,7 @@ class LegQd(RigModule):
             for ctls in self.toeCtlsArray:
                 [ctl.a.showAttr(r=1) for ctl in ctls]
 
-        self.extra_ikc.a.showAttr("rx", "rz", t=1)
+        self.extra_ikc.a.showAttr(t=1, r=1)
 
     def setup_rotate_order(self):
         """Setup rotate order for the quadruped leg rig controls."""

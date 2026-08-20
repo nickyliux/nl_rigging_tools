@@ -2079,7 +2079,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Load Directory</string>
+          <string>Load Character Directory</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -2229,7 +2229,7 @@
            <string notr="true"/>
           </property>
           <property name="text">
-           <string>Mirror Joints</string>
+           <string>Mirror L to R</string>
           </property>
          </widget>
         </item>
