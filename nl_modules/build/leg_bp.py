@@ -136,20 +136,18 @@ class LegBp(RigModule):
             ("lwr_fkc", "hexagon_3d", "x", scale, 0),
             ("palm_fkc", "hexagon_3d", "x", scale, 0),
             ("ball_fkc", "hexagon_3d", "x", scale / 2, 0),
-            ("ikc", "foot3", None, rSz, 0),  # Vec((1.6, 0.5, 3.2))
+            ("ikc", "foot", None, rSz, 0),
             ("pvc", "sphere", None, rSz, 0),
             ("smart_ctl", "pyramid", None, scale / 3, 0),
         ]
         if self.scapulaBone:
-            ctl_defs.append(
-                ("scap_fkc", "shoulder", "z", Vec((0.2, 0.6, 0.6)) * scale, 0)
-            )
+            ctl_defs.append(("scap_fkc", "arrow", "x", scale / 3, 0))
 
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
 
         if self.scapulaBone:
-            self.scap_fkc.cv_rotate(-90, 0, 0)
+            self.scap_fkc.cv_rotate(90, 0, 0)
             self.scap_fkc.cv_move(0, scale * 10, 0)
 
         if xDr == -1:

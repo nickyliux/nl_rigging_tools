@@ -1,5 +1,7 @@
 import logging
+
 import maya.cmds as mc
+
 from nl_modules.build.rig_module import RigModule
 from nl_modules.nodel.crv_node import CrvNode
 from nl_modules.nodel.grp_node import GrpNode
@@ -59,7 +61,7 @@ class IkFkSpline(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2, 1),
-            ("main", "arrow2", "z", rSz * 3, 1),
+            ("main", "arrow", "z", rSz * 3, 1),
         ]
         for name, shape, up, sca, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, sca, top)
@@ -136,7 +138,7 @@ class IkFkSpline(RigModule):
             ctl = CrvNode(
                 name,
                 pf=rID,
-                shape="rotate4_3d" if isEnding else "cube",
+                shape="rotate3_3d" if isEnding else "cube",
                 up=None if isEnding else "z",
                 scale=Vec((3, 3, 3)) * rSz if isEnding else rSz / 2,
                 align=self.jnts_ik[i],
