@@ -508,7 +508,7 @@ class LegQd(RigModule):
 
             if dupTgt.allChildrenJt:
                 ikJ = None
-                if self.toeNum == 5 and order > 0:
+                if self.toeNum < 5 or (self.toeNum == 5 and order > 0):
                     ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
                     self.toeIKHs.append(ikH)
 
@@ -555,31 +555,48 @@ class LegQd(RigModule):
 
     def build_toes_mammal_sdk(self, topIks):
 
+        # Add spread attribute to smart control for toe spread
         spread = self.smart_ctl.a.add("spread", min=-10, max=10, dv=0)
 
-        start_id = 0
-        if self.toeNum == 2:
-            start_id = 2
-        elif self.toeNum == 3 or self.toeNum == 4:
-            start_id = 1
-
         rSzD = self.rigSize * self.xDir
+        data_fk_rz = []
+        data_ik_ty = []
 
-        data_fk_rz = [
-            [(-10, -20), (0, 0), (10, 20)],
-            [(-10, -15), (0, 0), (10, 15)],
-            [(-10, -6), (0, 0), (10, 6)],
-            [(-10, 6), (0, 0), (10, -6)],
-            [(-10, 15), (0, 0), (10, -15)],
-        ]
-        data_ik_ty = [
-            [(-10, -1.5 * rSzD), (0, 0), (10, 1.5 * rSzD)],
-            [(-10, -0.5 * rSzD), (0, 0), (10, 0.5 * rSzD)],
-            [(-10, -0.25 * rSzD), (0, 0), (10, 0.25 * rSzD)],
-            [(-10, 0.25 * rSzD), (0, 0), (10, -0.25 * rSzD)],
-            [(-10, 0.5 * rSzD), (0, 0), (10, -0.5 * rSzD)],
-        ]
+        if self.toeNum == 2:
+            data_fk_rz = [
+                [(-10, -5), (0, 0), (10, 5)],
+                [(-10, 5), (0, 0), (10, -5)],
+            ]
+            data_ik_ty = [
+                [(-10, -2 * rSzD), (0, 0), (10, 2 * rSzD)],
+                [(-10, 2 * rSzD), (0, 0), (10, -2 * rSzD)],
+            ]
+        elif self.toeNum == 3:
+            data_fk_rz = [
+                [(-10, -5), (0, 0), (10, 5)],
+                [(-10, 0), (0, 0), (10, 0)],
+                [(-10, 5), (0, 0), (10, -5)],
+            ]
+            data_ik_ty = [
+                [(-10, -2 * rSzD), (0, 0), (10, 2 * rSzD)],
+                [(-10, 0), (0, 0), (10, 0)],
+                [(-10, 2 * rSzD), (0, 0), (10, -2 * rSzD)],
+            ]
+        elif self.toeNum >= 4:
+            data_fk_rz = [
+                [(-10, -5), (0, 0), (10, 5)],
+                [(-10, -2), (0, 0), (10, 2)],
+                [(-10, 2), (0, 0), (10, -2)],
+                [(-10, 5), (0, 0), (10, -5)],
+            ]
+            data_ik_ty = [
+                [(-10, -2 * rSzD), (0, 0), (10, 2 * rSzD)],
+                [(-10, -0.5 * rSzD), (0, 0), (10, 0.5 * rSzD)],
+                [(-10, 0.5 * rSzD), (0, 0), (10, -0.5 * rSzD)],
+                [(-10, 2 * rSzD), (0, 0), (10, -2 * rSzD)],
+            ]
 
+        k = 0
         for i, toeCtls in enumerate(self.toeCtlsArray):
             if topIks[i] == None:
                 continue
@@ -588,10 +605,16 @@ class LegQd(RigModule):
             fkOfs0 = toeCtls[0].addOffsetGrp()
 
             for j in range(3):
-                common.sdk2(spread, fkOfs0.a.rz, *data_fk_rz[i][j])
-                common.sdk2(spread, topIks[i].a.ty, *data_ik_ty[i][j])
-                # common.sdk2(spread, fkOfs0.a.rz, *data_fk_rz[start_id + i][j])
-                # common.sdk2(spread, topIks[i].a.ty, *data_ik_ty[start_id + i][j])
+                common.sdk2(spread, fkOfs0.a.rz, *data_fk_rz[k][j])
+                common.sdk2(spread, topIks[i].a.ty, *data_ik_ty[k][j])
+            k += 1
+
+        # Add curl attributes for toe bending
+        start_id = 0
+        if self.toeNum == 2:
+            start_id = 2
+        elif self.toeNum == 3 or self.toeNum == 4:
+            start_id = 1
 
         for i, toeCtls in enumerate(self.toeCtlsArray):
             if self.toeNum == 5 and i == 0:
