@@ -508,7 +508,9 @@ class LegQd(RigModule):
 
             if dupTgt.allChildrenJt:
                 ikJ = None
-                if self.toeNum < 5 or (self.toeNum == 5 and order > 0):
+                addToeIK = self.toeNum < 5 or (self.toeNum == 5 and order > 0)
+
+                if addToeIK:
                     ikJ, ikH = self.build_digit_ik(dupTgt, scale, p=self.ball_fkc)
                     self.toeIKHs.append(ikH)
 
@@ -527,7 +529,7 @@ class LegQd(RigModule):
 
                 self.build_fk_with_ctl(fkToeList, ctlList, p=self.CTL_DATA, oriOnly=1)
 
-                if self.toeNum == 5 and order > 0:
+                if addToeIK:
                     ikJ.a.r >> ctlList[0].addOffsetGrp().a.r
 
                 self.toeCtlsArray.append(ctlList)
@@ -564,8 +566,8 @@ class LegQd(RigModule):
 
         if self.toeNum == 2:
             data_fk_rz = [
-                [(-10, -5), (0, 0), (10, 5)],
-                [(-10, 5), (0, 0), (10, -5)],
+                [(-10, -20), (0, 0), (10, 20)],
+                [(-10, 20), (0, 0), (10, -20)],
             ]
             data_ik_ty = [
                 [(-10, -2 * rSzD), (0, 0), (10, 2 * rSzD)],
@@ -573,9 +575,9 @@ class LegQd(RigModule):
             ]
         elif self.toeNum == 3:
             data_fk_rz = [
-                [(-10, -5), (0, 0), (10, 5)],
+                [(-10, -20), (0, 0), (10, 20)],
                 [(-10, 0), (0, 0), (10, 0)],
-                [(-10, 5), (0, 0), (10, -5)],
+                [(-10, 20), (0, 0), (10, -20)],
             ]
             data_ik_ty = [
                 [(-10, -2 * rSzD), (0, 0), (10, 2 * rSzD)],
@@ -584,10 +586,10 @@ class LegQd(RigModule):
             ]
         elif self.toeNum >= 4:
             data_fk_rz = [
+                [(-10, -20), (0, 0), (10, 20)],
                 [(-10, -5), (0, 0), (10, 5)],
-                [(-10, -2), (0, 0), (10, 2)],
-                [(-10, 2), (0, 0), (10, -2)],
                 [(-10, 5), (0, 0), (10, -5)],
+                [(-10, 20), (0, 0), (10, -20)],
             ]
             data_ik_ty = [
                 [(-10, -2 * rSzD), (0, 0), (10, 2 * rSzD)],
