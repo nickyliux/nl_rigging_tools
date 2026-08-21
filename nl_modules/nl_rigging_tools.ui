@@ -971,6 +971,114 @@
         </layout>
        </item>
        <item>
+        <layout class="QHBoxLayout" name="model_LO_6">
+         <property name="spacing">
+          <number>6</number>
+         </property>
+         <property name="sizeConstraint">
+          <enum>QLayout::SetDefaultConstraint</enum>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_17">
+           <property name="minimumSize">
+            <size>
+             <width>30</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>9999</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>sk ref</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="loadRef_BN">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>8</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+             <kerning>true</kerning>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>Load skeleton reference</string>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="flat">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="saveRef_BN">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>8</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>Save skeleton reference</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
         <widget class="Line" name="line_2">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -1089,114 +1197,6 @@
            </property>
            <property name="toolTip">
             <string>Save Guide Template</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="model_LO_6">
-         <property name="spacing">
-          <number>6</number>
-         </property>
-         <property name="sizeConstraint">
-          <enum>QLayout::SetDefaultConstraint</enum>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QLabel" name="label_17">
-           <property name="minimumSize">
-            <size>
-             <width>30</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>9999</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>sk ref</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="loadRef_BN">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>20</width>
-             <height>20</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Segoe UI</family>
-             <pointsize>8</pointsize>
-             <weight>50</weight>
-             <bold>false</bold>
-             <kerning>true</kerning>
-            </font>
-           </property>
-           <property name="toolTip">
-            <string>Load skeleton reference</string>
-           </property>
-           <property name="layoutDirection">
-            <enum>Qt::LeftToRight</enum>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="flat">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="saveRef_BN">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>20</width>
-             <height>20</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Segoe UI</family>
-             <pointsize>8</pointsize>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="toolTip">
-            <string>Save skeleton reference</string>
            </property>
            <property name="text">
             <string/>
@@ -4201,7 +4201,7 @@ Setup</string>
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>N</string>
+          <string>Nrm</string>
          </property>
         </widget>
        </item>
@@ -4243,7 +4243,7 @@ Setup</string>
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>T</string>
+          <string>Tpl</string>
          </property>
         </widget>
        </item>
@@ -4285,7 +4285,7 @@ Setup</string>
           <string notr="true"/>
          </property>
          <property name="text">
-          <string>R</string>
+          <string>Ref</string>
          </property>
         </widget>
        </item>
