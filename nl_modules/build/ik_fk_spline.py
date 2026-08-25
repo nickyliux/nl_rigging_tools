@@ -60,7 +60,7 @@ class IkFkSpline(RigModule):
         rID, rSz, xDr = self.get_short_form()
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", rSz * 2, 1),
+            ("setting", "screw_nut", "z", rSz * 3, 1),
             ("main", "arrow", "z", rSz * 3, 1),
         ]
         for name, shape, up, sca, top in ctl_defs:
@@ -166,7 +166,8 @@ class IkFkSpline(RigModule):
 
         SrfNode(self.rbSrf1).weightTo(self.jnts_ik, mi=4, dr=6)
 
-        self.setting.snapTo(self.ctls_ik[-1], p=self.ctls_ik[-1])
+        # self.setting.snapTo(self.ctls_ik[-1], p=self.ctls_ik[-1])
+        self.setting.snapTo(self.main, p=self.main)
         # self.ctls_ik[0].cstPar(self.setting, mo=1)
 
         RigModule.isolate_align(
@@ -328,13 +329,11 @@ class IkFkSpline(RigModule):
 
     def setup_space(self):
         """Setup space switching for the rig controls."""
-        self.ctls_ik[-1].a.add("spaceType", dv=2, k=0, cb=0)
+        # self.ctls_ik[-1].a.add("spaceType", dv=2, k=0, cb=0)
 
         self.masterGuide.a.add(
             "spaceName1", type="string", txt="localBase, COG, master"
         )
-        # self.masterGuide.a.add("spaceName2", type="string", txt="chest, COG, master")
-
         self.masterGuide.setMsg(
             {
                 "spaceHolder1": self.ctls_ik[-1],

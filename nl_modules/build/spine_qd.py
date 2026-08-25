@@ -76,9 +76,9 @@ class SpineQd(RigModule):
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2, 1),
             ("cog_ctl", "trapezoid_3d", None, Vec((1, 1.2, 1.8)) * rSz, 0),
-            ("fore_ikc", "hexagon_3d", "z", rSz * 3, 0),
-            ("mid_ikc", "hexagon_3d", "z", rSz * 2.5, 0),
-            ("base_ikc", "hexagon_3d", "z", rSz * 3, 0),
+            ("fore_ikc", "hexagon_3d", "z", rSz * 4, 0),
+            ("mid_ikc", "hexagon_3d", "z", rSz * 3, 0),
+            ("base_ikc", "hexagon_3d", "z", rSz * 4, 0),
             ("tangent0_ctl", "arrow", "x", rSz / 2, 1),
             ("tangent1_ctl", "arrow", "x", rSz / 2, 1),
             ("end_ctl", "rotate2_3d", None, rSz * 1.5, 0),

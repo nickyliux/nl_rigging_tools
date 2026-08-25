@@ -5,8 +5,6 @@ import maya.cmds as mc
 
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
-
-# from nl_modules.utils import helper
 from nl_modules.utils import anim, build, common, control, guide, proxy
 
 MENU_NAME = "marking_menu_autorig"
@@ -76,7 +74,6 @@ class MarkingMenuAutorig:
         mc.menuItem(p=mi, l="Mirror Sel / All", c=self.mirrorShapeSelOrAll)
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Drop It", c=control.dropSel)
-        mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Use Last's", c=self.use_last_crv_shapes)
         mc.menuItem(p=mi, l="Add Last's", c=self.add_last_crv_shapes)
         mc.menuItem(p=mi, l="Break Instance", c=self.crvShape_breakInst)
@@ -106,20 +103,16 @@ class MarkingMenuAutorig:
         # mc.menuItem(p=mi, l="    ry ~> tz", c=partial(helper.addHelpers2, "ry", "tz"))
         # mc.menuItem(p=mi, l="    ry ~> ty", c=partial(helper.addHelpers2, "ry", "ty"))
         # mc.menuItem(p=mi, l="    rz ~> tz", c=partial(helper.addHelpers2, "rz", "tz"))
-        # mc.menuItem(p=mi, l="-" * 15, en=0)
         # mc.menuItem(p=mi, l="Mirror", c=helper.mirrorHelpers)
         # mc.menuItem(p=mi, l="Delete", c=helper.deleteHelpers)
-        mc.menuItem(p=mi, l="-" * 15, en=0)
 
     def addGuideOptions(self, menu):
         """Add guide options to the marking menu"""
         mi = mc.menuItem(p=menu, l="Guide", rp="NE", subMenu=1)
-        # , i="HIKCharacterToolSkeleton.png"
         mc.menuItem(p=mi, l="Mirror Sel / All", c=guide.mirrorGuide)
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Duplicate", c=guide.dupGuideSel)
         mc.menuItem(p=mi, l="Duplicate (Sym)", c=partial(guide.dupGuideSel, mirror=1))
-        mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Copy Setting", c=guide.copyGuideUI)
 
     def addProxyOptions(self, menu):
@@ -128,7 +121,6 @@ class MarkingMenuAutorig:
         mc.menuItem(p=mi, l="Mirror Sel", c=proxy.mirrorProxy)
         mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Warp Sel", c=proxy.wrapProxy)
-        mc.menuItem(p=mi, l="-" * 15, en=0)
         mc.menuItem(p=mi, l="Reset Sel", c=proxy.resetProxy)
         mc.menuItem(p=mi, l="Gen", c=proxy.genProxyForSet)
         mc.menuItem(p=mi, l="Select All", c=proxy.selectAllProxy)
@@ -141,9 +133,8 @@ class MarkingMenuAutorig:
         curr_ns_str = "<< Load Namespace >>" if ns == "" else f"<< {ns} >>"
 
         mc.menuItem(p=menu, l="Toggle Guide", c=guide.toggleGuide)
-        mc.menuItem(p=menu, l="-" * 25, en=0)
         mc.menuItem(p=menu, l="Create Follow Cam", c=common.createFollowCam)
-        mc.menuItem(p=menu, l="-" * 25, en=0)
+        mc.menuItem(p=menu, l="-" * 15, en=0)
         mc.menuItem(p=menu, l="Clear Namespace", c=common.clearNs)
         mc.menuItem(p=menu, l=curr_ns_str, c=common.setNsFrSel)
 
@@ -175,7 +166,7 @@ class MarkingMenuAutorig:
             attr = DagNode(sel[0]).a[space]
             if attr.exists():
                 addSep = 1
-                mc.menuItem(p=menu, l=f"< {space.upper()} >", en=0)
+                mc.menuItem(p=menu, l=f"# {space.upper()}", en=0)
                 val = attr.get()
                 allSpaceAttr = attr.query(le=1)[0].split(":")
                 for i, spaceAttr in enumerate(allSpaceAttr):
@@ -196,7 +187,7 @@ class MarkingMenuAutorig:
                     c=partial(self.multi_switch_local_global, attr, val, mg),
                 )
         if addSep:
-            mc.menuItem(p=menu, l="-" * 25, en=0)
+            mc.menuItem(p=menu, l="================", en=0)
 
     def mirrorShapeSelOrAll(*args):
         """Mirror the shape of the selected control or all controls in LF_CTL_SET"""

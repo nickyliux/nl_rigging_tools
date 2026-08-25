@@ -18,6 +18,7 @@ def reset_all_ctl():
             if attr.settable():
                 attr.reset()
         reset_count += 1
+    common.setView()
     logging.info(f"{reset_count} ctls reset.")
 
 

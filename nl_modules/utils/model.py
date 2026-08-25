@@ -45,5 +45,5 @@ def loadModel(self):
 
         logging.info(f"Model imported: {os.path.basename(tgtPaths[-1])}.")
         print()
-        common.setView(wos=1, jx=0)
+        common.setView(wos=1, jx=0)  # , fit=1)
         common.setView(jx=1)

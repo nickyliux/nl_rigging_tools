@@ -240,7 +240,7 @@ class LegQd(RigModule):
             self.build_dual_bones()
 
         if self.carpalFix:
-            self.carpalFix_setup(self.palm, self.digit, tz=(-1, -5), tx=(0.5, 1))
+            self.carpalFix_setup(self.palm, self.digit, tz=(-1, -4.5), tx=(0.5, 1))
 
         self.build_toes(self.toeType)
         self.build_post()

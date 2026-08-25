@@ -182,7 +182,6 @@ def unbuildGuide(*arg):
     MGs = collectMasterGuide(isSel=1, build=1)
     if MGs:
         control.reset_all_ctl()
-
         count = 0
         for mg in MGs:
             count += unbuildTgt(mg)

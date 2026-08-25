@@ -124,7 +124,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def unbuildAll(self):
         """Unbuild all rig components."""
         build.unbuildGuide()
-        # self.masterGuide_UI_refresh()
 
     def loadWeightUI(self):
         skin.loadWeight(loadLatest=self.UI.loadLatest_CB.isChecked())
@@ -431,7 +430,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             self.loadPresetGuide("avian_tpl")
 
         mc.select(allTgtMG)
-        common.setView(fit=1)
+        # common.setView(fit=1)
         mc.setToolTo("moveSuperContext")
 
     def loadPresetGuide(self, name):
@@ -813,7 +812,7 @@ def closeUI():
 
 def addIcon2CurrShelf():
     """Add icon to current shelf"""
-    currDir = os.path.dirname(__file__)
+    # currDir = os.path.dirname(__file__)
     base = os.path.basename(__file__)
     icon = base.replace(".py", ".bmp")
 
