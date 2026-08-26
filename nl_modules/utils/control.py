@@ -117,7 +117,7 @@ def loadControl(loadLatest=1):
             )
         if not tgtPaths:
             tgtPaths = mc.fileDialog2(
-                fileFilter="*_ctl*", dialogStyle=2, fileMode=1, dir=charPath
+                fileFilter="*_ctl*.ma", dialogStyle=2, fileMode=1, dir=charPath
             )
     if not tgtPaths:
         return
@@ -125,9 +125,8 @@ def loadControl(loadLatest=1):
 
     # Set targets
     allTgts = common.getRigCtlsAll()
-    allTgts.extend(
-        [DagNode("master2_ctl"), DagNode("master1_ctl"), DagNode("master_ctl")]
-    )
+    allTgts.extend(["master2_ctl", "master1_ctl", "master_ctl"])
+
     loadFileReplaceShapes(tgtPaths[-1], allTgts)
 
 
@@ -146,20 +145,21 @@ def loadFileReplaceShapes(tgtPath, allTgts):
     # Replace existing shapes with new shapes
     # ns = newNodes[0].replace(":", " ").replace("|", " ").split()[0]
     ns = DagNode(newNodes[0]).namespace
+    if ns is not None:
+        for tgt in allTgts:
+            tgtN = DagNode(tgt)
+            if tgtN.exists():
+                src = DagNode(ns + ":" + tgt)
+                if src.exists():
+                    mc.delete(tgtN.shapes)
+                    mc.parent(src.shapes, tgtN, s=1, r=1)
+                    for s in tgtN.shapes:
+                        s.rename(tgt + "Shape#")
+        mc.delete(ns + ":*")
 
-    for tgt in allTgts:
-        src = DagNode(ns + ":" + tgt)
-        if src.exists():
-            mc.delete(tgt.shapes)
-            mc.parent(src.shapes, tgt, s=1, r=1)
-            for s in tgt.shapes:
-                s.rename(tgt + "Shape#")
-
-    mc.delete(ns + ":*")
     mc.select(cl=1)
-
-    logging.info("Control shapes loaded.")
     print()
+    logging.info("Control shapes loaded.")
 
 
 @common.Undo("setOnTopSel")

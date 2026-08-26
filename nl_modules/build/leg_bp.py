@@ -527,7 +527,7 @@ class LegBp(RigModule):
         """Setup visibility for the leg rig controls."""
         self.pvc.a["fkPin"] >> self.pin_fkc.a.v
 
-        self.ctl_vis_toggle(
+        self.ctl_vis_toggle_AS(
             self.setting.a["fkIk"],
             onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
             offList=self.ctls_fk[1:-1],

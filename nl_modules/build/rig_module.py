@@ -1,5 +1,7 @@
 import logging
+
 import maya.cmds as mc
+
 from nl_modules.build.rig_base import RigBase
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
@@ -9,8 +11,7 @@ from nl_modules.nodel.jnt_node import JntNode
 from nl_modules.nodel.loc_node import LocNode
 from nl_modules.nodel.rbn_node import RbnNode
 from nl_modules.nodel.srf_node import SrfNode
-from nl_modules.utils import common
-from nl_modules.utils import proxy
+from nl_modules.utils import common, proxy
 from nl_modules.utils import utils_node as ut
 from nl_modules.utils.color import Color
 
@@ -947,6 +948,18 @@ class RigModule(RigBase):
             for tgt in self.getXformOrShape(offList, shape):
                 ~attr >> tgt.a.v
 
+    def ctl_vis_toggle_AS(self, attr, fkList=None, ikList=None, shape=0):
+        """Toggle visibility of controls based on the given attribute."""
+        autoVis = attr.node.a.add("autoVis", type="bool", dv=1, k=0)
+        fkVis = attr.node.a.add("fkVis", type="bool", dv=1, k=0)
+        ikVis = attr.node.a.add("ikVis", type="bool", dv=1, k=0)
+        if fkList:
+            for tgt in self.getXformOrShape(fkList, shape):
+                (autoVis >= 0.5).setCdn(ifTrue=~attr, ifFalse=fkVis) >> tgt.a.v
+        if ikList:
+            for tgt in self.getXformOrShape(ikList, shape):
+                (autoVis >= 0.5).setCdn(ifTrue=attr, ifFalse=ikVis) >> tgt.a.v
+
     def get_short_form(self):
         """Get rig ID, size and x direction for the current rig instance."""
         return str(self.rigID), self.rigSize, int(self.xDir)
@@ -1033,7 +1046,7 @@ class RigModule(RigBase):
         rID, rSz, xDr = self.get_short_form()
         tgt_p = jnt0.parent
         if not tgt_p or tgt_p.type != "joint":
-            raise ValueError(f"No target parent or it is not a joint")
+            raise ValueError("No target parent or it is not a joint")
 
         self.jnts_ro = common.dupSk([jnt0, jnt1], sf, r=rSz)
         self.jnts_ro[1].a.ty.set(0)

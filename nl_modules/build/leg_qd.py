@@ -944,10 +944,10 @@ class LegQd(RigModule):
 
     def setup_vis(self):
         """Setup visibility toggles for the quadruped leg rig controls."""
-        self.ctl_vis_toggle(
+        self.ctl_vis_toggle_AS(
             self.setting.a["fkIk"],
-            onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
-            offList=self.ctls_fk[1:-1],
+            ikList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
+            fkList=self.ctls_fk[1:-1],
         )
         if self.toeType > 0:
             self.ctls_fk[-1].hide()
