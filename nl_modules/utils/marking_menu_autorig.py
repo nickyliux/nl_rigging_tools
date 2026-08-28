@@ -221,12 +221,10 @@ class MarkingMenuAutorig:
         """Switch FK/IK mode for the specified rig node"""
         for arg in args[0]:
             anim.switch_fk_ik(mg=arg)
-        # self.reload_marking_menu()
 
     def multi_switch_local_global(self, *args):
         """Switch Local/Global mode for the specified rig node"""
         anim.switch_local_global(attr=args[0], toGlobal=args[1])
-        # self.reload_marking_menu()
 
     def reload_marking_menu(*args):
         """Reload the marking menu to reflect any changes made"""

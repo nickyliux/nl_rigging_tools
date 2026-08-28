@@ -304,13 +304,13 @@ def connect_to_map(quadType=0):
             cst_mm_to_quad(CANINE_MAP, ns)
             mm_connect_setup(ns, jnts=CANINE_JNTS["neck"], rID="neck0")
             mm_connect_setup(ns, jnts=CANINE_JNTS["tail"], rID="tail0")
-            mc.confirmDialog(title="Info", m="Controls linked.     ", b="OK")
+            mc.confirmDialog(title="Info", m="Character linked.     ", b="OK")
 
         elif quadType == 1:
             cst_mm_to_quad(EQUINE_MAP, ns)
             mm_connect_setup(ns, jnts=EQUINE_JNTS["neck"], rID="neck0")
             mm_connect_setup(ns, jnts=EQUINE_JNTS["tail"], rID="tail0")
-            mc.confirmDialog(title="Info", m="Controls linked.     ", b="OK")
+            mc.confirmDialog(title="Info", m="Character linked.     ", b="OK")
 
 
 def delete_link_grps():
@@ -325,11 +325,11 @@ def unconnect_map(quadType=0):
     if ns:
         if quadType == 0:
             unCst_mm_to_quad(CANINE_MAP, ns)
-            mc.confirmDialog(title="Info", m="Controls unlinked.     ", b="OK")
+            mc.confirmDialog(title="Info", m="Character un-linked.     ", b="OK")
 
         elif quadType == 1:
             unCst_mm_to_quad(EQUINE_MAP, ns)
-            mc.confirmDialog(title="Info", m="Controls unlinked.     ", b="OK")
+            mc.confirmDialog(title="Info", m="Character un-linked.     ", b="OK")
 
         # remove resampled joints and rbSrf
         delete_link_grps()

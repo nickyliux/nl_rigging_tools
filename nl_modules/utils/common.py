@@ -804,7 +804,7 @@ def setNsFrSel(*args):
     return ns
 
 
-def clearNs(*arg):
+def clearNs(*args):
     """Clear current namespace in optionVar"""
     mc.optionVar(sv=("curr_ns", ""))
 

@@ -3,6 +3,7 @@ import logging
 import maya.cmds as mc
 
 from nl_modules.nodel.base.dag_node import DagNode
+from nl_modules.utils import common
 
 # def switch_to_space_target(spaceName):
 #     """Switch space target for selected controls to the specified spaceName."""
@@ -87,19 +88,18 @@ def switch_fk_ik(mg=None):
     if not mg or not mg.a.built.get():
         return
 
-    attr = None
+    fkIk = None
     setting = mg.a.setting.inConnNode
     if setting:
-        attr = setting.a["fkIk"]
-        if not attr.exists():
+        fkIk = setting.a["fkIk"]
+        if not fkIk.exists():
             return
     else:
         return
 
-    rigID = mg.a.rigID.get()
     rootJ = mg.a.rootJ.inConnNode
     if rootJ is None:
-        logging.warning(f"Root joint for {rigID} not found. Cannot switch IK/FK.")
+        logging.warning("Root joint not found. Cannot switch IK/FK.")
         return
 
     jnts = []
@@ -109,7 +109,7 @@ def switch_fk_ik(mg=None):
     # FK Ctls
     fkCtls = [mg.a[name].inConnNode for name in fkCtlNames]
     if not all(fkCtls):
-        logging.warning(f"Not all FK ctls for {rigID} found. Cannot switch IK/FK.")
+        logging.warning("Not all FK ctls found. Cannot switch IK/FK.")
         return
 
     # IK Ctls
@@ -118,25 +118,30 @@ def switch_fk_ik(mg=None):
     ikc_matcher = DagNode(f"{ikc.name}_matcher") if ikc else None
 
     ball_ikc = DagNode(mg.a["ball_ikc"].inConnNode)
-    smart_ctl = DagNode(f"{rigID}_smart_ctl")
-    extra_ikc = DagNode(f"{rigID}_extra_ikc")
+    # smart_ctl = DagNode(mg.a["smart_ctl"].inConnNode)
+    # smart_ctl = DagNode(f"{rigID}_smart_ctl")
+
+    rigID = mg.a.rigID.get()
+
+    ns = rootJ.namespace + ":" if rootJ.namespace else ""
+    extra_ikc = DagNode(f"{ns}{rigID}_extra_ikc")
     extra_matcher = DagNode(f"{extra_ikc.name}_matcher") if extra_ikc else None
 
     ikCtls = [ikc, pvc, ikc_matcher]
     if not all(ikCtls):
-        logging.warning(f"Not all ik ctls for {rigID} found. Ignore fk ik switch.")
+        logging.warning("Not all ik ctls found. Ignore fk ik switch.")
         return
 
     # Get ball joint xform before switching
     ball_mtx = jnts[-1].getMtx()
 
-    toIKMode = 0 if attr.get() > 0.5 else 1
+    toIKMode = 0 if fkIk.get() >= 0.5 else 1
 
     if toIKMode == 0:  # to FK
         for ctl, jnt in zip(fkCtls, jnts):
             if ctl:
                 ctl.alignTo(jnt)
-        attr.set(0)
+        fkIk.set(0)
     else:  # to IK
         root_mtx = jnts[0].getMtx()
 
@@ -148,8 +153,8 @@ def switch_fk_ik(mg=None):
         if ikc_matcher.exists():
             ikc.alignTo(ikc_matcher)
 
-        if smart_ctl.exists():
-            smart_ctl.resetXf()
+        # if smart_ctl.exists():
+        #     smart_ctl.resetXf()
 
         if ball_ikc.exists():
             ball_ikc.resetXf()
@@ -171,12 +176,12 @@ def switch_fk_ik(mg=None):
             pvc_pos = calc_pvc_pos(jnts[1], jnts[2], jnts[3])
             mc.xform(pvc, ws=1, t=pvc_pos)
 
-        attr.set(1)
+        fkIk.set(1)
 
     # Apply ball ctl after switching
     fkCtls[-1].setMtx(ball_mtx)
 
-    logging.info(f"{rigID}: Switched to {'IK' if toIKMode else 'FK'}.")
+    logging.info(f"Switched to {'IK' if toIKMode else 'FK'}.")
 
 
 def calc_pvc_pos(obj1, obj2, obj3):
