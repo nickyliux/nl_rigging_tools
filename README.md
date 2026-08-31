@@ -18,6 +18,8 @@ blockquote {
 [![License: AGPL v3](https://img.shields.io/badge/license-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Blog](https://img.shields.io/badge/blog-nickyliu.com-red)](http://www.nickyliu.com)
 
+[Watch the Wolf Skeleton Rig (FREE) Video on YouTube](https://youtu.be/0pu68ORB9BU)
+
 ![nlRT Main](docs/nlRT_UI.jpg) 
 
 ## Declaimer
