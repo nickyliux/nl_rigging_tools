@@ -968,6 +968,7 @@ class LegQd(RigModule):
                 self.smart_ctl.a.add("toeCtlFkVis", dv=1, type="bool", k=0),
                 onList=toesCtls,
             )
+        mc.hide(self.toesRootJ)
 
     def setup_channel(self):
         """Setup channels for the quadruped leg rig controls."""

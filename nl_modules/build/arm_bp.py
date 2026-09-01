@@ -436,8 +436,8 @@ class ArmBp(RigModule):
         """Setup visibility toggles for the arm rig controls."""
         self.ctl_vis_toggle_AS(
             self.setting.a["fkIk"],
-            onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
-            offList=self.ctls_fk[1:],
+            ikList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
+            fkList=self.ctls_fk[1:],
         )
         self.ctl_vis_toggle(
             self.pvc.a["fkPin"],

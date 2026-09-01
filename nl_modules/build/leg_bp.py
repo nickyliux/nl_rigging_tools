@@ -529,8 +529,8 @@ class LegBp(RigModule):
 
         self.ctl_vis_toggle_AS(
             self.setting.a["fkIk"],
-            onList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
-            offList=self.ctls_fk[1:-1],
+            ikList=[self.ikc, self.pvc, self.pvc_line, self.ikCstG],
+            fkList=self.ctls_fk[1:-1],
         )
         self.ctl_vis_toggle(
             self.setting.a.add("showRollJnts", type="bool", k=0, dv=0),

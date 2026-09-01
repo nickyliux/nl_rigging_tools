@@ -951,8 +951,8 @@ class RigModule(RigBase):
     def ctl_vis_toggle_AS(self, attr, fkList=None, ikList=None, shape=0):
         """Toggle visibility of controls based on the given attribute."""
         autoVis = attr.node.a.add("autoVis", type="bool", dv=1, k=0)
-        fkVis = attr.node.a.add("fkVis", type="bool", dv=1, k=0)
-        ikVis = attr.node.a.add("ikVis", type="bool", dv=1, k=0)
+        fkVis = attr.node.a.add("fkVis", type="bool", dv=0, k=0)
+        ikVis = attr.node.a.add("ikVis", type="bool", dv=0, k=0)
         if fkList:
             for tgt in self.getXformOrShape(fkList, shape):
                 (autoVis >= 0.5).setCdn(ifTrue=~attr, ifFalse=fkVis) >> tgt.a.v
