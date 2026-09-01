@@ -30,7 +30,7 @@ def aboutDialog(self):
     """Show the about dialog."""
 
     msg = """
-nl Rigging Tools ( nlRT ) version: v0.1.0
+nl Rigging Tools ( nlRT ) version: v0.1.1
 
 nlRT is under the terms of the MIT License
 
