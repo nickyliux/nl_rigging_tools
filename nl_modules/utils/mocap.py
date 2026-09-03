@@ -74,7 +74,7 @@ EQUINE_MAP = {
     ],
     "cstOri": [
         # HEAD
-        ("head", "neck0_fore_ikc"),
+        ("head", "head0_head_fkc"),
         # SPINE
         ("pelvis", "spineQd0_end_ctl"),
         # L LEGS
@@ -156,10 +156,6 @@ def mm_connect_setup(ns, jnts=None, rID="tail0"):
     for i, jnt in enumerate(resampledJnts):
         ctl = f"{ns}{rID}_{i}_fkc"
         if DagNode(ctl).exists():
-            # if i == 0:
-            #     jnt.cstOri(ctl, mo=1)
-            # else:
-            #     jnt.cstPar(ctl, mo=1)
             jnt.cstOri(ctl, mo=1)
 
     mc.delete(crv)
