@@ -207,7 +207,9 @@ def unCst_mm_to_quad(mapping, ns):
         for src, tgt in pairs:
             ctl = DagNode(ns + tgt)
             if ctl.exists():
-                ctl.removeCstNodes()
+                cstObj = DagNode(ctl).getCstObjects()
+                if cstObj:
+                    mc.delete(cstObj)
 
 
 def cst_mm_to_quad(mapping, ns):
@@ -219,7 +221,9 @@ def cst_mm_to_quad(mapping, ns):
             node1 = DagNode(moma_ns + src)
             node2 = DagNode(ns + tgt)
             if node1.exists() and node2.exists():
-                getattr(node1, cstMethod)(node2, mo=1)
+                # Add offset group to avoid flipping issues with constraints
+                ofsG = GrpNode("tmp#", align=node2, p=node1)
+                getattr(ofsG, cstMethod)(node2, mo=1)
                 count += 1
             else:
                 logging.info(

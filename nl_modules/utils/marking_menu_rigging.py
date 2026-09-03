@@ -181,7 +181,7 @@ def showOnly(*args):
 
 
 def select_constrainers(*args):
-    """Select the constraining objects of the first selected object"""
+    """Select the objects driving the first selected object"""
     selList = mc.ls(sl=1, tr=1)
     if selList:
         cstObj = DagNode(selList[0]).getCstObjects()
@@ -190,7 +190,7 @@ def select_constrainers(*args):
 
 
 def select_constrained(*args):
-    """Select the constraining objects of the first selected object"""
+    """Select the objects driven by the first selected object"""
     selList = mc.ls(sl=1, tr=1)
     if selList:
         cstObj = DagNode(selList[0]).getCstObjects(isSrc=0)
