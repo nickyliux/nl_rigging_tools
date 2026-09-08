@@ -105,12 +105,18 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             # btn.setIconSize(icon.size())
             # btn.setIconSize(QtCore.QSize(24, 24))
 
+    # Add a cache at class level or module level
+    _ICON_CACHE = {}
+
     def connect2(self, btn, func, icon=None):
         """Connect a button to a function with an optional icon."""
         btn.clicked.connect(func)
         if icon:
-            iconQP = QtGui.QPixmap(IMAGE_PATH + f"/{icon}.png")
-            btn.setIcon(QIcon(iconQP))
+            if icon not in self._ICON_CACHE:
+                path = os.path.join(IMAGE_PATH, f"{icon}.png")
+                self._ICON_CACHE[icon] = QIcon(QtGui.QPixmap(path))
+
+            btn.setIcon(self._ICON_CACHE[icon])
             btn.setIconSize(QtCore.QSize(24, 24))
 
     def buildAll(self):
@@ -430,7 +436,7 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             self.loadPresetGuide("avian_tpl")
 
         mc.select(allTgtMG)
-        # common.setView(fit=1)
+        common.setView(fit=1)
         mc.setToolTo("moveSuperContext")
 
     def loadPresetGuide(self, name):
@@ -789,8 +795,8 @@ global nlRT_win
 def showUI():
     """Main function to initialize and show the rigging tools UI."""
     closeUI()
-
     global nlRT_win
+
     nlRT_win = MyToolWin()
     # nlRT_win.show(dockable=1, floating=0, area="right")
     nlRT_win.show(dockable=1, floating=0, area="left")
@@ -806,7 +812,7 @@ def closeUI():
     global nlRT_win
     try:
         nlRT_win.close_window()
-    except:
+    except Exception:
         pass
 
 
