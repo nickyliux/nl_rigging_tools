@@ -23,16 +23,16 @@ blockquote {
 
 ![nlRT Main](docs/nlRT_UI.jpg) 
 
-## Declaimer
+## Disclaimer
 > Note that the project is still under active development so please do not use it in production. 
 
 ## Background
 
-In my last job I encountered a project involving character setup with Ziva muscle. The very first step was to rig the skeleton mesh as the input of simulation. It required unusual skills like building IK with backward initial knee, bone offset for correct anatomy ... Isn't it cool if my rigging tool could support skeleton for every vetebrate ? Look like a great way to learn anatomy and apply python fully.
+In my last job I encountered a project involving character setup with Ziva muscle. The very first step was to rig the skeleton mesh as the input of simulation. It required unusual skills like building IK with backward initial knee, bone offset for correct anatomy ... Wouldn't it be cool if my rigging tool could support skeleton for every vertebrate ? It looks like a great way to learn anatomy and apply python fully.
 
 Here are some features I am trying to include: 
 
-- **Modular :** No more silly building the whole and deleting unwanted.
+- **Modular :** No more blindly building the whole and deleting unwanted.
 - **Skeleton :** Support skeleton meshes (and then simulation).
 - **Cartoony :** Setup of bendy limbs.
 - **Data Reuse :** Avoid redundant work of editing presets, controls, proxies, weights.
@@ -153,7 +153,7 @@ flowchart
 ## Reference
 1. [Python for Maya : Beginner to Advanced Rigging Automation by Nick Hughes](https://www.udemy.com/course/python-for-maya-beginner-to-advanced-rigging-automation)
 
-    I really recommend this tutorials. He shows how a framework can be built to make development efficient and professional. I find it important but rarely taught in many other courses.
+    I really recommend this tutorial. He shows how a framework can be built to make development efficient and professional. I find it important but rarely taught in many other courses.
 
 2. [Ramon Arango's rigs](https://ramonarango.gumroad.com/)
 3. [BoneClones](https://boneclones.com/category/all-zoology-skeletons/fields-of-study)
@@ -164,3 +164,4 @@ flowchart
 <br>
 
 Visit my blog at [https://www.nickyliu.com](https://www.nickyliu.com)
+
