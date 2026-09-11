@@ -97,7 +97,7 @@ class ArmBp(RigModule):
             ("lwr_fkc", "hexagon_3d", "x", scale, 0),
             ("palm_fkc", "hexagon_3d", "x", scale, 0),
             ("ikc", "trapezoid_3d", None, scale, 0),
-            ("pvc", "sphere", None, rSz * 2, 0),
+            ("pvc", "sphere", None, rSz, 0),
             ("palm_ikc", "hexagon_3d", "x", scale, 0),
         ]
 

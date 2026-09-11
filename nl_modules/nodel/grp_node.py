@@ -1,10 +1,11 @@
 import logging
 import os
+
 import maya.cmds as mc
+
 import nl_modules as nl_modules
 from nl_modules.nodel.base.dag_node import DagNode
-from nl_modules.utils import file
-from nl_modules.utils import open_maya_api
+from nl_modules.utils import file, open_maya_api
 
 MOD_DIR = os.path.dirname(nl_modules.__file__)
 SHAPE_PATH = MOD_DIR + "/build/shapes"
@@ -175,7 +176,7 @@ class GrpNode(DagNode):
     def shape_buildFrDictList(self, dictList, name, xf=None):
         """Build curves from a list of dictionaries and return a group node"""
         if dictList is None:
-            logging.info("Empty dictionary list")
+            logging.info(f"{name}: Empty dictionary list")
             return None
 
         xf = xf or mc.createNode("transform", n=name)
@@ -224,7 +225,10 @@ class GrpNode(DagNode):
         if isinstance(crv, str):
             crvDictList = self.shape_getDictListFrLib(crv)
             crvObj = self.shape_buildFrDictList(crvDictList, crv)
-            crvObj.copy_shape_as_inst([self], keepSrc=0)
+            if crvObj:
+                crvObj.copy_shape_as_inst([self], keepSrc=0)
+            else:
+                logging.info(f"create shape for '{crv}' failed.")
         else:
             crv.copy_shape_as_inst([self])
 
@@ -286,7 +290,7 @@ class GrpNode(DagNode):
 
     def break_instance(self):
         """Un-instance all instances of this shape"""
-        logging.info(f"Break all instances.")
+        logging.info("Break all instances.")
 
         selfShapes = self.shapes
 
