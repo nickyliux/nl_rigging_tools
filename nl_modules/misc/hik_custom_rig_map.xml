@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<HIKRetargeter dest="nlRigChar">
+<HIKRetargeter dest="nlChar">
     <MappedRetargeter matrixSource="LeftHandGX" type="R" destRig="human_rig:lfArmBp0_ikc" destSkel="human_rig:lfArmBp0_palm" id="11" body="LeftHand" className="DefaultRetargeter" name="CustomRigDefaultMappingNode1"/>
     <MappedRetargeter matrixSource="LeftHandGX" type="T" destRig="human_rig:lfArmBp0_ikc" destSkel="human_rig:lfArmBp0_palm" id="11" body="LeftHand" offsetX="8.566009521484375" offsetY="0.0376548171043396" offsetZ="0.13639764487743378" className="DefaultRetargeter" name="CustomRigDefaultMappingNode2"/>
     <MappedRetargeter matrixSource="HipsGX" type="R" destRig="human_rig:spineBp0_cog_ctl" destSkel="human_rig:spineBp0_cog_ctl" id="1" body="Hips" className="DefaultRetargeter" name="CustomRigDefaultMappingNode3"/>

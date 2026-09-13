@@ -14,7 +14,7 @@ MOD_DIR = os.path.dirname(nl_modules.__file__)
 HIK_MAP_FILE = os.path.join(MOD_DIR, "misc", "hik_custom_rig_map.xml")
 
 LINK_GRP = "moma_link_grp_"
-HIK_CHAR = "nlRigChar"
+HIK_CHAR = "nlChar"
 
 CANINE_MAP = {
     "cstPar": [
@@ -523,9 +523,19 @@ def add_char_def_UI():
         if ns:
             add_char_def(HIK_CHAR, HUMAN_IK_MAP, ns)
         else:
-            logging.info("No namespace found for the selected object.")
+            # logging.info("No namespace found for the selected object.")
+            mc.confirmDialog(
+                t="Info",
+                m="No namespace found for the selected object.     ",
+                b=["OK"],
+            )
     else:
-        logging.info("Please select a joint or control to determine the namespace.")
+        # logging.info("Please select a joint or control to determine the namespace.")
+        mc.confirmDialog(
+            t="Info",
+            m="Please select a joint or control to determine the namespace.     ",
+            b=["OK"],
+        )
 
 
 def add_char_def(char_name, mapping, ns):
@@ -603,7 +613,7 @@ HUMAN_IK_CTL_MAP = {
 #     if sel:
 #         ns = DagNode(sel[0]).namespace
 #         if ns:
-#             add_cust_rig_map("nlRigChar", HUMAN_IK_CTL_MAP, ns)
+#             add_cust_rig_map(HIK_CHAR, HUMAN_IK_CTL_MAP, ns)
 #         else:
 #             logging.info("No namespace found for the selected object.")
 #     else:
