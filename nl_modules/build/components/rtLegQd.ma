@@ -85,6 +85,9 @@ createNode transform -n "master_guide";
 	addAttr -ci true -sn "scapulaBone" -ln "scapulaBone" -min 0 -max 1 -at "bool";
 	addAttr -ci true -sn "patellaBone" -ln "patellaBone" -min 0 -max 1 -at "bool";
 	addAttr -ci true -sn "carpalFix" -ln "carpalFix" -min 0 -max 1 -at "bool";
+	addAttr -ci true -sn "fixTxScale" -ln "fixTxScale" -dv 1 -min 0 -at "double";
+	addAttr -ci true -sn "fixTzScale" -ln "fixTzScale" -dv 1 -min 0 -at "double";
+	setAttr ".ovc" 18;
 	addAttr -ci true -sn "dualBone" -ln "dualBone" -min 0 -max 1 -at "bool";
 	addAttr -ci true -sn "toeType" -ln "toeType" -min 0 -max 2 -en "None:Mammal:Bird" 
 		-at "enum";
@@ -102,6 +105,8 @@ createNode transform -n "master_guide";
 	setAttr -cb on ".scapulaBone";
 	setAttr -cb on ".patellaBone";
 	setAttr -cb on ".carpalFix";
+	setAttr -cb on ".fixTxScale";
+	setAttr -cb on ".fixTzScale";
 	setAttr -cb on ".dualBone";
 	setAttr -cb on ".toeType";
 	setAttr -cb on ".includeMeta" yes;

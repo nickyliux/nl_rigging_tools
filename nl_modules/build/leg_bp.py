@@ -17,8 +17,6 @@ class LegBp(RigModule):
     """Biped leg rig module."""
 
     def __init__(self, mg):
-        # if isinstance(mg, str):
-        #     mg = DagNode(mg)
         super().__init__(mg)
 
         guide_attrs = [
@@ -28,6 +26,8 @@ class LegBp(RigModule):
             "patellaBone",
             "scapulaBone",
             "kneeFix",
+            "fixTxScale",
+            "fixTzScale",
             "rollJntNum",
             "rbnJntNum",
             "hipAutoAim",
@@ -36,6 +36,8 @@ class LegBp(RigModule):
             setattr(self, attr, self.masterGuide.a[attr].get())
 
         self.setting = None
+        self.fixTxScale = 1 if self.fixTxScale is None else self.fixTxScale
+        self.fixTzScale = 1 if self.fixTzScale is None else self.fixTzScale
 
         self.FK_GRP = GrpNode("FK", pf=self.rigID, p=self.CTL_DATA)
         self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA)
@@ -195,6 +197,8 @@ class LegBp(RigModule):
                 lwr=self.lwr,
                 palm=self.palm,
                 kneeFix=self.kneeFix,
+                txScale=self.fixTxScale,
+                tzScale=self.fixTzScale,
                 up1="ty",
                 up2="ty",
             )
@@ -202,7 +206,9 @@ class LegBp(RigModule):
             self.update_list(self.jnts_bind, add=[self.upr, self.lwr])
 
         if self.kneeFix:
-            self.boneOfsFix_setup(self.lwr, self.palm)
+            self.boneOfsFix_setup(
+                self.lwr, self.palm, txScale=self.fixTxScale, tzScale=self.fixTzScale
+            )
             if self.ribbon:
                 self.ofsFixJ.cstPoi(self.ribbon_lw.stt_loc)
 

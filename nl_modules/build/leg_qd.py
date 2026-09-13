@@ -30,6 +30,8 @@ class LegQd(RigModule):
             "patellaBone",
             "scapulaBone",
             "carpalFix",
+            "fixTxScale",
+            "fixTzScale",
             "toeNum",
             "hipAutoAim",
             "palmAimRatio",
@@ -38,6 +40,8 @@ class LegQd(RigModule):
             setattr(self, attr, self.masterGuide.a[attr].get())
 
         self.setting = None
+        self.fixTxScale = 1 if self.fixTxScale is None else self.fixTxScale
+        self.fixTzScale = 1 if self.fixTzScale is None else self.fixTzScale
 
         self.FK_GRP = GrpNode("FK", pf=self.rigID, p=self.CTL_DATA)
         self.IK_GRP = GrpNode("IK", pf=self.rigID, p=self.CTL_DATA)
@@ -93,9 +97,6 @@ class LegQd(RigModule):
         # --- Generate main skeleton module and root joints ---
         self.genSk_module()
         root_list = self.gen_sk_fr_names(self.jnt_names)
-
-        # for jnt in root_list:
-        #     DagNode(jnt).a.ro.set(2)
 
         self.toesRootJ = self.gen_sk_fr_names(["toesRoot"])[0]
         self.toesRootJ | self.JNT_DATA
@@ -240,7 +241,14 @@ class LegQd(RigModule):
             self.build_dual_bones()
 
         if self.carpalFix:
-            self.carpalFix_setup(self.palm, self.digit, tz=(-1, -4.5), tx=(0.5, 1))
+            self.carpalFix_setup(
+                self.palm,
+                self.digit,
+                tz=(-1, -4.5),
+                tx=(0.5, 1),
+                txScale=self.fixTxScale,
+                tzScale=self.fixTzScale,
+            )
 
         self.build_toes(self.toeType)
         self.build_post()

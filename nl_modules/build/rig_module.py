@@ -471,7 +471,9 @@ class RigModule(RigBase):
                 if tgt in tgtList:
                     tgtList.remove(tgt)
 
-    def boneOfsFix_setup(self, tgt, tgtChild, tz=(-2, -8), tx=(2.5, 0)):
+    def boneOfsFix_setup(
+        self, tgt, tgtChild, tz=(-2, -8), tx=(2.5, 0), txScale=1.0, tzScale=1.0
+    ):
         """Setup bone fix for the leg rig."""
         rID, rSz, xDr = self.get_short_form()
 
@@ -488,7 +490,6 @@ class RigModule(RigBase):
 
         childDup.rename(tgtChild + "Fix")
         childDup | tgtDup | tgt
-        # tgtDup.color = Color.PINK
 
         # reset, especially for digit joint
         childDup.a.jointOrient.reset()
@@ -499,15 +500,19 @@ class RigModule(RigBase):
             tgtDup, worldUpType="object", worldUpObject=upLoc, aim=(xDr, 0, 0)
         )
 
-        self.ofsBoneFix_sdk(tgt, tgtDup, tz=tz, tx=tx)
+        self.ofsBoneFix_sdk(tgt, tgtDup, tz=tz, tx=tx, txScale=txScale, tzScale=tzScale)
         upLoc.hide()
         self.update_list(self.jnts_bind, add=[tgtDup], rm=[tgt])
 
         self.ofsFixJ = tgtDup
 
-    def carpalFix_setup(self, palm, digit, tz=(-2, -8), tx=(2.5, 0)):
+    def carpalFix_setup(
+        self, palm, digit, tz=(-2, -8), tx=(2.5, 0), txScale=1, tzScale=1
+    ):
         """Setup carpal fix for the leg rig."""
-        self.boneOfsFix_setup(palm, digit, tz=tz, tx=tx)
+        self.boneOfsFix_setup(
+            palm, digit, tz=tz, tx=tx, txScale=txScale, tzScale=tzScale
+        )
 
         rID, rSz, xDr = self.get_short_form()
 
@@ -524,25 +529,16 @@ class RigModule(RigBase):
         else:
             logging.info(f"Carpal guide not found: '{rID}_carpal_guide'")
 
-    def ofsBoneFix_sdk(self, driver, driven, tx=(2.5, 0), tz=(-2, -8)):
+    def ofsBoneFix_sdk(
+        self, driver, driven, tx=(2.5, 0), tz=(-2, -8), txScale=1, tzScale=1
+    ):
         """ "Setup SDK for bone fix to drive the leg joint."""
-        # s = self.xDir
-
-        # if tx != (0, 0):
-        #     common.sdk(driver, driven, "ry", "tx", 0, 0, tangent=1)
-        #     common.sdk(driver, driven, "ry", "tx", -90, tx[0] * s, tangent=1)
-        #     common.sdk(driver, driven, "ry", "tx", -180, tx[1] * s, tangent=1)
-
-        # if tz != (0, 0):
-        #     common.sdk(driver, driven, "ry", "tz", 0, 0, tangent=1)
-        #     common.sdk(driver, driven, "ry", "tz", -90, tz[0] * s, tangent=1)
-        #     common.sdk(driver, driven, "ry", "tz", -180, tz[1] * s, tangent=1)
 
         s = self.xDir
         fixTX = self.setting.a.add("fixTX", k=0)
-        fixTX_scale = self.setting.a.add("fixTX_scale", k=0, dv=1)
+        fixTX_scale = self.setting.a.add("fixTX_scale", k=0, dv=txScale)
         fixTZ = self.setting.a.add("fixTZ", k=0)
-        fixTZ_scale = self.setting.a.add("fixTZ_scale", k=0, dv=1)
+        fixTZ_scale = self.setting.a.add("fixTZ_scale", k=0, dv=tzScale)
 
         if tx != (0, 0):
             common.sdk2(driver.a.ry, fixTX, 0, 0, tangent=1)
@@ -564,8 +560,8 @@ class RigModule(RigBase):
         def patella_sdk(driver, driven):
             common.sdk(driver, driven, "ry", "ry", 0, 0, tangent=1)
             # common.sdk(driver, driven, "ry", "ry", -20, -1, tangent=1)
-            common.sdk(driver, driven, "ry", "ry", -90, -45, tangent=1)
-            common.sdk(driver, driven, "ry", "ry", -180, -90)
+            common.sdk(driver, driven, "ry", "ry", -90, -60, tangent=1)
+            common.sdk(driver, driven, "ry", "ry", -180, -100)
 
         if patella_guide.exists():
             j = JntNode("patella", pf=rID, align=patella_guide, r=rSz / 2, p=self.upr)
@@ -1117,6 +1113,8 @@ class RigModule(RigBase):
         lwr=None,
         palm=None,
         kneeFix=0,
+        txScale=1,
+        tzScale=1,
         up1="tz",
         up2="tz",
         tz=(-2, -8),
@@ -1167,7 +1165,9 @@ class RigModule(RigBase):
         mid_bend.cstParSca(stt_ofs[0], mo=1)
 
         if kneeFix:
-            self.ofsBoneFix_sdk(lwr, stt_ofs[1], tz=tz, tx=tx)
+            self.ofsBoneFix_sdk(
+                lwr, stt_ofs[1], tz=tz, tx=tx, txScale=txScale, tzScale=tzScale
+            )
 
         # Add volume attributes to setting
         autoVol = self.setting.a.add("autoVol", min=0, dv=0.5)
