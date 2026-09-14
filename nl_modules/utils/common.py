@@ -1149,7 +1149,7 @@ def getSetMembersInOrder(tgt):
         return [DagNode(n) for n in members]
 
 
-def createFollowCam(*args):
+def createFollowCam(*args, fix=0):
     """Create a follow camera and set viewport for it."""
     from nl_modules.nodel.base.dag_node import DagNode
 
@@ -1157,8 +1157,9 @@ def createFollowCam(*args):
     if sel:
         cam = DagNode(mc.camera(n="followCam_#")[0])
         DagNode(sel[0]).cstPoi(cam.addOffsetGrp())
-        cam.offset.a.ty.disconnect()
-        cam.offset.a.ty.set(0)
+        if fix == 0:
+            cam.offset.a.ty.disconnect()
+            cam.offset.a.ty.set(0)
         cam.shape.a.focalLength.set(50)
 
         current_panel = mc.getPanel(withFocus=True)
