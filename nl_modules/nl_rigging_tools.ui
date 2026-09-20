@@ -74,7 +74,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="main_TB">
     <attribute name="title">
@@ -843,7 +843,7 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>Left</string>
+       <string>Auto load if name conversion followed</string>
       </property>
       <property name="text">
        <string>Auto Load</string>
@@ -2348,7 +2348,7 @@
            </font>
           </property>
           <property name="toolTip">
-           <string>Add Rb Jnt for Selected</string>
+           <string/>
           </property>
           <property name="statusTip">
            <string/>
@@ -2384,7 +2384,7 @@
            </font>
           </property>
           <property name="toolTip">
-           <string>Add Rb Jnt for Selected</string>
+           <string/>
           </property>
           <property name="statusTip">
            <string/>
@@ -2420,7 +2420,7 @@
            </font>
           </property>
           <property name="toolTip">
-           <string>Add Rb Jnt for Selected</string>
+           <string/>
           </property>
           <property name="statusTip">
            <string/>
@@ -2456,7 +2456,7 @@
            </font>
           </property>
           <property name="toolTip">
-           <string>Add Ref Jnt for Selected</string>
+           <string/>
           </property>
           <property name="statusTip">
            <string/>
@@ -2517,7 +2517,7 @@
         </font>
        </property>
        <property name="toolTip">
-        <string>Add Ref Jnt for Selected</string>
+        <string/>
        </property>
        <property name="statusTip">
         <string/>
@@ -2621,7 +2621,7 @@
            </font>
           </property>
           <property name="toolTip">
-           <string>Toggle Template</string>
+           <string/>
           </property>
           <property name="styleSheet">
            <string notr="true"/>
@@ -4330,6 +4330,9 @@ Setup</string>
            <height>20</height>
           </size>
          </property>
+         <property name="toolTip">
+          <string>Add Worldspace attribute</string>
+         </property>
          <property name="text">
           <string>WsMirror</string>
          </property>
@@ -4348,6 +4351,9 @@ Setup</string>
            <width>16777215</width>
            <height>20</height>
           </size>
+         </property>
+         <property name="toolTip">
+          <string>Add flipRx attribute</string>
          </property>
          <property name="text">
           <string>FlipRx</string>
@@ -4368,6 +4374,9 @@ Setup</string>
            <height>20</height>
           </size>
          </property>
+         <property name="toolTip">
+          <string>Add flipRy attribute</string>
+         </property>
          <property name="text">
           <string>FlipRy</string>
          </property>
@@ -4386,6 +4395,9 @@ Setup</string>
            <width>16777215</width>
            <height>20</height>
           </size>
+         </property>
+         <property name="toolTip">
+          <string>Add flipRz attribute</string>
          </property>
          <property name="text">
           <string>FlipRz</string>
@@ -4557,8 +4569,7 @@ Setup</string>
           </size>
          </property>
          <property name="toolTip">
-          <string>Apply Preset to Selected
-( Low Contrast )</string>
+          <string>Apply Preset 1</string>
          </property>
          <property name="text">
           <string>1</string>
@@ -4580,8 +4591,7 @@ Setup</string>
           </size>
          </property>
          <property name="toolTip">
-          <string>Apply Preset to Selected
-( High Contrast )</string>
+          <string>Apply Preset 2</string>
          </property>
          <property name="text">
           <string>2</string>
@@ -4744,7 +4754,7 @@ Setup</string>
           </font>
          </property>
          <property name="toolTip">
-          <string>Drop Shape on the Floor</string>
+          <string>Drop selected ctl on floor</string>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -4947,7 +4957,7 @@ Setup</string>
           </font>
          </property>
          <property name="toolTip">
-          <string>Connect to Canine</string>
+          <string>Connect to Biped</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -5039,7 +5049,7 @@ Setup</string>
           </font>
          </property>
          <property name="toolTip">
-          <string>Connect to Canine</string>
+          <string>Connect to Equine</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -5166,7 +5176,7 @@ Setup</string>
             </font>
            </property>
            <property name="toolTip">
-            <string>Connect to Canine</string>
+            <string/>
            </property>
            <property name="layoutDirection">
             <enum>Qt::LeftToRight</enum>
@@ -5199,7 +5209,7 @@ Setup</string>
             </font>
            </property>
            <property name="toolTip">
-            <string>Connect to Equine</string>
+            <string/>
            </property>
            <property name="layoutDirection">
             <enum>Qt::LeftToRight</enum>
@@ -5248,7 +5258,7 @@ Setup</string>
             </font>
            </property>
            <property name="toolTip">
-            <string>Connect to Canine</string>
+            <string/>
            </property>
            <property name="layoutDirection">
             <enum>Qt::LeftToRight</enum>
@@ -5281,7 +5291,7 @@ Setup</string>
             </font>
            </property>
            <property name="toolTip">
-            <string>Connect to Canine</string>
+            <string/>
            </property>
            <property name="layoutDirection">
             <enum>Qt::LeftToRight</enum>
@@ -5314,86 +5324,95 @@ Setup</string>
      <property name="flat">
       <bool>true</bool>
      </property>
-     <widget class="QPushButton" name="addCharDef_BN">
+     <widget class="QWidget" name="verticalLayoutWidget_5">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>47</y>
-        <width>201</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>10</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>18</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Segoe UI</family>
-        <pointsize>8</pointsize>
-       </font>
-      </property>
-      <property name="toolTip">
-       <string>Import Env Scene</string>
-      </property>
-      <property name="text">
-       <string>Create Character Definition</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_23">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>25</y>
+        <x>0</x>
+        <y>20</y>
         <width>211</width>
-        <height>21</height>
+        <height>81</height>
        </rect>
       </property>
-      <property name="text">
-       <string>Select any rig ctl</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="addCustRigMap_BN">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>80</y>
-        <width>201</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>10</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>18</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Segoe UI</family>
-        <pointsize>8</pointsize>
-       </font>
-      </property>
-      <property name="toolTip">
-       <string>Import Env Scene</string>
-      </property>
-      <property name="text">
-       <string>Create Custom Rig Mapping</string>
-      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <property name="spacing">
+        <number>4</number>
+       </property>
+       <property name="leftMargin">
+        <number>10</number>
+       </property>
+       <property name="topMargin">
+        <number>4</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_23">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>1. Open your rig</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="addCharDef_BN">
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Create Character Definition for nlChar</string>
+         </property>
+         <property name="text">
+          <string>Create Character Definition</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="addCustRigMap_BN">
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>18</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Create Custom Rig Mapping for nlChar</string>
+         </property>
+         <property name="text">
+          <string>Create Custom Rig Mapping</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
     <widget class="QGroupBox" name="groupBox_15">
@@ -5738,7 +5757,7 @@ Setup</string>
           </font>
          </property>
          <property name="toolTip">
-          <string>Select in Hierarchy</string>
+          <string>Select Hierarchy</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>

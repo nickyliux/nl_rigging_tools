@@ -517,28 +517,29 @@ HUMAN_IK_MAP = {
 
 def add_char_def_UI():
     """Create a HumanIK character definition for a biped rig based on the selected object."""
-    sel = mc.ls(sl=1, tr=1)
-    if sel:
-        ns = DagNode(sel[0]).namespace
-        if ns:
-            add_char_def(HIK_CHAR, HUMAN_IK_MAP, ns)
-        else:
-            # logging.info("No namespace found for the selected object.")
-            mc.confirmDialog(
-                t="Info",
-                m="No namespace found for the selected object.     ",
-                b=["OK"],
-            )
-    else:
-        # logging.info("Please select a joint or control to determine the namespace.")
-        mc.confirmDialog(
-            t="Info",
-            m="Please select a joint or control to determine the namespace.     ",
-            b=["OK"],
-        )
+    add_char_def(HIK_CHAR, HUMAN_IK_MAP)
+    # sel = mc.ls(sl=1, tr=1)
+    # if sel:
+    #     ns = DagNode(sel[0]).namespace
+    #     if ns:
+    #         add_char_def(HIK_CHAR, HUMAN_IK_MAP, ns)
+    #     else:
+    #         # logging.info("No namespace found for the selected object.")
+    #         mc.confirmDialog(
+    #             t="Info",
+    #             m="No namespace found for the selected object.     ",
+    #             b=["OK"],
+    #         )
+    # else:
+    #     # logging.info("Please select a joint or control to determine the namespace.")
+    #     mc.confirmDialog(
+    #         t="Info",
+    #         m="Please select a joint or control to determine the namespace.     ",
+    #         b=["OK"],
+    #     )
 
 
-def add_char_def(char_name, mapping, ns):
+def add_char_def(char_name, mapping):
     """Create a HumanIK character definition and assign joints."""
     _ensure_hik_loaded()
     # maya_loc = os.environ.get("MAYA_LOCATION", "")
@@ -546,9 +547,9 @@ def add_char_def(char_name, mapping, ns):
     # mel.eval(f'source "{maya_loc}/scripts/others/hikDefinitionOperations.mel"')
     # mel.eval(f'source "{maya_loc}/scripts/others/hikCharacterControlsUI.mel"')
 
-    if not ns:
-        logging.info("Namespace is required to create a character definition.")
-        return None
+    # if not ns:
+    #     logging.info("Namespace is required to create a character definition.")
+    #     return None
 
     mc.HIKCharacterControlsTool()
     try:
@@ -568,13 +569,13 @@ def add_char_def(char_name, mapping, ns):
             logging.warning(f"Skipped '{hik_bone}': unknown HIK bone name")
             continue
 
-        ns_joint = f"{ns}:{joint_name}"
-        if not mc.objExists(ns_joint):
-            logging.warning(f"Skipped '{hik_bone}': {ns_joint} not found")
+        # ns_joint = f"{ns}:{joint_name}"
+        if not mc.objExists(joint_name):
+            logging.warning(f"Skipped '{hik_bone}': {joint_name} not found")
             continue
 
-        mel.eval(f'setCharacterObject("{ns_joint}", "{char_name}", {slot_idx}, 0)')
-        logging.info(f"Assigned '{ns_joint}' to HIK '{hik_bone}' (slot {slot_idx})")
+        mel.eval(f'setCharacterObject("{joint_name}", "{char_name}", {slot_idx}, 0)')
+        logging.info(f"Assigned '{joint_name}' to HIK '{hik_bone}' (slot {slot_idx})")
 
     # mel.eval("hikToggleLockDefinition()")
     # mel.eval("hikUpdateDefinitionUI();")
