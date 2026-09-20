@@ -782,7 +782,7 @@ def setView(jx=0, xray=0, wos=0, fit=0, ao=0, aa=0):
 
 def getNsFrOptVar():
     """Get current namespace from optionVar"""
-    return mc.optionVar(q="curr_ns")
+    return mc.optionVar(q="curr_ns") or ""
 
 
 def setNsFrSel(*args):
