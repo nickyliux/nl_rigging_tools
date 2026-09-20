@@ -1160,7 +1160,8 @@ def createFollowCam(*args, fix=0):
         if fix == 0:
             cam.offset.a.ty.disconnect()
             cam.offset.a.ty.set(0)
-        cam.shape.a.focalLength.set(50)
+        cam.shape.a.focalLength.set(85)
+        cam.shape.a.nearClipPlane.set(1)
 
         current_panel = mc.getPanel(withFocus=True)
         if mc.getPanel(typeOf=current_panel) == "modelPanel":
