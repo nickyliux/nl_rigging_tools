@@ -13,7 +13,7 @@ blockquote {
 </style>
 -->
 
-# nl-rigging-tools ( nlRT )
+# nl-rigging-tools (nlRT)
 
 [![License: AGPL v3](https://img.shields.io/badge/license-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Blog](https://img.shields.io/badge/blog-nickyliu.com-red)](http://www.nickyliu.com)
@@ -86,7 +86,6 @@ horse_twk.ma            # tweak
 weight/horse_wgh.json   # skin weight
 ```
 
-
 ## Custom Objects Classes
 ```mermaid
 flowchart
@@ -140,7 +139,6 @@ flowchart LR
     id1(RigModule) --> id12(FingerFk)
     id1(RigModule) --> id13(SimpleFk)
     id1(RigModule) --> id14(Belt)
-    style id1 fill:#c99
 ```
 
 
