@@ -1,5 +1,5 @@
 import maya.cmds as mc
-import maya.mel as mel
+from maya import mel
 
 
 def createMenu():
@@ -30,30 +30,23 @@ def aboutDialog(self):
     """Show the about dialog."""
 
     msg = """
-nl Rigging Tools ( nlRT ) version: v0.1.1
-
-nlRT is under the terms of the MIT License
-
+nl Rigging Tools ( nlRT )
+Version: v0.1.2
 Copyright (c) 2026 Nicky Liu
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+nlRT is under the terms of the AGPL-3.0 License
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR      
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
-OR OTHER DEALINGS IN THE SOFTWARE.
+- Free to Use: You can use, run, and modify the software for any purpose, including commercially.
 
-GitHub: https://github.com/nl/nl_rigging_tools
+- Share Modifications (Network Clause): If you change the code and let users access it over a network (like as a web app or cloud service), you must make the full modified source code available to those users.
+
+- Keep Notices: You must keep original copyright notices, license terms, and state any significant changes made to the code.
+
+- No Warranty: The software comes with no warranty or liability protection.
+
+
+Source @ GitHub
+https://github.com/nl/nl_rigging_tools
     """
     mc.confirmDialog(title="About nlRT", message=msg, button=["OK"])
