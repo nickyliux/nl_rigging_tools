@@ -86,20 +86,20 @@ horse_twk.ma            # tweak
 weight/horse_wgh.json   # skin weight
 ```
 
+
 ## Custom Objects Classes
 ```mermaid
 flowchart
-    DepNode --> Condition
-    DepNode --> DagNode
-    DagNode --> GrpNode
-    GrpNode --> CrvNode
-    GrpNode --> JntNode
-    GrpNode --> LocNode
-    GrpNode --> SrfNode
-    GrpNode --> MshNode
-
-    Dimension
-    AttributeHolder --> Attribute
+    id10(DepNode) --> id11(Condition)
+    id10(DepNode) --> id12(DagNode)
+    id12(DagNode) --> id1(GrpNode)
+    id1(GrpNode) --> id2(CrvNode)
+    id1(GrpNode) --> id3(JntNode)
+    id1(GrpNode) --> id4(LocNode)
+    id1(GrpNode) --> id5(SrfNode)
+    id1(GrpNode) --> id6(MshNode)
+    id8(AttributeHolder) --> id9(Attribute)
+    id7(Dimension)
 ```
 
 ```python
@@ -122,26 +122,25 @@ jnt.alignTo(grp)  # align jnt to grp
 jnt.addOffsetGrp()  # add offset group for jnt
 ```
 
-## Custom Component Classes
+
+#### Custom Component Classes
 ```mermaid
-flowchart
-    RigModule --> Head
-    RigModule --> SpineBp
-    RigModule --> SpineQd
-    RigModule --> ArmBp
-    RigModule --> LegBp
-    RigModule --> LegQd
-    
-```
-```mermaid
-flowchart
-    RigModule --> IkFkSpline
-    IkFkSpline --> Neck
-    IkFkSpline --> Tail
-    RigModule --> HandBp
-    RigModule --> FingerFk
-    RigModule --> SimpleFk
-    RigModule --> belt
+
+flowchart LR
+    id1(RigModule) --> id2(Head)
+    id1(RigModule) --> id3(SpineQd)
+    id3(SpineQd) --> id4(SpineBp)
+    id1(RigModule) --> id5(ArmBp)
+    id1(RigModule) --> id6(LegBp)
+    id1(RigModule) --> id7(LegQd)
+    id1(RigModule) --> id8(IkFkSpline)
+    id8(IkFkSpline) --> id9(Neck)
+    id8(IkFkSpline) --> id10(Tail)
+    id1(RigModule) --> id11(HandBp)
+    id1(RigModule) --> id12(FingerFk)
+    id1(RigModule) --> id13(SimpleFk)
+    id1(RigModule) --> id14(Belt)
+    style id1 fill:#c99
 ```
 
 

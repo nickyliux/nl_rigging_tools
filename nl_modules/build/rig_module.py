@@ -336,7 +336,7 @@ class RigModule(RigBase):
 
     def unbuild_pre_module(self):
         """Prepare for unbuilding the rig module, resetting the master guide state."""
-        common.pauseVP(1)
+        # common.pauseVP(1)
         # self.moduleG.show()
 
         prx = mc.ls(self.rigID + "_*_pxGeo*")
@@ -370,7 +370,7 @@ class RigModule(RigBase):
 
         self.CTL_DATA.delete()
         self.masterGuide.a.built.set(0)
-        common.pauseVP(0)
+        # common.pauseVP(0)
 
     def setup_anchor_module(self, anchorDict=None):
         """
@@ -1170,7 +1170,7 @@ class RigModule(RigBase):
             )
 
         # Add volume attributes to setting
-        autoVol = self.setting.a.add("autoVol", min=0, dv=0.5)
+        autoVol = self.setting.a.add("autoVol", min=0, dv=1)
         autoVol >> ribbonUp.autoVol
         autoVol >> ribbonLw.autoVol
 

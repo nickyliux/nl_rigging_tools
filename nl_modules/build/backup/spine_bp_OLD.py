@@ -1,0 +1,403 @@
+import logging
+import maya.cmds as mc
+from nl_modules.build.rig_module import RigModule
+from nl_modules.nodel.base.dag_node import DagNode
+from nl_modules.nodel.crv_node import CrvNode
+from nl_modules.nodel.jnt_node import JntNode
+from nl_modules.nodel.loc_node import LocNode
+from nl_modules.nodel.srf_node import SrfNode
+from nl_modules.utils import common
+from nl_modules.utils import proxy
+from nl_modules.utils import utils_node as ut
+from nl_modules.utils.color import Color
+from nl_modules.utils.common import Vec
+
+
+class SpineBp(RigModule):
+    """Biped spine rig module."""
+
+    def __init__(self, mg):
+        super().__init__(mg)
+
+        self.fkJntNum = 4
+        for attr in (
+            # "ribbon",
+            # "fkJntNum",
+            "rbnJntNum",
+        ):
+            setattr(self, attr, self.masterGuide.a[attr].get())
+
+        # Guide nodes
+        self.LINE_GUIDE = DagNode(f"{self.rigID}_line_guide")
+        self.MD_GUIDE = DagNode(f"{self.rigID}_md_guide")
+
+        guide = DagNode(f"{self.rigID}_base_pivot_guide")
+        self.BASE_PVT_GUIDE = guide if guide.exists() else None
+
+        # Main settings and controls
+        self.setting = None
+        self.cog_ctl = None
+        self.base_ikc = None
+        self.mid_ikc = None
+        self.cog_gmb = None
+        self.fore_ikc = None
+
+        # Control and joint lists
+        self.ctls_ik = []
+        self.ctls_fk = []
+        self.jnts_five = []
+        self.jnts_bind = []
+        self.jnts_fk = []
+        self.jnts_rb = []
+
+        # Ribbon surface
+        self.rbSrf = None
+
+    def gen_sk(self):
+        """Generate the skeleton for the spine rig."""
+        self.genSk_module()
+        root_list = self.gen_sk_fr_names(["rt", "md", "tp"])
+
+        self.rootJ = root_list[0]
+        self.rootJ | self.JNT_DATA
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
+        return self.rootJ
+
+    def build_ctl(self):
+        """Build control nodes for the spine rig."""
+        logging.info(".")
+        rID, rSz, xDr = self.get_short_form()
+
+        if self.is_neck():
+            rSz = self.rigSize = rSz / 2
+
+        ctl_defs = [
+            ("setting", "screw_nut", "z", rSz * 2, 0),
+            ("cog_ctl", "hexagon_3d", None, rSz * 4, 0),
+            ("fore_ikc", "cube", None, Vec((3.5, 0.3, 3.5)) * rSz, 0),
+            ("mid_ikc", "sphere", None, rSz, 1),
+            ("base_ikc", "cube", None, Vec((3.5, 0.3, 3.5)) * rSz, 0),
+        ]
+        for name, shape, up, scale, top in ctl_defs:
+            self.create_and_register_ctl(rID, name, shape, up, scale, top)
+
+        self.setting.cv_move(0, 0, rSz * -50)
+
+    def build(self):
+        """Build the spine rig module."""
+        self.build_pre_module()
+
+        self.build_ctl()
+        self.build_fk()
+        # if self.ribbon:
+        self.build_spine_ik()
+
+        self.setting.alignTo(self.masterGuide, p=self.cog_gmb)
+
+        self.build_post()
+
+    def build_fk(self):
+        """Build the FK controls and joints for the spine rig."""
+        logging.info(".")
+        rID, rSz, xDr = self.get_short_form()
+
+        self.jnts_fk = JntNode.createJntsFrCrv(
+            self.LINE_GUIDE,
+            num=self.fkJntNum,
+            pf=rID,
+            aimV=(0, 1, 0),
+            size=rSz * 2,
+            p=self.JNT_DATA,
+            wldUpObj=self.masterGuide,
+        )
+        mc.delete(self.rootJ)
+        self.rootJ = self.jnts_fk[0]
+        self.masterGuide.setMsg({"rootJ": self.rootJ})
+
+        self.ctls_fk = []
+        for i, j in enumerate(self.jnts_fk[:-1]):
+            c = CrvNode(
+                f"{i + 1}_fkc",
+                pf=rID,
+                shape="hexagon_3d",
+                scale=Vec((2, 1, 2)) * rSz,
+            )
+            self.ctls_fk.append(c)
+
+        if self.is_neck():
+            self.build_fk_with_ctl2(self.jnts_fk, self.ctls_fk, p=self.CTL_DATA)
+        else:
+            self.build_fk_with_ctl2(self.jnts_fk[1:], self.ctls_fk[1:], p=self.CTL_DATA)
+            self.reverse_fk_hip()
+
+        self.cog_ctl.snapAlignTo(self.jnts_fk[0], self.masterGuide)
+        self.cog_gmb = CrvNode(self.cog_ctl).addGimbal(dv=1)
+        self.cog_ctl | self.CTL_DATA
+        self.cog_ctl.addOffsetGrp()
+
+        self.cog_gmb.cstPar(self.ctls_fk[0].offset, mo=1)
+        if not self.is_neck():
+            self.cog_gmb.cstPar(self.ctls_fk[1].offset, mo=1)
+
+        self.cog_gmb.cstSca(self.jnts_fk[0])
+        self.jnts_fk[0].childrenJt[0].a.segmentScaleCompensate.set(0)
+
+        self.jnts_bind = self.jnts_fk[:-1]
+
+    def reverse_fk_hip(self):
+        """modify first fkc specific for hip rotation."""
+        ctl = self.ctls_fk[0]
+        ctl(
+            p=self.CTL_DATA,
+            addOfs=1,
+            shape="hexagon_3d",
+            scale=self.rigSize,
+            color=Color.PINK,
+        )
+        ctl.cv_scale(2.2)
+
+        # ctl.offset.snapAlignTo(self.BASE_PVT_GUIDE, self.jnts_fk[0])
+        ctl.offset.alignTo(self.BASE_PVT_GUIDE)
+        ctl.cstPar(self.jnts_fk[0], mo=1)
+
+    def build_spine_ik(self):
+        """Build the IK controls for the spine rig."""
+        logging.info(".")
+        rID, rSz, xDr = self.get_short_form()
+
+        self.base_ikc.snapAlignTo(self.jnts_fk[0], self.masterGuide)
+        self.mid_ikc.snapAlignTo(self.MD_GUIDE, self.masterGuide)
+        self.fore_ikc.snapAlignTo(self.jnts_fk[-1], self.masterGuide)
+
+        self.base_ikc | self.ctls_fk[0]
+        self.fore_ikc | self.ctls_fk[-1]
+
+        mid_parent = self.ctls_fk[len(self.ctls_fk) // 2]
+        self.mid_ikc | mid_parent
+        self.mid_ikc.addOffsetGrp(count=2)
+        self.mid_ikc.addOffsetGrp()
+        self.base_ikc.addOffsetGrp()
+        self.fore_ikc.addOffsetGrp()
+
+        midOfs2 = self.mid_ikc.offset.offset
+        self.fore_ikc.a.t @ self.base_ikc.a.t >> midOfs2.a.t
+        # midOfs2.a.ty.disconnect()
+
+        twistRatio = self.mid_ikc.a.add("twistRatio", min=0, max=1, dv=0.5)
+
+        blendRy = ut.blend2_(self.base_ikc.a.ry, self.fore_ikc.a.ry, w=twistRatio)
+        blendRy >> self.mid_ikc.offset.a.ry
+
+        self.base_ikc.cstAim(
+            self.mid_ikc.offset.offset,
+            worldUpObject=self.cog_ctl,
+            worldUpType="objectrotation",
+            aim=(0, -1, 0),
+            u=(0, 0, 1),
+            wu=(0, 0, 1),
+        )
+        self.fore_ikc.cstOri(self.jnts_fk[-1], mo=1)
+
+        self.build_ribbon()
+        # self.addMiddleBend()
+
+        if not self.is_neck():
+            RigModule.dyn_pivot(self.cog_ctl)
+            RigModule.dyn_pivot(self.fore_ikc, endTgt=self.mid_ikc, dv=1)
+            RigModule.dyn_pivot(self.base_ikc, endTgt=self.mid_ikc, dv=0.5)
+
+        self.ctls_ik = [self.mid_ikc, self.fore_ikc, self.base_ikc]
+
+    def addMiddleBend(self):
+        """Add middle bend control for the spine rig."""
+        loc = LocNode(
+            "midBend_loc", pf=self.rigID, align=self.mid_ikc, p=self.mid_ikc.parent
+        )
+        grp = self.mid_ikc.addOffsetGrp()
+        autoMidBend = self.mid_ikc.a.add("autoMidBend", min=0, max=1, dv=0.5)
+        common.cstMulti(self.fore_ikc, self.base_ikc, loc, cstType="parT", mo=1)
+        loc.a.ty.disconnect()
+
+        loc.a.tx * autoMidBend >> grp.a.tx
+        loc.a.tz * autoMidBend >> grp.a.tz
+
+        self.fore_ikc.a.add("autoMidBend", proxy=autoMidBend)
+        self.base_ikc.a.add("autoMidBend", proxy=autoMidBend)
+
+    def build_ribbon(self):
+        """Build the ribbon for the spine rig."""
+        rID, rSz, xDr = self.get_short_form()
+
+        self.rbSrf = SrfNode.buildRbSrf(
+            pf=rID,
+            crv=self.LINE_GUIDE,
+            normal=-1,
+            snap=self.rootJ,
+            # spans=self.fkJntNum + 1,
+            spans=self.fkJntNum,
+            p=self.CTL_DATA,
+            inheritsXf=0,
+        )
+
+        self.ctlJnts = self.build_threeOrFiveJnts(
+            [self.base_ikc, self.mid_ikc, self.fore_ikc],
+            r=rSz * 5,
+            five=0 if self.is_neck() else 1,
+        )
+        # self.rbSrf.weightTo(self.ctlJnts, chain=0, mi=3, dr=5)
+        self.rbSrf.hardWeightTo(self.ctlJnts)
+
+        mid_id = len(self.ctlJnts) // 2
+
+        if len(self.ctlJnts) == 5:
+            self.ctlJnts[1] | self.ctlJnts[0]
+            self.ctlJnts[-2] | self.ctlJnts[-1]
+
+        self.base_ikc.a.add("tangent", min=0.001, dv=1) >> self.ctlJnts[0].a.sy
+        self.mid_ikc.a.add("tangent", min=0.001, dv=1) >> self.ctlJnts[mid_id].a.sy
+        self.fore_ikc.a.add("tangent", min=0.001, dv=1) >> self.ctlJnts[-1].a.sy
+
+        stretchy = self.setting.a.add("stretchy", min=0, max=1, dv=1)
+        self.base_ikc.a.add("stretchy", proxy=stretchy)
+        self.fore_ikc.a.add("stretchy", proxy=stretchy)
+
+        crvLenRatio, self.jnts_rb, crv = common.build_ribbon_rivet(
+            rbSrf=self.rbSrf,
+            rivetNum=self.rbnJntNum,
+            scaleAttr=self.masterC.a.globalScale * self.cog_ctl.a.sy,
+            stretchyAttr=self.setting.a.stretchy,
+            pf=rID,
+            rSz=rSz,
+            atMidOrEnd=1,
+            p=self.CTL_DATA,
+            JNT_DATA=self.JNT_DATA,
+        )
+        self.jnts_bind = self.jnts_rb
+        self.masterGuide.setMsg({"rbCrv": crv})
+        self.masterGuide.setMsg({"rbSrf": self.rbSrf})
+
+        self.build_volume_setup()
+
+    def build_volume_setup(self):
+        """Setup volume squash/stretch for the spine rig."""
+        scaleFix = self.masterC.a["globalScale"]
+
+        # To get the correct arc length of the spine, get the V value from the posi node for the last ribbon jnt
+        rivet_loc = self.jnts_rb[-1].parent
+        posi = rivet_loc.a.tx.inConnNode
+
+        arcLD = ut.arcLenDim_(self.rbSrf)
+        posi.a.parameterV >> arcLD.a.vParamValue
+        d = arcLD.a.arcLengthInV
+        D = d.get()
+
+        autoVol = self.setting.a.add("autoVol", min=0, dv=0.5)
+        self.fore_ikc.a.add("autoVol", proxy=autoVol)
+        self.base_ikc.a.add("autoVol", proxy=autoVol)
+
+        volGraph = common.addKeys(
+            self.setting,
+            "volGraph",
+            [(0, 0), ((self.rbnJntNum - 1) / 2, 1), (self.rbnJntNum - 1, 0)],
+        )
+        common.setupFrameCache(
+            graph=volGraph,
+            joints=self.jnts_rb,
+            base=D / (d / scaleFix),
+            autoVol=autoVol,
+        )
+
+    def setup_vis(self):
+        """Setup visibility toggles for the spine rig controls."""
+        self.ctl_vis_toggle(
+            self.setting.a.add("debug", type="bool", k=0),
+            onList=[self.jnts_fk[0]] + self.jnts_five + [self.rbSrf],
+        )
+        if self.is_neck():
+            CrvNode(self.ctls_fk[0]).setOnTop(1)
+            self.ctl_vis_toggle(
+                self.setting.a.add("showFullCtl", type="bool", k=0),
+                onList=[self.cog_ctl, self.base_ikc],
+            )
+
+        mc.hide(self.ctlJnts)
+
+    def setup_channel(self):
+        """Setup channel attributes for the spine rig controls."""
+        self.setting.a.showAttr()
+
+        ctls = self.ctls_fk + [
+            self.cog_gmb,
+        ]
+        for ctl in [self.base_ikc, self.mid_ikc, self.fore_ikc]:
+            ctl.a.showAttr(t=1, r=1, s=0)
+
+        for ctl in ctls:
+            ctl.a.showAttr(t=1, r=1)
+
+        self.ctls_fk[0].a.showAttr(t=0, r=1)
+
+    def setup_rotate_order(self):
+        """Setup rotate order for the spine rig controls."""
+        ctls = self.ctls_fk + [
+            self.cog_ctl,
+            self.cog_gmb,
+        ]
+        # if self.ribbon:
+        ctls += self.ctls_ik
+
+        for ctl in ctls:
+            ctl.a.ro.set(2)
+
+    def setup_space(self):
+        """Setup space switching for the spine rig controls."""
+        self.masterGuide.setMsg({"space_COG": self.cog_ctl})
+
+        self.masterGuide.setMsg(
+            {
+                "space_master": self.masterC,
+                "space_lwrBody": self.base_ikc,
+                "space_uprBody": self.fore_ikc,
+            }
+        )
+
+    def setup_anchor(self):
+        """Setup anchor module for the spine rig controls."""
+        anchor1 = self.base_ikc
+        anchor2 = self.jnts_rb[-1]
+        self.setup_anchor_module({"anchorP1": anchor1, "anchorP2": anchor2})
+
+    def setup_bindJnt(self):
+        """Setup bind joints for the spine rig."""
+        self.add_bind_jnt_set(self.jnts_bind)
+        proxy.add_proxyRadiusScale_attr(self.jnts_bind, 5)
+
+    def setup_ctlSet(self):
+        """Setup control sets for the spine rig."""
+        ctls = self.ctls_fk + [self.setting, self.cog_ctl, self.cog_gmb]
+        ctls += self.ctls_ik
+        self.add_ctl_set(ctls)
+
+    def setup_scale(self):
+        """Setup scale attributes for the spine rig."""
+        self.masterC.a.globalScale >> self.JNT_DATA.a.s
+        for ctl in self.ctls_fk:
+            self.cog_ctl.a.s >> ctl.offset.a.s
+
+    def is_neck(self):
+        """Check if the rig is a neck rig."""
+        return self.__class__.__name__ == "NeckBp"
+
+    def build_post(self):
+        """Post setup for the spine rig."""
+        logging.info(".")
+
+        self.setup_scale()
+        self.setup_bindJnt()
+        self.setup_ctlSet()
+        self.setup_space()
+        self.setup_anchor()
+        self.setup_vis()
+        self.setup_rotate_order()
+        self.build_post_module()
+        self.setup_channel()

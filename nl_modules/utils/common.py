@@ -75,20 +75,20 @@ def matchMove(targetList, mode=None):
     mc.matchTransform(*others, last, position=t, rotation=r, scale=s)
 
 
-def assignColor(preset, tgts=None):
-    """Assign preset color to target objects"""
-    from nl_modules.nodel.base.dag_node import DagNode
+# def assignColor(preset, tgts=None):
+#     """Assign preset color to target objects"""
+#     from nl_modules.nodel.base.dag_node import DagNode
 
-    tgts = tgts or mc.ls(sl=1, tr=1)
-    if not tgts:
-        return
+#     tgts = tgts or mc.ls(sl=1, tr=1)
+#     if not tgts:
+#         return
 
-    for tgt in tgts:
-        tgt = DagNode(tgt)
-        if tgt.type == "nurbsCurve":
-            tgt.color = tgt.get_side_color(preset=preset)
+#     for tgt in tgts:
+#         tgt = DagNode(tgt)
+#         if tgt.type == "nurbsCurve":
+#             tgt.color = tgt.get_side_color(preset=preset)
 
-    mc.select(cl=1)
+#     mc.select(cl=1)
 
 
 def assignShd(*args, tgts=None):

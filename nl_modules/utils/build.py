@@ -73,14 +73,14 @@ def buildGuide(*args):
         mc.progressWindow(
             t="Build", pr=0, status="\nPreparing ...", ii=0, maxValue=guideCount
         )
-        common.pauseVP(1)
+        # common.pauseVP(1)
         for i, mg in enumerate(guidesToBuild):
             logging.info(f"({i + 1}) {mg.name}")
             buildTgt(mg)
             mc.progressWindow(e=1, pr=i, status=f"\n{mg.name}  [ {i} / {guideCount} ]")
             mc.refresh()
         postRig()
-        common.pauseVP(0)
+        # common.pauseVP(0)
 
         mc.progressWindow(ep=1)
         logging.info(f"{guideCount} guide(s) built.")
@@ -514,10 +514,7 @@ def boneAutoAttach():
         if rigID.startswith("tail") or rigID.startswith("neck"):
             attachToOneSrfUVPin(rigID, rbJnts, rbSrfSk, globalScale, grp)
 
-        elif rigID.startswith("spineBp") or rigID.startswith("neck"):
-            attachToOneSrfUVPin(rigID, rbJnts, rbSrf, globalScale, grp)
-
-        elif rigID.startswith("spineQd"):
+        elif rigID.startswith("spine"):
             attachToTwoSrfUVPin(rigID, rbJnts, rbSrf, rbSrfSk, globalScale, grp)
 
 

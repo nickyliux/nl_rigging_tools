@@ -279,9 +279,9 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         )
         self.connect(self.UI.crvShape_save_BN, self.crvShape_save, ":fileSave.png")
         self.connect(self.UI.crvShape_del_BN, self.crvShape_del, ":smallTrash.png")
-        icon = ":colorPresetSpectrum.png"
-        self.connect(self.UI.assignColor_BN, partial(common.assignColor, 0), icon)
-        self.connect(self.UI.assignColor2_BN, partial(common.assignColor, 1), icon)
+        # icon = ":colorPresetSpectrum.png"
+        # self.connect(self.UI.assignColor_BN, partial(common.assignColor, 0), icon)
+        # self.connect(self.UI.assignColor2_BN, partial(common.assignColor, 1), icon)
 
         self.connect(self.UI.shapeRotaX_BN, partial(control.rotaCVForSel, 90, 0, 0))
         self.connect(self.UI.shapeRotaY_BN, partial(control.rotaCVForSel, 0, 90, 0))
@@ -568,14 +568,6 @@ class MyToolWin(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 )
                 jnt.a.t.set(*mesh.o.bbCenter)
                 addedJnts.append(jnt)
-
-            # Add extra group to created joints
-            # mc.group(addedJnts, n=grp.name + "_#")
-
-            # Add set
-            # if rb == 1 and len(addedJnts) > 0:
-            #     setNames = ["neck_rbj_set", "spine_rbj_set", "tail_rbj_set"]
-            #     mc.sets(addedJnts, n=setNames[type])
 
     def toggleClickDrag(self):
         """Toggle click and drag selection preference."""

@@ -80,9 +80,6 @@ def autoBind_rbJnts(meshes=None):
 
         if grp.exists():
             if not mc.ls(setName, type="objectSet"):
-                # ele = mc.sets(setName, q=1)
-                # mc.delete(ele)
-                # Create set for duplicated
                 rbJnts = [j.duplicate(n=j + "_bind") for j in grp.allChildrenJt]
                 mc.sets(rbJnts, n=setName)
         else:

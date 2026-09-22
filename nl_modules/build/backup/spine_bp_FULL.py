@@ -15,7 +15,7 @@ from nl_modules.utils.color import Color
 from nl_modules.utils.common import Vec
 
 
-class SpineQd(RigModule):
+class SpineBp(RigModule):
     """Quadruped spine rig module."""
 
     def __init__(self, mg):
@@ -76,26 +76,20 @@ class SpineQd(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 2, 1),
-            ("cog_ctl", "trapezoid_3d", None, Vec((1, 1.2, 1.8)) * rSz, 0),
-            ("fore_ikc", "hexagon_3d", "z", rSz * 4, 0),
-            ("mid_ikc", "hexagon_3d", "z", rSz * 3, 0),
-            ("base_ikc", "hexagon_3d", "z", rSz * 4, 0),
-            ("tangent0_ctl", "arrow", "x", rSz / 2, 1),
-            ("tangent1_ctl", "arrow", "x", rSz / 2, 1),
+            ("cog_ctl", "cog", None, rSz * 4, 0),
+            ("fore_ikc", "hexagon_3d", None, rSz * 2, 0),
+            ("mid_ikc", "hexagon_3d", None, rSz * 1.5, 0),
+            ("base_ikc", "hexagon_3d", None, rSz * 2, 0),
+            ("tangent0_ctl", "arrow", None, rSz / 2, 1),
+            ("tangent1_ctl", "arrow", None, rSz / 2, 1),
             ("end_ctl", "rotate2_3d", None, rSz * 1.5, 0),
         ]
 
         for name, shape, up, scale, top in ctl_defs:
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
-        self.cog_ctl.cv_move(0, rSz * 50, 0)
-        self.cog_ctl.cv_scale(0.5, 1, 1)
-
-        self.end_ctl.cv_rotate(0, 90, 0)
-        self.end_ctl.cv_move(0, 0, rSz * -15)
-
-        self.tangent0_ctl.cv_rotate(0, 180, 0)
-        self.setting.cv_move(0, rSz * 30, 0)
+        self.end_ctl.cv_rotate(-90, 0, 0)
+        self.setting.cv_move(0, 0, rSz * -40)
 
     def build(self):
         """Build the spine rig."""
@@ -118,7 +112,6 @@ class SpineQd(RigModule):
         self.build_ctl()
         self.build_fk()
         self.build_ik()
-        self.build_addPivot()
         self.build_ribbon()
         self.build_post()
 
@@ -146,7 +139,7 @@ class SpineQd(RigModule):
                 f"{i + 1}_fkc",
                 pf=rID,
                 shape="hexagon_3d",
-                scale=rSz * 3,
+                scale=Vec((2, 1, 2)) * rSz,
             )
             self.ctls_fk.append(c)
 
@@ -171,12 +164,11 @@ class SpineQd(RigModule):
         ctl(
             p=self.CTL_DATA,
             addOfs=1,
-            # shape="hexagon_3d",
             shape="cube",
             scale=self.rigSize,
             color=Color.PINK,
         )
-        ctl.cv_scale(4, 2, 2)
+        ctl.cv_scale(4, 0.5, 2)
 
         # ctl.offset.snapAlignTo(self.BASE_PVT_GUIDE, self.jnts_fk[0])
         ctl.offset.alignTo(self.BASE_PVT_GUIDE)
@@ -222,23 +214,10 @@ class SpineQd(RigModule):
         )
         ctlJ0, ctlJ1, ctlJ2 = self.jnts_ctl
 
-        self.cog_ctl.snapTo(ctlJ0)
-
-        if self.COG_PVT_GUIDE:
-            self.mid_ikc.alignTo(self.COG_PVT_GUIDE)
-        else:
-            self.mid_ikc.snapAlignTo(self.MD_GUIDE, self.masterGuide)
-
-        if self.BASE_PVT_GUIDE:
-            self.base_ikc.alignTo(self.BASE_PVT_GUIDE)
-        else:
-            self.base_ikc.snapAlignTo(self.RT_GUIDE, self.masterGuide)
+        self.base_ikc.snapAlignTo(self.RT_GUIDE, self.masterGuide)
+        self.mid_ikc.snapAlignTo(self.MD_GUIDE, self.masterGuide)
+        self.fore_ikc.snapAlignTo(self.TP_GUIDE, self.masterGuide)
         self.tangent0_ctl.alignTo(self.base_ikc)
-
-        if self.CHEST_PVT_GUIDE:
-            self.fore_ikc.alignTo(self.CHEST_PVT_GUIDE)
-        else:
-            self.fore_ikc.snapAlignTo(self.TP_GUIDE, self.masterGuide)
         self.tangent1_ctl.alignTo(self.fore_ikc)
 
         self.cog_ctl | self.IK_GRP
@@ -266,9 +245,9 @@ class SpineQd(RigModule):
         [ctl.addOffsetGrp() for ctl in self.ctls_ik]
         self.mid_ikc.addOffsetGrp()
 
-    def build_addPivot(self):
-        RigModule.dyn_pivot(self.cog_ctl, axis="ty", dv=0)
-        RigModule.dyn_pivot(self.cog_ctl, endTgt=self.TP_GUIDE, axis="tz", dv=0)
+        # RigModule.dyn_pivot(self.cog_ctl)
+        RigModule.dyn_pivot(self.fore_ikc, endTgt=self.mid_ikc, dv=1)
+        RigModule.dyn_pivot(self.base_ikc, endTgt=self.mid_ikc, dv=0.5)
 
     def build_spik_ribbon(
         self, rbSrf=None, rbSrfSk=None, jntNum=5, setting=None, scaleAttr=None
@@ -360,7 +339,6 @@ class SpineQd(RigModule):
         self.end_ctl.alignTo(self.RT_GUIDE, p=self.tangent0_ctl, addOfs=1)
         self.end_ctl.cstOri(rb_jnts[0], mo=1)
 
-        mc.sets(rb_jnts, n="spine_bind_jnt_set")
         ik_handle.hide()
         return crv_len_ratio_sk, spIkJnts, rb_jnts
 
@@ -437,10 +415,16 @@ class SpineQd(RigModule):
 
     def setup_channel(self):
         """Setup channel attributes for the spine rig controls."""
+        [ctl.a.showAttr(t=1, r=1) for ctl in self.ctls_ik]
+
         self.setting.a.showAttr()
         [
             ctl.a.showAttr(t=1, r=1)
-            for ctl in [self.cog_ctl] + self.ctls_fk + self.ctls_ik
+            for ctl in [
+                self.cog_ctl,
+                self.tangent0_ctl,
+                self.tangent1_ctl,
+            ]
         ]
         self.end_ctl.a.showAttr(r=1)
 

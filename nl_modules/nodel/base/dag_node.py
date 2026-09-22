@@ -1,12 +1,12 @@
 import logging
 import re
-import maya.cmds as mc
-from maya import mel
 from collections import OrderedDict
 
+import maya.cmds as mc
+from maya import mel
+
 from nl_modules.nodel.base.dep_node import DepNode
-from nl_modules.utils import common
-from nl_modules.utils import open_maya_api
+from nl_modules.utils import common, open_maya_api
 from nl_modules.utils.color import Color
 
 
@@ -17,11 +17,8 @@ class DagNode(DepNode):
         n = DagNode('new', nodeType='transform')
     """
 
-    # 0: [22, 25, 18, 13],  # 6 is blue, 18 is light blue
-    COLOR_PRESET = {
-        0: [(1, 0.95, 0), (0.6, 0.5, 0), 18, 13],
-        1: [(1, 0.95, 0), (0.5, 0.4, 0), (0.36, 0.66, 1), (0.71, 0.30, 0.30)],
-    }
+    COLOR_PRESET = {0: [(0.7, 0.7, 0), 20, 18, 13]}
+    # 1: [(1, 0.95, 0), (0.5, 0.4, 0), (0.36, 0.66, 1), (0.71, 0.30, 0.30)],
 
     def __init__(self, n, nodeType=None):
         """Initialize DagNode with node name and type."""
@@ -468,7 +465,7 @@ class DagNode(DepNode):
     def alignTo(self, obj, ofs=None, ofsR=None, rotateOnly=0, p=None, addOfs=0):
         """Align to obj"""
         obj = DagNode(obj) if isinstance(obj, str) else obj
-        if not obj.exists():
+        if not obj or not obj.exists():
             logging.error("Can't align to None.")
             return
 
@@ -488,7 +485,7 @@ class DagNode(DepNode):
     def snapTo(self, obj, ofs=None, p=None, addOfs=0):
         """Snap to obj"""
         obj = DagNode(obj) if isinstance(obj, str) else obj
-        if not obj.exists():
+        if not obj or not obj.exists():
             logging.error("Can't snap to None.")
             return
 
@@ -538,11 +535,11 @@ class DagNode(DepNode):
     def duplicate(self, n=None, p=None, **kwargs):
         """Duplicate itself"""
         from nl_modules.nodel.base.dag_node import DagNode
-        from nl_modules.nodel.jnt_node import JntNode
+        from nl_modules.nodel.crv_node import CrvNode
         from nl_modules.nodel.grp_node import GrpNode
+        from nl_modules.nodel.jnt_node import JntNode
         from nl_modules.nodel.loc_node import LocNode
         from nl_modules.nodel.msh_node import MshNode
-        from nl_modules.nodel.crv_node import CrvNode
         from nl_modules.nodel.srf_node import SrfNode
 
         if not self.exists():

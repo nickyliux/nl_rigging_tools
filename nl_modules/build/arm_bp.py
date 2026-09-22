@@ -92,7 +92,7 @@ class ArmBp(RigModule):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz, 0),
-            ("clavicle_fkc", "cube", None, scale / 2, 1),
+            ("clavicle_fkc", "cube", None, scale / 3, 1),
             ("upr_fkc", "hexagon_3d", "x", scale, 0),
             ("lwr_fkc", "hexagon_3d", "x", scale, 0),
             ("palm_fkc", "hexagon_3d", "x", scale, 0),
@@ -110,6 +110,7 @@ class ArmBp(RigModule):
         self.pvc.cv_rotate(-90, 0, 0)
         self.setting.cv_move(0, scale * 20, 0)
         self.ikc.cv_rotate(0, 90, 0)
+        self.clavicle_fkc.scale(2, 0.5, 0.5)
 
     def build(self):
         """Build the arm rig module."""
