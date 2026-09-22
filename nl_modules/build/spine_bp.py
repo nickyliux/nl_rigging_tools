@@ -16,7 +16,7 @@ class SpineBp(SpineQd):
 
         ctl_defs = [
             ("setting", "screw_nut", "z", rSz * 1.5, 1),
-            ("cog_ctl", "cog", None, rSz * 4, 0),
+            ("cog_ctl", "hexagon", None, rSz * 4, 0),
             ("fore_ikc", "hexagon_3d", None, rSz * 2, 0),
             ("mid_ikc", "hexagon_3d", None, rSz * 2, 0),
             ("base_ikc", "hexagon_3d", None, rSz * 2, 0),

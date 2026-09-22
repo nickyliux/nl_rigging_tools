@@ -442,7 +442,10 @@ class SpineQd(RigModule):
             ctl.a.showAttr(t=1, r=1)
             for ctl in [self.cog_ctl] + self.ctls_fk + self.ctls_ik
         ]
-        self.end_ctl.a.showAttr(r=1)
+        [
+            ctl.a.showAttr(r=1)
+            for ctl in [self.tangent0_ctl, self.tangent1_ctl, self.end_ctl]
+        ]
 
     def setup_anchor(self):
         """Setup anchor points for the spine rig controls."""

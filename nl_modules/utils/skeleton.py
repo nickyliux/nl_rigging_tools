@@ -78,8 +78,7 @@ def rib_setup(*args):
             return
 
         if DagNode(RIB_LATTICE_GRP).exists():
-            logging.info(f"{RIB_LATTICE_GRP} already exists.")
-            return
+            mc.delete(RIB_LATTICE_GRP)
 
         div = (1, 1, 1)
         # Note that the div may be wrong if the model group has non-zero rotation values
