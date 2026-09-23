@@ -15,7 +15,7 @@ class SpineBp(SpineQd):
         rID, rSz, xDr = self.get_short_form()
 
         ctl_defs = [
-            ("setting", "screw_nut", "z", rSz * 1.5, 1),
+            ("setting", "screw_nut", "z", rSz, 1),
             ("cog_ctl", "hexagon", None, rSz * 4, 0),
             ("fore_ikc", "hexagon_3d", None, rSz * 2, 0),
             ("mid_ikc", "hexagon_3d", None, rSz * 2, 0),
@@ -29,7 +29,7 @@ class SpineBp(SpineQd):
             self.create_and_register_ctl(rID, name, shape, up, scale, top)
 
         self.end_ctl.cv_rotate(-90, 0, 0)
-        self.setting.cv_move(0, 0, rSz * 40)
+        # self.setting.cv_move(0, 0, rSz * 40)
 
     def build_addPivot(self):
         # RigModule.dyn_pivot(self.cog_ctl)

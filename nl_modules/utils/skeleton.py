@@ -71,10 +71,10 @@ def rib_setup(*args):
     """Add a lattice deformer to a group containing rib meshes."""
     tgts = mc.ls(RIB_GRP)
     if tgts:
-        tgt_jnt_set = "spine_bind_jnt_set"
-        bind_set = mc.ls(tgt_jnt_set, type="objectSet")
-        if not bind_set:
-            logging.info(f"Not found: {tgt_jnt_set}.")
+        tgt_bind_set = "spine_bind_jnt_set"
+        tgt_bind_jnts = mc.ls(tgt_bind_set, type="objectSet")
+        if not tgt_bind_jnts:
+            logging.info(f"Not found: {tgt_bind_set}.")
             return
 
         if DagNode(RIB_LATTICE_GRP).exists():
@@ -101,7 +101,7 @@ def rib_setup(*args):
         )
 
         lattice = GrpNode(result[1])
-        lattice.weightTo(bind_set, mi=5)
+        lattice.weightTo(tgt_bind_jnts, mi=5)
         lattice_grp = lattice.parent
         lattice_grp.rename(RIB_LATTICE_GRP)
 

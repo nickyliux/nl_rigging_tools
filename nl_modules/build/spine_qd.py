@@ -95,7 +95,7 @@ class SpineQd(RigModule):
         self.end_ctl.cv_move(0, 0, rSz * -15)
 
         self.tangent0_ctl.cv_rotate(0, 180, 0)
-        self.setting.cv_move(0, rSz * 30, 0)
+        # self.setting.cv_move(0, rSz * 30, 0)
 
     def build(self):
         """Build the spine rig."""
