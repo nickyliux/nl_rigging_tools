@@ -97,8 +97,8 @@ flowchart
     id1(GrpNode) --> id4(LocNode)
     id1(GrpNode) --> id5(SrfNode)
     id1(GrpNode) --> id6(MshNode)
-    id8(AttributeHolder) --> id9(Attribute)
     id7(Dimension)
+    id8(AttributeHolder) --> id9(Attribute)
 ```
 
 ```python
@@ -124,23 +124,23 @@ jnt.addOffsetGrp()  # add offset group for jnt
 
 #### Custom Component Classes
 ```mermaid
-
 flowchart LR
     id1(RigModule) --> id2(Head)
+    id1(RigModule) --> id12(IkFkSpline)
+    id12(IkFkSpline) --> id13(Neck)
+    id12(IkFkSpline) --> id14(Tail)
     id1(RigModule) --> id3(SpineQd)
     id3(SpineQd) --> id4(SpineBp)
     id1(RigModule) --> id5(ArmBp)
+    id1(RigModule) --> id8(HandBp)
     id1(RigModule) --> id6(LegBp)
     id1(RigModule) --> id7(LegQd)
-    id1(RigModule) --> id8(IkFkSpline)
-    id8(IkFkSpline) --> id9(Neck)
-    id8(IkFkSpline) --> id10(Tail)
-    id1(RigModule) --> id11(HandBp)
-    id1(RigModule) --> id12(FingerFk)
-    id1(RigModule) --> id13(SimpleFk)
-    id1(RigModule) --> id14(Belt)
+    id1(RigModule) --> id9(FingerFk)
+    id1(RigModule) --> id10(SimpleFk)
+    id1(RigModule) --> id11(Belt)
+    
+    
 ```
-
 
 ## Dev Environment
 - Maya 2023.3 & 2027.2 
