@@ -757,9 +757,9 @@ def getObjectBelow(tgt, tgtType="mesh"):
     return returnNodes
 
 
-def pauseVP(state=1):
-    # mc.optionVar(iv=("vp2PauseState", state))
-    mc.refresh(suspend=state)
+# def pauseVP(state=1):
+#     # mc.optionVar(iv=("vp2PauseState", state))
+#     mc.refresh(suspend=state)
 
 
 def setView(jx=0, xray=0, wos=0, fit=0, ao=0, aa=0):

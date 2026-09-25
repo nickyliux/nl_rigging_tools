@@ -336,9 +336,6 @@ class RigModule(RigBase):
 
     def unbuild_pre_module(self):
         """Prepare for unbuilding the rig module, resetting the master guide state."""
-        # common.pauseVP(1)
-        # self.moduleG.show()
-
         prx = mc.ls(self.rigID + "_*_pxGeo*")
         if prx:
             mc.delete(prx)
@@ -370,7 +367,6 @@ class RigModule(RigBase):
 
         self.CTL_DATA.delete()
         self.masterGuide.a.built.set(0)
-        # common.pauseVP(0)
 
     def setup_anchor_module(self, anchorDict=None):
         """

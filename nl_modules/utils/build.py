@@ -55,7 +55,6 @@ def buildTgt(mg):
 @common.Undo("buildGuide")
 def buildGuide(*args):
     """Build rig for selected or all master guides."""
-
     MGs = collectMasterGuide(isSel=1, build=1)
     guidesToBuild = []
 
@@ -73,14 +72,12 @@ def buildGuide(*args):
         mc.progressWindow(
             t="Build", pr=0, status="\nPreparing ...", ii=0, maxValue=guideCount
         )
-        # common.pauseVP(1)
         for i, mg in enumerate(guidesToBuild):
             logging.info(f"({i + 1}) {mg.name}")
             buildTgt(mg)
             mc.progressWindow(e=1, pr=i, status=f"\n{mg.name}  [ {i} / {guideCount} ]")
             mc.refresh()
         postRig()
-        # common.pauseVP(0)
 
         mc.progressWindow(ep=1)
         logging.info(f"{guideCount} guide(s) built.")

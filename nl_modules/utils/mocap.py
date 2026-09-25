@@ -184,10 +184,8 @@ def bake_motion_to_ik(*args):
 
     allCtls = common.getRigCtlsAll()
     if allCtls:
-        # common.pauseVP(1)
         mc.select(allCtls)
         mc.bakeResults(simulation=1, t=(startTime, endTime))
-        # common.pauseVP(0)
 
         for frame in range(startTime, endTime + 1):
             mc.currentTime(frame, e=1)
