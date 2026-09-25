@@ -132,8 +132,6 @@ class HandBp(RigModule):
             tgtGrp.addOffsetGrp()
             ikJ.a.r >> tgtGrp.a.r
 
-        self.rootJ.cstPar(self.hand_grp, mo=1)
-
     def setSDK(self, drv, data, i=0, attr1="ry", attr2="ry", tgtOfs=0):
         """Setup SDK for finger base controls.
         tgtOfs = which seg of finger to start with
