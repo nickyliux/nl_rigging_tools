@@ -445,8 +445,7 @@ def _ensure_hik_loaded():
 
 HUMAN_IK_MAP = {
     "Reference": "master2_ctl",
-    # "Hips": "spineBp0_0_fkj",
-    "Hips": "spineBp0_cog_ctl",
+    "Hips": "spineBp0_0_fkj",
     "LeftUpLeg": "lfLegBp0_upr",
     "LeftLeg": "lfLegBp0_lwr",
     "LeftFoot": "lfLegBp0_palm",
