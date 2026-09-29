@@ -153,8 +153,8 @@ class LegQd(RigModule):
                 fgr_jnts = self.gen_sk_fr_names(names, r=0.5)
                 fgr_jnts[0].reOrient(
                     upRef=fgr_jnts[1],
-                    xDir=self.xDir,
-                    up=(0, 0, -1),
+                    aimV=(self.xDir, 0, 0),
+                    upV=(0, 0, -1),
                 )
                 fgr_jnts[0] | self.toesRootJ
                 self.jnts_toes.extend(fgr_jnts)

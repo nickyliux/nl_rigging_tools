@@ -116,8 +116,6 @@ class IkFkSpline(RigModule):
         last = self.ikJntNum - 1
         normal = -1 if self.rigID.startswith("tail") else 1
 
-        resetEnd = self.__class__.__name__ == "Tail"
-
         self.jnts_ik = JntNode.createJntsFrCrv(
             self.LINE_GUIDE,
             num=self.ikJntNum,
@@ -127,7 +125,7 @@ class IkFkSpline(RigModule):
             size=rSz * 3,
             color=Color.D_YELLOW,
             wldUpObj=self.masterGuide,
-            resetEnd=resetEnd,
+            endLocal=self.__class__.__name__ == "Tail",  # make IK ctl world space
         )
         self.main.alignTo(self.RT_GUIDE)
         self.main | self.IK_GRP
@@ -200,7 +198,6 @@ class IkFkSpline(RigModule):
             )
             self.masterGuide.setMsg({f"fkc{i}": ctl})
             self.ctls_fk.append(ctl)
-
         self.build_fk_with_ctl3(self.jnts_fk, self.ctls_fk, p=self.FK_GRP)
 
         crvLenRatio, pinXf, crv = common.build_ribbon_rivet(

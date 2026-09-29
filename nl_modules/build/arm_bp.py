@@ -122,7 +122,7 @@ class ArmBp(RigModule):
         self.build_fk()
         self.build_ik()
         self.blend_fk_ik()
-        self.update_list(self.jnts_bind, add=[self.clavicle, self.palm])
+        self.update_list(self.jnts_bind, add=[self.clavicle])  # , self.palm])
 
         if self.ribbon:
             self.ribbon_up, self.ribbon_lw = self.build_bendy_ribbon(

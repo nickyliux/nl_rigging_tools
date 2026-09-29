@@ -136,7 +136,8 @@ class SpineQd(RigModule):
             p=self.JNT_DATA,
             wldUpObj=self.masterGuide,
         )
-        # mc.delete(self.rootJ)
+        self.jnts_fk[0].orientToWorld()
+
         self.rootJ = self.jnts_fk[0]
         self.masterGuide.setMsg({"rootJ": self.rootJ})
 
@@ -440,7 +441,7 @@ class SpineQd(RigModule):
         self.setting.a.showAttr()
         [
             ctl.a.showAttr(t=1, r=1)
-            for ctl in [self.cog_ctl] + self.ctls_fk + self.ctls_ik
+            for ctl in [self.cog_ctl, self.cog_gmb] + self.ctls_fk + self.ctls_ik
         ]
         [
             ctl.a.showAttr(r=1)

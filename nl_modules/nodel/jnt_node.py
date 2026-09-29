@@ -1,5 +1,6 @@
-import maya.cmds as mc
 import logging
+
+import maya.cmds as mc
 
 from nl_modules.nodel.base.dag_node import DagNode
 from nl_modules.nodel.crv_node import CrvNode
@@ -207,12 +208,13 @@ class JntNode(GrpNode):
         num=2,
         rev=0,
         aimV=(0, 0, 1),
+        upV=(0, 1, 0),
         wldUpObj=None,
         size=1,
         color=None,
         addEndJ=0,
         p=None,
-        resetEnd=0,
+        endLocal=1,
     ):
         """Create a joint chain from a curve."""
         joints = []
@@ -230,26 +232,26 @@ class JntNode(GrpNode):
             poci.a.turnOnPercentage.set(1)
             poci.a.parameter.set(i / (num - 1))
             DagNode(crv).shape.a.worldSpace >> poci.a.inputCurve
-            aimCst = DagNode("aimCst_#", nodeType="aimConstraint")
+            # aimCst = DagNode("aimCst_#", nodeType="aimConstraint")
 
             mp.a.uValue.set(i / (num - 1))
-            mc.connectAttr(
-                f"{poci}.tangent", f"{aimCst}.target[0].targetTranslate", f=1
-            )
+            # mc.connectAttr(
+            #     f"{poci}.tangent", f"{aimCst}.target[0].targetTranslate", f=1
+            # )
             poci.a.position >> grp.a.translate
 
-            aimCst.a.aimVector.set(*aimV)
-            aimCst.a.constraintRotateX >> grp.a.rx
-            aimCst.a.constraintRotateY >> grp.a.ry
-            aimCst.a.constraintRotateZ >> grp.a.rz
-            if wldUpObj:
-                aimCst.a.worldUpType.set(2)
-                wldUpObj.a.worldMatrix >> aimCst.a.worldUpMatrix
+            # aimCst.a.aimVector.set(*aimV)
+            # aimCst.a.constraintRotateX >> grp.a.rx
+            # aimCst.a.constraintRotateY >> grp.a.ry
+            # aimCst.a.constraintRotateZ >> grp.a.rz
+            # if wldUpObj:
+            #     aimCst.a.worldUpType.set(2)
+            #     wldUpObj.a.worldMatrix >> aimCst.a.worldUpMatrix
 
             j = JntNode(f"{i}_{name}", pf=pf, align=grp, r=size, color=color)
             joints.append(j)
 
-            mc.delete(mp, poci, aimCst, grp)
+            mc.delete(mp, poci, grp)  # aimCst,
 
         root = joints[-1] if rev else joints[0]
         last = joints[0] if rev else joints[-1]
@@ -261,10 +263,6 @@ class JntNode(GrpNode):
             else:
                 if chain:
                     joints[i] | joints[i + 1]
-
-        if resetEnd:
-            joints[-1].resetOrient()
-            joints[-1].a.r.set(0, 0, 0)
 
         if addEndJ:
             endJ = last.duplicate(n=last + "_end")
@@ -278,6 +276,8 @@ class JntNode(GrpNode):
 
         if p:
             root | p
+
+        joints[0].reOrient(upRef=wldUpObj, aimV=aimV, upV=upV, endLocal=endLocal)
 
         return joints
 
@@ -319,7 +319,11 @@ class JntNode(GrpNode):
             return
         self.a.drawStyle.set(style)
 
-    def reOrient(self, upRef=None, xDir=1, up=(0, 1, 0)):
+    def orientToWorld(self):
+        """Orient joint to World"""
+        mc.joint(self, e=1, oj="none", zso=1, ch=0)
+
+    def reOrient(self, upRef=None, aimV=(1, 0, 0), upV=(0, 1, 0), endLocal=1):
         """Orient joints below this node"""
         all_jnts = self.allChildrenJt2
 
@@ -345,16 +349,18 @@ class JntNode(GrpNode):
                 aimLoc.snapTo(tgt)
                 aimLoc.cstAim(
                     jnt,
-                    aim=(xDir, 0, 0),
+                    aim=aimV,
                     worldUpType="objectrotation",
                     worldUpObject=upLoc,
-                    upVector=up,
+                    upVector=upV,
                     keep=0,
                 )
                 jnt.freezeXf()
                 tgt | jnt
             else:
-                JntNode(jnt).resetOrient()
+                # jnt.freezeXf()
+                if endLocal == 1:
+                    JntNode(jnt).resetOrient()
 
         mc.delete(upLoc, aimLoc)
         mc.select(cl=1)

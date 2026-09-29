@@ -5272,7 +5272,7 @@ Setup</string>
       </rect>
      </property>
      <property name="title">
-      <string>Human IK</string>
+      <string>Human IK Setup</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

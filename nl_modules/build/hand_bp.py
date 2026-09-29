@@ -39,7 +39,7 @@ class HandBp(RigModule):
         fgr_roots = []
         for fgr_names in ALL_FGR_NAMES:
             jnts = self.gen_sk_fr_names(fgr_names, r=0.5)
-            jnts[0].reOrient(upRef=jnts[1], xDir=self.xDir)
+            jnts[0].reOrient(upRef=jnts[1], aimV=(self.xDir, 0, 0))
             jnts[0] | root_list[0]
             fgr_roots.append(jnts[0])
 
@@ -76,6 +76,8 @@ class HandBp(RigModule):
             digit_jnts = [jnt for jnt in root.allChildrenJt2]
             self.jnts_fgr.append(digit_jnts)
             self.update_list(self.jnts_bind, add=digit_jnts[:-1])
+
+        self.jnts_bind.append(self.rootJ)
 
         self.build_ctl()
         self.build_fk()
@@ -357,8 +359,9 @@ class HandBp(RigModule):
     def setup_channel(self):
         """Setup channels for the hand rig controls."""
         self.setting.a.showAttr()
-        self.smart_ctl.a.showAttr("sy", t=1, r=1)  # , s=1)
+        self.smart_ctl.a.showAttr("sy", t=1, r=1)
         self.palm_ctl.a.showAttr(r=1)
+        self.thumb_ctl.a.showAttr(r=1)
 
         for ctls in self.ctls_fgr:
             for ctl in ctls:
