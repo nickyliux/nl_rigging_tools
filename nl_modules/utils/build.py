@@ -126,7 +126,26 @@ def postRig():
             master2_ctl.a.proxyVis.set(1)
         # master2_ctl.a.jointVis.set(0)
 
+    allAllCtlsToCTLS_layer()
     mc.select(cl=1)
+
+
+def allAllCtlsToCTLS_layer():
+    """Add all ctls to CTLS layer"""
+    # Create layer if not exist
+    lyrs = mc.ls("CTLS", type="displayLayer")
+    lyr = None
+    if lyrs:
+        lyr = lyrs[0]
+    else:
+        lyr = mc.createDisplayLayer(n="CTLS", e=1)
+
+    # Assign all ctls to layer
+    allCtls = common.getRigCtlsAll()
+    if allCtls:
+        mc.select(allCtls)
+        ufeSel = mc.ls(sl=1, ufe=1)
+        mc.editDisplayLayerMembers(lyr, ufeSel, noRecurse=1)
 
 
 def addMasterAttrs():

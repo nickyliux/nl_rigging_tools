@@ -193,7 +193,7 @@ class CrvNode(GrpNode):
 
         if attrHolder:
             (
-                attrHolder.a.add("PlaybackHide", type="bool", dv=0, k=0)
+                attrHolder.a.add("PlaybackHide", type="bool", dv=1, k=0)
                 >> line.shape.a["hideOnPlayback"]
             )
 

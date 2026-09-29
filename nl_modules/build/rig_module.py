@@ -605,11 +605,12 @@ class RigModule(RigBase):
         from nl_modules.utils import utils_node as ut
 
         footRoll = targetCtl.a.add("footRoll")
-        # footBreak = targetCtl.a.add("footBreak", min=0, dv=50)
         ut.min_(0, footRoll) >> heelRollG.a.rx
-        # ut.clp_(footRoll, min=0, max=footBreak) >> ballRollG.a.rx
-        # ut.max_(0, (footRoll - footBreak)) >> footRollG.a.rx
-        ut.max_(0, footRoll) >> footRollG.a.rx
+
+        footBreak = targetCtl.a.add("footBreak", min=0, dv=50)
+        ut.clp_(footRoll, min=0, max=footBreak) >> ballRollG.a.rx
+        ut.max_(0, (footRoll - footBreak)) >> footRollG.a.rx
+        # ut.max_(0, footRoll) >> footRollG.a.rx
 
         # self.ikc.a.add("heelTwist") >> heelRollG.a.ry
         # self.ikc.a.add("ballTwist") >> ballRollG.a.ry
