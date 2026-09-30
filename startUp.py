@@ -31,7 +31,7 @@ def aboutDialog(self):
 
     msg = """
 nl Rigging Tools (nlRT)
-Version: v0.1.2
+Version: v0.1.3
 Copyright (c) 2026 Nicky Liu
 
 
